@@ -1,0 +1,29 @@
+ManifestFileVersion: 0
+CRC: 3137456723
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: a8622f2115b36ee2bd8a26fbd37882e9
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 47ee499ae8022a6b96ca6a5fd541f154
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+- Class: 114
+  Script: {fileID: -822479833, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+- Class: 114
+  Script: {fileID: 227461547, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+- Class: 114
+  Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/NetworkPlayer.prefab
+- Assets/NetworkManager.prefab
+Dependencies: []

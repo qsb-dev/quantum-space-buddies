@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FriendsInSpace</RootNamespace>
+    <AssemblyName>FriendsInSpace</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\NAudio-Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\OWML.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\OWML.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\OWML.ModHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.3.35\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>..\..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="QSB.cs" />
+    <Compile Include="NetworkPlayer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default-config.json" />
+    <None Include="manifest.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>md "$(StartWorkingDirectory)\Mods\FriendsInSpace"
+md "$(StartWorkingDirectory)\Mods\FriendsInSpace\assets"
+
+copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\FriendsInSpace\FriendsInSpace.dll"
+
+copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\FriendsInSpace\default-config.json"
+
+copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\FriendsInSpace\config.json"
+
+copy /y "$(ProjectDir)\manifest.json" "$(StartWorkingDirectory)\Mods\FriendsInSpace\manifest.json"
+
+copy /y "$(ProjectDir)\Assets\*" "$(StartWorkingDirectory)\Mods\FriendsInSpace\Assets"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
