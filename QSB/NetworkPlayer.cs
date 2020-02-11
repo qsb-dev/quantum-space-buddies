@@ -5,6 +5,7 @@ namespace QSB {
     public class NetworkPlayer: NetworkBehaviour {
         Transform _body;
         Transform _sun;
+        float _smoothSpeed = 10f;
 
         void Start () {
             QSB.Log("Started network player");
@@ -29,7 +30,7 @@ namespace QSB {
                 transform.position = _body.position - _sun.position;
                 transform.rotation = _body.rotation * Quaternion.Inverse(_sun.rotation);
             } else {
-                _body.position = _sun.position + transform.position;
+                _body.position = Vector3.Lerp(_body.position, _sun.position + transform.position, _smoothSpeed * Time.deltaTime);
                 _body.rotation = transform.rotation * _sun.rotation;
             }
         }
