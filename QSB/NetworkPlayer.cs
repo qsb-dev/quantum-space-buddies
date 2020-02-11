@@ -17,6 +17,7 @@ namespace QSB {
                 _body = player;
             } else {
                 _body = Instantiate(player);
+                _body.GetComponent<PlayerAnimController>().enabled = false;
                 _body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
                 _body.parent = transform;
                 _body.localPosition = Vector3.zero;
