@@ -1,19 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB {
     public class NetworkPlayer: NetworkBehaviour {
         Transform _body;
-        Transform _sun;
         float _smoothSpeed = 10f;
+        public static NetworkPlayer localInstance { get; private set; }
+
+        [SyncVar(hook = "OnChangeSector")]
+        public Sector.Name _sector;
+        Transform _sectorTransform;
 
         void Start () {
             QSB.Log("Started network player");
 
-            _sun = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            _sectorTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
             var player = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
             if (isLocalPlayer) {
+                localInstance = this;
                 _body = player;
             } else {
                 _body = Instantiate(player);
@@ -24,16 +31,51 @@ namespace QSB {
                 _body.localRotation = Quaternion.identity;
             }
         }
+
+        public void EnterSector (Sector sector) {
+            if (!isLocalPlayer) {
+                QSB.Log("EnterSector being called for non-local player! Bad!");
+            }
+            var name = sector.GetName();
+            if (name != Sector.Name.Unnamed) {
+                QSB.Log("Client entered sector", name.ToString());
+                CmdSetSector(name);
+            }
+        }
+
+        [Command]
+        void CmdSetSector (Sector.Name name) {
+            if (!isServer) {
+                QSB.Log("This is not the server, so skipping CmdSetSector");
+                return;
+            }
+            QSB.Log("This is iserver, so setting client sector to", name.ToString());
+            _sector = name;
+        }
+
+        void OnChangeSector (Sector.Name name) {
+            QSB.Log("Client received onChange from server, to sector", name.ToString());
+            _sector = name;
+
+            var sectors = GameObject.FindObjectsOfType<Sector>();
+            foreach (var sector in sectors) {
+                if (name == sector.GetName()) {
+                    _sectorTransform = sector.transform;
+                    return;
+                }
+            }
+        }
+
         void Update () {
             if (!_body) {
                 return;
             }
             if (isLocalPlayer) {
-                transform.position = _body.position - _sun.position;
-                transform.rotation = _body.rotation * Quaternion.Inverse(_sun.rotation);
+                transform.position = _body.position - _sectorTransform.position;
+                transform.rotation = _body.rotation * Quaternion.Inverse(_sectorTransform.rotation);
             } else {
-                _body.position = Vector3.Lerp(_body.position, _sun.position + transform.position, _smoothSpeed * Time.deltaTime);
-                _body.rotation = transform.rotation * _sun.rotation;
+                _body.position = Vector3.Lerp(_body.position, _sectorTransform.position + transform.position, _smoothSpeed * Time.deltaTime);
+                _body.rotation = transform.rotation * _sectorTransform.rotation;
             }
         }
     }

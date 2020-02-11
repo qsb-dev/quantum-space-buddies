@@ -26,10 +26,26 @@ namespace QSB {
             var networkPlayerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             networkPlayerPrefab.AddComponent<NetworkPlayer>();
             networkManager.GetComponent<NetworkManager>().playerPrefab = networkPlayerPrefab;
+
+            ModHelper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "OnAddSector");
         }
 
         public static void Log (params string[] strings) {
             _instance.ModHelper.Console.WriteLine(string.Join(" ", strings));
+        }
+
+        public static void LogToScreen (params string[] strings) {
+            var text = string.Join(" ", strings);
+            NotificationData data = new NotificationData(NotificationTarget.Player, text, 3f, true);
+            NotificationManager.SharedInstance.PostNotification(data, false);
+        }
+
+        static class Patches {
+            static void OnAddSector (Sector sector, PlayerSectorDetector __instance) {
+                if (NetworkPlayer.localInstance != null) {
+                    NetworkPlayer.localInstance.EnterSector(sector);
+                }
+            }
         }
     }
 }
