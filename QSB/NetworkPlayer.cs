@@ -14,7 +14,7 @@ namespace QSB {
         Transform _sectorTransform;
 
         void Start () {
-            QSB.Log("Started network player");
+            QSB.LogToScreen("Started network player");
 
             _sectorTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
@@ -34,11 +34,11 @@ namespace QSB {
 
         public void EnterSector (Sector sector) {
             if (!isLocalPlayer) {
-                QSB.Log("EnterSector being called for non-local player! Bad!");
+                QSB.LogToScreen("EnterSector being called for non-local player! Bad!");
             }
             var name = sector.GetName();
             if (name != Sector.Name.Unnamed) {
-                QSB.Log("Client entered sector", name.ToString());
+                QSB.LogToScreen("Client entered sector", name.ToString());
                 CmdSetSector(name);
             }
         }
@@ -46,15 +46,15 @@ namespace QSB {
         [Command]
         void CmdSetSector (Sector.Name name) {
             if (!isServer) {
-                QSB.Log("This is not the server, so skipping CmdSetSector");
+                QSB.LogToScreen("This is not the server, so skipping CmdSetSector");
                 return;
             }
-            QSB.Log("This is iserver, so setting client sector to", name.ToString());
+            QSB.LogToScreen("This is iserver, so setting client sector to", name.ToString());
             _sector = name;
         }
 
         void OnChangeSector (Sector.Name name) {
-            QSB.Log("Client received onChange from server, to sector", name.ToString());
+            QSB.LogToScreen("Client received onChange from server, to sector", name.ToString());
             _sector = name;
 
             var sectors = GameObject.FindObjectsOfType<Sector>();
