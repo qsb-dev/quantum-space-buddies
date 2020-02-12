@@ -62,11 +62,12 @@ namespace QSB {
 
             var sectorTransform = QSB.playerSectors[netId.Value];
             if (isLocalPlayer) {
-                transform.position = _body.position - sectorTransform.position;
-                transform.rotation = _body.rotation * Quaternion.Inverse(sectorTransform.rotation);
+                transform.position = sectorTransform.InverseTransformPoint(_body.position);
+                transform.rotation = sectorTransform.InverseTransformRotation(_body.rotation);
             } else {
-                _body.position = Vector3.Lerp(_body.position, sectorTransform.position + transform.position, _smoothSpeed * Time.deltaTime);
-                _body.rotation = transform.rotation * sectorTransform.rotation;
+                //var lerpPosition = Vector3.Lerp(_body.position, sectorTransform.TransformPoint(transform.position), _smoothSpeed * Time.deltaTime);
+                _body.position = sectorTransform.TransformPoint(transform.position);
+                _body.rotation = sectorTransform.rotation * transform.rotation;
             }
         }
     }
