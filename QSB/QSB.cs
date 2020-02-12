@@ -42,9 +42,9 @@ namespace QSB {
             return result;
         }
 
-        //public static void Log (params object[] logObjects) {
-        //    _instance.ModHelper.Console.WriteLine(JoinAll(logObjects));
-        //}
+        public static void Log (params object[] logObjects) {
+            _instance.ModHelper.Console.WriteLine(JoinAll(logObjects));
+        }
 
         public static void LogToScreen (params object[] logObjects) {
             NotificationData data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
