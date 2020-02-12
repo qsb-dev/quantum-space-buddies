@@ -8,7 +8,6 @@ namespace QSB {
         Transform _body;
         float _smoothSpeed = 10f;
         public static NetworkPlayer localInstance { get; private set; }
-        Sector.Name _prevSector;
 
         void Start () {
             if (isLocalPlayer) {
