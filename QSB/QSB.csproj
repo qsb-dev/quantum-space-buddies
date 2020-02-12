@@ -78,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SectorMessage.cs" />
     <Compile Include="QSB.cs" />
     <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

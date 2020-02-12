@@ -8,24 +8,7 @@ namespace QSB {
         Transform _body;
         float _smoothSpeed = 10f;
         public static NetworkPlayer localInstance { get; private set; }
-
-        public Sector.Name _sector;
         Transform _sectorTransform;
-
-        public class SectorMessage: MessageBase {
-            public int sector;
-            public int id;
-
-            public override void Deserialize (NetworkReader reader) {
-                sector = reader.ReadInt32();
-                id = reader.ReadInt32();
-            }
-
-            public override void Serialize (NetworkWriter writer) {
-                writer.Write(sector);
-                writer.Write(id);
-            }
-        }
 
         void Start () {
             QSB.LogToScreen("Started network player");
@@ -46,35 +29,31 @@ namespace QSB {
             }
 
             if (isServer) {
+                QSB.LogToScreen("Register Handler Server");
                 NetworkServer.RegisterHandler(MsgType.Highest + 1, OnReceiveMessage);
             } else {
+                QSB.LogToScreen("Register Handler Client");
                 NetworkManager.singleton.client.RegisterHandler(MsgType.Highest + 1, OnReceiveMessage);
             }
-
-        }
-
-        void DoThisThing () {
-            _sector = Sector.Name.Comet;
         }
 
         private void OnReceiveMessage (NetworkMessage netMsg) {
-            QSB.LogToScreen("Messager Receive");
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
+            QSB.LogToScreen("Messager Receive", msg.senderId.ToString(), netId.Value.ToString());
 
             if (isServer) {
-                if (msg.id == connectionToClient.connectionId) {
-                    NetworkServer.SendToAll(MsgType.Highest + 1, msg);
-                    SetSectorById(msg.sector);
+                if (msg.senderId == netId.Value) {
+                    NetworkServer.SendToAll(SectorMessage.Type, msg);
+                    SetSectorById(msg.sectorId);
                 }
             } else {
-                if (msg.id == connectionToServer.connectionId) {
-                    SetSectorById(msg.sector);
+                if (msg.senderId == netId.Value) {
+                    SetSectorById(msg.sectorId);
                 }
             }
         }
 
         void SetSectorById (int sectorId) {
-            QSB.LogToScreen("Set sector by ID");
             var sectorName = (Sector.Name) sectorId;
             var sectors = GameObject.FindObjectsOfType<Sector>();
             foreach (var sector in sectors) {
@@ -86,19 +65,15 @@ namespace QSB {
         }
 
         public void EnterSector (Sector sector) {
-            if (!isLocalPlayer) {
-                QSB.LogToScreen("EnterSector being called for non-local player! Bad!");
-            }
             var name = sector.GetName();
-            if (name != Sector.Name.Unnamed) {
-                QSB.LogToScreen("Client entered sector", name.ToString());
+            if (name != Sector.Name.Unnamed && name != Sector.Name.Ship) {
                 SectorMessage msg = new SectorMessage();
-                msg.sector = (int) sector.GetName();
-                msg.id = connectionToServer.connectionId;
+                msg.sectorId = (int) sector.GetName();
+                msg.senderId = netId.Value;
                 if (isServer) {
-                    NetworkServer.SendToAll(MsgType.Highest + 1, msg);
+                    NetworkServer.SendToAll(SectorMessage.Type, msg);
                 } else {
-                    connectionToServer.Send(MsgType.Highest + 1, msg);
+                    connectionToServer.Send(SectorMessage.Type, msg);
                 }
             }
         }
