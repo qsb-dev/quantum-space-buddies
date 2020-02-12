@@ -90,17 +90,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md "$(StartWorkingDirectory)\Mods\FriendsInSpace"
-md "$(StartWorkingDirectory)\Mods\FriendsInSpace\assets"
+    <PostBuildEvent>md "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies"
+md "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\assets"
+del "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\config.json"
 
-copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\FriendsInSpace\FriendsInSpace.dll"
+copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\QuantumSpaceBuddies.dll"
 
-copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\FriendsInSpace\default-config.json"
+copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\default-config.json"
 
-copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\FriendsInSpace\config.json"
+copy /y "$(ProjectDir)\manifest.json" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\manifest.json"
 
-copy /y "$(ProjectDir)\manifest.json" "$(StartWorkingDirectory)\Mods\FriendsInSpace\manifest.json"
-
-copy /y "$(ProjectDir)\Assets\*" "$(StartWorkingDirectory)\Mods\FriendsInSpace\Assets"</PostBuildEvent>
+copy /y "$(ProjectDir)\Assets\*" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\Assets"</PostBuildEvent>
   </PropertyGroup>
 </Project>
