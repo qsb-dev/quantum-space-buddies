@@ -11,7 +11,12 @@ namespace QSB {
         Transform _sectorTransform;
 
         void Start () {
-            QSB.LogToScreen("Started network player");
+            if (isLocalPlayer) {
+                QSB.LogToScreen("Started LOCAL network player", netId.Value);
+            } else {
+                QSB.LogToScreen("Started REMOTE network player", netId.Value);
+            }
+            QSB.players[netId.Value] = this;
 
             _sectorTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
@@ -28,29 +33,25 @@ namespace QSB {
                 _body.localRotation = Quaternion.identity;
             }
 
+            // It's dumb that this is here, should be somewhere else.
             if (isServer) {
-                QSB.LogToScreen("Register Handler Server");
-                NetworkServer.RegisterHandler(MsgType.Highest + 1, OnReceiveMessage);
+                NetworkServer.RegisterHandler(MsgType.Highest + 1, QSB.OnReceiveMessage);
             } else {
-                QSB.LogToScreen("Register Handler Client");
-                NetworkManager.singleton.client.RegisterHandler(MsgType.Highest + 1, OnReceiveMessage);
+                NetworkManager.singleton.client.RegisterHandler(SectorMessage.Type, QSB.OnReceiveMessage);
             }
+
         }
 
-        private void OnReceiveMessage (NetworkMessage netMsg) {
-            SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
-            QSB.LogToScreen("Messager Receive", msg.senderId.ToString(), netId.Value.ToString());
+        public void OnReceiveMessage (int sectorId) {
+            QSB.LogToScreen("Messager Receive", netId.Value);
 
             if (isServer) {
-                if (msg.senderId == netId.Value) {
-                    NetworkServer.SendToAll(SectorMessage.Type, msg);
-                    SetSectorById(msg.sectorId);
-                }
-            } else {
-                if (msg.senderId == netId.Value) {
-                    SetSectorById(msg.sectorId);
-                }
+                var msg = new SectorMessage();
+                msg.senderId = netId.Value;
+                msg.sectorId = sectorId;
+                NetworkServer.SendToAll(SectorMessage.Type, msg);
             }
+            SetSectorById(sectorId);
         }
 
         void SetSectorById (int sectorId) {
@@ -58,6 +59,7 @@ namespace QSB {
             var sectors = GameObject.FindObjectsOfType<Sector>();
             foreach (var sector in sectors) {
                 if (sectorName == sector.GetName()) {
+                    QSB.LogToScreen("Found sector", sectorName, ", setting for", netId.Value);
                     _sectorTransform = sector.transform;
                     return;
                 }
