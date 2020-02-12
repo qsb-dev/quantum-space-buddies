@@ -39,7 +39,7 @@ namespace QSB {
 
         public void EnterSector (Sector sector) {
             var name = sector.GetName();
-            if (name != Sector.Name.Unnamed && name != Sector.Name.Ship) {
+            if (name != Sector.Name.Unnamed && name != Sector.Name.Ship && name != Sector.Name.Sun) {
                 QSB.playerSectors[netId.Value] = QSB.GetSectorByName(sector.GetName());
 
                 SectorMessage msg = new SectorMessage();
