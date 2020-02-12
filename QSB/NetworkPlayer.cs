@@ -8,7 +8,7 @@ namespace QSB {
         Transform _body;
         float _smoothSpeed = 10f;
         public static NetworkPlayer localInstance { get; private set; }
-        Transform _sectorTransform;
+        Sector.Name _prevSector;
 
         void Start () {
             if (isLocalPlayer) {
@@ -16,9 +16,7 @@ namespace QSB {
             } else {
                 QSB.LogToScreen("Started REMOTE network player", netId.Value);
             }
-            QSB.players[netId.Value] = this;
-
-            _sectorTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            QSB.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
             var player = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
             if (isLocalPlayer) {
@@ -42,33 +40,11 @@ namespace QSB {
 
         }
 
-        public void OnReceiveMessage (int sectorId) {
-            QSB.LogToScreen("Messager Receive", netId.Value);
-
-            if (isServer) {
-                var msg = new SectorMessage();
-                msg.senderId = netId.Value;
-                msg.sectorId = sectorId;
-                NetworkServer.SendToAll(SectorMessage.Type, msg);
-            }
-            SetSectorById(sectorId);
-        }
-
-        void SetSectorById (int sectorId) {
-            var sectorName = (Sector.Name) sectorId;
-            var sectors = GameObject.FindObjectsOfType<Sector>();
-            foreach (var sector in sectors) {
-                if (sectorName == sector.GetName()) {
-                    QSB.LogToScreen("Found sector", sectorName, ", setting for", netId.Value);
-                    _sectorTransform = sector.transform;
-                    return;
-                }
-            }
-        }
-
         public void EnterSector (Sector sector) {
             var name = sector.GetName();
             if (name != Sector.Name.Unnamed && name != Sector.Name.Ship) {
+                QSB.playerSectors[netId.Value] = QSB.GetSectorByName(sector.GetName());
+
                 SectorMessage msg = new SectorMessage();
                 msg.sectorId = (int) sector.GetName();
                 msg.senderId = netId.Value;
@@ -84,12 +60,14 @@ namespace QSB {
             if (!_body) {
                 return;
             }
+
+            var sectorTransform = QSB.playerSectors[netId.Value];
             if (isLocalPlayer) {
-                transform.position = _body.position - _sectorTransform.position;
-                transform.rotation = _body.rotation * Quaternion.Inverse(_sectorTransform.rotation);
+                transform.position = _body.position - sectorTransform.position;
+                transform.rotation = _body.rotation * Quaternion.Inverse(sectorTransform.rotation);
             } else {
-                _body.position = Vector3.Lerp(_body.position, _sectorTransform.position + transform.position, _smoothSpeed * Time.deltaTime);
-                _body.rotation = transform.rotation * _sectorTransform.rotation;
+                _body.position = Vector3.Lerp(_body.position, sectorTransform.position + transform.position, _smoothSpeed * Time.deltaTime);
+                _body.rotation = transform.rotation * sectorTransform.rotation;
             }
         }
     }

@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 namespace QSB {
     public class QSB: ModBehaviour {
         static QSB _instance;
-        public static Dictionary<uint, NetworkPlayer> players;
+        public static Dictionary<uint, Transform> playerSectors;
 
         void Awake () {
             Application.runInBackground = true;
@@ -23,7 +23,7 @@ namespace QSB {
         void Start () {
             _instance = this;
 
-            players = new Dictionary<uint, NetworkPlayer>();
+            playerSectors = new Dictionary<uint, Transform>();
 
             var assetBundle = ModHelper.Assets.LoadBundle("assets/network");
             var networkManager = Instantiate(assetBundle.LoadAsset<GameObject>("assets/networkmanager.prefab"));
@@ -51,10 +51,31 @@ namespace QSB {
             NotificationManager.SharedInstance.PostNotification(data, false);
         }
 
+        public static Transform GetSectorByName (Sector.Name sectorName) {
+            var sectors = GameObject.FindObjectsOfType<Sector>();
+            foreach (var sector in sectors) {
+                if (sectorName == sector.GetName()) {
+                    return sector.transform;
+                }
+            }
+            return null;
+        }
+
         public static void OnReceiveMessage (NetworkMessage netMsg) {
-            QSB.LogToScreen("global message receive");
+            QSB.LogToScreen("Global message receive");
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
-            players[msg.senderId].OnReceiveMessage(msg.sectorId);
+
+            var sectorName = (Sector.Name) msg.sectorId;
+            var sectorTransform = GetSectorByName(sectorName);
+
+            if (sectorTransform == null) {
+                QSB.LogToScreen("Sector", sectorName, "not found");
+                return;
+            }
+
+            QSB.LogToScreen("Found sector", sectorName, ", setting for", msg.senderId);
+
+            playerSectors[msg.senderId] = sectorTransform;
         }
 
         static class Patches {
