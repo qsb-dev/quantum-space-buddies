@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 namespace QSB {
     public class NetworkPlayer: NetworkBehaviour {
         Transform _body;
-        float _smoothSpeed = 10f;
         public static NetworkPlayer localInstance { get; private set; }
 
         void Start () {
@@ -17,6 +16,8 @@ namespace QSB {
             }
             QSB.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
+            transform.parent = Locator.GetRootTransform();
+
             var player = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
             if (isLocalPlayer) {
                 localInstance = this;
@@ -25,9 +26,6 @@ namespace QSB {
                 _body = Instantiate(player);
                 _body.GetComponent<PlayerAnimController>().enabled = false;
                 _body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-                _body.parent = transform;
-                _body.localPosition = Vector3.zero;
-                _body.localRotation = Quaternion.identity;
             }
 
             // It's dumb that this is here, should be somewhere else.
@@ -65,7 +63,7 @@ namespace QSB {
                 transform.position = sectorTransform.InverseTransformPoint(_body.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(_body.rotation);
             } else {
-                //var lerpPosition = Vector3.Lerp(_body.position, sectorTransform.TransformPoint(transform.position), _smoothSpeed * Time.deltaTime);
+                _body.parent = sectorTransform;
                 _body.position = sectorTransform.TransformPoint(transform.position);
                 _body.rotation = sectorTransform.rotation * transform.rotation;
             }
