@@ -26,6 +26,7 @@ namespace QSB {
                 _body = Instantiate(player);
                 _body.GetComponent<PlayerAnimController>().enabled = false;
                 _body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
+                _body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
             }
 
             // It's dumb that this is here, should be somewhere else.
