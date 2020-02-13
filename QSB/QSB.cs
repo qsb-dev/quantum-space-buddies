@@ -26,10 +26,14 @@ namespace QSB {
             playerSectors = new Dictionary<uint, Transform>();
 
             var assetBundle = ModHelper.Assets.LoadBundle("assets/network");
-            var networkManager = Instantiate(assetBundle.LoadAsset<GameObject>("assets/networkmanager.prefab"));
+            //var networkManager = Instantiate(assetBundle.LoadAsset<GameObject>("assets/networkmanager.prefab"));
             var networkPlayerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             networkPlayerPrefab.AddComponent<NetworkPlayer>();
-            networkManager.GetComponent<NetworkManager>().playerPrefab = networkPlayerPrefab;
+
+            var networkManager = gameObject.AddComponent<QSBNetworkManager>();
+            networkManager.playerPrefab = networkPlayerPrefab;
+
+            gameObject.AddComponent<NetworkManagerHUD>();
 
             ModHelper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "OnAddSector");
         }
@@ -47,6 +51,11 @@ namespace QSB {
         }
 
         public static void LogToScreen (params object[] logObjects) {
+            if (Locator.GetPlayerBody() == null) {
+                Log("Warning: tried to log to HUD but player is not ready.");
+                Log(logObjects);
+                return;
+            }
             NotificationData data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
             NotificationManager.SharedInstance.PostNotification(data, false);
         }

@@ -9,11 +9,7 @@ namespace QSB {
         public static NetworkPlayer localInstance { get; private set; }
 
         void Start () {
-            if (isLocalPlayer) {
-                QSB.LogToScreen("Started LOCAL network player", netId.Value);
-            } else {
-                QSB.LogToScreen("Started REMOTE network player", netId.Value);
-            }
+            QSB.Log("Start NetworkPlayer", netId.Value);
             QSB.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
             transform.parent = Locator.GetRootTransform();
@@ -35,7 +31,6 @@ namespace QSB {
             } else {
                 NetworkManager.singleton.client.RegisterHandler(SectorMessage.Type, QSB.OnReceiveMessage);
             }
-
         }
 
         public void EnterSector (Sector sector) {
