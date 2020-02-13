@@ -11,6 +11,8 @@ namespace QSB {
         void Awake () {
             playerSectors = new Dictionary<uint, Transform>();
             _allSectors = FindObjectsOfType<Sector>();
+
+            QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
 
         public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName) {
@@ -30,7 +32,7 @@ namespace QSB {
             return null;
         }
 
-        protected override void OnReceiveMessage (NetworkMessage netMsg) {
+        protected override void OnClientReceiveMessage (NetworkMessage netMsg) {
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
 
             var sectorName = (Sector.Name) msg.sectorId;
@@ -43,6 +45,19 @@ namespace QSB {
 
             QSB.LogToScreen("Found sector", sectorName, ", setting for", msg.senderId);
             playerSectors[msg.senderId] = sectorTransform;
+        }
+
+        protected override void OnServerReceiveMessage (NetworkMessage netMsg) {
+            SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
+            NetworkServer.SendToAll(MessageType.Sector, msg);
+        }
+
+        static class Patches {
+            static void PreAddSector (Sector sector, PlayerSectorDetector __instance) {
+                if (NetworkPlayer.localInstance != null) {
+                    NetworkPlayer.localInstance.EnterSector(sector);
+                }
+            }
         }
     }
 }

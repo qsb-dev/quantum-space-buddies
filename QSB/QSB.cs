@@ -26,8 +26,6 @@ namespace QSB {
 
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
-
-            ModHelper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "OnAddSector");
         }
 
         static string JoinAll (params object[] logObjects) {
@@ -50,14 +48,6 @@ namespace QSB {
             }
             NotificationData data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
             NotificationManager.SharedInstance.PostNotification(data, false);
-        }
-
-        static class Patches {
-            static void OnAddSector (Sector sector, PlayerSectorDetector __instance) {
-                if (NetworkPlayer.localInstance != null) {
-                    NetworkPlayer.localInstance.EnterSector(sector);
-                }
-            }
         }
     }
 }
