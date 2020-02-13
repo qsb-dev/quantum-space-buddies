@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB {
     public abstract class MessageHandler: MonoBehaviour {
-        public abstract short type { get; }
+        protected abstract short type { get; }
 
         public MessageHandler () {
             NetworkServer.RegisterHandler(SectorMessage.Type, OnReceiveMessage);

@@ -4,16 +4,25 @@ using UnityEngine.Networking;
 
 namespace QSB {
     public class SectorSync: MessageHandler {
-        public override short type { get => MessageType.Sector; }
-        public static Dictionary<uint, Transform> playerSectors;
+        protected override short type { get => MessageType.Sector; }
+        static Dictionary<uint, Transform> playerSectors;
+        static Sector[] _allSectors;
 
         void Awake () {
             playerSectors = new Dictionary<uint, Transform>();
+            _allSectors = FindObjectsOfType<Sector>();
         }
 
-        public static Transform GetSectorByName (Sector.Name sectorName) {
-            var sectors = FindObjectsOfType<Sector>();
-            foreach (var sector in sectors) {
+        public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName) {
+            playerSectors[netId.Value] = GetSectorByName(sectorName);
+        }
+
+        public static Transform GetSector (NetworkInstanceId netId) {
+            return playerSectors[netId.Value];
+        }
+
+        static Transform GetSectorByName (Sector.Name sectorName) {
+            foreach (var sector in _allSectors) {
                 if (sectorName == sector.GetName()) {
                     return sector.transform;
                 }
