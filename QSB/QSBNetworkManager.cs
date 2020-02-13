@@ -12,6 +12,13 @@ namespace QSB {
             playerPrefab.AddComponent<NetworkPlayer>();
         }
 
+        public override void OnClientConnect (NetworkConnection conn) {
+            base.OnClientConnect(conn);
+
+            QSB.Log("OnClientConnect");
+            gameObject.AddComponent<WakeUpSync>();
+        }
+
         void OnWakeUp () {
             gameObject.AddComponent<SectorSync>();
         }

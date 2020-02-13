@@ -8,7 +8,12 @@ namespace QSB {
         Transform _body;
         public static NetworkPlayer localInstance { get; private set; }
 
-        void Start () {
+        void Awake () {
+            DontDestroyOnLoad(this);
+            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+        }
+
+        void OnWakeUp () {
             QSB.Log("Start NetworkPlayer", netId.Value);
             SectorSync.SetSector(netId, Sector.Name.TimberHearth, true);
 

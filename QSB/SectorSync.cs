@@ -8,14 +8,14 @@ namespace QSB {
         static Dictionary<uint, Transform> playerSectors;
         static Sector[] _allSectors = null;
 
-        void Awake () {
+        void Start () {
             playerSectors = new Dictionary<uint, Transform>();
 
             QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
 
         public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName, bool skipAnnounce = false) {
-            if (sectorName == Sector.Name.Unnamed || sectorName != Sector.Name.Ship && sectorName != Sector.Name.Sun) {
+            if (sectorName == Sector.Name.Unnamed || sectorName == Sector.Name.Ship && sectorName == Sector.Name.Sun) {
                 return;
             }
 
