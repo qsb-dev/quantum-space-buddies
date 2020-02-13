@@ -10,7 +10,7 @@ namespace QSB {
 
         void Start () {
             QSB.Log("Start NetworkPlayer", netId.Value);
-            QSBNetworkManager.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            SectorSync.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
             transform.parent = Locator.GetRootTransform();
 
@@ -29,7 +29,7 @@ namespace QSB {
         public void EnterSector (Sector sector) {
             var name = sector.GetName();
             if (name != Sector.Name.Unnamed && name != Sector.Name.Ship && name != Sector.Name.Sun) {
-                QSBNetworkManager.playerSectors[netId.Value] = QSBNetworkManager.GetSectorByName(sector.GetName());
+                SectorSync.playerSectors[netId.Value] = SectorSync.GetSectorByName(sector.GetName());
 
                 SectorMessage msg = new SectorMessage();
                 msg.sectorId = (int) sector.GetName();
@@ -47,7 +47,7 @@ namespace QSB {
                 return;
             }
 
-            var sectorTransform = QSBNetworkManager.playerSectors[netId.Value];
+            var sectorTransform = SectorSync.playerSectors[netId.Value];
             if (isLocalPlayer) {
                 transform.position = sectorTransform.InverseTransformPoint(_body.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(_body.rotation);
