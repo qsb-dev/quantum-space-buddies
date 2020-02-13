@@ -7,8 +7,8 @@
     <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FriendsInSpace</RootNamespace>
-    <AssemblyName>FriendsInSpace</AssemblyName>
+    <RootNamespace>QSB</RootNamespace>
+    <AssemblyName>QSB</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -90,16 +90,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies"
-md "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\assets"
-del "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\config.json"
+    <PostBuildEvent>md "$(StartWorkingDirectory)"
+md "$(StartWorkingDirectory)\assets"
+del "$(StartWorkingDirectory)\config.json"
 
-copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\QuantumSpaceBuddies.dll"
+copy /y "$(TargetPath)" "$(StartWorkingDirectory)"
 
-copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\default-config.json"
+copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)"
 
-copy /y "$(ProjectDir)\manifest.json" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\manifest.json"
+copy /y "$(ProjectDir)\manifest.json" "$(StartWorkingDirectory)"
 
-copy /y "$(ProjectDir)\Assets\*" "$(StartWorkingDirectory)\Mods\QuantumSpaceBuddies\Assets"</PostBuildEvent>
+copy /y "$(ProjectDir)\Assets" "$(StartWorkingDirectory)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartWorkingDirectory>C:\Program Files\Epic Games\OuterWilds\OWML</StartWorkingDirectory>
+    <StartWorkingDirectory>C:\Program Files\Epic Games\OuterWilds\OWML\Mods\QuantumSpaceBuddies</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartWorkingDirectory>C:\Program Files\Epic Games\OuterWilds\OWML\Mods\QuantumSpaceBuddies</StartWorkingDirectory>
   </PropertyGroup>
 </Project>
