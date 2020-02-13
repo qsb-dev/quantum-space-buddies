@@ -33,11 +33,7 @@ namespace QSB {
                 SectorMessage msg = new SectorMessage();
                 msg.sectorId = (int) sector.GetName();
                 msg.senderId = netId.Value;
-                if (isServer) {
-                    NetworkServer.SendToAll(SectorMessage.Type, msg);
-                } else {
-                    connectionToServer.Send(SectorMessage.Type, msg);
-                }
+                connectionToServer.Send(SectorMessage.Type, msg);
             }
         }
 
