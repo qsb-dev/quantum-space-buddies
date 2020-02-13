@@ -2,7 +2,6 @@
 
 namespace QSB {
     public class SectorMessage: MessageBase {
-        public static short Type = MsgType.Highest + 1;
         public int sectorId;
         public uint senderId;
 
