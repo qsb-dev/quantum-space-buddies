@@ -27,10 +27,7 @@ namespace QSB {
         }
 
         public void EnterSector (Sector sector) {
-            var name = sector.GetName();
-            if (name != Sector.Name.Unnamed && name != Sector.Name.Ship && name != Sector.Name.Sun) {
-                SectorSync.SetSector(netId, sector.GetName());
-            }
+            SectorSync.SetSector(netId, sector.GetName());
         }
 
         void Update () {

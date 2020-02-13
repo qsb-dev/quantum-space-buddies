@@ -16,7 +16,11 @@ namespace QSB {
         }
 
         public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName, bool skipAnnounce = false) {
-            playerSectors[netId.Value] = GetSectorByName(sectorName);
+            if (sectorName == Sector.Name.Unnamed || sectorName != Sector.Name.Ship && sectorName != Sector.Name.Sun) {
+                return;
+            }
+
+            playerSectors[netId.Value] = GetSectorTransform(sectorName);
 
             if (!skipAnnounce) {
                 SectorMessage msg = new SectorMessage();
@@ -30,7 +34,7 @@ namespace QSB {
             return playerSectors[netId.Value];
         }
 
-        static Transform GetSectorByName (Sector.Name sectorName) {
+        static Transform GetSectorTransform (Sector.Name sectorName) {
             foreach (var sector in _allSectors) {
                 if (sectorName == sector.GetName()) {
                     return sector.transform;
@@ -43,7 +47,7 @@ namespace QSB {
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
 
             var sectorName = (Sector.Name) msg.sectorId;
-            var sectorTransform = GetSectorByName(sectorName);
+            var sectorTransform = GetSectorTransform(sectorName);
 
             if (sectorTransform == null) {
                 QSB.LogToScreen("Sector", sectorName, "not found");
