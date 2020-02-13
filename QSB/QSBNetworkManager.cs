@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB {
     class QSBNetworkManager: NetworkManager {
         void Awake () {
+            var assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
+            playerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
+            playerPrefab.AddComponent<NetworkPlayer>();
         }
 
-        public override void OnClientConnect (NetworkConnection conn) {
-            base.OnClientConnect(conn);
+        public override void OnStartClient (NetworkClient client) {
+            base.OnStartClient(client);
 
-            QSB.Log("OnClientConnect");
+            QSB.Log("start client");
         }
     }
 }

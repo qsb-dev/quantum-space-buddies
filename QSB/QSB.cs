@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 
 namespace QSB {
     public class QSB: ModBehaviour {
+        public static IModHelper Helper;
         static QSB _instance;
         public static Dictionary<uint, Transform> playerSectors;
 
@@ -22,17 +23,11 @@ namespace QSB {
 
         void Start () {
             _instance = this;
+            Helper = ModHelper;
 
             playerSectors = new Dictionary<uint, Transform>();
 
-            var assetBundle = ModHelper.Assets.LoadBundle("assets/network");
-            //var networkManager = Instantiate(assetBundle.LoadAsset<GameObject>("assets/networkmanager.prefab"));
-            var networkPlayerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
-            networkPlayerPrefab.AddComponent<NetworkPlayer>();
-
-            var networkManager = gameObject.AddComponent<QSBNetworkManager>();
-            networkManager.playerPrefab = networkPlayerPrefab;
-
+            gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
 
             ModHelper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "OnAddSector");
