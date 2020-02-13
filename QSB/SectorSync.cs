@@ -4,13 +4,12 @@ using UnityEngine.Networking;
 
 namespace QSB {
     public class SectorSync: MessageHandler {
-        protected override short type { get => MessageType.Sector; }
+        protected override short type => MessageType.Sector;
         static Dictionary<uint, Transform> playerSectors;
-        static Sector[] _allSectors;
+        static Sector[] _allSectors = null;
 
         void Awake () {
             playerSectors = new Dictionary<uint, Transform>();
-            _allSectors = FindObjectsOfType<Sector>();
 
             QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
@@ -20,7 +19,7 @@ namespace QSB {
                 return;
             }
 
-            playerSectors[netId.Value] = GetSectorTransform(sectorName);
+            playerSectors[netId.Value] = FindSectorTransform(sectorName);
 
             if (!skipAnnounce) {
                 SectorMessage msg = new SectorMessage();
@@ -34,7 +33,10 @@ namespace QSB {
             return playerSectors[netId.Value];
         }
 
-        static Transform GetSectorTransform (Sector.Name sectorName) {
+        static Transform FindSectorTransform (Sector.Name sectorName) {
+            if (_allSectors == null) {
+                _allSectors = FindObjectsOfType<Sector>();
+            }
             foreach (var sector in _allSectors) {
                 if (sectorName == sector.GetName()) {
                     return sector.transform;
@@ -47,7 +49,7 @@ namespace QSB {
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
 
             var sectorName = (Sector.Name) msg.sectorId;
-            var sectorTransform = GetSectorTransform(sectorName);
+            var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null) {
                 QSB.LogToScreen("Sector", sectorName, "not found");

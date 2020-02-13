@@ -5,14 +5,14 @@ using UnityEngine.Networking;
 namespace QSB {
     class QSBNetworkManager: NetworkManager {
         void Awake () {
+            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+
             var assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
             playerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<NetworkPlayer>();
         }
 
-        public override void OnStartClient (NetworkClient client) {
-            base.OnStartClient(client);
-
+        void OnWakeUp () {
             gameObject.AddComponent<SectorSync>();
         }
     }
