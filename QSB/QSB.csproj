@@ -78,10 +78,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageHandler.cs" />
-    <Compile Include="MessageType.cs" />
+    <Compile Include="Messaging\MessageHandler.cs" />
+    <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="QSBNetworkManager.cs" />
-    <Compile Include="SectorMessage.cs" />
+    <Compile Include="Messaging\SectorMessage.cs" />
     <Compile Include="QSB.cs" />
     <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

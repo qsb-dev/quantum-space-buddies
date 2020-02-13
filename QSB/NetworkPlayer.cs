@@ -10,7 +10,7 @@ namespace QSB {
 
         void Start () {
             QSB.Log("Start NetworkPlayer", netId.Value);
-            SectorSync.SetSector(netId, Sector.Name.TimberHearth);
+            SectorSync.SetSector(netId, Sector.Name.TimberHearth, true);
 
             transform.parent = Locator.GetRootTransform();
 
@@ -30,10 +30,6 @@ namespace QSB {
             var name = sector.GetName();
             if (name != Sector.Name.Unnamed && name != Sector.Name.Ship && name != Sector.Name.Sun) {
                 SectorSync.SetSector(netId, sector.GetName());
-                SectorMessage msg = new SectorMessage();
-                msg.sectorId = (int) sector.GetName();
-                msg.senderId = netId.Value;
-                connectionToServer.Send(MessageType.Sector, msg);
             }
         }
 
