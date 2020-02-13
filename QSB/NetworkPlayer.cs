@@ -10,7 +10,7 @@ namespace QSB {
 
         void Start () {
             QSB.Log("Start NetworkPlayer", netId.Value);
-            QSB.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            QSBNetworkManager.playerSectors[netId.Value] = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 
             transform.parent = Locator.GetRootTransform();
 
@@ -24,19 +24,12 @@ namespace QSB {
                 _body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
                 _body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
             }
-
-            // It's dumb that this is here, should be somewhere else.
-            if (isServer) {
-                NetworkServer.RegisterHandler(MsgType.Highest + 1, QSB.OnReceiveMessage);
-            } else {
-                NetworkManager.singleton.client.RegisterHandler(SectorMessage.Type, QSB.OnReceiveMessage);
-            }
         }
 
         public void EnterSector (Sector sector) {
             var name = sector.GetName();
             if (name != Sector.Name.Unnamed && name != Sector.Name.Ship && name != Sector.Name.Sun) {
-                QSB.playerSectors[netId.Value] = QSB.GetSectorByName(sector.GetName());
+                QSBNetworkManager.playerSectors[netId.Value] = QSBNetworkManager.GetSectorByName(sector.GetName());
 
                 SectorMessage msg = new SectorMessage();
                 msg.sectorId = (int) sector.GetName();
@@ -54,7 +47,7 @@ namespace QSB {
                 return;
             }
 
-            var sectorTransform = QSB.playerSectors[netId.Value];
+            var sectorTransform = QSBNetworkManager.playerSectors[netId.Value];
             if (isLocalPlayer) {
                 transform.position = sectorTransform.InverseTransformPoint(_body.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(_body.rotation);

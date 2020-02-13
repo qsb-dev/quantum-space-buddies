@@ -8,7 +8,6 @@ namespace QSB {
     public class QSB: ModBehaviour {
         public static IModHelper Helper;
         static QSB _instance;
-        public static Dictionary<uint, Transform> playerSectors;
 
         void Awake () {
             Application.runInBackground = true;
@@ -24,8 +23,6 @@ namespace QSB {
         void Start () {
             _instance = this;
             Helper = ModHelper;
-
-            playerSectors = new Dictionary<uint, Transform>();
 
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
@@ -53,33 +50,6 @@ namespace QSB {
             }
             NotificationData data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
             NotificationManager.SharedInstance.PostNotification(data, false);
-        }
-
-        public static Transform GetSectorByName (Sector.Name sectorName) {
-            var sectors = GameObject.FindObjectsOfType<Sector>();
-            foreach (var sector in sectors) {
-                if (sectorName == sector.GetName()) {
-                    return sector.transform;
-                }
-            }
-            return null;
-        }
-
-        public static void OnReceiveMessage (NetworkMessage netMsg) {
-            QSB.LogToScreen("Global message receive");
-            SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
-
-            var sectorName = (Sector.Name) msg.sectorId;
-            var sectorTransform = GetSectorByName(sectorName);
-
-            if (sectorTransform == null) {
-                QSB.LogToScreen("Sector", sectorName, "not found");
-                return;
-            }
-
-            QSB.LogToScreen("Found sector", sectorName, ", setting for", msg.senderId);
-
-            playerSectors[msg.senderId] = sectorTransform;
         }
 
         static class Patches {
