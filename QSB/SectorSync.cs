@@ -10,6 +10,7 @@ namespace QSB {
         static Sector[] _allSectors = null;
 
         void Start () {
+            DebugLog.Screen("Start SectorSync");
             playerSectors = new Dictionary<uint, Transform>();
 
             QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
@@ -23,6 +24,8 @@ namespace QSB {
             if (sectorName == Sector.Name.Unnamed || sectorName == Sector.Name.Ship && sectorName == Sector.Name.Sun) {
                 return;
             }
+
+            DebugLog.Screen("Gonna set sector");
 
             playerSectors[netId.Value] = FindSectorTransform(sectorName);
 
@@ -50,6 +53,7 @@ namespace QSB {
         }
 
         protected override void OnClientReceiveMessage (NetworkMessage netMsg) {
+            DebugLog.Screen("OnClientReceiveMessage SectorSync");
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
 
             var sectorName = (Sector.Name) msg.sectorId;
@@ -65,6 +69,8 @@ namespace QSB {
         }
 
         protected override void OnServerReceiveMessage (NetworkMessage netMsg) {
+            DebugLog.Screen("OnServerReceiveMessage SectorSync");
+            OnClientReceiveMessage(netMsg);
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
             NetworkServer.SendToAll(MessageType.Sector, msg);
         }
