@@ -70,7 +70,6 @@ namespace QSB {
 
         protected override void OnServerReceiveMessage (NetworkMessage netMsg) {
             DebugLog.Screen("OnServerReceiveMessage SectorSync");
-            OnClientReceiveMessage(netMsg);
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
             NetworkServer.SendToAll(MessageType.Sector, msg);
         }
