@@ -1,16 +1,20 @@
-﻿using System;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB {
     public class NetworkPlayer: NetworkBehaviour {
         Transform _body;
+        bool _isSectorSetUp = false;
         public static NetworkPlayer localInstance { get; private set; }
 
-        void Start () {
-            QSB.Log("Start NetworkPlayer", netId.Value);
-            SectorSync.SetSector(netId, Sector.Name.TimberHearth, true);
+        void Awake () {
+            DontDestroyOnLoad(this);
+            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+        }
+
+        void OnWakeUp () {
+            DebugLog.Screen("Start NetworkPlayer", netId.Value);
+            Invoke("SetFirstSector", 1);
 
             transform.parent = Locator.GetRootTransform();
 
@@ -26,16 +30,22 @@ namespace QSB {
             }
         }
 
+        void SetFirstSector () {
+            _isSectorSetUp = true;
+            SectorSync.SetSector(netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
+        }
+
         public void EnterSector (Sector sector) {
-            SectorSync.SetSector(netId, sector.GetName());
+            SectorSync.SetSector(netId.Value, sector.GetName());
         }
 
         void Update () {
-            if (!_body) {
+            if (!_body || !_isSectorSetUp) {
                 return;
             }
 
-            var sectorTransform = SectorSync.GetSector(netId);
+            var sectorTransform = SectorSync.GetSector(netId.Value);
+
             if (isLocalPlayer) {
                 transform.position = sectorTransform.InverseTransformPoint(_body.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(_body.rotation);

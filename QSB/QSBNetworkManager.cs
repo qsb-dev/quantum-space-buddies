@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB {
@@ -10,9 +9,15 @@ namespace QSB {
             playerPrefab.AddComponent<NetworkPlayer>();
         }
 
-        public override void OnStartClient (NetworkClient client) {
-            base.OnStartClient(client);
+        public override void OnStartServer () {
+            WakeUpSync.isServer = true;
+        }
 
+        public override void OnClientConnect (NetworkConnection conn) {
+            base.OnClientConnect(conn);
+
+            DebugLog.Screen("OnClientConnect");
+            gameObject.AddComponent<WakeUpSync>();
             gameObject.AddComponent<SectorSync>();
         }
     }
