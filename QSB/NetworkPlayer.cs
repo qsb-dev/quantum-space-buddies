@@ -34,11 +34,11 @@ namespace QSB {
 
         void SetFirstSector () {
             _isSectorSetUp = true;
-            SectorSync.SetSector(netId, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
+            SectorSync.SetSector(netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
         }
 
         public void EnterSector (Sector sector) {
-            SectorSync.SetSector(netId, sector.GetName());
+            SectorSync.SetSector(netId.Value, sector.GetName());
         }
 
         void Update () {
@@ -46,7 +46,7 @@ namespace QSB {
                 return;
             }
 
-            var sectorTransform = SectorSync.GetSector(netId);
+            var sectorTransform = SectorSync.GetSector(netId.Value);
 
             if (isLocalPlayer) {
                 transform.position = sectorTransform.InverseTransformPoint(_body.position);

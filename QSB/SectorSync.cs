@@ -16,28 +16,28 @@ namespace QSB {
             QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
 
-        public static void SetSector (NetworkInstanceId netId, Transform sectorTransform) {
-            playerSectors[netId.Value] = sectorTransform;
+        public static void SetSector (uint id, Transform sectorTransform) {
+            playerSectors[id] = sectorTransform;
         }
 
-        public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName) {
+        public static void SetSector (uint id, Sector.Name sectorName) {
             if (sectorName == Sector.Name.Unnamed || sectorName == Sector.Name.Ship && sectorName == Sector.Name.Sun) {
                 return;
             }
 
             DebugLog.Screen("Gonna set sector");
 
-            playerSectors[netId.Value] = FindSectorTransform(sectorName);
+            playerSectors[id] = FindSectorTransform(sectorName);
 
             SectorMessage msg = new SectorMessage();
             msg.sectorId = (int) sectorName;
-            msg.senderId = netId.Value;
+            msg.senderId = id;
             NetworkManager.singleton.client.Send(MessageType.Sector, msg);
 
         }
 
-        public static Transform GetSector (NetworkInstanceId netId) {
-            return playerSectors[netId.Value];
+        public static Transform GetSector (uint id) {
+            return playerSectors[id];
         }
 
         static Transform FindSectorTransform (Sector.Name sectorName) {
