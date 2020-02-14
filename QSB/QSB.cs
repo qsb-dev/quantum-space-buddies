@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 namespace QSB {
     public class QSB: ModBehaviour {
         public static IModHelper Helper;
-        static QSB _instance;
 
         void Awake () {
             Application.runInBackground = true;
@@ -20,7 +19,6 @@ namespace QSB {
         }
 
         void Start () {
-            _instance = this;
             Helper = ModHelper;
 
             gameObject.AddComponent<DebugLog>();
