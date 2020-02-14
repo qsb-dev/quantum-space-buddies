@@ -99,7 +99,7 @@
     <Compile Include="SectorSync.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Messaging\default-config.json" />
+    <None Include="default-config.json" />
     <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>

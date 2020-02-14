@@ -2,7 +2,8 @@
 using UnityEngine.Networking;
 
 namespace QSB {
-    // Extend this MonoBehaviour and set the message type 
+    // Extend this to create new message handlers.
+    // You'll also need to create a new message type (add it to the enum).
     public abstract class MessageHandler: MonoBehaviour {
         protected abstract MessageType type { get; }
 
