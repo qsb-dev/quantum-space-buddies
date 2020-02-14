@@ -16,10 +16,10 @@ namespace QSB {
 
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<WakeUpSync>();
+            gameObject.AddComponent<SectorSync>();
         }
 
         void OnWakeUp () {
-            gameObject.AddComponent<SectorSync>();
         }
     }
 }

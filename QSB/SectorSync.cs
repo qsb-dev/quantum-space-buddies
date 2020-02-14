@@ -15,19 +15,22 @@ namespace QSB {
             QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
 
-        public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName, bool skipAnnounce = false) {
+        public static void SetSector (NetworkInstanceId netId, Transform sectorTransform) {
+            playerSectors[netId.Value] = sectorTransform;
+        }
+
+        public static void SetSector (NetworkInstanceId netId, Sector.Name sectorName) {
             if (sectorName == Sector.Name.Unnamed || sectorName == Sector.Name.Ship && sectorName == Sector.Name.Sun) {
                 return;
             }
 
             playerSectors[netId.Value] = FindSectorTransform(sectorName);
 
-            if (!skipAnnounce) {
-                SectorMessage msg = new SectorMessage();
-                msg.sectorId = (int) sectorName;
-                msg.senderId = netId.Value;
-                NetworkManager.singleton.client.Send(MessageType.Sector, msg);
-            }
+            SectorMessage msg = new SectorMessage();
+            msg.sectorId = (int) sectorName;
+            msg.senderId = netId.Value;
+            NetworkManager.singleton.client.Send(MessageType.Sector, msg);
+
         }
 
         public static Transform GetSector (NetworkInstanceId netId) {

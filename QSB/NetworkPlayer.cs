@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 namespace QSB {
     public class NetworkPlayer: NetworkBehaviour {
         Transform _body;
+        bool _isSectorSetUp = false;
         public static NetworkPlayer localInstance { get; private set; }
 
         void Awake () {
@@ -15,7 +16,7 @@ namespace QSB {
 
         void OnWakeUp () {
             DebugLog.Screen("Start NetworkPlayer", netId.Value);
-            SectorSync.SetSector(netId, Sector.Name.TimberHearth, true);
+            Invoke("SetFirstSector", 1);
 
             transform.parent = Locator.GetRootTransform();
 
@@ -31,16 +32,22 @@ namespace QSB {
             }
         }
 
+        void SetFirstSector () {
+            _isSectorSetUp = true;
+            SectorSync.SetSector(netId, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
+        }
+
         public void EnterSector (Sector sector) {
             SectorSync.SetSector(netId, sector.GetName());
         }
 
         void Update () {
-            if (!_body) {
+            if (!_body || !_isSectorSetUp) {
                 return;
             }
 
             var sectorTransform = SectorSync.GetSector(netId);
+
             if (isLocalPlayer) {
                 transform.position = sectorTransform.InverseTransformPoint(_body.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(_body.rotation);
