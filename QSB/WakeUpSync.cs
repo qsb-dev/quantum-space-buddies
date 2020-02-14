@@ -41,11 +41,5 @@ namespace QSB {
         protected override void OnServerReceiveMessage (NetworkMessage netMsg) {
             throw new NotImplementedException();
         }
-
-        void Update () {
-            if (Input.GetKeyDown(UnityEngine.KeyCode.KeypadPlus)) {
-                OnWakeUp();
-            }
-        }
     }
 }
