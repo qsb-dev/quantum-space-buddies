@@ -13,7 +13,7 @@ namespace QSB {
             DebugLog.Screen("Start SectorSync");
             playerSectors = new Dictionary<uint, Transform>();
 
-            QSB.Helper.HarmonyHelper.AddPostfix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PostAddSector");
+            QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
 
         public static void SetSector (uint id, Transform sectorTransform) {
@@ -21,6 +21,12 @@ namespace QSB {
         }
 
         public static void SetSector (uint id, Sector.Name sectorName) {
+            if (sectorName == Sector.Name.Unnamed || sectorName == Sector.Name.Ship && sectorName == Sector.Name.Sun) {
+                return;
+            }
+
+            DebugLog.Screen("Gonna set sector");
+
             playerSectors[id] = FindSectorTransform(sectorName);
 
             SectorMessage msg = new SectorMessage();
@@ -69,17 +75,9 @@ namespace QSB {
         }
 
         static class Patches {
-            static void PostAddSector (PlayerSectorDetector __instance, List<Sector> ____sectorList) {
-                if (NetworkPlayer.localInstance == null) {
-                    return;
-                }
-
-                foreach (var sector in ____sectorList) {
-                    if (sector.GetName() != Sector.Name.Unnamed && sector.GetName() != Sector.Name.Ship && sector.GetName() != Sector.Name.Sun && sector.GetName() != Sector.Name.HourglassTwins) {
-                        sector.GetOWRigidbody().GetReferenceFrame();
-                        NetworkPlayer.localInstance.EnterSector(sector);
-                        return;
-                    }
+            static void PreAddSector (Sector sector, PlayerSectorDetector __instance) {
+                if (NetworkPlayer.localInstance != null) {
+                    NetworkPlayer.localInstance.EnterSector(sector);
                 }
             }
         }
