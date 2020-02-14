@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace QSB {
     class WakeUpSync: MessageHandler {
-        protected override short type => MessageType.WakeUp;
+        protected override MessageType type => MessageType.WakeUp;
         public static bool isServer;
 
         void Start () {
@@ -16,7 +16,7 @@ namespace QSB {
             DebugLog.Screen("Sending wakeup to all my friends");
             if (isServer) {
                 var message = new WakeUpMessage();
-                NetworkServer.SendToAll(MessageType.WakeUp, message);
+                NetworkServer.SendToAll((short) MessageType.WakeUp, message);
             }
         }
 
@@ -24,7 +24,10 @@ namespace QSB {
             if (isServer) {
                 return;
             }
-            DebugLog.Screen("client received wake up message");
+
+            // I copied all of this from my AutoResume mod, since that already wakes up the player instantly.
+            // There must be a simpler way to do this though, I just couldn't find it.
+
             // Skip wake up animation.
             var cameraEffectController = FindObjectOfType<PlayerCameraEffectController>();
             cameraEffectController.OpenEyes(0, true);

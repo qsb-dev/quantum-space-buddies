@@ -1,9 +1,9 @@
 ﻿using UnityEngine.Networking;
 
 namespace QSB {
-    public class MessageType: MsgType {
-        public const short Sector = MsgType.Highest + 1;
-        public const short WakeUp = MsgType.Highest + 2;
-        // Add other message types here, incrementing the number.
+    public enum MessageType {
+        Sector = MsgType.Highest + 1,
+        WakeUp = MsgType.Highest + 2,
+        // Add other message types here, incrementing the value.
     }
 }

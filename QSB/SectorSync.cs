@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace QSB {
     public class SectorSync: MessageHandler {
-        protected override short type => MessageType.Sector;
+        protected override MessageType type => MessageType.Sector;
 
         static Dictionary<uint, Transform> playerSectors;
         static Sector[] _allSectors = null;
@@ -28,7 +28,7 @@ namespace QSB {
             SectorMessage msg = new SectorMessage();
             msg.sectorId = (int) sectorName;
             msg.senderId = id;
-            NetworkManager.singleton.client.Send(MessageType.Sector, msg);
+            NetworkManager.singleton.client.Send((short) MessageType.Sector, msg);
 
         }
 
@@ -67,7 +67,7 @@ namespace QSB {
         protected override void OnServerReceiveMessage (NetworkMessage netMsg) {
             DebugLog.Screen("OnServerReceiveMessage SectorSync");
             SectorMessage msg = netMsg.ReadMessage<SectorMessage>();
-            NetworkServer.SendToAll(MessageType.Sector, msg);
+            NetworkServer.SendToAll((short) MessageType.Sector, msg);
         }
 
         static class Patches {
