@@ -9,6 +9,10 @@ namespace QSB {
             playerPrefab.AddComponent<NetworkPlayer>();
         }
 
+        public override void OnStartServer () {
+            WakeUpSync.isServer = true;
+        }
+
         public override void OnClientConnect (NetworkConnection conn) {
             base.OnClientConnect(conn);
 

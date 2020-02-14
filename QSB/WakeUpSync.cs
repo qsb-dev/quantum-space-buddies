@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 namespace QSB {
     class WakeUpSync: MessageHandler {
         protected override short type => MessageType.WakeUp;
+        public static bool isServer;
 
         void Start () {
             DebugLog.Screen("Start WakeUpSync");
@@ -13,11 +14,16 @@ namespace QSB {
 
         void OnWakeUp () {
             DebugLog.Screen("Sending wakeup to all my friends");
-            var message = new WakeUpMessage();
-            NetworkServer.SendToAll(MessageType.WakeUp, message);
+            if (isServer) {
+                var message = new WakeUpMessage();
+                NetworkServer.SendToAll(MessageType.WakeUp, message);
+            }
         }
 
         protected override void OnClientReceiveMessage (NetworkMessage netMsg) {
+            if (isServer) {
+                return;
+            }
             DebugLog.Screen("client received wake up message");
             // Skip wake up animation.
             var cameraEffectController = FindObjectOfType<PlayerCameraEffectController>();
@@ -30,7 +36,7 @@ namespace QSB {
             Locator.GetPauseCommandListener().RemovePauseCommandLock();
             Locator.GetPromptManager().RemoveScreenPrompt(cameraEffectController.GetValue<ScreenPrompt>("_wakePrompt"));
             OWTime.Unpause(OWTime.PauseType.Sleeping);
-            //cameraEffectController.Invoke("WakeUp");
+            cameraEffectController.Invoke("WakeUp");
 
             // Enable all inputs immedeately.
             OWInput.ChangeInputMode(InputMode.Character);
