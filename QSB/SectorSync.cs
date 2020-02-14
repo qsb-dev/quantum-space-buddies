@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 namespace QSB {
     public class SectorSync: MessageHandler {
         protected override short type => MessageType.Sector;
+
         static Dictionary<uint, Transform> playerSectors;
         static Sector[] _allSectors = null;
 

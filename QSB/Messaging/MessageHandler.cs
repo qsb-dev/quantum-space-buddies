@@ -6,8 +6,8 @@ namespace QSB {
         protected abstract short type { get; }
 
         void Awake () {
-            NetworkServer.RegisterHandler(MessageType.Sector, OnServerReceiveMessage);
-            NetworkManager.singleton.client.RegisterHandler(MessageType.Sector, OnClientReceiveMessage);
+            NetworkServer.RegisterHandler(type, OnServerReceiveMessage);
+            NetworkManager.singleton.client.RegisterHandler(type, OnClientReceiveMessage);
         }
 
         protected abstract void OnClientReceiveMessage (NetworkMessage netMsg);

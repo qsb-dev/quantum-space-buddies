@@ -12,6 +12,8 @@ namespace QSB {
         void Awake () {
             var assetBundle = QSB.Helper.Assets.LoadBundle("assets/debug");
             var LogCanvas = Instantiate(assetBundle.LoadAsset<GameObject>("assets/logcanvas.prefab"));
+            DontDestroyOnLoad(LogCanvas);
+            DontDestroyOnLoad(this);
             LogCanvas.GetComponent<Canvas>().sortingOrder = 9999;
             _screenText = LogCanvas.GetComponentInChildren<Text>();
 
