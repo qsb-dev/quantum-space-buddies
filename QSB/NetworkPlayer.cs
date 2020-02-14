@@ -14,7 +14,7 @@ namespace QSB {
         }
 
         void OnWakeUp () {
-            QSB.Log("Start NetworkPlayer", netId.Value);
+            DebugLog.Screen("Start NetworkPlayer", netId.Value);
             SectorSync.SetSector(netId, Sector.Name.TimberHearth, true);
 
             transform.parent = Locator.GetRootTransform();

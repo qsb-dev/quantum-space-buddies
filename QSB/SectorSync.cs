@@ -52,11 +52,11 @@ namespace QSB {
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null) {
-                QSB.LogToScreen("Sector", sectorName, "not found");
+                DebugLog.Screen("Sector", sectorName, "not found");
                 return;
             }
 
-            QSB.LogToScreen("Found sector", sectorName, ", setting for", msg.senderId);
+            DebugLog.Screen("Found sector", sectorName, ", setting for", msg.senderId);
             playerSectors[msg.senderId] = sectorTransform;
         }
 

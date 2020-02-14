@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB {
@@ -15,7 +14,7 @@ namespace QSB {
         public override void OnClientConnect (NetworkConnection conn) {
             base.OnClientConnect(conn);
 
-            QSB.Log("OnClientConnect");
+            DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<WakeUpSync>();
         }
 

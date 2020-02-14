@@ -6,18 +6,18 @@ namespace QSB {
         protected override short type => MessageType.WakeUp;
 
         void Start () {
-            QSB.Log("Start WakeUpSync");
+            DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
         }
 
         void OnWakeUp () {
-            QSB.Log("Sending wakeup to all my friends");
+            DebugLog.Screen("Sending wakeup to all my friends");
             var message = new WakeUpMessage();
             NetworkServer.SendToAll(MessageType.WakeUp, message);
         }
 
         protected override void OnClientReceiveMessage (NetworkMessage netMsg) {
-            QSB.LogToScreen("client received wake up message");
+            DebugLog.Screen("client received wake up message");
             GlobalMessenger.FireEvent("WakeUp");
         }
 
