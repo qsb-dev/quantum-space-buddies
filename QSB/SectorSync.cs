@@ -21,10 +21,6 @@ namespace QSB {
         }
 
         public static void SetSector (uint id, Sector.Name sectorName) {
-            if (sectorName == Sector.Name.Unnamed || sectorName == Sector.Name.Ship && sectorName == Sector.Name.Sun) {
-                return;
-            }
-
             DebugLog.Screen("Gonna set sector");
 
             playerSectors[id] = FindSectorTransform(sectorName);
@@ -76,6 +72,10 @@ namespace QSB {
 
         static class Patches {
             static void PreAddSector (Sector sector, PlayerSectorDetector __instance) {
+                if (sector.GetName() == Sector.Name.Unnamed || sector.GetName() == Sector.Name.Ship || sector.GetName() == Sector.Name.Sun || sector.GetName() == Sector.Name.HourglassTwins) {
+                    return;
+                }
+
                 if (NetworkPlayer.localInstance != null) {
                     NetworkPlayer.localInstance.EnterSector(sector);
                 }
