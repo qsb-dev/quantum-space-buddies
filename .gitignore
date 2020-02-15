@@ -12,7 +12,7 @@
 *.rsuser
 *.suo
 *.user
-!.csproj.user
+!*.csproj.user
 *.userosscache
 *.sln.docstates
 
