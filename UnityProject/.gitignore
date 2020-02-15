@@ -61,6 +61,3 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
-
-# Generated asset bundles
-/Assets/AssetBundles*
