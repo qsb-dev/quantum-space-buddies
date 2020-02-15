@@ -112,6 +112,7 @@ md "$(StartWorkingDirectory)\Mods\$(ProjectName)\assets"
 del "$(StartWorkingDirectory)\Mods\$(ProjectName)\config.json"
 
 copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
+copy /y "$(TargetDir)\QSB.Messaging.dll" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
 copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
