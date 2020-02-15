@@ -15,8 +15,14 @@ namespace QSB
 
             try
             {
-                var anim = playerPrefab.GetComponentsInChildren<Animator>()
-                    .Single(x => x.name == "Traveller_HEA_Player_v2");
+                var anim = playerPrefab.GetComponent<Animator>();
+                if (anim == null)
+                {
+                    DebugLog.Console("Error: Animator is null");
+                    anim = playerPrefab.GetComponentsInChildren<Animator>()
+                        .Single(x => x.name == "Traveller_HEA_Player_v2");
+                }
+
                 var netAnim = playerPrefab.AddComponent<NetworkAnimator>();
                 netAnim.animator = anim;
                 for (var i = 0; i < 20; i++)
