@@ -37,7 +37,7 @@ namespace QSB {
             }
             catch (Exception ex)
             {
-                DebugLog.Console("Error while getting parameter", i, ex);
+                DebugLog.Console("Error setting up anim sync", ex);
             }
         }
 
