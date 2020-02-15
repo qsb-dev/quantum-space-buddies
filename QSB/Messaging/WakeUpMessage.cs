@@ -1,15 +1,19 @@
 ﻿using UnityEngine.Networking;
 
-namespace QSB {
-    public class WakeUpMessage: MessageBase {
-        bool wakeUp = true;
+namespace QSB.Messaging
+{
+    public class WakeUpMessage : MessageBase
+    {
+        private bool _wakeUp = true;
 
-        public override void Deserialize (NetworkReader reader) {
-            wakeUp = reader.ReadBoolean();
+        public override void Deserialize(NetworkReader reader)
+        {
+            _wakeUp = reader.ReadBoolean();
         }
 
-        public override void Serialize (NetworkWriter writer) {
-            writer.Write(wakeUp);
+        public override void Serialize(NetworkWriter writer)
+        {
+            writer.Write(_wakeUp);
         }
     }
 }

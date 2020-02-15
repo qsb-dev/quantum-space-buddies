@@ -1,27 +1,36 @@
 ﻿using OWML.ModHelper.Events;
 using System;
+using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB {
-    class WakeUpSync: MessageHandler {
-        protected override MessageType type => MessageType.WakeUp;
-        public static bool isServer;
+namespace QSB
+{
+    public class WakeUpSync : MessageHandler
+    {
+        public static bool IsServer;
 
-        void Start () {
+        protected override MessageType Type => MessageType.WakeUp;
+
+        private void Start()
+        {
             DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
         }
 
-        void OnWakeUp () {
+        private void OnWakeUp()
+        {
             DebugLog.Screen("Sending wakeup to all my friends");
-            if (isServer) {
+            if (IsServer)
+            {
                 var message = new WakeUpMessage();
-                NetworkServer.SendToAll((short) MessageType.WakeUp, message);
+                NetworkServer.SendToAll((short)MessageType.WakeUp, message);
             }
         }
 
-        protected override void OnClientReceiveMessage (NetworkMessage netMsg) {
-            if (isServer) {
+        protected override void OnClientReceiveMessage(NetworkMessage netMsg)
+        {
+            if (IsServer)
+            {
                 return;
             }
 
@@ -41,14 +50,16 @@ namespace QSB {
             OWTime.Unpause(OWTime.PauseType.Sleeping);
             cameraEffectController.Invoke("WakeUp");
 
-            // Enable all inputs immedeately.
+            // Enable all inputs immediately.
             OWInput.ChangeInputMode(InputMode.Character);
             typeof(OWInput).SetValue("_inputFadeFraction", 0f);
             GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
 
-        protected override void OnServerReceiveMessage (NetworkMessage netMsg) {
+        protected override void OnServerReceiveMessage(NetworkMessage netMsg)
+        {
             throw new NotImplementedException();
         }
+
     }
 }
