@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,17 +30,12 @@ namespace QSB
 
         private static string JoinAll(params object[] logObjects)
         {
-            var result = "";
-            foreach (var obj in logObjects)
-            {
-                result += obj + " ";
-            }
-            return result;
+            return string.Join(" ", logObjects.Select(o => o.ToString()).ToArray());
         }
 
         public static void Console(params object[] logObjects)
         {
-            QSB.Helper.Console.WriteLine(JoinAll(logObjects));
+            QSB.Helper.Console.WriteLine(logObjects);
         }
 
         public static void Screen(params object[] logObjects)
