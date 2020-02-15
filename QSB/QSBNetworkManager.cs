@@ -3,9 +3,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QSB {
-    class QSBNetworkManager: NetworkManager {
-        void Awake () {
+namespace QSB
+{
+    public class QSBNetworkManager : NetworkManager
+    {
+        private void Awake()
+        {
             var assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
             playerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<NetworkPlayer>();
@@ -41,16 +44,19 @@ namespace QSB {
             }
         }
 
-        public override void OnStartServer () {
-            WakeUpSync.isServer = true;
+        public override void OnStartServer()
+        {
+            WakeUpSync.IsServer = true;
         }
 
-        public override void OnClientConnect (NetworkConnection conn) {
+        public override void OnClientConnect(NetworkConnection conn)
+        {
             base.OnClientConnect(conn);
 
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<WakeUpSync>();
             gameObject.AddComponent<SectorSync>();
         }
+
     }
 }
