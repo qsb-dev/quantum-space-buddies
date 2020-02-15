@@ -87,12 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DebugLog.cs" />
-    <Compile Include="Messaging\WakeUpMessage.cs" />
     <Compile Include="WakeUpSync.cs" />
-    <Compile Include="Messaging\MessageHandler.cs" />
-    <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="QSBNetworkManager.cs" />
-    <Compile Include="Messaging\SectorMessage.cs" />
     <Compile Include="QSB.cs" />
     <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -103,6 +99,12 @@
     <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QSB.Messaging\QSB.Messaging.csproj">
+      <Project>{d6bb93aa-f405-48d5-9c4c-49c3f8e81e9a}</Project>
+      <Name>QSB.Messaging</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(StartWorkingDirectory)\Mods\$(ProjectName)"
@@ -110,6 +112,7 @@ md "$(StartWorkingDirectory)\Mods\$(ProjectName)\assets"
 del "$(StartWorkingDirectory)\Mods\$(ProjectName)\config.json"
 
 copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
+copy /y "$(TargetDir)\QSB.Messaging.dll" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
 copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
