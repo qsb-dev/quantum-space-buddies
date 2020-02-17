@@ -10,7 +10,9 @@ namespace QSB
             var assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
             playerPrefab = assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<NetworkPlayer>();
-            playerPrefab.AddComponent<NetworkAnimator>().enabled = false;
+
+            var anim = playerPrefab.AddComponent<Animator>();
+            playerPrefab.AddComponent<NetworkAnimator>().animator = anim;
         }
 
         public override void OnStartServer()

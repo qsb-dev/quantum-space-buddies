@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
@@ -29,50 +28,22 @@ namespace QSB
             {
                 LocalInstance = this;
                 _body = player;
+                _body.gameObject.AddComponent<AnimatorMirror>().Init(_body.GetComponent<Animator>(), GetComponent<Animator>());
             }
             else
             {
                 _body = Instantiate(player);
-                //_body.GetComponent<PlayerAnimController>().enabled = false;
-                // todo disable movement
+                //_body.GetComponent<PlayerAnimController>().enabled = false; todo
                 _body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
                 _body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+                _body.gameObject.AddComponent<AnimatorMirror>().Init(GetComponent<Animator>(), _body.GetComponent<Animator>());
             }
 
-            NetworkAnimator netAnim;
-            Animator anim;
-            try
+            var netAnim = GetComponent<NetworkAnimator>();
+            for (var i = 0; i < GetComponent<Animator>().parameterCount; i++)
             {
-                netAnim = GetComponent<NetworkAnimator>();
-                netAnim.enabled = true;
-                anim = _body.GetComponent<Animator>();
-                netAnim.animator = anim;
+                netAnim.SetParameterAutoSend(i, true);
             }
-            catch (Exception ex)
-            {
-                DebugLog.Console("Error while doing normal anim stuff", ex);
-                return;
-            }
-
-            for (var i = 0; i < 20; i++)
-            {
-                try
-                {
-                    if (anim.GetParameter(i) != null)
-                    {
-                        netAnim.SetParameterAutoSend(i, true);
-                    }
-                    else
-                    {
-                        DebugLog.Console("Parameter", i, "is null");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    DebugLog.Console("Error while getting parameter", i, ex);
-                }
-            }
-
         }
 
         private void SetFirstSector()
