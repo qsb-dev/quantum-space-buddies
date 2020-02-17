@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB
 {
@@ -44,11 +43,6 @@ namespace QSB
                     case AnimatorControllerParameterType.Bool:
                         _to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
                         break;
-                    case AnimatorControllerParameterType.Trigger:
-                        // todo
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
