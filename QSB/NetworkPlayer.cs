@@ -33,7 +33,7 @@ namespace QSB
             else
             {
                 _body = Instantiate(player);
-                //_body.GetComponent<PlayerAnimController>().enabled = false; todo
+                _body.GetComponent<PlayerAnimController>().enabled = false;
                 _body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
                 _body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
                 _body.gameObject.AddComponent<AnimatorMirror>().Init(GetComponent<Animator>(), _body.GetComponent<Animator>());
