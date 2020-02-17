@@ -123,6 +123,6 @@ copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\$(Pro
 
 copy /y "$(ProjectDir)\manifest.json" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
-copy /y "$(ProjectDir)\Assets" "$(StartWorkingDirectory)\Mods\$(ProjectName)\assets"</PostBuildEvent>
+copy /y "$(SolutionDir)\AssetBundles" "$(StartWorkingDirectory)\Mods\$(ProjectName)\assets"</PostBuildEvent>
   </PropertyGroup>
 </Project>
