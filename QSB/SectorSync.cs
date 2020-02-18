@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using QSB.Messaging;
+﻿using QSB.Messaging;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
