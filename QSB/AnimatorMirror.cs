@@ -11,8 +11,9 @@ namespace QSB
         private Animator _from;
         private Animator _to;
         private bool _isRunning;
+
         private float _smoothVelocity;
-        private Dictionary<string, float> _floatParams;
+        private readonly Dictionary<string, float> _floatParams = new Dictionary<string, float>();
 
         public void Init(Animator from, Animator to)
         {
@@ -30,7 +31,6 @@ namespace QSB
             {
                 _floatParams.Add(param.name, param.defaultFloat);
             }
-            _floatParams = new Dictionary<string, float>();
             _isRunning = true;
         }
 
