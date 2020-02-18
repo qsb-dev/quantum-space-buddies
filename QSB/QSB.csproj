@@ -70,6 +70,10 @@
     <Reference Include="UnityEngine">
       <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
@@ -86,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatorMirror.cs" />
     <Compile Include="DebugLog.cs" />
     <Compile Include="WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
