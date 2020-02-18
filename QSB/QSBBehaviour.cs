@@ -3,7 +3,9 @@ using UnityEngine.SceneManagement;
 
 namespace QSB {
     abstract class QSBBehaviour: MonoBehaviour {
-        void Awake () {
+        protected bool isPlayerAwake;
+
+        protected virtual void Awake () {
             GlobalMessenger.AddListener("WakeUp", PlayerWokeUp);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -16,8 +18,12 @@ namespace QSB {
             }
         }
 
-        protected virtual void PlayerWokeUp () { }
+        protected virtual void PlayerWokeUp () {
+            isPlayerAwake = true;
+        }
+
         protected virtual void StartSolarSystem () { }
+
         protected virtual void StartEyeOfUniverse () { }
     }
 }
