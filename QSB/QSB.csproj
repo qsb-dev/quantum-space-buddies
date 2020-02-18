@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationSync.cs" />
     <Compile Include="AnimatorMirror.cs" />
     <Compile Include="DebugLog.cs" />
     <Compile Include="WakeUpSync.cs" />
