@@ -1,6 +1,6 @@
 ﻿using OWML.ModHelper.Events;
-using System;
 using QSB.Messaging;
+using System;
 using UnityEngine.Networking;
 
 namespace QSB
