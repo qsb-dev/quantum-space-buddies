@@ -37,7 +37,7 @@ namespace QSB
                 _body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
             }
 
-            GetComponent<AnimationSync>().Init(_body, isLocalPlayer);
+            GetComponent<AnimationSync>().Init(_body);
         }
 
         private void SetFirstSector()

@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB
 {
-    public class AnimationSync : MonoBehaviour
+    public class AnimationSync : NetworkBehaviour
     {
         private Animator _anim;
         private NetworkAnimator _netAnim;
@@ -15,7 +15,7 @@ namespace QSB
             _netAnim.animator = _anim;
         }
 
-        public void Init(Transform body, bool isLocalPlayer)
+        public void Init(Transform body)
         {
             var bodyAnim = body.GetComponent<Animator>();
             var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
