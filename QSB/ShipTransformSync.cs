@@ -19,7 +19,7 @@ namespace QSB
 
         protected override Transform GetLocalTransform()
         {
-            return GetShipModel();
+            return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
         protected override Transform GetRemoteTransform()
