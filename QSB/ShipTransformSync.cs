@@ -11,7 +11,6 @@ namespace QSB
         {
             if (!_shipModel)
             {
-                // TODO: specify ship model
                 _shipModel = Locator.GetShipBody().transform;
             }
             return _shipModel;
@@ -29,11 +28,29 @@ namespace QSB
             var cabin = Instantiate(shipModel.Find("Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"));
             var supplies = Instantiate(shipModel.Find("Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"));
             var engine = Instantiate(shipModel.Find("Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"));
-            //var landingGear = shipModel.Find("Geo_LandingGear_Front");
+            var landingGearFront = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front"));
+            var landingGearLeft = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left"));
+            var landingGearRight = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right"));
+
+            Destroy(landingGearFront.Find("LandingGear_FrontCollision").gameObject);
+            Destroy(landingGearLeft.Find("LandingGear_LeftCollision").gameObject);
+            Destroy(landingGearRight.Find("LandingGear_RightCollision").gameObject);
 
             var remoteTransform = new GameObject().transform;
 
-            cockpit.parent = cabin.parent = supplies.parent = engine.parent = remoteTransform;
+            cockpit.parent
+                = cabin.parent
+                = supplies.parent
+                = engine.parent
+                = landingGearFront.parent
+                = landingGearLeft.parent
+                = landingGearRight.parent
+                = remoteTransform;
+
+            landingGearFront.localPosition
+                = landingGearLeft.localPosition
+                = landingGearRight.localPosition
+                += Vector3.up * 3.762f;
 
             return remoteTransform;
         }

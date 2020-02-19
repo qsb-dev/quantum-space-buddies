@@ -80,6 +80,10 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.UI.dll</HintPath>
@@ -93,6 +97,7 @@
     <Compile Include="AnimationSync.cs" />
     <Compile Include="AnimatorMirror.cs" />
     <Compile Include="DebugLog.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />
     <Compile Include="ShipTransformSync.cs" />
