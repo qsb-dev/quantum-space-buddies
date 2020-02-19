@@ -12,7 +12,7 @@ namespace QSB
         private Animator _to;
         private bool _isRunning;
 
-        private readonly Dictionary<string, FloatParam> _floatParams = new Dictionary<string, FloatParam>();
+        private readonly Dictionary<string, FloatAnimParam> _floatParams = new Dictionary<string, FloatAnimParam>();
 
         public void Init(Animator from, Animator to)
         {
@@ -28,7 +28,7 @@ namespace QSB
             }
             foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
             {
-                _floatParams.Add(param.name, new FloatParam());
+                _floatParams.Add(param.name, new FloatAnimParam());
             }
             _isRunning = true;
         }

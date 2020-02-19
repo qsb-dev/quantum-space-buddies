@@ -2,7 +2,7 @@
 
 namespace QSB
 {
-    public class FloatParam
+    public class FloatAnimParam
     {
         public float Current { get; private set; }
         public float Target { get; set; }
