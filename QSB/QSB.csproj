@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="AnimationSync.cs" />
     <Compile Include="AnimatorMirror.cs" />
+    <Compile Include="FloatAnimParam.cs" />
     <Compile Include="DebugLog.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />

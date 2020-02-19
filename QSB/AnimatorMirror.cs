@@ -6,14 +6,13 @@ namespace QSB
 {
     public class AnimatorMirror : MonoBehaviour
     {
-        private const float SmoothTime = 0.02f;
+        private const float SmoothTime = 0.05f;
 
         private Animator _from;
         private Animator _to;
         private bool _isRunning;
 
-        private float _smoothVelocity;
-        private readonly Dictionary<string, float> _floatParams = new Dictionary<string, float>();
+        private readonly Dictionary<string, FloatAnimParam> _floatParams = new Dictionary<string, FloatAnimParam>();
 
         public void Init(Animator from, Animator to)
         {
@@ -29,7 +28,7 @@ namespace QSB
             }
             foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
             {
-                _floatParams.Add(param.name, param.defaultFloat);
+                _floatParams.Add(param.name, new FloatAnimParam());
             }
             _isRunning = true;
         }
@@ -51,7 +50,7 @@ namespace QSB
                 switch (fromParam.type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _floatParams[fromParam.name] = _from.GetFloat(fromParam.name);
+                        _floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
                         break;
                     case AnimatorControllerParameterType.Int:
                         _to.SetInteger(fromParam.name, _from.GetInteger(fromParam.name));
@@ -67,9 +66,8 @@ namespace QSB
         {
             foreach (var floatParam in _floatParams)
             {
-                var current = _to.GetFloat(floatParam.Key);
-                var value = Mathf.SmoothDamp(current, floatParam.Value, ref _smoothVelocity, SmoothTime);
-                _to.SetFloat(floatParam.Key, value);
+                var current = floatParam.Value.Smooth(SmoothTime);
+                _to.SetFloat(floatParam.Key, current);
             }
         }
 
