@@ -16,7 +16,7 @@ namespace QSB
             return _playerModel;
         }
 
-        protected override Transform GetLocalPlayerTransform()
+        protected override Transform GetLocalTransform()
         {
             LocalInstance = this;
             var body = GetPlayerModel();
@@ -26,7 +26,7 @@ namespace QSB
             return body;
         }
 
-        protected override Transform GetRemotePlayerTransform()
+        protected override Transform GetRemoteTransform()
         {
             var body = Instantiate(GetPlayerModel());
             body.GetComponent<PlayerAnimController>().enabled = false;
