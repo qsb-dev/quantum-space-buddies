@@ -46,7 +46,7 @@ namespace QSB
 
             var sectorTransform = SectorSync.GetSector(netId.Value);
 
-            if (isLocalPlayer)
+            if (hasAuthority)
             {
                 transform.position = sectorTransform.InverseTransformPoint(_syncedTransform.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(_syncedTransform.rotation);
