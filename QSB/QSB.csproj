@@ -90,9 +90,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimationSync.cs" />
-    <Compile Include="AnimatorMirror.cs" />
-    <Compile Include="FloatAnimParam.cs" />
     <Compile Include="DebugLog.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />
@@ -109,6 +106,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QSB.Animation\QSB.Animation.csproj">
+      <Project>{B11CC457-BB55-4647-8523-6A53FC6E069B}</Project>
+      <Name>QSB.Animation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QSB.Messaging\QSB.Messaging.csproj">
       <Project>{d6bb93aa-f405-48d5-9c4c-49c3f8e81e9a}</Project>
       <Name>QSB.Messaging</Name>
@@ -122,6 +123,7 @@ del "$(StartWorkingDirectory)\Mods\$(ProjectName)\config.json"
 
 copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 copy /y "$(TargetDir)\QSB.Messaging.dll" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
+copy /y "$(TargetDir)\QSB.Animation.dll" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
 copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 

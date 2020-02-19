@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSB", "QSB\QSB.csproj", "{1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSB.Messaging", "QSB.Messaging\QSB.Messaging.csproj", "{D6BB93AA-F405-48D5-9C4C-49C3F8E81E9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSB.Animation", "QSB.Animation\QSB.Animation.csproj", "{B11CC457-BB55-4647-8523-6A53FC6E069B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D6BB93AA-F405-48D5-9C4C-49C3F8E81E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6BB93AA-F405-48D5-9C4C-49C3F8E81E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6BB93AA-F405-48D5-9C4C-49C3F8E81E9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B11CC457-BB55-4647-8523-6A53FC6E069B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B11CC457-BB55-4647-8523-6A53FC6E069B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B11CC457-BB55-4647-8523-6A53FC6E069B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B11CC457-BB55-4647-8523-6A53FC6E069B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

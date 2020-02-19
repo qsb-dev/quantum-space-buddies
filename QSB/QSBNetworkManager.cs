@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Animation;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
