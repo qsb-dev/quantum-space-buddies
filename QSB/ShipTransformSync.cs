@@ -32,8 +32,6 @@ namespace QSB
             //var landingGear = shipModel.Find("Geo_LandingGear_Front");
 
             var remoteTransform = new GameObject().transform;
-            remoteTransform.position = shipModel.position;
-            remoteTransform.rotation = shipModel.rotation;
 
             cockpit.parent = cabin.parent = supplies.parent = engine.parent = remoteTransform;
 
