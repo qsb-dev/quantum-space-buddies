@@ -14,8 +14,8 @@ namespace QSB
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
         }
 
-        protected abstract Transform GetLocalPlayerTransform();
-        protected abstract Transform GetRemotePlayerTransform();
+        protected abstract Transform GetLocalTransform();
+        protected abstract Transform GetRemoteTransform();
 
         private void OnWakeUp()
         {
@@ -23,7 +23,7 @@ namespace QSB
             Invoke(nameof(SetFirstSector), 1);
 
             transform.parent = Locator.GetRootTransform();
-            _syncedTransform = isLocalPlayer ? GetLocalPlayerTransform() : GetRemotePlayerTransform();
+            _syncedTransform = hasAuthority ? GetLocalTransform() : GetRemoteTransform();
         }
 
         private void SetFirstSector()
