@@ -8,7 +8,7 @@ namespace QSB
         private Transform _syncedTransform;
         private bool _isSectorSetUp;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             DontDestroyOnLoad(this);
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);

@@ -95,6 +95,7 @@
     <Compile Include="DebugLog.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />
+    <Compile Include="TransformSync.cs" />
     <Compile Include="WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
     <Compile Include="QSB.cs" />
