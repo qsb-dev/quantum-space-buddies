@@ -23,6 +23,12 @@ namespace QSB.Animation
             if (isLocalPlayer)
             {
                 animMirror.Init(bodyAnim, _anim);
+
+                var playerController = body.GetComponent<PlayerCharacterController>();
+                playerController.OnJump += OnPlayerJump;
+                playerController.OnBecomeGrounded += OnPlayerGrounded;
+                playerController.OnBecomeUngrounded += OnPlayerUngrounded;
+                //playerResources.OnInstantDamage += this.OnInstantDamage;
             }
             else
             {
@@ -35,5 +41,19 @@ namespace QSB.Animation
             }
         }
 
+        private void OnPlayerJump()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void OnPlayerGrounded()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void OnPlayerUngrounded()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
