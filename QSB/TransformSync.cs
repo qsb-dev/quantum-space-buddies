@@ -5,8 +5,11 @@ namespace QSB
 {
     public abstract class TransformSync : NetworkBehaviour
     {
+        private const float SmoothTime = 0.1f;
+
         private Transform _syncedTransform;
         private bool _isSectorSetUp;
+        private Vector3 _smoothVelocity;
 
         protected virtual void Awake()
         {
@@ -54,8 +57,9 @@ namespace QSB
             else
             {
                 _syncedTransform.parent = sectorTransform;
-                _syncedTransform.position = sectorTransform.TransformPoint(transform.position);
-                _syncedTransform.rotation = sectorTransform.rotation * transform.rotation;
+
+                _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _smoothVelocity, SmoothTime);
+                _syncedTransform.localRotation = transform.rotation;
             }
         }
 
