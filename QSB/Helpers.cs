@@ -4,6 +4,7 @@ namespace QSB
 {
     static class Helpers
     {
+        // Stolen from here: https://gist.github.com/maxattack/4c7b4de00f5c1b95a33b
         public static Quaternion QuaternionSmoothDamp(Quaternion rot, Quaternion target, ref Quaternion deriv, float time)
         {
             // account for double-cover
