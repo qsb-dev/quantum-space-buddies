@@ -1,31 +1,36 @@
 ﻿using QSB.Messaging;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB
 {
-    public class SectorSync : MessageHandler
+    public class SectorSync : MonoBehaviour
     {
-        protected override MessageType Type => MessageType.Sector;
+        public static SectorSync Instance { get; private set; }
 
-        private static Dictionary<uint, Transform> _playerSectors;
-        private static Sector[] _allSectors;
+        private Dictionary<uint, Transform> _playerSectors;
+        private Sector[] _allSectors;
+        private MessageHandler<SectorMessage> _sectorHandler;
 
         private void Start()
         {
+            Instance = this;
             DebugLog.Screen("Start SectorSync");
             _playerSectors = new Dictionary<uint, Transform>();
+
+            _sectorHandler = new MessageHandler<SectorMessage>();
+            _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+            _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
             QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
         }
 
-        public static void SetSector(uint id, Transform sectorTransform)
+        public void SetSector(uint id, Transform sectorTransform)
         {
             _playerSectors[id] = sectorTransform;
         }
 
-        public static void SetSector(uint id, Sector.Name sectorName)
+        public void SetSector(uint id, Sector.Name sectorName)
         {
             DebugLog.Screen("Gonna set sector");
 
@@ -36,16 +41,15 @@ namespace QSB
                 SectorId = (int)sectorName,
                 SenderId = id
             };
-            NetworkManager.singleton.client.Send((short)MessageType.Sector, msg);
-
+            _sectorHandler.SendToServer(msg);
         }
 
-        public static Transform GetSector(uint id)
+        public Transform GetSector(uint id)
         {
             return _playerSectors[id];
         }
 
-        private static Transform FindSectorTransform(Sector.Name sectorName)
+        private Transform FindSectorTransform(Sector.Name sectorName)
         {
             if (_allSectors == null)
             {
@@ -61,12 +65,11 @@ namespace QSB
             return null;
         }
 
-        protected override void OnClientReceiveMessage(NetworkMessage netMsg)
+        private void OnClientReceiveMessage(SectorMessage message)
         {
             DebugLog.Screen("OnClientReceiveMessage SectorSync");
-            var msg = netMsg.ReadMessage<SectorMessage>();
 
-            var sectorName = (Sector.Name)msg.SectorId;
+            var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
@@ -75,15 +78,14 @@ namespace QSB
                 return;
             }
 
-            DebugLog.Screen("Found sector", sectorName, ", setting for", msg.SenderId);
-            _playerSectors[msg.SenderId] = sectorTransform;
+            DebugLog.Screen("Found sector", sectorName, ", setting for", message.SenderId);
+            _playerSectors[message.SenderId] = sectorTransform;
         }
 
-        protected override void OnServerReceiveMessage(NetworkMessage netMsg)
+        private void OnServerReceiveMessage(SectorMessage message)
         {
             DebugLog.Screen("OnServerReceiveMessage SectorSync");
-            var msg = netMsg.ReadMessage<SectorMessage>();
-            NetworkServer.SendToAll((short)MessageType.Sector, msg);
+            _sectorHandler.SendToAll(message);
         }
 
         private static class Patches

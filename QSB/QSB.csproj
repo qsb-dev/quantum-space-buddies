@@ -93,12 +93,14 @@
     <Compile Include="DebugLog.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />
+    <Compile Include="SectorMessage.cs" />
+    <Compile Include="SectorSync.cs" />
+    <Compile Include="WakeUpMessage.cs" />
     <Compile Include="WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
     <Compile Include="QSB.cs" />
     <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SectorSync.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />

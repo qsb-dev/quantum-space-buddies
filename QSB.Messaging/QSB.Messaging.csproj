@@ -75,11 +75,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QSBMessage.cs" />
     <Compile Include="MessageHandler.cs" />
-    <Compile Include="MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SectorMessage.cs" />
-    <Compile Include="WakeUpMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

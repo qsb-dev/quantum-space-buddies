@@ -1,20 +1,20 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Messaging;
-using System;
-using UnityEngine.Networking;
+using UnityEngine;
 
 namespace QSB
 {
-    public class WakeUpSync : MessageHandler
+    public class WakeUpSync : MonoBehaviour
     {
         public static bool IsServer;
-
-        protected override MessageType Type => MessageType.WakeUp;
+        private MessageHandler<WakeUpMessage> _wakeUpHandler;
 
         private void Start()
         {
             DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+            _wakeUpHandler = new MessageHandler<WakeUpMessage>();
+            _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
         private void OnWakeUp()
@@ -22,12 +22,11 @@ namespace QSB
             DebugLog.Screen("Sending wakeup to all my friends");
             if (IsServer)
             {
-                var message = new WakeUpMessage();
-                NetworkServer.SendToAll((short)MessageType.WakeUp, message);
+                _wakeUpHandler.SendToAll(new WakeUpMessage());
             }
         }
 
-        protected override void OnClientReceiveMessage(NetworkMessage netMsg)
+        private void OnClientReceiveMessage(WakeUpMessage message)
         {
             if (IsServer)
             {
@@ -54,11 +53,6 @@ namespace QSB
             OWInput.ChangeInputMode(InputMode.Character);
             typeof(OWInput).SetValue("_inputFadeFraction", 0f);
             GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
-        }
-
-        protected override void OnServerReceiveMessage(NetworkMessage netMsg)
-        {
-            throw new NotImplementedException();
         }
 
     }

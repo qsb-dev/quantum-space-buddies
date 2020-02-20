@@ -1,9 +1,12 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.Messaging;
+using UnityEngine.Networking;
 
-namespace QSB.Messaging
+namespace QSB
 {
-    public class SectorMessage : MessageBase
+    public class SectorMessage : QSBMessage
     {
+        public override short MessageType => MsgType.Highest + 1;
+
         public int SectorId;
         public uint SenderId;
 
@@ -18,5 +21,6 @@ namespace QSB.Messaging
             writer.Write(SectorId);
             writer.Write(SenderId);
         }
+
     }
 }

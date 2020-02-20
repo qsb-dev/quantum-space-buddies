@@ -1,21 +1,42 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
     // Extend this to create new message handlers.
-    // You'll also need to create a new message type (add it to the enum).
-    public abstract class MessageHandler : MonoBehaviour
+    public class MessageHandler<T> where T : QSBMessage, new()
     {
-        protected abstract MessageType Type { get; }
+        public event Action<T> OnClientReceiveMessage;
+        public event Action<T> OnServerReceiveMessage;
 
-        private void Awake()
+        public MessageHandler()
         {
-            NetworkServer.RegisterHandler((short)Type, OnServerReceiveMessage);
-            NetworkManager.singleton.client.RegisterHandler((short)Type, OnClientReceiveMessage);
+            var message = (T)Activator.CreateInstance(typeof(T));
+            NetworkServer.RegisterHandler(message.MessageType, OnServerReceiveMessageHandler);
+            NetworkManager.singleton.client.RegisterHandler(message.MessageType, OnClientReceiveMessageHandler);
         }
 
-        protected abstract void OnClientReceiveMessage(NetworkMessage netMsg);
-        protected abstract void OnServerReceiveMessage(NetworkMessage netMsg);
+        public void SendToAll(T message)
+        {
+            NetworkServer.SendToAll(message.MessageType, message);
+        }
+
+        public void SendToServer(T message)
+        {
+            NetworkManager.singleton.client.Send(message.MessageType, message);
+        }
+
+        private void OnClientReceiveMessageHandler(NetworkMessage netMsg)
+        {
+            var message = netMsg.ReadMessage<T>();
+            OnClientReceiveMessage?.Invoke(message);
+        }
+
+        private void OnServerReceiveMessageHandler(NetworkMessage netMsg)
+        {
+            var message = netMsg.ReadMessage<T>();
+            OnServerReceiveMessage?.Invoke(message);
+        }
+
     }
 }
