@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace QSB
 {
-    class ShipTransformSync : TransformSync
+    public class ShipTransformSync : TransformSync
     {
+        public static ShipTransformSync LocalInstance { get; private set; }
         Transform _shipModel;
 
         Transform GetShipModel()
@@ -18,6 +19,7 @@ namespace QSB
 
         protected override Transform GetLocalTransform()
         {
+            LocalInstance = this;
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
