@@ -60,7 +60,7 @@ namespace QSB.TransformSync
                 _syncedTransform.parent = sectorTransform;
 
                 _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                _syncedTransform.localRotation = QuaternionHelper.QuaternionSmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
             }
         }
     }

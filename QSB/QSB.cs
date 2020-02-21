@@ -25,12 +25,6 @@ namespace QSB
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<PreserveTimeScale>();
         }
-
-        private void Update()
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
+        
     }
 }
