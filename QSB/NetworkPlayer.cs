@@ -5,9 +5,10 @@ namespace QSB
     public class NetworkPlayer : TransformSync
     {
         public static NetworkPlayer LocalInstance { get; private set; }
+
         private Transform _playerModel;
 
-        Transform GetPlayerModel()
+        private Transform GetPlayerModel()
         {
             if (!_playerModel)
             {
@@ -16,7 +17,7 @@ namespace QSB
             return _playerModel;
         }
 
-        protected override Transform GetLocalTransform()
+        protected override Transform InitLocalTransform()
         {
             LocalInstance = this;
             var body = GetPlayerModel();
@@ -26,7 +27,7 @@ namespace QSB
             return body;
         }
 
-        protected override Transform GetRemoteTransform()
+        protected override Transform InitRemoteTransform()
         {
             var body = Instantiate(GetPlayerModel());
             body.GetComponent<PlayerAnimController>().enabled = false;

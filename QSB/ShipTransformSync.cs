@@ -1,14 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB
 {
     public class ShipTransformSync : TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
-        Transform _shipModel;
 
-        Transform GetShipModel()
+        private Transform _shipModel;
+
+        private Transform GetShipModel()
         {
             if (!_shipModel)
             {
@@ -17,37 +17,30 @@ namespace QSB
             return _shipModel;
         }
 
-        protected override Transform GetLocalTransform()
+        protected override Transform InitLocalTransform()
         {
             LocalInstance = this;
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
-        protected override Transform GetRemoteTransform()
+        protected override Transform InitRemoteTransform()
         {
             var shipModel = GetShipModel();
-            var cockpit = Instantiate(shipModel.Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"));
-            var cabin = Instantiate(shipModel.Find("Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"));
-            var supplies = Instantiate(shipModel.Find("Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"));
-            var engine = Instantiate(shipModel.Find("Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"));
-            var landingGearFront = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front"));
-            var landingGearLeft = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left"));
-            var landingGearRight = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right"));
+
+            var remoteTransform = new GameObject().transform;
+
+            Instantiate(shipModel.Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remoteTransform);
+            Instantiate(shipModel.Find("Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remoteTransform);
+            Instantiate(shipModel.Find("Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"), remoteTransform);
+            Instantiate(shipModel.Find("Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"), remoteTransform);
+
+            var landingGearFront = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front"), remoteTransform);
+            var landingGearLeft = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left"), remoteTransform);
+            var landingGearRight = Instantiate(shipModel.Find("Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right"), remoteTransform);
 
             Destroy(landingGearFront.Find("LandingGear_FrontCollision").gameObject);
             Destroy(landingGearLeft.Find("LandingGear_LeftCollision").gameObject);
             Destroy(landingGearRight.Find("LandingGear_RightCollision").gameObject);
-
-            var remoteTransform = new GameObject().transform;
-
-            cockpit.parent
-                = cabin.parent
-                = supplies.parent
-                = engine.parent
-                = landingGearFront.parent
-                = landingGearLeft.parent
-                = landingGearRight.parent
-                = remoteTransform;
 
             landingGearFront.localPosition
                 = landingGearLeft.localPosition
