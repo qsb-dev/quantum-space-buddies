@@ -22,7 +22,7 @@ namespace QSB
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<PlayerSectorDetector>("OnAddSector", typeof(Patches), "PreAddSector");
+            QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
         }
 
         public void SetSector(uint id, Transform sectorTransform)
@@ -90,16 +90,22 @@ namespace QSB
 
         private static class Patches
         {
-            private static void PreAddSector(Sector sector, PlayerSectorDetector __instance)
+            private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
             {
                 if (sector.GetName() == Sector.Name.Unnamed || sector.GetName() == Sector.Name.Ship || sector.GetName() == Sector.Name.Sun || sector.GetName() == Sector.Name.HourglassTwins)
                 {
                     return;
                 }
 
-                if (NetworkPlayer.LocalInstance != null)
+                if (____occupantType == DynamicOccupant.Player && NetworkPlayer.LocalInstance != null)
                 {
                     NetworkPlayer.LocalInstance.EnterSector(sector);
+                    return;
+                }
+
+                if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
+                {
+                    ShipTransformSync.LocalInstance.EnterSector(sector);
                 }
             }
         }

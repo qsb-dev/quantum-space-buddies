@@ -80,6 +80,10 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(StartWorkingDirectory)\..\OuterWilds_Data\Managed\UnityEngine.UI.dll</HintPath>
@@ -91,8 +95,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DebugLog.cs" />
+    <Compile Include="QuaternionHelper.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />
+    <Compile Include="ShipTransformSync.cs" />
+    <Compile Include="TransformSync.cs" />
     <Compile Include="SectorMessage.cs" />
     <Compile Include="SectorSync.cs" />
     <Compile Include="WakeUpMessage.cs" />
