@@ -5,7 +5,7 @@ namespace QSB
 {
     public class WakeUpMessage : QSBMessage
     {
-        public override MessageType MessageType => MessageType.WakeUpSync;
+        public override MessageType MessageType => MessageType.WakeUp;
 
         private bool _wakeUp = true;
 

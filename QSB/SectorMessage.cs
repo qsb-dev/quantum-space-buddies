@@ -5,7 +5,7 @@ namespace QSB
 {
     public class SectorMessage : QSBMessage
     {
-        public override MessageType MessageType => MessageType.SectorSync;
+        public override MessageType MessageType => MessageType.Sector;
 
         public int SectorId;
         public uint SenderId;
