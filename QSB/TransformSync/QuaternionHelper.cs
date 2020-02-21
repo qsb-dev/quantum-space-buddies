@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB
+namespace QSB.TransformSync
 {
     public static class QuaternionHelper
     {

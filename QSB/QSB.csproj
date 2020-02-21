@@ -94,35 +94,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationSync\AnimationSync.cs" />
+    <Compile Include="AnimationSync\AnimatorMirror.cs" />
+    <Compile Include="AnimationSync\AnimFloatParam.cs" />
     <Compile Include="DebugLog.cs" />
-    <Compile Include="QuaternionHelper.cs" />
+    <Compile Include="Messaging\MessageHandler.cs" />
+    <Compile Include="Messaging\MessageType.cs" />
+    <Compile Include="Messaging\QSBMessage.cs" />
+    <Compile Include="TransformSync\QuaternionHelper.cs" />
     <Compile Include="QSBBehaviour.cs" />
     <Compile Include="PreserveTimeScale.cs" />
-    <Compile Include="ShipTransformSync.cs" />
-    <Compile Include="TransformSync.cs" />
-    <Compile Include="SectorMessage.cs" />
-    <Compile Include="SectorSync.cs" />
+    <Compile Include="TransformSync\ShipTransformSync.cs" />
+    <Compile Include="TransformSync\TransformSync.cs" />
+    <Compile Include="TransformSync\SectorMessage.cs" />
+    <Compile Include="TransformSync\SectorSync.cs" />
     <Compile Include="WakeUpMessage.cs" />
     <Compile Include="WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
     <Compile Include="QSB.cs" />
-    <Compile Include="NetworkPlayer.cs" />
+    <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />
     <None Include="manifest.json" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\QSB.Animation\QSB.Animation.csproj">
-      <Project>{B11CC457-BB55-4647-8523-6A53FC6E069B}</Project>
-      <Name>QSB.Animation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QSB.Messaging\QSB.Messaging.csproj">
-      <Project>{d6bb93aa-f405-48d5-9c4c-49c3f8e81e9a}</Project>
-      <Name>QSB.Messaging</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -131,8 +127,6 @@ md "$(StartWorkingDirectory)\Mods\$(ProjectName)\assets"
 del "$(StartWorkingDirectory)\Mods\$(ProjectName)\config.json"
 
 copy /y "$(TargetPath)" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
-copy /y "$(TargetDir)\QSB.Messaging.dll" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
-copy /y "$(TargetDir)\QSB.Animation.dll" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 
 copy /y "$(ProjectDir)\default-config.json" "$(StartWorkingDirectory)\Mods\$(ProjectName)"
 

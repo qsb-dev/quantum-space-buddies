@@ -1,8 +1,8 @@
-﻿using QSB.Messaging;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using QSB.Messaging;
 using UnityEngine;
 
-namespace QSB
+namespace QSB.TransformSync
 {
     public class SectorSync : MonoBehaviour
     {
@@ -97,9 +97,9 @@ namespace QSB
                     return;
                 }
 
-                if (____occupantType == DynamicOccupant.Player && NetworkPlayer.LocalInstance != null)
+                if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
                 {
-                    NetworkPlayer.LocalInstance.EnterSector(sector);
+                    PlayerTransformSync.LocalInstance.EnterSector(sector);
                     return;
                 }
 

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.AnimationSync
 {
     public class AnimatorMirror : MonoBehaviour
     {

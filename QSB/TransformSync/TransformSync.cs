@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {

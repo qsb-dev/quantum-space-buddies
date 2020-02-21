@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.TransformSync
 {
     public class SectorMessage : QSBMessage
     {

@@ -1,11 +1,10 @@
-﻿using QSB.Animation;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace QSB
+namespace QSB.TransformSync
 {
-    public class NetworkPlayer : TransformSync
+    public class PlayerTransformSync : TransformSync
     {
-        public static NetworkPlayer LocalInstance { get; private set; }
+        public static PlayerTransformSync LocalInstance { get; private set; }
 
         private Transform _playerModel;
 
@@ -23,7 +22,7 @@ namespace QSB
             LocalInstance = this;
             var body = GetPlayerModel();
 
-            GetComponent<AnimationSync>().Init(body);
+            GetComponent<AnimationSync.AnimationSync>().Init(body);
 
             return body;
         }
@@ -35,7 +34,7 @@ namespace QSB
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
-            GetComponent<AnimationSync>().Init(body);
+            GetComponent<AnimationSync.AnimationSync>().Init(body);
 
             return body;
         }
