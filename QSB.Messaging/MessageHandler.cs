@@ -12,18 +12,18 @@ namespace QSB.Messaging
         public MessageHandler()
         {
             var message = (T)Activator.CreateInstance(typeof(T));
-            NetworkServer.RegisterHandler(message.MessageType, OnServerReceiveMessageHandler);
-            NetworkManager.singleton.client.RegisterHandler(message.MessageType, OnClientReceiveMessageHandler);
+            NetworkServer.RegisterHandler((short)message.MessageType, OnServerReceiveMessageHandler);
+            NetworkManager.singleton.client.RegisterHandler((short)message.MessageType, OnClientReceiveMessageHandler);
         }
 
         public void SendToAll(T message)
         {
-            NetworkServer.SendToAll(message.MessageType, message);
+            NetworkServer.SendToAll((short)message.MessageType, message);
         }
 
         public void SendToServer(T message)
         {
-            NetworkManager.singleton.client.Send(message.MessageType, message);
+            NetworkManager.singleton.client.Send((short)message.MessageType, message);
         }
 
         private void OnClientReceiveMessageHandler(NetworkMessage netMsg)

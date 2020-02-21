@@ -4,6 +4,6 @@ namespace QSB.Messaging
 {
     public abstract class QSBMessage : MessageBase
     {
-        public abstract short MessageType { get; }
+        public abstract MessageType MessageType { get; }
     }
 }
