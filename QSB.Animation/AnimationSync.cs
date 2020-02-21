@@ -23,7 +23,6 @@ namespace QSB.Animation
             if (isLocalPlayer)
             {
                 animMirror.Init(bodyAnim, _anim);
-
             }
             else
             {

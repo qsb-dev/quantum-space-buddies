@@ -16,12 +16,6 @@ namespace QSB
             Cursor.visible = true;
         }
 
-        private void Update()
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
         private void Start()
         {
             Helper = ModHelper;
@@ -30,6 +24,12 @@ namespace QSB
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<PreserveTimeScale>();
+        }
+
+        private void Update()
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
     }

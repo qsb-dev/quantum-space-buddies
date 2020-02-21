@@ -56,7 +56,7 @@
   <ItemGroup>
     <Compile Include="AnimationSync.cs" />
     <Compile Include="AnimatorMirror.cs" />
-    <Compile Include="FloatAnimParam.cs" />
+    <Compile Include="AnimFloatParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
