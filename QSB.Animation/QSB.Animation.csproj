@@ -57,7 +57,14 @@
     <Compile Include="AnimationSync.cs" />
     <Compile Include="AnimatorMirror.cs" />
     <Compile Include="AnimFloatParam.cs" />
+    <Compile Include="AnimTriggerMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QSB.Messaging\QSB.Messaging.csproj">
+      <Project>{D6BB93AA-F405-48D5-9C4C-49C3F8E81E9A}</Project>
+      <Name>QSB.Messaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
