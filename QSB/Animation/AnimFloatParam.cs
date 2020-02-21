@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace QSB
+namespace QSB.Animation
 {
-    public class FloatAnimParam
+    public class AnimFloatParam
     {
         public float Current { get; private set; }
         public float Target { get; set; }

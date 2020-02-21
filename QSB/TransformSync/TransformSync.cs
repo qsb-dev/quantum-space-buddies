@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
@@ -33,12 +33,12 @@ namespace QSB
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
-            SectorSync.SetSector(netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
+            SectorSync.Instance.SetSector(netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
         }
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.SetSector(netId.Value, sector.GetName());
+            SectorSync.Instance.SetSector(netId.Value, sector.GetName());
         }
 
         private void Update()
@@ -48,7 +48,7 @@ namespace QSB
                 return;
             }
 
-            var sectorTransform = SectorSync.GetSector(netId.Value);
+            var sectorTransform = SectorSync.Instance.GetSector(netId.Value);
 
             if (hasAuthority)
             {
@@ -60,7 +60,7 @@ namespace QSB
                 _syncedTransform.parent = sectorTransform;
 
                 _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                _syncedTransform.localRotation = Helpers.QuaternionSmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
             }
         }
     }

@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+﻿using QSB.Animation;
+using QSB.TransformSync;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
-        AssetBundle _assetBundle;
-        GameObject _shipPrefab;
+        private AssetBundle _assetBundle;
+        private GameObject _shipPrefab;
+
         private void Awake()
         {
             _assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
-            playerPrefab.AddComponent<NetworkPlayer>();
+            playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");

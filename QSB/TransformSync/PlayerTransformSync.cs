@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using QSB.Animation;
+using UnityEngine;
 
-namespace QSB
+namespace QSB.TransformSync
 {
-    public class NetworkPlayer : TransformSync
+    public class PlayerTransformSync : TransformSync
     {
-        public static NetworkPlayer LocalInstance { get; private set; }
+        public static PlayerTransformSync LocalInstance { get; private set; }
 
         private Transform _playerModel;
 

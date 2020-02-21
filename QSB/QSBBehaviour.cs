@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 namespace QSB
 {
-    abstract class QSBBehaviour : MonoBehaviour
+    public abstract class QSBBehaviour : MonoBehaviour
     {
-        protected bool isPlayerAwake;
+        protected bool IsPlayerAwake;
 
         protected virtual void Awake()
         {
@@ -27,7 +27,7 @@ namespace QSB
 
         protected virtual void PlayerWokeUp()
         {
-            isPlayerAwake = true;
+            IsPlayerAwake = true;
         }
 
         protected virtual void StartSolarSystem() { }

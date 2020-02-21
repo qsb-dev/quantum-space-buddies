@@ -2,11 +2,11 @@
 
 namespace QSB
 {
-    class PreserveTimeScale : QSBBehaviour
+    public class PreserveTimeScale : QSBBehaviour
     {
-        void Update()
+        private void Update()
         {
-            if (isPlayerAwake)
+            if (IsPlayerAwake)
             {
                 Time.timeScale = 1;
             }

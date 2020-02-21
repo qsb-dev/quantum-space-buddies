@@ -1,9 +1,12 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.Messaging;
+using UnityEngine.Networking;
 
-namespace QSB.Messaging
+namespace QSB.TransformSync
 {
-    public class SectorMessage : MessageBase
+    public class SectorMessage : QSBMessage
     {
+        public override MessageType MessageType => MessageType.Sector;
+
         public int SectorId;
         public uint SenderId;
 
@@ -18,5 +21,6 @@ namespace QSB.Messaging
             writer.Write(SectorId);
             writer.Write(SenderId);
         }
+
     }
 }
