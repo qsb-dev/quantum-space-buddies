@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QSB.AnimationSync
+namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {

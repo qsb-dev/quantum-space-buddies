@@ -1,4 +1,5 @@
-﻿using QSB.TransformSync;
+﻿using QSB.Animation;
+using QSB.TransformSync;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -14,7 +15,7 @@ namespace QSB
             _assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<PlayerTransformSync>();
-            playerPrefab.AddComponent<AnimationSync.AnimationSync>();
+            playerPrefab.AddComponent<AnimationSync>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();

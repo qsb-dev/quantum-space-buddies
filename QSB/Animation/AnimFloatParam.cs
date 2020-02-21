@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB.AnimationSync
+namespace QSB.Animation
 {
     public class AnimFloatParam
     {
