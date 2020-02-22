@@ -23,7 +23,7 @@ namespace QSB.TransformSync
 
         private void OnWakeUp()
         {
-            DebugLog.Screen("Start TransformSync", netId.Value);
+            DebugLog.Instance.Screen("Start TransformSync", netId.Value);
             Invoke(nameof(SetFirstSector), 1);
 
             transform.parent = Locator.GetRootTransform();

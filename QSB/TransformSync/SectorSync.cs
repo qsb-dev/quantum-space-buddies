@@ -15,7 +15,7 @@ namespace QSB.TransformSync
         private void Start()
         {
             Instance = this;
-            DebugLog.Screen("Start SectorSync");
+            DebugLog.Instance.Screen("Start SectorSync");
             _playerSectors = new Dictionary<uint, Transform>();
 
             _sectorHandler = new MessageHandler<SectorMessage>();
@@ -32,7 +32,7 @@ namespace QSB.TransformSync
 
         public void SetSector(uint id, Sector.Name sectorName)
         {
-            DebugLog.Screen("Gonna set sector");
+            DebugLog.Instance.Screen("Gonna set sector");
 
             _playerSectors[id] = FindSectorTransform(sectorName);
 
@@ -67,24 +67,24 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            DebugLog.Screen("OnClientReceiveMessage SectorSync");
+            DebugLog.Instance.Screen("OnClientReceiveMessage SectorSync");
 
             var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.Screen("Sector", sectorName, "not found");
+                DebugLog.Instance.Screen("Sector", sectorName, "not found");
                 return;
             }
 
-            DebugLog.Screen("Found sector", sectorName, ", setting for", message.SenderId);
+            DebugLog.Instance.Screen("Found sector", sectorName, ", setting for", message.SenderId);
             _playerSectors[message.SenderId] = sectorTransform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            DebugLog.Screen("OnServerReceiveMessage SectorSync");
+            DebugLog.Instance.Screen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 

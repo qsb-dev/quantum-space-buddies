@@ -7,6 +7,8 @@ namespace QSB
 {
     public class DebugLog : MonoBehaviour
     {
+        public static DebugLog Instance { get; private set; }
+
         private const int ScreenLinesMax = 6;
 
         private static Text _screenText;
@@ -14,6 +16,7 @@ namespace QSB
 
         private void Awake()
         {
+            Instance = this;
             var assetBundle = QSB.Helper.Assets.LoadBundle("assets/debug");
             var logCanvas = Instantiate(assetBundle.LoadAsset<GameObject>("assets/logcanvas.prefab"));
             DontDestroyOnLoad(logCanvas);
@@ -28,17 +31,17 @@ namespace QSB
             }
         }
 
-        private static string JoinAll(params object[] logObjects)
+        private string JoinAll(params object[] logObjects)
         {
             return string.Join(" ", logObjects.Select(o => o.ToString()).ToArray());
         }
 
-        public static void Console(params object[] logObjects)
+        public void Console(params object[] logObjects)
         {
             QSB.Helper.Console.WriteLine(logObjects);
         }
 
-        public static void Screen(params object[] logObjects)
+        public void Screen(params object[] logObjects)
         {
             for (var i = 1; i < ScreenLinesMax; i++)
             {
@@ -48,7 +51,7 @@ namespace QSB
             _screenText.text = string.Join("\n", _lines.ToArray());
         }
 
-        public static void HUD(params object[] logObjects)
+        public void HUD(params object[] logObjects)
         {
             if (Locator.GetPlayerBody() == null)
             {
