@@ -26,6 +26,8 @@ namespace QSB.Animation
             _bodyAnim = body.GetComponent<Animator>();
             var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
 
+            DebugLog.Instance.Screen("Init: isLocalPlayer=" + isLocalPlayer);
+
             if (isLocalPlayer)
             {
                 animMirror.Init(_bodyAnim, _anim);
@@ -58,19 +60,30 @@ namespace QSB.Animation
             {
                 TriggerName = triggerName
             };
-            _triggerHandler.SendToServer(message);
+            if (isServer)
+            {
+                DebugLog.Instance.Screen("Sending trigger from server: " + message.TriggerName);
+                _triggerHandler.SendToAll(message);
+            }
+            else
+            {
+                DebugLog.Instance.Screen("Sending trigger to server: " + message.TriggerName);
+                _triggerHandler.SendToServer(message);
+            }
         }
 
         private void OnServerReceiveMessage(AnimTriggerMessage message)
         {
+            DebugLog.Instance.Screen("Server received trigger: " + message.TriggerName);
             _triggerHandler.SendToAll(message);
         }
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
+            DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName} (isLocalPlayer={isLocalPlayer})");
             if (!isLocalPlayer)
             {
-                DebugLog.Instance.Screen(message.TriggerName);
+                DebugLog.Instance.Screen("Setting anim trigger: " + message.TriggerName);
                 _bodyAnim.SetTrigger(message.TriggerName);
             }
         }

@@ -43,6 +43,7 @@ namespace QSB
 
         public void Screen(params object[] logObjects)
         {
+            Console(logObjects);
             for (var i = 1; i < ScreenLinesMax; i++)
             {
                 _lines[i - 1] = _lines[i];

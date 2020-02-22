@@ -12,8 +12,6 @@ namespace QSB
         private void Awake()
         {
             Application.runInBackground = true;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
 
         private void Start()
