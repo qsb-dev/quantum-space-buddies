@@ -18,14 +18,7 @@ namespace QSB.Animation
             _netAnim.animator = _anim;
             _triggerHandler = new MessageHandler<AnimTriggerMessage>();
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-        }
-
-        private void OnServerReceiveMessage(AnimTriggerMessage message)
-        {
-            if (!isLocalPlayer)
-            {
-                _bodyAnim.SetTrigger(message.TriggerName);
-            }
+            _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
         public void Init(Transform body)
@@ -65,7 +58,21 @@ namespace QSB.Animation
             {
                 TriggerName = triggerName
             };
+            _triggerHandler.SendToServer(message);
+        }
+
+        private void OnServerReceiveMessage(AnimTriggerMessage message)
+        {
             _triggerHandler.SendToAll(message);
+        }
+
+        private void OnClientReceiveMessage(AnimTriggerMessage message)
+        {
+            if (!isLocalPlayer)
+            {
+                DebugLog.Instance.Screen(message.TriggerName);
+                _bodyAnim.SetTrigger(message.TriggerName);
+            }
         }
 
     }
