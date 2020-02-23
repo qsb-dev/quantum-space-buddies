@@ -26,21 +26,12 @@ namespace QSB.Animation
             _anim = gameObject.AddComponent<Animator>();
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
             _netAnim.animator = _anim;
-
-            for (var i = 0; i < _anim.parameterCount; i++)
-            {
-                _netAnim.SetParameterAutoSend(i, true);
-            }
         }
 
         public void InitLocal(Transform body)
         {
-            PlayerAnimSyncs.Add(netId.Value, this);
-
             _bodyAnim = body.GetComponent<Animator>();
-            var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
-
-            animMirror.Init(_bodyAnim, _anim);
+            body.gameObject.AddComponent<AnimatorMirror>().Init(_bodyAnim, _anim);
 
             _triggerHandler = new MessageHandler<AnimTriggerMessage>();
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
@@ -53,16 +44,14 @@ namespace QSB.Animation
 
             GlobalMessenger.AddListener("SuitUp", () => SendTrigger(AnimTrigger.SuitUp));
             GlobalMessenger.AddListener("RemoveSuit", () => SendTrigger(AnimTrigger.SuitDown));
+
+            InitCommon();
         }
 
         public void InitRemote(Transform body)
         {
-            PlayerAnimSyncs.Add(netId.Value, this);
-
             _bodyAnim = body.GetComponent<Animator>();
-            var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
-
-            animMirror.Init(_anim, _bodyAnim);
+            body.gameObject.AddComponent<AnimatorMirror>().Init(_anim, _bodyAnim);
 
             _suitedAnimController = _bodyAnim.runtimeAnimatorController;
 
@@ -79,6 +68,18 @@ namespace QSB.Animation
 
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+
+            InitCommon();
+        }
+
+        private void InitCommon()
+        {
+            PlayerAnimSyncs.Add(netId.Value, this);
+
+            for (var i = 0; i < _anim.parameterCount; i++)
+            {
+                _netAnim.SetParameterAutoSend(i, true);
+            }
         }
 
         private void SendTrigger(AnimTrigger trigger)
@@ -90,19 +91,16 @@ namespace QSB.Animation
             };
             if (isServer)
             {
-                DebugLog.Instance.Screen("Sending trigger from server: " + trigger);
                 _triggerHandler.SendToAll(message);
             }
             else
             {
-                DebugLog.Instance.Screen("Sending trigger to server: " + trigger);
                 _triggerHandler.SendToServer(message);
             }
         }
 
         private void OnServerReceiveMessage(AnimTriggerMessage message)
         {
-            DebugLog.Instance.Screen("Server received trigger: " + (AnimTrigger)message.TriggerId);
             _triggerHandler.SendToAll(message);
         }
 
@@ -111,7 +109,6 @@ namespace QSB.Animation
             var animSync = PlayerAnimSyncs[message.SenderId];
             if (animSync != this)
             {
-                DebugLog.Instance.Screen($"Client received trigger: {(AnimTrigger)message.TriggerId}. SenderId: {message.SenderId} is NOT local");
                 animSync.HandleTrigger((AnimTrigger)message.TriggerId);
             }
         }
@@ -138,7 +135,6 @@ namespace QSB.Animation
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
             }
-
         }
 
     }
