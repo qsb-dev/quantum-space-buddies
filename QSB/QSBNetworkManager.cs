@@ -33,7 +33,6 @@ namespace QSB
         {
             WakeUpSync.IsServer = true;
         }
-
         public override void OnClientConnect(NetworkConnection conn)
         {
             base.OnClientConnect(conn);
@@ -42,5 +41,6 @@ namespace QSB
             gameObject.AddComponent<WakeUpSync>();
             gameObject.AddComponent<SectorSync>();
         }
+
     }
 }

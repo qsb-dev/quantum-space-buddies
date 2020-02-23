@@ -97,6 +97,8 @@
     <Compile Include="Animation\AnimationSync.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
+    <Compile Include="Animation\AnimTriggerMessage.cs" />
+    <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="DebugLog.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
