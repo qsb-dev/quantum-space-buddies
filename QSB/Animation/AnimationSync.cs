@@ -58,18 +58,11 @@ namespace QSB.Animation
         {
             var message = new AnimTriggerMessage
             {
+                SenderId = netId.Value,
                 TriggerName = triggerName
             };
-            if (isServer)
-            {
-                DebugLog.Instance.Screen("Sending trigger from server: " + message.TriggerName);
-                _triggerHandler.SendToAll(message);
-            }
-            else
-            {
-                DebugLog.Instance.Screen("Sending trigger to server: " + message.TriggerName);
-                _triggerHandler.SendToServer(message);
-            }
+            DebugLog.Instance.Screen($"Sending trigger from SenderId={netId.Value} to server: " + message.TriggerName);
+            _triggerHandler.SendToServer(message);
         }
 
         private void OnServerReceiveMessage(AnimTriggerMessage message)
@@ -80,11 +73,14 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName} (isLocalPlayer={isLocalPlayer})");
-            if (!isLocalPlayer)
+            if (message.SenderId == netId.Value && !isLocalPlayer)
             {
-                DebugLog.Instance.Screen("Setting anim trigger: " + message.TriggerName);
+                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. Correct SenderId ({message.SenderId}) and isLocalPlayer ({isLocalPlayer})");
                 _bodyAnim.SetTrigger(message.TriggerName);
+            }
+            else
+            {
+                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. NOT correct SenderId ({message.SenderId}) and isLocalPlayer ({isLocalPlayer})");
             }
         }
 
