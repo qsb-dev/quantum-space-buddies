@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using System.Collections.Generic;
+using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -11,14 +12,13 @@ namespace QSB.Animation
         private Animator _bodyAnim;
         private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
+        private static readonly Dictionary<uint, AnimationSync> _playerAnimationSyncs = new Dictionary<uint, AnimationSync>();
+
         private void Awake()
         {
             _anim = gameObject.AddComponent<Animator>();
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
             _netAnim.animator = _anim;
-            _triggerHandler = new MessageHandler<AnimTriggerMessage>();
-            _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-            _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
         public void Init(Transform body)
@@ -26,11 +26,15 @@ namespace QSB.Animation
             _bodyAnim = body.GetComponent<Animator>();
             var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
 
-            DebugLog.Instance.Screen("Init: isLocalPlayer=" + isLocalPlayer);
+            _playerAnimationSyncs.Add(netId.Value, this);
 
             if (isLocalPlayer)
             {
                 animMirror.Init(_bodyAnim, _anim);
+
+                _triggerHandler = new MessageHandler<AnimTriggerMessage>();
+                _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
+                _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
                 var playerController = body.parent.GetComponent<PlayerCharacterController>();
                 playerController.OnJump += OnPlayerJump;
@@ -73,14 +77,15 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            if (message.SenderId == netId.Value && !isLocalPlayer)
+            var animSync = _playerAnimationSyncs[message.SenderId];
+            if (animSync != this)
             {
-                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. Correct SenderId ({message.SenderId}) and isLocalPlayer ({isLocalPlayer})");
+                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. SenderId: {message.SenderId} is NOT local");
                 _bodyAnim.SetTrigger(message.TriggerName);
             }
             else
             {
-                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. NOT correct SenderId ({message.SenderId}) and isLocalPlayer ({isLocalPlayer})");
+                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. SenderId: {message.SenderId} is local");
             }
         }
 
