@@ -23,7 +23,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
             var body = GetPlayerModel();
 
-            GetComponent<AnimationSync>().Init(body);
+            GetComponent<AnimationSync>().InitLocal(body);
 
             return body;
         }
@@ -31,13 +31,11 @@ namespace QSB.TransformSync
         protected override Transform InitRemoteTransform()
         {
             var body = Instantiate(GetPlayerModel());
-            body.GetComponent<PlayerAnimController>().enabled = false;
-            body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-            body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
-            GetComponent<AnimationSync>().Init(body);
+            GetComponent<AnimationSync>().InitRemote(body);
 
             return body;
         }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using OWML.ModHelper.Events;
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,45 +9,23 @@ namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {
-        public Animator BodyAnim { get; private set; }
-
-        private static readonly Dictionary<uint, AnimationSync> _playerAnimationSyncs = new Dictionary<uint, AnimationSync>();
-
         private Animator _anim;
+        private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
         private MessageHandler<AnimTriggerMessage> _triggerHandler;
+
+        private RuntimeAnimatorController _suitedAnimController;
+        private AnimatorOverrideController _unsuitedAnimController;
+        private GameObject _suitedGraphics;
+        private GameObject _unsuitedGraphics;
+
+        private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
 
         private void Awake()
         {
             _anim = gameObject.AddComponent<Animator>();
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
             _netAnim.animator = _anim;
-        }
-
-        public void Init(Transform body)
-        {
-            BodyAnim = body.GetComponent<Animator>();
-            var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
-
-            _playerAnimationSyncs.Add(netId.Value, this);
-
-            if (isLocalPlayer)
-            {
-                animMirror.Init(BodyAnim, _anim);
-
-                _triggerHandler = new MessageHandler<AnimTriggerMessage>();
-                _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-                _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-
-                var playerController = body.parent.GetComponent<PlayerCharacterController>();
-                playerController.OnJump += OnPlayerJump;
-                playerController.OnBecomeGrounded += OnPlayerGrounded;
-                playerController.OnBecomeUngrounded += OnPlayerUngrounded;
-            }
-            else
-            {
-                animMirror.Init(_anim, BodyAnim);
-            }
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {
@@ -53,37 +33,112 @@ namespace QSB.Animation
             }
         }
 
-        private void OnPlayerJump() => SendTrigger("Jump");
+        public void InitLocal(Transform body)
+        {
+            PlayerAnimSyncs.Add(netId.Value, this);
 
-        private void OnPlayerGrounded() => SendTrigger("Grounded");
+            _bodyAnim = body.GetComponent<Animator>();
+            var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
 
-        private void OnPlayerUngrounded() => SendTrigger("Ungrounded");
+            animMirror.Init(_bodyAnim, _anim);
 
-        private void SendTrigger(string triggerName)
+            _triggerHandler = new MessageHandler<AnimTriggerMessage>();
+            _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
+            _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+
+            var playerController = body.parent.GetComponent<PlayerCharacterController>();
+            playerController.OnJump += () => SendTrigger(AnimTrigger.Jump);
+            playerController.OnBecomeGrounded += () => SendTrigger(AnimTrigger.Grounded);
+            playerController.OnBecomeUngrounded += () => SendTrigger(AnimTrigger.Ungrounded);
+
+            GlobalMessenger.AddListener("SuitUp", () => SendTrigger(AnimTrigger.SuitUp));
+            GlobalMessenger.AddListener("RemoveSuit", () => SendTrigger(AnimTrigger.SuitDown));
+        }
+
+        public void InitRemote(Transform body)
+        {
+            PlayerAnimSyncs.Add(netId.Value, this);
+
+            _bodyAnim = body.GetComponent<Animator>();
+            var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
+
+            animMirror.Init(_anim, _bodyAnim);
+
+            _suitedAnimController = _bodyAnim.runtimeAnimatorController;
+
+            var playerAnimController = body.GetComponent<PlayerAnimController>();
+            playerAnimController.enabled = false;
+            _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
+            _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
+            _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
+
+            playerAnimController.SetValue("_suitedGroup", new GameObject());
+            playerAnimController.SetValue("_unsuitedGroup", new GameObject());
+            playerAnimController.SetValue("_baseAnimController", null);
+            playerAnimController.SetValue("_unsuitedAnimOverride", null);
+
+            body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
+            body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+        }
+
+        private void SendTrigger(AnimTrigger trigger)
         {
             var message = new AnimTriggerMessage
             {
                 SenderId = netId.Value,
-                TriggerName = triggerName
+                TriggerId = (short)trigger
             };
-            DebugLog.Instance.Screen($"Sending trigger to server: " + message.TriggerName);
-            _triggerHandler.SendToServer(message);
+            if (isServer)
+            {
+                DebugLog.Instance.Screen("Sending trigger from server: " + trigger);
+                _triggerHandler.SendToAll(message);
+            }
+            else
+            {
+                DebugLog.Instance.Screen("Sending trigger to server: " + trigger);
+                _triggerHandler.SendToServer(message);
+            }
         }
 
         private void OnServerReceiveMessage(AnimTriggerMessage message)
         {
-            DebugLog.Instance.Screen("Server received trigger: " + message.TriggerName);
+            DebugLog.Instance.Screen("Server received trigger: " + (AnimTrigger)message.TriggerId);
             _triggerHandler.SendToAll(message);
         }
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            var animSync = _playerAnimationSyncs[message.SenderId];
+            var animSync = PlayerAnimSyncs[message.SenderId];
             if (animSync != this)
             {
-                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. SenderId: {message.SenderId} is NOT local");
-                animSync.BodyAnim.SetTrigger(message.TriggerName);
+                DebugLog.Instance.Screen($"Client received trigger: {(AnimTrigger)message.TriggerId}. SenderId: {message.SenderId} is NOT local");
+                animSync.HandleTrigger((AnimTrigger)message.TriggerId);
             }
+        }
+
+        private void HandleTrigger(AnimTrigger trigger)
+        {
+            switch (trigger)
+            {
+                case AnimTrigger.Jump:
+                case AnimTrigger.Grounded:
+                case AnimTrigger.Ungrounded:
+                    _bodyAnim.SetTrigger(trigger.ToString());
+                    break;
+                case AnimTrigger.SuitUp:
+                    _bodyAnim.runtimeAnimatorController = _suitedAnimController;
+                    _unsuitedGraphics.SetActive(false);
+                    _suitedGraphics.SetActive(true);
+                    break;
+                case AnimTrigger.SuitDown:
+                    _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
+                    _unsuitedGraphics.SetActive(true);
+                    _suitedGraphics.SetActive(false);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
+            }
+
         }
 
     }

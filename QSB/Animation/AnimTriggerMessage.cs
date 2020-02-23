@@ -7,18 +7,18 @@ namespace QSB.Animation
     {
         public override MessageType MessageType => MessageType.AnimTrigger;
 
-        public string TriggerName;
+        public short TriggerId;
         public uint SenderId;
 
         public override void Deserialize(NetworkReader reader)
         {
-            TriggerName = reader.ReadString();
+            TriggerId = reader.ReadInt16();
             SenderId = reader.ReadPackedUInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
-            writer.Write(TriggerName);
+            writer.Write(TriggerId);
             writer.Write(SenderId);
         }
     }
