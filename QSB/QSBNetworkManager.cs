@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.TimeSync;
 using QSB.TransformSync;
 using UnityEngine;
 using UnityEngine.Networking;

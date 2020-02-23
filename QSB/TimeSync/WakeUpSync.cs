@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using UnityEngine;
 
-namespace QSB
+namespace QSB.TimeSync
 {
     public class WakeUpSync : MonoBehaviour
     {

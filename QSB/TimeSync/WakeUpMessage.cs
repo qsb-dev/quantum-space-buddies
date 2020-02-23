@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.TimeSync
 {
     public class WakeUpMessage : QSBMessage
     {
