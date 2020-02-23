@@ -7,12 +7,13 @@ namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {
-        private Animator _anim;
-        private NetworkAnimator _netAnim;
-        private Animator _bodyAnim;
-        private MessageHandler<AnimTriggerMessage> _triggerHandler;
+        public Animator BodyAnim { get; private set; }
 
         private static readonly Dictionary<uint, AnimationSync> _playerAnimationSyncs = new Dictionary<uint, AnimationSync>();
+
+        private Animator _anim;
+        private NetworkAnimator _netAnim;
+        private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
         private void Awake()
         {
@@ -23,14 +24,14 @@ namespace QSB.Animation
 
         public void Init(Transform body)
         {
-            _bodyAnim = body.GetComponent<Animator>();
+            BodyAnim = body.GetComponent<Animator>();
             var animMirror = body.gameObject.AddComponent<AnimatorMirror>();
 
             _playerAnimationSyncs.Add(netId.Value, this);
 
             if (isLocalPlayer)
             {
-                animMirror.Init(_bodyAnim, _anim);
+                animMirror.Init(BodyAnim, _anim);
 
                 _triggerHandler = new MessageHandler<AnimTriggerMessage>();
                 _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
@@ -43,7 +44,7 @@ namespace QSB.Animation
             }
             else
             {
-                animMirror.Init(_anim, _bodyAnim);
+                animMirror.Init(_anim, BodyAnim);
             }
 
             for (var i = 0; i < _anim.parameterCount; i++)
@@ -65,7 +66,7 @@ namespace QSB.Animation
                 SenderId = netId.Value,
                 TriggerName = triggerName
             };
-            DebugLog.Instance.Screen($"Sending trigger from SenderId={netId.Value} to server: " + message.TriggerName);
+            DebugLog.Instance.Screen($"Sending trigger to server: " + message.TriggerName);
             _triggerHandler.SendToServer(message);
         }
 
@@ -81,11 +82,7 @@ namespace QSB.Animation
             if (animSync != this)
             {
                 DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. SenderId: {message.SenderId} is NOT local");
-                _bodyAnim.SetTrigger(message.TriggerName);
-            }
-            else
-            {
-                DebugLog.Instance.Screen($"Client received trigger: {message.TriggerName}. SenderId: {message.SenderId} is local");
+                animSync.BodyAnim.SetTrigger(message.TriggerName);
             }
         }
 
