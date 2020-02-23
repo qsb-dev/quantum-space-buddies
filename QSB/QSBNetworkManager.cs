@@ -37,7 +37,7 @@ namespace QSB
         {
             base.OnClientConnect(conn);
 
-            DebugLog.Instance.Screen("OnClientConnect");
+            DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<WakeUpSync>();
             gameObject.AddComponent<SectorSync>();
         }

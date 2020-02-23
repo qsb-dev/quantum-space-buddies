@@ -11,7 +11,7 @@ namespace QSB
 
         private void Start()
         {
-            DebugLog.Instance.Screen("Start WakeUpSync");
+            DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
@@ -19,7 +19,7 @@ namespace QSB
 
         private void OnWakeUp()
         {
-            DebugLog.Instance.Screen("Sending wakeup to all my friends");
+            DebugLog.Screen("Sending wakeup to all my friends");
             if (IsServer)
             {
                 _wakeUpHandler.SendToAll(new WakeUpMessage());
