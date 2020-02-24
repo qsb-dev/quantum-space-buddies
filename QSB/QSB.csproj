@@ -105,13 +105,13 @@
     <Compile Include="Messaging\QSBMessage.cs" />
     <Compile Include="TransformSync\QuaternionHelper.cs" />
     <Compile Include="QSBBehaviour.cs" />
-    <Compile Include="PreserveTimeScale.cs" />
+    <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="TransformSync\SectorMessage.cs" />
     <Compile Include="TransformSync\SectorSync.cs" />
-    <Compile Include="WakeUpMessage.cs" />
-    <Compile Include="WakeUpSync.cs" />
+    <Compile Include="TimeSync\WakeUpMessage.cs" />
+    <Compile Include="TimeSync\WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
     <Compile Include="QSB.cs" />
     <Compile Include="TransformSync\PlayerTransformSync.cs" />

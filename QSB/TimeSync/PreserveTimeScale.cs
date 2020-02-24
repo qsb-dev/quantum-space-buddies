@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB
+namespace QSB.TimeSync
 {
     public class PreserveTimeScale : QSBBehaviour
     {

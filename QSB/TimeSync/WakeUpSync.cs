@@ -1,16 +1,19 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Messaging;
-using UnityEngine;
+using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.TimeSync
 {
-    public class WakeUpSync : MonoBehaviour
+    public class WakeUpSync : NetworkBehaviour
     {
-        public static bool IsServer;
         private MessageHandler<WakeUpMessage> _wakeUpHandler;
 
         private void Start()
         {
+            if (!isLocalPlayer)
+            {
+                return;
+            }
             DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
@@ -19,16 +22,17 @@ namespace QSB
 
         private void OnWakeUp()
         {
-            DebugLog.Screen("Sending wakeup to all my friends");
-            if (IsServer)
+            if (!isServer)
             {
-                _wakeUpHandler.SendToAll(new WakeUpMessage());
+                return;
             }
+            DebugLog.Screen("Sending wakeup to all my friends");
+            _wakeUpHandler.SendToAll(new WakeUpMessage());
         }
 
         private void OnClientReceiveMessage(WakeUpMessage message)
         {
-            if (IsServer)
+            if (isServer)
             {
                 return;
             }
