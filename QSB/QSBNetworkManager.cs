@@ -17,6 +17,7 @@ namespace QSB
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
+            playerPrefab.AddComponent<WakeUpSync>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
@@ -30,16 +31,11 @@ namespace QSB
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), conn);
         }
 
-        public override void OnStartServer()
-        {
-            WakeUpSync.IsServer = true;
-        }
         public override void OnClientConnect(NetworkConnection conn)
         {
             base.OnClientConnect(conn);
 
             DebugLog.Screen("OnClientConnect");
-            gameObject.AddComponent<WakeUpSync>();
             gameObject.AddComponent<SectorSync>();
         }
 
