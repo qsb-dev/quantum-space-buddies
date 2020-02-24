@@ -27,7 +27,7 @@ namespace QSB.TimeSync
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            //_wakeUpHandler.OnServerReceiveMessage += OnServerReceiveMessage; todo
+            _wakeUpHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -65,11 +65,22 @@ namespace QSB.TimeSync
             WakeUpOrSleep();
         }
 
+        private void OnServerReceiveMessage(WakeUpMessage obj)
+        {
+            DebugLog.Screen("Someone (should identify) requested server time, sending to all...");
+            var message = new WakeUpMessage
+            {
+                ServerTime = Time.timeSinceLevelLoad
+            };
+            _wakeUpHandler.SendToAll(message);
+        }
+
         private void WakeUpOrSleep()
         {
             if (!_hasServerTime)
             {
                 DebugLog.Screen("Server hasn't reported in...");
+                _wakeUpHandler.SendToServer(new WakeUpMessage());
                 return;
             }
 
