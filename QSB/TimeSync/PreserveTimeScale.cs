@@ -8,7 +8,7 @@ namespace QSB.TimeSync
         {
             if (IsPlayerAwake)
             {
-                Time.timeScale = 1;
+                //Time.timeScale = 1; todo
             }
         }
     }

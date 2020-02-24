@@ -7,16 +7,16 @@ namespace QSB.TimeSync
     {
         public override MessageType MessageType => MessageType.WakeUp;
 
-        private bool _wakeUp = true;
+        public float ServerTime { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
-            _wakeUp = reader.ReadBoolean();
+            ServerTime = reader.ReadSingle();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
-            writer.Write(_wakeUp);
+            writer.Write(ServerTime);
         }
 
     }
