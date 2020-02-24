@@ -23,35 +23,42 @@ namespace QSB.TimeSync
             {
                 return;
             }
+
             DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _wakeUpHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             _isLoaded = scene.name == "SolarSystem";
+            _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
         }
 
         private void OnWakeUp()
         {
             if (isServer)
             {
-                DebugLog.Screen("Sending wakeup to all my friends");
-                var message = new WakeUpMessage
-                {
-                    ServerTime = Time.timeSinceLevelLoad // 0
-                };
-                _wakeUpHandler.SendToAll(message);
+                SendServerTime();
             }
             else
             {
-                _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
                 WakeUpOrSleep();
             }
+        }
+
+        private void SendServerTime()
+        {
+            DebugLog.Screen("Sending wakeup to all my friends");
+            var message = new WakeUpMessage
+            {
+                ServerTime = Time.timeSinceLevelLoad
+            };
+            _wakeUpHandler.SendToAll(message);
         }
 
         private void OnClientReceiveMessage(WakeUpMessage message)
@@ -67,33 +74,29 @@ namespace QSB.TimeSync
 
         private void OnServerReceiveMessage(WakeUpMessage obj)
         {
-            DebugLog.Screen("Someone (should identify) requested server time, sending to all...");
-            var message = new WakeUpMessage
-            {
-                ServerTime = Time.timeSinceLevelLoad
-            };
-            _wakeUpHandler.SendToAll(message);
+            DebugLog.Screen("Someone (should identify who) requested server time");
+            SendServerTime();
         }
 
         private void WakeUpOrSleep()
         {
             if (!_hasServerTime)
             {
-                DebugLog.Screen("Server hasn't reported in...");
+                DebugLog.Screen("I joined after server woke up, requesting server time");
                 _wakeUpHandler.SendToServer(new WakeUpMessage());
                 return;
             }
-
-            var myTime = _isLoaded ? Time.timeSinceLevelLoad : 0;
-            var diff = _serverTime - myTime;
-
-            DebugLog.Screen($"My time ({myTime}) is {diff} behind server ({_serverTime})");
 
             if (!_isLoaded)
             {
                 DebugLog.Screen("I haven't loaded!");
                 return;
             }
+
+            var myTime = Time.timeSinceLevelLoad;
+            var diff = _serverTime - myTime;
+
+            DebugLog.Screen($"My time ({myTime}) is {diff} behind server ({_serverTime})");
 
             if (diff < 0)
             {
@@ -134,12 +137,12 @@ namespace QSB.TimeSync
             typeof(OWInput).SetValue("_inputFadeFraction", 0f);
             GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
-        
+
         private void StartSleeping()
         {
             DebugLog.Screen("Starting sleeping");
-            _isSleeping = true;
             _campfire.Invoke("StartSleeping");
+            _isSleeping = true;
         }
 
         private void StopSleeping()
