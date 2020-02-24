@@ -35,8 +35,11 @@ namespace QSB.TimeSync
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            _isLoaded = scene.name == "SolarSystem";
-            _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
+            if (scene.name == "SolarSystem")
+            {
+                _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
+                _isLoaded = true;
+            }
         }
 
         private void OnWakeUp()
