@@ -10,11 +10,11 @@ namespace QSB.TimeSync
 
         private void Start()
         {
-            DebugLog.Screen("Start WakeUpSync");
             if (!isLocalPlayer)
             {
                 return;
             }
+            DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
