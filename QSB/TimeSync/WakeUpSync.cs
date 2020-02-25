@@ -9,12 +9,19 @@ namespace QSB.TimeSync
 {
     public class WakeUpSync : NetworkBehaviour
     {
+        private const float TimeThreshold = 1f;
+
+        private enum State { NotLoaded, EyesClosed, Wild }
+
         private MessageHandler<WakeUpMessage> _wakeUpHandler;
 
-        private bool _hasServerTime;
+        private bool _isServerAwake;
+        private float _sendTimer;
+
+        private State _state = State.NotLoaded;
         private float _serverTime;
         private bool _isSleeping;
-        private bool _isLoaded;
+        private bool _isPausing;
         private Campfire _campfire;
 
         private void Start()
@@ -30,7 +37,6 @@ namespace QSB.TimeSync
 
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            _wakeUpHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -38,7 +44,7 @@ namespace QSB.TimeSync
             if (scene.name == "SolarSystem")
             {
                 _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
-                _isLoaded = true;
+                _state = State.EyesClosed;
             }
         }
 
@@ -46,6 +52,7 @@ namespace QSB.TimeSync
         {
             if (isServer)
             {
+                _isServerAwake = true;
                 SendServerTime();
             }
             else
@@ -71,53 +78,43 @@ namespace QSB.TimeSync
                 return;
             }
             _serverTime = message.ServerTime;
-            _hasServerTime = true;
             WakeUpOrSleep();
-        }
-
-        private void OnServerReceiveMessage(WakeUpMessage obj)
-        {
-            DebugLog.Screen("Someone (should identify who) requested server time");
-            SendServerTime();
         }
 
         private void WakeUpOrSleep()
         {
-            if (!_hasServerTime)
+            if (_state == State.NotLoaded)
             {
-                DebugLog.Screen("I joined after server woke up, requesting server time");
-                _wakeUpHandler.SendToServer(new WakeUpMessage());
                 return;
             }
 
-            if (!_isLoaded)
+            if (_state == State.EyesClosed)
             {
-                DebugLog.Screen("I haven't loaded!");
-                return;
+                OpenEyes();
+                _state = State.Wild;
             }
 
             var myTime = Time.timeSinceLevelLoad;
-            var diff = _serverTime - myTime;
+            var diff = myTime - _serverTime;
 
-            DebugLog.Screen($"My time ({myTime}) is {diff} behind server ({_serverTime})");
-
-            if (diff < 0)
+            if (diff > TimeThreshold)
             {
-                DebugLog.Screen("Somehow I'm AHEAD of server... how? :(");
+                DebugLog.Screen($"My time ({myTime}) is {diff} ahead server ({_serverTime})");
+                StartPausing();
                 return;
             }
 
-            if (diff < 1)
+            if (diff < -TimeThreshold)
             {
-                DebugLog.Screen("Less than a sec behind the server, waking up now!");
-                WakeUp();
+                DebugLog.Screen($"My time ({myTime}) is {-diff} behind server ({_serverTime})");
+                StartSleeping();
                 return;
             }
 
-            StartSleeping();
+            DebugLog.Screen($"My time ({myTime}) is within threshold of server time ({_serverTime})");
         }
 
-        private void WakeUp()
+        private void OpenEyes()
         {
             // I copied all of this from my AutoResume mod, since that already wakes up the player instantly.
             // There must be a simpler way to do this though, I just couldn't find it.
@@ -140,9 +137,13 @@ namespace QSB.TimeSync
             typeof(OWInput).SetValue("_inputFadeFraction", 0f);
             GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
-
+        
         private void StartSleeping()
         {
+            if (_isSleeping)
+            {
+                return;
+            }
             DebugLog.Screen("Starting sleeping");
             _campfire.Invoke("StartSleeping");
             _isSleeping = true;
@@ -150,28 +151,82 @@ namespace QSB.TimeSync
 
         private void StopSleeping()
         {
+            if (!_isSleeping)
+            {
+                return;
+            }
             DebugLog.Screen("Stopping sleeping");
             _campfire.StopSleeping();
             _isSleeping = false;
         }
 
+        private void StartPausing()
+        {
+            if (_isPausing)
+            {
+                return;
+            }
+            OWTime.Pause(OWTime.PauseType.Menu);
+            _isPausing = true;
+        }
+
+        private void StopPausing()
+        {
+            if (!_isPausing)
+            {
+                return;
+            }
+            OWTime.Unpause(OWTime.PauseType.Menu);
+            _isPausing = false;
+        }
+
         private void Update()
         {
-            _serverTime += Time.unscaledDeltaTime;
+            if (isServer)
+            {
+                UpdateServer();
+            }
+            else if (isLocalPlayer)
+            {
+                UpdateLocal();
+            }
+        }
 
-            if (!_isLoaded)
+        private void UpdateServer()
+        {
+            if (!_isServerAwake)
             {
                 return;
             }
 
             DebugLog.Screen(Time.timeSinceLevelLoad);
 
-            if (_isSleeping)
+            _sendTimer += Time.unscaledDeltaTime;
+            if (_sendTimer > 1)
             {
-                if (Time.timeSinceLevelLoad > _serverTime)
-                {
-                    StopSleeping();
-                }
+                SendServerTime();
+                _sendTimer = 0;
+            }
+        }
+
+        private void UpdateLocal()
+        {
+            _serverTime += Time.unscaledDeltaTime;
+
+            if (_state == State.NotLoaded || _state == State.EyesClosed)
+            {
+                return;
+            }
+
+            DebugLog.Screen(Time.timeSinceLevelLoad);
+
+            if (_isSleeping && Time.timeSinceLevelLoad >= _serverTime)
+            {
+                StopSleeping();
+            }
+            else if (_isPausing && Time.timeSinceLevelLoad < _serverTime)
+            {
+                StopPausing();
             }
         }
 
