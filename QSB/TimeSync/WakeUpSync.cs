@@ -9,21 +9,17 @@ namespace QSB.TimeSync
 {
     public class WakeUpSync : NetworkBehaviour
     {
-        private const float TimeThreshold = 1f;
+        private const float TimeThreshold = 0.5f;
 
-        private enum State { NotLoaded, EyesClosed, Wild }
+        private enum State { NotLoaded, EyesClosed, Awake, Sleeping, Pausing }
+        private State _state = State.NotLoaded;
 
         private MessageHandler<WakeUpMessage> _wakeUpHandler;
-
-        private bool _isServerAwake;
-        private float _sendTimer;
-
-        private State _state = State.NotLoaded;
-        private float _serverTime;
-        private bool _isSleeping;
-        private bool _isPausing;
         private Campfire _campfire;
 
+        private float _sendTimer;
+        private float _serverTime;
+        
         private void Start()
         {
             if (!isLocalPlayer)
@@ -50,9 +46,9 @@ namespace QSB.TimeSync
 
         private void OnWakeUp()
         {
+            _state = State.Awake;
             if (isServer)
             {
-                _isServerAwake = true;
                 SendServerTime();
             }
             else
@@ -63,7 +59,7 @@ namespace QSB.TimeSync
 
         private void SendServerTime()
         {
-            DebugLog.Screen("Sending wakeup to all my friends");
+            DebugLog.Screen("Sending server time to all my friends: " + Time.timeSinceLevelLoad);
             var message = new WakeUpMessage
             {
                 ServerTime = Time.timeSinceLevelLoad
@@ -91,7 +87,7 @@ namespace QSB.TimeSync
             if (_state == State.EyesClosed)
             {
                 OpenEyes();
-                _state = State.Wild;
+                _state = State.Awake;
             }
 
             var myTime = Time.timeSinceLevelLoad;
@@ -137,47 +133,47 @@ namespace QSB.TimeSync
             typeof(OWInput).SetValue("_inputFadeFraction", 0f);
             GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
-        
+
         private void StartSleeping()
         {
-            if (_isSleeping)
+            if (_state == State.Sleeping)
             {
                 return;
             }
             DebugLog.Screen("Starting sleeping");
             _campfire.Invoke("StartSleeping");
-            _isSleeping = true;
+            _state = State.Sleeping;
         }
 
         private void StopSleeping()
         {
-            if (!_isSleeping)
+            if (_state != State.Sleeping)
             {
                 return;
             }
             DebugLog.Screen("Stopping sleeping");
             _campfire.StopSleeping();
-            _isSleeping = false;
+            _state = State.Awake;
         }
 
         private void StartPausing()
         {
-            if (_isPausing)
+            if (_state == State.Pausing)
             {
                 return;
             }
             OWTime.Pause(OWTime.PauseType.Menu);
-            _isPausing = true;
+            _state = State.Pausing;
         }
 
         private void StopPausing()
         {
-            if (!_isPausing)
+            if (_state != State.Pausing)
             {
                 return;
             }
             OWTime.Unpause(OWTime.PauseType.Menu);
-            _isPausing = false;
+            _state = State.Awake;
         }
 
         private void Update()
@@ -194,12 +190,10 @@ namespace QSB.TimeSync
 
         private void UpdateServer()
         {
-            if (!_isServerAwake)
+            if (_state != State.Awake)
             {
                 return;
             }
-
-            DebugLog.Screen(Time.timeSinceLevelLoad);
 
             _sendTimer += Time.unscaledDeltaTime;
             if (_sendTimer > 1)
@@ -218,13 +212,11 @@ namespace QSB.TimeSync
                 return;
             }
 
-            DebugLog.Screen(Time.timeSinceLevelLoad);
-
-            if (_isSleeping && Time.timeSinceLevelLoad >= _serverTime)
+            if (_state == State.Sleeping && Time.timeSinceLevelLoad >= _serverTime)
             {
                 StopSleeping();
             }
-            else if (_isPausing && Time.timeSinceLevelLoad < _serverTime)
+            else if (_state == State.Pausing && Time.timeSinceLevelLoad < _serverTime)
             {
                 StopPausing();
             }
