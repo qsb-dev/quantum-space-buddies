@@ -23,7 +23,8 @@ namespace QSB.TransformSync
             LocalInstance = this;
             var body = GetPlayerModel();
 
-            GetComponent<AnimationSync>().InitLocal(body);
+            // TODO Re-enable animation sync
+            // GetComponent<AnimationSync>().InitLocal(body);
 
             return body;
         }
@@ -32,7 +33,8 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetPlayerModel());
 
-            GetComponent<AnimationSync>().InitRemote(body);
+            // TODO Re-enable animation sync
+            // GetComponent<AnimationSync>().InitRemote(body);
 
             return body;
         }

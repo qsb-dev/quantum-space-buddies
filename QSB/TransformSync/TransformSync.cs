@@ -6,6 +6,7 @@ namespace QSB.TransformSync
     public abstract class TransformSync : NetworkBehaviour
     {
         private const float SmoothTime = 0.1f;
+        static private bool _isAwake;
 
         private Transform _syncedTransform;
         private bool _isSectorSetUp;
@@ -15,7 +16,14 @@ namespace QSB.TransformSync
         protected virtual void Awake()
         {
             DontDestroyOnLoad(this);
-            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+            if (_isAwake)
+            {
+                OnWakeUp();
+            }
+            else
+            {
+                GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+            }
         }
 
         protected abstract Transform InitLocalTransform();
@@ -23,6 +31,7 @@ namespace QSB.TransformSync
 
         private void OnWakeUp()
         {
+            _isAwake = true;
             DebugLog.Screen("Start TransformSync", netId.Value);
             Invoke(nameof(SetFirstSector), 1);
 
