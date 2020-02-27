@@ -5,17 +5,25 @@ namespace QSB
 {
     class RespawnOnDeath : MonoBehaviour
     {
-        Vector3 _shipSpawnPosition;
-        Quaternion _shipSpawnRotation;
+        SpawnPoint _shipSpawnPoint;
         static RespawnOnDeath Instance;
 
         void Awake()
         {
+            GlobalMessenger.AddListener("WakeUp", PlayerWokeUp);
+
             Instance = this;
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
+        }
 
-            _shipSpawnPosition = Locator.GetShipTransform().position;
-            _shipSpawnRotation = Locator.GetShipTransform().rotation;
+        void PlayerWokeUp()
+        {
+            typeof(PlayerState).SetValue("_insideShip", true);
+            _shipSpawnPoint = FindObjectOfType<PlayerSpawner>().GetSpawnPoint(SpawnLocation.TimberHearth);
+            typeof(PlayerState).SetValue("_insideShip", false);
+
+            _shipSpawnPoint.transform.position = Locator.GetShipTransform().position;
+            _shipSpawnPoint.transform.rotation = Locator.GetShipTransform().rotation;
         }
 
         public void WaitAndResetShip()
@@ -25,9 +33,8 @@ namespace QSB
 
         void ResetShip()
         {
-            DebugLog.Screen("Reset Ship");
-            Locator.GetShipBody().SetPosition(_shipSpawnPosition);
-            Locator.GetShipBody().SetRotation(_shipSpawnRotation);
+            Locator.GetShipBody().SetVelocity(_shipSpawnPoint.GetPointVelocity());
+            Locator.GetShipBody().WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
         }
 
         internal static class Patches
