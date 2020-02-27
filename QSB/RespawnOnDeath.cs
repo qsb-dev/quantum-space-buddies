@@ -29,7 +29,8 @@ namespace QSB
             _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
             _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
 
-            if (Locator.GetShipTransform())
+            var shipTransform = Locator.GetShipTransform();
+            if (shipTransform)
             {
                 _shipComponents = Locator.GetShipTransform().GetComponentsInChildren<ShipComponent>();
                 _shipBody = Locator.GetShipBody();
@@ -37,8 +38,8 @@ namespace QSB
 
                 // Move debug spawn point to initial ship position.
                 _playerSpawnPoint = GetSpawnPoint();
-                _shipSpawnPoint.transform.position = Locator.GetShipTransform().position;
-                _shipSpawnPoint.transform.rotation = Locator.GetShipTransform().rotation;
+                _shipSpawnPoint.transform.position = shipTransform.position;
+                _shipSpawnPoint.transform.rotation = shipTransform.rotation;
             }
 
         }
