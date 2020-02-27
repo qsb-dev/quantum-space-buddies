@@ -5,10 +5,14 @@ namespace QSB
 {
     class RespawnOnDeath : MonoBehaviour
     {
-        SpawnPoint _shipSpawnPoint;
         static RespawnOnDeath Instance;
+
+        SpawnPoint _shipSpawnPoint;
+        SpawnPoint _playerSpawnPoint;
         OWRigidbody _shipBody;
         PlayerSpawner _playerSpawner;
+        FluidDetector _fluidDetector;
+        PlayerResources _playerResources;
 
         void Awake()
         {
@@ -22,15 +26,19 @@ namespace QSB
         {
             _playerSpawner = FindObjectOfType<PlayerSpawner>();
             _shipSpawnPoint = GetSpawnPoint(true);
+            _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
+            _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
+            _shipBody = Locator.GetShipBody();
 
+            // Move debug spawn point to initial ship position.
+            _playerSpawnPoint = GetSpawnPoint();
             _shipSpawnPoint.transform.position = Locator.GetShipTransform().position;
             _shipSpawnPoint.transform.rotation = Locator.GetShipTransform().rotation;
-
-            _shipBody = Locator.GetShipBody();
         }
 
         public void ResetShip()
         {
+            // Reset ship position.
             _shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
             _shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
 
@@ -47,17 +55,16 @@ namespace QSB
 
         public void ResetPlayer()
         {
-            typeof(PlayerState).SetValue("_insideShip", false);
-            var spawnPoint = GetSpawnPoint();
+            // Reset player position.
             OWRigidbody playerBody = Locator.GetPlayerBody();
-            playerBody.WarpToPositionRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
-            playerBody.SetVelocity(spawnPoint.GetPointVelocity());
-            spawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
-            spawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>().gameObject);
-            spawnPoint.OnSpawnPlayer();
+            playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
+            playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
+            _playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
+            _playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
+            _playerSpawnPoint.OnSpawnPlayer();
 
-            // Reset fuel and health.
-            Locator.GetPlayerTransform().GetComponent<PlayerResources>().DebugRefillResources();
+            // Reset player health and resources.
+            _playerResources.DebugRefillResources();
         }
 
         SpawnPoint GetSpawnPoint(bool isShip = false)
