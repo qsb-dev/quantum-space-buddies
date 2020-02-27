@@ -7,6 +7,8 @@ namespace QSB
     {
         SpawnPoint _shipSpawnPoint;
         static RespawnOnDeath Instance;
+        OWRigidbody _shipBody;
+        PlayerSpawner _playerSpawner;
 
         void Awake()
         {
@@ -18,23 +20,33 @@ namespace QSB
 
         void PlayerWokeUp()
         {
-            typeof(PlayerState).SetValue("_insideShip", true);
-            _shipSpawnPoint = FindObjectOfType<PlayerSpawner>().GetSpawnPoint(SpawnLocation.TimberHearth);
-            typeof(PlayerState).SetValue("_insideShip", false);
+            _playerSpawner = FindObjectOfType<PlayerSpawner>();
+            _shipSpawnPoint = GetSpawnPoint(true);
 
             _shipSpawnPoint.transform.position = Locator.GetShipTransform().position;
             _shipSpawnPoint.transform.rotation = Locator.GetShipTransform().rotation;
+
+            _shipBody = Locator.GetShipBody();
         }
 
-        public void WaitAndResetShip()
+        SpawnPoint GetSpawnPoint(bool isShip = false)
         {
-            Invoke(nameof(ResetShip), 1);
+            var spawnList = _playerSpawner.GetValue<SpawnPoint[]>("_spawnList");
+            for (int i = 0; i < spawnList.Length; i++)
+            {
+                SpawnPoint spawnPoint = spawnList[i];
+                if (spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip)
+                {
+                    return spawnPoint;
+                }
+            }
+            return null;
         }
 
-        void ResetShip()
+        public void ResetShip()
         {
-            Locator.GetShipBody().SetVelocity(_shipSpawnPoint.GetPointVelocity());
-            Locator.GetShipBody().WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
+            _shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
+            _shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
         }
 
         internal static class Patches
@@ -43,7 +55,7 @@ namespace QSB
             {
                 // Teleport palyer to Timber Hearth.
                 typeof(PlayerState).SetValue("_insideShip", false);
-                var spawnPoint = FindObjectOfType<PlayerSpawner>().GetSpawnPoint(SpawnLocation.TimberHearth);
+                var spawnPoint = Instance.GetSpawnPoint();
                 OWRigidbody playerBody = Locator.GetPlayerBody();
                 playerBody.WarpToPositionRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
                 playerBody.SetVelocity(spawnPoint.GetPointVelocity());
@@ -54,7 +66,7 @@ namespace QSB
                 // Reset fuel and health.
                 Locator.GetPlayerTransform().GetComponent<PlayerResources>().DebugRefillResources();
 
-                Instance.WaitAndResetShip();
+                Instance.ResetShip();
 
                 // Reset ship damage.
                 if (Locator.GetShipTransform())
