@@ -11,7 +11,7 @@ namespace QSB.Animation
     {
         private Animator _anim;
         private Animator _bodyAnim;
-        private NetworkAnimator _netAnim;
+        private QSBNetAnim _netAnim;
         private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
         private RuntimeAnimatorController _suitedAnimController;
@@ -29,7 +29,7 @@ namespace QSB.Animation
             }
             if (_netAnim == null)
             {
-                _netAnim = gameObject.AddComponent<NetworkAnimator>();
+                _netAnim = gameObject.AddComponent<QSBNetAnim>();
                 _netAnim.animator = _anim;
             }
         }
