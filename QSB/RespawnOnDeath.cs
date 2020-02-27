@@ -75,6 +75,8 @@ namespace QSB
             _playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
             _playerSpawnPoint.OnSpawnPlayer();
 
+            _playerResources.SetValue("_isSuffocating", false);
+
             // Reset player health and resources.
             _playerResources.DebugRefillResources();
         }
