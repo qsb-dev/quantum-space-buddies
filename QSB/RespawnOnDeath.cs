@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB
@@ -83,16 +84,11 @@ namespace QSB
 
         SpawnPoint GetSpawnPoint(bool isShip = false)
         {
-            var spawnList = _playerSpawner.GetValue<SpawnPoint[]>("_spawnList");
-            for (int i = 0; i < spawnList.Length; i++)
-            {
-                SpawnPoint spawnPoint = spawnList[i];
-                if (spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip)
-                {
-                    return spawnPoint;
-                }
-            }
-            return null;
+            return _playerSpawner
+                .GetValue<SpawnPoint[]>("_spawnList")
+                .FirstOrDefault(spawnPoint =>
+                    spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip
+                );
         }
 
         internal static class Patches
