@@ -13,6 +13,7 @@ namespace QSB
         PlayerSpawner _playerSpawner;
         FluidDetector _fluidDetector;
         PlayerResources _playerResources;
+        ShipComponent[] _shipComponents;
 
         void Awake()
         {
@@ -25,19 +26,30 @@ namespace QSB
         void PlayerWokeUp()
         {
             _playerSpawner = FindObjectOfType<PlayerSpawner>();
-            _shipSpawnPoint = GetSpawnPoint(true);
             _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
             _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
-            _shipBody = Locator.GetShipBody();
 
-            // Move debug spawn point to initial ship position.
-            _playerSpawnPoint = GetSpawnPoint();
-            _shipSpawnPoint.transform.position = Locator.GetShipTransform().position;
-            _shipSpawnPoint.transform.rotation = Locator.GetShipTransform().rotation;
+            if (Locator.GetShipTransform())
+            {
+                _shipComponents = Locator.GetShipTransform().GetComponentsInChildren<ShipComponent>();
+                _shipBody = Locator.GetShipBody();
+                _shipSpawnPoint = GetSpawnPoint(true);
+
+                // Move debug spawn point to initial ship position.
+                _playerSpawnPoint = GetSpawnPoint();
+                _shipSpawnPoint.transform.position = Locator.GetShipTransform().position;
+                _shipSpawnPoint.transform.rotation = Locator.GetShipTransform().rotation;
+            }
+
         }
 
         public void ResetShip()
         {
+            if (!_shipBody)
+            {
+                return;
+            }
+
             // Reset ship position.
             _shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
             _shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
@@ -45,10 +57,9 @@ namespace QSB
             // Reset ship damage.
             if (Locator.GetShipTransform())
             {
-                ShipComponent[] shipComponents = Locator.GetShipTransform().GetComponentsInChildren<ShipComponent>();
-                for (int i = 0; i < shipComponents.Length; i++)
+                for (int i = 0; i < _shipComponents.Length; i++)
                 {
-                    shipComponents[i].SetDamaged(false);
+                    _shipComponents[i].SetDamaged(false);
                 }
             }
         }
