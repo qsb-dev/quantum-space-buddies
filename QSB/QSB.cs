@@ -23,7 +23,7 @@ namespace QSB
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<PreserveTimeScale>();
+            gameObject.AddComponent<RespawnOnDeath>();
         }
-        
     }
 }
