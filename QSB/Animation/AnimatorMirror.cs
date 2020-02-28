@@ -18,16 +18,6 @@ namespace QSB.Animation
         {
             _from = from;
             _to = to;
-            CopyRuntimeControllers();
-            foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
-            {
-                _floatParams.Add(param.name, new AnimFloatParam());
-            }
-            _isRunning = true;
-        }
-
-        private void CopyRuntimeControllers()
-        {
             if (_from.runtimeAnimatorController == null)
             {
                 _from.runtimeAnimatorController = _to.runtimeAnimatorController;
@@ -36,6 +26,11 @@ namespace QSB.Animation
             {
                 _to.runtimeAnimatorController = _from.runtimeAnimatorController;
             }
+            foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
+            {
+                _floatParams.Add(param.name, new AnimFloatParam());
+            }
+            _isRunning = true;
         }
 
         private void Update()
@@ -44,7 +39,10 @@ namespace QSB.Animation
             {
                 return;
             }
-            CopyRuntimeControllers();
+            if (_to.runtimeAnimatorController != _from.runtimeAnimatorController)
+            {
+                _to.runtimeAnimatorController = _from.runtimeAnimatorController;
+            }
             SyncParams();
             SmoothFloats();
         }
