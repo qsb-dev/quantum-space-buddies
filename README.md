@@ -1,5 +1,31 @@
 # Quantum Space Buddies - Outer Wilds Online Multiplayer Mod
 
+## Installation
+
+* [Download OWML](https://github.com/amazingalek/owml/releases);
+* [Follow OWML's instalation instructions](https://github.com/amazingalek/owml#installation);
+* [Download the latest QSB release](https://github.com/Raicuparta/quantum-space-buddies/releases/latest);
+* Extract the `QSB` directory to the `OWML/Mods` directory;
+* Run `OWML.Launcher.exe` to start the game.
+
+## Playing as a client
+
+* Run `OWML.Launcher.exe` to start the game;
+* You'll see some new buttons on the top left;
+* Replace `localhost` with the server's IP address;
+* Press "LAN Client(C)";
+* If you see "Stop (X)", you are connected.
+
+## Playing as a host
+
+* Open port `7777` on your router;
+* Run `OWML.Launcher.exe` to start the game;
+* You'll see some new buttons on the top left;
+* Don't start the game (expedition) before starting the server;
+* Press "LAN Host(H)";
+* If you now see the "Stop (X)" button, you are serving;
+* Give your external IPv4 address to your clients ([like what you see here](http://whatismyip.host/)).
+
 ## Development Setup
 
 To get the project to run on Visual Studio and build correctly, you need to set this all up so the project can find its dependencies:
