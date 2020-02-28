@@ -21,7 +21,7 @@ namespace QSB
             gameObject.AddComponent<DebugLog>();
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
+            gameObject.AddComponent<RespawnOnDeath>();
         }
-        
     }
 }
