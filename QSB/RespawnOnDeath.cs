@@ -69,7 +69,11 @@ namespace QSB
                 }
             }
 
-            // Exit ship.
+            Invoke("ExitShip", 0.01f);
+        }
+
+        void ExitShip()
+        {
             _cockpitController.Invoke("ExitFlightConsole");
             _cockpitController.Invoke("CompleteExitFlightConsole");
             _hatchController.SetValue("_isPlayerInShip", false);
