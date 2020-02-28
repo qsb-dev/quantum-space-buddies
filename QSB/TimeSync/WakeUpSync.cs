@@ -47,13 +47,13 @@ namespace QSB.TimeSync
         private void OnWakeUp()
         {
             _state = State.Awake;
+            gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
             {
                 SendServerTime();
             }
             else
             {
-                gameObject.AddComponent<PreserveTimeScale>();
                 WakeUpOrSleep();
             }
         }
