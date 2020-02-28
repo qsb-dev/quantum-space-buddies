@@ -101,7 +101,7 @@ namespace QSB
             _playerResources.DebugRefillResources();
 
             // Remove space suit.
-            _spaceSuit.RemoveSuit();
+            _spaceSuit.RemoveSuit(true);
         }
 
         SpawnPoint GetSpawnPoint(bool isShip = false)
