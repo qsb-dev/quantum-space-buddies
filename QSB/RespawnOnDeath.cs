@@ -15,6 +15,9 @@ namespace QSB
         FluidDetector _fluidDetector;
         PlayerResources _playerResources;
         ShipComponent[] _shipComponents;
+        HatchController _hatchController;
+        ShipCockpitController _cockpitController;
+        PlayerSpacesuit _spaceSuit;
 
         void Awake()
         {
@@ -26,14 +29,18 @@ namespace QSB
 
         void PlayerWokeUp()
         {
+            var playerTransform = Locator.GetPlayerTransform();
+            _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
+            _spaceSuit = Locator.GetPlayerTransform().GetComponentInChildren<PlayerSpacesuit>(true);
             _playerSpawner = FindObjectOfType<PlayerSpawner>();
             _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
-            _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
 
             var shipTransform = Locator.GetShipTransform();
             if (shipTransform)
             {
-                _shipComponents = Locator.GetShipTransform().GetComponentsInChildren<ShipComponent>();
+                _shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
+                _hatchController = shipTransform.GetComponentInChildren<HatchController>();
+                _cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
                 _shipBody = Locator.GetShipBody();
                 _shipSpawnPoint = GetSpawnPoint(true);
 
@@ -64,6 +71,17 @@ namespace QSB
                     _shipComponents[i].SetDamaged(false);
                 }
             }
+
+            Invoke(nameof(ExitShip), 0.01f);
+        }
+
+        void ExitShip()
+        {
+            _cockpitController.Invoke("ExitFlightConsole");
+            _cockpitController.Invoke("CompleteExitFlightConsole");
+            _hatchController.SetValue("_isPlayerInShip", false);
+            _hatchController.Invoke("OpenHatch");
+            GlobalMessenger.FireEvent("ExitShip");
         }
 
         public void ResetPlayer()
@@ -76,10 +94,14 @@ namespace QSB
             _playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
             _playerSpawnPoint.OnSpawnPlayer();
 
+            // Stop suffocation sound effect.
             _playerResources.SetValue("_isSuffocating", false);
 
             // Reset player health and resources.
             _playerResources.DebugRefillResources();
+
+            // Remove space suit.
+            _spaceSuit.RemoveSuit(true);
         }
 
         SpawnPoint GetSpawnPoint(bool isShip = false)
@@ -95,8 +117,8 @@ namespace QSB
         {
             public static bool PreFinishDeathSequence()
             {
-                Instance.ResetPlayer();
                 Instance.ResetShip();
+                Instance.ResetPlayer();
 
                 // Prevent original death method from running.
                 return false;
