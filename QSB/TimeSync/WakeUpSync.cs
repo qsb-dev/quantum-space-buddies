@@ -19,7 +19,7 @@ namespace QSB.TimeSync
 
         private float _sendTimer;
         private float _serverTime;
-        
+
         private void Start()
         {
             if (!isLocalPlayer)
@@ -53,6 +53,7 @@ namespace QSB.TimeSync
             }
             else
             {
+                gameObject.AddComponent<PreserveTimeScale>();
                 WakeUpOrSleep();
             }
         }
@@ -163,6 +164,7 @@ namespace QSB.TimeSync
                 return;
             }
             OWTime.Pause(OWTime.PauseType.Menu);
+            Time.timeScale = 0f;
             _state = State.Pausing;
         }
 
