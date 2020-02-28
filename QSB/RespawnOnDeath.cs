@@ -15,6 +15,8 @@ namespace QSB
         FluidDetector _fluidDetector;
         PlayerResources _playerResources;
         ShipComponent[] _shipComponents;
+        HatchController _hatchController;
+        ShipCockpitController _cockpitController;
 
         void Awake()
         {
@@ -33,7 +35,9 @@ namespace QSB
             var shipTransform = Locator.GetShipTransform();
             if (shipTransform)
             {
-                _shipComponents = Locator.GetShipTransform().GetComponentsInChildren<ShipComponent>();
+                _shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
+                _hatchController = shipTransform.GetComponentInChildren<HatchController>();
+                _cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
                 _shipBody = Locator.GetShipBody();
                 _shipSpawnPoint = GetSpawnPoint(true);
 
@@ -47,6 +51,13 @@ namespace QSB
 
         public void ResetShip()
         {
+            // Exit ship.
+            _cockpitController.Invoke("ExitFlightConsole");
+            _cockpitController.Invoke("CompleteExitFlightConsole");
+            _hatchController.SetValue("_isPlayerInShip", false);
+            _hatchController.Invoke("OpenHatch");
+            GlobalMessenger.FireEvent("ExitShip");
+
             if (!_shipBody)
             {
                 return;
@@ -76,6 +87,7 @@ namespace QSB
             _playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
             _playerSpawnPoint.OnSpawnPlayer();
 
+            // Stop suffocation sound effect.
             _playerResources.SetValue("_isSuffocating", false);
 
             // Reset player health and resources.
@@ -95,8 +107,8 @@ namespace QSB
         {
             public static bool PreFinishDeathSequence()
             {
-                Instance.ResetPlayer();
                 Instance.ResetShip();
+                Instance.ResetPlayer();
 
                 // Prevent original death method from running.
                 return false;
