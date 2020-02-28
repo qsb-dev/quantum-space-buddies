@@ -51,13 +51,6 @@ namespace QSB
 
         public void ResetShip()
         {
-            // Exit ship.
-            _cockpitController.Invoke("ExitFlightConsole");
-            _cockpitController.Invoke("CompleteExitFlightConsole");
-            _hatchController.SetValue("_isPlayerInShip", false);
-            _hatchController.Invoke("OpenHatch");
-            GlobalMessenger.FireEvent("ExitShip");
-
             if (!_shipBody)
             {
                 return;
@@ -75,6 +68,13 @@ namespace QSB
                     _shipComponents[i].SetDamaged(false);
                 }
             }
+
+            // Exit ship.
+            _cockpitController.Invoke("ExitFlightConsole");
+            _cockpitController.Invoke("CompleteExitFlightConsole");
+            _hatchController.SetValue("_isPlayerInShip", false);
+            _hatchController.Invoke("OpenHatch");
+            GlobalMessenger.FireEvent("ExitShip");
         }
 
         public void ResetPlayer()
