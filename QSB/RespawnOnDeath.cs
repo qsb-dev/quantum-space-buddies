@@ -69,7 +69,7 @@ namespace QSB
                 }
             }
 
-            Invoke("ExitShip", 0.01f);
+            Invoke(nameof(ExitShip), 0.01f);
         }
 
         void ExitShip()
