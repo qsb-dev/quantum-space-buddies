@@ -17,6 +17,7 @@ namespace QSB
         ShipComponent[] _shipComponents;
         HatchController _hatchController;
         ShipCockpitController _cockpitController;
+        PlayerSpacesuit _spaceSuit;
 
         void Awake()
         {
@@ -28,9 +29,11 @@ namespace QSB
 
         void PlayerWokeUp()
         {
+            var playerTransform = Locator.GetPlayerTransform();
+            _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
+            _spaceSuit = Locator.GetPlayerTransform().GetComponentInChildren<PlayerSpacesuit>(true);
             _playerSpawner = FindObjectOfType<PlayerSpawner>();
             _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
-            _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
 
             var shipTransform = Locator.GetShipTransform();
             if (shipTransform)
@@ -96,6 +99,9 @@ namespace QSB
 
             // Reset player health and resources.
             _playerResources.DebugRefillResources();
+
+            // Remove space suit.
+            _spaceSuit.RemoveSuit();
         }
 
         SpawnPoint GetSpawnPoint(bool isShip = false)
