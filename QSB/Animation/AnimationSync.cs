@@ -11,7 +11,7 @@ namespace QSB.Animation
     {
         private Animator _anim;
         private Animator _bodyAnim;
-        private NetworkAnimator _netAnim;
+        private QSBNetAnim _netAnim;
         private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
         private RuntimeAnimatorController _suitedAnimController;
@@ -23,9 +23,15 @@ namespace QSB.Animation
 
         private void Awake()
         {
-            _anim = gameObject.AddComponent<Animator>();
-            _netAnim = gameObject.AddComponent<NetworkAnimator>();
-            _netAnim.animator = _anim;
+            if (_anim == null)
+            {
+                _anim = gameObject.AddComponent<Animator>();
+            }
+            if (_netAnim == null)
+            {
+                _netAnim = gameObject.AddComponent<QSBNetAnim>();
+                _netAnim.animator = _anim;
+            }
         }
 
         public void InitLocal(Transform body)
@@ -50,6 +56,7 @@ namespace QSB.Animation
 
         public void InitRemote(Transform body)
         {
+            Awake();
             _bodyAnim = body.GetComponent<Animator>();
             body.gameObject.AddComponent<AnimatorMirror>().Init(_anim, _bodyAnim);
 
@@ -106,8 +113,7 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            var animSync = PlayerAnimSyncs[message.SenderId];
-            if (animSync != this)
+            if (PlayerAnimSyncs.TryGetValue(message.SenderId, out var animSync) && animSync != this)
             {
                 animSync.HandleTrigger((AnimTrigger)message.TriggerId);
             }

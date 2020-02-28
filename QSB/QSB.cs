@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
-using QSB.TimeSync;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -22,7 +21,6 @@ namespace QSB
             gameObject.AddComponent<DebugLog>();
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
-            gameObject.AddComponent<PreserveTimeScale>();
             gameObject.AddComponent<RespawnOnDeath>();
         }
     }

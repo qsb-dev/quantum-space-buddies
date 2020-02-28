@@ -1,15 +1,25 @@
-﻿using UnityEngine;
+﻿using OWML.ModHelper.Events;
+using UnityEngine;
 
 namespace QSB.TimeSync
 {
-    public class PreserveTimeScale : QSBBehaviour
+    public class PreserveTimeScale : MonoBehaviour
     {
-        private void Update()
+        private void Start()
         {
-            if (IsPlayerAwake)
+            GlobalMessenger.AddListener("GamePaused", OnPause);
+
+            var campfires = GameObject.FindObjectsOfType<Campfire>();
+            foreach (var campfire in campfires)
             {
-                Time.timeScale = 1;
+                campfire.SetValue("_canSleepHere", false);
             }
         }
+
+        private void OnPause()
+        {
+            Time.timeScale = 1;
+        }
+
     }
 }

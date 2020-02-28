@@ -39,6 +39,10 @@ namespace QSB.Animation
             {
                 return;
             }
+            if (_to.runtimeAnimatorController != _from.runtimeAnimatorController)
+            {
+                _to.runtimeAnimatorController = _from.runtimeAnimatorController;
+            }
             SyncParams();
             SmoothFloats();
         }
@@ -51,9 +55,6 @@ namespace QSB.Animation
                 {
                     case AnimatorControllerParameterType.Float:
                         _floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
-                        break;
-                    case AnimatorControllerParameterType.Int:
-                        _to.SetInteger(fromParam.name, _from.GetInteger(fromParam.name));
                         break;
                     case AnimatorControllerParameterType.Bool:
                         _to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
