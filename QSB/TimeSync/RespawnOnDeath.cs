@@ -1,42 +1,42 @@
-﻿using OWML.ModHelper.Events;
-using System.Linq;
+﻿using System.Linq;
+using OWML.ModHelper.Events;
 using UnityEngine;
 
-namespace QSB
+namespace QSB.TimeSync
 {
-    class RespawnOnDeath : MonoBehaviour
+    public class RespawnOnDeath : MonoBehaviour
     {
-        static RespawnOnDeath Instance;
+        private static RespawnOnDeath _instance;
 
-        SpawnPoint _shipSpawnPoint;
-        SpawnPoint _playerSpawnPoint;
-        OWRigidbody _shipBody;
-        PlayerSpawner _playerSpawner;
-        FluidDetector _fluidDetector;
-        PlayerResources _playerResources;
-        ShipComponent[] _shipComponents;
-        HatchController _hatchController;
-        ShipCockpitController _cockpitController;
-        PlayerSpacesuit _spaceSuit;
+        private SpawnPoint _shipSpawnPoint;
+        private SpawnPoint _playerSpawnPoint;
+        private OWRigidbody _shipBody;
+        private PlayerSpawner _playerSpawner;
+        private FluidDetector _fluidDetector;
+        private PlayerResources _playerResources;
+        private ShipComponent[] _shipComponents;
+        private HatchController _hatchController;
+        private ShipCockpitController _cockpitController;
+        private PlayerSpacesuit _spaceSuit;
 
-        void Awake()
+        private void Awake()
         {
             GlobalMessenger.AddListener("WakeUp", PlayerWokeUp);
 
-            Instance = this;
+            _instance = this;
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
         }
 
-        void PlayerWokeUp()
+        private void PlayerWokeUp()
         {
             var playerTransform = Locator.GetPlayerTransform();
-            _playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
-            _spaceSuit = Locator.GetPlayerTransform().GetComponentInChildren<PlayerSpacesuit>(true);
+            _playerResources = playerTransform.GetComponent<PlayerResources>();
+            _spaceSuit = playerTransform.GetComponentInChildren<PlayerSpacesuit>(true);
             _playerSpawner = FindObjectOfType<PlayerSpawner>();
             _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 
             var shipTransform = Locator.GetShipTransform();
-            if (shipTransform)
+            if (shipTransform != null)
             {
                 _shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
                 _hatchController = shipTransform.GetComponentInChildren<HatchController>();
@@ -54,7 +54,7 @@ namespace QSB
 
         public void ResetShip()
         {
-            if (!_shipBody)
+            if (_shipBody == null)
             {
                 return;
             }
@@ -66,16 +66,16 @@ namespace QSB
             // Reset ship damage.
             if (Locator.GetShipTransform())
             {
-                for (int i = 0; i < _shipComponents.Length; i++)
+                foreach (var shipComponent in _shipComponents)
                 {
-                    _shipComponents[i].SetDamaged(false);
+                    shipComponent.SetDamaged(false);
                 }
             }
 
             Invoke(nameof(ExitShip), 0.01f);
         }
 
-        void ExitShip()
+        private void ExitShip()
         {
             _cockpitController.Invoke("ExitFlightConsole");
             _cockpitController.Invoke("CompleteExitFlightConsole");
@@ -104,7 +104,7 @@ namespace QSB
             _spaceSuit.RemoveSuit(true);
         }
 
-        SpawnPoint GetSpawnPoint(bool isShip = false)
+        private SpawnPoint GetSpawnPoint(bool isShip = false)
         {
             return _playerSpawner
                 .GetValue<SpawnPoint[]>("_spawnList")
@@ -115,10 +115,19 @@ namespace QSB
 
         internal static class Patches
         {
-            public static bool PreFinishDeathSequence()
+            public static bool PreFinishDeathSequence(DeathType deathType)
             {
-                Instance.ResetShip();
-                Instance.ResetPlayer();
+                DebugLog.Screen("Death by " + deathType);
+                QSB.Helper.Console.WriteLine("Death by " + deathType);
+
+                if (deathType == DeathType.Supernova)
+                {
+                    // Allow real death
+                    return true;
+                }
+
+                _instance.ResetShip();
+                _instance.ResetPlayer();
 
                 // Prevent original death method from running.
                 return false;
