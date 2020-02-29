@@ -1,12 +1,20 @@
 ﻿using OWML.ModHelper.Events;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB.TimeSync
 {
-    public class PreserveTimeScale : MonoBehaviour
+    public class PreserveTimeScale : NetworkBehaviour
     {
         private void Start()
         {
+            QSB.Helper.Menus.PauseMenu.GetButton("Button-EndCurrentLoop").Hide();
+
+            if (isServer)
+            {
+                return;
+            }
+
             GlobalMessenger.AddListener("GamePaused", OnPause);
 
             var campfires = GameObject.FindObjectsOfType<Campfire>();
