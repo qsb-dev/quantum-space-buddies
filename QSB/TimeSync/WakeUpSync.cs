@@ -142,9 +142,10 @@ namespace QSB.TimeSync
                 return;
             }
             DebugLog.Screen("Starting sleeping");
-            var wakePrompt = _campfire.GetValue<ScreenPrompt>("_wakePrompt");
-            Locator.GetPromptManager().RemoveScreenPrompt(wakePrompt, PromptPosition.Center);
-            _campfire.Invoke("StartSleeping");
+            //var wakePrompt = _campfire.GetValue<ScreenPrompt>("_wakePrompt");
+            //Locator.GetPromptManager().RemoveScreenPrompt(wakePrompt, PromptPosition.Center);
+            //_campfire.Invoke("StartSleeping");
+            Time.timeScale = 10f;
             _state = State.Sleeping;
         }
 
@@ -155,7 +156,8 @@ namespace QSB.TimeSync
                 return;
             }
             DebugLog.Screen("Stopping sleeping");
-            _campfire.StopSleeping();
+            //_campfire.StopSleeping();
+            Time.timeScale = 1f;
             _state = State.Awake;
         }
 
@@ -165,7 +167,7 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            OWTime.Pause(OWTime.PauseType.Menu);
+            //OWTime.Pause(OWTime.PauseType.Menu);
             Time.timeScale = 0f;
             _state = State.Pausing;
         }
@@ -176,7 +178,8 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            OWTime.Unpause(OWTime.PauseType.Menu);
+            //OWTime.Unpause(OWTime.PauseType.Menu);
+            Time.timeScale = 1f;
             _state = State.Awake;
         }
 
