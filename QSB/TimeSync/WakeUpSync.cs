@@ -10,6 +10,7 @@ namespace QSB.TimeSync
     public class WakeUpSync : NetworkBehaviour
     {
         private const float TimeThreshold = 0.5f;
+        private const float FastForwardSpeed = 10f;
 
         private enum State { NotLoaded, EyesClosed, Awake, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
@@ -18,6 +19,7 @@ namespace QSB.TimeSync
 
         private float _sendTimer;
         private float _serverTime;
+        private float _timeScale;
 
         private void Start()
         {
@@ -58,7 +60,6 @@ namespace QSB.TimeSync
 
         private void SendServerTime()
         {
-            DebugLog.Screen("Sending server time to all my friends: " + Time.timeSinceLevelLoad);
             var message = new WakeUpMessage
             {
                 ServerTime = Time.timeSinceLevelLoad
@@ -105,8 +106,6 @@ namespace QSB.TimeSync
                 StartFastForwarding();
                 return;
             }
-
-            DebugLog.Screen($"My time ({myTime}) is within threshold of server time ({_serverTime})");
         }
 
         private void OpenEyes()
@@ -139,20 +138,8 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            DebugLog.Screen("Starting sleeping");
-            Time.timeScale = 10f;
+            _timeScale = FastForwardSpeed;
             _state = State.FastForwarding;
-        }
-
-        private void StopFastForwarding()
-        {
-            if (_state != State.FastForwarding)
-            {
-                return;
-            }
-            DebugLog.Screen("Stopping sleeping");
-            Time.timeScale = 1f;
-            _state = State.Awake;
         }
 
         private void StartPausing()
@@ -161,17 +148,13 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            Time.timeScale = 0f;
+            _timeScale = 0f;
             _state = State.Pausing;
         }
 
-        private void StopPausing()
+        private void ResetTimeScale()
         {
-            if (_state != State.Pausing)
-            {
-                return;
-            }
-            Time.timeScale = 1f;
+            _timeScale = 1f;
             _state = State.Awake;
         }
 
@@ -211,14 +194,15 @@ namespace QSB.TimeSync
                 return;
             }
 
-            if (_state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime)
+            bool isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
+            bool isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+
+            if (isDoneFastForwarding || isDonePausing)
             {
-                StopFastForwarding();
+                ResetTimeScale();
             }
-            else if (_state == State.Pausing && Time.timeSinceLevelLoad < _serverTime)
-            {
-                StopPausing();
-            }
+
+            Time.timeScale = _timeScale;
         }
 
     }
