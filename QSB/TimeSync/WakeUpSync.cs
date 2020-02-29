@@ -11,11 +11,10 @@ namespace QSB.TimeSync
     {
         private const float TimeThreshold = 0.5f;
 
-        private enum State { NotLoaded, EyesClosed, Awake, Sleeping, Pausing }
+        private enum State { NotLoaded, EyesClosed, Awake, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
 
         private MessageHandler<WakeUpMessage> _wakeUpHandler;
-        private Campfire _campfire;
 
         private float _sendTimer;
         private float _serverTime;
@@ -39,7 +38,6 @@ namespace QSB.TimeSync
         {
             if (scene.name == "SolarSystem")
             {
-                _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
                 _state = State.EyesClosed;
             }
         }
@@ -104,7 +102,7 @@ namespace QSB.TimeSync
             if (diff < -TimeThreshold)
             {
                 DebugLog.Screen($"My time ({myTime}) is {-diff} behind server ({_serverTime})");
-                StartSleeping();
+                StartFastForwarding();
                 return;
             }
 
@@ -135,28 +133,24 @@ namespace QSB.TimeSync
             GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
 
-        private void StartSleeping()
+        private void StartFastForwarding()
         {
-            if (_state == State.Sleeping)
+            if (_state == State.FastForwarding)
             {
                 return;
             }
             DebugLog.Screen("Starting sleeping");
-            //var wakePrompt = _campfire.GetValue<ScreenPrompt>("_wakePrompt");
-            //Locator.GetPromptManager().RemoveScreenPrompt(wakePrompt, PromptPosition.Center);
-            //_campfire.Invoke("StartSleeping");
             Time.timeScale = 10f;
-            _state = State.Sleeping;
+            _state = State.FastForwarding;
         }
 
-        private void StopSleeping()
+        private void StopFastForwarding()
         {
-            if (_state != State.Sleeping)
+            if (_state != State.FastForwarding)
             {
                 return;
             }
             DebugLog.Screen("Stopping sleeping");
-            //_campfire.StopSleeping();
             Time.timeScale = 1f;
             _state = State.Awake;
         }
@@ -167,7 +161,6 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            //OWTime.Pause(OWTime.PauseType.Menu);
             Time.timeScale = 0f;
             _state = State.Pausing;
         }
@@ -178,7 +171,6 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            //OWTime.Unpause(OWTime.PauseType.Menu);
             Time.timeScale = 1f;
             _state = State.Awake;
         }
@@ -219,9 +211,9 @@ namespace QSB.TimeSync
                 return;
             }
 
-            if (_state == State.Sleeping && Time.timeSinceLevelLoad >= _serverTime)
+            if (_state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime)
             {
-                StopSleeping();
+                StopFastForwarding();
             }
             else if (_state == State.Pausing && Time.timeSinceLevelLoad < _serverTime)
             {
