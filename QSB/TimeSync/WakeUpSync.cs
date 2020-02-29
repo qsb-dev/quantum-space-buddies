@@ -142,6 +142,8 @@ namespace QSB.TimeSync
                 return;
             }
             DebugLog.Screen("Starting sleeping");
+            var wakePrompt = _campfire.GetValue<ScreenPrompt>("_wakePrompt");
+            Locator.GetPromptManager().RemoveScreenPrompt(wakePrompt, PromptPosition.Center);
             _campfire.Invoke("StartSleeping");
             _state = State.Sleeping;
         }
