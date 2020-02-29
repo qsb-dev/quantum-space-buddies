@@ -10,15 +10,17 @@ namespace QSB.TimeSync
     public class WakeUpSync : NetworkBehaviour
     {
         private const float TimeThreshold = 0.5f;
+        private const float FastForwardSpeed = 10f;
 
-        private enum State { NotLoaded, EyesClosed, Awake, Sleeping, Pausing }
+        private enum State { NotLoaded, EyesClosed, Awake, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
 
         private MessageHandler<WakeUpMessage> _wakeUpHandler;
-        private Campfire _campfire;
 
         private float _sendTimer;
         private float _serverTime;
+        private float _timeScale;
+        private bool _isInputEnabled = true;
 
         private void Start()
         {
@@ -39,7 +41,6 @@ namespace QSB.TimeSync
         {
             if (scene.name == "SolarSystem")
             {
-                _campfire = GameObject.FindObjectsOfType<Campfire>().Single(x => x.GetValue<Sector>("_sector").name == "Sector_Village");
                 _state = State.EyesClosed;
             }
         }
@@ -60,7 +61,6 @@ namespace QSB.TimeSync
 
         private void SendServerTime()
         {
-            DebugLog.Screen("Sending server time to all my friends: " + Time.timeSinceLevelLoad);
             var message = new WakeUpMessage
             {
                 ServerTime = Time.timeSinceLevelLoad
@@ -89,6 +89,11 @@ namespace QSB.TimeSync
             {
                 OpenEyes();
                 _state = State.Awake;
+
+                if (!isServer)
+                {
+                    DisableInput();
+                }
             }
 
             var myTime = Time.timeSinceLevelLoad;
@@ -96,19 +101,15 @@ namespace QSB.TimeSync
 
             if (diff > TimeThreshold)
             {
-                DebugLog.Screen($"My time ({myTime}) is {diff} ahead server ({_serverTime})");
                 StartPausing();
                 return;
             }
 
             if (diff < -TimeThreshold)
             {
-                DebugLog.Screen($"My time ({myTime}) is {-diff} behind server ({_serverTime})");
-                StartSleeping();
+                StartFastForwarding();
                 return;
             }
-
-            DebugLog.Screen($"My time ({myTime}) is within threshold of server time ({_serverTime})");
         }
 
         private void OpenEyes()
@@ -128,35 +129,16 @@ namespace QSB.TimeSync
             Locator.GetPromptManager().RemoveScreenPrompt(cameraEffectController.GetValue<ScreenPrompt>("_wakePrompt"));
             OWTime.Unpause(OWTime.PauseType.Sleeping);
             cameraEffectController.Invoke("WakeUp");
-
-            // Enable all inputs immediately.
-            OWInput.ChangeInputMode(InputMode.Character);
-            typeof(OWInput).SetValue("_inputFadeFraction", 0f);
-            GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
 
-        private void StartSleeping()
+        private void StartFastForwarding()
         {
-            if (_state == State.Sleeping)
+            if (_state == State.FastForwarding)
             {
                 return;
             }
-            DebugLog.Screen("Starting sleeping");
-            var wakePrompt = _campfire.GetValue<ScreenPrompt>("_wakePrompt");
-            Locator.GetPromptManager().RemoveScreenPrompt(wakePrompt, PromptPosition.Center);
-            _campfire.Invoke("StartSleeping");
-            _state = State.Sleeping;
-        }
-
-        private void StopSleeping()
-        {
-            if (_state != State.Sleeping)
-            {
-                return;
-            }
-            DebugLog.Screen("Stopping sleeping");
-            _campfire.StopSleeping();
-            _state = State.Awake;
+            _timeScale = FastForwardSpeed;
+            _state = State.FastForwarding;
         }
 
         private void StartPausing()
@@ -165,19 +147,31 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            OWTime.Pause(OWTime.PauseType.Menu);
-            Time.timeScale = 0f;
+            _timeScale = 0f;
             _state = State.Pausing;
         }
 
-        private void StopPausing()
+        private void ResetTimeScale()
         {
-            if (_state != State.Pausing)
-            {
-                return;
-            }
-            OWTime.Unpause(OWTime.PauseType.Menu);
+            _timeScale = 1f;
             _state = State.Awake;
+
+            if (!_isInputEnabled)
+            {
+                EnableInput();
+            }
+        }
+
+        private void DisableInput()
+        {
+            _isInputEnabled = false;
+            OWInput.ChangeInputMode(InputMode.None);
+        }
+
+        private void EnableInput()
+        {
+            _isInputEnabled = true;
+            OWInput.ChangeInputMode(InputMode.Character);
         }
 
         private void Update()
@@ -216,13 +210,19 @@ namespace QSB.TimeSync
                 return;
             }
 
-            if (_state == State.Sleeping && Time.timeSinceLevelLoad >= _serverTime)
+            bool isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
+            bool isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+
+            if (isDoneFastForwarding || isDonePausing)
             {
-                StopSleeping();
+                ResetTimeScale();
             }
-            else if (_state == State.Pausing && Time.timeSinceLevelLoad < _serverTime)
+
+            Time.timeScale = _timeScale;
+
+            if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
             {
-                StopPausing();
+                DisableInput();
             }
         }
 
