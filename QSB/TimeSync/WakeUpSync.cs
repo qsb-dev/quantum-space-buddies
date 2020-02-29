@@ -20,6 +20,7 @@ namespace QSB.TimeSync
         private float _sendTimer;
         private float _serverTime;
         private float _timeScale;
+        private bool _isInputDisabled;
 
         private void Start()
         {
@@ -104,6 +105,7 @@ namespace QSB.TimeSync
             {
                 DebugLog.Screen($"My time ({myTime}) is {-diff} behind server ({_serverTime})");
                 StartFastForwarding();
+                DisableInput();
                 return;
             }
         }
@@ -156,6 +158,23 @@ namespace QSB.TimeSync
         {
             _timeScale = 1f;
             _state = State.Awake;
+
+            if (_isInputDisabled)
+            {
+                EnableInput();
+            }
+        }
+
+        private void DisableInput()
+        {
+            _isInputDisabled = true;
+            OWInput.ChangeInputMode(InputMode.None);
+        }
+
+        private void EnableInput()
+        {
+            _isInputDisabled = false;
+            OWInput.ChangeInputMode(InputMode.Character);
         }
 
         private void Update()
