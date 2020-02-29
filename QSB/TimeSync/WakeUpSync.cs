@@ -20,7 +20,7 @@ namespace QSB.TimeSync
         private float _sendTimer;
         private float _serverTime;
         private float _timeScale;
-        private bool _isInputDisabled;
+        private bool _isInputEnabled = true;
 
         private void Start()
         {
@@ -156,7 +156,7 @@ namespace QSB.TimeSync
             _timeScale = 1f;
             _state = State.Awake;
 
-            if (_isInputDisabled)
+            if (!_isInputEnabled)
             {
                 EnableInput();
             }
@@ -164,13 +164,13 @@ namespace QSB.TimeSync
 
         private void DisableInput()
         {
-            _isInputDisabled = true;
+            _isInputEnabled = false;
             OWInput.ChangeInputMode(InputMode.None);
         }
 
         private void EnableInput()
         {
-            _isInputDisabled = false;
+            _isInputEnabled = true;
             OWInput.ChangeInputMode(InputMode.Character);
         }
 
@@ -220,7 +220,7 @@ namespace QSB.TimeSync
 
             Time.timeScale = _timeScale;
 
-            if (_isInputDisabled && OWInput.GetInputMode() != InputMode.None)
+            if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
             {
                 DisableInput();
             }
