@@ -89,6 +89,11 @@ namespace QSB.TimeSync
             {
                 OpenEyes();
                 _state = State.Awake;
+
+                if (!isServer)
+                {
+                    DisableInput();
+                }
             }
 
             var myTime = Time.timeSinceLevelLoad;
@@ -96,16 +101,13 @@ namespace QSB.TimeSync
 
             if (diff > TimeThreshold)
             {
-                DebugLog.Screen($"My time ({myTime}) is {diff} ahead server ({_serverTime})");
                 StartPausing();
                 return;
             }
 
             if (diff < -TimeThreshold)
             {
-                DebugLog.Screen($"My time ({myTime}) is {-diff} behind server ({_serverTime})");
                 StartFastForwarding();
-                DisableInput();
                 return;
             }
         }
@@ -127,11 +129,6 @@ namespace QSB.TimeSync
             Locator.GetPromptManager().RemoveScreenPrompt(cameraEffectController.GetValue<ScreenPrompt>("_wakePrompt"));
             OWTime.Unpause(OWTime.PauseType.Sleeping);
             cameraEffectController.Invoke("WakeUp");
-
-            // Enable all inputs immediately.
-            OWInput.ChangeInputMode(InputMode.Character);
-            typeof(OWInput).SetValue("_inputFadeFraction", 0f);
-            GlobalMessenger.FireEvent("TakeFirstFlashbackSnapshot");
         }
 
         private void StartFastForwarding()
@@ -222,6 +219,11 @@ namespace QSB.TimeSync
             }
 
             Time.timeScale = _timeScale;
+
+            if (_isInputDisabled && OWInput.GetInputMode() != InputMode.None)
+            {
+                DisableInput();
+            }
         }
 
     }
