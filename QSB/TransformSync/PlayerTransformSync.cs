@@ -32,6 +32,23 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetPlayerModel());
 
+            var physicsBody = new GameObject();
+
+            var collider = physicsBody.AddComponent<CapsuleCollider>();
+            collider.radius = 1;
+            collider.height = 2;
+            collider.center = Vector3.up * 1;
+
+            var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
+            rigidBodySync.target = body;
+
+            //var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule).transform;
+            //capsule.parent = rigidBodySync.transform;
+            //capsule.localScale = Vector3.up * 1;
+            //capsule.localRotation = Quaternion.identity;
+            //capsule.localScale = new Vector3(1, 2, 1);
+            //Destroy(capsule.GetComponent<BoxCollider>());
+
             GetComponent<AnimationSync>().InitRemote(body);
 
             return body;
