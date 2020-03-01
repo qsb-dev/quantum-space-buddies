@@ -12,6 +12,7 @@ namespace QSB.TransformSync
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
+        private Rigidbody _rigidBody;
 
         protected virtual void Awake()
         {
@@ -37,6 +38,25 @@ namespace QSB.TransformSync
 
             transform.parent = Locator.GetRootTransform();
             _syncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+
+            if (!hasAuthority)
+            {
+                _rigidBody = new GameObject("PlayerBody").AddComponent<Rigidbody>();
+                _rigidBody.useGravity = false;
+                _rigidBody.isKinematic = true;
+                _rigidBody.gameObject.AddComponent<OWRigidbody>();
+                var collider = _rigidBody.gameObject.AddComponent<CapsuleCollider>();
+                collider.radius = 1;
+                collider.height = 2;
+                collider.center = Vector3.up * 1;
+
+                var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule).transform;
+                capsule.parent = _rigidBody.transform;
+                capsule.localScale = Vector3.up * 1;
+                capsule.localRotation = Quaternion.identity;
+                capsule.localScale = new Vector3(1, 2, 1);
+                Destroy(capsule.GetComponent<BoxCollider>());
+            }
         }
 
         private void SetFirstSector()
@@ -70,6 +90,9 @@ namespace QSB.TransformSync
 
                 _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
                 _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+
+                _rigidBody.MovePosition(_syncedTransform.position);
+                _rigidBody.MoveRotation(_syncedTransform.rotation);
             }
         }
     }
