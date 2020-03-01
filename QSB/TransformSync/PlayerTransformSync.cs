@@ -31,6 +31,7 @@ namespace QSB.TransformSync
         protected override Transform InitRemoteTransform()
         {
             var body = Instantiate(GetPlayerModel());
+            GetComponent<AnimationSync>().InitRemote(body);
 
             var physicsBody = new GameObject();
 
@@ -48,8 +49,6 @@ namespace QSB.TransformSync
             //capsule.localRotation = Quaternion.identity;
             //capsule.localScale = new Vector3(1, 2, 1);
             //Destroy(capsule.GetComponent<BoxCollider>());
-
-            GetComponent<AnimationSync>().InitRemote(body);
 
             return body;
         }

@@ -47,6 +47,22 @@ namespace QSB.TransformSync
                 = landingGearRight.localPosition
                 += Vector3.up * 3.762f;
 
+            var physicsBody = new GameObject();
+
+            var collider = physicsBody.AddComponent<SphereCollider>();
+            collider.radius = 5;
+            collider.center = Vector3.up * 5;
+
+            var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
+            rigidBodySync.target = remoteTransform;
+
+            //var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+            //sphere.parent = rigidBodySync.transform;
+            //sphere.localScale = Vector3.one * 10;
+            //sphere.localRotation = Quaternion.identity;
+            //sphere.localPosition = Vector3.up * 5;
+            //Destroy(sphere.GetComponent<BoxCollider>());
+
             return remoteTransform;
         }
     }
