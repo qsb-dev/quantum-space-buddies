@@ -9,6 +9,7 @@ namespace QSB
     public class QSB : ModBehaviour
     {
         public static IModHelper Helper;
+        public static string DefaultServerIP;
 
         private void Awake()
         {
@@ -21,8 +22,13 @@ namespace QSB
 
             gameObject.AddComponent<DebugLog>();
             gameObject.AddComponent<QSBNetworkManager>();
-            gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<RespawnOnDeath>();
+            gameObject.AddComponent<NetworkManagerHUD>();
+        }
+
+        public override void Configure(IModConfig config)
+        {
+            DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
         }
     }
 }

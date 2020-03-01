@@ -22,6 +22,8 @@ namespace QSB
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
+
+            networkAddress = QSB.DefaultServerIP;
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
