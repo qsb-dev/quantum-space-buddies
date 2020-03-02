@@ -27,7 +27,6 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            DebugLog.Screen("Max connections: " + NetworkManager.singleton.maxConnections);
             DebugLog.Screen("Start WakeUpSync");
 
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);

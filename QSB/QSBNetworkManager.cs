@@ -28,8 +28,9 @@ namespace QSB
 
         private void Start()
         {
-            var netManager = GetComponent<NetworkManagerHUD>();
-            netManager.manager.maxConnections = MaxConnections;
+            var netManager = GetComponent<NetworkManagerHUD>().manager;
+            netManager.maxConnections = MaxConnections;
+            DebugLog.Screen("Max connections: " + netManager.maxConnections);
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
