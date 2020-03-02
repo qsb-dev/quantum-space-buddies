@@ -8,6 +8,8 @@ namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
+        private const int MaxConnections = 128;
+
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
 
@@ -24,6 +26,12 @@ namespace QSB
             spawnPrefabs.Add(_shipPrefab);
 
             networkAddress = QSB.DefaultServerIP;
+            maxConnections = MaxConnections;
+            customConfig = true;
+            connectionConfig.AddChannel(QosType.Reliable);
+            connectionConfig.AddChannel(QosType.Unreliable);
+            channels.Add(QosType.Reliable);
+            channels.Add(QosType.Unreliable);
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)

@@ -10,19 +10,8 @@ namespace QSB.Animation
         public override void OnDeserialize(NetworkReader reader, bool initialState)
         {
             var anim = this.GetValue<Animator>("m_Animator");
-            if (anim == null)
+            if (anim == null || anim.parameters == null || anim.parameters.Length == 0)
             {
-                DebugLog.Screen("anim is null");
-                return;
-            }
-            if (anim.parameters == null)
-            {
-                DebugLog.Screen("anim.parameters is null");
-                return;
-            }
-            if (anim.parameters.Length == 0)
-            {
-                DebugLog.Screen("anim.parameters.Length == 0");
                 return;
             }
             for (int index = 0; index < anim.parameters.Length; ++index)
