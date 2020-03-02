@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -28,8 +27,9 @@ namespace QSB.TimeSync
             {
                 return;
             }
-
+            DebugLog.Screen("Max connections: " + NetworkManager.singleton.maxConnections);
             DebugLog.Screen("Start WakeUpSync");
+            
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             SceneManager.sceneLoaded += OnSceneLoaded;
 

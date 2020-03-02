@@ -8,6 +8,8 @@ namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
+        private const int MaxConnections = 100;
+
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
 
@@ -22,6 +24,12 @@ namespace QSB
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
+        }
+
+        private void Start()
+        {
+            var netManager = GetComponent<NetworkManagerHUD>();
+            netManager.manager.maxConnections = MaxConnections;
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
