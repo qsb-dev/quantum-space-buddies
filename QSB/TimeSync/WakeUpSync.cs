@@ -27,8 +27,8 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            DebugLog.Screen("Start WakeUpSync");
 
+            DebugLog.Screen("Start WakeUpSync");
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             SceneManager.sceneLoaded += OnSceneLoaded;
 
