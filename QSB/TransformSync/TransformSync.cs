@@ -37,6 +37,10 @@ namespace QSB.TransformSync
 
             transform.parent = Locator.GetRootTransform();
             _syncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+            if (!hasAuthority)
+            {
+                _syncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+            }
         }
 
         private void SetFirstSector()
@@ -66,10 +70,17 @@ namespace QSB.TransformSync
             }
             else
             {
-                _syncedTransform.parent = sectorTransform;
+                if (_syncedTransform.position == Vector3.zero)
+                {
+                    _syncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                }
+                else
+                {
+                    _syncedTransform.parent = sectorTransform;
 
-                _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                    _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+                    _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                }
             }
         }
     }

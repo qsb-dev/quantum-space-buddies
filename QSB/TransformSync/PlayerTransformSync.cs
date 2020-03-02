@@ -36,14 +36,6 @@ namespace QSB.TransformSync
 
             return body;
         }
-
-        private void Update()
-        {
-            if (!isLocalPlayer && transform.position == Vector3.zero)
-            {
-                transform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
-            }
-        }
-
+        
     }
 }
