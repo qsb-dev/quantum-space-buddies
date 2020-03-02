@@ -30,7 +30,8 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            var body = Instantiate(GetPlayerModel());
+            var sunPos = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+            var body = Instantiate(GetPlayerModel(), sunPos, Quaternion.identity);
 
             GetComponent<AnimationSync>().InitRemote(body);
 
