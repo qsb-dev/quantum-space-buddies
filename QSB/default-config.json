@@ -1,5 +1,7 @@
 {
   "requireVR": false,
   "enabled": true,
-  "settings": {}
+  "settings": {
+    "defaultServerIP": "localhost"
+  }
 }

@@ -25,6 +25,7 @@ namespace QSB
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
 
+            networkAddress = QSB.DefaultServerIP;
             maxConnections = MaxConnections;
             customConfig = true;
             connectionConfig.AddChannel(QosType.Reliable);
