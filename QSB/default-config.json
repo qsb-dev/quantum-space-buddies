@@ -2,6 +2,6 @@
   "requireVR": false,
   "enabled": true,
   "settings": {
-    "defaultServerIP": "144.2.114.190"
+    "defaultServerIP": "localhost"
   }
 }
