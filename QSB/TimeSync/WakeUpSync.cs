@@ -29,7 +29,7 @@ namespace QSB.TimeSync
             }
             DebugLog.Screen("Max connections: " + NetworkManager.singleton.maxConnections);
             DebugLog.Screen("Start WakeUpSync");
-            
+
             GlobalMessenger.AddListener("WakeUp", OnWakeUp);
             SceneManager.sceneLoaded += OnSceneLoaded;
 
