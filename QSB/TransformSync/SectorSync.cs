@@ -11,6 +11,23 @@ namespace QSB.TransformSync
         private Dictionary<uint, Transform> _playerSectors;
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
+        private readonly List<Sector.Name> SectorWhitelist = new List<Sector.Name>(new Sector.Name[]{
+            Sector.Name.BrambleDimension,
+            Sector.Name.BrittleHollow,
+            Sector.Name.Comet,
+            Sector.Name.DarkBramble,
+            Sector.Name.EyeOfTheUniverse,
+            Sector.Name.GiantsDeep,
+            Sector.Name.HourglassTwin_A,
+            Sector.Name.HourglassTwin_B,
+            Sector.Name.OrbitalProbeCannon,
+            Sector.Name.QuantumMoon,
+            Sector.Name.SunStation,
+            Sector.Name.TimberHearth,
+            Sector.Name.TimberMoon,
+            Sector.Name.VolcanicMoon,
+            Sector.Name.WhiteHole
+        });
 
         private void Start()
         {
@@ -22,7 +39,7 @@ namespace QSB.TransformSync
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
+            QSB.Helper.HarmonyHelper.AddPrefix<Sector>("OnEntry", typeof(Patches), nameof(Patches.PreEntry));
         }
 
         public void SetSector(uint id, Transform sectorTransform)
@@ -90,22 +107,28 @@ namespace QSB.TransformSync
 
         private static class Patches
         {
-            private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
+            public static void PreEntry(Sector __instance, GameObject hitObj)
             {
-                if (sector.GetName() == Sector.Name.Unnamed || sector.GetName() == Sector.Name.Ship || sector.GetName() == Sector.Name.Sun || sector.GetName() == Sector.Name.HourglassTwins)
+                SectorDetector sectorDetector = hitObj.GetComponent<SectorDetector>();
+                if (sectorDetector == null)
                 {
                     return;
                 }
 
-                if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
+                if (!Instance.SectorWhitelist.Contains(__instance.GetName()))
                 {
-                    PlayerTransformSync.LocalInstance.EnterSector(sector);
                     return;
                 }
 
-                if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
+                if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
                 {
-                    ShipTransformSync.LocalInstance.EnterSector(sector);
+                    PlayerTransformSync.LocalInstance.EnterSector(__instance);
+                    return;
+                }
+
+                if (sectorDetector.GetOccupantType() == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
+                {
+                    ShipTransformSync.LocalInstance.EnterSector(__instance);
                 }
             }
         }
