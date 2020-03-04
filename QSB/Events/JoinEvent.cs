@@ -1,11 +1,11 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.Swag
+namespace QSB.Events
 {
-    public class HelloMessage : QSBMessage
+    public class JoinEvent : QSBMessage
     {
-        public override MessageType MessageType => MessageType.Hello;
+        public override MessageType MessageType => MessageType.Join;
 
         public string PlayerName { get; set; }
 

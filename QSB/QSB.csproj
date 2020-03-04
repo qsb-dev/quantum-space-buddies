@@ -107,8 +107,8 @@
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="DebugLog.cs" />
-    <Compile Include="Swag\Hello.cs" />
-    <Compile Include="Swag\HelloMessage.cs" />
+    <Compile Include="Events\PlayerJoin.cs" />
+    <Compile Include="Events\JoinEvent.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Messaging\QSBMessage.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using QSB.Animation;
-using QSB.Swag;
+using QSB.Events;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using UnityEngine;
@@ -82,7 +82,7 @@ namespace QSB
 
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<SectorSync>();
-            gameObject.AddComponent<Hello>().Sup(_playerName);
+            gameObject.AddComponent<PlayerJoin>().Join(_playerName);
         }
 
         private void OnGUI()
