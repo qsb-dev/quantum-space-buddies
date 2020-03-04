@@ -60,5 +60,12 @@ namespace QSB
             NotificationManager.SharedInstance.PostNotification(data, false);
         }
 
+        public static void All(params object[] logObjects)
+        {
+            Console(logObjects);
+            Screen(logObjects);
+            HUD(logObjects);
+        }
+
     }
 }

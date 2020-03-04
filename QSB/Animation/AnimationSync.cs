@@ -38,7 +38,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerAnimSyncs.Add(netId.Value, this);
+            PlayerAnimSyncs[netId.Value] = this;
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {

@@ -1,4 +1,7 @@
-﻿using QSB.Animation;
+﻿using System;
+using System.Linq;
+using QSB.Animation;
+using QSB.Events;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using UnityEngine;
@@ -13,6 +16,31 @@ namespace QSB
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
 
+        private readonly string[] _defaultNames = {
+            "Arkose",
+            "Chert",
+            "Esker",
+            "Hal",
+            "Hornfels",
+            "Feldspar",
+            "Gabbro",
+            "Galena",
+            "Gneiss",
+            "Gossan",
+            "Marl",
+            "Mica",
+            "Moraine",
+            "Porphy",
+            "Riebeck",
+            "Rutile",
+            "Slate",
+            "Spinel",
+            "Tektite",
+            "Tephra",
+            "Tuff"
+        };
+        private string _playerName;
+
         private void Awake()
         {
             _assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
@@ -26,6 +54,8 @@ namespace QSB
             spawnPrefabs.Add(_shipPrefab);
 
             ConfigureNetworkManager();
+
+            _playerName = _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 
         private void ConfigureNetworkManager()
@@ -52,6 +82,13 @@ namespace QSB
 
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<SectorSync>();
+            gameObject.AddComponent<PlayerJoin>().Join(_playerName);
+        }
+
+        private void OnGUI()
+        {
+            GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");
+            _playerName = GUI.TextField(new Rect(60, 10, 145, 20f), _playerName);
         }
 
     }
