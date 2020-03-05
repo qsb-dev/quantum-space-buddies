@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using OWML.ModHelper.Events;
+using QSB.Events;
+using QSB.Messaging;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -18,6 +20,8 @@ namespace QSB.TimeSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
+
+        private MessageHandler<DeathMessage> _deathHandler;
 
         private void Awake()
         {
@@ -50,6 +54,9 @@ namespace QSB.TimeSync
                 _shipSpawnPoint.transform.rotation = shipTransform.rotation;
             }
 
+            _deathHandler = new MessageHandler<DeathMessage>();
+            _deathHandler.OnServerReceiveMessage += OnServerReceiveMessage;
+            _deathHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
         public void ResetShip()
@@ -113,12 +120,23 @@ namespace QSB.TimeSync
                 );
         }
 
+        private void OnServerReceiveMessage(DeathMessage message)
+        {
+            _deathHandler.SendToAll(message);
+        }
+
+        private void OnClientReceiveMessage(DeathMessage message)
+        {
+            var playerName = PlayerJoin.PlayerNames.TryGetValue(message.SenderId, out var n) ? n : message.PlayerName;
+            var deathType = ((DeathType)message.DeathId).ToString();
+            DebugLog.All($"{playerName} was killed by {deathType}!");
+        }
+
         internal static class Patches
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
             {
-                DebugLog.Screen("Death by " + deathType);
-                QSB.Helper.Console.WriteLine("Death by " + deathType);
+                BroadcastDeath(deathType);
 
                 if (deathType == DeathType.Supernova)
                 {
@@ -132,6 +150,18 @@ namespace QSB.TimeSync
                 // Prevent original death method from running.
                 return false;
             }
+
+            private static void BroadcastDeath(DeathType deathType)
+            {
+                var message = new DeathMessage
+                {
+                    PlayerName = PlayerJoin.MyName,
+                    SenderId = NetPlayer.LocalInstance.netId.Value,
+                    DeathId = (short)deathType
+                };
+                _instance._deathHandler.SendToServer(message);
+            }
+
         }
     }
 }
