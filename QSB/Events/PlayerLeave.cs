@@ -50,7 +50,7 @@ namespace QSB.Events
             {
                 return;
             }
-            Destroy(playerTransformSync.PlayerModel.gameObject);
+            Destroy(playerTransformSync.SyncedTransform.gameObject);
             Destroy(playerTransformSync.gameObject);
         }
 
@@ -62,7 +62,7 @@ namespace QSB.Events
             {
                 return;
             }
-            Destroy(shipTransformSync.ShipModel.gameObject);
+            Destroy(shipTransformSync.SyncedTransform.gameObject);
             Destroy(shipTransformSync.gameObject);
         }
 

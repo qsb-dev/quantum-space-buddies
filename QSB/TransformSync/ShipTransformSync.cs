@@ -6,24 +6,20 @@ namespace QSB.TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
 
-        public Transform ShipModel { get; private set; }
-
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+        private Transform _shipModel;
 
         private Transform GetShipModel()
         {
-            if (!ShipModel)
+            if (!_shipModel)
             {
-                ShipModel = Locator.GetShipBody().transform;
+                _shipModel = Locator.GetShipBody().transform;
             }
-            return ShipModel;
+            return _shipModel;
         }
 
         protected override Transform InitLocalTransform()
         {
+            LocalInstance = this;
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 

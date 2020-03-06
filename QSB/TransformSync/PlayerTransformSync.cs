@@ -7,7 +7,7 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
-        public Transform PlayerModel { get; private set; }
+        private Transform _playerModel;
 
         public override void OnStartLocalPlayer()
         {
@@ -16,11 +16,11 @@ namespace QSB.TransformSync
 
         private Transform GetPlayerModel()
         {
-            if (!PlayerModel)
+            if (!_playerModel)
             {
-                PlayerModel = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
+                _playerModel = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
             }
-            return PlayerModel;
+            return _playerModel;
         }
 
         protected override Transform InitLocalTransform()
