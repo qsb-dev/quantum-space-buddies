@@ -109,6 +109,11 @@ namespace QSB
         public override void OnStopClient()
         {
             DebugLog.Screen("OnStopClient");
+            Destroy(GetComponent<SectorSync>());
+            Destroy(GetComponent<PlayerJoin>());
+            Destroy(GetComponent<PlayerLeave>());
+            PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
+
             _canEditName = true;
         }
 

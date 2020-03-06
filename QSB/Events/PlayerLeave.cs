@@ -35,9 +35,7 @@ namespace QSB.Events
         private void OnClientReceiveMessage(LeaveMessage message)
         {
             DebugLog.All(message.PlayerName, "left");
-
             PlayerJoin.PlayerNames.Remove(message.SenderId);
-
             CleanUpPlayer(message.SenderId);
             CleanUpShip(message.SenderId);
         }
@@ -51,7 +49,6 @@ namespace QSB.Events
                 return;
             }
             Destroy(playerTransformSync.SyncedTransform.gameObject);
-            Destroy(playerTransformSync.gameObject);
         }
 
         private void CleanUpShip(uint playerId)
@@ -63,7 +60,6 @@ namespace QSB.Events
                 return;
             }
             Destroy(shipTransformSync.SyncedTransform.gameObject);
-            Destroy(shipTransformSync.gameObject);
         }
 
     }
