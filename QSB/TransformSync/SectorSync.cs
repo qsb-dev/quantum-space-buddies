@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using QSB.Messaging;
 using UnityEngine;
+using System.Linq;
 
 namespace QSB.TransformSync
 {
@@ -11,7 +12,7 @@ namespace QSB.TransformSync
         private Dictionary<uint, Transform> _playerSectors;
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
-        private readonly List<Sector.Name> SectorWhitelist = new List<Sector.Name>(new Sector.Name[]{
+        private readonly Sector.Name[] sectorWhitelist = new Sector.Name[]{
             Sector.Name.BrambleDimension,
             Sector.Name.BrittleHollow,
             Sector.Name.Comet,
@@ -27,7 +28,7 @@ namespace QSB.TransformSync
             Sector.Name.TimberMoon,
             Sector.Name.VolcanicMoon,
             Sector.Name.WhiteHole
-        });
+        };
 
         private void Start()
         {
@@ -39,7 +40,7 @@ namespace QSB.TransformSync
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<Sector>("OnEntry", typeof(Patches), nameof(Patches.PreEntry));
+            QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
         }
 
         public void SetSector(uint id, Transform sectorTransform)
@@ -107,28 +108,22 @@ namespace QSB.TransformSync
 
         private static class Patches
         {
-            public static void PreEntry(Sector __instance, GameObject hitObj)
+            private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
             {
-                SectorDetector sectorDetector = hitObj.GetComponent<SectorDetector>();
-                if (sectorDetector == null)
+                if (!Instance.sectorWhitelist.Contains(sector.GetName()))
                 {
                     return;
                 }
 
-                if (!Instance.SectorWhitelist.Contains(__instance.GetName()))
+                if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
                 {
+                    PlayerTransformSync.LocalInstance.EnterSector(sector);
                     return;
                 }
 
-                if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
+                if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
                 {
-                    PlayerTransformSync.LocalInstance.EnterSector(__instance);
-                    return;
-                }
-
-                if (sectorDetector.GetOccupantType() == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
-                {
-                    ShipTransformSync.LocalInstance.EnterSector(__instance);
+                    ShipTransformSync.LocalInstance.EnterSector(sector);
                 }
             }
         }
