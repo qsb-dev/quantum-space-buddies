@@ -2,6 +2,7 @@
 using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.TransformSync;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -156,7 +157,7 @@ namespace QSB.TimeSync
                 var message = new DeathMessage
                 {
                     PlayerName = PlayerJoin.MyName,
-                    SenderId = NetPlayer.LocalInstance.netId.Value,
+                    SenderId = PlayerTransformSync.LocalInstance.netId.Value,
                     DeathId = (short)deathType
                 };
                 _instance._deathHandler.SendToServer(message);
