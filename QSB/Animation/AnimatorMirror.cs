@@ -10,7 +10,6 @@ namespace QSB.Animation
 
         private Animator _from;
         private Animator _to;
-        private bool _isRunning;
 
         private readonly Dictionary<string, AnimFloatParam> _floatParams = new Dictionary<string, AnimFloatParam>();
 
@@ -30,12 +29,11 @@ namespace QSB.Animation
             {
                 _floatParams.Add(param.name, new AnimFloatParam());
             }
-            _isRunning = true;
         }
 
         private void Update()
         {
-            if (!_isRunning || _to == null || _from == null)
+            if (_to == null || _from == null)
             {
                 return;
             }

@@ -31,30 +31,19 @@ namespace QSB.Events
         {
             DebugLog.All(message.PlayerName, "left");
             PlayerJoin.PlayerNames.Remove(message.SenderId);
-            CleanUpPlayer(message.SenderId);
-            CleanUpShip(message.ShipId);
+            DestroySyncedObject<PlayerTransformSync>(message.SenderId);
+            DestroySyncedObject<ShipTransformSync>(message.ShipId);
         }
 
-        private void CleanUpPlayer(uint playerId)
+        private void DestroySyncedObject<T>(uint id) where T : TransformSync.TransformSync
         {
-            var playerTransformSync = GameObject.FindObjectsOfType<PlayerTransformSync>()
-                .FirstOrDefault(x => x.netId.Value == playerId);
-            if (playerTransformSync == null)
+            var transformSync = GameObject.FindObjectsOfType<T>()
+                .FirstOrDefault(x => x.netId.Value == id);
+            if (transformSync == null)
             {
                 return;
             }
-            Destroy(playerTransformSync.SyncedTransform.gameObject);
-        }
-
-        private void CleanUpShip(uint shipId)
-        {
-            var shipTransformSync = GameObject.FindObjectsOfType<ShipTransformSync>()
-                .FirstOrDefault(x => x.netId.Value == shipId);
-            if (shipTransformSync == null)
-            {
-                return;
-            }
-            Destroy(shipTransformSync.SyncedTransform.gameObject);
+            Destroy(transformSync.SyncedTransform.gameObject);
         }
 
     }
