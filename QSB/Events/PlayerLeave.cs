@@ -14,7 +14,6 @@ namespace QSB.Events
         {
             _leaveHandler = new MessageHandler<LeaveMessage>();
             _leaveHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            _leaveHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
         public void Leave(uint playerId, uint shipId)
@@ -25,11 +24,6 @@ namespace QSB.Events
                 SenderId = playerId,
                 ShipId = shipId
             };
-            _leaveHandler.SendToAll(message);
-        }
-
-        private void OnServerReceiveMessage(LeaveMessage message)
-        {
             _leaveHandler.SendToAll(message);
         }
 
