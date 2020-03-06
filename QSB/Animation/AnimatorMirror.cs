@@ -35,7 +35,7 @@ namespace QSB.Animation
 
         private void Update()
         {
-            if (!_isRunning)
+            if (!_isRunning || _to == null || _from == null)
             {
                 return;
             }
