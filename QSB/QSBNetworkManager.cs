@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.Events;
 using QSB.TimeSync;
@@ -40,6 +41,7 @@ namespace QSB
             "Tuff"
         };
         private string _playerName;
+        private bool _canEditName;
 
         private void Awake()
         {
@@ -56,7 +58,21 @@ namespace QSB
 
             ConfigureNetworkManager();
 
-            _playerName = _defaultNames.OrderBy(x => Guid.NewGuid()).First();
+            _playerName = GetPlayerName();
+            _canEditName = true;
+        }
+
+        private string GetPlayerName()
+        {
+            var profileManager = StandaloneProfileManager.SharedInstance;
+            profileManager.Initialize();
+            var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
+            var profileName = profile?.profileName;
+            if (!string.IsNullOrEmpty(profileName))
+            {
+                return profileName;
+            }
+            return _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 
         private void ConfigureNetworkManager()
@@ -84,12 +100,27 @@ namespace QSB
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
+
+            _canEditName = false;
+        }
+
+        public override void OnStopClient()
+        {
+            DebugLog.Screen("OnStopClient");
+            _canEditName = true;
         }
 
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");
-            _playerName = GUI.TextField(new Rect(60, 10, 145, 20f), _playerName);
+            if (_canEditName)
+            {
+                _playerName = GUI.TextField(new Rect(60, 10, 145, 20f), _playerName);
+            }
+            else
+            {
+                GUI.Label(new Rect(60, 10, 145, 20f), _playerName);
+            }
         }
 
     }
