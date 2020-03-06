@@ -40,6 +40,7 @@ namespace QSB
             "Tuff"
         };
         private string _playerName;
+        private bool _canEditName;
 
         private void Awake()
         {
@@ -57,6 +58,7 @@ namespace QSB
             ConfigureNetworkManager();
 
             _playerName = _defaultNames.OrderBy(x => Guid.NewGuid()).First();
+            _canEditName = true;
         }
 
         private void ConfigureNetworkManager()
@@ -84,12 +86,37 @@ namespace QSB
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
+
+            _canEditName = false;
+        }
+
+        public override void OnStopClient()
+        {
+            DebugLog.Screen("OnStopClient");
+            _canEditName = true;
+        }
+
+        public override void OnServerDisconnect(NetworkConnection conn)
+        {
+            DebugLog.Screen("OnServerDisconnect");
+            
+            var playerId = conn.playerControllers[0].gameObject.GetComponent<NetPlayer>().netId.Value;
+            GetComponent<PlayerJoin>().Leave(playerId);
+
+            base.OnServerDisconnect(conn);
         }
 
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");
-            _playerName = GUI.TextField(new Rect(60, 10, 145, 20f), _playerName);
+            if (_canEditName)
+            {
+                _playerName = GUI.TextField(new Rect(60, 10, 145, 20f), _playerName);
+            }
+            else
+            {
+                GUI.Label(new Rect(60, 10, 145, 20f), _playerName);
+            }
         }
 
     }

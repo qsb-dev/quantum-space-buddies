@@ -12,12 +12,17 @@ namespace QSB.Events
         public static string MyName { get; private set; }
 
         private MessageHandler<JoinMessage> _joinHandler;
+        private MessageHandler<LeaveMessage> _leaveHandler;
 
         private void Awake()
         {
             _joinHandler = new MessageHandler<JoinMessage>();
             _joinHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _joinHandler.OnServerReceiveMessage += OnServerReceiveMessage;
+
+            _leaveHandler = new MessageHandler<LeaveMessage>();
+            _leaveHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+            _leaveHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
         public void Join(string playerName)
@@ -34,14 +39,17 @@ namespace QSB.Events
                 PlayerName = playerName,
                 SenderId = NetPlayer.LocalInstance.netId.Value
             };
-            if (isServer)
+            _joinHandler.SendToServer(message);
+        }
+
+        public void Leave(uint playerId) // called by server
+        {
+            var message = new LeaveMessage
             {
-                _joinHandler.SendToAll(message);
-            }
-            else
-            {
-                _joinHandler.SendToServer(message);
-            }
+                PlayerName = PlayerNames[playerId],
+                SenderId = playerId
+            };
+            _leaveHandler.SendToAll(message);
         }
 
         private void OnServerReceiveMessage(JoinMessage message)
@@ -53,6 +61,20 @@ namespace QSB.Events
         {
             PlayerNames[message.SenderId] = message.PlayerName;
             DebugLog.All(message.PlayerName, "joined!");
+        }
+
+        private void OnServerReceiveMessage(LeaveMessage message)
+        {
+            _leaveHandler.SendToAll(message);
+        }
+
+        private void OnClientReceiveMessage(LeaveMessage message)
+        {
+            if (PlayerNames.ContainsKey(message.SenderId))
+            {
+                PlayerNames.Remove(message.SenderId);
+            }
+            DebugLog.All(message.PlayerName, "left");
         }
 
     }
