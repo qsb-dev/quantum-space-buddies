@@ -112,6 +112,16 @@ namespace QSB
             _canEditName = true;
         }
 
+        public override void OnServerDisconnect(NetworkConnection conn)
+        {
+            DebugLog.Screen("OnServerDisconnect");
+
+            var playerId = conn.playerControllers[0].gameObject.GetComponent<NetPlayer>().netId.Value;
+            GetComponent<PlayerJoin>().Leave(playerId);
+
+            base.OnServerDisconnect(conn);
+        }
+
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");

@@ -8,7 +8,8 @@ namespace QSB.Messaging
         WakeUp = MsgType.Highest + 2,
         AnimTrigger = MsgType.Highest + 3,
         Join = MsgType.Highest + 4,
-        Death = MsgType.Highest + 5
+        Death = MsgType.Highest + 5,
+        Leave = MsgType.Highest + 6
         // Add other message types here, incrementing the value.
     }
 }
