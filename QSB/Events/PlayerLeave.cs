@@ -17,12 +17,13 @@ namespace QSB.Events
             _leaveHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        public void Leave(uint playerId)
+        public void Leave(uint playerId, uint shipId)
         {
             var message = new LeaveMessage
             {
                 PlayerName = PlayerJoin.PlayerNames[playerId],
-                SenderId = playerId
+                SenderId = playerId,
+                ShipId = shipId
             };
             _leaveHandler.SendToAll(message);
         }
@@ -37,7 +38,7 @@ namespace QSB.Events
             DebugLog.All(message.PlayerName, "left");
             PlayerJoin.PlayerNames.Remove(message.SenderId);
             CleanUpPlayer(message.SenderId);
-            CleanUpShip(message.SenderId);
+            CleanUpShip(message.ShipId);
         }
 
         private void CleanUpPlayer(uint playerId)
@@ -51,10 +52,10 @@ namespace QSB.Events
             Destroy(playerTransformSync.SyncedTransform.gameObject);
         }
 
-        private void CleanUpShip(uint playerId)
+        private void CleanUpShip(uint shipId)
         {
             var shipTransformSync = GameObject.FindObjectsOfType<ShipTransformSync>()
-                .FirstOrDefault(x => x.netId.Value == playerId);
+                .FirstOrDefault(x => x.netId.Value == shipId);
             if (shipTransformSync == null)
             {
                 return;
