@@ -84,6 +84,8 @@ namespace QSB
             connectionConfig.AddChannel(QosType.Unreliable);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
+
+            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
