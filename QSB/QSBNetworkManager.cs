@@ -48,6 +48,7 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
+            playerPrefab.AddComponent<NetPlayer>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
