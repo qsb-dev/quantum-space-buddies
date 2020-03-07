@@ -9,6 +9,11 @@ namespace QSB.TransformSync
 
         private Transform _playerModel;
 
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
+
         private Transform GetPlayerModel()
         {
             if (!_playerModel)
@@ -20,7 +25,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            LocalInstance = this;
             var body = GetPlayerModel();
 
             GetComponent<AnimationSync>().InitLocal(body);
