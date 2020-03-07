@@ -122,8 +122,8 @@ namespace QSB
             DebugLog.Screen("OnServerDisconnect");
 
             var playerId = conn.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            var shipId = conn.clientOwnedObjects.ToList()[1].Value; // fragile!
-            GetComponent<PlayerLeave>().Leave(playerId, shipId);
+            var objectIds = conn.clientOwnedObjects.Select(x => x.Value).ToArray();
+            GetComponent<PlayerLeave>().Leave(playerId, objectIds);
 
             base.OnServerDisconnect(conn);
         }

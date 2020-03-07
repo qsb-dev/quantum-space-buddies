@@ -1,4 +1,6 @@
-﻿using QSB.Messaging;
+﻿using System;
+using System.Linq;
+using QSB.Messaging;
 using UnityEngine.Networking;
 
 namespace QSB.Events
@@ -7,18 +9,18 @@ namespace QSB.Events
     {
         public override MessageType MessageType => MessageType.Leave;
 
-        public uint ShipId { get; set; }
+        public uint[] ObjectIds { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            ShipId = reader.ReadUInt32();
+            ObjectIds = reader.ReadString().Split(',').Select(x => Convert.ToUInt32(x)).ToArray();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(ShipId);
+            writer.Write(string.Join(",", ObjectIds.Select(x => x.ToString()).ToArray()));
         }
     }
 }

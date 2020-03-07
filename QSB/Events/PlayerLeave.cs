@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using QSB.Messaging;
-using QSB.TransformSync;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -16,13 +15,13 @@ namespace QSB.Events
             _leaveHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
-        public void Leave(uint playerId, uint shipId)
+        public void Leave(uint playerId, uint[] objectIds)
         {
             var message = new LeaveMessage
             {
                 PlayerName = PlayerJoin.PlayerNames[playerId],
                 SenderId = playerId,
-                ShipId = shipId
+                ObjectIds = objectIds
             };
             _leaveHandler.SendToAll(message);
         }
@@ -31,19 +30,26 @@ namespace QSB.Events
         {
             DebugLog.All(message.PlayerName, "left");
             PlayerJoin.PlayerNames.Remove(message.SenderId);
-            DestroySyncedObject<PlayerTransformSync>(message.SenderId);
-            DestroySyncedObject<ShipTransformSync>(message.ShipId);
+            foreach (var objectId in message.ObjectIds)
+            {
+                DestroyObject(objectId);
+            }
         }
 
-        private void DestroySyncedObject<T>(uint id) where T : TransformSync.TransformSync
+        private void DestroyObject(uint objectId)
         {
-            var transformSync = GameObject.FindObjectsOfType<T>()
-                .FirstOrDefault(x => x.netId.Value == id);
-            if (transformSync == null)
+            var component = GameObject.FindObjectsOfType<NetworkBehaviour>()
+                .FirstOrDefault(x => x.netId.Value == objectId);
+            if (component == null)
             {
                 return;
             }
-            Destroy(transformSync.SyncedTransform.gameObject);
+            var transformSync = component.GetComponent<TransformSync.TransformSync>();
+            if (transformSync != null)
+            {
+                Destroy(transformSync.SyncedTransform.gameObject);
+            }
+            Destroy(component.gameObject);
         }
 
     }

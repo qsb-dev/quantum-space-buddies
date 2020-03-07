@@ -94,9 +94,15 @@ namespace QSB.Animation
 
         public void Reset()
         {
+            if (_playerController == null)
+            {
+                return;
+            }
             _playerController.OnJump -= OnJump;
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
+            GlobalMessenger.RemoveListener("SuitUp", SuitUp);
+            GlobalMessenger.RemoveListener("RemoveSuit", SuitDown);
         }
 
         private void SendTrigger(AnimTrigger trigger)
