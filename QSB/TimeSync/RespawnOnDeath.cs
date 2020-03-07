@@ -2,6 +2,7 @@
 using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.TransformSync;
 using UnityEngine;
 
 namespace QSB.TimeSync
