@@ -12,7 +12,7 @@ namespace QSB.TransformSync
         private Dictionary<uint, Transform> _playerSectors;
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
-        private readonly Sector.Name[] sectorWhitelist = new Sector.Name[]{
+        private readonly Sector.Name[] _sectorWhitelist = {
             Sector.Name.BrambleDimension,
             Sector.Name.BrittleHollow,
             Sector.Name.Comet,
@@ -110,7 +110,7 @@ namespace QSB.TransformSync
         {
             private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
             {
-                if (!Instance.sectorWhitelist.Contains(sector.GetName()))
+                if (!Instance._sectorWhitelist.Contains(sector.GetName()))
                 {
                     return;
                 }

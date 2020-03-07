@@ -50,7 +50,6 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
-            playerPrefab.AddComponent<NetPlayer>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
@@ -102,6 +101,7 @@ namespace QSB
             DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
+            gameObject.AddComponent<PlayerLeave>();
 
             _canEditName = false;
         }
@@ -111,6 +111,7 @@ namespace QSB
             DebugLog.Screen("OnStopClient");
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<PlayerJoin>());
+            Destroy(GetComponent<PlayerLeave>());
             PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
 
             _canEditName = true;
@@ -120,8 +121,9 @@ namespace QSB
         {
             DebugLog.Screen("OnServerDisconnect");
 
-            var playerId = conn.playerControllers[0].gameObject.GetComponent<NetPlayer>().netId.Value;
-            GetComponent<PlayerJoin>().Leave(playerId);
+            var playerId = conn.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            var objectIds = conn.clientOwnedObjects.Select(x => x.Value).ToArray();
+            GetComponent<PlayerLeave>().Leave(playerId, objectIds);
 
             base.OnServerDisconnect(conn);
         }

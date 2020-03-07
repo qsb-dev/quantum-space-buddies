@@ -8,7 +8,8 @@ namespace QSB.TransformSync
         private const float SmoothTime = 0.1f;
         private static bool _isAwake;
 
-        private Transform _syncedTransform;
+        public Transform SyncedTransform { get; private set; }
+
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
@@ -36,10 +37,10 @@ namespace QSB.TransformSync
             Invoke(nameof(SetFirstSector), 1);
 
             transform.parent = Locator.GetRootTransform();
-            _syncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+            SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                _syncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
             }
         }
 
@@ -56,7 +57,7 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!_syncedTransform || !_isSectorSetUp)
+            if (!SyncedTransform || !_isSectorSetUp)
             {
                 return;
             }
@@ -65,21 +66,21 @@ namespace QSB.TransformSync
 
             if (hasAuthority)
             {
-                transform.position = sectorTransform.InverseTransformPoint(_syncedTransform.position);
-                transform.rotation = sectorTransform.InverseTransformRotation(_syncedTransform.rotation);
+                transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
             }
             else
             {
-                if (_syncedTransform.position == Vector3.zero)
+                if (SyncedTransform.position == Vector3.zero)
                 {
-                    _syncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                    SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
                 }
                 else
                 {
-                    _syncedTransform.parent = sectorTransform;
+                    SyncedTransform.parent = sectorTransform;
 
-                    _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                    _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+                    SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
                 }
             }
         }

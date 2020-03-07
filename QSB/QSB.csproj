@@ -108,7 +108,7 @@
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Events\JoinMessage.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
-    <Compile Include="NetPlayer.cs" />
+    <Compile Include="Events\PlayerLeave.cs" />
     <Compile Include="DebugLog.cs" />
     <Compile Include="Events\DeathMessage.cs" />
     <Compile Include="Events\PlayerJoin.cs" />
