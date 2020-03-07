@@ -14,11 +14,11 @@ namespace QSB.Animation
         private NetworkAnimator _netAnim;
         private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
-        private PlayerCharacterController _playerController;
         private RuntimeAnimatorController _suitedAnimController;
         private AnimatorOverrideController _unsuitedAnimController;
         private GameObject _suitedGraphics;
         private GameObject _unsuitedGraphics;
+        private PlayerCharacterController _playerController;
 
         private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
 
@@ -60,8 +60,8 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded += OnBecomeGrounded;
             _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener("SuitUp", SuitUp);
-            GlobalMessenger.AddListener("RemoveSuit", SuitDown);
+            GlobalMessenger.AddListener("SuitUp", OnSuitUp);
+            GlobalMessenger.AddListener("RemoveSuit", OnSuitDown);
         }
 
         public void InitRemote(Transform body)
@@ -89,8 +89,8 @@ namespace QSB.Animation
         private void OnBecomeGrounded() => SendTrigger(AnimTrigger.Grounded);
         private void OnBecomeUngrounded() => SendTrigger(AnimTrigger.Ungrounded);
 
-        private void SuitUp() => SendTrigger(AnimTrigger.SuitUp);
-        private void SuitDown() => SendTrigger(AnimTrigger.SuitDown);
+        private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
+        private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
 
         public void Reset()
         {
@@ -101,8 +101,8 @@ namespace QSB.Animation
             _playerController.OnJump -= OnJump;
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener("SuitUp", SuitUp);
-            GlobalMessenger.RemoveListener("RemoveSuit", SuitDown);
+            GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
+            GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
         }
 
         private void SendTrigger(AnimTrigger trigger)
