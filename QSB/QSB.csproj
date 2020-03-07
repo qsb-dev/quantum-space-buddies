@@ -106,6 +106,7 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
+    <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Events\JoinMessage.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
     <Compile Include="NetPlayer.cs" />

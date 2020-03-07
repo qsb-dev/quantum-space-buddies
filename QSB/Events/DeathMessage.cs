@@ -7,18 +7,18 @@ namespace QSB.Events
     {
         public override MessageType MessageType => MessageType.Death;
 
-        public short DeathId { get; set; }
+        public DeathType DeathType { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            DeathId = reader.ReadInt16();
+            DeathType = (DeathType)reader.ReadInt16();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(DeathId);
+            writer.Write((short)DeathType);
         }
     }
 }
