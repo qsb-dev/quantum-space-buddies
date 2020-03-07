@@ -53,9 +53,9 @@ namespace QSB.Events
             } },
             { DeathType.BigBang, new[]
             {
-                "Player sacrificed themself for the universe",
-                "Player knows the true meaning of sacrifice",
-                "Player won at the cost of their life"
+                "{0} sacrificed themself for the universe",
+                "{0} knows the true meaning of sacrifice",
+                "{0} won at the cost of their life"
             } },
             { DeathType.Crushed, new[]
             {
