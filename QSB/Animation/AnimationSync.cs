@@ -18,6 +18,7 @@ namespace QSB.Animation
         private AnimatorOverrideController _unsuitedAnimController;
         private GameObject _suitedGraphics;
         private GameObject _unsuitedGraphics;
+        private PlayerCharacterController _playerController;
 
         private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
 
@@ -54,13 +55,13 @@ namespace QSB.Animation
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
-            var playerController = body.parent.GetComponent<PlayerCharacterController>();
-            playerController.OnJump += () => SendTrigger(AnimTrigger.Jump);
-            playerController.OnBecomeGrounded += () => SendTrigger(AnimTrigger.Grounded);
-            playerController.OnBecomeUngrounded += () => SendTrigger(AnimTrigger.Ungrounded);
+            _playerController = body.parent.GetComponent<PlayerCharacterController>();
+            _playerController.OnJump += OnJump;
+            _playerController.OnBecomeGrounded += OnBecomeGrounded;
+            _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener("SuitUp", () => SendTrigger(AnimTrigger.SuitUp));
-            GlobalMessenger.AddListener("RemoveSuit", () => SendTrigger(AnimTrigger.SuitDown));
+            GlobalMessenger.AddListener("SuitUp", OnSuitUp);
+            GlobalMessenger.AddListener("RemoveSuit", OnSuitDown);
         }
 
         public void InitRemote(Transform body)
@@ -82,6 +83,26 @@ namespace QSB.Animation
 
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+        }
+
+        private void OnJump() => SendTrigger(AnimTrigger.Jump);
+        private void OnBecomeGrounded() => SendTrigger(AnimTrigger.Grounded);
+        private void OnBecomeUngrounded() => SendTrigger(AnimTrigger.Ungrounded);
+
+        private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
+        private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
+
+        public void Reset()
+        {
+            if (_playerController == null)
+            {
+                return;
+            }
+            _playerController.OnJump -= OnJump;
+            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
+            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
+            GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
+            GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
         }
 
         private void SendTrigger(AnimTrigger trigger)
