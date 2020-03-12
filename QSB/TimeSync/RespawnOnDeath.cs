@@ -30,6 +30,7 @@ namespace QSB.TimeSync
 
             _instance = this;
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.EmptyMethod<ShipDamageController>("Explode");
         }
 
         private void PlayerWokeUp()
