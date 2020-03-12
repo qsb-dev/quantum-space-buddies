@@ -58,12 +58,10 @@ namespace QSB.TransformSync
         {
             if (!_isInitialized && IsReady())
             {
-                DebugLog.All("######## Init Transform Sync");
                 Init();
             }
             else if (_isInitialized && !IsReady())
             {
-                DebugLog.All("########### Reset Transform Sync");
                 Reset();
             }
 
