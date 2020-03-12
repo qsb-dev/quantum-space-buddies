@@ -7,7 +7,7 @@ namespace QSB.TransformSync
     public abstract class TransformSync : NetworkBehaviour
     {
         private const float SmoothTime = 0.1f;
-        protected bool _isInitialized;
+        private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
 
@@ -22,6 +22,7 @@ namespace QSB.TransformSync
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
+        protected abstract bool IsReady();
 
         protected void Init()
         {
@@ -55,6 +56,17 @@ namespace QSB.TransformSync
 
         private void Update()
         {
+            if (!_isInitialized && IsReady())
+            {
+                DebugLog.All("######## Init Transform Sync");
+                Init();
+            }
+            else if (_isInitialized && !IsReady())
+            {
+                DebugLog.All("########### Reset Transform Sync");
+                Reset();
+            }
+
             if (!SyncedTransform || !_isSectorSetUp)
             {
                 return;
