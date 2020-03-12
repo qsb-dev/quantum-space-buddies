@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
@@ -17,7 +16,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
         }
 
         protected abstract Transform InitLocalTransform();
@@ -27,10 +26,9 @@ namespace QSB.TransformSync
         protected void Init()
         {
             _isInitialized = true;
-            DebugLog.Screen("Start TransformSync", netId.Value);
             Invoke(nameof(SetFirstSector), 1);
 
-            transform.parent = Locator.GetRootTransform();
+            // transform.parent = Locator.GetRootTransform();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
@@ -41,6 +39,7 @@ namespace QSB.TransformSync
         protected void Reset()
         {
             _isInitialized = false;
+            _isSectorSetUp = false;
         }
 
         private void SetFirstSector()
@@ -65,7 +64,7 @@ namespace QSB.TransformSync
                 Reset();
             }
 
-            if (!SyncedTransform || !_isSectorSetUp)
+            if (!SyncedTransform || !_isSectorSetUp || !_isInitialized)
             {
                 return;
             }

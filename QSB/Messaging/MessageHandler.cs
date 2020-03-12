@@ -23,7 +23,6 @@ namespace QSB.Messaging
 
         private void Init()
         {
-            DebugLog.All("##### INIT Messagehandler");
             var message = (T)Activator.CreateInstance(typeof(T));
             NetworkServer.RegisterHandler((short)message.MessageType, OnServerReceiveMessageHandler);
             NetworkManager.singleton.client.RegisterHandler((short)message.MessageType, OnClientReceiveMessageHandler);

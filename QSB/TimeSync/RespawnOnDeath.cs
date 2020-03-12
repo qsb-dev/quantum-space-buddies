@@ -4,7 +4,6 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.TransformSync;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TimeSync
 {
