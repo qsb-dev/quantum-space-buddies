@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
         private const float SmoothTime = 0.1f;
-        private static bool _isAwake;
+        protected bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
 
@@ -17,22 +18,14 @@ namespace QSB.TransformSync
         protected virtual void Awake()
         {
             DontDestroyOnLoad(this);
-            if (_isAwake)
-            {
-                OnWakeUp();
-            }
-            else
-            {
-                GlobalMessenger.AddListener("WakeUp", OnWakeUp);
-            }
         }
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
 
-        private void OnWakeUp()
+        protected void Init()
         {
-            _isAwake = true;
+            _isInitialized = true;
             DebugLog.Screen("Start TransformSync", netId.Value);
             Invoke(nameof(SetFirstSector), 1);
 
@@ -42,6 +35,11 @@ namespace QSB.TransformSync
             {
                 SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
             }
+        }
+
+        protected void Reset()
+        {
+            _isInitialized = false;
         }
 
         private void SetFirstSector()

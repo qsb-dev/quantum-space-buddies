@@ -18,7 +18,7 @@ namespace QSB.TransformSync
         {
             if (!_playerModel)
             {
-                _playerModel = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
+                _playerModel = Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
             }
             return _playerModel;
         }
@@ -39,6 +39,20 @@ namespace QSB.TransformSync
             GetComponent<AnimationSync>().InitRemote(body);
 
             return body;
+        }
+
+        void Update()
+        {
+            if (!_isInitialized && Locator.GetPlayerTransform() != null)
+            {
+                DebugLog.All("######## Init Transform Sync");
+                base.Init();
+            }
+            else if (_isInitialized && Locator.GetPlayerTransform() == null)
+            {
+                DebugLog.All("########### Reset Transform Sync");
+                base.Reset();
+            }
         }
 
     }
