@@ -106,6 +106,7 @@ namespace QSB
             gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
             gameObject.AddComponent<PlayerLeave>();
+            gameObject.AddComponent<RespawnOnDeath>();
 
             _canEditName = false;
 
@@ -119,6 +120,7 @@ namespace QSB
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<PlayerJoin>());
             Destroy(GetComponent<PlayerLeave>());
+            Destroy(GetComponent<RespawnOnDeath>());
             PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
 
             _canEditName = true;
