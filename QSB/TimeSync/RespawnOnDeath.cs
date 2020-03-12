@@ -129,8 +129,8 @@ namespace QSB.TimeSync
         private void OnClientReceiveMessage(DeathMessage message)
         {
             var playerName = PlayerJoin.PlayerNames.TryGetValue(message.SenderId, out var n) ? n : message.PlayerName;
-            var deathType = ((DeathType)message.DeathId).ToString();
-            DebugLog.All($"{playerName} was killed by {deathType}!");
+            var deathMessage = Necronomicon.GetPhrase(message.DeathType);
+            DebugLog.All(string.Format(deathMessage, playerName));
         }
 
         internal static class Patches
@@ -158,7 +158,7 @@ namespace QSB.TimeSync
                 {
                     PlayerName = PlayerJoin.MyName,
                     SenderId = PlayerTransformSync.LocalInstance.netId.Value,
-                    DeathId = (short)deathType
+                    DeathType = deathType
                 };
                 _instance._deathHandler.SendToServer(message);
             }
