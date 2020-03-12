@@ -163,6 +163,10 @@ namespace QSB.TimeSync
 
             private static void BroadcastDeath(DeathType deathType)
             {
+                if (!QSBNetworkManager.IsReady)
+                {
+                    return;
+                }
                 var message = new DeathMessage
                 {
                     PlayerName = PlayerJoin.MyName,

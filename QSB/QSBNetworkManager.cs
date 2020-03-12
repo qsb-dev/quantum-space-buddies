@@ -6,12 +6,16 @@ using QSB.Events;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
+        public static UnityEvent OnNetworkManagerReady = new UnityEvent();
+        public static bool IsReady = false;
+
         private const int MaxConnections = 128;
 
         private AssetBundle _assetBundle;
@@ -104,6 +108,9 @@ namespace QSB
             gameObject.AddComponent<PlayerLeave>();
 
             _canEditName = false;
+
+            OnNetworkManagerReady.Invoke();
+            IsReady = true;
         }
 
         public override void OnStopClient()
