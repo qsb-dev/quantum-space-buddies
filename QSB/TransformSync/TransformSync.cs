@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
@@ -17,6 +18,15 @@ namespace QSB.TransformSync
         protected virtual void Awake()
         {
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (_isInitialized)
+            {
+                Reset();
+            }
         }
 
         protected abstract Transform InitLocalTransform();
