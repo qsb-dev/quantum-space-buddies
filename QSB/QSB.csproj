@@ -119,7 +119,6 @@
     <Compile Include="Messaging\QSBMessage.cs" />
     <Compile Include="TimeSync\RespawnOnDeath.cs" />
     <Compile Include="TransformSync\QuaternionHelper.cs" />
-    <Compile Include="QSBBehaviour.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
