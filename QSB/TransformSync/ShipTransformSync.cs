@@ -6,15 +6,9 @@ namespace QSB.TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
 
-        private Transform _shipModel;
-
         private Transform GetShipModel()
         {
-            if (!_shipModel)
-            {
-                _shipModel = Locator.GetShipBody().transform;
-            }
-            return _shipModel;
+            return Locator.GetShipTransform();
         }
 
         protected override Transform InitLocalTransform()
@@ -48,6 +42,11 @@ namespace QSB.TransformSync
                 += Vector3.up * 3.762f;
 
             return remoteTransform;
+        }
+
+        protected override bool IsReady()
+        {
+            return GetShipModel() != null;
         }
     }
 }

@@ -26,13 +26,21 @@ namespace QSB.TimeSync
 
         private void Awake()
         {
-            GlobalMessenger.AddListener("WakeUp", PlayerWokeUp);
-
             _instance = this;
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
+            QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
+            QSB.Helper.Events.OnEvent += OnEvent;
         }
 
-        private void PlayerWokeUp()
+        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
+        {
+            if (behaviour.GetType() == typeof(PlayerResources) && ev == OWML.Common.Events.AfterStart)
+            {
+                Init();
+            }
+        }
+
+        private void Init()
         {
             var playerTransform = Locator.GetPlayerTransform();
             _playerResources = playerTransform.GetComponent<PlayerResources>();

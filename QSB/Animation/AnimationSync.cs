@@ -22,12 +22,15 @@ namespace QSB.Animation
 
         private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
 
-        private void InitCommon(Transform body)
+        private void Awake()
         {
             _anim = gameObject.AddComponent<Animator>();
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
             _netAnim.animator = _anim;
+        }
 
+        private void InitCommon(Transform body)
+        {
             _bodyAnim = body.GetComponent<Animator>();
             var mirror = body.gameObject.AddComponent<AnimatorMirror>();
             if (isLocalPlayer)
