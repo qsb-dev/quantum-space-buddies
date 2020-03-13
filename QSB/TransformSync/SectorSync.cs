@@ -2,6 +2,7 @@
 using QSB.Messaging;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
@@ -30,6 +31,11 @@ namespace QSB.TransformSync
             Sector.Name.WhiteHole
         };
 
+        private void Awake()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
         private void Start()
         {
             Instance = this;
@@ -41,6 +47,11 @@ namespace QSB.TransformSync
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
             QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            _allSectors = null;
         }
 
         public void SetSector(uint id, Transform sectorTransform)

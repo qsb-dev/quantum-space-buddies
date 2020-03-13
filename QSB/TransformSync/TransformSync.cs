@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
         private const float SmoothTime = 0.1f;
-        private static bool _isAwake;
+        private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
 
@@ -16,32 +17,38 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            DontDestroyOnLoad(this);
-            if (_isAwake)
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (_isInitialized)
             {
-                OnWakeUp();
-            }
-            else
-            {
-                GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+                Reset();
             }
         }
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
+        protected abstract bool IsReady();
 
-        private void OnWakeUp()
+        protected void Init()
         {
-            _isAwake = true;
-            DebugLog.Screen("Start TransformSync", netId.Value);
+            _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
 
-            transform.parent = Locator.GetRootTransform();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
                 SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
             }
+        }
+
+        protected void Reset()
+        {
+            _isInitialized = false;
+            _isSectorSetUp = false;
         }
 
         private void SetFirstSector()
@@ -57,7 +64,16 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!SyncedTransform || !_isSectorSetUp)
+            if (!_isInitialized && IsReady())
+            {
+                Init();
+            }
+            else if (_isInitialized && !IsReady())
+            {
+                Reset();
+            }
+
+            if (!SyncedTransform || !_isSectorSetUp || !_isInitialized)
             {
                 return;
             }
