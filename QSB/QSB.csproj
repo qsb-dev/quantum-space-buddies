@@ -117,6 +117,7 @@
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Messaging\QSBMessage.cs" />
+    <Compile Include="TimeSync\PreventShipDestruction.cs" />
     <Compile Include="TimeSync\RespawnOnDeath.cs" />
     <Compile Include="TransformSync\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
