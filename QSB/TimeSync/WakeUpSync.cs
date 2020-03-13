@@ -20,6 +20,8 @@ namespace QSB.TimeSync
         private float _serverTime;
         private float _timeScale;
         private bool _isInputEnabled = true;
+        private int _localLoopCount;
+        private int _serverLoopCount;
 
         private void Start()
         {
@@ -40,6 +42,8 @@ namespace QSB.TimeSync
             {
                 SceneManager.sceneLoaded += OnSceneLoaded;
             }
+
+            GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -54,9 +58,13 @@ namespace QSB.TimeSync
             }
         }
 
+        private void OnLoopStart()
+        {
+            _localLoopCount++;
+        }
+
         private void Init()
         {
-            DebugLog.All("Init WakeUpSync");
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
@@ -78,7 +86,8 @@ namespace QSB.TimeSync
         {
             var message = new WakeUpMessage
             {
-                ServerTime = Time.timeSinceLevelLoad
+                ServerTime = Time.timeSinceLevelLoad,
+                LoopCount = _localLoopCount
             };
             _wakeUpHandler.SendToAll(message);
         }
@@ -90,12 +99,13 @@ namespace QSB.TimeSync
                 return;
             }
             _serverTime = message.ServerTime;
+            _serverLoopCount = message.LoopCount;
             WakeUpOrSleep();
         }
 
         private void WakeUpOrSleep()
         {
-            if (_state == State.NotLoaded)
+            if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
             {
                 return;
             }
