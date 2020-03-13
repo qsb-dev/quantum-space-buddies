@@ -9,7 +9,9 @@ namespace QSB.TimeSync
     public class WakeUpSync : NetworkBehaviour
     {
         private const float TimeThreshold = 0.5f;
-        private const float FastForwardSpeed = 10f;
+        private const float MaxFastForwardSpeed = 60f;
+        private const float MaxFastForwardDiff = 60f;
+        private const float MinFastForwardSpeed = 2f;
 
         private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
@@ -121,18 +123,18 @@ namespace QSB.TimeSync
 
             if (diff < -TimeThreshold)
             {
-                StartFastForwarding();
+                StartFastForwarding(diff);
                 return;
             }
         }
 
-        private void StartFastForwarding()
+        private void StartFastForwarding(float diff)
         {
             if (_state == State.FastForwarding)
             {
                 return;
             }
-            _timeScale = FastForwardSpeed;
+            _timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
             _state = State.FastForwarding;
         }
 
