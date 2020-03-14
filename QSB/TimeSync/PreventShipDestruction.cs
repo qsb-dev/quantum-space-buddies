@@ -13,6 +13,8 @@ namespace QSB.TimeSync
             QSB.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), "ReturnNull");
             QSB.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), "ReturnNull");
 
+            QSB.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
+
             QSB.Helper.Events.Subscribe<ShipDamageController>(OWML.Common.Events.AfterAwake);
             QSB.Helper.Events.OnEvent += OnEvent;
         }
