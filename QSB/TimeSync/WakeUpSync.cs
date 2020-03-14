@@ -207,15 +207,7 @@ namespace QSB.TimeSync
                 return;
             }
 
-            bool isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
-            bool isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
-
-            if (isDoneFastForwarding || isDonePausing)
-            {
-                ResetTimeScale();
-            }
-
-            if (_timeScale > 1)
+            if (_state == State.FastForwarding)
             {
                 var diff = _serverTime - Time.timeSinceLevelLoad;
                 Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
@@ -223,6 +215,14 @@ namespace QSB.TimeSync
             else
             {
                 Time.timeScale = _timeScale;
+            }
+
+            bool isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
+            bool isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+
+            if (isDoneFastForwarding || isDonePausing)
+            {
+                ResetTimeScale();
             }
 
             if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
