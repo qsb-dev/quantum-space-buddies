@@ -10,7 +10,7 @@ namespace QSB.TimeSync
     {
         private const float TimeThreshold = 0.5f;
         private const float MaxFastForwardSpeed = 60f;
-        private const float MaxFastForwardDiff = 60f;
+        private const float MaxFastForwardDiff = 20f;
         private const float MinFastForwardSpeed = 2f;
 
         private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
