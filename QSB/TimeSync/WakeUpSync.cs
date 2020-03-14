@@ -134,7 +134,7 @@ namespace QSB.TimeSync
             {
                 return;
             }
-            _timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+            _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
         }
 
@@ -215,7 +215,15 @@ namespace QSB.TimeSync
                 ResetTimeScale();
             }
 
-            Time.timeScale = _timeScale;
+            if (_timeScale > 1)
+            {
+                var diff = _serverTime - Time.timeSinceLevelLoad;
+                Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+            }
+            else
+            {
+                Time.timeScale = _timeScale;
+            }
 
             if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
             {
