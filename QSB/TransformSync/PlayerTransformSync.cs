@@ -7,20 +7,18 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
-        private Transform _playerModel;
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
 
         private Transform GetPlayerModel()
         {
-            if (!_playerModel)
-            {
-                _playerModel = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2");
-            }
-            return _playerModel;
+            return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
         }
 
         protected override Transform InitLocalTransform()
         {
-            LocalInstance = this;
             var body = GetPlayerModel();
 
             GetComponent<AnimationSync>().InitLocal(body);
@@ -51,6 +49,11 @@ namespace QSB.TransformSync
             //Destroy(capsule.GetComponent<BoxCollider>());
 
             return body;
+        }
+
+        protected override bool IsReady()
+        {
+            return Locator.GetPlayerTransform() != null;
         }
 
     }

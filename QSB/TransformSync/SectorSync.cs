@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using QSB.Messaging;
 using UnityEngine;
+using System.Linq;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
@@ -11,6 +13,28 @@ namespace QSB.TransformSync
         private Dictionary<uint, Transform> _playerSectors;
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
+        private readonly Sector.Name[] _sectorWhitelist = {
+            Sector.Name.BrambleDimension,
+            Sector.Name.BrittleHollow,
+            Sector.Name.Comet,
+            Sector.Name.DarkBramble,
+            Sector.Name.EyeOfTheUniverse,
+            Sector.Name.GiantsDeep,
+            Sector.Name.HourglassTwin_A,
+            Sector.Name.HourglassTwin_B,
+            Sector.Name.OrbitalProbeCannon,
+            Sector.Name.QuantumMoon,
+            Sector.Name.SunStation,
+            Sector.Name.TimberHearth,
+            Sector.Name.TimberMoon,
+            Sector.Name.VolcanicMoon,
+            Sector.Name.WhiteHole
+        };
+
+        private void Awake()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
 
         private void Start()
         {
@@ -23,6 +47,11 @@ namespace QSB.TransformSync
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
             QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            _allSectors = null;
         }
 
         public void SetSector(uint id, Transform sectorTransform)
@@ -88,7 +117,7 @@ namespace QSB.TransformSync
         {
             private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
             {
-                if (sector.GetName() == Sector.Name.Unnamed || sector.GetName() == Sector.Name.Ship || sector.GetName() == Sector.Name.Sun || sector.GetName() == Sector.Name.HourglassTwins)
+                if (!Instance._sectorWhitelist.Contains(sector.GetName()))
                 {
                     return;
                 }

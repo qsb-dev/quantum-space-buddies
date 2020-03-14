@@ -1,42 +1,54 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
         private const float SmoothTime = 0.1f;
-        private static bool _isAwake;
+        private bool _isInitialized;
 
-        private Transform _syncedTransform;
+        public Transform SyncedTransform { get; private set; }
+
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
 
         protected virtual void Awake()
         {
-            DontDestroyOnLoad(this);
-            if (_isAwake)
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (_isInitialized)
             {
-                OnWakeUp();
-            }
-            else
-            {
-                GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+                Reset();
             }
         }
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
+        protected abstract bool IsReady();
 
-        private void OnWakeUp()
+        protected void Init()
         {
-            _isAwake = true;
-            DebugLog.Screen("Start TransformSync", netId.Value);
+            _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
 
-            transform.parent = Locator.GetRootTransform();
-            _syncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+            SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+            if (!hasAuthority)
+            {
+                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+            }
+        }
+
+        protected void Reset()
+        {
+            _isInitialized = false;
+            _isSectorSetUp = false;
         }
 
         private void SetFirstSector()
@@ -52,7 +64,16 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!_syncedTransform || !_isSectorSetUp)
+            if (!_isInitialized && IsReady())
+            {
+                Init();
+            }
+            else if (_isInitialized && !IsReady())
+            {
+                Reset();
+            }
+
+            if (!SyncedTransform || !_isSectorSetUp || !_isInitialized)
             {
                 return;
             }
@@ -61,15 +82,22 @@ namespace QSB.TransformSync
 
             if (hasAuthority)
             {
-                transform.position = sectorTransform.InverseTransformPoint(_syncedTransform.position);
-                transform.rotation = sectorTransform.InverseTransformRotation(_syncedTransform.rotation);
+                transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
             }
             else
             {
-                _syncedTransform.parent = sectorTransform;
+                if (SyncedTransform.position == Vector3.zero)
+                {
+                    SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                }
+                else
+                {
+                    SyncedTransform.parent = sectorTransform;
 
-                _syncedTransform.localPosition = Vector3.SmoothDamp(_syncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                _syncedTransform.localRotation = QuaternionHelper.SmoothDamp(_syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+                    SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                }
             }
         }
     }

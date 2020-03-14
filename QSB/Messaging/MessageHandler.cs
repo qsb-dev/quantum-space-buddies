@@ -11,6 +11,18 @@ namespace QSB.Messaging
 
         public MessageHandler()
         {
+            if (QSBNetworkManager.IsReady)
+            {
+                Init();
+            }
+            else
+            {
+                QSBNetworkManager.OnNetworkManagerReady.AddListener(Init);
+            }
+        }
+
+        private void Init()
+        {
             var message = (T)Activator.CreateInstance(typeof(T));
             NetworkServer.RegisterHandler((short)message.MessageType, OnServerReceiveMessageHandler);
             NetworkManager.singleton.client.RegisterHandler((short)message.MessageType, OnClientReceiveMessageHandler);
@@ -18,11 +30,19 @@ namespace QSB.Messaging
 
         public void SendToAll(T message)
         {
+            if (!QSBNetworkManager.IsReady)
+            {
+                return;
+            }
             NetworkServer.SendToAll((short)message.MessageType, message);
         }
 
         public void SendToServer(T message)
         {
+            if (!QSBNetworkManager.IsReady)
+            {
+                return;
+            }
             NetworkManager.singleton.client.Send((short)message.MessageType, message);
         }
 

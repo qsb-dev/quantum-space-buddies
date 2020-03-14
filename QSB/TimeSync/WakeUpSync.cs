@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,9 +9,11 @@ namespace QSB.TimeSync
     public class WakeUpSync : NetworkBehaviour
     {
         private const float TimeThreshold = 0.5f;
-        private const float FastForwardSpeed = 10f;
+        private const float MaxFastForwardSpeed = 60f;
+        private const float MaxFastForwardDiff = 20f;
+        private const float MinFastForwardSpeed = 2f;
 
-        private enum State { NotLoaded, EyesClosed, Awake, FastForwarding, Pausing }
+        private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
 
         private MessageHandler<WakeUpMessage> _wakeUpHandler;
@@ -21,6 +22,8 @@ namespace QSB.TimeSync
         private float _serverTime;
         private float _timeScale;
         private bool _isInputEnabled = true;
+        private int _localLoopCount;
+        private int _serverLoopCount;
 
         private void Start()
         {
@@ -29,25 +32,42 @@ namespace QSB.TimeSync
                 return;
             }
 
-            DebugLog.Screen("Start WakeUpSync");
-            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
-            SceneManager.sceneLoaded += OnSceneLoaded;
-
             _wakeUpHandler = new MessageHandler<WakeUpMessage>();
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+
+            var sceneName = SceneManager.GetActiveScene().name;
+            if (sceneName == "SolarSystem" || sceneName == "EyeOfTheUniverse")
+            {
+                Init();
+            }
+            else
+            {
+                SceneManager.sceneLoaded += OnSceneLoaded;
+            }
+
+            GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name == "SolarSystem")
+            if (scene.name == "SolarSystem" || scene.name == "EyeOfTheUniverse")
             {
-                _state = State.EyesClosed;
+                Init();
+            }
+            else
+            {
+                Reset();
             }
         }
 
-        private void OnWakeUp()
+        private void OnLoopStart()
         {
-            _state = State.Awake;
+            _localLoopCount++;
+        }
+
+        private void Init()
+        {
+            _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
             {
@@ -59,11 +79,17 @@ namespace QSB.TimeSync
             }
         }
 
+        private void Reset()
+        {
+            _state = State.NotLoaded;
+        }
+
         private void SendServerTime()
         {
             var message = new WakeUpMessage
             {
-                ServerTime = Time.timeSinceLevelLoad
+                ServerTime = Time.timeSinceLevelLoad,
+                LoopCount = _localLoopCount
             };
             _wakeUpHandler.SendToAll(message);
         }
@@ -75,25 +101,15 @@ namespace QSB.TimeSync
                 return;
             }
             _serverTime = message.ServerTime;
+            _serverLoopCount = message.LoopCount;
             WakeUpOrSleep();
         }
 
         private void WakeUpOrSleep()
         {
-            if (_state == State.NotLoaded)
+            if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
             {
                 return;
-            }
-
-            if (_state == State.EyesClosed)
-            {
-                OpenEyes();
-                _state = State.Awake;
-
-                if (!isServer)
-                {
-                    DisableInput();
-                }
             }
 
             var myTime = Time.timeSinceLevelLoad;
@@ -107,37 +123,18 @@ namespace QSB.TimeSync
 
             if (diff < -TimeThreshold)
             {
-                StartFastForwarding();
+                StartFastForwarding(diff);
                 return;
             }
         }
 
-        private void OpenEyes()
-        {
-            // I copied all of this from my AutoResume mod, since that already wakes up the player instantly.
-            // There must be a simpler way to do this though, I just couldn't find it.
-
-            // Skip wake up animation.
-            var cameraEffectController = FindObjectOfType<PlayerCameraEffectController>();
-            cameraEffectController.OpenEyes(0, true);
-            cameraEffectController.SetValue("_wakeLength", 0f);
-            cameraEffectController.SetValue("_waitForWakeInput", false);
-
-            // Skip wake up prompt.
-            LateInitializerManager.pauseOnInitialization = false;
-            Locator.GetPauseCommandListener().RemovePauseCommandLock();
-            Locator.GetPromptManager().RemoveScreenPrompt(cameraEffectController.GetValue<ScreenPrompt>("_wakePrompt"));
-            OWTime.Unpause(OWTime.PauseType.Sleeping);
-            cameraEffectController.Invoke("WakeUp");
-        }
-
-        private void StartFastForwarding()
+        private void StartFastForwarding(float diff)
         {
             if (_state == State.FastForwarding)
             {
                 return;
             }
-            _timeScale = FastForwardSpeed;
+            _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
         }
 
@@ -154,7 +151,7 @@ namespace QSB.TimeSync
         private void ResetTimeScale()
         {
             _timeScale = 1f;
-            _state = State.Awake;
+            _state = State.Loaded;
 
             if (!_isInputEnabled)
             {
@@ -188,7 +185,7 @@ namespace QSB.TimeSync
 
         private void UpdateServer()
         {
-            if (_state != State.Awake)
+            if (_state != State.Loaded)
             {
                 return;
             }
@@ -205,9 +202,19 @@ namespace QSB.TimeSync
         {
             _serverTime += Time.unscaledDeltaTime;
 
-            if (_state == State.NotLoaded || _state == State.EyesClosed)
+            if (_state == State.NotLoaded)
             {
                 return;
+            }
+
+            if (_state == State.FastForwarding)
+            {
+                var diff = _serverTime - Time.timeSinceLevelLoad;
+                Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+            }
+            else
+            {
+                Time.timeScale = _timeScale;
             }
 
             bool isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
@@ -217,8 +224,6 @@ namespace QSB.TimeSync
             {
                 ResetTimeScale();
             }
-
-            Time.timeScale = _timeScale;
 
             if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
             {

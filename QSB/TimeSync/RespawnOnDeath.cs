@@ -1,5 +1,8 @@
 ﻿using System.Linq;
 using OWML.ModHelper.Events;
+using QSB.Events;
+using QSB.Messaging;
+using QSB.TransformSync;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -7,6 +10,12 @@ namespace QSB.TimeSync
     public class RespawnOnDeath : MonoBehaviour
     {
         private static RespawnOnDeath _instance;
+
+        private static readonly DeathType[] _allowedDeathTypes = {
+            DeathType.BigBang,
+            DeathType.Supernova,
+            DeathType.TimeLoop
+        };
 
         private SpawnPoint _shipSpawnPoint;
         private SpawnPoint _playerSpawnPoint;
@@ -18,16 +27,26 @@ namespace QSB.TimeSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
+        private MessageHandler<DeathMessage> _deathHandler;
 
         private void Awake()
         {
-            GlobalMessenger.AddListener("WakeUp", PlayerWokeUp);
-
             _instance = this;
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.BroadcastDeath));
+            QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
+            QSB.Helper.Events.OnEvent += OnEvent;
         }
 
-        private void PlayerWokeUp()
+        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
+        {
+            if (behaviour.GetType() == typeof(PlayerResources) && ev == OWML.Common.Events.AfterStart)
+            {
+                Init();
+            }
+        }
+
+        private void Init()
         {
             var playerTransform = Locator.GetPlayerTransform();
             _playerResources = playerTransform.GetComponent<PlayerResources>();
@@ -50,6 +69,9 @@ namespace QSB.TimeSync
                 _shipSpawnPoint.transform.rotation = shipTransform.rotation;
             }
 
+            _deathHandler = new MessageHandler<DeathMessage>();
+            _deathHandler.OnServerReceiveMessage += OnServerReceiveMessage;
+            _deathHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
         public void ResetShip()
@@ -113,14 +135,23 @@ namespace QSB.TimeSync
                 );
         }
 
+        private void OnServerReceiveMessage(DeathMessage message)
+        {
+            _deathHandler.SendToAll(message);
+        }
+
+        private void OnClientReceiveMessage(DeathMessage message)
+        {
+            var playerName = PlayerJoin.PlayerNames.TryGetValue(message.SenderId, out var n) ? n : message.PlayerName;
+            var deathMessage = Necronomicon.GetPhrase(message.DeathType);
+            DebugLog.All(string.Format(deathMessage, playerName));
+        }
+
         internal static class Patches
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
             {
-                DebugLog.Screen("Death by " + deathType);
-                QSB.Helper.Console.WriteLine("Death by " + deathType);
-
-                if (deathType == DeathType.Supernova)
+                if (_allowedDeathTypes.Contains(deathType))
                 {
                     // Allow real death
                     return true;
@@ -132,6 +163,18 @@ namespace QSB.TimeSync
                 // Prevent original death method from running.
                 return false;
             }
+
+            public static void BroadcastDeath(DeathType deathType)
+            {
+                var message = new DeathMessage
+                {
+                    PlayerName = PlayerJoin.MyName,
+                    SenderId = PlayerTransformSync.LocalInstance.netId.Value,
+                    DeathType = deathType
+                };
+                _instance._deathHandler.SendToServer(message);
+            }
+
         }
     }
 }

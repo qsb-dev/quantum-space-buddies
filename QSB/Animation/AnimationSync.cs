@@ -11,54 +11,67 @@ namespace QSB.Animation
     {
         private Animator _anim;
         private Animator _bodyAnim;
-        private QSBNetAnim _netAnim;
+        private NetworkAnimator _netAnim;
         private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
         private RuntimeAnimatorController _suitedAnimController;
         private AnimatorOverrideController _unsuitedAnimController;
         private GameObject _suitedGraphics;
         private GameObject _unsuitedGraphics;
+        private PlayerCharacterController _playerController;
 
         private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
 
         private void Awake()
         {
-            if (_anim == null)
+            _anim = gameObject.AddComponent<Animator>();
+            _netAnim = gameObject.AddComponent<NetworkAnimator>();
+            _netAnim.enabled = false;
+            _netAnim.animator = _anim;
+        }
+
+        private void InitCommon(Transform body)
+        {
+            _netAnim.enabled = true;
+            _bodyAnim = body.GetComponent<Animator>();
+            var mirror = body.gameObject.AddComponent<AnimatorMirror>();
+            if (isLocalPlayer)
             {
-                _anim = gameObject.AddComponent<Animator>();
+                mirror.Init(_bodyAnim, _anim);
             }
-            if (_netAnim == null)
+            else
             {
-                _netAnim = gameObject.AddComponent<QSBNetAnim>();
-                _netAnim.animator = _anim;
+                mirror.Init(_anim, _bodyAnim);
+            }
+
+            PlayerAnimSyncs[netId.Value] = this;
+
+            for (var i = 0; i < _anim.parameterCount; i++)
+            {
+                _netAnim.SetParameterAutoSend(i, true);
             }
         }
 
         public void InitLocal(Transform body)
         {
-            _bodyAnim = body.GetComponent<Animator>();
-            body.gameObject.AddComponent<AnimatorMirror>().Init(_bodyAnim, _anim);
+            InitCommon(body);
 
             _triggerHandler = new MessageHandler<AnimTriggerMessage>();
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
-            var playerController = body.parent.GetComponent<PlayerCharacterController>();
-            playerController.OnJump += () => SendTrigger(AnimTrigger.Jump);
-            playerController.OnBecomeGrounded += () => SendTrigger(AnimTrigger.Grounded);
-            playerController.OnBecomeUngrounded += () => SendTrigger(AnimTrigger.Ungrounded);
+            _playerController = body.parent.GetComponent<PlayerCharacterController>();
+            _playerController.OnJump += OnJump;
+            _playerController.OnBecomeGrounded += OnBecomeGrounded;
+            _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener("SuitUp", () => SendTrigger(AnimTrigger.SuitUp));
-            GlobalMessenger.AddListener("RemoveSuit", () => SendTrigger(AnimTrigger.SuitDown));
-
-            InitCommon();
+            GlobalMessenger.AddListener("SuitUp", OnSuitUp);
+            GlobalMessenger.AddListener("RemoveSuit", OnSuitDown);
         }
 
         public void InitRemote(Transform body)
         {
-            Awake();
-            _bodyAnim = body.GetComponent<Animator>();
-            body.gameObject.AddComponent<AnimatorMirror>().Init(_anim, _bodyAnim);
+            InitCommon(body);
 
             _suitedAnimController = _bodyAnim.runtimeAnimatorController;
 
@@ -75,18 +88,27 @@ namespace QSB.Animation
 
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
-
-            InitCommon();
         }
 
-        private void InitCommon()
-        {
-            PlayerAnimSyncs.Add(netId.Value, this);
+        private void OnJump() => SendTrigger(AnimTrigger.Jump);
+        private void OnBecomeGrounded() => SendTrigger(AnimTrigger.Grounded);
+        private void OnBecomeUngrounded() => SendTrigger(AnimTrigger.Ungrounded);
 
-            for (var i = 0; i < _anim.parameterCount; i++)
+        private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
+        private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
+
+        public void Reset()
+        {
+            if (_playerController == null)
             {
-                _netAnim.SetParameterAutoSend(i, true);
+                return;
             }
+            _netAnim.enabled = false;
+            _playerController.OnJump -= OnJump;
+            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
+            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
+            GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
+            GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
         }
 
         private void SendTrigger(AnimTrigger trigger)
