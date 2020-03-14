@@ -1,16 +1,17 @@
-﻿using OWML.ModHelper.Events;
+﻿using System.Collections.Generic;
+using System.Reflection.Emit;
+using Harmony;
+using OWML.ModHelper.Events;
 using UnityEngine;
 
 namespace QSB.TimeSync
 {
     public class PreventShipDestruction : MonoBehaviour
     {
-        private ShipModule[] _shipModules;
-
         private void Awake()
         {
-            QSB.Helper.HarmonyHelper.EmptyMethod<ShipDamageController>("OnImpact");
-            QSB.Helper.HarmonyHelper.EmptyMethod<ShipDamageController>("Explode");
+            QSB.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), "ReturnNull");
+            QSB.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), "ReturnNull");
 
             QSB.Helper.Events.Subscribe<ShipDamageController>(OWML.Common.Events.AfterAwake);
             QSB.Helper.Events.OnEvent += OnEvent;
@@ -20,21 +21,19 @@ namespace QSB.TimeSync
         {
             if (behaviour.GetType() == typeof(ShipDamageController) && ev == OWML.Common.Events.AfterAwake)
             {
-                _shipModules = behaviour.GetValue<ShipModule[]>("_shipModules");
-                var impactSensor = behaviour.GetValue<ImpactSensor>("_impactSensor");
-                impactSensor.OnImpact += OnImpact;
+                behaviour.SetValue("_exploded", true);
             }
         }
 
-        private void OnImpact(ImpactData impact)
+        private static class Patch
         {
-            if (impact.otherCollider.attachedRigidbody != null && impact.otherCollider.attachedRigidbody.CompareTag("Player") && PlayerState.IsInsideShip())
+            public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions)
             {
-                return;
-            }
-            foreach (var module in _shipModules)
-            {
-                module.ApplyImpact(impact);
+                return new List<CodeInstruction>
+                {
+                    new CodeInstruction(OpCodes.Ldnull),
+                    new CodeInstruction(OpCodes.Ret)
+                };
             }
         }
 
