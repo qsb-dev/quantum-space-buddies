@@ -26,11 +26,13 @@ namespace QSB.Animation
         {
             _anim = gameObject.AddComponent<Animator>();
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
+            _netAnim.enabled = false;
             _netAnim.animator = _anim;
         }
 
         private void InitCommon(Transform body)
         {
+            _netAnim.enabled = true;
             _bodyAnim = body.GetComponent<Animator>();
             var mirror = body.gameObject.AddComponent<AnimatorMirror>();
             if (isLocalPlayer)
@@ -101,6 +103,7 @@ namespace QSB.Animation
             {
                 return;
             }
+            _netAnim.enabled = false;
             _playerController.OnJump -= OnJump;
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
