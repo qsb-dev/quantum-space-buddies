@@ -11,6 +11,13 @@ namespace QSB.TimeSync
     {
         private static RespawnOnDeath _instance;
 
+        private static readonly DeathType[] _allowedDeathTypes = {
+            DeathType.BigBang,
+            DeathType.BlackHole,
+            DeathType.Supernova,
+            DeathType.TimeLoop
+        };
+
         private SpawnPoint _shipSpawnPoint;
         private SpawnPoint _playerSpawnPoint;
         private OWRigidbody _shipBody;
@@ -21,13 +28,13 @@ namespace QSB.TimeSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
-
         private MessageHandler<DeathMessage> _deathHandler;
 
         private void Awake()
         {
             _instance = this;
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.OnEvent += OnEvent;
         }
@@ -145,9 +152,7 @@ namespace QSB.TimeSync
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
             {
-                BroadcastDeath(deathType);
-
-                if (deathType == DeathType.Supernova)
+                if (_allowedDeathTypes.Contains(deathType))
                 {
                     // Allow real death
                     return true;
@@ -160,7 +165,7 @@ namespace QSB.TimeSync
                 return false;
             }
 
-            private static void BroadcastDeath(DeathType deathType)
+            public static void BroadcastDeath(DeathType deathType)
             {
                 var message = new DeathMessage
                 {
