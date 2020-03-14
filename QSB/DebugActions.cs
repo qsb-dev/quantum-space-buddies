@@ -28,6 +28,10 @@ namespace QSB
 
         void Update()
         {
+            if (!QSB.DebugMode)
+            {
+                return;
+            }
             if (Input.GetKeyDown(KeyCode.Keypad1))
             {
                 GoToVessel();

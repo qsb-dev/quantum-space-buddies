@@ -24,10 +24,7 @@ namespace QSB
             gameObject.AddComponent<DebugLog>();
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
-            if (DebugMode)
-            {
-                gameObject.AddComponent<DebugActions>();
-            }
+            gameObject.AddComponent<DebugActions>();
         }
 
         public override void Configure(IModConfig config)
