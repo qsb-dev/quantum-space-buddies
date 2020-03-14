@@ -10,6 +10,7 @@ namespace QSB
     {
         public static IModHelper Helper;
         public static string DefaultServerIP;
+        public static bool DebugMode;
 
         private void Awake()
         {
@@ -23,11 +24,13 @@ namespace QSB
             gameObject.AddComponent<DebugLog>();
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
+            gameObject.AddComponent<DebugActions>();
         }
 
         public override void Configure(IModConfig config)
         {
             DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+            DebugMode = config.GetSettingsValue<bool>("debugMode");
         }
     }
 }
