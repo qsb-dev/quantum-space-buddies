@@ -2,6 +2,7 @@
   "requireVR": false,
   "enabled": true,
   "settings": {
-    "defaultServerIP": "localhost"
+    "defaultServerIP": "localhost",
+    "debugMode": false
   }
 }
