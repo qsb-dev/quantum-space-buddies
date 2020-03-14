@@ -13,7 +13,6 @@ namespace QSB.TimeSync
 
         private static readonly DeathType[] _allowedDeathTypes = {
             DeathType.BigBang,
-            DeathType.BlackHole,
             DeathType.Supernova,
             DeathType.TimeLoop
         };
