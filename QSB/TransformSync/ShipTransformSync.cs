@@ -52,13 +52,6 @@ namespace QSB.TransformSync
             rigidBodySync.localColliderType = typeof(ShipBody);
             rigidBodySync.IgnoreCollision(Locator.GetPlayerTransform().gameObject);
 
-            //var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-            //sphere.parent = rigidBodySync.transform;
-            //sphere.localScale = Vector3.one * 10;
-            //sphere.localRotation = Quaternion.identity;
-            //sphere.localPosition = Vector3.up * 5;
-            //Destroy(sphere.GetComponent<BoxCollider>());
-
             return remoteTransform;
         }
 
