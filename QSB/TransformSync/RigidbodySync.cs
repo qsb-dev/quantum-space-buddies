@@ -32,6 +32,15 @@ namespace QSB.TransformSync
             InvokeRepeating(nameof(TryEnableCollisions), 1, 1);
         }
 
+        public void IgnoreCollision(GameObject colliderParent)
+        {
+            var colliders = colliderParent.GetComponentsInChildren<Collider>();
+            foreach (var collider in colliders)
+            {
+                Physics.IgnoreCollision(collider, _collider);
+            }
+        }
+
         void FixedUpdate()
         {
             _rigidbody.MovePosition(target.position);

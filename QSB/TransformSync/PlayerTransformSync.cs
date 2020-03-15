@@ -41,6 +41,7 @@ namespace QSB.TransformSync
             var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
             rigidBodySync.target = body;
             rigidBodySync.localColliderType = typeof(PlayerBody);
+            rigidBodySync.IgnoreCollision(Locator.GetShipTransform().gameObject);
 
             //var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule).transform;
             //capsule.parent = rigidBodySync.transform;

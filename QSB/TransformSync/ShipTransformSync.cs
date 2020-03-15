@@ -50,6 +50,7 @@ namespace QSB.TransformSync
             var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
             rigidBodySync.target = remoteTransform;
             rigidBodySync.localColliderType = typeof(ShipBody);
+            rigidBodySync.IgnoreCollision(Locator.GetPlayerTransform().gameObject);
 
             //var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
             //sphere.parent = rigidBodySync.transform;
