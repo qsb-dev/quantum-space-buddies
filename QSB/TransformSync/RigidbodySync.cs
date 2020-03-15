@@ -9,28 +9,66 @@ namespace QSB.TransformSync
     class RigidbodySync : MonoBehaviour
     {
         public Transform target;
+        public Type localColliderType;
         private Rigidbody _rigidbody;
+        private Collider _collider;
+        private Vector3 _prevPosition;
+        private const float _collisionDisableMovementThreshold = 250;
+
+        void Awake()
+        {
+            _collider = GetComponent<Collider>();
+            _collider.isTrigger = true;
+        }
 
         void Start()
         {
             gameObject.AddComponent<OWRigidbody>();
             _rigidbody = gameObject.GetComponent<Rigidbody>();
-            if (_rigidbody == null)
-            {
-                DebugLog.Screen("Could not add rigidbody");
-            }
-            else
-            {
-                DebugLog.Screen("Could yes add rigidbody");
-            }
             _rigidbody.useGravity = false;
             _rigidbody.isKinematic = true;
+            _prevPosition = transform.position;
+
+            InvokeRepeating(nameof(TryEnableCollisions), 1, 1);
         }
 
         void FixedUpdate()
         {
             _rigidbody.MovePosition(target.position);
             _rigidbody.MoveRotation(target.rotation);
+        }
+
+        void TryEnableCollisions()
+        {
+            if (!_collider.isTrigger)
+            {
+                return;
+            }
+            var colliders = Physics.OverlapSphere(transform.position, 2);
+            foreach (var collider in colliders)
+            {
+                if (collider.gameObject == gameObject)
+                {
+                    continue;
+                }
+                if (collider.GetComponentInParent(localColliderType) || collider.GetComponent<RigidbodySync>())
+                {
+                    DebugLog.All("Occupied by", collider.name);
+                    return;
+                }
+            }
+            DebugLog.All("Enable collisions for", gameObject.name);
+            _collider.isTrigger = false;
+        }
+
+        void Update()
+        {
+            if (!_collider.isTrigger && (_prevPosition - transform.position).sqrMagnitude > _collisionDisableMovementThreshold)
+            {
+                DebugLog.All("Disable collisions for", gameObject.name);
+                _collider.isTrigger = true;
+            }
+            _prevPosition = transform.position;
         }
     }
 }

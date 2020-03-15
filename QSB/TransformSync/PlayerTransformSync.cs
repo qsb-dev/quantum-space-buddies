@@ -31,7 +31,7 @@ namespace QSB.TransformSync
             var body = Instantiate(GetPlayerModel());
             GetComponent<AnimationSync>().InitRemote(body);
 
-            var physicsBody = new GameObject();
+            var physicsBody = new GameObject("PlayerBodySync");
 
             var collider = physicsBody.AddComponent<CapsuleCollider>();
             collider.radius = 1;
@@ -40,6 +40,7 @@ namespace QSB.TransformSync
 
             var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
             rigidBodySync.target = body;
+            rigidBodySync.localColliderType = typeof(PlayerBody);
 
             //var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule).transform;
             //capsule.parent = rigidBodySync.transform;

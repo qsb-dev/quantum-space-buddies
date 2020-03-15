@@ -41,7 +41,7 @@ namespace QSB.TransformSync
                 = landingGearRight.localPosition
                 += Vector3.up * 3.762f;
 
-            var physicsBody = new GameObject();
+            var physicsBody = new GameObject("ShipBodySync");
 
             var collider = physicsBody.AddComponent<SphereCollider>();
             collider.radius = 5;
@@ -49,6 +49,7 @@ namespace QSB.TransformSync
 
             var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
             rigidBodySync.target = remoteTransform;
+            rigidBodySync.localColliderType = typeof(ShipBody);
 
             //var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
             //sphere.parent = rigidBodySync.transform;
