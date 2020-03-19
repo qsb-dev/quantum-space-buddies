@@ -44,8 +44,8 @@ namespace QSB
             "Tephra",
             "Tuff"
         };
-        private string _playerName;
-        private bool _canEditName;
+        public string _playerName;
+        public bool _canEditName;
 
         private void Awake()
         {
@@ -88,7 +88,7 @@ namespace QSB
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
 
-            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+            //QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
@@ -117,13 +117,35 @@ namespace QSB
 
         public override void OnStopClient()
         {
+            // Stop client without errors
+
             DebugLog.Screen("OnStopClient");
-            Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<PlayerJoin>());
-            Destroy(GetComponent<PlayerLeave>());
-            Destroy(GetComponent<RespawnOnDeath>());
-            Destroy(GetComponent<PreventShipDestruction>());
-            PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
+            var sectorSync = GetComponent<SectorSync>();
+            if(sectorSync != null)
+                Destroy(sectorSync);
+
+            var playerJoin = GetComponent<PlayerJoin>();
+            if (playerJoin != null)
+                Destroy(playerJoin);
+
+            var playerLeave = GetComponent<PlayerLeave>();
+            if (playerLeave != null)
+                Destroy(playerLeave);
+
+            var respawnOnDeath = GetComponent<RespawnOnDeath>();
+            if (respawnOnDeath != null)
+                Destroy(respawnOnDeath);
+
+            var preventShipDestruction = GetComponent<PreventShipDestruction>();
+            if (preventShipDestruction != null)
+                Destroy(preventShipDestruction);
+
+            if (PlayerTransformSync.LocalInstance != null)
+            {
+                var animationSync = PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>();
+                if (animationSync != null)
+                    animationSync.Reset();
+            }
 
             _canEditName = true;
         }
@@ -138,7 +160,7 @@ namespace QSB
 
             base.OnServerDisconnect(conn);
         }
-
+#if DEBUG
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");
@@ -151,6 +173,6 @@ namespace QSB
                 GUI.Label(new Rect(60, 10, 145, 20f), _playerName);
             }
         }
-
+#endif
     }
 }
