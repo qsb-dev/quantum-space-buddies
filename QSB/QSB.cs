@@ -1,16 +1,9 @@
 ﻿using OWML.Common;
-using OWML.Common.Menus;
 using OWML.ModHelper;
-using OWML.ModHelper.Menus;
-using QSB.TimeSync;
 using QSB.Menus;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
-using System.Collections.Generic;
 using OWML.ModHelper.Events;
-using System.Linq;
-using System;
 
 
 
@@ -60,10 +53,6 @@ namespace QSB
 #endif
             gameObject.AddComponent<DebugActions>();
             var multiplayerMenuController = new MultiplayerMenuController(Helper, networkManager);
-
-            //var multMenu = new LoadMultiplayerMenu();// (Helper.Logger, Helper.Console, Helper.Events);
-            //DoMainMenuStuff();
-            //ModHelper.Menus.PauseMenu.OnInit += DoPauseMenuStuff;
         }
 
 
