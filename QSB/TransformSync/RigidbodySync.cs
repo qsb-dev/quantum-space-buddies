@@ -8,20 +8,20 @@ namespace QSB.TransformSync
 {
     class RigidbodySync : MonoBehaviour
     {
-        public Transform target;
-        public Type localColliderType;
+        private Transform _target;
+        private Type _localColliderType;
         private Rigidbody _rigidbody;
         private Collider _collider;
         private Vector3 _prevPosition;
         private const float _collisionDisableMovementThreshold = 250;
 
-        void Awake()
+        private void Awake()
         {
             _collider = GetComponent<Collider>();
             _collider.isTrigger = true;
         }
 
-        void Start()
+        private void Start()
         {
             gameObject.AddComponent<OWRigidbody>();
             _rigidbody = gameObject.GetComponent<Rigidbody>();
@@ -30,6 +30,12 @@ namespace QSB.TransformSync
             _prevPosition = transform.position;
 
             InvokeRepeating(nameof(TryEnableCollisions), 1, 1);
+        }
+
+        public void Init<LocalCollider>(Transform target)
+        {
+            _localColliderType = typeof(LocalCollider);
+            _target = target;
         }
 
         public void IgnoreCollision(GameObject colliderParent)
@@ -41,13 +47,13 @@ namespace QSB.TransformSync
             }
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
-            _rigidbody.MovePosition(target.position);
-            _rigidbody.MoveRotation(target.rotation);
+            _rigidbody.MovePosition(_target.position);
+            _rigidbody.MoveRotation(_target.rotation);
         }
 
-        void TryEnableCollisions()
+        private void TryEnableCollisions()
         {
             if (!_collider.isTrigger)
             {
@@ -60,7 +66,7 @@ namespace QSB.TransformSync
                 {
                     continue;
                 }
-                if (collider.GetComponentInParent(localColliderType) || collider.GetComponent<RigidbodySync>())
+                if (collider.GetComponentInParent(_localColliderType) || collider.GetComponent<RigidbodySync>())
                 {
                     DebugLog.Screen(gameObject.name, "occupied by", collider.name);
                     return;
@@ -70,7 +76,7 @@ namespace QSB.TransformSync
             _collider.isTrigger = false;
         }
 
-        void Update()
+        private void Update()
         {
             if (!_collider.isTrigger && (_prevPosition - transform.position).sqrMagnitude > _collisionDisableMovementThreshold)
             {

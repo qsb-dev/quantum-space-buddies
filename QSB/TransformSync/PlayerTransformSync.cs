@@ -39,8 +39,7 @@ namespace QSB.TransformSync
             collider.center = Vector3.up * 1;
 
             var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
-            rigidBodySync.target = body;
-            rigidBodySync.localColliderType = typeof(PlayerBody);
+            rigidBodySync.Init<PlayerBody>(body);
             rigidBodySync.IgnoreCollision(Locator.GetShipTransform().gameObject);
 
             return body;
