@@ -59,12 +59,15 @@ namespace QSB.Menus
             _buttonTemplate = options.InputTab.GetButton("UIElement-RemapControls");
 
             hostButton = _buttonTemplate.Copy("Host Server and Join");
+            hostButton.Button.enabled = true;
             hostButton.OnClick += () => StartHost();
             
             clientButton = _buttonTemplate.Copy("Join Server");
+            clientButton.Button.enabled = true;
             clientButton.OnClick += () => StartClient();
             
             serverButton = _buttonTemplate.Copy("Host Server Only");
+            serverButton.Button.enabled = true;
             serverButton.OnClick += StartServer;
             
             cancelButton = _buttonTemplate.Copy("Cancel");
@@ -84,7 +87,12 @@ namespace QSB.Menus
             textInput.OnChange += (value) => networkManager._playerName = value;
 
             var button = Helper.Menus.MainMenu.ResumeExpeditionButton.Duplicate("SET UP MULTIPLAYER", 1);
+            Helper.Menus.MainMenu.SelectFirst();
+            Helper.Menus.MainMenu.UpdateNavigation();
             button.OnClick += () => serverTab.Open();
+
+            serverTab.SelectFirst();
+            serverTab.UpdateNavigation();
         }
 
 
@@ -152,8 +160,12 @@ namespace QSB.Menus
             hostButton.Hide();
             clientButton.Hide();
             serverButton.Hide();
+            textInput.Hide();
 
             cancelButton.Show();
+
+            serverTab.SelectFirst();
+            serverTab.UpdateNavigation();
         }
 
         private void ShowMainServerButtons()
@@ -161,8 +173,12 @@ namespace QSB.Menus
             hostButton.Show();
             clientButton.Show();
             serverButton.Show();
+            textInput.Show();
 
             cancelButton.Hide();
+
+            serverTab.SelectFirst();
+            serverTab.UpdateNavigation();
         }
     }
 }
