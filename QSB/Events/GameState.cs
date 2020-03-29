@@ -15,17 +15,21 @@ namespace QSB.Events
         {
             _messageHandler = new MessageHandler<FullStateMessage>();
             _messageHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            _messageHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-        }
-
-        private void OnServerReceiveMessage(FullStateMessage message)
-        {
-            _messageHandler.SendToAll(message);
         }
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
             PlayerJoin.PlayerNames = message.PlayerNames;
+        }
+
+        public void Send()
+        {
+            var message = new FullStateMessage()
+            {
+                PlayerNames = PlayerJoin.PlayerNames
+            };
+
+            _messageHandler.SendToAll(message);
         }
     }
 }

@@ -96,19 +96,25 @@ namespace QSB
             base.OnServerAddPlayer(conn, playerControllerId);
 
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), conn);
+
+            var gameState = gameObject.AddComponent<GameState>();
+            gameState.Send();
         }
 
         public override void OnClientConnect(NetworkConnection conn)
         {
             base.OnClientConnect(conn);
 
-            DebugLog.Screen("OnClientConnect");
             gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
             gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
-            gameObject.AddComponent<GameState>();
+
+            if (!Network.isServer)
+            {
+                gameObject.AddComponent<GameState>();
+            }
 
             _canEditName = false;
 
