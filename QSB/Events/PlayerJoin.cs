@@ -9,7 +9,7 @@ namespace QSB.Events
 {
     public class PlayerJoin : NetworkBehaviour
     {
-        public static readonly Dictionary<uint, string> PlayerNames = new Dictionary<uint, string>();
+        public static Dictionary<uint, string> PlayerNames = new Dictionary<uint, string>();
         public static string MyName { get; private set; }
 
         private MessageHandler<JoinMessage> _joinHandler;

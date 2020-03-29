@@ -108,6 +108,7 @@ namespace QSB
             gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
+            gameObject.AddComponent<GameState>();
 
             _canEditName = false;
 
