@@ -1,4 +1,5 @@
-﻿using QSB.Animation;
+﻿using OWML.ModHelper.Events;
+using QSB.Animation;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -29,6 +30,8 @@ namespace QSB.TransformSync
         protected override Transform InitRemoteTransform()
         {
             var body = Instantiate(GetPlayerModel());
+
+            var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
 
             GetComponent<AnimationSync>().InitRemote(body);
 
