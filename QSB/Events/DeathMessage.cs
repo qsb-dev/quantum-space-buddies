@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class DeathMessage : NameMessage
+    public class DeathMessage : PlayerMessage
     {
         public override MessageType MessageType => MessageType.Death;
 

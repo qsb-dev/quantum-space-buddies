@@ -116,7 +116,7 @@
     <Compile Include="DebugLog.cs" />
     <Compile Include="Events\DeathMessage.cs" />
     <Compile Include="Events\PlayerJoin.cs" />
-    <Compile Include="Events\NameMessage.cs" />
+    <Compile Include="Events\PlayerMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Messaging\QSBMessage.cs" />

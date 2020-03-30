@@ -19,7 +19,6 @@ namespace QSB.Events
         {
             var message = new LeaveMessage
             {
-                PlayerName = PlayerJoin.PlayerNames[playerId],
                 SenderId = playerId,
                 ObjectIds = objectIds
             };
@@ -28,7 +27,8 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(LeaveMessage message)
         {
-            DebugLog.All(message.PlayerName, "left");
+            var playerName = PlayerJoin.PlayerNames[message.SenderId];
+            DebugLog.All(playerName, "left");
             PlayerJoin.PlayerNames.Remove(message.SenderId);
             foreach (var objectId in message.ObjectIds)
             {
