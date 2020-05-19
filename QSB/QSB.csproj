@@ -122,6 +122,7 @@
     <Compile Include="Messaging\QSBMessage.cs" />
     <Compile Include="TimeSync\PreventShipDestruction.cs" />
     <Compile Include="TimeSync\RespawnOnDeath.cs" />
+    <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="TransformSync\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
