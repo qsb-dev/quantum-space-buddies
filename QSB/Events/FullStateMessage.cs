@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    class FullStateMessage : NameMessage
+    public class FullStateMessage : PlayerMessage
     {
         public override MessageType MessageType => MessageType.FullState;
 

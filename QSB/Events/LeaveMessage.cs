@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class LeaveMessage : NameMessage
+    public class LeaveMessage : PlayerMessage
     {
         public override MessageType MessageType => MessageType.Leave;
 
