@@ -1,4 +1,6 @@
-﻿using QSB.Animation;
+﻿using OWML.ModHelper.Events;
+using QSB.Animation;
+using QSB.Events;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -31,6 +33,9 @@ namespace QSB.TransformSync
             var body = Instantiate(GetPlayerModel());
 
             GetComponent<AnimationSync>().InitRemote(body);
+
+            var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
+            marker.SetId(netId.Value);
 
             return body;
         }
