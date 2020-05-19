@@ -107,6 +107,8 @@
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="DebugActions.cs" />
+    <Compile Include="Events\FullStateMessage.cs" />
+    <Compile Include="Events\GameState.cs" />
     <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Events\JoinMessage.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
