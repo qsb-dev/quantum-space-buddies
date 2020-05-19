@@ -43,7 +43,6 @@ namespace QSB.TransformSync
         {
             if (_isReady && PlayerJoin.PlayerNames.ContainsKey(_netId))
             {
-                DebugLog.All("Setting name", PlayerJoin.PlayerNames[_netId]);
                 _markerLabel = PlayerJoin.PlayerNames[_netId];
                 _isReady = false;
 
