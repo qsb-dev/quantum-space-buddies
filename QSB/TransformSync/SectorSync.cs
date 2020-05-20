@@ -39,7 +39,7 @@ namespace QSB.TransformSync
         private void Start()
         {
             Instance = this;
-            DebugLog.Screen("Start SectorSync");
+            DebugLog.Console("Start SectorSync");
             _playerSectors = new Dictionary<uint, Transform>();
 
             _sectorHandler = new MessageHandler<SectorMessage>();
@@ -61,7 +61,7 @@ namespace QSB.TransformSync
 
         public void SetSector(uint id, Sector.Name sectorName)
         {
-            DebugLog.Screen("Gonna set sector");
+            DebugLog.Console("Gonna set sector");
 
             _playerSectors[id] = FindSectorTransform(sectorName);
 

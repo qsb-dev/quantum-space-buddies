@@ -68,11 +68,11 @@ namespace QSB.TransformSync
                 }
                 if (collider.GetComponentInParent(_localColliderType) || collider.GetComponent<RigidbodySync>())
                 {
-                    DebugLog.Screen(gameObject.name, "occupied by", collider.name);
+                    DebugLog.Console(gameObject.name, "occupied by", collider.name);
                     return;
                 }
             }
-            DebugLog.Screen("Enable collisions for", gameObject.name);
+            DebugLog.Console("Enable collisions for", gameObject.name);
             _collider.isTrigger = false;
         }
 
@@ -80,7 +80,7 @@ namespace QSB.TransformSync
         {
             if (!_collider.isTrigger && (_prevPosition - transform.position).sqrMagnitude > _collisionDisableMovementThreshold)
             {
-                DebugLog.Screen("Disable collisions for", gameObject.name);
+                DebugLog.Console("Disable collisions for", gameObject.name);
                 _collider.isTrigger = true;
             }
             _prevPosition = transform.position;

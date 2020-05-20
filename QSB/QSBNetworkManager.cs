@@ -124,7 +124,7 @@ namespace QSB
 
         public override void OnStopClient()
         {
-            DebugLog.Screen("OnStopClient");
+            DebugLog.Console("OnStopClient");
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<PlayerJoin>());
             Destroy(GetComponent<PlayerLeave>());
@@ -137,7 +137,7 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection conn)
         {
-            DebugLog.Screen("OnServerDisconnect");
+            DebugLog.Console("OnServerDisconnect");
 
             var playerId = conn.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = conn.clientOwnedObjects.Select(x => x.Value).ToArray();

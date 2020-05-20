@@ -66,6 +66,5 @@ namespace QSB
             Screen(logObjects);
             HUD(logObjects);
         }
-
     }
 }

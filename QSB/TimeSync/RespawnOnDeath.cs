@@ -68,6 +68,10 @@ namespace QSB.TimeSync
                 _shipSpawnPoint.transform.position = shipTransform.position;
                 _shipSpawnPoint.transform.rotation = shipTransform.rotation;
             }
+            else
+            {
+                DebugLog.Console("Error: Ship Transform not found");
+            }
 
             _deathHandler = new MessageHandler<DeathMessage>();
             _deathHandler.OnServerReceiveMessage += OnServerReceiveMessage;
