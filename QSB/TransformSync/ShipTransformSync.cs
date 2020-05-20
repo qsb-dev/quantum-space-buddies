@@ -49,6 +49,10 @@ namespace QSB.TransformSync
 
             var rigidBodySync = physicsBody.AddComponent<RigidbodySync>();
             rigidBodySync.Init<ShipBody>(remoteTransform);
+
+            // TODO: If we disable remote player collisions while they are inside the ship,
+            // this wouldn't be necessary. For that, we'll need to broadcast a message
+            // that signals when a player is inside the ship.
             rigidBodySync.IgnoreCollision(Locator.GetPlayerTransform().gameObject);
 
             return remoteTransform;
