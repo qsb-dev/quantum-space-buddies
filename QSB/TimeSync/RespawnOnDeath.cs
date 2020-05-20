@@ -142,7 +142,7 @@ namespace QSB.TimeSync
 
         private void OnClientReceiveMessage(DeathMessage message)
         {
-            var playerName = PlayerJoin.PlayerNames.TryGetValue(message.SenderId, out var n) ? n : message.PlayerName;
+            var playerName = PlayerJoin.PlayerNames[message.SenderId];
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.All(string.Format(deathMessage, playerName));
         }
@@ -168,7 +168,6 @@ namespace QSB.TimeSync
             {
                 var message = new DeathMessage
                 {
-                    PlayerName = PlayerJoin.MyName,
                     SenderId = PlayerTransformSync.LocalInstance.netId.Value,
                     DeathType = deathType
                 };

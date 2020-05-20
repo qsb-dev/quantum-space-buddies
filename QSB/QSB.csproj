@@ -107,6 +107,8 @@
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="DebugActions.cs" />
+    <Compile Include="Events\FullStateMessage.cs" />
+    <Compile Include="Events\GameState.cs" />
     <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Events\JoinMessage.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
@@ -114,12 +116,13 @@
     <Compile Include="DebugLog.cs" />
     <Compile Include="Events\DeathMessage.cs" />
     <Compile Include="Events\PlayerJoin.cs" />
-    <Compile Include="Events\NameMessage.cs" />
+    <Compile Include="Events\PlayerMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Messaging\QSBMessage.cs" />
     <Compile Include="TimeSync\PreventShipDestruction.cs" />
     <Compile Include="TimeSync\RespawnOnDeath.cs" />
+    <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="TransformSync\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\RigidbodySync.cs" />
