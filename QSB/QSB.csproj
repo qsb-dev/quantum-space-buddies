@@ -74,6 +74,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
@@ -84,20 +88,23 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UI.dll</HintPath>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UNETModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +124,26 @@
     <Compile Include="Events\DeathMessage.cs" />
     <Compile Include="Events\PlayerJoin.cs" />
     <Compile Include="Events\PlayerMessage.cs" />
+    <Compile Include="Marshmallow\AddToUITable.cs" />
+    <Compile Include="Marshmallow\Main.cs" />
+    <Compile Include="Marshmallow\MakeAir.cs" />
+    <Compile Include="Marshmallow\MakeAmbientLight.cs" />
+    <Compile Include="Marshmallow\MakeAtmosphere.cs" />
+    <Compile Include="Marshmallow\MakeBaseEffects.cs" />
+    <Compile Include="Marshmallow\MakeClouds.cs" />
+    <Compile Include="Marshmallow\MakeFieldDetector.cs" />
+    <Compile Include="Marshmallow\MakeGeometry.cs" />
+    <Compile Include="Marshmallow\MakeGravityWell.cs" />
+    <Compile Include="Marshmallow\MakeMapMarker.cs" />
+    <Compile Include="Marshmallow\MakeOrbitingAstroObject.cs" />
+    <Compile Include="Marshmallow\MakeOrbitLine.cs" />
+    <Compile Include="Marshmallow\MakeRFVolume.cs" />
+    <Compile Include="Marshmallow\MakeSector.cs" />
+    <Compile Include="Marshmallow\MakeSpawnPoint.cs" />
+    <Compile Include="Marshmallow\MakeSunOverride.cs" />
+    <Compile Include="Marshmallow\MakeVolumes.cs" />
+    <Compile Include="Marshmallow\MakeWater.cs" />
+    <Compile Include="Marshmallow\PlanetConfig.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Messaging\QSBMessage.cs" />

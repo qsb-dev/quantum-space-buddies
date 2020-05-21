@@ -67,6 +67,8 @@ namespace QSB.TimeSync
 
         private void Init()
         {
+            Marshmallow.Main.CreatePlanet();
+
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
