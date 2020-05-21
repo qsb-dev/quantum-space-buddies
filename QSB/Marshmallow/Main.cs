@@ -24,7 +24,7 @@ namespace Marshmallow
 
             planet.transform.parent = Locator.GetRootTransform();
 
-            planet.transform.position = new Vector3(1000, 1000, 1000);
+            planet.transform.position = new Vector3(10000, 0, 10000);
             planet.SetActive(true);
 
             General.MakeOrbitLine.Make(planet, ASTROOBJECT);
@@ -33,27 +33,27 @@ namespace Marshmallow
         private static GameObject GenerateBody()
         {
             var name = "Player Planet";
-            var orbitAngle = 0f;
+            var orbitAngle = 0.01f;
             var hasGravity = true;
-            var surfaceAcceleration = 0.01f;
+            var surfaceAcceleration = 12;
             var hasMapMarker = true;
             var hasClouds = true;
-            var cloudTint = new Color32(255, 255, 255, 255);
-            var fogTint = new Color32(255, 255, 255, 255);
-            var waterSize = 10f;
-            var hasRain = false;
-            var hasWater = false;
+            var cloudTint = new Color32(255, 0, 0, 128);
+            var fogTint = new Color32(0, 75, 15, 128);
+            var waterSize = 401f;
+            var hasRain = true;
+            var hasWater = true;
             var hasFog = false;
-            var fogDensity = 0.5f;
-            var makeSpawnPoint = false;
+            var fogDensity = 0.75f;
+            var makeSpawnPoint = true;
+            var groundScale = 400f;
+            var topCloudSize = 650f;
+            var bottomCloudSize = 600f;
 
             QSB.DebugLog.Console("Begin generation sequence of planet [" + name + "] ...");
 
-            float groundScale = 400f;
 
-            var topCloudSize = 500f;
             QSB.DebugLog.Console("Got top cloud size as " + topCloudSize);
-            var bottomCloudSize = 450;
             QSB.DebugLog.Console("Got bottom cloud size as " + bottomCloudSize);
 
             GameObject body;

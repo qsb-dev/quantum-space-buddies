@@ -50,6 +50,8 @@ namespace QSB.TimeSync
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+
+            Marshmallow.Main.CreatePlanet();
             if (scene.name == "SolarSystem" || scene.name == "EyeOfTheUniverse")
             {
                 Init();
@@ -67,8 +69,6 @@ namespace QSB.TimeSync
 
         private void Init()
         {
-            Marshmallow.Main.CreatePlanet();
-
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
