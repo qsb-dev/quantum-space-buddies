@@ -114,6 +114,7 @@ namespace QSB
             gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
+            gameObject.AddComponent<Events.EventHandler>();
 
             if (!Network.isServer)
             {
@@ -134,6 +135,7 @@ namespace QSB
             Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
+            Destroy(GetComponent<Events.EventHandler>());
             if (IsClientConnected())
             {
                 PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();

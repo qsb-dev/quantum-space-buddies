@@ -120,10 +120,14 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
+    <Compile Include="Animation\QSBFlashlight.cs" />
     <Compile Include="DebugActions.cs" />
+    <Compile Include="Events\EventListener.cs" />
     <Compile Include="Events\FullStateMessage.cs" />
     <Compile Include="Events\FullStateRequest.cs" />
     <Compile Include="Events\GameState.cs" />
+    <Compile Include="Events\EventHandler.cs" />
+    <Compile Include="Events\EventMessage.cs" />
     <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Events\JoinMessage.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
