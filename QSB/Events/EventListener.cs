@@ -23,13 +23,11 @@ namespace QSB.Events
 
         private void FlashlightOn()
         {
-            DebugLog.ToAll("TurnOnFlashlight");
             EventHandler.LocalInstance.Send("TurnOnFlashlight");
         }
 
         private void FlashlightOff()
         {
-            DebugLog.ToAll("TurnOffFlashlight");
             EventHandler.LocalInstance.Send("TurnOffFlashlight");
         }
     }

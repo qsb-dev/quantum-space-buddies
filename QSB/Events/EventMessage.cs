@@ -7,7 +7,7 @@ namespace QSB.Events
 {
     public class EventMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.Listener;
+        public override MessageType MessageType => MessageType.Event;
 
         public string EventType { get; set; }
 

@@ -8,11 +8,6 @@ namespace QSB.Animation
 {
     public class QSBFlashlight : MonoBehaviour
     {
-		void Awake()
-		{
-			GlobalMessenger.AddListener("TurnOnFlashlight", TurnOn);
-			GlobalMessenger.AddListener("TurnOffFlashlight", TurnOff);
-		}
         private void Start()
         {
             this._baseForward = this._basePivot.forward;

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using QSB.Messaging;
+using QSB.TransformSync;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -30,9 +31,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(LeaveMessage message)
         {
-            var playerName = PlayerJoin.PlayerNames[message.SenderId];
+            var playerName = Finder.GetPlayerName(message.SenderId);
             DebugLog.ToAll(playerName, "disconnected.");
-            PlayerJoin.PlayerNames.Remove(message.SenderId);
+            Finder.RemovePlayer(message.SenderId);
             foreach (var objectId in message.ObjectIds)
             {
                 DestroyObject(objectId);
@@ -41,8 +42,7 @@ namespace QSB.Events
 
         private void DestroyObject(uint objectId)
         {
-            var component = GameObject.FindObjectsOfType<NetworkBehaviour>()
-                .FirstOrDefault(x => x.netId.Value == objectId);
+            var component = GameObject.FindObjectsOfType<NetworkBehaviour>().FirstOrDefault(x => x.netId.Value == objectId);
             if (component == null)
             {
                 return;

@@ -23,14 +23,14 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
-            PlayerJoin.PlayerNames = message.PlayerNames;
+            Finder.UpdatePlayerNames(message.PlayerNames);
         }
 
         public void Send()
         {
             var message = new FullStateMessage()
             {
-                PlayerNames = PlayerJoin.PlayerNames
+                PlayerNames = Finder.GetPlayerNames()
             };
 
             _messageHandler.SendToAll(message);

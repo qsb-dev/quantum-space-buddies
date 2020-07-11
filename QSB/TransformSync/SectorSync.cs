@@ -10,7 +10,6 @@ namespace QSB.TransformSync
     {
         public static SectorSync Instance { get; private set; }
 
-        private Dictionary<uint, Transform> _playerSectors;
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
         private readonly Sector.Name[] _sectorWhitelist = {
@@ -39,8 +38,6 @@ namespace QSB.TransformSync
         private void Start()
         {
             Instance = this;
-            DebugLog.ToScreen("Start SectorSync");
-            _playerSectors = new Dictionary<uint, Transform>();
 
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
@@ -54,16 +51,11 @@ namespace QSB.TransformSync
             _allSectors = null;
         }
 
-        public void SetSector(uint id, Transform sectorTransform)
-        {
-            _playerSectors[id] = sectorTransform;
-        }
-
         public void SetSector(uint id, Sector.Name sectorName)
         {
             DebugLog.ToScreen("Gonna set sector");
 
-            _playerSectors[id] = FindSectorTransform(sectorName);
+            Finder.UpdateSector(id, FindSectorTransform(sectorName));
 
             var msg = new SectorMessage
             {
@@ -71,11 +63,6 @@ namespace QSB.TransformSync
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
-        }
-
-        public Transform GetSector(uint id)
-        {
-            return _playerSectors[id];
         }
 
         private Transform FindSectorTransform(Sector.Name sectorName)
@@ -108,7 +95,7 @@ namespace QSB.TransformSync
             }
 
             DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
-            _playerSectors[message.SenderId] = sectorTransform;
+            Finder.UpdateSector(message.SenderId, sectorTransform);
         }
 
         private void OnServerReceiveMessage(SectorMessage message)

@@ -12,7 +12,6 @@ namespace QSB.Events
     /// </summary>
     public class PlayerJoin : NetworkBehaviour
     {
-        public static Dictionary<uint, string> PlayerNames = new Dictionary<uint, string>();
         public static string MyName { get; private set; }
 
         private MessageHandler<JoinMessage> _joinHandler;
@@ -48,9 +47,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(JoinMessage message)
         {
-            PlayerNames[message.SenderId] = message.PlayerName;
+            Finder.UpdatePlayerName(message.SenderId, message.PlayerName);
+            Finder.SetReadiness(message.SenderId, true);
             DebugLog.ToAll(message.PlayerName, "joined!");
         }
-
     }
 }

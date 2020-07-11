@@ -47,28 +47,16 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
+            DebugLog.ToScreen("Received event message!");
             switch (message.EventType)
             {
                 case "TurnOnFlashlight":
-                    FindPlayerObject(message.SenderId).GetComponentInChildren<QSBFlashlight>().TurnOn();
+                    Finder.GetPlayerFlashlight(message.SenderId).TurnOn();
                     break;
                 case "TurnOffFlashlight":
-                    FindPlayerObject(message.SenderId).GetComponentInChildren<QSBFlashlight>().TurnOff();
+                    Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
                     break;
             }
-        }
-
-        private GameObject FindPlayerObject(uint id)
-        {
-            var markers = GameObject.FindObjectsOfType<PlayerHUDMarker>();
-            foreach (var item in markers)
-            {
-                if (item.GetValue<uint>("_netId") == id)
-                {
-                    return item.gameObject;
-                }
-            }
-            return null;
         }
     }
 }

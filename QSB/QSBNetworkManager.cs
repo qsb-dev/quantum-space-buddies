@@ -96,7 +96,6 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
-            DebugLog.ToAll("OnServerAddPlayer");
             base.OnServerAddPlayer(connection, playerControllerId);
 
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);

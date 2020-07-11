@@ -12,7 +12,7 @@ namespace QSB.Messaging
         Leave = MsgType.Highest + 6,
         FullState = MsgType.Highest + 7,
         FullStateRequest = MsgType.Highest + 8,
-        Listener = MsgType.Highest + 9
+        Event = MsgType.Highest + 9
         // Add other message types here, incrementing the value.
     }
 }

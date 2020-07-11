@@ -51,6 +51,8 @@ namespace QSB.TransformSync
             flashlightRoot.transform.parent = body;
             flashlightRoot.SetActive(true);
 
+            Finder.RegisterPlayer(netId.Value, body.gameObject);
+
             return body;
         }
 
