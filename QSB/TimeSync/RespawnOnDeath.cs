@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace QSB.TimeSync
 {
+    /// <summary>
+    /// Client-only-side component for managing respawning after death.
+    /// </summary>
     public class RespawnOnDeath : MonoBehaviour
     {
         private static RespawnOnDeath _instance;
@@ -27,11 +30,13 @@ namespace QSB.TimeSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
+
         private MessageHandler<DeathMessage> _deathHandler;
 
         private void Awake()
         {
             _instance = this;
+
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
             QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
@@ -144,7 +149,7 @@ namespace QSB.TimeSync
         {
             var playerName = PlayerJoin.PlayerNames[message.SenderId];
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
-            DebugLog.All(string.Format(deathMessage, playerName));
+            DebugLog.ToAll(string.Format(deathMessage, playerName));
         }
 
         internal static class Patches

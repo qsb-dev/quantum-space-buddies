@@ -7,6 +7,9 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
+    /// <summary>
+    /// Client-only-side component for managing player joins.
+    /// </summary>
     public class PlayerJoin : NetworkBehaviour
     {
         public static Dictionary<uint, string> PlayerNames = new Dictionary<uint, string>();
@@ -21,13 +24,13 @@ namespace QSB.Events
             _joinHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        public void Join(string playerName)
+        public void Join(string playerName) // Called when joining a server
         {
             MyName = playerName;
             StartCoroutine(SendJoinMessage(playerName));
         }
 
-        private IEnumerator SendJoinMessage(string playerName)
+        private IEnumerator SendJoinMessage(string playerName) // Send join message with player name and ID
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
             var message = new JoinMessage
@@ -38,7 +41,7 @@ namespace QSB.Events
             _joinHandler.SendToServer(message);
         }
 
-        private void OnServerReceiveMessage(JoinMessage message)
+        private void OnServerReceiveMessage(JoinMessage message) // Distrubute player join message to all connected clients
         {
             _joinHandler.SendToAll(message);
         }
@@ -46,7 +49,7 @@ namespace QSB.Events
         private void OnClientReceiveMessage(JoinMessage message)
         {
             PlayerNames[message.SenderId] = message.PlayerName;
-            DebugLog.All(message.PlayerName, "joined!");
+            DebugLog.ToAll(message.PlayerName, "joined!");
         }
 
     }

@@ -8,8 +8,9 @@ namespace QSB.TimeSync
     {
         private void Start()
         {
-            QSB.Helper.Menus.PauseMenu.GetButton("Button-EndCurrentLoop").Hide();
+            QSB.Helper.Menus.PauseMenu.GetButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
 
+            // Allow server to sleep at campfires
             if (isServer)
             {
                 return;
@@ -18,9 +19,8 @@ namespace QSB.TimeSync
             var campfires = GameObject.FindObjectsOfType<Campfire>();
             foreach (var campfire in campfires)
             {
-                campfire.SetValue("_canSleepHere", false);
+                campfire.SetValue("_canSleepHere", false); // Stop players from sleeping at campfires
             }
         }
-
     }
 }

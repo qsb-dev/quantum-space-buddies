@@ -9,12 +9,16 @@ namespace QSB.Events
 {
     class GameState : NetworkBehaviour
     {
+        public static GameState LocalInstance { get; private set; }
+
         private MessageHandler<FullStateMessage> _messageHandler;
 
         private void Awake()
         {
             _messageHandler = new MessageHandler<FullStateMessage>();
             _messageHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+
+            LocalInstance = this;
         }
 
         private void OnClientReceiveMessage(FullStateMessage message)

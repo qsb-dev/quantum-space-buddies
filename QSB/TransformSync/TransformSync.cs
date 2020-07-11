@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Events;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
@@ -6,7 +7,7 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
-        private const float SmoothTime = 0.1f;
+        private const float SMOOTH_TIME = 0.1f;
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
@@ -78,24 +79,28 @@ namespace QSB.TransformSync
                 return;
             }
 
+            // Get which sector should be used as a reference point
             var sectorTransform = SectorSync.Instance.GetSector(netId.Value);
 
-            if (hasAuthority)
+            if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
                 transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
             }
-            else
+            else // If this script is attached to any other body, eg the representations of other players
             {
-                if (SyncedTransform.position == Vector3.zero)
+                if (SyncedTransform.position == Vector3.zero) 
                 {
+                    // Fix bodies staying at 0,0,0 by chucking them into the sun
                     SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+
+                    FullStateRequest.LocalInstance.Request();
                 }
                 else
                 {
                     SyncedTransform.parent = sectorTransform;
 
-                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SMOOTH_TIME);
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
                 }
             }

@@ -16,7 +16,7 @@ namespace QSB
         public static UnityEvent OnNetworkManagerReady = new UnityEvent();
         public static bool IsReady = false;
 
-        private const int MaxConnections = 128;
+        private const int MAX_CONNECTIONS = 128;
 
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
@@ -50,6 +50,9 @@ namespace QSB
         private void Awake()
         {
             _assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
+
+            // Loads the network player prefab into the network manager, then adds scripts to the prefab.
+            // For every player that then joins a new instance of the prefab is made, with those new scripts.
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
@@ -81,7 +84,7 @@ namespace QSB
         private void ConfigureNetworkManager()
         {
             networkAddress = QSB.DefaultServerIP;
-            maxConnections = MaxConnections;
+            maxConnections = MAX_CONNECTIONS;
             customConfig = true;
             connectionConfig.AddChannel(QosType.Reliable);
             connectionConfig.AddChannel(QosType.Unreliable);
@@ -91,19 +94,20 @@ namespace QSB
             QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
-        public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+        public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
-            base.OnServerAddPlayer(conn, playerControllerId);
+            DebugLog.ToAll("OnServerAddPlayer");
+            base.OnServerAddPlayer(connection, playerControllerId);
 
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), conn);
+            NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
 
             var gameState = gameObject.AddComponent<GameState>();
             gameState.Send();
         }
 
-        public override void OnClientConnect(NetworkConnection conn)
+        public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
-            base.OnClientConnect(conn);
+            base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
@@ -122,28 +126,30 @@ namespace QSB
             IsReady = true;
         }
 
-        public override void OnStopClient()
+        public override void OnStopClient() // Called on the client when closing connection
         {
-            DebugLog.Screen("OnStopClient");
+            DebugLog.ToScreen("OnStopClient");
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<PlayerJoin>());
             Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
-            PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
-
+            if (IsClientConnected())
+            {
+                PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
+            }
             _canEditName = true;
         }
 
-        public override void OnServerDisconnect(NetworkConnection conn)
+        public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            DebugLog.Screen("OnServerDisconnect");
+            DebugLog.ToScreen("OnServerDisconnect");
 
-            var playerId = conn.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            var objectIds = conn.clientOwnedObjects.Select(x => x.Value).ToArray();
+            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GetComponent<PlayerLeave>().Leave(playerId, objectIds);
 
-            base.OnServerDisconnect(conn);
+            base.OnServerDisconnect(connection);
         }
 
         private void OnGUI()

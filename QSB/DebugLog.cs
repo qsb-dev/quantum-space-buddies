@@ -7,7 +7,7 @@ namespace QSB
 {
     public class DebugLog : MonoBehaviour
     {
-        private const int ScreenLinesMax = 6;
+        private const int LINES_MAX = 6;
 
         private static Text _screenText;
         private static List<string> _lines;
@@ -21,8 +21,8 @@ namespace QSB
             logCanvas.GetComponent<Canvas>().sortingOrder = 9999;
             _screenText = logCanvas.GetComponentInChildren<Text>();
 
-            _lines = new List<string>(ScreenLinesMax);
-            for (var i = 0; i < ScreenLinesMax; i++)
+            _lines = new List<string>(LINES_MAX);
+            for (var i = 0; i < LINES_MAX; i++)
             {
                 _lines.Add(".");
             }
@@ -33,39 +33,38 @@ namespace QSB
             return string.Join(" ", logObjects.Select(o => o.ToString()).ToArray());
         }
 
-        public static void Console(params object[] logObjects)
+        public static void ToConsole(params object[] logObjects)
         {
             QSB.Helper.Console.WriteLine(logObjects);
         }
 
-        public static void Screen(params object[] logObjects)
+        public static void ToScreen(params object[] logObjects)
         {
-            for (var i = 1; i < ScreenLinesMax; i++)
+            for (var i = 1; i < LINES_MAX; i++)
             {
                 _lines[i - 1] = _lines[i];
             }
-            _lines.Insert(ScreenLinesMax - 1, JoinAll(logObjects));
+            _lines.Insert(LINES_MAX - 1, JoinAll(logObjects));
             _screenText.text = string.Join("\n", _lines.ToArray());
         }
 
-        public static void HUD(params object[] logObjects)
+        public static void ToHud(params object[] logObjects)
         {
             if (Locator.GetPlayerBody() == null)
             {
-                Console("Warning: tried to log to HUD but player is not ready.");
-                Console(logObjects);
+                ToConsole("Warning: tried to log to HUD but player is not ready.");
+                ToConsole(logObjects);
                 return;
             }
             var data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
             NotificationManager.SharedInstance.PostNotification(data, false);
         }
 
-        public static void All(params object[] logObjects)
+        public static void ToAll(params object[] logObjects)
         {
-            Console(logObjects);
-            Screen(logObjects);
-            HUD(logObjects);
+            ToConsole(logObjects);
+            ToScreen(logObjects);
+            ToHud(logObjects);
         }
-
     }
 }

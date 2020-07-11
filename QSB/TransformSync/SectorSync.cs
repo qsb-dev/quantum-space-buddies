@@ -39,7 +39,7 @@ namespace QSB.TransformSync
         private void Start()
         {
             Instance = this;
-            DebugLog.Screen("Start SectorSync");
+            DebugLog.ToScreen("Start SectorSync");
             _playerSectors = new Dictionary<uint, Transform>();
 
             _sectorHandler = new MessageHandler<SectorMessage>();
@@ -61,13 +61,13 @@ namespace QSB.TransformSync
 
         public void SetSector(uint id, Sector.Name sectorName)
         {
-            DebugLog.Screen("Gonna set sector");
+            DebugLog.ToScreen("Gonna set sector");
 
             _playerSectors[id] = FindSectorTransform(sectorName);
 
             var msg = new SectorMessage
             {
-                SectorId = (int)sectorName,
+                SectorName = (int)sectorName,
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
@@ -96,24 +96,24 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            DebugLog.Screen("OnClientReceiveMessage SectorSync");
+            DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
 
-            var sectorName = (Sector.Name)message.SectorId;
+            var sectorName = (Sector.Name)message.SectorName;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.Screen("Sector", sectorName, "not found");
+                DebugLog.ToScreen("Sector", sectorName, "not found");
                 return;
             }
 
-            DebugLog.Screen("Found sector", sectorName, ", setting for", message.SenderId);
+            DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
             _playerSectors[message.SenderId] = sectorTransform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            DebugLog.Screen("OnServerReceiveMessage SectorSync");
+            DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 

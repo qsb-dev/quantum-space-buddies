@@ -14,13 +14,12 @@ namespace QSB.TransformSync
 
         protected override void InitCanvasMarker()
         {
-            _markerRadius = 0.3f;
+            _markerRadius = 2f;
 
             _markerTarget = new GameObject().transform;
             _markerTarget.parent = transform;
-            // I'm not really sure why this has to be 20 instead of 2 (the player height in units).
-            // But that's the only way it looks right.
-            _markerTarget.localPosition = Vector3.up * 20;
+
+            _markerTarget.localPosition = Vector3.zero;
         }
 
         public void SetId(uint netId)
@@ -35,8 +34,6 @@ namespace QSB.TransformSync
             {
                 _canvasMarker.SetVisibility(true);
             }
-
-
         }
 
         void Update()
