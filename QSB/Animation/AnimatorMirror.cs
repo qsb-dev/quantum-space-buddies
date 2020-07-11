@@ -6,7 +6,7 @@ namespace QSB.Animation
 {
     public class AnimatorMirror : MonoBehaviour
     {
-        private const float SmoothTime = 0.05f;
+        private const float SMOOTH_TIME = 0.05f;
 
         private Animator _from;
         private Animator _to;
@@ -65,7 +65,7 @@ namespace QSB.Animation
         {
             foreach (var floatParam in _floatParams)
             {
-                var current = floatParam.Value.Smooth(SmoothTime);
+                var current = floatParam.Value.Smooth(SMOOTH_TIME);
                 _to.SetFloat(floatParam.Key, current);
             }
         }

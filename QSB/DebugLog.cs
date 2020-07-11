@@ -53,7 +53,7 @@ namespace QSB
             if (Locator.GetPlayerBody() == null)
             {
                 ToConsole("Warning: tried to log to HUD but player is not ready.");
-                ToConsole(logObjects);
+                ToConsole("* " + JoinAll(logObjects));
                 return;
             }
             var data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
