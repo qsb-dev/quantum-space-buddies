@@ -106,6 +106,26 @@ namespace QSB.TransformSync
         {
             return GetPlayer(id).ReferenceSector;
         }
+
+        public static void UpdateState(uint id, State state, bool value)
+        {
+            var states = GetPlayer(id).State;
+            if (value)
+            {
+                FlagsHelper.Set(ref states, state);
+            }
+            else
+            {
+                FlagsHelper.Unset(ref states, state);
+            }
+            GetPlayer(id).State = states;
+        }
+
+        public static bool GetState(uint id, State state)
+        {
+            var states = GetPlayer(id).State;
+            return FlagsHelper.IsSet(states, state);
+        }
     }
 
     public class PlayerInfo
@@ -115,6 +135,7 @@ namespace QSB.TransformSync
         public string Name { get; set; }
         public bool Ready { get; set; }
         public Transform ReferenceSector { get; set; }
+        public State State { get; set; }
 
         public PlayerInfo(uint netId, GameObject body, string name, bool ready)
         {
@@ -123,5 +144,13 @@ namespace QSB.TransformSync
             Name = name;
             Ready = ready;
         }
+    }
+
+    [Flags]
+    public enum State
+    {
+        Flashlight = 0,
+        Suit = 1,
+        ProbeLauncher = 2
     }
 }

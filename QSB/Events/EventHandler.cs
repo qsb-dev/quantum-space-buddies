@@ -54,9 +54,11 @@ namespace QSB.Events
                 {
                     case "TurnOnFlashlight":
                         Finder.GetPlayerFlashlight(message.SenderId).TurnOn();
+                        Finder.UpdateState(message.SenderId, State.Flashlight, true);
                         break;
                     case "TurnOffFlashlight":
                         Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
+                        Finder.UpdateState(message.SenderId, State.Flashlight, false);
                         break;
                 }
             }
