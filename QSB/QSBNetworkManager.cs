@@ -16,7 +16,7 @@ namespace QSB
         public static UnityEvent OnNetworkManagerReady = new UnityEvent();
         public static bool IsReady = false;
 
-        private const int MAX_CONNECTIONS = 128;
+        private const int MaxConnections = 128;
 
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
@@ -84,7 +84,7 @@ namespace QSB
         private void ConfigureNetworkManager()
         {
             networkAddress = QSB.DefaultServerIP;
-            maxConnections = MAX_CONNECTIONS;
+            maxConnections = MaxConnections;
             customConfig = true;
             connectionConfig.AddChannel(QosType.Reliable);
             connectionConfig.AddChannel(QosType.Unreliable);
