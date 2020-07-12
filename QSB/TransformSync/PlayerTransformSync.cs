@@ -26,6 +26,8 @@ namespace QSB.TransformSync
 
             GetComponent<AnimationSync>().InitLocal(body);
 
+            Finder.RegisterPlayer(netId.Value, body.gameObject);
+
             return body;
         }
 
@@ -38,6 +40,20 @@ namespace QSB.TransformSync
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
+            SetupPlayerTools(body);
+
+            Finder.RegisterPlayer(netId.Value, body.gameObject);
+
+            return body;
+        }
+
+        protected override bool IsReady()
+        {
+            return Locator.GetPlayerTransform() != null;
+        }
+
+        private void SetupPlayerTools(Transform body)
+        {
             var flashlightRoot = Instantiate(GameObject.Find("FlashlightRoot"));
             flashlightRoot.SetActive(false);
             var oldComponent = flashlightRoot.GetComponent<Flashlight>();
@@ -50,16 +66,6 @@ namespace QSB.TransformSync
             oldComponent.enabled = false;
             flashlightRoot.transform.parent = body;
             flashlightRoot.SetActive(true);
-
-            Finder.RegisterPlayer(netId.Value, body.gameObject);
-
-            return body;
         }
-
-        protected override bool IsReady()
-        {
-            return Locator.GetPlayerTransform() != null;
-        }
-
     }
 }

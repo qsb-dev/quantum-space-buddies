@@ -47,15 +47,18 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
-            DebugLog.ToScreen("Received event message!");
-            switch (message.EventType)
+            if (message.SenderId != PlayerTransformSync.LocalInstance.netId.Value)
             {
-                case "TurnOnFlashlight":
-                    Finder.GetPlayerFlashlight(message.SenderId).TurnOn();
-                    break;
-                case "TurnOffFlashlight":
-                    Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
-                    break;
+                DebugLog.ToScreen("Received event message!");
+                switch (message.EventType)
+                {
+                    case "TurnOnFlashlight":
+                        Finder.GetPlayerFlashlight(message.SenderId).TurnOn();
+                        break;
+                    case "TurnOffFlashlight":
+                        Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
+                        break;
+                }
             }
         }
     }

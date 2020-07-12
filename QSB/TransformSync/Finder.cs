@@ -9,7 +9,7 @@ namespace QSB.TransformSync
 {
     public static class Finder
     {
-        private static List<PlayerInfo> playerList = new List<PlayerInfo>();
+        private static readonly List<PlayerInfo> playerList = new List<PlayerInfo>();
 
         public static void RegisterPlayer(uint id, GameObject body)
         {
@@ -32,6 +32,12 @@ namespace QSB.TransformSync
 
         private static PlayerInfo GetPlayer(uint id)
         {
+            if (playerList.Find(x => x.NetId == id) != null)
+            {
+                return playerList.Find(x => x.NetId == id);
+            }
+            DebugLog.ToAll("Couldn't find playerinfo for id", id);
+            playerList.Add(new PlayerInfo(id, null, "", false));
             return playerList.Find(x => x.NetId == id);
         }
 
@@ -42,7 +48,6 @@ namespace QSB.TransformSync
 
         public static QSBFlashlight GetPlayerFlashlight(uint id)
         {
-            DebugLog.ToAll("Getting flashlight for ", id);
             return GetPlayerBody(id).GetComponentInChildren<QSBFlashlight>();
         }
 
@@ -50,7 +55,7 @@ namespace QSB.TransformSync
         {
             if (GetPlayer(id) == null)
             {
-                DebugLog.ToAll("updating name of non-existant player - creating player for id ", id);
+                DebugLog.ToScreen("updating name of non-existant player - creating player for id ", id);
                 playerList.Add(new PlayerInfo(id, null, name, false));
             }
             else
@@ -94,16 +99,11 @@ namespace QSB.TransformSync
 
         public static void UpdateSector(uint id, Transform sector)
         {
-            DebugLog.ToAll("update sector of player", id);
             GetPlayer(id).ReferenceSector = sector;
         }
 
         public static Transform GetSector(uint id)
         {
-            if (GetPlayer(id) == null)
-            {
-                DebugLog.ToAll("GetPlayer is null! - id", id);
-            }
             return GetPlayer(id).ReferenceSector;
         }
     }

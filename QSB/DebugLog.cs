@@ -7,7 +7,7 @@ namespace QSB
 {
     public class DebugLog : MonoBehaviour
     {
-        private const int LinesMax = 6;
+        private const int ScreenLinesMax = 6;
 
         private static Text _screenText;
         private static List<string> _lines;
@@ -21,8 +21,8 @@ namespace QSB
             logCanvas.GetComponent<Canvas>().sortingOrder = 9999;
             _screenText = logCanvas.GetComponentInChildren<Text>();
 
-            _lines = new List<string>(LinesMax);
-            for (var i = 0; i < LinesMax; i++)
+            _lines = new List<string>(ScreenLinesMax);
+            for (var i = 0; i < ScreenLinesMax; i++)
             {
                 _lines.Add(".");
             }
@@ -40,11 +40,11 @@ namespace QSB
 
         public static void ToScreen(params object[] logObjects)
         {
-            for (var i = 1; i < LinesMax; i++)
+            for (var i = 1; i < ScreenLinesMax; i++)
             {
                 _lines[i - 1] = _lines[i];
             }
-            _lines.Insert(LinesMax - 1, JoinAll(logObjects));
+            _lines.Insert(ScreenLinesMax - 1, JoinAll(logObjects));
             _screenText.text = string.Join("\n", _lines.ToArray());
         }
 
