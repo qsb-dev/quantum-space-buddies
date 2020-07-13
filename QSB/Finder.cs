@@ -1,11 +1,11 @@
 ﻿using QSB.Animation;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB
 {
     public static class Finder
     {
@@ -80,10 +80,7 @@ namespace QSB.TransformSync
         public static Dictionary<uint, string> GetPlayerNames()
         {
             var dict = new Dictionary<uint, string>();
-            foreach (var item in playerList)
-            {
-                dict.Add(item.NetId, item.Name);
-            }
+            playerList.ForEach(x => dict.Add(x.NetId, x.Name));
             return dict;
         }
 
@@ -152,5 +149,6 @@ namespace QSB.TransformSync
         Flashlight = 0,
         Suit = 1,
         ProbeLauncher = 2
+        //Increment these in binary to add more states
     }
 }

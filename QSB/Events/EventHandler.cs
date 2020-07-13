@@ -60,6 +60,15 @@ namespace QSB.Events
                         Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
                         Finder.UpdateState(message.SenderId, State.Flashlight, false);
                         break;
+                    case "SuitUp":
+                        Finder.UpdateState(message.SenderId, State.Suit, true);
+                        break;
+                    case "RemoveSuit":
+                        Finder.UpdateState(message.SenderId, State.Suit, false);
+                        break;
+                    case "EquipSignalscope":
+                        DebugLog.ToScreen("Equip signalscope");
+                        break;
                 }
             }
         }

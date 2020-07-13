@@ -1,6 +1,7 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.Events;
+using QSB.Utility;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,57 +16,39 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        private Transform GetPlayerModel()
-        {
-            return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
-        }
-
         protected override Transform InitLocalTransform()
         {
-            var body = GetPlayerModel();
+            var body = Locator.GetPlayerTransform();
 
-            GetComponent<AnimationSync>().InitLocal(body);
+            GetComponent<AnimationSync>().InitLocal(body.Find("Traveller_HEA_Player_v2"));
 
-            Finder.RegisterPlayer(netId.Value, body.gameObject);
+            PlayerToolsManager.Init(body, true);
 
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
-            var body = Instantiate(GetPlayerModel());
+            var body = Instantiate(Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2"));
 
-            GetComponent<AnimationSync>().InitRemote(body);
+            var root = new GameObject("Player_Body");
+            body.parent = root.transform;
 
-            var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
+            GetComponent<AnimationSync>().InitRemote(root.transform);
+
+            var marker = root.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
-            SetupPlayerTools(body);
+            PlayerToolsManager.Init(root.transform, false);
 
-            Finder.RegisterPlayer(netId.Value, body.gameObject);
+            Finder.RegisterPlayer(netId.Value, root);
 
-            return body;
+            return root.transform;
         }
 
         protected override bool IsReady()
         {
             return Locator.GetPlayerTransform() != null;
-        }
-
-        private void SetupPlayerTools(Transform body)
-        {
-            var flashlightRoot = Instantiate(GameObject.Find("FlashlightRoot"));
-            flashlightRoot.SetActive(false);
-            var oldComponent = flashlightRoot.GetComponent<Flashlight>();
-            var component = flashlightRoot.AddComponent<QSBFlashlight>();
-            component._lights = oldComponent.GetValue<OWLight2[]>("_lights");
-            component._illuminationCheckLight = oldComponent.GetValue<OWLight2>("_illuminationCheckLight");
-            component._root = oldComponent.GetValue<Transform>("_root");
-            component._basePivot = oldComponent.GetValue<Transform>("_basePivot");
-            component._wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
-            oldComponent.enabled = false;
-            flashlightRoot.transform.parent = body;
-            flashlightRoot.SetActive(true);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace QSB.TransformSync
+namespace QSB.Utility
 {
     // Stolen from here : https://stackoverflow.com/questions/3261451/using-a-bitmask-in-c-sharp
 

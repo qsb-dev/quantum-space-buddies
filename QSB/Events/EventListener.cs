@@ -10,25 +10,21 @@ namespace QSB.Events
     {
         public static EventListener LocalInstance;
 
+        List<string> _eventTypes = new List<string>
+        {
+            "TurnOnFlashlight",
+            "TurnOffFlashlight",
+            "SuitUp",
+            "RemoveSuit",
+            "EquipSignalscope",
+            "UnequipSignalscope"
+        };
+
         void Awake()
         {
             LocalInstance = this;
+            _eventTypes.ForEach(x => GlobalMessenger.AddListener(x, () => EventHandler.LocalInstance.Send(x)));
         }
-
-        void Start()
-        {
-            GlobalMessenger.AddListener("TurnOnFlashlight", new Callback(this.FlashlightOn));
-            GlobalMessenger.AddListener("TurnOffFlashlight", new Callback(this.FlashlightOff));
-        }
-
-        private void FlashlightOn()
-        {
-            EventHandler.LocalInstance.Send("TurnOnFlashlight");
-        }
-
-        private void FlashlightOff()
-        {
-            EventHandler.LocalInstance.Send("TurnOffFlashlight");
-        }
+        
     }
 }
