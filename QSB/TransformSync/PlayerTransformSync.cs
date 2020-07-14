@@ -41,7 +41,7 @@ namespace QSB.TransformSync
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
-            PlayerToolsManager.Init(body, false);
+            PlayerToolsManager.Init(gameObject.transform, false);
 
             Finder.RegisterPlayer(netId.Value, gameObject);
 

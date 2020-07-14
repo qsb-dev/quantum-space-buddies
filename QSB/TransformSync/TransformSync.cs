@@ -96,7 +96,7 @@ namespace QSB.TransformSync
                     // Fix bodies staying at 0,0,0 by chucking them into the sun
                     SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
 
-                    //FullStateRequest.LocalInstance.Request();
+                    FullStateRequest.LocalInstance.Request();
                 }
                 else
                 {
