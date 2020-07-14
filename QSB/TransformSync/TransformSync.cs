@@ -82,8 +82,6 @@ namespace QSB.TransformSync
             }
 
             // Get which sector should be used as a reference point
-            //var sectorTransform = SectorSync.Instance.GetSector(netId.Value);
-            //var sectorTransform = Finder.GetSector(netId.Value);
             var sectorTransform = Finder.GetSector(PlayerTransformSync.LocalInstance.netId.Value);
 
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.

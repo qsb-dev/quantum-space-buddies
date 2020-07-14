@@ -55,8 +55,15 @@ namespace QSB
             // For every player that then joins a new instance of the prefab is made, with those new scripts.
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<PlayerTransformSync>();
+            playerPrefab.AddComponent<PlayerCameraRotationSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
+
+            var camera = new GameObject("PlayerCamera");
+            camera.transform.parent = playerPrefab.transform;
+            camera.transform.localPosition = Vector3.zero;
+
+            playerPrefab.AddComponent<NetworkTransformChild>().target = camera.transform;
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
@@ -165,6 +172,5 @@ namespace QSB
                 GUI.Label(new Rect(60, 10, 145, 20f), _playerName);
             }
         }
-
     }
 }
