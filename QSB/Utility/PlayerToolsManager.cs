@@ -8,21 +8,10 @@ namespace QSB.Utility
     class PlayerToolsManager
     {
         private static Transform _rootBody;
-        private static Transform _cameraRoot;
 
-        public static void Init(Transform body, bool isLocal)
+        public static void Init(Transform body)
         {
             _rootBody = body;
-
-            if (!isLocal)
-            {
-                var camera = new GameObject("PlayerCamera");
-                camera.transform.parent = _rootBody;
-            }
-
-            _cameraRoot = _rootBody.Find("PlayerCamera");
-
-            _rootBody.gameObject.AddComponent<NetworkTransformChild>().target = _cameraRoot;
 
             CreateFlashlight();
         }
@@ -39,7 +28,7 @@ namespace QSB.Utility
             component._basePivot = oldComponent.GetValue<Transform>("_basePivot");
             component._wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
             oldComponent.enabled = false;
-            flashlightRoot.transform.parent = _cameraRoot;
+            flashlightRoot.transform.parent = _rootBody;
             flashlightRoot.SetActive(true);
         }
     }
