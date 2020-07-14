@@ -68,11 +68,8 @@ If for some reason none of this is working, you might have to set everything man
 ## Authors
 
 - [AmazingAlek](https://github.com/amazingalek)
+- [Mister_Nebula](https://github.com/misternebula) - Current lead
 - [Raicuparta](https://github.com/Raicuparta)
-
-## Special thanks
-
-- [Mister_Nebula](https://github.com/misternebula), for research
 
 ## Help / Discuss development / Whatever
 
