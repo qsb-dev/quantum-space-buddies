@@ -1,5 +1,4 @@
-﻿using OWML.ModHelper;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Animation;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -15,7 +14,15 @@ namespace QSB.Utility
         {
             _rootBody = body;
 
+            if (!isLocal)
+            {
+                var camera = new GameObject("PlayerCamera");
+                camera.transform.parent = _rootBody;
+            }
+
             _cameraRoot = _rootBody.Find("PlayerCamera");
+
+            _rootBody.gameObject.AddComponent<NetworkTransformChild>().target = _cameraRoot;
 
             CreateFlashlight();
         }

@@ -16,16 +16,11 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        private Transform GetPlayerModel()
-        {
-            return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
-        }
-
         protected override Transform InitLocalTransform()
         {
-            var body = GetPlayerModel();
+            var body = Locator.GetPlayerTransform();
 
-            GetComponent<AnimationSync>().InitLocal(body);
+            GetComponent<AnimationSync>().InitLocal(body.Find("Traveller_HEA_Player_v2"));
 
             PlayerToolsManager.Init(body, true);
 
@@ -34,18 +29,21 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            var body = Instantiate(GetPlayerModel());
+            var body = Instantiate(Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2"));
 
-            GetComponent<AnimationSync>().InitRemote(body);
+            var root = new GameObject("Player_Body");
+            body.parent = root.transform;
 
-            var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
+            GetComponent<AnimationSync>().InitRemote(root.transform);
+
+            var marker = root.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
-            PlayerToolsManager.Init(gameObject.transform, false);
+            PlayerToolsManager.Init(root.transform, false);
 
-            Finder.RegisterPlayer(netId.Value, gameObject);
+            Finder.RegisterPlayer(netId.Value, root);
 
-            return body;
+            return root.transform;
         }
 
         protected override bool IsReady()
