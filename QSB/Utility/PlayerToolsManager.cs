@@ -15,7 +15,8 @@ namespace QSB.Utility
         {
             _rootBody = body;
 
-            _cameraRoot = _rootBody.Find("PlayerCamera");
+            //_cameraRoot = _rootBody.Find("PlayerCamera");
+            _cameraRoot = _rootBody;
 
             CreateFlashlight();
         }
