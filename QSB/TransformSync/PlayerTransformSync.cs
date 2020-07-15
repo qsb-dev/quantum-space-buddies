@@ -11,6 +11,8 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
+        public Transform bodyTransform;
+
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
@@ -25,9 +27,9 @@ namespace QSB.TransformSync
         {
             var body = GetPlayerModel();
 
-            GetComponent<AnimationSync>().InitLocal(body);
+            bodyTransform = body;
 
-            PlayerToolsManager.Init(body);
+            GetComponent<AnimationSync>().InitLocal(body);
 
             Finder.RegisterPlayer(netId.Value, body.gameObject);
 
@@ -38,12 +40,12 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetPlayerModel());
 
+            bodyTransform = body;
+
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
-
-            PlayerToolsManager.Init(body);
 
             Finder.RegisterPlayer(netId.Value, body.gameObject);
 
