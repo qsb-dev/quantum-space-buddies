@@ -115,7 +115,8 @@ namespace QSB.TransformSync
 
                 if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
                 {
-                    PlayerTransformSync.LocalInstance.EnterSector(sector);
+                    PlayerTransformSync.LocalInstance?.EnterSector(sector);
+                    PlayerCameraSync.LocalInstance?.EnterSector(sector);
                     return;
                 }
 

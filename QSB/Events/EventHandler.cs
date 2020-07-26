@@ -53,10 +53,12 @@ namespace QSB.Events
                 switch (message.EventType)
                 {
                     case "TurnOnFlashlight":
+                        DebugLog.ToScreen("flash on");
                         Finder.GetPlayerFlashlight(message.SenderId).TurnOn();
                         Finder.UpdateState(message.SenderId, State.Flashlight, true);
                         break;
                     case "TurnOffFlashlight":
+                        DebugLog.ToScreen("flash off");
                         Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
                         Finder.UpdateState(message.SenderId, State.Flashlight, false);
                         break;

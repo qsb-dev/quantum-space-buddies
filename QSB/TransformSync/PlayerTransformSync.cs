@@ -25,19 +25,21 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole("Local for player " + netId.Value);
             var body = GetPlayerModel();
 
             bodyTransform = body;
 
             GetComponent<AnimationSync>().InitLocal(body);
 
-            Finder.RegisterPlayer(netId.Value, body.gameObject);
+            Finder.RegisterPlayerBody(netId.Value, body.gameObject);
 
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole("Remote for player " + netId.Value);
             var body = Instantiate(GetPlayerModel());
 
             bodyTransform = body;
@@ -47,7 +49,7 @@ namespace QSB.TransformSync
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
-            Finder.RegisterPlayer(netId.Value, body.gameObject);
+            Finder.RegisterPlayerBody(netId.Value, body.gameObject);
 
             return body;
         }

@@ -61,7 +61,6 @@ namespace QSB.TransformSync
 
         public void EnterSector(Sector sector)
         {
-            //SectorSync.Instance.SetSector(netId.Value, sector.GetName());
             SectorSync.Instance.SetSector(PlayerTransformSync.LocalInstance.netId.Value, sector.GetName());
         }
 

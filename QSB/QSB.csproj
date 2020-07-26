@@ -143,8 +143,7 @@
     <Compile Include="TimeSync\PreventShipDestruction.cs" />
     <Compile Include="TimeSync\RespawnOnDeath.cs" />
     <Compile Include="Finder.cs" />
-    <Compile Include="TransformSync\PlayerCameraRotationSync.cs" />
-    <Compile Include="TransformSync\RotationSync.cs" />
+    <Compile Include="TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Utility\FlagsHelper.cs" />
     <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="Utility\PlayerToolsManager.cs" />

@@ -11,57 +11,77 @@ namespace QSB
     {
         private static readonly List<PlayerInfo> playerList = new List<PlayerInfo>();
 
-        public static void RegisterPlayer(uint id, GameObject body)
+        public static void RegisterPlayerBody(uint id, GameObject body)
         {
-            if (!playerList.Any(x => x.NetId == id))
+            DebugLog.ToConsole($"register player body {id}");
+            GetPlayer(id).Body = body;
+        }
+
+        public static void CreatePlayer(uint id, string name)
+        {
+            DebugLog.ToConsole($"create player {id} {name}");
+            playerList.Add(new PlayerInfo(id, null, null, name, false));
+        }
+
+        public static void RegisterPlayerCamera(uint id, GameObject camera)
+        {
+            DebugLog.ToConsole($"register player camera {id}");
+            if (camera == null)
             {
-                DebugLog.ToAll("Registering new player - id of", id);
-                playerList.Add(new PlayerInfo(id, body, "", false));
+                DebugLog.ToConsole("given camera object is null!");
             }
-            else
-            {
-                DebugLog.ToAll("Updating player body - id of", id);
-                GetPlayer(id).Body = body;
-            }
+            var player = playerList.Find(x => x.NetId == id);
+            player.Camera = camera;
+            DebugLog.ToConsole($"*name {playerList.Find(x => x.NetId == id).Name}");
+            DebugLog.ToConsole($"*body {playerList.Find(x => x.NetId == id).Body.name}");
+            DebugLog.ToConsole($"*camera {playerList.Find(x => x.NetId == id).Camera.name}");
         }
 
         public static void RemovePlayer(uint id)
         {
+            DebugLog.ToConsole($"remove player {id}");
             playerList.Remove(playerList.Find(x => x.NetId == id));
         }
 
         private static PlayerInfo GetPlayer(uint id)
         {
-            if (playerList.Find(x => x.NetId == id) != null)
-            {
-                return playerList.Find(x => x.NetId == id);
-            }
-            DebugLog.ToAll("Couldn't find playerinfo for id", id);
-            playerList.Add(new PlayerInfo(id, null, "", false));
             return playerList.Find(x => x.NetId == id);
         }
 
         public static GameObject GetPlayerBody(uint id)
         {
+            DebugLog.ToConsole($"get player body {id}");
             return GetPlayer(id).Body;
+        }
+
+        public static GameObject GetPlayerCamera(uint id)
+        {
+            DebugLog.ToConsole($"get player camera {id}");
+            var player = playerList.Find(x => x.NetId == id);
+            DebugLog.ToConsole($"*name {playerList.Find(x => x.NetId == id).Name}");
+            DebugLog.ToConsole($"*body {playerList.Find(x => x.NetId == id).Body.name}");
+            DebugLog.ToConsole($"*camera {playerList.Find(x => x.NetId == id).Camera.name}");
+            if (GetPlayer(id).Camera == null && GetPlayer(id) != null)
+            {
+                DebugLog.ToScreen($"WARNING - Got player {id} but camera object is null");
+            }
+            return GetPlayer(id).Camera;
         }
 
         public static QSBFlashlight GetPlayerFlashlight(uint id)
         {
-            return GetPlayerBody(id).GetComponentInChildren<QSBFlashlight>();
+            DebugLog.ToConsole($"get player flashlight {id}");
+            if (GetPlayerCamera(id) == null)
+            {
+                DebugLog.ToScreen($"WARNING - Camera for {id} is null");
+            }
+            return GetPlayerCamera(id).GetComponentInChildren<QSBFlashlight>();
         }
 
         public static void UpdatePlayerName(uint id, string name)
         {
-            if (GetPlayer(id) == null)
-            {
-                DebugLog.ToScreen("updating name of non-existant player - creating player for id ", id);
-                playerList.Add(new PlayerInfo(id, null, name, false));
-            }
-            else
-            {
-                GetPlayer(id).Name = name;
-            }
+            DebugLog.ToConsole($"update player name {id}");
+            GetPlayer(id).Name = name;
         }
 
         public static void UpdatePlayerNames(Dictionary<uint, string> newDict)
@@ -74,6 +94,7 @@ namespace QSB
 
         public static string GetPlayerName(uint id)
         {
+            DebugLog.ToConsole($"get player name {id}");
             return GetPlayer(id).Name;
         }
 
@@ -91,11 +112,13 @@ namespace QSB
 
         public static void SetReadiness(uint id, bool ready)
         {
+            DebugLog.ToConsole($"set readiness {id}");
             GetPlayer(id).Ready = ready;
         }
 
         public static void UpdateSector(uint id, Transform sector)
         {
+            DebugLog.ToConsole($"update sector {id}");
             GetPlayer(id).ReferenceSector = sector;
         }
 
@@ -106,6 +129,7 @@ namespace QSB
 
         public static void UpdateState(uint id, State state, bool value)
         {
+            DebugLog.ToConsole($"update state {id}.{state}.{value}");
             var states = GetPlayer(id).State;
             if (value)
             {
@@ -120,6 +144,7 @@ namespace QSB
 
         public static bool GetState(uint id, State state)
         {
+            DebugLog.ToConsole($"get state {id}.{state}");
             var states = GetPlayer(id).State;
             return FlagsHelper.IsSet(states, state);
         }
@@ -129,15 +154,17 @@ namespace QSB
     {
         public uint NetId { get; set; }
         public GameObject Body { get; set; }
+        public GameObject Camera { get; set; }
         public string Name { get; set; }
         public bool Ready { get; set; }
         public Transform ReferenceSector { get; set; }
         public State State { get; set; }
 
-        public PlayerInfo(uint netId, GameObject body, string name, bool ready)
+        public PlayerInfo(uint netId, GameObject body, GameObject camera, string name, bool ready)
         {
             NetId = netId;
             Body = body;
+            Camera = camera;
             Name = name;
             Ready = ready;
         }
