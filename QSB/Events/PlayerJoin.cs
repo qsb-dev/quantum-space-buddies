@@ -7,9 +7,6 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    /// <summary>
-    /// Client-only-side component for managing player joins.
-    /// </summary>
     public class PlayerJoin : NetworkBehaviour
     {
         public static string MyName { get; private set; }
