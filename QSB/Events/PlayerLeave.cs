@@ -42,7 +42,8 @@ namespace QSB.Events
 
         private void DestroyObject(uint objectId)
         {
-            var component = GameObject.FindObjectsOfType<NetworkBehaviour>().FirstOrDefault(x => x.netId.Value == objectId);
+            var component = GameObject.FindObjectsOfType<NetworkBehaviour>()
+                .FirstOrDefault(x => x.netId.Value == objectId);
             if (component == null)
             {
                 return;
