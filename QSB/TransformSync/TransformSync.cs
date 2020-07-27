@@ -39,7 +39,6 @@ namespace QSB.TransformSync
         {
             _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
-
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {

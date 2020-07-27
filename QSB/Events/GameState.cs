@@ -23,17 +23,22 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
-            Finder.UpdatePlayerNames(message.PlayerNames);
+            Finder.HandleFullStateMessage(message);
         }
 
         public void Send()
         {
-            var message = new FullStateMessage()
-            {
-                PlayerNames = Finder.GetPlayerNames()
-            };
 
-            _messageHandler.SendToAll(message);
+            foreach (var player in Finder.GetPlayers())
+            {
+                var message = new FullStateMessage()
+                {
+                    PlayerName = player.Name,
+                    SenderId = player.NetId
+                };
+
+                _messageHandler.SendToAll(message);
+            }
         }
     }
 }

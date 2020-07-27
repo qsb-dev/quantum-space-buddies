@@ -1,17 +1,16 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Animation;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Utility
 {
     class PlayerToolsManager
     {
-        private static Transform _rootBody;
+        private static Transform _cameraBody;
 
-        public static void Init(Transform body)
+        public static void Init(Transform camera)
         {
-            _rootBody = body;
+            _cameraBody = camera;
 
             CreateFlashlight();
         }
@@ -28,7 +27,8 @@ namespace QSB.Utility
             component._basePivot = oldComponent.GetValue<Transform>("_basePivot");
             component._wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
             oldComponent.enabled = false;
-            flashlightRoot.transform.parent = _rootBody;
+            flashlightRoot.transform.parent = _cameraBody;
+            flashlightRoot.transform.localPosition = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
             flashlightRoot.SetActive(true);
         }
     }

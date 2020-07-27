@@ -16,26 +16,29 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
+        uint GetAttachedNetId()
+        {
+            return netId.Value - 2; // This is the 3rd transformsync in the "stack"
+        }
+
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole("Local for camera " + PlayerTransformSync.LocalInstance.netId.Value);
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
             PlayerToolsManager.Init(body);
 
-            Finder.RegisterPlayerCamera(PlayerTransformSync.LocalInstance.netId.Value, body.gameObject);
+            Finder.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole("Remote for camera " + PlayerTransformSync.LocalInstance.netId.Value);
             var body = new GameObject("PlayerCamera");
 
             PlayerToolsManager.Init(body.transform);
 
-            Finder.RegisterPlayerCamera(PlayerTransformSync.LocalInstance.netId.Value, body);
+            Finder.RegisterPlayerCamera(GetAttachedNetId(), body);
 
             return body.transform;
         }

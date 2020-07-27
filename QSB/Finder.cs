@@ -1,4 +1,6 @@
-﻿using QSB.Animation;
+﻿using Newtonsoft.Json;
+using QSB.Animation;
+using QSB.Events;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,35 +13,45 @@ namespace QSB
     {
         private static readonly List<PlayerInfo> playerList = new List<PlayerInfo>();
 
+        public static List<PlayerInfo> GetPlayers()
+        {
+            return playerList;
+        }
+
         public static void RegisterPlayerBody(uint id, GameObject body)
         {
-            DebugLog.ToConsole($"register player body {id}");
+            DebugLog.ToConsole($"Registering body for player: {id}");
             GetPlayer(id).Body = body;
+        }
+
+        public static bool PlayerExists(uint id)
+        {
+            return playerList.Any(x => x.NetId == id);
         }
 
         public static void CreatePlayer(uint id, string name)
         {
-            DebugLog.ToConsole($"create player {id} {name}");
-            playerList.Add(new PlayerInfo(id, null, null, name, false));
+            if (!PlayerExists(id))
+            {
+                DebugLog.ToConsole($"Creating player: {id}");
+                var player = new PlayerInfo()
+                {
+                    NetId = id,
+                    Name = name
+                };
+                playerList.Add(player);
+            }
         }
 
         public static void RegisterPlayerCamera(uint id, GameObject camera)
         {
-            DebugLog.ToConsole($"register player camera {id}");
-            if (camera == null)
-            {
-                DebugLog.ToConsole("given camera object is null!");
-            }
-            var player = playerList.Find(x => x.NetId == id);
-            player.Camera = camera;
-            DebugLog.ToConsole($"*name {playerList.Find(x => x.NetId == id).Name}");
-            DebugLog.ToConsole($"*body {playerList.Find(x => x.NetId == id).Body.name}");
-            DebugLog.ToConsole($"*camera {playerList.Find(x => x.NetId == id).Camera.name}");
+            DebugLog.ToConsole($"Registering camera {id}");
+            GetPlayer(id).Camera = camera;
         }
 
         public static void RemovePlayer(uint id)
         {
-            DebugLog.ToConsole($"remove player {id}");
+            DebugLog.ToConsole($"Removing player {id}");
             playerList.Remove(playerList.Find(x => x.NetId == id));
         }
 
@@ -48,53 +60,35 @@ namespace QSB
             return playerList.Find(x => x.NetId == id);
         }
 
-        public static GameObject GetPlayerBody(uint id)
-        {
-            DebugLog.ToConsole($"get player body {id}");
-            return GetPlayer(id).Body;
-        }
-
         public static GameObject GetPlayerCamera(uint id)
         {
-            DebugLog.ToConsole($"get player camera {id}");
-            var player = playerList.Find(x => x.NetId == id);
-            DebugLog.ToConsole($"*name {playerList.Find(x => x.NetId == id).Name}");
-            DebugLog.ToConsole($"*body {playerList.Find(x => x.NetId == id).Body.name}");
-            DebugLog.ToConsole($"*camera {playerList.Find(x => x.NetId == id).Camera.name}");
-            if (GetPlayer(id).Camera == null && GetPlayer(id) != null)
-            {
-                DebugLog.ToScreen($"WARNING - Got player {id} but camera object is null");
-            }
             return GetPlayer(id).Camera;
         }
 
         public static QSBFlashlight GetPlayerFlashlight(uint id)
         {
-            DebugLog.ToConsole($"get player flashlight {id}");
-            if (GetPlayerCamera(id) == null)
-            {
-                DebugLog.ToScreen($"WARNING - Camera for {id} is null");
-            }
             return GetPlayerCamera(id).GetComponentInChildren<QSBFlashlight>();
         }
 
         public static void UpdatePlayerName(uint id, string name)
         {
-            DebugLog.ToConsole($"update player name {id}");
             GetPlayer(id).Name = name;
         }
 
-        public static void UpdatePlayerNames(Dictionary<uint, string> newDict)
+        public static void HandleFullStateMessage(FullStateMessage message)
         {
-            foreach (var item in newDict)
+            if (!PlayerExists(message.SenderId))
             {
-                GetPlayer(item.Key).Name = item.Value;
+                CreatePlayer(message.SenderId, message.PlayerName);
+            }
+            else
+            {
+                GetPlayer(message.SenderId).Name = message.PlayerName;
             }
         }
 
         public static string GetPlayerName(uint id)
         {
-            DebugLog.ToConsole($"get player name {id}");
             return GetPlayer(id).Name;
         }
 
@@ -112,13 +106,11 @@ namespace QSB
 
         public static void SetReadiness(uint id, bool ready)
         {
-            DebugLog.ToConsole($"set readiness {id}");
             GetPlayer(id).Ready = ready;
         }
 
         public static void UpdateSector(uint id, Transform sector)
         {
-            DebugLog.ToConsole($"update sector {id}");
             GetPlayer(id).ReferenceSector = sector;
         }
 
@@ -129,7 +121,6 @@ namespace QSB
 
         public static void UpdateState(uint id, State state, bool value)
         {
-            DebugLog.ToConsole($"update state {id}.{state}.{value}");
             var states = GetPlayer(id).State;
             if (value)
             {
@@ -144,7 +135,6 @@ namespace QSB
 
         public static bool GetState(uint id, State state)
         {
-            DebugLog.ToConsole($"get state {id}.{state}");
             var states = GetPlayer(id).State;
             return FlagsHelper.IsSet(states, state);
         }
@@ -159,15 +149,6 @@ namespace QSB
         public bool Ready { get; set; }
         public Transform ReferenceSector { get; set; }
         public State State { get; set; }
-
-        public PlayerInfo(uint netId, GameObject body, GameObject camera, string name, bool ready)
-        {
-            NetId = netId;
-            Body = body;
-            Camera = camera;
-            Name = name;
-            Ready = ready;
-        }
     }
 
     [Flags]
@@ -175,7 +156,8 @@ namespace QSB
     {
         Flashlight = 0,
         Suit = 1,
-        ProbeLauncher = 2
+        ProbeLauncher = 2,
+        SignalScope = 4
         //Increment these in binary to add more states
     }
 }

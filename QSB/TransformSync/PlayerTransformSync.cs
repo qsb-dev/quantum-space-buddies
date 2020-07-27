@@ -18,6 +18,11 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
+        uint GetAttachedNetId()
+        {
+            return netId.Value - 0; // This is the 1st transformsync in the "stack"
+        }
+
         private Transform GetPlayerModel()
         {
             return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
@@ -25,21 +30,21 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole("Local for player " + netId.Value);
+            DebugLog.ToConsole("PlayerSync local " + GetAttachedNetId());
             var body = GetPlayerModel();
 
             bodyTransform = body;
 
             GetComponent<AnimationSync>().InitLocal(body);
 
-            Finder.RegisterPlayerBody(netId.Value, body.gameObject);
+            Finder.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole("Remote for player " + netId.Value);
+            DebugLog.ToConsole("PlayerSync remote " + GetAttachedNetId());
             var body = Instantiate(GetPlayerModel());
 
             bodyTransform = body;
@@ -49,7 +54,7 @@ namespace QSB.TransformSync
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
-            Finder.RegisterPlayerBody(netId.Value, body.gameObject);
+            Finder.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 
             return body;
         }

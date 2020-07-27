@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OWML.Common;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ namespace QSB
 {
     public class DebugLog : MonoBehaviour
     {
-        private const int ScreenLinesMax = 10;
+        private const int ScreenLinesMax = 6;
 
         private static Text _screenText;
         private static List<string> _lines;
@@ -33,9 +34,14 @@ namespace QSB
             return string.Join(" ", logObjects.Select(o => o.ToString()).ToArray());
         }
 
-        public static void ToConsole(params object[] logObjects)
+        public static void ToConsole(string message)
         {
-            QSB.Helper.Console.WriteLine(logObjects);
+            QSB.Helper.Console.WriteLine(message, MessageType.Message);
+        }
+
+        public static void ToConsole(string message, MessageType type)
+        {
+            QSB.Helper.Console.WriteLine(message, type);
         }
 
         public static void ToScreen(params object[] logObjects)
@@ -62,7 +68,7 @@ namespace QSB
 
         public static void ToAll(params object[] logObjects)
         {
-            ToConsole(logObjects);
+            ToConsole(JoinAll(logObjects));
             ToScreen(logObjects);
             ToHud(logObjects);
         }
