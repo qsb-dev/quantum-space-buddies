@@ -4,7 +4,4 @@
     <GameDir>D:/EpicGames/OuterWilds</GameDir>
     <OwmlDir>C:\Users\Henry\Downloads\OWModManager\OWML</OwmlDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartWorkingDirectory>C:\Program Files\Epic Games\OuterWilds\OuterWilds_Data\Managed\</StartWorkingDirectory>
-  </PropertyGroup>
 </Project>
