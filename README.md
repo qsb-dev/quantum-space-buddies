@@ -67,8 +67,8 @@ If for some reason none of this is working, you might have to set everything man
 
 ## Authors
 
-- [AmazingAlek](https://github.com/amazingalek)
 - [Mister_Nebula](https://github.com/misternebula) - Current lead
+- [AmazingAlek](https://github.com/amazingalek)
 - [Raicuparta](https://github.com/Raicuparta)
 
 ## Help / Discuss development / Whatever
