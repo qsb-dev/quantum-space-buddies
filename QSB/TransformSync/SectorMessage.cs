@@ -7,18 +7,18 @@ namespace QSB.TransformSync
     {
         public override MessageType MessageType => MessageType.Sector;
 
-        public int SectorName;
+        public int SectorId;
         public uint SenderId;
 
         public override void Deserialize(NetworkReader reader)
         {
-            SectorName = reader.ReadInt32();
+            SectorId = reader.ReadInt32();
             SenderId = reader.ReadPackedUInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
-            writer.Write(SectorName);
+            writer.Write(SectorId);
             writer.Write(SenderId);
         }
     }

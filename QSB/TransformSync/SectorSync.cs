@@ -59,7 +59,7 @@ namespace QSB.TransformSync
 
             var msg = new SectorMessage
             {
-                SectorName = (int)sectorName,
+                SectorId = (int)sectorName,
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
@@ -85,7 +85,7 @@ namespace QSB.TransformSync
         {
             DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
 
-            var sectorName = (Sector.Name)message.SectorName;
+            var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
