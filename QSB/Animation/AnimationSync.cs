@@ -120,13 +120,13 @@ namespace QSB.Animation
             GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
         }
 
-        private void SendTrigger(AnimTrigger trigger, float extraValue = 0)
+        private void SendTrigger(AnimTrigger trigger, float value = 0)
         {
             var message = new AnimTriggerMessage
             {
                 SenderId = netId.Value,
                 TriggerId = (short)trigger,
-                Value = extraValue
+                Value = value
             };
             if (isServer)
             {
