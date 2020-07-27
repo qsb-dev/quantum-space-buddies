@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using QSB.Messaging;
 using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class FullStateMessage : PlayerMessage
+    public class EventMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.FullState;
+        public override MessageType MessageType => MessageType.Event;
 
-        public string PlayerName { get; set; }
+        public int EventType { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            PlayerName = reader.ReadString();
+            EventType = reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(PlayerName);
+            writer.Write(EventType);
         }
     }
 }

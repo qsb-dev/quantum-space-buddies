@@ -9,7 +9,6 @@ namespace QSB.Events
 {
     public class PlayerJoin : NetworkBehaviour
     {
-        public static Dictionary<uint, string> PlayerNames = new Dictionary<uint, string>();
         public static string MyName { get; private set; }
 
         private MessageHandler<JoinMessage> _joinHandler;
@@ -21,12 +20,14 @@ namespace QSB.Events
             _joinHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
+        // Called when joining a server
         public void Join(string playerName)
         {
             MyName = playerName;
             StartCoroutine(SendJoinMessage(playerName));
         }
 
+        // Send join message with player name and ID
         private IEnumerator SendJoinMessage(string playerName)
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
@@ -45,9 +46,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(JoinMessage message)
         {
-            PlayerNames[message.SenderId] = message.PlayerName;
-            DebugLog.All(message.PlayerName, "joined!");
+            PlayerRegistry.CreatePlayer(message.SenderId, message.PlayerName);
+            PlayerRegistry.SetReadiness(message.SenderId, true);
+            DebugLog.ToAll(message.PlayerName, "joined!");
         }
-
     }
 }

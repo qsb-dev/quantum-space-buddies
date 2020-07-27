@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using QSB.Events;
+using QSB.Utility;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
@@ -37,7 +39,6 @@ namespace QSB.TransformSync
         {
             _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
-
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
@@ -54,12 +55,12 @@ namespace QSB.TransformSync
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
-            SectorSync.Instance.SetSector(netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
+            PlayerRegistry.UpdateSector(PlayerTransformSync.LocalInstance.netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
         }
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.Instance.SetSector(netId.Value, sector.GetName());
+            SectorSync.Instance.SetSector(PlayerTransformSync.LocalInstance.netId.Value, sector.GetName());
         }
 
         private void Update()
@@ -78,18 +79,22 @@ namespace QSB.TransformSync
                 return;
             }
 
-            var sectorTransform = SectorSync.Instance.GetSector(netId.Value);
+            // Get which sector should be used as a reference point
+            var sectorTransform = PlayerRegistry.GetSector(PlayerTransformSync.LocalInstance.netId.Value);
 
-            if (hasAuthority)
+            if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
                 transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
             }
-            else
+            else // If this script is attached to any other body, eg the representations of other players
             {
-                if (SyncedTransform.position == Vector3.zero)
+                if (SyncedTransform.position == Vector3.zero) 
                 {
+                    // Fix bodies staying at 0,0,0 by chucking them into the sun
                     SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+
+                    FullStateRequest.LocalInstance.Request();
                 }
                 else
                 {

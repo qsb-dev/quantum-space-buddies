@@ -1,6 +1,8 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.Events;
+using QSB.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -9,9 +11,21 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
+        public Transform bodyTransform;
+
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
+        }
+
+        uint GetAttachedNetId()
+        {
+            /*
+            Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
+            for all components of a player, so I've chosen to used the netId of PlayerTransformSync.
+            This is minus 0 so all transformsyncs follow the same template.
+            */
+            return netId.Value - 0;
         }
 
         private Transform GetPlayerModel()
@@ -21,21 +35,31 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole("PlayerSync local " + GetAttachedNetId());
             var body = GetPlayerModel();
 
+            bodyTransform = body;
+
             GetComponent<AnimationSync>().InitLocal(body);
+
+            PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole("PlayerSync remote " + GetAttachedNetId());
             var body = Instantiate(GetPlayerModel());
+
+            bodyTransform = body;
 
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
+
+            PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
@@ -44,6 +68,5 @@ namespace QSB.TransformSync
         {
             return Locator.GetPlayerTransform() != null;
         }
-
     }
 }

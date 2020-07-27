@@ -10,7 +10,6 @@ namespace QSB.TransformSync
     {
         public static SectorSync Instance { get; private set; }
 
-        private Dictionary<uint, Transform> _playerSectors;
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
         private readonly Sector.Name[] _sectorWhitelist = {
@@ -39,8 +38,6 @@ namespace QSB.TransformSync
         private void Start()
         {
             Instance = this;
-            DebugLog.Screen("Start SectorSync");
-            _playerSectors = new Dictionary<uint, Transform>();
 
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
@@ -54,16 +51,11 @@ namespace QSB.TransformSync
             _allSectors = null;
         }
 
-        public void SetSector(uint id, Transform sectorTransform)
-        {
-            _playerSectors[id] = sectorTransform;
-        }
-
         public void SetSector(uint id, Sector.Name sectorName)
         {
-            DebugLog.Screen("Gonna set sector");
+            DebugLog.ToScreen("Gonna set sector");
 
-            _playerSectors[id] = FindSectorTransform(sectorName);
+            PlayerRegistry.UpdateSector(id, FindSectorTransform(sectorName));
 
             var msg = new SectorMessage
             {
@@ -71,11 +63,6 @@ namespace QSB.TransformSync
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
-        }
-
-        public Transform GetSector(uint id)
-        {
-            return _playerSectors[id];
         }
 
         private Transform FindSectorTransform(Sector.Name sectorName)
@@ -96,24 +83,24 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            DebugLog.Screen("OnClientReceiveMessage SectorSync");
+            DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
 
             var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.Screen("Sector", sectorName, "not found");
+                DebugLog.ToScreen("Sector", sectorName, "not found");
                 return;
             }
 
-            DebugLog.Screen("Found sector", sectorName, ", setting for", message.SenderId);
-            _playerSectors[message.SenderId] = sectorTransform;
+            DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
+            PlayerRegistry.UpdateSector(message.SenderId, sectorTransform);
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            DebugLog.Screen("OnServerReceiveMessage SectorSync");
+            DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 
@@ -128,7 +115,8 @@ namespace QSB.TransformSync
 
                 if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
                 {
-                    PlayerTransformSync.LocalInstance.EnterSector(sector);
+                    PlayerTransformSync.LocalInstance?.EnterSector(sector);
+                    PlayerCameraSync.LocalInstance?.EnterSector(sector);
                     return;
                 }
 

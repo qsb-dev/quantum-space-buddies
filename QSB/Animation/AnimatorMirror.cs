@@ -69,6 +69,5 @@ namespace QSB.Animation
                 _to.SetFloat(floatParam.Key, current);
             }
         }
-
     }
 }
