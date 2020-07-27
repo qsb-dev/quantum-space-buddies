@@ -27,7 +27,7 @@ namespace QSB.TransformSync
 
             PlayerToolsManager.Init(body);
 
-            Finder.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
+            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
@@ -38,7 +38,7 @@ namespace QSB.TransformSync
 
             PlayerToolsManager.Init(body.transform);
 
-            Finder.RegisterPlayerCamera(GetAttachedNetId(), body);
+            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body);
 
             return body.transform;
         }

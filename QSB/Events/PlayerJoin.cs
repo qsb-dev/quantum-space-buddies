@@ -23,13 +23,15 @@ namespace QSB.Events
             _joinHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        public void Join(string playerName) // Called when joining a server
+        // Called when joining a server
+        public void Join(string playerName)
         {
             MyName = playerName;
             StartCoroutine(SendJoinMessage(playerName));
         }
 
-        private IEnumerator SendJoinMessage(string playerName) // Send join message with player name and ID
+        // Send join message with player name and ID
+        private IEnumerator SendJoinMessage(string playerName)
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
             var message = new JoinMessage
@@ -40,15 +42,15 @@ namespace QSB.Events
             _joinHandler.SendToServer(message);
         }
 
-        private void OnServerReceiveMessage(JoinMessage message) // Distrubute player join message to all connected clients
+        private void OnServerReceiveMessage(JoinMessage message)
         {
             _joinHandler.SendToAll(message);
         }
 
         private void OnClientReceiveMessage(JoinMessage message)
         {
-            Finder.CreatePlayer(message.SenderId, message.PlayerName);
-            Finder.SetReadiness(message.SenderId, true);
+            PlayerRegistry.CreatePlayer(message.SenderId, message.PlayerName);
+            PlayerRegistry.SetReadiness(message.SenderId, true);
             DebugLog.ToAll(message.PlayerName, "joined!");
         }
     }

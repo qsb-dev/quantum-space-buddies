@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB
 {
-    public static class Finder
+    public static class PlayerRegistry
     {
         private static readonly List<PlayerInfo> playerList = new List<PlayerInfo>();
 

@@ -118,6 +118,7 @@
     <Compile Include="Animation\QSBFlashlight.cs" />
     <Compile Include="DebugActions.cs" />
     <Compile Include="Events\EventListener.cs" />
+    <Compile Include="Events\EventType.cs" />
     <Compile Include="Events\FullStateMessage.cs" />
     <Compile Include="Events\FullStateRequest.cs" />
     <Compile Include="Events\GameState.cs" />

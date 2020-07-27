@@ -7,6 +7,7 @@ namespace QSB.Utility
     class PlayerToolsManager
     {
         private static Transform _cameraBody;
+        private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
 
         public static void Init(Transform camera)
         {
@@ -28,7 +29,7 @@ namespace QSB.Utility
             component._wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
             oldComponent.enabled = false;
             flashlightRoot.transform.parent = _cameraBody;
-            flashlightRoot.transform.localPosition = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
+            flashlightRoot.transform.localPosition = FlashlightOffset;
             flashlightRoot.SetActive(true);
         }
     }

@@ -23,13 +23,13 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
-            Finder.HandleFullStateMessage(message);
+            PlayerRegistry.HandleFullStateMessage(message);
         }
 
         public void Send()
         {
 
-            foreach (var player in Finder.GetPlayers())
+            foreach (var player in PlayerRegistry.GetPlayers())
             {
                 var message = new FullStateMessage()
                 {

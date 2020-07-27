@@ -38,9 +38,9 @@ namespace QSB.TransformSync
 
         void Update()
         {
-            if (_isReady && Finder.IsPlayerReady(_netId))
+            if (_isReady && PlayerRegistry.IsPlayerReady(_netId))
             {
-                _markerLabel = Finder.GetPlayerName(_netId);
+                _markerLabel = PlayerRegistry.GetPlayerName(_netId);
                 _isReady = false;
 
                 base.InitCanvasMarker();

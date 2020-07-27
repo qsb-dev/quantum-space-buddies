@@ -37,7 +37,7 @@ namespace QSB.TransformSync
 
             GetComponent<AnimationSync>().InitLocal(body);
 
-            Finder.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
+            PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
@@ -54,7 +54,7 @@ namespace QSB.TransformSync
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(netId.Value);
 
-            Finder.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
+            PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 
             return body;
         }

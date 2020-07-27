@@ -31,9 +31,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(LeaveMessage message)
         {
-            var playerName = Finder.GetPlayerName(message.SenderId);
+            var playerName = PlayerRegistry.GetPlayerName(message.SenderId);
             DebugLog.ToAll(playerName, "disconnected.");
-            Finder.RemovePlayer(message.SenderId);
+            PlayerRegistry.RemovePlayer(message.SenderId);
             foreach (var objectId in message.ObjectIds)
             {
                 DestroyObject(objectId);

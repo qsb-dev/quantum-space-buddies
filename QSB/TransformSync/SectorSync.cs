@@ -55,7 +55,7 @@ namespace QSB.TransformSync
         {
             DebugLog.ToScreen("Gonna set sector");
 
-            Finder.UpdateSector(id, FindSectorTransform(sectorName));
+            PlayerRegistry.UpdateSector(id, FindSectorTransform(sectorName));
 
             var msg = new SectorMessage
             {
@@ -95,7 +95,7 @@ namespace QSB.TransformSync
             }
 
             DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
-            Finder.UpdateSector(message.SenderId, sectorTransform);
+            PlayerRegistry.UpdateSector(message.SenderId, sectorTransform);
         }
 
         private void OnServerReceiveMessage(SectorMessage message)

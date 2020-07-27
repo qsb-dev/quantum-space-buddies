@@ -6,17 +6,14 @@ using UnityEngine;
 
 namespace QSB.TimeSync
 {
-    /// <summary>
-    /// Client-only-side component for stopping the ship from being damaged.
-    /// </summary>
     public class PreventShipDestruction : MonoBehaviour
     {
         private void Awake()
         {
-            QSB.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), "ReturnNull"); // Stop legs from detaching
-            QSB.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), "ReturnNull"); // Stop modules detaching
+            QSB.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), "ReturnNull");
+            QSB.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), "ReturnNull");
 
-            QSB.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract"); // Turn off ejection system
+            QSB.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
 
             QSB.Helper.Events.Subscribe<ShipDamageController>(OWML.Common.Events.AfterAwake);
             QSB.Helper.Events.OnEvent += OnEvent;

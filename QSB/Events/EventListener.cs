@@ -10,21 +10,18 @@ namespace QSB.Events
     {
         public static EventListener LocalInstance;
 
-        List<string> _eventTypes = new List<string>
-        {
-            "TurnOnFlashlight",
-            "TurnOffFlashlight",
-            "SuitUp",
-            "RemoveSuit",
-            "EquipSignalscope",
-            "UnequipSignalscope"
-        };
-
         void Awake()
         {
             LocalInstance = this;
-            _eventTypes.ForEach(x => GlobalMessenger.AddListener(x, () => EventHandler.LocalInstance.Send(x)));
+            foreach (var item in Enum.GetNames(typeof(EventType)))
+            {
+                GlobalMessenger.AddListener(item, () => SendEvent(item));
+            }
         }
         
+        private void SendEvent(string eventName)
+        {
+            EventHandler.LocalInstance.Send((EventType)Enum.Parse(typeof(EventType), eventName));
+        }
     }
 }

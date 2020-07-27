@@ -24,17 +24,17 @@ namespace QSB.Events
             _eventHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        public void Send(string eventType)
+        public void Send(EventType eventType)
         {
             StartCoroutine(SendEvent(eventType));
         }
 
-        private IEnumerator SendEvent(string eventType)
+        private IEnumerator SendEvent(EventType eventType)
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
             var message = new EventMessage
             {
-                EventType = eventType,
+                EventType = (int)eventType,
                 SenderId = PlayerTransformSync.LocalInstance.netId.Value
             };
             _eventHandler.SendToServer(message);
@@ -49,23 +49,21 @@ namespace QSB.Events
         {
             if (message.SenderId != PlayerTransformSync.LocalInstance.netId.Value)
             {
-                switch (message.EventType)
+                switch ((EventType)message.EventType)
                 {
-                    case "TurnOnFlashlight":
-                        Finder.GetPlayerFlashlight(message.SenderId).TurnOn();
-                        Finder.UpdateState(message.SenderId, State.Flashlight, true);
+                    case EventType.TurnOnFlashlight:
+                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
+                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
                         break;
-                    case "TurnOffFlashlight":
-                        Finder.GetPlayerFlashlight(message.SenderId).TurnOff();
-                        Finder.UpdateState(message.SenderId, State.Flashlight, false);
+                    case EventType.TurnOffFlashlight:
+                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
+                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
                         break;
-                    case "SuitUp":
-                        Finder.UpdateState(message.SenderId, State.Suit, true);
+                    case EventType.SuitUp:
+                        PlayerRegistry.UpdateState(message.SenderId, State.Suit, true);
                         break;
-                    case "RemoveSuit":
-                        Finder.UpdateState(message.SenderId, State.Suit, false);
-                        break;
-                    case "EquipSignalscope":
+                    case EventType.RemoveSuit:
+                        PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
                         break;
                 }
             }

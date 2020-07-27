@@ -9,12 +9,12 @@ namespace QSB.Events
     {
         public override MessageType MessageType => MessageType.Event;
 
-        public string EventType { get; set; }
+        public int EventType { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            EventType = reader.ReadString();
+            EventType = reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
