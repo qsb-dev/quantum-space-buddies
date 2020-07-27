@@ -43,7 +43,6 @@ namespace QSB.Animation
             }
             SyncParams();
             SmoothFloats();
-            //SyncLayerWeights();
         }
 
         private void SyncParams()
@@ -68,14 +67,6 @@ namespace QSB.Animation
             {
                 var current = floatParam.Value.Smooth(SmoothTime);
                 _to.SetFloat(floatParam.Key, current);
-            }
-        }
-
-        void SyncLayerWeights()
-        {
-            for (int i = 0; i < _from.layerCount; i++)
-            {
-                _to.SetLayerWeight(i, _from.GetLayerWeight(i));
             }
         }
     }
