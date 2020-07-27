@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
 namespace QSB.Events

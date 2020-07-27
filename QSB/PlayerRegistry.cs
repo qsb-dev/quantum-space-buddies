@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json;
-using QSB.Animation;
+﻿using QSB.Animation;
 using QSB.Events;
 using QSB.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,12 +9,7 @@ namespace QSB
 {
     public static class PlayerRegistry
     {
-        private static readonly List<PlayerInfo> playerList = new List<PlayerInfo>();
-
-        public static List<PlayerInfo> GetPlayers()
-        {
-            return playerList;
-        }
+        public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
         public static void RegisterPlayerBody(uint id, GameObject body)
         {
@@ -26,21 +19,22 @@ namespace QSB
 
         public static bool PlayerExists(uint id)
         {
-            return playerList.Any(x => x.NetId == id);
+            return PlayerList.Any(x => x.NetId == id);
         }
 
         public static void CreatePlayer(uint id, string name)
         {
-            if (!PlayerExists(id))
+            if (PlayerExists(id))
             {
-                DebugLog.ToConsole($"Creating player: {id}");
-                var player = new PlayerInfo()
-                {
-                    NetId = id,
-                    Name = name
-                };
-                playerList.Add(player);
+                return;
             }
+            DebugLog.ToConsole($"Creating player: {id}");
+            var player = new PlayerInfo()
+            {
+                NetId = id,
+                Name = name
+            };
+            PlayerList.Add(player);
         }
 
         public static void RegisterPlayerCamera(uint id, GameObject camera)
@@ -52,12 +46,12 @@ namespace QSB
         public static void RemovePlayer(uint id)
         {
             DebugLog.ToConsole($"Removing player {id}");
-            playerList.Remove(playerList.Find(x => x.NetId == id));
+            PlayerList.Remove(PlayerList.Find(x => x.NetId == id));
         }
 
         private static PlayerInfo GetPlayer(uint id)
         {
-            return playerList.Find(x => x.NetId == id);
+            return PlayerList.Find(x => x.NetId == id);
         }
 
         public static GameObject GetPlayerCamera(uint id)
@@ -95,7 +89,7 @@ namespace QSB
         public static Dictionary<uint, string> GetPlayerNames()
         {
             var dict = new Dictionary<uint, string>();
-            playerList.ForEach(x => dict.Add(x.NetId, x.Name));
+            PlayerList.ForEach(x => dict.Add(x.NetId, x.Name));
             return dict;
         }
 
@@ -138,26 +132,5 @@ namespace QSB
             var states = GetPlayer(id).State;
             return FlagsHelper.IsSet(states, state);
         }
-    }
-
-    public class PlayerInfo
-    {
-        public uint NetId { get; set; }
-        public GameObject Body { get; set; }
-        public GameObject Camera { get; set; }
-        public string Name { get; set; }
-        public bool Ready { get; set; }
-        public Transform ReferenceSector { get; set; }
-        public State State { get; set; }
-    }
-
-    [Flags]
-    public enum State
-    {
-        Flashlight = 0,
-        Suit = 1,
-        ProbeLauncher = 2,
-        SignalScope = 4
-        //Increment these in binary to add more states
     }
 }
