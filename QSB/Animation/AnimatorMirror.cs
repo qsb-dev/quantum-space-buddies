@@ -7,7 +7,6 @@ namespace QSB.Animation
     public class AnimatorMirror : MonoBehaviour
     {
         private const float SmoothTime = 0.05f;
-        private const int CrouchLayerIndex = 1;
 
         private Animator _from;
         private Animator _to;
@@ -44,7 +43,6 @@ namespace QSB.Animation
             }
             SyncParams();
             SmoothFloats();
-            SyncLayerWeight();
         }
 
         private void SyncParams()
@@ -70,12 +68,6 @@ namespace QSB.Animation
                 var current = floatParam.Value.Smooth(SmoothTime);
                 _to.SetFloat(floatParam.Key, current);
             }
-        }
-
-        private void SyncLayerWeight()
-        {
-            var layerWeight = _from.GetLayerWeight(CrouchLayerIndex);
-            _to.SetLayerWeight(CrouchLayerIndex, layerWeight);
         }
 
     }

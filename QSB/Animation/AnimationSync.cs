@@ -9,6 +9,11 @@ namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {
+        private const float CrouchSendInterval = 0.1f;
+        private const float CrouchChargeThreshold = 0.01f;
+        private const float CrouchSmoothTime = 0.05f;
+        private const int CrouchLayerIndex = 1;
+
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
@@ -19,6 +24,10 @@ namespace QSB.Animation
         private GameObject _suitedGraphics;
         private GameObject _unsuitedGraphics;
         private PlayerCharacterController _playerController;
+
+        private readonly AnimFloatParam _crouchParam = new AnimFloatParam();
+        private float _sendTimer;
+        private float _lastSentJumpChargeFraction;
 
         private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
 
@@ -111,12 +120,13 @@ namespace QSB.Animation
             GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
         }
 
-        private void SendTrigger(AnimTrigger trigger)
+        private void SendTrigger(AnimTrigger trigger, float extraValue = 0)
         {
             var message = new AnimTriggerMessage
             {
                 SenderId = netId.Value,
-                TriggerId = (short)trigger
+                TriggerId = (short)trigger,
+                Value = extraValue
             };
             if (isServer)
             {
@@ -137,11 +147,11 @@ namespace QSB.Animation
         {
             if (PlayerAnimSyncs.TryGetValue(message.SenderId, out var animSync) && animSync != this)
             {
-                animSync.HandleTrigger((AnimTrigger)message.TriggerId);
+                animSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
             }
         }
 
-        private void HandleTrigger(AnimTrigger trigger)
+        private void HandleTrigger(AnimTrigger trigger, float value)
         {
             switch (trigger)
             {
@@ -160,9 +170,56 @@ namespace QSB.Animation
                     _unsuitedGraphics.SetActive(true);
                     _suitedGraphics.SetActive(false);
                     break;
+                case AnimTrigger.Crouch:
+                    _crouchParam.Target = value;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
             }
+        }
+
+        private void Update()
+        {
+            if (isLocalPlayer)
+            {
+                SyncLocalCrouch();
+            }
+            else
+            {
+                SyncRemoteCrouch();
+            }
+        }
+
+        private void SyncLocalCrouch()
+        {
+            if (_playerController == null)
+            {
+                return;
+            }
+            _sendTimer += Time.unscaledDeltaTime;
+            if (_sendTimer < CrouchSendInterval)
+            {
+                return;
+            }
+            var jumpChargeFraction = _playerController.GetJumpChargeFraction();
+            if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
+            {
+                return;
+            }
+            SendTrigger(AnimTrigger.Crouch, jumpChargeFraction);
+            _lastSentJumpChargeFraction = jumpChargeFraction;
+            _sendTimer = 0;
+        }
+
+        private void SyncRemoteCrouch()
+        {
+            if (_bodyAnim == null)
+            {
+                return;
+            }
+            _crouchParam.Smooth(CrouchSmoothTime);
+            var jumpChargeFraction = _crouchParam.Current;
+            _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
         }
 
     }
