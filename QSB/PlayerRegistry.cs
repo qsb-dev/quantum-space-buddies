@@ -18,22 +18,10 @@ namespace QSB
             return playerList;
         }
 
-        public static void RegisterPlayerBody(uint id, GameObject body)
-        {
-            DebugLog.ToConsole($"Registering body for player: {id}");
-            GetPlayer(id).Body = body;
-        }
-
-        public static bool PlayerExists(uint id)
-        {
-            return playerList.Any(x => x.NetId == id);
-        }
-
         public static void CreatePlayer(uint id, string name)
         {
             if (!PlayerExists(id))
             {
-                DebugLog.ToConsole($"Creating player: {id}");
                 var player = new PlayerInfo()
                 {
                     NetId = id,
@@ -43,16 +31,14 @@ namespace QSB
             }
         }
 
-        public static void RegisterPlayerCamera(uint id, GameObject camera)
-        {
-            DebugLog.ToConsole($"Registering camera {id}");
-            GetPlayer(id).Camera = camera;
-        }
-
         public static void RemovePlayer(uint id)
         {
-            DebugLog.ToConsole($"Removing player {id}");
             playerList.Remove(playerList.Find(x => x.NetId == id));
+        }
+
+        public static bool PlayerExists(uint id)
+        {
+            return playerList.Any(x => x.NetId == id);
         }
 
         private static PlayerInfo GetPlayer(uint id)
@@ -60,21 +46,21 @@ namespace QSB
             return playerList.Find(x => x.NetId == id);
         }
 
-        public static GameObject GetPlayerCamera(uint id)
+        public static void RegisterPlayerBody(uint id, GameObject body)
         {
-            return GetPlayer(id).Camera;
+            GetPlayer(id).Body = body;
+        }
+
+        public static void RegisterPlayerCamera(uint id, GameObject camera)
+        {
+            GetPlayer(id).Camera = camera;
         }
 
         public static QSBFlashlight GetPlayerFlashlight(uint id)
         {
-            return GetPlayerCamera(id).GetComponentInChildren<QSBFlashlight>();
+            return GetPlayer(id).Camera.GetComponentInChildren<QSBFlashlight>();
         }
-
-        public static void UpdatePlayerName(uint id, string name)
-        {
-            GetPlayer(id).Name = name;
-        }
-
+        
         public static void HandleFullStateMessage(FullStateMessage message)
         {
             if (!PlayerExists(message.SenderId))
@@ -85,6 +71,11 @@ namespace QSB
             {
                 GetPlayer(message.SenderId).Name = message.PlayerName;
             }
+        }
+
+        public static void UpdatePlayerName(uint id, string name)
+        {
+            GetPlayer(id).Name = name;
         }
 
         public static string GetPlayerName(uint id)
@@ -121,6 +112,7 @@ namespace QSB
 
         public static void UpdateState(uint id, State state, bool value)
         {
+            DebugLog.ToConsole($"Updating state : {id}.{state}.{value}");
             var states = GetPlayer(id).State;
             if (value)
             {
@@ -154,10 +146,11 @@ namespace QSB
     [Flags]
     public enum State
     {
-        Flashlight = 0,
-        Suit = 1,
+        Suit = 0,
+        Flashlight = 1,
         ProbeLauncher = 2,
-        SignalScope = 4
+        Signalscope = 4,
+        Translator = 8
         //Increment these in binary to add more states
     }
 }

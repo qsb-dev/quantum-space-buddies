@@ -24,17 +24,17 @@ namespace QSB.Events
             _eventHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        public void Send(EventType eventType)
+        public void Send(EventType type)
         {
-            StartCoroutine(SendEvent(eventType));
+            StartCoroutine(SendEvent(type));
         }
 
-        private IEnumerator SendEvent(EventType eventType)
+        private IEnumerator SendEvent(EventType type)
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
             var message = new EventMessage
             {
-                EventType = (int)eventType,
+                EventType = (int)type,
                 SenderId = PlayerTransformSync.LocalInstance.netId.Value
             };
             _eventHandler.SendToServer(message);
@@ -64,6 +64,12 @@ namespace QSB.Events
                         break;
                     case EventType.RemoveSuit:
                         PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
+                        break;
+                    case EventType.EquipSignalscope:
+                        PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, true);
+                        break;
+                    case EventType.UnequipSignalscope:
+                        PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, false);
                         break;
                 }
             }
