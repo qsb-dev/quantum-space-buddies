@@ -20,7 +20,12 @@ namespace QSB.TransformSync
 
         uint GetAttachedNetId()
         {
-            return netId.Value - 0; // This is the 1st transformsync in the "stack"
+            /*
+            Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
+            for all components of a player, so I've chosen to used the netId of PlayerTransformSync.
+            This is minus 0 so all transformsyncs follow the same template.
+            */
+            return netId.Value - 0;
         }
 
         private Transform GetPlayerModel()
