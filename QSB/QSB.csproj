@@ -114,6 +114,8 @@
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Animation\QSBFlashlight.cs" />
+    <Compile Include="Animation\QSBTool.cs" />
+    <Compile Include="Animation\ToolType.cs" />
     <Compile Include="DebugActions.cs" />
     <Compile Include="Events\EventListener.cs" />
     <Compile Include="Events\EventType.cs" />

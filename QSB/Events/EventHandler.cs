@@ -66,9 +66,11 @@ namespace QSB.Events
                         PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
                         break;
                     case EventType.EquipSignalscope:
+                        PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
                         PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, true);
                         break;
                     case EventType.UnequipSignalscope:
+                        PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
                         PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, false);
                         break;
                 }

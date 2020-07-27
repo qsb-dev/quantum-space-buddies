@@ -53,12 +53,22 @@ namespace QSB
 
         public static void RegisterPlayerCamera(uint id, GameObject camera)
         {
+            DebugLog.ToConsole("register player camera " + id);
             GetPlayer(id).Camera = camera;
         }
 
         public static QSBFlashlight GetPlayerFlashlight(uint id)
         {
             return GetPlayer(id).Camera.GetComponentInChildren<QSBFlashlight>();
+        }
+
+        public static PlayerTool GetPlayerSignalscope(uint id)
+        {
+            if (GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>().Length == 0)
+            {
+                DebugLog.ToConsole("Found no qsbtools!!");
+            }
+            return GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>().First(x => x.Type == ToolType.Signalscope);
         }
         
         public static void HandleFullStateMessage(FullStateMessage message)
