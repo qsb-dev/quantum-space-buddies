@@ -20,6 +20,7 @@ namespace QSB
 
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
+        private GameObject _cameraPrefab;
 
         private readonly string[] _defaultNames = {
             "Arkose",
@@ -51,8 +52,6 @@ namespace QSB
         {
             _assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
 
-            // Loads the network player prefab into the network manager, then adds scripts to the prefab.
-            // For every player that then joins a new instance of the prefab is made, with those new scripts.
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
@@ -61,6 +60,10 @@ namespace QSB
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
+
+            _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
+            _cameraPrefab.AddComponent<PlayerCameraSync>();
+            spawnPrefabs.Add(_cameraPrefab);
 
             ConfigureNetworkManager();
 
@@ -98,7 +101,9 @@ namespace QSB
         {
             base.OnServerAddPlayer(connection, playerControllerId);
 
+            // These have to be in a constant order (for now, until I get a better netId getting system...)
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
+            NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
 
             var gameState = gameObject.AddComponent<GameState>();
             gameState.Send();

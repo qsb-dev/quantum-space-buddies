@@ -49,7 +49,6 @@ namespace QSB.Events
         {
             if (message.SenderId != PlayerTransformSync.LocalInstance.netId.Value)
             {
-                DebugLog.ToScreen("Received event message!");
                 switch (message.EventType)
                 {
                     case "TurnOnFlashlight":
@@ -67,7 +66,6 @@ namespace QSB.Events
                         Finder.UpdateState(message.SenderId, State.Suit, false);
                         break;
                     case "EquipSignalscope":
-                        DebugLog.ToScreen("Equip signalscope");
                         break;
                 }
             }

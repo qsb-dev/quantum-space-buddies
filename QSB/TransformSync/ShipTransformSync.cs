@@ -6,6 +6,16 @@ namespace QSB.TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
 
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
+
+        uint GetAttachedNetId()
+        {
+            return netId.Value - 1; // This is the 2nd transformsync in the "stack"
+        }
+
         private Transform GetShipModel()
         {
             return Locator.GetShipTransform();
@@ -13,12 +23,13 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            LocalInstance = this;
+            DebugLog.ToConsole("ShipSync local " + GetAttachedNetId());
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole("ShipSync remote " + GetAttachedNetId());
             var shipModel = GetShipModel();
 
             var remoteTransform = new GameObject().transform;

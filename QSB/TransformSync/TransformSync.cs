@@ -39,7 +39,6 @@ namespace QSB.TransformSync
         {
             _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
-
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
@@ -61,7 +60,6 @@ namespace QSB.TransformSync
 
         public void EnterSector(Sector sector)
         {
-            //SectorSync.Instance.SetSector(netId.Value, sector.GetName());
             SectorSync.Instance.SetSector(PlayerTransformSync.LocalInstance.netId.Value, sector.GetName());
         }
 

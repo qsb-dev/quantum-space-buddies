@@ -38,7 +38,7 @@
       <HintPath>..\packages\OW.Unity.Dlls.1.0.7\lib\net35\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\NAudio-Unity.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\NAudio-Unity.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
@@ -47,28 +47,28 @@
       <HintPath>..\packages\OW.Unity.Dlls.1.0.7\lib\net35\OW.Unity.Dlls.dll</HintPath>
     </Reference>
     <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.dll</HintPath>
     </Reference>
     <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.Common.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.Common.dll</HintPath>
     </Reference>
     <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.ModHelper.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.ModHelper.dll</HintPath>
     </Reference>
     <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
     </Reference>
     <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.ModHelper.Events.dll</HintPath>
     </Reference>
     <Reference Include="OWML.ModHelper.Input, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.ModHelper.Input.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.ModHelper.Input.dll</HintPath>
     </Reference>
     <Reference Include="OWML.ModHelper.Interaction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
     </Reference>
     <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.4.1\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
+      <HintPath>..\packages\OWML.0.6.0\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -143,6 +143,7 @@
     <Compile Include="TimeSync\PreventShipDestruction.cs" />
     <Compile Include="TimeSync\RespawnOnDeath.cs" />
     <Compile Include="Finder.cs" />
+    <Compile Include="TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Utility\FlagsHelper.cs" />
     <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="Utility\PlayerToolsManager.cs" />

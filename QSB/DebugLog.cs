@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OWML.Common;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,9 +34,14 @@ namespace QSB
             return string.Join(" ", logObjects.Select(o => o.ToString()).ToArray());
         }
 
-        public static void ToConsole(params object[] logObjects)
+        public static void ToConsole(string message)
         {
-            QSB.Helper.Console.WriteLine(logObjects);
+            QSB.Helper.Console.WriteLine(message, MessageType.Message);
+        }
+
+        public static void ToConsole(string message, MessageType type)
+        {
+            QSB.Helper.Console.WriteLine(message, type);
         }
 
         public static void ToScreen(params object[] logObjects)
@@ -52,8 +58,8 @@ namespace QSB
         {
             if (Locator.GetPlayerBody() == null)
             {
-                ToConsole("Warning: tried to log to HUD but player is not ready.");
-                ToConsole("* " + JoinAll(logObjects));
+                //ToConsole("Warning: tried to log to HUD but player is not ready.");
+                //ToConsole("* " + JoinAll(logObjects));
                 return;
             }
             var data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
@@ -62,7 +68,7 @@ namespace QSB
 
         public static void ToAll(params object[] logObjects)
         {
-            ToConsole(logObjects);
+            ToConsole(JoinAll(logObjects));
             ToScreen(logObjects);
             ToHud(logObjects);
         }

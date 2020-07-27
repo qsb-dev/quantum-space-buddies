@@ -47,7 +47,7 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(JoinMessage message)
         {
-            Finder.UpdatePlayerName(message.SenderId, message.PlayerName);
+            Finder.CreatePlayer(message.SenderId, message.PlayerName);
             Finder.SetReadiness(message.SenderId, true);
             DebugLog.ToAll(message.PlayerName, "joined!");
         }
