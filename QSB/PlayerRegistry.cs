@@ -29,7 +29,7 @@ namespace QSB
                 return;
             }
             DebugLog.ToConsole($"Creating player: {id}");
-            var player = new PlayerInfo()
+            var player = new PlayerInfo
             {
                 NetId = id,
                 Name = name
