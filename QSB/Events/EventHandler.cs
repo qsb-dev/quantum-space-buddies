@@ -1,7 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using OWML.ModHelper.Events;
-using QSB.Animation;
 using QSB.Messaging;
 using QSB.TransformSync;
 using UnityEngine;
@@ -47,25 +44,26 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
-            if (message.SenderId != PlayerTransformSync.LocalInstance.netId.Value)
+            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
             {
-                switch ((EventType)message.EventType)
-                {
-                    case EventType.TurnOnFlashlight:
-                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
-                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
-                        break;
-                    case EventType.TurnOffFlashlight:
-                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
-                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
-                        break;
-                    case EventType.SuitUp:
-                        PlayerRegistry.UpdateState(message.SenderId, State.Suit, true);
-                        break;
-                    case EventType.RemoveSuit:
-                        PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
-                        break;
-                }
+                return;
+            }
+            switch ((EventType)message.EventType)
+            {
+                case EventType.TurnOnFlashlight:
+                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
+                    PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
+                    break;
+                case EventType.TurnOffFlashlight:
+                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
+                    PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
+                    break;
+                case EventType.SuitUp:
+                    PlayerRegistry.UpdateState(message.SenderId, State.Suit, true);
+                    break;
+                case EventType.RemoveSuit:
+                    PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
+                    break;
             }
         }
     }

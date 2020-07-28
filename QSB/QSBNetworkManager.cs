@@ -14,7 +14,7 @@ namespace QSB
     public class QSBNetworkManager : NetworkManager
     {
         public static UnityEvent OnNetworkManagerReady = new UnityEvent();
-        public static bool IsReady = false;
+        public static bool IsReady;
 
         private const int MaxConnections = 128;
 
@@ -77,11 +77,9 @@ namespace QSB
             profileManager.Initialize();
             var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
             var profileName = profile?.profileName;
-            if (!string.IsNullOrEmpty(profileName))
-            {
-                return profileName;
-            }
-            return _defaultNames.OrderBy(x => Guid.NewGuid()).First();
+            return !string.IsNullOrEmpty(profileName) 
+                ? profileName 
+                : _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 
         private void ConfigureNetworkManager()

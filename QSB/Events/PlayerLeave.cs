@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using QSB.Messaging;
-using QSB.TransformSync;
 using UnityEngine;
 using UnityEngine.Networking;
 

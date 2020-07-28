@@ -1,8 +1,4 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Animation;
-using QSB.Events;
-using QSB.Utility;
-using System.Collections.Generic;
+﻿using QSB.Animation;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -18,7 +14,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        uint GetAttachedNetId()
+        private uint GetAttachedNetId()
         {
             /*
             Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same

@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.Events
 {
-    class EventListener : MonoBehaviour
+    public class EventListener : MonoBehaviour
     {
         public static EventListener LocalInstance;
 
-        void Awake()
+        private void Awake()
         {
             LocalInstance = this;
             foreach (var item in Enum.GetNames(typeof(EventType)))
