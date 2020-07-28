@@ -59,6 +59,7 @@ namespace QSB.Utility
             var signalscopeRoot = GameObject.Instantiate(GameObject.Find("Signalscope"));
             signalscopeRoot.SetActive(false);
             Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
+            Object.Destroy(signalscopeRoot.transform.Find("Props_HEA_Signalscope_Prepass"));
 
             var oldSignalscope = signalscopeRoot.GetComponent<Signalscope>();
             var tool = signalscopeRoot.AddComponent<QSBTool>();
@@ -67,10 +68,13 @@ namespace QSB.Utility
             tool.SetValue("_holdTransform", _toolHoldTransform);
             tool.SetValue("_arrivalDegrees", 5f);
             tool.Type = ToolType.Signalscope;
+            tool._scopeGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
+            tool._scopeGameObject.layer = 0;
             oldSignalscope.enabled = false;
 
             signalscopeRoot.transform.parent = _cameraBody;
             signalscopeRoot.transform.localPosition = Vector3.zero;
+            signalscopeRoot.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             signalscopeRoot.SetActive(true);
         }
     }
