@@ -80,11 +80,6 @@ namespace QSB.TransformSync
                 return;
             }
 
-            if (PlayerTransformSync.LocalInstance == null)
-            {
-                DebugLog.ToConsole($"Error - PlayerTransformSync's localinstance is null!", OWML.Common.MessageType.Error);
-            }
-
             // Get which sector should be used as a reference point
             var sectorTransform = PlayerRegistry.GetSector(OverriddenNetId);
 
