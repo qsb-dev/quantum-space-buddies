@@ -14,6 +14,12 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            OverriddenNetId = GetAttachedNetId();
+        }
+
         private uint GetAttachedNetId()
         {
             /*
@@ -51,7 +57,7 @@ namespace QSB.TransformSync
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
-            marker.SetId(netId.Value);
+            marker.SetId(GetAttachedNetId());
 
             PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
 

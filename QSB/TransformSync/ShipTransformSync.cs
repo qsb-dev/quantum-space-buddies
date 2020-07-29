@@ -11,6 +11,12 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            OverriddenNetId = GetAttachedNetId();
+        }
+
         uint GetAttachedNetId()
         {
             /*
@@ -63,7 +69,7 @@ namespace QSB.TransformSync
 
         protected override bool IsReady()
         {
-            return GetShipModel() != null;
+            return GetShipModel() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
         }
     }
 }
