@@ -12,7 +12,7 @@ namespace QSB.TransformSync
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
-        public uint OverriddenNetId { get; set; }
+        public uint OverriddenNetId { get; set; } = 0;
 
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
@@ -61,7 +61,10 @@ namespace QSB.TransformSync
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.Instance.SetSector(OverriddenNetId, sector.GetName());
+            if (OverriddenNetId != 0)
+            {
+                SectorSync.Instance.SetSector(OverriddenNetId, sector.GetName());
+            }
         }
 
         private void Update()
