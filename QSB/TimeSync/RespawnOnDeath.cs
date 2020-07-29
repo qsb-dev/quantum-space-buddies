@@ -14,7 +14,7 @@ namespace QSB.TimeSync
     {
         private static RespawnOnDeath _instance;
 
-        private static readonly DeathType[] AllowedDeathTypes = {
+        private static readonly DeathType[] _allowedDeathTypes = {
             DeathType.BigBang,
             DeathType.Supernova,
             DeathType.TimeLoop
@@ -45,7 +45,7 @@ namespace QSB.TimeSync
 
         private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
         {
-            if (behaviour is PlayerResources && ev == OWML.Common.Events.AfterStart)
+            if (behaviour.GetType() == typeof(PlayerResources) && ev == OWML.Common.Events.AfterStart)
             {
                 Init();
             }
@@ -156,7 +156,7 @@ namespace QSB.TimeSync
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
             {
-                if (AllowedDeathTypes.Contains(deathType))
+                if (_allowedDeathTypes.Contains(deathType))
                 {
                     // Allow real death
                     return true;

@@ -1,9 +1,13 @@
-﻿using QSB.Messaging;
+﻿using System.Collections;
+using System.Collections.Generic;
+using QSB.Messaging;
+using QSB.TransformSync;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class GameState : NetworkBehaviour
+    class GameState : NetworkBehaviour
     {
         public static GameState LocalInstance { get; private set; }
 
@@ -24,9 +28,10 @@ namespace QSB.Events
 
         public void Send()
         {
-            foreach (var player in PlayerRegistry.PlayerList)
+
+            foreach (var player in PlayerRegistry.GetPlayers())
             {
-                var message = new FullStateMessage
+                var message = new FullStateMessage()
                 {
                     PlayerName = player.Name,
                     SenderId = player.NetId

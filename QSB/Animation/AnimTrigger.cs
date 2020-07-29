@@ -6,7 +6,6 @@
         Grounded = 1,
         Ungrounded = 2,
         SuitUp = 3,
-        SuitDown = 4,
-        Crouch = 5
+        SuitDown = 4
     }
 }

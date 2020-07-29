@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using OWML.ModHelper.Events;
+using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -122,11 +123,12 @@ namespace QSB.TimeSync
 
             if (diff < -TimeThreshold)
             {
-                StartFastForwarding();
+                StartFastForwarding(diff);
+                return;
             }
         }
 
-        private void StartFastForwarding()
+        private void StartFastForwarding(float diff)
         {
             if (_state == State.FastForwarding)
             {
@@ -215,8 +217,8 @@ namespace QSB.TimeSync
                 Time.timeScale = _timeScale;
             }
 
-            var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
-            var isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+            bool isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
+            bool isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
 
             if (isDoneFastForwarding || isDonePausing)
             {

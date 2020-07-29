@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using System.Collections.Generic;
+using QSB.Messaging;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
@@ -11,7 +12,6 @@ namespace QSB.TransformSync
 
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
-
         private readonly Sector.Name[] _sectorWhitelist = {
             Sector.Name.BrambleDimension,
             Sector.Name.BrittleHollow,
@@ -71,10 +71,14 @@ namespace QSB.TransformSync
             {
                 _allSectors = FindObjectsOfType<Sector>();
             }
-            return _allSectors
-                .Where(sector => sectorName == sector.GetName())
-                .Select(sector => sector.transform)
-                .FirstOrDefault();
+            foreach (var sector in _allSectors)
+            {
+                if (sectorName == sector.GetName())
+                {
+                    return sector.transform;
+                }
+            }
+            return null;
         }
 
         private void OnClientReceiveMessage(SectorMessage message)

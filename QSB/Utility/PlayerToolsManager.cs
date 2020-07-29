@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.Utility
 {
-    public class PlayerToolsManager
+    class PlayerToolsManager
     {
         private static Transform _cameraBody;
         private static Transform _toolStowTransform;
@@ -12,7 +12,6 @@ namespace QSB.Utility
 
         private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
         private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
-
 
         public static void Init(Transform camera)
         {

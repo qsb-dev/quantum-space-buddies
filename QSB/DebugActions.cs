@@ -1,19 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 
 namespace QSB
 {
-    public class DebugActions : MonoBehaviour
+    class DebugActions : MonoBehaviour
     {
-        private void GoToVessel()
+        void GoToVessel()
         {
             var spawnPoint = GameObject.Find("Spawn_Vessel").GetComponent<SpawnPoint>();
 
-            var playerBody = Locator.GetPlayerBody();
+            OWRigidbody playerBody = Locator.GetPlayerBody();
             playerBody.WarpToPositionRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
             playerBody.SetVelocity(spawnPoint.GetPointVelocity());
         }
 
-        private void InsertWarpCore()
+        void InsertWarpCore()
         {
             var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
             var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
@@ -22,7 +26,7 @@ namespace QSB
             GetComponent<NomaiCoordinateInterface>().SetPillarRaised(true, true);
         }
 
-        private void Update()
+        void Update()
         {
             if (!QSB.DebugMode)
             {

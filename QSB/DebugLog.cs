@@ -62,8 +62,8 @@ namespace QSB
                 //ToConsole("* " + JoinAll(logObjects));
                 return;
             }
-            var data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects));
-            NotificationManager.SharedInstance.PostNotification(data);
+            var data = new NotificationData(NotificationTarget.Player, JoinAll(logObjects), 5f, true);
+            NotificationManager.SharedInstance.PostNotification(data, false);
         }
 
         public static void ToAll(params object[] logObjects)
