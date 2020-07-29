@@ -11,16 +11,7 @@ namespace QSB
     {
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-        public static void RegisterPlayerBody(uint id, GameObject body)
-        {
-            DebugLog.ToConsole($"Registering body for player: {id}");
-            GetPlayer(id).Body = body;
-        }
-
-        public static bool PlayerExists(uint id)
-        {
-            return PlayerList.Any(x => x.NetId == id);
-        }
+        // Methods relating to the PlayerList :
 
         public static void CreatePlayer(uint id, string name)
         {
@@ -28,7 +19,6 @@ namespace QSB
             {
                 return;
             }
-            DebugLog.ToConsole($"Creating player: {id}");
             var player = new PlayerInfo
             {
                 NetId = id,
@@ -37,22 +27,41 @@ namespace QSB
             PlayerList.Add(player);
         }
 
-        public static void RegisterPlayerCamera(uint id, GameObject camera)
-        {
-            DebugLog.ToConsole($"Registering camera {id}");
-            GetPlayer(id).Camera = camera;
-        }
-
-        public static void RemovePlayer(uint id)
-        {
-            DebugLog.ToConsole($"Removing player {id}");
-            PlayerList.Remove(PlayerList.Find(x => x.NetId == id));
-        }
-
         private static PlayerInfo GetPlayer(uint id)
         {
             return PlayerList.Find(x => x.NetId == id);
         }
+
+        public static bool PlayerExists(uint id)
+        {
+            return PlayerList.Any(x => x.NetId == id);
+        }
+
+        public static void RemovePlayer(uint id)
+        {
+            PlayerList.Remove(PlayerList.Find(x => x.NetId == id));
+        }
+
+        public static Dictionary<uint, string> GetPlayerNames()
+        {
+            var dict = new Dictionary<uint, string>();
+            PlayerList.ForEach(x => dict.Add(x.NetId, x.Name));
+            return dict;
+        }
+
+        // Registering player objects :
+
+        public static void RegisterPlayerBody(uint id, GameObject body)
+        {
+            GetPlayer(id).Body = body;
+        } 
+
+        public static void RegisterPlayerCamera(uint id, GameObject camera)
+        {
+            GetPlayer(id).Camera = camera;
+        }
+
+        // Get player objects :
 
         public static GameObject GetPlayerCamera(uint id)
         {
@@ -64,10 +73,18 @@ namespace QSB
             return GetPlayerCamera(id).GetComponentInChildren<QSBFlashlight>();
         }
 
-        public static void UpdatePlayerName(uint id, string name)
+        public static QSBTool GetPlayerSignalscope(uint id)
         {
-            GetPlayer(id).Name = name;
+            var tools = GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>();
+            if (tools.Length == 0)
+            {
+                DebugLog.ToConsole("Error - Zero items in QSBTool list while trying to get Signalscope", OWML.Common.MessageType.Error);
+                return null;
+            }
+            return tools.First(x => x.Type == ToolType.Signalscope);
         }
+
+        // Update player data :
 
         public static void HandleFullStateMessage(FullStateMessage message)
         {
@@ -81,23 +98,6 @@ namespace QSB
             }
         }
 
-        public static string GetPlayerName(uint id)
-        {
-            return GetPlayer(id).Name;
-        }
-
-        public static Dictionary<uint, string> GetPlayerNames()
-        {
-            var dict = new Dictionary<uint, string>();
-            PlayerList.ForEach(x => dict.Add(x.NetId, x.Name));
-            return dict;
-        }
-
-        public static bool IsPlayerReady(uint id)
-        {
-            return GetPlayer(id).Ready;
-        }
-
         public static void SetReadiness(uint id, bool ready)
         {
             GetPlayer(id).Ready = ready;
@@ -106,11 +106,6 @@ namespace QSB
         public static void UpdateSector(uint id, Transform sector)
         {
             GetPlayer(id).ReferenceSector = sector;
-        }
-
-        public static Transform GetSector(uint id)
-        {
-            return GetPlayer(id).ReferenceSector;
         }
 
         public static void UpdateState(uint id, State state, bool value)
@@ -126,6 +121,23 @@ namespace QSB
             }
             GetPlayer(id).State = states;
         }
+
+        // Get player data :
+
+        public static string GetPlayerName(uint id)
+        {
+            return GetPlayer(id).Name;
+        }
+
+        public static bool IsPlayerReady(uint id)
+        {
+            return GetPlayer(id).Ready;
+        } 
+
+        public static Transform GetSector(uint id)
+        {
+            return GetPlayer(id).ReferenceSector;
+        }   
 
         public static bool GetState(uint id, State state)
         {

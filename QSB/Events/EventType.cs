@@ -2,9 +2,11 @@
 {
     public enum EventType
     {
-        TurnOnFlashlight = 0,
-        TurnOffFlashlight = 1,
-        SuitUp = 2,
-        RemoveSuit = 3
+        TurnOnFlashlight,
+        TurnOffFlashlight,
+        SuitUp,
+        RemoveSuit,
+        EquipSignalscope,
+        UnequipSignalscope
     }
 }
