@@ -48,7 +48,7 @@ namespace QSB.TransformSync
 
         protected override bool IsReady()
         {
-            return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
+            return Locator.GetPlayerTransform() != null;
         }
     }
 }
