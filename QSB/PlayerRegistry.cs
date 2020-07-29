@@ -11,6 +11,11 @@ namespace QSB
     {
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
+        public static void RegisterPlayerBody(uint id, GameObject body)
+        {
+            DebugLog.ToConsole($"Registering body for player: {id}");
+            GetPlayer(id).Body = body;
+        }
 
         public static bool PlayerExists(uint id)
         {
@@ -32,6 +37,12 @@ namespace QSB
             PlayerList.Add(player);
         }
 
+        public static void RegisterPlayerCamera(uint id, GameObject camera)
+        {
+            DebugLog.ToConsole($"Registering camera {id}");
+            GetPlayer(id).Camera = camera;
+        }
+
         public static void RemovePlayer(uint id)
         {
             DebugLog.ToConsole($"Removing player {id}");
@@ -43,18 +54,6 @@ namespace QSB
             return PlayerList.Find(x => x.NetId == id);
         }
 
-        public static void RegisterPlayerBody(uint id, GameObject body)
-        {
-            DebugLog.ToConsole($"Registering body for player: {id}");
-            GetPlayer(id).Body = body;
-        }
-
-        public static void RegisterPlayerCamera(uint id, GameObject camera)
-        {
-            DebugLog.ToConsole($"Registering camera {id}");
-            GetPlayer(id).Camera = camera;
-        } 
-
         public static GameObject GetPlayerCamera(uint id)
         {
             return GetPlayer(id).Camera;
@@ -63,6 +62,11 @@ namespace QSB
         public static QSBFlashlight GetPlayerFlashlight(uint id)
         {
             return GetPlayerCamera(id).GetComponentInChildren<QSBFlashlight>();
+        }
+
+        public static void UpdatePlayerName(uint id, string name)
+        {
+            GetPlayer(id).Name = name;
         }
 
         public static void HandleFullStateMessage(FullStateMessage message)
