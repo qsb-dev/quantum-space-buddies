@@ -20,6 +20,7 @@ namespace QSB
 
         public static void CreatePlayer(uint id, string name)
         {
+            DebugLog.ToConsole("CREATE PLAYER " + id);
             if (!PlayerExists(id))
             {
                 var player = new PlayerInfo()
@@ -48,12 +49,13 @@ namespace QSB
 
         public static void RegisterPlayerBody(uint id, GameObject body)
         {
+            DebugLog.ToConsole("Register player body " + id);
             GetPlayer(id).Body = body;
         }
 
         public static void RegisterPlayerCamera(uint id, GameObject camera)
         {
-            DebugLog.ToConsole("register player camera " + id);
+            DebugLog.ToConsole("Register player camera " + id);
             GetPlayer(id).Camera = camera;
         }
 
@@ -64,10 +66,6 @@ namespace QSB
 
         public static PlayerTool GetPlayerSignalscope(uint id)
         {
-            if (GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>().Length == 0)
-            {
-                DebugLog.ToConsole("Found no qsbtools!!");
-            }
             return GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>().First(x => x.Type == ToolType.Signalscope);
         }
         

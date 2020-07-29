@@ -99,6 +99,7 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
+            DebugLog.ToConsole("- ON SERVER ADD PLAYER -");
             base.OnServerAddPlayer(connection, playerControllerId);
 
             // These have to be in a constant order (for now, until I get a better netId getting system...)
@@ -111,6 +112,7 @@ namespace QSB
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
+            DebugLog.ToConsole("- ON CLIENT CONNECT -");
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();

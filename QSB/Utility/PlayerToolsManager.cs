@@ -9,7 +9,9 @@ namespace QSB.Utility
         private static Transform _cameraBody;
         private static Transform _toolStowTransform;
         private static Transform _toolHoldTransform;
+
         private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
+        private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
 
         public static void Init(Transform camera)
         {
@@ -69,12 +71,12 @@ namespace QSB.Utility
             tool.SetValue("_arrivalDegrees", 5f);
             tool.Type = ToolType.Signalscope;
             tool._scopeGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
-            tool._scopeGameObject.layer = 0;
+            signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject.layer = 0;
             oldSignalscope.enabled = false;
 
             signalscopeRoot.transform.parent = _cameraBody;
             signalscopeRoot.transform.localPosition = Vector3.zero;
-            signalscopeRoot.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            signalscopeRoot.transform.localScale = SignalscopeScale;
             signalscopeRoot.SetActive(true);
         }
     }
