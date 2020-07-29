@@ -12,12 +12,6 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            OverriddenNetId = GetAttachedNetId();
-        }
-
         private uint GetAttachedNetId()
         { 
             /*
@@ -54,7 +48,12 @@ namespace QSB.TransformSync
 
         protected override bool IsReady()
         {
-            return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
+            if (Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId()))
+            {
+                OverriddenNetId = GetAttachedNetId();
+                return true;
+            }
+            return false;
         }
     }
 }

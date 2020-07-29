@@ -12,7 +12,7 @@ namespace QSB.TransformSync
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
-        public uint OverriddenNetId { get; set; } = 0;
+        public uint OverriddenNetId { get; set; }
 
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
@@ -56,6 +56,7 @@ namespace QSB.TransformSync
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
+            DebugLog.ToConsole("setting up first sector with id of " + OverriddenNetId);
             PlayerRegistry.UpdateSector(OverriddenNetId, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
         }
 
@@ -84,6 +85,7 @@ namespace QSB.TransformSync
             }
 
             // Get which sector should be used as a reference point
+            DebugLog.ToConsole("got id " + OverriddenNetId);
             var sectorTransform = PlayerRegistry.GetSector(OverriddenNetId);
 
             if (sectorTransform == null)

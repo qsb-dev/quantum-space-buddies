@@ -13,8 +13,8 @@ namespace QSB.TransformSync
 
         protected override void Awake()
         {
-            base.Awake();
             OverriddenNetId = GetAttachedNetId();
+            base.Awake();
         }
 
         uint GetAttachedNetId()
@@ -69,7 +69,12 @@ namespace QSB.TransformSync
 
         protected override bool IsReady()
         {
-            return GetShipModel() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
+            if (GetShipModel() != null && PlayerRegistry.PlayerExists(GetAttachedNetId()))
+            {
+                OverriddenNetId = GetAttachedNetId();
+                return true;
+            }
+            return false;
         }
     }
 }

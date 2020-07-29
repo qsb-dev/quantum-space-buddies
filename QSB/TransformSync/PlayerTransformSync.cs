@@ -16,8 +16,8 @@ namespace QSB.TransformSync
 
         protected override void Awake()
         {
-            base.Awake();
             OverriddenNetId = GetAttachedNetId();
+            base.Awake();
         }
 
         private uint GetAttachedNetId()
@@ -66,7 +66,12 @@ namespace QSB.TransformSync
 
         protected override bool IsReady()
         {
-            return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
+            if (Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId()))
+            {
+                OverriddenNetId = GetAttachedNetId();
+                return true;
+            }
+            return false;
         }
     }
 }
