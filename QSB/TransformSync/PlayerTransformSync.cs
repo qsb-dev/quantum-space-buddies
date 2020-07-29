@@ -14,12 +14,6 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override void Awake()
-        {
-            OverriddenNetId = GetAttachedNetId();
-            base.Awake();
-        }
-
         private uint GetAttachedNetId()
         {
             /*
