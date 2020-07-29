@@ -30,13 +30,11 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole("ShipSync local " + GetAttachedNetId());
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole("ShipSync remote " + GetAttachedNetId());
             var shipModel = GetShipModel();
 
             var remoteTransform = new GameObject().transform;
