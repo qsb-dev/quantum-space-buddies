@@ -82,6 +82,11 @@ namespace QSB.TransformSync
             // Get which sector should be used as a reference point
             var sectorTransform = PlayerRegistry.GetSector(PlayerTransformSync.LocalInstance.netId.Value);
 
+            if (sectorTransform == null)
+            {
+                DebugLog.ToConsole($"Error - Player ID {PlayerTransformSync.LocalInstance.netId.Value}'s reference sector is null!", OWML.Common.MessageType.Error);
+            }
+
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
                 transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);

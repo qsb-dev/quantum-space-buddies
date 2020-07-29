@@ -64,6 +64,14 @@ namespace QSB.Events
                 case EventType.RemoveSuit:
                     PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
                     break;
+                case EventType.EquipSignalscope:
+                    PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, true);
+                    PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
+                    break;
+                case EventType.UnequipSignalscope:
+                    PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, false);
+                    PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
+                    break;
             }
         }
     }
