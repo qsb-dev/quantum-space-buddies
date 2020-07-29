@@ -61,10 +61,7 @@ namespace QSB.TransformSync
 
         public void EnterSector(Sector sector)
         {
-            if (OverriddenNetId != 0)
-            {
-                SectorSync.Instance.SetSector(OverriddenNetId, sector.GetName());
-            }
+            SectorSync.Instance.SetSector(OverriddenNetId, sector.GetName());
         }
 
         private void Update()

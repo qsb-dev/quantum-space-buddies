@@ -79,24 +79,24 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
+            //DebugLog.ToConsole("OnClientReceiveMessage SectorSync");
 
             var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.ToScreen("Sector", sectorName, "not found");
+                DebugLog.ToConsole($"Sector {sectorName} not found");
                 return;
             }
 
-            DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
+            DebugLog.ToConsole($"Setting {message.SenderId} to {sectorName}");
             PlayerRegistry.UpdateSector(message.SenderId, sectorTransform);
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
+            //DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 
@@ -118,7 +118,7 @@ namespace QSB.TransformSync
 
                 if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
                 {
-                    ShipTransformSync.LocalInstance.EnterSector(sector);
+                    ShipTransformSync.LocalInstance?.EnterSector(sector);
                 }
             }
         }
