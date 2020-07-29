@@ -20,7 +20,6 @@ namespace QSB
             {
                 return;
             }
-            DebugLog.ToConsole("Creating player " + id);
             var player = new PlayerInfo
             {
                 NetId = id,
@@ -55,13 +54,11 @@ namespace QSB
 
         public static void RegisterPlayerBody(uint id, GameObject body)
         {
-            DebugLog.ToConsole("register player body " + id);
             GetPlayer(id).Body = body;
         } 
 
         public static void RegisterPlayerCamera(uint id, GameObject camera)
         {
-            DebugLog.ToConsole("register player camera " + id);
             GetPlayer(id).Camera = camera;
         }
 
