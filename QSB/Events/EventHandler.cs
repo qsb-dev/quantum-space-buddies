@@ -1,7 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using OWML.ModHelper.Events;
-using QSB.Animation;
 using QSB.Messaging;
 using QSB.TransformSync;
 using UnityEngine;
@@ -24,17 +21,17 @@ namespace QSB.Events
             _eventHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        public void Send(EventType type)
+        public void Send(EventType eventType)
         {
-            StartCoroutine(SendEvent(type));
+            StartCoroutine(SendEvent(eventType));
         }
 
-        private IEnumerator SendEvent(EventType type)
+        private IEnumerator SendEvent(EventType eventType)
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
             var message = new EventMessage
             {
-                EventType = (int)type,
+                EventType = (int)eventType,
                 SenderId = PlayerTransformSync.LocalInstance.netId.Value
             };
             _eventHandler.SendToServer(message);
@@ -47,33 +44,26 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
-            if (message.SenderId != PlayerTransformSync.LocalInstance.netId.Value)
+            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
             {
-                switch ((EventType)message.EventType)
-                {
-                    case EventType.TurnOnFlashlight:
-                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
-                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
-                        break;
-                    case EventType.TurnOffFlashlight:
-                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
-                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
-                        break;
-                    case EventType.SuitUp:
-                        PlayerRegistry.UpdateState(message.SenderId, State.Suit, true);
-                        break;
-                    case EventType.RemoveSuit:
-                        PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
-                        break;
-                    case EventType.EquipSignalscope:
-                        PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
-                        PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, true);
-                        break;
-                    case EventType.UnequipSignalscope:
-                        PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
-                        PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, false);
-                        break;
-                }
+                return;
+            }
+            switch ((EventType)message.EventType)
+            {
+                case EventType.TurnOnFlashlight:
+                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
+                    PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
+                    break;
+                case EventType.TurnOffFlashlight:
+                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
+                    PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
+                    break;
+                case EventType.SuitUp:
+                    PlayerRegistry.UpdateState(message.SenderId, State.Suit, true);
+                    break;
+                case EventType.RemoveSuit:
+                    PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
+                    break;
             }
         }
     }

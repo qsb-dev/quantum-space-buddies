@@ -1,13 +1,8 @@
-﻿using QSB.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    class PlayerHUDMarker : HUDDistanceMarker
+    public class PlayerHUDMarker : HUDDistanceMarker
     {
         private uint _netId = uint.MaxValue;
         private bool _isReady;
@@ -36,15 +31,16 @@ namespace QSB.TransformSync
             }
         }
 
-        void Update()
+        private void Update()
         {
-            if (_isReady && PlayerRegistry.IsPlayerReady(_netId))
+            if (!_isReady || !PlayerRegistry.IsPlayerReady(_netId))
             {
-                _markerLabel = PlayerRegistry.GetPlayerName(_netId);
-                _isReady = false;
-
-                base.InitCanvasMarker();
+                return;
             }
+            _markerLabel = PlayerRegistry.GetPlayerName(_netId);
+            _isReady = false;
+
+            base.InitCanvasMarker();
         }
     }
 }
