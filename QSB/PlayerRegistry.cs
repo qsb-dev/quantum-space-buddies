@@ -1,4 +1,5 @@
-﻿using QSB.Animation;
+﻿using OWML.Common;
+using QSB.Animation;
 using QSB.Events;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -78,7 +79,7 @@ namespace QSB
             var tools = GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>();
             if (tools.Length == 0)
             {
-                DebugLog.ToConsole("Error - Zero items in QSBTool list while trying to get Signalscope", OWML.Common.MessageType.Error);
+                DebugLog.ToConsole("Error - Zero items in QSBTool list while trying to get Signalscope", MessageType.Error);
                 return null;
             }
             return tools.First(x => x.Type == ToolType.Signalscope);

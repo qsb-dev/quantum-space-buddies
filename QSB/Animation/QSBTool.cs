@@ -5,16 +5,16 @@ namespace QSB.Animation
     public class QSBTool : PlayerTool
     {
         public ToolType Type;
-        public GameObject _scopeGameObject;
+        public GameObject ToolGameObject;
 
         private void OnEnable()
         {
-            _scopeGameObject.SetActive(true);
+            ToolGameObject.SetActive(true);
         }
 
         private void OnDisable()
         {
-            _scopeGameObject.SetActive(false);
+            ToolGameObject.SetActive(false);
         }
     }
 }

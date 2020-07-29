@@ -68,7 +68,7 @@ namespace QSB.Utility
             tool.SetValue("_holdTransform", _toolHoldTransform);
             tool.SetValue("_arrivalDegrees", 5f);
             tool.Type = ToolType.Signalscope;
-            tool._scopeGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
+            tool.ToolGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
             signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject.layer = 0;
             oldSignalscope.enabled = false;
 
