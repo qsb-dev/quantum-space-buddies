@@ -66,11 +66,11 @@ namespace QSB.Events
                     player.UpdateState(State.Suit, false);
                     break;
                 case EventType.EquipSignalscope:
-                    player.UpdateState(State.SignalScope, true);
+                    player.UpdateState(State.Signalscope, true);
                     player.Signalscope.EquipTool();
                     break;
                 case EventType.UnequipSignalscope:
-                    player.UpdateState(State.SignalScope, false);
+                    player.UpdateState(State.Signalscope, false);
                     player.Signalscope.UnequipTool();
                     break;
                 case EventType.EquipTranslator:
