@@ -65,12 +65,20 @@ namespace QSB.Events
                     PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
                     break;
                 case EventType.EquipSignalscope:
-                    PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, true);
+                    PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, true);
                     PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
                     break;
                 case EventType.UnequipSignalscope:
-                    PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, false);
+                    PlayerRegistry.UpdateState(message.SenderId, State.Signalscope, false);
                     PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
+                    break;
+                case EventType.EquipTranslator:
+                    PlayerRegistry.UpdateState(message.SenderId, State.Translator, true);
+                    PlayerRegistry.GetPlayerTranslator(message.SenderId).EquipTool();
+                    break;
+                case EventType.UnequipTranslator:
+                    PlayerRegistry.UpdateState(message.SenderId, State.Translator, false);
+                    PlayerRegistry.GetPlayerTranslator(message.SenderId).UnequipTool();
                     break;
             }
         }

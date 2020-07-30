@@ -8,7 +8,8 @@ namespace QSB
         Flashlight = 0,
         Suit = 1,
         ProbeLauncher = 2,
-        SignalScope = 4
+        Signalscope = 4,
+        Translator = 8
         //Increment these in binary to add more states
     }
 }
