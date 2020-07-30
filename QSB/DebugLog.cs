@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,21 +13,29 @@ namespace QSB
 
         private static Text _screenText;
         private static List<string> _lines;
+        private static GameObject _logCanvas;
 
         private void Awake()
         {
             var assetBundle = QSB.Helper.Assets.LoadBundle("assets/debug");
-            var logCanvas = Instantiate(assetBundle.LoadAsset<GameObject>("assets/logcanvas.prefab"));
-            DontDestroyOnLoad(logCanvas);
+            _logCanvas = Instantiate(assetBundle.LoadAsset<GameObject>("assets/logcanvas.prefab"));
+            DontDestroyOnLoad(_logCanvas);
             DontDestroyOnLoad(this);
-            logCanvas.GetComponent<Canvas>().sortingOrder = 9999;
-            _screenText = logCanvas.GetComponentInChildren<Text>();
+            _logCanvas.GetComponent<Canvas>().sortingOrder = 9999;
+            _screenText = _logCanvas.GetComponentInChildren<Text>();
 
             _lines = new List<string>(ScreenLinesMax);
             for (var i = 0; i < ScreenLinesMax; i++)
             {
                 _lines.Add(".");
             }
+        }
+
+        public static void UpdateInfoCanvas(uint netId, InfoState state, object value)
+        {
+            var stateName = Enum.GetName(typeof(InfoState), state);
+            var stateGameObject = _logCanvas.transform.Find("InfoCanvases").Find(netId.ToString()).Find(stateName);
+            stateGameObject.transform.Find("ValueText").GetComponent<Text>().text = value.ToString();
         }
 
         private static string JoinAll(params object[] logObjects)
@@ -72,5 +81,16 @@ namespace QSB
             ToScreen(logObjects);
             ToHud(logObjects);
         }
+    }
+
+    public enum InfoState
+    {
+        ID,
+        Name,
+        Sector,
+        RelativePosition,
+        Suit,
+        Flashlight,
+        Signalscope
     }
 }

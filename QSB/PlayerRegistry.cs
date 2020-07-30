@@ -26,6 +26,8 @@ namespace QSB
                 Name = name
             };
             PlayerList.Add(player);
+            DebugLog.UpdateInfoCanvas(id, InfoState.ID, id);
+            DebugLog.UpdateInfoCanvas(id, InfoState.Name, name);
         }
 
         private static PlayerInfo GetPlayer(uint id)
@@ -107,10 +109,12 @@ namespace QSB
         public static void UpdateSector(uint id, Transform sector)
         {
             GetPlayer(id).ReferenceSector = sector;
+            DebugLog.UpdateInfoCanvas(id, InfoState.Sector, sector.name);
         }
 
         public static void UpdateState(uint id, State state, bool value)
         {
+            DebugLog.ToConsole($"Setting state : {id}.{state}.{value}");
             var states = GetPlayer(id).State;
             if (value)
             {
@@ -121,6 +125,9 @@ namespace QSB
                 FlagsHelper.Unset(ref states, state);
             }
             GetPlayer(id).State = states;
+            DebugLog.UpdateInfoCanvas(id, InfoState.Suit, FlagsHelper.IsSet(states, State.Suit));
+            DebugLog.UpdateInfoCanvas(id, InfoState.Signalscope, FlagsHelper.IsSet(states, State.SignalScope));
+            DebugLog.UpdateInfoCanvas(id, InfoState.Flashlight, FlagsHelper.IsSet(states, State.Flashlight));
         }
 
         // Get player data :
