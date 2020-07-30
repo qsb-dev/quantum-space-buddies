@@ -5,6 +5,7 @@ using QSB.Animation;
 using QSB.Events;
 using QSB.TimeSync;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;

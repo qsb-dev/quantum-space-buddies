@@ -56,7 +56,7 @@ namespace QSB.Events
                     player.UpdateState(State.Flashlight, true);
                     break;
                 case EventType.TurnOffFlashlight:
-                    player.FlashLight.TurnOn();
+                    player.FlashLight.TurnOff();
                     player.UpdateState(State.Flashlight, false);
                     break;
                 case EventType.SuitUp:

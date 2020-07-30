@@ -1,4 +1,4 @@
-﻿using QSB.Utility;
+﻿using QSB.Tools;
 using UnityEngine;
 
 namespace QSB.TransformSync

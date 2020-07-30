@@ -1,4 +1,4 @@
-﻿namespace QSB.Animation
+﻿namespace QSB.Tools
 {
     public enum ToolType
     {

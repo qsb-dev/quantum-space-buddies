@@ -1,7 +1,7 @@
 ﻿using OWML.ModHelper.Events;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Tools
 {
     public class QSBFlashlight : MonoBehaviour
     {

@@ -1,6 +1,6 @@
-﻿using QSB.Events;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using QSB.Events;
 using QSB.TransformSync;
 
 namespace QSB
