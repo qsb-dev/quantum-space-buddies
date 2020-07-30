@@ -20,7 +20,7 @@ namespace QSB.Utility
         public static void Init(Transform camera)
         {
             _cameraBody = camera;
-            CreateStowTransforms(_cameraBody);
+            CreateStowTransforms();
 
             _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
             _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
@@ -30,17 +30,17 @@ namespace QSB.Utility
             CreateTranslator();
         }
 
-        private static void CreateStowTransforms(Transform root)
+        private static void CreateStowTransforms()
         {
             var stow = new GameObject("ToolStowTransform");
             _toolStowTransform = stow.transform;
-            stow.transform.parent = root;
+            stow.transform.parent = _cameraBody;
             stow.transform.localPosition = Vector3.zero;
             stow.transform.localRotation = Quaternion.Euler(45f, 0f, 0f);
 
             var hold = new GameObject("ToolHoldTransform");
             _toolHoldTransform = hold.transform;
-            hold.transform.parent = root;
+            hold.transform.parent = _cameraBody;
             hold.transform.localPosition = Vector3.zero;
             hold.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
         }
@@ -51,11 +51,7 @@ namespace QSB.Utility
             flashlightRoot.SetActive(false);
             var oldComponent = flashlightRoot.GetComponent<Flashlight>();
             var component = flashlightRoot.AddComponent<QSBFlashlight>();
-            component._lights = oldComponent.GetValue<OWLight2[]>("_lights");
-            component._illuminationCheckLight = oldComponent.GetValue<OWLight2>("_illuminationCheckLight");
-            component._root = oldComponent.GetValue<Transform>("_root");
-            component._basePivot = oldComponent.GetValue<Transform>("_basePivot");
-            component._wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
+            component.Init(oldComponent);
             oldComponent.enabled = false;
             flashlightRoot.transform.parent = _cameraBody;
             flashlightRoot.transform.localPosition = FlashlightOffset;
@@ -73,10 +69,10 @@ namespace QSB.Utility
 
             var oldSignalscope = signalscopeRoot.GetComponent<Signalscope>();
             var tool = signalscopeRoot.AddComponent<QSBTool>();
-            tool.SetValue("_moveSpring", oldSignalscope.GetValue<DampedSpringQuat>("_moveSpring"));
-            tool.SetValue("_stowTransform", _toolStowTransform);
-            tool.SetValue("_holdTransform", _toolHoldTransform);
-            tool.SetValue("_arrivalDegrees", 5f);
+            tool.MoveSpring = oldSignalscope.GetValue<DampedSpringQuat>("_moveSpring");
+            tool.StowTransform = _toolStowTransform;
+            tool.HoldTransform = _toolHoldTransform;
+            tool.ArrivalDegrees = 5f;
             tool.Type = ToolType.Signalscope;
             tool.ToolGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
             oldSignalscope.enabled = false;
@@ -108,10 +104,10 @@ namespace QSB.Utility
 
             var oldTranslator = translatorRoot.GetComponent<NomaiTranslator>();
             var tool = translatorRoot.AddComponent<QSBTool>();
-            tool.SetValue("_moveSpring", oldTranslator.GetValue<DampedSpringQuat>("_moveSpring"));
-            tool.SetValue("_stowTransform", _toolStowTransform);
-            tool.SetValue("_holdTransform", _toolHoldTransform);
-            tool.SetValue("_arrivalDegrees", 5f);
+            tool.MoveSpring = oldTranslator.GetValue<DampedSpringQuat>("_moveSpring");
+            tool.StowTransform = _toolStowTransform;
+            tool.HoldTransform = _toolHoldTransform;
+            tool.ArrivalDegrees = 5f;
             tool.Type = ToolType.Translator;
             tool.ToolGameObject = group.gameObject;
             oldTranslator.enabled = false;
