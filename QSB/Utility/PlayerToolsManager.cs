@@ -51,11 +51,7 @@ namespace QSB.Utility
             flashlightRoot.SetActive(false);
             var oldComponent = flashlightRoot.GetComponent<Flashlight>();
             var component = flashlightRoot.AddComponent<QSBFlashlight>();
-            component._lights = oldComponent.GetValue<OWLight2[]>("_lights");
-            component._illuminationCheckLight = oldComponent.GetValue<OWLight2>("_illuminationCheckLight");
-            component._root = oldComponent.GetValue<Transform>("_root");
-            component._basePivot = oldComponent.GetValue<Transform>("_basePivot");
-            component._wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
+            component.Init(oldComponent);
             oldComponent.enabled = false;
             flashlightRoot.transform.parent = _cameraBody;
             flashlightRoot.transform.localPosition = FlashlightOffset;
