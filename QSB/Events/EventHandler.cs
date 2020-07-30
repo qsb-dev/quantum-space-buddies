@@ -73,6 +73,14 @@ namespace QSB.Events
                     player.UpdateState(State.SignalScope, false);
                     player.Signalscope.UnequipTool();
                     break;
+                case EventType.EquipTranslator:
+                    player.UpdateState(State.Translator, true);
+                    player.Translator.EquipTool();
+                    break;
+                case EventType.UnequipTranslator:
+                    player.UpdateState(State.Translator, false);
+                    player.Translator.UnequipTool();
+                    break;
             }
         }
     }
