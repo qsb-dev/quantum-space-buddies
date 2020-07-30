@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Animation;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -14,19 +15,19 @@ namespace QSB.Utility
 
         private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
         private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
-        private static readonly Vector3 TranslatorScale = new Vector3(1, 1, 1);
+        private static readonly Vector3 TranslatorScale = new Vector3(0.75f, 0.75f, 0.75f);
 
         public static void Init(Transform camera)
         {
             _cameraBody = camera;
             CreateStowTransforms(_cameraBody);
 
+            _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
+            _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
+
             CreateFlashlight();
             CreateSignalscope();
             CreateTranslator();
-
-            _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
-            _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().material;
         }
 
         private static void CreateStowTransforms(Transform root)
@@ -65,8 +66,10 @@ namespace QSB.Utility
         {
             var signalscopeRoot = GameObject.Instantiate(GameObject.Find("Signalscope"));
             signalscopeRoot.SetActive(false);
+
             Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
-            Object.Destroy(signalscopeRoot.transform.Find("Props_HEA_Signalscope_Prepass"));
+            Object.Destroy(signalscopeRoot.transform.Find("Props_HEA_Signalscope")
+                .Find("Props_HEA_Signalscope_Prepass").gameObject);
 
             var oldSignalscope = signalscopeRoot.GetComponent<Signalscope>();
             var tool = signalscopeRoot.AddComponent<QSBTool>();
@@ -78,7 +81,7 @@ namespace QSB.Utility
             tool.ToolGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
             oldSignalscope.enabled = false;
 
-            signalscopeRoot.transform.Find("Props_HEA_Signalscope").GetComponent<MeshRenderer>().material = _playerToolsMaterial;
+            signalscopeRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Signalscope").material = _playerToolsMaterial;
 
             signalscopeRoot.transform.parent = _cameraBody;
             signalscopeRoot.transform.localPosition = Vector3.zero;
@@ -91,12 +94,17 @@ namespace QSB.Utility
             var translatorRoot = GameObject.Instantiate(GameObject.Find("NomaiTranslatorProp"));
             translatorRoot.SetActive(false);
 
+            var group = translatorRoot.transform.Find("TranslatorGroup");
+            var model = group.Find("Props_HEA_Translator");
+
             Object.Destroy(translatorRoot.GetComponent<NomaiTranslatorProp>());
-            Object.Destroy(translatorRoot.transform.Find("Canvas"));
-            Object.Destroy(translatorRoot.transform.Find("TranslatorBeams"));
-            Object.Destroy(translatorRoot.transform.Find("Lighting"));
-            Object.Destroy(translatorRoot.transform.Find("Props_HEA_Translator_RotatingPart_Prepass"));
-            Object.Destroy(translatorRoot.transform.Find("Props_HEA_Translator_Prepass"));
+            Object.Destroy(group.Find("Canvas").gameObject);
+            Object.Destroy(group.Find("Lighting").gameObject);
+            Object.Destroy(group.Find("TranslatorBeams").gameObject);
+            Object.Destroy(model.Find("Props_HEA_Translator_Pivot_RotatingPart")
+                .Find("Props_HEA_Translator_RotatingPart")
+                .Find("Props_HEA_Translator_RotatingPart_Prepass").gameObject);
+            Object.Destroy(model.Find("Props_HEA_Translator_Prepass").gameObject);
 
             var oldTranslator = translatorRoot.GetComponent<NomaiTranslator>();
             var tool = translatorRoot.AddComponent<QSBTool>();
@@ -105,13 +113,13 @@ namespace QSB.Utility
             tool.SetValue("_holdTransform", _toolHoldTransform);
             tool.SetValue("_arrivalDegrees", 5f);
             tool.Type = ToolType.Translator;
-            tool.ToolGameObject = translatorRoot.transform.Find("TranslatorGroup").gameObject;
+            tool.ToolGameObject = group.gameObject;
             oldTranslator.enabled = false;
 
-            translatorRoot.transform.Find("Props_HEA_Translator_Geo").GetComponent<MeshRenderer>().material = _playerToolsMaterial;
-            translatorRoot.transform.Find("Props_HEA_Translator_RotatingPart").GetComponent<MeshRenderer>().material = _playerToolsMaterial;
-            translatorRoot.transform.Find("Props_HEA_Translator_Button_L").GetComponent<MeshRenderer>().material = _lightbulbMaterial;
-            translatorRoot.transform.Find("Props_HEA_Translator_Button_R").GetComponent<MeshRenderer>().material = _lightbulbMaterial;
+            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_Geo").material = _playerToolsMaterial;
+            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_RotatingPart").material = _playerToolsMaterial;
+            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_Button_L").material = _lightbulbMaterial;
+            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_Button_R").material = _lightbulbMaterial;
 
             translatorRoot.transform.parent = _cameraBody;
             translatorRoot.transform.localPosition = Vector3.zero;
