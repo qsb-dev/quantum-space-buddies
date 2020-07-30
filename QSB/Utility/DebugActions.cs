@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB
+namespace QSB.Utility
 {
     public class DebugActions : MonoBehaviour
     {

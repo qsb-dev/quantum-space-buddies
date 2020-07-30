@@ -1,9 +1,8 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Animation;
-using System.Linq;
+﻿using System.Linq;
+using OWML.ModHelper.Events;
 using UnityEngine;
 
-namespace QSB.Utility
+namespace QSB.Tools
 {
     public class PlayerToolsManager
     {
