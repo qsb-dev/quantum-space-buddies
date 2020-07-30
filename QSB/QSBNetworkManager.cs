@@ -77,8 +77,8 @@ namespace QSB
             profileManager.Initialize();
             var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
             var profileName = profile?.profileName;
-            return !string.IsNullOrEmpty(profileName) 
-                ? profileName 
+            return !string.IsNullOrEmpty(profileName)
+                ? profileName
                 : _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 
