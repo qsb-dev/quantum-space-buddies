@@ -13,6 +13,9 @@ namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
+        public static int ReliableChannelId { get; private set; }
+        public static int UnreliableChannelId { get; private set; }
+
         public static UnityEvent OnNetworkManagerReady = new UnityEvent();
         public static bool IsReady;
 
@@ -77,8 +80,8 @@ namespace QSB
             profileManager.Initialize();
             var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
             var profileName = profile?.profileName;
-            return !string.IsNullOrEmpty(profileName) 
-                ? profileName 
+            return !string.IsNullOrEmpty(profileName)
+                ? profileName
                 : _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 
@@ -87,8 +90,8 @@ namespace QSB
             networkAddress = QSB.DefaultServerIP;
             maxConnections = MaxConnections;
             customConfig = true;
-            connectionConfig.AddChannel(QosType.Reliable);
-            connectionConfig.AddChannel(QosType.Unreliable);
+            ReliableChannelId = connectionConfig.AddChannel(QosType.Reliable);
+            UnreliableChannelId = connectionConfig.AddChannel(QosType.Unreliable);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
 
