@@ -10,12 +10,12 @@ namespace QSB
         public uint NetId { get; }
         public GameObject Body { get; set; }
         public GameObject Camera { get; set; }
-        public State State { get; private set; }
         public QSBFlashlight FlashLight => Camera.GetComponentInChildren<QSBFlashlight>();
         public QSBTool Signalscope => Camera.GetComponentsInChildren<QSBTool>().First(x => x.Type == ToolType.Signalscope);
         public string Name { get; set; }
         public bool IsReady { get; set; }
         public Transform ReferenceSector { get; set; }
+        public State State { get; private set; }
 
         public PlayerInfo(uint id)
         {
