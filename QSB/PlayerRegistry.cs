@@ -85,6 +85,17 @@ namespace QSB
             return tools.First(x => x.Type == ToolType.Signalscope);
         }
 
+        public static QSBTool GetPlayerTranslator(uint id)
+        {
+            var tools = GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>();
+            if (tools.Length == 0)
+            {
+                DebugLog.ToConsole("Error - Zero items in QSBTool list while trying to get Translator", MessageType.Error);
+                return null;
+            }
+            return tools.First(x => x.Type == ToolType.Translator);
+        }
+
         // Update player data :
 
         public static void HandleFullStateMessage(FullStateMessage message)
