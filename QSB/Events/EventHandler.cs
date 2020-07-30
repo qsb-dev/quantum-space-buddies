@@ -44,12 +44,27 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
+            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
+            {
+                switch ((EventType)message.EventType)
+                {
+                    case EventType.TurnOnFlashlight:
+                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
+                        break;
+                    case EventType.TurnOffFlashlight:
+                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
+                        break;
+                }
+                return;
+            }
             switch ((EventType)message.EventType)
             {
                 case EventType.TurnOnFlashlight:
+                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
                     PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
                     break;
                 case EventType.TurnOffFlashlight:
+                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
                     PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
                     break;
                 case EventType.SuitUp:
@@ -60,29 +75,12 @@ namespace QSB.Events
                     break;
                 case EventType.EquipSignalscope:
                     PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, true);
+                    PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
                     break;
                 case EventType.UnequipSignalscope:
                     PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, false);
+                    PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
                     break;
-            }
-
-            if (message.SenderId != PlayerTransformSync.LocalInstance.netId.Value)
-            {
-                switch ((EventType)message.EventType)
-                {
-                    case EventType.TurnOnFlashlight:
-                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
-                        break;
-                    case EventType.TurnOffFlashlight:
-                        PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
-                        break;
-                    case EventType.EquipSignalscope:
-                        PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
-                        break;
-                    case EventType.UnequipSignalscope:
-                        PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
-                        break;
-                }
             }
         }
     }

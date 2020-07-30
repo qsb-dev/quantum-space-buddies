@@ -58,6 +58,11 @@ namespace QSB.TransformSync
             return body;
         }
 
+        void FixedUpdate()
+        {
+            DebugLog.UpdateInfoCanvas(GetAttachedNetId(), InfoState.RelativePosition, gameObject.transform.localPosition);
+        }
+
         protected override bool IsReady()
         {
             if (Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId()))
