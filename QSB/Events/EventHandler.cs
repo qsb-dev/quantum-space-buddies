@@ -46,15 +46,6 @@ namespace QSB.Events
         {
             if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
             {
-                switch ((EventType)message.EventType)
-                {
-                    case EventType.TurnOnFlashlight:
-                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
-                        break;
-                    case EventType.TurnOffFlashlight:
-                        PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
-                        break;
-                }
                 return;
             }
             switch ((EventType)message.EventType)

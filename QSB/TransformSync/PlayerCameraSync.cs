@@ -26,22 +26,24 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole($"Local PlayerCameraSync for {GetAttachedNetId()}");
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
-            PlayerToolsManager.Init(body);
-
             PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
+
+            PlayerToolsManager.Init(body);
 
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole($"Remote PlayerCameraSync for {GetAttachedNetId()}");
             var body = new GameObject("PlayerCamera");
 
-            PlayerToolsManager.Init(body.transform);
-
             PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body);
+
+            PlayerToolsManager.Init(body.transform);
 
             return body.transform;
         }

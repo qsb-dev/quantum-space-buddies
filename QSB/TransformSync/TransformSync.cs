@@ -40,6 +40,7 @@ namespace QSB.TransformSync
         {
             _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
+            DebugLog.ToConsole($"Setting up transformsync for id {OverriddenNetId} - hasAuthority is {hasAuthority}");
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
@@ -61,7 +62,10 @@ namespace QSB.TransformSync
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.Instance.SetSector(OverriddenNetId, sector.GetName());
+            if (OverriddenNetId != 0)
+            {
+                SectorSync.Instance.SetSector(OverriddenNetId, sector.GetName());
+            }
         }
 
         private void Update()

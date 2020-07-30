@@ -56,12 +56,21 @@ namespace QSB.Utility
 
         private static void CreateSignalscope()
         {
+            DebugLog.ToConsole("create signalscope");
             var signalscopeRoot = GameObject.Instantiate(GameObject.Find("Signalscope"));
+            if (signalscopeRoot == null)
+            {
+                DebugLog.ToConsole("signalscoperoot is null");
+            }
+            var oldSignalscope = signalscopeRoot.GetComponent<Signalscope>();
+            if (oldSignalscope == null)
+            {
+                DebugLog.ToConsole("oldsignalscope is null");
+            }
             signalscopeRoot.SetActive(false);
             Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
             Object.Destroy(signalscopeRoot.transform.Find("Props_HEA_Signalscope_Prepass"));
-
-            var oldSignalscope = signalscopeRoot.GetComponent<Signalscope>();
+            
             var tool = signalscopeRoot.AddComponent<QSBTool>();
             tool.SetValue("_moveSpring", oldSignalscope.GetValue<DampedSpringQuat>("_moveSpring"));
             tool.SetValue("_stowTransform", _toolStowTransform);
@@ -75,6 +84,7 @@ namespace QSB.Utility
             signalscopeRoot.transform.parent = _cameraBody;
             signalscopeRoot.transform.localPosition = Vector3.zero;
             signalscopeRoot.transform.localScale = SignalscopeScale;
+            signalscopeRoot.layer = 0;
             signalscopeRoot.SetActive(true);
         }
     }
