@@ -147,7 +147,7 @@ namespace QSB.TimeSync
 
         private void OnClientReceiveMessage(DeathMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayerName(message.SenderId);
+            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }

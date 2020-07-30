@@ -30,7 +30,7 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(LeaveMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayerName(message.SenderId);
+            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
             DebugLog.ToAll(playerName, "disconnected.");
             PlayerRegistry.RemovePlayer(message.SenderId);
             foreach (var objectId in message.ObjectIds)

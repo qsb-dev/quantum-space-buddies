@@ -1,149 +1,46 @@
-﻿using OWML.Common;
-using QSB.Animation;
-using QSB.Events;
-using QSB.Utility;
+﻿using QSB.Events;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using QSB.TransformSync;
 
 namespace QSB
 {
     public static class PlayerRegistry
     {
+        public static PlayerInfo LocalPlayer => GetPlayer(PlayerTransformSync.LocalInstance.netId.Value);
+
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-        // Methods relating to the PlayerList :
-
-        public static void CreatePlayer(uint id, string name)
+        public static PlayerInfo CreatePlayer(uint id)
         {
             if (PlayerExists(id))
             {
-                return;
+                return null;
             }
-            var player = new PlayerInfo
-            {
-                NetId = id,
-                Name = name
-            };
+            var player = new PlayerInfo(id);
             PlayerList.Add(player);
+            return player;
         }
 
-        private static PlayerInfo GetPlayer(uint id)
+        public static PlayerInfo GetPlayer(uint id)
         {
-            return PlayerList.Find(x => x.NetId == id);
+            return PlayerList.FirstOrDefault(x => x.NetId == id);
         }
-
         public static bool PlayerExists(uint id)
         {
-            return PlayerList.Any(x => x.NetId == id);
+            return GetPlayer(id) != null;
         }
 
         public static void RemovePlayer(uint id)
         {
-            PlayerList.Remove(PlayerList.Find(x => x.NetId == id));
+            PlayerList.Remove(GetPlayer(id));
         }
-
-        public static Dictionary<uint, string> GetPlayerNames()
-        {
-            var dict = new Dictionary<uint, string>();
-            PlayerList.ForEach(x => dict.Add(x.NetId, x.Name));
-            return dict;
-        }
-
-        // Registering player objects :
-
-        public static void RegisterPlayerBody(uint id, GameObject body)
-        {
-            GetPlayer(id).Body = body;
-        } 
-
-        public static void RegisterPlayerCamera(uint id, GameObject camera)
-        {
-            GetPlayer(id).Camera = camera;
-        }
-
-        // Get player objects :
-
-        public static GameObject GetPlayerCamera(uint id)
-        {
-            return GetPlayer(id).Camera;
-        }
-
-        public static QSBFlashlight GetPlayerFlashlight(uint id)
-        {
-            return GetPlayerCamera(id).GetComponentInChildren<QSBFlashlight>();
-        }
-
-        public static QSBTool GetPlayerSignalscope(uint id)
-        {
-            var tools = GetPlayer(id).Camera.GetComponentsInChildren<QSBTool>();
-            if (tools.Length == 0)
-            {
-                DebugLog.ToConsole("Error - Zero items in QSBTool list while trying to get Signalscope", MessageType.Error);
-                return null;
-            }
-            return tools.First(x => x.Type == ToolType.Signalscope);
-        }
-
-        // Update player data :
 
         public static void HandleFullStateMessage(FullStateMessage message)
         {
-            if (!PlayerExists(message.SenderId))
-            {
-                CreatePlayer(message.SenderId, message.PlayerName);
-            }
-            else
-            {
-                GetPlayer(message.SenderId).Name = message.PlayerName;
-            }
+            var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
+            player.Name = message.PlayerName;
         }
 
-        public static void SetReadiness(uint id, bool ready)
-        {
-            GetPlayer(id).Ready = ready;
-        }
-
-        public static void UpdateSector(uint id, Transform sector)
-        {
-            GetPlayer(id).ReferenceSector = sector;
-        }
-
-        public static void UpdateState(uint id, State state, bool value)
-        {
-            var states = GetPlayer(id).State;
-            if (value)
-            {
-                FlagsHelper.Set(ref states, state);
-            }
-            else
-            {
-                FlagsHelper.Unset(ref states, state);
-            }
-            GetPlayer(id).State = states;
-        }
-
-        // Get player data :
-
-        public static string GetPlayerName(uint id)
-        {
-            return GetPlayer(id).Name;
-        }
-
-        public static bool IsPlayerReady(uint id)
-        {
-            return GetPlayer(id).Ready;
-        } 
-
-        public static Transform GetSector(uint id)
-        {
-            return GetPlayer(id).ReferenceSector;
-        }   
-
-        public static bool GetState(uint id, State state)
-        {
-            var states = GetPlayer(id).State;
-            return FlagsHelper.IsSet(states, state);
-        }
     }
 }

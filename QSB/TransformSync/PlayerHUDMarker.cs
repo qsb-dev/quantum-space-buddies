@@ -33,11 +33,11 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!_isReady || !PlayerRegistry.IsPlayerReady(_netId))
+            if (!_isReady || !PlayerRegistry.GetPlayer(_netId).IsReady)
             {
                 return;
             }
-            _markerLabel = PlayerRegistry.GetPlayerName(_netId);
+            _markerLabel = PlayerRegistry.GetPlayer(_netId).Name;
             _isReady = false;
 
             base.InitCanvasMarker();
