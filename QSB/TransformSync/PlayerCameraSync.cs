@@ -29,9 +29,9 @@ namespace QSB.TransformSync
             DebugLog.ToConsole($"Local PlayerCameraSync for {GetAttachedNetId()}");
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
-            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
+            PlayerToolsManager.Init(body.transform);
 
-            PlayerToolsManager.Init(body);
+            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
 
             return body;
         }
@@ -41,21 +41,24 @@ namespace QSB.TransformSync
             DebugLog.ToConsole($"Remote PlayerCameraSync for {GetAttachedNetId()}");
             var body = new GameObject("PlayerCamera");
 
-            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body);
-
             PlayerToolsManager.Init(body.transform);
+
+            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body);
 
             return body.transform;
         }
 
         protected override bool IsReady()
         {
+            /*
             if (Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId()))
             {
                 OverriddenNetId = GetAttachedNetId();
                 return true;
             }
             return false;
+            */
+            return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
         }
     }
 }
