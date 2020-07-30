@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -84,7 +85,7 @@ namespace QSB.TransformSync
 
             if (sectorTransform == null)
             {
-                DebugLog.ToConsole($"Error - Player ID {PlayerRegistry.LocalPlayer.NetId}'s reference sector is null!", OWML.Common.MessageType.Error);
+                DebugLog.ToConsole($"Error - Player ID {PlayerRegistry.LocalPlayer.NetId}'s reference sector is null!", MessageType.Error);
             }
 
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
