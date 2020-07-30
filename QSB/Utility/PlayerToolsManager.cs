@@ -81,7 +81,7 @@ namespace QSB.Utility
             tool.ToolGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
             oldSignalscope.enabled = false;
 
-            signalscopeRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Signalscope").material = _playerToolsMaterial;
+            GetRenderer(signalscopeRoot, "Props_HEA_Signalscope").material = _playerToolsMaterial;
 
             signalscopeRoot.transform.parent = _cameraBody;
             signalscopeRoot.transform.localPosition = Vector3.zero;
@@ -116,15 +116,20 @@ namespace QSB.Utility
             tool.ToolGameObject = group.gameObject;
             oldTranslator.enabled = false;
 
-            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_Geo").material = _playerToolsMaterial;
-            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_RotatingPart").material = _playerToolsMaterial;
-            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_Button_L").material = _lightbulbMaterial;
-            translatorRoot.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == "Props_HEA_Translator_Button_R").material = _lightbulbMaterial;
+            GetRenderer(translatorRoot, "Props_HEA_Translator_Geo").material = _playerToolsMaterial;
+            GetRenderer(translatorRoot, "Props_HEA_Translator_RotatingPart").material = _playerToolsMaterial;
+            GetRenderer(translatorRoot, "Props_HEA_Translator_Button_L").material = _lightbulbMaterial;
+            GetRenderer(translatorRoot, "Props_HEA_Translator_Button_R").material = _lightbulbMaterial;
 
             translatorRoot.transform.parent = _cameraBody;
             translatorRoot.transform.localPosition = Vector3.zero;
             translatorRoot.transform.localScale = TranslatorScale;
             translatorRoot.SetActive(true);
+        }
+
+        private static MeshRenderer GetRenderer(GameObject root, string gameobjectName)
+        {
+            return root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameobjectName);
         }
     }
 }
