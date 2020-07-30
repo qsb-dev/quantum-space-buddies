@@ -30,7 +30,7 @@ namespace QSB.TransformSync
 
             PlayerToolsManager.Init(body);
 
-            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
+            PlayerRegistry.GetPlayer(GetAttachedNetId()).Camera = body.gameObject;
 
             return body;
         }
@@ -41,7 +41,7 @@ namespace QSB.TransformSync
 
             PlayerToolsManager.Init(body.transform);
 
-            PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body);
+            PlayerRegistry.GetPlayer(GetAttachedNetId()).Camera = body;
 
             return body.transform;
         }

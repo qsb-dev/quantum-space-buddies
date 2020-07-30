@@ -45,8 +45,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(JoinMessage message)
         {
-            PlayerRegistry.CreatePlayer(message.SenderId, message.PlayerName);
-            PlayerRegistry.SetReadiness(message.SenderId, true);
+            var player = PlayerRegistry.CreatePlayer(message.SenderId);
+            player.Name = message.PlayerName;
+            player.IsReady = true;
             DebugLog.ToAll(message.PlayerName, "joined!");
         }
     }
