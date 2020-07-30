@@ -34,7 +34,7 @@ namespace QSB.Messaging
             {
                 return;
             }
-            NetworkServer.SendByChannelToAll((short)message.MessageType, message, QSBNetworkManager.ReliableChannelId);
+            NetworkServer.SendToAll((short)message.MessageType, message);
         }
 
         public void SendToServer(T message)
@@ -43,7 +43,7 @@ namespace QSB.Messaging
             {
                 return;
             }
-            NetworkManager.singleton.client.SendByChannel((short)message.MessageType, message, QSBNetworkManager.ReliableChannelId);
+            NetworkManager.singleton.client.Send((short)message.MessageType, message);
         }
 
         private void OnClientReceiveMessageHandler(NetworkMessage netMsg)

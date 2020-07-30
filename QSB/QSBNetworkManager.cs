@@ -13,9 +13,6 @@ namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
-        public static int ReliableChannelId { get; private set; }
-        public static int UnreliableChannelId { get; private set; }
-
         public static UnityEvent OnNetworkManagerReady = new UnityEvent();
         public static bool IsReady;
 
@@ -90,8 +87,8 @@ namespace QSB
             networkAddress = QSB.DefaultServerIP;
             maxConnections = MaxConnections;
             customConfig = true;
-            ReliableChannelId = connectionConfig.AddChannel(QosType.Reliable);
-            UnreliableChannelId = connectionConfig.AddChannel(QosType.Unreliable);
+            connectionConfig.AddChannel(QosType.Reliable);
+            connectionConfig.AddChannel(QosType.Unreliable);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
 
