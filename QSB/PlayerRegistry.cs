@@ -2,6 +2,8 @@
 using System.Linq;
 using QSB.Events;
 using QSB.TransformSync;
+using QSB.Utility;
+using OWML.Common;
 
 namespace QSB
 {
@@ -17,6 +19,7 @@ namespace QSB
             {
                 return null;
             }
+            DebugLog.ToConsole($"Creating player id {id}", MessageType.Info);
             var player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -26,6 +29,7 @@ namespace QSB
         {
             return PlayerList.FirstOrDefault(x => x.NetId == id);
         }
+
         public static bool PlayerExists(uint id)
         {
             return GetPlayer(id) != null;
@@ -33,6 +37,7 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
+            DebugLog.ToConsole($"Removing player id {id}", MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
@@ -41,6 +46,5 @@ namespace QSB
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
         }
-
     }
 }

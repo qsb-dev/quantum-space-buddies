@@ -54,7 +54,7 @@ namespace QSB.TransformSync
 
         public void SetSector(uint id, Sector.Name sectorName)
         {
-            DebugLog.ToScreen("Gonna set sector");
+            //DebugLog.ToScreen("Gonna set sector");
 
             PlayerRegistry.GetPlayer(id).ReferenceSector = FindSectorTransform(sectorName);
 
@@ -80,24 +80,26 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
+            //DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
 
             var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.ToScreen("Sector", sectorName, "not found");
+                //DebugLog.ToScreen("Sector", sectorName, "not found");
+                DebugLog.ToConsole($"Error - Sector {sectorName} not found!", OWML.Common.MessageType.Error);
                 return;
             }
 
-            DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
+            //DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
+            DebugLog.ToConsole($"Setting player id {message.SenderId} sector to {sectorName}", OWML.Common.MessageType.Warning);
             PlayerRegistry.GetPlayer(message.SenderId).ReferenceSector = sectorTransform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
+            //DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 
@@ -120,6 +122,11 @@ namespace QSB.TransformSync
                 if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
                 {
                     ShipTransformSync.LocalInstance.EnterSector(sector);
+                }
+
+                if (____occupantType == DynamicOccupant.Probe && PlayerProbeSync.LocalInstance != null)
+                {
+                    PlayerProbeSync.LocalInstance.EnterSector(sector);
                 }
             }
         }

@@ -114,8 +114,10 @@
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
+    <Compile Include="Tools\QSBProbe.cs" />
     <Compile Include="Tools\QSBTool.cs" />
     <Compile Include="Tools\ToolType.cs" />
+    <Compile Include="TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
     <Compile Include="Events\EventListener.cs" />
     <Compile Include="Events\EventType.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Utility\FlagsHelper.cs" />
     <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
+    <Compile Include="Utility\Patches.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />

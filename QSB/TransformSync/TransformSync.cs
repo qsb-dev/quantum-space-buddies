@@ -80,6 +80,11 @@ namespace QSB.TransformSync
                 return;
             }
 
+            if (PlayerRegistry.LocalPlayer == null)
+            {
+                DebugLog.ToConsole($"Error - Local player not set up yet.");
+            }
+
             // Get which sector should be used as a reference point
             var sectorTransform = PlayerRegistry.LocalPlayer.ReferenceSector;
 
@@ -99,6 +104,8 @@ namespace QSB.TransformSync
                 {
                     // Fix bodies staying at 0,0,0 by chucking them into the sun
                     SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+
+                    DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
 
                     FullStateRequest.LocalInstance.Request();
                 }

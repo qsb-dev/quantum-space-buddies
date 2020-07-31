@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -31,6 +32,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole($"Local PlayerTransformSync for id {GetAttachedNetId()}");
             var body = GetPlayerModel();
 
             bodyTransform = body;
@@ -44,6 +46,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole($"Remote PlayerTransformSync for id {GetAttachedNetId()}");
             var body = Instantiate(GetPlayerModel());
 
             bodyTransform = body;

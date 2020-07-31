@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using QSB.Messaging;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -48,6 +49,7 @@ namespace QSB.Events
             {
                 return;
             }
+            DebugLog.ToConsole("Recieved event message");
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             switch ((EventType)message.EventType)
             {
@@ -80,6 +82,14 @@ namespace QSB.Events
                 case EventType.UnequipTranslator:
                     player.UpdateState(State.Translator, false);
                     player.Translator.UnequipTool();
+                    break;
+                case EventType.ProbeLauncherEquipped:
+                    player.UpdateState(State.ProbeLauncher, true);
+                    player.ProbeLauncher.EquipTool();
+                    break;
+                case EventType.ProbeLauncherUnequipped:
+                    player.UpdateState(State.ProbeLauncher, false);
+                    player.ProbeLauncher.UnequipTool();
                     break;
             }
         }
