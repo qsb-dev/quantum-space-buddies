@@ -2,40 +2,32 @@
 using UnityEngine;
 using System.Linq;
 using QSB.Utility;
-using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
-    public class SectorSync : MonoBehaviour
+    public class SectorSync : NetworkBehaviour
     {
         public static SectorSync Instance { get; private set; }
 
-        private Sector[] _allSectors;
+        private const float SendInterval = 0.5f;
+        private float _sendTimer;
+        private Sector.Name _lastSentSector;
         private MessageHandler<SectorMessage> _sectorHandler;
 
-        private readonly Sector.Name[] _sectorWhitelist = {
-            Sector.Name.BrambleDimension,
-            Sector.Name.BrittleHollow,
-            Sector.Name.Comet,
-            Sector.Name.DarkBramble,
-            Sector.Name.EyeOfTheUniverse,
-            Sector.Name.GiantsDeep,
-            Sector.Name.HourglassTwin_A,
-            Sector.Name.HourglassTwin_B,
-            Sector.Name.OrbitalProbeCannon,
-            Sector.Name.QuantumMoon,
-            Sector.Name.SunStation,
-            Sector.Name.TimberHearth,
-            Sector.Name.TimberMoon,
-            Sector.Name.VolcanicMoon,
-            Sector.Name.WhiteHole
-        };
-
-        private void Awake()
+        private Sector[] _allSectors;
+        private Sector[] AllSectors
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            get
+            {
+                if (_allSectors == null || !_allSectors.Any())
+                {
+                    _allSectors = FindObjectsOfType<Sector>();
+                }
+                return _allSectors;
+            }
         }
-
+        
         private void Start()
         {
             Instance = this;
@@ -43,18 +35,17 @@ namespace QSB.TransformSync
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-
-            QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void SendSector(uint id, Sector.Name sectorName)
         {
-            _allSectors = null;
-        }
 
-        public void SetSector(uint id, Sector.Name sectorName)
-        {
-            DebugLog.ToScreen("Gonna set sector");
+            if (_lastSentSector == sectorName)
+            {
+                return;
+            }
+
+            DebugLog.ToScreen("Gonna send sector");
 
             PlayerRegistry.GetPlayer(id).ReferenceSector = FindSectorTransform(sectorName);
 
@@ -64,15 +55,12 @@ namespace QSB.TransformSync
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
+            _lastSentSector = sectorName;
         }
 
         private Transform FindSectorTransform(Sector.Name sectorName)
         {
-            if (_allSectors == null)
-            {
-                _allSectors = FindObjectsOfType<Sector>();
-            }
-            return _allSectors
+            return AllSectors
                 .Where(sector => sectorName == sector.GetName())
                 .Select(sector => sector.transform)
                 .FirstOrDefault();
@@ -101,27 +89,21 @@ namespace QSB.TransformSync
             _sectorHandler.SendToAll(message);
         }
 
-        private static class Patches
+        private void Update()
         {
-            private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
+            if (!isLocalPlayer || _allSectors == null || _allSectors.Length == 0)
             {
-                if (!Instance._sectorWhitelist.Contains(sector.GetName()))
-                {
-                    return;
-                }
-
-                if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
-                {
-                    PlayerTransformSync.LocalInstance?.EnterSector(sector);
-                    PlayerCameraSync.LocalInstance?.EnterSector(sector);
-                    return;
-                }
-
-                if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
-                {
-                    ShipTransformSync.LocalInstance.EnterSector(sector);
-                }
+                return;
             }
+            _sendTimer += Time.unscaledDeltaTime;
+            if (_sendTimer < SendInterval)
+            {
+                return;
+            }
+            var me = PlayerRegistry.LocalPlayer;
+            var sector = AllSectors.OrderByDescending(s => Vector3.Distance(s.transform.position, me.Position)).First();
+            SendSector(me.NetId, sector.GetName());
+            _sendTimer = 0;
         }
 
     }
