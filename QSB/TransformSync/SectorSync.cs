@@ -27,7 +27,7 @@ namespace QSB.TransformSync
                 return _allSectors;
             }
         }
-        
+
         private void Start()
         {
             Instance = this;
