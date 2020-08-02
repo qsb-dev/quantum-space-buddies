@@ -13,6 +13,11 @@ namespace QSB.TransformSync
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
 
+        private readonly Sector.Name[] _sectorBlacklist = {
+            Sector.Name.Unnamed,
+            Sector.Name.Ship
+        };
+
         private void Start()
         {
             _sectorHandler = new MessageHandler<SectorMessage>();
@@ -30,7 +35,6 @@ namespace QSB.TransformSync
         private void SendSector(uint id, Sector.Name sectorName)
         {
             DebugLog.ToScreen($"Sending sector {sectorName} for {PlayerRegistry.GetPlayer(id).Name}");
-
             var msg = new SectorMessage
             {
                 SectorId = (int)sectorName,
@@ -106,7 +110,7 @@ namespace QSB.TransformSync
             return _allSectors
                 .OrderBy(s => Vector3.Distance(s.transform.position, player.Position))
                 .Select(s => s.GetName())
-                .Except(new[] { Sector.Name.Unnamed, Sector.Name.Ship })
+                .Except(_sectorBlacklist)
                 .First();
         }
     }
