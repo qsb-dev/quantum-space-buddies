@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using QSB.Messaging;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -45,8 +46,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(JoinMessage message)
         {
-            PlayerRegistry.CreatePlayer(message.SenderId, message.PlayerName);
-            PlayerRegistry.SetReadiness(message.SenderId, true);
+            var player = PlayerRegistry.CreatePlayer(message.SenderId);
+            player.Name = message.PlayerName;
+            player.IsReady = true;
             DebugLog.ToAll(message.PlayerName, "joined!");
         }
     }

@@ -37,7 +37,7 @@ namespace QSB.TransformSync
 
             GetComponent<AnimationSync>().InitLocal(body);
 
-            PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
+            PlayerRegistry.GetPlayer(GetAttachedNetId()).Body = body.gameObject;
 
             return body;
         }
@@ -53,7 +53,7 @@ namespace QSB.TransformSync
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.SetId(GetAttachedNetId());
 
-            PlayerRegistry.RegisterPlayerBody(GetAttachedNetId(), body.gameObject);
+            PlayerRegistry.GetPlayer(GetAttachedNetId()).Body = body.gameObject;
 
             return body;
         }

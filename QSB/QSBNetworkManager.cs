@@ -5,6 +5,7 @@ using QSB.Animation;
 using QSB.Events;
 using QSB.TimeSync;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -77,8 +78,8 @@ namespace QSB
             profileManager.Initialize();
             var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
             var profileName = profile?.profileName;
-            return !string.IsNullOrEmpty(profileName) 
-                ? profileName 
+            return !string.IsNullOrEmpty(profileName)
+                ? profileName
                 : _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 

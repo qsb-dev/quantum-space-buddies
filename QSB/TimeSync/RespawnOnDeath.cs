@@ -3,6 +3,7 @@ using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -147,7 +148,7 @@ namespace QSB.TimeSync
 
         private void OnClientReceiveMessage(DeathMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayerName(message.SenderId);
+            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }

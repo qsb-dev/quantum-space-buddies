@@ -1,6 +1,7 @@
 ﻿using QSB.Messaging;
 using UnityEngine;
 using System.Linq;
+using QSB.Utility;
 using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
@@ -55,7 +56,7 @@ namespace QSB.TransformSync
         {
             DebugLog.ToScreen("Gonna set sector");
 
-            PlayerRegistry.UpdateSector(id, FindSectorTransform(sectorName));
+            PlayerRegistry.GetPlayer(id).ReferenceSector = FindSectorTransform(sectorName);
 
             var msg = new SectorMessage
             {
@@ -91,7 +92,7 @@ namespace QSB.TransformSync
             }
 
             DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
-            PlayerRegistry.UpdateSector(message.SenderId, sectorTransform);
+            PlayerRegistry.GetPlayer(message.SenderId).ReferenceSector = sectorTransform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)

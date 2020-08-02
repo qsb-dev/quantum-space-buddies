@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -55,12 +56,12 @@ namespace QSB.TransformSync
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
-            PlayerRegistry.UpdateSector(PlayerTransformSync.LocalInstance.netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
+            PlayerRegistry.LocalPlayer.ReferenceSector = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
         }
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.Instance.SetSector(PlayerTransformSync.LocalInstance.netId.Value, sector.GetName());
+            SectorSync.Instance.SetSector(PlayerRegistry.LocalPlayer.NetId, sector.GetName());
         }
 
         private void Update()
@@ -80,11 +81,11 @@ namespace QSB.TransformSync
             }
 
             // Get which sector should be used as a reference point
-            var sectorTransform = PlayerRegistry.GetSector(PlayerTransformSync.LocalInstance.netId.Value);
+            var sectorTransform = PlayerRegistry.LocalPlayer.ReferenceSector;
 
             if (sectorTransform == null)
             {
-                DebugLog.ToConsole($"Error - Player ID {PlayerTransformSync.LocalInstance.netId.Value}'s reference sector is null!", OWML.Common.MessageType.Error);
+                DebugLog.ToConsole($"Error - Player ID {PlayerRegistry.LocalPlayer.NetId}'s reference sector is null!", MessageType.Error);
             }
 
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
@@ -94,7 +95,7 @@ namespace QSB.TransformSync
             }
             else // If this script is attached to any other body, eg the representations of other players
             {
-                if (SyncedTransform.position == Vector3.zero) 
+                if (SyncedTransform.position == Vector3.zero)
                 {
                     // Fix bodies staying at 0,0,0 by chucking them into the sun
                     SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;

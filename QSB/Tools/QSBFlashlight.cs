@@ -1,14 +1,15 @@
-﻿using UnityEngine;
+﻿using OWML.ModHelper.Events;
+using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Tools
 {
     public class QSBFlashlight : MonoBehaviour
     {
-        public OWLight2[] _lights;
-        public OWLight2 _illuminationCheckLight;
-        public Transform _root;
-        public Transform _basePivot;
-        public Transform _wobblePivot;
+        private OWLight2[] _lights;
+        private OWLight2 _illuminationCheckLight;
+        private Transform _root;
+        private Transform _basePivot;
+        private Transform _wobblePivot;
 
         private bool _flashlightOn;
         private Vector3 _baseForward;
@@ -18,6 +19,15 @@ namespace QSB.Animation
         {
             _baseForward = _basePivot.forward;
             _baseRotation = _basePivot.rotation;
+        }
+
+        public void Init(Flashlight oldComponent)
+        {
+            _lights = oldComponent.GetValue<OWLight2[]>("_lights");
+            _illuminationCheckLight = oldComponent.GetValue<OWLight2>("_illuminationCheckLight");
+            _root = oldComponent.GetValue<Transform>("_root");
+            _basePivot = oldComponent.GetValue<Transform>("_basePivot");
+            _wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
         }
 
         public void TurnOn()

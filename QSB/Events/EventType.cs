@@ -7,6 +7,8 @@
         SuitUp,
         RemoveSuit,
         EquipSignalscope,
-        UnequipSignalscope
+        UnequipSignalscope,
+        EquipTranslator,
+        UnequipTranslator
     }
 }

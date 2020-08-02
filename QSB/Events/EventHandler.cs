@@ -44,33 +44,42 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
-            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
+            if (message.SenderId == PlayerRegistry.LocalPlayer.NetId)
             {
                 return;
             }
+            var player = PlayerRegistry.GetPlayer(message.SenderId);
             switch ((EventType)message.EventType)
             {
                 case EventType.TurnOnFlashlight:
-                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOn();
-                    PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, true);
+                    player.FlashLight.TurnOn();
+                    player.UpdateState(State.Flashlight, true);
                     break;
                 case EventType.TurnOffFlashlight:
-                    PlayerRegistry.GetPlayerFlashlight(message.SenderId).TurnOff();
-                    PlayerRegistry.UpdateState(message.SenderId, State.Flashlight, false);
+                    player.FlashLight.TurnOff();
+                    player.UpdateState(State.Flashlight, false);
                     break;
                 case EventType.SuitUp:
-                    PlayerRegistry.UpdateState(message.SenderId, State.Suit, true);
+                    player.UpdateState(State.Suit, true);
                     break;
                 case EventType.RemoveSuit:
-                    PlayerRegistry.UpdateState(message.SenderId, State.Suit, false);
+                    player.UpdateState(State.Suit, false);
                     break;
                 case EventType.EquipSignalscope:
-                    PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, true);
-                    PlayerRegistry.GetPlayerSignalscope(message.SenderId).EquipTool();
+                    player.UpdateState(State.Signalscope, true);
+                    player.Signalscope.EquipTool();
                     break;
                 case EventType.UnequipSignalscope:
-                    PlayerRegistry.UpdateState(message.SenderId, State.SignalScope, false);
-                    PlayerRegistry.GetPlayerSignalscope(message.SenderId).UnequipTool();
+                    player.UpdateState(State.Signalscope, false);
+                    player.Signalscope.UnequipTool();
+                    break;
+                case EventType.EquipTranslator:
+                    player.UpdateState(State.Translator, true);
+                    player.Translator.EquipTool();
+                    break;
+                case EventType.UnequipTranslator:
+                    player.UpdateState(State.Translator, false);
+                    player.Translator.UnequipTool();
                     break;
             }
         }
