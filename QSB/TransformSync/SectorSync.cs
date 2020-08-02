@@ -8,18 +8,13 @@ namespace QSB.TransformSync
 {
     public class SectorSync : NetworkBehaviour
     {
-        public static SectorSync Instance { get; private set; }
-
         private const float SendInterval = 0.5f;
         private float _sendTimer;
         private MessageHandler<SectorMessage> _sectorHandler;
-
         private Sector[] _allSectors;
 
         private void Start()
         {
-            Instance = this;
-
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
@@ -60,15 +55,13 @@ namespace QSB.TransformSync
                 return;
             }
 
-            var sectorName = (Sector.Name)message.SectorId;
+            DebugLog.ToScreen($"Received sector {message.SectorName} for {player.Name}");
 
-            DebugLog.ToScreen($"Received sector {sectorName} for {player.Name}");
-
-            var sectorTransform = FindSectorTransform(sectorName);
+            var sectorTransform = FindSectorTransform(message.SectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.ToScreen($"Could not find transform for {sectorName}");
+                DebugLog.ToScreen($"Could not find transform for {message.SectorName}");
                 return;
             }
 
@@ -92,9 +85,9 @@ namespace QSB.TransformSync
             {
                 return;
             }
+
             var me = PlayerRegistry.LocalPlayer;
             var sector = GetClosestSector(me);
-
             var sectorTransform = FindSectorTransform(sector);
 
             if (sectorTransform == null)
@@ -104,7 +97,6 @@ namespace QSB.TransformSync
             }
 
             me.ReferenceSector = sectorTransform;
-
             SendSector(me.NetId, sector);
             _sendTimer = 0;
         }
