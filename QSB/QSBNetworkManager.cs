@@ -57,7 +57,8 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
-
+            playerPrefab.AddComponent<SectorSync>();
+            
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
@@ -112,7 +113,6 @@ namespace QSB
         {
             base.OnClientConnect(connection);
 
-            gameObject.AddComponent<SectorSync>();
             gameObject.AddComponent<PlayerJoin>().Join(_playerName);
             gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
@@ -133,7 +133,6 @@ namespace QSB
         public override void OnStopClient() // Called on the client when closing connection
         {
             DebugLog.ToScreen("OnStopClient");
-            Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<PlayerJoin>());
             Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());

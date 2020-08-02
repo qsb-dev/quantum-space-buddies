@@ -6,6 +6,7 @@ namespace QSB.TransformSync
     public class SectorMessage : QSBMessage
     {
         public override MessageType MessageType => MessageType.Sector;
+        public Sector.Name SectorName => (Sector.Name)SectorId;
 
         public int SectorId;
         public uint SenderId;
