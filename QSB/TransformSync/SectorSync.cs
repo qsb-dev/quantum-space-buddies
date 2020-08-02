@@ -10,8 +10,8 @@ namespace QSB.TransformSync
     {
         private const float SendInterval = 0.5f;
         private float _sendTimer;
-        private MessageHandler<SectorMessage> _sectorHandler;
         private Sector[] _allSectors;
+        private MessageHandler<SectorMessage> _sectorHandler;
 
         private void Start()
         {
