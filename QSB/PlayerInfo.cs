@@ -13,14 +13,43 @@ namespace QSB
         public QSBFlashlight FlashLight => Camera.GetComponentInChildren<QSBFlashlight>();
         public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
         public QSBTool Translator => GetToolByType(ToolType.Translator);
-        public string Name { get; set; }
+
+        private string _name;
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+
+            set
+            {
+                _name = value;
+                DebugLog.UpdateInfoCanvas(NetId, InfoState.Name, _name);
+            }
+        }
+
         public bool IsReady { get; set; }
-        public Transform ReferenceSector { get; set; }
+        private Transform _referenceSector;
+        public Transform ReferenceSector
+        {
+            get
+            {
+                return _referenceSector;
+            }
+
+            set
+            {
+                _referenceSector = value;
+                DebugLog.UpdateInfoCanvas(NetId, InfoState.Sector, _referenceSector.name);
+            }
+        }
         public State State { get; private set; }
 
         public PlayerInfo(uint id)
         {
             NetId = id;
+            DebugLog.UpdateInfoCanvas(NetId, InfoState.ID, id);
         }
 
         public void UpdateState(State state, bool value)

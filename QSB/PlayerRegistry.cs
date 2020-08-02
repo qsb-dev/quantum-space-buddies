@@ -26,6 +26,7 @@ namespace QSB
         {
             return PlayerList.FirstOrDefault(x => x.NetId == id);
         }
+
         public static bool PlayerExists(uint id)
         {
             return GetPlayer(id) != null;
