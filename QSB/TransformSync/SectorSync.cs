@@ -79,24 +79,24 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            //DebugLog.ToConsole("OnClientReceiveMessage SectorSync");
+            DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
 
             var sectorName = (Sector.Name)message.SectorId;
             var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.ToConsole($"Sector {sectorName} not found");
+                DebugLog.ToScreen("Sector", sectorName, "not found");
                 return;
             }
 
-            DebugLog.ToConsole($"Setting {message.SenderId} to {sectorName}");
+            DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
             PlayerRegistry.UpdateSector(message.SenderId, sectorTransform);
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            //DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
+            DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 

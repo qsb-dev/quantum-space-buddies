@@ -29,7 +29,7 @@ namespace QSB.TransformSync
             DebugLog.ToConsole($"Local PlayerCameraSync for {GetAttachedNetId()}");
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
-            PlayerToolsManager.Init(body.transform);
+            PlayerToolsManager.Init(body);
 
             PlayerRegistry.RegisterPlayerCamera(GetAttachedNetId(), body.gameObject);
 
@@ -50,14 +50,6 @@ namespace QSB.TransformSync
 
         protected override bool IsReady()
         {
-            /*
-            if (Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId()))
-            {
-                OverriddenNetId = GetAttachedNetId();
-                return true;
-            }
-            return false;
-            */
             return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
         }
     }

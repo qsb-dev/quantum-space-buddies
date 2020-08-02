@@ -12,7 +12,6 @@ namespace QSB.TransformSync
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
-        public uint OverriddenNetId { get; set; }
 
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
@@ -80,22 +79,12 @@ namespace QSB.TransformSync
                 return;
             }
 
-            if (PlayerTransformSync.LocalInstance == null)
-            {
-                DebugLog.ToConsole($"Error - PlayerTransformSync's localinstance is null!", OWML.Common.MessageType.Error);
-            }
-
             // Get which sector should be used as a reference point
             var sectorTransform = PlayerRegistry.GetSector(PlayerTransformSync.LocalInstance.netId.Value);
 
             if (sectorTransform == null)
             {
                 DebugLog.ToConsole($"Error - Player ID {PlayerTransformSync.LocalInstance.netId.Value}'s reference sector is null!", OWML.Common.MessageType.Error);
-            }
-
-            if (SyncedTransform == null)
-            {
-                DebugLog.ToConsole($"Error - SyncedTransform for player ID {PlayerTransformSync.LocalInstance.netId.Value} is null!", OWML.Common.MessageType.Error);
             }
 
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
