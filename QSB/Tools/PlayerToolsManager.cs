@@ -29,8 +29,6 @@ namespace QSB.Tools
 
             QSB.Helper.Events.Subscribe<NomaiTranslatorProp>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.OnEvent += OnEvent;
-
-            
         }
 
         private static void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
