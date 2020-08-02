@@ -28,15 +28,16 @@ namespace QSB.TransformSync
             return netId.Value - 3;
         }
 
-        private Transform GetProbeModel()
+        private Transform GetProbe()
         {
             return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
+            //return Locator.GetProbe().transform;
         }
 
         protected override Transform InitLocalTransform()
         {
             DebugLog.ToConsole($"Local PlayerProbeSync for id {GetAttachedNetId()}");
-            var body = GetProbeModel();
+            var body = GetProbe();
 
             bodyTransform = body;
 
@@ -48,18 +49,11 @@ namespace QSB.TransformSync
         protected override Transform InitRemoteTransform()
         {
             DebugLog.ToConsole($"Remote PlayerProbeSync for id {GetAttachedNetId()}");
-            var body = Instantiate(GetProbeModel());
+            var body = Instantiate(GetProbe());
+
+            PlayerToolsManager.CreateProbe(body, GetAttachedNetId());
 
             bodyTransform = body;
-
-            /*
-            var oldProbe = body.GetComponent<SurveyorProbe>();
-            var oldLantern = body.GetComponentInChildren<ProbeLantern>();
-            var newProbe = body.gameObject.AddComponent<QSBProbe>();
-            newProbe.Init(oldProbe, oldLantern);
-            oldProbe.enabled = false;
-            oldLantern.enabled = false;
-            */
 
             PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeBody = body.gameObject;
 

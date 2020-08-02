@@ -12,6 +12,7 @@
         UnequipTranslator,
         ProbeLauncherEquipped,
         ProbeLauncherUnequipped,
-        RetrieveProbe
+        RetrieveProbe,
+        LaunchProbe
     }
 }

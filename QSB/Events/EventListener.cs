@@ -14,7 +14,8 @@ namespace QSB.Events
             {EventType.EquipSignalscope, new List<Type>{typeof(Signalscope)}},
             {EventType.ProbeLauncherEquipped, new List<Type>{typeof(ProbeLauncher)}},
             {EventType.ProbeLauncherUnequipped, new List<Type>{typeof(ProbeLauncher)}},
-            {EventType.RetrieveProbe, new List<Type>{typeof(SurveyorProbe)}}
+            {EventType.RetrieveProbe, new List<Type>{typeof(SurveyorProbe)}},
+            {EventType.LaunchProbe, new List<Type>{typeof(SurveyorProbe)}}
         };
 
         private void Awake()

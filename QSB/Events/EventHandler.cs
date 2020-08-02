@@ -91,6 +91,12 @@ namespace QSB.Events
                     player.UpdateState(State.ProbeLauncher, false);
                     player.ProbeLauncher.UnequipTool();
                     break;
+                case EventType.RetrieveProbe:
+                    player.Probe.Deactivate();
+                    break;
+                case EventType.LaunchProbe:
+                    player.Probe.Activate();
+                    break;
             }
         }
     }

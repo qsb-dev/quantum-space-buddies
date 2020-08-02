@@ -31,6 +31,19 @@ namespace QSB.Tools
             CreateProbeLauncher();
         }
 
+        public static void CreateProbe(Transform body, uint id)
+        {
+            //var oldProbe = body.GetComponent<SurveyorProbe>();
+            //var oldLantern = body.GetComponentInChildren<ProbeLantern>();
+            var newProbe = body.gameObject.AddComponent<QSBProbe>();
+            //newProbe.Init(oldProbe, oldLantern, id);
+            newProbe.Init(id);
+            //oldProbe.enabled = false;
+            //oldLantern.enabled = false;
+
+            PlayerRegistry.GetPlayer(id).Probe = newProbe;
+        }
+
         private static void CreateStowTransforms()
         {
             var stow = new GameObject("ToolStowTransform");
