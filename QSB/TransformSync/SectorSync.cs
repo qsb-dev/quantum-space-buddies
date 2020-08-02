@@ -2,39 +2,62 @@
 using UnityEngine;
 using System.Linq;
 using QSB.Utility;
-using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
-    public class SectorSync : NetworkBehaviour
+    public class SectorSync : MonoBehaviour
     {
-        private const float SendInterval = 0.5f;
-        private float _sendTimer;
+        public static SectorSync Instance { get; private set; }
+
         private Sector[] _allSectors;
         private MessageHandler<SectorMessage> _sectorHandler;
 
-        private readonly Sector.Name[] _sectorBlacklist = {
-            Sector.Name.Unnamed,
-            Sector.Name.Ship
+        private readonly Sector.Name[] _sectorWhitelist = {
+            Sector.Name.BrambleDimension,
+            Sector.Name.BrittleHollow,
+            Sector.Name.Comet,
+            Sector.Name.DarkBramble,
+            Sector.Name.EyeOfTheUniverse,
+            Sector.Name.GiantsDeep,
+            Sector.Name.HourglassTwin_A,
+            Sector.Name.HourglassTwin_B,
+            Sector.Name.OrbitalProbeCannon,
+            Sector.Name.QuantumMoon,
+            Sector.Name.SunStation,
+            Sector.Name.TimberHearth,
+            Sector.Name.TimberMoon,
+            Sector.Name.VolcanicMoon,
+            Sector.Name.WhiteHole
         };
+
+        private void Awake()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
 
         private void Start()
         {
+            Instance = this;
+
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
-            QSB.Helper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
+            QSB.Helper.HarmonyHelper.AddPrefix<SectorDetector>("AddSector", typeof(Patches), "PreAddSector");
         }
 
-        private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            _allSectors = FindObjectsOfType<Sector>();
+            _allSectors = null;
         }
 
-        private void SendSector(uint id, Sector.Name sectorName)
+        public void SetSector(uint id, Sector.Name sectorName)
         {
-            DebugLog.ToScreen($"Sending sector {sectorName} for {PlayerRegistry.GetPlayer(id).Name}");
+            DebugLog.ToScreen("Gonna set sector");
+
+            PlayerRegistry.GetPlayer(id).ReferenceSector = FindSectorTransform(sectorName);
+
             var msg = new SectorMessage
             {
                 SectorId = (int)sectorName,
@@ -45,7 +68,11 @@ namespace QSB.TransformSync
 
         private Transform FindSectorTransform(Sector.Name sectorName)
         {
-            return _allSectors?
+            if (_allSectors == null)
+            {
+                _allSectors = FindObjectsOfType<Sector>();
+            }
+            return _allSectors
                 .Where(sector => sectorName == sector.GetName())
                 .Select(sector => sector.transform)
                 .FirstOrDefault();
@@ -53,23 +80,19 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
-            if (player == PlayerRegistry.LocalPlayer)
-            {
-                return;
-            }
+            DebugLog.ToScreen("OnClientReceiveMessage SectorSync");
 
-            DebugLog.ToScreen($"Received sector {message.SectorName} for {player.Name}");
-
-            var sectorTransform = FindSectorTransform(message.SectorName);
+            var sectorName = (Sector.Name)message.SectorId;
+            var sectorTransform = FindSectorTransform(sectorName);
 
             if (sectorTransform == null)
             {
-                DebugLog.ToScreen($"Could not find transform for {message.SectorName}");
+                DebugLog.ToScreen("Sector", sectorName, "not found");
                 return;
             }
 
-            player.ReferenceSector = sectorTransform;
+            DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
+            PlayerRegistry.GetPlayer(message.SenderId).ReferenceSector = sectorTransform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
@@ -78,40 +101,28 @@ namespace QSB.TransformSync
             _sectorHandler.SendToAll(message);
         }
 
-        private void Update()
+        private static class Patches
         {
-            if (!isLocalPlayer || _allSectors == null || _allSectors.Length == 0)
+            private static void PreAddSector(Sector sector, DynamicOccupant ____occupantType)
             {
-                return;
-            }
-            _sendTimer += Time.unscaledDeltaTime;
-            if (_sendTimer < SendInterval)
-            {
-                return;
-            }
+                if (!Instance._sectorWhitelist.Contains(sector.GetName()))
+                {
+                    return;
+                }
 
-            var me = PlayerRegistry.LocalPlayer;
-            var sector = GetClosestSector(me);
-            var sectorTransform = FindSectorTransform(sector);
+                if (____occupantType == DynamicOccupant.Player && PlayerTransformSync.LocalInstance != null)
+                {
+                    PlayerTransformSync.LocalInstance?.EnterSector(sector);
+                    PlayerCameraSync.LocalInstance?.EnterSector(sector);
+                    return;
+                }
 
-            if (sectorTransform == null)
-            {
-                DebugLog.ToAll("ERROR! Sector transform not found for sector " + sector);
-                return;
+                if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
+                {
+                    ShipTransformSync.LocalInstance?.EnterSector(sector);
+                }
             }
-
-            me.ReferenceSector = sectorTransform;
-            SendSector(me.NetId, sector);
-            _sendTimer = 0;
         }
 
-        private Sector.Name GetClosestSector(PlayerInfo player)
-        {
-            return _allSectors
-                .OrderBy(s => Vector3.Distance(s.transform.position, player.Position))
-                .Select(s => s.GetName())
-                .Except(_sectorBlacklist)
-                .First();
-        }
     }
 }

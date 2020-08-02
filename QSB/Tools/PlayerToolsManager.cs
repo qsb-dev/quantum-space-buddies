@@ -26,17 +26,7 @@ namespace QSB.Tools
 
             CreateFlashlight();
             CreateSignalscope();
-
-            QSB.Helper.Events.Subscribe<NomaiTranslatorProp>(OWML.Common.Events.AfterStart);
-            QSB.Helper.Events.OnEvent += OnEvent;
-        }
-
-        private static void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
-        {
-            if (behaviour is NomaiTranslatorProp translatorProp && ev == OWML.Common.Events.AfterStart)
-            {
-                CreateTranslator(translatorProp);
-            }
+            CreateTranslator();
         }
 
         private static void CreateStowTransforms()
@@ -94,9 +84,9 @@ namespace QSB.Tools
             signalscopeRoot.SetActive(true);
         }
 
-        private static void CreateTranslator(NomaiTranslatorProp translatorProp)
+        private static void CreateTranslator()
         {
-            var translatorRoot = GameObject.Instantiate(translatorProp.gameObject);
+            var translatorRoot = GameObject.Instantiate(GameObject.Find("NomaiTranslatorProp"));
             translatorRoot.SetActive(false);
 
             var group = translatorRoot.transform.Find("TranslatorGroup");

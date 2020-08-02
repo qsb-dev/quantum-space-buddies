@@ -9,7 +9,6 @@ namespace QSB
     {
         public uint NetId { get; }
         public GameObject Body { get; set; }
-        public Vector3 Position => Body.transform.position;
         public GameObject Camera { get; set; }
         public QSBFlashlight FlashLight => Camera.GetComponentInChildren<QSBFlashlight>();
         public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);

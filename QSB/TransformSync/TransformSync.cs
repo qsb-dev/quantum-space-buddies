@@ -59,6 +59,11 @@ namespace QSB.TransformSync
             PlayerRegistry.LocalPlayer.ReferenceSector = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
         }
 
+        public void EnterSector(Sector sector)
+        {
+            SectorSync.Instance.SetSector(PlayerRegistry.LocalPlayer.NetId, sector.GetName());
+        }
+
         private void Update()
         {
             if (!_isInitialized && IsReady())
