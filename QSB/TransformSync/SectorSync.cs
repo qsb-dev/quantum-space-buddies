@@ -8,9 +8,8 @@ namespace QSB.TransformSync
 {
     public class SectorSync : NetworkBehaviour
     {
-        private const float SendInterval = 0.5f;
-        private float _sendTimer;
         private Sector[] _allSectors;
+        private Sector _lastSector;
         private MessageHandler<SectorMessage> _sectorHandler;
 
         private readonly Sector.Name[] _sectorBlacklist = {
@@ -20,6 +19,10 @@ namespace QSB.TransformSync
 
         private void Start()
         {
+            if (!isLocalPlayer)
+            {
+                return;
+            }
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
@@ -32,23 +35,25 @@ namespace QSB.TransformSync
             _allSectors = FindObjectsOfType<Sector>();
         }
 
-        private void SendSector(uint id, Sector.Name sectorName)
+        private void SetSector(Sector sector)
         {
-            DebugLog.ToScreen($"Sending sector {sectorName} for {PlayerRegistry.GetPlayer(id).Name}");
+            var me = PlayerRegistry.LocalPlayer;
+            me.ReferenceSector = sector.transform;
+
+            DebugLog.ToScreen($"Sending my ({me.Name}) reference object {sector.GetName()}");
+
             var msg = new SectorMessage
             {
-                SectorId = (int)sectorName,
-                SenderId = id
+                SectorId = (int)sector.GetName(),
+                SenderId = me.NetId
             };
             _sectorHandler.SendToServer(msg);
         }
 
-        private Transform FindSectorTransform(Sector.Name sectorName)
+        private Sector FindSector(Sector.Name sectorName)
         {
             return _allSectors?
-                .Where(sector => sectorName == sector.GetName())
-                .Select(sector => sector.transform)
-                .FirstOrDefault();
+                .FirstOrDefault(sector => sectorName == sector.GetName());
         }
 
         private void OnClientReceiveMessage(SectorMessage message)
@@ -61,20 +66,11 @@ namespace QSB.TransformSync
 
             DebugLog.ToScreen($"Received sector {message.SectorName} for {player.Name}");
 
-            var sectorTransform = FindSectorTransform(message.SectorName);
-
-            if (sectorTransform == null)
-            {
-                DebugLog.ToScreen($"Could not find transform for {message.SectorName}");
-                return;
-            }
-
-            player.ReferenceSector = sectorTransform;
+            player.ReferenceSector = FindSector(message.SectorName)?.transform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
         {
-            DebugLog.ToScreen("OnServerReceiveMessage SectorSync");
             _sectorHandler.SendToAll(message);
         }
 
@@ -84,33 +80,22 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            _sendTimer += Time.unscaledDeltaTime;
-            if (_sendTimer < SendInterval)
+
+            var sector = GetClosestSector(PlayerRegistry.LocalPlayer);
+            if (sector == _lastSector)
             {
                 return;
             }
 
-            var me = PlayerRegistry.LocalPlayer;
-            var sector = GetClosestSector(me);
-            var sectorTransform = FindSectorTransform(sector);
-
-            if (sectorTransform == null)
-            {
-                DebugLog.ToAll("ERROR! Sector transform not found for sector " + sector);
-                return;
-            }
-
-            me.ReferenceSector = sectorTransform;
-            SendSector(me.NetId, sector);
-            _sendTimer = 0;
+            SetSector(sector);
+            _lastSector = sector;
         }
 
-        private Sector.Name GetClosestSector(PlayerInfo player)
+        private Sector GetClosestSector(PlayerInfo player)
         {
             return _allSectors
-                .OrderBy(s => Vector3.Distance(s.transform.position, player.Position))
-                .Select(s => s.GetName())
-                .Except(_sectorBlacklist)
+                .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
+                .OrderBy(sector => Vector3.Distance(sector.transform.position, player.Position))
                 .First();
         }
     }
