@@ -1,4 +1,6 @@
-﻿using OWML.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using OWML.Common;
 using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
@@ -9,10 +11,13 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
+        private static readonly List<TransformSync> _transformSyncs = new List<TransformSync>();
+
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
+        public Transform ReferenceTransform { get; set; }
 
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
@@ -20,6 +25,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
+            _transformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -56,12 +62,12 @@ namespace QSB.TransformSync
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
-            PlayerRegistry.LocalPlayer.ReferenceSector = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
         }
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.Instance.SetSector(PlayerRegistry.LocalPlayer.NetId, sector.GetName());
+            SectorSync.Instance.SetSector(netId.Value, sector.GetName());
         }
 
         private void Update()
@@ -81,17 +87,16 @@ namespace QSB.TransformSync
             }
 
             // Get which sector should be used as a reference point
-            var sectorTransform = PlayerRegistry.LocalPlayer.ReferenceSector;
 
-            if (sectorTransform == null)
+            if (ReferenceTransform == null)
             {
-                DebugLog.ToConsole($"Error - Player ID {PlayerRegistry.LocalPlayer.NetId}'s reference sector is null!", MessageType.Error);
+                DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
             }
 
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
-                transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
-                transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
+                transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
             }
             else // If this script is attached to any other body, eg the representations of other players
             {
@@ -104,12 +109,18 @@ namespace QSB.TransformSync
                 }
                 else
                 {
-                    SyncedTransform.parent = sectorTransform;
+                    SyncedTransform.parent = ReferenceTransform;
 
                     SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
                 }
             }
         }
+
+        public static TransformSync GetById(uint id)
+        {
+            return _transformSyncs.Single(x => x.netId.Value == id);
+        }
+
     }
 }

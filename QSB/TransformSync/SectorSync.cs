@@ -56,7 +56,7 @@ namespace QSB.TransformSync
         {
             DebugLog.ToScreen("Gonna set sector");
 
-            PlayerRegistry.GetPlayer(id).ReferenceSector = FindSectorTransform(sectorName);
+            TransformSync.GetById(id).ReferenceTransform = FindSectorTransform(sectorName);
 
             var msg = new SectorMessage
             {
@@ -92,7 +92,7 @@ namespace QSB.TransformSync
             }
 
             DebugLog.ToScreen("Found sector", sectorName, ", setting for", message.SenderId);
-            PlayerRegistry.GetPlayer(message.SenderId).ReferenceSector = sectorTransform;
+            TransformSync.GetById(message.SenderId).ReferenceTransform = sectorTransform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
