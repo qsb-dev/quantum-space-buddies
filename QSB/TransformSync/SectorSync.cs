@@ -80,7 +80,7 @@ namespace QSB.TransformSync
             }
 
             var sector = GetClosestSector(PlayerRegistry.LocalPlayer);
-            if (sector == _lastSector)
+            if (sector == _lastSector || sector == null)
             {
                 return;
             }
@@ -91,10 +91,12 @@ namespace QSB.TransformSync
 
         private Sector GetClosestSector(PlayerInfo player)
         {
-            return _allSectors
-                .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
-                .OrderBy(sector => Vector3.Distance(sector.transform.position, player.Position))
-                .First();
+            return player.Body == null
+                ? null
+                : _allSectors
+                    .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
+                    .OrderBy(sector => Vector3.Distance(sector.transform.position, player.Position))
+                    .First();
         }
     }
 }
