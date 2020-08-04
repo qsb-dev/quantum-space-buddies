@@ -2,11 +2,10 @@
 using UnityEngine;
 using System.Linq;
 using QSB.Utility;
-using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
-    public class SectorSync : NetworkBehaviour
+    public class SectorSync : MonoBehaviour
     {
         private Sector[] _allSectors;
         private Sector _lastSector;
