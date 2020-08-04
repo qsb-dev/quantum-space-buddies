@@ -4,6 +4,6 @@
   "name": "Quantum Space Buddies",
   "description": "Adds online multiplayer to the game.",
   "uniqueName": "Raicuparta.QuantumSpaceBuddies",
-  "version": "0.2",
-  "owmlVersion": "0.3.56"
+  "version": "0.3",
+  "owmlVersion": "0.6.1"
 }
