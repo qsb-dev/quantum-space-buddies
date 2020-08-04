@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OWML.Common;
 using QSB.Events;
 using QSB.Utility;
@@ -11,7 +10,7 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
-        private static readonly List<TransformSync> _transformSyncs = new List<TransformSync>();
+        public static List<TransformSync> TransformSyncs { get; } = new List<TransformSync>();
 
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
@@ -25,7 +24,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            _transformSyncs.Add(this);
+            TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -65,11 +64,6 @@ namespace QSB.TransformSync
             ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
         }
 
-        public void EnterSector(Sector sector)
-        {
-            SectorSync.Instance.SetSector(netId.Value, sector.GetName());
-        }
-
         private void Update()
         {
             if (!_isInitialized && IsReady())
@@ -97,29 +91,20 @@ namespace QSB.TransformSync
             {
                 transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
+                return;
             }
-            else // If this script is attached to any other body, eg the representations of other players
+            if (SyncedTransform.position == Vector3.zero)
             {
-                if (SyncedTransform.position == Vector3.zero)
-                {
-                    // Fix bodies staying at 0,0,0 by chucking them into the sun
-                    SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                // Fix bodies staying at 0,0,0 by chucking them into the sun
+                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
 
-                    FullStateRequest.LocalInstance.Request();
-                }
-                else
-                {
-                    SyncedTransform.parent = ReferenceTransform;
-
-                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                    SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
-                }
+                FullStateRequest.LocalInstance.Request();
+                return;
             }
-        }
+            SyncedTransform.parent = ReferenceTransform;
 
-        public static TransformSync GetById(uint id)
-        {
-            return _transformSyncs.Single(x => x.netId.Value == id);
+            SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+            SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
     }
