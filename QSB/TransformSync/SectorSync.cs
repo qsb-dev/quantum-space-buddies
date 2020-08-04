@@ -16,16 +16,19 @@ namespace QSB.TransformSync
             Sector.Name.Ship
         };
 
+        private void Awake()
+        {
+            QSB.Helper.Events.Scenes.OnCompleteSceneChange += OnSceneLoaded;
+        }
+
         private void Start()
         {
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-
-            QSB.Helper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
         }
 
-        private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene oldScene, OWScene newScene)
         {
             _allSectors = FindObjectsOfType<Sector>();
         }
