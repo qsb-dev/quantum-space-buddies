@@ -19,10 +19,6 @@ namespace QSB.TransformSync
 
         private void Start()
         {
-            if (!isLocalPlayer)
-            {
-                return;
-            }
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
@@ -76,7 +72,7 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!isLocalPlayer || _allSectors == null || _allSectors.Length == 0)
+            if (_allSectors == null || _allSectors.Length == 0)
             {
                 return;
             }
