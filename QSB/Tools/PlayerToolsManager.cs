@@ -108,7 +108,7 @@ namespace QSB.Tools
 
         private static void CreateTranslator(NomaiTranslatorProp translatorProp)
         {
-            var translatorRoot = GameObject.Instantiate(translatorProp.gameObject);
+            var translatorRoot = Object.Instantiate(translatorProp.gameObject);
             translatorRoot.SetActive(false);
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
