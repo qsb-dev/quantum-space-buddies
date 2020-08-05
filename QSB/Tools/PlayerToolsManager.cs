@@ -27,6 +27,7 @@ namespace QSB.Tools
 
             CreateFlashlight();
             CreateSignalscope();
+            CreateProbeLauncher();
 
             QSB.Helper.Events.Subscribe<NomaiTranslatorProp>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.OnEvent += OnEvent;
