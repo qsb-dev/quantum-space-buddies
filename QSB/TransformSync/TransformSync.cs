@@ -93,13 +93,6 @@ namespace QSB.TransformSync
                 {
                     transform.position = sectorTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
                 }
-                else
-                {
-                    if (this.GetType().Name == "PlayerProbeSync")
-                    {
-                        DebugLog.ToConsole($"HAS AUTH {GetAttachedNetId()} : {sectorTransform.name} / {SyncedTransform.localPosition} -> {transform.position}", MessageType.Warning);
-                    }
-                }
             }
             else // If this script is attached to any other body, eg the representations of other players
             {

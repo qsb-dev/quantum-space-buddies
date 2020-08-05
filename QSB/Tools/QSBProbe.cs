@@ -13,6 +13,11 @@ namespace QSB.Tools
             _attachedNetId = netid;
         }
 
+        void Start()
+        {
+            gameObject.SetActive(false);
+        }
+
         public void Activate()
         {
             DebugLog.ToConsole($"Activating player {_attachedNetId}'s probe.", MessageType.Info);
