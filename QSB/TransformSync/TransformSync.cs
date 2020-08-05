@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
@@ -11,8 +9,6 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
-        private static readonly List<TransformSync> _transformSyncs = new List<TransformSync>();
-
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
 
@@ -25,7 +21,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            _transformSyncs.Add(this);
+            PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -115,11 +111,6 @@ namespace QSB.TransformSync
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
                 }
             }
-        }
-
-        public static TransformSync GetById(uint id)
-        {
-            return _transformSyncs.Single(x => x.netId.Value == id);
         }
 
     }
