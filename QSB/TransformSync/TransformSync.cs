@@ -88,20 +88,26 @@ namespace QSB.TransformSync
             {
                 transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
-                return;
             }
-            if (SyncedTransform.position == Vector3.zero)
+            else // If this script is attached to any other body, eg the representations of other players
             {
-                // Fix bodies staying at 0,0,0 by chucking them into the sun
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                if (SyncedTransform.position == Vector3.zero)
+                {
+                    // Fix bodies staying at 0,0,0 by chucking them into the sun
+                    SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
 
-                FullStateRequest.LocalInstance.Request();
-                return;
+                    FullStateRequest.LocalInstance.Request();
+                }
+                else
+                {
+                    SyncedTransform.parent = ReferenceTransform;
+
+                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position,
+                        ref _positionSmoothVelocity, SmoothTime);
+                    SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation,
+                        transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+                }
             }
-            SyncedTransform.parent = ReferenceTransform;
-
-            SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-            SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
     }
