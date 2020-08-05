@@ -18,7 +18,6 @@ namespace QSB
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
         public string Name { get; set; }
         public bool IsReady { get; set; }
-        public Transform ReferenceSector { get; set; }
         public State State { get; private set; }
 
         public PlayerInfo(uint id)
