@@ -1,5 +1,4 @@
 ﻿using QSB.Tools;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -27,7 +26,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole($"Local PlayerCameraSync for id {GetAttachedNetId()}");
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
             PlayerToolsManager.Init(body);
@@ -39,7 +37,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole($"Remote PlayerCameraSync for id {GetAttachedNetId()}");
             var body = new GameObject("PlayerCamera");
 
             PlayerToolsManager.Init(body.transform);

@@ -1,6 +1,4 @@
-﻿using QSB.Animation;
-using QSB.Tools;
-using QSB.Utility;
+﻿using QSB.Tools;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -31,12 +29,10 @@ namespace QSB.TransformSync
         private Transform GetProbe()
         {
             return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-            //return Locator.GetProbe().transform;
         }
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole($"Local PlayerProbeSync for id {GetAttachedNetId()}");
             var body = GetProbe();
 
             bodyTransform = body;
@@ -48,7 +44,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole($"Remote PlayerProbeSync for id {GetAttachedNetId()}");
             var body = Instantiate(GetProbe());
 
             PlayerToolsManager.CreateProbe(body, GetAttachedNetId());

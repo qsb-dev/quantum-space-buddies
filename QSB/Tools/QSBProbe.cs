@@ -22,7 +22,7 @@ namespace QSB.Tools
         public void Deactivate()
         {
             DebugLog.ToConsole($"Deactivating player {_attachedNetId}'s probe.", MessageType.Info);
-            //gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 }

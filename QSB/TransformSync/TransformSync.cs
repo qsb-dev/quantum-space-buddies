@@ -116,11 +116,6 @@ namespace QSB.TransformSync
                 {
                     SyncedTransform.parent = sectorTransform;
 
-                    if (this.GetType().Name == "PlayerProbeSync" && !Override())
-                    {
-                        DebugLog.ToConsole($"{GetAttachedNetId()} : {sectorTransform.name} / {SyncedTransform.localPosition} -> {transform.position}", MessageType.Warning);
-                    }
-
                     SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
 

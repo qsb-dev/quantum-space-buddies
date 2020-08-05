@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using OWML.Common;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
@@ -29,7 +28,6 @@ namespace QSB
 
         public void UpdateState(State state, bool value)
         {
-            DebugLog.ToConsole($"Updating player state {NetId}.{state}.{value}", MessageType.Info);
             var states = State;
             if (value)
             {

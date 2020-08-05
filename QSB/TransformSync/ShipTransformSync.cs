@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.TransformSync
 {
@@ -31,13 +30,11 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole($"Local ShipTransformSync for id {GetAttachedNetId()}");
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole($"Remote ShipTransformSync for id {GetAttachedNetId()}");
             var shipModel = GetShipModel();
 
             var remoteTransform = new GameObject().transform;
