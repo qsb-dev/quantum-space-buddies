@@ -13,6 +13,8 @@ namespace QSB
 
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
+
+        public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t.hasAuthority).ToList();
         
         public static PlayerInfo CreatePlayer(uint id)
         {
