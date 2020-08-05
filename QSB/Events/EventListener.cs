@@ -42,7 +42,48 @@ namespace QSB.Events
 
         private void SendEvent(string eventName)
         {
-            EventHandler.LocalInstance.Send((EventType)Enum.Parse(typeof(EventType), eventName));
+            var eventType = (EventType)Enum.Parse(typeof(EventType), eventName);
+            var player = PlayerRegistry.LocalPlayer;
+            EventHandler.LocalInstance.Send(eventType);
+            switch (eventType)
+            {
+                case EventType.TurnOnFlashlight:
+                    player.UpdateState(State.Flashlight, true);
+                    break;
+                case EventType.TurnOffFlashlight:
+                    player.UpdateState(State.Flashlight, false);
+                    break;
+                case EventType.SuitUp:
+                    player.UpdateState(State.Suit, true);
+                    break;
+                case EventType.RemoveSuit:
+                    player.UpdateState(State.Suit, false);
+                    break;
+                case EventType.EquipSignalscope:
+                    player.UpdateState(State.Signalscope, true);
+                    break;
+                case EventType.UnequipSignalscope:
+                    player.UpdateState(State.Signalscope, false);
+                    break;
+                case EventType.EquipTranslator:
+                    player.UpdateState(State.Translator, true);
+                    break;
+                case EventType.UnequipTranslator:
+                    player.UpdateState(State.Translator, false);
+                    break;
+                case EventType.ProbeLauncherEquipped:
+                    player.UpdateState(State.ProbeLauncher, true);
+                    break;
+                case EventType.ProbeLauncherUnequipped:
+                    player.UpdateState(State.ProbeLauncher, false);
+                    break;
+                case EventType.RetrieveProbe:
+                    player.UpdateState(State.ProbeActive, false);
+                    break;
+                case EventType.LaunchProbe:
+                    player.UpdateState(State.ProbeActive, true);
+                    break;
+            }
         }
 
         public void Listen<T>(string eventName)
