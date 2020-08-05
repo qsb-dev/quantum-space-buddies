@@ -42,9 +42,13 @@ namespace QSB
             State = states;
         }
 
+        public bool GetState(State state)
+        {
+            return FlagsHelper.IsSet(State, state);
+        }
+
         private QSBTool GetToolByType(ToolType type)
         {
-            DebugLog.ToConsole($"Getting tool {type} for player id {NetId}");
             return Camera.GetComponentsInChildren<QSBTool>().First(x => x.Type == type);
         }
     }

@@ -24,11 +24,9 @@ namespace QSB.Events
             {
                 if (!TypedList.Keys.Contains((EventType)Enum.Parse(typeof(EventType), item)))
                 {
-                    DebugLog.ToConsole($"Adding listener for {item}");
                     GlobalMessenger.AddListener(item, () => SendEvent(item));
                 }
             }
-            DebugLog.ToConsole("--------------------");
             // the following code is garbage and stupid and i should be ashamed
             // it's too hot right now i just cant be bothered
             MethodInfo oldMethod;
@@ -40,7 +38,7 @@ namespace QSB.Events
                     case 1:
                         oldMethod = GetGenericMethod(typeof(EventListener), "Listen", 1);
                         newMethod = oldMethod.MakeGenericMethod(item.Value[0]);
-                        newMethod.Invoke(this, new[] { (object)Enum.GetName(typeof(EventType), item.Key) });
+                        newMethod.Invoke(this, new[] { (object)Enum.GetName(typeof(EventType), item.Key) }); // I HATE THIS
                         break;
                     case 2:
                         oldMethod = GetGenericMethod(typeof(EventListener), "Listen", 2);
@@ -58,13 +56,11 @@ namespace QSB.Events
 
         public void Listen<T>(string eventName)
         {
-            DebugLog.ToConsole($"Adding listener for {eventName}");
             GlobalMessenger<T>.AddListener(eventName, (T var) => SendEvent(eventName));
         }
 
         public void Listen<T,U>(string eventName)
         {
-            DebugLog.ToConsole($"Adding listener for {eventName}");
             GlobalMessenger<T,U>.AddListener(eventName, (T var, U var2) => SendEvent(eventName));
         }
 

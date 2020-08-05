@@ -121,12 +121,14 @@ namespace QSB.TransformSync
 
                 if (____occupantType == DynamicOccupant.Ship && ShipTransformSync.LocalInstance != null)
                 {
-                    ShipTransformSync.LocalInstance.EnterSector(sector);
+                    ShipTransformSync.LocalInstance?.EnterSector(sector);
+                    return;
                 }
 
                 if (____occupantType == DynamicOccupant.Probe && PlayerProbeSync.LocalInstance != null)
                 {
-                    PlayerProbeSync.LocalInstance.EnterSector(sector);
+                    PlayerProbeSync.LocalInstance?.EnterSector(sector);
+                    return;
                 }
             }
         }

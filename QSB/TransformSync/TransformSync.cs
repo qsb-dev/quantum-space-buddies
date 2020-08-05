@@ -35,6 +35,8 @@ namespace QSB.TransformSync
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
         protected abstract bool IsReady();
+        protected abstract uint GetAttachedNetId();
+        protected abstract bool Override();
 
         protected void Init()
         {
@@ -56,12 +58,12 @@ namespace QSB.TransformSync
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
-            PlayerRegistry.LocalPlayer.ReferenceSector = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            PlayerRegistry.GetPlayer(GetAttachedNetId()).ReferenceSector = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
         }
 
         public void EnterSector(Sector sector)
         {
-            SectorSync.Instance.SetSector(PlayerRegistry.LocalPlayer.NetId, sector.GetName());
+            SectorSync.Instance.SetSector(GetAttachedNetId(), sector.GetName());
         }
 
         private void Update()
@@ -80,23 +82,24 @@ namespace QSB.TransformSync
                 return;
             }
 
-            if (PlayerRegistry.LocalPlayer == null)
-            {
-                DebugLog.ToConsole($"Error - Local player not set up yet.");
-            }
-
-            // Get which sector should be used as a reference point
-            var sectorTransform = PlayerRegistry.LocalPlayer.ReferenceSector;
-
-            if (sectorTransform == null)
-            {
-                DebugLog.ToConsole($"Error - Player ID {PlayerRegistry.LocalPlayer.NetId}'s reference sector is null!", MessageType.Error);
-            }
+            var sectorTransform = PlayerRegistry.GetPlayer(GetAttachedNetId()).ReferenceSector;
 
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
                 transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
+
+                if (Override())
+                {
+                    transform.position = sectorTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                }
+                else
+                {
+                    if (this.GetType().Name == "PlayerProbeSync")
+                    {
+                        DebugLog.ToConsole($"HAS AUTH {GetAttachedNetId()} : {sectorTransform.name} / {SyncedTransform.localPosition} -> {transform.position}", MessageType.Warning);
+                    }
+                }
             }
             else // If this script is attached to any other body, eg the representations of other players
             {
@@ -113,8 +116,18 @@ namespace QSB.TransformSync
                 {
                     SyncedTransform.parent = sectorTransform;
 
+                    if (this.GetType().Name == "PlayerProbeSync" && !Override())
+                    {
+                        DebugLog.ToConsole($"{GetAttachedNetId()} : {sectorTransform.name} / {SyncedTransform.localPosition} -> {transform.position}", MessageType.Warning);
+                    }
+
                     SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+
+                    if (Override())
+                    {
+                        SyncedTransform.localPosition = sectorTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                    }
                 }
             }
         }

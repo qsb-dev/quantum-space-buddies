@@ -16,7 +16,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        private uint GetAttachedNetId()
+        protected override uint GetAttachedNetId()
         {
             /*
             Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
@@ -58,6 +58,12 @@ namespace QSB.TransformSync
             PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeBody = body.gameObject;
 
             return body;
+        }
+
+        protected override bool Override()
+        {
+            var player = PlayerRegistry.GetPlayer(GetAttachedNetId());
+            return !player.GetState(State.ProbeActive);
         }
 
         protected override bool IsReady()

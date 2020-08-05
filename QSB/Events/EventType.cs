@@ -13,6 +13,8 @@
         ProbeLauncherEquipped,
         ProbeLauncherUnequipped,
         RetrieveProbe,
-        LaunchProbe
+        LaunchProbe,
+        QSBOnProbeWarp,
+        QSBOnProbeAnchor
     }
 }

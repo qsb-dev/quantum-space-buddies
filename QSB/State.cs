@@ -9,7 +9,8 @@ namespace QSB
         Suit = 1,
         ProbeLauncher = 2,
         Signalscope = 4,
-        Translator = 8
+        Translator = 8,
+        ProbeActive = 16
         //Increment these in binary to add more states
     }
 }

@@ -1,8 +1,5 @@
-﻿using OWML.ModHelper.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OWML.Common;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -18,15 +15,14 @@ namespace QSB.Tools
 
         public void Activate()
         {
+            DebugLog.ToConsole($"Activating player {_attachedNetId}'s probe.", MessageType.Info);
             gameObject.SetActive(true);
-            gameObject.transform.parent = null;
         }
 
         public void Deactivate()
         {
+            DebugLog.ToConsole($"Deactivating player {_attachedNetId}'s probe.", MessageType.Info);
             //gameObject.SetActive(false);
-            gameObject.transform.parent = PlayerRegistry.GetPlayer(_attachedNetId).Body.transform;
-            gameObject.transform.localPosition = Vector3.zero;
         }
     }
 }

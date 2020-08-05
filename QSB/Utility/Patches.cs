@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace QSB.Utility
 {
@@ -10,7 +11,7 @@ namespace QSB.Utility
     {
         private static void ProbeAnchor()
         {
-            GlobalMessenger.FireEvent("QSBProbeAnchor");
+            GlobalMessenger.FireEvent("QSBOnProbeAnchor");
         }
 
         private static bool ProbeWarp(ref bool ____isRetrieving)

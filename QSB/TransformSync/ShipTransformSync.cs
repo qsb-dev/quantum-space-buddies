@@ -12,7 +12,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        uint GetAttachedNetId()
+        protected override uint GetAttachedNetId()
         {
             /*
             Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
@@ -62,6 +62,11 @@ namespace QSB.TransformSync
                 += Vector3.up * 3.762f;
 
             return remoteTransform;
+        }
+
+        protected override bool Override()
+        {
+            return false;
         }
 
         protected override bool IsReady()

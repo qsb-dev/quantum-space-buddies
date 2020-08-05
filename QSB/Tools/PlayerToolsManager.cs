@@ -33,13 +33,8 @@ namespace QSB.Tools
 
         public static void CreateProbe(Transform body, uint id)
         {
-            //var oldProbe = body.GetComponent<SurveyorProbe>();
-            //var oldLantern = body.GetComponentInChildren<ProbeLantern>();
             var newProbe = body.gameObject.AddComponent<QSBProbe>();
-            //newProbe.Init(oldProbe, oldLantern, id);
             newProbe.Init(id);
-            //oldProbe.enabled = false;
-            //oldLantern.enabled = false;
 
             PlayerRegistry.GetPlayer(id).Probe = newProbe;
         }
@@ -61,7 +56,7 @@ namespace QSB.Tools
 
         private static void CreateFlashlight()
         {
-            var flashlightRoot = GameObject.Instantiate(GameObject.Find("FlashlightRoot"));
+            var flashlightRoot = Object.Instantiate(GameObject.Find("FlashlightRoot"));
             flashlightRoot.SetActive(false);
             var oldComponent = flashlightRoot.GetComponent<Flashlight>();
             var component = flashlightRoot.AddComponent<QSBFlashlight>();
@@ -76,7 +71,7 @@ namespace QSB.Tools
 
         private static void CreateSignalscope()
         {
-            var signalscopeRoot = GameObject.Instantiate(GameObject.Find("Signalscope"));
+            var signalscopeRoot = Object.Instantiate(GameObject.Find("Signalscope"));
             signalscopeRoot.SetActive(false);
 
             Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
@@ -103,7 +98,7 @@ namespace QSB.Tools
 
         private static void CreateTranslator()
         {
-            var translatorRoot = GameObject.Instantiate(GameObject.Find("NomaiTranslatorProp"));
+            var translatorRoot = Object.Instantiate(GameObject.Find("NomaiTranslatorProp"));
             translatorRoot.SetActive(false);
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
@@ -141,7 +136,7 @@ namespace QSB.Tools
 
         private static void CreateProbeLauncher()
         {
-            var launcherRoot = GameObject.Instantiate(GameObject.Find("PlayerCamera/ProbeLauncher"));
+            var launcherRoot = Object.Instantiate(GameObject.Find("PlayerCamera/ProbeLauncher"));
             launcherRoot.SetActive(false);
 
             var launcher = launcherRoot.transform.Find("Props_HEA_ProbeLauncher");

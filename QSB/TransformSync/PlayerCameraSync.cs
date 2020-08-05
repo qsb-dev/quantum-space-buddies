@@ -13,7 +13,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        private uint GetAttachedNetId()
+        protected override uint GetAttachedNetId()
         { 
             /*
             Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
@@ -47,6 +47,11 @@ namespace QSB.TransformSync
             PlayerRegistry.GetPlayer(GetAttachedNetId()).Camera = body;
 
             return body.transform;
+        }
+
+        protected override bool Override()
+        {
+            return false;
         }
 
         protected override bool IsReady()
