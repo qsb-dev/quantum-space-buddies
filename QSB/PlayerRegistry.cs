@@ -10,7 +10,10 @@ namespace QSB
         public static PlayerInfo LocalPlayer => GetPlayer(PlayerTransformSync.LocalInstance.netId.Value);
 
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
+        public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
 
+        public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t.hasAuthority).ToList();
+        
         public static PlayerInfo CreatePlayer(uint id)
         {
             if (PlayerExists(id))
@@ -41,6 +44,11 @@ namespace QSB
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
+        }
+
+        public static TransformSync.TransformSync GetTransformSync(uint id)
+        {
+            return TransformSyncs.Single(x => x.netId.Value == id);
         }
 
     }

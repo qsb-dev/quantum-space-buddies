@@ -66,7 +66,7 @@ namespace QSB.TransformSync
             }
 
             DebugLog.ToScreen($"Found sector {sectorName} for {message.SenderId}");
-            TransformSync.TransformSyncs.Single(x => x.netId.Value == message.SenderId).ReferenceTransform = sector.transform;
+            PlayerRegistry.GetTransformSync(message.SenderId).ReferenceTransform = sector.transform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
@@ -80,7 +80,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            TransformSync.TransformSyncs.ForEach(UpdateTransformSync);
+            PlayerRegistry.LocalTransformSyncs.ForEach(UpdateTransformSync);
         }
 
         private void UpdateTransformSync(TransformSync transformSync)

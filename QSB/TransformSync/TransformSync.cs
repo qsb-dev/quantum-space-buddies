@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
@@ -10,8 +9,6 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
-        public static List<TransformSync> TransformSyncs { get; } = new List<TransformSync>();
-
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
 
@@ -24,7 +21,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            TransformSyncs.Add(this);
+            PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
