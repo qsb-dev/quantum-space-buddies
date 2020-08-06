@@ -38,7 +38,7 @@ namespace QSB.TransformSync
         protected abstract Transform InitRemoteTransform();
         protected abstract bool IsReady();
         protected abstract uint GetAttachedNetId();
-        protected abstract Vector3? Override();
+        protected abstract bool Override();
 
         protected void Init()
         {
@@ -91,9 +91,9 @@ namespace QSB.TransformSync
                 transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
 
-                if (Override().HasValue)
+                if (Override())
                 {
-                    transform.position = ReferenceTransform.InverseTransformPoint(Override().Value);
+                    transform.position = ReferenceTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
                 }
             }
             else // If this script is attached to any other body, eg the representations of other players
@@ -114,9 +114,9 @@ namespace QSB.TransformSync
                     SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
 
-                    if (Override().HasValue)
+                    if (Override())
                     {
-                        SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(Override().Value);
+                        SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
                     }
                 }
             }

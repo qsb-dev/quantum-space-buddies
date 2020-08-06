@@ -61,9 +61,9 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        protected override Vector3? Override()
+        protected override bool Override()
         {
-            return null;
+            return false;
         }
 
         protected override bool IsReady()
