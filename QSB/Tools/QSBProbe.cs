@@ -19,11 +19,6 @@ namespace QSB.Tools
             _probeSync = playerProbeSync;
         }
 
-        private void Start()
-        {
-            gameObject.SetActive(false);
-        }
-
         public void Activate()
         {
             DebugLog.ToConsole($"Activating {_player.Name}'s probe.", MessageType.Info);
@@ -40,7 +35,8 @@ namespace QSB.Tools
 
         public void Reset()
         {
-            _probeSync.TeleportToPlayer(_player);
+            var position = _player.ProbeLauncher.ToolGameObject.transform.position;
+            _probeSync.TeleportTo(position, _player.ReferenceTransform);
         }
     }
 }

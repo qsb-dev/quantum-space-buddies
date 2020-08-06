@@ -30,6 +30,7 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetProbe());
             Player.Probe = CreateProbe(body.gameObject, Player);
+            Player.Probe.gameObject.SetActive(false);
             return body;
         }
 

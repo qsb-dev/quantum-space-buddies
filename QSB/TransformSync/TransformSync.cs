@@ -113,14 +113,9 @@ namespace QSB.TransformSync
             }
         }
 
-        public void TeleportToPlayer(PlayerInfo player)
+        public void TeleportTo(Vector3 position, Transform referenceTransform)
         {
-            TeleportToPosition(player.Position, player.ReferenceTransform);
-        }
-
-        public void TeleportToPosition(Vector3 position, Transform referenceTransform)
-        {
-            SyncedTransform.localPosition = position;
+            SyncedTransform.position = position;
             ReferenceTransform = referenceTransform;
             _positionSmoothVelocity = Vector3.zero;
         }
