@@ -61,11 +61,6 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        protected override Vector3? Override()
-        {
-            return null;
-        }
-
         protected override bool IsReady()
         {
             return GetShipModel() != null;

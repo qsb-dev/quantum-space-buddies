@@ -58,11 +58,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        protected override Vector3? Override()
-        {
-            return null;
-        }
-
         protected override bool IsReady()
         {
             return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());

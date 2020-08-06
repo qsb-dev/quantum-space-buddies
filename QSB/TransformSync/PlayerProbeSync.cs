@@ -55,16 +55,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        protected override Vector3? Override()
-        {
-            var player = PlayerRegistry.GetPlayer(GetAttachedNetId());
-            if (player.GetState(State.ProbeActive))
-            {
-                return null;
-            }
-            return PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position;
-        }
-
         protected override bool IsReady()
         {
             return Locator.GetProbe() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
