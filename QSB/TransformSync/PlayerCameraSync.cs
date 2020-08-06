@@ -46,9 +46,9 @@ namespace QSB.TransformSync
             return body.transform;
         }
 
-        protected override bool Override()
+        protected override Vector3? Override()
         {
-            return false;
+            return null;
         }
 
         protected override bool IsReady()

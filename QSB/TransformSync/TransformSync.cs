@@ -38,7 +38,7 @@ namespace QSB.TransformSync
         protected abstract Transform InitRemoteTransform();
         protected abstract bool IsReady();
         protected abstract uint GetAttachedNetId();
-        protected abstract bool Override();
+        protected abstract Vector3? Override();
 
         protected void Init()
         {
@@ -91,9 +91,10 @@ namespace QSB.TransformSync
                 transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
 
-                if (Override())
+                if (Override().HasValue)
                 {
-                    transform.position = ReferenceTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                    //transform.position = ReferenceTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                    transform.position = ReferenceTransform.InverseTransformPoint(Override().Value);
                 }
             }
             else // If this script is attached to any other body, eg the representations of other players
@@ -114,9 +115,10 @@ namespace QSB.TransformSync
                     SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
 
-                    if (Override())
+                    if (Override().HasValue)
                     {
-                        SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                        //SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                        SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(Override().Value);
                     }
                 }
             }

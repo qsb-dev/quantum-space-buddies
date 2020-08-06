@@ -55,10 +55,14 @@ namespace QSB.TransformSync
             return body;
         }
 
-        protected override bool Override()
+        protected override Vector3? Override()
         {
             var player = PlayerRegistry.GetPlayer(GetAttachedNetId());
-            return !player.GetState(State.ProbeActive);
+            if (player.GetState(State.ProbeActive))
+            {
+                return null;
+            }
+            return PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position;
         }
 
         protected override bool IsReady()
