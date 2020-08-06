@@ -120,7 +120,7 @@ namespace QSB.TransformSync
 
         public void TeleportToPosition(Vector3 position, Transform referenceTransform)
         {
-            SyncedTransform.position = position;
+            SyncedTransform.localPosition = position;
             ReferenceTransform = referenceTransform;
             _positionSmoothVelocity = Vector3.zero;
         }
