@@ -170,6 +170,9 @@ namespace QSB.Tools
             tool.ToolGameObject = launcher.gameObject;
             oldLauncher.enabled = false;
 
+            GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;
+            GetRenderer(launcherRoot, "ProbeLauncherChassis").material = _playerToolsMaterial;
+
             launcherRoot.transform.parent = _cameraBody;
             launcherRoot.transform.localPosition = ProbeLauncherOffset;
             launcherRoot.SetActive(true);
@@ -181,3 +184,4 @@ namespace QSB.Tools
         }
     }
 }
+-

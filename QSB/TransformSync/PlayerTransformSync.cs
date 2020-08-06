@@ -51,7 +51,7 @@ namespace QSB.TransformSync
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
-            marker.SetId(netId.Value);
+            marker.SetId(GetAttachedNetId());
 
             PlayerRegistry.GetPlayer(GetAttachedNetId()).Body = body.gameObject;
 
