@@ -93,7 +93,6 @@ namespace QSB.TransformSync
 
                 if (Override().HasValue)
                 {
-                    //transform.position = ReferenceTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
                     transform.position = ReferenceTransform.InverseTransformPoint(Override().Value);
                 }
             }
@@ -117,7 +116,6 @@ namespace QSB.TransformSync
 
                     if (Override().HasValue)
                     {
-                        //SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
                         SyncedTransform.localPosition = SyncedTransform.InverseTransformPoint(Override().Value);
                     }
                 }
