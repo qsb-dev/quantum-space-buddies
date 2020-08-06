@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using QSB.Tools;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -9,8 +10,8 @@ namespace QSB
     {
         public uint NetId { get; }
         public GameObject Body { get; set; }
+        public Vector3 Position => Body.transform.position;
         public GameObject Camera { get; set; }
-        public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }
         public QSBFlashlight FlashLight => Camera.GetComponentInChildren<QSBFlashlight>();
         public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
@@ -19,6 +20,8 @@ namespace QSB
         public string Name { get; set; }
         public bool IsReady { get; set; }
         public State State { get; private set; }
+        public PlayerTransformSync PlayerTransformSync { get; set; }
+        public Transform ReferenceTransform => PlayerTransformSync.ReferenceTransform;
 
         public PlayerInfo(uint id)
         {

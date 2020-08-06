@@ -7,24 +7,12 @@ namespace QSB.TransformSync
     {
         public static PlayerProbeSync LocalInstance { get; private set; }
 
-        public Transform bodyTransform;
-
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
 
-        protected override uint GetAttachedNetId()
-        {
-            /*
-            Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
-            for all components of a player, so I've chosen to used the netId of PlayerTransformSync.
-            Since every networkbehaviour has it's own ascending netId, and we know that PlayerCameraSync
-            is the 4th network transform to be loaded (After PlayerTransformSync, ShipTransformSync and PlayerCameraSync),
-            we can just minus 3 from PlayerProbeSync's netId to get PlayerTransformSyncs's netId.
-            */
-            return netId.Value - 3;
-        }
+        protected override uint PlayerId => netId.Value - 3;
 
         private Transform GetProbe()
         {
@@ -34,30 +22,27 @@ namespace QSB.TransformSync
         protected override Transform InitLocalTransform()
         {
             var body = GetProbe();
-
-            bodyTransform = body;
-
-            PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeBody = body.gameObject;
-
+            Player.Probe = CreateProbe(body.gameObject, Player);
             return body;
         }
 
         protected override Transform InitRemoteTransform()
         {
             var body = Instantiate(GetProbe());
-
-            PlayerToolsManager.CreateProbe(body, GetAttachedNetId());
-
-            bodyTransform = body;
-
-            PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeBody = body.gameObject;
-
+            Player.Probe = CreateProbe(body.gameObject, Player);
             return body;
+        }
+
+        private QSBProbe CreateProbe(GameObject body, PlayerInfo player)
+        {
+            var probe = body.AddComponent<QSBProbe>();
+            probe.Init(body, player, this);
+            return probe;
         }
 
         protected override bool IsReady()
         {
-            return Locator.GetProbe() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
+            return Locator.GetProbe() != null && Player != null;
         }
     }
 }

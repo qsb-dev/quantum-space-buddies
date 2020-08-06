@@ -15,10 +15,17 @@ namespace QSB.TransformSync
         public Transform SyncedTransform { get; private set; }
         public Transform ReferenceTransform { get; set; }
 
+        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
+
+        protected abstract Transform InitLocalTransform();
+        protected abstract Transform InitRemoteTransform();
+        protected abstract bool IsReady();
+        protected abstract uint PlayerId { get; }
+
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
-
+        
         protected virtual void Awake()
         {
             PlayerRegistry.TransformSyncs.Add(this);
@@ -33,11 +40,6 @@ namespace QSB.TransformSync
                 Reset();
             }
         }
-
-        protected abstract Transform InitLocalTransform();
-        protected abstract Transform InitRemoteTransform();
-        protected abstract bool IsReady();
-        protected abstract uint GetAttachedNetId();
 
         protected void Init()
         {
@@ -109,6 +111,18 @@ namespace QSB.TransformSync
                     SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
                 }
             }
+        }
+
+        public void TeleportToPlayer(PlayerInfo player)
+        {
+            TeleportToPosition(player.Position, player.ReferenceTransform);
+        }
+
+        public void TeleportToPosition(Vector3 position, Transform referenceTransform)
+        {
+            SyncedTransform.position = position;
+            ReferenceTransform = referenceTransform;
+            _positionSmoothVelocity = Vector3.zero;
         }
 
     }

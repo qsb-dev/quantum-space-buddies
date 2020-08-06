@@ -11,17 +11,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint GetAttachedNetId()
-        {
-            /*
-            Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
-            for all components of a player, so I've chosen to used the netId of PlayerTransformSync.
-            Since every networkbehaviour has it's own ascending netId, and we know that PlayerCameraSync
-            is the 2nd network transform to be loaded (After PlayerTransformSync), we can just
-            minus 1 from ShipTransformSync's netId to get PlayerTransformSyncs's netId.
-            */
-            return netId.Value - 1;
-        }
+        protected override uint PlayerId => netId.Value - 1;
 
         private Transform GetShipModel()
         {

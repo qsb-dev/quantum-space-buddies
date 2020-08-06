@@ -41,13 +41,6 @@ namespace QSB.Tools
             }
         }
 
-        public static void CreateProbe(Transform body, uint id)
-        {
-            var newProbe = body.gameObject.AddComponent<QSBProbe>();
-            newProbe.Init(id);
-
-            PlayerRegistry.GetPlayer(id).Probe = newProbe;
-        }
 
         private static void CreateStowTransforms()
         {

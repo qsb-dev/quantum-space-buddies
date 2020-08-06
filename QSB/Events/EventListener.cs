@@ -79,9 +79,11 @@ namespace QSB.Events
                     break;
                 case EventType.RetrieveProbe:
                     player.UpdateState(State.ProbeActive, false);
+                    player.Probe.Reset();
                     break;
                 case EventType.LaunchProbe:
                     player.UpdateState(State.ProbeActive, true);
+                    player.Probe.Reset();
                     break;
             }
         }
