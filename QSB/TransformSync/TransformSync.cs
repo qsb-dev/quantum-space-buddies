@@ -25,7 +25,7 @@ namespace QSB.TransformSync
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
-        
+
         protected virtual void Awake()
         {
             PlayerRegistry.TransformSyncs.Add(this);
