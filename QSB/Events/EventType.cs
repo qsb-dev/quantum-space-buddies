@@ -9,6 +9,12 @@
         EquipSignalscope,
         UnequipSignalscope,
         EquipTranslator,
-        UnequipTranslator
+        UnequipTranslator,
+        ProbeLauncherEquipped,
+        ProbeLauncherUnequipped,
+        RetrieveProbe,
+        LaunchProbe,
+        QSBOnProbeWarp,
+        QSBOnProbeAnchor
     }
 }

@@ -14,15 +14,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        private uint GetAttachedNetId()
-        {
-            /*
-            Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
-            for all components of a player, so I've chosen to used the netId of PlayerTransformSync.
-            This is minus 0 so all transformsyncs follow the same template.
-            */
-            return netId.Value - 0;
-        }
+        protected override uint PlayerId => netId.Value - 0;
 
         private Transform GetPlayerModel()
         {
@@ -37,7 +29,7 @@ namespace QSB.TransformSync
 
             GetComponent<AnimationSync>().InitLocal(body);
 
-            PlayerRegistry.GetPlayer(GetAttachedNetId()).Body = body.gameObject;
+            Player.Body = body.gameObject;
 
             return body;
         }
@@ -51,16 +43,13 @@ namespace QSB.TransformSync
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
-            marker.SetId(netId.Value);
+            marker.SetId(PlayerId);
 
-            PlayerRegistry.GetPlayer(GetAttachedNetId()).Body = body.gameObject;
+            Player.Body = body.gameObject;
 
             return body;
         }
 
-        protected override bool IsReady()
-        {
-            return Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
-        }
+        protected override bool IsReady => Locator.GetPlayerTransform() != null && Player != null;
     }
 }

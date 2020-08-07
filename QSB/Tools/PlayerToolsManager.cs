@@ -13,6 +13,7 @@ namespace QSB.Tools
         private static Material _lightbulbMaterial;
 
         private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
+        private static readonly Vector3 ProbeLauncherOffset = new Vector3(0.5745087f, -0.26f, 0.4453125f);
         private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
         private static readonly Vector3 TranslatorScale = new Vector3(0.75f, 0.75f, 0.75f);
 
@@ -26,6 +27,7 @@ namespace QSB.Tools
 
             CreateFlashlight();
             CreateSignalscope();
+            CreateProbeLauncher();
 
             QSB.Helper.Events.Subscribe<NomaiTranslatorProp>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.OnEvent += OnEvent;
@@ -37,6 +39,14 @@ namespace QSB.Tools
             {
                 CreateTranslator(translatorProp);
             }
+        }
+
+        public static void CreateProbe(Transform body, uint id)
+        {
+            var newProbe = body.gameObject.AddComponent<QSBProbe>();
+            newProbe.Init(id);
+
+            PlayerRegistry.GetPlayer(id).Probe = newProbe;
         }
 
         private static void CreateStowTransforms()
@@ -56,12 +66,14 @@ namespace QSB.Tools
 
         private static void CreateFlashlight()
         {
-            var flashlightRoot = GameObject.Instantiate(GameObject.Find("FlashlightRoot"));
+            var flashlightRoot = Object.Instantiate(GameObject.Find("FlashlightRoot"));
             flashlightRoot.SetActive(false);
             var oldComponent = flashlightRoot.GetComponent<Flashlight>();
             var component = flashlightRoot.AddComponent<QSBFlashlight>();
+
             component.Init(oldComponent);
             oldComponent.enabled = false;
+
             flashlightRoot.transform.parent = _cameraBody;
             flashlightRoot.transform.localPosition = FlashlightOffset;
             flashlightRoot.SetActive(true);
@@ -69,7 +81,7 @@ namespace QSB.Tools
 
         private static void CreateSignalscope()
         {
-            var signalscopeRoot = GameObject.Instantiate(GameObject.Find("Signalscope"));
+            var signalscopeRoot = Object.Instantiate(GameObject.Find("Signalscope"));
             signalscopeRoot.SetActive(false);
 
             Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
@@ -96,7 +108,7 @@ namespace QSB.Tools
 
         private static void CreateTranslator(NomaiTranslatorProp translatorProp)
         {
-            var translatorRoot = GameObject.Instantiate(translatorProp.gameObject);
+            var translatorRoot = Object.Instantiate(translatorProp.gameObject);
             translatorRoot.SetActive(false);
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
@@ -130,6 +142,40 @@ namespace QSB.Tools
             translatorRoot.transform.localPosition = Vector3.zero;
             translatorRoot.transform.localScale = TranslatorScale;
             translatorRoot.SetActive(true);
+        }
+
+        private static void CreateProbeLauncher()
+        {
+            var launcherRoot = Object.Instantiate(GameObject.Find("PlayerCamera/ProbeLauncher"));
+            launcherRoot.SetActive(false);
+
+            var launcher = launcherRoot.transform.Find("Props_HEA_ProbeLauncher");
+
+            Object.Destroy(launcherRoot.GetComponent<ProbePromptController>());
+            Object.Destroy(launcherRoot.GetComponent<ProbeLauncherEffects>());
+            Object.Destroy(launcherRoot.transform.Find("Props_HEA_ProbeLauncher_ProbeCamera").gameObject);
+            Object.Destroy(launcherRoot.transform.Find("preLaunchCamera").gameObject);
+            Object.Destroy(launcherRoot.transform.Find("LaunchParticleEffect_Underwater").gameObject);
+            Object.Destroy(launcherRoot.transform.Find("LaunchParticleEffect").gameObject);
+            Object.Destroy(launcher.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
+            Object.Destroy(launcher.Find("Props_HEA_Probe_Prelaunch").Find("Props_HEA_Probe_Prelaunch_Prepass").gameObject);
+
+            var oldLauncher = launcherRoot.GetComponent<PlayerProbeLauncher>();
+            var tool = launcherRoot.AddComponent<QSBTool>();
+            tool.MoveSpring = oldLauncher.GetValue<DampedSpringQuat>("_moveSpring");
+            tool.StowTransform = _toolStowTransform;
+            tool.HoldTransform = _toolHoldTransform;
+            tool.ArrivalDegrees = 5f;
+            tool.Type = ToolType.ProbeLauncher;
+            tool.ToolGameObject = launcher.gameObject;
+            oldLauncher.enabled = false;
+
+            GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;
+            GetRenderer(launcherRoot, "ProbeLauncherChassis").material = _playerToolsMaterial;
+
+            launcherRoot.transform.parent = _cameraBody;
+            launcherRoot.transform.localPosition = ProbeLauncherOffset;
+            launcherRoot.SetActive(true);
         }
 
         private static MeshRenderer GetRenderer(GameObject root, string gameobjectName)

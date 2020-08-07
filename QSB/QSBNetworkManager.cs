@@ -22,6 +22,7 @@ namespace QSB
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
+        private GameObject _probePrefab;
 
         private readonly string[] _defaultNames = {
             "Arkose",
@@ -66,6 +67,10 @@ namespace QSB
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
 
+            _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
+            _probePrefab.AddComponent<PlayerProbeSync>();
+            spawnPrefabs.Add(_probePrefab);
+
             ConfigureNetworkManager();
 
             _playerName = GetPlayerName();
@@ -103,6 +108,7 @@ namespace QSB
             // These have to be in a constant order (for now, until I get a better netId getting system...)
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
+            NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 
             var gameState = gameObject.AddComponent<GameState>();
             gameState.Send();

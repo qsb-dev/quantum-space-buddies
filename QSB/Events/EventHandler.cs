@@ -44,20 +44,20 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
+            var player = PlayerRegistry.GetPlayer(message.SenderId);
             if (message.SenderId == PlayerRegistry.LocalPlayer.NetId)
             {
                 return;
             }
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
             switch ((EventType)message.EventType)
             {
                 case EventType.TurnOnFlashlight:
-                    player.FlashLight.TurnOn();
                     player.UpdateState(State.Flashlight, true);
+                    player.FlashLight.TurnOn();
                     break;
                 case EventType.TurnOffFlashlight:
-                    player.FlashLight.TurnOff();
                     player.UpdateState(State.Flashlight, false);
+                    player.FlashLight.TurnOff();
                     break;
                 case EventType.SuitUp:
                     player.UpdateState(State.Suit, true);
@@ -80,6 +80,22 @@ namespace QSB.Events
                 case EventType.UnequipTranslator:
                     player.UpdateState(State.Translator, false);
                     player.Translator.UnequipTool();
+                    break;
+                case EventType.ProbeLauncherEquipped:
+                    player.UpdateState(State.ProbeLauncher, true);
+                    player.ProbeLauncher.EquipTool();
+                    break;
+                case EventType.ProbeLauncherUnequipped:
+                    player.UpdateState(State.ProbeLauncher, false);
+                    player.ProbeLauncher.UnequipTool();
+                    break;
+                case EventType.RetrieveProbe:
+                    player.UpdateState(State.ProbeActive, false);
+                    player.Probe.Deactivate();
+                    break;
+                case EventType.LaunchProbe:
+                    player.UpdateState(State.ProbeActive, true);
+                    player.Probe.Activate();
                     break;
             }
         }
