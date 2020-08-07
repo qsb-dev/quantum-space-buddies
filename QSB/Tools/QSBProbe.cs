@@ -34,7 +34,7 @@ namespace QSB.Tools
 
         public void Reset()
         {
-            var position = _player.ProbeLauncher.ToolGameObject.transform.localPosition;
+            var position = _player.ProbeLauncher.ToolGameObject.transform.position;
             _probeSync.TeleportTo(position, _player.ReferenceTransform);
         }
     }
