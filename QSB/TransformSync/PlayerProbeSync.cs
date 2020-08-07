@@ -34,7 +34,13 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            var body = Instantiate(GetProbe());
+            var probe = GetProbe();
+
+            probe.gameObject.SetActive(false);
+            var body = Instantiate(probe);
+            probe.gameObject.SetActive(true);
+
+            Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 
             PlayerToolsManager.CreateProbe(body, PlayerId);
 
