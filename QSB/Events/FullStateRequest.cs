@@ -8,16 +8,16 @@ namespace QSB.Events
 {
     public class FullStateRequest : NetworkBehaviour
     {
-        public static FullStateRequest LocalInstance { get; private set; }
+        public static FullStateRequest Instance { get; private set; }
 
         private MessageHandler<StateRequestMessage> _stateRequestHandler;
 
         private void Awake()
         {
+            Instance = this;
+
             _stateRequestHandler = new MessageHandler<StateRequestMessage>();
             _stateRequestHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-
-            LocalInstance = this;
         }
 
         public void Request()

@@ -75,7 +75,7 @@ namespace QSB.TransformSync
                 Reset();
             }
 
-            if (!SyncedTransform || !_isSectorSetUp || !_isInitialized)
+            if (SyncedTransform == null || !_isSectorSetUp || !_isInitialized)
             {
                 return;
             }
@@ -103,11 +103,13 @@ namespace QSB.TransformSync
             if (SyncedTransform.position == Vector3.zero)
             {
                 // Fix bodies staying at 0,0,0 by chucking them into the sun
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
 
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
 
-                FullStateRequest.LocalInstance.Request();
+                FullStateRequest.Instance.Request();
+
+                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+
                 return;
             }
 

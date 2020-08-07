@@ -27,6 +27,7 @@ namespace QSB
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<EventListener>();
+            gameObject.AddComponent<FullStateRequest>();
         }
 
         public override void Configure(IModConfig config)
