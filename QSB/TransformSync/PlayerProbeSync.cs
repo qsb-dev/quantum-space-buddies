@@ -14,17 +14,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint GetAttachedNetId()
-        {
-            /*
-            Players are stored in PlayerRegistry using a specific ID. This ID has to remain the same
-            for all components of a player, so I've chosen to used the netId of PlayerTransformSync.
-            Since every networkbehaviour has it's own ascending netId, and we know that PlayerCameraSync
-            is the 4th network transform to be loaded (After PlayerTransformSync, ShipTransformSync and PlayerCameraSync),
-            we can just minus 3 from PlayerProbeSync's netId to get PlayerTransformSyncs's netId.
-            */
-            return netId.Value - 3;
-        }
+        protected override uint PlayerId => netId.Value - 3;
 
         private Transform GetProbe()
         {
@@ -37,7 +27,7 @@ namespace QSB.TransformSync
 
             bodyTransform = body;
 
-            PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeBody = body.gameObject;
+            Player.ProbeBody = body.gameObject;
 
             return body;
         }
@@ -46,24 +36,20 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetProbe());
 
-            PlayerToolsManager.CreateProbe(body, GetAttachedNetId());
+            PlayerToolsManager.CreateProbe(body, PlayerId);
 
             bodyTransform = body;
 
-            PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeBody = body.gameObject;
+            Player.ProbeBody = body.gameObject;
 
             return body;
         }
 
         protected override bool Override()
         {
-            var player = PlayerRegistry.GetPlayer(GetAttachedNetId());
-            return !player.GetState(State.ProbeActive);
+            return !Player.GetState(State.ProbeActive);
         }
 
-        protected override bool IsReady()
-        {
-            return Locator.GetProbe() != null && PlayerRegistry.PlayerExists(GetAttachedNetId());
-        }
+        protected override bool IsReady => Locator.GetProbe() != null && Player != null;
     }
 }
