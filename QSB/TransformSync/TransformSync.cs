@@ -115,7 +115,14 @@ namespace QSB.TransformSync
 
         public void TeleportTo(Vector3 position, Transform referenceTransform)
         {
-            SyncedTransform.position = position;
+            if (hasAuthority)
+            {
+                transform.position = position;
+            }
+            else
+            {
+                SyncedTransform.localPosition = position;
+            }
             ReferenceTransform = referenceTransform;
             _positionSmoothVelocity = Vector3.zero;
         }

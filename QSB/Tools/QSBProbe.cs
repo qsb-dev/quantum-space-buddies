@@ -22,14 +22,14 @@ namespace QSB.Tools
         public void Activate()
         {
             DebugLog.ToConsole($"Activating {_player.Name}'s probe.", MessageType.Info);
-            gameObject.SetActive(true);
+            Body.SetActive(true);
             Reset();
         }
 
         public void Deactivate()
         {
             DebugLog.ToConsole($"Deactivating {_player.Name}'s probe.", MessageType.Info);
-            gameObject.SetActive(false);
+            Body.SetActive(false);
         }
 
         public void Reset()
