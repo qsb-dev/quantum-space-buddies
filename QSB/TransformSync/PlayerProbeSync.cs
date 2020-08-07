@@ -55,11 +55,14 @@ namespace QSB.TransformSync
             if (hasAuthority)
             {
                 transform.position = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
+                return;
             }
-            else
+            if (SyncedTransform.position == Vector3.zero ||
+                SyncedTransform.position == Locator.GetAstroObject(AstroObject.Name.Sun).transform.position)
             {
-                SyncedTransform.localPosition = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
+                return;
             }
+            SyncedTransform.localPosition = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
         }
 
         protected override bool IsReady => Locator.GetProbe() != null && Player != null;
