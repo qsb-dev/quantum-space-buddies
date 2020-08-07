@@ -45,9 +45,24 @@ namespace QSB.TransformSync
             return body;
         }
 
-        protected override bool Override()
+        protected override void UpdateTransform()
         {
-            return !Player.GetState(State.ProbeActive);
+            base.UpdateTransform();
+            if (Player.GetState(State.ProbeActive))
+            {
+                return;
+            }
+            if (hasAuthority)
+            {
+                transform.position = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
+                return;
+            }
+            if (SyncedTransform.position == Vector3.zero ||
+                SyncedTransform.position == Locator.GetAstroObject(AstroObject.Name.Sun).transform.position)
+            {
+                return;
+            }
+            SyncedTransform.localPosition = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
         }
 
         protected override bool IsReady => Locator.GetProbe() != null && Player != null;

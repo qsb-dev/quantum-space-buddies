@@ -40,7 +40,6 @@ namespace QSB.TransformSync
         protected abstract Transform InitRemoteTransform();
         protected abstract bool IsReady { get; }
         protected abstract uint PlayerId { get; }
-        protected abstract bool Override();
 
         protected void Init()
         {
@@ -88,40 +87,34 @@ namespace QSB.TransformSync
                 DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
             }
 
+            UpdateTransform();
+        }
+
+        protected virtual void UpdateTransform()
+        {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
                 transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
-
-                if (Override())
-                {
-                    transform.position = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
-                }
+                return;
             }
-            else // If this script is attached to any other body, eg the representations of other players
+
+            // If this script is attached to any other body, eg the representations of other players
+            if (SyncedTransform.position == Vector3.zero)
             {
-                if (SyncedTransform.position == Vector3.zero)
-                {
-                    // Fix bodies staying at 0,0,0 by chucking them into the sun
-                    SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                // Fix bodies staying at 0,0,0 by chucking them into the sun
+                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
 
-                    DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
+                DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
 
-                    FullStateRequest.LocalInstance.Request();
-                }
-                else
-                {
-                    SyncedTransform.parent = ReferenceTransform;
-
-                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                    SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
-
-                    if (Override())
-                    {
-                        SyncedTransform.localPosition = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
-                    }
-                }
+                FullStateRequest.LocalInstance.Request();
+                return;
             }
+
+            SyncedTransform.parent = ReferenceTransform;
+
+            SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+            SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
     }
