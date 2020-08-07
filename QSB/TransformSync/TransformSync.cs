@@ -121,7 +121,7 @@ namespace QSB.TransformSync
             }
             else
             {
-                SyncedTransform.localPosition = position;
+                SyncedTransform.localPosition = referenceTransform.InverseTransformPoint(position);
             }
             ReferenceTransform = referenceTransform;
             _positionSmoothVelocity = Vector3.zero;
