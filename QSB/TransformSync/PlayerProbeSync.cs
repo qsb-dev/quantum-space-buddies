@@ -41,9 +41,6 @@ namespace QSB.TransformSync
             return probe;
         }
 
-        protected override bool IsReady()
-        {
-            return Locator.GetProbe() != null && Player != null;
-        }
+        protected override bool IsReady => Locator.GetProbe() != null && Player != null;
     }
 }

@@ -9,18 +9,13 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
+        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
+
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
         public Transform ReferenceTransform { get; set; }
-
-        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
-
-        protected abstract Transform InitLocalTransform();
-        protected abstract Transform InitRemoteTransform();
-        protected abstract bool IsReady();
-        protected abstract uint PlayerId { get; }
 
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
@@ -40,6 +35,11 @@ namespace QSB.TransformSync
                 Reset();
             }
         }
+
+        protected abstract Transform InitLocalTransform();
+        protected abstract Transform InitRemoteTransform();
+        protected abstract bool IsReady { get; }
+        protected abstract uint PlayerId { get; }
 
         protected void Init()
         {
@@ -66,11 +66,11 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!_isInitialized && IsReady())
+            if (!_isInitialized && IsReady)
             {
                 Init();
             }
-            else if (_isInitialized && !IsReady())
+            else if (_isInitialized && !IsReady)
             {
                 Reset();
             }
