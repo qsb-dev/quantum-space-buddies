@@ -2,8 +2,6 @@
 using System.Linq;
 using QSB.Events;
 using QSB.TransformSync;
-using QSB.Utility;
-using OWML.Common;
 using QSB.Animation;
 
 namespace QSB
@@ -13,18 +11,17 @@ namespace QSB
         public static PlayerInfo LocalPlayer => GetPlayer(PlayerTransformSync.LocalInstance.netId.Value);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-        public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
-
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t.hasAuthority).ToList();
-        
+
+        public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
+
         public static PlayerInfo CreatePlayer(uint id)
         {
             if (PlayerExists(id))
             {
                 return null;
             }
-            DebugLog.ToConsole($"Creating player id {id}", MessageType.Info);
             var player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -42,7 +39,6 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
-            DebugLog.ToConsole($"Removing player id {id}", MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
