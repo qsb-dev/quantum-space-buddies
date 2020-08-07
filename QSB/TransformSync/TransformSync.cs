@@ -9,6 +9,8 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
+        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
+
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
 
@@ -36,8 +38,8 @@ namespace QSB.TransformSync
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
-        protected abstract bool IsReady();
-        protected abstract uint GetAttachedNetId();
+        protected abstract bool IsReady { get; }
+        protected abstract uint PlayerId { get; }
         protected abstract bool Override();
 
         protected void Init()
@@ -65,11 +67,11 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!_isInitialized && IsReady())
+            if (!_isInitialized && IsReady)
             {
                 Init();
             }
-            else if (_isInitialized && !IsReady())
+            else if (_isInitialized && !IsReady)
             {
                 Reset();
             }
@@ -93,7 +95,7 @@ namespace QSB.TransformSync
 
                 if (Override())
                 {
-                    transform.position = ReferenceTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                    transform.position = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
                 }
             }
             else // If this script is attached to any other body, eg the representations of other players
@@ -116,7 +118,7 @@ namespace QSB.TransformSync
 
                     if (Override())
                     {
-                        SyncedTransform.localPosition = ReferenceTransform.InverseTransformPoint(PlayerRegistry.GetPlayer(GetAttachedNetId()).ProbeLauncher.transform.position);
+                        SyncedTransform.localPosition = ReferenceTransform.InverseTransformPoint(Player.ProbeLauncher.transform.position);
                     }
                 }
             }
