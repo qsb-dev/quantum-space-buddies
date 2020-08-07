@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using OWML.ModHelper.Events;
 using QSB.Messaging;
 using UnityEngine;
@@ -29,8 +28,6 @@ namespace QSB.Animation
         private float _sendTimer;
         private float _lastSentJumpChargeFraction;
 
-        private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
-
         private void Awake()
         {
             _anim = gameObject.AddComponent<Animator>();
@@ -53,7 +50,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerAnimSyncs[netId.Value] = this;
+            PlayerRegistry.AnimationSyncs.Add(this);
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {
@@ -145,10 +142,12 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            if (PlayerAnimSyncs.TryGetValue(message.SenderId, out var animSync) && animSync != this)
+            var animationSync = PlayerRegistry.GetAnimationSync(message.SenderId);
+            if (animationSync == null || animationSync == this)
             {
-                animSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
+                return;
             }
+            animationSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
         }
 
         private void HandleTrigger(AnimTrigger trigger, float value)
