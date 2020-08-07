@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Utility;
 using UnityEngine.Networking;
 
 namespace QSB.Events
@@ -19,11 +20,13 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
+            DebugLog.ToConsole($"Received game state id {PlayerRegistry.LocalPlayer.NetId}");
             PlayerRegistry.HandleFullStateMessage(message);
         }
 
         public void Send()
         {
+            DebugLog.ToConsole("Sending game state to all players.");
             foreach (var player in PlayerRegistry.PlayerList)
             {
                 var message = new FullStateMessage
@@ -33,6 +36,7 @@ namespace QSB.Events
                 };
 
                 _messageHandler.SendToAll(message);
+                DebugLog.ToConsole($"* Sent state for {player.NetId}");
             }
         }
     }
