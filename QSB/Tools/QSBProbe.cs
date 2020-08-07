@@ -29,13 +29,12 @@ namespace QSB.Tools
         public void Deactivate()
         {
             DebugLog.ToConsole($"Deactivating {_player.Name}'s probe.", MessageType.Info);
-            Reset();
             gameObject.SetActive(false);
         }
 
         public void Reset()
         {
-            var position = _player.ProbeLauncher.ToolGameObject.transform.position;
+            var position = _player.ProbeLauncher.ToolGameObject.transform.localPosition;
             _probeSync.TeleportTo(position, _player.ReferenceTransform);
         }
     }
