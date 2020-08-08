@@ -34,30 +34,31 @@ namespace QSB.TransformSync
             _allSectors = FindObjectsOfType<Sector>();
         }
 
-        private void SendSector(uint id, Sector.Name sectorName)
+        private void SendSector(uint id, Sector sector)
         {
-            DebugLog.ToScreen($"Sending sector {sectorName} for id {id}");
+            DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
 
             var msg = new SectorMessage
             {
-                SectorId = (int)sectorName,
+                SectorId = (int)sector.GetName(),
+                SectorName = sector.name,
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
         }
 
-        private Sector FindSectorByName(Sector.Name sectorName)
+        private Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
             return _allSectors?
-                .FirstOrDefault(sector => sectorName == sector.GetName());
+                .FirstOrDefault(sector => sector.GetName() == sectorName && sector.name == goName);
         }
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
             var sectorName = (Sector.Name)message.SectorId;
-            DebugLog.ToScreen($"Received sector {sectorName} for id {message.SenderId}");
+            DebugLog.ToScreen($"Received sector {message.SectorName} for id {message.SenderId}");
 
-            var sector = FindSectorByName(sectorName);
+            var sector = FindSectorByName(sectorName, message.SectorName);
 
             if (sector == null)
             {
@@ -97,16 +98,16 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            SendSector(transformSync.netId.Value, closestSector.GetName());
+            SendSector(transformSync.netId.Value, closestSector);
             transformSync.ReferenceTransform = closestSector.transform;
         }
 
         private Sector GetClosestSector(Transform trans)
         {
             return _allSectors?
-                    .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
-                    .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
-                    .First();
+                .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
+                .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
+                .First();
         }
     }
 }
