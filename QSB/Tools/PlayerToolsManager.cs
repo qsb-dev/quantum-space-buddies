@@ -28,17 +28,7 @@ namespace QSB.Tools
             CreateFlashlight();
             CreateSignalscope();
             CreateProbeLauncher();
-
-            QSB.Helper.Events.Subscribe<NomaiTranslatorProp>(OWML.Common.Events.AfterStart);
-            QSB.Helper.Events.OnEvent += OnEvent;
-        }
-
-        private static void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
-        {
-            if (behaviour is NomaiTranslatorProp translatorProp && ev == OWML.Common.Events.AfterStart)
-            {
-                CreateTranslator(translatorProp);
-            }
+            CreateTranslator();
         }
 
         public static void CreateProbe(Transform body, PlayerInfo player)
@@ -106,10 +96,13 @@ namespace QSB.Tools
             signalscopeRoot.SetActive(true);
         }
 
-        private static void CreateTranslator(NomaiTranslatorProp translatorProp)
+        private static void CreateTranslator()
         {
-            var translatorRoot = Object.Instantiate(translatorProp.gameObject);
-            translatorRoot.SetActive(false);
+            var original = GameObject.Find("NomaiTranslatorProp");
+
+            original.SetActive(false);
+            var translatorRoot = GameObject.Instantiate(original);
+            original.SetActive(true);
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
             var model = group.Find("Props_HEA_Translator");
@@ -141,7 +134,7 @@ namespace QSB.Tools
             translatorRoot.transform.parent = _cameraBody;
             translatorRoot.transform.localPosition = Vector3.zero;
             translatorRoot.transform.localScale = TranslatorScale;
-            translatorRoot.SetActive(true);
+            QSB.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
         }
 
         private static void CreateProbeLauncher()
