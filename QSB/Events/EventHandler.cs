@@ -45,7 +45,6 @@ namespace QSB.Events
         private void OnClientReceiveMessage(EventMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
-            player.IsReady = true;
             if (message.SenderId == PlayerRegistry.LocalPlayer.NetId)
             {
                 return;

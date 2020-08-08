@@ -48,7 +48,6 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
-            player.IsReady = true;
             DebugLog.ToAll(message.PlayerName, "joined!");
         }
     }
