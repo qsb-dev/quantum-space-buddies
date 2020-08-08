@@ -6,27 +6,22 @@ namespace QSB.Tools
 {
     public class QSBProbe : MonoBehaviour
     {
-        private uint _attachedNetId;
+        private PlayerInfo _player;
 
-        public void Init(uint netid)
+        public void Init(PlayerInfo player)
         {
-            _attachedNetId = netid;
-        }
-
-        void Start()
-        {
-            gameObject.SetActive(false);
+            _player = player;
         }
 
         public void Activate()
         {
-            DebugLog.ToConsole($"Activating player {_attachedNetId}'s probe.", MessageType.Info);
+            DebugLog.ToConsole($"Activating {_player.Name}'s probe.", MessageType.Info);
             gameObject.SetActive(true);
         }
 
         public void Deactivate()
         {
-            DebugLog.ToConsole($"Deactivating player {_attachedNetId}'s probe.", MessageType.Info);
+            DebugLog.ToConsole($"Deactivating {_player.Name}'s probe.", MessageType.Info);
             gameObject.SetActive(false);
         }
     }
