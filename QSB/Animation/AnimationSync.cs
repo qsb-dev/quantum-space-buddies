@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using OWML.ModHelper.Events;
 using QSB.Messaging;
 using UnityEngine;
@@ -9,6 +8,11 @@ namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {
+        private const float CrouchSendInterval = 0.1f;
+        private const float CrouchChargeThreshold = 0.01f;
+        private const float CrouchSmoothTime = 0.05f;
+        private const int CrouchLayerIndex = 1;
+
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
@@ -20,7 +24,9 @@ namespace QSB.Animation
         private GameObject _unsuitedGraphics;
         private PlayerCharacterController _playerController;
 
-        private static readonly Dictionary<uint, AnimationSync> PlayerAnimSyncs = new Dictionary<uint, AnimationSync>();
+        private readonly AnimFloatParam _crouchParam = new AnimFloatParam();
+        private float _sendTimer;
+        private float _lastSentJumpChargeFraction;
 
         private void Awake()
         {
@@ -44,7 +50,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerAnimSyncs[netId.Value] = this;
+            PlayerRegistry.AnimationSyncs.Add(this);
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {
@@ -111,12 +117,13 @@ namespace QSB.Animation
             GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
         }
 
-        private void SendTrigger(AnimTrigger trigger)
+        private void SendTrigger(AnimTrigger trigger, float value = 0)
         {
             var message = new AnimTriggerMessage
             {
                 SenderId = netId.Value,
-                TriggerId = (short)trigger
+                TriggerId = (short)trigger,
+                Value = value
             };
             if (isServer)
             {
@@ -135,13 +142,15 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            if (PlayerAnimSyncs.TryGetValue(message.SenderId, out var animSync) && animSync != this)
+            var animationSync = PlayerRegistry.GetAnimationSync(message.SenderId);
+            if (animationSync == null || animationSync == this)
             {
-                animSync.HandleTrigger((AnimTrigger)message.TriggerId);
+                return;
             }
+            animationSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
         }
 
-        private void HandleTrigger(AnimTrigger trigger)
+        private void HandleTrigger(AnimTrigger trigger, float value)
         {
             switch (trigger)
             {
@@ -160,9 +169,56 @@ namespace QSB.Animation
                     _unsuitedGraphics.SetActive(true);
                     _suitedGraphics.SetActive(false);
                     break;
+                case AnimTrigger.Crouch:
+                    _crouchParam.Target = value;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
             }
+        }
+
+        private void Update()
+        {
+            if (isLocalPlayer)
+            {
+                SyncLocalCrouch();
+            }
+            else
+            {
+                SyncRemoteCrouch();
+            }
+        }
+
+        private void SyncLocalCrouch()
+        {
+            if (_playerController == null)
+            {
+                return;
+            }
+            _sendTimer += Time.unscaledDeltaTime;
+            if (_sendTimer < CrouchSendInterval)
+            {
+                return;
+            }
+            var jumpChargeFraction = _playerController.GetJumpChargeFraction();
+            if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
+            {
+                return;
+            }
+            SendTrigger(AnimTrigger.Crouch, jumpChargeFraction);
+            _lastSentJumpChargeFraction = jumpChargeFraction;
+            _sendTimer = 0;
+        }
+
+        private void SyncRemoteCrouch()
+        {
+            if (_bodyAnim == null)
+            {
+                return;
+            }
+            _crouchParam.Smooth(CrouchSmoothTime);
+            var jumpChargeFraction = _crouchParam.Current;
+            _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
         }
 
     }

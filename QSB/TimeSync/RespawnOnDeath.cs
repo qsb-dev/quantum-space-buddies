@@ -3,15 +3,19 @@ using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TimeSync
 {
+    /// <summary>
+    /// Client-only-side component for managing respawning after death.
+    /// </summary>
     public class RespawnOnDeath : MonoBehaviour
     {
         private static RespawnOnDeath _instance;
 
-        private static readonly DeathType[] _allowedDeathTypes = {
+        private static readonly DeathType[] AllowedDeathTypes = {
             DeathType.BigBang,
             DeathType.Supernova,
             DeathType.TimeLoop
@@ -27,11 +31,13 @@ namespace QSB.TimeSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
+
         private MessageHandler<DeathMessage> _deathHandler;
 
         private void Awake()
         {
             _instance = this;
+
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
             QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
@@ -40,7 +46,7 @@ namespace QSB.TimeSync
 
         private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
         {
-            if (behaviour.GetType() == typeof(PlayerResources) && ev == OWML.Common.Events.AfterStart)
+            if (behaviour is PlayerResources && ev == OWML.Common.Events.AfterStart)
             {
                 Init();
             }
@@ -142,16 +148,16 @@ namespace QSB.TimeSync
 
         private void OnClientReceiveMessage(DeathMessage message)
         {
-            var playerName = PlayerJoin.PlayerNames[message.SenderId];
+            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
-            DebugLog.All(string.Format(deathMessage, playerName));
+            DebugLog.ToAll(string.Format(deathMessage, playerName));
         }
 
         internal static class Patches
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
             {
-                if (_allowedDeathTypes.Contains(deathType))
+                if (AllowedDeathTypes.Contains(deathType))
                 {
                     // Allow real death
                     return true;

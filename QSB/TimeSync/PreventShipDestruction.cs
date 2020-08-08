@@ -21,9 +21,10 @@ namespace QSB.TimeSync
 
         private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
         {
-            if (behaviour.GetType() == typeof(ShipDamageController) && ev == OWML.Common.Events.AfterAwake)
+            if (behaviour is ShipDamageController shipDamageController &&
+                ev == OWML.Common.Events.AfterAwake)
             {
-                behaviour.SetValue("_exploded", true);
+                shipDamageController.SetValue("_exploded", true);
             }
         }
 
@@ -38,6 +39,5 @@ namespace QSB.TimeSync
                 };
             }
         }
-
     }
 }

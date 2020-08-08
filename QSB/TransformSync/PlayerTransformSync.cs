@@ -1,6 +1,4 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Animation;
-using QSB.Events;
+﻿using QSB.Animation;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -9,10 +7,14 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
+        public Transform bodyTransform;
+
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
+
+        protected override uint PlayerId => netId.Value - 0;
 
         private Transform GetPlayerModel()
         {
@@ -23,7 +25,11 @@ namespace QSB.TransformSync
         {
             var body = GetPlayerModel();
 
+            bodyTransform = body;
+
             GetComponent<AnimationSync>().InitLocal(body);
+
+            Player.Body = body.gameObject;
 
             return body;
         }
@@ -32,18 +38,18 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetPlayerModel());
 
+            bodyTransform = body;
+
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
-            marker.SetId(netId.Value);
+            marker.Init(Player);
+
+            Player.Body = body.gameObject;
 
             return body;
         }
 
-        protected override bool IsReady()
-        {
-            return Locator.GetPlayerTransform() != null;
-        }
-
+        protected override bool IsReady => Locator.GetPlayerTransform() != null && Player != null;
     }
 }

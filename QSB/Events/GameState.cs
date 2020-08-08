@@ -1,35 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using QSB.Messaging;
-using QSB.TransformSync;
-using UnityEngine;
+﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    class GameState : NetworkBehaviour
+    public class GameState : NetworkBehaviour
     {
+        public static GameState LocalInstance { get; private set; }
+
         private MessageHandler<FullStateMessage> _messageHandler;
 
         private void Awake()
         {
             _messageHandler = new MessageHandler<FullStateMessage>();
             _messageHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+
+            LocalInstance = this;
         }
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
-            PlayerJoin.PlayerNames = message.PlayerNames;
+            PlayerRegistry.HandleFullStateMessage(message);
         }
 
         public void Send()
         {
-            var message = new FullStateMessage()
+            foreach (var player in PlayerRegistry.PlayerList)
             {
-                PlayerNames = PlayerJoin.PlayerNames
-            };
+                var message = new FullStateMessage
+                {
+                    PlayerName = player.Name,
+                    SenderId = player.NetId
+                };
 
-            _messageHandler.SendToAll(message);
+                _messageHandler.SendToAll(message);
+            }
         }
     }
 }

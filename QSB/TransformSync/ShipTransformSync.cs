@@ -6,6 +6,13 @@ namespace QSB.TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
 
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
+
+        protected override uint PlayerId => netId.Value - 1;
+
         private Transform GetShipModel()
         {
             return Locator.GetShipTransform();
@@ -13,7 +20,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            LocalInstance = this;
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
@@ -25,6 +31,7 @@ namespace QSB.TransformSync
 
             Instantiate(shipModel.Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remoteTransform);
             Instantiate(shipModel.Find("Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remoteTransform);
+            Instantiate(shipModel.Find("Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remoteTransform);
             Instantiate(shipModel.Find("Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"), remoteTransform);
             Instantiate(shipModel.Find("Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"), remoteTransform);
 
@@ -44,9 +51,6 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        protected override bool IsReady()
-        {
-            return GetShipModel() != null;
-        }
+        protected override bool IsReady => GetShipModel() != null;
     }
 }

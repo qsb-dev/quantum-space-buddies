@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using OWML.Common;
+using QSB.Events;
+using QSB.Utility;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
@@ -6,10 +9,13 @@ namespace QSB.TransformSync
 {
     public abstract class TransformSync : NetworkBehaviour
     {
+        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
+
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
+        public Transform ReferenceTransform { get; set; }
 
         private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
@@ -17,6 +23,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
+            PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -31,13 +38,13 @@ namespace QSB.TransformSync
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
-        protected abstract bool IsReady();
+        protected abstract bool IsReady { get; }
+        protected abstract uint PlayerId { get; }
 
         protected void Init()
         {
             _isInitialized = true;
             Invoke(nameof(SetFirstSector), 1);
-
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
@@ -54,51 +61,63 @@ namespace QSB.TransformSync
         private void SetFirstSector()
         {
             _isSectorSetUp = true;
-            SectorSync.Instance.SetSector(netId.Value, Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform);
-        }
-
-        public void EnterSector(Sector sector)
-        {
-            SectorSync.Instance.SetSector(netId.Value, sector.GetName());
+            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
         }
 
         private void Update()
         {
-            if (!_isInitialized && IsReady())
+            if (!_isInitialized && IsReady)
             {
                 Init();
             }
-            else if (_isInitialized && !IsReady())
+            else if (_isInitialized && !IsReady)
             {
                 Reset();
             }
 
-            if (!SyncedTransform || !_isSectorSetUp || !_isInitialized)
+            if (SyncedTransform == null || !_isSectorSetUp || !_isInitialized)
             {
                 return;
             }
 
-            var sectorTransform = SectorSync.Instance.GetSector(netId.Value);
+            // Get which sector should be used as a reference point
 
-            if (hasAuthority)
+            if (ReferenceTransform == null)
             {
-                transform.position = sectorTransform.InverseTransformPoint(SyncedTransform.position);
-                transform.rotation = sectorTransform.InverseTransformRotation(SyncedTransform.rotation);
+                DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
             }
-            else
-            {
-                if (SyncedTransform.position == Vector3.zero)
-                {
-                    SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
-                }
-                else
-                {
-                    SyncedTransform.parent = sectorTransform;
 
-                    SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-                    SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
-                }
-            }
+            UpdateTransform();
         }
+
+        protected virtual void UpdateTransform()
+        {
+            if (hasAuthority) // If this script is attached to the client's own body on the client's side.
+            {
+                transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
+                return;
+            }
+
+            // If this script is attached to any other body, eg the representations of other players
+            if (SyncedTransform.position == Vector3.zero)
+            {
+                // Fix bodies staying at 0,0,0 by chucking them into the sun
+
+                DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
+
+                FullStateRequest.Instance.Request();
+
+                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+
+                return;
+            }
+
+            SyncedTransform.parent = ReferenceTransform;
+
+            SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+            SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+        }
+
     }
 }

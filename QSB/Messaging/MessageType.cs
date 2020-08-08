@@ -10,7 +10,9 @@ namespace QSB.Messaging
         Join = MsgType.Highest + 4,
         Death = MsgType.Highest + 5,
         Leave = MsgType.Highest + 6,
-        FullState = MsgType.Highest + 7
+        FullState = MsgType.Highest + 7,
+        FullStateRequest = MsgType.Highest + 8,
+        Event = MsgType.Highest + 9
         // Add other message types here, incrementing the value.
     }
 }

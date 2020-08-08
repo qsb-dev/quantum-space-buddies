@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
-using QSB.TimeSync;
+using QSB.Events;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -25,6 +26,8 @@ namespace QSB
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
+            gameObject.AddComponent<EventListener>();
+            gameObject.AddComponent<FullStateRequest>();
         }
 
         public override void Configure(IModConfig config)

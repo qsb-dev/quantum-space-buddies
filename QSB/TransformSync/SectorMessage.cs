@@ -21,6 +21,5 @@ namespace QSB.TransformSync
             writer.Write(SectorId);
             writer.Write(SenderId);
         }
-
     }
 }

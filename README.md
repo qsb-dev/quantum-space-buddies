@@ -67,12 +67,9 @@ If for some reason none of this is working, you might have to set everything man
 
 ## Authors
 
+- [Mister_Nebula](https://github.com/misternebula) - Current lead
 - [AmazingAlek](https://github.com/amazingalek)
 - [Raicuparta](https://github.com/Raicuparta)
-
-## Special thanks
-
-- [Mister_Nebula](https://github.com/misternebula), for research
 
 ## Help / Discuss development / Whatever
 

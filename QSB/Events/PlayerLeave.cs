@@ -1,10 +1,14 @@
 ﻿using System.Linq;
 using QSB.Messaging;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB.Events
 {
+    /// <summary>
+    /// Client-only-side component for managing player leaves.
+    /// </summary>
     public class PlayerLeave : NetworkBehaviour
     {
         private MessageHandler<LeaveMessage> _leaveHandler;
@@ -27,9 +31,9 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(LeaveMessage message)
         {
-            var playerName = PlayerJoin.PlayerNames[message.SenderId];
-            DebugLog.All(playerName, "left");
-            PlayerJoin.PlayerNames.Remove(message.SenderId);
+            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
+            DebugLog.ToAll(playerName, "disconnected.");
+            PlayerRegistry.RemovePlayer(message.SenderId);
             foreach (var objectId in message.ObjectIds)
             {
                 DestroyObject(objectId);
