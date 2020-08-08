@@ -4,7 +4,7 @@ namespace QSB.TransformSync
 {
     public class PlayerHUDMarker : HUDDistanceMarker
     {
-        private uint _netId = uint.MaxValue;
+        private PlayerInfo _player;
         private bool _isReady;
 
         protected override void InitCanvasMarker()
@@ -17,9 +17,9 @@ namespace QSB.TransformSync
             _markerTarget.localPosition = Vector3.zero;
         }
 
-        public void SetId(uint netId)
+        public void Init(PlayerInfo player)
         {
-            _netId = netId;
+            _player = player;
             _isReady = true;
         }
 
@@ -33,11 +33,11 @@ namespace QSB.TransformSync
 
         private void Update()
         {
-            if (!_isReady || !PlayerRegistry.GetPlayer(_netId).IsReady)
+            if (!_isReady || !_player.IsReady)
             {
                 return;
             }
-            _markerLabel = PlayerRegistry.GetPlayer(_netId).Name;
+            _markerLabel = _player.Name;
             _isReady = false;
 
             base.InitCanvasMarker();
