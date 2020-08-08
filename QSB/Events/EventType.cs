@@ -5,6 +5,9 @@
         FlashlightActiveChange,
         SignalscopeActiveChange,
         TranslatorActiveChange,
-        ProbeLauncherActiveChange
+        ProbeLauncherActiveChange,
+        PlayerJoin,
+        PlayerLeave,
+        PlayerSectorChange
     }
 }

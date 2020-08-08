@@ -114,6 +114,9 @@
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Events\PlayerFlashlightEvent.cs" />
+    <Compile Include="Events\PlayerJoinEvent.cs" />
+    <Compile Include="Events\PlayerSignalscopeEvent.cs" />
+    <Compile Include="Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />
@@ -129,12 +132,10 @@
     <Compile Include="Events\EventHandler.cs" />
     <Compile Include="Events\EventMessage.cs" />
     <Compile Include="Events\Necronomicon.cs" />
-    <Compile Include="Events\JoinMessage.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
     <Compile Include="Events\PlayerLeave.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="Events\DeathMessage.cs" />
-    <Compile Include="Events\PlayerJoin.cs" />
     <Compile Include="Events\PlayerMessage.cs" />
     <Compile Include="Events\StateRequestMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />

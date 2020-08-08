@@ -41,9 +41,7 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(EventMessage message)
         {
-            DebugLog.ToConsole($"Received event message of {message.EventType}");
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
-            if (message.SenderId == PlayerRegistry.LocalPlayer.NetId)
+            if (message.SenderId == PlayerRegistry.LocalPlayer?.NetId)
             {
                 return;
             }

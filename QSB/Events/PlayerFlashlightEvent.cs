@@ -1,46 +1,41 @@
-﻿using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QSB.Events
+﻿namespace QSB.Events
 {
     class PlayerFlashlightEvent : QSBEvent
     {
         public override EventType Type => EventType.FlashlightActiveChange;
 
+        public override void SetupListener()
+        {
+            GlobalMessenger.AddListener("TurnOnFlashlight", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, true));
+            GlobalMessenger.AddListener("TurnOffFlashlight", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, false));
+        }
+
         public override void OnReceive(uint sender, object[] data)
         {
             var player = PlayerRegistry.GetPlayer(sender);
-
+            var tool = player.FlashLight;
             player.UpdateState(State.Flashlight, (bool)data[0]);
             if ((bool)data[0] == true)
             {
-                player.FlashLight.TurnOn();
+                tool.TurnOn();
             }
             else
             {
-                player.FlashLight.TurnOff();
+                tool.TurnOff();
             }
         }
 
         public override void OnReceiveLocal(object[] data)
         {
+            var tool = PlayerRegistry.LocalPlayer.FlashLight;
             if ((bool)data[0] == true)
             {
-                PlayerRegistry.LocalPlayer.FlashLight.TurnOn();
+                tool.TurnOn();
             }
             else
             {
-                PlayerRegistry.LocalPlayer.FlashLight.TurnOff();
+                tool.TurnOff();
             }
-        }
-
-        public override void SetupListener()
-        {
-            GlobalMessenger.AddListener("TurnOnFlashlight", () => EventSender.SendEvent(this, true));
-            GlobalMessenger.AddListener("TurnOffFlashlight", () => EventSender.SendEvent(this, true));
         }
     }
 }

@@ -119,7 +119,6 @@ namespace QSB
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
-            gameObject.AddComponent<PlayerJoin>().Join(_playerName);
             gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
@@ -134,13 +133,14 @@ namespace QSB
 
             OnNetworkManagerReady.Invoke();
             IsReady = true;
+
+            GlobalMessenger<string>.FireEvent("QSBPlayerJoin", _playerName);
         }
 
         public override void OnStopClient() // Called on the client when closing connection
         {
             DebugLog.ToScreen("OnStopClient");
             Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<PlayerJoin>());
             Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());

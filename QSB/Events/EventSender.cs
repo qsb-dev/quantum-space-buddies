@@ -14,6 +14,13 @@ namespace QSB.Events
         public static void Init()
         {
             EventList.Add(new PlayerFlashlightEvent());
+            EventList.Add(new PlayerSignalscopeEvent());
+            EventList.Add(new PlayerTrasnlatorEvent());
+            //EventList.Add(new PlayerProbeLauncherEvent());
+            //EventList.Add(new PlayerProbeEvent());
+            //EventList.Add(new PlayerSectorChange());
+            EventList.Add(new PlayerJoinEvent());
+            //EventList.Add(new PlayerLeaveEvent());
 
             foreach (var item in EventList)
             {
@@ -22,12 +29,11 @@ namespace QSB.Events
             }
         }
 
-        public static void SendEvent(QSBEvent _event, params object[] data)
+        public static void SendEvent(QSBEvent _event, uint sender, params object[] data)
         {
-            DebugLog.ToConsole($"Sending {_event.Type}");
             var message = new EventMessage
             {
-                SenderId = PlayerRegistry.LocalPlayer.NetId,
+                SenderId = sender,
                 EventType = (int)_event.Type,
                 Data = data
             };

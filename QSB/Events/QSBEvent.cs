@@ -9,8 +9,8 @@ namespace QSB.Events
     {
         public abstract EventType Type { get; }
 
+        public abstract void SetupListener();
         public abstract void OnReceive(uint sender, object[] data);
         public abstract void OnReceiveLocal(object[] data);
-        public abstract void SetupListener();
     }
 }

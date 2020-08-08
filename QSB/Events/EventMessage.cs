@@ -21,7 +21,6 @@ namespace QSB.Events
             EventType = reader.ReadInt32();
             var guff = reader.ReadString();
             var strings = guff.Split('|');
-            DebugLog.ToConsole($"Read {guff}");
             var temp = new List<object>();
             foreach (var item in strings)
             {
@@ -40,7 +39,6 @@ namespace QSB.Events
                 data += "|" + ObjectToString(item);
             }
             data = data.TrimStart('|');
-            DebugLog.ToConsole($"Writing {data}");
             writer.Write(data);
         }
 
