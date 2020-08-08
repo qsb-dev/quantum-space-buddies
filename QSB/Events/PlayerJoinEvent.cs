@@ -22,7 +22,10 @@ namespace QSB.Events
 
         public override void OnReceiveLocal(object[] data)
         {
-            return;
+            var player = PlayerRegistry.CreatePlayer(PlayerTransformSync.LocalInstance.netId.Value);
+            player.Name = (string)data[0];
+            player.IsReady = true;
+            DebugLog.ToAll($"{player.Name} joined!");
         }
     }
 }

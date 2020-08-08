@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using QSB.Messaging;
 
 namespace QSB.Events
 {
@@ -11,6 +8,6 @@ namespace QSB.Events
 
         public abstract void SetupListener();
         public abstract void OnReceive(uint sender, object[] data);
-        public abstract void OnReceiveLocal(object[] data);
+        public virtual void OnReceiveLocal(object[] data) { }
     }
 }

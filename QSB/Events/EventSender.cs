@@ -16,7 +16,7 @@ namespace QSB.Events
             EventList.Add(new PlayerFlashlightEvent());
             EventList.Add(new PlayerSignalscopeEvent());
             EventList.Add(new PlayerTrasnlatorEvent());
-            //EventList.Add(new PlayerProbeLauncherEvent());
+            EventList.Add(new PlayerProbeLauncherEvent());
             //EventList.Add(new PlayerProbeEvent());
             //EventList.Add(new PlayerSectorChange());
             EventList.Add(new PlayerJoinEvent());

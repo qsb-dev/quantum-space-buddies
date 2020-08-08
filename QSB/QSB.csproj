@@ -115,6 +115,7 @@
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Events\PlayerJoinEvent.cs" />
+    <Compile Include="Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
