@@ -14,7 +14,7 @@ namespace QSB.TransformSync
             _markerTarget = new GameObject().transform;
             _markerTarget.parent = transform;
 
-            _markerTarget.localPosition = Vector3.zero;
+            _markerTarget.localPosition = new Vector3(0, 2, 0);
         }
 
         public void Init(PlayerInfo player)
