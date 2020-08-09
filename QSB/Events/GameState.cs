@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine.Networking;
 
@@ -20,7 +21,7 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
-            DebugLog.ToConsole($"Received game state id {PlayerRegistry.LocalPlayer.NetId}");
+            DebugLog.ToConsole($"Received game state id for {PlayerTransformSync.LocalInstance.netId.Value}");
             PlayerRegistry.HandleFullStateMessage(message);
         }
 

@@ -2,22 +2,22 @@
 
 namespace QSB.Events
 {
-    class PlayerProbeLauncherEvent : QSBEvent
+    class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.ProbeLauncherActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(new ToggleMessage { On = true }));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(new ToggleMessage { On = false }));
         }
 
-        public override void OnReceive(uint sender, object[] data)
+        public override void OnReceive(uint sender, ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(sender);
             var tool = player.ProbeLauncher;
-            player.UpdateState(State.ProbeLauncher, (bool)data[0]);
-            if ((bool)data[0] == true)
+            player.UpdateState(State.ProbeLauncher, message.On);
+            if (message.On)
             {
                 tool.EquipTool();
             }
@@ -27,10 +27,10 @@ namespace QSB.Events
             }
         }
 
-        public override void OnReceiveLocal(object[] data)
+        public override void OnReceiveLocal(ToggleMessage message)
         {
             var tool = PlayerRegistry.LocalPlayer.ProbeLauncher;
-            if ((bool)data[0] == true)
+            if (message.On)
             {
                 tool.EquipTool();
             }

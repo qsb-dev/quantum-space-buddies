@@ -4,56 +4,53 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    public abstract class QSBEvent
+    public abstract class QSBEvent<T> where T : PlayerMessage, new()
+
     {
         public abstract MessageType Type { get; }
 
         public abstract void SetupListener();
-        public abstract void OnReceive(uint sender, object[] data);
-        public virtual void OnReceiveLocal(object[] data) { }
+        public abstract void OnReceive(uint sender, T message);
 
-        public void SendEvent(uint sender, params object[] data)
+        public virtual void OnReceiveLocal(T message)
         {
-            var message = new EventMessage
-            {
-                SenderId = sender,
-                EventType = (int)Type,
-                Data = data
-            };
-            Send(message);
         }
 
-        private readonly MessageHandler<EventMessage> _eventHandler;
+        public void SendEvent(T message)
+        {
+            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
+        }
+
+        private readonly MessageHandler<T> _eventHandler;
 
         protected QSBEvent()
         {
-            _eventHandler = new MessageHandler<EventMessage>(Type);
+            _eventHandler = new MessageHandler<T>(Type);
             _eventHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _eventHandler.OnServerReceiveMessage += OnServerReceiveMessage;
 
             SetupListener();
         }
 
-        public void Send(EventMessage message)
+        private void Send(T message)
         {
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () =>
-            {
-                _eventHandler.SendToServer(message);
-            });
+            message.SenderId = PlayerTransformSync.LocalInstance.netId.Value;
+            _eventHandler.SendToServer(message);
         }
 
-        private void OnServerReceiveMessage(EventMessage message)
+        private void OnServerReceiveMessage(T message)
         {
             _eventHandler.SendToAll(message);
         }
 
-        private void OnClientReceiveMessage(EventMessage message)
+        private void OnClientReceiveMessage(T message)
         {
             if (message.SenderId == PlayerRegistry.LocalPlayer?.NetId)
             {
                 return;
             }
-            OnReceive(message.SenderId, message.Data);
+
+            OnReceive(message.SenderId, message);
         }
     }
 }
