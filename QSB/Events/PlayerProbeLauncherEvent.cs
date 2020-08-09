@@ -8,13 +8,13 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(new ToggleMessage { On = true }));
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(new ToggleMessage { On = false }));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(new ToggleMessage { SenderId = PlayerRegistry.LocalPlayer.NetId, On = true }));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(new ToggleMessage { SenderId = PlayerRegistry.LocalPlayer.NetId, On = false }));
         }
 
-        public override void OnReceive(uint sender, ToggleMessage message)
+        public override void OnReceive(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(sender);
+            var player = PlayerRegistry.GetPlayer(message.SenderId);
             var tool = player.ProbeLauncher;
             player.UpdateState(State.ProbeLauncher, message.On);
             if (message.On)

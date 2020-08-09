@@ -10,7 +10,7 @@ namespace QSB.Events
         public abstract MessageType Type { get; }
 
         public abstract void SetupListener();
-        public abstract void OnReceive(uint sender, T message);
+        public abstract void OnReceive(T message);
 
         public virtual void OnReceiveLocal(T message)
         {
@@ -34,7 +34,6 @@ namespace QSB.Events
 
         private void Send(T message)
         {
-            message.SenderId = PlayerTransformSync.LocalInstance.netId.Value;
             _eventHandler.SendToServer(message);
         }
 
@@ -47,10 +46,11 @@ namespace QSB.Events
         {
             if (message.SenderId == PlayerRegistry.LocalPlayer?.NetId)
             {
+                OnReceiveLocal(message);
                 return;
             }
 
-            OnReceive(message.SenderId, message);
+            OnReceive(message);
         }
     }
 }

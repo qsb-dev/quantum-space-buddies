@@ -29,7 +29,7 @@ namespace QSB
             gameObject.AddComponent<FullStateRequest>();
             gameObject.AddComponent<UnityHelper>();
 
-            EventSender.Init();
+            EventList.Init();
         }
 
         public override void Configure(IModConfig config)

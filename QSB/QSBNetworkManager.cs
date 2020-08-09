@@ -119,7 +119,6 @@ namespace QSB
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
-            gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
 
@@ -140,7 +139,6 @@ namespace QSB
         {
             DebugLog.ToScreen("OnStopClient");
             Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             if (IsClientConnected())
@@ -156,7 +154,7 @@ namespace QSB
 
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GetComponent<PlayerLeave>().Leave(playerId, objectIds);
+            GlobalMessenger<uint, uint[]>.FireEvent("QSBPlayerLeave", playerId, objectIds);
 
             base.OnServerDisconnect(connection);
         }

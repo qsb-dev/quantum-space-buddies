@@ -10,12 +10,12 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener("QSBPlayerJoin", name => SendEvent(new PlayerJoinMessage { PlayerName = name }));
+            GlobalMessenger<string>.AddListener("QSBPlayerJoin", name => SendEvent(new PlayerJoinMessage { SenderId = PlayerTransformSync.LocalInstance.netId.Value, PlayerName = name }));
         }
 
-        public override void OnReceive(uint sender, PlayerJoinMessage message)
+        public override void OnReceive(PlayerJoinMessage message)
         {
-            var player = PlayerRegistry.CreatePlayer(sender);
+            var player = PlayerRegistry.CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
             player.IsReady = true;
             DebugLog.ToAll($"{player.Name} joined!");
@@ -26,7 +26,7 @@ namespace QSB.Events
             var player = PlayerRegistry.CreatePlayer(PlayerTransformSync.LocalInstance.netId.Value);
             player.Name = message.PlayerName;
             player.IsReady = true;
-            DebugLog.ToAll($"{player.Name} joined!");
+            DebugLog.ToAll($"Connected to server as {player.Name}.");
         }
     }
 }

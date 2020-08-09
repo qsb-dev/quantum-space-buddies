@@ -1,6 +1,6 @@
 ﻿namespace QSB.Events
 {
-    public static class EventSender
+    public static class EventList
     {
         public static void Init()
         {

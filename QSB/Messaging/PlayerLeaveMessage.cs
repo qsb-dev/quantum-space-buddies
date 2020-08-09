@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class LeaveMessage : PlayerMessage
+    public class PlayerLeaveMessage : PlayerMessage
     {
         public uint[] ObjectIds { get; set; }
 

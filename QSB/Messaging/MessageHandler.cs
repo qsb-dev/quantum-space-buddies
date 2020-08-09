@@ -13,7 +13,7 @@ namespace QSB.Messaging
 
         public MessageHandler(MessageType messageType)
         {
-            _messageType = messageType;
+            _messageType = messageType + 1 + MsgType.Highest;
             if (QSBNetworkManager.IsReady)
             {
                 Init();

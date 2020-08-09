@@ -8,13 +8,13 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(new ToggleMessage { On = true }));
-            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(new ToggleMessage { On = false }));
+            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(new ToggleMessage { SenderId = PlayerRegistry.LocalPlayer.NetId, On = true }));
+            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(new ToggleMessage { SenderId = PlayerRegistry.LocalPlayer.NetId, On = false }));
         }
 
-        public override void OnReceive(uint sender, ToggleMessage message)
+        public override void OnReceive(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(sender);
+            var player = PlayerRegistry.GetPlayer(message.SenderId);
             var tool = player.Translator;
             player.UpdateState(State.Translator, message.On);
             if (message.On)
