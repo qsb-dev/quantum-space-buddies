@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
@@ -24,10 +23,10 @@ namespace QSB.TransformSync
         {
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
             _isInitialized = false;
         }
