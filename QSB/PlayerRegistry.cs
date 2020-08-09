@@ -4,6 +4,7 @@ using QSB.Events;
 using QSB.TransformSync;
 using QSB.Animation;
 using QSB.Utility;
+using QSB.Messaging;
 
 namespace QSB
 {

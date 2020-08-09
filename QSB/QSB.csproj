@@ -133,13 +133,13 @@
     <Compile Include="TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
     <Compile Include="Events\EventList.cs" />
-    <Compile Include="Events\FullStateMessage.cs" />
+    <Compile Include="Messaging\FullStateMessage.cs" />
     <Compile Include="Events\FullStateRequest.cs" />
     <Compile Include="Events\GameState.cs" />
     <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="Messaging\PlayerMessage.cs" />
-    <Compile Include="Events\StateRequestMessage.cs" />
+    <Compile Include="Messaging\StateRequestMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Messaging\QSBMessage.cs" />
