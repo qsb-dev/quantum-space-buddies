@@ -124,7 +124,7 @@ namespace QSB.Tools
             tool.ArrivalDegrees = 5f;
             tool.Type = ToolType.Translator;
             tool.ToolGameObject = group.gameObject;
-            oldTranslator.enabled = false;
+            Object.Destroy(oldTranslator);
 
             GetRenderer(translatorRoot, "Props_HEA_Translator_Geo").material = _playerToolsMaterial;
             GetRenderer(translatorRoot, "Props_HEA_Translator_RotatingPart").material = _playerToolsMaterial;

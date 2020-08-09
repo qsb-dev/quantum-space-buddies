@@ -17,7 +17,7 @@ namespace QSB
         public QSBTool Translator => GetToolByType(ToolType.Translator);
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
         public string Name { get; set; }
-        public bool IsReady { get; set; }
+        public bool IsReady => Body != null;
         public State State { get; private set; }
 
         public PlayerInfo(uint id)
