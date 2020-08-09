@@ -1,14 +1,14 @@
-﻿using QSB.Messaging;
+﻿using System.Collections.Generic;
+using QSB.Messaging;
 using UnityEngine;
 using System.Linq;
 using QSB.Utility;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
     public class SectorSync : MonoBehaviour
     {
-        private Sector[] _allSectors;
+        private readonly List<Sector> _allSectors = new List<Sector>();
         private MessageHandler<SectorMessage> _sectorHandler;
 
         private readonly Sector.Name[] _sectorBlacklist =
@@ -19,7 +19,19 @@ namespace QSB.TransformSync
 
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            QSB.Helper.Events.Subscribe<Sector>(OWML.Common.Events.AfterAwake);
+            QSB.Helper.Events.Event += OnEvent;
+        }
+
+        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
+        {
+            if (behaviour is Sector sector && ev == OWML.Common.Events.AfterAwake)
+            {
+                if (!_allSectors.Contains(sector))
+                {
+                    _allSectors.Add(sector);
+                }
+            }
         }
 
         private void Start()
@@ -27,11 +39,6 @@ namespace QSB.TransformSync
             _sectorHandler = new MessageHandler<SectorMessage>();
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-        }
-
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            _allSectors = FindObjectsOfType<Sector>();
         }
 
         private void SendSector(uint id, Sector sector)
@@ -50,7 +57,9 @@ namespace QSB.TransformSync
         private Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
             return _allSectors?
-                .FirstOrDefault(sector => sector.GetName() == sectorName && sector.name == goName);
+                .FirstOrDefault(sector => sector != null &&
+                                          sector.GetName() == sectorName &&
+                                          sector.name == goName);
         }
 
         private void OnClientReceiveMessage(SectorMessage message)
@@ -104,7 +113,8 @@ namespace QSB.TransformSync
         private Sector GetClosestSector(Transform trans)
         {
             return _allSectors?
-                .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
+                .Where(sector => sector != null &&
+                                 !_sectorBlacklist.Contains(sector.GetName()))
                 .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
                 .First();
         }
