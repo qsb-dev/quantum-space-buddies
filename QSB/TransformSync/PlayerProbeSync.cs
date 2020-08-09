@@ -42,7 +42,7 @@ namespace QSB.TransformSync
 
             Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 
-            PlayerToolsManager.CreateProbe(body, PlayerId);
+            PlayerToolsManager.CreateProbe(body, Player);
 
             bodyTransform = body;
 

@@ -1,14 +1,14 @@
-﻿using QSB.Messaging;
+﻿using System.Collections.Generic;
+using QSB.Messaging;
 using UnityEngine;
 using System.Linq;
 using QSB.Utility;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
     public class SectorSync : MonoBehaviour
     {
-        private Sector[] _allSectors;
+        private readonly List<Sector> _allSectors = new List<Sector>();
         private MessageHandler<SectorMessage> _sectorHandler;
 
         private readonly Sector.Name[] _sectorBlacklist =
@@ -19,7 +19,19 @@ namespace QSB.TransformSync
 
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            QSB.Helper.Events.Subscribe<Sector>(OWML.Common.Events.AfterAwake);
+            QSB.Helper.Events.Event += OnEvent;
+        }
+
+        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
+        {
+            if (behaviour is Sector sector && ev == OWML.Common.Events.AfterAwake)
+            {
+                if (!_allSectors.Contains(sector))
+                {
+                    _allSectors.Add(sector);
+                }
+            }
         }
 
         private void Start()
@@ -29,44 +41,45 @@ namespace QSB.TransformSync
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void SendSector(uint id, Sector sector)
         {
-            _allSectors = FindObjectsOfType<Sector>();
-        }
-
-        private void SendSector(uint id, Sector.Name sectorName)
-        {
-            DebugLog.ToScreen($"Sending sector {sectorName} for id {id}");
+            DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
 
             var msg = new SectorMessage
             {
-                SectorId = (int)sectorName,
+                SectorId = (int)sector.GetName(),
+                SectorName = sector.name,
                 SenderId = id
             };
             _sectorHandler.SendToServer(msg);
         }
 
-        private Sector FindSectorByName(Sector.Name sectorName)
+        private Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
-            return _allSectors?
-                .FirstOrDefault(sector => sectorName == sector.GetName());
+            return _allSectors
+                .FirstOrDefault(sector => sector != null &&
+                                          sector.GetName() == sectorName &&
+                                          sector.name == goName);
         }
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            var sectorName = (Sector.Name)message.SectorId;
-            DebugLog.ToScreen($"Received sector {sectorName} for id {message.SenderId}");
+            var sector = FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
 
-            var sector = FindSectorByName(sectorName);
+            if (_allSectors.Count == 0)
+            {
+                DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
+            }
 
             if (sector == null)
             {
-                DebugLog.ToScreen($"Sector {sectorName} not found");
+                DebugLog.ToScreen($"Sector {message.SectorName},{(Sector.Name)message.SectorId} not found!");
                 return;
             }
 
-            DebugLog.ToScreen($"Found sector {sectorName} for {message.SenderId}");
-            PlayerRegistry.GetTransformSync(message.SenderId).ReferenceTransform = sector.transform;
+            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
+            DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
+            transformSync.ReferenceTransform = sector.transform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
@@ -97,16 +110,17 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            SendSector(transformSync.netId.Value, closestSector.GetName());
+            SendSector(transformSync.netId.Value, closestSector);
             transformSync.ReferenceTransform = closestSector.transform;
         }
 
         private Sector GetClosestSector(Transform trans)
         {
-            return _allSectors?
-                    .Where(sector => !_sectorBlacklist.Contains(sector.GetName()))
-                    .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
-                    .First();
+            return _allSectors
+                .Where(sector => sector != null &&
+                                 !_sectorBlacklist.Contains(sector.GetName()))
+                .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
+                .First();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace QSB.TransformSync
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
-            marker.SetId(PlayerId);
+            marker.Init(Player);
 
             Player.Body = body.gameObject;
 

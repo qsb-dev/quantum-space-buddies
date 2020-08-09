@@ -14,7 +14,7 @@ namespace QSB
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
-        public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t.hasAuthority).ToList();
+        public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
 
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
 
@@ -57,12 +57,12 @@ namespace QSB
 
         public static TransformSync.TransformSync GetTransformSync(uint id)
         {
-            return TransformSyncs.Single(x => x.netId.Value == id);
+            return TransformSyncs.First(x => x != null && x.netId.Value == id);
         }
 
         public static AnimationSync GetAnimationSync(uint id)
         {
-            return AnimationSyncs.SingleOrDefault(x => x.netId.Value == id);
+            return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
 
     }
