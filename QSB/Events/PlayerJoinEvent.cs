@@ -17,7 +17,6 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
-            player.IsReady = true;
             DebugLog.ToAll($"{player.Name} joined!");
         }
 
@@ -25,7 +24,6 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.CreatePlayer(PlayerTransformSync.LocalInstance.netId.Value);
             player.Name = message.PlayerName;
-            player.IsReady = true;
             DebugLog.ToAll($"Connected to server as {player.Name}.");
         }
     }

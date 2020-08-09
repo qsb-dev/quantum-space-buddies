@@ -48,11 +48,7 @@ namespace QSB
         public static void HandleFullStateMessage(FullStateMessage message)
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
-            DebugLog.ToConsole($"Player Id {message.SenderId} ----------------", OWML.Common.MessageType.Info);
             player.Name = message.PlayerName;
-            DebugLog.ToConsole($"Name : {player.Name}", OWML.Common.MessageType.Info);
-            player.IsReady = message.IsReady;
-            DebugLog.ToConsole($"IsReady : {player.IsReady}", OWML.Common.MessageType.Info);
         }
 
         public static TransformSync.TransformSync GetTransformSync(uint id)
