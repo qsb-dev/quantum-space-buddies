@@ -5,8 +5,6 @@ namespace QSB.Animation
 {
     public class AnimTriggerMessage : QSBMessage
     {
-        public override MessageType MessageType => MessageType.AnimTrigger;
-
         public short TriggerId;
         public uint SenderId;
         public float Value;

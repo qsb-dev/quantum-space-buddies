@@ -5,8 +5,6 @@ namespace QSB.TimeSync
 {
     public class WakeUpMessage : QSBMessage
     {
-        public override MessageType MessageType => MessageType.WakeUp;
-
         public float ServerTime { get; set; }
         public int LoopCount { get; set; }
 

@@ -31,7 +31,7 @@ namespace QSB.TimeSync
                 return;
             }
 
-            _wakeUpHandler = new MessageHandler<WakeUpMessage>();
+            _wakeUpHandler = new MessageHandler<WakeUpMessage>(MessageType.WakeUp);
             _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
             var sceneName = SceneManager.GetActiveScene().name;
