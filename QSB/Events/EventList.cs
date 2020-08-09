@@ -6,6 +6,7 @@
 
         public static void Init()
         {
+            new PlayerSuitEvent();
             new PlayerFlashlightEvent();
             new PlayerSignalscopeEvent();
             new PlayerTranslatorEvent();

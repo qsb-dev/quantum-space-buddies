@@ -46,7 +46,15 @@ namespace QSB
             Translator.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-            DebugLog.ToConsole($"Suit : " + FlagsHelper.IsSet(State, State.Suit));
+
+            if (FlagsHelper.IsSet(State, State.Suit))
+            {
+                PlayerRegistry.GetAnimationSync(NetId).SuitUp();
+            }
+            else
+            {
+                PlayerRegistry.GetAnimationSync(NetId).SuitDown();
+            }
         }
 
         public bool GetState(State state)

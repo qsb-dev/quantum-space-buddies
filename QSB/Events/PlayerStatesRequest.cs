@@ -23,7 +23,6 @@ namespace QSB.Events
 
         public void Request()
         {
-            DebugLog.ToConsole("Requesting gamestate...");
             StartCoroutine(SendRequest());
         }
 
@@ -39,7 +38,6 @@ namespace QSB.Events
 
         private void OnServerReceiveMessage(PlayerStatesRequestMessage message)
         {
-            DebugLog.ToConsole("Received request for gamestate.");
             PlayerState.LocalInstance.Send();
         }
     }

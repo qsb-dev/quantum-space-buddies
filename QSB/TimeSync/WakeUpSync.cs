@@ -73,7 +73,6 @@ namespace QSB.TimeSync
         private void OnWakeUp()
         {
             PlayerRegistry.GetPlayer(netId.Value).IsReady = true;
-            DebugLog.ToConsole($"Set player {netId.Value} to ready.");
             PlayerStatesRequest.Instance.Request();
         }
 

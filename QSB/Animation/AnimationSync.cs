@@ -161,14 +161,10 @@ namespace QSB.Animation
                     _bodyAnim.SetTrigger(trigger.ToString());
                     break;
                 case AnimTrigger.SuitUp:
-                    _bodyAnim.runtimeAnimatorController = _suitedAnimController;
-                    _unsuitedGraphics.SetActive(false);
-                    _suitedGraphics.SetActive(true);
+                    SuitUp();
                     break;
                 case AnimTrigger.SuitDown:
-                    _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
-                    _unsuitedGraphics.SetActive(true);
-                    _suitedGraphics.SetActive(false);
+                    SuitDown();
                     break;
                 case AnimTrigger.Crouch:
                     _crouchParam.Target = value;
@@ -176,6 +172,20 @@ namespace QSB.Animation
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
             }
+        }
+
+        public void SuitUp()
+        {
+            _bodyAnim.runtimeAnimatorController = _suitedAnimController;
+            _unsuitedGraphics.SetActive(false);
+            _suitedGraphics.SetActive(true);
+        }
+
+        public void SuitDown()
+        {
+            _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
+            _unsuitedGraphics.SetActive(true);
+            _suitedGraphics.SetActive(false);
         }
 
         private void Update()

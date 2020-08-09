@@ -26,7 +26,6 @@ namespace QSB.Events
             {
                 return;
             }
-            DebugLog.ToConsole($"Received game state for id {message.SenderId}");
             UnityHelper.Instance.RunWhen(() => PlayerRegistry.GetTransformSync(message.SenderId) != null, 
                 () => PlayerRegistry.HandleFullStateMessage(message));
         }
@@ -43,7 +42,6 @@ namespace QSB.Events
                 };
 
                 _messageHandler.SendToAll(message);
-                DebugLog.ToConsole($"* Sent state for {player.NetId}");
             }
         }
     }

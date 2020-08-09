@@ -20,7 +20,6 @@ namespace QSB.Tools
 
         public static void Init(Transform camera)
         {
-            DebugLog.ToConsole("Init of tools.");
             _cameraBody = camera;
             CreateStowTransforms();
 

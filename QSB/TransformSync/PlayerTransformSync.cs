@@ -24,7 +24,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole("Local of playertransformsync " + PlayerId);
             var body = GetPlayerModel();
 
             bodyTransform = body;
@@ -38,7 +37,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole("Remote of playertransformsync " + PlayerId);
             var body = Instantiate(GetPlayerModel());
 
             bodyTransform = body;
