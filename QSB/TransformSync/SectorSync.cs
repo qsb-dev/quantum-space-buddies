@@ -9,7 +9,8 @@ namespace QSB.TransformSync
     public class SectorSync : MonoBehaviour
     {
         private readonly List<Sector> _allSectors = new List<Sector>();
-        private MessageHandler<SectorMessage> _sectorHandler;
+
+        public static SectorSync LocalInstance { get; private set; }
 
         private readonly Sector.Name[] _sectorBlacklist =
         {
@@ -19,6 +20,7 @@ namespace QSB.TransformSync
 
         private void Awake()
         {
+            LocalInstance = this;
             QSB.Helper.Events.Subscribe<Sector>(OWML.Common.Events.AfterAwake);
             QSB.Helper.Events.Event += OnEvent;
         }
@@ -34,50 +36,23 @@ namespace QSB.TransformSync
             }
         }
 
-        private void Start()
-        {
-            _sectorHandler = new MessageHandler<SectorMessage>(MessageType.Sector);
-            _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-        }
-
         private void SendSector(uint id, Sector sector)
         {
             DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
             GlobalMessenger<uint, int, string>.FireEvent("QSBSectorChange", id, (int)sector.GetName(), sector.name);
         }
 
-        private Sector FindSectorByName(Sector.Name sectorName, string goName)
+        public Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
-            return _allSectors
-                .FirstOrDefault(sector => sector != null &&
-                                          sector.GetName() == sectorName &&
-                                          sector.name == goName);
-        }
-
-        private void OnClientReceiveMessage(SectorMessage message)
-        {
-            var sector = FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
-
             if (_allSectors.Count == 0)
             {
                 DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
             }
 
-            if (sector == null)
-            {
-                DebugLog.ToScreen($"Sector {message.SectorName},{(Sector.Name)message.SectorId} not found!");
-                return;
-            }
-
-            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
-            DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
-            transformSync.ReferenceTransform = sector.transform;
-        }
-
-        private void OnServerReceiveMessage(SectorMessage message)
-        {
-            _sectorHandler.SendToAll(message);
+            return _allSectors
+                .FirstOrDefault(sector => sector != null &&
+                                          sector.GetName() == sectorName &&
+                                          sector.name == goName);
         }
 
         private void Update()
