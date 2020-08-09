@@ -27,6 +27,7 @@ namespace QSB
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<FullStateRequest>();
+            gameObject.AddComponent<UnityHelper>();
 
             EventSender.Init();
         }

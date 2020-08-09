@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using QSB.Messaging;
 
 namespace QSB.Events
 {
     class PlayerProbeLauncherEvent : QSBEvent
     {
-        public override EventType Type => EventType.ProbeLauncherActiveChange;
+        public override MessageType Type => MessageType.ProbeLauncherActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
         }
 
         public override void OnReceive(uint sender, object[] data)

@@ -1,15 +1,16 @@
-﻿using QSB.TransformSync;
+﻿using QSB.Messaging;
+using QSB.TransformSync;
 using QSB.Utility;
 
 namespace QSB.Events
 {
     class PlayerJoinEvent : QSBEvent
     {
-        public override EventType Type => EventType.PlayerJoin;
+        public override MessageType Type => MessageType.PlayerJoin;
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener("QSBPlayerJoin", var => EventSender.SendEvent(this, PlayerTransformSync.LocalInstance.netId.Value, var));
+            GlobalMessenger<string>.AddListener("QSBPlayerJoin", var => SendEvent(PlayerTransformSync.LocalInstance.netId.Value, var));
         }
 
         public override void OnReceive(uint sender, object[] data)
