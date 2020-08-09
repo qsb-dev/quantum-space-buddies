@@ -110,7 +110,7 @@ namespace QSB
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 
-            var gameState = gameObject.AddComponent<Events.GameState>();
+            var gameState = gameObject.AddComponent<GameState>();
             gameState.Send();
         }
 
@@ -122,11 +122,10 @@ namespace QSB
             gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
-            gameObject.AddComponent<Events.EventHandler>();
 
             if (!Network.isServer)
             {
-                gameObject.AddComponent<Events.GameState>();
+                gameObject.AddComponent<GameState>();
             }
 
             _canEditName = false;
@@ -144,7 +143,6 @@ namespace QSB
             Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
-            Destroy(GetComponent<Events.EventHandler>());
             if (IsClientConnected())
             {
                 PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();

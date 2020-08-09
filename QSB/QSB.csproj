@@ -126,11 +126,9 @@
     <Compile Include="TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
     <Compile Include="Events\EventSender.cs" />
-    <Compile Include="Events\EventType.cs" />
     <Compile Include="Events\FullStateMessage.cs" />
     <Compile Include="Events\FullStateRequest.cs" />
     <Compile Include="Events\GameState.cs" />
-    <Compile Include="Events\EventHandler.cs" />
     <Compile Include="Events\EventMessage.cs" />
     <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Events\LeaveMessage.cs" />
@@ -164,6 +162,7 @@
     <Compile Include="QSB.cs" />
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\UnityHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />

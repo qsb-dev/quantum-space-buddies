@@ -1,13 +1,15 @@
-﻿namespace QSB.Events
+﻿using QSB.Messaging;
+
+namespace QSB.Events
 {
     class PlayerTrasnlatorEvent : QSBEvent
     {
-        public override EventType Type => EventType.TranslatorActiveChange;
+        public override MessageType Type => MessageType.TranslatorActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("EquipTranslator", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger.AddListener("UnequipTranslator", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
+            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
         }
 
         public override void OnReceive(uint sender, object[] data)

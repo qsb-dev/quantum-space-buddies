@@ -1,13 +1,15 @@
-﻿namespace QSB.Events
+﻿using QSB.Messaging;
+
+namespace QSB.Events
 {
     class PlayerSignalscopeEvent : QSBEvent
     {
-        public override EventType Type => EventType.SignalscopeActiveChange;
+        public override MessageType Type => MessageType.SignalscopeActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger.AddListener("UnequipSignalscope", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
+            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
         }
 
         public override void OnReceive(uint sender, object[] data)

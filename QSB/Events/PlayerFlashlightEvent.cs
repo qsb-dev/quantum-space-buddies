@@ -1,13 +1,15 @@
-﻿namespace QSB.Events
+﻿using QSB.Messaging;
+
+namespace QSB.Events
 {
     class PlayerFlashlightEvent : QSBEvent
     {
-        public override EventType Type => EventType.FlashlightActiveChange;
+        public override MessageType Type => MessageType.FlashlightActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("TurnOnFlashlight", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger.AddListener("TurnOffFlashlight", () => EventSender.SendEvent(this, PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger.AddListener("TurnOnFlashlight", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
+            GlobalMessenger.AddListener("TurnOffFlashlight", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
         }
 
         public override void OnReceive(uint sender, object[] data)
