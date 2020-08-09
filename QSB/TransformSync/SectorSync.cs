@@ -96,8 +96,7 @@ namespace QSB.TransformSync
         {
             var syncedTransform = transformSync.SyncedTransform;
             if (syncedTransform == null ||
-                syncedTransform.position == Vector3.zero ||
-                syncedTransform.position == Locator.GetAstroObject(AstroObject.Name.Sun).transform.position)
+                syncedTransform.position == Vector3.zero)
             {
                 return;
             }
