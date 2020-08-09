@@ -30,7 +30,19 @@ namespace QSB.Tools
             _wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
         }
 
-        public void TurnOn()
+        public void UpdateState(bool value)
+        {
+            if (value)
+            {
+                TurnOn();
+            }
+            else
+            {
+                TurnOff();
+            }
+        }
+
+        private void TurnOn()
         {
             if (_flashlightOn)
             {
@@ -47,7 +59,7 @@ namespace QSB.Tools
             _baseForward = _basePivot.forward;
         }
 
-        public void TurnOff()
+        private void TurnOff()
         {
             if (!_flashlightOn)
             {

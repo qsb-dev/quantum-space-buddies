@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using QSB.Messaging;
 using QSB.TransformSync;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -22,6 +23,7 @@ namespace QSB.Events
 
         public void Request()
         {
+            DebugLog.ToConsole("Requesting gamestate...");
             StartCoroutine(SendRequest());
         }
 
@@ -37,6 +39,7 @@ namespace QSB.Events
 
         private void OnServerReceiveMessage(StateRequestMessage message)
         {
+            DebugLog.ToConsole("Received request for gamestate.");
             GameState.LocalInstance.Send();
         }
     }

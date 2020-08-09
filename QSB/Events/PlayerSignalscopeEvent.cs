@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -11,41 +12,25 @@ namespace QSB.Events
             GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = true
+                    ToggleValue = true
                 }));
             GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = false
+                    ToggleValue = false
                 }));
         }
 
         public override void OnReceive(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
-            var tool = player.Signalscope;
-            player.UpdateState(State.Signalscope, message.On);
-            if (message.On)
-            {
-                tool.EquipTool();
-            }
-            else
-            {
-                tool.UnequipTool();
-            }
+            player.UpdateState(State.Signalscope, message.ToggleValue);
+            player.Signalscope.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
-            var tool = PlayerRegistry.LocalPlayer.Signalscope;
-            if (message.On)
-            {
-                tool.EquipTool();
-            }
-            else
-            {
-                tool.UnequipTool();
-            }
+            PlayerRegistry.LocalPlayer.Signalscope.ChangeEquipState(message.ToggleValue);
         }
     }
 }

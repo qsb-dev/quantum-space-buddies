@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -11,41 +12,25 @@ namespace QSB.Events
             GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = true
+                    ToggleValue = true
                 }));
             GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = false
+                    ToggleValue = false
                 }));
         }
 
         public override void OnReceive(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
-            var tool = player.ProbeLauncher;
-            player.UpdateState(State.ProbeLauncher, message.On);
-            if (message.On)
-            {
-                tool.EquipTool();
-            }
-            else
-            {
-                tool.UnequipTool();
-            }
+            player.UpdateState(State.ProbeLauncher, message.ToggleValue);
+            player.ProbeLauncher.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
-            var tool = PlayerRegistry.LocalPlayer.ProbeLauncher;
-            if (message.On)
-            {
-                tool.EquipTool();
-            }
-            else
-            {
-                tool.UnequipTool();
-            }
+            PlayerRegistry.LocalPlayer.ProbeLauncher.ChangeEquipState(message.ToggleValue);
         }
     }
 }

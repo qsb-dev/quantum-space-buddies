@@ -15,7 +15,6 @@ namespace QSB
 
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
-
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
 
         public static PlayerInfo CreatePlayer(uint id)
@@ -48,7 +47,9 @@ namespace QSB
         public static void HandleFullStateMessage(FullStateMessage message)
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
+            DebugLog.ToConsole($"{message.PlayerName} : {message.SenderId} ----------------");
             player.Name = message.PlayerName;
+            DebugLog.ToConsole($"Name : {message.PlayerName}");
         }
 
         public static TransformSync.TransformSync GetTransformSync(uint id)

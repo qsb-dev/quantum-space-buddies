@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -11,41 +12,25 @@ namespace QSB.Events
             GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = true
+                    ToggleValue = true
                 }));
             GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = false
+                    ToggleValue = false
                 }));
         }
 
         public override void OnReceive(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
-            var tool = player.Translator;
-            player.UpdateState(State.Translator, message.On);
-            if (message.On)
-            {
-                tool.EquipTool();
-            }
-            else
-            {
-                tool.UnequipTool();
-            }
+            player.UpdateState(State.Translator, message.ToggleValue);
+            player.Translator.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
-            var tool = PlayerRegistry.LocalPlayer.Translator;
-            if (message.On)
-            {
-                tool.EquipTool();
-            }
-            else
-            {
-                tool.UnequipTool();
-            }
+            PlayerRegistry.LocalPlayer.Translator.ChangeEquipState(message.ToggleValue);
         }
     }
 }

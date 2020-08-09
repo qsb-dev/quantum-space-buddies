@@ -11,41 +11,25 @@ namespace QSB.Events
             GlobalMessenger.AddListener("TurnOnFlashlight", () => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = true
+                    ToggleValue = true
                 }));
             GlobalMessenger.AddListener("TurnOffFlashlight", () => SendEvent(
                 new ToggleMessage {
                     SenderId = PlayerRegistry.LocalPlayer.NetId,
-                    On = false
+                    ToggleValue = false
                 }));
         }
 
         public override void OnReceive(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
-            var tool = player.FlashLight;
-            player.UpdateState(State.Flashlight, message.On);
-            if (message.On)
-            {
-                tool.TurnOn();
-            }
-            else
-            {
-                tool.TurnOff();
-            }
+            player.UpdateState(State.Flashlight, message.ToggleValue);
+            player.FlashLight.UpdateState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
-            var tool = PlayerRegistry.LocalPlayer.FlashLight;
-            if (message.On)
-            {
-                tool.TurnOn();
-            }
-            else
-            {
-                tool.TurnOff();
-            }
+            PlayerRegistry.LocalPlayer.FlashLight.UpdateState(message.ToggleValue);
         }
     }
 }

@@ -4,18 +4,18 @@ namespace QSB.Messaging
 {
     public class ToggleMessage : PlayerMessage
     {
-        public bool On { get; set; }
+        public bool ToggleValue { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            On = reader.ReadBoolean();
+            ToggleValue = reader.ReadBoolean();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(On);
+            writer.Write(ToggleValue);
         }
     }
 }

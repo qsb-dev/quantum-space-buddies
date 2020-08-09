@@ -121,6 +121,7 @@
     <Compile Include="Events\PlayerJoinEvent.cs" />
     <Compile Include="Events\PlayerLeaveEvent.cs" />
     <Compile Include="Events\PlayerSectorEvent.cs" />
+    <Compile Include="Events\WakeUpEvent.cs" />
     <Compile Include="Messaging\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
     <Compile Include="Events\PlayerProbeLauncherEvent.cs" />
@@ -162,7 +163,7 @@
     <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="Messaging\SectorMessage.cs" />
     <Compile Include="TransformSync\SectorSync.cs" />
-    <Compile Include="TimeSync\WakeUpMessage.cs" />
+    <Compile Include="Messaging\WakeUpMessage.cs" />
     <Compile Include="TimeSync\WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
     <Compile Include="QSB.cs" />
