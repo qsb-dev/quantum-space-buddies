@@ -43,7 +43,7 @@ namespace QSB.TransformSync
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                SyncedTransform.position = ReferenceTransform.position;
             }
             _isInitialized = true;
         }
@@ -52,7 +52,7 @@ namespace QSB.TransformSync
         {
             if (!_isInitialized && IsReady)
             {
-                QSB.Helper.Events.Unity.FireOnNextUpdate(Init);
+                Init();
             }
             else if (_isInitialized && !IsReady)
             {
