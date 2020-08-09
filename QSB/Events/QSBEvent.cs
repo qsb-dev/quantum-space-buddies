@@ -14,6 +14,7 @@ namespace QSB.Events
 
         public virtual void OnReceiveLocal(T message)
         {
+            OnReceive(message);
         }
 
         public void SendEvent(T message)
