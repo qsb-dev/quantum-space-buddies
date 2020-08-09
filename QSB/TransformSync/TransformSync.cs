@@ -69,7 +69,7 @@ namespace QSB.TransformSync
             // If this script is attached to any other body, eg the representations of other players
             if (SyncedTransform.position == Vector3.zero)
             {
-                DebugLog.ToConsole($"TransformSync {netId.Value} at (0,0,0)", MessageType.Info);
+                DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
                 FullStateRequest.Instance.Request();
                 return;
             }
