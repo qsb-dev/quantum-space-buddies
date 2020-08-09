@@ -56,7 +56,7 @@ namespace QSB.TransformSync
 
         private Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
-            return _allSectors?
+            return _allSectors
                 .FirstOrDefault(sector => sector != null &&
                                           sector.GetName() == sectorName &&
                                           sector.name == goName);
@@ -66,7 +66,7 @@ namespace QSB.TransformSync
         {
             var sector = FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
 
-            if (_allSectors == null || _allSectors.Count == 0)
+            if (_allSectors.Count == 0)
             {
                 DebugLog.ToConsole($"Error: _allSectors is null or empty for player {message.SenderId}!", OWML.Common.MessageType.Error);
             }
@@ -79,7 +79,7 @@ namespace QSB.TransformSync
 
             var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
             DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
-            PlayerRegistry.GetTransformSync(message.SenderId).ReferenceTransform = sector.transform;
+            transformSync.ReferenceTransform = sector.transform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
@@ -116,7 +116,7 @@ namespace QSB.TransformSync
 
         private Sector GetClosestSector(Transform trans)
         {
-            return _allSectors?
+            return _allSectors
                 .Where(sector => sector != null &&
                                  !_sectorBlacklist.Contains(sector.GetName()))
                 .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
