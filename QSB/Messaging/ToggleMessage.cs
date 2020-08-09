@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
     public class ToggleMessage : PlayerMessage
     {

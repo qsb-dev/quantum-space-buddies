@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
     public class PlayerLeaveMessage : PlayerMessage
     {

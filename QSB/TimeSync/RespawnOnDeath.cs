@@ -32,8 +32,6 @@ namespace QSB.TimeSync
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
 
-        private MessageHandler<DeathMessage> _deathHandler;
-
         private void Awake()
         {
             _instance = this;
@@ -74,10 +72,6 @@ namespace QSB.TimeSync
                 _shipSpawnPoint.transform.position = shipTransform.position;
                 _shipSpawnPoint.transform.rotation = shipTransform.rotation;
             }
-
-            _deathHandler = new MessageHandler<DeathMessage>(MessageType.Death);
-            _deathHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-            _deathHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
         public void ResetShip()
@@ -141,18 +135,6 @@ namespace QSB.TimeSync
                 );
         }
 
-        private void OnServerReceiveMessage(DeathMessage message)
-        {
-            _deathHandler.SendToAll(message);
-        }
-
-        private void OnClientReceiveMessage(DeathMessage message)
-        {
-            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
-            var deathMessage = Necronomicon.GetPhrase(message.DeathType);
-            DebugLog.ToAll(string.Format(deathMessage, playerName));
-        }
-
         internal static class Patches
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
@@ -172,14 +154,8 @@ namespace QSB.TimeSync
 
             public static void BroadcastDeath(DeathType deathType)
             {
-                var message = new DeathMessage
-                {
-                    SenderId = PlayerTransformSync.LocalInstance.netId.Value,
-                    DeathType = deathType
-                };
-                _instance._deathHandler.SendToServer(message);
+                GlobalMessenger<DeathType>.FireEvent("QSBPlayerDeath", deathType);
             }
-
         }
     }
 }

@@ -11,7 +11,8 @@
             //new PlayerProbeEvent();
             //new PlayerSectorChange();
             new PlayerJoinEvent();
-            //new PlayerLeaveEvent();
+            new PlayerLeaveEvent();
+            new PlayerDeathEvent();
         }
     }
 }

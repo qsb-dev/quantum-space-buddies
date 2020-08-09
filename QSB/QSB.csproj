@@ -113,9 +113,12 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
+    <Compile Include="Events\PlayerDeathEvent.cs" />
     <Compile Include="Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Events\PlayerJoinEvent.cs" />
     <Compile Include="Events\PlayerLeaveEvent.cs" />
+    <Compile Include="Events\PlayerSectorEvent.cs" />
+    <Compile Include="Messaging\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
     <Compile Include="Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Events\PlayerSignalscopeEvent.cs" />
@@ -135,7 +138,6 @@
     <Compile Include="Events\GameState.cs" />
     <Compile Include="Events\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
-    <Compile Include="Events\DeathMessage.cs" />
     <Compile Include="Messaging\PlayerMessage.cs" />
     <Compile Include="Events\StateRequestMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
@@ -155,7 +157,7 @@
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
-    <Compile Include="TransformSync\SectorMessage.cs" />
+    <Compile Include="Messaging\SectorMessage.cs" />
     <Compile Include="TransformSync\SectorSync.cs" />
     <Compile Include="TimeSync\WakeUpMessage.cs" />
     <Compile Include="TimeSync\WakeUpSync.cs" />
