@@ -8,8 +8,16 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(new ToggleMessage { SenderId = PlayerRegistry.LocalPlayer.NetId, On = true }));
-            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(new ToggleMessage { SenderId = PlayerRegistry.LocalPlayer.NetId, On = false }));
+            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(
+                new ToggleMessage {
+                    SenderId = PlayerRegistry.LocalPlayer.NetId,
+                    On = true
+                }));
+            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(
+                new ToggleMessage {
+                    SenderId = PlayerRegistry.LocalPlayer.NetId,
+                    On = false
+                }));
         }
 
         public override void OnReceive(ToggleMessage message)

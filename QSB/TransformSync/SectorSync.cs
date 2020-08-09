@@ -44,14 +44,7 @@ namespace QSB.TransformSync
         private void SendSector(uint id, Sector sector)
         {
             DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
-
-            var msg = new SectorMessage
-            {
-                SectorId = (int)sector.GetName(),
-                SectorName = sector.name,
-                SenderId = id
-            };
-            _sectorHandler.SendToServer(msg);
+            GlobalMessenger<uint, int, string>.FireEvent("QSBSectorChange", id, (int)sector.GetName(), sector.name);
         }
 
         private Sector FindSectorByName(Sector.Name sectorName, string goName)

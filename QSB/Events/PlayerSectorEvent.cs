@@ -8,7 +8,12 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            throw new System.NotImplementedException();
+            GlobalMessenger<uint, int, string>.AddListener("QSBPlayerSectorChange", (netId, id, name) => SendEvent(
+                new SectorMessage {
+                    SenderId = netId,
+                    SectorId = id,
+                    SectorName = name
+                }));
         }
 
         public override void OnReceive(SectorMessage message)

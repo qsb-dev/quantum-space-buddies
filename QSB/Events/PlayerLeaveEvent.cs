@@ -13,7 +13,11 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, uint[]>.AddListener("QSBPlayerLeave", (id, objects) => SendEvent(new PlayerLeaveMessage { SenderId = id, ObjectIds = objects }));
+            GlobalMessenger<uint, uint[]>.AddListener("QSBPlayerLeave", (id, objects) => SendEvent(
+                new PlayerLeaveMessage {
+                    SenderId = id,
+                    ObjectIds = objects
+                }));
         }
 
         public override void OnReceive(PlayerLeaveMessage message)

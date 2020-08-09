@@ -10,7 +10,11 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener("QSBPlayerJoin", name => SendEvent(new PlayerJoinMessage { SenderId = PlayerTransformSync.LocalInstance.netId.Value, PlayerName = name }));
+            GlobalMessenger<string>.AddListener("QSBPlayerJoin", name => SendEvent(
+                new PlayerJoinMessage {
+                    SenderId = PlayerTransformSync.LocalInstance.netId.Value,
+                    PlayerName = name
+                }));
         }
 
         public override void OnReceive(PlayerJoinMessage message)
