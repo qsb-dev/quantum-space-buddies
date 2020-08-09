@@ -19,7 +19,6 @@ namespace QSB
 
         public static PlayerInfo CreatePlayer(uint id)
         {
-            DebugLog.ToConsole($"Creating player {id}");
             if (PlayerExists(id))
             {
                 return null;
