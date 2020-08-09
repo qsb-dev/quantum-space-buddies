@@ -2,22 +2,22 @@
 
 namespace QSB.Events
 {
-    class PlayerTrasnlatorEvent : QSBEvent
+    class PlayerTranslatorEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.TranslatorActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(new ToggleMessage { On = true }));
+            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(new ToggleMessage { On = false }));
         }
 
-        public override void OnReceive(uint sender, object[] data)
+        public override void OnReceive(uint sender, ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(sender);
             var tool = player.Translator;
-            player.UpdateState(State.Translator, (bool)data[0]);
-            if ((bool)data[0] == true)
+            player.UpdateState(State.Translator, message.On);
+            if (message.On)
             {
                 tool.EquipTool();
             }
@@ -27,10 +27,10 @@ namespace QSB.Events
             }
         }
 
-        public override void OnReceiveLocal(object[] data)
+        public override void OnReceiveLocal(ToggleMessage message)
         {
             var tool = PlayerRegistry.LocalPlayer.Translator;
-            if ((bool)data[0] == true)
+            if (message.On)
             {
                 tool.EquipTool();
             }

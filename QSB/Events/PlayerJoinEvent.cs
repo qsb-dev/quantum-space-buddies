@@ -4,27 +4,27 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    class PlayerJoinEvent : QSBEvent
+    class PlayerJoinEvent : QSBEvent<PlayerJoinMessage>
     {
         public override MessageType Type => MessageType.PlayerJoin;
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener("QSBPlayerJoin", var => SendEvent(PlayerTransformSync.LocalInstance.netId.Value, var));
+            GlobalMessenger<string>.AddListener("QSBPlayerJoin", name => SendEvent(new PlayerJoinMessage { PlayerName = name }));
         }
 
-        public override void OnReceive(uint sender, object[] data)
+        public override void OnReceive(uint sender, PlayerJoinMessage message)
         {
             var player = PlayerRegistry.CreatePlayer(sender);
-            player.Name = (string)data[0];
+            player.Name = message.PlayerName;
             player.IsReady = true;
             DebugLog.ToAll($"{player.Name} joined!");
         }
 
-        public override void OnReceiveLocal(object[] data)
+        public override void OnReceiveLocal(PlayerJoinMessage message)
         {
             var player = PlayerRegistry.CreatePlayer(PlayerTransformSync.LocalInstance.netId.Value);
-            player.Name = (string)data[0];
+            player.Name = message.PlayerName;
             player.IsReady = true;
             DebugLog.ToAll($"{player.Name} joined!");
         }

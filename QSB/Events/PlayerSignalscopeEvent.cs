@@ -2,22 +2,22 @@
 
 namespace QSB.Events
 {
-    class PlayerSignalscopeEvent : QSBEvent
+    class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.SignalscopeActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(PlayerRegistry.LocalPlayer.NetId, true));
-            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(PlayerRegistry.LocalPlayer.NetId, false));
+            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(new ToggleMessage { On = true }));
+            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(new ToggleMessage { On = false }));
         }
 
-        public override void OnReceive(uint sender, object[] data)
+        public override void OnReceive(uint sender, ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(sender);
             var tool = player.Signalscope;
-            player.UpdateState(State.Signalscope, (bool)data[0]);
-            if ((bool)data[0] == true)
+            player.UpdateState(State.Signalscope, message.On);
+            if (message.On)
             {
                 tool.EquipTool();
             }
@@ -27,10 +27,10 @@ namespace QSB.Events
             }
         }
 
-        public override void OnReceiveLocal(object[] data)
+        public override void OnReceiveLocal(ToggleMessage message)
         {
             var tool = PlayerRegistry.LocalPlayer.Signalscope;
-            if ((bool)data[0] == true)
+            if (message.On)
             {
                 tool.EquipTool();
             }
