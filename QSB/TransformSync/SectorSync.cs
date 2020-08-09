@@ -68,7 +68,7 @@ namespace QSB.TransformSync
 
             if (_allSectors.Count == 0)
             {
-                DebugLog.ToConsole($"Error: _allSectors is empty for player {message.SenderId}!", OWML.Common.MessageType.Error);
+                DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
             }
 
             if (sector == null)
