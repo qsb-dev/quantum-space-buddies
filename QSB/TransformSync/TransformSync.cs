@@ -17,7 +17,6 @@ namespace QSB.TransformSync
         public Transform SyncedTransform { get; private set; }
         public Transform ReferenceTransform { get; set; }
 
-        private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
 
@@ -30,10 +29,7 @@ namespace QSB.TransformSync
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (_isInitialized)
-            {
-                Reset();
-            }
+            _isInitialized = false;
         }
 
         protected abstract Transform InitLocalTransform();
@@ -43,39 +39,27 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            _isInitialized = true;
-            Invoke(nameof(SetFirstSector), 1);
+            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
                 SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
             }
-        }
-
-        protected void Reset()
-        {
-            _isInitialized = false;
-            _isSectorSetUp = false;
-        }
-
-        private void SetFirstSector()
-        {
-            _isSectorSetUp = true;
-            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            _isInitialized = true;
         }
 
         private void Update()
         {
             if (!_isInitialized && IsReady)
             {
-                Init();
+                QSB.Helper.Events.Unity.FireOnNextUpdate(Init);
             }
             else if (_isInitialized && !IsReady)
             {
-                Reset();
+                _isInitialized = false;
             }
 
-            if (SyncedTransform == null || !_isSectorSetUp || !_isInitialized)
+            if (SyncedTransform == null || !_isInitialized)
             {
                 return;
             }
