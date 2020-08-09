@@ -2,6 +2,8 @@
 {
     public static class EventList
     {
+        public static bool Ready { get; private set; }
+
         public static void Init()
         {
             new PlayerFlashlightEvent();
@@ -13,6 +15,8 @@
             new PlayerJoinEvent();
             new PlayerLeaveEvent();
             new PlayerDeathEvent();
+
+            Ready = true;
         }
     }
 }

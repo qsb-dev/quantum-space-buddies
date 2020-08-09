@@ -21,13 +21,16 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(FullStateMessage message)
         {
-            DebugLog.ToConsole($"Received game state id for {PlayerTransformSync.LocalInstance.netId.Value}");
+            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
+            {
+                return;
+            }
+            DebugLog.ToConsole($"Received game state for id {message.SenderId}");
             PlayerRegistry.HandleFullStateMessage(message);
         }
 
         public void Send()
         {
-            DebugLog.ToConsole("Sending game state to all players.");
             foreach (var player in PlayerRegistry.PlayerList)
             {
                 var message = new FullStateMessage
