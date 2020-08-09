@@ -1,4 +1,7 @@
-﻿using QSB.Messaging;
+﻿using QSB.Events;
+using QSB.Messaging;
+using QSB.Utility;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -47,6 +50,7 @@ namespace QSB.TimeSync
             }
 
             GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
+            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -66,8 +70,16 @@ namespace QSB.TimeSync
             _localLoopCount++;
         }
 
+        private void OnWakeUp()
+        {
+            PlayerRegistry.GetPlayer(netId.Value).IsReady = true;
+            DebugLog.ToConsole($"Set player {netId.Value} to ready.");
+            PlayerStatesRequest.Instance.Request();
+        }
+
         private void Init()
         {
+            PlayerStatesRequest.Instance.Request();
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
@@ -90,7 +102,7 @@ namespace QSB.TimeSync
             GlobalMessenger<float, int>.FireEvent("QSBServerTime", Time.timeSinceLevelLoad, _localLoopCount);
         }
 
-        public void OnClientReceiveMessage(WakeUpMessage message)
+        public void OnClientReceiveMessage(ServerTimeMessage message)
         {
             if (isServer)
             {
@@ -120,6 +132,7 @@ namespace QSB.TimeSync
             if (diff < -TimeThreshold)
             {
                 StartFastForwarding();
+                return;
             }
         }
 

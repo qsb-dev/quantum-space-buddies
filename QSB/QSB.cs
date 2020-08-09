@@ -26,7 +26,7 @@ namespace QSB
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
-            gameObject.AddComponent<FullStateRequest>();
+            gameObject.AddComponent<PlayerStatesRequest>();
             gameObject.AddComponent<UnityHelper>();
         }
 

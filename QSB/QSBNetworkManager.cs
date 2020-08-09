@@ -110,8 +110,7 @@ namespace QSB
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 
-            var gameState = gameObject.AddComponent<GameState>();
-            gameState.Send();
+            var gameState = gameObject.AddComponent<Events.PlayerState>();
         }
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
@@ -124,7 +123,7 @@ namespace QSB
 
             if (!Network.isServer)
             {
-                gameObject.AddComponent<GameState>();
+                gameObject.AddComponent<Events.PlayerState>();
             }
 
             _canEditName = false;

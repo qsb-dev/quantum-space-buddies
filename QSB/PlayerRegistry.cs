@@ -44,12 +44,15 @@ namespace QSB
             PlayerList.Remove(GetPlayer(id));
         }
 
-        public static void HandleFullStateMessage(FullStateMessage message)
+        public static void HandleFullStateMessage(PlayerStateMessage message)
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
-            DebugLog.ToConsole($"{message.PlayerName} : {message.SenderId} ----------------");
             player.Name = message.PlayerName;
-            DebugLog.ToConsole($"Name : {message.PlayerName}");
+
+            if (LocalPlayer.IsReady == true)
+            {
+                player.UpdateStates(message.PlayerState);
+            }
         }
 
         public static TransformSync.TransformSync GetTransformSync(uint id)

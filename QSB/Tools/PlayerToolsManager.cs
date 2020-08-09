@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OWML.ModHelper.Events;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -19,6 +20,7 @@ namespace QSB.Tools
 
         public static void Init(Transform camera)
         {
+            DebugLog.ToConsole("Init of tools.");
             _cameraBody = camera;
             CreateStowTransforms();
 

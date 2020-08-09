@@ -13,6 +13,7 @@ namespace QSB.Messaging
         SignalscopeActiveChange,
         TranslatorActiveChange,
         ProbeLauncherActiveChange,
+        SuitActiveChange,
         PlayerJoin,
         PlayerLeave,
         PlayerDeath,

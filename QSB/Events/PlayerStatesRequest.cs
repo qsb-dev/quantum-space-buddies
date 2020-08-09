@@ -7,17 +7,17 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class FullStateRequest : NetworkBehaviour
+    public class PlayerStatesRequest : NetworkBehaviour
     {
-        public static FullStateRequest Instance { get; private set; }
+        public static PlayerStatesRequest Instance { get; private set; }
 
-        private MessageHandler<StateRequestMessage> _stateRequestHandler;
+        private MessageHandler<PlayerStatesRequestMessage> _stateRequestHandler;
 
         private void Awake()
         {
             Instance = this;
 
-            _stateRequestHandler = new MessageHandler<StateRequestMessage>(MessageType.FullStateRequest);
+            _stateRequestHandler = new MessageHandler<PlayerStatesRequestMessage>(MessageType.FullStateRequest);
             _stateRequestHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 
@@ -30,17 +30,17 @@ namespace QSB.Events
         private IEnumerator SendRequest()
         {
             yield return new WaitUntil(() => PlayerTransformSync.LocalInstance != null);
-            var message = new StateRequestMessage
+            var message = new PlayerStatesRequestMessage
             {
                 SenderId = PlayerTransformSync.LocalInstance.netId.Value
             };
             _stateRequestHandler.SendToServer(message);
         }
 
-        private void OnServerReceiveMessage(StateRequestMessage message)
+        private void OnServerReceiveMessage(PlayerStatesRequestMessage message)
         {
             DebugLog.ToConsole("Received request for gamestate.");
-            GameState.LocalInstance.Send();
+            PlayerState.LocalInstance.Send();
         }
     }
 }

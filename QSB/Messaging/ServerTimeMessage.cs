@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
-    public class WakeUpMessage : PlayerMessage
+    public class ServerTimeMessage : PlayerMessage
     {
         public float ServerTime { get; set; }
         public int LoopCount { get; set; }
