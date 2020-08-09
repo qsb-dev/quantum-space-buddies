@@ -56,7 +56,7 @@ namespace QSB.TransformSync
 
         private Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
-            return _allSectors?
+            return _allSectors
                 .FirstOrDefault(sector => sector != null &&
                                           sector.GetName() == sectorName &&
                                           sector.name == goName);
@@ -64,18 +64,22 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            DebugLog.ToScreen($"Received sector {message.SectorName} for id {message.SenderId}");
-
             var sector = FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
+
+            if (_allSectors.Count == 0)
+            {
+                DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
+            }
 
             if (sector == null)
             {
-                DebugLog.ToScreen($"Sector {message.SectorName} not found");
+                DebugLog.ToScreen($"Sector {message.SectorName},{(Sector.Name)message.SectorId} not found!");
                 return;
             }
 
-            DebugLog.ToScreen($"Found sector {message.SectorName} for {message.SenderId}");
-            PlayerRegistry.GetTransformSync(message.SenderId).ReferenceTransform = sector.transform;
+            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
+            DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
+            transformSync.ReferenceTransform = sector.transform;
         }
 
         private void OnServerReceiveMessage(SectorMessage message)
@@ -112,7 +116,7 @@ namespace QSB.TransformSync
 
         private Sector GetClosestSector(Transform trans)
         {
-            return _allSectors?
+            return _allSectors
                 .Where(sector => sector != null &&
                                  !_sectorBlacklist.Contains(sector.GetName()))
                 .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
