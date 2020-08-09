@@ -1,6 +1,4 @@
-﻿using QSB.Messaging;
-using QSB.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -10,8 +8,6 @@ namespace QSB.Events
 {
     public class EventMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.Event;
-
         public int EventType { get; set; }
         public object[] Data { get; set; }
 

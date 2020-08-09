@@ -1,12 +1,9 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB.Events
 {
     public class FullStateMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.FullState;
-
         public string PlayerName { get; set; }
         public bool IsReady { get; set; }
 

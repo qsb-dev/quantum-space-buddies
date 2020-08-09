@@ -1,12 +1,9 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB.Events
 {
     public class DeathMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.Death;
-
         public DeathType DeathType { get; set; }
 
         public override void Deserialize(NetworkReader reader)

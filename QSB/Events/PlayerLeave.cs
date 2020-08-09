@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using QSB.Messaging;
 using QSB.Utility;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB.Events
@@ -15,7 +14,7 @@ namespace QSB.Events
 
         private void Awake()
         {
-            _leaveHandler = new MessageHandler<LeaveMessage>();
+            _leaveHandler = new MessageHandler<LeaveMessage>(MessageType.Leave);
             _leaveHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
 
@@ -42,7 +41,7 @@ namespace QSB.Events
 
         private void DestroyObject(uint objectId)
         {
-            var component = GameObject.FindObjectsOfType<NetworkBehaviour>()
+            var component = FindObjectsOfType<NetworkBehaviour>()
                 .FirstOrDefault(x => x.netId.Value == objectId);
             if (component == null)
             {

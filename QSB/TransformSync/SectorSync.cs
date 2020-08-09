@@ -24,7 +24,7 @@ namespace QSB.TransformSync
 
         private void Start()
         {
-            _sectorHandler = new MessageHandler<SectorMessage>();
+            _sectorHandler = new MessageHandler<SectorMessage>(MessageType.Sector);
             _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }

@@ -62,7 +62,7 @@ namespace QSB.Animation
         {
             InitCommon(body);
 
-            _triggerHandler = new MessageHandler<AnimTriggerMessage>();
+            _triggerHandler = new MessageHandler<AnimTriggerMessage>(MessageType.AnimTrigger);
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 

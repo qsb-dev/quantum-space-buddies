@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using QSB.Messaging;
 using UnityEngine.Networking;
 
 namespace QSB.Events
 {
     public class LeaveMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.Leave;
-
         public uint[] ObjectIds { get; set; }
 
         public override void Deserialize(NetworkReader reader)

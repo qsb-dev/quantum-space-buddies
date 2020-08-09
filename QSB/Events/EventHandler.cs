@@ -2,7 +2,6 @@
 using System.Linq;
 using QSB.Messaging;
 using QSB.TransformSync;
-using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -18,7 +17,7 @@ namespace QSB.Events
         {
             LocalInstance = this;
 
-            _eventHandler = new MessageHandler<EventMessage>();
+            _eventHandler = new MessageHandler<EventMessage>(MessageType.Event);
             _eventHandler.OnClientReceiveMessage += OnClientReceiveMessage;
             _eventHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }

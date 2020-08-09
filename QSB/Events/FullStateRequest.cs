@@ -16,7 +16,7 @@ namespace QSB.Events
         {
             Instance = this;
 
-            _stateRequestHandler = new MessageHandler<StateRequestMessage>();
+            _stateRequestHandler = new MessageHandler<StateRequestMessage>(MessageType.FullStateRequest);
             _stateRequestHandler.OnServerReceiveMessage += OnServerReceiveMessage;
         }
 

@@ -12,7 +12,7 @@ namespace QSB.Events
 
         private void Awake()
         {
-            _messageHandler = new MessageHandler<FullStateMessage>();
+            _messageHandler = new MessageHandler<FullStateMessage>(MessageType.FullState);
             _messageHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
             LocalInstance = this;

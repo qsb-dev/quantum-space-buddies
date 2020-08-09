@@ -75,7 +75,7 @@ namespace QSB.TimeSync
                 _shipSpawnPoint.transform.rotation = shipTransform.rotation;
             }
 
-            _deathHandler = new MessageHandler<DeathMessage>();
+            _deathHandler = new MessageHandler<DeathMessage>(MessageType.Death);
             _deathHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             _deathHandler.OnClientReceiveMessage += OnClientReceiveMessage;
         }
