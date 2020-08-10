@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TimeSync
 {
@@ -37,22 +36,22 @@ namespace QSB.TimeSync
                 return;
             }
 
-            var sceneName = SceneManager.GetActiveScene().name;
-            if (sceneName == "SolarSystem" || sceneName == "EyeOfTheUniverse")
+            var scene = LoadManager.GetCurrentScene();
+            if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
             {
                 Init();
             }
             else
             {
-                SceneManager.sceneLoaded += OnSceneLoaded;
+                LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
             }
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
-            if (scene.name == "SolarSystem" || scene.name == "EyeOfTheUniverse")
+            if (newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse)
             {
                 Init();
             }

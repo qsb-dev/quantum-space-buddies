@@ -22,11 +22,15 @@ namespace QSB.Events
 
         public override void OnReceiveRemote(SectorMessage message)
         {
-            var sector = SectorSync.LocalInstance.FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
+            if (!IsInUniverse)
+            {
+                return;
+            }
+            var sector = SectorSync.LocalInstance.FindSectorByName(message.SectorId, message.SectorName);
 
             if (sector == null)
             {
-                DebugLog.ToScreen($"Sector {message.SectorName},{(Sector.Name)message.SectorId} not found!");
+                DebugLog.ToScreen($"Sector {message.SectorName}, {message.SectorId} not found!");
                 return;
             }
 
