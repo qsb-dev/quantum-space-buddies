@@ -22,6 +22,10 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Flashlight, message.ToggleValue);
+            if (!IsInUniverse)
+            {
+                return;
+            }
             player.FlashLight?.UpdateState(message.ToggleValue);
         }
 
