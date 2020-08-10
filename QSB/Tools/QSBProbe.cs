@@ -4,14 +4,27 @@ namespace QSB.Tools
 {
     public class QSBProbe : MonoBehaviour
     {
-        public void Activate()
+        public void SetState(bool state)
+        {
+            if (state)
+            {
+                Activate();
+            }
+            else
+            {
+                Deactivate();
+            }
+        }
+
+        private void Activate()
         {
             gameObject.SetActive(true);
         }
 
-        public void Deactivate()
+        private void Deactivate()
         {
             gameObject.SetActive(false);
         }
+
     }
 }

@@ -10,14 +10,14 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, int, string>.AddListener(EventNames.QSBSectorChange, (netId, id, name) => SendEvent(CreateMessage(netId, id, name)));
+            GlobalMessenger<uint, Sector.Name, string>.AddListener(EventNames.QSBSectorChange, (netId, sectorId, sectorName) => SendEvent(CreateMessage(netId, sectorId, sectorName)));
         }
 
-        private SectorMessage CreateMessage(uint netId, int id, string name) => new SectorMessage
+        private SectorMessage CreateMessage(uint netId, Sector.Name sectorId, string sectorName) => new SectorMessage
         {
             SenderId = netId,
-            SectorId = id,
-            SectorName = name
+            SectorId = sectorId,
+            SectorName = sectorName
         };
 
         public override void OnReceiveRemote(SectorMessage message)
