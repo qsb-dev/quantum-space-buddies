@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using QSB.Animation;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace QSB
         public string Name { get; set; }
         public bool IsReady { get; set; }
         public State State { get; set; }
+        public AnimationSync AnimationSync { get; set; }
 
         public PlayerInfo(uint id)
         {
@@ -49,15 +51,7 @@ namespace QSB
             Translator.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-
-            if (FlagsHelper.IsSet(State, State.Suit))
-            {
-                PlayerRegistry.GetAnimationSync(NetId).SuitUp();
-            }
-            else
-            {
-                PlayerRegistry.GetAnimationSync(NetId).SuitDown();
-            }
+            AnimationSync.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
         }
 
         public bool GetState(State state)

@@ -101,8 +101,17 @@ namespace QSB.Animation
         private void OnBecomeGrounded() => SendTrigger(AnimTrigger.Grounded);
         private void OnBecomeUngrounded() => SendTrigger(AnimTrigger.Ungrounded);
 
-        private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
-        private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
+        private void OnSuitUp()
+        {
+            PlayerRegistry.LocalPlayer.UpdateState(State.Suit, true);
+            SendTrigger(AnimTrigger.SuitUp);
+        }
+
+        private void OnSuitDown()
+        {
+            PlayerRegistry.LocalPlayer.UpdateState(State.Suit, false);
+            SendTrigger(AnimTrigger.SuitDown);
+        }
 
         public void Reset()
         {
@@ -174,14 +183,26 @@ namespace QSB.Animation
             }
         }
 
-        public void SuitUp()
+        public void SetSuitState(bool state)
+        {
+            if (state)
+            {
+                SuitUp();
+            }
+            else
+            {
+                SuitDown();
+            }
+        }
+
+        private void SuitUp()
         {
             _bodyAnim.runtimeAnimatorController = _suitedAnimController;
             _unsuitedGraphics.SetActive(false);
             _suitedGraphics.SetActive(true);
         }
 
-        public void SuitDown()
+        private void SuitDown()
         {
             _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
             _unsuitedGraphics.SetActive(true);

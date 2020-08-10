@@ -48,7 +48,7 @@ namespace QSB
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
 
-            if (LocalPlayer.IsReady == true)
+            if (LocalPlayer.IsReady)
             {
                 player.UpdateStateObjects();
             }
