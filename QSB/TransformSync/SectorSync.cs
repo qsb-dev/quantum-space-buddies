@@ -44,9 +44,16 @@ namespace QSB.TransformSync
 
         public Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
+            var scene = LoadManager.GetCurrentScene();
+            if (scene != OWScene.SolarSystem && scene != OWScene.EyeOfTheUniverse)
+            {
+                return;
+            }
+
             if (_allSectors.Count == 0)
             {
                 DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
+                return;
             }
 
             return _allSectors
