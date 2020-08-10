@@ -9,8 +9,7 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("QSBPlayerStatesRequest", () => SendEvent(
-                CreateMessage()));
+            GlobalMessenger.AddListener("QSBPlayerStatesRequest", () => SendEvent(CreateMessage()));
         }
 
         private PlayerMessage CreateMessage() => new PlayerMessage
