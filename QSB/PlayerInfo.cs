@@ -18,7 +18,7 @@ namespace QSB
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
         public string Name { get; set; }
         public bool IsReady { get; set; }
-        public State State { get; private set; }
+        public State State { get; set; }
 
         public PlayerInfo(uint id)
         {
@@ -39,9 +39,14 @@ namespace QSB
             State = states;
         }
 
-        public void UpdateStates(State newState)
+        public void UpdateStateObjects()
         {
-            State = newState;
+            if (!QSB.WokenUp)
+            {
+                DebugLog.ToConsole("Tried to update state objects, but local player hasn't woken up!");
+                return;
+            }
+            DebugLog.ToConsole($"Updating state objects for player {NetId}");
             FlashLight.UpdateState(FlagsHelper.IsSet(State, State.Flashlight));
             Translator.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));

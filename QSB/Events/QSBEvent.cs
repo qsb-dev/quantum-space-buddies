@@ -27,8 +27,8 @@ namespace QSB.Events
         protected QSBEvent()
         {
             _eventHandler = new MessageHandler<T>(Type);
-            _eventHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            _eventHandler.OnServerReceiveMessage += OnServerReceiveMessage;
+            _eventHandler.OnClientReceiveMessage += OnClientReceive;
+            _eventHandler.OnServerReceiveMessage += OnServerReceive;
 
             SetupListener();
         }
@@ -38,12 +38,12 @@ namespace QSB.Events
             _eventHandler.SendToServer(message);
         }
 
-        private void OnServerReceiveMessage(T message)
+        public virtual void OnServerReceive(T message)
         {
             _eventHandler.SendToAll(message);
         }
 
-        private void OnClientReceiveMessage(T message)
+        private void OnClientReceive(T message)
         {
             if (message.SenderId == PlayerTransformSync.LocalInstance?.netId.Value)
             {

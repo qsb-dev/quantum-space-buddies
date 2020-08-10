@@ -31,7 +31,7 @@ namespace QSB.Events
         public override void OnReceiveLocal(ToggleMessage message)
         {
             PlayerRegistry.LocalPlayer.UpdateState(State.Signalscope, message.ToggleValue);
-            PlayerRegistry.LocalPlayer.Signalscope.ChangeEquipState(message.ToggleValue);
+            //PlayerRegistry.LocalPlayer.Signalscope.ChangeEquipState(message.ToggleValue);
         }
     }
 }

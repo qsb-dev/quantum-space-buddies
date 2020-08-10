@@ -47,10 +47,17 @@ namespace QSB
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
+            player.IsReady = message.PlayerReady;
+            player.State = message.PlayerState;
 
             if (LocalPlayer.IsReady == true)
             {
-                player.UpdateStates(message.PlayerState);
+                DebugLog.ToConsole("LocalPlayer is ready, update state objects.");
+                player.UpdateStateObjects();
+            }
+            else
+            {
+                DebugLog.ToConsole("LocalPlayer is NOT ready.");
             }
         }
 

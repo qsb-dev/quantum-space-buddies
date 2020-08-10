@@ -120,9 +120,10 @@
     <Compile Include="Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Events\PlayerJoinEvent.cs" />
     <Compile Include="Events\PlayerLeaveEvent.cs" />
+    <Compile Include="Events\PlayerReadyEvent.cs" />
     <Compile Include="Events\PlayerSectorEvent.cs" />
     <Compile Include="Events\PlayerSuitEvent.cs" />
-    <Compile Include="Events\WakeUpEvent.cs" />
+    <Compile Include="Events\ServerTimeEvent.cs" />
     <Compile Include="Messaging\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
     <Compile Include="Events\PlayerProbeLauncherEvent.cs" />

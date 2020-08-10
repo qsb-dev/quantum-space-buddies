@@ -72,7 +72,6 @@ namespace QSB.TimeSync
 
         private void OnWakeUp()
         {
-            PlayerRegistry.GetPlayer(netId.Value).IsReady = true;
             PlayerStatesRequest.Instance.Request();
         }
 

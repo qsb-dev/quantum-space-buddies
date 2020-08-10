@@ -5,7 +5,7 @@ namespace QSB.Messaging
     public enum MessageType
     {
         Sector,
-        WakeUp,
+        ServerTime,
         AnimTrigger,
         FullState,
         FullStateRequest,
@@ -17,6 +17,7 @@ namespace QSB.Messaging
         PlayerJoin,
         PlayerLeave,
         PlayerDeath,
-        PlayerSectorChange
+        PlayerSectorChange,
+        PlayerReady
     }
 }
