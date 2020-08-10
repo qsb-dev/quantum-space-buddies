@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QSB.Events;
 using QSB.TransformSync;
 using QSB.Animation;
+using QSB.Messaging;
 
 namespace QSB
 {
@@ -13,7 +13,6 @@ namespace QSB
 
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
-
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
 
         public static PlayerInfo CreatePlayer(uint id)
@@ -42,10 +41,17 @@ namespace QSB
             PlayerList.Remove(GetPlayer(id));
         }
 
-        public static void HandleFullStateMessage(FullStateMessage message)
+        public static void HandleFullStateMessage(PlayerStateMessage message)
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
+            player.IsReady = message.PlayerReady;
+            player.State = message.PlayerState;
+
+            if (LocalPlayer.IsReady == true)
+            {
+                player.UpdateStateObjects();
+            }
         }
 
         public static TransformSync.TransformSync GetTransformSync(uint id)

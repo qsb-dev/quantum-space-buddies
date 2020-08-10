@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using QSB.Messaging;
 using UnityEngine;
 using System.Linq;
+using QSB.Events;
 using QSB.Utility;
 
 namespace QSB.TransformSync
@@ -9,7 +9,8 @@ namespace QSB.TransformSync
     public class SectorSync : MonoBehaviour
     {
         private readonly List<Sector> _allSectors = new List<Sector>();
-        private MessageHandler<SectorMessage> _sectorHandler;
+
+        public static SectorSync LocalInstance { get; private set; }
 
         private readonly Sector.Name[] _sectorBlacklist =
         {
@@ -19,6 +20,7 @@ namespace QSB.TransformSync
 
         private void Awake()
         {
+            LocalInstance = this;
             QSB.Helper.Events.Subscribe<Sector>(OWML.Common.Events.AfterAwake);
             QSB.Helper.Events.Event += OnEvent;
         }
@@ -34,65 +36,23 @@ namespace QSB.TransformSync
             }
         }
 
-        private void Start()
-        {
-            _sectorHandler = new MessageHandler<SectorMessage>();
-            _sectorHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-            _sectorHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-        }
-
         private void SendSector(uint id, Sector sector)
         {
             DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
-
-            var msg = new SectorMessage
-            {
-                SectorId = (int)sector.GetName(),
-                SectorName = sector.name,
-                SenderId = id
-            };
-            _sectorHandler.SendToServer(msg);
+            GlobalMessenger<uint, Sector.Name, string>.FireEvent(EventNames.QSBSectorChange, id, sector.GetName(), sector.name);
         }
 
-        private Sector FindSectorByName(Sector.Name sectorName, string goName)
+        public Sector FindSectorByName(Sector.Name sectorName, string goName)
         {
+            if (_allSectors.Count == 0)
+            {
+                DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
+            }
+
             return _allSectors
                 .FirstOrDefault(sector => sector != null &&
                                           sector.GetName() == sectorName &&
                                           sector.name == goName);
-        }
-
-        private void OnClientReceiveMessage(SectorMessage message)
-        {
-            var scene = LoadManager.GetCurrentScene();
-            if (scene != OWScene.SolarSystem && scene != OWScene.EyeOfTheUniverse)
-            {
-                return;
-            }
-
-            if (_allSectors.Count == 0)
-            {
-                DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
-                return;
-            }
-
-            var sectorName = (Sector.Name)message.SectorId;
-            var sector = FindSectorByName(sectorName, message.SectorName);
-
-            if (sector == null)
-            {
-                DebugLog.ToScreen($"Sector {message.SectorName}, {sectorName} not found!");
-                return;
-            }
-
-            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
-            DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
-            transformSync.ReferenceTransform = sector.transform;
-        }
-
-        private void OnServerReceiveMessage(SectorMessage message)
-        {
-            _sectorHandler.SendToAll(message);
         }
 
         private void Update()

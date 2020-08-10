@@ -1,9 +1,8 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
-    public abstract class PlayerMessage : QSBMessage
+    public class PlayerMessage : MessageBase
     {
         public uint SenderId { get; set; }
         

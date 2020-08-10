@@ -1,5 +1,6 @@
 ﻿using System;
 using OWML.ModHelper.Events;
+using QSB.Events;
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -62,7 +63,7 @@ namespace QSB.Animation
         {
             InitCommon(body);
 
-            _triggerHandler = new MessageHandler<AnimTriggerMessage>();
+            _triggerHandler = new MessageHandler<AnimTriggerMessage>(MessageType.AnimTrigger);
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
@@ -71,8 +72,8 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded += OnBecomeGrounded;
             _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener("SuitUp", OnSuitUp);
-            GlobalMessenger.AddListener("RemoveSuit", OnSuitDown);
+            GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
         }
 
         public void InitRemote(Transform body)
@@ -160,14 +161,10 @@ namespace QSB.Animation
                     _bodyAnim.SetTrigger(trigger.ToString());
                     break;
                 case AnimTrigger.SuitUp:
-                    _bodyAnim.runtimeAnimatorController = _suitedAnimController;
-                    _unsuitedGraphics.SetActive(false);
-                    _suitedGraphics.SetActive(true);
+                    SuitUp();
                     break;
                 case AnimTrigger.SuitDown:
-                    _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
-                    _unsuitedGraphics.SetActive(true);
-                    _suitedGraphics.SetActive(false);
+                    SuitDown();
                     break;
                 case AnimTrigger.Crouch:
                     _crouchParam.Target = value;
@@ -175,6 +172,20 @@ namespace QSB.Animation
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
             }
+        }
+
+        public void SuitUp()
+        {
+            _bodyAnim.runtimeAnimatorController = _suitedAnimController;
+            _unsuitedGraphics.SetActive(false);
+            _suitedGraphics.SetActive(true);
+        }
+
+        public void SuitDown()
+        {
+            _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
+            _unsuitedGraphics.SetActive(true);
+            _suitedGraphics.SetActive(false);
         }
 
         private void Update()

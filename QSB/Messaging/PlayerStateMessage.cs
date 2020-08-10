@@ -1,24 +1,27 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
-    public class FullStateMessage : PlayerMessage
+    public class PlayerStateMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.FullState;
-
         public string PlayerName { get; set; }
+        public bool PlayerReady { get; set; }
+        public State PlayerState { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
             PlayerName = reader.ReadString();
+            PlayerReady = reader.ReadBoolean();
+            PlayerState = (State)reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
             writer.Write(PlayerName);
+            writer.Write(PlayerReady);
+            writer.Write((int)PlayerState);
         }
     }
 }

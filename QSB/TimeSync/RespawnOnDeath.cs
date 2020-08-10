@@ -1,9 +1,6 @@
 ﻿using System.Linq;
 using OWML.ModHelper.Events;
 using QSB.Events;
-using QSB.Messaging;
-using QSB.TransformSync;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -32,8 +29,6 @@ namespace QSB.TimeSync
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
 
-        private MessageHandler<DeathMessage> _deathHandler;
-
         private void Awake()
         {
             _instance = this;
@@ -41,7 +36,7 @@ namespace QSB.TimeSync
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
             QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
-            QSB.Helper.Events.OnEvent += OnEvent;
+            QSB.Helper.Events.Event += OnEvent;
         }
 
         private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
@@ -61,23 +56,20 @@ namespace QSB.TimeSync
             _fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 
             var shipTransform = Locator.GetShipTransform();
-            if (shipTransform != null)
+            if (shipTransform == null)
             {
-                _shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
-                _hatchController = shipTransform.GetComponentInChildren<HatchController>();
-                _cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
-                _shipBody = Locator.GetShipBody();
-                _shipSpawnPoint = GetSpawnPoint(true);
-
-                // Move debug spawn point to initial ship position.
-                _playerSpawnPoint = GetSpawnPoint();
-                _shipSpawnPoint.transform.position = shipTransform.position;
-                _shipSpawnPoint.transform.rotation = shipTransform.rotation;
+                return;
             }
+            _shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
+            _hatchController = shipTransform.GetComponentInChildren<HatchController>();
+            _cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
+            _shipBody = Locator.GetShipBody();
+            _shipSpawnPoint = GetSpawnPoint(true);
 
-            _deathHandler = new MessageHandler<DeathMessage>();
-            _deathHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-            _deathHandler.OnClientReceiveMessage += OnClientReceiveMessage;
+            // Move debug spawn point to initial ship position.
+            _playerSpawnPoint = GetSpawnPoint();
+            _shipSpawnPoint.transform.position = shipTransform.position;
+            _shipSpawnPoint.transform.rotation = shipTransform.rotation;
         }
 
         public void ResetShip()
@@ -109,13 +101,13 @@ namespace QSB.TimeSync
             _cockpitController.Invoke("CompleteExitFlightConsole");
             _hatchController.SetValue("_isPlayerInShip", false);
             _hatchController.Invoke("OpenHatch");
-            GlobalMessenger.FireEvent("ExitShip");
+            GlobalMessenger.FireEvent(EventNames.ExitShip);
         }
 
         public void ResetPlayer()
         {
             // Reset player position.
-            OWRigidbody playerBody = Locator.GetPlayerBody();
+            var playerBody = Locator.GetPlayerBody();
             playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
             playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
             _playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
@@ -141,18 +133,6 @@ namespace QSB.TimeSync
                 );
         }
 
-        private void OnServerReceiveMessage(DeathMessage message)
-        {
-            _deathHandler.SendToAll(message);
-        }
-
-        private void OnClientReceiveMessage(DeathMessage message)
-        {
-            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
-            var deathMessage = Necronomicon.GetPhrase(message.DeathType);
-            DebugLog.ToAll(string.Format(deathMessage, playerName));
-        }
-
         internal static class Patches
         {
             public static bool PreFinishDeathSequence(DeathType deathType)
@@ -172,14 +152,8 @@ namespace QSB.TimeSync
 
             public static void BroadcastDeath(DeathType deathType)
             {
-                var message = new DeathMessage
-                {
-                    SenderId = PlayerTransformSync.LocalInstance.netId.Value,
-                    DeathType = deathType
-                };
-                _instance._deathHandler.SendToServer(message);
+                GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
             }
-
         }
     }
 }

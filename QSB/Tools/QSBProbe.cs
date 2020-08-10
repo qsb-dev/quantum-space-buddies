@@ -1,28 +1,30 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.Tools
 {
     public class QSBProbe : MonoBehaviour
     {
-        private PlayerInfo _player;
-
-        public void Init(PlayerInfo player)
+        public void SetState(bool state)
         {
-            _player = player;
+            if (state)
+            {
+                Activate();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
-        public void Activate()
+        private void Activate()
         {
-            DebugLog.ToConsole($"Activating {_player.Name}'s probe.", MessageType.Info);
             gameObject.SetActive(true);
         }
 
-        public void Deactivate()
+        private void Deactivate()
         {
-            DebugLog.ToConsole($"Deactivating {_player.Name}'s probe.", MessageType.Info);
             gameObject.SetActive(false);
         }
+
     }
 }

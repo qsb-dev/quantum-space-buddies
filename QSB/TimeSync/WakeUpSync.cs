@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.Events;
+using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -6,6 +7,8 @@ namespace QSB.TimeSync
 {
     public class WakeUpSync : NetworkBehaviour
     {
+        public static WakeUpSync LocalInstance { get; private set; }
+
         private const float TimeThreshold = 0.5f;
         private const float MaxFastForwardSpeed = 60f;
         private const float MaxFastForwardDiff = 20f;
@@ -14,8 +17,6 @@ namespace QSB.TimeSync
         private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
 
-        private MessageHandler<WakeUpMessage> _wakeUpHandler;
-
         private float _sendTimer;
         private float _serverTime;
         private float _timeScale;
@@ -23,15 +24,17 @@ namespace QSB.TimeSync
         private int _localLoopCount;
         private int _serverLoopCount;
 
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
+
         private void Start()
         {
             if (!isLocalPlayer)
             {
                 return;
             }
-
-            _wakeUpHandler = new MessageHandler<WakeUpMessage>();
-            _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
             var scene = LoadManager.GetCurrentScene();
             if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
@@ -43,7 +46,7 @@ namespace QSB.TimeSync
                 LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
             }
 
-            GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
+            GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
         }
 
         private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
@@ -65,6 +68,7 @@ namespace QSB.TimeSync
 
         private void Init()
         {
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
@@ -84,15 +88,10 @@ namespace QSB.TimeSync
 
         private void SendServerTime()
         {
-            var message = new WakeUpMessage
-            {
-                ServerTime = Time.timeSinceLevelLoad,
-                LoopCount = _localLoopCount
-            };
-            _wakeUpHandler.SendToAll(message);
+            GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
         }
 
-        private void OnClientReceiveMessage(WakeUpMessage message)
+        public void OnClientReceiveMessage(ServerTimeMessage message)
         {
             if (isServer)
             {

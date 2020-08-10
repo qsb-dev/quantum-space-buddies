@@ -4,13 +4,16 @@ using UnityEngine.Networking;
 namespace QSB.Messaging
 {
     // Extend this to create new message handlers.
-    public class MessageHandler<T> where T : QSBMessage, new()
+    public class MessageHandler<T> where T : MessageBase, new()
     {
         public event Action<T> OnClientReceiveMessage;
         public event Action<T> OnServerReceiveMessage;
 
-        public MessageHandler()
+        private readonly MessageType _messageType;
+
+        public MessageHandler(MessageType messageType)
         {
+            _messageType = messageType + 1 + MsgType.Highest;
             if (QSBNetworkManager.IsReady)
             {
                 Init();
@@ -23,9 +26,8 @@ namespace QSB.Messaging
 
         private void Init()
         {
-            var message = (T)Activator.CreateInstance(typeof(T));
-            NetworkServer.RegisterHandler((short)message.MessageType, OnServerReceiveMessageHandler);
-            NetworkManager.singleton.client.RegisterHandler((short)message.MessageType, OnClientReceiveMessageHandler);
+            NetworkServer.RegisterHandler((short)_messageType, OnServerReceiveMessageHandler);
+            NetworkManager.singleton.client.RegisterHandler((short)_messageType, OnClientReceiveMessageHandler);
         }
 
         public void SendToAll(T message)
@@ -34,7 +36,7 @@ namespace QSB.Messaging
             {
                 return;
             }
-            NetworkServer.SendToAll((short)message.MessageType, message);
+            NetworkServer.SendToAll((short)_messageType, message);
         }
 
         public void SendToServer(T message)
@@ -43,7 +45,7 @@ namespace QSB.Messaging
             {
                 return;
             }
-            NetworkManager.singleton.client.Send((short)message.MessageType, message);
+            NetworkManager.singleton.client.Send((short)_messageType, message);
         }
 
         private void OnClientReceiveMessageHandler(NetworkMessage netMsg)

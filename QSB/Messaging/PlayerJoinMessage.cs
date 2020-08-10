@@ -1,12 +1,9 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
-    public class JoinMessage : PlayerMessage
+    public class PlayerJoinMessage : PlayerMessage
     {
-        public override MessageType MessageType => MessageType.Join;
-
         public string PlayerName { get; set; }
 
         public override void Deserialize(NetworkReader reader)

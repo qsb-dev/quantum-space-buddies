@@ -12,6 +12,7 @@ namespace QSB
         public static IModHelper Helper;
         public static string DefaultServerIP;
         public static bool DebugMode;
+        public static bool WokenUp;
 
         private void Awake()
         {
@@ -26,8 +27,21 @@ namespace QSB
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
-            gameObject.AddComponent<EventListener>();
-            gameObject.AddComponent<FullStateRequest>();
+            gameObject.AddComponent<UnityHelper>();
+
+            GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
+            GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+        }
+
+        private void OnWakeUp()
+        {
+            WokenUp = true;
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+        }
+
+        private void OnLoopStart()
+        {
+            WokenUp = false;
         }
 
         public override void Configure(IModConfig config)

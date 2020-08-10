@@ -110,8 +110,7 @@ namespace QSB
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 
-            var gameState = gameObject.AddComponent<GameState>();
-            gameState.Send();
+            gameObject.AddComponent<Events.PlayerState>();
         }
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
@@ -119,32 +118,31 @@ namespace QSB
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
-            gameObject.AddComponent<PlayerJoin>().Join(_playerName);
-            gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
-            gameObject.AddComponent<Events.EventHandler>();
 
             if (!Network.isServer)
             {
-                gameObject.AddComponent<GameState>();
+                gameObject.AddComponent<Events.PlayerState>();
             }
 
             _canEditName = false;
 
             OnNetworkManagerReady.Invoke();
             IsReady = true;
+
+            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
+
+            UnityHelper.Instance.RunWhen(() => EventList.Ready,
+                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
         }
 
         public override void OnStopClient() // Called on the client when closing connection
         {
             DebugLog.ToScreen("OnStopClient");
             Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<PlayerJoin>());
-            Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
-            Destroy(GetComponent<Events.EventHandler>());
             if (IsClientConnected())
             {
                 PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
@@ -158,7 +156,7 @@ namespace QSB
 
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GetComponent<PlayerLeave>().Leave(playerId, objectIds);
+            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
 
             base.OnServerDisconnect(connection);
         }
