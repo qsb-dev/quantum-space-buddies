@@ -16,7 +16,7 @@
             new PlayerTranslatorEvent();
             new PlayerProbeLauncherEvent();
             new PlayerProbeEvent();
-            //new PlayerSectorChange();
+            new PlayerSectorEvent();
             new PlayerJoinEvent();
             new PlayerLeaveEvent();
             new PlayerDeathEvent();
