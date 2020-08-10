@@ -22,14 +22,7 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.ProbeActive, message.ToggleValue);
-            if (message.ToggleValue)
-            {
-                player.Probe.Activate();
-            }
-            else
-            {
-                player.Probe.Deactivate();
-            }
+            player.Probe.SetState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
