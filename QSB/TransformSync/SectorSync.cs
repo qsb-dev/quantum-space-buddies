@@ -64,16 +64,24 @@ namespace QSB.TransformSync
 
         private void OnClientReceiveMessage(SectorMessage message)
         {
-            var sector = FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
+            var scene = LoadManager.GetCurrentScene();
+            if (scene != OWScene.SolarSystem && scene != OWScene.EyeOfTheUniverse)
+            {
+                return;
+            }
 
             if (_allSectors.Count == 0)
             {
                 DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
+                return;
             }
+
+            var sectorName = (Sector.Name)message.SectorId;
+            var sector = FindSectorByName(sectorName, message.SectorName);
 
             if (sector == null)
             {
-                DebugLog.ToScreen($"Sector {message.SectorName},{(Sector.Name)message.SectorId} not found!");
+                DebugLog.ToScreen($"Sector {message.SectorName}, {sectorName} not found!");
                 return;
             }
 
