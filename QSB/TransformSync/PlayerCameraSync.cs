@@ -25,7 +25,7 @@ namespace QSB.TransformSync
 
             Player.IsReady = true;
             GlobalMessenger<bool>.FireEvent("QSBPlayerReady", true);
-            PlayerStatesRequest.Instance.Request();
+            GlobalMessenger.FireEvent("QSBPlayerStatesRequest");
 
             return body;
         }

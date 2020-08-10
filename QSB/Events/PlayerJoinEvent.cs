@@ -17,7 +17,7 @@ namespace QSB.Events
                 }));
         }
 
-        public override void OnReceive(PlayerJoinMessage message)
+        public override void OnReceiveRemote(PlayerJoinMessage message)
         {
             var player = PlayerRegistry.CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;

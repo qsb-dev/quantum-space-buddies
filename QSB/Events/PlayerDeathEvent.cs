@@ -15,12 +15,12 @@ namespace QSB.Events
         {
             GlobalMessenger<DeathType>.AddListener("QSBPlayerDeath", type => SendEvent(
                 new PlayerDeathMessage {
-                    SenderId = PlayerRegistry.LocalPlayer.NetId,
+                    SenderId = LocalPlayerId,
                     DeathType = type
                 }));
         }
 
-        public override void OnReceive(PlayerDeathMessage message)
+        public override void OnReceiveRemote(PlayerDeathMessage message)
         {
             var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);

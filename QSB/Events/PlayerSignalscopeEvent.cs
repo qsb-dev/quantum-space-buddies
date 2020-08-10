@@ -11,17 +11,17 @@ namespace QSB.Events
         {
             GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(
                 new ToggleMessage {
-                    SenderId = PlayerRegistry.LocalPlayer.NetId,
+                    SenderId = LocalPlayerId,
                     ToggleValue = true
                 }));
             GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(
                 new ToggleMessage {
-                    SenderId = PlayerRegistry.LocalPlayer.NetId,
+                    SenderId = LocalPlayerId,
                     ToggleValue = false
                 }));
         }
 
-        public override void OnReceive(ToggleMessage message)
+        public override void OnReceiveRemote(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Signalscope, message.ToggleValue);

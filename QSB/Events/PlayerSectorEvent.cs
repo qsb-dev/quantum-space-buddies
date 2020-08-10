@@ -18,7 +18,7 @@ namespace QSB.Events
                 }));
         }
 
-        public override void OnReceive(SectorMessage message)
+        public override void OnReceiveRemote(SectorMessage message)
         {
             var sector = SectorSync.LocalInstance.FindSectorByName((Sector.Name)message.SectorId, message.SectorName);
 

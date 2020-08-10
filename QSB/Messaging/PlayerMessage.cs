@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
-    public abstract class PlayerMessage : QSBMessage
+    public class PlayerMessage : QSBMessage
     {
         public uint SenderId { get; set; }
         

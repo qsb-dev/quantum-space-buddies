@@ -19,7 +19,7 @@ namespace QSB.Events
                 }));
         }
 
-        public override void OnReceive(PlayerLeaveMessage message)
+        public override void OnReceiveRemote(PlayerLeaveMessage message)
         {
             var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
             DebugLog.ToAll(playerName, "disconnected.");

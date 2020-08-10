@@ -27,7 +27,6 @@ namespace QSB
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
-            gameObject.AddComponent<PlayerStatesRequest>();
             gameObject.AddComponent<UnityHelper>();
 
             GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
@@ -37,7 +36,7 @@ namespace QSB
         private void OnWakeUp()
         {
             WokenUp = true;
-            PlayerStatesRequest.Instance.Request();
+            GlobalMessenger.FireEvent("QSBPlayerStatesRequest");
         }
 
         private void OnLoopStart()

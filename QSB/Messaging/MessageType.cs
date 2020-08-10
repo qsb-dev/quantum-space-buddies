@@ -16,6 +16,7 @@
         PlayerLeave,
         PlayerDeath,
         PlayerSectorChange,
-        PlayerReady
+        PlayerReady,
+        ProbeActiveChange
     }
 }

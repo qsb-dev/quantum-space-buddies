@@ -11,14 +11,9 @@ namespace QSB.Events
         {
             GlobalMessenger<bool>.AddListener("QSBPlayerReady", ready => SendEvent(
                 new ToggleMessage { 
-                    SenderId = PlayerRegistry.LocalPlayer.NetId, 
+                    SenderId = LocalPlayerId, 
                     ToggleValue = ready 
                 }));
-        }
-
-        public override void OnReceive(ToggleMessage message)
-        {
-            return; 
         }
 
         public override void OnServerReceive(ToggleMessage message)

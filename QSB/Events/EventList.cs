@@ -12,7 +12,7 @@
             new PlayerSignalscopeEvent();
             new PlayerTranslatorEvent();
             new PlayerProbeLauncherEvent();
-            //new PlayerProbeEvent();
+            new PlayerProbeEvent();
             //new PlayerSectorChange();
             new PlayerJoinEvent();
             new PlayerLeaveEvent();

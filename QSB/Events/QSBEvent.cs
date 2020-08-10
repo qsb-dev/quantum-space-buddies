@@ -9,12 +9,17 @@ namespace QSB.Events
     {
         public abstract MessageType Type { get; }
 
+        public uint LocalPlayerId => PlayerRegistry.LocalPlayer.NetId;
+
         public abstract void SetupListener();
-        public abstract void OnReceive(T message);
+        public virtual void OnReceiveRemote(T message)
+        {
+
+        }
 
         public virtual void OnReceiveLocal(T message)
         {
-            OnReceive(message);
+            OnReceiveRemote(message);
         }
 
         public void SendEvent(T message)
@@ -51,7 +56,7 @@ namespace QSB.Events
                 return;
             }
 
-            OnReceive(message);
+            OnReceiveRemote(message);
         }
     }
 }

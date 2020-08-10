@@ -69,7 +69,7 @@ namespace QSB.TimeSync
 
         private void Init()
         {
-            PlayerStatesRequest.Instance.Request();
+            GlobalMessenger.FireEvent("QSBPlayerStatesRequest");
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)

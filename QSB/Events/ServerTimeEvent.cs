@@ -17,7 +17,7 @@ namespace QSB.Events
                 }));
         }
 
-        public override void OnReceive(ServerTimeMessage message)
+        public override void OnReceiveRemote(ServerTimeMessage message)
         {
             WakeUpSync.LocalInstance.OnClientReceiveMessage(message);
         }
