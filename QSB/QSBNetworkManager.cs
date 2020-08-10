@@ -134,7 +134,7 @@ namespace QSB
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
             UnityHelper.Instance.RunWhen(() => EventList.Ready,
-                () => GlobalMessenger<string>.FireEvent("QSBPlayerJoin", _playerName));
+                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
         }
 
         public override void OnStopClient() // Called on the client when closing connection
@@ -156,7 +156,7 @@ namespace QSB
 
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GlobalMessenger<uint, uint[]>.FireEvent("QSBPlayerLeave", playerId, objectIds);
+            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
 
             base.OnServerDisconnect(connection);
         }

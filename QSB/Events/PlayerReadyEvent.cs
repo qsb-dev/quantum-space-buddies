@@ -8,7 +8,7 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<bool>.AddListener("QSBPlayerReady", ready => SendEvent(CreateMessage(ready)));
+            GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, ready => SendEvent(CreateMessage(ready)));
         }
 
         private ToggleMessage CreateMessage(bool ready) => new ToggleMessage

@@ -10,7 +10,7 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, int, string>.AddListener("QSBSectorChange", (netId, id, name) => SendEvent(CreateMessage(netId, id, name)));
+            GlobalMessenger<uint, int, string>.AddListener(EventNames.QSBSectorChange, (netId, id, name) => SendEvent(CreateMessage(netId, id, name)));
         }
 
         private SectorMessage CreateMessage(uint netId, int id, string name) => new SectorMessage

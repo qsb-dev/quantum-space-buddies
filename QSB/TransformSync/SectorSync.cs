@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using QSB.Events;
 using QSB.Utility;
 
 namespace QSB.TransformSync
@@ -38,7 +39,7 @@ namespace QSB.TransformSync
         private void SendSector(uint id, Sector sector)
         {
             DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
-            GlobalMessenger<uint, int, string>.FireEvent("QSBSectorChange", id, (int)sector.GetName(), sector.name);
+            GlobalMessenger<uint, int, string>.FireEvent(EventNames.QSBSectorChange, id, (int)sector.GetName(), sector.name);
         }
 
         public Sector FindSectorByName(Sector.Name sectorName, string goName)

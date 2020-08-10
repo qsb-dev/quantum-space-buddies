@@ -9,8 +9,8 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(CreateMessage(true)));
-            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(CreateMessage(false)));
+            GlobalMessenger.AddListener(EventNames.EquipTranslator, () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener(EventNames.UnequipTranslator, () => SendEvent(CreateMessage(false)));
         }
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage

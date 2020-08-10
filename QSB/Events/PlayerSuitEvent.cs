@@ -8,8 +8,8 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("SuitUp", () => SendEvent(CreateMessage(true)));
-            GlobalMessenger.AddListener("RemoveSuit", () => SendEvent(CreateMessage(false)));
+            GlobalMessenger.AddListener(EventNames.SuitUp, () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener(EventNames.RemoveSuit, () => SendEvent(CreateMessage(false)));
         }
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage

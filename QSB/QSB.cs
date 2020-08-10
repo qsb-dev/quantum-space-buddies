@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -28,14 +29,14 @@ namespace QSB
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<UnityHelper>();
 
-            GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
-            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
+            GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
+            GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
         }
 
         private void OnWakeUp()
         {
             WokenUp = true;
-            GlobalMessenger.FireEvent("QSBPlayerStatesRequest");
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
         }
 
         private void OnLoopStart()

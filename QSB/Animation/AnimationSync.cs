@@ -1,5 +1,6 @@
 ﻿using System;
 using OWML.ModHelper.Events;
+using QSB.Events;
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -71,8 +72,8 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded += OnBecomeGrounded;
             _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener("SuitUp", OnSuitUp);
-            GlobalMessenger.AddListener("RemoveSuit", OnSuitDown);
+            GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
         }
 
         public void InitRemote(Transform body)
