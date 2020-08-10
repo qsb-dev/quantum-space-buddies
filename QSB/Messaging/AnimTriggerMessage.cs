@@ -2,10 +2,9 @@
 
 namespace QSB.Messaging
 {
-    public class AnimTriggerMessage : MessageBase
+    public class AnimTriggerMessage : PlayerMessage
     {
         public short TriggerId;
-        public uint SenderId;
         public float Value;
 
         public override void Deserialize(NetworkReader reader)
@@ -13,7 +12,6 @@ namespace QSB.Messaging
             base.Deserialize(reader);
             Value = reader.ReadSingle();
             TriggerId = reader.ReadInt16();
-            SenderId = reader.ReadPackedUInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
@@ -21,7 +19,6 @@ namespace QSB.Messaging
             base.Serialize(writer);
             writer.Write(Value);
             writer.Write(TriggerId);
-            writer.Write(SenderId);
         }
     }
 }
