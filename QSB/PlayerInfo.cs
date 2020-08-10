@@ -43,10 +43,8 @@ namespace QSB
         {
             if (!QSB.WokenUp)
             {
-                DebugLog.ToConsole("Tried to update state objects, but local player hasn't woken up!");
                 return;
             }
-            DebugLog.ToConsole($"Updating state objects for player {NetId}");
             FlashLight.UpdateState(FlagsHelper.IsSet(State, State.Flashlight));
             Translator.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));

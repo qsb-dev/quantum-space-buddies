@@ -52,12 +52,7 @@ namespace QSB
 
             if (LocalPlayer.IsReady == true)
             {
-                DebugLog.ToConsole("LocalPlayer is ready, update state objects.");
                 player.UpdateStateObjects();
-            }
-            else
-            {
-                DebugLog.ToConsole("LocalPlayer is NOT ready.");
             }
         }
 

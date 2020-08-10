@@ -27,7 +27,6 @@ namespace QSB.Events
 
         public override void OnServerReceive(ToggleMessage message)
         {
-            DebugLog.ToConsole("Received ready message from " + message.SenderId);
             PlayerRegistry.GetPlayer(message.SenderId).IsReady = message.ToggleValue;
             PlayerState.LocalInstance.Send();
         }

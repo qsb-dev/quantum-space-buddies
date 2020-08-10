@@ -24,7 +24,6 @@ namespace QSB.TransformSync
 
             Player.Camera = body.gameObject;
 
-            DebugLog.ToConsole("Setting player " + Player.NetId + " to ready - all tools done!");
             Player.IsReady = true;
             GlobalMessenger<bool>.FireEvent("QSBPlayerReady", true);
             PlayerStatesRequest.Instance.Request();
