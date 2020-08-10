@@ -3,23 +3,21 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
+    public class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.ProbeLauncherActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = true
-                }));
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = false
-                }));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(CreateMessage(true)));
+            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(CreateMessage(false)));
         }
+
+        private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+        {
+            SenderId = LocalPlayerId,
+            ToggleValue = value
+        };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {

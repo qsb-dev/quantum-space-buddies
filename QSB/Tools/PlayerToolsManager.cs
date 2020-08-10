@@ -101,7 +101,7 @@ namespace QSB.Tools
             var original = GameObject.Find("NomaiTranslatorProp");
 
             original.SetActive(false);
-            var translatorRoot = GameObject.Instantiate(original);
+            var translatorRoot = Object.Instantiate(original);
             original.SetActive(true);
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
@@ -171,9 +171,9 @@ namespace QSB.Tools
             launcherRoot.SetActive(true);
         }
 
-        private static MeshRenderer GetRenderer(GameObject root, string gameobjectName)
+        private static MeshRenderer GetRenderer(GameObject root, string gameObjectName)
         {
-            return root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameobjectName);
+            return root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
         }
     }
 }

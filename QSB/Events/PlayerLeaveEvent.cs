@@ -6,18 +6,20 @@ using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    class PlayerLeaveEvent : QSBEvent<PlayerLeaveMessage>
+    public class PlayerLeaveEvent : QSBEvent<PlayerLeaveMessage>
     {
         public override MessageType Type => MessageType.PlayerLeave;
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, uint[]>.AddListener("QSBPlayerLeave", (id, objects) => SendEvent(
-                new PlayerLeaveMessage {
-                    SenderId = id,
-                    ObjectIds = objects
-                }));
+            GlobalMessenger<uint, uint[]>.AddListener("QSBPlayerLeave", (id, objects) => SendEvent(CreateMessage(id, objects)));
         }
+
+        private PlayerLeaveMessage CreateMessage(uint id, uint[] objects) => new PlayerLeaveMessage
+        {
+            SenderId = id,
+            ObjectIds = objects
+        };
 
         public override void OnReceiveRemote(PlayerLeaveMessage message)
         {

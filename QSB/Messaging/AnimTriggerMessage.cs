@@ -1,5 +1,4 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
@@ -11,6 +10,7 @@ namespace QSB.Messaging
 
         public override void Deserialize(NetworkReader reader)
         {
+            base.Deserialize(reader);
             Value = reader.ReadSingle();
             TriggerId = reader.ReadInt16();
             SenderId = reader.ReadPackedUInt32();
@@ -18,6 +18,7 @@ namespace QSB.Messaging
 
         public override void Serialize(NetworkWriter writer)
         {
+            base.Serialize(writer);
             writer.Write(Value);
             writer.Write(TriggerId);
             writer.Write(SenderId);

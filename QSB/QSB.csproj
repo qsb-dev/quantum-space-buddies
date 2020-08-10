@@ -114,7 +114,6 @@
     <Compile Include="Animation\AnimationSync.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
-    <Compile Include="Messaging\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Events\PlayerDeathEvent.cs" />
     <Compile Include="Events\PlayerFlashlightEvent.cs" />
@@ -126,6 +125,7 @@
     <Compile Include="Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Events\PlayerSuitEvent.cs" />
     <Compile Include="Events\ServerTimeEvent.cs" />
+    <Compile Include="Messaging\AnimTriggerMessage.cs" />
     <Compile Include="Messaging\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
     <Compile Include="Events\PlayerProbeLauncherEvent.cs" />

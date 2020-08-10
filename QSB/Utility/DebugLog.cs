@@ -66,11 +66,16 @@ namespace QSB.Utility
             NotificationManager.SharedInstance.PostNotification(data);
         }
 
-        public static void ToAll(params object[] logObjects)
+        public static void ToAll(MessageType type, params object[] logObjects)
         {
-            ToConsole(JoinAll(logObjects));
+            ToConsole(JoinAll(logObjects), type);
             ToScreen(logObjects);
             ToHud(logObjects);
+        }
+
+        public static void ToAll(params object[] logObjects)
+        {
+            ToAll(MessageType.Message, logObjects);
         }
     }
 }

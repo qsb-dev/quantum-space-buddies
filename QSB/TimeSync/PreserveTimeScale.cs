@@ -1,5 +1,4 @@
 ﻿using OWML.ModHelper.Events;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB.TimeSync
@@ -16,7 +15,7 @@ namespace QSB.TimeSync
                 return;
             }
 
-            var campfires = GameObject.FindObjectsOfType<Campfire>();
+            var campfires = FindObjectsOfType<Campfire>();
             foreach (var campfire in campfires)
             {
                 campfire.SetValue("_canSleepHere", false); // Stop players from sleeping at campfires

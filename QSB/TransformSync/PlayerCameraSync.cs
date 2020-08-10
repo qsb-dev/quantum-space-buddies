@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Tools;
+﻿using QSB.Tools;
 using UnityEngine;
 
 namespace QSB.TransformSync
