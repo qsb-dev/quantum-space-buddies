@@ -51,7 +51,7 @@ namespace QSB
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
-            DebugLog.ToConsole($"Updating state for player {player.NetId} to {Convert.ToString((int)player.State, 2)}");
+
             if (LocalPlayer.IsReady == true)
             {
                 player.UpdateStateObjects();

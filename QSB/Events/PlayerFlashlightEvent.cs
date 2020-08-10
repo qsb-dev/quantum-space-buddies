@@ -24,7 +24,7 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Flashlight, message.ToggleValue);
-            player.FlashLight.UpdateState(message.ToggleValue);
+            player.FlashLight?.UpdateState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)

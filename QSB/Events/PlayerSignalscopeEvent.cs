@@ -25,7 +25,7 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Signalscope, message.ToggleValue);
-            player.Signalscope.ChangeEquipState(message.ToggleValue);
+            player.Signalscope?.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
