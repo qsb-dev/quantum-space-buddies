@@ -2,7 +2,6 @@
 using System.Linq;
 using QSB.TransformSync;
 using QSB.Animation;
-using QSB.Utility;
 using QSB.Messaging;
 
 namespace QSB
@@ -18,7 +17,6 @@ namespace QSB
 
         public static PlayerInfo CreatePlayer(uint id)
         {
-            DebugLog.ToConsole($"Creating player with ID {id}", OWML.Common.MessageType.Info);
             if (PlayerExists(id))
             {
                 return null;

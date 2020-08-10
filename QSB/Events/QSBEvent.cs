@@ -59,7 +59,6 @@ namespace QSB.Events
         {
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
-
         private void Send(T message)
         {
             _eventHandler.SendToServer(message);

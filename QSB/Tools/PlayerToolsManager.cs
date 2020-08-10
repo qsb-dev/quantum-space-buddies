@@ -34,8 +34,6 @@ namespace QSB.Tools
         public static void CreateProbe(Transform body, PlayerInfo player)
         {
             var newProbe = body.gameObject.AddComponent<QSBProbe>();
-            newProbe.Init(player);
-
             player.Probe = newProbe;
         }
 
