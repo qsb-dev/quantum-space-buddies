@@ -79,10 +79,10 @@ namespace QSB.Animation
         {
             InitCommon(body);
 
-            _suitedAnimController = _bodyAnim.runtimeAnimatorController;
-
             var playerAnimController = body.GetComponent<PlayerAnimController>();
             playerAnimController.enabled = false;
+
+            _suitedAnimController = playerAnimController.GetValue<RuntimeAnimatorController>("_baseAnimController");
             _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
             _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
             _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
