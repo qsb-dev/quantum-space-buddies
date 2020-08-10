@@ -34,14 +34,7 @@ namespace QSB.Events
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
-            if (message.ToggleValue)
-            {
-                PlayerRegistry.LocalPlayer.Probe.Activate();
-            }
-            else
-            {
-                PlayerRegistry.LocalPlayer.Probe.Deactivate();
-            }
+            PlayerRegistry.LocalPlayer.UpdateState(State.ProbeActive, message.ToggleValue);
         }
     }
 }
