@@ -9,8 +9,8 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(CreateMessage(true)));
-            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(CreateMessage(false)));
+            GlobalMessenger<Signalscope>.AddListener(EventNames.EquipSignalscope, var => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener(EventNames.UnequipSignalscope, () => SendEvent(CreateMessage(false)));
         }
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage

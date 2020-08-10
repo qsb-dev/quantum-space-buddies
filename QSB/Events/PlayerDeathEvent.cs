@@ -9,7 +9,7 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<DeathType>.AddListener("QSBPlayerDeath", type => SendEvent(CreateMessage(type)));
+            GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, type => SendEvent(CreateMessage(type)));
         }
 
         private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage

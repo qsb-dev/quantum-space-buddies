@@ -1,4 +1,5 @@
-﻿using QSB.Tools;
+﻿using QSB.Events;
+using QSB.Tools;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -23,8 +24,8 @@ namespace QSB.TransformSync
             Player.Camera = body.gameObject;
 
             Player.IsReady = true;
-            GlobalMessenger<bool>.FireEvent("QSBPlayerReady", true);
-            GlobalMessenger.FireEvent("QSBPlayerStatesRequest");
+            GlobalMessenger<bool>.FireEvent(EventNames.QSBPlayerReady, true);
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
 
             return body;
         }

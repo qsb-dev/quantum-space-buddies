@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OWML.ModHelper.Events;
+using QSB.Events;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -100,7 +101,7 @@ namespace QSB.TimeSync
             _cockpitController.Invoke("CompleteExitFlightConsole");
             _hatchController.SetValue("_isPlayerInShip", false);
             _hatchController.Invoke("OpenHatch");
-            GlobalMessenger.FireEvent("ExitShip");
+            GlobalMessenger.FireEvent(EventNames.ExitShip);
         }
 
         public void ResetPlayer()
@@ -151,7 +152,7 @@ namespace QSB.TimeSync
 
             public static void BroadcastDeath(DeathType deathType)
             {
-                GlobalMessenger<DeathType>.FireEvent("QSBPlayerDeath", deathType);
+                GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
             }
         }
     }

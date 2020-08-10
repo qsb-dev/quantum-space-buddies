@@ -10,7 +10,7 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener("QSBPlayerJoin", name => SendEvent(CreateMessage(name)));
+            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, name => SendEvent(CreateMessage(name)));
         }
 
         private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage

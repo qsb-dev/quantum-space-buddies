@@ -9,8 +9,8 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherEquipped", var => SendEvent(CreateMessage(true)));
-            GlobalMessenger<ProbeLauncher>.AddListener("ProbeLauncherUnequipped", var => SendEvent(CreateMessage(false)));
+            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, var => SendEvent(CreateMessage(true)));
+            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, var => SendEvent(CreateMessage(false)));
         }
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage

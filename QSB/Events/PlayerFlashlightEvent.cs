@@ -8,8 +8,8 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("TurnOnFlashlight", () => SendEvent(CreateMessage(true)));
-            GlobalMessenger.AddListener("TurnOffFlashlight", () => SendEvent(CreateMessage(false)));
+            GlobalMessenger.AddListener(EventNames.TurnOnFlashlight, () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener(EventNames.TurnOffFlashlight, () => SendEvent(CreateMessage(false)));
         }
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage

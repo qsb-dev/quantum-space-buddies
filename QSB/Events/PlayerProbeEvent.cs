@@ -8,8 +8,8 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<SurveyorProbe>.AddListener("LaunchProbe", probe => SendEvent(CreateMessage(true)));
-            GlobalMessenger<SurveyorProbe>.AddListener("RetrieveProbe", probe => SendEvent(CreateMessage(false)));
+            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, probe => SendEvent(CreateMessage(true)));
+            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, probe => SendEvent(CreateMessage(false)));
         }
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
