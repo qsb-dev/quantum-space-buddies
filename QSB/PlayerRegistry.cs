@@ -5,6 +5,7 @@ using QSB.TransformSync;
 using QSB.Animation;
 using QSB.Utility;
 using QSB.Messaging;
+using System;
 
 namespace QSB
 {
@@ -19,6 +20,7 @@ namespace QSB
 
         public static PlayerInfo CreatePlayer(uint id)
         {
+            DebugLog.ToConsole($"Creating player with ID {id}", OWML.Common.MessageType.Info);
             if (PlayerExists(id))
             {
                 return null;
@@ -49,7 +51,7 @@ namespace QSB
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
-
+            DebugLog.ToConsole($"Updating state for player {player.NetId} to {Convert.ToString((int)player.State, 2)}");
             if (LocalPlayer.IsReady == true)
             {
                 player.UpdateStateObjects();

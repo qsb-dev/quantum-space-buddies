@@ -23,6 +23,7 @@ namespace QSB.Events
 
         public void Request()
         {
+            DebugLog.ToConsole("Requesting player states...", OWML.Common.MessageType.Info);
             StartCoroutine(SendRequest());
         }
 

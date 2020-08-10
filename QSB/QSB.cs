@@ -37,6 +37,7 @@ namespace QSB
         private void OnWakeUp()
         {
             WokenUp = true;
+            PlayerStatesRequest.Instance.Request();
         }
 
         private void OnLoopStart()

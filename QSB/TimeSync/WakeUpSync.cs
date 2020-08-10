@@ -50,7 +50,6 @@ namespace QSB.TimeSync
             }
 
             GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
-            GlobalMessenger.AddListener("WakeUp", OnWakeUp);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -68,11 +67,6 @@ namespace QSB.TimeSync
         private void OnLoopStart()
         {
             _localLoopCount++;
-        }
-
-        private void OnWakeUp()
-        {
-            PlayerStatesRequest.Instance.Request();
         }
 
         private void Init()
