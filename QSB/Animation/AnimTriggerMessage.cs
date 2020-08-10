@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Animation
 {
-    public class AnimTriggerMessage : QSBMessage
+    public class AnimTriggerMessage : MessageBase
     {
         public short TriggerId;
         public uint SenderId;

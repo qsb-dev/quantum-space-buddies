@@ -1,5 +1,8 @@
 ﻿namespace QSB.Events
 {
+    /// <summary>
+    /// Creates instances of all of the events QSB uses.
+    /// </summary>
     public static class EventList
     {
         public static bool Ready { get; private set; }

@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 namespace QSB.Messaging
 {
     // Extend this to create new message handlers.
-    public class MessageHandler<T> where T : QSBMessage, new()
+    public class MessageHandler<T> where T : MessageBase, new()
     {
         public event Action<T> OnClientReceiveMessage;
         public event Action<T> OnServerReceiveMessage;
