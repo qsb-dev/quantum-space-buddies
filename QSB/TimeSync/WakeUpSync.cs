@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -122,7 +121,6 @@ namespace QSB.TimeSync
             if (diff < -TimeThreshold)
             {
                 StartFastForwarding();
-                return;
             }
         }
 

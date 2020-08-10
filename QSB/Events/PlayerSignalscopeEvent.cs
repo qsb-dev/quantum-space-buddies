@@ -3,23 +3,21 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
+    public class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.SignalscopeActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = true
-                }));
-            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = false
-                }));
+            GlobalMessenger<Signalscope>.AddListener("EquipSignalscope", var => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener("UnequipSignalscope", () => SendEvent(CreateMessage(false)));
         }
+
+        private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+        {
+            SenderId = LocalPlayerId,
+            ToggleValue = value
+        };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {

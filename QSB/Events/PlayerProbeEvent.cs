@@ -1,29 +1,22 @@
 ﻿using QSB.Messaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QSB.Events
 {
-    class PlayerProbeEvent : QSBEvent<ToggleMessage>
+    public class PlayerProbeEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.ProbeActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<SurveyorProbe>.AddListener("LaunchProbe", probe => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId, 
-                    ToggleValue = true 
-                }));
-            GlobalMessenger<SurveyorProbe>.AddListener("RetrieveProbe", probe => SendEvent(
-                new ToggleMessage
-                {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = false
-                }));
+            GlobalMessenger<SurveyorProbe>.AddListener("LaunchProbe", probe => SendEvent(CreateMessage(true)));
+            GlobalMessenger<SurveyorProbe>.AddListener("RetrieveProbe", probe => SendEvent(CreateMessage(false)));
         }
+
+        private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+        {
+            SenderId = LocalPlayerId,
+            ToggleValue = value
+        };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {

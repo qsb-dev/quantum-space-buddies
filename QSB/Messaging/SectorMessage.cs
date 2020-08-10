@@ -1,5 +1,4 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
@@ -10,12 +9,14 @@ namespace QSB.Messaging
 
         public override void Deserialize(NetworkReader reader)
         {
+            base.Deserialize(reader);
             SectorId = reader.ReadInt32();
             SectorName = reader.ReadString();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
+            base.Serialize(writer);
             writer.Write(SectorId);
             writer.Write(SectorName);
         }

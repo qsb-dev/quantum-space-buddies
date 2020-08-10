@@ -131,9 +131,9 @@ namespace QSB
             OnNetworkManagerReady.Invoke();
             IsReady = true;
 
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => EventList.Init());
+            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
-            UnityHelper.Instance.RunWhen(() => EventList.Ready == true,
+            UnityHelper.Instance.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger<string>.FireEvent("QSBPlayerJoin", _playerName));
         }
 

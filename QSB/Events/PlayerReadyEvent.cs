@@ -3,18 +3,20 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    class PlayerReadyEvent : QSBEvent<ToggleMessage>
+    public class PlayerReadyEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.PlayerReady;
 
         public override void SetupListener()
         {
-            GlobalMessenger<bool>.AddListener("QSBPlayerReady", ready => SendEvent(
-                new ToggleMessage { 
-                    SenderId = LocalPlayerId, 
-                    ToggleValue = ready 
-                }));
+            GlobalMessenger<bool>.AddListener("QSBPlayerReady", ready => SendEvent(CreateMessage(ready)));
         }
+
+        private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
+        {
+            SenderId = LocalPlayerId,
+            ToggleValue = ready
+        };
 
         public override void OnServerReceive(ToggleMessage message)
         {

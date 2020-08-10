@@ -2,23 +2,21 @@
 
 namespace QSB.Events
 {
-    class PlayerFlashlightEvent : QSBEvent<ToggleMessage>
+    public class PlayerFlashlightEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.FlashlightActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("TurnOnFlashlight", () => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = true
-                }));
-            GlobalMessenger.AddListener("TurnOffFlashlight", () => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = false
-                }));
+            GlobalMessenger.AddListener("TurnOnFlashlight", () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener("TurnOffFlashlight", () => SendEvent(CreateMessage(false)));
         }
+
+        private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+        {
+            SenderId = LocalPlayerId,
+            ToggleValue = value
+        };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {

@@ -93,7 +93,7 @@ namespace QSB.Events
                 "{0} chased their memories"
             } }
         };
-        
+
         public static string GetPhrase(DeathType deathType)
         {
             return DeathDictionary[deathType].OrderBy(x => Guid.NewGuid()).First();

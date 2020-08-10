@@ -9,12 +9,14 @@ namespace QSB.Messaging
 
         public override void Deserialize(NetworkReader reader)
         {
+            base.Deserialize(reader);
             ServerTime = reader.ReadSingle();
             LoopCount = reader.ReadInt16();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
+            base.Serialize(writer);
             writer.Write(ServerTime);
             writer.Write(LoopCount);
         }

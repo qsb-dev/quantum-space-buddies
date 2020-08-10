@@ -3,23 +3,21 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    class PlayerTranslatorEvent : QSBEvent<ToggleMessage>
+    public class PlayerTranslatorEvent : QSBEvent<ToggleMessage>
     {
         public override MessageType Type => MessageType.TranslatorActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = true
-                }));
-            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(
-                new ToggleMessage {
-                    SenderId = LocalPlayerId,
-                    ToggleValue = false
-                }));
+            GlobalMessenger.AddListener("EquipTranslator", () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.AddListener("UnequipTranslator", () => SendEvent(CreateMessage(false)));
         }
+
+        private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+        {
+            SenderId = LocalPlayerId,
+            ToggleValue = value
+        };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {

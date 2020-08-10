@@ -1,5 +1,4 @@
-﻿using QSB.Messaging;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {

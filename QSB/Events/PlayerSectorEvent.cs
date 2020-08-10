@@ -4,19 +4,21 @@ using QSB.Utility;
 
 namespace QSB.Events
 {
-    class PlayerSectorEvent : QSBEvent<SectorMessage>
+    public class PlayerSectorEvent : QSBEvent<SectorMessage>
     {
         public override MessageType Type => MessageType.PlayerSectorChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, int, string>.AddListener("QSBSectorChange", (netId, id, name) => SendEvent(
-                new SectorMessage {
-                    SenderId = netId,
-                    SectorId = id,
-                    SectorName = name
-                }));
+            GlobalMessenger<uint, int, string>.AddListener("QSBSectorChange", (netId, id, name) => SendEvent(CreateMessage(netId, id, name)));
         }
+
+        private SectorMessage CreateMessage(uint netId, int id, string name) => new SectorMessage
+        {
+            SenderId = netId,
+            SectorId = id,
+            SectorName = name
+        };
 
         public override void OnReceiveRemote(SectorMessage message)
         {
