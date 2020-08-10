@@ -114,7 +114,7 @@
     <Compile Include="Animation\AnimationSync.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
-    <Compile Include="Animation\AnimTriggerMessage.cs" />
+    <Compile Include="Messaging\AnimTriggerMessage.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Events\PlayerDeathEvent.cs" />
     <Compile Include="Events\PlayerFlashlightEvent.cs" />
