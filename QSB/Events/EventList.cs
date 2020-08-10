@@ -20,6 +20,7 @@
             new PlayerJoinEvent();
             new PlayerLeaveEvent();
             new PlayerDeathEvent();
+            new PlayerStatesRequestEvent();
 
             Ready = true;
         }
