@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QSB.Events;
 using QSB.TransformSync;
 using QSB.Animation;
 using QSB.Utility;
 using QSB.Messaging;
-using System;
 
 namespace QSB
 {

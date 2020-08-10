@@ -1,6 +1,4 @@
-﻿using UnityEngine.Networking;
-
-namespace QSB.Messaging
+﻿namespace QSB.Messaging
 {
     public enum MessageType
     {

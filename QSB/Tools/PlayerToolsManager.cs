@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using OWML.ModHelper.Events;
-using QSB.Events;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools

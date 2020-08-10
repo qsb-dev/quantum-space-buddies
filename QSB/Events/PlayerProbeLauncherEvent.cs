@@ -25,7 +25,7 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.ProbeLauncher, message.ToggleValue);
-            player.ProbeLauncher.ChangeEquipState(message.ToggleValue);
+            player.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)

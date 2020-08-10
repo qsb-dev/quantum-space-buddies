@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.Utility;
 
 namespace QSB.Events
 {

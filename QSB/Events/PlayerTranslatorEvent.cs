@@ -25,7 +25,7 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Translator, message.ToggleValue);
-            player.Translator.ChangeEquipState(message.ToggleValue);
+            player.Translator?.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
