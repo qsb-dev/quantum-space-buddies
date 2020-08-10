@@ -23,6 +23,10 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.ProbeLauncher, message.ToggleValue);
+            if (!IsInUniverse)
+            {
+                return;
+            }
             player.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
         }
 

@@ -23,6 +23,10 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Signalscope, message.ToggleValue);
+            if (!IsInUniverse)
+            {
+                return;
+            }
             player.Signalscope?.ChangeEquipState(message.ToggleValue);
         }
 
