@@ -26,7 +26,7 @@ namespace QSB.TransformSync
 
         private Transform GetPlayerModelCopy()
         {
-            var copy = Instantiate(LocalInstance._originalBody);
+            var copy = Instantiate(LocalInstance._originalBody ?? Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2"));
             copy.gameObject.SetActive(true);
             return copy;
         }
