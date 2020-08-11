@@ -23,10 +23,5 @@ namespace QSB.Events
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Suit, message.ToggleValue);
         }
-
-        public override void OnReceiveLocal(ToggleMessage message)
-        {
-            PlayerRegistry.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
-        }
     }
 }

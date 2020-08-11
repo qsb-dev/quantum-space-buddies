@@ -7,7 +7,7 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
-        private Transform _bodyBlueprint;
+        private Transform _originalBody;
 
         public override void OnStartLocalPlayer()
         {
@@ -19,28 +19,14 @@ namespace QSB.TransformSync
         private Transform GetPlayerModel()
         {
             var body = Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
-            StoreBlueprintIfMissing(body);
+            _originalBody = Instantiate(body);
+            _originalBody.gameObject.SetActive(false);
             return body;
         }
 
         private Transform GetPlayerModelCopy()
         {
-            StoreBlueprintIfMissing(Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2"));
-            return GetBlueprintCopy();
-        }
-
-        private void StoreBlueprintIfMissing(Transform body)
-        {
-            if (_bodyBlueprint == null)
-            {
-                _bodyBlueprint = Instantiate(body);
-                _bodyBlueprint.gameObject.SetActive(false);
-            }
-        }
-
-        private Transform GetBlueprintCopy()
-        {
-            var copy = Instantiate(_bodyBlueprint);
+            var copy = Instantiate(LocalInstance._originalBody);
             copy.gameObject.SetActive(true);
             return copy;
         }
