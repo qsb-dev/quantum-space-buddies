@@ -15,25 +15,16 @@ namespace QSB
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
 
-        public static PlayerInfo CreatePlayer(uint id)
-        {
-            if (PlayerExists(id))
-            {
-                return null;
-            }
-            var player = new PlayerInfo(id);
-            PlayerList.Add(player);
-            return player;
-        }
-
         public static PlayerInfo GetPlayer(uint id)
         {
-            return PlayerList.FirstOrDefault(x => x.NetId == id);
-        }
-
-        public static bool PlayerExists(uint id)
-        {
-            return GetPlayer(id) != null;
+            var player = PlayerList.FirstOrDefault(x => x.NetId == id);
+            if (player != null)
+            {
+                return player;
+            }
+            player = new PlayerInfo(id);
+            PlayerList.Add(player);
+            return player;
         }
 
         public static void RemovePlayer(uint id)
@@ -43,12 +34,12 @@ namespace QSB
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
-            var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
+            var player = GetPlayer(message.SenderId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
 
-            if (LocalPlayer.IsReady == true)
+            if (LocalPlayer.IsReady)
             {
                 player.UpdateStateObjects();
             }
