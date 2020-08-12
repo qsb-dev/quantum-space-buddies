@@ -17,6 +17,7 @@
         PlayerDeath,
         PlayerSectorChange,
         PlayerReady,
-        ProbeActiveChange
+        ProbeActiveChange,
+        Elevator
     }
 }

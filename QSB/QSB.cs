@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using QSB.ElevatorSync;
 using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
@@ -28,6 +29,7 @@ namespace QSB
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<UnityHelper>();
+            gameObject.AddComponent<ElevatorController>();
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
