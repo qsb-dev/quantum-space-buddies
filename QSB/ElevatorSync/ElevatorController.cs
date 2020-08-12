@@ -56,17 +56,17 @@ namespace QSB.ElevatorSync
 
         public void RemoteCall(ElevatorDirection direction)
         {
-            PrepareForMoving(direction);
+            SetDirection(direction);
             RemoteStartLift();
         }
 
         private void LocalCall(ElevatorDirection direction)
         {
-            PrepareForMoving(direction);
+            SetDirection(direction);
             _elevator.Invoke("StartLift");
         }
 
-        private void PrepareForMoving(ElevatorDirection direction)
+        private void SetDirection(ElevatorDirection direction)
         {
             var isGoingUp = direction == ElevatorDirection.Up;
             var targetPos = isGoingUp ? _endLocalPos : _startLocalPos;
