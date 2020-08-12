@@ -83,7 +83,7 @@ namespace QSB.Animation
             var playerAnimController = body.GetComponent<PlayerAnimController>();
             playerAnimController.enabled = false;
 
-            _suitedAnimController = playerAnimController.GetValue<RuntimeAnimatorController>("_baseAnimController");
+            _suitedAnimController = AnimControllerHack.SuitedAnimController;
             _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
             _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
             _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
@@ -177,6 +177,7 @@ namespace QSB.Animation
         public void SuitUp()
         {
             _bodyAnim.runtimeAnimatorController = _suitedAnimController;
+            _anim.runtimeAnimatorController = _suitedAnimController;
             _unsuitedGraphics.SetActive(false);
             _suitedGraphics.SetActive(true);
         }
@@ -184,6 +185,7 @@ namespace QSB.Animation
         public void SuitDown()
         {
             _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
+            _anim.runtimeAnimatorController = _unsuitedAnimController;
             _unsuitedGraphics.SetActive(true);
             _suitedGraphics.SetActive(false);
         }
