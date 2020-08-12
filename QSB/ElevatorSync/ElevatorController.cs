@@ -38,32 +38,10 @@ namespace QSB.ElevatorSync
             }
         }
 
-        private void Update()
-        {
-            if (_elevator == null)
-            {
-                return;
-            }
-            if (Input.GetKeyDown(KeyCode.PageUp))
-            {
-                LocalCall(ElevatorDirection.Up);
-            }
-            if (Input.GetKeyDown(KeyCode.PageDown))
-            {
-                LocalCall(ElevatorDirection.Down);
-            }
-        }
-
         public void RemoteCall(ElevatorDirection direction)
         {
             SetDirection(direction);
             RemoteStartLift();
-        }
-
-        private void LocalCall(ElevatorDirection direction)
-        {
-            SetDirection(direction);
-            _elevator.Invoke("StartLift");
         }
 
         private void SetDirection(ElevatorDirection direction)
