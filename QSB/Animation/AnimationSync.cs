@@ -114,8 +114,8 @@ namespace QSB.Animation
             _playerController.OnJump -= OnJump;
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
-            GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
+            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
         }
 
         private void SendTrigger(AnimTrigger trigger, float value = 0)
