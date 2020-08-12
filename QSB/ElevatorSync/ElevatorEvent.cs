@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 
 namespace QSB.ElevatorSync
 {
@@ -25,8 +24,6 @@ namespace QSB.ElevatorSync
             {
                 return;
             }
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
-            DebugLog.ToAll($"{player.Name} called the elevator {message.Direction}");
             ElevatorController.Instance.RemoteCall(message.Direction);
         }
     }
