@@ -7,7 +7,10 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
-        public Transform bodyTransform;
+        static PlayerTransformSync()
+        {
+            AnimControllerPatch.Init();
+        }
 
         public override void OnStartLocalPlayer()
         {
@@ -25,8 +28,6 @@ namespace QSB.TransformSync
         {
             var body = GetPlayerModel();
 
-            bodyTransform = body;
-
             GetComponent<AnimationSync>().InitLocal(body);
 
             Player.Body = body.gameObject;
@@ -37,8 +38,6 @@ namespace QSB.TransformSync
         protected override Transform InitRemoteTransform()
         {
             var body = Instantiate(GetPlayerModel());
-
-            bodyTransform = body;
 
             GetComponent<AnimationSync>().InitRemote(body);
 
