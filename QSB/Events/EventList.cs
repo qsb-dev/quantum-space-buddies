@@ -1,4 +1,6 @@
-﻿namespace QSB.Events
+﻿using QSB.ElevatorSync;
+
+namespace QSB.Events
 {
     /// <summary>
     /// Creates instances of all of the events QSB uses.
@@ -21,6 +23,7 @@
             new PlayerLeaveEvent();
             new PlayerDeathEvent();
             new PlayerStatesRequestEvent();
+            new ElevatorEvent();
 
             Ready = true;
         }

@@ -27,5 +27,6 @@
         public static string QSBServerTime = "QSBServerTime";
         public static string QSBOnProbeAnchor = "QSBOnProbeAnchor";
         public static string QSBOnProbeWarp = "QSBOnProbeWarp";
+        public static string QSBStartLift = "QSBStartLift";
     }
 }
