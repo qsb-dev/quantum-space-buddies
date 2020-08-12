@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.Animation
 {
-    public static class AnimControllerHack
+    public static class AnimControllerPatch
     {
         public static RuntimeAnimatorController SuitedAnimController { get; private set; }
 

@@ -9,7 +9,7 @@ namespace QSB.TransformSync
 
         static PlayerTransformSync()
         {
-            AnimControllerHack.Init();
+            AnimControllerPatch.Init();
         }
 
         public override void OnStartLocalPlayer()

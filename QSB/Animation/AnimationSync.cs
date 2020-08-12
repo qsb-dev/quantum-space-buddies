@@ -83,7 +83,7 @@ namespace QSB.Animation
             var playerAnimController = body.GetComponent<PlayerAnimController>();
             playerAnimController.enabled = false;
 
-            _suitedAnimController = AnimControllerHack.SuitedAnimController;
+            _suitedAnimController = AnimControllerPatch.SuitedAnimController;
             _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
             _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
             _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
