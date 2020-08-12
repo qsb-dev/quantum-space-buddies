@@ -5,7 +5,7 @@ namespace QSB.ElevatorSync
 {
     public class ElevatorController : MonoBehaviour
     {
-        public static ElevatorController Instance { get; private set; }
+        public string ElevatorName => _elevator.name;
 
         private Elevator _elevator;
         private Vector3 _startLocalPos;
@@ -15,27 +15,15 @@ namespace QSB.ElevatorSync
         private OWAudioSource _owAudioSourceOneShot;
         private OWAudioSource _owAudioSourceLP;
 
-        private void Awake()
+        public void Init(Elevator elevator)
         {
-            Instance = this;
-
-            QSB.Helper.Events.Subscribe<Elevator>(OWML.Common.Events.AfterAwake);
-            QSB.Helper.Events.Event += OnEvent;
-
-            QSB.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(ElevatorPatches.StartLift));
-        }
-
-        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
-        {
-            if (behaviour is Elevator elevator && ev == OWML.Common.Events.AfterAwake)
-            {
-                _elevator = elevator;
-                _startLocalPos = _elevator.GetValue<Vector3>("_startLocalPos");
-                _endLocalPos = _elevator.GetValue<Vector3>("_endLocalPos");
-                _interactVolume = _elevator.GetValue<SingleInteractionVolume>("_interactVolume");
-                _owAudioSourceOneShot = _elevator.GetValue<OWAudioSource>("_owAudioSourceOneShot");
-                _owAudioSourceLP = _elevator.GetValue<OWAudioSource>("_owAudioSourceLP");
-            }
+            PlayerRegistry.ElevatorControllers.Add(this);
+            _elevator = elevator;
+            _startLocalPos = _elevator.GetValue<Vector3>("_startLocalPos");
+            _endLocalPos = _elevator.GetValue<Vector3>("_endLocalPos");
+            _interactVolume = _elevator.GetValue<SingleInteractionVolume>("_interactVolume");
+            _owAudioSourceOneShot = _elevator.GetValue<OWAudioSource>("_owAudioSourceOneShot");
+            _owAudioSourceLP = _elevator.GetValue<OWAudioSource>("_owAudioSourceLP");
         }
 
         public void RemoteCall(ElevatorDirection direction)
