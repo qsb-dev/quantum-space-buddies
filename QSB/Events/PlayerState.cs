@@ -1,6 +1,5 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
-using QSB.Utility;
 using UnityEngine.Networking;
 
 namespace QSB.Events
@@ -25,7 +24,7 @@ namespace QSB.Events
             {
                 return;
             }
-            UnityHelper.Instance.RunWhen(() => PlayerRegistry.GetTransformSync(message.SenderId) != null, 
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerRegistry.GetTransformSync(message.SenderId) != null, 
                 () => PlayerRegistry.HandleFullStateMessage(message));
         }
 

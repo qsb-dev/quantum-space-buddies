@@ -1,6 +1,5 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
-using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -65,7 +64,7 @@ namespace QSB.Events
 
         public void SendEvent(T message)
         {
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
         private void Send(T message)
         {
