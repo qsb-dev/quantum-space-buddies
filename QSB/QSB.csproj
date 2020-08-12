@@ -120,6 +120,7 @@
     <Compile Include="ElevatorSync\ElevatorDirection.cs" />
     <Compile Include="ElevatorSync\ElevatorController.cs" />
     <Compile Include="ElevatorSync\ElevatorEvent.cs" />
+    <Compile Include="ElevatorSync\ElevatorManager.cs" />
     <Compile Include="ElevatorSync\ElevatorMessage.cs" />
     <Compile Include="ElevatorSync\ElevatorPatches.cs" />
     <Compile Include="Events\EventNames.cs" />
