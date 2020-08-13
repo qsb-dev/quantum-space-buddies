@@ -2,6 +2,7 @@
 using OWML.ModHelper;
 using QSB.ElevatorSync;
 using QSB.Events;
+using QSB.GeyserSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -30,6 +31,7 @@ namespace QSB
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<UnityHelper>();
             gameObject.AddComponent<ElevatorManager>();
+            gameObject.AddComponent<GeyserManager>();
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);

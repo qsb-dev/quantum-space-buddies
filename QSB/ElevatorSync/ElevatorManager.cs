@@ -1,24 +1,34 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace QSB.ElevatorSync
 {
     public class ElevatorManager : MonoBehaviour
     {
+        public static ElevatorManager Instance { get; private set; }
+
+        private List<Elevator> _elevators;
+
         private void Awake()
         {
-            QSB.Helper.Events.Subscribe<Elevator>(OWML.Common.Events.AfterAwake);
-            QSB.Helper.Events.Event += OnEvent;
+            Instance = this;
+
+            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
 
             QSB.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(ElevatorPatches.StartLift));
         }
 
-        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
+        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
-            if (behaviour is Elevator elevator && ev == OWML.Common.Events.AfterAwake)
+            _elevators = Resources.FindObjectsOfTypeAll<Elevator>().ToList();
+            for (var id = 0; id < _elevators.Count; id++)
             {
-                var elevatorController = gameObject.AddComponent<ElevatorController>();
-                elevatorController.Init(elevator);
+                var elevatorController = new QSBElevator();
+                elevatorController.Init(_elevators[id], id);
             }
         }
+
+        public int GetId(Elevator elevator) => _elevators.IndexOf(elevator);
     }
 }

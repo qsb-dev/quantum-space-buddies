@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.WorldSync;
 
 namespace QSB.ElevatorSync
 {
@@ -9,23 +10,23 @@ namespace QSB.ElevatorSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<ElevatorDirection, string>.AddListener(EventNames.QSBStartLift, (direction, elevatorName) => SendEvent(CreateMessage(direction, elevatorName)));
+            GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, (id, direction) => SendEvent(CreateMessage(id, direction)));
         }
 
-        private ElevatorMessage CreateMessage(ElevatorDirection direction, string elevatorName) => new ElevatorMessage
+        private ElevatorMessage CreateMessage(int id, ElevatorDirection direction) => new ElevatorMessage
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,
             Direction = direction,
-            ElevatorName = elevatorName
+            ObjectId = id
         };
 
         public override void OnReceiveRemote(ElevatorMessage message)
         {
-            if (!IsInUniverse || message.SenderId == PlayerRegistry.LocalPlayer.NetId)
+            if (!IsInUniverse)
             {
                 return;
             }
-            PlayerRegistry.GetElevatorController(message.ElevatorName).RemoteCall(message.Direction);
+            WorldRegistry.GetObject<QSBElevator>(message.ObjectId).RemoteCall(message.Direction);
         }
     }
 }

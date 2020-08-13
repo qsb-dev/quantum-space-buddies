@@ -1,22 +1,22 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.ElevatorSync
+namespace QSB.WorldSync
 {
-    public class ElevatorMessage : WorldObjectMessage
+    public class WorldObjectMessage : PlayerMessage
     {
-        public ElevatorDirection Direction { get; set; }
+        public int ObjectId { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            Direction = (ElevatorDirection)reader.ReadInt32();
+            ObjectId = reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write((int)Direction);
+            writer.Write(ObjectId);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using QSB.ElevatorSync;
+using QSB.GeyserSync;
 
 namespace QSB.Events
 {
@@ -24,6 +25,7 @@ namespace QSB.Events
             new PlayerDeathEvent();
             new PlayerStatesRequestEvent();
             new ElevatorEvent();
+            new GeyserEvent();
             new ServerTimeEvent();
 
             Ready = true;
