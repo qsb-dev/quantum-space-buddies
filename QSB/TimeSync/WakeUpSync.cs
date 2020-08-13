@@ -21,6 +21,7 @@ namespace QSB.TimeSync
         private float _serverTime;
         private float _timeScale;
         private bool _isInputEnabled = true;
+        private bool _isFirstFastForward = true;
         private int _localLoopCount;
         private int _serverLoopCount;
 
@@ -155,6 +156,7 @@ namespace QSB.TimeSync
             {
                 EnableInput();
             }
+            _isFirstFastForward = false;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
@@ -212,17 +214,17 @@ namespace QSB.TimeSync
             {
                 var diff = _serverTime - Time.timeSinceLevelLoad;
                 Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+
+                if (LoadManager.GetCurrentScene() == OWScene.SolarSystem && _isFirstFastForward)
+                {
+                    Locator.GetPlayerTransform().position = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.position;
+                    Locator.GetPlayerTransform().rotation = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.rotation;
+                    Physics.SyncTransforms();
+                }
             }
             else
             {
                 Time.timeScale = _timeScale;
-            }
-
-            if (LoadManager.GetCurrentScene() == OWScene.SolarSystem)
-            {
-                Locator.GetPlayerTransform().position = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.position;
-                Locator.GetPlayerTransform().rotation = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.rotation;
-                Physics.SyncTransforms();
             }
 
             var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
