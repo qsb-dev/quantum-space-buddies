@@ -24,6 +24,7 @@ namespace QSB.Events
             new PlayerDeathEvent();
             new PlayerStatesRequestEvent();
             new ElevatorEvent();
+            new ServerTimeEvent();
 
             Ready = true;
         }
