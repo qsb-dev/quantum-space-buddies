@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.WorldSync;
 
 namespace QSB.ElevatorSync
 {
@@ -25,7 +26,7 @@ namespace QSB.ElevatorSync
             {
                 return;
             }
-            PlayerRegistry.GetElevatorController(message.ElevatorName).RemoteCall(message.Direction);
+            WorldRegistry.GetObject<QSBElevator>(message.ElevatorName).RemoteCall(message.Direction);
         }
     }
 }

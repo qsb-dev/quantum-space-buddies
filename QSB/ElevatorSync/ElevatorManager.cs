@@ -16,7 +16,7 @@ namespace QSB.ElevatorSync
         {
             if (behaviour is Elevator elevator && ev == OWML.Common.Events.AfterAwake)
             {
-                var elevatorController = gameObject.AddComponent<ElevatorController>();
+                var elevatorController = new QSBElevator();
                 elevatorController.Init(elevator);
             }
         }

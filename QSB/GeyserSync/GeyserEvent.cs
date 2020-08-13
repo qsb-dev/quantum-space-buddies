@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.GeyserSync
@@ -9,18 +8,15 @@ namespace QSB.GeyserSync
     {
         public override MessageType Type => MessageType.Geyser;
 
-        public static SyncObjects ObjectType => SyncObjects.Geysers;
-
         public override void SetupListener()
         {
-            GlobalMessenger<GeyserController, bool>.AddListener(EventNames.QSBGeyserState, (controller, state) => SendEvent(CreateMessage(controller, state)));
+            GlobalMessenger<string, bool>.AddListener(EventNames.QSBGeyserState, (name, state) => SendEvent(CreateMessage(name, state)));
         }
 
-        private GeyserMessage CreateMessage(GeyserController controller, bool state) => new GeyserMessage
+        private GeyserMessage CreateMessage(string name, bool state) => new GeyserMessage
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,
-            ObjectID = WorldRegistry.GetObjectID(ObjectType, controller),
-            ObjectType = ObjectType,
+            ObjectName = name,
             State = state
         };
 
@@ -30,14 +26,8 @@ namespace QSB.GeyserSync
             {
                 return;
             }
-            if (message.State)
-            {
-                WorldRegistry.GeyserControllers[message.ObjectID].ActivateGeyser();
-            }
-            else
-            {
-                WorldRegistry.GeyserControllers[message.ObjectID].DeactivateGeyser();
-            }
+            var geyser = WorldRegistry.GetObject<QSBGeyser>(message.ObjectName);
+            geyser.SetState(message.State);
         }
     }
 }
