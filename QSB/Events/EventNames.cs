@@ -28,5 +28,6 @@
         public static string QSBOnProbeAnchor = "QSBOnProbeAnchor";
         public static string QSBOnProbeWarp = "QSBOnProbeWarp";
         public static string QSBStartLift = "QSBStartLift";
+        public static string QSBGeyserState = "QSBGeyserState";
     }
 }

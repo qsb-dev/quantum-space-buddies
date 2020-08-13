@@ -2,9 +2,11 @@
 using OWML.ModHelper;
 using QSB.ElevatorSync;
 using QSB.Events;
+using QSB.GeyserSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace QSB
 {
@@ -33,22 +35,24 @@ namespace QSB
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+
+            SceneManager.sceneLoaded += OnSceneLoad;
         }
 
         private void OnWakeUp()
         {
             WokenUp = true;
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
-
-            foreach (var geyser in GameObject.FindObjectsOfType<GeyserController>())
-            {
-                DebugLog.ToConsole(geyser.name + " : " + geyser.GetInstanceID());
-            }
         }
 
         private void OnLoopStart()
         {
             WokenUp = false;
+        }
+
+        private void OnSceneLoad(Scene scene, LoadSceneMode mode)
+        {
+            WorldRegistry.GenerateComponentList();
         }
 
         public override void Configure(IModConfig config)

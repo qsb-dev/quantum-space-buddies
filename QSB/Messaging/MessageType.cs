@@ -18,6 +18,7 @@
         PlayerSectorChange,
         PlayerReady,
         ProbeActiveChange,
-        Elevator
+        Elevator,
+        Geyser
     }
 }

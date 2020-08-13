@@ -121,9 +121,10 @@ namespace QSB
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
 
-            if (!Network.isServer)
+            if (NetworkClient.active && !NetworkServer.active)
             {
                 gameObject.AddComponent<Events.PlayerState>();
+                QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
             }
 
             _canEditName = false;
