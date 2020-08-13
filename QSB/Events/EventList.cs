@@ -2,6 +2,7 @@
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.TimeSync;
 using QSB.Tools;
 using QSB.TransformSync;
 
