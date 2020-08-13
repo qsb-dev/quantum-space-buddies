@@ -26,6 +26,7 @@ namespace QSB.Events
             new PlayerStatesRequestEvent();
             new ElevatorEvent();
             new GeyserEvent();
+            new ServerTimeEvent();
 
             Ready = true;
         }
