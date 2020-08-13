@@ -1,6 +1,7 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.Messaging;
+using UnityEngine.Networking;
 
-namespace QSB.Messaging
+namespace QSB.Animation
 {
     public class AnimTriggerMessage : PlayerMessage
     {

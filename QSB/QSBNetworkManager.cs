@@ -2,6 +2,7 @@
 using System.Linq;
 using OWML.ModHelper.Events;
 using QSB.Animation;
+using QSB.DeathSync;
 using QSB.Events;
 using QSB.GeyserSync;
 using QSB.TimeSync;

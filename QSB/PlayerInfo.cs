@@ -49,15 +49,7 @@ namespace QSB
             Translator.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-
-            if (FlagsHelper.IsSet(State, State.Suit))
-            {
-                PlayerRegistry.GetAnimationSync(NetId).SuitUp();
-            }
-            else
-            {
-                PlayerRegistry.GetAnimationSync(NetId).SuitDown();
-            }
+            PlayerRegistry.GetAnimationSync(NetId).SetSuitState(FlagsHelper.IsSet(State, State.Suit));
         }
 
         public bool GetState(State state)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QSB.Events
+namespace QSB.DeathSync
 {
     public static class Necronomicon
     {

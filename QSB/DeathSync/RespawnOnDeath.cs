@@ -3,16 +3,16 @@ using OWML.ModHelper.Events;
 using QSB.Events;
 using UnityEngine;
 
-namespace QSB.TimeSync
+namespace QSB.DeathSync
 {
     /// <summary>
     /// Client-only-side component for managing respawning after death.
     /// </summary>
     public class RespawnOnDeath : MonoBehaviour
     {
-        private static RespawnOnDeath _instance;
+        public static RespawnOnDeath Instance;
 
-        private static readonly DeathType[] AllowedDeathTypes = {
+        public readonly DeathType[] AllowedDeathTypes = {
             DeathType.BigBang,
             DeathType.Supernova,
             DeathType.TimeLoop
@@ -31,10 +31,10 @@ namespace QSB.TimeSync
 
         private void Awake()
         {
-            _instance = this;
+            Instance = this;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.PreFinishDeathSequence));
-            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(Patches), nameof(Patches.BroadcastDeath));
+            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.Event += OnEvent;
         }
@@ -131,29 +131,6 @@ namespace QSB.TimeSync
                 .FirstOrDefault(spawnPoint =>
                     spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip
                 );
-        }
-
-        internal static class Patches
-        {
-            public static bool PreFinishDeathSequence(DeathType deathType)
-            {
-                if (AllowedDeathTypes.Contains(deathType))
-                {
-                    // Allow real death
-                    return true;
-                }
-
-                _instance.ResetShip();
-                _instance.ResetPlayer();
-
-                // Prevent original death method from running.
-                return false;
-            }
-
-            public static void BroadcastDeath(DeathType deathType)
-            {
-                GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
-            }
         }
     }
 }
