@@ -24,5 +24,10 @@ namespace QSB.Events
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }
+
+        public override void OnReceiveLocal(PlayerDeathMessage message)
+        {
+            OnReceiveRemote(message);
+        }
     }
 }

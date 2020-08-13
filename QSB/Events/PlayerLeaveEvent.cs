@@ -32,6 +32,11 @@ namespace QSB.Events
             }
         }
 
+        public override void OnReceiveLocal(PlayerLeaveMessage message)
+        {
+            OnReceiveRemote(message);
+        }
+
         private void DestroyObject(uint objectId)
         {
             var component = Object.FindObjectsOfType<NetworkBehaviour>()

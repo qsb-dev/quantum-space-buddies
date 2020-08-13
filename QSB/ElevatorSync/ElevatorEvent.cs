@@ -21,7 +21,7 @@ namespace QSB.ElevatorSync
 
         public override void OnReceiveRemote(ElevatorMessage message)
         {
-            if (!IsInUniverse || message.SenderId == PlayerRegistry.LocalPlayer.NetId)
+            if (!IsInUniverse)
             {
                 return;
             }

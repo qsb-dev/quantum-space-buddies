@@ -26,7 +26,7 @@ namespace QSB.GeyserSync
 
         public override void OnReceiveRemote(GeyserMessage message)
         {
-            if (!IsInUniverse || message.SenderId == PlayerRegistry.LocalPlayer.NetId)
+            if (!IsInUniverse)
             {
                 return;
             }
