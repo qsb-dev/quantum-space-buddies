@@ -29,7 +29,7 @@ namespace QSB
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<UnityHelper>();
-            gameObject.AddComponent<ElevatorController>();
+            gameObject.AddComponent<ElevatorManager>();
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
