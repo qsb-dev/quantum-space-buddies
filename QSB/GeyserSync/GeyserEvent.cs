@@ -30,7 +30,6 @@ namespace QSB.GeyserSync
             {
                 return;
             }
-            DebugLog.ToConsole($"Recieved geyser event for {message.ObjectID} to {message.State}");
             if (message.State)
             {
                 WorldRegistry.GeyserControllers[message.ObjectID].ActivateGeyser();
