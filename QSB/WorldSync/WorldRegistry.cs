@@ -7,9 +7,9 @@ namespace QSB.WorldSync
     {
         public static List<WorldObject> WorldObjects { get; } = new List<WorldObject>();
 
-        public static T GetObject<T>(string name) where T : WorldObject
+        public static T GetObject<T>(string uniqueName) where T : WorldObject
         {
-            return WorldObjects.OfType<T>().FirstOrDefault(x => x.UniqueName == name);
+            return WorldObjects.OfType<T>().FirstOrDefault(x => x.UniqueName == uniqueName);
         }
     }
 }
