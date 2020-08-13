@@ -132,6 +132,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
+            SpinnerUI.Show();
         }
 
         private void StartPausing()
@@ -142,6 +143,7 @@ namespace QSB.TimeSync
             }
             _timeScale = 0f;
             _state = State.Pausing;
+            SpinnerUI.Show();
         }
 
         private void ResetTimeScale()
@@ -153,6 +155,9 @@ namespace QSB.TimeSync
             {
                 EnableInput();
             }
+            Physics.SyncTransforms();
+            SpinnerUI.Hide();
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
         }
 
         private void DisableInput()
@@ -211,6 +216,13 @@ namespace QSB.TimeSync
             else
             {
                 Time.timeScale = _timeScale;
+            }
+
+            if (LoadManager.GetCurrentScene() == OWScene.SolarSystem)
+            {
+                Locator.GetPlayerTransform().position = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.position;
+                Locator.GetPlayerTransform().rotation = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.rotation;
+                Physics.SyncTransforms();
             }
 
             var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;

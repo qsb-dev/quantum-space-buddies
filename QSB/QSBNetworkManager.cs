@@ -127,6 +127,7 @@ namespace QSB
             {
                 gameObject.AddComponent<Events.PlayerState>();
                 GeyserManager.Instance.EmptyUpdate();
+                WakeUpPatches.AddPatches();
             }
 
             _canEditName = false;
