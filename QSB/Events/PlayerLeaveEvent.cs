@@ -32,10 +32,7 @@ namespace QSB.Events
             }
         }
 
-        public override void OnReceiveLocal(PlayerLeaveMessage message)
-        {
-            OnReceiveRemote(message);
-        }
+        public override void OnReceiveLocal(PlayerLeaveMessage message) => OnReceiveRemote(message);
 
         private void DestroyObject(uint objectId)
         {

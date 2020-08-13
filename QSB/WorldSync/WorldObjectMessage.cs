@@ -1,25 +1,22 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.Messaging
+namespace QSB.WorldSync
 {
     public class WorldObjectMessage : PlayerMessage
     {
-        public SyncObjects ObjectType { get; set; }
-        public int ObjectID { get; set; }
+        public int ObjectId { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            ObjectType = (SyncObjects)reader.ReadInt32();
-            ObjectID = reader.ReadInt32();
+            ObjectId = reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write((int)ObjectType);
-            writer.Write(ObjectID);
+            writer.Write(ObjectId);
         }
     }
 }

@@ -39,9 +39,6 @@ namespace QSB.Events
             transformSync.ReferenceTransform = sector.transform;
         }
 
-        public override void OnReceiveLocal(SectorMessage message)
-        {
-            OnReceiveRemote(message);
-        }
+        public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);
     }
 }

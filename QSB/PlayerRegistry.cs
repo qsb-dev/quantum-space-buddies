@@ -2,7 +2,6 @@
 using System.Linq;
 using QSB.TransformSync;
 using QSB.Animation;
-using QSB.ElevatorSync;
 using QSB.Messaging;
 
 namespace QSB
@@ -15,8 +14,6 @@ namespace QSB
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
-
-        public static List<ElevatorController> ElevatorControllers { get; } = new List<ElevatorController>();
 
         public static PlayerInfo CreatePlayer(uint id)
         {
@@ -51,7 +48,7 @@ namespace QSB
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
 
-            if (LocalPlayer.IsReady == true)
+            if (LocalPlayer.IsReady)
             {
                 player.UpdateStateObjects();
             }
@@ -65,11 +62,6 @@ namespace QSB
         public static AnimationSync GetAnimationSync(uint id)
         {
             return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
-        }
-
-        public static ElevatorController GetElevatorController(string name)
-        {
-            return ElevatorControllers.FirstOrDefault(x => x != null && x.ElevatorName == name);
         }
 
     }

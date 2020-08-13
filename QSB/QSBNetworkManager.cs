@@ -3,6 +3,7 @@ using System.Linq;
 using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.Events;
+using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -124,7 +125,7 @@ namespace QSB
             if (NetworkClient.active && !NetworkServer.active)
             {
                 gameObject.AddComponent<Events.PlayerState>();
-                QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
+                GeyserManager.Instance.EmptyUpdate();
             }
 
             _canEditName = false;

@@ -25,9 +25,6 @@ namespace QSB.Events
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }
 
-        public override void OnReceiveLocal(PlayerDeathMessage message)
-        {
-            OnReceiveRemote(message);
-        }
+        public override void OnReceiveLocal(PlayerDeathMessage message) => OnReceiveRemote(message);
     }
 }

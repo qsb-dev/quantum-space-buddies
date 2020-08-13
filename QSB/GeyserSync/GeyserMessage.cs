@@ -1,4 +1,4 @@
-﻿using QSB.Messaging;
+﻿using QSB.WorldSync;
 using UnityEngine.Networking;
 
 namespace QSB.GeyserSync
