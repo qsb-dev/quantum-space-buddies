@@ -83,7 +83,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -118,7 +120,7 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="ElevatorSync\ElevatorDirection.cs" />
-    <Compile Include="ElevatorSync\ElevatorController.cs" />
+    <Compile Include="ElevatorSync\QSBElevator.cs" />
     <Compile Include="ElevatorSync\ElevatorEvent.cs" />
     <Compile Include="ElevatorSync\ElevatorManager.cs" />
     <Compile Include="ElevatorSync\ElevatorMessage.cs" />
@@ -134,6 +136,10 @@
     <Compile Include="Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Events\PlayerSuitEvent.cs" />
     <Compile Include="Events\ServerTimeEvent.cs" />
+    <Compile Include="GeyserSync\GeyserEvent.cs" />
+    <Compile Include="GeyserSync\GeyserManager.cs" />
+    <Compile Include="GeyserSync\GeyserMessage.cs" />
+    <Compile Include="GeyserSync\QSBGeyser.cs" />
     <Compile Include="Messaging\AnimTriggerMessage.cs" />
     <Compile Include="Messaging\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
@@ -143,6 +149,7 @@
     <Compile Include="Events\QSBEvent.cs" />
     <Compile Include="Messaging\PlayerJoinMessage.cs" />
     <Compile Include="Messaging\ToggleMessage.cs" />
+    <Compile Include="WorldSync\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />
     <Compile Include="Tools\QSBTool.cs" />
@@ -181,6 +188,8 @@
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\UnityHelper.cs" />
+    <Compile Include="WorldSync\WorldRegistry.cs" />
+    <Compile Include="WorldSync\WorldObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />

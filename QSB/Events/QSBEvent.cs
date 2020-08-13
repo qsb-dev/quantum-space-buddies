@@ -42,7 +42,6 @@ namespace QSB.Events
         /// <param name="message"></param>
         public virtual void OnReceiveRemote(T message)
         {
-
         }
 
         /// <summary>
@@ -51,7 +50,6 @@ namespace QSB.Events
         /// <param name="message"></param>
         public virtual void OnReceiveLocal(T message)
         {
-            OnReceiveRemote(message);
         }
 
         /// <summary>

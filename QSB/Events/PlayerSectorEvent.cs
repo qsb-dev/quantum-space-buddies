@@ -38,5 +38,7 @@ namespace QSB.Events
             DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
             transformSync.ReferenceTransform = sector.transform;
         }
+
+        public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);
     }
 }

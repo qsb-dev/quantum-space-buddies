@@ -2,6 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <GameDir>D:\EpicGames\OuterWilds</GameDir>
-    <OwmlDir>C:\Users\Henry\Downloads\OWModManager\OWML</OwmlDir>
+    <OwmlDir>C:\Users\Henry\AppData\Roaming\OuterWildsModManager\OWML</OwmlDir>
   </PropertyGroup>
 </Project>

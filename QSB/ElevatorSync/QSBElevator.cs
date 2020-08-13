@@ -1,12 +1,12 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ElevatorSync
 {
-    public class ElevatorController : MonoBehaviour
+    public class QSBElevator : WorldObject
     {
-        public string ElevatorName => _elevator.name;
-
         private Elevator _elevator;
         private Vector3 _startLocalPos;
         private Vector3 _endLocalPos;
@@ -15,10 +15,16 @@ namespace QSB.ElevatorSync
         private OWAudioSource _owAudioSourceOneShot;
         private OWAudioSource _owAudioSourceLP;
 
-        public void Init(Elevator elevator)
+        public void Init(Elevator elevator, int id)
         {
-            PlayerRegistry.ElevatorControllers.Add(this);
             _elevator = elevator;
+            ObjectId = id;
+            WorldRegistry.WorldObjects.Add(this);
+            UnityHelper.Instance.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
+        }
+
+        private void InitValues()
+        {
             _startLocalPos = _elevator.GetValue<Vector3>("_startLocalPos");
             _endLocalPos = _elevator.GetValue<Vector3>("_endLocalPos");
             _interactVolume = _elevator.GetValue<SingleInteractionVolume>("_interactVolume");

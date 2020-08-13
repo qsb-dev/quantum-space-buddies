@@ -3,6 +3,7 @@ using System.Linq;
 using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.Events;
+using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -121,9 +122,10 @@ namespace QSB
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
 
-            if (!Network.isServer)
+            if (NetworkClient.active && !NetworkServer.active)
             {
                 gameObject.AddComponent<Events.PlayerState>();
+                GeyserManager.Instance.EmptyUpdate();
             }
 
             _canEditName = false;

@@ -1,4 +1,6 @@
-﻿namespace QSB.Utility
+﻿using UnityEngine;
+
+namespace QSB.Utility
 {
     public static class QSBExtensions
     {
@@ -12,6 +14,17 @@
             {
                 tool.UnequipTool();
             }
+        }
+
+        public static string GetHierarchy(this GameObject go)
+        {
+            var name = go.name;
+            while (go.transform.parent != null)
+            {
+                go = go.transform.parent.gameObject;
+                name = go.name + "/" + name;
+            }
+            return name;
         }
     }
 }
