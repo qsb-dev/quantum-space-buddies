@@ -36,7 +36,7 @@ namespace QSB
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
 
-            SceneManager.sceneLoaded += OnSceneLoad;
+            LoadManager.OnCompleteSceneLoad += OnSceneLoad;
         }
 
         private void OnWakeUp()
@@ -50,7 +50,7 @@ namespace QSB
             WokenUp = false;
         }
 
-        private void OnSceneLoad(Scene scene, LoadSceneMode mode)
+        private void OnSceneLoad(OWScene oldScene, OWScene newScene)
         {
             WorldRegistry.GenerateComponentList();
         }
