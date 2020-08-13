@@ -10,14 +10,14 @@ namespace QSB.ElevatorSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<ElevatorDirection, string>.AddListener(EventNames.QSBStartLift, (direction, elevatorName) => SendEvent(CreateMessage(direction, elevatorName)));
+            GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, (id, direction) => SendEvent(CreateMessage(id, direction)));
         }
 
-        private ElevatorMessage CreateMessage(ElevatorDirection direction, string elevatorName) => new ElevatorMessage
+        private ElevatorMessage CreateMessage(int id, ElevatorDirection direction) => new ElevatorMessage
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,
             Direction = direction,
-            UniqueName = elevatorName
+            Id = id
         };
 
         public override void OnReceiveRemote(ElevatorMessage message)
@@ -26,7 +26,7 @@ namespace QSB.ElevatorSync
             {
                 return;
             }
-            WorldRegistry.GetObject<QSBElevator>(message.UniqueName).RemoteCall(message.Direction);
+            WorldRegistry.GetObject<QSBElevator>(message.Id).RemoteCall(message.Direction);
         }
     }
 }

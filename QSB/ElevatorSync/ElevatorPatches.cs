@@ -9,7 +9,8 @@ namespace QSB.ElevatorSync
         {
             var isGoingUp = __instance.GetValue<bool>("_goingToTheEnd");
             var direction = isGoingUp ? ElevatorDirection.Up : ElevatorDirection.Down;
-            GlobalMessenger<ElevatorDirection, string>.FireEvent(EventNames.QSBStartLift, direction, __instance.name);
+            var id = ElevatorManager.Instance.GetId(__instance);
+            GlobalMessenger<int, ElevatorDirection>.FireEvent(EventNames.QSBStartLift, id, direction);
         }
     }
 }

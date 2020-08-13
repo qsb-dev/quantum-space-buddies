@@ -6,12 +6,11 @@ namespace QSB.GeyserSync
 {
     public class QSBGeyser : WorldObject
     {
-        public override string UniqueName => _geyserController.name;
-
         private GeyserController _geyserController;
 
-        public void Init(GeyserController geyserController)
+        public void Init(GeyserController geyserController, int id)
         {
+            Id = id;
             WorldRegistry.WorldObjects.Add(this);
             _geyserController = geyserController;
 
@@ -23,7 +22,7 @@ namespace QSB.GeyserSync
         {
             if (NetworkServer.active)
             {
-                GlobalMessenger<string, bool>.FireEvent(EventNames.QSBGeyserState, UniqueName, state);
+                GlobalMessenger<int, bool>.FireEvent(EventNames.QSBGeyserState, Id, state);
             }
         }
 

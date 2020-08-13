@@ -1,7 +1,7 @@
 ﻿namespace QSB.WorldSync
 {
-    public abstract class WorldObject
+    public class WorldObject
     {
-        public abstract string UniqueName { get; }
+        public int Id { get; protected set; }
     }
 }

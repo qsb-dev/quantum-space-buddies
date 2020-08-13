@@ -10,19 +10,19 @@ namespace QSB.GeyserSync
         {
             Instance = this;
 
-            QSB.Helper.Events.Subscribe<GeyserController>(OWML.Common.Events.AfterAwake);
-            QSB.Helper.Events.Event += OnEvent;
+            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
         }
 
-        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
+        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
-            if (behaviour is GeyserController geyserController && ev == OWML.Common.Events.AfterAwake)
+            var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();
+            for (var id = 0; id < geyserControllers.Length; id++)
             {
                 var geyser = new QSBGeyser();
-                geyser.Init(geyserController);
+                geyser.Init(geyserControllers[id], id);
             }
         }
-
+        
         public void EmptyUpdate()
         {
             QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
