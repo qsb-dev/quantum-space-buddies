@@ -1,7 +1,8 @@
-﻿using QSB.Messaging;
+﻿using QSB.Events;
+using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.Events
+namespace QSB.Tools
 {
     public class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
     {

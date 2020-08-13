@@ -1,6 +1,7 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.Messaging;
+using UnityEngine.Networking;
 
-namespace QSB.Messaging
+namespace QSB.TransformSync
 {
     public class SectorMessage : PlayerMessage
     {

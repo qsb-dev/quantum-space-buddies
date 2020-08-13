@@ -1,8 +1,8 @@
-﻿using QSB.Messaging;
-using QSB.TransformSync;
+﻿using QSB.Events;
+using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.Events
+namespace QSB.TransformSync
 {
     public class PlayerSectorEvent : QSBEvent<SectorMessage>
     {

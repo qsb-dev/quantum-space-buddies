@@ -1,5 +1,10 @@
-﻿using QSB.ElevatorSync;
+﻿using QSB.Animation;
+using QSB.DeathSync;
+using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.TimeSync;
+using QSB.Tools;
+using QSB.TransformSync;
 
 namespace QSB.Events
 {

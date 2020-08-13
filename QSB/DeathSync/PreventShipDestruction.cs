@@ -4,7 +4,7 @@ using Harmony;
 using OWML.ModHelper.Events;
 using UnityEngine;
 
-namespace QSB.TimeSync
+namespace QSB.DeathSync
 {
     public class PreventShipDestruction : MonoBehaviour
     {

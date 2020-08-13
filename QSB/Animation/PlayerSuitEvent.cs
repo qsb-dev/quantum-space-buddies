@@ -1,6 +1,7 @@
-﻿using QSB.Messaging;
+﻿using QSB.Events;
+using QSB.Messaging;
 
-namespace QSB.Events
+namespace QSB.Animation
 {
     public class PlayerSuitEvent : QSBEvent<ToggleMessage>
     {

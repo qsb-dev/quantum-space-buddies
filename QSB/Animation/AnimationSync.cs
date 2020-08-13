@@ -174,7 +174,7 @@ namespace QSB.Animation
             }
         }
 
-        public void SuitUp()
+        private void SuitUp()
         {
             _bodyAnim.runtimeAnimatorController = _suitedAnimController;
             _anim.runtimeAnimatorController = _suitedAnimController;
@@ -182,12 +182,24 @@ namespace QSB.Animation
             _suitedGraphics.SetActive(true);
         }
 
-        public void SuitDown()
+        private void SuitDown()
         {
             _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
             _anim.runtimeAnimatorController = _unsuitedAnimController;
             _unsuitedGraphics.SetActive(true);
             _suitedGraphics.SetActive(false);
+        }
+
+        public void SetSuitState(bool state)
+        {
+            if (state)
+            {
+                SuitUp();
+            }
+            else
+            {
+                SuitDown();
+            }
         }
 
         private void Update()
