@@ -134,6 +134,7 @@
     <Compile Include="Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Events\PlayerSuitEvent.cs" />
     <Compile Include="Events\ServerTimeEvent.cs" />
+    <Compile Include="GeyserSync\GeyserPatches.cs" />
     <Compile Include="Messaging\AnimTriggerMessage.cs" />
     <Compile Include="Messaging\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\UnityHelper.cs" />
+    <Compile Include="WorldRegistry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />

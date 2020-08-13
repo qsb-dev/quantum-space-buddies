@@ -39,6 +39,11 @@ namespace QSB
         {
             WokenUp = true;
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+
+            foreach (var geyser in GameObject.FindObjectsOfType<GeyserController>())
+            {
+                DebugLog.ToConsole(geyser.name + " : " + geyser.GetInstanceID());
+            }
         }
 
         private void OnLoopStart()
