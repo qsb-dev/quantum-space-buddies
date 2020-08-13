@@ -14,11 +14,6 @@ namespace QSB.GeyserSync
             QSB.Helper.Events.Event += OnEvent;
         }
 
-        public void EmptyUpdate()
-        {
-            QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
-        }
-
         private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
         {
             if (behaviour is GeyserController geyserController && ev == OWML.Common.Events.AfterAwake)
@@ -27,5 +22,11 @@ namespace QSB.GeyserSync
                 geyser.Init(geyserController);
             }
         }
+
+        public void EmptyUpdate()
+        {
+            QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
+        }
+
     }
 }
