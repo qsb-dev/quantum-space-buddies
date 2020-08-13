@@ -17,7 +17,7 @@ namespace QSB.ElevatorSync
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,
             Direction = direction,
-            ElevatorName = elevatorName
+            UniqueName = elevatorName
         };
 
         public override void OnReceiveRemote(ElevatorMessage message)
@@ -26,7 +26,7 @@ namespace QSB.ElevatorSync
             {
                 return;
             }
-            WorldRegistry.GetObject<QSBElevator>(message.ElevatorName).RemoteCall(message.Direction);
+            WorldRegistry.GetObject<QSBElevator>(message.UniqueName).RemoteCall(message.Direction);
         }
     }
 }
