@@ -9,7 +9,7 @@ namespace QSB.WorldSync
 
         public static T GetObject<T>(int id) where T : WorldObject
         {
-            return WorldObjects.OfType<T>().FirstOrDefault(x => x.Id == id);
+            return WorldObjects.OfType<T>().FirstOrDefault(x => x.ObjectId == id);
         }
     }
 }

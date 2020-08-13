@@ -16,7 +16,7 @@ namespace QSB.GeyserSync
         private GeyserMessage CreateMessage(int id, bool state) => new GeyserMessage
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,
-            Id = id,
+            ObjectId = id,
             State = state
         };
 
@@ -26,7 +26,7 @@ namespace QSB.GeyserSync
             {
                 return;
             }
-            var geyser = WorldRegistry.GetObject<QSBGeyser>(message.Id);
+            var geyser = WorldRegistry.GetObject<QSBGeyser>(message.ObjectId);
             geyser.SetState(message.State);
         }
     }

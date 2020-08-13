@@ -18,7 +18,7 @@ namespace QSB.ElevatorSync
         public void Init(Elevator elevator, int id)
         {
             _elevator = elevator;
-            Id = id;
+            ObjectId = id;
             WorldRegistry.WorldObjects.Add(this);
             UnityHelper.Instance.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
         }

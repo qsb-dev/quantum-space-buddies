@@ -2,6 +2,6 @@
 {
     public class WorldObject
     {
-        public int Id { get; protected set; }
+        public int ObjectId { get; protected set; }
     }
 }
