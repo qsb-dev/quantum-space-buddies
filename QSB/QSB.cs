@@ -4,6 +4,7 @@ using QSB.ElevatorSync;
 using QSB.Events;
 using QSB.GeyserSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;

@@ -184,7 +184,7 @@
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\UnityHelper.cs" />
-    <Compile Include="WorldRegistry.cs" />
+    <Compile Include="WorldSync\WorldRegistry.cs" />
     <Compile Include="WorldSync\SyncObjects.cs" />
   </ItemGroup>
   <ItemGroup>

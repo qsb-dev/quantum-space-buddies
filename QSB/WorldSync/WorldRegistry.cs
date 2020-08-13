@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ElevatorSync;
+using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -6,11 +7,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.WorldSync
 {
     public static class WorldRegistry
     {
         public static List<GeyserController> GeyserControllers = new List<GeyserController>();
+        public static List<ElevatorController> ElevatorControllers { get; } = new List<ElevatorController>();
 
         public static void GenerateComponentList()
         {
@@ -34,6 +36,11 @@ namespace QSB
                     return GeyserControllers.FindIndex(x => x == component);
             }
             return 0;
+        }
+
+        public static ElevatorController GetElevatorController(string name)
+        {
+            return ElevatorControllers.FirstOrDefault(x => x != null && x.ElevatorName == name);
         }
     }
 }

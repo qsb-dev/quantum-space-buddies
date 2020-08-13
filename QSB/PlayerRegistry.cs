@@ -16,8 +16,6 @@ namespace QSB
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
 
-        public static List<ElevatorController> ElevatorControllers { get; } = new List<ElevatorController>();
-
         public static PlayerInfo CreatePlayer(uint id)
         {
             if (PlayerExists(id))
@@ -66,11 +64,5 @@ namespace QSB
         {
             return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
-
-        public static ElevatorController GetElevatorController(string name)
-        {
-            return ElevatorControllers.FirstOrDefault(x => x != null && x.ElevatorName == name);
-        }
-
     }
 }

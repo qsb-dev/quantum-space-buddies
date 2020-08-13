@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ElevatorSync
@@ -17,7 +18,7 @@ namespace QSB.ElevatorSync
 
         public void Init(Elevator elevator)
         {
-            PlayerRegistry.ElevatorControllers.Add(this);
+            WorldRegistry.ElevatorControllers.Add(this);
             _elevator = elevator;
             _startLocalPos = _elevator.GetValue<Vector3>("_startLocalPos");
             _endLocalPos = _elevator.GetValue<Vector3>("_endLocalPos");
