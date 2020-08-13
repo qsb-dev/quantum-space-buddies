@@ -21,8 +21,7 @@ namespace QSB.GeyserSync
 
         private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
         {
-            if (behaviour is GeyserController geyserController &&
-                ev == OWML.Common.Events.AfterAwake)
+            if (behaviour is GeyserController geyserController && ev == OWML.Common.Events.AfterAwake)
             {
                 var geyser = new QSBGeyser();
                 geyser.Init(geyserController);
