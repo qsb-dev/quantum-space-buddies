@@ -47,6 +47,7 @@ namespace QSB
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
+            player.IsAwake = message.PlayerAwake;
             player.State = message.PlayerState;
 
             if (LocalPlayer.IsReady)

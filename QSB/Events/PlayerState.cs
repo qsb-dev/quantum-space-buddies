@@ -38,6 +38,7 @@ namespace QSB.Events
                     SenderId = player.NetId,
                     PlayerName = player.Name,
                     PlayerReady = player.IsReady,
+                    PlayerAwake = player.IsAwake,
                     PlayerState = player.State
                 };
 

@@ -6,6 +6,7 @@ namespace QSB.Messaging
     {
         public string PlayerName { get; set; }
         public bool PlayerReady { get; set; }
+        public bool PlayerAwake { get; set; }
         public State PlayerState { get; set; }
         public Sector.Name SectorID { get; set; }
         public string SectorName { get; set; }
@@ -15,6 +16,7 @@ namespace QSB.Messaging
             base.Deserialize(reader);
             PlayerName = reader.ReadString();
             PlayerReady = reader.ReadBoolean();
+            PlayerAwake = reader.ReadBoolean();
             PlayerState = (State)reader.ReadInt32();
             SectorID = (Sector.Name)reader.ReadInt32();
             SectorName = reader.ReadString();
@@ -25,6 +27,7 @@ namespace QSB.Messaging
             base.Serialize(writer);
             writer.Write(PlayerName);
             writer.Write(PlayerReady);
+            writer.Write(PlayerAwake);
             writer.Write((int)PlayerState);
             writer.Write((int)SectorID);
             writer.Write(SectorName);
