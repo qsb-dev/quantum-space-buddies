@@ -37,10 +37,11 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
+            ReferenceTransform = Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().transform;
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                SyncedTransform.position = Locator.GetRootTransform().position;
+                SyncedTransform.position = ReferenceTransform.position;
             }
             _isInitialized = true;
         }
