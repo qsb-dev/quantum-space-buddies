@@ -57,6 +57,7 @@
 - Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory);
 - Open the project solution file `QSB.sln` in Visual Studio;
 - If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references;
+- Run this to stop tracking QSB.csproj.user: ```git update-index --skip-worktree QSB/QSB.csproj.user```
 
 After doing this, the project references should be working. When you build the solution, the dll and json files will be copied to `[Mod Manager directory]/OWML/QSB`. If this process is successful, you should see the mod show up in the Mod Manager.
 
