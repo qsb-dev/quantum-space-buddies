@@ -89,8 +89,6 @@ namespace QSB.TransformSync
 
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
 
-                //FullStateRequest.Instance.Request();
-
                 SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
 
                 return;
