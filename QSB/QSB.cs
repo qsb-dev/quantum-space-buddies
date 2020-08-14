@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using QSB.ElevatorSync;
-using QSB.Events;
 using QSB.GeyserSync;
 using QSB.Utility;
 using UnityEngine;

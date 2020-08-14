@@ -1,5 +1,5 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using OWML.ModHelper.Events;
+using QSB.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -133,7 +133,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
-            SpinnerUI.Show();
+            FindObjectOfType<SleepTimerUI>().Invoke("OnStartFastForward");
         }
 
         private void StartPausing()
@@ -159,6 +159,7 @@ namespace QSB.TimeSync
             _isFirstFastForward = false;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
+            FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
         }
 
@@ -217,8 +218,9 @@ namespace QSB.TimeSync
 
                 if (LoadManager.GetCurrentScene() == OWScene.SolarSystem && _isFirstFastForward)
                 {
-                    Locator.GetPlayerTransform().position = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.position;
-                    Locator.GetPlayerTransform().rotation = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.rotation;
+                    var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
+                    Locator.GetPlayerTransform().position = spawnPoint.position;
+                    Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
                     Physics.SyncTransforms();
                 }
             }
