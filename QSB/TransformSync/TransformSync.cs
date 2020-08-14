@@ -38,7 +38,7 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceTransform = LoadManager.GetCurrentScene() == OWScene.EyeOfTheUniverse ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform : Locator.GetAstroObject(AstroObject.Name.Eye).transform;
+            ReferenceTransform = LoadManager.GetCurrentScene() == OWScene.SolarSystem ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform : Locator.GetAstroObject(AstroObject.Name.Eye).transform;
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
