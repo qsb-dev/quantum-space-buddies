@@ -11,6 +11,7 @@ namespace QSB.TransformSync
 
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
+        private Transform _previousTransform;
 
         public Transform SyncedTransform { get; private set; }
         public Transform ReferenceTransform { get; set; }
@@ -96,8 +97,16 @@ namespace QSB.TransformSync
             }
 
             SyncedTransform.parent = ReferenceTransform;
+            if (SyncedTransform.parent == _previousTransform)
+            {
+                SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+            }
+            else
+            {
+                SyncedTransform.localPosition = transform.position;
+            }
+            _previousTransform = SyncedTransform.parent;
 
-            SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
