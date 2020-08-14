@@ -19,6 +19,7 @@
         PlayerReady,
         ProbeActiveChange,
         Elevator,
-        Geyser
+        Geyser,
+        WakeUp
     }
 }

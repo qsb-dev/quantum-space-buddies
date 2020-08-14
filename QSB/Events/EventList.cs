@@ -32,6 +32,7 @@ namespace QSB.Events
             new ElevatorEvent();
             new GeyserEvent();
             new ServerTimeEvent();
+            new WakeUpEvent();
 
             Ready = true;
         }

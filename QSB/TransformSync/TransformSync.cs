@@ -37,9 +37,7 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceSector = LoadManager.GetCurrentScene() == OWScene.SolarSystem
-                ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetRootSector()
-                : Locator.GetAstroObject(AstroObject.Name.Eye).GetRootSector();
+            ReferenceSector = GetStartPlanet().GetRootSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
@@ -59,7 +57,7 @@ namespace QSB.TransformSync
                 _isInitialized = false;
             }
 
-            if (SyncedTransform == null || !_isInitialized)
+            if (SyncedTransform == null || !_isInitialized || Player == null || !Player.IsAwake)
             {
                 return;
             }
@@ -90,11 +88,11 @@ namespace QSB.TransformSync
 
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
 
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                SyncedTransform.position = GetStartPlanet().GetRootSector().transform.position;
 
                 return;
             }
-           
+
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
@@ -106,6 +104,13 @@ namespace QSB.TransformSync
             SyncedTransform.localPosition += sector.transform.position - SyncedTransform.parent.position;
             transform.position = ReferenceSector.transform.InverseTransformPoint(SyncedTransform.position);
             transform.rotation = ReferenceSector.transform.InverseTransformRotation(SyncedTransform.rotation);
+        }
+
+        private AstroObject GetStartPlanet()
+        {
+            return LoadManager.GetCurrentScene() == OWScene.SolarSystem
+                ? Locator.GetAstroObject(AstroObject.Name.TimberHearth)
+                : Locator.GetAstroObject(AstroObject.Name.Eye);
         }
     }
 }

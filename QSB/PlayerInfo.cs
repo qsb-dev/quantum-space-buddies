@@ -18,6 +18,7 @@ namespace QSB
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
         public string Name { get; set; }
         public bool IsReady { get; set; }
+        public bool IsAwake { get; set; }
         public State State { get; set; }
 
         public PlayerInfo(uint id)
