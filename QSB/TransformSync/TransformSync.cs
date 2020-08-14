@@ -11,7 +11,6 @@ namespace QSB.TransformSync
 
         private const float SmoothTime = 0.1f;
         private bool _isInitialized;
-        private Transform _previousTransform;
 
         public Transform SyncedTransform { get; private set; }
         public Sector ReferenceSector { get; set; }
@@ -103,12 +102,8 @@ namespace QSB.TransformSync
         public void SetReference(Sector sector)
         {
             ReferenceSector = sector;
-            _positionSmoothVelocity = Vector3.zero;
-            _rotationSmoothVelocity = Quaternion.identity;
             SyncedTransform.parent = ReferenceSector.transform;
-            var difference = sector.transform.position - SyncedTransform.parent.position;
-            SyncedTransform.parent = ReferenceSector.transform;
-            SyncedTransform.localPosition = SyncedTransform.localPosition + difference;
+            SyncedTransform.localPosition += sector.transform.position - SyncedTransform.parent.position;
             transform.position = ReferenceSector.transform.InverseTransformPoint(SyncedTransform.position);
             transform.rotation = ReferenceSector.transform.InverseTransformRotation(SyncedTransform.rotation);
         }
