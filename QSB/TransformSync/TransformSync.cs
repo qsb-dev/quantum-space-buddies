@@ -97,14 +97,9 @@ namespace QSB.TransformSync
             }
 
             SyncedTransform.parent = ReferenceTransform;
-            if (SyncedTransform.parent == _previousTransform)
-            {
-                SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-            }
-            else
-            {
-                SyncedTransform.localPosition = transform.position;
-            }
+            SyncedTransform.localPosition = SyncedTransform.parent == _previousTransform
+                ? Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime)
+                : transform.position;
             _previousTransform = SyncedTransform.parent;
 
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
