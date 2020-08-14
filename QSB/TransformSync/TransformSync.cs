@@ -95,13 +95,8 @@ namespace QSB.TransformSync
 
                 return;
             }
-
-            SyncedTransform.parent = ReferenceSector.transform;
-            SyncedTransform.localPosition = SyncedTransform.parent == _previousTransform
-                ? Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime)
-                : transform.position;
-            _previousTransform = SyncedTransform.parent;
-
+           
+            SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
@@ -110,6 +105,12 @@ namespace QSB.TransformSync
             ReferenceSector = sector;
             _positionSmoothVelocity = Vector3.zero;
             _rotationSmoothVelocity = Quaternion.identity;
+            SyncedTransform.parent = ReferenceSector.transform;
+            var difference = sector.transform.position - SyncedTransform.parent.position;
+            SyncedTransform.parent = ReferenceSector.transform;
+            SyncedTransform.localPosition = SyncedTransform.localPosition + difference;
+            transform.position = ReferenceSector.transform.InverseTransformPoint(SyncedTransform.position);
+            transform.rotation = ReferenceSector.transform.InverseTransformRotation(SyncedTransform.rotation);
         }
     }
 }
