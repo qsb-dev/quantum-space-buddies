@@ -56,7 +56,7 @@ namespace QSB
 
         public static TransformSync.TransformSync GetTransformSync(uint id)
         {
-            return TransformSyncs.First(x => x != null && x.netId.Value == id);
+            return TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
 
         public static AnimationSync GetAnimationSync(uint id)
