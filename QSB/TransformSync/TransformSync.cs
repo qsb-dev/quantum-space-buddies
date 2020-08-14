@@ -14,9 +14,7 @@ namespace QSB.TransformSync
         private Transform _previousTransform;
 
         public Transform SyncedTransform { get; private set; }
-        public Transform ReferenceTransform { get; set; }
-        public Sector.Name SectorId { get; set; }
-        public string SectorName { get; set; }
+        public Sector ReferenceSector { get; set; }
 
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
@@ -40,13 +38,13 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceTransform = LoadManager.GetCurrentScene() == OWScene.SolarSystem
-                ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform
-                : Locator.GetAstroObject(AstroObject.Name.Eye).transform;
+            ReferenceSector = LoadManager.GetCurrentScene() == OWScene.SolarSystem
+                ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetRootSector()
+                : Locator.GetAstroObject(AstroObject.Name.Eye).GetRootSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                SyncedTransform.position = ReferenceTransform.position;
+                SyncedTransform.position = ReferenceSector.transform.position;
             }
             _isInitialized = true;
         }
@@ -69,7 +67,7 @@ namespace QSB.TransformSync
 
             // Get which sector should be used as a reference point
 
-            if (ReferenceTransform == null)
+            if (ReferenceSector == null)
             {
                 DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
             }
@@ -81,8 +79,8 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
-                transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
-                transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
+                transform.position = ReferenceSector.transform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = ReferenceSector.transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;
             }
 
@@ -98,7 +96,7 @@ namespace QSB.TransformSync
                 return;
             }
 
-            SyncedTransform.parent = ReferenceTransform;
+            SyncedTransform.parent = ReferenceSector.transform;
             SyncedTransform.localPosition = SyncedTransform.parent == _previousTransform
                 ? Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime)
                 : transform.position;
@@ -107,9 +105,9 @@ namespace QSB.TransformSync
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
-        public void SetReference(Transform sectorTransform)
+        public void SetReference(Sector sector)
         {
-            ReferenceTransform = sectorTransform;
+            ReferenceSector = sector;
             _positionSmoothVelocity = Vector3.zero;
             _rotationSmoothVelocity = Quaternion.identity;
         }

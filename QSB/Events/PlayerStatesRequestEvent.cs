@@ -22,7 +22,7 @@ namespace QSB.Events
             PlayerState.LocalInstance.Send();
             foreach (var item in PlayerRegistry.TransformSyncs)
             {
-                GlobalMessenger<uint, Sector.Name, string>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.SectorId, item.SectorName);
+                GlobalMessenger<uint, Sector.Name, string>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector.GetName(), item.ReferenceSector.name);
             }
         }
     }

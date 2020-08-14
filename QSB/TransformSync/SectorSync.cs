@@ -73,12 +73,12 @@ namespace QSB.TransformSync
                 return;
             }
             var closestSector = GetClosestSector(syncedTransform);
-            if (closestSector.transform == transformSync.ReferenceTransform)
+            if (closestSector == transformSync.ReferenceSector)
             {
                 return;
             }
             SendSector(transformSync.netId.Value, closestSector);
-            transformSync.ReferenceTransform = closestSector.transform;
+            transformSync.ReferenceSector = closestSector;
         }
 
         private Sector GetClosestSector(Transform trans)
