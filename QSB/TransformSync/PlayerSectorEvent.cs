@@ -1,8 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
-using System;
-using System.Runtime.InteropServices;
 
 namespace QSB.TransformSync
 {
