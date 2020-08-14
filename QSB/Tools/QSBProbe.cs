@@ -18,6 +18,7 @@ namespace QSB.Tools
 
         private void Activate()
         {
+            gameObject.SetActive(true);
             var renderers = gameObject.GetComponentsInChildren<MeshRenderer>();
             foreach (var item in renderers)
             {
