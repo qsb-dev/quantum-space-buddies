@@ -37,11 +37,10 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                SyncedTransform.position = ReferenceTransform.position;
+                SyncedTransform.position = Locator.GetRootTransform().position;
             }
             _isInitialized = true;
         }
