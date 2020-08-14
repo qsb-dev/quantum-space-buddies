@@ -1,6 +1,8 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
+using System;
+using System.Runtime.InteropServices;
 
 namespace QSB.TransformSync
 {
@@ -37,6 +39,8 @@ namespace QSB.TransformSync
             var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
             DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
             transformSync.SetReference(sector.transform);
+            transformSync.SectorId = message.SectorId;
+            transformSync.SectorName = message.SectorName;
         }
 
         public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);

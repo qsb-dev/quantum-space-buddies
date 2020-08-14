@@ -20,6 +20,10 @@ namespace QSB.Events
         public override void OnServerReceive(PlayerMessage message)
         {
             PlayerState.LocalInstance.Send();
+            foreach (var item in PlayerRegistry.TransformSyncs)
+            {
+                GlobalMessenger<uint, Sector.Name, string>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.SectorId, item.SectorName);
+            }
         }
     }
 }

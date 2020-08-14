@@ -7,6 +7,8 @@ namespace QSB.Messaging
         public string PlayerName { get; set; }
         public bool PlayerReady { get; set; }
         public State PlayerState { get; set; }
+        public Sector.Name SectorID { get; set; }
+        public string SectorName { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
@@ -14,6 +16,8 @@ namespace QSB.Messaging
             PlayerName = reader.ReadString();
             PlayerReady = reader.ReadBoolean();
             PlayerState = (State)reader.ReadInt32();
+            SectorID = (Sector.Name)reader.ReadInt32();
+            SectorName = reader.ReadString();
         }
 
         public override void Serialize(NetworkWriter writer)
@@ -22,6 +26,8 @@ namespace QSB.Messaging
             writer.Write(PlayerName);
             writer.Write(PlayerReady);
             writer.Write((int)PlayerState);
+            writer.Write((int)SectorID);
+            writer.Write(SectorName);
         }
     }
 }

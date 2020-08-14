@@ -15,6 +15,8 @@ namespace QSB.TransformSync
 
         public Transform SyncedTransform { get; private set; }
         public Transform ReferenceTransform { get; set; }
+        public Sector.Name SectorId { get; set; }
+        public string SectorName { get; set; }
 
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
