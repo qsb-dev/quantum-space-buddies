@@ -40,5 +40,17 @@ namespace QSB.Tools
         {
             ToolGameObject.SetActive(false);
         }
+
+        public void ChangeEquipState(bool equipState)
+        {
+            if (equipState)
+            {
+                EquipTool();
+            }
+            else
+            {
+                UnequipTool();
+            }
+        }
     }
 }
