@@ -37,7 +37,7 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            ReferenceTransform = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform.root;
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
