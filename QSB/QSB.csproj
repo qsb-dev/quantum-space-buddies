@@ -180,7 +180,7 @@
     <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
     <Compile Include="Utility\Patches.cs" />
-    <Compile Include="Utility\QSBExtensions.cs" />
+    <Compile Include="Tools\ToolExtensions.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />

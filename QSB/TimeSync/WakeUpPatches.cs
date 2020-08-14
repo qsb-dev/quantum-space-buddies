@@ -1,8 +1,4 @@
-﻿using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OWML.ModHelper.Events;
 
 namespace QSB.TimeSync
 {
@@ -10,14 +6,14 @@ namespace QSB.TimeSync
     {
         public static void AddPatches()
         {
-            QSB.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(WakeUpPatches.OnStartOfTimeLoopPrefix));
+            QSB.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
         }
 
         public static bool OnStartOfTimeLoopPrefix(ref PlayerCameraEffectController __instance)
         {
             if (__instance.gameObject.CompareTag("MainCamera") && LoadManager.GetCurrentScene() != OWScene.EyeOfTheUniverse)
             {
-                __instance.Call("WakeUp");
+                __instance.Invoke("WakeUp");
             }
             return false;
         }
