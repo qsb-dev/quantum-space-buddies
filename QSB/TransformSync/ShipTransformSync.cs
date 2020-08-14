@@ -11,7 +11,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint PlayerId => netId.Value - 1;
+        public override uint PlayerId => netId.Value - 1;
 
         private Transform GetShipModel()
         {

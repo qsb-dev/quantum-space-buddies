@@ -1,8 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
-using System;
-using System.Runtime.InteropServices;
 
 namespace QSB.TransformSync
 {
@@ -43,6 +41,6 @@ namespace QSB.TransformSync
             transformSync.SectorName = message.SectorName;
         }
 
-        public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);
+        //public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);
     }
 }

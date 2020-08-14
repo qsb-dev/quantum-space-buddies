@@ -36,7 +36,7 @@ namespace QSB.TransformSync
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
         protected abstract bool IsReady { get; }
-        protected abstract uint PlayerId { get; }
+        public abstract uint PlayerId { get; }
 
         protected void Init()
         {

@@ -72,7 +72,8 @@ namespace QSB.Events
 
         private void OnClientReceive(T message)
         {
-            if (message.SenderId == PlayerTransformSync.LocalInstance?.netId.Value)
+            if (message.SenderId == PlayerTransformSync.LocalInstance?.netId.Value ||
+                PlayerRegistry.GetTransformSync(message.SenderId).PlayerId == PlayerTransformSync.LocalInstance?.netId.Value)
             {
                 OnReceiveLocal(message);
                 return;

@@ -13,7 +13,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint PlayerId => netId.Value - 2;
+        public override uint PlayerId => netId.Value - 2;
 
         protected override Transform InitLocalTransform()
         {

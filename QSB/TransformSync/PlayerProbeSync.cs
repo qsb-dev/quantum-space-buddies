@@ -14,7 +14,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint PlayerId => netId.Value - 3;
+        public override uint PlayerId => netId.Value - 3;
 
         private Transform GetProbe()
         {
