@@ -14,7 +14,6 @@ namespace QSB.TransformSync
 
         private readonly Sector.Name[] _sectorBlacklist =
         {
-            Sector.Name.Unnamed,
             Sector.Name.Ship
         };
 
