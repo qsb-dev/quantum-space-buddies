@@ -37,7 +37,7 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceTransform = Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().transform;
+            ReferenceTransform = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
