@@ -101,5 +101,11 @@ namespace QSB.TransformSync
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
+        public void SetReference(Transform sectorTransform)
+        {
+            ReferenceTransform = sectorTransform;
+            _positionSmoothVelocity = Vector3.zero;
+            _rotationSmoothVelocity = Quaternion.identity;
+        }
     }
 }

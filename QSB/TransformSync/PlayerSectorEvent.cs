@@ -36,7 +36,7 @@ namespace QSB.TransformSync
 
             var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
             DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
-            transformSync.ReferenceTransform = sector.transform;
+            transformSync.SetReference(sector.transform);
         }
 
         public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);

@@ -23,7 +23,7 @@ namespace QSB.Tools
 
         private void Deactivate()
         {
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
         }
 
     }
