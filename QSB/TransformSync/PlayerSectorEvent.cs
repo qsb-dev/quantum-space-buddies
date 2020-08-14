@@ -41,6 +41,5 @@ namespace QSB.TransformSync
             transformSync.SectorName = message.SectorName;
         }
 
-        //public override void OnReceiveLocal(SectorMessage message) => OnReceiveRemote(message);
     }
 }
