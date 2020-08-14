@@ -1,5 +1,5 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using OWML.ModHelper.Events;
+using QSB.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -21,6 +21,7 @@ namespace QSB.TimeSync
         private float _serverTime;
         private float _timeScale;
         private bool _isInputEnabled = true;
+        private bool _isFirstFastForward = true;
         private int _localLoopCount;
         private int _serverLoopCount;
 
@@ -132,6 +133,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
+            FindObjectOfType<SleepTimerUI>().Invoke("OnStartFastForward");
         }
 
         private void StartPausing()
@@ -142,6 +144,7 @@ namespace QSB.TimeSync
             }
             _timeScale = 0f;
             _state = State.Pausing;
+            SpinnerUI.Show();
         }
 
         private void ResetTimeScale()
@@ -153,6 +156,11 @@ namespace QSB.TimeSync
             {
                 EnableInput();
             }
+            _isFirstFastForward = false;
+            Physics.SyncTransforms();
+            SpinnerUI.Hide();
+            FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
         }
 
         private void DisableInput()
@@ -207,6 +215,14 @@ namespace QSB.TimeSync
             {
                 var diff = _serverTime - Time.timeSinceLevelLoad;
                 Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+
+                if (LoadManager.GetCurrentScene() == OWScene.SolarSystem && _isFirstFastForward)
+                {
+                    var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
+                    Locator.GetPlayerTransform().position = spawnPoint.position;
+                    Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
+                    Physics.SyncTransforms();
+                }
             }
             else
             {

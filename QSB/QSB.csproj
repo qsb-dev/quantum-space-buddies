@@ -97,6 +97,10 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
@@ -129,6 +133,7 @@
     <Compile Include="ElevatorSync\ElevatorPatches.cs" />
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
+    <Compile Include="TimeSync\WakeUpPatches.cs" />
     <Compile Include="Tools\PlayerFlashlightEvent.cs" />
     <Compile Include="Events\PlayerJoinEvent.cs" />
     <Compile Include="Events\PlayerLeaveEvent.cs" />
@@ -175,7 +180,7 @@
     <Compile Include="TransformSync\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
     <Compile Include="Utility\Patches.cs" />
-    <Compile Include="Utility\QSBExtensions.cs" />
+    <Compile Include="Tools\ToolExtensions.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />

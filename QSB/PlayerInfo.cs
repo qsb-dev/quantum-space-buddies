@@ -41,7 +41,7 @@ namespace QSB
 
         public void UpdateStateObjects()
         {
-            if (!QSB.WokenUp)
+            if (OWInput.GetInputMode() == InputMode.None)
             {
                 return;
             }
