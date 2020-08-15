@@ -14,6 +14,12 @@ namespace QSB.Tools
             GlobalMessenger.AddListener(EventNames.UnequipSignalscope, () => SendEvent(CreateMessage(false)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger<Signalscope>.RemoveListener(EventNames.EquipSignalscope, var => SendEvent(CreateMessage(true)));
+            GlobalMessenger.RemoveListener(EventNames.UnequipSignalscope, () => SendEvent(CreateMessage(false)));
+        }
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

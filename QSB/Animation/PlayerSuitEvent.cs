@@ -13,6 +13,12 @@ namespace QSB.Animation
             GlobalMessenger.AddListener(EventNames.RemoveSuit, () => SendEvent(CreateMessage(false)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger.RemoveListener(EventNames.SuitUp, () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, () => SendEvent(CreateMessage(false)));
+        }
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

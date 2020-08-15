@@ -12,6 +12,11 @@ namespace QSB.TimeSync
             GlobalMessenger<float, int>.AddListener(EventNames.QSBServerTime, (time, count) => SendEvent(CreateMessage(time, count)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger<float, int>.RemoveListener(EventNames.QSBServerTime, (time, count) => SendEvent(CreateMessage(time, count)));
+        }
+
         private ServerTimeMessage CreateMessage(float time, int count) => new ServerTimeMessage
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,

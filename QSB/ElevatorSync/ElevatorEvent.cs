@@ -13,6 +13,11 @@ namespace QSB.ElevatorSync
             GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, (id, direction) => SendEvent(CreateMessage(id, direction)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger<int, ElevatorDirection>.RemoveListener(EventNames.QSBStartLift, (id, direction) => SendEvent(CreateMessage(id, direction)));
+        }
+
         private ElevatorMessage CreateMessage(int id, ElevatorDirection direction) => new ElevatorMessage
         {
             SenderId = PlayerRegistry.LocalPlayer.NetId,

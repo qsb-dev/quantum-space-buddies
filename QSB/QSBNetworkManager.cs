@@ -117,6 +117,7 @@ namespace QSB
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
+            DebugLog.ToConsole("OnClientConnect (connected to server)");
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
@@ -137,16 +138,22 @@ namespace QSB
 
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
-            UnityHelper.Instance.RunWhen(() => EventList.Ready,
-                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
+            UnityHelper.Instance.RunWhen(() => EventList.Ready, () => FireJoinEvent());
+        }
+
+        private void FireJoinEvent()
+        {
+            DebugLog.ToConsole("Firing join event!");
+            GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName);
         }
 
         public override void OnStopClient() // Called on the client when closing connection
         {
-            DebugLog.ToScreen("OnStopClient");
+            DebugLog.ToConsole("OnStopClient (disconnecting from server)");
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
+            EventList.Reset();
             if (IsClientConnected())
             {
                 PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
@@ -156,13 +163,18 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            DebugLog.ToScreen("OnServerDisconnect");
+            DebugLog.ToConsole("OnServerDisconnect");
 
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
 
             base.OnServerDisconnect(connection);
+        }
+
+        public override void OnStopServer()
+        {
+            NetworkServer.Reset();
         }
 
         private void OnGUI()

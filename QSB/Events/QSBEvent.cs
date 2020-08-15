@@ -37,6 +37,11 @@ namespace QSB.Events
         public abstract void SetupListener();
 
         /// <summary>
+        /// Called to remove all set up activators.
+        /// </summary>
+        public abstract void CloseListener();
+
+        /// <summary>
         /// Called on every client that didn't send the event.
         /// </summary>
         /// <param name="message"></param>
@@ -58,20 +63,25 @@ namespace QSB.Events
         /// <param name="message"></param>
         public virtual void OnServerReceive(T message)
         {
+            DebugLog.ToConsole("server get message");
             _eventHandler.SendToAll(message);
         }
 
         public void SendEvent(T message)
         {
+            DebugLog.ToConsole("Starting wait to send event...");
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
+
         private void Send(T message)
         {
+            DebugLog.ToConsole("sending event!");
             _eventHandler.SendToServer(message);
         }
 
         private void OnClientReceive(T message)
         {
+            DebugLog.ToConsole("Got event!");
             if (PlayerRegistry.IsBelongingToLocalPlayer(message.SenderId))
             {
                 OnReceiveLocal(message);

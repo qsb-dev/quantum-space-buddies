@@ -1,10 +1,16 @@
-﻿using QSB.Animation;
+﻿using OWML.ModHelper.Events;
+using QSB.Animation;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.Messaging;
 using QSB.TimeSync;
 using QSB.Tools;
 using QSB.TransformSync;
+using QSB.Utility;
+using System.Collections.Generic;
+using UnityEngine.Assertions.Must;
+using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -15,25 +21,51 @@ namespace QSB.Events
     {
         public static bool Ready { get; private set; }
 
+        private static List<object> _eventList = new List<object>();
+
         public static void Init()
         {
-            new PlayerReadyEvent();
-            new PlayerSuitEvent();
-            new PlayerFlashlightEvent();
-            new PlayerSignalscopeEvent();
-            new PlayerTranslatorEvent();
-            new PlayerProbeLauncherEvent();
-            new PlayerProbeEvent();
-            new PlayerSectorEvent();
-            new PlayerJoinEvent();
-            new PlayerLeaveEvent();
-            new PlayerDeathEvent();
-            new PlayerStatesRequestEvent();
-            new ElevatorEvent();
-            new GeyserEvent();
-            new ServerTimeEvent();
+            _eventList = new List<object>
+            {
+                new PlayerReadyEvent(),
+                new PlayerSuitEvent(),
+                new PlayerFlashlightEvent(),
+                new PlayerSignalscopeEvent(),
+                new PlayerTranslatorEvent(),
+                new PlayerProbeLauncherEvent(),
+                new PlayerProbeEvent(),
+                new PlayerSectorEvent(),
+                new PlayerLeaveEvent(),
+                new PlayerDeathEvent(),
+                new PlayerStatesRequestEvent(),
+                new ElevatorEvent(),
+                new GeyserEvent(),
+                new ServerTimeEvent()
+            };
+
+            var join = new PlayerJoinEvent();
+            join.CloseListener();
+
+            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Write);
+            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Write);
 
             Ready = true;
+        }
+
+        public static void Write(string test)
+        {
+            DebugLog.ToConsole("GET EVENT");
+        }
+
+        public static void Reset()
+        {
+            Ready = false;
+            foreach (var item in _eventList)
+            {
+                DebugLog.ToConsole("Closing listener for " + item.GetType().Name);
+                item.Invoke("CloseListener");
+            }
+            _eventList = new List<object>();
         }
     }
 }

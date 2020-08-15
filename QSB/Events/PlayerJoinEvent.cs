@@ -1,6 +1,10 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
+using OWML.ModHelper.Events;
+using System;
+using System.Reflection;
+using System.Collections;
 
 namespace QSB.Events
 {
@@ -10,7 +14,19 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, name => SendEvent(CreateMessage(name)));
+            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, name => StartSendEvent(CreateMessage(name)));
+        }
+
+        public override void CloseListener()
+        {
+            DebugLog.ToConsole("Close listener for join event");
+            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, name => StartSendEvent(CreateMessage(name)));
+        }
+
+        private void StartSendEvent(PlayerJoinMessage message)
+        {
+            DebugLog.ToConsole("Got fire event for player join, sending message");
+            SendEvent(message);
         }
 
         private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage
@@ -29,6 +45,7 @@ namespace QSB.Events
 
         public override void OnReceiveLocal(PlayerJoinMessage message)
         {
+            DebugLog.ToConsole($"OnReceiveLocal player join event, from {message.SenderId}");
             var player = PlayerRegistry.CreatePlayer(PlayerTransformSync.LocalInstance.netId.Value);
             player.Name = message.PlayerName;
             var text = $"Connected to server as {player.Name}.";

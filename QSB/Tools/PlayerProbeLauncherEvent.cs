@@ -14,6 +14,12 @@ namespace QSB.Tools
             GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, var => SendEvent(CreateMessage(false)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherEquipped, var => SendEvent(CreateMessage(true)));
+            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherUnequipped, var => SendEvent(CreateMessage(false)));
+        }
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

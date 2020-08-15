@@ -14,6 +14,12 @@ namespace QSB.Tools
             GlobalMessenger.AddListener(EventNames.UnequipTranslator, () => SendEvent(CreateMessage(false)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger.RemoveListener(EventNames.EquipTranslator, () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.RemoveListener(EventNames.UnequipTranslator, () => SendEvent(CreateMessage(false)));
+        }
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

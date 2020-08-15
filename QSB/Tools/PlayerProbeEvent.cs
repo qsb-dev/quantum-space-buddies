@@ -13,6 +13,12 @@ namespace QSB.Tools
             GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, probe => SendEvent(CreateMessage(false)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.LaunchProbe, probe => SendEvent(CreateMessage(true)));
+            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.RetrieveProbe, probe => SendEvent(CreateMessage(false)));
+        }
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

@@ -13,6 +13,11 @@ namespace QSB.Events
             GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, () => SendEvent(CreateMessage()));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, () => SendEvent(CreateMessage()));
+        }
+
         private PlayerMessage CreateMessage() => new PlayerMessage
         {
             SenderId = PlayerTransformSync.LocalInstance.netId.Value

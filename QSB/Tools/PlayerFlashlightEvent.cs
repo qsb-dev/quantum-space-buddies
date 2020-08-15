@@ -13,6 +13,12 @@ namespace QSB.Tools
             GlobalMessenger.AddListener(EventNames.TurnOffFlashlight, () => SendEvent(CreateMessage(false)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger.RemoveListener(EventNames.TurnOnFlashlight, () => SendEvent(CreateMessage(true)));
+            GlobalMessenger.RemoveListener(EventNames.TurnOffFlashlight, () => SendEvent(CreateMessage(false)));
+        }
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

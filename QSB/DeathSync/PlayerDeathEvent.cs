@@ -13,6 +13,11 @@ namespace QSB.DeathSync
             GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, type => SendEvent(CreateMessage(type)));
         }
 
+        public override void CloseListener()
+        {
+            GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, type => SendEvent(CreateMessage(type)));
+        }
+
         private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
         {
             SenderId = LocalPlayerId,
