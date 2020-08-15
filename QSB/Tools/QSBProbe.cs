@@ -19,21 +19,11 @@ namespace QSB.Tools
         private void Activate()
         {
             gameObject.SetActive(true);
-            var renderers = gameObject.GetComponentsInChildren<MeshRenderer>();
-            foreach (var item in renderers)
-            {
-                item.enabled = true;
-            }
         }
 
         private void Deactivate()
         {
-            var renderers = gameObject.GetComponentsInChildren<MeshRenderer>();
-            foreach (var item in renderers)
-            {
-                item.enabled = false;
-            }
+            gameObject.SetActive(false);
         }
-
     }
 }
