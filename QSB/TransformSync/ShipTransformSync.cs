@@ -51,6 +51,6 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        protected override bool IsReady => GetShipModel() != null;
+        public override bool IsReady => GetShipModel() != null && Player != null && (Player?.IsReady).Value;
     }
 }
