@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 
 namespace QSB.Tools
 {
@@ -10,15 +9,18 @@ namespace QSB.Tools
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, var => SendEvent(CreateMessage(true)));
-            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, var => SendEvent(CreateMessage(false)));
+            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, HandleEquip);
+            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, HandleUnequip);
         }
 
         public override void CloseListener()
         {
-            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherEquipped, var => SendEvent(CreateMessage(true)));
-            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherUnequipped, var => SendEvent(CreateMessage(false)));
+            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherEquipped, HandleEquip);
+            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherUnequipped, HandleUnequip);
         }
+
+        private void HandleEquip(ProbeLauncher var) => SendEvent(CreateMessage(true));
+        private void HandleUnequip(ProbeLauncher var) => SendEvent(CreateMessage(false));
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {

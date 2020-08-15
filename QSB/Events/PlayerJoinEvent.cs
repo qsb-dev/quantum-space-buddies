@@ -1,10 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
-using OWML.ModHelper.Events;
-using System;
-using System.Reflection;
-using System.Collections;
 
 namespace QSB.Events
 {
@@ -14,14 +10,16 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, name => StartSendEvent(CreateMessage(name)));
+            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Handler);
         }
 
         public override void CloseListener()
         {
             DebugLog.ToConsole("Close listener for join event");
-            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, name => StartSendEvent(CreateMessage(name)));
+            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Handler);
         }
+
+        private void Handler(string name) => StartSendEvent(CreateMessage(name));
 
         private void StartSendEvent(PlayerJoinMessage message)
         {

@@ -9,15 +9,18 @@ namespace QSB.Tools
 
         public override void SetupListener()
         {
-            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, probe => SendEvent(CreateMessage(true)));
-            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, probe => SendEvent(CreateMessage(false)));
+            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, HandleLaunch);
+            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, HandleRetrieve);
         }
 
         public override void CloseListener()
         {
-            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.LaunchProbe, probe => SendEvent(CreateMessage(true)));
-            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.RetrieveProbe, probe => SendEvent(CreateMessage(false)));
+            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.LaunchProbe, HandleLaunch);
+            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.RetrieveProbe, HandleRetrieve);
         }
+
+        private void HandleLaunch(SurveyorProbe probe) => SendEvent(CreateMessage(true));
+        private void HandleRetrieve(SurveyorProbe probe) => SendEvent(CreateMessage(false));
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
