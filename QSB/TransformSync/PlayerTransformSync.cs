@@ -49,6 +49,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null && (Player?.IsReady).Value;
+        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null && Player.IsReady;
     }
 }

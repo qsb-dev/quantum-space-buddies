@@ -71,6 +71,6 @@ namespace QSB.TransformSync
             SyncedTransform.localPosition = ReferenceSector.transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && Player != null && (Player?.IsReady).Value;
+        public override bool IsReady => Locator.GetProbe() != null && Player != null && Player.IsReady;
     }
 }
