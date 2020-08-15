@@ -25,6 +25,7 @@ namespace QSB.Events
             _eventList = new List<object>
             {
                 new PlayerReadyEvent(),
+                new PlayerJoinEvent(),
                 new PlayerSuitEvent(),
                 new PlayerFlashlightEvent(),
                 new PlayerSignalscopeEvent(),
@@ -40,18 +41,7 @@ namespace QSB.Events
                 new ServerTimeEvent()
             };
 
-            var join = new PlayerJoinEvent();
-            join.CloseListener();
-
-            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Write);
-            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Write);
-
             Ready = true;
-        }
-
-        public static void Write(string test)
-        {
-            DebugLog.ToConsole("GET EVENT");
         }
 
         public static void Reset()
