@@ -16,7 +16,6 @@
         public static string UnequipTranslator = "UnequipTranslator";
         public static string ExitShip = "ExitShip";
         public static string RestartTimeLoop = "RestartTimeLoop";
-        public static string WakeUp = "WakeUp";
 
         public static string QSBPlayerDeath = "QSBPlayerDeath";
         public static string QSBPlayerJoin = "QSBPlayerJoin";

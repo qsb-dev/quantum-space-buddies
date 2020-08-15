@@ -17,7 +17,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint PlayerId => netId.Value - 0;
+        public override uint PlayerId => netId.Value - 0;
 
         private Transform GetPlayerModel()
         {
@@ -49,6 +49,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        protected override bool IsReady => Locator.GetPlayerTransform() != null && Player != null;
+        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null && Player.IsReady;
     }
 }
