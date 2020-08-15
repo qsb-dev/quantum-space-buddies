@@ -12,7 +12,7 @@ namespace QSB.Tools
             GlobalMessenger.AddListener(EventNames.EquipTranslator, HandleEquip);
             GlobalMessenger.AddListener(EventNames.UnequipTranslator, HandleUnequip);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger.RemoveListener(EventNames.EquipTranslator, HandleEquip);

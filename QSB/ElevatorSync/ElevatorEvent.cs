@@ -12,7 +12,7 @@ namespace QSB.ElevatorSync
         {
             GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, Handler);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger<int, ElevatorDirection>.RemoveListener(EventNames.QSBStartLift, Handler);

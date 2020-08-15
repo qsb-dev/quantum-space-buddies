@@ -12,7 +12,7 @@ namespace QSB.Tools
             GlobalMessenger.AddListener(EventNames.TurnOnFlashlight, HandleTurnOn);
             GlobalMessenger.AddListener(EventNames.TurnOffFlashlight, HandleTurnOff);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger.RemoveListener(EventNames.TurnOnFlashlight, HandleTurnOn);
@@ -21,7 +21,7 @@ namespace QSB.Tools
 
         private void HandleTurnOn() => SendEvent(CreateMessage(true));
         private void HandleTurnOff() => SendEvent(CreateMessage(false));
-        
+
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
             SenderId = LocalPlayerId,

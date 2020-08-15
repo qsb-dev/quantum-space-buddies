@@ -12,7 +12,7 @@ namespace QSB.Events
         {
             GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, Handler);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, Handler);

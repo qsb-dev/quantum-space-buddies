@@ -12,14 +12,14 @@ namespace QSB.TransformSync
         {
             GlobalMessenger<uint, Sector.Name, string>.AddListener(EventNames.QSBSectorChange, Handler);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger<uint, Sector.Name, string>.RemoveListener(EventNames.QSBSectorChange, Handler);
         }
 
         private void Handler(uint netId, Sector.Name sectorId, string sectorName) => SendEvent(CreateMessage(netId, sectorId, sectorName));
-        
+
         private SectorMessage CreateMessage(uint netId, Sector.Name sectorId, string sectorName) => new SectorMessage
         {
             SenderId = netId,
@@ -43,7 +43,7 @@ namespace QSB.TransformSync
 
             var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
             DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {message.SectorName}");
-            UnityHelper.Instance.RunWhen(() => transformSync.SyncedTransform != null, 
+            UnityHelper.Instance.RunWhen(() => transformSync.SyncedTransform != null,
                 () => transformSync.SetReferenceSector(sector));
         }
 

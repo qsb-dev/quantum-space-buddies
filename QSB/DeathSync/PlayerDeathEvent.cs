@@ -12,7 +12,7 @@ namespace QSB.DeathSync
         {
             GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, Handler);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, Handler);

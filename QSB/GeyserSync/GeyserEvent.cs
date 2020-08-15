@@ -12,7 +12,7 @@ namespace QSB.GeyserSync
         {
             GlobalMessenger<int, bool>.AddListener(EventNames.QSBGeyserState, Handler);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBGeyserState, Handler);

@@ -12,7 +12,7 @@ namespace QSB.Animation
             GlobalMessenger.AddListener(EventNames.SuitUp, HandleSuitUp);
             GlobalMessenger.AddListener(EventNames.RemoveSuit, HandleSuitDown);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger.RemoveListener(EventNames.SuitUp, HandleSuitUp);

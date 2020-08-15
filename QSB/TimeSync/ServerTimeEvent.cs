@@ -11,7 +11,7 @@ namespace QSB.TimeSync
         {
             GlobalMessenger<float, int>.AddListener(EventNames.QSBServerTime, Handler);
         }
-        
+
         public override void CloseListener()
         {
             GlobalMessenger<float, int>.RemoveListener(EventNames.QSBServerTime, Handler);

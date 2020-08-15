@@ -11,7 +11,7 @@ namespace QSB.Events
         {
             GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
         }
-        
+
         public override void CloseListener()
         {
             DebugLog.ToConsole("Close listener for ready event");
