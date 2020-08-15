@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 
 namespace QSB.Tools
 {
@@ -10,15 +9,18 @@ namespace QSB.Tools
 
         public override void SetupListener()
         {
-            GlobalMessenger<Signalscope>.AddListener(EventNames.EquipSignalscope, var => SendEvent(CreateMessage(true)));
-            GlobalMessenger.AddListener(EventNames.UnequipSignalscope, () => SendEvent(CreateMessage(false)));
+            GlobalMessenger<Signalscope>.AddListener(EventNames.EquipSignalscope, HandleEquip);
+            GlobalMessenger.AddListener(EventNames.UnequipSignalscope, HandleUnequip);
         }
 
         public override void CloseListener()
         {
-            GlobalMessenger<Signalscope>.RemoveListener(EventNames.EquipSignalscope, var => SendEvent(CreateMessage(true)));
-            GlobalMessenger.RemoveListener(EventNames.UnequipSignalscope, () => SendEvent(CreateMessage(false)));
+            GlobalMessenger<Signalscope>.RemoveListener(EventNames.EquipSignalscope, HandleEquip);
+            GlobalMessenger.RemoveListener(EventNames.UnequipSignalscope, HandleUnequip);
         }
+
+        private void HandleEquip(Signalscope var) => SendEvent(CreateMessage(true));
+        private void HandleUnequip() => SendEvent(CreateMessage(false));
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {

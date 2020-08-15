@@ -10,13 +10,15 @@ namespace QSB.DeathSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, type => SendEvent(CreateMessage(type)));
+            GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, Handler);
         }
-
+        
         public override void CloseListener()
         {
-            GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, type => SendEvent(CreateMessage(type)));
+            GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, Handler);
         }
+
+        private void Handler(DeathType type) => SendEvent(CreateMessage(type));
 
         private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
         {

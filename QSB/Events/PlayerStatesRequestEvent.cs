@@ -10,13 +10,15 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, () => SendEvent(CreateMessage()));
+            GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, Handler);
         }
-
+        
         public override void CloseListener()
         {
-            GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, () => SendEvent(CreateMessage()));
+            GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, Handler);
         }
+
+        private void Handler() => SendEvent(CreateMessage());
 
         private PlayerMessage CreateMessage() => new PlayerMessage
         {

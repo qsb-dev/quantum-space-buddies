@@ -3,14 +3,11 @@ using QSB.Animation;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
-using QSB.Messaging;
 using QSB.TimeSync;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
-using UnityEngine.Assertions.Must;
-using UnityEngine.Networking;
 
 namespace QSB.Events
 {

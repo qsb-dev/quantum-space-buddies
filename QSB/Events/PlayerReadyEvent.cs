@@ -9,14 +9,16 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, ready => SendEvent(CreateMessage(ready)));
+            GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
         }
-
+        
         public override void CloseListener()
         {
             DebugLog.ToConsole("Close listener for ready event");
-            GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, ready => SendEvent(CreateMessage(ready)));
+            GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
         }
+
+        private void Handler(bool ready) => SendEvent(CreateMessage(ready));
 
         private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
         {

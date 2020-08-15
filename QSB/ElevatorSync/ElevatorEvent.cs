@@ -10,13 +10,15 @@ namespace QSB.ElevatorSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, (id, direction) => SendEvent(CreateMessage(id, direction)));
+            GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, Handler);
         }
-
+        
         public override void CloseListener()
         {
-            GlobalMessenger<int, ElevatorDirection>.RemoveListener(EventNames.QSBStartLift, (id, direction) => SendEvent(CreateMessage(id, direction)));
+            GlobalMessenger<int, ElevatorDirection>.RemoveListener(EventNames.QSBStartLift, Handler);
         }
+
+        private void Handler(int id, ElevatorDirection direction) => SendEvent(CreateMessage(id, direction));
 
         private ElevatorMessage CreateMessage(int id, ElevatorDirection direction) => new ElevatorMessage
         {
