@@ -18,6 +18,8 @@ namespace QSB.TransformSync
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
 
+        private bool _isVisible;
+
         protected virtual void Awake()
         {
             PlayerRegistry.TransformSyncs.Add(this);
@@ -44,6 +46,7 @@ namespace QSB.TransformSync
                 SyncedTransform.position = ReferenceSector.Position;
             }
             _isInitialized = true;
+            _isVisible = true;
         }
 
         private void Update()
@@ -86,11 +89,11 @@ namespace QSB.TransformSync
             {
                 // Fix bodies staying at 0,0,0 by chucking them into the sun
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
-                SyncedTransform.gameObject.Hide();
+                Hide();
                 return;
             }
 
-            SyncedTransform.gameObject.Show();
+            Show();
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
@@ -103,5 +106,24 @@ namespace QSB.TransformSync
             transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
             transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
         }
+
+        private void Show()
+        {
+            if (!_isVisible)
+            {
+                SyncedTransform.gameObject.Show();
+                _isVisible = true;
+            }
+        }
+
+        private void Hide()
+        {
+            if (_isVisible)
+            {
+                SyncedTransform.gameObject.Hide();
+                _isVisible = false;
+            }
+        }
+
     }
 }

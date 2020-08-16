@@ -4,16 +4,16 @@ namespace QSB.Utility
 {
     public static class GOExtensions
     {
-        public static void Show(this GameObject gameObject) => SetRendererState(gameObject, true);
+        public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
 
-        public static void Hide(this GameObject gameObject) => SetRendererState(gameObject, false);
+        public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
 
-        private static void SetRendererState(GameObject gameObject, bool state)
+        private static void SetVisibility(GameObject gameObject, bool isVisible)
         {
             var renderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             foreach (var renderer in renderers)
             {
-                renderer.enabled = state;
+                renderer.enabled = isVisible;
             }
         }
     }
