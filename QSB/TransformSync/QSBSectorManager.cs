@@ -18,10 +18,10 @@ namespace QSB.TransformSync
         private void Awake()
         {
             Instance = this;
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
             for (var id = 0; id < sectors.Count; id++)
@@ -43,7 +43,7 @@ namespace QSB.TransformSync
 
         public QSBSector GetStartPlanetSector()
         {
-            var sector = LoadManager.GetCurrentScene() == OWScene.SolarSystem
+            var sector = QSBSceneManager.CurrentScene == OWScene.SolarSystem
                 ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetRootSector()
                 : Locator.GetAstroObject(AstroObject.Name.Eye).GetRootSector();
             return WorldRegistry.GetObjects<QSBSector>()

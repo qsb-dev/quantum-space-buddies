@@ -24,10 +24,10 @@ namespace QSB.TransformSync
         {
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             _isInitialized = false;
         }

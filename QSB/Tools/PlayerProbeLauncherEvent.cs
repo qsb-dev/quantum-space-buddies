@@ -23,7 +23,7 @@ namespace QSB.Tools
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player?.UpdateState(State.ProbeLauncher, message.ToggleValue);
-            if (!IsInUniverse)
+            if (!QSBSceneManager.IsInUniverse)
             {
                 return;
             }
