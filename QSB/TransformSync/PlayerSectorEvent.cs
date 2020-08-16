@@ -30,12 +30,12 @@ namespace QSB.TransformSync
 
             if (sector == null)
             {
-                DebugLog.ToScreen($"Sector with order id {message.ObjectId} not found!");
+                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!");
                 return;
             }
 
             var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
-            DebugLog.ToScreen($"{transformSync.GetType().Name} of ID {message.SenderId} set to {sector.Name}");
+            //DebugLog.ToConsole($"{transformSync.GetType().Name} of ID {message.SenderId} set to {sector.Name}");
             UnityHelper.Instance.RunWhen(() => transformSync.SyncedTransform != null, 
                 () => transformSync.SetReferenceSector(sector));
         }
