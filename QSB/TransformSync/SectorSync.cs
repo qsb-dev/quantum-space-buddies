@@ -6,8 +6,8 @@ namespace QSB.TransformSync
 {
     public class SectorSync : MonoBehaviour
     {
-        private float _checkTimer;
         private const float CheckInterval = 0.5f;
+        private float _checkTimer = CheckInterval;
 
         private void Update()
         {
