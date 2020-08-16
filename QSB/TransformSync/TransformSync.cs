@@ -100,9 +100,9 @@ namespace QSB.TransformSync
 
         public void SetReferenceSector(QSBSector sector)
         {
+            _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
-            SyncedTransform.parent = sector.Transform;
-            SyncedTransform.localPosition += sector.Position - SyncedTransform.parent.position;
+            SyncedTransform.SetParent(sector.Transform, true);
             transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
             transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
         }
