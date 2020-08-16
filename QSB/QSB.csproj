@@ -157,6 +157,7 @@
     <Compile Include="Messaging\ToggleMessage.cs" />
     <Compile Include="TransformSync\QSBSector.cs" />
     <Compile Include="TransformSync\QSBSectorManager.cs" />
+    <Compile Include="Utility\GOExtensions.cs" />
     <Compile Include="WorldSync\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />

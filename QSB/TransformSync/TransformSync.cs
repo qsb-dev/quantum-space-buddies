@@ -85,14 +85,12 @@ namespace QSB.TransformSync
             if (SyncedTransform.position == Vector3.zero)
             {
                 // Fix bodies staying at 0,0,0 by chucking them into the sun
-
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
-
-                SyncedTransform.position = QSBSectorManager.Instance.GetStartPlanetSector().Position;
-
+                SyncedTransform.gameObject.Hide();
                 return;
             }
 
+            SyncedTransform.gameObject.Show();
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }

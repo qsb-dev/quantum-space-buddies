@@ -46,7 +46,8 @@ namespace QSB.TransformSync
             var sector = LoadManager.GetCurrentScene() == OWScene.SolarSystem
                 ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetRootSector()
                 : Locator.GetAstroObject(AstroObject.Name.Eye).GetRootSector();
-            return WorldRegistry.GetObjects<QSBSector>().FirstOrDefault(x => x.Sector == sector);
+            return WorldRegistry.GetObjects<QSBSector>()
+                .FirstOrDefault(x => x.Sector == sector);
         }
     }
 }

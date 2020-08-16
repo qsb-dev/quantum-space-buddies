@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Tools
 {
@@ -19,20 +20,12 @@ namespace QSB.Tools
         private void Activate()
         {
             gameObject.SetActive(true);
-            var renderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-            foreach (var item in renderers)
-            {
-                item.enabled = true;
-            }
+            gameObject.Show();
         }
 
         private void Deactivate()
         {
-            var renderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-            foreach (var item in renderers)
-            {
-                item.enabled = false;
-            }
+            gameObject.Hide();
         }
     }
 }
