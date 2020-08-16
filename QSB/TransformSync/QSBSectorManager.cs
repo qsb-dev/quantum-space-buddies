@@ -36,7 +36,7 @@ namespace QSB.TransformSync
         public QSBSector GetClosestSector(Transform trans)
         {
             return WorldRegistry.GetObjects<QSBSector>()
-                .Where(sector => !_sectorBlacklist.Contains(sector.EnumName))
+                .Where(sector => !_sectorBlacklist.Contains(sector.Type))
                 .OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
                 .First();
         }
