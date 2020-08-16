@@ -8,8 +8,8 @@ namespace QSB.TransformSync
         public Sector Sector { get; private set; }
         public Sector.Name EnumName => Sector.GetName();
         public string GOName => Sector.name;
-        public Vector3 Position => Sector.transform.position;
         public Transform Transform => Sector.transform;
+        public Vector3 Position => Transform.position;
         
         public void Init(Sector sector, int id)
         {

@@ -20,11 +20,11 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            PlayerRegistry.LocalTransformSyncs.ForEach(UpdateTransformSync);
+            PlayerRegistry.LocalTransformSyncs.ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 
-        private void UpdateTransformSync(TransformSync transformSync)
+        private void CheckTransformSyncSector(TransformSync transformSync)
         {
             var syncedTransform = transformSync.SyncedTransform;
             if (syncedTransform == null ||
