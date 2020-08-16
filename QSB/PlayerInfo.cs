@@ -45,11 +45,11 @@ namespace QSB
             {
                 return;
             }
-            FlashLight.UpdateState(FlagsHelper.IsSet(State, State.Flashlight));
-            Translator.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
-            ProbeLauncher.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
-            Signalscope.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-            PlayerRegistry.GetAnimationSync(NetId).SetSuitState(FlagsHelper.IsSet(State, State.Suit));
+            FlashLight?.UpdateState(FlagsHelper.IsSet(State, State.Flashlight));
+            Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
+            ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
+            Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
+            PlayerRegistry.GetAnimationSync(NetId)?.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
         }
 
         public bool GetState(State state)

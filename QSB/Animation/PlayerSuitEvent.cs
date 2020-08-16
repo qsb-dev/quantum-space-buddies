@@ -21,6 +21,10 @@ namespace QSB.Animation
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
+            if (!IsInUniverse)
+            {
+                return;
+            }
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.Suit, message.ToggleValue);
         }
