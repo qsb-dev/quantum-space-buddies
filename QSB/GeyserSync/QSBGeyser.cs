@@ -11,7 +11,6 @@ namespace QSB.GeyserSync
         public void Init(GeyserController geyserController, int id)
         {
             ObjectId = id;
-            WorldRegistry.WorldObjects.Add(this);
             _geyserController = geyserController;
 
             geyserController.OnGeyserActivateEvent += () => HandleEvent(true);

@@ -13,7 +13,7 @@ namespace QSB.TransformSync
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
-        public Sector ReferenceSector { get; set; }
+        public QSBSector ReferenceSector { get; set; }
 
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
@@ -37,13 +37,11 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            ReferenceSector = LoadManager.GetCurrentScene() == OWScene.SolarSystem
-                ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetRootSector()
-                : Locator.GetAstroObject(AstroObject.Name.Eye).GetRootSector();
+            ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                SyncedTransform.position = ReferenceSector.transform.position;
+                SyncedTransform.position = ReferenceSector.Position;
             }
             _isInitialized = true;
         }
@@ -78,8 +76,8 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
-                transform.position = ReferenceSector.transform.InverseTransformPoint(SyncedTransform.position);
-                transform.rotation = ReferenceSector.transform.InverseTransformRotation(SyncedTransform.rotation);
+                transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;
             }
 
@@ -90,22 +88,22 @@ namespace QSB.TransformSync
 
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
 
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                SyncedTransform.position = QSBSectorManager.Instance.GetStartPlanetSector().Position;
 
                 return;
             }
-           
+
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }
 
-        public void SetReferenceSector(Sector sector)
+        public void SetReferenceSector(QSBSector sector)
         {
             ReferenceSector = sector;
-            SyncedTransform.parent = ReferenceSector.transform;
-            SyncedTransform.localPosition += sector.transform.position - SyncedTransform.parent.position;
-            transform.position = ReferenceSector.transform.InverseTransformPoint(SyncedTransform.position);
-            transform.rotation = ReferenceSector.transform.InverseTransformRotation(SyncedTransform.rotation);
+            SyncedTransform.parent = sector.Transform;
+            SyncedTransform.localPosition += sector.Position - SyncedTransform.parent.position;
+            transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
+            transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
         }
     }
 }

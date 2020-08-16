@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ElevatorSync
@@ -24,8 +25,9 @@ namespace QSB.ElevatorSync
             _elevators = Resources.FindObjectsOfTypeAll<Elevator>().ToList();
             for (var id = 0; id < _elevators.Count; id++)
             {
-                var elevatorController = new QSBElevator();
-                elevatorController.Init(_elevators[id], id);
+                var qsbElevator = new QSBElevator();
+                qsbElevator.Init(_elevators[id], id);
+                WorldRegistry.AddObject(qsbElevator);
             }
         }
 

@@ -5,11 +5,22 @@ namespace QSB.WorldSync
 {
     public static class WorldRegistry
     {
-        public static List<WorldObject> WorldObjects { get; } = new List<WorldObject>();
+        private static readonly List<WorldObject> _worldObjects = new List<WorldObject>();
+
+        public static void AddObject(WorldObject worldObject)
+        {
+            _worldObjects.Add(worldObject);
+        }
+
+        public static List<T> GetObjects<T>()
+        {
+            return _worldObjects.OfType<T>().ToList();
+        }
 
         public static T GetObject<T>(int id) where T : WorldObject
         {
-            return WorldObjects.OfType<T>().FirstOrDefault(x => x.ObjectId == id);
+            return GetObjects<T>().FirstOrDefault(x => x.ObjectId == id);
         }
+
     }
 }

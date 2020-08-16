@@ -1,0 +1,20 @@
+﻿using QSB.WorldSync;
+using UnityEngine;
+
+namespace QSB.TransformSync
+{
+    public class QSBSector : WorldObject
+    {
+        public Sector Sector { get; private set; }
+        public Sector.Name EnumName => Sector.GetName();
+        public string GOName => Sector.name;
+        public Vector3 Position => Sector.transform.position;
+        public Transform Transform => Sector.transform;
+        
+        public void Init(Sector sector, int id)
+        {
+            Sector = sector;
+            ObjectId = id;
+        }
+    }
+}
