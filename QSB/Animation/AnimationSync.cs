@@ -1,5 +1,6 @@
 ﻿using System;
 using OWML.ModHelper.Events;
+using QSB.Events;
 using QSB.Messaging;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -62,7 +63,7 @@ namespace QSB.Animation
         {
             InitCommon(body);
 
-            _triggerHandler = new MessageHandler<AnimTriggerMessage>();
+            _triggerHandler = new MessageHandler<AnimTriggerMessage>(MessageType.AnimTrigger);
             _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
             _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
@@ -71,18 +72,18 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded += OnBecomeGrounded;
             _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener("SuitUp", OnSuitUp);
-            GlobalMessenger.AddListener("RemoveSuit", OnSuitDown);
+            GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
         }
 
         public void InitRemote(Transform body)
         {
             InitCommon(body);
 
-            _suitedAnimController = _bodyAnim.runtimeAnimatorController;
-
             var playerAnimController = body.GetComponent<PlayerAnimController>();
             playerAnimController.enabled = false;
+
+            _suitedAnimController = AnimControllerPatch.SuitedAnimController;
             _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
             _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
             _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
@@ -113,8 +114,8 @@ namespace QSB.Animation
             _playerController.OnJump -= OnJump;
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
-            GlobalMessenger.RemoveListener("RemoveSuit", OnSuitDown);
+            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
         }
 
         private void SendTrigger(AnimTrigger trigger, float value = 0)
@@ -160,20 +161,44 @@ namespace QSB.Animation
                     _bodyAnim.SetTrigger(trigger.ToString());
                     break;
                 case AnimTrigger.SuitUp:
-                    _bodyAnim.runtimeAnimatorController = _suitedAnimController;
-                    _unsuitedGraphics.SetActive(false);
-                    _suitedGraphics.SetActive(true);
+                    SuitUp();
                     break;
                 case AnimTrigger.SuitDown:
-                    _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
-                    _unsuitedGraphics.SetActive(true);
-                    _suitedGraphics.SetActive(false);
+                    SuitDown();
                     break;
                 case AnimTrigger.Crouch:
                     _crouchParam.Target = value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
+            }
+        }
+
+        private void SuitUp()
+        {
+            _bodyAnim.runtimeAnimatorController = _suitedAnimController;
+            _anim.runtimeAnimatorController = _suitedAnimController;
+            _unsuitedGraphics.SetActive(false);
+            _suitedGraphics.SetActive(true);
+        }
+
+        private void SuitDown()
+        {
+            _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
+            _anim.runtimeAnimatorController = _unsuitedAnimController;
+            _unsuitedGraphics.SetActive(true);
+            _suitedGraphics.SetActive(false);
+        }
+
+        public void SetSuitState(bool state)
+        {
+            if (state)
+            {
+                SuitUp();
+            }
+            else
+            {
+                SuitDown();
             }
         }
 

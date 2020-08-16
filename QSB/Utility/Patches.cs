@@ -1,9 +1,5 @@
 ﻿using OWML.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+using QSB.Events;
 
 namespace QSB.Utility
 {
@@ -11,14 +7,14 @@ namespace QSB.Utility
     {
         private static void ProbeAnchor()
         {
-            GlobalMessenger.FireEvent("QSBOnProbeAnchor");
+            GlobalMessenger.FireEvent(EventNames.QSBOnProbeAnchor);
         }
 
         private static bool ProbeWarp(ref bool ____isRetrieving)
         {
             if (!____isRetrieving)
             {
-                GlobalMessenger.FireEvent("QSBOnProbeWarp");
+                GlobalMessenger.FireEvent(EventNames.QSBOnProbeWarp);
             }  
             return true;
         }

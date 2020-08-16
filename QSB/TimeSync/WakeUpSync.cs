@@ -1,12 +1,14 @@
-﻿using QSB.Messaging;
+﻿using OWML.ModHelper.Events;
+using QSB.Events;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TimeSync
 {
     public class WakeUpSync : NetworkBehaviour
     {
+        public static WakeUpSync LocalInstance { get; private set; }
+
         private const float TimeThreshold = 0.5f;
         private const float MaxFastForwardSpeed = 60f;
         private const float MaxFastForwardDiff = 20f;
@@ -15,14 +17,18 @@ namespace QSB.TimeSync
         private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
         private State _state = State.NotLoaded;
 
-        private MessageHandler<WakeUpMessage> _wakeUpHandler;
-
         private float _sendTimer;
         private float _serverTime;
         private float _timeScale;
         private bool _isInputEnabled = true;
+        private bool _isFirstFastForward = true;
         private int _localLoopCount;
         private int _serverLoopCount;
+
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
 
         private void Start()
         {
@@ -31,25 +37,22 @@ namespace QSB.TimeSync
                 return;
             }
 
-            _wakeUpHandler = new MessageHandler<WakeUpMessage>();
-            _wakeUpHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-
-            var sceneName = SceneManager.GetActiveScene().name;
-            if (sceneName == "SolarSystem" || sceneName == "EyeOfTheUniverse")
+            var scene = LoadManager.GetCurrentScene();
+            if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
             {
                 Init();
             }
             else
             {
-                SceneManager.sceneLoaded += OnSceneLoaded;
+                LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
             }
 
-            GlobalMessenger.AddListener("RestartTimeLoop", OnLoopStart);
+            GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
-            if (scene.name == "SolarSystem" || scene.name == "EyeOfTheUniverse")
+            if (newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse)
             {
                 Init();
             }
@@ -66,6 +69,7 @@ namespace QSB.TimeSync
 
         private void Init()
         {
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
             if (isServer)
@@ -85,15 +89,10 @@ namespace QSB.TimeSync
 
         private void SendServerTime()
         {
-            var message = new WakeUpMessage
-            {
-                ServerTime = Time.timeSinceLevelLoad,
-                LoopCount = _localLoopCount
-            };
-            _wakeUpHandler.SendToAll(message);
+            GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
         }
 
-        private void OnClientReceiveMessage(WakeUpMessage message)
+        public void OnClientReceiveMessage(ServerTimeMessage message)
         {
             if (isServer)
             {
@@ -134,6 +133,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
+            FindObjectOfType<SleepTimerUI>().Invoke("OnStartFastForward");
         }
 
         private void StartPausing()
@@ -144,6 +144,7 @@ namespace QSB.TimeSync
             }
             _timeScale = 0f;
             _state = State.Pausing;
+            SpinnerUI.Show();
         }
 
         private void ResetTimeScale()
@@ -155,6 +156,11 @@ namespace QSB.TimeSync
             {
                 EnableInput();
             }
+            _isFirstFastForward = false;
+            Physics.SyncTransforms();
+            SpinnerUI.Hide();
+            FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
+            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
         }
 
         private void DisableInput()
@@ -209,6 +215,14 @@ namespace QSB.TimeSync
             {
                 var diff = _serverTime - Time.timeSinceLevelLoad;
                 Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+
+                if (LoadManager.GetCurrentScene() == OWScene.SolarSystem && _isFirstFastForward)
+                {
+                    var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
+                    Locator.GetPlayerTransform().position = spawnPoint.position;
+                    Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
+                    Physics.SyncTransforms();
+                }
             }
             else
             {

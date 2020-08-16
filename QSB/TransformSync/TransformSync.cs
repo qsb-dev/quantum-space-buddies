@@ -1,9 +1,7 @@
 ﻿using OWML.Common;
-using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QSB.TransformSync
 {
@@ -15,53 +13,40 @@ namespace QSB.TransformSync
         private bool _isInitialized;
 
         public Transform SyncedTransform { get; private set; }
-        public Transform ReferenceTransform { get; set; }
+        public QSBSector ReferenceSector { get; set; }
 
-        private bool _isSectorSetUp;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
+
+        private bool _isVisible;
 
         protected virtual void Awake()
         {
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
-            if (_isInitialized)
-            {
-                Reset();
-            }
+            _isInitialized = false;
         }
 
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
-        protected abstract bool IsReady { get; }
-        protected abstract uint PlayerId { get; }
+        public abstract bool IsReady { get; }
+        public abstract uint PlayerId { get; }
 
         protected void Init()
         {
-            _isInitialized = true;
-            Invoke(nameof(SetFirstSector), 1);
+            ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
             {
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
+                SyncedTransform.position = ReferenceSector.Position;
             }
-        }
-
-        protected void Reset()
-        {
-            _isInitialized = false;
-            _isSectorSetUp = false;
-        }
-
-        private void SetFirstSector()
-        {
-            _isSectorSetUp = true;
-            ReferenceTransform = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
+            _isInitialized = true;
+            _isVisible = true;
         }
 
         private void Update()
@@ -72,17 +57,17 @@ namespace QSB.TransformSync
             }
             else if (_isInitialized && !IsReady)
             {
-                Reset();
+                _isInitialized = false;
             }
 
-            if (SyncedTransform == null || !_isSectorSetUp || !_isInitialized)
+            if (SyncedTransform == null || !_isInitialized)
             {
                 return;
             }
 
             // Get which sector should be used as a reference point
 
-            if (ReferenceTransform == null)
+            if (ReferenceSector == null)
             {
                 DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
             }
@@ -94,8 +79,8 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
-                transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
-                transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
+                transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;
             }
 
@@ -103,20 +88,41 @@ namespace QSB.TransformSync
             if (SyncedTransform.position == Vector3.zero)
             {
                 // Fix bodies staying at 0,0,0 by chucking them into the sun
-
                 DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
-
-                FullStateRequest.Instance.Request();
-
-                SyncedTransform.position = Locator.GetAstroObject(AstroObject.Name.Sun).transform.position;
-
+                Hide();
                 return;
             }
 
-            SyncedTransform.parent = ReferenceTransform;
-
+            Show();
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+        }
+
+        public void SetReferenceSector(QSBSector sector)
+        {
+            _positionSmoothVelocity = Vector3.zero;
+            ReferenceSector = sector;
+            SyncedTransform.SetParent(sector.Transform, true);
+            transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
+            transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+        }
+
+        private void Show()
+        {
+            if (!_isVisible)
+            {
+                SyncedTransform.gameObject.Show();
+                _isVisible = true;
+            }
+        }
+
+        private void Hide()
+        {
+            if (_isVisible)
+            {
+                SyncedTransform.gameObject.Hide();
+                _isVisible = false;
+            }
         }
 
     }

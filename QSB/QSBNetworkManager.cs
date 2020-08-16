@@ -2,7 +2,9 @@
 using System.Linq;
 using OWML.ModHelper.Events;
 using QSB.Animation;
+using QSB.DeathSync;
 using QSB.Events;
+using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -110,8 +112,7 @@ namespace QSB
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 
-            var gameState = gameObject.AddComponent<GameState>();
-            gameState.Send();
+            gameObject.AddComponent<Events.PlayerState>();
         }
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
@@ -119,32 +120,32 @@ namespace QSB
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
-            gameObject.AddComponent<PlayerJoin>().Join(_playerName);
-            gameObject.AddComponent<PlayerLeave>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
-            gameObject.AddComponent<Events.EventHandler>();
 
-            if (!Network.isServer)
+            if (NetworkClient.active && !NetworkServer.active)
             {
-                gameObject.AddComponent<GameState>();
+                gameObject.AddComponent<Events.PlayerState>();
+                GeyserManager.Instance.EmptyUpdate();
+                WakeUpPatches.AddPatches();
             }
 
             _canEditName = false;
 
             OnNetworkManagerReady.Invoke();
             IsReady = true;
+
+            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
+
+            UnityHelper.Instance.RunWhen(() => EventList.Ready,
+                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
         }
 
         public override void OnStopClient() // Called on the client when closing connection
         {
-            DebugLog.ToScreen("OnStopClient");
             Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<PlayerJoin>());
-            Destroy(GetComponent<PlayerLeave>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
-            Destroy(GetComponent<Events.EventHandler>());
             if (IsClientConnected())
             {
                 PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
@@ -154,11 +155,9 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            DebugLog.ToScreen("OnServerDisconnect");
-
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GetComponent<PlayerLeave>().Leave(playerId, objectIds);
+            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
 
             base.OnServerDisconnect(connection);
         }

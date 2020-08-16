@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QSB.Events;
 using QSB.TransformSync;
 using QSB.Animation;
+using QSB.Messaging;
 
 namespace QSB
 {
     public static class PlayerRegistry
     {
-        public static PlayerInfo LocalPlayer => GetPlayer(PlayerTransformSync.LocalInstance.netId.Value);
+        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.netId.Value;
+        public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
-
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
 
         public static PlayerInfo CreatePlayer(uint id)
@@ -42,15 +42,27 @@ namespace QSB
             PlayerList.Remove(GetPlayer(id));
         }
 
-        public static void HandleFullStateMessage(FullStateMessage message)
+        public static void HandleFullStateMessage(PlayerStateMessage message)
         {
             var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
             player.Name = message.PlayerName;
+            player.IsReady = message.PlayerReady;
+            player.State = message.PlayerState;
+
+            if (LocalPlayer.IsReady)
+            {
+                player.UpdateStateObjects();
+            }
         }
 
         public static TransformSync.TransformSync GetTransformSync(uint id)
         {
-            return TransformSyncs.First(x => x != null && x.netId.Value == id);
+            return TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
+        }
+
+        public static bool IsBelongingToLocalPlayer(uint id)
+        {
+            return id == LocalPlayerId || GetTransformSync(id).PlayerId == LocalPlayerId;
         }
 
         public static AnimationSync GetAnimationSync(uint id)

@@ -357,3 +357,5 @@ MigrationBackup/
 
 # Unecessary asset bundle file
 /AssetBundles/AssetBundles*
+
+QSB.csproj.user

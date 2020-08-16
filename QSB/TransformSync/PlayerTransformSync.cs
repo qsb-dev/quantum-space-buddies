@@ -7,14 +7,17 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
-        public Transform bodyTransform;
+        static PlayerTransformSync()
+        {
+            AnimControllerPatch.Init();
+        }
 
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
 
-        protected override uint PlayerId => netId.Value - 0;
+        public override uint PlayerId => netId.Value - 0;
 
         private Transform GetPlayerModel()
         {
@@ -24,8 +27,6 @@ namespace QSB.TransformSync
         protected override Transform InitLocalTransform()
         {
             var body = GetPlayerModel();
-
-            bodyTransform = body;
 
             GetComponent<AnimationSync>().InitLocal(body);
 
@@ -38,8 +39,6 @@ namespace QSB.TransformSync
         {
             var body = Instantiate(GetPlayerModel());
 
-            bodyTransform = body;
-
             GetComponent<AnimationSync>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
@@ -50,6 +49,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        protected override bool IsReady => Locator.GetPlayerTransform() != null && Player != null;
+        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null && Player.IsReady;
     }
 }

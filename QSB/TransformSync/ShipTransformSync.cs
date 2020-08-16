@@ -11,7 +11,7 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        protected override uint PlayerId => netId.Value - 1;
+        public override uint PlayerId => netId.Value - 1;
 
         private Transform GetShipModel()
         {
@@ -51,6 +51,6 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        protected override bool IsReady => GetShipModel() != null;
+        public override bool IsReady => GetShipModel() != null && Player != null && Player.IsReady;
     }
 }

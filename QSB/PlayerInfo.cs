@@ -17,8 +17,8 @@ namespace QSB
         public QSBTool Translator => GetToolByType(ToolType.Translator);
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
         public string Name { get; set; }
-        public bool IsReady => Body != null;
-        public State State { get; private set; }
+        public bool IsReady { get; set; }
+        public State State { get; set; }
 
         public PlayerInfo(uint id)
         {
@@ -37,6 +37,19 @@ namespace QSB
                 FlagsHelper.Unset(ref states, state);
             }
             State = states;
+        }
+
+        public void UpdateStateObjects()
+        {
+            if (OWInput.GetInputMode() == InputMode.None)
+            {
+                return;
+            }
+            FlashLight?.UpdateState(FlagsHelper.IsSet(State, State.Flashlight));
+            Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
+            ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
+            Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
+            PlayerRegistry.GetAnimationSync(NetId)?.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
         }
 
         public bool GetState(State state)
