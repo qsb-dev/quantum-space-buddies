@@ -14,8 +14,6 @@ namespace QSB.Events
         public uint LocalPlayerId => PlayerRegistry.LocalPlayer.NetId;
         private readonly MessageHandler<T> _eventHandler;
 
-        protected bool IsInUniverse { get; private set; }
-
         protected QSBEvent()
         {
             _eventHandler = new MessageHandler<T>(Type);
@@ -23,12 +21,6 @@ namespace QSB.Events
             _eventHandler.OnServerReceiveMessage += OnServerReceive;
 
             SetupListener();
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
-        }
-
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
-        {
-            IsInUniverse = newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse;
         }
 
         /// <summary>

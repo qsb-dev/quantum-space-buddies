@@ -37,22 +37,21 @@ namespace QSB.TimeSync
                 return;
             }
 
-            var scene = LoadManager.GetCurrentScene();
-            if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
+            if (QSBSceneManager.IsInUniverse)
             {
                 Init();
             }
             else
             {
-                LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+                QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
             }
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
-            if (newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse)
+            if (isInUniverse)
             {
                 Init();
             }
@@ -216,7 +215,7 @@ namespace QSB.TimeSync
                 var diff = _serverTime - Time.timeSinceLevelLoad;
                 Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
 
-                if (LoadManager.GetCurrentScene() == OWScene.SolarSystem && _isFirstFastForward)
+                if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
                 {
                     var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
                     Locator.GetPlayerTransform().position = spawnPoint.position;

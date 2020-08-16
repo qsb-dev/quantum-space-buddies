@@ -133,6 +133,7 @@
     <Compile Include="ElevatorSync\ElevatorPatches.cs" />
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
+    <Compile Include="QSBSceneManager.cs" />
     <Compile Include="TimeSync\WakeUpPatches.cs" />
     <Compile Include="Tools\PlayerFlashlightEvent.cs" />
     <Compile Include="Events\PlayerJoinEvent.cs" />

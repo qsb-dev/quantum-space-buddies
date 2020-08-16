@@ -11,7 +11,7 @@ namespace QSB.TimeSync
 
         public static bool OnStartOfTimeLoopPrefix(ref PlayerCameraEffectController __instance)
         {
-            if (__instance.gameObject.CompareTag("MainCamera") && LoadManager.GetCurrentScene() != OWScene.EyeOfTheUniverse)
+            if (__instance.gameObject.CompareTag("MainCamera") && QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse)
             {
                 __instance.Invoke("WakeUp");
             }

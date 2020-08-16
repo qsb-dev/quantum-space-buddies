@@ -22,7 +22,7 @@ namespace QSB.TransformSync
 
         public override void OnReceiveRemote(WorldObjectMessage message)
         {
-            if (!IsInUniverse)
+            if (!QSBSceneManager.IsInUniverse)
             {
                 return;
             }
