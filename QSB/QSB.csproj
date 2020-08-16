@@ -155,6 +155,9 @@
     <Compile Include="Events\QSBEvent.cs" />
     <Compile Include="Messaging\PlayerJoinMessage.cs" />
     <Compile Include="Messaging\ToggleMessage.cs" />
+    <Compile Include="TransformSync\QSBSector.cs" />
+    <Compile Include="TransformSync\QSBSectorManager.cs" />
+    <Compile Include="Utility\GOExtensions.cs" />
     <Compile Include="WorldSync\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />
@@ -184,7 +187,6 @@
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
-    <Compile Include="TransformSync\SectorMessage.cs" />
     <Compile Include="TransformSync\SectorSync.cs" />
     <Compile Include="TimeSync\ServerTimeMessage.cs" />
     <Compile Include="TimeSync\WakeUpSync.cs" />
