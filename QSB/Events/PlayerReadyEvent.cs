@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -21,7 +20,6 @@ namespace QSB.Events
 
         private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
         {
-            FromId = LocalPlayerId,
             AboutId = LocalPlayerId,
             ToggleValue = ready
         };

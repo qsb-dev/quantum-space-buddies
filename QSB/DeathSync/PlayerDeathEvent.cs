@@ -22,7 +22,6 @@ namespace QSB.DeathSync
 
         private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
         {
-            FromId = LocalPlayerId,
             AboutId = LocalPlayerId,
             DeathType = type
         };

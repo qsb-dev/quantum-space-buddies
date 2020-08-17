@@ -22,7 +22,6 @@ namespace QSB.ElevatorSync
 
         private ElevatorMessage CreateMessage(int id, ElevatorDirection direction) => new ElevatorMessage
         {
-            FromId = LocalPlayerId,
             Direction = direction,
             ObjectId = id
         };

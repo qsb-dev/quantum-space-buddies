@@ -22,8 +22,7 @@ namespace QSB.Events
 
         private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage
         {
-            FromId = PlayerTransformSync.LocalInstance.netId.Value,
-            AboutId = PlayerTransformSync.LocalInstance.netId.Value,
+            AboutId = LocalPlayerId,
             PlayerName = name
         };
 

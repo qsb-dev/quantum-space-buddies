@@ -1,7 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
-using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -12,7 +11,7 @@ namespace QSB.Events
     public abstract class QSBEvent<T> where T : PlayerMessage, new()
     {
         public abstract MessageType Type { get; }
-        public uint LocalPlayerId => PlayerRegistry.LocalPlayer.NetId;
+        public uint LocalPlayerId => PlayerRegistry.LocalPlayerId;
         private readonly MessageHandler<T> _eventHandler;
 
         protected QSBEvent()
@@ -61,6 +60,7 @@ namespace QSB.Events
 
         public void SendEvent(T message)
         {
+            message.FromId = PlayerRegistry.LocalPlayerId;
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
 

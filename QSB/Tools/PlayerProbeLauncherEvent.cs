@@ -24,7 +24,6 @@ namespace QSB.Tools
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
-            FromId = LocalPlayerId,
             AboutId = LocalPlayerId,
             ToggleValue = value
         };
