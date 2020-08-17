@@ -15,7 +15,6 @@ namespace QSB
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
-        public static List<PlayerHUDMarker> PlayerHudMarkers { get; } = new List<PlayerHUDMarker>();
 
         public static PlayerInfo GetPlayer(uint id)
         {
@@ -60,11 +59,6 @@ namespace QSB
         public static AnimationSync GetAnimationSync(uint id)
         {
             return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
-        }
-
-        public static PlayerHUDMarker GetPlayerMarker(uint id)
-        {
-            return PlayerHudMarkers.FirstOrDefault(x => x != null && x._player.NetId == id);
         }
     }
 }

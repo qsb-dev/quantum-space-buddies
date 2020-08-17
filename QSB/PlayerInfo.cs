@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using QSB.Tools;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace QSB
         public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
         public QSBTool Translator => GetToolByType(ToolType.Translator);
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
+        public PlayerHUDMarker HudMarker { get; set; }
         public string Name { get; set; }
         public bool IsReady { get; set; }
         public State State { get; set; }
