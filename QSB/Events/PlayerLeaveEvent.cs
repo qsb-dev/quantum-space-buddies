@@ -42,23 +42,26 @@ namespace QSB.Events
 
         private void DestroyObject(uint objectId)
         {
-            var component = Object.FindObjectsOfType<NetworkBehaviour>()
-                .FirstOrDefault(x => x.netId.Value == objectId);
-            if (component == null)
+            var components = Object.FindObjectsOfType<NetworkBehaviour>()
+                .Where(x => x.netId.Value == objectId);
+            foreach (var component in components)
             {
-                return;
-            }
-            var transformSync = component.GetComponent<TransformSync.TransformSync>();
-            
-            if (transformSync != null)
-            {
-                PlayerRegistry.TransformSyncs.Remove(transformSync);
-                if (transformSync.SyncedTransform != null)
+                if (component == null)
                 {
-                    Object.Destroy(transformSync.SyncedTransform.gameObject);
+                    return;
                 }
+                var transformSync = component.GetComponent<TransformSync.TransformSync>();
+
+                if (transformSync != null)
+                {
+                    PlayerRegistry.TransformSyncs.Remove(transformSync);
+                    if (transformSync.SyncedTransform != null)
+                    {
+                        Object.Destroy(transformSync.SyncedTransform.gameObject);
+                    }
+                }
+                Object.Destroy(component.gameObject);
             }
-            Object.Destroy(component.gameObject);
         }
     }
 }

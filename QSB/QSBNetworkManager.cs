@@ -160,6 +160,11 @@ namespace QSB
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
             CleanupConnection(connection);
+            //var marker = PlayerRegistry.GetPlayerMarker(playerId);
+            //if (marker != null)
+            //{
+            //    Destroy(marker.transform.parent.gameObject);
+            //}
         }
 
         public override void OnStopServer()
@@ -175,6 +180,10 @@ namespace QSB
         public override void OnClientDisconnect(NetworkConnection conn)
         {
             DebugLog.ToConsole("Disconnected from server.", OWML.Common.MessageType.Info);
+            //foreach (var marker in PlayerRegistry.PlayerHudMarkers)
+            //{
+            //    Destroy(marker.transform.parent.gameObject);
+            //}
             foreach (var connection in NetworkServer.connections.Where(x => x != conn))
             {
                 CleanupConnection(connection);
@@ -198,23 +207,26 @@ namespace QSB
 
         private void DestroyObject(uint objectId)
         {
-            var component = FindObjectsOfType<NetworkBehaviour>()
-                .FirstOrDefault(x => x.netId.Value == objectId);
-            if (component == null)
+            var components = FindObjectsOfType<NetworkBehaviour>()
+                .Where(x => x.netId.Value == objectId);
+            foreach (var component in components)
             {
-                return;
-            }
-            var transformSync = component.GetComponent<TransformSync.TransformSync>();
-
-            if (transformSync != null)
-            {
-                PlayerRegistry.TransformSyncs.Remove(transformSync);
-                if (transformSync.SyncedTransform != null)
+                if (component == null)
                 {
-                    Destroy(transformSync.SyncedTransform.gameObject);
+                    return;
                 }
+                var transformSync = component.GetComponent<TransformSync.TransformSync>();
+
+                if (transformSync != null)
+                {
+                    PlayerRegistry.TransformSyncs.Remove(transformSync);
+                    if (transformSync.SyncedTransform != null)
+                    {
+                        Destroy(transformSync.SyncedTransform.gameObject);
+                    }
+                }
+                Destroy(component.gameObject);
             }
-            Destroy(component.gameObject);
         }
 
         private void OnGUI()

@@ -16,6 +16,7 @@ namespace QSB
         public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
         public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
+        public static List<PlayerHUDMarker> PlayerHudMarkers { get; } = new List<PlayerHUDMarker>();
 
         public static PlayerInfo CreatePlayer(uint id)
         {
@@ -59,21 +60,11 @@ namespace QSB
 
         public static TransformSync.TransformSync GetTransformSync(uint id)
         {
-            DebugLog.ToConsole($"Getting transform sync for id {id}");
-            foreach (var item in TransformSyncs)
-            {
-                DebugLog.ToConsole($"{item.GetType().Name} : {item.netId.Value}");
-            }
-            if (TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id) == default(TransformSync.TransformSync))
-            {
-                DebugLog.ToConsole($"* Couldn't find transformsync for id {id}!", OWML.Common.MessageType.Warning);
-            }
             return TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            DebugLog.ToConsole($"LocalPlayerId : {LocalPlayerId}");
             return id == LocalPlayerId || GetTransformSync(id).PlayerId == LocalPlayerId;
         }
 
@@ -82,5 +73,9 @@ namespace QSB
             return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
 
+        public static PlayerHUDMarker GetPlayerMarker(uint id)
+        {
+            return PlayerHudMarkers.FirstOrDefault(x => x != null && x._player.NetId == id);
+        }
     }
 }

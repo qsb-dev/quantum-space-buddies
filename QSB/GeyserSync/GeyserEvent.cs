@@ -23,6 +23,7 @@ namespace QSB.GeyserSync
         private GeyserMessage CreateMessage(int id, bool state) => new GeyserMessage
         {
             FromId = PlayerRegistry.LocalPlayer.NetId,
+            AboutId = PlayerRegistry.LocalPlayer.NetId,
             ObjectId = id,
             State = state
         };

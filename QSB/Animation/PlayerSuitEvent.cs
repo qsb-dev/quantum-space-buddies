@@ -24,6 +24,7 @@ namespace QSB.Animation
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
+            FromId = LocalPlayerId,
             AboutId = LocalPlayerId,
             ToggleValue = value
         };

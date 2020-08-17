@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -32,6 +33,7 @@ namespace QSB.TimeSync
 
         private void Start()
         {
+            DebugLog.ToConsole("WAKEUPSYNC NETID IS " + netId.Value);
             if (!isLocalPlayer)
             {
                 return;
@@ -68,6 +70,7 @@ namespace QSB.TimeSync
 
         private void Init()
         {
+            DebugLog.ToConsole("WAKEUPSYNC NETID IS " + netId.Value);
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
