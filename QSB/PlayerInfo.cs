@@ -12,7 +12,7 @@ namespace QSB
         public GameObject Camera { get; set; }
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }
-        public QSBFlashlight FlashLight => Camera.GetComponentInChildren<QSBFlashlight>();
+        public QSBFlashlight FlashLight => Camera?.GetComponentInChildren<QSBFlashlight>();
         public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
         public QSBTool Translator => GetToolByType(ToolType.Translator);
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
