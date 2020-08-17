@@ -22,10 +22,6 @@ namespace QSB.ElevatorSync
 
         public override void OnReceiveRemote(ElevatorMessage message)
         {
-            if (!QSBSceneManager.IsInUniverse)
-            {
-                return;
-            }
             var elevator = WorldRegistry.GetObject<QSBElevator>(message.ObjectId);
             elevator?.RemoteCall(message.Direction);
         }

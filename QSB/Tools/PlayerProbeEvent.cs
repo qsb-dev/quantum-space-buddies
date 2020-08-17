@@ -23,7 +23,7 @@ namespace QSB.Tools
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
             player.UpdateState(State.ProbeActive, message.ToggleValue);
-            player.Probe.SetState(message.ToggleValue);
+            player.Probe?.SetState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
