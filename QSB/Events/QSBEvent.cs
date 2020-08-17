@@ -71,7 +71,8 @@ namespace QSB.Events
 
         private void OnClientReceive(T message)
         {
-            if (PlayerRegistry.IsBelongingToLocalPlayer(message.FromId))
+            if (message.FromId == PlayerRegistry.LocalPlayerId ||
+                PlayerRegistry.IsBelongingToLocalPlayer(message.AboutId))
             {
                 OnReceiveLocal(message);
                 return;
