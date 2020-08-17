@@ -31,12 +31,12 @@ namespace QSB.Tools
         public override void OnReceiveRemote(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.SenderId);
-            player.UpdateState(State.ProbeLauncher, message.ToggleValue);
-            if (!IsInUniverse)
+            player?.UpdateState(State.ProbeLauncher, message.ToggleValue);
+            if (!QSBSceneManager.IsInUniverse)
             {
                 return;
             }
-            player.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
+            player?.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)

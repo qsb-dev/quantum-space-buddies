@@ -5,12 +5,13 @@ namespace QSB
     [Flags]
     public enum State
     {
-        Flashlight = 0,
-        Suit = 1,
-        ProbeLauncher = 2,
-        Signalscope = 4,
-        Translator = 8,
-        ProbeActive = 16
+        None = 0,
+        Flashlight = 1,
+        Suit = 2,
+        ProbeLauncher = 4,
+        Signalscope = 8,
+        Translator = 16,
+        ProbeActive = 32
         //Increment these in binary to add more states
     }
 }

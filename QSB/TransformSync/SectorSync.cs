@@ -1,93 +1,48 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
+﻿using UnityEngine;
 using QSB.Events;
-using QSB.Utility;
 
 namespace QSB.TransformSync
 {
     public class SectorSync : MonoBehaviour
     {
-        private readonly List<Sector> _allSectors = new List<Sector>();
-
-        public static SectorSync LocalInstance { get; private set; }
-
-        private readonly Sector.Name[] _sectorBlacklist =
-        {
-            Sector.Name.Ship
-        };
-
-        private void Awake()
-        {
-            LocalInstance = this;
-            QSB.Helper.Events.Subscribe<Sector>(OWML.Common.Events.AfterAwake);
-            QSB.Helper.Events.Event += OnEvent;
-        }
-
-        private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
-        {
-            if (behaviour is Sector sector && ev == OWML.Common.Events.AfterAwake)
-            {
-                if (!_allSectors.Contains(sector))
-                {
-                    _allSectors.Add(sector);
-                }
-            }
-        }
-
-        private void SendSector(uint id, Sector sector)
-        {
-            DebugLog.ToScreen($"Sending sector {sector.name} for id {id}");
-            GlobalMessenger<uint, Sector.Name, string>.FireEvent(EventNames.QSBSectorChange, id, sector.GetName(), sector.name);
-        }
-
-        public Sector FindSectorByName(Sector.Name sectorName, string goName)
-        {
-            if (_allSectors.Count == 0)
-            {
-                DebugLog.ToConsole("Error: _allSectors is empty!", OWML.Common.MessageType.Error);
-            }
-
-            return _allSectors
-                .FirstOrDefault(sector => sector != null &&
-                                          sector.GetName() == sectorName &&
-                                          sector.name == goName);
-        }
+        private const float CheckInterval = 0.5f;
+        private float _checkTimer = CheckInterval;
 
         private void Update()
         {
-            if (_allSectors == null || !_allSectors.Any())
+            if (!QSBSectorManager.Instance.IsReady)
             {
                 return;
             }
-            PlayerRegistry.LocalTransformSyncs.ForEach(UpdateTransformSync);
+            _checkTimer += Time.unscaledDeltaTime;
+            if (_checkTimer < CheckInterval)
+            {
+                return;
+            }
+            PlayerRegistry.LocalTransformSyncs.ForEach(CheckTransformSyncSector);
+            _checkTimer = 0;
         }
 
-        private void UpdateTransformSync(TransformSync transformSync)
+        private void CheckTransformSyncSector(TransformSync transformSync)
         {
             var syncedTransform = transformSync.SyncedTransform;
-            if (syncedTransform == null ||
-                syncedTransform.position == Vector3.zero ||
-                syncedTransform.position == Locator.GetAstroObject(AstroObject.Name.Sun).transform.position)
+            if (syncedTransform == null || syncedTransform.position == Vector3.zero)
             {
                 return;
             }
-            var closestSector = GetClosestSector(syncedTransform);
+            var closestSector = QSBSectorManager.Instance.GetClosestSector(syncedTransform);
             if (closestSector == transformSync.ReferenceSector)
             {
                 return;
             }
-            SendSector(transformSync.netId.Value, closestSector);
             transformSync.ReferenceSector = closestSector;
+            SendSector(transformSync.netId.Value, closestSector);
         }
 
-        private Sector GetClosestSector(Transform trans)
+        private void SendSector(uint id, QSBSector sector)
         {
-            return _allSectors
-                .Where(sector => sector != null &&
-                                 !_sectorBlacklist.Contains(sector.GetName()))
-                .OrderBy(sector => Vector3.Distance(sector.transform.position, trans.position))
-                .First();
+            //DebugLog.ToConsole($"Sending sector {sector.Name} for id {id}");
+            GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
         }
     }
 }

@@ -29,12 +29,12 @@ namespace QSB.GeyserSync
 
         public override void OnReceiveRemote(GeyserMessage message)
         {
-            if (!IsInUniverse)
+            if (!QSBSceneManager.IsInUniverse)
             {
                 return;
             }
             var geyser = WorldRegistry.GetObject<QSBGeyser>(message.ObjectId);
-            geyser.SetState(message.State);
+            geyser?.SetState(message.State);
         }
     }
 }

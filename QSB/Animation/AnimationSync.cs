@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
@@ -92,6 +93,10 @@ namespace QSB.Animation
             playerAnimController.SetValue("_unsuitedGroup", new GameObject());
             playerAnimController.SetValue("_baseAnimController", null);
             playerAnimController.SetValue("_unsuitedAnimOverride", null);
+            playerAnimController.SetValue("_rightArmHidden", false);
+
+            var rightArmObjects = playerAnimController.GetValue<GameObject[]>("_rightArmObjects").ToList();
+            rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
 
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;

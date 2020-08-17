@@ -149,7 +149,6 @@ namespace QSB
 
         public override void OnStopClient() // Called on the client when closing connection
         {
-            DebugLog.ToConsole("OnStopClient (disconnecting from server)");
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
@@ -163,8 +162,6 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            DebugLog.ToConsole("OnServerDisconnect");
-
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);

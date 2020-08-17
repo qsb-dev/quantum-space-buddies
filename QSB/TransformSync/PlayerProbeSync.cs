@@ -60,7 +60,7 @@ namespace QSB.TransformSync
             }
             if (hasAuthority)
             {
-                transform.position = ReferenceSector.transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
+                transform.position = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
                 return;
             }
             if (SyncedTransform.position == Vector3.zero ||
@@ -68,9 +68,9 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            SyncedTransform.localPosition = ReferenceSector.transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
+            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && Player != null && (Player?.IsReady).Value;
+        public override bool IsReady => Locator.GetProbe() != null && Player != null && Player.IsReady;
     }
 }

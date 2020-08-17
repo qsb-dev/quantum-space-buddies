@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.GeyserSync
 {
@@ -9,17 +10,17 @@ namespace QSB.GeyserSync
         private void Awake()
         {
             Instance = this;
-
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();
             for (var id = 0; id < geyserControllers.Length; id++)
             {
-                var geyser = new QSBGeyser();
-                geyser.Init(geyserControllers[id], id);
+                var qsbGeyser = new QSBGeyser();
+                qsbGeyser.Init(geyserControllers[id], id);
+                WorldRegistry.AddObject(qsbGeyser);
             }
         }
         

@@ -2,6 +2,7 @@
 using OWML.ModHelper;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -30,6 +31,7 @@ namespace QSB
             gameObject.AddComponent<UnityHelper>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
+            gameObject.AddComponent<QSBSectorManager>();
         }
 
         public override void Configure(IModConfig config)
