@@ -59,7 +59,8 @@ namespace QSB
 
         private QSBTool GetToolByType(ToolType type)
         {
-            return Camera.GetComponentsInChildren<QSBTool>().First(x => x.Type == type);
+            return Camera?.GetComponentsInChildren<QSBTool>()
+                .FirstOrDefault(x => x.Type == type);
         }
     }
 }
