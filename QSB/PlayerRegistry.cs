@@ -18,25 +18,16 @@ namespace QSB
         public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
         public static List<PlayerHUDMarker> PlayerHudMarkers { get; } = new List<PlayerHUDMarker>();
 
-        public static PlayerInfo CreatePlayer(uint id)
-        {
-            if (PlayerExists(id))
-            {
-                return null;
-            }
-            var player = new PlayerInfo(id);
-            PlayerList.Add(player);
-            return player;
-        }
-
         public static PlayerInfo GetPlayer(uint id)
         {
-            return PlayerList.FirstOrDefault(x => x.NetId == id);
-        }
-
-        public static bool PlayerExists(uint id)
-        {
-            return GetPlayer(id) != null;
+            var player = PlayerList.FirstOrDefault(x => x.NetId == id);
+            if (player != null)
+            {
+                return player;
+            }
+            player = new PlayerInfo(id);
+            PlayerList.Add(player);
+            return player;
         }
 
         public static void RemovePlayer(uint id)
@@ -47,7 +38,7 @@ namespace QSB
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
-            var player = GetPlayer(message.AboutId) ?? CreatePlayer(message.AboutId);
+            var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;

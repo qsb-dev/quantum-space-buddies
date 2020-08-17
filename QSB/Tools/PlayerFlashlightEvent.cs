@@ -31,12 +31,8 @@ namespace QSB.Tools
         public override void OnReceiveRemote(ToggleMessage message)
         {
             var player = PlayerRegistry.GetPlayer(message.AboutId);
-            player?.UpdateState(State.Flashlight, message.ToggleValue);
-            if (!QSBSceneManager.IsInUniverse)
-            {
-                return;
-            }
-            player?.FlashLight?.UpdateState(message.ToggleValue);
+            player.UpdateState(State.Flashlight, message.ToggleValue);
+            player.FlashLight?.UpdateState(message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)

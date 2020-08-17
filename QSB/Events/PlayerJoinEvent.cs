@@ -27,7 +27,7 @@ namespace QSB.Events
 
         public override void OnReceiveRemote(PlayerJoinMessage message)
         {
-            var player = PlayerRegistry.CreatePlayer(message.AboutId);
+            var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             var text = $"{player.Name} joined!";
             DebugLog.ToAll(OWML.Common.MessageType.Info, text);
@@ -35,7 +35,7 @@ namespace QSB.Events
 
         public override void OnReceiveLocal(PlayerJoinMessage message)
         {
-            var player = PlayerRegistry.CreatePlayer(PlayerRegistry.LocalPlayerId);
+            var player = PlayerRegistry.GetPlayer(PlayerRegistry.LocalPlayerId);
             player.Name = message.PlayerName;
             var text = $"Connected to server as {player.Name}.";
             DebugLog.ToAll(OWML.Common.MessageType.Info, text);
