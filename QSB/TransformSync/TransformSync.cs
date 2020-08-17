@@ -22,7 +22,6 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            DebugLog.ToConsole($"Adding {GetType().Name} of id {netId.Value} to transformsync list.");
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -88,12 +87,14 @@ namespace QSB.TransformSync
             // If this script is attached to any other body, eg the representations of other players
             if (SyncedTransform.position == Vector3.zero)
             {
-                // Fix bodies staying at 0,0,0 by chucking them into the sun
+                DebugLog.ToConsole($"{GetType().Name} of id {PlayerId} is at 0,0,0!");
                 Hide();
-                return;
             }
-
-            Show();
+            else
+            {
+                Show();
+            }
+            
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }

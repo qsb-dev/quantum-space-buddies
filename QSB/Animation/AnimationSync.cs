@@ -127,8 +127,7 @@ namespace QSB.Animation
         {
             var message = new AnimTriggerMessage
             {
-                FromId = netId.Value,
-                AboutId = netId.Value,
+                AboutId = PlayerRegistry.LocalPlayerId,
                 TriggerId = (short)trigger,
                 Value = value
             };

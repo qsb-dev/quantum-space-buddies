@@ -3,7 +3,6 @@ using System.Linq;
 using QSB.TransformSync;
 using QSB.Animation;
 using QSB.Messaging;
-using QSB.Utility;
 
 namespace QSB
 {
@@ -32,7 +31,6 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
-            DebugLog.ToConsole($"Removing player {id}");
             PlayerList.Remove(GetPlayer(id));
         }
 
