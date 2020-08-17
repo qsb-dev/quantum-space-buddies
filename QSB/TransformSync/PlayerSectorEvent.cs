@@ -11,7 +11,12 @@ namespace QSB.TransformSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, Sector.Name, string>.AddListener(EventNames.QSBSectorChange, Handler);
+            GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
+        }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<uint, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
         }
 
         private void Handler(uint netId, QSBSector sector) => SendEvent(CreateMessage(netId, sector));
