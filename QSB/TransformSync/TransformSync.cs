@@ -87,7 +87,6 @@ namespace QSB.TransformSync
             // If this script is attached to any other body, eg the representations of other players
             if (SyncedTransform.position == Vector3.zero)
             {
-                DebugLog.ToConsole($"{GetType().Name} of id {PlayerId} is at 0,0,0!");
                 Hide();
             }
             else
