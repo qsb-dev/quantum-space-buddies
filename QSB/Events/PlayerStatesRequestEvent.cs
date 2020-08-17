@@ -22,8 +22,7 @@ namespace QSB.Events
 
         private PlayerMessage CreateMessage() => new PlayerMessage
         {
-            FromId = PlayerTransformSync.LocalInstance.netId.Value,
-            AboutId = PlayerTransformSync.LocalInstance.netId.Value
+            AboutId = LocalPlayerId
         };
 
         public override void OnServerReceive(PlayerMessage message)

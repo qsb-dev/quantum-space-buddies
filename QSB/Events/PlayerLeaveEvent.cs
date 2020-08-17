@@ -24,7 +24,6 @@ namespace QSB.Events
 
         private PlayerLeaveMessage CreateMessage(uint id, uint[] objects) => new PlayerLeaveMessage
         {
-            FromId = LocalPlayerId,
             AboutId = id,
             ObjectIds = objects
         };

@@ -23,7 +23,6 @@ namespace QSB.TransformSync
 
         private WorldObjectMessage CreateMessage(uint netId, QSBSector sector) => new WorldObjectMessage
         {
-            FromId = LocalPlayerId,
             AboutId = netId,
             ObjectId = sector.ObjectId
         };

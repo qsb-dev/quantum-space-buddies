@@ -21,7 +21,6 @@ namespace QSB.Events
 
         private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
         {
-            FromId = LocalPlayerId,
             AboutId = LocalPlayerId,
             ToggleValue = ready
         };
