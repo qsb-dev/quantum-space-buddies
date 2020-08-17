@@ -11,7 +11,6 @@ using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 
 namespace QSB
 {
