@@ -1,6 +1,7 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
+using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -55,26 +56,22 @@ namespace QSB.Events
         /// <param name="message"></param>
         public virtual void OnServerReceive(T message)
         {
-            DebugLog.ToConsole("server get message");
             _eventHandler.SendToAll(message);
         }
 
         public void SendEvent(T message)
         {
-            DebugLog.ToConsole("Starting wait to send event...");
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
 
         private void Send(T message)
         {
-            DebugLog.ToConsole("sending event!");
             _eventHandler.SendToServer(message);
         }
 
         private void OnClientReceive(T message)
         {
-            DebugLog.ToConsole("Got event!");
-            if (PlayerRegistry.IsBelongingToLocalPlayer(message.SenderId))
+            if (PlayerRegistry.IsBelongingToLocalPlayer(message.FromId))
             {
                 OnReceiveLocal(message);
                 return;

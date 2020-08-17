@@ -24,22 +24,21 @@ namespace QSB.Events
 
         private PlayerLeaveMessage CreateMessage(uint id, uint[] objects) => new PlayerLeaveMessage
         {
-            SenderId = id,
+            FromId = LocalPlayerId,
+            AboutId = id,
             ObjectIds = objects
         };
 
         public override void OnReceiveRemote(PlayerLeaveMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
-            DebugLog.ToAll(playerName, "disconnected.");
-            PlayerRegistry.RemovePlayer(message.SenderId);
+            var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
+            DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
+            PlayerRegistry.RemovePlayer(message.AboutId);
             foreach (var objectId in message.ObjectIds)
             {
                 DestroyObject(objectId);
             }
         }
-
-        public override void OnReceiveLocal(PlayerLeaveMessage message) => OnReceiveRemote(message);
 
         private void DestroyObject(uint objectId)
         {
@@ -50,9 +49,14 @@ namespace QSB.Events
                 return;
             }
             var transformSync = component.GetComponent<TransformSync.TransformSync>();
+            
             if (transformSync != null)
             {
-                Object.Destroy(transformSync.SyncedTransform.gameObject);
+                PlayerRegistry.TransformSyncs.Remove(transformSync);
+                if (transformSync.SyncedTransform != null)
+                {
+                    Object.Destroy(transformSync.SyncedTransform.gameObject);
+                }
             }
             Object.Destroy(component.gameObject);
         }

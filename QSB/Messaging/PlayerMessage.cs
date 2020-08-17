@@ -4,16 +4,19 @@ namespace QSB.Messaging
 {
     public class PlayerMessage : MessageBase
     {
-        public uint SenderId { get; set; }
+        public uint FromId { get; set; }
+        public uint AboutId { get; set; }
         
         public override void Deserialize(NetworkReader reader)
         {
-            SenderId = reader.ReadUInt32();
+            FromId = reader.ReadUInt32();
+            AboutId = reader.ReadUInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
-            writer.Write(SenderId);
+            writer.Write(FromId);
+            writer.Write(AboutId);
         }
     }
 }

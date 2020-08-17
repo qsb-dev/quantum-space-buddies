@@ -49,7 +49,6 @@ namespace QSB.Events
             Ready = false;
             foreach (var item in _eventList)
             {
-                DebugLog.ToConsole("Closing listener for " + item.GetType().Name);
                 item.Invoke("CloseListener");
             }
             _eventList = new List<object>();

@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -9,11 +10,19 @@ namespace QSB.TransformSync
 
         static PlayerTransformSync()
         {
+            DebugLog.ToConsole("constructor of playertransformsync");
             AnimControllerPatch.Init();
+        }
+
+        public override void OnNetworkDestroy()
+        {
+            DebugLog.ToConsole("PlayerTransformSync on network destroy");
+            base.OnNetworkDestroy();
         }
 
         public override void OnStartLocalPlayer()
         {
+            DebugLog.ToConsole("onstartlocalplayer of playertransformsync, id of " + PlayerId);
             LocalInstance = this;
         }
 

@@ -22,6 +22,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
+            DebugLog.ToConsole($"Adding {GetType().Name} of id {netId.Value} to transformsync list.");
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;

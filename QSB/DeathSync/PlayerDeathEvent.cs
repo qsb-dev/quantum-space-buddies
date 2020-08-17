@@ -22,13 +22,13 @@ namespace QSB.DeathSync
 
         private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
         {
-            SenderId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             DeathType = type
         };
 
         public override void OnReceiveRemote(PlayerDeathMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
+            var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }

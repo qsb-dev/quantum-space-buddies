@@ -23,7 +23,8 @@ namespace QSB.TransformSync
 
         private WorldObjectMessage CreateMessage(uint netId, QSBSector sector) => new WorldObjectMessage
         {
-            SenderId = netId,
+            FromId = LocalPlayerId,
+            AboutId = netId,
             ObjectId = sector.ObjectId
         };
 
@@ -41,7 +42,7 @@ namespace QSB.TransformSync
                 return;
             }
 
-            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
+            var transformSync = PlayerRegistry.GetTransformSync(message.AboutId);
             //DebugLog.ToConsole($"{transformSync.GetType().Name} of ID {message.SenderId} set to {sector.Name}");
             UnityHelper.Instance.RunWhen(() => transformSync.SyncedTransform != null, 
                 () => transformSync.SetReferenceSector(sector));

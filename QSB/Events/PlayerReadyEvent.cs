@@ -14,7 +14,6 @@ namespace QSB.Events
 
         public override void CloseListener()
         {
-            DebugLog.ToConsole("Close listener for ready event");
             GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
         }
 
@@ -22,13 +21,14 @@ namespace QSB.Events
 
         private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
         {
-            SenderId = LocalPlayerId,
+            FromId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             ToggleValue = ready
         };
 
         public override void OnServerReceive(ToggleMessage message)
         {
-            PlayerRegistry.GetPlayer(message.SenderId).IsReady = message.ToggleValue;
+            PlayerRegistry.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
             PlayerState.LocalInstance.Send();
         }
     }

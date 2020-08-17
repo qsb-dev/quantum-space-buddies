@@ -21,11 +21,11 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(PlayerStateMessage message)
         {
-            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
+            if (message.FromId == PlayerTransformSync.LocalInstance.netId.Value)
             {
                 return;
             }
-            UnityHelper.Instance.RunWhen(() => PlayerRegistry.GetTransformSync(message.SenderId) != null, 
+            UnityHelper.Instance.RunWhen(() => PlayerRegistry.GetTransformSync(message.AboutId) != null, 
                 () => PlayerRegistry.HandleFullStateMessage(message));
         }
 
@@ -35,7 +35,8 @@ namespace QSB.Events
             {
                 var message = new PlayerStateMessage
                 {
-                    SenderId = player.NetId,
+                    FromId = PlayerRegistry.LocalPlayerId,
+                    AboutId = player.NetId,
                     PlayerName = player.Name,
                     PlayerReady = player.IsReady,
                     PlayerState = player.State

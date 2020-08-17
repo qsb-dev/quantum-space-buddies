@@ -127,7 +127,8 @@ namespace QSB.Animation
         {
             var message = new AnimTriggerMessage
             {
-                SenderId = netId.Value,
+                FromId = netId.Value,
+                AboutId = netId.Value,
                 TriggerId = (short)trigger,
                 Value = value
             };
@@ -148,7 +149,7 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            var animationSync = PlayerRegistry.GetAnimationSync(message.SenderId);
+            var animationSync = PlayerRegistry.GetAnimationSync(message.AboutId);
             if (animationSync == null || animationSync == this)
             {
                 return;

@@ -21,7 +21,7 @@ namespace QSB.TimeSync
 
         private ServerTimeMessage CreateMessage(float time, int count) => new ServerTimeMessage
         {
-            SenderId = PlayerRegistry.LocalPlayer.NetId,
+            FromId = PlayerRegistry.LocalPlayer.NetId,
             ServerTime = time,
             LoopCount = count
         };

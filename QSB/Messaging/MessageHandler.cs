@@ -27,7 +27,6 @@ namespace QSB.Messaging
 
         private void Init()
         {
-            DebugLog.ToConsole($"Registering handler on server id {NetworkServer.serverHostId}");
             NetworkServer.RegisterHandler((short)_messageType, OnServerReceiveMessageHandler);
             NetworkManager.singleton.client.RegisterHandler((short)_messageType, OnClientReceiveMessageHandler);
         }

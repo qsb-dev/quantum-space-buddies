@@ -24,13 +24,14 @@ namespace QSB.Tools
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
-            SenderId = LocalPlayerId,
+            FromId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             ToggleValue = value
         };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
+            var player = PlayerRegistry.GetPlayer(message.AboutId);
             player?.UpdateState(State.ProbeLauncher, message.ToggleValue);
             if (!QSBSceneManager.IsInUniverse)
             {

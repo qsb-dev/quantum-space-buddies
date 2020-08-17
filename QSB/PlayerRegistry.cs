@@ -3,6 +3,7 @@ using System.Linq;
 using QSB.TransformSync;
 using QSB.Animation;
 using QSB.Messaging;
+using QSB.Utility;
 
 namespace QSB
 {
@@ -39,12 +40,13 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
+            DebugLog.ToConsole($"Removing player {id}");
             PlayerList.Remove(GetPlayer(id));
         }
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
-            var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
+            var player = GetPlayer(message.AboutId) ?? CreatePlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
@@ -57,11 +59,21 @@ namespace QSB
 
         public static TransformSync.TransformSync GetTransformSync(uint id)
         {
+            DebugLog.ToConsole($"Getting transform sync for id {id}");
+            foreach (var item in TransformSyncs)
+            {
+                DebugLog.ToConsole($"{item.GetType().Name} : {item.netId.Value}");
+            }
+            if (TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id) == default(TransformSync.TransformSync))
+            {
+                DebugLog.ToConsole($"* Couldn't find transformsync for id {id}!", OWML.Common.MessageType.Warning);
+            }
             return TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
+            DebugLog.ToConsole($"LocalPlayerId : {LocalPlayerId}");
             return id == LocalPlayerId || GetTransformSync(id).PlayerId == LocalPlayerId;
         }
 

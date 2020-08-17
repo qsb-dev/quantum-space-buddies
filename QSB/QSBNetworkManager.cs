@@ -11,6 +11,7 @@ using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace QSB
 {
@@ -54,7 +55,7 @@ namespace QSB
 
         private void Awake()
         {
-            _assetBundle = QSB.Helper.Assets.LoadBundle("assets/network");
+            _assetBundle = QSB.NetworkAssetBundle;
 
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             playerPrefab.AddComponent<PlayerTransformSync>();
@@ -99,12 +100,11 @@ namespace QSB
             connectionConfig.AddChannel(QosType.Unreliable);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
-
-            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
+            DebugLog.ToConsole("On server add player " + playerControllerId);
             base.OnServerAddPlayer(connection, playerControllerId);
 
             // These have to be in a constant order (for now, until I get a better netId getting system...)
@@ -117,7 +117,6 @@ namespace QSB
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
-            DebugLog.ToConsole("OnClientConnect (connected to server)");
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
@@ -138,13 +137,8 @@ namespace QSB
 
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
-            UnityHelper.Instance.RunWhen(() => EventList.Ready, () => FireJoinEvent());
-        }
-
-        private void FireJoinEvent()
-        {
-            DebugLog.ToConsole("Firing join event!");
-            GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName);
+            UnityHelper.Instance.RunWhen(() => EventList.Ready, 
+                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
         }
 
         public override void OnStopClient() // Called on the client when closing connection
@@ -165,13 +159,62 @@ namespace QSB
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
-
-            base.OnServerDisconnect(connection);
+            CleanupConnection(connection);
         }
 
         public override void OnStopServer()
         {
-            NetworkServer.Reset();
+            DebugLog.ToConsole("Server stopped!", OWML.Common.MessageType.Info);
+            foreach (var connection in NetworkServer.connections)
+            {
+                CleanupConnection(connection);
+            }
+            base.OnStopServer();
+        }
+
+        public override void OnClientDisconnect(NetworkConnection conn)
+        {
+            DebugLog.ToConsole("Disconnected from server.", OWML.Common.MessageType.Info);
+            foreach (var connection in NetworkServer.connections.Where(x => x != conn))
+            {
+                CleanupConnection(connection);
+            }
+            base.OnClientDisconnect(conn);
+        }
+
+        private void CleanupConnection(NetworkConnection connection)
+        {
+            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
+
+            var playerName = PlayerRegistry.GetPlayer(playerId).Name;
+            DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
+            PlayerRegistry.RemovePlayer(playerId);
+            foreach (var objectId in objectIds)
+            {
+                DestroyObject(objectId);
+            }
+        }
+
+        private void DestroyObject(uint objectId)
+        {
+            var component = FindObjectsOfType<NetworkBehaviour>()
+                .FirstOrDefault(x => x.netId.Value == objectId);
+            if (component == null)
+            {
+                return;
+            }
+            var transformSync = component.GetComponent<TransformSync.TransformSync>();
+
+            if (transformSync != null)
+            {
+                PlayerRegistry.TransformSyncs.Remove(transformSync);
+                if (transformSync.SyncedTransform != null)
+                {
+                    Destroy(transformSync.SyncedTransform.gameObject);
+                }
+            }
+            Destroy(component.gameObject);
         }
 
         private void OnGUI()
