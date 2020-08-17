@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.TransformSync;
 using QSB.Utility;
 
 namespace QSB.Events
@@ -36,7 +35,7 @@ namespace QSB.Events
 
         public override void OnReceiveLocal(PlayerJoinMessage message)
         {
-            var player = PlayerRegistry.CreatePlayer(PlayerTransformSync.LocalInstance.netId.Value);
+            var player = PlayerRegistry.CreatePlayer(PlayerRegistry.LocalPlayerId);
             player.Name = message.PlayerName;
             var text = $"Connected to server as {player.Name}.";
             DebugLog.ToAll(OWML.Common.MessageType.Info, text);

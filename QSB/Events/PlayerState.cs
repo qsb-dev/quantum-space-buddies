@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine.Networking;
 
@@ -21,7 +20,7 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(PlayerStateMessage message)
         {
-            if (message.FromId == PlayerTransformSync.LocalInstance.netId.Value)
+            if (message.FromId == PlayerRegistry.LocalPlayerId)
             {
                 return;
             }
