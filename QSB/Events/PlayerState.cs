@@ -20,7 +20,7 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(PlayerStateMessage message)
         {
-            if (message.FromId == PlayerRegistry.LocalPlayerId)
+            if (message.AboutId == PlayerRegistry.LocalPlayerId)
             {
                 return;
             }
