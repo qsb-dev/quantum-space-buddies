@@ -116,6 +116,7 @@ namespace QSB
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
+            DebugLog.ToConsole("Connecting to server...", OWML.Common.MessageType.Info);
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
@@ -142,13 +143,25 @@ namespace QSB
 
         public override void OnStopClient() // Called on the client when closing connection
         {
+            DebugLog.ToConsole("Disconnecting from server...", OWML.Common.MessageType.Info);
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
             if (IsClientConnected())
             {
-                PlayerTransformSync.LocalInstance.gameObject.GetComponent<AnimationSync>().Reset();
+                PlayerTransformSync.LocalInstance?.gameObject.GetComponent<AnimationSync>().Reset();
+            }
+            foreach (var player in PlayerRegistry.PlayerList)
+            {
+                if (player.HudMarker != null)
+                {
+                    Destroy(player.HudMarker.transform.parent.gameObject);
+                }
+            }
+            foreach (var connection in NetworkServer.connections)
+            {
+                CleanupConnection(connection);
             }
             _canEditName = true;
         }
@@ -174,20 +187,6 @@ namespace QSB
                 CleanupConnection(connection);
             }
             base.OnStopServer();
-        }
-
-        public override void OnClientDisconnect(NetworkConnection conn)
-        {
-            DebugLog.ToConsole("Disconnected from server.", OWML.Common.MessageType.Info);
-            foreach (var player in PlayerRegistry.PlayerList)
-            {
-                Destroy(player.HudMarker.transform.parent.gameObject);
-            }
-            foreach (var connection in NetworkServer.connections.Where(x => x != conn))
-            {
-                CleanupConnection(connection);
-            }
-            base.OnClientDisconnect(conn);
         }
 
         private void CleanupConnection(NetworkConnection connection)

@@ -49,6 +49,12 @@ namespace QSB.TimeSync
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
         }
 
+        private void OnDestroy()
+        {
+            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+            GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
+        }
+
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             if (isInUniverse)

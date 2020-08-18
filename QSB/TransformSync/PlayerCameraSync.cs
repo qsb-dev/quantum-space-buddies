@@ -1,5 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Tools;
+using QSB.Utility;
+using System;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -13,7 +15,25 @@ namespace QSB.TransformSync
             LocalInstance = this;
         }
 
-        public override uint PlayerId => netId.Value - 2;
+        public override uint PlayerId
+        {
+            get
+            {
+                uint id = uint.MaxValue;
+                try
+                {
+                    id = netId.Value - 2;
+                }
+                catch
+                {
+                    DebugLog.ToConsole($"Error while geting netId of {GetType().Name}! " +
+                        $"{Environment.NewLine}     - Did you destroy the TransformSync without destroying the {GetType().Name}?" +
+                        $"{Environment.NewLine}     - Did a destroyed TransformSync/{GetType().Name} still have an active action/event listener?" +
+                        $"{Environment.NewLine}     If you are a user seeing this, please report this error.", OWML.Common.MessageType.Error);
+                }
+                return id;
+            }
+        }
 
         protected override Transform InitLocalTransform()
         {
