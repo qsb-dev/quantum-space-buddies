@@ -20,7 +20,7 @@ namespace QSB.TransformSync
         public void Init(PlayerInfo player)
         {
             _player = player;
-            PlayerRegistry.GetPlayer(_player.NetId).HudMarker = this;
+            _player.HudMarker = this;
             _isReady = true;
         }
 
