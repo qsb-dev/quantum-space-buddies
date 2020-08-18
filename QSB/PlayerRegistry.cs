@@ -56,7 +56,7 @@ namespace QSB
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            return id == LocalPlayerId || GetTransformSync(id).PlayerId == LocalPlayerId;
+            return id == LocalPlayerId || GetTransformSync(id)?.PlayerId == LocalPlayerId;
         }
 
         public static AnimationSync GetAnimationSync(uint id)

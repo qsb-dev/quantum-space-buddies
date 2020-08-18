@@ -8,7 +8,7 @@ namespace QSB.Events
     /// Abstract class that handles all event code.
     /// </summary>
     /// <typeparam name="T">The message type to use.</typeparam>
-    public abstract class QSBEvent<T> where T : PlayerMessage, new()
+    public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
     {
         public abstract MessageType Type { get; }
         public uint LocalPlayerId => PlayerRegistry.LocalPlayerId;
@@ -19,8 +19,6 @@ namespace QSB.Events
             _eventHandler = new MessageHandler<T>(Type);
             _eventHandler.OnClientReceiveMessage += OnClientReceive;
             _eventHandler.OnServerReceiveMessage += OnServerReceive;
-
-            SetupListener();
         }
 
         /// <summary>
