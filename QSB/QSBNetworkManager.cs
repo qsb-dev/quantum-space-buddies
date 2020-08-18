@@ -116,7 +116,6 @@ namespace QSB
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
-            DebugLog.ToConsole("Connecting to server...", OWML.Common.MessageType.Info);
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync>();
@@ -137,7 +136,7 @@ namespace QSB
 
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
-            UnityHelper.Instance.RunWhen(() => EventList.Ready, 
+            UnityHelper.Instance.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
         }
 

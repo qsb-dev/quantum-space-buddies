@@ -4,7 +4,7 @@ namespace QSB.TransformSync
 {
     public class PlayerHUDMarker : HUDDistanceMarker
     {
-        public PlayerInfo _player;
+        private PlayerInfo _player;
         private bool _isReady;
 
         protected override void InitCanvasMarker()
