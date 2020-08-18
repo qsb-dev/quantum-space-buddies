@@ -1,5 +1,4 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Animation;
+﻿using QSB.Animation;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
@@ -17,11 +16,11 @@ namespace QSB.Events
     {
         public static bool Ready { get; private set; }
 
-        private static List<object> _eventList = new List<object>();
+        private static List<IQSBEvent> _eventList = new List<IQSBEvent>();
 
         public static void Init()
         {
-            _eventList = new List<object>
+            _eventList = new List<IQSBEvent>
             {
                 new PlayerReadyEvent(),
                 new PlayerJoinEvent(),
@@ -40,17 +39,18 @@ namespace QSB.Events
                 new ServerTimeEvent()
             };
 
+            _eventList.ForEach(ev => ev.SetupListener());
+
             Ready = true;
         }
 
         public static void Reset()
         {
             Ready = false;
-            foreach (var item in _eventList)
-            {
-                item.Invoke("CloseListener");
-            }
-            _eventList = new List<object>();
+
+            _eventList.ForEach(ev => ev.CloseListener());
+
+            _eventList = new List<IQSBEvent>();
         }
     }
 }
