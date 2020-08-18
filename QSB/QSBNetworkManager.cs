@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
@@ -9,51 +8,30 @@ using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Networking;
 
 namespace QSB
 {
     public class QSBNetworkManager : NetworkManager
     {
-        public static UnityEvent OnNetworkManagerReady = new UnityEvent();
-        public static bool IsReady;
-
         private const int MaxConnections = 128;
 
+        public static QSBNetworkManager Instance { get; private set; }
+
+        public event Action OnNetworkManagerReady;
+        public bool IsReady { get; private set; }
+
+        private QSBNetworkLobby _lobby;
         private AssetBundle _assetBundle;
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
         private GameObject _probePrefab;
 
-        private readonly string[] _defaultNames = {
-            "Arkose",
-            "Chert",
-            "Esker",
-            "Hal",
-            "Hornfels",
-            "Feldspar",
-            "Gabbro",
-            "Galena",
-            "Gneiss",
-            "Gossan",
-            "Marl",
-            "Mica",
-            "Moraine",
-            "Porphy",
-            "Riebeck",
-            "Rutile",
-            "Slate",
-            "Spinel",
-            "Tektite",
-            "Tephra",
-            "Tuff"
-        };
-        private string _playerName;
-        private bool _canEditName;
-
         private void Awake()
         {
+            Instance = this;
+
+            _lobby = gameObject.AddComponent<QSBNetworkLobby>();
             _assetBundle = QSB.NetworkAssetBundle;
 
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
@@ -74,20 +52,6 @@ namespace QSB
             spawnPrefabs.Add(_probePrefab);
 
             ConfigureNetworkManager();
-
-            _playerName = GetPlayerName();
-            _canEditName = true;
-        }
-
-        private string GetPlayerName()
-        {
-            var profileManager = StandaloneProfileManager.SharedInstance;
-            profileManager.Initialize();
-            var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
-            var profileName = profile?.profileName;
-            return !string.IsNullOrEmpty(profileName)
-                ? profileName
-                : _defaultNames.OrderBy(x => Guid.NewGuid()).First();
         }
 
         private void ConfigureNetworkManager()
@@ -129,7 +93,7 @@ namespace QSB
                 WakeUpPatches.AddPatches();
             }
 
-            _canEditName = false;
+            _lobby.CanEditName = false;
 
             OnNetworkManagerReady.Invoke();
             IsReady = true;
@@ -137,7 +101,7 @@ namespace QSB
             UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
             UnityHelper.Instance.RunWhen(() => EventList.Ready,
-                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _playerName));
+                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
         }
 
         public override void OnStopClient() // Called on the client when closing connection
@@ -151,68 +115,49 @@ namespace QSB
             {
                 PlayerTransformSync.LocalInstance?.gameObject.GetComponent<AnimationSync>().Reset();
             }
-            foreach (var player in PlayerRegistry.PlayerList)
-            {
-                if (player.HudMarker != null)
-                {
-                    Destroy(player.HudMarker.transform.parent.gameObject);
-                }
-            }
-            foreach (var connection in NetworkServer.connections)
-            {
-                CleanupConnection(connection);
-            }
-            _canEditName = true;
+            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
+            NetworkServer.connections.ToList().ForEach(CleanupConnection);
+            _lobby.CanEditName = true;
         }
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
+            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
+            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
             CleanupConnection(connection);
-            var marker = PlayerRegistry.GetPlayer(playerId).HudMarker;
-            if (marker != null)
-            {
-                Destroy(marker.transform.parent.gameObject);
-            }
+            PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
         }
 
         public override void OnStopServer()
         {
             DebugLog.ToConsole("Server stopped!", OWML.Common.MessageType.Info);
-            foreach (var connection in NetworkServer.connections)
-            {
-                CleanupConnection(connection);
-            }
+            NetworkServer.connections.ToList().ForEach(CleanupConnection);
             base.OnStopServer();
         }
 
         private void CleanupConnection(NetworkConnection connection)
         {
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-
             var playerName = PlayerRegistry.GetPlayer(playerId).Name;
             DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
-            foreach (var objectId in objectIds)
-            {
-                DestroyObject(objectId);
-            }
+
+            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
+            netIds.ForEach(CleanupNetworkBehaviour);
         }
 
-        private void DestroyObject(uint objectId)
+        public void CleanupNetworkBehaviour(uint netId)
         {
-            var components = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x.netId.Value == objectId);
-            foreach (var component in components)
+            var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
+                .Where(x => x.netId.Value == netId);
+            foreach (var networkBehaviour in networkBehaviours)
             {
-                if (component == null)
+                if (networkBehaviour == null)
                 {
-                    return;
+                    continue;
                 }
-                var transformSync = component.GetComponent<TransformSync.TransformSync>();
+                var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
 
                 if (transformSync != null)
                 {
@@ -222,20 +167,7 @@ namespace QSB
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
-                Destroy(component.gameObject);
-            }
-        }
-
-        private void OnGUI()
-        {
-            GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");
-            if (_canEditName)
-            {
-                _playerName = GUI.TextField(new Rect(60, 10, 145, 20f), _playerName);
-            }
-            else
-            {
-                GUI.Label(new Rect(60, 10, 145, 20f), _playerName);
+                Destroy(networkBehaviour.gameObject);
             }
         }
 

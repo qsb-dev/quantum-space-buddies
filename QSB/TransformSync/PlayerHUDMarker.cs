@@ -43,5 +43,11 @@ namespace QSB.TransformSync
 
             base.InitCanvasMarker();
         }
+
+        public void Remove()
+        {
+            Destroy(transform.parent.gameObject);
+        }
+
     }
 }
