@@ -16,6 +16,7 @@ namespace QSB.Animation
         private const float CrouchSmoothTime = 0.05f;
         private const int CrouchLayerIndex = 1;
 
+        private bool _isSetUpLocal;
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
@@ -41,11 +42,14 @@ namespace QSB.Animation
 
         private void OnDestroy()
         {
-            _playerController.OnJump -= OnJump;
-            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
-            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
-            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
+            if (_isSetUpLocal)
+            {
+                _playerController.OnJump -= OnJump;
+                _playerController.OnBecomeGrounded -= OnBecomeGrounded;
+                _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
+                GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
+                GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
+            }
         }
 
         private void InitCommon(Transform body)
@@ -85,6 +89,7 @@ namespace QSB.Animation
 
             GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
             GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
+            _isSetUpLocal = true;
         }
 
         public void InitRemote(Transform body)
