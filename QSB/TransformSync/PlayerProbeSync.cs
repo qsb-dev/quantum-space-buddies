@@ -1,4 +1,6 @@
 ﻿using QSB.Tools;
+using QSB.Utility;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -23,6 +25,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = GetProbe();
 
             bodyTransform = body;
@@ -34,6 +37,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var probe = GetProbe();
 
             probe.gameObject.SetActive(false);
@@ -71,6 +75,6 @@ namespace QSB.TransformSync
             SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && Player != null && Player.IsReady;
+        public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
     }
 }

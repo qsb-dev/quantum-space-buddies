@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -26,6 +27,7 @@ namespace QSB.Events
 
         public override void OnServerReceive(ToggleMessage message)
         {
+            DebugLog.ToConsole("Get ready event for player " + message.AboutId);
             PlayerRegistry.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
             PlayerState.LocalInstance.Send();
         }

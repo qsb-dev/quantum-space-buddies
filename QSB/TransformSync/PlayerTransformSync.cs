@@ -1,4 +1,6 @@
 ﻿using QSB.Animation;
+using QSB.Utility;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -25,6 +27,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = GetPlayerModel();
 
             GetComponent<AnimationSync>().InitLocal(body);
@@ -36,6 +39,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = Instantiate(GetPlayerModel());
 
             GetComponent<AnimationSync>().InitRemote(body);
@@ -48,6 +52,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null && Player.IsReady;
+        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
     }
 }
