@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
-using UnityEngine.Windows.Speech;
 
 namespace QSB
 {
