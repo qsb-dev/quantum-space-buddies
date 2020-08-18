@@ -1,8 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.Utility;
 using System.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -20,12 +18,12 @@ namespace QSB.Events
             GlobalMessenger<uint, uint[]>.RemoveListener(EventNames.QSBPlayerLeave, Handler);
         }
 
-        private void Handler(uint id, uint[] objects) => SendEvent(CreateMessage(id, objects));
+        private void Handler(uint playerId, uint[] netIds) => SendEvent(CreateMessage(playerId, netIds));
 
-        private PlayerLeaveMessage CreateMessage(uint id, uint[] objects) => new PlayerLeaveMessage
+        private PlayerLeaveMessage CreateMessage(uint playerId, uint[] netIds) => new PlayerLeaveMessage
         {
-            AboutId = id,
-            ObjectIds = objects
+            AboutId = playerId,
+            NetIds = netIds
         };
 
         public override void OnReceiveRemote(PlayerLeaveMessage message)
@@ -33,34 +31,8 @@ namespace QSB.Events
             var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
             DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(message.AboutId);
-            foreach (var objectId in message.ObjectIds)
-            {
-                DestroyObject(objectId);
-            }
+            message.NetIds.ToList().ForEach(netId => QSBNetworkManager.Instance.CleanupNetworkBehaviour(netId));
         }
 
-        private void DestroyObject(uint objectId)
-        {
-            var components = Object.FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x.netId.Value == objectId);
-            foreach (var component in components)
-            {
-                if (component == null)
-                {
-                    return;
-                }
-                var transformSync = component.GetComponent<TransformSync.TransformSync>();
-
-                if (transformSync != null)
-                {
-                    PlayerRegistry.TransformSyncs.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null)
-                    {
-                        Object.Destroy(transformSync.SyncedTransform.gameObject);
-                    }
-                }
-                Object.Destroy(component.gameObject);
-            }
-        }
     }
 }
