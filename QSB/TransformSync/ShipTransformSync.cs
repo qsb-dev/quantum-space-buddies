@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using System.Reflection;
+using UnityEngine;
 
 namespace QSB.TransformSync
 {
@@ -19,11 +21,13 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
         }
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var shipModel = GetShipModel();
 
             var remoteTransform = new GameObject().transform;
@@ -50,6 +54,6 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        public override bool IsReady => GetShipModel() != null && Player != null && Player.IsReady;
+        public override bool IsReady => GetShipModel() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
     }
 }

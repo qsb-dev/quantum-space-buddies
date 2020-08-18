@@ -25,6 +25,7 @@ namespace QSB
             {
                 return player;
             }
+            DebugLog.ToConsole("Creating player with id " + id, OWML.Common.MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -35,11 +36,17 @@ namespace QSB
             PlayerList.Remove(GetPlayer(id));
         }
 
+        public static bool PlayerExists(uint id)
+        {
+            return PlayerList.Any(x => x.NetId == id);
+        }
+
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
             var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
+            DebugLog.ToConsole($"Set player {player.NetId} to ready state {player.IsReady}");
             player.State = message.PlayerState;
             DebugLog.ToConsole($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
                 $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");

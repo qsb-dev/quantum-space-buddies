@@ -1,5 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
+using QSB.Utility;
 using System.Linq;
 
 namespace QSB.Events
@@ -27,6 +28,7 @@ namespace QSB.Events
 
         public override void OnServerReceive(PlayerMessage message)
         {
+            DebugLog.ToConsole("Server get request for player states.", OWML.Common.MessageType.Warning);
             PlayerState.LocalInstance.Send();
             foreach (var item in PlayerRegistry.TransformSyncs.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
