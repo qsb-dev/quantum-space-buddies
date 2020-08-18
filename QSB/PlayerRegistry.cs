@@ -3,6 +3,8 @@ using System.Linq;
 using QSB.TransformSync;
 using QSB.Animation;
 using QSB.Messaging;
+using System;
+using QSB.Utility;
 
 namespace QSB
 {
@@ -39,7 +41,8 @@ namespace QSB
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
-
+            DebugLog.ToConsole($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
+                $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
             if (LocalPlayer.IsReady)
             {
                 player.UpdateStateObjects();

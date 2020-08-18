@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
+using UnityEngine.Windows.Speech;
 
 namespace QSB
 {
@@ -39,6 +42,8 @@ namespace QSB
                 FlagsHelper.Unset(ref states, state);
             }
             State = states;
+            DebugLog.ToConsole($"State of player {NetId} is now : {Environment.NewLine}" +
+                $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(State))}");
         }
 
         public void UpdateStateObjects()

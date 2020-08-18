@@ -37,7 +37,7 @@ namespace QSB.TransformSync
 
             if (sector == null)
             {
-                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!");
+                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!", OWML.Common.MessageType.Warning);
                 return;
             }
 

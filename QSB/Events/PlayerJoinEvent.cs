@@ -30,7 +30,7 @@ namespace QSB.Events
             var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             var text = $"{player.Name} joined!";
-            DebugLog.ToAll(OWML.Common.MessageType.Info, text);
+            DebugLog.ToAll(text, OWML.Common.MessageType.Info);
         }
 
         public override void OnReceiveLocal(PlayerJoinMessage message)
@@ -38,7 +38,7 @@ namespace QSB.Events
             var player = PlayerRegistry.GetPlayer(PlayerRegistry.LocalPlayerId);
             player.Name = message.PlayerName;
             var text = $"Connected to server as {player.Name}.";
-            DebugLog.ToAll(OWML.Common.MessageType.Info, text);
+            DebugLog.ToAll(text, OWML.Common.MessageType.Info);
         }
     }
 }
