@@ -20,6 +20,7 @@ namespace QSB.TransformSync
         {
             LocalInstance = this;
         }
+
         private Transform GetPlayerModel()
         {
             return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
