@@ -13,14 +13,14 @@ namespace QSB.Messaging
 
         public MessageHandler(MessageType messageType)
         {
-            _messageType = messageType + 1 + MsgType.Highest;
-            if (QSBNetworkManager.IsReady)
+            _messageType = messageType + MsgType.Highest + 1;
+            if (QSBNetworkManager.Instance.IsReady)
             {
                 Init();
             }
             else
             {
-                QSBNetworkManager.OnNetworkManagerReady.AddListener(Init);
+                QSBNetworkManager.Instance.OnNetworkManagerReady += Init;
             }
         }
 
@@ -32,7 +32,7 @@ namespace QSB.Messaging
 
         public void SendToAll(T message)
         {
-            if (!QSBNetworkManager.IsReady)
+            if (!QSBNetworkManager.Instance.IsReady)
             {
                 return;
             }
@@ -41,7 +41,7 @@ namespace QSB.Messaging
 
         public void SendToServer(T message)
         {
-            if (!QSBNetworkManager.IsReady)
+            if (!QSBNetworkManager.Instance.IsReady)
             {
                 return;
             }
