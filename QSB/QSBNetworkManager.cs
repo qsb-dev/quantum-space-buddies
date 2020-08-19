@@ -147,10 +147,6 @@ namespace QSB
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
-            if (IsClientConnected())
-            {
-                PlayerTransformSync.LocalInstance?.gameObject.GetComponent<AnimationSync>().Reset();
-            }
             foreach (var player in PlayerRegistry.PlayerList)
             {
                 if (player.HudMarker != null)
@@ -158,7 +154,9 @@ namespace QSB
                     Destroy(player.HudMarker.transform.parent.gameObject);
                 }
             }
-            foreach (var connection in NetworkServer.connections)
+            foreach (var connection in NetworkServer.connections.Where(
+                x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value != PlayerRegistry.LocalPlayerId
+                ))
             {
                 CleanupConnection(connection);
             }
@@ -170,12 +168,12 @@ namespace QSB
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var objectIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, objectIds);
-            CleanupConnection(connection);
             var marker = PlayerRegistry.GetPlayer(playerId).HudMarker;
             if (marker != null)
             {
                 Destroy(marker.transform.parent.gameObject);
             }
+            CleanupConnection(connection);
         }
 
         public override void OnStopServer()
@@ -204,24 +202,30 @@ namespace QSB
 
         private void DestroyObject(uint objectId)
         {
+            DebugLog.ToConsole("Destroying object " + objectId);
             var components = FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x.netId.Value == objectId);
             foreach (var component in components)
             {
+                DebugLog.ToConsole("* For object " + component.GetType().Name);
                 if (component == null)
                 {
+                    DebugLog.ToConsole("    * Component is null!");
                     return;
                 }
                 var transformSync = component.GetComponent<TransformSync.TransformSync>();
 
                 if (transformSync != null)
                 {
+                    DebugLog.ToConsole("    * TS is not null - removing from list");
                     PlayerRegistry.TransformSyncs.Remove(transformSync);
                     if (transformSync.SyncedTransform != null)
                     {
+                        DebugLog.ToConsole("    * TS's ST is not null - destroying");
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
+                DebugLog.ToConsole("    * Destroying component's gameobject " + component.gameObject.name);
                 Destroy(component.gameObject);
             }
         }

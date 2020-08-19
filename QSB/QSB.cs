@@ -38,6 +38,8 @@ namespace QSB
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
             gameObject.AddComponent<QSBSectorManager>();
+
+            Patches.DoPatches();
         }
 
         public override void Configure(IModConfig config)

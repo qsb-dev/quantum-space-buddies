@@ -41,24 +41,30 @@ namespace QSB.Events
 
         private void DestroyObject(uint objectId)
         {
+            DebugLog.ToConsole("Destroying object " + objectId);
             var components = Object.FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x.netId.Value == objectId);
             foreach (var component in components)
             {
+                DebugLog.ToConsole("* For object " + component.GetType().Name);
                 if (component == null)
                 {
+                    DebugLog.ToConsole("    * Component is null!");
                     return;
                 }
                 var transformSync = component.GetComponent<TransformSync.TransformSync>();
 
                 if (transformSync != null)
                 {
+                    DebugLog.ToConsole("    * TS is not null - removing from list");
                     PlayerRegistry.TransformSyncs.Remove(transformSync);
                     if (transformSync.SyncedTransform != null)
                     {
+                        DebugLog.ToConsole("    * TS's ST is not null - destroying");
                         Object.Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
+                DebugLog.ToConsole("    * Destroying component's gameobject " + component.gameObject.name);
                 Object.Destroy(component.gameObject);
             }
         }

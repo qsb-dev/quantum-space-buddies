@@ -19,10 +19,10 @@ namespace QSB.Utility
             return true;
         }
 
-        public static void DoPatches(IHarmonyHelper helper)
+        public static void DoPatches()
         {
-            helper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(Patches), nameof(ProbeAnchor));
-            helper.AddPrefix<SurveyorProbe>("Retrieve", typeof(Patches), nameof(ProbeWarp));
+            QSB.Helper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(Patches), nameof(ProbeAnchor));
+            QSB.Helper.HarmonyHelper.AddPrefix<SurveyorProbe>("Retrieve", typeof(Patches), nameof(ProbeWarp));
         }
     }
 }

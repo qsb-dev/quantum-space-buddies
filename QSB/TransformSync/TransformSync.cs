@@ -79,6 +79,10 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
+                if (ReferenceSector.Sector == null)
+                {
+                    DebugLog.ToConsole($"Sector is null for referencesector for {GetType().Name}!", MessageType.Error);
+                }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;

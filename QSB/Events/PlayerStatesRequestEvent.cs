@@ -32,6 +32,7 @@ namespace QSB.Events
             PlayerState.LocalInstance.Send();
             foreach (var item in PlayerRegistry.TransformSyncs.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
+                DebugLog.ToConsole($"Sending sector event for {item.netId.Value}");
                 GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector);
             }
         }

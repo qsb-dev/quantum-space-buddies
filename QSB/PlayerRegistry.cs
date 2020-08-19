@@ -5,6 +5,7 @@ using QSB.Animation;
 using QSB.Messaging;
 using System;
 using QSB.Utility;
+using System.Diagnostics;
 
 namespace QSB
 {
@@ -25,7 +26,8 @@ namespace QSB
             {
                 return player;
             }
-            DebugLog.ToConsole("Creating player with id " + id, OWML.Common.MessageType.Info);
+            var stacktrace = new StackTrace();
+            DebugLog.ToConsole($"Creating player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -33,6 +35,8 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
+            var stacktrace = new StackTrace();
+            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
