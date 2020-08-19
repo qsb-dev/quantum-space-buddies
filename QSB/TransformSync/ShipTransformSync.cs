@@ -14,6 +14,7 @@ namespace QSB.TransformSync
         {
             LocalInstance = this;
         }
+
         private Transform GetShipModel()
         {
             return Locator.GetShipTransform();

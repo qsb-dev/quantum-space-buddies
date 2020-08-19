@@ -15,7 +15,6 @@ namespace QSB
         public static string DefaultServerIP;
         public static bool DebugMode;
         public static AssetBundle NetworkAssetBundle;
-        private static GameObject GameObject;
 
         private void Awake()
         {
@@ -25,10 +24,9 @@ namespace QSB
         private void Start()
         {
             Helper = ModHelper;
-            GameObject = gameObject;
 
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+            Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
 
             gameObject.AddComponent<DebugLog>();
             gameObject.AddComponent<QSBNetworkManager>();

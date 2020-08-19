@@ -146,13 +146,9 @@ namespace QSB
         public void CleanupNetworkBehaviour(uint netId)
         {
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x.netId.Value == netId);
+                .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
-                if (networkBehaviour == null)
-                {
-                    continue;
-                }
                 var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
 
                 if (transformSync != null)
