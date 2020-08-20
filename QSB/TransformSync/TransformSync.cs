@@ -26,7 +26,6 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            DebugLog.ToConsole("Awake of " + GetType().Name, MessageType.Error);
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;

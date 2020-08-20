@@ -23,17 +23,20 @@ namespace QSB
 
         private void Start()
         {
-            DebugLog.ToConsole($"* Start of QSB version {ModHelper.Manifest.Version} - authored by {ModHelper.Manifest.Author}", MessageType.Info);
-
             Helper = ModHelper;
+            DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
+            
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
             Patches.DoPatches();
 
+            // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
+            // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
+            // null (even though it isnt...)
+            gameObject.AddComponent<QSBNetworkManager>();
+            gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
-            gameObject.AddComponent<NetworkManagerHUD>();
-            gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<QSBSectorManager>();
         }
 

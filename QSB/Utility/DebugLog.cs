@@ -46,5 +46,31 @@ namespace QSB.Utility
             }
             return columns + Environment.NewLine + data;
         }
+
+        public static void OkayState(string name, bool state)
+        {
+            if (state)
+            {
+                OkayState(name, State.OK);
+                return;
+            }
+            OkayState(name, State.FAIL);
+        }
+
+        public static void OkayState(string name, State state)
+        {
+            if (state == State.FAIL)
+            {
+                ToConsole($"* {name} FAIL", MessageType.Error);
+                return;
+            }
+            ToConsole($"* {name} OK", MessageType.Success);
+        }
+
+        public enum State
+        {
+            OK,
+            FAIL
+        }
     }
 }
