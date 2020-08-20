@@ -11,7 +11,6 @@ namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {
-        private bool _isSetUpLocal;
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
@@ -86,7 +85,6 @@ namespace QSB.Animation
 
             GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
             GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
-            _isSetUpLocal = true;
 
             InitCrouchSync();
         }
