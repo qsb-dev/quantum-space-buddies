@@ -1,6 +1,4 @@
 ﻿using QSB.Animation;
-using QSB.Utility;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -20,6 +18,7 @@ namespace QSB.TransformSync
         {
             LocalInstance = this;
         }
+
         private Transform GetPlayerModel()
         {
             return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
@@ -27,7 +26,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = GetPlayerModel();
 
             GetComponent<AnimationSync>().InitLocal(body);
@@ -39,7 +37,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = Instantiate(GetPlayerModel());
 
             GetComponent<AnimationSync>().InitRemote(body);

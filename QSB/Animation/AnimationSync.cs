@@ -34,14 +34,19 @@ namespace QSB.Animation
 
         private void OnDestroy()
         {
-            if (_isSetUpLocal)
+            _netAnim.enabled = false;
+            if (_playerController == null)
             {
-                _playerController.OnJump -= OnJump;
-                _playerController.OnBecomeGrounded -= OnBecomeGrounded;
-                _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-                GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
-                GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
+                return;
             }
+            _playerController.OnJump -= OnJump;
+            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
+            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
+            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
+
+            _triggerHandler.OnServerReceiveMessage -= OnServerReceiveMessage;
+            _triggerHandler.OnClientReceiveMessage -= OnClientReceiveMessage;
         }
 
         private void InitCommon(Transform body)
@@ -126,21 +131,7 @@ namespace QSB.Animation
         private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
         private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
 
-        public void Reset()
-        {
-            if (_playerController == null)
-            {
-                return;
-            }
-            _netAnim.enabled = false;
-            _playerController.OnJump -= OnJump;
-            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
-            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
-            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
-        }
-
-        public void SendTrigger(AnimTrigger trigger, float value = 0)
+        private void SendTrigger(AnimTrigger trigger, float value = 0)
         {
             var message = new AnimTriggerMessage
             {

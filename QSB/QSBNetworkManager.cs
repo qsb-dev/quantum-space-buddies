@@ -38,20 +38,26 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
+            DebugLog.LogState("PlayerPrefab", playerPrefab);
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
+            DebugLog.LogState("ShipPrefab", _shipPrefab);
 
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
+            DebugLog.LogState("CameraPrefab", _cameraPrefab);
 
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
+            DebugLog.LogState("ProbePrefab", _probePrefab);
 
             ConfigureNetworkManager();
+
+            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         private void ConfigureNetworkManager()
@@ -67,10 +73,9 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
-            DebugLog.ToConsole("On server add player " + playerControllerId);
             base.OnServerAddPlayer(connection, playerControllerId);
 
-            // These have to be in a constant order (for now, until I get a better netId getting system...)
+            // These have to be in a constant order (for now, until we get a better netId getting system...)
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
@@ -95,12 +100,12 @@ namespace QSB
 
             _lobby.CanEditName = false;
 
-            OnNetworkManagerReady.Invoke();
+            OnNetworkManagerReady?.Invoke();
             IsReady = true;
 
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
-            UnityHelper.Instance.RunWhen(() => EventList.Ready,
+            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
         }
 
@@ -111,12 +116,14 @@ namespace QSB
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
-            if (IsClientConnected())
-            {
-                PlayerTransformSync.LocalInstance?.gameObject.GetComponent<AnimationSync>().Reset();
-            }
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-            NetworkServer.connections.ToList().ForEach(CleanupConnection);
+
+            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId).ToList())
+            {
+                PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
+                PlayerRegistry.RemovePlayer(player.NetId);
+            }
+
             _lobby.CanEditName = true;
         }
 
@@ -125,13 +132,18 @@ namespace QSB
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
-            CleanupConnection(connection);
             PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
+            CleanupConnection(connection);
         }
 
         public override void OnStopServer()
         {
+            Destroy(GetComponent<SectorSync>());
+            Destroy(GetComponent<RespawnOnDeath>());
+            Destroy(GetComponent<PreventShipDestruction>());
+            EventList.Reset();
             DebugLog.ToConsole("Server stopped!", OWML.Common.MessageType.Info);
+            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
             base.OnStopServer();
         }
@@ -139,24 +151,29 @@ namespace QSB
         private void CleanupConnection(NetworkConnection connection)
         {
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            if (!PlayerRegistry.PlayerExists(playerId))
+            {
+                return;
+            }
             var playerName = PlayerRegistry.GetPlayer(playerId).Name;
             DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
 
-            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
-            netIds.ForEach(CleanupNetworkBehaviour);
+            if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
+            {
+                var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
+                netIds.ForEach(CleanupNetworkBehaviour);
+            }
         }
 
         public void CleanupNetworkBehaviour(uint netId)
         {
+            DebugLog.ToConsole($"Cleaning up object {netId}");
+            // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x.netId.Value == netId);
+                .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
-                if (networkBehaviour == null)
-                {
-                    continue;
-                }
                 var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
 
                 if (transformSync != null)

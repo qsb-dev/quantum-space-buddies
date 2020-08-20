@@ -5,11 +5,14 @@ using QSB.Animation;
 using QSB.Messaging;
 using System;
 using QSB.Utility;
+using System.Diagnostics;
 
 namespace QSB
 {
     public static class PlayerRegistry
     {
+        public const int NetworkObjectCount = 4;
+
         public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.netId.Value;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
@@ -25,7 +28,8 @@ namespace QSB
             {
                 return player;
             }
-            DebugLog.ToConsole("Creating player with id " + id, OWML.Common.MessageType.Info);
+            var stacktrace = new StackTrace();
+            DebugLog.ToConsole($"Creating player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -33,6 +37,8 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
+            var stacktrace = new StackTrace();
+            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
@@ -46,7 +52,6 @@ namespace QSB
             var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
-            DebugLog.ToConsole($"Set player {player.NetId} to ready state {player.IsReady}");
             player.State = message.PlayerState;
             DebugLog.ToConsole($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
                 $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
@@ -70,5 +75,11 @@ namespace QSB
         {
             return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
+
+        public static List<uint> GetPlayerNetIds(PlayerInfo player)
+        {
+            return Enumerable.Range((int)player.NetId, NetworkObjectCount).Select(x => (uint)x).ToList();
+        }
+
     }
 }

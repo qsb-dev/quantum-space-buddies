@@ -1,6 +1,6 @@
-﻿using System;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Utility;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -26,7 +26,6 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            DebugLog.ToConsole("Awake of " + GetType().Name, MessageType.Error);
             PlayerRegistry.TransformSyncs.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -79,6 +78,10 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
+                if (ReferenceSector.Sector == null)
+                {
+                    DebugLog.ToConsole($"Sector is null for referencesector for {GetType().Name}!", MessageType.Error);
+                }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;
@@ -93,7 +96,7 @@ namespace QSB.TransformSync
             {
                 Show();
             }
-            
+
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }

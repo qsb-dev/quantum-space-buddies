@@ -10,7 +10,7 @@ namespace QSB.TransformSync
         public string Name => Sector.name;
         public Transform Transform => Sector.transform;
         public Vector3 Position => Transform.position;
-        
+
         public void Init(Sector sector, int id)
         {
             Sector = sector;

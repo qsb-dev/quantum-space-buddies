@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using OWML.Common;
-using UnityEngine;
 
 namespace QSB.Utility
 {
-    public class DebugLog : MonoBehaviour
+    public static class DebugLog
     {
         public static void ToConsole(string message, MessageType type = MessageType.Message)
         {
@@ -29,23 +28,30 @@ namespace QSB.Utility
             ToHud(message);
         }
 
-        public static string GenerateTable(List<string> collumsData, List<string> rowData)
+        public static string GenerateTable(List<string> columnsData, List<string> rowData)
         {
-            var longestKey = collumsData.OrderByDescending(s => s.Length).First();
+            var longestKey = columnsData.OrderByDescending(s => s.Length).First();
             var longestValue = rowData.OrderByDescending(s => s.Length).First();
             var longestObject = (longestKey.Length > longestValue.Length) ? longestKey : longestValue;
-            string collums = "|";
-            string data = "|";
-            foreach (var item in collumsData)
+            var columns = "|";
+            var data = "|";
+            foreach (var item in columnsData)
             {
-                collums += " " + item.PadRight(longestObject.Length) + " |";
-                
+                columns += $" {item.PadRight(longestObject.Length)} |";
             }
             foreach (var item in rowData)
             {
-                data += " " + item.PadRight(longestObject.Length) + " |";
+                data += $" {item.PadRight(longestObject.Length)} |";
             }
-            return collums + Environment.NewLine + data;
+            return columns + Environment.NewLine + data;
         }
+
+        public static void LogState(string name, bool state)
+        {
+            var status = state ? "OK" : "FAIL";
+            var messageType = state ? MessageType.Success : MessageType.Error;
+            ToConsole($"* {name} {status}", messageType);
+        }
+
     }
 }

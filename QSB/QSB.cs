@@ -2,6 +2,7 @@
 using OWML.ModHelper;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
@@ -15,7 +16,6 @@ namespace QSB
         public static string DefaultServerIP;
         public static bool DebugMode;
         public static AssetBundle NetworkAssetBundle;
-        private static GameObject GameObject;
 
         private void Awake()
         {
@@ -25,16 +25,18 @@ namespace QSB
         private void Start()
         {
             Helper = ModHelper;
-            GameObject = gameObject;
+            DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+            DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
+            ProbePatches.DoPatches();
 
-            gameObject.AddComponent<DebugLog>();
+            // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
+            // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
+            // null (even though it isnt...)
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
-            gameObject.AddComponent<UnityHelper>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
             gameObject.AddComponent<QSBSectorManager>();
