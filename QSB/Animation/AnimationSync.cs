@@ -11,11 +11,6 @@ namespace QSB.Animation
 {
     public class AnimationSync : NetworkBehaviour
     {
-        private const float CrouchSendInterval = 0.1f;
-        private const float CrouchChargeThreshold = 0.01f;
-        private const float CrouchSmoothTime = 0.05f;
-        private const int CrouchLayerIndex = 1;
-
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
@@ -26,10 +21,7 @@ namespace QSB.Animation
         private GameObject _suitedGraphics;
         private GameObject _unsuitedGraphics;
         private PlayerCharacterController _playerController;
-
-        private readonly AnimFloatParam _crouchParam = new AnimFloatParam();
-        private float _sendTimer;
-        private float _lastSentJumpChargeFraction;
+        private CrouchSync _crouchSync;
 
         private void Awake()
         {
@@ -93,6 +85,8 @@ namespace QSB.Animation
 
             GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
             GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
+
+            InitCrouchSync();
         }
 
         public void InitRemote(Transform body)
@@ -118,6 +112,14 @@ namespace QSB.Animation
 
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+
+            InitCrouchSync();
+        }
+
+        private void InitCrouchSync()
+        {
+            _crouchSync = gameObject.AddComponent<CrouchSync>();
+            _crouchSync.Init(this, _playerController, _bodyAnim);
         }
 
         private void OnJump() => SendTrigger(AnimTrigger.Jump);
@@ -148,7 +150,7 @@ namespace QSB.Animation
             }
             catch
             {
-                DebugLog.ToConsole($"Error while geting isServer in AnimationSync! " +
+                DebugLog.ToConsole("Error while getting isServer in AnimationSync! " +
                        $"{Environment.NewLine}     - Did a destroyed AnimationSync still have an active action/event listener?" +
                        $"{Environment.NewLine}     If you are a user seeing this, please report this error.", OWML.Common.MessageType.Error);
             }
@@ -185,7 +187,7 @@ namespace QSB.Animation
                     SuitDown();
                     break;
                 case AnimTrigger.Crouch:
-                    _crouchParam.Target = value;
+                    _crouchSync.CrouchParam.Target = value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
@@ -218,50 +220,6 @@ namespace QSB.Animation
             {
                 SuitDown();
             }
-        }
-
-        private void Update()
-        {
-            if (isLocalPlayer)
-            {
-                SyncLocalCrouch();
-            }
-            else
-            {
-                SyncRemoteCrouch();
-            }
-        }
-
-        private void SyncLocalCrouch()
-        {
-            if (_playerController == null)
-            {
-                return;
-            }
-            _sendTimer += Time.unscaledDeltaTime;
-            if (_sendTimer < CrouchSendInterval)
-            {
-                return;
-            }
-            var jumpChargeFraction = _playerController.GetJumpChargeFraction();
-            if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
-            {
-                return;
-            }
-            SendTrigger(AnimTrigger.Crouch, jumpChargeFraction);
-            _lastSentJumpChargeFraction = jumpChargeFraction;
-            _sendTimer = 0;
-        }
-
-        private void SyncRemoteCrouch()
-        {
-            if (_bodyAnim == null)
-            {
-                return;
-            }
-            _crouchParam.Smooth(CrouchSmoothTime);
-            var jumpChargeFraction = _crouchParam.Current;
-            _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
         }
 
     }

@@ -124,6 +124,7 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Animation\AnimTriggerMessage.cs" />
+    <Compile Include="Animation\CrouchSync.cs" />
     <Compile Include="DeathSync\DeathPatches.cs" />
     <Compile Include="ElevatorSync\ElevatorDirection.cs" />
     <Compile Include="ElevatorSync\QSBElevator.cs" />
