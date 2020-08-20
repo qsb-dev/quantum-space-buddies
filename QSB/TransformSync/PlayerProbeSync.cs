@@ -7,14 +7,14 @@ namespace QSB.TransformSync
     {
         public static PlayerProbeSync LocalInstance { get; private set; }
 
+        protected override uint PlayerIdOffset => 3;
+
         public Transform bodyTransform;
 
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
-
-        public override uint PlayerId => netId.Value - 3;
 
         private Transform GetProbe()
         {
@@ -71,6 +71,6 @@ namespace QSB.TransformSync
             SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && Player != null && Player.IsReady;
+        public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
     }
 }

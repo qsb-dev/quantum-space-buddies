@@ -10,12 +10,19 @@ namespace QSB.GeyserSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<int, bool>.AddListener(EventNames.QSBGeyserState, (id, state) => SendEvent(CreateMessage(id, state)));
+            GlobalMessenger<int, bool>.AddListener(EventNames.QSBGeyserState, Handler);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBGeyserState, Handler);
+        }
+
+        private void Handler(int id, bool state) => SendEvent(CreateMessage(id, state));
 
         private GeyserMessage CreateMessage(int id, bool state) => new GeyserMessage
         {
-            SenderId = PlayerRegistry.LocalPlayer.NetId,
+            AboutId = LocalPlayerId,
             ObjectId = id,
             State = state
         };

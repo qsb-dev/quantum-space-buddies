@@ -11,12 +11,19 @@ namespace QSB.TransformSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, (netId, sector) => SendEvent(CreateMessage(netId, sector)));
+            GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<uint, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
+        }
+
+        private void Handler(uint netId, QSBSector sector) => SendEvent(CreateMessage(netId, sector));
 
         private WorldObjectMessage CreateMessage(uint netId, QSBSector sector) => new WorldObjectMessage
         {
-            SenderId = netId,
+            AboutId = netId,
             ObjectId = sector.ObjectId
         };
 
@@ -30,13 +37,13 @@ namespace QSB.TransformSync
 
             if (sector == null)
             {
-                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!");
+                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!", OWML.Common.MessageType.Warning);
                 return;
             }
 
-            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
-            //DebugLog.ToConsole($"{transformSync.GetType().Name} of ID {message.SenderId} set to {sector.Name}");
-            UnityHelper.Instance.RunWhen(() => transformSync.SyncedTransform != null, 
+            var transformSync = PlayerRegistry.GetTransformSync(message.AboutId);
+
+            QSB.Helper.Events.Unity.RunWhen(() => transformSync.SyncedTransform != null,
                 () => transformSync.SetReferenceSector(sector));
         }
 

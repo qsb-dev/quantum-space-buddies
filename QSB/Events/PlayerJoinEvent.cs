@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.TransformSync;
 using QSB.Utility;
 
 namespace QSB.Events
@@ -10,29 +9,36 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, name => SendEvent(CreateMessage(name)));
+            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Handler);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Handler);
+        }
+
+        private void Handler(string name) => SendEvent(CreateMessage(name));
 
         private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage
         {
-            SenderId = PlayerTransformSync.LocalInstance.netId.Value,
+            AboutId = LocalPlayerId,
             PlayerName = name
         };
 
         public override void OnReceiveRemote(PlayerJoinMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
+            var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             var text = $"{player.Name} joined!";
-            DebugLog.ToAll(OWML.Common.MessageType.Info, text);
+            DebugLog.ToAll(text, OWML.Common.MessageType.Info);
         }
 
         public override void OnReceiveLocal(PlayerJoinMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(PlayerTransformSync.LocalInstance.netId.Value);
+            var player = PlayerRegistry.GetPlayer(PlayerRegistry.LocalPlayerId);
             player.Name = message.PlayerName;
             var text = $"Connected to server as {player.Name}.";
-            DebugLog.ToAll(OWML.Common.MessageType.Info, text);
+            DebugLog.ToAll(text, OWML.Common.MessageType.Info);
         }
     }
 }

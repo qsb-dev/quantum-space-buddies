@@ -9,19 +9,28 @@ namespace QSB.Tools
 
         public override void SetupListener()
         {
-            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, probe => SendEvent(CreateMessage(true)));
-            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, probe => SendEvent(CreateMessage(false)));
+            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, HandleLaunch);
+            GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, HandleRetrieve);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.LaunchProbe, HandleLaunch);
+            GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.RetrieveProbe, HandleRetrieve);
+        }
+
+        private void HandleLaunch(SurveyorProbe probe) => SendEvent(CreateMessage(true));
+        private void HandleRetrieve(SurveyorProbe probe) => SendEvent(CreateMessage(false));
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
-            SenderId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             ToggleValue = value
         };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
+            var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.UpdateState(State.ProbeActive, message.ToggleValue);
             player.Probe?.SetState(message.ToggleValue);
         }

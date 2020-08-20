@@ -1,6 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.TransformSync;
-using QSB.Utility;
 using UnityEngine.Networking;
 
 namespace QSB.Events
@@ -21,11 +19,11 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(PlayerStateMessage message)
         {
-            if (message.SenderId == PlayerTransformSync.LocalInstance.netId.Value)
+            if (message.AboutId == PlayerRegistry.LocalPlayerId)
             {
                 return;
             }
-            UnityHelper.Instance.RunWhen(() => PlayerRegistry.GetTransformSync(message.SenderId) != null, 
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerRegistry.GetTransformSync(message.AboutId) != null,
                 () => PlayerRegistry.HandleFullStateMessage(message));
         }
 
@@ -35,7 +33,7 @@ namespace QSB.Events
             {
                 var message = new PlayerStateMessage
                 {
-                    SenderId = player.NetId,
+                    AboutId = player.NetId,
                     PlayerName = player.Name,
                     PlayerReady = player.IsReady,
                     PlayerState = player.State

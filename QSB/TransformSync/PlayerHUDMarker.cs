@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using System;
+using UnityEngine;
 
 namespace QSB.TransformSync
 {
@@ -20,6 +22,7 @@ namespace QSB.TransformSync
         public void Init(PlayerInfo player)
         {
             _player = player;
+            _player.HudMarker = this;
             _isReady = true;
         }
 
@@ -41,6 +44,22 @@ namespace QSB.TransformSync
             _isReady = false;
 
             base.InitCanvasMarker();
+        }
+
+        public void Remove()
+        {
+            // do N O T destroy the parent - it completely breaks the ENTIRE GAME
+            try
+            {
+                _canvasMarker.DestroyMarker();
+                Destroy(_markerTarget.gameObject);
+                Destroy(this);
+            }
+            catch (Exception ex)
+            {
+                DebugLog.ToConsole($"Warning - Failed to remove PlayerHUDMarker for {_player.Name} ({_player.NetId}) : {ex}", OWML.Common.MessageType.Warning);
+            }
+
         }
     }
 }

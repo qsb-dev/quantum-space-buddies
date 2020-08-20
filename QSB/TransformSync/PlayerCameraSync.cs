@@ -8,12 +8,12 @@ namespace QSB.TransformSync
     {
         public static PlayerCameraSync LocalInstance { get; private set; }
 
+        protected override uint PlayerIdOffset => 2;
+
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
-
-        public override uint PlayerId => netId.Value - 2;
 
         protected override Transform InitLocalTransform()
         {
@@ -41,6 +41,6 @@ namespace QSB.TransformSync
             return body.transform;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null;
+        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId);
     }
 }

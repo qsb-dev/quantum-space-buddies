@@ -10,18 +10,25 @@ namespace QSB.DeathSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, type => SendEvent(CreateMessage(type)));
+            GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, Handler);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, Handler);
+        }
+
+        private void Handler(DeathType type) => SendEvent(CreateMessage(type));
 
         private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
         {
-            SenderId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             DeathType = type
         };
 
         public override void OnReceiveRemote(PlayerDeathMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayer(message.SenderId).Name;
+            var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }

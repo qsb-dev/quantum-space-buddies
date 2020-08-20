@@ -8,18 +8,25 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, ready => SendEvent(CreateMessage(ready)));
+            GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
+        }
+
+        private void Handler(bool ready) => SendEvent(CreateMessage(ready));
 
         private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
         {
-            SenderId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             ToggleValue = ready
         };
 
         public override void OnServerReceive(ToggleMessage message)
         {
-            PlayerRegistry.GetPlayer(message.SenderId).IsReady = message.ToggleValue;
+            PlayerRegistry.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
             PlayerState.LocalInstance.Send();
         }
     }

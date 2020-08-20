@@ -9,19 +9,28 @@ namespace QSB.Tools
 
         public override void SetupListener()
         {
-            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, var => SendEvent(CreateMessage(true)));
-            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, var => SendEvent(CreateMessage(false)));
+            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, HandleEquip);
+            GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, HandleUnequip);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherEquipped, HandleEquip);
+            GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherUnequipped, HandleUnequip);
+        }
+
+        private void HandleEquip(ProbeLauncher var) => SendEvent(CreateMessage(true));
+        private void HandleUnequip(ProbeLauncher var) => SendEvent(CreateMessage(false));
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
-            SenderId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             ToggleValue = value
         };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
+            var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.UpdateState(State.ProbeLauncher, message.ToggleValue);
             player.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
         }
