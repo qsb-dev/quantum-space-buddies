@@ -59,7 +59,7 @@ namespace QSB.Events
         public void SendEvent(T message)
         {
             message.FromId = PlayerRegistry.LocalPlayerId;
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
 
         private void Send(T message)

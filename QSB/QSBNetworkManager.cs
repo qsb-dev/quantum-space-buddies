@@ -70,7 +70,7 @@ namespace QSB
             DebugLog.ToConsole("On server add player " + playerControllerId);
             base.OnServerAddPlayer(connection, playerControllerId);
 
-            // These have to be in a constant order (for now, until I get a better netId getting system...)
+            // These have to be in a constant order (for now, until we get a better netId getting system...)
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
@@ -98,9 +98,9 @@ namespace QSB
             OnNetworkManagerReady.Invoke();
             IsReady = true;
 
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
-            UnityHelper.Instance.RunWhen(() => EventList.Ready,
+            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
         }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.Utility
 {
-    public class DebugLog : MonoBehaviour
+    public static class DebugLog
     {
         public static void ToConsole(string message, MessageType type = MessageType.Message)
         {

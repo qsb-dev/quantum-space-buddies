@@ -1,5 +1,5 @@
-﻿using OWML.Common;
-using QSB.Events;
+﻿using QSB.Events;
+using UnityEngine.Networking;
 
 namespace QSB.Utility
 {
@@ -23,6 +23,7 @@ namespace QSB.Utility
         {
             QSB.Helper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(Patches), nameof(ProbeAnchor));
             QSB.Helper.HarmonyHelper.AddPrefix<SurveyorProbe>("Retrieve", typeof(Patches), nameof(ProbeWarp));
+            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
     }
 }

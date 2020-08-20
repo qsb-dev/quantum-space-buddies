@@ -23,21 +23,18 @@ namespace QSB
 
         private void Start()
         {
+            DebugLog.ToConsole($"* Start of QSB version {ModHelper.Manifest.Version} - authored by {ModHelper.Manifest.Author}");
+
             Helper = ModHelper;
-
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-            Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+            Patches.DoPatches();
 
-            gameObject.AddComponent<DebugLog>();
-            gameObject.AddComponent<QSBNetworkManager>();
-            gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
-            gameObject.AddComponent<UnityHelper>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
+            gameObject.AddComponent<NetworkManagerHUD>();
+            gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<QSBSectorManager>();
-
-            Patches.DoPatches();
         }
 
         public override void Configure(IModConfig config)
