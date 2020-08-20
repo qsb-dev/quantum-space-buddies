@@ -1,5 +1,4 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 

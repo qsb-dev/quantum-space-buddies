@@ -8,7 +8,7 @@ namespace QSB.TransformSync
         public static PlayerProbeSync LocalInstance { get; private set; }
 
         protected override uint PlayerIdOffset => 3;
-        
+
         public Transform bodyTransform;
 
         public override void OnStartLocalPlayer()

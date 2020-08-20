@@ -1,9 +1,8 @@
 ﻿using QSB.Events;
-using UnityEngine.Networking;
 
-namespace QSB.Utility
+namespace QSB.Tools
 {
-    public static class Patches
+    public static class ProbePatches
     {
         private static void ProbeAnchor()
         {
@@ -15,15 +14,14 @@ namespace QSB.Utility
             if (!____isRetrieving)
             {
                 GlobalMessenger.FireEvent(EventNames.QSBOnProbeWarp);
-            }  
+            }
             return true;
         }
 
         public static void DoPatches()
         {
-            QSB.Helper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(Patches), nameof(ProbeAnchor));
-            QSB.Helper.HarmonyHelper.AddPrefix<SurveyorProbe>("Retrieve", typeof(Patches), nameof(ProbeWarp));
-            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+            QSB.Helper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(ProbePatches), nameof(ProbeAnchor));
+            QSB.Helper.HarmonyHelper.AddPrefix<SurveyorProbe>("Retrieve", typeof(ProbePatches), nameof(ProbeWarp));
         }
     }
 }

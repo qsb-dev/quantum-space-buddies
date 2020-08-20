@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using QSB.Animation;
 using QSB.DeathSync;
@@ -39,24 +38,26 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
-            DebugLog.OkayState("PlayerPrefab", playerPrefab);
+            DebugLog.LogState("PlayerPrefab", playerPrefab);
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
-            DebugLog.OkayState("ShipPrefab", _shipPrefab);
+            DebugLog.LogState("ShipPrefab", _shipPrefab);
 
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
-            DebugLog.OkayState("CameraPrefab", _cameraPrefab);
+            DebugLog.LogState("CameraPrefab", _cameraPrefab);
 
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
-            DebugLog.OkayState("ProbePrefab", _probePrefab);
+            DebugLog.LogState("ProbePrefab", _probePrefab);
 
             ConfigureNetworkManager();
+
+            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         private void ConfigureNetworkManager()
@@ -99,7 +100,7 @@ namespace QSB
 
             _lobby.CanEditName = false;
 
-            OnNetworkManagerReady.Invoke();
+            OnNetworkManagerReady?.Invoke();
             IsReady = true;
 
             QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
@@ -116,13 +117,10 @@ namespace QSB
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-           
-            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId))
+
+            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId).ToList())
             {
-                for (uint i = 0; i < QSB.NETWORK_OBJECT_COUNT; i++)
-                {
-                    CleanupNetworkBehaviour(player.NetId + i);
-                }
+                PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
                 PlayerRegistry.RemovePlayer(player.NetId);
             }
 

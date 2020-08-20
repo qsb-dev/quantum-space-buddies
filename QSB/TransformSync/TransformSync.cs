@@ -1,6 +1,6 @@
-﻿using System;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Utility;
+using System;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -96,7 +96,7 @@ namespace QSB.TransformSync
             {
                 Show();
             }
-            
+
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }

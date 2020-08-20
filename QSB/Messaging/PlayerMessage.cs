@@ -6,7 +6,7 @@ namespace QSB.Messaging
     {
         public uint FromId { get; set; }
         public uint AboutId { get; set; }
-        
+
         public override void Deserialize(NetworkReader reader)
         {
             FromId = reader.ReadUInt32();
