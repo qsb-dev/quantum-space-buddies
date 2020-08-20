@@ -29,7 +29,7 @@ namespace QSB.Events
         public override void OnReceiveRemote(PlayerLeaveMessage message)
         {
             var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
-            DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
+            DebugLog.ToAll($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(message.AboutId);
             message.NetIds.ToList().ForEach(netId => QSBNetworkManager.Instance.CleanupNetworkBehaviour(netId));
         }
