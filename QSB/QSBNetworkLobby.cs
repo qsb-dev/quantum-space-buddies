@@ -1,6 +1,6 @@
-﻿using OWML.ModHelper.Events;
-using System;
+﻿using System;
 using System.Linq;
+using OWML.ModHelper.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 

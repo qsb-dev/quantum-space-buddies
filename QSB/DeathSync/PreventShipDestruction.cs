@@ -1,7 +1,7 @@
-﻿using Harmony;
-using OWML.ModHelper.Events;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
+using Harmony;
+using OWML.ModHelper.Events;
 using UnityEngine;
 
 namespace QSB.DeathSync

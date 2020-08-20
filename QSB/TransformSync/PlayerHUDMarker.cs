@@ -57,8 +57,9 @@ namespace QSB.TransformSync
             }
             catch (Exception ex)
             {
-                DebugLog.ToConsole($"Warning - Failed to remove PlayerHUDMarker for id {_player.NetId} : {ex}", OWML.Common.MessageType.Warning);
+                DebugLog.ToConsole($"Warning - Failed to remove PlayerHUDMarker for {_player.Name} ({_player.NetId}) : {ex}", OWML.Common.MessageType.Warning);
             }
+
         }
     }
 }

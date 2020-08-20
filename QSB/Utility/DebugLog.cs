@@ -1,7 +1,7 @@
-﻿using OWML.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OWML.Common;
 
 namespace QSB.Utility
 {
@@ -37,39 +37,21 @@ namespace QSB.Utility
             var data = "|";
             foreach (var item in columnsData)
             {
-                columns += " " + item.PadRight(longestObject.Length) + " |";
+                columns += $" {item.PadRight(longestObject.Length)} |";
             }
             foreach (var item in rowData)
             {
-                data += " " + item.PadRight(longestObject.Length) + " |";
+                data += $" {item.PadRight(longestObject.Length)} |";
             }
             return columns + Environment.NewLine + data;
         }
 
-        public static void OkayState(string name, bool state)
+        public static void LogState(string name, bool state)
         {
-            if (state)
-            {
-                OkayState(name, State.OK);
-                return;
-            }
-            OkayState(name, State.FAIL);
+            var status = state ? "OK" : "FAIL";
+            var messageType = state ? MessageType.Success : MessageType.Error;
+            ToConsole($"* {name} {status}", messageType);
         }
 
-        public static void OkayState(string name, State state)
-        {
-            if (state == State.FAIL)
-            {
-                ToConsole($"* {name} FAIL", MessageType.Error);
-                return;
-            }
-            ToConsole($"* {name} OK", MessageType.Success);
-        }
-
-        public enum State
-        {
-            OK,
-            FAIL
-        }
     }
 }

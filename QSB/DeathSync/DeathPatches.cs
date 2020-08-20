@@ -1,5 +1,5 @@
-﻿using QSB.Events;
-using System.Linq;
+﻿using System.Linq;
+using QSB.Events;
 
 namespace QSB.DeathSync
 {

@@ -1,16 +1,18 @@
-﻿using QSB.Animation;
-using QSB.Messaging;
-using QSB.TransformSync;
-using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
+using QSB.TransformSync;
+using QSB.Animation;
+using QSB.Messaging;
+using System;
+using QSB.Utility;
+using System.Diagnostics;
 
 namespace QSB
 {
     public static class PlayerRegistry
     {
+        public const int NetworkObjectCount = 4;
+
         public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.netId.Value;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
@@ -73,5 +75,11 @@ namespace QSB
         {
             return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
         }
+
+        public static List<uint> GetPlayerNetIds(PlayerInfo player)
+        {
+            return Enumerable.Range((int)player.NetId, NetworkObjectCount).Select(x => (uint)x).ToList();
+        }
+
     }
 }

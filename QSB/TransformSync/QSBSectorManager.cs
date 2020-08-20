@@ -1,5 +1,5 @@
-﻿using QSB.WorldSync;
-using System.Linq;
+﻿using System.Linq;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.TransformSync
