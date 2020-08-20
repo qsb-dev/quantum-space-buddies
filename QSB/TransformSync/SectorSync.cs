@@ -42,7 +42,6 @@ namespace QSB.TransformSync
 
         private void SendSector(uint id, QSBSector sector)
         {
-            DebugLog.ToConsole($"Sending sector event for {id}");
             GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
         }
     }

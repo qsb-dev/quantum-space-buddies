@@ -112,7 +112,7 @@ namespace QSB
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-            NetworkServer.connections.ToList()Where(x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value != PlayerRegistry.LocalPlayerId).ForEach(CleanupConnection);
+            NetworkServer.connections.ToList().ForEach(CleanupConnection);
             _lobby.CanEditName = true;
         }
 
@@ -139,12 +139,16 @@ namespace QSB
             DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
 
-            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
-            netIds.ForEach(CleanupNetworkBehaviour);
+            if (playerId != PlayerRegistry.LocalPlayerId)
+            {
+                var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
+                netIds.ForEach(CleanupNetworkBehaviour);
+            }
         }
 
         public void CleanupNetworkBehaviour(uint netId)
         {
+            DebugLog.ToConsole($"Cleaning up object {netId}");
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
@@ -153,11 +157,9 @@ namespace QSB
 
                 if (transformSync != null)
                 {
-                    DebugLog.ToConsole("    * TS is not null - removing from list");
                     PlayerRegistry.TransformSyncs.Remove(transformSync);
                     if (transformSync.SyncedTransform != null)
                     {
-                        DebugLog.ToConsole("    * TS's ST is not null - destroying");
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
