@@ -27,7 +27,7 @@ namespace QSB
         {
             Helper = ModHelper;
             DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
-            
+
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
             DebugLog.OkayState("NetworkBundle", NetworkAssetBundle);
             Patches.DoPatches();

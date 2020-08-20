@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Events;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.DeathSync

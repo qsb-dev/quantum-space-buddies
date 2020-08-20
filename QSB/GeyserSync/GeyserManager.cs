@@ -23,7 +23,7 @@ namespace QSB.GeyserSync
                 WorldRegistry.AddObject(qsbGeyser);
             }
         }
-        
+
         public void EmptyUpdate()
         {
             QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");

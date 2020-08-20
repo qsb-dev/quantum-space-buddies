@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using QSB.Animation;
+﻿using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -116,7 +115,7 @@ namespace QSB
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-           
+
             foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId))
             {
                 for (uint i = 0; i < QSB.NETWORK_OBJECT_COUNT; i++)

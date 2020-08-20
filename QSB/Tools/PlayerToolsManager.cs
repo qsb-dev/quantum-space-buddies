@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -28,7 +28,7 @@ namespace QSB.Tools
             CreateFlashlight();
             CreateSignalscope();
             CreateProbeLauncher();
-            CreateTranslator();            
+            CreateTranslator();
         }
 
         public static void CreateProbe(Transform body, PlayerInfo player)

@@ -9,12 +9,12 @@ namespace QSB.TransformSync
         public static PlayerCameraSync LocalInstance { get; private set; }
 
         protected override uint PlayerIdOffset => 2;
-        
+
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
-        
+
         protected override Transform InitLocalTransform()
         {
             var body = Locator.GetPlayerCamera().gameObject.transform;
