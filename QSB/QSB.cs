@@ -27,6 +27,7 @@ namespace QSB
             DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
             
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
+            DebugLog.OkayState("NetworkBundle", NetworkAssetBundle);
             Patches.DoPatches();
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 

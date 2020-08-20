@@ -46,8 +46,13 @@ namespace QSB.TransformSync
 
         public void Remove()
         {
-            Destroy(transform.parent.gameObject);
+            // do N O T destroy the parent - it completely breaks the ENTIRE GAME
+            if (_canvasMarker && _canvasMarker.gameObject != null)
+            {
+                _canvasMarker.DestroyMarker();
+            }
+            Destroy(_markerTarget.gameObject);
+            Destroy(this);
         }
-
     }
 }

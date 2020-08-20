@@ -36,7 +36,7 @@ namespace QSB
         public static void RemovePlayer(uint id)
         {
             var stacktrace = new StackTrace();
-            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
+            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
@@ -50,7 +50,6 @@ namespace QSB
             var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
-            DebugLog.ToConsole($"Set player {player.NetId} to ready state {player.IsReady}");
             player.State = message.PlayerState;
             DebugLog.ToConsole($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
                 $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");

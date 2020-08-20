@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QSB.Animation;
 using QSB.DeathSync;
@@ -38,22 +39,22 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
-            DebugLog.OkayState("PlayerPrefab", playerPrefab != null);
+            DebugLog.OkayState("PlayerPrefab", playerPrefab);
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
-            DebugLog.OkayState("ShipPrefab", _shipPrefab != null);
+            DebugLog.OkayState("ShipPrefab", _shipPrefab);
 
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
-            DebugLog.OkayState("CameraPrefab", _cameraPrefab != null);
+            DebugLog.OkayState("CameraPrefab", _cameraPrefab);
 
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
-            DebugLog.OkayState("ProbePrefab", _probePrefab != null);
+            DebugLog.OkayState("ProbePrefab", _probePrefab);
 
             ConfigureNetworkManager();
         }
@@ -115,8 +116,32 @@ namespace QSB
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-            NetworkServer.connections.ToList().ForEach(CleanupConnection);
+            NetworkClient.allClients.ForEach(x => CleanupConnection(x.connection));
             _lobby.CanEditName = true;
+            if (PlayerRegistry.PlayerList.Count > 1)
+            {
+                var ids = "";
+                foreach (var player in PlayerRegistry.PlayerList)
+                {
+                    ids += $"{Environment.NewLine}* {player.NetId}";
+                }
+                DebugLog.ToConsole($"Error - PlayerList contains more than one player after scrubbing?! If you are a client, please report this error!" +
+                    $"{Environment.NewLine}List of remaing IDs : {ids}", OWML.Common.MessageType.Error);
+                return;
+            }
+
+            if (PlayerRegistry.PlayerList.Count == 0) // We had the server connection - this was running on the server!
+            {
+                return;
+            }
+
+            // hack to clean up the server's objects - afaik there's no way to get the servers networkconnection outside of a networkbehaviour!
+            // this works since we've cleaned up all the other players on the list (and removed them from the list)
+            // if there is still more than 1 player on the list, something has gone horribly wrong and we throw the above error
+            for (uint i = 0; i < 4; i++)
+            {
+                CleanupNetworkBehaviour(PlayerRegistry.PlayerList[0].NetId + i);
+            }
         }
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
@@ -130,14 +155,24 @@ namespace QSB
 
         public override void OnStopServer()
         {
+            Destroy(GetComponent<SectorSync>());
+            Destroy(GetComponent<RespawnOnDeath>());
+            Destroy(GetComponent<PreventShipDestruction>());
+            EventList.Reset();
             DebugLog.ToConsole("Server stopped!", OWML.Common.MessageType.Info);
+            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
             base.OnStopServer();
         }
 
         private void CleanupConnection(NetworkConnection connection)
         {
+            
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            if (!PlayerRegistry.PlayerExists(playerId))
+            {
+                return;
+            }
             var playerName = PlayerRegistry.GetPlayer(playerId).Name;
             DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);

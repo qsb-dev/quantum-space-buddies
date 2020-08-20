@@ -28,7 +28,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = GetPlayerModel();
 
             GetComponent<AnimationSync>().InitLocal(body);
@@ -40,7 +39,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = Instantiate(GetPlayerModel());
 
             GetComponent<AnimationSync>().InitRemote(body);

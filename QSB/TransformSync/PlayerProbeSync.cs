@@ -25,7 +25,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var body = GetProbe();
 
             bodyTransform = body;
@@ -37,7 +36,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.ToConsole($"{MethodBase.GetCurrentMethod().Name} for {GetType().Name}");
             var probe = GetProbe();
 
             probe.gameObject.SetActive(false);
