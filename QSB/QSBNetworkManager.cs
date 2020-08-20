@@ -67,7 +67,6 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
-            DebugLog.ToConsole("On server add player " + playerControllerId);
             base.OnServerAddPlayer(connection, playerControllerId);
 
             // These have to be in a constant order (for now, until we get a better netId getting system...)
@@ -121,7 +120,7 @@ namespace QSB
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
-			PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
+            PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
             CleanupConnection(connection);
         }
 
@@ -139,7 +138,7 @@ namespace QSB
             DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
 
-            if (playerId != PlayerRegistry.LocalPlayerId)
+            if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
             {
                 var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
                 netIds.ForEach(CleanupNetworkBehaviour);
@@ -149,6 +148,7 @@ namespace QSB
         public void CleanupNetworkBehaviour(uint netId)
         {
             DebugLog.ToConsole($"Cleaning up object {netId}");
+            // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)

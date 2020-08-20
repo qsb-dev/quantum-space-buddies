@@ -23,7 +23,7 @@ namespace QSB
 
         private void Start()
         {
-            DebugLog.ToConsole($"* Start of QSB version {ModHelper.Manifest.Version} - authored by {ModHelper.Manifest.Author}");
+            DebugLog.ToConsole($"* Start of QSB version {ModHelper.Manifest.Version} - authored by {ModHelper.Manifest.Author}", MessageType.Info);
 
             Helper = ModHelper;
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
