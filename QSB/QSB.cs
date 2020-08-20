@@ -16,6 +16,8 @@ namespace QSB
         public static bool DebugMode;
         public static AssetBundle NetworkAssetBundle;
 
+        public const int NETWORK_OBJECT_COUNT = 4;
+
         private void Awake()
         {
             Application.runInBackground = true;

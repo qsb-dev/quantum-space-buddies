@@ -116,32 +116,17 @@ namespace QSB
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-            NetworkClient.allClients.ForEach(x => CleanupConnection(x.connection));
-            _lobby.CanEditName = true;
-            if (PlayerRegistry.PlayerList.Count > 1)
+           
+            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId))
             {
-                var ids = "";
-                foreach (var player in PlayerRegistry.PlayerList)
+                for (uint i = 0; i < QSB.NETWORK_OBJECT_COUNT; i++)
                 {
-                    ids += $"{Environment.NewLine}* {player.NetId}";
+                    CleanupNetworkBehaviour(player.NetId + i);
                 }
-                DebugLog.ToConsole($"Error - PlayerList contains more than one player after scrubbing?! If you are a client, please report this error!" +
-                    $"{Environment.NewLine}List of remaing IDs : {ids}", OWML.Common.MessageType.Error);
-                return;
+                PlayerRegistry.RemovePlayer(player.NetId);
             }
 
-            if (PlayerRegistry.PlayerList.Count == 0) // We had the server connection - this was running on the server!
-            {
-                return;
-            }
-
-            // hack to clean up the server's objects - afaik there's no way to get the servers networkconnection outside of a networkbehaviour!
-            // this works since we've cleaned up all the other players on the list (and removed them from the list)
-            // if there is still more than 1 player on the list, something has gone horribly wrong and we throw the above error
-            for (uint i = 0; i < 4; i++)
-            {
-                CleanupNetworkBehaviour(PlayerRegistry.PlayerList[0].NetId + i);
-            }
+            _lobby.CanEditName = true;
         }
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
@@ -167,7 +152,6 @@ namespace QSB
 
         private void CleanupConnection(NetworkConnection connection)
         {
-            
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             if (!PlayerRegistry.PlayerExists(playerId))
             {
