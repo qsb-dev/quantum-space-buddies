@@ -1,6 +1,5 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
-using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -75,7 +74,6 @@ namespace QSB.TimeSync
 
         private void Init()
         {
-            DebugLog.ToConsole("Sending request for player states...", OWML.Common.MessageType.Warning);
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
@@ -167,7 +165,6 @@ namespace QSB.TimeSync
             Physics.SyncTransforms();
             SpinnerUI.Hide();
             FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
-            DebugLog.ToConsole("Sending request for player states...", OWML.Common.MessageType.Warning);
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
         }
 

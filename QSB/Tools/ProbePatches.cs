@@ -14,7 +14,7 @@ namespace QSB.Tools
             if (!____isRetrieving)
             {
                 GlobalMessenger.FireEvent(EventNames.QSBOnProbeWarp);
-            }  
+            }
             return true;
         }
 

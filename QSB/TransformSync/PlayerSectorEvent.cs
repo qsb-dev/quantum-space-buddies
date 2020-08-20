@@ -43,7 +43,7 @@ namespace QSB.TransformSync
 
             var transformSync = PlayerRegistry.GetTransformSync(message.AboutId);
 
-            QSB.Helper.Events.Unity.RunWhen(() => transformSync.SyncedTransform != null, 
+            QSB.Helper.Events.Unity.RunWhen(() => transformSync.SyncedTransform != null,
                 () => transformSync.SetReferenceSector(sector));
         }
 

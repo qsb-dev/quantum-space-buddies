@@ -6,7 +6,6 @@ using QSB.Messaging;
 using System;
 using QSB.Utility;
 using System.Diagnostics;
-using UnityEngine.Networking;
 
 namespace QSB
 {

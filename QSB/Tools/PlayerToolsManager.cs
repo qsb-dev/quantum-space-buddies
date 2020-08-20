@@ -28,7 +28,7 @@ namespace QSB.Tools
             CreateFlashlight();
             CreateSignalscope();
             CreateProbeLauncher();
-            CreateTranslator();            
+            CreateTranslator();
         }
 
         public static void CreateProbe(Transform body, PlayerInfo player)
