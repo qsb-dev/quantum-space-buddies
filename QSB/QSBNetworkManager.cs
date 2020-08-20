@@ -118,7 +118,7 @@ namespace QSB
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId))
+            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId).ToList())
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
                 PlayerRegistry.RemovePlayer(player.NetId);
