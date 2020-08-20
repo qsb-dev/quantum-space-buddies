@@ -2,6 +2,7 @@
 using OWML.ModHelper;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
@@ -16,8 +17,6 @@ namespace QSB
         public static bool DebugMode;
         public static AssetBundle NetworkAssetBundle;
 
-        public const int NETWORK_OBJECT_COUNT = 4;
-
         private void Awake()
         {
             Application.runInBackground = true;
@@ -29,8 +28,8 @@ namespace QSB
             DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
             
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-            DebugLog.OkayState("NetworkBundle", NetworkAssetBundle);
-            Patches.DoPatches();
+            DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
+            ProbePatches.DoPatches();
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
