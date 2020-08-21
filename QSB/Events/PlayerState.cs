@@ -23,7 +23,8 @@ namespace QSB.Events
             {
                 return;
             }
-            QSB.Helper.Events.Unity.RunWhen(() => PlayerRegistry.GetTransformSync(message.AboutId) != null,
+            QSB.Helper.Events.Unity.RunWhen(
+                () => PlayerRegistry.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
                 () => PlayerRegistry.HandleFullStateMessage(message));
         }
 

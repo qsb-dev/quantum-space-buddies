@@ -1,5 +1,4 @@
-﻿using QSB.Animation;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
 using System;
@@ -17,9 +16,7 @@ namespace QSB
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-        public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
-        public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
-        public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
+        public static List<PlayerSyncObject> PlayerSyncObjects { get; } = new List<PlayerSyncObject>();
 
         public static PlayerInfo GetPlayer(uint id)
         {
@@ -61,19 +58,19 @@ namespace QSB
             }
         }
 
-        public static TransformSync.TransformSync GetTransformSync(uint id)
+        public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject
         {
-            return TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
+            return PlayerSyncObjects.OfType<T>();
+        }
+
+        public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
+        {
+            return GetSyncObjects<T>().FirstOrDefault(x => x.NetId == id);
         }
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            return id == LocalPlayerId || GetTransformSync(id)?.PlayerId == LocalPlayerId;
-        }
-
-        public static AnimationSync GetAnimationSync(uint id)
-        {
-            return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
+            return id == LocalPlayerId || GetSyncObject<PlayerSyncObject>(id)?.PlayerId == LocalPlayerId;
         }
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)

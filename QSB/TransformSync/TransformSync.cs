@@ -1,20 +1,15 @@
 ﻿using OWML.Common;
 using QSB.Utility;
-using System;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
-    public abstract class TransformSync : NetworkBehaviour
+    public abstract class TransformSync : PlayerSyncObject
     {
         public abstract bool IsReady { get; }
         protected abstract Transform InitLocalTransform();
         protected abstract Transform InitRemoteTransform();
-        protected abstract uint PlayerIdOffset { get; }
 
-        public uint PlayerId => GetPlayerId();
-        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
         public Transform SyncedTransform { get; private set; }
         public QSBSector ReferenceSector { get; set; }
 
@@ -26,7 +21,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            PlayerRegistry.TransformSyncs.Add(this);
+            PlayerRegistry.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
@@ -125,22 +120,6 @@ namespace QSB.TransformSync
             {
                 SyncedTransform.gameObject.Hide();
                 _isVisible = false;
-            }
-        }
-
-        private uint GetPlayerId()
-        {
-            try
-            {
-                return netId.Value - PlayerIdOffset;
-            }
-            catch
-            {
-                DebugLog.ToConsole($"Error while getting netId of {GetType().Name}! " +
-                                   $"{Environment.NewLine}     - Did you destroy the TransformSync without destroying the {GetType().Name}?" +
-                                   $"{Environment.NewLine}     - Did a destroyed TransformSync/{GetType().Name} still have an active action/event listener?" +
-                                   $"{Environment.NewLine}     If you are a user seeing this, please report this error.", MessageType.Error);
-                return uint.MaxValue;
             }
         }
 

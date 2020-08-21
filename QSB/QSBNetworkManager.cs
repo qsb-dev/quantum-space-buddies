@@ -178,7 +178,7 @@ namespace QSB
 
                 if (transformSync != null)
                 {
-                    PlayerRegistry.TransformSyncs.Remove(transformSync);
+                    PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
                     if (transformSync.SyncedTransform != null)
                     {
                         Destroy(transformSync.SyncedTransform.gameObject);

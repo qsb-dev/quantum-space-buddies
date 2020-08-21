@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using System.Linq;
+using QSB.Events;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -19,7 +20,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            PlayerRegistry.LocalTransformSyncs.ForEach(CheckTransformSyncSector);
+            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.IsLocal).ToList().ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 

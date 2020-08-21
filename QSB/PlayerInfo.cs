@@ -3,6 +3,7 @@ using QSB.TransformSync;
 using QSB.Utility;
 using System;
 using System.Linq;
+using QSB.Animation;
 using UnityEngine;
 
 namespace QSB
@@ -53,7 +54,7 @@ namespace QSB
             Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-            PlayerRegistry.GetAnimationSync(NetId)?.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
+            PlayerRegistry.GetSyncObject<AnimationSync>(NetId)?.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
         }
 
         public bool GetState(State state)
