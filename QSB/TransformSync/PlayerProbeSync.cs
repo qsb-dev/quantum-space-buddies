@@ -9,7 +9,7 @@ namespace QSB.TransformSync
 
         protected override uint PlayerIdOffset => 3;
 
-        public Transform bodyTransform;
+        private Transform _disabledSocket;
 
         public override void OnStartLocalPlayer()
         {
@@ -25,8 +25,7 @@ namespace QSB.TransformSync
         {
             var body = GetProbe();
 
-            bodyTransform = body;
-
+            _disabledSocket = Player.Camera.transform;
             Player.ProbeBody = body.gameObject;
 
             return body;
@@ -44,8 +43,7 @@ namespace QSB.TransformSync
 
             PlayerToolsManager.CreateProbe(body, Player);
 
-            bodyTransform = body;
-
+            _disabledSocket = Player.ProbeLauncher.ToolGameObject.transform;
             Player.ProbeBody = body.gameObject;
 
             return body;
@@ -60,7 +58,7 @@ namespace QSB.TransformSync
             }
             if (hasAuthority)
             {
-                transform.position = ReferenceSector.Transform.InverseTransformPoint(Player.Camera.transform.position); // this looks shitty, but fixes the NRE from ProbeLauncher
+                transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
                 return;
             }
             if (SyncedTransform.position == Vector3.zero ||
@@ -68,7 +66,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.Camera.transform.position); // this looks shitty, but fixes the NRE from ProbeLauncher
+            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
         }
 
         public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
