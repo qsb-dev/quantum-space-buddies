@@ -28,7 +28,8 @@ namespace QSB.Events
         public override void OnServerReceive(PlayerMessage message)
         {
             PlayerState.LocalInstance.Send();
-            foreach (var item in PlayerRegistry.TransformSyncs.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
+            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
+                .Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
                 GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector);
             }

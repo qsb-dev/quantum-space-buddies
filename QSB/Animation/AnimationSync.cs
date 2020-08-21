@@ -9,8 +9,10 @@ using UnityEngine.Networking;
 
 namespace QSB.Animation
 {
-    public class AnimationSync : NetworkBehaviour
+    public class AnimationSync : PlayerSyncObject
     {
+        protected override uint PlayerIdOffset => 0;
+
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
@@ -62,7 +64,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerRegistry.AnimationSyncs.Add(this);
+            PlayerRegistry.PlayerSyncObjects.Add(this);
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {
@@ -163,7 +165,7 @@ namespace QSB.Animation
 
         private void OnClientReceiveMessage(AnimTriggerMessage message)
         {
-            var animationSync = PlayerRegistry.GetAnimationSync(message.AboutId);
+            var animationSync = PlayerRegistry.GetSyncObject<AnimationSync>(message.AboutId);
             if (animationSync == null || animationSync == this)
             {
                 return;
