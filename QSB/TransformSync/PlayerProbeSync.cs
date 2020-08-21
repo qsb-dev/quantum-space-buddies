@@ -60,7 +60,7 @@ namespace QSB.TransformSync
             }
             if (hasAuthority)
             {
-                transform.position = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
+                transform.position = ReferenceSector.Transform.InverseTransformPoint(Player.Camera.transform.position); // this looks shitty, but fixes the NRE from ProbeLauncher
                 return;
             }
             if (SyncedTransform.position == Vector3.zero ||
@@ -68,7 +68,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
+            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.Camera.transform.position); // this looks shitty, but fixes the NRE from ProbeLauncher
         }
 
         public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;

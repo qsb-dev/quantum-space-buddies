@@ -10,7 +10,6 @@ namespace QSB
     public class PlayerInfo
     {
         public uint NetId { get; }
-        public GameObject Body { get; set; }
         public GameObject Camera { get; set; }
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }

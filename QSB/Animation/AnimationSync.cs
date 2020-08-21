@@ -129,7 +129,7 @@ namespace QSB.Animation
         private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
         private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
 
-        private void SendTrigger(AnimTrigger trigger, float value = 0)
+        public void SendTrigger(AnimTrigger trigger, float value = 0)
         {
             var message = new AnimTriggerMessage
             {
