@@ -1,5 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
+using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -63,7 +64,14 @@ namespace QSB.Events
 
         private void Send(T message)
         {
-            _eventHandler.SendToServer(message);
+            if (NetworkServer.active)
+            {
+                _eventHandler.SendToAll(message);
+            }
+            else
+            {
+                _eventHandler.SendToServer(message);
+            }
         }
 
         private void OnClientReceive(T message)
