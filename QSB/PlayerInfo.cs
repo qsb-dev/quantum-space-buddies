@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-using QSB.Tools;
+﻿using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
+using System;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB
@@ -10,7 +10,6 @@ namespace QSB
     public class PlayerInfo
     {
         public uint NetId { get; }
-        public GameObject Body { get; set; }
         public GameObject Camera { get; set; }
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }

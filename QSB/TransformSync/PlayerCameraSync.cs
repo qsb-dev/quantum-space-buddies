@@ -19,8 +19,6 @@ namespace QSB.TransformSync
         {
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
-            PlayerToolsManager.Init(body);
-
             Player.Camera = body.gameObject;
 
             Player.IsReady = true;

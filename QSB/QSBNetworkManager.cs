@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using QSB.Animation;
+﻿using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 

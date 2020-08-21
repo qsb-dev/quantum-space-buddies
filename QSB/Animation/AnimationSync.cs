@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -129,7 +129,7 @@ namespace QSB.Animation
         private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
         private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
 
-        private void SendTrigger(AnimTrigger trigger, float value = 0)
+        public void SendTrigger(AnimTrigger trigger, float value = 0)
         {
             var message = new AnimTriggerMessage
             {
