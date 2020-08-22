@@ -32,11 +32,9 @@ namespace QSB.Animation
             if (isLocalPlayer)
             {
                 SyncLocalCrouch();
+                return;
             }
-            else
-            {
-                SyncRemoteCrouch();
-            }
+            SyncRemoteCrouch();
         }
 
         private void SyncLocalCrouch()
