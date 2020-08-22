@@ -28,6 +28,14 @@ namespace QSB.Utility
             ToHud(message);
         }
 
+        public static void DebugWrite(string message, MessageType type = MessageType.Message)
+        {
+            if (QSB.DebugMode)
+            {
+                ToConsole(message, type);
+            }
+        }
+
         public static string GenerateTable(List<string> columnsData, List<string> rowData)
         {
             var longestKey = columnsData.OrderByDescending(s => s.Length).First();
@@ -50,7 +58,7 @@ namespace QSB.Utility
         {
             var status = state ? "OK" : "FAIL";
             var messageType = state ? MessageType.Success : MessageType.Error;
-            ToConsole($"* {name} {status}", messageType);
+            DebugWrite($"* {name} {status}", messageType);
         }
 
     }

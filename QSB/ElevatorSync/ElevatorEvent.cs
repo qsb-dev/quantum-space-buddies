@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ElevatorSync
@@ -28,6 +29,7 @@ namespace QSB.ElevatorSync
 
         public override void OnReceiveRemote(ElevatorMessage message)
         {
+            DebugLog.DebugWrite($"Get ElevatorMessage {message.Direction} for {message.ObjectId}");
             var elevator = WorldRegistry.GetObject<QSBElevator>(message.ObjectId);
             elevator?.RemoteCall(message.Direction);
         }

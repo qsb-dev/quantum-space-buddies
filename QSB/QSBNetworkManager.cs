@@ -169,7 +169,7 @@ namespace QSB
 
         public void CleanupNetworkBehaviour(uint netId)
         {
-            DebugLog.ToConsole($"Cleaning up object {netId}");
+            DebugLog.DebugWrite($"Cleaning up object {netId}");
             // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x != null && x.netId.Value == netId);
