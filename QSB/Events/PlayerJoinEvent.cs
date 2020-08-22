@@ -1,11 +1,12 @@
-﻿using QSB.Messaging;
+﻿using OWML.Common;
+using QSB.Messaging;
 using QSB.Utility;
 
 namespace QSB.Events
 {
     public class PlayerJoinEvent : QSBEvent<PlayerJoinMessage>
     {
-        public override MessageType Type => MessageType.PlayerJoin;
+        public override EventType Type => EventType.PlayerJoin;
 
         public override void SetupListener()
         {
@@ -30,7 +31,7 @@ namespace QSB.Events
             var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             var text = $"{player.Name} joined!";
-            DebugLog.ToAll(text, OWML.Common.MessageType.Info);
+            DebugLog.ToAll(text, MessageType.Info);
         }
 
         public override void OnReceiveLocal(PlayerJoinMessage message)
@@ -38,7 +39,7 @@ namespace QSB.Events
             var player = PlayerRegistry.GetPlayer(PlayerRegistry.LocalPlayerId);
             player.Name = message.PlayerName;
             var text = $"Connected to server as {player.Name}.";
-            DebugLog.ToAll(text, OWML.Common.MessageType.Info);
+            DebugLog.ToAll(text, MessageType.Info);
         }
     }
 }

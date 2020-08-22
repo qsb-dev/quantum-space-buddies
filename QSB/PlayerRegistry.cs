@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using OWML.Common;
+using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
 using System;
@@ -26,7 +27,7 @@ namespace QSB
                 return player;
             }
             var stacktrace = new StackTrace();
-            DebugLog.ToConsole($"Creating player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
+            DebugLog.ToConsole($"Creating player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -35,7 +36,7 @@ namespace QSB
         public static void RemovePlayer(uint id)
         {
             var stacktrace = new StackTrace();
-            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}", OWML.Common.MessageType.Info);
+            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}", MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 

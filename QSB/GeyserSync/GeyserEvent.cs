@@ -6,7 +6,7 @@ namespace QSB.GeyserSync
 {
     public class GeyserEvent : QSBEvent<GeyserMessage>
     {
-        public override MessageType Type => MessageType.Geyser;
+        public override EventType Type => EventType.Geyser;
 
         public override void SetupListener()
         {

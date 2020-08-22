@@ -5,7 +5,7 @@ namespace QSB.Animation
 {
     public class AnimTriggerEvent : QSBEvent<AnimTriggerMessage>
     {
-        public override MessageType Type => MessageType.PlayerJoin;
+        public override EventType Type => EventType.AnimTrigger;
 
         public override void SetupListener()
         {

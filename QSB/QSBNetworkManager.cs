@@ -1,4 +1,5 @@
-﻿using QSB.Animation;
+﻿using OWML.Common;
+using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.GeyserSync;
@@ -111,7 +112,7 @@ namespace QSB
 
         public override void OnStopClient() // Called on the client when closing connection
         {
-            DebugLog.ToConsole("Disconnecting from server...", OWML.Common.MessageType.Info);
+            DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
@@ -142,7 +143,7 @@ namespace QSB
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
-            DebugLog.ToConsole("Server stopped!", OWML.Common.MessageType.Info);
+            DebugLog.ToConsole("Server stopped!", MessageType.Info);
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
             base.OnStopServer();
@@ -156,7 +157,7 @@ namespace QSB
                 return;
             }
             var playerName = PlayerRegistry.GetPlayer(playerId).Name;
-            DebugLog.ToConsole($"{playerName} disconnected.", OWML.Common.MessageType.Info);
+            DebugLog.ToConsole($"{playerName} disconnected.", MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
 
             if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!

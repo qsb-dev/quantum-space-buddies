@@ -4,7 +4,7 @@ namespace QSB.Events
 {
     public class PlayerReadyEvent : QSBEvent<ToggleMessage>
     {
-        public override MessageType Type => MessageType.PlayerReady;
+        public override EventType Type => EventType.PlayerReady;
 
         public override void SetupListener()
         {

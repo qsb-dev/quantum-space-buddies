@@ -6,7 +6,7 @@ namespace QSB.ElevatorSync
 {
     public class ElevatorEvent : QSBEvent<ElevatorMessage>
     {
-        public override MessageType Type => MessageType.Elevator;
+        public override EventType Type => EventType.Elevator;
 
         public override void SetupListener()
         {

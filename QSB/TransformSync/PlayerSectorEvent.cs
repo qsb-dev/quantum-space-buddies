@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -7,7 +8,7 @@ namespace QSB.TransformSync
 {
     public class PlayerSectorEvent : QSBEvent<WorldObjectMessage>
     {
-        public override MessageType Type => MessageType.PlayerSectorChange;
+        public override EventType Type => EventType.PlayerSectorChange;
 
         public override void SetupListener()
         {
@@ -37,7 +38,7 @@ namespace QSB.TransformSync
 
             if (sector == null)
             {
-                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!", OWML.Common.MessageType.Warning);
+                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!", MessageType.Warning);
                 return;
             }
 

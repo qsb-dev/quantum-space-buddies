@@ -10,7 +10,7 @@ namespace QSB.Events
     /// <typeparam name="T">The message type to use.</typeparam>
     public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
     {
-        public abstract MessageType Type { get; }
+        public abstract EventType Type { get; }
         public uint LocalPlayerId => PlayerRegistry.LocalPlayerId;
         private readonly MessageHandler<T> _eventHandler;
 

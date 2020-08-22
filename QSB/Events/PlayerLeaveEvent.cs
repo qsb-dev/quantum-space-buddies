@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using OWML.Common;
+using QSB.Messaging;
 using QSB.Utility;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace QSB.Events
 {
     public class PlayerLeaveEvent : QSBEvent<PlayerLeaveMessage>
     {
-        public override MessageType Type => MessageType.PlayerLeave;
+        public override EventType Type => EventType.PlayerLeave;
 
         public override void SetupListener()
         {
@@ -29,7 +30,7 @@ namespace QSB.Events
         public override void OnReceiveRemote(PlayerLeaveMessage message)
         {
             var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
-            DebugLog.ToAll($"{playerName} disconnected.", OWML.Common.MessageType.Info);
+            DebugLog.ToAll($"{playerName} disconnected.", MessageType.Info);
             PlayerRegistry.RemovePlayer(message.AboutId);
             message.NetIds.ToList().ForEach(netId => QSBNetworkManager.Instance.CleanupNetworkBehaviour(netId));
         }

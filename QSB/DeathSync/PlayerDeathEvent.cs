@@ -6,7 +6,7 @@ namespace QSB.DeathSync
 {
     public class PlayerDeathEvent : QSBEvent<PlayerDeathMessage>
     {
-        public override MessageType Type => MessageType.PlayerDeath;
+        public override EventType Type => EventType.PlayerDeath;
 
         public override void SetupListener()
         {
