@@ -1,11 +1,8 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
-using QSB.Messaging;
-using QSB.Utility;
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Networking;
 
 namespace QSB.Animation

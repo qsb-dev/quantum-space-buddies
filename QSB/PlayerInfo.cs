@@ -1,9 +1,9 @@
-﻿using QSB.Tools;
+﻿using QSB.Animation;
+using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using System;
 using System.Linq;
-using QSB.Animation;
 using UnityEngine;
 
 namespace QSB
