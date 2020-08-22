@@ -68,6 +68,5 @@ namespace QSB.Animation
             var jumpChargeFraction = CrouchParam.Current;
             _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
         }
-
     }
 }

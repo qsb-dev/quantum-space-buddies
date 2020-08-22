@@ -174,6 +174,5 @@ namespace QSB.Animation
             }
             SuitDown();
         }
-
     }
 }
