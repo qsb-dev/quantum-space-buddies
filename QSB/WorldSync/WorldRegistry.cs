@@ -9,6 +9,10 @@ namespace QSB.WorldSync
 
         public static void AddObject(WorldObject worldObject)
         {
+            if (_worldObjects.Contains(worldObject))
+            {
+                return;
+            }
             _worldObjects.Add(worldObject);
         }
 

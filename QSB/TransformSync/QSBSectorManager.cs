@@ -26,7 +26,7 @@ namespace QSB.TransformSync
             var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
             for (var id = 0; id < sectors.Count; id++)
             {
-                var qsbSector = new QSBSector();
+                var qsbSector = WorldRegistry.GetObject<QSBSector>(id) ?? new QSBSector();
                 qsbSector.Init(sectors[id], id);
                 WorldRegistry.AddObject(qsbSector);
             }
