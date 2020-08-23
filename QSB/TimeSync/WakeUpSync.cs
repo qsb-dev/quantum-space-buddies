@@ -21,6 +21,8 @@ namespace QSB.TimeSync
         private float _sendTimer;
         private float _serverTime;
         private float _timeScale;
+        private bool _isInputEnabled = true;
+        private bool _isFirstFastForward = true;
         private int _localLoopCount;
         private int _serverLoopCount;
 
@@ -156,7 +158,11 @@ namespace QSB.TimeSync
             _timeScale = 1f;
             _state = State.Loaded;
 
-            EnableInput();
+            if (!_isInputEnabled)
+            {
+                EnableInput();
+            }
+            _isFirstFastForward = false;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
             FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
@@ -166,12 +172,13 @@ namespace QSB.TimeSync
 
         private void DisableInput()
         {
+            _isInputEnabled = false;
             OWInput.ChangeInputMode(InputMode.None);
         }
 
         private void EnableInput()
         {
-            QSB.HasWokenUp = true;
+            _isInputEnabled = true;
             OWInput.ChangeInputMode(InputMode.Character);
         }
 
@@ -216,7 +223,7 @@ namespace QSB.TimeSync
                 var diff = _serverTime - Time.timeSinceLevelLoad;
                 Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
 
-                if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && !QSB.HasWokenUp)
+                if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
                 {
                     var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
                     Locator.GetPlayerTransform().position = spawnPoint.position;
@@ -237,7 +244,7 @@ namespace QSB.TimeSync
                 ResetTimeScale();
             }
 
-            if (!QSB.HasWokenUp && OWInput.GetInputMode() != InputMode.None)
+            if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
             {
                 DisableInput();
             }

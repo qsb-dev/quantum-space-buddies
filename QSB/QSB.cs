@@ -18,7 +18,6 @@ namespace QSB
         public static int Port { get; private set; }
         public static bool DebugMode { get; private set; }
         public static AssetBundle NetworkAssetBundle { get; private set; }
-        public static bool HasWokenUp { get; set; }
 
         private void Awake()
         {
@@ -45,13 +44,6 @@ namespace QSB
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
             gameObject.AddComponent<QSBSectorManager>();
-
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-        }
-
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-        {
-            HasWokenUp = false;
         }
 
         public override void Configure(IModConfig config)
