@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
 using System.Linq;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -98,9 +99,7 @@ namespace QSB.Tools
         {
             var original = GameObject.Find("NomaiTranslatorProp");
 
-            original.SetActive(false);
-            var translatorRoot = Object.Instantiate(original);
-            original.SetActive(true);
+            var translatorRoot = original.InstantiateInactive();
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
             var model = group.Find("Props_HEA_Translator");
