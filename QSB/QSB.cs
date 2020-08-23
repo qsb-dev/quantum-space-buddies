@@ -47,7 +47,10 @@ namespace QSB
         {
             DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
             Port = config.GetSettingsValue<int>("port");
-            QSBNetworkManager.Instance.networkPort = Port;
+            if (QSBNetworkManager.Instance != null)
+            {
+                QSBNetworkManager.Instance.networkPort = Port;
+            }
             DebugMode = config.GetSettingsValue<bool>("debugMode");
         }
     }
