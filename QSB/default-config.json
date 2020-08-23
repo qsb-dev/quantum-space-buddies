@@ -2,7 +2,7 @@
   "enabled": true,
   "settings": {
     "defaultServerIP": "localhost",
-    "debugMode": true
+    "debugMode": true,
     "port": 7777
   }
 }
