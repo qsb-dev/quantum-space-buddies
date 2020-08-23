@@ -32,9 +32,8 @@ namespace QSB.Messaging
             if (NetworkServer.handlers.Keys.Contains((short)_eventType))
             {
                 DebugLog.LogState($"{_eventType} HANDLER", false);
-                DebugLog.ToConsole($"Error - NetworkServer already contains a handler for EventType {_eventType} : You probably used the wrong type in an event.",
-                    MessageType.Error);
-                return;
+                DebugLog.ToConsole($"Warning - NetworkServer already contains a handler for EventType {_eventType} : You probably used the wrong type in an event.", MessageType.Warning);
+                NetworkServer.handlers.Remove((short)_eventType);
             }
             NetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
             NetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
