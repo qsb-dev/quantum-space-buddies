@@ -69,9 +69,14 @@ namespace QSB
             return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.NetId == id);
         }
 
+        public static PlayerSyncObject GetSyncObject(uint id)
+        {
+            return PlayerSyncObjects.FirstOrDefault(x => x != null && x.NetId == id);
+        }
+
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            return id == LocalPlayerId || GetSyncObject<PlayerSyncObject>(id)?.PlayerId == LocalPlayerId;
+            return id == LocalPlayerId || GetSyncObject(id)?.PlayerId == LocalPlayerId;
         }
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)
