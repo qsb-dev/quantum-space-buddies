@@ -18,7 +18,7 @@ namespace QSB
         public static int Port { get; private set; }
         public static bool DebugMode { get; private set; }
         public static AssetBundle NetworkAssetBundle { get; private set; }
-        public static bool HasWokenUp;
+        public static bool HasWokenUp { get; set; }
 
         private void Awake()
         {
@@ -49,7 +49,7 @@ namespace QSB
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnSceneLoaded(OWScene arg1, bool arg2)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             HasWokenUp = false;
         }
