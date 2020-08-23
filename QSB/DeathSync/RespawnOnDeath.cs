@@ -28,13 +28,12 @@ namespace QSB.DeathSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
+        private bool _isSetUp;
 
         private void Awake()
         {
             Instance = this;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.PreFinishDeathSequence));
-            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.Event += OnEvent;
         }
@@ -47,8 +46,13 @@ namespace QSB.DeathSync
             }
         }
 
-        private void Init()
+        public void Init()
         {
+            if (_isSetUp)
+            {
+                return;
+            }
+            _isSetUp = true;
             var playerTransform = Locator.GetPlayerTransform();
             _playerResources = playerTransform.GetComponent<PlayerResources>();
             _spaceSuit = playerTransform.GetComponentInChildren<PlayerSpacesuit>(true);

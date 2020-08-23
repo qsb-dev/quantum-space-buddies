@@ -1,4 +1,5 @@
 ﻿using QSB.Tools;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -35,9 +36,7 @@ namespace QSB.TransformSync
         {
             var probe = GetProbe();
 
-            probe.gameObject.SetActive(false);
-            var body = Instantiate(probe);
-            probe.gameObject.SetActive(true);
+            var body = probe.InstantiateInactive();
 
             Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 

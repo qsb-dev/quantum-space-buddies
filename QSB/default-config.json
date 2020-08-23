@@ -3,5 +3,6 @@
   "settings": {
     "defaultServerIP": "localhost",
     "debugMode": true
+    "port": 7777
   }
 }

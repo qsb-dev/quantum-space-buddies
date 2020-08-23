@@ -32,13 +32,15 @@ namespace QSB
             "Spinel",
             "Tektite",
             "Tephra",
-            "Tuff"
+            "Tuff",
+            "Jinha"
         };
 
         private void Awake()
         {
             PlayerName = GetPlayerName();
             CanEditName = true;
+            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         private string GetPlayerName()

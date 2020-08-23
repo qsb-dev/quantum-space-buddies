@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Tools;
@@ -12,10 +13,11 @@ namespace QSB
 {
     public class QSB : ModBehaviour
     {
-        public static IModHelper Helper;
-        public static string DefaultServerIP;
-        public static bool DebugMode;
-        public static AssetBundle NetworkAssetBundle;
+        public static IModHelper Helper { get; private set; }
+        public static string DefaultServerIP { get; private set; }
+        public static int Port { get; private set; }
+        public static bool DebugMode { get; private set; }
+        public static AssetBundle NetworkAssetBundle { get; private set; }
 
         private void Awake()
         {
@@ -29,11 +31,13 @@ namespace QSB
 
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
             DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
+
             ProbePatches.DoPatches();
+            DeathPatches.DoPatches();
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
-            // null (even though it isnt...)
+            // null (even though it isn't...)
             gameObject.AddComponent<QSBNetworkManager>();
             gameObject.AddComponent<NetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
@@ -45,6 +49,11 @@ namespace QSB
         public override void Configure(IModConfig config)
         {
             DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+            Port = config.GetSettingsValue<int>("port");
+            if (QSBNetworkManager.Instance != null)
+            {
+                QSBNetworkManager.Instance.networkPort = Port;
+            }
             DebugMode = config.GetSettingsValue<bool>("debugMode");
         }
     }
