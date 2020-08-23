@@ -1,34 +1,13 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using System;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB
 {
     public abstract class PlayerSyncObject : NetworkBehaviour
     {
         protected abstract uint PlayerIdOffset { get; }
-
-        public uint NetId => netId.Value;
+        public uint NetId => GetComponent<NetworkIdentity>()?.netId.Value ?? 0;
         public bool IsLocal => hasAuthority;
-        public uint PlayerId => GetPlayerId();
+        public uint PlayerId => NetId - PlayerIdOffset;
         public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
-
-        private uint GetPlayerId()
-        {
-            try
-            {
-                return NetId - PlayerIdOffset;
-            }
-            catch
-            {
-                DebugLog.ToConsole($"Error while getting netId of {GetType().Name}! " +
-                                   $"{Environment.NewLine}     - Did you destroy the TransformSync without destroying the {GetType().Name}?" +
-                                   $"{Environment.NewLine}     - Did a destroyed TransformSync/{GetType().Name} still have an active action/event listener?" +
-                                   $"{Environment.NewLine}     If you are a user seeing this, please report this error.", MessageType.Error);
-                return uint.MaxValue;
-            }
-        }
-
     }
 }
