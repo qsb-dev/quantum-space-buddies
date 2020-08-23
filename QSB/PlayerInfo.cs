@@ -40,8 +40,8 @@ namespace QSB
                 FlagsHelper.Unset(ref states, state);
             }
             State = states;
-            DebugLog.ToConsole($"State of player {NetId} is now : {Environment.NewLine}" +
-                $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(State))}");
+            //DebugLog.DebugWrite($"State of player {NetId} is now : {Environment.NewLine}" +
+            //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(State))}");
         }
 
         public void UpdateStateObjects()

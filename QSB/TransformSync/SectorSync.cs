@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -42,6 +43,7 @@ namespace QSB.TransformSync
 
         private void SendSector(uint id, QSBSector sector)
         {
+            DebugLog.DebugWrite($"Sending sector {sector.Name} for object {id}");
             GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
         }
     }

@@ -26,8 +26,7 @@ namespace QSB
             {
                 return player;
             }
-            var stacktrace = new StackTrace();
-            DebugLog.ToConsole($"Creating player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType}.{stacktrace.GetFrame(1).GetMethod().Name}", MessageType.Info);
+            DebugLog.DebugWrite($"Creating player with id {id}", MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
@@ -35,8 +34,7 @@ namespace QSB
 
         public static void RemovePlayer(uint id)
         {
-            var stacktrace = new StackTrace();
-            DebugLog.ToConsole($"Removing player with id {id}, called from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}", MessageType.Info);
+            DebugLog.DebugWrite($"Removing player with id {id}", MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
@@ -47,12 +45,13 @@ namespace QSB
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
+            DebugLog.DebugWrite($"Handle full state message");
             var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
-            DebugLog.ToConsole($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
-                $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
+            //DebugLog.DebugWrite($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
+            //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
             if (LocalPlayer.IsReady)
             {
                 player.UpdateStateObjects();
@@ -79,6 +78,5 @@ namespace QSB
         {
             return Enumerable.Range((int)player.NetId, NetworkObjectCount).Select(x => (uint)x).ToList();
         }
-
     }
 }
