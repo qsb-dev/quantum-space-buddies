@@ -1,7 +1,4 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.TransformSync
 {
@@ -50,17 +47,13 @@ namespace QSB.TransformSync
         public void Remove()
         {
             // do N O T destroy the parent - it completely breaks the ENTIRE GAME
-            try
+            if (_canvasMarker.gameObject != null)
             {
                 _canvasMarker.DestroyMarker();
-                Destroy(_markerTarget.gameObject);
-                Destroy(this);
             }
-            catch (Exception ex)
-            {
-                DebugLog.ToConsole($"Warning - Failed to remove PlayerHUDMarker for {_player.Name} ({_player.NetId}) : {ex}", MessageType.Warning);
-            }
-
+            Destroy(_markerTarget.gameObject);
+            Destroy(this);
         }
+
     }
 }

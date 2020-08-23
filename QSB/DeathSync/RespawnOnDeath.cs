@@ -132,9 +132,7 @@ namespace QSB.DeathSync
         {
             return _playerSpawner
                 .GetValue<SpawnPoint[]>("_spawnList")
-                .FirstOrDefault(spawnPoint =>
-                    spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip
-                );
+                .FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
         }
     }
 }
