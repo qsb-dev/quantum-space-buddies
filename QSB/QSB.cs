@@ -32,8 +32,8 @@ namespace QSB
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
             DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
 
-            ProbePatches.Patch();
-            DeathPatches.Patch();
+            ProbePatches.DoPatches();
+            DeathPatches.DoPatches();
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
