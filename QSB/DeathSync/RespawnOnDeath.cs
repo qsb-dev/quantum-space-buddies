@@ -28,6 +28,7 @@ namespace QSB.DeathSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
+        private bool _isSetUp;
 
         private void Awake()
         {
@@ -49,6 +50,11 @@ namespace QSB.DeathSync
 
         public void Init()
         {
+            if (_isSetUp)
+            {
+                return;
+            }
+            _isSetUp = true;
             var playerTransform = Locator.GetPlayerTransform();
             _playerResources = playerTransform.GetComponent<PlayerResources>();
             _spaceSuit = playerTransform.GetComponentInChildren<PlayerSpacesuit>(true);
