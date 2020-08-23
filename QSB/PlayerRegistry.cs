@@ -61,12 +61,12 @@ namespace QSB
 
         public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject
         {
-            return PlayerSyncObjects.OfType<T>();
+            return PlayerSyncObjects.OfType<T>().Where(x => x != null);
         }
 
         public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
         {
-            return GetSyncObjects<T>().FirstOrDefault(x => x.NetId == id);
+            return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.NetId == id);
         }
 
         public static bool IsBelongingToLocalPlayer(uint id)
