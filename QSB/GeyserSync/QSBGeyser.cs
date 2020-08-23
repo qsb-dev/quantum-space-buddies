@@ -29,11 +29,11 @@ namespace QSB.GeyserSync
         {
             if (state)
             {
-                _geyserController.ActivateGeyser();
+                _geyserController?.ActivateGeyser();
             }
             else
             {
-                _geyserController.DeactivateGeyser();
+                _geyserController?.DeactivateGeyser();
             }
         }
     }
