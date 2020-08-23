@@ -114,20 +114,20 @@ namespace QSB.DeathSync
         {
             // Reset player position.
             var playerBody = Locator.GetPlayerBody();
-            playerBody?.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
-            playerBody?.SetVelocity(_playerSpawnPoint.GetPointVelocity());
-            _playerSpawnPoint?.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
-            _playerSpawnPoint?.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
-            _playerSpawnPoint?.OnSpawnPlayer();
+            playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
+            playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
+            _playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
+            _playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
+            _playerSpawnPoint.OnSpawnPlayer();
 
             // Stop suffocation sound effect.
-            _playerResources?.SetValue("_isSuffocating", false);
+            _playerResources.SetValue("_isSuffocating", false);
 
             // Reset player health and resources.
-            _playerResources?.DebugRefillResources();
+            _playerResources.DebugRefillResources();
 
             // Remove space suit.
-            _spaceSuit?.RemoveSuit(true);
+            _spaceSuit.RemoveSuit(true);
         }
 
         private SpawnPoint GetSpawnPoint(bool isShip = false)
