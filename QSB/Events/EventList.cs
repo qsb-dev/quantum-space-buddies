@@ -36,7 +36,8 @@ namespace QSB.Events
                 new PlayerStatesRequestEvent(),
                 new ElevatorEvent(),
                 new GeyserEvent(),
-                new ServerTimeEvent()
+                new ServerTimeEvent(),
+                new AnimTriggerEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());

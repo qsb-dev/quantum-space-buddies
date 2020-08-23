@@ -5,7 +5,7 @@ namespace QSB.Tools
 {
     public class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
     {
-        public override MessageType Type => MessageType.SignalscopeActiveChange;
+        public override EventType Type => EventType.SignalscopeActiveChange;
 
         public override void SetupListener()
         {

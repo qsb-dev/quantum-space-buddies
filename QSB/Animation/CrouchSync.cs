@@ -32,11 +32,9 @@ namespace QSB.Animation
             if (isLocalPlayer)
             {
                 SyncLocalCrouch();
+                return;
             }
-            else
-            {
-                SyncRemoteCrouch();
-            }
+            SyncRemoteCrouch();
         }
 
         private void SyncLocalCrouch()
@@ -70,6 +68,5 @@ namespace QSB.Animation
             var jumpChargeFraction = CrouchParam.Current;
             _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
         }
-
     }
 }

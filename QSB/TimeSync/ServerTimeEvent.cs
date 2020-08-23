@@ -5,7 +5,7 @@ namespace QSB.TimeSync
 {
     public class ServerTimeEvent : QSBEvent<ServerTimeMessage>
     {
-        public override MessageType Type => MessageType.ServerTime;
+        public override EventType Type => EventType.ServerTime;
 
         public override void SetupListener()
         {

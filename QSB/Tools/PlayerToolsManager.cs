@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
 using System.Linq;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -98,9 +99,7 @@ namespace QSB.Tools
         {
             var original = GameObject.Find("NomaiTranslatorProp");
 
-            original.SetActive(false);
-            var translatorRoot = Object.Instantiate(original);
-            original.SetActive(true);
+            var translatorRoot = original.InstantiateInactive();
 
             var group = translatorRoot.transform.Find("TranslatorGroup");
             var model = group.Find("Props_HEA_Translator");
@@ -137,30 +136,34 @@ namespace QSB.Tools
 
         private static void CreateProbeLauncher()
         {
-            var launcherRoot = Object.Instantiate(GameObject.Find("PlayerCamera/ProbeLauncher"));
-            launcherRoot.SetActive(false);
+            var launcherRoot = new GameObject("ProbeLauncher");
+            var modelOrig = GameObject.Find("PlayerCamera/ProbeLauncher/Props_HEA_ProbeLauncher");
+            var model = Object.Instantiate(modelOrig);
+            model.transform.parent = launcherRoot.transform;
 
-            var launcher = launcherRoot.transform.Find("Props_HEA_ProbeLauncher");
+            Object.Destroy(model.transform.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
+            Object.Destroy(model.transform.Find("Props_HEA_Probe_Prelaunch").Find("Props_HEA_Probe_Prelaunch_Prepass").gameObject);
 
-            Object.Destroy(launcherRoot.GetComponent<ProbePromptController>());
-            Object.Destroy(launcherRoot.GetComponent<ProbeLauncherEffects>());
-            Object.Destroy(launcherRoot.transform.Find("Props_HEA_ProbeLauncher_ProbeCamera").gameObject);
-            Object.Destroy(launcherRoot.transform.Find("preLaunchCamera").gameObject);
-            Object.Destroy(launcherRoot.transform.Find("LaunchParticleEffect_Underwater").gameObject);
-            Object.Destroy(launcherRoot.transform.Find("LaunchParticleEffect").gameObject);
-            Object.Destroy(launcher.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
-            Object.Destroy(launcher.Find("Props_HEA_Probe_Prelaunch").Find("Props_HEA_Probe_Prelaunch_Prepass").gameObject);
-
-            var oldLauncher = launcherRoot.GetComponent<PlayerProbeLauncher>();
             var tool = launcherRoot.AddComponent<QSBTool>();
-            tool.MoveSpring = oldLauncher.GetValue<DampedSpringQuat>("_moveSpring");
+            var spring = new DampedSpringQuat
+            {
+                velocity = Vector4.zero,
+                settings = new DampedSpringSettings
+                {
+                    springConstant = 50f,
+                    dampingCoefficient = 8.485282f,
+                    mass = 1
+                }
+            };
+            tool.MoveSpring = spring;
             tool.StowTransform = _toolStowTransform;
             tool.HoldTransform = _toolHoldTransform;
             tool.ArrivalDegrees = 5f;
             tool.Type = ToolType.ProbeLauncher;
-            tool.ToolGameObject = launcher.gameObject;
-            oldLauncher.enabled = false;
+            tool.ToolGameObject = model;
 
+            GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = _playerToolsMaterial;
+            GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = _lightbulbMaterial;
             GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;
             GetRenderer(launcherRoot, "ProbeLauncherChassis").material = _playerToolsMaterial;
 

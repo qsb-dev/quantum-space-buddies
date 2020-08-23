@@ -6,7 +6,7 @@ namespace QSB.Events
 {
     public class PlayerStatesRequestEvent : QSBEvent<PlayerMessage>
     {
-        public override MessageType Type => MessageType.FullStateRequest;
+        public override EventType Type => EventType.FullStateRequest;
 
         public override void SetupListener()
         {

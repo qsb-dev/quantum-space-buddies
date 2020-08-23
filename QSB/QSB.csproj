@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\AnimationSync.cs" />
+    <Compile Include="Animation\AnimTriggerEvent.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimControllerPatch.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
@@ -177,7 +178,7 @@
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="Messaging\PlayerMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
-    <Compile Include="Messaging\MessageType.cs" />
+    <Compile Include="Messaging\EventType.cs" />
     <Compile Include="PlayerInfo.cs" />
     <Compile Include="State.cs" />
     <Compile Include="DeathSync\PreventShipDestruction.cs" />

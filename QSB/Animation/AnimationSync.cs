@@ -1,7 +1,5 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
-using QSB.Messaging;
-using QSB.Utility;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -16,7 +14,6 @@ namespace QSB.Animation
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
-        private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
         private RuntimeAnimatorController _suitedAnimController;
         private AnimatorOverrideController _unsuitedAnimController;
@@ -45,9 +42,6 @@ namespace QSB.Animation
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
             GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
             GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
-
-            _triggerHandler.OnServerReceiveMessage -= OnServerReceiveMessage;
-            _triggerHandler.OnClientReceiveMessage -= OnClientReceiveMessage;
         }
 
         private void InitCommon(Transform body)
@@ -75,10 +69,6 @@ namespace QSB.Animation
         public void InitLocal(Transform body)
         {
             InitCommon(body);
-
-            _triggerHandler = new MessageHandler<AnimTriggerMessage>(MessageType.AnimTrigger);
-            _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-            _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
             _playerController = body.parent.GetComponent<PlayerCharacterController>();
             _playerController.OnJump += OnJump;
@@ -133,47 +123,10 @@ namespace QSB.Animation
 
         public void SendTrigger(AnimTrigger trigger, float value = 0)
         {
-            var message = new AnimTriggerMessage
-            {
-                AboutId = PlayerRegistry.LocalPlayerId,
-                TriggerId = (short)trigger,
-                Value = value
-            };
-            try
-            {
-                if (isServer)
-                {
-                    _triggerHandler.SendToAll(message);
-                }
-                else
-                {
-                    _triggerHandler.SendToServer(message);
-                }
-            }
-            catch
-            {
-                DebugLog.ToConsole("Error while getting isServer in AnimationSync! " +
-                       $"{Environment.NewLine}     - Did a destroyed AnimationSync still have an active action/event listener?" +
-                       $"{Environment.NewLine}     If you are a user seeing this, please report this error.", OWML.Common.MessageType.Error);
-            }
+            GlobalMessenger<short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)trigger, value);
         }
 
-        private void OnServerReceiveMessage(AnimTriggerMessage message)
-        {
-            _triggerHandler.SendToAll(message);
-        }
-
-        private void OnClientReceiveMessage(AnimTriggerMessage message)
-        {
-            var animationSync = PlayerRegistry.GetSyncObject<AnimationSync>(message.AboutId);
-            if (animationSync == null || animationSync == this)
-            {
-                return;
-            }
-            animationSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
-        }
-
-        private void HandleTrigger(AnimTrigger trigger, float value)
+        public void HandleTrigger(AnimTrigger trigger, float value)
         {
             switch (trigger)
             {
@@ -217,12 +170,9 @@ namespace QSB.Animation
             if (state)
             {
                 SuitUp();
+                return;
             }
-            else
-            {
-                SuitDown();
-            }
+            SuitDown();
         }
-
     }
 }

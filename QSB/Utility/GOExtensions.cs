@@ -16,5 +16,19 @@ namespace QSB.Utility
                 renderer.enabled = isVisible;
             }
         }
+
+        public static GameObject InstantiateInactive(this GameObject original)
+        {
+            original.SetActive(false);
+            var copy = Object.Instantiate(original);
+            original.SetActive(true);
+            return copy;
+        }
+
+        public static Transform InstantiateInactive(this Transform original)
+        {
+            return original.gameObject.InstantiateInactive().transform;
+        }
+
     }
 }

@@ -5,7 +5,7 @@ namespace QSB.Tools
 {
     public class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
     {
-        public override MessageType Type => MessageType.ProbeLauncherActiveChange;
+        public override EventType Type => EventType.ProbeLauncherActiveChange;
 
         public override void SetupListener()
         {

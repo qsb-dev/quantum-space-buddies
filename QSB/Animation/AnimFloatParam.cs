@@ -14,6 +14,5 @@ namespace QSB.Animation
             Current = Mathf.SmoothDamp(Current, Target, ref _velocity, smoothTime);
             return Current;
         }
-
     }
 }

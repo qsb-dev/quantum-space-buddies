@@ -1,6 +1,6 @@
-﻿using System;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Utility;
+using System;
 using UnityEngine.Networking;
 
 namespace QSB
