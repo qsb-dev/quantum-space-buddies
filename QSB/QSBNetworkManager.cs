@@ -150,13 +150,14 @@ namespace QSB
 
         private void CleanupConnection(NetworkConnection connection)
         {
-            uint playerId = uint.MaxValue;
+            uint playerId;
             try
             {
                 playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             }
-            catch
+            catch (Exception ex)
             {
+                DebugLog.ToConsole("Error when getting playerId in CleanupConnection: " + ex.Message, MessageType.Error);
                 return;
             }
             if (!PlayerRegistry.PlayerExists(playerId))
