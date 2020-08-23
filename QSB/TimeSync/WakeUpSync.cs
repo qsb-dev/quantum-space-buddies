@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.DeathSync;
 using QSB.Events;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -166,6 +167,7 @@ namespace QSB.TimeSync
             SpinnerUI.Hide();
             FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+            RespawnOnDeath.Instance.Init();
         }
 
         private void DisableInput()
