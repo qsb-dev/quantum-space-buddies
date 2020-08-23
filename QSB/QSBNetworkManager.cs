@@ -57,13 +57,12 @@ namespace QSB
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
             ConfigureNetworkManager();
-
-            QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
         }
 
         private void ConfigureNetworkManager()
         {
             networkAddress = QSB.DefaultServerIP;
+            networkPort = QSB.Port;
             maxConnections = MaxConnections;
             customConfig = true;
             connectionConfig.AddChannel(QosType.Reliable);
