@@ -10,11 +10,10 @@ namespace QSB.GeyserSync
         private void Awake()
         {
             Instance = this;
-
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();
             for (var id = 0; id < geyserControllers.Length; id++)
@@ -24,7 +23,7 @@ namespace QSB.GeyserSync
                 WorldRegistry.AddObject(qsbGeyser);
             }
         }
-        
+
         public void EmptyUpdate()
         {
             QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");

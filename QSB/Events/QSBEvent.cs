@@ -1,6 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
-using QSB.Utility;
+using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -8,33 +8,28 @@ namespace QSB.Events
     /// Abstract class that handles all event code.
     /// </summary>
     /// <typeparam name="T">The message type to use.</typeparam>
-    public abstract class QSBEvent<T> where T : PlayerMessage, new()
+    public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
     {
-        public abstract MessageType Type { get; }
-        public uint LocalPlayerId => PlayerRegistry.LocalPlayer.NetId;
+        public abstract EventType Type { get; }
+        public uint LocalPlayerId => PlayerRegistry.LocalPlayerId;
         private readonly MessageHandler<T> _eventHandler;
-
-        protected bool IsInUniverse { get; private set; }
 
         protected QSBEvent()
         {
             _eventHandler = new MessageHandler<T>(Type);
             _eventHandler.OnClientReceiveMessage += OnClientReceive;
             _eventHandler.OnServerReceiveMessage += OnServerReceive;
-
-            SetupListener();
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
-        }
-
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
-        {
-            IsInUniverse = newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse;
         }
 
         /// <summary>
         /// Called to set up the activators for the event.
         /// </summary>
         public abstract void SetupListener();
+
+        /// <summary>
+        /// Called to remove all set up activators.
+        /// </summary>
+        public abstract void CloseListener();
 
         /// <summary>
         /// Called on every client that didn't send the event.
@@ -63,16 +58,26 @@ namespace QSB.Events
 
         public void SendEvent(T message)
         {
-            UnityHelper.Instance.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
+            message.FromId = PlayerRegistry.LocalPlayerId;
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
+
         private void Send(T message)
         {
-            _eventHandler.SendToServer(message);
+            if (NetworkServer.active)
+            {
+                _eventHandler.SendToAll(message);
+            }
+            else
+            {
+                _eventHandler.SendToServer(message);
+            }
         }
 
         private void OnClientReceive(T message)
         {
-            if (PlayerRegistry.IsBelongingToLocalPlayer(message.SenderId))
+            if (message.FromId == PlayerRegistry.LocalPlayerId ||
+                PlayerRegistry.IsBelongingToLocalPlayer(message.AboutId))
             {
                 OnReceiveLocal(message);
                 return;

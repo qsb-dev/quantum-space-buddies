@@ -1,6 +1,6 @@
 ﻿namespace QSB.Messaging
 {
-    public enum MessageType
+    public enum EventType
     {
         Sector,
         ServerTime,

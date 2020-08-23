@@ -1,41 +1,35 @@
 ﻿using OWML.Common;
 using QSB.Utility;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
-    public abstract class TransformSync : NetworkBehaviour
+    public abstract class TransformSync : PlayerSyncObject
     {
-        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
-
-        private const float SmoothTime = 0.1f;
-        private bool _isInitialized;
+        public abstract bool IsReady { get; }
+        protected abstract Transform InitLocalTransform();
+        protected abstract Transform InitRemoteTransform();
 
         public Transform SyncedTransform { get; private set; }
         public QSBSector ReferenceSector { get; set; }
 
+        private const float SmoothTime = 0.1f;
+        private bool _isInitialized;
         private Vector3 _positionSmoothVelocity;
         private Quaternion _rotationSmoothVelocity;
-
         private bool _isVisible;
 
         protected virtual void Awake()
         {
-            PlayerRegistry.TransformSyncs.Add(this);
+            PlayerRegistry.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             _isInitialized = false;
         }
-
-        protected abstract Transform InitLocalTransform();
-        protected abstract Transform InitRemoteTransform();
-        public abstract bool IsReady { get; }
-        public abstract uint PlayerId { get; }
 
         protected void Init()
         {
@@ -79,6 +73,10 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.
             {
+                if (ReferenceSector.Sector == null)
+                {
+                    DebugLog.ToConsole($"Sector is null for referencesector for {GetType().Name}!", MessageType.Error);
+                }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;
@@ -87,13 +85,13 @@ namespace QSB.TransformSync
             // If this script is attached to any other body, eg the representations of other players
             if (SyncedTransform.position == Vector3.zero)
             {
-                // Fix bodies staying at 0,0,0 by chucking them into the sun
-                DebugLog.ToConsole("Warning - TransformSync at (0,0,0)!", MessageType.Warning);
                 Hide();
-                return;
+            }
+            else
+            {
+                Show();
             }
 
-            Show();
             SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
             SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
         }

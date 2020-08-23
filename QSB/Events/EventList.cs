@@ -5,6 +5,7 @@ using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.Tools;
 using QSB.TransformSync;
+using System.Collections.Generic;
 
 namespace QSB.Events
 {
@@ -15,25 +16,42 @@ namespace QSB.Events
     {
         public static bool Ready { get; private set; }
 
+        private static List<IQSBEvent> _eventList = new List<IQSBEvent>();
+
         public static void Init()
         {
-            new PlayerReadyEvent();
-            new PlayerSuitEvent();
-            new PlayerFlashlightEvent();
-            new PlayerSignalscopeEvent();
-            new PlayerTranslatorEvent();
-            new PlayerProbeLauncherEvent();
-            new PlayerProbeEvent();
-            new PlayerSectorEvent();
-            new PlayerJoinEvent();
-            new PlayerLeaveEvent();
-            new PlayerDeathEvent();
-            new PlayerStatesRequestEvent();
-            new ElevatorEvent();
-            new GeyserEvent();
-            new ServerTimeEvent();
+            _eventList = new List<IQSBEvent>
+            {
+                new PlayerReadyEvent(),
+                new PlayerJoinEvent(),
+                new PlayerSuitEvent(),
+                new PlayerFlashlightEvent(),
+                new PlayerSignalscopeEvent(),
+                new PlayerTranslatorEvent(),
+                new PlayerProbeLauncherEvent(),
+                new PlayerProbeEvent(),
+                new PlayerSectorEvent(),
+                new PlayerLeaveEvent(),
+                new PlayerDeathEvent(),
+                new PlayerStatesRequestEvent(),
+                new ElevatorEvent(),
+                new GeyserEvent(),
+                new ServerTimeEvent(),
+                new AnimTriggerEvent()
+            };
+
+            _eventList.ForEach(ev => ev.SetupListener());
 
             Ready = true;
+        }
+
+        public static void Reset()
+        {
+            Ready = false;
+
+            _eventList.ForEach(ev => ev.CloseListener());
+
+            _eventList = new List<IQSBEvent>();
         }
     }
 }

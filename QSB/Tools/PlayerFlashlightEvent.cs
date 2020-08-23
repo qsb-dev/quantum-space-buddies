@@ -5,28 +5,33 @@ namespace QSB.Tools
 {
     public class PlayerFlashlightEvent : QSBEvent<ToggleMessage>
     {
-        public override MessageType Type => MessageType.FlashlightActiveChange;
+        public override EventType Type => EventType.FlashlightActiveChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger.AddListener(EventNames.TurnOnFlashlight, () => SendEvent(CreateMessage(true)));
-            GlobalMessenger.AddListener(EventNames.TurnOffFlashlight, () => SendEvent(CreateMessage(false)));
+            GlobalMessenger.AddListener(EventNames.TurnOnFlashlight, HandleTurnOn);
+            GlobalMessenger.AddListener(EventNames.TurnOffFlashlight, HandleTurnOff);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger.RemoveListener(EventNames.TurnOnFlashlight, HandleTurnOn);
+            GlobalMessenger.RemoveListener(EventNames.TurnOffFlashlight, HandleTurnOff);
+        }
+
+        private void HandleTurnOn() => SendEvent(CreateMessage(true));
+        private void HandleTurnOff() => SendEvent(CreateMessage(false));
 
         private ToggleMessage CreateMessage(bool value) => new ToggleMessage
         {
-            SenderId = LocalPlayerId,
+            AboutId = LocalPlayerId,
             ToggleValue = value
         };
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.SenderId);
+            var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.UpdateState(State.Flashlight, message.ToggleValue);
-            if (!IsInUniverse)
-            {
-                return;
-            }
             player.FlashLight?.UpdateState(message.ToggleValue);
         }
 

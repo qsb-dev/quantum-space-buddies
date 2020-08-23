@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using QSB.WorldSync;
+using System.Collections.Generic;
 using System.Linq;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ElevatorSync
@@ -14,13 +14,11 @@ namespace QSB.ElevatorSync
         private void Awake()
         {
             Instance = this;
-
-            LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
-
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
             QSB.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(ElevatorPatches.StartLift));
         }
 
-        private void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             _elevators = Resources.FindObjectsOfTypeAll<Elevator>().ToList();
             for (var id = 0; id < _elevators.Count; id++)

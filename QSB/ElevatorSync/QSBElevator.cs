@@ -1,5 +1,4 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ namespace QSB.ElevatorSync
         {
             _elevator = elevator;
             ObjectId = id;
-            UnityHelper.Instance.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
+            QSB.Helper.Events.Unity.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
         }
 
         private void InitValues()

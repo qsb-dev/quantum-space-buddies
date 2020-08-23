@@ -1,33 +1,26 @@
-﻿using System;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Events;
-using QSB.Messaging;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB.Animation
 {
-    public class AnimationSync : NetworkBehaviour
+    public class AnimationSync : PlayerSyncObject
     {
-        private const float CrouchSendInterval = 0.1f;
-        private const float CrouchChargeThreshold = 0.01f;
-        private const float CrouchSmoothTime = 0.05f;
-        private const int CrouchLayerIndex = 1;
+        protected override uint PlayerIdOffset => 0;
 
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
-        private MessageHandler<AnimTriggerMessage> _triggerHandler;
 
         private RuntimeAnimatorController _suitedAnimController;
         private AnimatorOverrideController _unsuitedAnimController;
         private GameObject _suitedGraphics;
         private GameObject _unsuitedGraphics;
         private PlayerCharacterController _playerController;
-
-        private readonly AnimFloatParam _crouchParam = new AnimFloatParam();
-        private float _sendTimer;
-        private float _lastSentJumpChargeFraction;
+        private CrouchSync _crouchSync;
 
         private void Awake()
         {
@@ -35,6 +28,20 @@ namespace QSB.Animation
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
             _netAnim.enabled = false;
             _netAnim.animator = _anim;
+        }
+
+        private void OnDestroy()
+        {
+            _netAnim.enabled = false;
+            if (_playerController == null)
+            {
+                return;
+            }
+            _playerController.OnJump -= OnJump;
+            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
+            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
+            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
+            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
         }
 
         private void InitCommon(Transform body)
@@ -51,7 +58,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerRegistry.AnimationSyncs.Add(this);
+            PlayerRegistry.PlayerSyncObjects.Add(this);
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {
@@ -63,10 +70,6 @@ namespace QSB.Animation
         {
             InitCommon(body);
 
-            _triggerHandler = new MessageHandler<AnimTriggerMessage>(MessageType.AnimTrigger);
-            _triggerHandler.OnServerReceiveMessage += OnServerReceiveMessage;
-            _triggerHandler.OnClientReceiveMessage += OnClientReceiveMessage;
-
             _playerController = body.parent.GetComponent<PlayerCharacterController>();
             _playerController.OnJump += OnJump;
             _playerController.OnBecomeGrounded += OnBecomeGrounded;
@@ -74,6 +77,8 @@ namespace QSB.Animation
 
             GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
             GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
+
+            InitCrouchSync();
         }
 
         public void InitRemote(Transform body)
@@ -92,9 +97,21 @@ namespace QSB.Animation
             playerAnimController.SetValue("_unsuitedGroup", new GameObject());
             playerAnimController.SetValue("_baseAnimController", null);
             playerAnimController.SetValue("_unsuitedAnimOverride", null);
+            playerAnimController.SetValue("_rightArmHidden", false);
+
+            var rightArmObjects = playerAnimController.GetValue<GameObject[]>("_rightArmObjects").ToList();
+            rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
 
             body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+
+            InitCrouchSync();
+        }
+
+        private void InitCrouchSync()
+        {
+            _crouchSync = gameObject.AddComponent<CrouchSync>();
+            _crouchSync.Init(this, _playerController, _bodyAnim);
         }
 
         private void OnJump() => SendTrigger(AnimTrigger.Jump);
@@ -104,54 +121,12 @@ namespace QSB.Animation
         private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
         private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
 
-        public void Reset()
+        public void SendTrigger(AnimTrigger trigger, float value = 0)
         {
-            if (_playerController == null)
-            {
-                return;
-            }
-            _netAnim.enabled = false;
-            _playerController.OnJump -= OnJump;
-            _playerController.OnBecomeGrounded -= OnBecomeGrounded;
-            _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
-            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
+            GlobalMessenger<short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)trigger, value);
         }
 
-        private void SendTrigger(AnimTrigger trigger, float value = 0)
-        {
-            var message = new AnimTriggerMessage
-            {
-                SenderId = netId.Value,
-                TriggerId = (short)trigger,
-                Value = value
-            };
-            if (isServer)
-            {
-                _triggerHandler.SendToAll(message);
-            }
-            else
-            {
-                _triggerHandler.SendToServer(message);
-            }
-        }
-
-        private void OnServerReceiveMessage(AnimTriggerMessage message)
-        {
-            _triggerHandler.SendToAll(message);
-        }
-
-        private void OnClientReceiveMessage(AnimTriggerMessage message)
-        {
-            var animationSync = PlayerRegistry.GetAnimationSync(message.SenderId);
-            if (animationSync == null || animationSync == this)
-            {
-                return;
-            }
-            animationSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
-        }
-
-        private void HandleTrigger(AnimTrigger trigger, float value)
+        public void HandleTrigger(AnimTrigger trigger, float value)
         {
             switch (trigger)
             {
@@ -167,7 +142,7 @@ namespace QSB.Animation
                     SuitDown();
                     break;
                 case AnimTrigger.Crouch:
-                    _crouchParam.Target = value;
+                    _crouchSync.CrouchParam.Target = value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
@@ -195,56 +170,9 @@ namespace QSB.Animation
             if (state)
             {
                 SuitUp();
-            }
-            else
-            {
-                SuitDown();
-            }
-        }
-
-        private void Update()
-        {
-            if (isLocalPlayer)
-            {
-                SyncLocalCrouch();
-            }
-            else
-            {
-                SyncRemoteCrouch();
-            }
-        }
-
-        private void SyncLocalCrouch()
-        {
-            if (_playerController == null)
-            {
                 return;
             }
-            _sendTimer += Time.unscaledDeltaTime;
-            if (_sendTimer < CrouchSendInterval)
-            {
-                return;
-            }
-            var jumpChargeFraction = _playerController.GetJumpChargeFraction();
-            if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
-            {
-                return;
-            }
-            SendTrigger(AnimTrigger.Crouch, jumpChargeFraction);
-            _lastSentJumpChargeFraction = jumpChargeFraction;
-            _sendTimer = 0;
+            SuitDown();
         }
-
-        private void SyncRemoteCrouch()
-        {
-            if (_bodyAnim == null)
-            {
-                return;
-            }
-            _crouchParam.Smooth(CrouchSmoothTime);
-            var jumpChargeFraction = _crouchParam.Current;
-            _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
-        }
-
     }
 }

@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using QSB.Events;
+﻿using QSB.Events;
+using System.Linq;
 
 namespace QSB.DeathSync
 {
@@ -24,5 +24,12 @@ namespace QSB.DeathSync
         {
             GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
         }
+
+        public static void DoPatches()
+        {
+            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
+        }
+
     }
 }

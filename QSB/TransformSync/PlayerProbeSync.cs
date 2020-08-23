@@ -1,4 +1,5 @@
 ﻿using QSB.Tools;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -7,14 +8,14 @@ namespace QSB.TransformSync
     {
         public static PlayerProbeSync LocalInstance { get; private set; }
 
-        public Transform bodyTransform;
+        protected override uint PlayerIdOffset => 3;
+
+        private Transform _disabledSocket;
 
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
         }
-
-        public override uint PlayerId => netId.Value - 3;
 
         private Transform GetProbe()
         {
@@ -25,8 +26,7 @@ namespace QSB.TransformSync
         {
             var body = GetProbe();
 
-            bodyTransform = body;
-
+            _disabledSocket = Player.Camera.transform;
             Player.ProbeBody = body.gameObject;
 
             return body;
@@ -36,16 +36,13 @@ namespace QSB.TransformSync
         {
             var probe = GetProbe();
 
-            probe.gameObject.SetActive(false);
-            var body = Instantiate(probe);
-            probe.gameObject.SetActive(true);
+            var body = probe.InstantiateInactive();
 
             Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 
             PlayerToolsManager.CreateProbe(body, Player);
 
-            bodyTransform = body;
-
+            _disabledSocket = Player.ProbeLauncher.ToolGameObject.transform;
             Player.ProbeBody = body.gameObject;
 
             return body;
@@ -54,13 +51,13 @@ namespace QSB.TransformSync
         protected override void UpdateTransform()
         {
             base.UpdateTransform();
-            if (Player.GetState(State.ProbeActive))
+            if (Player.GetState(State.ProbeActive) || ReferenceSector.Sector == null)
             {
                 return;
             }
             if (hasAuthority)
             {
-                transform.position = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
+                transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
                 return;
             }
             if (SyncedTransform.position == Vector3.zero ||
@@ -68,9 +65,9 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(Player.ProbeLauncher.ToolGameObject.transform.position);
+            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && Player != null && Player.IsReady;
+        public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
     }
 }

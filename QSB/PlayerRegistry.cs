@@ -1,74 +1,81 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using QSB.TransformSync;
-using QSB.Animation;
+﻿using OWML.Common;
 using QSB.Messaging;
+using QSB.TransformSync;
+using QSB.Utility;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Networking;
 
 namespace QSB
 {
     public static class PlayerRegistry
     {
-        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.netId.Value;
+        public const int NetworkObjectCount = 4;
+
+        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.GetComponent<NetworkIdentity>()?.netId.Value ?? 0;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-        public static List<TransformSync.TransformSync> TransformSyncs { get; } = new List<TransformSync.TransformSync>();
-        public static List<TransformSync.TransformSync> LocalTransformSyncs => TransformSyncs.Where(t => t != null && t.hasAuthority).ToList();
-        public static List<AnimationSync> AnimationSyncs { get; } = new List<AnimationSync>();
+        public static List<PlayerSyncObject> PlayerSyncObjects { get; } = new List<PlayerSyncObject>();
 
-        public static PlayerInfo CreatePlayer(uint id)
+        public static PlayerInfo GetPlayer(uint id)
         {
-            if (PlayerExists(id))
+            var player = PlayerList.FirstOrDefault(x => x.NetId == id);
+            if (player != null)
             {
-                return null;
+                return player;
             }
-            var player = new PlayerInfo(id);
+            DebugLog.DebugWrite($"Creating player with id {id}", MessageType.Info);
+            player = new PlayerInfo(id);
             PlayerList.Add(player);
             return player;
         }
 
-        public static PlayerInfo GetPlayer(uint id)
+        public static void RemovePlayer(uint id)
         {
-            return PlayerList.FirstOrDefault(x => x.NetId == id);
+            DebugLog.DebugWrite($"Removing player with id {id}", MessageType.Info);
+            PlayerList.Remove(GetPlayer(id));
         }
 
         public static bool PlayerExists(uint id)
         {
-            return GetPlayer(id) != null;
-        }
-
-        public static void RemovePlayer(uint id)
-        {
-            PlayerList.Remove(GetPlayer(id));
+            return PlayerList.Any(x => x.NetId == id);
         }
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
-            var player = GetPlayer(message.SenderId) ?? CreatePlayer(message.SenderId);
+            DebugLog.DebugWrite($"Handle full state message");
+            var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
             player.State = message.PlayerState;
-
+            //DebugLog.DebugWrite($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
+            //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
             if (LocalPlayer.IsReady)
             {
                 player.UpdateStateObjects();
             }
         }
 
-        public static TransformSync.TransformSync GetTransformSync(uint id)
+        public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject
         {
-            return TransformSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
+            return PlayerSyncObjects.OfType<T>().Where(x => x != null);
+        }
+
+        public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
+        {
+            return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.NetId == id);
         }
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            return id == LocalPlayerId || GetTransformSync(id).PlayerId == LocalPlayerId;
+            return id == LocalPlayerId ||
+                   PlayerSyncObjects.Any(x => x != null && x.NetId == id && x.PlayerId == LocalPlayerId);
         }
 
-        public static AnimationSync GetAnimationSync(uint id)
+        public static List<uint> GetPlayerNetIds(PlayerInfo player)
         {
-            return AnimationSyncs.FirstOrDefault(x => x != null && x.netId.Value == id);
+            return Enumerable.Range((int)player.NetId, NetworkObjectCount).Select(x => (uint)x).ToList();
         }
-
     }
 }

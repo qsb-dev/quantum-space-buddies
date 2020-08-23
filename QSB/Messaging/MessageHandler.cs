@@ -1,4 +1,7 @@
-﻿using System;
+﻿using OWML.Common;
+using QSB.Utility;
+using System;
+using System.Linq;
 using UnityEngine.Networking;
 
 namespace QSB.Messaging
@@ -9,43 +12,50 @@ namespace QSB.Messaging
         public event Action<T> OnClientReceiveMessage;
         public event Action<T> OnServerReceiveMessage;
 
-        private readonly MessageType _messageType;
+        private readonly EventType _eventType;
 
-        public MessageHandler(MessageType messageType)
+        public MessageHandler(EventType eventType)
         {
-            _messageType = messageType + 1 + MsgType.Highest;
-            if (QSBNetworkManager.IsReady)
+            _eventType = eventType + MsgType.Highest + 1;
+            if (QSBNetworkManager.Instance.IsReady)
             {
                 Init();
             }
             else
             {
-                QSBNetworkManager.OnNetworkManagerReady.AddListener(Init);
+                QSBNetworkManager.Instance.OnNetworkManagerReady += Init;
             }
         }
 
         private void Init()
         {
-            NetworkServer.RegisterHandler((short)_messageType, OnServerReceiveMessageHandler);
-            NetworkManager.singleton.client.RegisterHandler((short)_messageType, OnClientReceiveMessageHandler);
+            if (NetworkServer.handlers.Keys.Contains((short)_eventType))
+            {
+                DebugLog.LogState($"{_eventType} HANDLER", false);
+                DebugLog.ToConsole($"Warning - NetworkServer already contains a handler for EventType {_eventType}", MessageType.Warning);
+                NetworkServer.handlers.Remove((short)_eventType);
+            }
+            NetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
+            NetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
+            DebugLog.LogState($"{_eventType} HANDLER", true);
         }
 
         public void SendToAll(T message)
         {
-            if (!QSBNetworkManager.IsReady)
+            if (!QSBNetworkManager.Instance.IsReady)
             {
                 return;
             }
-            NetworkServer.SendToAll((short)_messageType, message);
+            NetworkServer.SendToAll((short)_eventType, message);
         }
 
         public void SendToServer(T message)
         {
-            if (!QSBNetworkManager.IsReady)
+            if (!QSBNetworkManager.Instance.IsReady)
             {
                 return;
             }
-            NetworkManager.singleton.client.Send((short)_messageType, message);
+            NetworkManager.singleton.client.Send((short)_eventType, message);
         }
 
         private void OnClientReceiveMessageHandler(NetworkMessage netMsg)

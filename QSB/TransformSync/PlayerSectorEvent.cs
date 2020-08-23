@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -7,22 +8,29 @@ namespace QSB.TransformSync
 {
     public class PlayerSectorEvent : QSBEvent<WorldObjectMessage>
     {
-        public override MessageType Type => MessageType.PlayerSectorChange;
+        public override EventType Type => EventType.PlayerSectorChange;
 
         public override void SetupListener()
         {
-            GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, (netId, sector) => SendEvent(CreateMessage(netId, sector)));
+            GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
         }
+
+        public override void CloseListener()
+        {
+            GlobalMessenger<uint, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
+        }
+
+        private void Handler(uint netId, QSBSector sector) => SendEvent(CreateMessage(netId, sector));
 
         private WorldObjectMessage CreateMessage(uint netId, QSBSector sector) => new WorldObjectMessage
         {
-            SenderId = netId,
+            AboutId = netId,
             ObjectId = sector.ObjectId
         };
 
         public override void OnReceiveRemote(WorldObjectMessage message)
         {
-            if (!IsInUniverse)
+            if (!QSBSceneManager.IsInUniverse)
             {
                 return;
             }
@@ -30,13 +38,13 @@ namespace QSB.TransformSync
 
             if (sector == null)
             {
-                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!");
+                DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!", MessageType.Warning);
                 return;
             }
 
-            var transformSync = PlayerRegistry.GetTransformSync(message.SenderId);
-            //DebugLog.ToConsole($"{transformSync.GetType().Name} of ID {message.SenderId} set to {sector.Name}");
-            UnityHelper.Instance.RunWhen(() => transformSync.SyncedTransform != null, 
+            var transformSync = PlayerRegistry.GetSyncObject<TransformSync>(message.AboutId);
+
+            QSB.Helper.Events.Unity.RunWhen(() => transformSync.SyncedTransform != null,
                 () => transformSync.SetReferenceSector(sector));
         }
 

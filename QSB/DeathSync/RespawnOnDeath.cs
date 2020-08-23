@@ -1,6 +1,8 @@
-﻿using System.Linq;
-using OWML.ModHelper.Events;
+﻿using OWML.ModHelper.Events;
 using QSB.Events;
+using System.Linq;
+using OWML.Common;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.DeathSync
@@ -33,8 +35,6 @@ namespace QSB.DeathSync
         {
             Instance = this;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.PreFinishDeathSequence));
-            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.Event += OnEvent;
         }
@@ -47,7 +47,7 @@ namespace QSB.DeathSync
             }
         }
 
-        private void Init()
+        public void Init()
         {
             var playerTransform = Locator.GetPlayerTransform();
             _playerResources = playerTransform.GetComponent<PlayerResources>();
@@ -80,6 +80,11 @@ namespace QSB.DeathSync
             }
 
             // Reset ship position.
+            if (_shipSpawnPoint == null)
+            {
+                DebugLog.ToConsole("_shipSpawnPoint is null!", MessageType.Warning);
+                return;
+            }
             _shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
             _shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
 
@@ -128,9 +133,7 @@ namespace QSB.DeathSync
         {
             return _playerSpawner
                 .GetValue<SpawnPoint[]>("_spawnList")
-                .FirstOrDefault(spawnPoint =>
-                    spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip
-                );
+                .FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
         }
     }
 }

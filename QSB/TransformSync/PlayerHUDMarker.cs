@@ -20,6 +20,7 @@ namespace QSB.TransformSync
         public void Init(PlayerInfo player)
         {
             _player = player;
+            _player.HudMarker = this;
             _isReady = true;
         }
 
@@ -42,5 +43,17 @@ namespace QSB.TransformSync
 
             base.InitCanvasMarker();
         }
+
+        public void Remove()
+        {
+            // do N O T destroy the parent - it completely breaks the ENTIRE GAME
+            if (_canvasMarker?.gameObject != null)
+            {
+                _canvasMarker.DestroyMarker();
+            }
+            Destroy(_markerTarget.gameObject);
+            Destroy(this);
+        }
+
     }
 }

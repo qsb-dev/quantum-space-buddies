@@ -12,9 +12,9 @@ namespace QSB.WorldSync
             _worldObjects.Add(worldObject);
         }
 
-        public static List<T> GetObjects<T>()
+        public static IEnumerable<T> GetObjects<T>()
         {
-            return _worldObjects.OfType<T>().ToList();
+            return _worldObjects.OfType<T>();
         }
 
         public static T GetObject<T>(int id) where T : WorldObject
