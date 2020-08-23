@@ -150,7 +150,16 @@ namespace QSB
 
         private void CleanupConnection(NetworkConnection connection)
         {
-            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            uint playerId;
+            try
+            {
+                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            }
+            catch (Exception ex)
+            {
+                DebugLog.ToConsole("Error when getting playerId in CleanupConnection: " + ex.Message, MessageType.Error);
+                return;
+            }
             if (!PlayerRegistry.PlayerExists(playerId))
             {
                 return;
@@ -161,7 +170,7 @@ namespace QSB
 
             if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
             {
-                var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToList();
+                var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
                 netIds.ForEach(CleanupNetworkBehaviour);
             }
         }

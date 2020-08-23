@@ -2,10 +2,9 @@
 using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using UnityEngine.Networking;
 
 namespace QSB
 {
@@ -13,7 +12,7 @@ namespace QSB
     {
         public const int NetworkObjectCount = 4;
 
-        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.netId.Value;
+        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.GetComponent<NetworkIdentity>()?.netId.Value ?? 0;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 

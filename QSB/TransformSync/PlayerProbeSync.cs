@@ -51,7 +51,7 @@ namespace QSB.TransformSync
         protected override void UpdateTransform()
         {
             base.UpdateTransform();
-            if (Player.GetState(State.ProbeActive))
+            if (Player.GetState(State.ProbeActive) || ReferenceSector.Sector == null)
             {
                 return;
             }

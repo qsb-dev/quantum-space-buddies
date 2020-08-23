@@ -1,6 +1,8 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
 using System.Linq;
+using OWML.Common;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.DeathSync
@@ -28,7 +30,6 @@ namespace QSB.DeathSync
         private HatchController _hatchController;
         private ShipCockpitController _cockpitController;
         private PlayerSpacesuit _spaceSuit;
-        private bool _isSetUp;
 
         private void Awake()
         {
@@ -48,11 +49,6 @@ namespace QSB.DeathSync
 
         public void Init()
         {
-            if (_isSetUp)
-            {
-                return;
-            }
-            _isSetUp = true;
             var playerTransform = Locator.GetPlayerTransform();
             _playerResources = playerTransform.GetComponent<PlayerResources>();
             _spaceSuit = playerTransform.GetComponentInChildren<PlayerSpacesuit>(true);
@@ -84,6 +80,11 @@ namespace QSB.DeathSync
             }
 
             // Reset ship position.
+            if (_shipSpawnPoint == null)
+            {
+                DebugLog.ToConsole("_shipSpawnPoint is null!", MessageType.Warning);
+                return;
+            }
             _shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
             _shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
 
@@ -132,9 +133,7 @@ namespace QSB.DeathSync
         {
             return _playerSpawner
                 .GetValue<SpawnPoint[]>("_spawnList")
-                .FirstOrDefault(spawnPoint =>
-                    spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip
-                );
+                .FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
         }
     }
 }
