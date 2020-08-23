@@ -24,5 +24,12 @@ namespace QSB.DeathSync
         {
             GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
         }
+
+        public static void Patch()
+        {
+            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
+        }
+
     }
 }

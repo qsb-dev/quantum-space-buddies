@@ -18,7 +18,7 @@ namespace QSB.Tools
             return true;
         }
 
-        public static void DoPatches()
+        public static void Patch()
         {
             QSB.Helper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(ProbePatches), nameof(ProbeAnchor));
             QSB.Helper.HarmonyHelper.AddPrefix<SurveyorProbe>("Retrieve", typeof(ProbePatches), nameof(ProbeWarp));

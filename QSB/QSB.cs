@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Tools;
@@ -30,7 +31,9 @@ namespace QSB
 
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
             DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
-            ProbePatches.DoPatches();
+
+            ProbePatches.Patch();
+            DeathPatches.Patch();
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
