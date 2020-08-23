@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.DeathSync;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -41,6 +42,8 @@ namespace QSB
             PlayerName = GetPlayerName();
             CanEditName = true;
             QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.PreFinishDeathSequence));
+            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.BroadcastDeath));
         }
 
         private string GetPlayerName()

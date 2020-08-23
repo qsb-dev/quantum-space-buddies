@@ -34,8 +34,6 @@ namespace QSB.DeathSync
         {
             Instance = this;
 
-            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.PreFinishDeathSequence));
-            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(DeathPatches.BroadcastDeath));
             QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
             QSB.Helper.Events.Event += OnEvent;
         }
