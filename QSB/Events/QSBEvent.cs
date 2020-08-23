@@ -1,6 +1,5 @@
 ﻿using QSB.Messaging;
 using QSB.TransformSync;
-using QSB.Utility;
 using UnityEngine.Networking;
 
 namespace QSB.Events
