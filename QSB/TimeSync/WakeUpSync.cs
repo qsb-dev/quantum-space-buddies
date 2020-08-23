@@ -166,14 +166,13 @@ namespace QSB.TimeSync
 
         private void DisableInput()
         {
-            QSB.CachedInputMode = OWInput.GetInputMode();
             OWInput.ChangeInputMode(InputMode.None);
         }
 
         private void EnableInput()
         {
             QSB.HasWokenUp = true;
-            OWInput.ChangeInputMode(QSB.CachedInputMode);
+            OWInput.ChangeInputMode(InputMode.Character);
         }
 
         private void Update()

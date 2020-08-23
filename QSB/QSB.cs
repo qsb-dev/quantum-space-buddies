@@ -19,7 +19,6 @@ namespace QSB
         public static bool DebugMode { get; private set; }
         public static AssetBundle NetworkAssetBundle { get; private set; }
         public static bool HasWokenUp { get; set; }
-        public static InputMode CachedInputMode;
 
         private void Awake()
         {
