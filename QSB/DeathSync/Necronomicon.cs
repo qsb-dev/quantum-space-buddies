@@ -15,7 +15,7 @@ namespace QSB.DeathSync
             } },
             { DeathType.Impact, new[]
             {
-                "{0} forgot what retro thrusters were",
+                "{0} forgot what retrorockets are",
                 "{0} bonked into the ground too hard",
                 "{0} went splat"
             } },
@@ -31,12 +31,12 @@ namespace QSB.DeathSync
             {
                 "{0} was cooked",
                 "{0} failed the Hotshot achievement",
-                "{0} forgot to install AC unit"
+                "{0} forgot to install an AC unit"
             } },
             { DeathType.Supernova, new[]
             {
                 "{0} ran out of time",
-                "{0} vaporized",
+                "{0} got vaporized",
                 "{0} lost track of time",
                 "{0} got front row seats to the supernova",
                 "{0} heard the End of Times music",

@@ -30,7 +30,7 @@ namespace QSB.DeathSync
         {
             var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
-            DebugLog.ToAll(string.Format(deathMessage, playerName));
+            DebugLog.ToAll(string.Format(deathMessage, playerName).ToUpper());
         }
 
         public override void OnReceiveLocal(PlayerDeathMessage message) => OnReceiveRemote(message);
