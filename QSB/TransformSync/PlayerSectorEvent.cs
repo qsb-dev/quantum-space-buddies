@@ -32,6 +32,8 @@ namespace QSB.TransformSync
         {
             if (!QSBSceneManager.IsInUniverse)
             {
+                //var player = PlayerRegistry.GetPlayer(message.FromId);
+                //player.SectorCacheList[message.AboutId - message.FromId + 1] = message.ObjectId;
                 return;
             }
             var sector = WorldRegistry.GetObject<QSBSector>(message.ObjectId);

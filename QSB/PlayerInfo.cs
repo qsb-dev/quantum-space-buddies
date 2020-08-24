@@ -21,6 +21,7 @@ namespace QSB
         public string Name { get; set; }
         public bool IsReady { get; set; }
         public State State { get; set; }
+        //public int[] SectorCacheList = new int[PlayerRegistry.NetworkObjectCount];
 
         public PlayerInfo(uint id)
         {
@@ -53,7 +54,8 @@ namespace QSB
             Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-            PlayerRegistry.GetSyncObject<AnimationSync>(NetId)?.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerRegistry.GetSyncObject<AnimationSync>(NetId) != null,
+                () => PlayerRegistry.GetSyncObject<AnimationSync>(NetId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
         }
 
         public bool GetState(State state)

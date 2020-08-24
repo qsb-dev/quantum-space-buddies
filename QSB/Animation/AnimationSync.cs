@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
+using QSB.Utility;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -151,6 +152,7 @@ namespace QSB.Animation
 
         private void SuitUp()
         {
+            DebugLog.DebugWrite($"Suit on for {PlayerId}");
             _bodyAnim.runtimeAnimatorController = _suitedAnimController;
             _anim.runtimeAnimatorController = _suitedAnimController;
             _unsuitedGraphics.SetActive(false);
@@ -159,6 +161,7 @@ namespace QSB.Animation
 
         private void SuitDown()
         {
+            DebugLog.DebugWrite($"Suit off for {PlayerId}");
             _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
             _anim.runtimeAnimatorController = _unsuitedAnimController;
             _unsuitedGraphics.SetActive(true);
