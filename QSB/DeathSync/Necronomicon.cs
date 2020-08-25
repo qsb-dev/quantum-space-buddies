@@ -15,7 +15,7 @@ namespace QSB.DeathSync
             } },
             { DeathType.Impact, new[]
             {
-                "{0} forgot what retrorockets are",
+                "{0} forgot what retro-rockets are",
                 "{0} bonked into the ground too hard",
                 "{0} went splat"
             } },

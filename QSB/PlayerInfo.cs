@@ -21,7 +21,6 @@ namespace QSB
         public string Name { get; set; }
         public bool IsReady { get; set; }
         public State State { get; set; }
-        //public int[] SectorCacheList = new int[PlayerRegistry.NetworkObjectCount];
 
         public PlayerInfo(uint id)
         {
