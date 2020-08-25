@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Tools;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -23,6 +24,7 @@ namespace QSB.TransformSync
 
             Player.IsReady = true;
             GlobalMessenger<bool>.FireEvent(EventNames.QSBPlayerReady, true);
+            DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
 
             return body;

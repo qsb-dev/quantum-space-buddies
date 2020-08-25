@@ -44,11 +44,13 @@ namespace QSB
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
-            DebugLog.DebugWrite($"Handle full state message");
+            DebugLog.DebugWrite($"Handle full state message for player {message.AboutId}");
             var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
+            DebugLog.DebugWrite($"* Is ready? : {player.IsReady}");
             player.State = message.PlayerState;
+            DebugLog.DebugWrite($"* Suit is on? : {FlagsHelper.IsSet(player.State, State.Suit)}");
             //DebugLog.DebugWrite($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
             //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
             if (LocalPlayer.IsReady)

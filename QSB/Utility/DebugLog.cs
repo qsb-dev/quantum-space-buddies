@@ -18,7 +18,7 @@ namespace QSB.Utility
             {
                 return;
             }
-            var data = new NotificationData(NotificationTarget.Player, message);
+            var data = new NotificationData(NotificationTarget.Player, message.ToUpper());
             NotificationManager.SharedInstance.PostNotification(data);
         }
 

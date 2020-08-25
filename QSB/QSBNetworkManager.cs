@@ -142,7 +142,7 @@ namespace QSB
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             EventList.Reset();
-            DebugLog.ToConsole("Server stopped!", MessageType.Info);
+            DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
             base.OnStopServer();
