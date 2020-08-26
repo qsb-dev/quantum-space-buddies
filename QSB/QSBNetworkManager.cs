@@ -3,6 +3,7 @@ using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.GeyserSync;
+using QSB.OrbSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -27,6 +28,7 @@ namespace QSB
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
         private GameObject _probePrefab;
+        public GameObject OrbPrefab;
 
         private void Awake()
         {
@@ -56,7 +58,21 @@ namespace QSB
             spawnPrefabs.Add(_probePrefab);
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
+            OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            spawnPrefabs.Add(OrbPrefab);
+            DebugLog.LogState("OrbPrefab", OrbPrefab);
+
             ConfigureNetworkManager();
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(OWScene scene, bool inUniverse)
+        {
+            var orbs = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>();
+            foreach (var orb in orbs)
+            {
+                DebugLog.ToConsole($"{orb.name}, {orb.transform.root.name}");
+            }
         }
 
         private void ConfigureNetworkManager()
@@ -95,6 +111,7 @@ namespace QSB
             {
                 gameObject.AddComponent<Events.PlayerState>();
                 GeyserManager.Instance.EmptyUpdate();
+                OrbSlotManager.Instance.StopChecking();
                 WakeUpPatches.AddPatches();
             }
 
@@ -118,10 +135,10 @@ namespace QSB
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId).ToList())
+            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.PlayerId != PlayerRegistry.LocalPlayerId).ToList())
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
-                PlayerRegistry.RemovePlayer(player.NetId);
+                PlayerRegistry.RemovePlayer(player.PlayerId);
             }
 
             _lobby.CanEditName = true;

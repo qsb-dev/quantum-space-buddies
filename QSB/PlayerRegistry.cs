@@ -2,6 +2,7 @@
 using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Networking;
@@ -10,8 +11,6 @@ namespace QSB
 {
     public static class PlayerRegistry
     {
-        public const int NetworkObjectCount = 4;
-
         public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.GetComponent<NetworkIdentity>()?.netId.Value ?? 0;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
@@ -20,7 +19,7 @@ namespace QSB
 
         public static PlayerInfo GetPlayer(uint id)
         {
-            var player = PlayerList.FirstOrDefault(x => x.NetId == id);
+            var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
             if (player != null)
             {
                 return player;
@@ -39,7 +38,7 @@ namespace QSB
 
         public static bool PlayerExists(uint id)
         {
-            return PlayerList.Any(x => x.NetId == id);
+            return PlayerList.Any(x => x.PlayerId == id);
         }
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
@@ -77,7 +76,19 @@ namespace QSB
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)
         {
-            return Enumerable.Range((int)player.NetId, NetworkObjectCount).Select(x => (uint)x).ToList();
+            return Enumerable.Range((int)player.PlayerId, PlayerSyncObjects.DistinctBy(x => x.NetId).Count(x => x.PlayerId == player.PlayerId)).Select(x => (uint)x).ToList();
+        }
+
+        private static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
         }
     }
 }
