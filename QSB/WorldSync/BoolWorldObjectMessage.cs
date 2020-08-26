@@ -1,9 +1,8 @@
-﻿using QSB.WorldSync;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
-namespace QSB.OrbSync
+namespace QSB.WorldSync
 {
-    public class OrbSlotMessage : WorldObjectMessage
+    public class BoolWorldObjectMessage : WorldObjectMessage
     {
         public bool State { get; set; }
 

@@ -5,7 +5,7 @@ using QSB.WorldSync;
 
 namespace QSB.GeyserSync
 {
-    public class GeyserEvent : QSBEvent<GeyserMessage>
+    public class GeyserEvent : QSBEvent<BoolWorldObjectMessage>
     {
         public override EventType Type => EventType.Geyser;
 
@@ -21,14 +21,14 @@ namespace QSB.GeyserSync
 
         private void Handler(int id, bool state) => SendEvent(CreateMessage(id, state));
 
-        private GeyserMessage CreateMessage(int id, bool state) => new GeyserMessage
+        private BoolWorldObjectMessage CreateMessage(int id, bool state) => new BoolWorldObjectMessage
         {
             AboutId = LocalPlayerId,
             ObjectId = id,
             State = state
         };
 
-        public override void OnReceiveRemote(GeyserMessage message)
+        public override void OnReceiveRemote(BoolWorldObjectMessage message)
         {
             var geyser = WorldRegistry.GetObject<QSBGeyser>(message.ObjectId);
             geyser?.SetState(message.State);
