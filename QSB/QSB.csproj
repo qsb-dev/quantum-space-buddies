@@ -137,7 +137,6 @@
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
     <Compile Include="OrbSync\OrbSlotManager.cs" />
-    <Compile Include="OrbSync\OrbSlotMessage.cs" />
     <Compile Include="OrbSync\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbSlotPatches.cs" />
     <Compile Include="OrbSync\QSBOrbSlot.cs" />
@@ -157,7 +156,6 @@
     <Compile Include="TimeSync\ServerTimeEvent.cs" />
     <Compile Include="GeyserSync\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
-    <Compile Include="GeyserSync\GeyserMessage.cs" />
     <Compile Include="GeyserSync\QSBGeyser.cs" />
     <Compile Include="DeathSync\PlayerDeathMessage.cs" />
     <Compile Include="Messaging\PlayerLeaveMessage.cs" />
@@ -170,6 +168,7 @@
     <Compile Include="TransformSync\QSBSector.cs" />
     <Compile Include="TransformSync\QSBSectorManager.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
+    <Compile Include="WorldSync\BoolWorldObjectMessage.cs" />
     <Compile Include="WorldSync\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />

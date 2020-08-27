@@ -59,6 +59,7 @@ namespace QSB
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
             OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            OrbPrefab.AddComponent<NomaiOrbTransformSync>();
             spawnPrefabs.Add(OrbPrefab);
             DebugLog.LogState("OrbPrefab", OrbPrefab);
 
@@ -89,6 +90,7 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
+            DebugLog.DebugWrite("[S] Add player");
             base.OnServerAddPlayer(connection, playerControllerId);
 
             // These have to be in a constant order (for now, until we get a better netId getting system...)
