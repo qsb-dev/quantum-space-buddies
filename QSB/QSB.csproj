@@ -139,6 +139,8 @@
     <Compile Include="OrbSync\OrbSlotManager.cs" />
     <Compile Include="OrbSync\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbSlotPatches.cs" />
+    <Compile Include="OrbSync\OrbStatusEvent.cs" />
+    <Compile Include="OrbSync\OrbUserEvent.cs" />
     <Compile Include="OrbSync\QSBOrbSlot.cs" />
     <Compile Include="PlayerSyncObject.cs" />
     <Compile Include="QSBNetworkLobby.cs" />

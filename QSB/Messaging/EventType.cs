@@ -20,6 +20,8 @@
         ProbeActiveChange,
         Elevator,
         Geyser,
-        OrbSlot
+        OrbSlot,
+        OrbUser,
+        OrbStatus
     }
 }

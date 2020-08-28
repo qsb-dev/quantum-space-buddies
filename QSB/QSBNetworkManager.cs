@@ -7,6 +7,7 @@ using QSB.OrbSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -69,10 +70,19 @@ namespace QSB
 
         private void OnSceneLoaded(OWScene scene, bool inUniverse)
         {
-            var orbs = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>();
-            foreach (var orb in orbs)
+            WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
+            foreach (var orb in WorldRegistry.OldOrbList)
             {
-                DebugLog.ToConsole($"{orb.name}, {orb.transform.root.name}");
+                
+                if (NetworkServer.active)
+                {
+                    WorldRegistry.OrbUserList.Add(orb, PlayerRegistry.LocalPlayerId);
+                    NetworkServer.Spawn(Instantiate(OrbPrefab));
+                }
+                else
+                {
+                    WorldRegistry.OrbUserList.Add(orb, 0);
+                }
             }
         }
 
@@ -116,6 +126,11 @@ namespace QSB
                 OrbSlotManager.Instance.StopChecking();
                 WakeUpPatches.AddPatches();
             }
+
+            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.StartDragCallEvent));
+            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("CancelDrag", typeof(OrbSlotPatches), nameof(OrbSlotPatches.CancelDrag));
+            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetPosition));
+            QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetOrbPosition));
 
             _lobby.CanEditName = false;
 
