@@ -22,6 +22,7 @@
         Geyser,
         OrbSlot,
         OrbUser,
-        OrbStatus
+        OrbStatus,
+        QSBPositionMessage
     }
 }

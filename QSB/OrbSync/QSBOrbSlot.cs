@@ -1,10 +1,8 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using UnityEngine.Networking;
 
 namespace QSB.OrbSync

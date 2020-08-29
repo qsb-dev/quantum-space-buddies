@@ -42,9 +42,9 @@ namespace QSB.TransformSync
                 return;
             }
 
-            var transformSync = PlayerRegistry.GetSyncObject<TransformSync>(message.AboutId);
+            var transformSync = PlayerRegistry.GetSyncObject<QSBTransformSync>(message.AboutId);
 
-            QSB.Helper.Events.Unity.RunWhen(() => transformSync.SyncedTransform != null,
+            QSB.Helper.Events.Unity.RunWhen(() => transformSync.AttachedObject != null,
                 () => transformSync.SetReferenceSector(sector));
         }
 

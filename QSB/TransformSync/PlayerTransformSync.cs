@@ -1,9 +1,10 @@
 ﻿using QSB.Animation;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerTransformSync : TransformSync
+    public class PlayerTransformSync : QSBTransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
@@ -16,6 +17,7 @@ namespace QSB.TransformSync
 
         public override void OnStartLocalPlayer()
         {
+            DebugLog.DebugWrite("OnStartLocalPlayer " + PlayerId);
             LocalInstance = this;
         }
 

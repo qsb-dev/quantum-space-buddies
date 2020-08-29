@@ -1,5 +1,4 @@
-﻿using OWML.Common;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,7 +8,7 @@ namespace QSB.TransformSync
     public class NomaiOrbTransformSync : NetworkBehaviour
     {
         private NomaiInterfaceOrb _attachedOrb;
-        private int _index => WorldRegistry.OrbList.FindIndex(x => x == this);
+        private int Index => WorldRegistry.OrbList.FindIndex(x => x == this);
 
         public Transform SyncedTransform { get; private set; }
         private bool _isInitialized;
@@ -27,8 +26,8 @@ namespace QSB.TransformSync
 
         private void OnReady()
         {
-            _attachedOrb = WorldRegistry.OldOrbList[_index];
-            DebugLog.DebugWrite($"orb index {_index} is attached to orb {_attachedOrb.GetInstanceID()}!");
+            _attachedOrb = WorldRegistry.OldOrbList[Index];
+            DebugLog.DebugWrite($"orb index {Index} is attached to orb {_attachedOrb.GetInstanceID()}!");
             _isReady = true;
         }
 
@@ -71,11 +70,7 @@ namespace QSB.TransformSync
 
         protected virtual void UpdateTransform()
         {
-            if (WorldRegistry.OldOrbList.FindIndex(x => x == _attachedOrb) == 31)
-            {
-                DebugLog.DebugWrite("31 is local? : " + WorldRegistry.IsOrbControlledLocally(_attachedOrb));
-            }
-            if (WorldRegistry.IsOrbControlledLocally(_attachedOrb))
+            if (isServer)
             {
                 transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);

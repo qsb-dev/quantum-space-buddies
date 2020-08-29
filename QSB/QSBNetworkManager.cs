@@ -39,6 +39,7 @@ namespace QSB
             _assetBundle = QSB.NetworkAssetBundle;
 
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
+            playerPrefab.AddComponent<QSBTransformSync>();
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
@@ -73,7 +74,6 @@ namespace QSB
             WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
             foreach (var orb in WorldRegistry.OldOrbList)
             {
-                
                 if (NetworkServer.active)
                 {
                     WorldRegistry.OrbUserList.Add(orb, PlayerRegistry.LocalPlayerId);
@@ -127,15 +127,17 @@ namespace QSB
                 WakeUpPatches.AddPatches();
             }
 
-            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.StartDragCallEvent));
-            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("CancelDrag", typeof(OrbSlotPatches), nameof(OrbSlotPatches.CancelDrag));
-            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetPosition));
-            QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetOrbPosition));
+            //QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.StartDragCallEvent));
+            //QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("CancelDrag", typeof(OrbSlotPatches), nameof(OrbSlotPatches.CancelDrag));
+            //QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetPosition));
+            //QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetOrbPosition));
 
             _lobby.CanEditName = false;
 
             OnNetworkManagerReady?.Invoke();
             IsReady = true;
+
+            NetworkServer.RegisterHandler((short)Messaging.EventType.QSBPositionMessage + MsgType.Highest + 1, new NetworkMessageDelegate(QSBTransformSync.HandleTransform));
 
             QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
@@ -217,14 +219,14 @@ namespace QSB
                 .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
-                var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
+                var transformSync = networkBehaviour.GetComponent<TransformSync.QSBTransformSync>();
 
                 if (transformSync != null)
                 {
                     PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null)
+                    if (transformSync.AttachedObject != null)
                     {
-                        Destroy(transformSync.SyncedTransform.gameObject);
+                        Destroy(transformSync.AttachedObject.gameObject);
                     }
                 }
                 Destroy(networkBehaviour.gameObject);

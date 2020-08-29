@@ -1,9 +1,4 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Events;
-using QSB.Utility;
-using QSB.WorldSync;
-
-namespace QSB.OrbSync
+﻿namespace QSB.OrbSync
 {
     public static class OrbSlotPatches
     {
@@ -12,6 +7,7 @@ namespace QSB.OrbSync
             return false;
         }
 
+        /*
         public static void StartDragCallEvent(bool __result, NomaiInterfaceOrb __instance)
         {
             if (__result)
@@ -36,5 +32,6 @@ namespace QSB.OrbSync
         {
             return WorldRegistry.IsOrbControlledLocally(__instance);
         }
+        */
     }
 }

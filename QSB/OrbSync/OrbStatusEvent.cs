@@ -1,7 +1,6 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync

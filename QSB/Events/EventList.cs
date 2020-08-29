@@ -39,9 +39,9 @@ namespace QSB.Events
                 new GeyserEvent(),
                 new ServerTimeEvent(),
                 new AnimTriggerEvent(),
-                new OrbSlotEvent(),
-                new OrbUserEvent(),
-                new OrbStatusEvent()
+                new OrbSlotEvent()
+                //new OrbUserEvent()
+                //new OrbStatusEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());

@@ -42,7 +42,7 @@ namespace QSB.Events
         public override void OnReceiveRemote(ToggleMessage message)
         {
             DebugLog.DebugWrite($"Get ready event from {message.FromId}", MessageType.Success);
-            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
+            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.QSBTransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
             {
                 DebugLog.DebugWrite($"* Sending sector for netid {item.netId.Value}...");
