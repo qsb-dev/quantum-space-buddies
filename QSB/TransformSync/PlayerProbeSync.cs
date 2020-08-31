@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerProbeSync : QSBTransformSync
+    public class PlayerProbeSync : TransformSync
     {
         public static PlayerProbeSync LocalInstance { get; private set; }
 
@@ -48,7 +48,6 @@ namespace QSB.TransformSync
             return body;
         }
 
-        /*
         protected override void UpdateTransform()
         {
             base.UpdateTransform();
@@ -68,7 +67,6 @@ namespace QSB.TransformSync
             }
             SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
         }
-        */
 
         public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
     }

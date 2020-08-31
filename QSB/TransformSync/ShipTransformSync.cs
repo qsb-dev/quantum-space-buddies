@@ -2,7 +2,7 @@
 
 namespace QSB.TransformSync
 {
-    public class ShipTransformSync : QSBTransformSync
+    public class ShipTransformSync : TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerCameraSync : QSBTransformSync
+    public class PlayerCameraSync : TransformSync
     {
         public static PlayerCameraSync LocalInstance { get; private set; }
 

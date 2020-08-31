@@ -21,13 +21,13 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            PlayerRegistry.GetSyncObjects<QSBTransformSync>().Where(x => x.IsLocal).ToList().ForEach(CheckTransformSyncSector);
+            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.IsLocal).ToList().ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 
-        private void CheckTransformSyncSector(QSBTransformSync transformSync)
+        private void CheckTransformSyncSector(TransformSync transformSync)
         {
-            var syncedTransform = transformSync.AttachedObject;
+            var syncedTransform = transformSync.SyncedTransform;
             if (syncedTransform == null || syncedTransform.position == Vector3.zero)
             {
                 return;

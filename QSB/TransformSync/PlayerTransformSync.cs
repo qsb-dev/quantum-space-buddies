@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerTransformSync : QSBTransformSync
+    public class PlayerTransformSync : TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 

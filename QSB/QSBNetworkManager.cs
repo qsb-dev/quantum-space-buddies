@@ -39,7 +39,6 @@ namespace QSB
             _assetBundle = QSB.NetworkAssetBundle;
 
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
-            playerPrefab.AddComponent<QSBTransformSync>();
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
@@ -137,7 +136,7 @@ namespace QSB
             OnNetworkManagerReady?.Invoke();
             IsReady = true;
 
-            NetworkServer.RegisterHandler((short)Messaging.EventType.QSBPositionMessage + MsgType.Highest + 1, new NetworkMessageDelegate(QSBTransformSync.HandleTransform));
+            //NetworkServer.RegisterHandler((short)Messaging.EventType.QSBPositionMessage + MsgType.Highest + 1, new NetworkMessageDelegate(QSBTransformSync.HandleTransform));
 
             QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 
@@ -219,14 +218,14 @@ namespace QSB
                 .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
-                var transformSync = networkBehaviour.GetComponent<TransformSync.QSBTransformSync>();
+                var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
 
                 if (transformSync != null)
                 {
                     PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.AttachedObject != null)
+                    if (transformSync.SyncedTransform != null)
                     {
-                        Destroy(transformSync.AttachedObject.gameObject);
+                        Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
                 Destroy(networkBehaviour.gameObject);

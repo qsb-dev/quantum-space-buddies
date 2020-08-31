@@ -24,7 +24,7 @@ namespace QSB.Events
                 return;
             }
             QSB.Helper.Events.Unity.RunWhen(
-                () => PlayerRegistry.GetSyncObject<TransformSync.QSBTransformSync>(message.AboutId) != null,
+                () => PlayerRegistry.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
                 () => PlayerRegistry.HandleFullStateMessage(message));
         }
 

@@ -36,6 +36,11 @@ namespace QSB.TransformSync
             PlayerRegistry.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+
+            var ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Destroy(ball.GetComponent<SphereCollider>());
+            ball.transform.parent = transform;
+            ball.transform.localPosition = Vector3.zero;
         }
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
@@ -51,61 +56,71 @@ namespace QSB.TransformSync
             transform.SetParent(sector.Transform, true);
             transform.position = sector.Transform.InverseTransformPoint(transform.position);
             transform.rotation = sector.Transform.InverseTransformRotation(transform.rotation);
+            if (!hasAuthority)
+            {
+                AttachedObject.SetParent(sector.Transform, true);
+            }
         }
 
         public override bool OnSerialize(NetworkWriter writer, bool initialState)
         {
-            DebugLog.DebugWrite("On serialize");
-            if (!initialState)
+            if (initialState)
             {
-                if (syncVarDirtyBits == 0)
-                {
-                    writer.WritePackedUInt32(0U);
-                    return false;
-                }
-                writer.WritePackedUInt32(1U);
+                writer.Write(transform.localPosition);
+                SerializeRotation3D(writer, transform.localRotation);
+                prevPosition = transform.localPosition;
+                prevRotation = transform.localRotation;
+                return true;
             }
-            SerializeModeTransform(writer);
-            return true;
+            bool wroteSyncVar = false;
+            if ((syncVarDirtyBits & 1U) != 0U)
+            {
+                if (!wroteSyncVar)
+                {
+                    writer.WritePackedUInt32(syncVarDirtyBits);
+                    wroteSyncVar = true;
+                }
+                writer.Write(transform.localPosition);
+                SerializeRotation3D(writer, transform.localRotation);
+                prevPosition = transform.localPosition;
+                prevRotation = transform.localRotation;
+            }
+            if (!wroteSyncVar)
+            {
+                writer.WritePackedUInt32(0);
+            }
+            return wroteSyncVar;
         }
 
         public override void OnDeserialize(NetworkReader reader, bool initialState)
         {
-            if (isServer && NetworkServer.localClientActive || !initialState && (int)reader.ReadPackedUInt32() == 0)
+            if (initialState)
             {
+                if (hasAuthority)
+                {
+                    reader.ReadVector3();
+                    UnserializeRotation3D(reader);
+                }
+                else
+                {
+                    transform.localPosition = reader.ReadVector3();
+                    transform.localRotation = UnserializeRotation3D(reader);
+                }
                 return;
             }
-            UnserializeModeTransform(reader);
-        }
-
-        private void SerializeModeTransform(NetworkWriter writer)
-        {
-            if (transform.parent != null)
+            int num = (int)reader.ReadPackedUInt32();
+            if ((num & 1) != 0)
             {
-                DebugLog.DebugWrite("* writing " + transform.localPosition + " with respect to " + transform.parent.name + ", using a reference of " + ReferenceSector.Name);
-                DebugLog.DebugWrite("* attached object is " + AttachedObject.name + " and it's localposition is " + ReferenceSector.Transform.InverseTransformPoint(AttachedObject.position));
-            }
-            else
-            {
-                DebugLog.DebugWrite("* writing " + transform.localPosition + " with respect to NULL PARENT");
-            }
-            writer.Write(transform.localPosition);
-            SerializeRotation3D(writer, transform.localRotation);
-            prevPosition = transform.localPosition;
-            prevRotation = transform.localRotation;
-        }
-
-        private void UnserializeModeTransform(NetworkReader reader)
-        {
-            if (hasAuthority)
-            {
-                reader.ReadVector3();
-                UnserializeRotation3D(reader);
-            }
-            else
-            {
-                transform.localPosition = reader.ReadVector3();
-                transform.localRotation = UnserializeRotation3D(reader);
+                if (hasAuthority)
+                {
+                    reader.ReadVector3();
+                    UnserializeRotation3D(reader);
+                }
+                else
+                {
+                    transform.localPosition = reader.ReadVector3();
+                    transform.localRotation = UnserializeRotation3D(reader);
+                }
             }
         }
 
@@ -131,12 +146,6 @@ namespace QSB.TransformSync
             DebugLog.DebugWrite("init of " + NetId);
             ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             AttachedObject = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
-            if (!hasAuthority)
-            {
-                AttachedObject.parent = transform;
-                AttachedObject.localPosition = Vector3.zero;
-                transform.localPosition = ReferenceSector.Position;
-            }
             _isInitialized = true;
         }
 
@@ -170,17 +179,30 @@ namespace QSB.TransformSync
             return num > 9.99999974737875E-06;
         }
 
+        protected virtual void UpdateTransform()
+        {
+            if (hasAuthority)
+            {
+                transform.localPosition = AttachedObject.localPosition;
+                transform.localRotation = AttachedObject.localRotation;
+                return;
+            }
+
+            AttachedObject.localPosition = transform.localPosition;
+            AttachedObject.localRotation = transform.localRotation;
+        }
+
         [Client]
         private void SendTransform()
         {
-            DebugLog.DebugWrite("send transform");
             if (!HasMoved() || ClientScene.readyConnection == null)
             {
                 return;
             }
             localTransformWriter.StartMessage((short)Messaging.EventType.QSBPositionMessage + MsgType.Highest + 1);
             localTransformWriter.Write(netId);
-            SerializeModeTransform(localTransformWriter);
+            localTransformWriter.Write(transform.localPosition);
+            SerializeRotation3D(localTransformWriter, transform.localRotation);
             prevPosition = transform.localPosition;
             prevRotation = transform.localRotation;
             localTransformWriter.FinishMessage();
@@ -197,7 +219,7 @@ namespace QSB.TransformSync
             }
             else
             {
-                var component = localObject.GetComponent<QSBTransformSync>();
+                var component = localObject.GetComponent<TransformSync>();
                 if (component == null)
                 {
                     DebugLog.ToConsole("Error - LocalObject doesn't have a QSBTransformSync!", MessageType.Error);
@@ -212,7 +234,16 @@ namespace QSB.TransformSync
                 }
                 else if (netMsg.conn.clientOwnedObjects.Contains(netId))
                 {
-                    component.UnserializeModeTransform(netMsg.reader);
+                    if (component.hasAuthority)
+                    {
+                        netMsg.reader.ReadVector3();
+                        UnserializeRotation3D(netMsg.reader);
+                    }
+                    else
+                    {
+                        component.transform.localPosition = netMsg.reader.ReadVector3();
+                        component.transform.localRotation = UnserializeRotation3D(netMsg.reader);
+                    }
                 }
                 else
                 {

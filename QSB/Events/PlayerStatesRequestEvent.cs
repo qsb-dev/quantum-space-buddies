@@ -30,7 +30,7 @@ namespace QSB.Events
         {
             DebugLog.DebugWrite($"[S] Get state request from {message.FromId}");
             PlayerState.LocalInstance.Send();
-            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.QSBTransformSync>()
+            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
                 DebugLog.DebugWrite($"* Sending sector for netid {item.netId.Value}...");
