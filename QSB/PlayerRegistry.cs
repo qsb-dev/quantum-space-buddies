@@ -103,7 +103,7 @@ namespace QSB
 
         public static List<NetworkInstanceId> GetPlayerNetIds(PlayerInfo player)
         {
-            var ints = Enumerable.Range((int)player.PlayerId.Value, PlayerSyncObjects.DistinctBy(x => x.NetId).Count(x => x.PlayerId == player.PlayerId)).Select(x => (uint)x).ToList();
+            var ints = Enumerable.Range((int)player.PlayerId.Value, PlayerSyncObjects.DistinctBy(x => x.NetId).Count(x => x.Player.PlayerId == player.PlayerId)).Select(x => (uint)x).ToList();
             var networkInstances = Resources.FindObjectsOfTypeAll<NetworkIdentity>().Select(x => x.netId).DistinctBy(x => x.Value);
             return networkInstances.Where(x => ints.Contains(x.Value)).ToList();
         }

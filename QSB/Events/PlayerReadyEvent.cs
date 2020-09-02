@@ -44,7 +44,7 @@ namespace QSB.Events
         {
             DebugLog.DebugWrite($"Get ready event from {message.FromId}", MessageType.Success);
             foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
-                .Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
+                .Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.Player.PlayerId == LocalPlayerId))
             {
                 GlobalMessenger<NetworkInstanceId, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId, item.ReferenceSector);
             }

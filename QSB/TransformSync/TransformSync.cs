@@ -62,7 +62,7 @@ namespace QSB.TransformSync
 
             if (SyncedTransform == null)
             {
-                DebugLog.ToConsole($"SyncedTransform of {PlayerId}.{GetType().Name} is null!");
+                DebugLog.ToConsole($"SyncedTransform of {Player.PlayerId.Value}.{GetType().Name} is null!");
                 return;
             }
 
@@ -80,7 +80,7 @@ namespace QSB.TransformSync
             {
                 if (ReferenceSector.Sector == null)
                 {
-                    DebugLog.ToConsole($"Sector is null for referencesector for {PlayerId}.{GetType().Name}!", MessageType.Error);
+                    DebugLog.ToConsole($"Sector is null for referencesector for {Player.PlayerId.Value}.{GetType().Name}!", MessageType.Error);
                 }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);

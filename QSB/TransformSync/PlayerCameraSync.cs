@@ -18,7 +18,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
-            DebugLog.DebugWrite($"{MethodBase.GetCurrentMethod().Name} of {PlayerId}.{GetType().Name}");
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
             Player.Camera = body.gameObject;
@@ -33,7 +32,6 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            DebugLog.DebugWrite($"{MethodBase.GetCurrentMethod().Name} of {PlayerId}.{GetType().Name}");
             var body = new GameObject("RemotePlayerCamera");
 
             PlayerToolsManager.Init(body.transform);
@@ -43,6 +41,6 @@ namespace QSB.TransformSync
             return body.transform;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId) && PlayerId != NetworkInstanceId.Invalid;
+        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(Player.PlayerId);
     }
 }
