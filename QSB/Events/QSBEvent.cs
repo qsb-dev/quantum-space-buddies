@@ -11,7 +11,7 @@ namespace QSB.Events
     public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
     {
         public abstract EventType Type { get; }
-        public uint LocalPlayerId => PlayerRegistry.LocalPlayerId;
+        public NetworkInstanceId LocalPlayerId => PlayerRegistry.LocalPlayerId;
         private readonly MessageHandler<T> _eventHandler;
 
         protected QSBEvent()
@@ -76,8 +76,7 @@ namespace QSB.Events
 
         private void OnClientReceive(T message)
         {
-            if (message.FromId == PlayerRegistry.LocalPlayerId ||
-                PlayerRegistry.IsBelongingToLocalPlayer(message.AboutId))
+            if (message.FromId == PlayerRegistry.LocalPlayerId || PlayerRegistry.IsBelongingToLocalPlayer(message.AboutId))
             {
                 OnReceiveLocal(message);
                 return;

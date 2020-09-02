@@ -1,15 +1,15 @@
 ﻿using QSB.Events;
 using QSB.Tools;
 using QSB.Utility;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
     public class PlayerCameraSync : TransformSync
     {
         public static PlayerCameraSync LocalInstance { get; private set; }
-
-        protected override uint PlayerIdOffset => 2;
 
         public override void OnStartLocalPlayer()
         {
@@ -18,6 +18,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitLocalTransform()
         {
+            DebugLog.DebugWrite($"{MethodBase.GetCurrentMethod().Name} of {PlayerId}.{GetType().Name}");
             var body = Locator.GetPlayerCamera().gameObject.transform;
 
             Player.Camera = body.gameObject;
@@ -32,7 +33,8 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            var body = new GameObject("PlayerCamera");
+            DebugLog.DebugWrite($"{MethodBase.GetCurrentMethod().Name} of {PlayerId}.{GetType().Name}");
+            var body = new GameObject("RemotePlayerCamera");
 
             PlayerToolsManager.Init(body.transform);
 
@@ -41,6 +43,6 @@ namespace QSB.TransformSync
             return body.transform;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId);
+        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId) && PlayerId != NetworkInstanceId.Invalid;
     }
 }

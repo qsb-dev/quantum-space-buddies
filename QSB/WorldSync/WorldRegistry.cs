@@ -1,6 +1,7 @@
 ﻿using QSB.TransformSync;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Networking;
 
 namespace QSB.WorldSync
 {
@@ -10,7 +11,7 @@ namespace QSB.WorldSync
         public static uint OrbStartNetId { get; set; }
         public static List<NomaiOrbTransformSync> OrbList = new List<NomaiOrbTransformSync>();
         public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
-        public static Dictionary<NomaiInterfaceOrb, uint> OrbUserList = new Dictionary<NomaiInterfaceOrb, uint>();
+        public static Dictionary<NomaiInterfaceOrb, NetworkInstanceId> OrbUserList = new Dictionary<NomaiInterfaceOrb, NetworkInstanceId>();
 
         public static void AddObject(WorldObject worldObject)
         {

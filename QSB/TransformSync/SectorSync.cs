@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
@@ -38,13 +38,13 @@ namespace QSB.TransformSync
                 return;
             }
             transformSync.ReferenceSector = closestSector;
-            SendSector(transformSync.netId.Value, closestSector);
+            SendSector(transformSync.netId, closestSector);
         }
 
-        private void SendSector(uint id, QSBSector sector)
+        private void SendSector(NetworkInstanceId id, QSBSector sector)
         {
-            DebugLog.DebugWrite($"Sending sector {sector.Name} for object {id}");
-            GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
+            //DebugLog.DebugWrite($"Sending sector {sector.Name} for object {id}");
+            GlobalMessenger<NetworkInstanceId, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
         }
     }
 }

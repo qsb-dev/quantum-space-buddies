@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -27,7 +26,6 @@ namespace QSB.TransformSync
         private void OnReady()
         {
             _attachedOrb = WorldRegistry.OldOrbList[Index];
-            DebugLog.DebugWrite($"orb index {Index} is attached to orb {_attachedOrb.GetInstanceID()}!");
             _isReady = true;
         }
 

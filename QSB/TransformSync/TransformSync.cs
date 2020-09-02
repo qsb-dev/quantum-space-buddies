@@ -52,14 +52,19 @@ namespace QSB.TransformSync
             else if (_isInitialized && !IsReady)
             {
                 _isInitialized = false;
+                return;
             }
 
-            if (SyncedTransform == null || !_isInitialized)
+            if (!_isInitialized)
             {
                 return;
             }
 
-            // Get which sector should be used as a reference point	
+            if (SyncedTransform == null)
+            {
+                DebugLog.ToConsole($"SyncedTransform of {PlayerId}.{GetType().Name} is null!");
+                return;
+            }
 
             if (ReferenceSector == null)
             {
@@ -75,7 +80,7 @@ namespace QSB.TransformSync
             {
                 if (ReferenceSector.Sector == null)
                 {
-                    DebugLog.ToConsole($"Sector is null for referencesector for {GetType().Name}!", MessageType.Error);
+                    DebugLog.ToConsole($"Sector is null for referencesector for {PlayerId}.{GetType().Name}!", MessageType.Error);
                 }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
@@ -98,6 +103,7 @@ namespace QSB.TransformSync
 
         public void SetReferenceSector(QSBSector sector)
         {
+            //DebugLog.DebugWrite($"Setting reference sector of {PlayerId.Value}.{GetType().Name} to {sector.Name}");
             _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
             SyncedTransform.SetParent(sector.Transform, true);

@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Reflection;
@@ -24,14 +23,12 @@ namespace QSB.OrbSync
         {
             if (NetworkServer.active)
             {
-                DebugLog.ToConsole($"FIRE ORB EVENT {ObjectId} : {state} ({instance.name})");
                 GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
             }
         }
 
         public void SetState(bool state)
         {
-            DebugLog.ToConsole($"Setting state of slot {_interfaceSlot.name} to {state}");
             if (state)
             {
                 RaiseEvent(_interfaceSlot, "OnSlotActivated");

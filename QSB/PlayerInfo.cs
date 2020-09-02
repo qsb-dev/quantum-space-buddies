@@ -4,12 +4,13 @@ using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB
 {
     public class PlayerInfo
     {
-        public uint PlayerId { get; }
+        public NetworkInstanceId PlayerId { get; }
         public GameObject Camera { get; set; }
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }
@@ -22,7 +23,7 @@ namespace QSB
         public bool IsReady { get; set; }
         public State State { get; set; }
 
-        public PlayerInfo(uint id)
+        public PlayerInfo(NetworkInstanceId id)
         {
             PlayerId = id;
         }

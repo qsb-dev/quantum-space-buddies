@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync
@@ -32,7 +31,6 @@ namespace QSB.OrbSync
         {
 
             var orbSlot = WorldRegistry.GetObject<QSBOrbSlot>(message.ObjectId);
-            DebugLog.ToConsole($"GET ORB MESSAGE {message.ObjectId} : {message.State}");
             orbSlot?.SetState(message.State);
         }
     }

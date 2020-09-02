@@ -80,7 +80,7 @@ namespace QSB
                 }
                 else
                 {
-                    WorldRegistry.OrbUserList.Add(orb, 0);
+                    WorldRegistry.OrbUserList.Add(orb, NetworkInstanceId.Invalid);
                 }
             }
         }
@@ -142,6 +142,10 @@ namespace QSB
 
             QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+
+            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
+                () => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
+
         }
 
         public override void OnStopClient() // Called on the client when closing connection
@@ -164,9 +168,9 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
+            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId;
+            var netIds = connection.clientOwnedObjects.Select(x => x).ToArray();
+            GlobalMessenger<NetworkInstanceId, NetworkInstanceId[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
             PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
             CleanupConnection(connection);
         }
@@ -185,10 +189,10 @@ namespace QSB
 
         private void CleanupConnection(NetworkConnection connection)
         {
-            uint playerId;
+            NetworkInstanceId playerId;
             try
             {
-                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId;
             }
             catch (Exception ex)
             {
@@ -205,17 +209,17 @@ namespace QSB
 
             if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
             {
-                var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
+                var netIds = connection.clientOwnedObjects?.Select(x => x).ToList();
                 netIds.ForEach(CleanupNetworkBehaviour);
             }
         }
 
-        public void CleanupNetworkBehaviour(uint netId)
+        public void CleanupNetworkBehaviour(NetworkInstanceId netId)
         {
-            DebugLog.DebugWrite($"Cleaning up object {netId}");
+            DebugLog.DebugWrite($"Cleaning up object {netId.Value}");
             // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x != null && x.netId.Value == netId);
+                .Where(x => x != null && x.netId == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
                 var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();

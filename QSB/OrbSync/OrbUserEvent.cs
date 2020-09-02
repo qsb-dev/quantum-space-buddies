@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync
@@ -29,7 +28,6 @@ namespace QSB.OrbSync
 
         public override void OnReceiveRemote(WorldObjectMessage message)
         {
-            DebugLog.DebugWrite("Get orb user from " + message.FromId + " about orb " + message.ObjectId);
             WorldRegistry.OrbUserList[WorldRegistry.OldOrbList[message.ObjectId]] = message.FromId;
         }
 

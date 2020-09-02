@@ -6,8 +6,6 @@ namespace QSB.TransformSync
     {
         public static ShipTransformSync LocalInstance { get; private set; }
 
-        protected override uint PlayerIdOffset => 1;
-
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
@@ -27,7 +25,7 @@ namespace QSB.TransformSync
         {
             var shipModel = GetShipModel();
 
-            var remoteTransform = new GameObject().transform;
+            var remoteTransform = new GameObject("RemoteShipTransform").transform;
 
             Instantiate(shipModel.Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remoteTransform);
             Instantiate(shipModel.Find("Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remoteTransform);

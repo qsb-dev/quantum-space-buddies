@@ -143,7 +143,6 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            DebugLog.DebugWrite("init of " + NetId);
             ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             AttachedObject = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             _isInitialized = true;
@@ -157,7 +156,6 @@ namespace QSB.TransformSync
             }
             else if (_isInitialized && !IsReady)
             {
-                DebugLog.DebugWrite("deinitialise " + PlayerId);
                 _isInitialized = false;
             }
 

@@ -2,6 +2,7 @@
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
+using UnityEngine.Networking;
 
 namespace QSB.Events
 {
@@ -33,8 +34,7 @@ namespace QSB.Events
             foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
-                DebugLog.DebugWrite($"* Sending sector for netid {item.netId.Value}...");
-                GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector);
+                GlobalMessenger<NetworkInstanceId, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId, item.ReferenceSector);
             }
         }
     }
