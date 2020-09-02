@@ -8,7 +8,6 @@ namespace QSB.WorldSync
     public static class WorldRegistry
     {
         private static readonly List<WorldObject> _worldObjects = new List<WorldObject>();
-        public static uint OrbStartNetId { get; set; }
         public static List<NomaiOrbTransformSync> OrbList = new List<NomaiOrbTransformSync>();
         public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
         public static Dictionary<NomaiInterfaceOrb, NetworkInstanceId> OrbUserList = new Dictionary<NomaiInterfaceOrb, NetworkInstanceId>();

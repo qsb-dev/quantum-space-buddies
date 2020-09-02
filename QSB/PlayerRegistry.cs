@@ -91,7 +91,7 @@ namespace QSB
             var lowerBound = lowerPlayerIds.ToList().Find(x => x.Value == lowerPlayerIds.Select(n => n.Value).Max());
             if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType()))
             {
-                DebugLog.ToConsole("Error - Mismatch between player count and syncobject count. Assuming new player has joined...");
+                DebugLog.ToConsole($"Error - Mismatch between player count ({PlayerList.Count}) and syncobject count ({PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType())}). Assuming new player has joined...");
                 if (behaviour.GetType() == typeof(PlayerTransformSync))
                 {
                     return GetPlayer(behaviour.netId).PlayerId;

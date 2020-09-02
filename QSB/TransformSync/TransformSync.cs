@@ -103,12 +103,15 @@ namespace QSB.TransformSync
 
         public void SetReferenceSector(QSBSector sector)
         {
-            //DebugLog.DebugWrite($"Setting reference sector of {PlayerId.Value}.{GetType().Name} to {sector.Name}");
+            DebugLog.DebugWrite($"Setting reference sector of {Player.PlayerId.Value}.{GetType().Name} to {sector.Name}");
             _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
-            SyncedTransform.SetParent(sector.Transform, true);
-            transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
-            transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+            if (!hasAuthority)
+            {
+                SyncedTransform.SetParent(sector.Transform, true);
+                transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+            }
         }
 
         private void Show()
