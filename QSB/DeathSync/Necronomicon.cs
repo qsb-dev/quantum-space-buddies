@@ -15,7 +15,7 @@ namespace QSB.DeathSync
             } },
             { DeathType.Impact, new[]
             {
-                "{0} forgot what retro thrusters were",
+                "{0} forgot to use retro-rockets",
                 "{0} bonked into the ground too hard",
                 "{0} went splat"
             } },
@@ -25,23 +25,25 @@ namespace QSB.DeathSync
                 "{0} forgot how to breathe",
                 "{0} forgot to check their oxygen meter",
                 "{0} lacked oxygen",
-                "{0} attempted to photosynthesise"
+                "{0} didn't need air anyway"
             } },
             { DeathType.Energy, new[]
             {
                 "{0} was cooked",
                 "{0} failed the Hotshot achievement",
-                "{0} forgot to install AC unit"
+                "{0} forgot to install an AC unit",
+                "{0} got too hot"
             } },
             { DeathType.Supernova, new[]
             {
                 "{0} ran out of time",
-                "{0} vaporized",
+                "{0} got vaporized",
                 "{0} lost track of time",
                 "{0} got front row seats to the supernova",
                 "{0} heard the End of Times music",
                 "{0} watched the sun go kaboom",
-                "{0} became cosmic marshmallow"
+                "{0} became cosmic marshmallow",
+                "{0} photosynthesized too much"
             } },
             { DeathType.Digestion, new[]
             {

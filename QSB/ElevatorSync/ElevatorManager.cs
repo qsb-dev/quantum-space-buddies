@@ -23,7 +23,7 @@ namespace QSB.ElevatorSync
             _elevators = Resources.FindObjectsOfTypeAll<Elevator>().ToList();
             for (var id = 0; id < _elevators.Count; id++)
             {
-                var qsbElevator = new QSBElevator();
+                var qsbElevator = WorldRegistry.GetObject<QSBElevator>(id) ?? new QSBElevator();
                 qsbElevator.Init(_elevators[id], id);
                 WorldRegistry.AddObject(qsbElevator);
             }

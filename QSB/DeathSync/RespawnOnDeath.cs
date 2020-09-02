@@ -1,8 +1,8 @@
-﻿using OWML.ModHelper.Events;
+﻿using OWML.Common;
+using OWML.ModHelper.Events;
 using QSB.Events;
-using System.Linq;
-using OWML.Common;
 using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.DeathSync
