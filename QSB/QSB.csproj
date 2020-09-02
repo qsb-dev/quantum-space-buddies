@@ -169,7 +169,6 @@
     <Compile Include="Messaging\ToggleMessage.cs" />
     <Compile Include="TransformSync\QSBSector.cs" />
     <Compile Include="TransformSync\QSBSectorManager.cs" />
-    <Compile Include="TransformSync\QSBTransformSync.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
     <Compile Include="WorldSync\BoolWorldObjectMessage.cs" />
