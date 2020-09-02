@@ -74,6 +74,6 @@ namespace QSB.TransformSync
             SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(Player.PlayerId) && Player.IsReady;
+        public override bool IsReady => Locator.GetProbe() != null && Player != null && PlayerRegistry.PlayerExists(Player.PlayerId) && Player.IsReady;
     }
 }

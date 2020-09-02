@@ -103,7 +103,6 @@ namespace QSB.TransformSync
 
         public void SetReferenceSector(QSBSector sector)
         {
-            DebugLog.DebugWrite($"Setting reference sector of {Player.PlayerId.Value}.{GetType().Name} to {sector.Name}");
             _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
             if (!hasAuthority)
