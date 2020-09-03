@@ -2,6 +2,7 @@
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
@@ -39,6 +40,10 @@ namespace QSB.TransformSync
             return body.transform;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && Player != null && PlayerRegistry.PlayerExists(Player.PlayerId);
+        public override bool IsReady => Locator.GetPlayerTransform() != null 
+            && Player != null 
+            && PlayerRegistry.PlayerExists(Player.PlayerId) 
+            && netId != NetworkInstanceId.Invalid 
+            && netId.Value != 0U;
     }
 }

@@ -21,6 +21,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
+            DebugLog.DebugWrite($"Awake of {NetId} ({GetType().Name})");
             PlayerRegistry.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -33,6 +34,7 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
+            DebugLog.DebugWrite($"Init of {NetId} ({Player.PlayerId}.{GetType().Name})");
             ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
@@ -62,13 +64,13 @@ namespace QSB.TransformSync
 
             if (SyncedTransform == null)
             {
-                DebugLog.ToConsole($"SyncedTransform of {Player.PlayerId.Value}.{GetType().Name} is null!");
+                DebugLog.ToConsole($"SyncedTransform {NetId} ({Player.PlayerId}.{GetType().Name}) is null!");
                 return;
             }
 
             if (ReferenceSector == null)
             {
-                DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
+                DebugLog.ToConsole($"Error - {NetId} ({Player.PlayerId}.{GetType().Name}) doesn't have a reference sector", MessageType.Error);
             }
 
             UpdateTransform();
@@ -80,7 +82,7 @@ namespace QSB.TransformSync
             {
                 if (ReferenceSector.Sector == null)
                 {
-                    DebugLog.ToConsole($"Sector is null for referencesector for {Player.PlayerId.Value}.{GetType().Name}!", MessageType.Error);
+                    DebugLog.ToConsole($"Sector is null for referencesector for {NetId} ({Player.PlayerId}.{GetType().Name})!", MessageType.Error);
                 }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);

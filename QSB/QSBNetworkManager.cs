@@ -157,7 +157,7 @@ namespace QSB
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.PlayerId != PlayerRegistry.LocalPlayerId).ToList())
+            foreach (var player in PlayerRegistry.PlayerList)
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
                 PlayerRegistry.RemovePlayer(player.PlayerId);
@@ -227,7 +227,7 @@ namespace QSB
                 if (transformSync != null)
                 {
                     PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null)
+                    if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId)
                     {
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }

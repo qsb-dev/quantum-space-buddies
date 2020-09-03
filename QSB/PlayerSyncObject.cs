@@ -1,4 +1,5 @@
-﻿using UnityEngine.Networking;
+﻿using System;
+using UnityEngine.Networking;
 
 namespace QSB
 {
@@ -6,7 +7,8 @@ namespace QSB
     {
         public NetworkInstanceId NetId => GetComponent<NetworkIdentity>()?.netId ?? NetworkInstanceId.Invalid;
         public bool IsLocal => hasAuthority;
-        private NetworkInstanceId PlayerId => this.GetPlayerOfObject();
+        [Obsolete("Use Player.PlayerId instead")]
+        public NetworkInstanceId PlayerId => this.GetPlayerOfObject();
         public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
     }
 }

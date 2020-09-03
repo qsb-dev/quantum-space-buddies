@@ -20,8 +20,9 @@ namespace QSB
 
         public static PlayerInfo GetPlayer(NetworkInstanceId id)
         {
-            if (id == NetworkInstanceId.Invalid)
+            if (id == NetworkInstanceId.Invalid || id.Value == 0U)
             {
+                DebugLog.ToConsole("Warning - tried to create player with id 0", MessageType.Warning);
                 return default;
             }
             var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
@@ -29,15 +30,17 @@ namespace QSB
             {
                 return player;
             }
-            DebugLog.DebugWrite($"Creating player with id {id}", MessageType.Info);
+            DebugLog.DebugWrite($"Creating player id {id}", MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
+            DebugLog.DebugWrite("PlayerList now contains :");
+            PlayerList.ForEach(x => DebugLog.DebugWrite($"* {x.PlayerId}, {x.Name}"));
             return player;
         }
 
         public static void RemovePlayer(NetworkInstanceId id)
         {
-            DebugLog.DebugWrite($"Removing player with id {id.Value}", MessageType.Info);
+            DebugLog.DebugWrite($"Removing player {GetPlayer(id).Name} id {id.Value}", MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
         }
 
@@ -52,13 +55,10 @@ namespace QSB
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
-            DebugLog.DebugWrite($"Handle full state message for player {message.AboutId}");
             var player = GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
             player.IsReady = message.PlayerReady;
-            DebugLog.DebugWrite($"* Is ready? : {player.IsReady}");
             player.State = message.PlayerState;
-            DebugLog.DebugWrite($"* Suit is on? : {FlagsHelper.IsSet(player.State, State.Suit)}");
             //DebugLog.DebugWrite($"Updating state of player {player.NetId} to : {Environment.NewLine}" +
             //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(player.State))}");
             if (LocalPlayer.IsReady)
@@ -85,12 +85,19 @@ namespace QSB
 
         public static NetworkInstanceId GetPlayerOfObject(this NetworkBehaviour behaviour)
         {
+            // Function to get a player id from any netid, for example input of 7 and players 1 and 5
+
+            // Get all players (eg 1, 5)
             var playerIds = PlayerList.Select(x => x.PlayerId).ToList();
+            // Get all players below the given netid (eg 1, 5)
             var lowerPlayerIds = playerIds.Where(x => x.Value <= behaviour.netId.Value);
+            // Get the highest of those (eg 5)
             var lowerBound = lowerPlayerIds.ToList().Find(x => x.Value == lowerPlayerIds.Select(n => n.Value).Max());
-            if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType()))
+            // When a new player joins, the objects spawn before the join event is sent. So in the event that happens, we
+            // don't want to send the wrong player. The problem with this is that the objects for the previous player will also stop working (as it will see a mismatch)
+            if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType()) && lowerBound.Value == playerIds.Select(n => n.Value).ToList().Max())
             {
-                DebugLog.ToConsole($"Error - Mismatch between player count ({PlayerList.Count}) and syncobject count ({PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType())}). Assuming new player has joined...");
+                DebugLog.ToConsole($"Warning - Player ({PlayerList.Count}) and syncobject ({PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType())}) count differ.", MessageType.Warning);
                 if (behaviour.GetType() == typeof(PlayerTransformSync))
                 {
                     return GetPlayer(behaviour.netId).PlayerId;
