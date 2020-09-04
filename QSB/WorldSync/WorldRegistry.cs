@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using QSB.TransformSync;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QSB.WorldSync
@@ -8,7 +9,7 @@ namespace QSB.WorldSync
         private static readonly List<WorldObject> _worldObjects = new List<WorldObject>();
         public static List<NomaiOrbTransformSync> OrbList = new List<NomaiOrbTransformSync>();
         public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
-        public static Dictionary<NomaiInterfaceOrb, NetworkInstanceId> OrbUserList = new Dictionary<NomaiInterfaceOrb, NetworkInstanceId>();
+        public static Dictionary<NomaiInterfaceOrb, uint> OrbUserList = new Dictionary<NomaiInterfaceOrb, uint>();
 
         public static void AddObject(WorldObject worldObject)
         {

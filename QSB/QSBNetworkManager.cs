@@ -7,6 +7,7 @@ using QSB.OrbSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -79,7 +80,7 @@ namespace QSB
                 }
                 else
                 {
-                    WorldRegistry.OrbUserList.Add(orb, NetworkInstanceId.Invalid);
+                    WorldRegistry.OrbUserList.Add(orb, uint.MaxValue);
                 }
             }
         }

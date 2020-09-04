@@ -19,6 +19,10 @@
         PlayerReady,
         ProbeActiveChange,
         Elevator,
-        Geyser
+        Geyser,
+        OrbSlot,
+        OrbUser,
+        OrbStatus,
+        QSBPositionMessage
     }
 }
