@@ -29,8 +29,5 @@
         public static string QSBStartLift = "QSBStartLift";
         public static string QSBGeyserState = "QSBGeyserState";
         public static string QSBAnimTrigger = "QSBAnimTrigger";
-        public static string QSBOrbSlot = "QSBOrbSlot";
-        public static string QSBOrbUser = "QSBOrbUser";
-        public static string QSBOrbStatus = "QSBOrbStatus";
     }
 }

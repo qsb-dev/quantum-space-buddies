@@ -2,7 +2,6 @@
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
-using QSB.OrbSync;
 using QSB.TimeSync;
 using QSB.Tools;
 using QSB.TransformSync;
@@ -38,10 +37,7 @@ namespace QSB.Events
                 new ElevatorEvent(),
                 new GeyserEvent(),
                 new ServerTimeEvent(),
-                new AnimTriggerEvent(),
-                new OrbSlotEvent()
-                //new OrbUserEvent()
-                //new OrbStatusEvent()
+                new AnimTriggerEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());
