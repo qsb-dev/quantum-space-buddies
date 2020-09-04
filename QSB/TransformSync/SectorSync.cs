@@ -38,12 +38,12 @@ namespace QSB.TransformSync
                 return;
             }
             transformSync.ReferenceSector = closestSector;
-            SendSector(transformSync.netId, closestSector);
+            SendSector(transformSync.netId.Value, closestSector);
         }
 
-        private void SendSector(NetworkInstanceId id, QSBSector sector)
+        private void SendSector(uint id, QSBSector sector)
         {
-            GlobalMessenger<NetworkInstanceId, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
+            GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
         }
     }
 }

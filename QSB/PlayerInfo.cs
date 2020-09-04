@@ -10,7 +10,7 @@ namespace QSB
 {
     public class PlayerInfo
     {
-        public NetworkInstanceId PlayerId { get; }
+        public uint PlayerId { get; }
         public GameObject Camera { get; set; }
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }
@@ -23,7 +23,7 @@ namespace QSB
         public bool IsReady { get; set; }
         public State State { get; set; }
 
-        public PlayerInfo(NetworkInstanceId id)
+        public PlayerInfo(uint id)
         {
             PlayerId = id;
         }

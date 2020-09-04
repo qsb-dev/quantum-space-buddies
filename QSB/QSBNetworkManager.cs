@@ -135,9 +135,9 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId;
-            var netIds = connection.clientOwnedObjects.Select(x => x).ToArray();
-            GlobalMessenger<NetworkInstanceId, NetworkInstanceId[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
+            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
+            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
             PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
             CleanupConnection(connection);
         }
@@ -156,10 +156,10 @@ namespace QSB
 
         private void CleanupConnection(NetworkConnection connection)
         {
-            NetworkInstanceId playerId;
+            uint playerId;
             try
             {
-                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId;
+                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             }
             catch (Exception ex)
             {
@@ -176,17 +176,17 @@ namespace QSB
 
             if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
             {
-                var netIds = connection.clientOwnedObjects?.Select(x => x).ToList();
+                var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
                 netIds.ForEach(CleanupNetworkBehaviour);
             }
         }
 
-        public void CleanupNetworkBehaviour(NetworkInstanceId netId)
+        public void CleanupNetworkBehaviour(uint netId)
         {
             DebugLog.DebugWrite($"Cleaning up netId {netId}");
             // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x != null && x.netId == netId);
+                .Where(x => x != null && x.netId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
                 var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();

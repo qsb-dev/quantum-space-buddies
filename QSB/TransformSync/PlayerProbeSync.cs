@@ -79,7 +79,7 @@ namespace QSB.TransformSync
             && Player != null 
             && PlayerRegistry.PlayerExists(Player.PlayerId) 
             && Player.IsReady 
-            && netId != NetworkInstanceId.Invalid
+            && netId.Value != uint.MaxValue
             && netId.Value != 0U;
     }
 }

@@ -1,40 +1,23 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
     public class PlayerLeaveMessage : PlayerMessage
     {
-        public NetworkInstanceId[] NetIds { get; set; }
+        public uint[] NetIds { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            NetIds = DeserializeFromString<NetworkInstanceId[]>(reader.ReadString());
+            NetIds = reader.ReadString().Split(',').Select(x => Convert.ToUInt32(x)).ToArray();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(SerializeToString(NetIds));
-        }
-
-        public static string SerializeToString<T>(T value)
-        {
-            using (var stream = new MemoryStream())
-            {
-                (new BinaryFormatter()).Serialize(stream, value);
-                stream.Flush();
-                return Convert.ToBase64String(stream.ToArray());
-            }
-        }
-        public static T DeserializeFromString<T>(string data)
-        {
-            byte[] bytes = Convert.FromBase64String(data);
-            using (var stream = new MemoryStream(bytes))
-                return (T)(new BinaryFormatter()).Deserialize(stream);
+            writer.Write(string.Join(",", NetIds.Select(x => x.ToString()).ToArray()));
         }
     }
 }

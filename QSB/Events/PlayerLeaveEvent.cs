@@ -12,17 +12,17 @@ namespace QSB.Events
 
         public override void SetupListener()
         {
-            GlobalMessenger<NetworkInstanceId, NetworkInstanceId[]>.AddListener(EventNames.QSBPlayerLeave, Handler);
+            GlobalMessenger<uint, uint[]>.AddListener(EventNames.QSBPlayerLeave, Handler);
         }
 
         public override void CloseListener()
         {
-            GlobalMessenger<NetworkInstanceId, NetworkInstanceId[]>.RemoveListener(EventNames.QSBPlayerLeave, Handler);
+            GlobalMessenger<uint, uint[]>.RemoveListener(EventNames.QSBPlayerLeave, Handler);
         }
 
-        private void Handler(NetworkInstanceId playerId, NetworkInstanceId[] netIds) => SendEvent(CreateMessage(playerId, netIds));
+        private void Handler(uint playerId, uint[] netIds) => SendEvent(CreateMessage(playerId, netIds));
 
-        private PlayerLeaveMessage CreateMessage(NetworkInstanceId playerId, NetworkInstanceId[] netIds) => new PlayerLeaveMessage
+        private PlayerLeaveMessage CreateMessage(uint playerId, uint[] netIds) => new PlayerLeaveMessage
         {
             AboutId = playerId,
             NetIds = netIds

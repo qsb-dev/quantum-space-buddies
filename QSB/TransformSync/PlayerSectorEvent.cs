@@ -13,17 +13,17 @@ namespace QSB.TransformSync
 
         public override void SetupListener()
         {
-            GlobalMessenger<NetworkInstanceId, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
+            GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
         }
 
         public override void CloseListener()
         {
-            GlobalMessenger<NetworkInstanceId, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
+            GlobalMessenger<uint, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
         }
 
-        private void Handler(NetworkInstanceId netId, QSBSector sector) => SendEvent(CreateMessage(netId, sector));
+        private void Handler(uint netId, QSBSector sector) => SendEvent(CreateMessage(netId, sector));
 
-        private WorldObjectMessage CreateMessage(NetworkInstanceId netId, QSBSector sector) => new WorldObjectMessage
+        private WorldObjectMessage CreateMessage(uint netId, QSBSector sector) => new WorldObjectMessage
         {
             AboutId = netId,
             ObjectId = sector.ObjectId

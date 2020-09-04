@@ -46,7 +46,7 @@ namespace QSB.Events
             foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.Player.PlayerId == LocalPlayerId))
             {
-                GlobalMessenger<NetworkInstanceId, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId, item.ReferenceSector);
+                GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector);
             }
         }
     }
