@@ -20,6 +20,11 @@ namespace QSB
 
         public static PlayerInfo GetPlayer(uint id)
         {
+            if (id == uint.MaxValue || id == 0U)
+            {
+                DebugLog.ToConsole("Warning - tried to create player with id 0", MessageType.Warning);
+                return default;
+            }
             var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
             if (player != null)
             {
@@ -67,12 +72,13 @@ namespace QSB
 
         public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
         {
-            return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
+            return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.NetId == id);
         }
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            return PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.isLocalPlayer);
+            var behaviours = Resources.FindObjectsOfTypeAll<NetworkBehaviour>();
+            return behaviours.Where(x => x.netId.Value == id).First().isLocalPlayer;
         }
 
         public static uint GetPlayerOfObject(this PlayerSyncObject syncObject)
@@ -100,7 +106,7 @@ namespace QSB
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)
         {
-            var ints = Enumerable.Range((int)player.PlayerId, PlayerSyncObjects.DistinctBy(x => x.AttachedNetId).Count(x => x.Player.PlayerId == player.PlayerId)).Select(x => (uint)x).ToList();
+            var ints = Enumerable.Range((int)player.PlayerId, PlayerSyncObjects.DistinctBy(x => x.NetId).Count(x => x.Player.PlayerId == player.PlayerId)).Select(x => (uint)x).ToList();
             return ints;
         }
 
