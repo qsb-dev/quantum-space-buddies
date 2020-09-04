@@ -5,7 +5,6 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
@@ -82,19 +81,17 @@ namespace QSB
 
         public static uint GetPlayerOfObject(this PlayerSyncObject syncObject)
         {
-            var behaviour = (NetworkBehaviour)syncObject;
             var playerIds = PlayerList.Select(x => x.PlayerId).ToList();
-            var lowerPlayerIds = playerIds.Where(x => x <= behaviour.netId.Value);
-            var lowerBound = lowerPlayerIds.ToList().Find(x => x == lowerPlayerIds.Select(n => n).Max());
-            if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType()) && lowerBound == playerIds.Select(n => n).ToList().Max())
+            var lowerBound = playerIds.Where(x => x <= syncObject.AttachedNetId).ToList().Max();
+            if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == syncObject.GetType()) && lowerBound == playerIds.Max())
             {
                 if (syncObject.PreviousPlayerId != uint.MaxValue)
                 {
                     return syncObject.PreviousPlayerId;
                 }
-                if (behaviour.GetType() == typeof(PlayerTransformSync) && behaviour.netId.Value != 0U)
+                if (syncObject.GetType() == typeof(PlayerTransformSync) && syncObject.AttachedNetId != 0U)
                 {
-                    return GetPlayer(behaviour.netId.Value).PlayerId;
+                    return GetPlayer(syncObject.AttachedNetId).PlayerId;
                 }
                 syncObject.PreviousPlayerId = uint.MaxValue;
                 return uint.MaxValue;
