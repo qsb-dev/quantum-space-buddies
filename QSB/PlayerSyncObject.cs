@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace QSB
 {

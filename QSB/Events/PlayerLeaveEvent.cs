@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using QSB.Utility;
 using System.Linq;
-using UnityEngine.Networking;
 
 namespace QSB.Events
 {

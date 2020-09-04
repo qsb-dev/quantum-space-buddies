@@ -1,7 +1,5 @@
-﻿using QSB.TransformSync;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Networking;
 
 namespace QSB.WorldSync
 {

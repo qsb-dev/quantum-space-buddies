@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {

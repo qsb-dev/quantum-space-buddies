@@ -2,7 +2,6 @@
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
-using UnityEngine.Networking;
 
 namespace QSB.Events
 {

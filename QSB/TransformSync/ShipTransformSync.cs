@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
@@ -50,9 +49,9 @@ namespace QSB.TransformSync
             return remoteTransform;
         }
 
-        public override bool IsReady => GetShipModel() != null 
-            && Player != null 
-            && PlayerRegistry.PlayerExists(Player.PlayerId) 
+        public override bool IsReady => GetShipModel() != null
+            && Player != null
+            && PlayerRegistry.PlayerExists(Player.PlayerId)
             && Player.IsReady
             && netId.Value != uint.MaxValue
             && netId.Value != 0U;

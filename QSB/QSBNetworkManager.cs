@@ -6,7 +6,6 @@ using QSB.GeyserSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
-using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -199,7 +198,7 @@ namespace QSB
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
-                
+
                 if (!networkBehaviour.hasAuthority)
                 {
                     Destroy(networkBehaviour.gameObject);

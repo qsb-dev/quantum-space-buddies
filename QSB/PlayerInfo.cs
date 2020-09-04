@@ -4,7 +4,6 @@ using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB
 {
