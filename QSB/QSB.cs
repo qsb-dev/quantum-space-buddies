@@ -3,6 +3,7 @@ using OWML.ModHelper;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.OrbSync;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -43,6 +44,7 @@ namespace QSB
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
+            gameObject.AddComponent<OrbSlotManager>();
             gameObject.AddComponent<QSBSectorManager>();
         }
 
