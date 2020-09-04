@@ -5,6 +5,7 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
@@ -71,8 +72,7 @@ namespace QSB
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
-            return id == LocalPlayerId ||
-                PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.isLocalPlayer);
+            return PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.isLocalPlayer);
         }
 
         public static uint GetPlayerOfObject(this PlayerSyncObject syncObject)
