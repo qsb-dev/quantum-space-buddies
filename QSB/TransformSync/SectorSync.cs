@@ -21,7 +21,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.IsLocal).ToList().ForEach(CheckTransformSyncSector);
+            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.hasAuthority).ToList().ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 

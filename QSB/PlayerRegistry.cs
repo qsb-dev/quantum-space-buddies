@@ -33,8 +33,6 @@ namespace QSB
             DebugLog.DebugWrite($"Creating player id {id}", MessageType.Info);
             player = new PlayerInfo(id);
             PlayerList.Add(player);
-            DebugLog.DebugWrite("PlayerList now contains :");
-            PlayerList.ForEach(x => DebugLog.DebugWrite($"* {x.PlayerId}, {x.Name}"));
             return player;
         }
 
@@ -83,8 +81,9 @@ namespace QSB
             return behaviours.Where(x => x.netId == id).First().isLocalPlayer;
         }
 
-        public static NetworkInstanceId GetPlayerOfObject(this NetworkBehaviour behaviour)
+        public static NetworkInstanceId GetPlayerOfObject(this PlayerSyncObject syncObject)
         {
+            var behaviour = (NetworkBehaviour)syncObject;
             // Function to get a player id from any netid, for example input of 7 and players 1 and 5
 
             // Get all players (eg 1, 5)
@@ -97,13 +96,18 @@ namespace QSB
             // don't want to send the wrong player. The problem with this is that the objects for the previous player will also stop working (as it will see a mismatch)
             if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType()) && lowerBound.Value == playerIds.Select(n => n.Value).ToList().Max())
             {
-                DebugLog.ToConsole($"Warning - Player ({PlayerList.Count}) and syncobject ({PlayerSyncObjects.Count(x => x.GetType() == behaviour.GetType())}) count differ.", MessageType.Warning);
-                if (behaviour.GetType() == typeof(PlayerTransformSync))
+                if (syncObject.PreviousPlayerId != NetworkInstanceId.Invalid)
+                {
+                    return syncObject.PreviousPlayerId;
+                }
+                if (behaviour.GetType() == typeof(PlayerTransformSync) && behaviour.netId.Value != 0U)
                 {
                     return GetPlayer(behaviour.netId).PlayerId;
                 }
+                syncObject.PreviousPlayerId = NetworkInstanceId.Invalid;
                 return NetworkInstanceId.Invalid;
             }
+            syncObject.PreviousPlayerId = lowerBound;
             return lowerBound;
         }
 

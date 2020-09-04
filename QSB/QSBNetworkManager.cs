@@ -160,8 +160,8 @@ namespace QSB
             foreach (var player in PlayerRegistry.PlayerList)
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
-                PlayerRegistry.RemovePlayer(player.PlayerId);
             }
+            PlayerRegistry.PlayerList.ForEach(x => PlayerRegistry.PlayerList.Remove(x));
 
             _lobby.CanEditName = true;
         }
@@ -216,7 +216,7 @@ namespace QSB
 
         public void CleanupNetworkBehaviour(NetworkInstanceId netId)
         {
-            DebugLog.DebugWrite($"Cleaning up object {netId.Value}");
+            DebugLog.DebugWrite($"Cleaning up netId {netId}");
             // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x != null && x.netId == netId);
@@ -227,12 +227,16 @@ namespace QSB
                 if (transformSync != null)
                 {
                     PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId)
+                    if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId && !networkBehaviour.hasAuthority)
                     {
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
-                Destroy(networkBehaviour.gameObject);
+                
+                if (!networkBehaviour.hasAuthority)
+                {
+                    Destroy(networkBehaviour.gameObject);
+                }
             }
         }
 
