@@ -10,7 +10,6 @@ namespace QSB.OrbSync
         {
             if (__result)
             {
-                DebugLog.DebugWrite("Sending using message for " + WorldRegistry.OldOrbList.FindIndex(x => x == __instance));
                 GlobalMessenger<int>.FireEvent(EventNames.QSBOrbUser, WorldRegistry.OldOrbList.FindIndex(x => x == __instance));
             }
         }

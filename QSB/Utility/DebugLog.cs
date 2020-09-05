@@ -36,24 +36,6 @@ namespace QSB.Utility
             }
         }
 
-        public static string GenerateTable(List<string> columnsData, List<string> rowData)
-        {
-            var longestKey = columnsData.OrderByDescending(s => s.Length).First();
-            var longestValue = rowData.OrderByDescending(s => s.Length).First();
-            var longestObject = (longestKey.Length > longestValue.Length) ? longestKey : longestValue;
-            var columns = "|";
-            var data = "|";
-            foreach (var item in columnsData)
-            {
-                columns += $" {item.PadRight(longestObject.Length)} |";
-            }
-            foreach (var item in rowData)
-            {
-                data += $" {item.PadRight(longestObject.Length)} |";
-            }
-            return columns + Environment.NewLine + data;
-        }
-
         public static void LogState(string name, bool state)
         {
             var status = state ? "OK" : "FAIL";

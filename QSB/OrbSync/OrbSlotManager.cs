@@ -3,13 +3,10 @@ using UnityEngine;
 
 namespace QSB.OrbSync
 {
-    public class OrbSlotManager : MonoBehaviour
+    class OrbSlotManager : MonoBehaviour
     {
-        public static OrbSlotManager Instance { get; private set; }
-
         private void Awake()
         {
-            Instance = this;
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
