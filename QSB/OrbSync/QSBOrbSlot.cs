@@ -3,7 +3,6 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using System.Reflection;
-using UnityEngine.Networking;
 
 namespace QSB.OrbSync
 {
@@ -15,16 +14,13 @@ namespace QSB.OrbSync
         {
             ObjectId = id;
             _interfaceSlot = slot;
-            _interfaceSlot.OnSlotActivated += (slotInstance) => HandleEvent(slotInstance, true);
-            _interfaceSlot.OnSlotDeactivated += (slotInstance) => HandleEvent(slotInstance, false);
+            _interfaceSlot.OnSlotActivated += (slotInstance) => HandleEvent(true);
+            _interfaceSlot.OnSlotDeactivated += (slotInstance) => HandleEvent(false);
         }
 
-        private void HandleEvent(NomaiInterfaceSlot instance, bool state)
+        private void HandleEvent(bool state)
         {
-            if (NetworkServer.active)
-            {
-                GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
-            }
+            GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
         }
 
         public void SetState(bool state)

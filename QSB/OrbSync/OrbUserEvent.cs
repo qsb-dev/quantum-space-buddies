@@ -34,9 +34,8 @@ namespace QSB.OrbSync
         {
             var fromPlayer = (NetworkServer.connections.First(x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value == message.FromId));
             DebugLog.DebugWrite($"[S] Setting orb {message.ObjectId} to auth id {message.FromId}");
-            var orbIdentity = WorldRegistry.OrbList
-                .First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId])
-                .GetComponent<NetworkIdentity>();
+            var orb = WorldRegistry.OrbList.First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
+            var orbIdentity = orb.GetComponent<NetworkIdentity>();
             orbIdentity.RemoveClientAuthority(orbIdentity.clientAuthorityOwner);
             orbIdentity.AssignClientAuthority(fromPlayer);
         }
