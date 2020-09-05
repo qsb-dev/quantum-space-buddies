@@ -136,7 +136,6 @@
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
-    <Compile Include="OrbSync\DebugOrbVisualiser.cs" />
     <Compile Include="OrbSync\OrbSlotManager.cs" />
     <Compile Include="OrbSync\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbPatches.cs" />
