@@ -18,10 +18,7 @@ namespace QSB.OrbSync
             _interfaceSlot.OnSlotDeactivated += (slotInstance) => HandleEvent(false);
         }
 
-        private void HandleEvent(bool state)
-        {
-            GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
-        }
+        private void HandleEvent(bool state) => GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
 
         public void SetState(bool state)
         {
