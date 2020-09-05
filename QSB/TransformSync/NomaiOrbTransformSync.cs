@@ -6,15 +6,13 @@ namespace QSB.TransformSync
 {
     public class NomaiOrbTransformSync : NetworkBehaviour
     {
-        private NomaiInterfaceOrb _attachedOrb;
+        public NomaiInterfaceOrb AttachedOrb { get; private set; }
         private int Index => WorldRegistry.OrbList.FindIndex(x => x == this);
 
-        public Transform SyncedTransform { get; private set; }
+        public Transform OrbTransform { get; private set; }
         private bool _isInitialized;
         private bool _isReady;
-        private Transform ReferenceTransform;
-        private Vector3 _positionSmoothVelocity;
-        private const float SmoothTime = 0.1f;
+        private Transform OrbParent;
 
         public override void OnStartClient()
         {
@@ -25,7 +23,7 @@ namespace QSB.TransformSync
 
         private void OnReady()
         {
-            _attachedOrb = WorldRegistry.OldOrbList[Index];
+            AttachedOrb = WorldRegistry.OldOrbList[Index];
             _isReady = true;
         }
 
@@ -42,8 +40,8 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
-            SyncedTransform = _attachedOrb.transform;
-            ReferenceTransform = _attachedOrb.GetAttachedOWRigidbody().GetOrigParent();
+            OrbTransform = AttachedOrb.transform;
+            OrbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
             _isInitialized = true;
         }
 
@@ -58,7 +56,7 @@ namespace QSB.TransformSync
                 _isInitialized = false;
             }
 
-            if (SyncedTransform == null || !_isInitialized)
+            if (OrbTransform == null || !_isInitialized)
             {
                 return;
             }
@@ -68,14 +66,14 @@ namespace QSB.TransformSync
 
         protected virtual void UpdateTransform()
         {
-            if (isServer)
+            if (hasAuthority)
             {
-                transform.position = ReferenceTransform.InverseTransformPoint(SyncedTransform.position);
-                transform.rotation = ReferenceTransform.InverseTransformRotation(SyncedTransform.rotation);
+                transform.position = OrbParent.InverseTransformPoint(OrbTransform.position);
+                transform.rotation = OrbParent.InverseTransformRotation(OrbTransform.rotation);
                 return;
             }
-            SyncedTransform.position = Vector3.SmoothDamp(SyncedTransform.position, ReferenceTransform.TransformPoint(transform.position), ref _positionSmoothVelocity, SmoothTime);
-            SyncedTransform.rotation = ReferenceTransform.rotation;
+            OrbTransform.position = OrbParent.TransformPoint(transform.position);
+            OrbTransform.rotation = OrbParent.InverseTransformRotation(OrbTransform.rotation);
         }
     }
 }

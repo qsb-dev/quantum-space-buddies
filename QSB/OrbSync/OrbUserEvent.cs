@@ -1,6 +1,10 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
+using UnityEngine.Networking;
 
 namespace QSB.OrbSync
 {
@@ -26,11 +30,23 @@ namespace QSB.OrbSync
             ObjectId = id
         };
 
-        public override void OnReceiveRemote(WorldObjectMessage message)
+        public override void OnServerReceive(WorldObjectMessage message)
         {
-            WorldRegistry.OrbUserList[WorldRegistry.OldOrbList[message.ObjectId]] = message.FromId;
+            var fromPlayer = (NetworkServer.connections.First(x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value == message.FromId));
+            DebugLog.DebugWrite($"[S] Setting orb {message.ObjectId} to auth id {message.FromId}");
+            var orbIdentity = WorldRegistry.OrbList
+                .First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId])
+                .GetComponent<NetworkIdentity>();
+            orbIdentity.RemoveClientAuthority(orbIdentity.clientAuthorityOwner);
+            orbIdentity.AssignClientAuthority(fromPlayer);
         }
 
-        public override void OnReceiveLocal(WorldObjectMessage message) => OnReceiveRemote(message);
+        public override void OnReceiveLocal(WorldObjectMessage message)
+        {
+            if (NetworkServer.active)
+            {
+                OnServerReceive(message);
+            }
+        }
     }
 }

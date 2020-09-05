@@ -71,17 +71,9 @@ namespace QSB
         private void OnSceneLoaded(OWScene scene, bool inUniverse)
         {
             WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-            foreach (var orb in WorldRegistry.OldOrbList)
+            if (NetworkServer.active)
             {
-                if (NetworkServer.active)
-                {
-                    WorldRegistry.OrbUserList.Add(orb, PlayerRegistry.LocalPlayerId);
-                    NetworkServer.Spawn(Instantiate(OrbPrefab));
-                }
-                else
-                {
-                    WorldRegistry.OrbUserList.Add(orb, uint.MaxValue);
-                }
+                WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(OrbPrefab)));
             }
         }
 
@@ -122,21 +114,15 @@ namespace QSB
             {
                 gameObject.AddComponent<Events.PlayerState>();
                 GeyserManager.Instance.EmptyUpdate();
-                OrbSlotManager.Instance.StopChecking();
                 WakeUpPatches.AddPatches();
             }
 
-            //QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.StartDragCallEvent));
-            //QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("CancelDrag", typeof(OrbSlotPatches), nameof(OrbSlotPatches.CancelDrag));
-            //QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetPosition));
-            //QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceOrb>("SetOrbPosition", typeof(OrbSlotPatches), nameof(OrbSlotPatches.SetOrbPosition));
+            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(OrbPatches.StartDragCallEvent));
 
             _lobby.CanEditName = false;
 
             OnNetworkManagerReady?.Invoke();
             IsReady = true;
-
-            //NetworkServer.RegisterHandler((short)Messaging.EventType.QSBPositionMessage + MsgType.Highest + 1, new NetworkMessageDelegate(QSBTransformSync.HandleTransform));
 
             QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
 

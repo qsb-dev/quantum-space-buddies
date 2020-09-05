@@ -21,8 +21,6 @@
         Elevator,
         Geyser,
         OrbSlot,
-        OrbUser,
-        OrbStatus,
-        QSBPositionMessage
+        OrbUser
     }
 }

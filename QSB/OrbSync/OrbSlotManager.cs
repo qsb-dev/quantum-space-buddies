@@ -23,10 +23,5 @@ namespace QSB.OrbSync
                 WorldRegistry.AddObject(qsbOrbSlot);
             }
         }
-
-        public void StopChecking()
-        {
-            QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbSlotPatches), nameof(OrbSlotPatches.CheckOrbCollisionSkip));
-        }
     }
 }
