@@ -29,7 +29,6 @@ namespace QSB.OrbSync
 
         public override void OnReceiveRemote(BoolWorldObjectMessage message)
         {
-
             var orbSlot = WorldRegistry.GetObject<QSBOrbSlot>(message.ObjectId);
             orbSlot?.SetState(message.State);
         }

@@ -1,6 +1,7 @@
 ﻿using QSB.Events;
 using QSB.WorldSync;
 using System;
+using System.Linq;
 using System.Reflection;
 using UnityEngine.Networking;
 
@@ -14,7 +15,6 @@ namespace QSB.OrbSync
         {
             ObjectId = id;
             _interfaceSlot = slot;
-
             _interfaceSlot.OnSlotActivated += (slotInstance) => HandleEvent(slotInstance, true);
             _interfaceSlot.OnSlotDeactivated += (slotInstance) => HandleEvent(slotInstance, false);
         }
@@ -32,11 +32,9 @@ namespace QSB.OrbSync
             if (state)
             {
                 RaiseEvent(_interfaceSlot, "OnSlotActivated");
+                return;
             }
-            else
-            {
-                RaiseEvent(_interfaceSlot, "OnSlotDeactivated");
-            }
+            RaiseEvent(_interfaceSlot, "OnSlotDeactivated");
         }
 
         private static void RaiseEvent(object instance, string eventName)
@@ -45,11 +43,8 @@ namespace QSB.OrbSync
             var staticFlags = BindingFlags.Instance | BindingFlags.NonPublic;
             var fieldInfo = type.GetField(eventName, staticFlags);
             var multDelegate = fieldInfo.GetValue(instance) as MulticastDelegate;
-            var delegateList = multDelegate.GetInvocationList();
-            foreach (var delegateMethod in delegateList)
-            {
-                delegateMethod.DynamicInvoke(instance);
-            }
+            var delegateList = multDelegate.GetInvocationList().ToList();
+            delegateList.ForEach(x => x.DynamicInvoke(instance));
         }
     }
 }
