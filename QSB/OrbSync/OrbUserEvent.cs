@@ -12,15 +12,9 @@ namespace QSB.OrbSync
     {
         public override EventType Type => EventType.OrbUser;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger<int>.AddListener(EventNames.QSBOrbUser, Handler);
-        }
+        public override void SetupListener() => GlobalMessenger<int>.AddListener(EventNames.QSBOrbUser, Handler);
 
-        public override void CloseListener()
-        {
-            GlobalMessenger<int>.RemoveListener(EventNames.QSBOrbUser, Handler);
-        }
+        public override void CloseListener() => GlobalMessenger<int>.RemoveListener(EventNames.QSBOrbUser, Handler);
 
         private void Handler(int id) => SendEvent(CreateMessage(id));
 
@@ -32,9 +26,11 @@ namespace QSB.OrbSync
 
         public override void OnServerReceive(WorldObjectMessage message)
         {
-            var fromPlayer = (NetworkServer.connections.First(x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value == message.FromId));
+            var fromPlayer = NetworkServer.connections
+                .First(x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value == message.FromId);
             DebugLog.DebugWrite($"[S] Setting orb {message.ObjectId} to auth id {message.FromId}");
-            var orb = WorldRegistry.OrbList.First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
+            var orb = WorldRegistry.OrbList
+                .First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
             var orbIdentity = orb.GetComponent<NetworkIdentity>();
             orbIdentity.RemoveClientAuthority(orbIdentity.clientAuthorityOwner);
             orbIdentity.AssignClientAuthority(fromPlayer);

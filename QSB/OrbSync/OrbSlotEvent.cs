@@ -8,15 +8,9 @@ namespace QSB.OrbSync
     {
         public override EventType Type => EventType.OrbSlot;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger<int, bool>.AddListener(EventNames.QSBOrbSlot, Handler);
-        }
+        public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBOrbSlot, Handler);
 
-        public override void CloseListener()
-        {
-            GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBOrbSlot, Handler);
-        }
+        public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBOrbSlot, Handler);
 
         private void Handler(int id, bool state) => SendEvent(CreateMessage(id, state));
 
