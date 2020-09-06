@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
@@ -18,6 +19,7 @@ namespace QSB
     public class QSBNetworkManager : NetworkManager
     {
         private const int MaxConnections = 128;
+        private const int MaxBufferedPackets = 64;
 
         public static QSBNetworkManager Instance { get; private set; }
 
@@ -85,6 +87,7 @@ namespace QSB
             customConfig = true;
             connectionConfig.AddChannel(QosType.Reliable);
             connectionConfig.AddChannel(QosType.Unreliable);
+            ((NetworkManager)this).SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
         }
@@ -118,6 +121,7 @@ namespace QSB
             }
 
             QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(OrbPatches.StartDragCallEvent));
+            QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(OrbPatches.CheckOrbCollision));
 
             _lobby.CanEditName = false;
 

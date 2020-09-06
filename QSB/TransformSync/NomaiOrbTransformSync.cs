@@ -7,16 +7,17 @@ namespace QSB.TransformSync
     public class NomaiOrbTransformSync : NetworkBehaviour
     {
         public NomaiInterfaceOrb AttachedOrb { get; private set; }
-        private int Index => WorldRegistry.OrbList.FindIndex(x => x == this);
+        private int Index => WorldRegistry.OrbSyncList.FindIndex(x => x == this);
 
         public Transform OrbTransform { get; private set; }
         private bool _isInitialized;
         private bool _isReady;
         private Transform OrbParent;
+        private int _updateCount;
 
         public override void OnStartClient()
         {
-            WorldRegistry.OrbList.Add(this);
+            WorldRegistry.OrbSyncList.Add(this);
 
             QSB.Helper.Events.Unity.RunWhen(() => WorldRegistry.OldOrbList.Count != 0, OnReady);
         }
@@ -71,6 +72,15 @@ namespace QSB.TransformSync
             }
             OrbTransform.position = OrbParent.TransformPoint(transform.position);
             OrbTransform.rotation = OrbParent.InverseTransformRotation(OrbTransform.rotation);
+            if (transform.localPosition == Vector3.zero)
+            {
+                _updateCount++;
+            }
+            if (_updateCount >= 5)
+            {
+                enabled = false;
+                _updateCount = 0;
+            }
         }
     }
 }

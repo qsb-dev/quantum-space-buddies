@@ -12,6 +12,11 @@ namespace QSB.OrbSync
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
+            QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, InitSlots);
+        }
+
+        private void InitSlots()
+        {
             var orbSlots = Resources.FindObjectsOfTypeAll<NomaiInterfaceSlot>();
             for (var id = 0; id < orbSlots.Length; id++)
             {

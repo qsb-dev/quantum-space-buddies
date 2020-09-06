@@ -19,6 +19,7 @@ namespace QSB
         public static int Port { get; private set; }
         public static bool DebugMode { get; private set; }
         public static AssetBundle NetworkAssetBundle { get; private set; }
+        public static bool HasWokenUp { get; set; }
 
         private void Awake()
         {

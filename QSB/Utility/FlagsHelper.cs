@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QSB.Utility
+﻿namespace QSB.Utility
 {
     // Stolen from here : https://stackoverflow.com/questions/3261451/using-a-bitmask-in-c-sharp
 
