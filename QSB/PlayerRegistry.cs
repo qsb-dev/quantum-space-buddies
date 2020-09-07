@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Networking;
@@ -42,11 +41,7 @@ namespace QSB
 
         public static bool PlayerExists(uint id)
         {
-            if (id == uint.MaxValue)
-            {
-                return false;
-            }
-            return PlayerList.Any(x => x.PlayerId == id);
+            return id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
         }
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
@@ -102,20 +97,8 @@ namespace QSB
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)
         {
-            var ints = Enumerable.Range((int)player.PlayerId, PlayerSyncObjects.DistinctBy(x => x.AttachedNetId).Count(x => x.Player.PlayerId == player.PlayerId)).Select(x => (uint)x).ToList();
-            return ints;
-        }
-
-        private static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            var seenKeys = new HashSet<TKey>();
-            foreach (var element in source)
-            {
-                if (seenKeys.Add(keySelector(element)))
-                {
-                    yield return element;
-                }
-            }
+            var count = PlayerSyncObjects.DistinctBy(x => x.AttachedNetId).Count(x => x.Player.PlayerId == player.PlayerId);
+            return Enumerable.Range((int)player.PlayerId, count).Select(x => (uint)x).ToList();
         }
     }
 }
