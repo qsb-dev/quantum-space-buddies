@@ -30,8 +30,8 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
-            var text = $"{player.Name} joined!";
-            DebugLog.ToAll(text, MessageType.Info);
+            DebugLog.ToHud($"{player.Name} joined!");
+            DebugLog.DebugWrite($"{player.Name} joined as id {player.PlayerId}", MessageType.Info);
         }
 
         public override void OnReceiveLocal(PlayerJoinMessage message)

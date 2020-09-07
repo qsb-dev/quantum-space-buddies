@@ -9,8 +9,6 @@ namespace QSB.Animation
 {
     public class AnimationSync : PlayerSyncObject
     {
-        protected override uint PlayerIdOffset => 0;
-
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;

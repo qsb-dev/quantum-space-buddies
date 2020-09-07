@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.IsLocal).ToList().ForEach(CheckTransformSyncSector);
+            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.hasAuthority).ToList().ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 
@@ -43,7 +42,6 @@ namespace QSB.TransformSync
 
         private void SendSector(uint id, QSBSector sector)
         {
-            DebugLog.DebugWrite($"Sending sector {sector.Name} for object {id}");
             GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
         }
     }

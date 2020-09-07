@@ -9,8 +9,6 @@ namespace QSB.TransformSync
     {
         public static PlayerCameraSync LocalInstance { get; private set; }
 
-        protected override uint PlayerIdOffset => 2;
-
         public override void OnStartLocalPlayer()
         {
             LocalInstance = this;
@@ -32,7 +30,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
-            var body = new GameObject("PlayerCamera");
+            var body = new GameObject("RemotePlayerCamera");
 
             PlayerToolsManager.Init(body.transform);
 
@@ -41,6 +39,10 @@ namespace QSB.TransformSync
             return body.transform;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId);
+        public override bool IsReady => Locator.GetPlayerTransform() != null
+            && Player != null
+            && PlayerRegistry.PlayerExists(Player.PlayerId)
+            && netId.Value != uint.MaxValue
+            && netId.Value != 0U;
     }
 }
