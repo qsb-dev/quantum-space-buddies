@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.OrbSync
 {
-    class OrbSlotManager : MonoBehaviour
+    public class OrbSlotManager : MonoBehaviour
     {
         private void Awake()
         {

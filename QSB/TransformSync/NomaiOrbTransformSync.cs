@@ -7,14 +7,15 @@ namespace QSB.TransformSync
     public class NomaiOrbTransformSync : NetworkBehaviour
     {
         public NomaiInterfaceOrb AttachedOrb { get; private set; }
+        public Transform OrbTransform { get; private set; }
+
         private int Index => WorldRegistry.OrbSyncList.FindIndex(x => x == this);
 
         private const int MaxUpdatesBeforeDisable = 5;
 
-        public Transform OrbTransform { get; private set; }
         private bool _isInitialized;
         private bool _isReady;
-        private Transform OrbParent;
+        private Transform _orbParent;
         private int _updateCount;
 
         public override void OnStartClient()
@@ -30,7 +31,7 @@ namespace QSB.TransformSync
             _isReady = true;
         }
 
-        void Awake()
+        private void Awake()
         {
             DontDestroyOnLoad(this);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -41,7 +42,7 @@ namespace QSB.TransformSync
         protected void Init()
         {
             OrbTransform = AttachedOrb.transform;
-            OrbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
+            _orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
             _isInitialized = true;
         }
 
@@ -68,12 +69,12 @@ namespace QSB.TransformSync
         {
             if (hasAuthority)
             {
-                transform.position = OrbParent.InverseTransformPoint(OrbTransform.position);
-                transform.rotation = OrbParent.InverseTransformRotation(OrbTransform.rotation);
+                transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
+                transform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
                 return;
             }
-            OrbTransform.position = OrbParent.TransformPoint(transform.position);
-            OrbTransform.rotation = OrbParent.InverseTransformRotation(OrbTransform.rotation);
+            OrbTransform.position = _orbParent.TransformPoint(transform.position);
+            OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
             if (transform.localPosition == Vector3.zero)
             {
                 _updateCount++;

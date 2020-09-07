@@ -25,7 +25,7 @@
             var flagsValue = (int)(object)flags;
             var flagValue = (int)(object)flag;
 
-            flags = (T)(object)(flagsValue & (~flagValue));
+            flags = (T)(object)(flagsValue & ~flagValue);
         }
     }
 }

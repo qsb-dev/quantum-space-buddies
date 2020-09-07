@@ -6,6 +6,7 @@ namespace QSB.OrbSync
     public class QSBOrbSlot : WorldObject
     {
         public NomaiInterfaceSlot InterfaceSlot { get; private set; }
+
         private bool _initialized;
 
         public void Init(NomaiInterfaceSlot slot, int id)
