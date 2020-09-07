@@ -31,7 +31,7 @@ namespace QSB
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
         private GameObject _probePrefab;
-        public GameObject OrbPrefab;
+        private GameObject _orbPrefab;
 
         private void Awake()
         {
@@ -61,10 +61,10 @@ namespace QSB
             spawnPrefabs.Add(_probePrefab);
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
-            OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-            OrbPrefab.AddComponent<NomaiOrbTransformSync>();
-            spawnPrefabs.Add(OrbPrefab);
-            DebugLog.LogState("OrbPrefab", OrbPrefab);
+            _orbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            _orbPrefab.AddComponent<NomaiOrbTransformSync>();
+            spawnPrefabs.Add(_orbPrefab);
+            DebugLog.LogState("OrbPrefab", _orbPrefab);
 
             ConfigureNetworkManager();
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -75,7 +75,7 @@ namespace QSB
             WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
             if (NetworkServer.active)
             {
-                WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(OrbPrefab)));
+                WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(_orbPrefab)));
             }
         }
 
@@ -87,7 +87,7 @@ namespace QSB
             customConfig = true;
             connectionConfig.AddChannel(QosType.Reliable);
             connectionConfig.AddChannel(QosType.Unreliable);
-            ((NetworkManager)this).SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
+            this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
         }
@@ -120,8 +120,7 @@ namespace QSB
                 WakeUpPatches.AddPatches();
             }
 
-            QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(OrbPatches.StartDragCallEvent));
-            QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(OrbPatches.CheckOrbCollision));
+            OrbPatches.AddPatches();
 
             _lobby.CanEditName = false;
 
