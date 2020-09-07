@@ -21,6 +21,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
+            DebugLog.DebugWrite($"Awake of {AttachedNetId} ({GetType().Name})");
             PlayerRegistry.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -33,6 +34,7 @@ namespace QSB.TransformSync
 
         protected void Init()
         {
+            DebugLog.DebugWrite($"Init of {AttachedNetId} ({Player.PlayerId}.{GetType().Name})");
             ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
             if (!hasAuthority)
@@ -52,18 +54,23 @@ namespace QSB.TransformSync
             else if (_isInitialized && !IsReady)
             {
                 _isInitialized = false;
+                return;
             }
 
-            if (SyncedTransform == null || !_isInitialized)
+            if (!_isInitialized)
             {
                 return;
             }
 
-            // Get which sector should be used as a reference point
+            if (SyncedTransform == null)
+            {
+                DebugLog.ToConsole($"SyncedTransform {AttachedNetId} ({Player.PlayerId}.{GetType().Name}) is null!");
+                return;
+            }
 
             if (ReferenceSector == null)
             {
-                DebugLog.ToConsole($"Error - TransformSync with id {netId.Value} doesn't have a reference sector", MessageType.Error);
+                DebugLog.ToConsole($"Error - {AttachedNetId} ({Player.PlayerId}.{GetType().Name}) doesn't have a reference sector", MessageType.Error);
             }
 
             UpdateTransform();
@@ -71,18 +78,18 @@ namespace QSB.TransformSync
 
         protected virtual void UpdateTransform()
         {
-            if (hasAuthority) // If this script is attached to the client's own body on the client's side.
+            if (hasAuthority) // If this script is attached to the client's own body on the client's side.	
             {
                 if (ReferenceSector.Sector == null)
                 {
-                    DebugLog.ToConsole($"Sector is null for referencesector for {GetType().Name}!", MessageType.Error);
+                    DebugLog.ToConsole($"Sector is null for referencesector for {AttachedNetId} ({Player.PlayerId}.{GetType().Name})!", MessageType.Error);
                 }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
                 return;
             }
 
-            // If this script is attached to any other body, eg the representations of other players
+            // If this script is attached to any other body, eg the representations of other players	
             if (SyncedTransform.position == Vector3.zero)
             {
                 Hide();
@@ -100,9 +107,12 @@ namespace QSB.TransformSync
         {
             _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
-            SyncedTransform.SetParent(sector.Transform, true);
-            transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
-            transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+            if (!hasAuthority)
+            {
+                SyncedTransform.SetParent(sector.Transform, true);
+                transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
+                transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+            }
         }
 
         private void Show()

@@ -1,4 +1,5 @@
-﻿using QSB.Tools;
+﻿using OWML.Common;
+using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
 
@@ -7,8 +8,6 @@ namespace QSB.TransformSync
     public class PlayerProbeSync : TransformSync
     {
         public static PlayerProbeSync LocalInstance { get; private set; }
-
-        protected override uint PlayerIdOffset => 3;
 
         private Transform _disabledSocket;
 
@@ -36,7 +35,14 @@ namespace QSB.TransformSync
         {
             var probe = GetProbe();
 
+            if (probe == null)
+            {
+                DebugLog.ToConsole("Error - Probe is null!", MessageType.Error);
+                return default;
+            }
+
             var body = probe.InstantiateInactive();
+            body.name = "RemoteProbeTransform";
 
             Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 
@@ -68,6 +74,11 @@ namespace QSB.TransformSync
             SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
         }
 
-        public override bool IsReady => Locator.GetProbe() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
+        public override bool IsReady => Locator.GetProbe() != null
+            && Player != null
+            && PlayerRegistry.PlayerExists(Player.PlayerId)
+            && Player.IsReady
+            && netId.Value != uint.MaxValue
+            && netId.Value != 0U;
     }
 }

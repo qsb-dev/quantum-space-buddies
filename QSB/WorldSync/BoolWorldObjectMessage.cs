@@ -1,9 +1,8 @@
-﻿using QSB.WorldSync;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
-namespace QSB.GeyserSync
+namespace QSB.WorldSync
 {
-    public class GeyserMessage : WorldObjectMessage
+    public class BoolWorldObjectMessage : WorldObjectMessage
     {
         public bool State { get; set; }
 

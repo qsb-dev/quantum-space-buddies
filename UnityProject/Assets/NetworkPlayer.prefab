@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4562567225116386}
   - component: {fileID: 114951036537616502}
-  - component: {fileID: 114833759961836714}
+  - component: {fileID: 114287548021608114}
   m_Layer: 0
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -41,7 +41,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114833759961836714
+--- !u!114 &114287548021608114
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

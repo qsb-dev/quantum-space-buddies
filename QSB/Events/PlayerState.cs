@@ -34,7 +34,7 @@ namespace QSB.Events
             {
                 var message = new PlayerStateMessage
                 {
-                    AboutId = player.NetId,
+                    AboutId = player.PlayerId,
                     PlayerName = player.Name,
                     PlayerReady = player.IsReady,
                     PlayerState = player.State

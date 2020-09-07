@@ -25,6 +25,5 @@ namespace QSB.WorldSync
         {
             return GetObjects<T>().FirstOrDefault(x => x.ObjectId == id);
         }
-
     }
 }

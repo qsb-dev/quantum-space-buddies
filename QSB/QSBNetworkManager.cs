@@ -73,6 +73,7 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
+            DebugLog.DebugWrite("[S] Add player");
             base.OnServerAddPlayer(connection, playerControllerId);
 
             // These have to be in a constant order (for now, until we get a better netId getting system...)
@@ -107,6 +108,10 @@ namespace QSB
 
             QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+
+            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
+                () => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
+
         }
 
         public override void OnStopClient() // Called on the client when closing connection
@@ -118,11 +123,11 @@ namespace QSB
             EventList.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            foreach (var player in PlayerRegistry.PlayerList.Where(x => x.NetId != PlayerRegistry.LocalPlayerId).ToList())
+            foreach (var player in PlayerRegistry.PlayerList)
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
-                PlayerRegistry.RemovePlayer(player.NetId);
             }
+            PlayerRegistry.PlayerList.ForEach(x => PlayerRegistry.PlayerList.Remove(x));
 
             _lobby.CanEditName = true;
         }
@@ -177,7 +182,7 @@ namespace QSB
 
         public void CleanupNetworkBehaviour(uint netId)
         {
-            DebugLog.DebugWrite($"Cleaning up object {netId}");
+            DebugLog.DebugWrite($"Cleaning up netId {netId}");
             // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
             var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
                 .Where(x => x != null && x.netId.Value == netId);
@@ -188,12 +193,16 @@ namespace QSB
                 if (transformSync != null)
                 {
                     PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null)
+                    if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId && !networkBehaviour.hasAuthority)
                     {
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
-                Destroy(networkBehaviour.gameObject);
+
+                if (!networkBehaviour.hasAuthority)
+                {
+                    Destroy(networkBehaviour.gameObject);
+                }
             }
         }
 
