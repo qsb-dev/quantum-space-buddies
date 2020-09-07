@@ -9,6 +9,8 @@ namespace QSB.TransformSync
         public NomaiInterfaceOrb AttachedOrb { get; private set; }
         private int Index => WorldRegistry.OrbSyncList.FindIndex(x => x == this);
 
+        private const int MaxUpdatesBeforeDisable = 5;
+
         public Transform OrbTransform { get; private set; }
         private bool _isInitialized;
         private bool _isReady;
@@ -76,7 +78,7 @@ namespace QSB.TransformSync
             {
                 _updateCount++;
             }
-            if (_updateCount >= 5)
+            if (_updateCount >= MaxUpdatesBeforeDisable)
             {
                 enabled = false;
                 _updateCount = 0;
