@@ -14,7 +14,7 @@ namespace QSB.OrbSync
             }
         }
 
-        public static bool CheckOrbCollision(ref bool __result, NomaiInterfaceSlot __instance, NomaiInterfaceOrb orb, 
+        public static bool CheckOrbCollision(ref bool __result, NomaiInterfaceSlot __instance, NomaiInterfaceOrb orb,
             bool ____ignoreDraggedOrbs, float ____radius, float ____exitRadius, ref NomaiInterfaceOrb ____occupyingOrb)
         {
             if (____ignoreDraggedOrbs && orb.IsBeingDragged())

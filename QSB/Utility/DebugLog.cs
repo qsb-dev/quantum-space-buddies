@@ -1,4 +1,7 @@
 ﻿using OWML.Common;
+using OWML.Logging;
+using System.Diagnostics;
+using System.Linq;
 
 namespace QSB.Utility
 {
@@ -6,7 +9,20 @@ namespace QSB.Utility
     {
         public static void ToConsole(string message, MessageType type = MessageType.Message)
         {
-            QSB.Helper.Console.WriteLine(message, type);
+            var console = (ModSocketOutput)QSB.Helper.Console;
+            var method = console.GetType()
+                .GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Last(x => x.Name == "WriteLine");
+            var callingType = GetCallingType(new StackTrace());
+            if (callingType == "DebugLog")
+            {
+                callingType = GetCallingType(new StackTrace(), 2);
+            }
+            if (callingType == "DebugLog")
+            {
+                callingType = GetCallingType(new StackTrace(), 3);
+            }
+            method.Invoke(console, new object[] { type, message, callingType });
         }
 
         public static void ToHud(string message)
@@ -40,5 +56,16 @@ namespace QSB.Utility
             DebugWrite($"* {name} {status}", messageType);
         }
 
+        private static string GetCallingType(StackTrace frame, int index = 1)
+        {
+            try
+            {
+                return frame.GetFrame(index).GetMethod().DeclaringType.Name;
+            }
+            catch
+            {
+                return "";
+            }
+        }
     }
 }
