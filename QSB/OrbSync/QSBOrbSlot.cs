@@ -30,12 +30,8 @@ namespace QSB.OrbSync
             {
                 return;
             }
-            if (state)
-            {
-                WorldRegistry.RaiseEvent(InterfaceSlot, "OnSlotActivated");
-                return;
-            }
-            WorldRegistry.RaiseEvent(InterfaceSlot, "OnSlotDeactivated");
+            var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
+            WorldRegistry.RaiseEvent(InterfaceSlot, ev);
         }
     }
 }
