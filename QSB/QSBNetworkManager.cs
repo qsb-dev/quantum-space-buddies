@@ -90,6 +90,8 @@ namespace QSB
             this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
+
+            gameObject.AddComponent<Events.PlayerState>();
         }
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -101,8 +103,6 @@ namespace QSB
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
-
-            gameObject.AddComponent<Events.PlayerState>();
         }
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
@@ -115,7 +115,6 @@ namespace QSB
 
             if (NetworkClient.active && !NetworkServer.active)
             {
-                gameObject.AddComponent<Events.PlayerState>();
                 GeyserManager.Instance.EmptyUpdate();
                 WakeUpPatches.AddPatches();
             }
