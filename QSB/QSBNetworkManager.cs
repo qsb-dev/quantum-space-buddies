@@ -2,6 +2,7 @@
 using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.DeathSync;
+using QSB.ElevatorSync;
 using QSB.Events;
 using QSB.GeyserSync;
 using QSB.OrbSync;
@@ -151,6 +152,12 @@ namespace QSB
             }
             PlayerRegistry.PlayerList.ForEach(x => PlayerRegistry.PlayerList.Remove(x));
 
+            WorldRegistry.OrbSyncList.ForEach(x => Destroy(x));
+            WorldRegistry.RemoveObjects<QSBOrbSlot>();
+            WorldRegistry.RemoveObjects<QSBElevator>();
+            WorldRegistry.RemoveObjects<QSBGeyser>();
+            WorldRegistry.RemoveObjects<QSBSector>();
+
             _lobby.CanEditName = true;
         }
 
@@ -172,6 +179,13 @@ namespace QSB
             DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
+
+            WorldRegistry.OrbSyncList.ForEach(x => Destroy(x));
+            WorldRegistry.RemoveObjects<QSBOrbSlot>();
+            WorldRegistry.RemoveObjects<QSBElevator>();
+            WorldRegistry.RemoveObjects<QSBGeyser>();
+            WorldRegistry.RemoveObjects<QSBSector>();
+
             base.OnStopServer();
         }
 

@@ -32,6 +32,11 @@ namespace QSB.WorldSync
             return GetObjects<T>().FirstOrDefault(x => x.ObjectId == id);
         }
 
+        public static void RemoveObjects<T>() where T : WorldObject
+        {
+            WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
+        }
+
         public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
         {
             var qsbSlot = GetObjects<QSBOrbSlot>().First(x => x.InterfaceSlot == slot);
