@@ -23,7 +23,7 @@ namespace QSB.OrbSync
                 return false;
             }
             var orbDistance = Vector3.Distance(orb.transform.position, __instance.transform.position);
-            var triggerRadius = !orb.IsBeingDragged() ? ____radius : ____exitRadius;
+            var triggerRadius = orb.IsBeingDragged() ? ____exitRadius : ____radius;
             if (____occupyingOrb == null && orbDistance < ____radius)
             {
                 ____occupyingOrb = orb;
@@ -35,7 +35,7 @@ namespace QSB.OrbSync
                 __result = true;
                 return false;
             }
-            if (!(____occupyingOrb != null) || !(____occupyingOrb == orb))
+            if (____occupyingOrb == null || ____occupyingOrb != orb)
             {
                 __result = false;
                 return false;
