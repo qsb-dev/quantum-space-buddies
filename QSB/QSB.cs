@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
@@ -47,6 +48,7 @@ namespace QSB
             gameObject.AddComponent<GeyserManager>();
             gameObject.AddComponent<OrbSlotManager>();
             gameObject.AddComponent<QSBSectorManager>();
+            gameObject.AddComponent<ConversationManager>();
         }
 
         public override void Configure(IModConfig config)

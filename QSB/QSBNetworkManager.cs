@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
 using QSB.Animation;
+using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.Events;
@@ -32,7 +33,7 @@ namespace QSB
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
         private GameObject _probePrefab;
-        private GameObject _orbPrefab;
+        public GameObject OrbPrefab { get; private set; }
 
         private void Awake()
         {
@@ -62,22 +63,13 @@ namespace QSB
             spawnPrefabs.Add(_probePrefab);
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
-            _orbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-            _orbPrefab.AddComponent<NomaiOrbTransformSync>();
-            spawnPrefabs.Add(_orbPrefab);
-            DebugLog.LogState("OrbPrefab", _orbPrefab);
+            OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            OrbPrefab.AddComponent<NomaiOrbTransformSync>();
+            spawnPrefabs.Add(OrbPrefab);
+            DebugLog.LogState("OrbPrefab", OrbPrefab);
 
             ConfigureNetworkManager();
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-        }
-
-        private void OnSceneLoaded(OWScene scene, bool inUniverse)
-        {
-            WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-            if (NetworkServer.active)
-            {
-                WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(_orbPrefab)));
-            }
+            QSBSceneManager.OnSceneLoaded += WorldRegistry.InitOnSceneLoaded;
         }
 
         private void ConfigureNetworkManager()
@@ -121,6 +113,7 @@ namespace QSB
             }
 
             OrbPatches.AddPatches();
+            ConversationPatches.AddPatches();
 
             _lobby.CanEditName = false;
 

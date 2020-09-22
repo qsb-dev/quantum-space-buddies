@@ -1,5 +1,9 @@
-﻿using System;
+﻿using OWML.ModHelper.Events;
+using QSB.Utility;
+using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -7,18 +11,36 @@ namespace QSB.ConversationSync
 {
     public static class ConversationPatches
     {
-        public static class OrbPatches
+        public static void StartConversation(CharacterDialogueTree __instance)
         {
-            public static void ZoneExit(CharacterAnimController __instance)
-            {
+            var index = WorldRegistry.OldDialogueTrees.FindIndex(x => x == __instance);
+            DebugLog.DebugWrite("START CONVO " + index);
+        }
 
-            }
-
-            public static void AddPatches()
+        public static bool InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
+        {
+            if (optionIndex >= 0)
             {
-                QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
-                QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));
+                var selectedOption = ____currentDialogueBox.OptionFromUIIndex(optionIndex);
+                ConversationManager.Instance.SendPlayerOption(selectedOption.Text);
             }
+            return true;
+        }
+
+        public static void GetNextPage(DialogueNode __instance, string ____name, List<string> ____listPagesToDisplay, int ____currentPage)
+        {
+            DebugLog.DebugWrite("Name is : " + __instance.Name);
+            DebugLog.DebugWrite("Target Name is : " + __instance.TargetName);
+            var key = ____name + ____listPagesToDisplay[____currentPage];
+            var mainText = TextTranslation.Translate(key).Trim();
+            ConversationManager.Instance.SendCharacterDialogue(mainText);
+        }
+
+        public static void AddPatches()
+        {
+            QSB.Helper.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(GetNextPage));
+            QSB.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(InputDialogueOption));
+            QSB.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(StartConversation));
         }
     }
 }

@@ -3,5 +3,6 @@
   <PropertyGroup>
     <GameDir>D:\EpicGames\OuterWilds</GameDir>
     <OwmlDir>C:\Users\Henry\AppData\Roaming\OuterWildsModManager\OWML</OwmlDir>
+    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
 </Project>

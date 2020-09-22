@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
@@ -40,7 +41,8 @@ namespace QSB.Events
                 new ServerTimeEvent(),
                 new AnimTriggerEvent(),
                 new OrbSlotEvent(),
-                new OrbUserEvent()
+                new OrbUserEvent(),
+                new ConversationEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());
