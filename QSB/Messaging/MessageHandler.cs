@@ -29,15 +29,16 @@ namespace QSB.Messaging
 
         private void Init()
         {
+            var eventName = Enum.GetName(typeof(EventType), _eventType - 1 - MsgType.Highest).ToUpper();
             if (NetworkServer.handlers.Keys.Contains((short)_eventType))
             {
-                DebugLog.LogState($"{_eventType} HANDLER", false);
+                DebugLog.LogState($"({_eventType}) {eventName} HANDLER", false);
                 DebugLog.ToConsole($"Warning - NetworkServer already contains a handler for EventType {_eventType}", MessageType.Warning);
                 NetworkServer.handlers.Remove((short)_eventType);
             }
             NetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
             NetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
-            DebugLog.LogState($"{_eventType} HANDLER", true);
+            DebugLog.LogState($"({_eventType}) {eventName} HANDLER", true);
         }
 
         public void SendToAll(T message)

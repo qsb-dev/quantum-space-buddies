@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,5 +25,10 @@ namespace QSB.ConversationSync
             Type = type,
             Message = message
         };
+
+        public override void OnReceiveRemote(ConversationMessage message)
+        {
+            DebugLog.DebugWrite($"Got conversation event for type [{message.Type}] id [{message.ObjectId}] text [{message.Message}]");
+        }
     }
 }

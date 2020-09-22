@@ -33,7 +33,7 @@ namespace QSB.ConversationSync
             DebugLog.DebugWrite("Target Name is : " + __instance.TargetName);
             var key = ____name + ____listPagesToDisplay[____currentPage];
             var mainText = TextTranslation.Translate(key).Trim();
-            ConversationManager.Instance.SendCharacterDialogue(mainText);
+            ConversationManager.Instance.SendCharacterDialogue(0, mainText);
         }
 
         public static void AddPatches()

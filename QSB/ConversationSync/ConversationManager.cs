@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QSB.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,12 +18,12 @@ namespace QSB.ConversationSync
 
         public void SendPlayerOption(string text)
         {
-
+            GlobalMessenger<int, string, ConversationType>.FireEvent(EventNames.QSBConversation, -1, text, ConversationType.PLAYER);
         }
 
-        public void SendCharacterDialogue(string text)
+        public void SendCharacterDialogue(int id, string text)
         {
-
+            GlobalMessenger<int, string, ConversationType>.FireEvent(EventNames.QSBConversation, id, text, ConversationType.CHARACTER);
         }
     }
 }
