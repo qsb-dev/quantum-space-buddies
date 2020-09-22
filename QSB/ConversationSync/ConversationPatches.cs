@@ -1,11 +1,6 @@
-﻿using OWML.ModHelper.Events;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace QSB.ConversationSync
 {
