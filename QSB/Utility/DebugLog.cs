@@ -14,14 +14,6 @@ namespace QSB.Utility
                 .GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .Last(x => x.Name == "WriteLine");
             var callingType = GetCallingType(new StackTrace());
-            if (callingType == "DebugLog")
-            {
-                callingType = GetCallingType(new StackTrace(), 2);
-            }
-            if (callingType == "DebugLog")
-            {
-                callingType = GetCallingType(new StackTrace(), 3);
-            }
             method.Invoke(console, new object[] { type, message, callingType });
         }
 
@@ -56,16 +48,10 @@ namespace QSB.Utility
             DebugWrite($"* {name} {status}", messageType);
         }
 
-        private static string GetCallingType(StackTrace frame, int index = 1)
+        private static string GetCallingType(StackTrace frame)
         {
-            try
-            {
-                return frame.GetFrame(index).GetMethod().DeclaringType.Name;
-            }
-            catch
-            {
-                return "";
-            }
+            var stackFrame = frame.GetFrames().First(x => x.GetMethod().DeclaringType.Name != "DebugLog");
+            return stackFrame.GetMethod().DeclaringType.Name;
         }
     }
 }

@@ -7,11 +7,6 @@ namespace QSB.OrbSync
     {
         private void Awake()
         {
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-        }
-
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-        {
             QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, InitSlots);
         }
 
@@ -22,7 +17,6 @@ namespace QSB.OrbSync
             {
                 var qsbOrbSlot = WorldRegistry.GetObject<QSBOrbSlot>(id) ?? new QSBOrbSlot();
                 qsbOrbSlot.Init(orbSlots[id], id);
-                WorldRegistry.AddObject(qsbOrbSlot);
             }
         }
     }
