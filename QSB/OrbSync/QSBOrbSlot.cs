@@ -14,6 +14,7 @@ namespace QSB.OrbSync
             ObjectId = id;
             InterfaceSlot = slot;
             _initialized = true;
+            WorldRegistry.AddObject(this);
         }
 
         public void HandleEvent(bool state)
