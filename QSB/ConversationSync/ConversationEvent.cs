@@ -4,7 +4,7 @@ using QSB.Utility;
 
 namespace QSB.ConversationSync
 {
-    class ConversationEvent : QSBEvent<ConversationMessage>
+    public class ConversationEvent : QSBEvent<ConversationMessage>
     {
         public override EventType Type => EventType.Conversation;
 

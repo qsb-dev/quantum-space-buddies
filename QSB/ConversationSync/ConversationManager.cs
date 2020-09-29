@@ -7,19 +7,19 @@ namespace QSB.ConversationSync
     {
         public static ConversationManager Instance { get; private set; }
 
-        void Start()
+        private void Start()
         {
             Instance = this;
         }
 
         public void SendPlayerOption(string text)
         {
-            GlobalMessenger<int, string, ConversationType>.FireEvent(EventNames.QSBConversation, -1, text, ConversationType.PLAYER);
+            GlobalMessenger<int, string, ConversationType>.FireEvent(EventNames.QSBConversation, -1, text, ConversationType.Player);
         }
 
         public void SendCharacterDialogue(int id, string text)
         {
-            GlobalMessenger<int, string, ConversationType>.FireEvent(EventNames.QSBConversation, id, text, ConversationType.CHARACTER);
+            GlobalMessenger<int, string, ConversationType>.FireEvent(EventNames.QSBConversation, id, text, ConversationType.Character);
         }
     }
 }

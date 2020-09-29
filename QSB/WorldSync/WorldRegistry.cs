@@ -16,12 +16,12 @@ namespace QSB.WorldSync
         public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
         public static List<CharacterDialogueTree> OldDialogueTrees = new List<CharacterDialogueTree>();
 
-        public static void InitOnSceneLoaded(OWScene scene, bool inUniverse)
+        public static void InitOnSceneLoaded(GameObject orbPrefab)
         {
             OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
             if (NetworkServer.active)
             {
-                OldOrbList.ForEach(x => NetworkServer.Spawn(UnityEngine.Object.Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
+                OldOrbList.ForEach(x => NetworkServer.Spawn(UnityEngine.Object.Instantiate(orbPrefab)));
             }
 
             OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
