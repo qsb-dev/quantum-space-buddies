@@ -45,7 +45,7 @@ namespace QSB
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
-            gameObject.AddComponent<OrbSlotManager>();
+            gameObject.AddComponent<OrbManager>();
             gameObject.AddComponent<QSBSectorManager>();
         }
 

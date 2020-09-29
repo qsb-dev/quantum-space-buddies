@@ -1,5 +1,7 @@
-﻿using QSB.OrbSync;
+﻿using OWML.Common;
+using QSB.OrbSync;
 using QSB.TransformSync;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +41,13 @@ namespace QSB.WorldSync
 
         public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
         {
-            var qsbSlot = GetObjects<QSBOrbSlot>().First(x => x.InterfaceSlot == slot);
+            var slotList = GetObjects<QSBOrbSlot>();
+            if (slotList.Count() == 0)
+            {
+                DebugLog.ToConsole($"Error - No QSBOrbSlots found when handling slot state change.", MessageType.Error);
+                return;
+            }
+            var qsbSlot = slotList.First(x => x.InterfaceSlot == slot);
             var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
             if (orbSync.hasAuthority)
             {

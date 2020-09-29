@@ -24,6 +24,7 @@ namespace QSB
 
         public PlayerInfo(uint id)
         {
+            DebugLog.DebugWrite($"Creating PlayerInfo with id {id}");
             PlayerId = id;
         }
 

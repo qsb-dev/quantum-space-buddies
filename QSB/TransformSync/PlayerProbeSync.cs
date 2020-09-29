@@ -21,11 +21,17 @@ namespace QSB.TransformSync
             return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
         }
 
+        private void OnDestroy()
+        {
+            DebugLog.ToConsole("ONDESTROY PLAYERPROBESYNC " + netId.Value, MessageType.Error);
+        }
+
         protected override Transform InitLocalTransform()
         {
+            DebugLog.ToConsole("probe initlocal " + netId.Value, MessageType.Error);
             var body = GetProbe();
 
-            _disabledSocket = Player.Camera.transform;
+            SetSocket(Player.Camera.transform);
             Player.ProbeBody = body.gameObject;
 
             return body;
@@ -33,6 +39,7 @@ namespace QSB.TransformSync
 
         protected override Transform InitRemoteTransform()
         {
+            DebugLog.ToConsole("probe initremote " + netId.Value, MessageType.Error);
             var probe = GetProbe();
 
             if (probe == null)
@@ -48,16 +55,21 @@ namespace QSB.TransformSync
 
             PlayerToolsManager.CreateProbe(body, Player);
 
-            _disabledSocket = Player.ProbeLauncher.ToolGameObject.transform;
+            QSB.Helper.Events.Unity.RunWhen(() => (Player.ProbeLauncher != null), () => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
             Player.ProbeBody = body.gameObject;
 
             return body;
         }
 
+        private void SetSocket(Transform socket)
+        {
+            _disabledSocket = socket;
+        }
+
         protected override void UpdateTransform()
         {
             base.UpdateTransform();
-            if (Player.GetState(State.ProbeActive) || ReferenceSector.Sector == null)
+            if (Player.GetState(State.ProbeActive) || ReferenceSector?.Sector == null)
             {
                 return;
             }

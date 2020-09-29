@@ -74,6 +74,11 @@ namespace QSB
 
         public static uint GetPlayerOfObject(this PlayerSyncObject syncObject)
         {
+            if (PlayerList.Count == 0)
+            {
+                DebugLog.ToConsole($"Error - No players found when getting player from object. (Attached NetID : {syncObject.AttachedNetId})", MessageType.Error);
+                return uint.MaxValue;
+            }
             var playerIds = PlayerList.Select(x => x.PlayerId).ToList();
             var lowerBound = playerIds.Where(x => x <= syncObject.AttachedNetId).ToList().Max();
             if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == syncObject.GetType()) && lowerBound == playerIds.Max())
@@ -95,7 +100,20 @@ namespace QSB
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)
         {
-            var count = PlayerSyncObjects.DistinctBy(x => x.AttachedNetId).Count(x => x.Player.PlayerId == player.PlayerId);
+            if (PlayerSyncObjects.Count == 0)
+            {
+                return default;
+            }
+            int count = 0;
+            PlayerSyncObjects.RemoveAll(x => x == null);
+            PlayerSyncObjects.RemoveAll(x => x.GetComponent<NetworkIdentity>() == null);
+            foreach (var item in PlayerSyncObjects.DistinctBy(x => x.AttachedNetId))
+            {
+                if (item.PlayerId == player.PlayerId)
+                {
+                    count++;
+                }
+            }
             return Enumerable.Range((int)player.PlayerId, count).Select(x => (uint)x).ToList();
         }
     }
