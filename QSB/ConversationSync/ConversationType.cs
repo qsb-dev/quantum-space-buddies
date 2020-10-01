@@ -2,7 +2,7 @@
 {
     public enum ConversationType
     {
-        CHARACTER,
-        PLAYER
+        Character,
+        Player
     }
 }

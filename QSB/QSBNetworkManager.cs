@@ -33,7 +33,7 @@ namespace QSB
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
         private GameObject _probePrefab;
-        public GameObject OrbPrefab { get; private set; }
+        private GameObject _orbPrefab;
 
         private void Awake()
         {
@@ -63,13 +63,13 @@ namespace QSB
             spawnPrefabs.Add(_probePrefab);
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
-            OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-            OrbPrefab.AddComponent<NomaiOrbTransformSync>();
-            spawnPrefabs.Add(OrbPrefab);
-            DebugLog.LogState("OrbPrefab", OrbPrefab);
+            _orbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            _orbPrefab.AddComponent<NomaiOrbTransformSync>();
+            spawnPrefabs.Add(_orbPrefab);
+            DebugLog.LogState("OrbPrefab", _orbPrefab);
 
             ConfigureNetworkManager();
-            QSBSceneManager.OnSceneLoaded += WorldRegistry.InitOnSceneLoaded;
+            QSBSceneManager.OnSceneLoaded += (scene, b) => WorldRegistry.InitOnSceneLoaded(_orbPrefab);
         }
 
         private void ConfigureNetworkManager()

@@ -14,11 +14,13 @@ namespace QSB.ConversationSync
 
         public static bool InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
         {
-            if (optionIndex >= 0)
+            if (optionIndex < 0)
             {
-                var selectedOption = ____currentDialogueBox.OptionFromUIIndex(optionIndex);
-                ConversationManager.Instance.SendPlayerOption(selectedOption.Text);
+                return true;
             }
+
+            var selectedOption = ____currentDialogueBox.OptionFromUIIndex(optionIndex);
+            ConversationManager.Instance.SendPlayerOption(selectedOption.Text);
             return true;
         }
 
