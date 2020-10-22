@@ -7,15 +7,9 @@ namespace QSB.Animation
     {
         public override EventType Type => EventType.AnimTrigger;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger<short, float>.AddListener(EventNames.QSBAnimTrigger, Handler);
-        }
+        public override void SetupListener() => GlobalMessenger<short, float>.AddListener(EventNames.QSBAnimTrigger, Handler);
 
-        public override void CloseListener()
-        {
-            GlobalMessenger<short, float>.RemoveListener(EventNames.QSBAnimTrigger, Handler);
-        }
+        public override void CloseListener() => GlobalMessenger<short, float>.RemoveListener(EventNames.QSBAnimTrigger, Handler);
 
         private void Handler(short triggerId, float value) => SendEvent(CreateMessage(triggerId, value));
 

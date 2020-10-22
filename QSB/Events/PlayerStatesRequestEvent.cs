@@ -9,15 +9,9 @@ namespace QSB.Events
     {
         public override EventType Type => EventType.FullStateRequest;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, Handler);
-        }
+        public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, Handler);
 
-        public override void CloseListener()
-        {
-            GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, Handler);
-        }
+        public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, Handler);
 
         private void Handler() => SendEvent(CreateMessage());
 
