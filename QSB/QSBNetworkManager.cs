@@ -73,7 +73,10 @@ namespace QSB
 
         private void OnSceneLoaded(OWScene scene, bool inUniverse)
         {
-            OrbManager.Instance.BuildOrbs();
+            if (inUniverse)
+            {
+                OrbManager.Instance.BuildOrbs();
+            }
         }
 
         private void ConfigureNetworkManager()
@@ -89,6 +92,15 @@ namespace QSB
             channels.Add(QosType.Unreliable);
 
             gameObject.AddComponent<Events.PlayerState>();
+        }
+
+        public override void OnStartServer()
+        {
+            DebugLog.DebugWrite("~~ ON START SERVER ~~", MessageType.Info);
+            if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
+            {
+                QSB.Helper.Events.Unity.RunWhen(() => NetworkServer.active, OrbManager.Instance.BuildOrbs);
+            }
         }
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -148,12 +160,13 @@ namespace QSB
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
             }
-            PlayerRegistry.PlayerList.ForEach(x => PlayerRegistry.PlayerList.Remove(x));
+            PlayerRegistry.RemoveAllPlayers();
 
             WorldRegistry.RemoveObjects<QSBOrbSlot>();
             WorldRegistry.RemoveObjects<QSBElevator>();
             WorldRegistry.RemoveObjects<QSBGeyser>();
             WorldRegistry.RemoveObjects<QSBSector>();
+            DebugLog.DebugWrite("Clearing OrbSyncList...", MessageType.Info);
             WorldRegistry.OrbSyncList.Clear();
 
             _lobby.CanEditName = true;
@@ -216,11 +229,8 @@ namespace QSB
             DebugLog.ToConsole($"{playerName} disconnected.", MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
 
-            if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
-            {
-                var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
-                netIds.ForEach(CleanupNetworkBehaviour);
-            }
+            var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
+            netIds.ForEach(CleanupNetworkBehaviour);
         }
 
         public void CleanupNetworkBehaviour(uint netId)

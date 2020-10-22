@@ -37,6 +37,12 @@ namespace QSB.TransformSync
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
+        private void OnDestroy()
+        {
+            WorldRegistry.OrbSyncList.Remove(this);
+            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+        }
+
         private void OnSceneLoaded(OWScene scene, bool isInUniverse) => _isInitialized = false;
 
         protected void Init()
