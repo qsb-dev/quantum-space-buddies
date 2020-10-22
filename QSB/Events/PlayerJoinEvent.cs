@@ -8,15 +8,9 @@ namespace QSB.Events
     {
         public override EventType Type => EventType.PlayerJoin;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Handler);
-        }
+        public override void SetupListener() => GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Handler);
 
-        public override void CloseListener()
-        {
-            GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Handler);
-        }
+        public override void CloseListener() => GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Handler);
 
         private void Handler(string name) => SendEvent(CreateMessage(name));
 
@@ -30,8 +24,8 @@ namespace QSB.Events
         {
             var player = PlayerRegistry.GetPlayer(message.AboutId);
             player.Name = message.PlayerName;
-            var text = $"{player.Name} joined!";
-            DebugLog.ToAll(text, MessageType.Info);
+            DebugLog.ToHud($"{player.Name} joined!");
+            DebugLog.DebugWrite($"{player.Name} joined as id {player.PlayerId}", MessageType.Info);
         }
 
         public override void OnReceiveLocal(PlayerJoinMessage message)

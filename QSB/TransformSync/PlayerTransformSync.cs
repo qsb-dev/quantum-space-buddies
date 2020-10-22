@@ -7,8 +7,6 @@ namespace QSB.TransformSync
     {
         public static PlayerTransformSync LocalInstance { get; private set; }
 
-        protected override uint PlayerIdOffset => 0;
-
         static PlayerTransformSync()
         {
             AnimControllerPatch.Init();
@@ -45,6 +43,11 @@ namespace QSB.TransformSync
             return body;
         }
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null && PlayerRegistry.PlayerExists(PlayerId) && Player.IsReady;
+        public override bool IsReady => Locator.GetPlayerTransform() != null
+            && Player != null
+            && PlayerRegistry.PlayerExists(Player.PlayerId)
+            && Player.IsReady
+            && netId.Value != uint.MaxValue
+            && netId.Value != 0U;
     }
 }

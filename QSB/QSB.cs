@@ -3,6 +3,7 @@ using OWML.ModHelper;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.OrbSync;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -18,6 +19,7 @@ namespace QSB
         public static int Port { get; private set; }
         public static bool DebugMode { get; private set; }
         public static AssetBundle NetworkAssetBundle { get; private set; }
+        public static bool HasWokenUp { get; set; }
 
         private void Awake()
         {
@@ -43,6 +45,7 @@ namespace QSB
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
+            gameObject.AddComponent<OrbManager>();
             gameObject.AddComponent<QSBSectorManager>();
         }
 

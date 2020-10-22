@@ -9,7 +9,7 @@ namespace QSB
 {
     public class PlayerInfo
     {
-        public uint NetId { get; }
+        public uint PlayerId { get; }
         public GameObject Camera { get; set; }
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }
@@ -24,7 +24,8 @@ namespace QSB
 
         public PlayerInfo(uint id)
         {
-            NetId = id;
+            DebugLog.DebugWrite($"Creating PlayerInfo with id {id}");
+            PlayerId = id;
         }
 
         public void UpdateState(State state, bool value)
@@ -39,8 +40,6 @@ namespace QSB
                 FlagsHelper.Unset(ref states, state);
             }
             State = states;
-            //DebugLog.DebugWrite($"State of player {NetId} is now : {Environment.NewLine}" +
-            //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(State))}");
         }
 
         public void UpdateStateObjects()
@@ -53,7 +52,8 @@ namespace QSB
             Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-            PlayerRegistry.GetSyncObject<AnimationSync>(NetId)?.SetSuitState(FlagsHelper.IsSet(State, State.Suit));
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerRegistry.GetSyncObject<AnimationSync>(PlayerId) != null,
+                () => PlayerRegistry.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
         }
 
         public bool GetState(State state)

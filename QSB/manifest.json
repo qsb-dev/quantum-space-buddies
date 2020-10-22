@@ -1,9 +1,9 @@
 {
   "filename": "QSB.dll",
-  "author": "Rai, Alek & Nebula",
+  "author": "Nebula, Alek & Rai",
   "name": "Quantum Space Buddies",
   "description": "Adds online multiplayer to the game.",
   "uniqueName": "Raicuparta.QuantumSpaceBuddies",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "owmlVersion": "0.7.3"
 }

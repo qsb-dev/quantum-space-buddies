@@ -1,6 +1,7 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.DeathSync;
 using QSB.Events;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -48,6 +49,15 @@ namespace QSB.TimeSync
             }
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
+            GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+        }
+
+        private void OnWakeUp()
+        {
+            if (NetworkServer.active)
+            {
+                QSB.HasWokenUp = true;
+            }
         }
 
         private void OnDestroy()
@@ -58,6 +68,7 @@ namespace QSB.TimeSync
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
+            QSB.HasWokenUp = false;
             if (isInUniverse)
             {
                 Init();
@@ -75,6 +86,7 @@ namespace QSB.TimeSync
 
         private void Init()
         {
+            DebugLog.DebugWrite("WakeUpSync init - Request state!");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
@@ -163,8 +175,10 @@ namespace QSB.TimeSync
                 EnableInput();
             }
             _isFirstFastForward = false;
+            QSB.HasWokenUp = true;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
+            DebugLog.DebugWrite("ResetTimeScale - Request state!");
             FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             RespawnOnDeath.Instance.Init();

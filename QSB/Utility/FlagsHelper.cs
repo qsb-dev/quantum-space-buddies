@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QSB.Utility
+﻿namespace QSB.Utility
 {
     // Stolen from here : https://stackoverflow.com/questions/3261451/using-a-bitmask-in-c-sharp
 
@@ -28,15 +25,7 @@ namespace QSB.Utility
             var flagsValue = (int)(object)flags;
             var flagValue = (int)(object)flag;
 
-            flags = (T)(object)(flagsValue & (~flagValue));
-        }
-
-        public static List<string> FlagsToListSet<T>(T flags) where T : struct
-        {
-            var temp = new List<string>();
-            var array = (T[])Enum.GetValues(flags.GetType());
-            Array.ForEach(array, x => temp.Add(Convert.ToString(IsSet(flags, x) ? 1 : 0)));
-            return temp;
+            flags = (T)(object)(flagsValue & ~flagValue);
         }
     }
 }

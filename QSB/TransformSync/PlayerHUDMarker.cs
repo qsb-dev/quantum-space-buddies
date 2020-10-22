@@ -38,7 +38,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            _markerLabel = _player.Name;
+            _markerLabel = _player.Name.ToUpper();
             _isReady = false;
 
             base.InitCanvasMarker();
