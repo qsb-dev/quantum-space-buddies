@@ -10,15 +10,9 @@ namespace QSB.Events
     {
         public override EventType Type => EventType.PlayerReady;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
-        }
+        public override void SetupListener() => GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
 
-        public override void CloseListener()
-        {
-            GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
-        }
+        public override void CloseListener() => GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
 
         private void Handler(bool ready) => SendEvent(CreateMessage(ready));
 

@@ -18,11 +18,12 @@ namespace QSB.TransformSync
         private void Awake()
         {
             Instance = this;
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+            QSBSceneManager.OnSceneLoaded += (OWScene scene, bool universe) => RebuildSectors();
         }
 
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+        public void RebuildSectors()
         {
+            WorldRegistry.RemoveObjects<QSBSector>();
             var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
             for (var id = 0; id < sectors.Count; id++)
             {

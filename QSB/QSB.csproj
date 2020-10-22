@@ -136,6 +136,11 @@
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
+    <Compile Include="OrbSync\OrbManager.cs" />
+    <Compile Include="OrbSync\OrbSlotEvent.cs" />
+    <Compile Include="OrbSync\OrbPatches.cs" />
+    <Compile Include="OrbSync\OrbUserEvent.cs" />
+    <Compile Include="OrbSync\QSBOrbSlot.cs" />
     <Compile Include="PlayerSyncObject.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="QSBSceneManager.cs" />
@@ -145,6 +150,7 @@
     <Compile Include="Events\PlayerLeaveEvent.cs" />
     <Compile Include="Tools\PlayerProbeEvent.cs" />
     <Compile Include="Events\PlayerReadyEvent.cs" />
+    <Compile Include="TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="TransformSync\PlayerSectorEvent.cs" />
     <Compile Include="Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Animation\PlayerSuitEvent.cs" />

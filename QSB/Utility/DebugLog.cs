@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
-using System;
-using System.Collections.Generic;
+using OWML.Logging;
+using System.Diagnostics;
 using System.Linq;
 
 namespace QSB.Utility
@@ -9,7 +9,12 @@ namespace QSB.Utility
     {
         public static void ToConsole(string message, MessageType type = MessageType.Message)
         {
-            QSB.Helper.Console.WriteLine(message, type);
+            var console = (ModSocketOutput)QSB.Helper.Console;
+            var method = console.GetType()
+                .GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Last(x => x.Name == "WriteLine");
+            var callingType = GetCallingType(new StackTrace());
+            method.Invoke(console, new object[] { type, message, callingType });
         }
 
         public static void ToHud(string message)
@@ -36,30 +41,20 @@ namespace QSB.Utility
             }
         }
 
-        public static string GenerateTable(List<string> columnsData, List<string> rowData)
-        {
-            var longestKey = columnsData.OrderByDescending(s => s.Length).First();
-            var longestValue = rowData.OrderByDescending(s => s.Length).First();
-            var longestObject = (longestKey.Length > longestValue.Length) ? longestKey : longestValue;
-            var columns = "|";
-            var data = "|";
-            foreach (var item in columnsData)
-            {
-                columns += $" {item.PadRight(longestObject.Length)} |";
-            }
-            foreach (var item in rowData)
-            {
-                data += $" {item.PadRight(longestObject.Length)} |";
-            }
-            return columns + Environment.NewLine + data;
-        }
-
         public static void LogState(string name, bool state)
         {
             var status = state ? "OK" : "FAIL";
             var messageType = state ? MessageType.Success : MessageType.Error;
-            DebugWrite($"* {name} {status}", messageType);
+            if (!state) // to stop "OK" spam
+            {
+                DebugWrite($"* {name} {status}", messageType);
+            }
         }
 
+        private static string GetCallingType(StackTrace frame)
+        {
+            var stackFrame = frame.GetFrames().First(x => x.GetMethod().DeclaringType.Name != "DebugLog");
+            return stackFrame.GetMethod().DeclaringType.Name;
+        }
     }
 }

@@ -49,6 +49,15 @@ namespace QSB.TimeSync
             }
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
+            GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+        }
+
+        private void OnWakeUp()
+        {
+            if (NetworkServer.active)
+            {
+                QSB.HasWokenUp = true;
+            }
         }
 
         private void OnDestroy()
@@ -59,6 +68,7 @@ namespace QSB.TimeSync
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
+            QSB.HasWokenUp = false;
             if (isInUniverse)
             {
                 Init();
@@ -165,6 +175,7 @@ namespace QSB.TimeSync
                 EnableInput();
             }
             _isFirstFastForward = false;
+            QSB.HasWokenUp = true;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
             DebugLog.DebugWrite("ResetTimeScale - Request state!");

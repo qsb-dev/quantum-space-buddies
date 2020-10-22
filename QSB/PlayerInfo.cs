@@ -24,6 +24,7 @@ namespace QSB
 
         public PlayerInfo(uint id)
         {
+            DebugLog.DebugWrite($"Creating PlayerInfo with id {id}");
             PlayerId = id;
         }
 
@@ -39,8 +40,6 @@ namespace QSB
                 FlagsHelper.Unset(ref states, state);
             }
             State = states;
-            //DebugLog.DebugWrite($"State of player {NetId} is now : {Environment.NewLine}" +
-            //    $"{DebugLog.GenerateTable(Enum.GetNames(typeof(State)).ToList(), FlagsHelper.FlagsToListSet(State))}");
         }
 
         public void UpdateStateObjects()
