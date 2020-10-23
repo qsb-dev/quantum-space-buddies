@@ -9,6 +9,8 @@ namespace QSB.Utility
     {
         public static void ToConsole(string message, MessageType type = MessageType.Message)
         {
+            // hack to make custom method name in owml log.
+            // i wrote the owml code for this so this is fine?? shut up i dont want to change owml
             var console = (ModSocketOutput)QSB.Helper.Console;
             var method = console.GetType()
                 .GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
@@ -45,10 +47,7 @@ namespace QSB.Utility
         {
             var status = state ? "OK" : "FAIL";
             var messageType = state ? MessageType.Success : MessageType.Error;
-            if (!state) // to stop "OK" spam
-            {
-                DebugWrite($"* {name} {status}", messageType);
-            }
+            DebugWrite($"* {name} {status}", messageType);
         }
 
         private static string GetCallingType(StackTrace frame)

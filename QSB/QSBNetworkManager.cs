@@ -77,6 +77,8 @@ namespace QSB
             if (inUniverse)
             {
                 OrbManager.Instance.BuildOrbs();
+                WorldRegistry.OldDialogueTrees.Clear();
+                WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
             }
         }
 
@@ -101,6 +103,10 @@ namespace QSB
             if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
             {
                 OrbManager.Instance.QueueBuildOrbs();
+            }
+            if (WorldRegistry.OldDialogueTrees.Count == 0)
+            {
+                WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
             }
         }
 
@@ -168,8 +174,8 @@ namespace QSB
             WorldRegistry.RemoveObjects<QSBElevator>();
             WorldRegistry.RemoveObjects<QSBGeyser>();
             WorldRegistry.RemoveObjects<QSBSector>();
-            DebugLog.DebugWrite("Clearing OrbSyncList...", MessageType.Info);
             WorldRegistry.OrbSyncList.Clear();
+            WorldRegistry.OldDialogueTrees.Clear();
 
             _lobby.CanEditName = true;
         }

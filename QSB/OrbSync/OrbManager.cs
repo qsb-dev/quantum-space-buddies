@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using OWML.Common;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace QSB.OrbSync
                 qsbOrbSlot.Init(orbSlots[id], id);
             }
 
-            DebugLog.DebugWrite($"Finished orb build with {WorldRegistry.OldOrbList.Count} interface orbs and {WorldRegistry.OrbSyncList.Count} orb syncs.");
+            DebugLog.DebugWrite($"Finished orb build with {WorldRegistry.OldOrbList.Count} interface orbs and {WorldRegistry.OrbSyncList.Count} orb syncs.", MessageType.Success);
         }
 
         public void BuildOrbs()

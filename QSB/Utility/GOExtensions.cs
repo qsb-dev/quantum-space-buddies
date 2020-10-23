@@ -29,6 +29,5 @@ namespace QSB.Utility
         {
             return original.gameObject.InstantiateInactive().transform;
         }
-
     }
 }

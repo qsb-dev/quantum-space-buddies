@@ -28,6 +28,8 @@ namespace QSB.TransformSync
 
             GetComponent<AnimationSync>().InitLocal(body);
 
+            Player.Body = body.gameObject;
+
             return body;
         }
 
@@ -39,6 +41,8 @@ namespace QSB.TransformSync
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.Init(Player);
+
+            Player.Body = body.gameObject;
 
             return body;
         }

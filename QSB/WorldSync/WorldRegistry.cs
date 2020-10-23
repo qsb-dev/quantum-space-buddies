@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.WorldSync
 {
@@ -17,17 +15,6 @@ namespace QSB.WorldSync
         public static List<NomaiOrbTransformSync> OrbSyncList = new List<NomaiOrbTransformSync>();
         public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
         public static List<CharacterDialogueTree> OldDialogueTrees = new List<CharacterDialogueTree>();
-
-        public static void InitOnSceneLoaded(GameObject orbPrefab)
-        {
-            OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-            if (NetworkServer.active)
-            {
-                OldOrbList.ForEach(x => NetworkServer.Spawn(UnityEngine.Object.Instantiate(orbPrefab)));
-            }
-
-            OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
-        }
 
         public static void AddObject(WorldObject worldObject)
         {

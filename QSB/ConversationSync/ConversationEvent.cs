@@ -8,23 +8,32 @@ namespace QSB.ConversationSync
     {
         public override EventType Type => EventType.Conversation;
 
-        public override void SetupListener() => GlobalMessenger<int, string, ConversationType>.AddListener(EventNames.QSBConversation, Handler);
+        public override void SetupListener() => GlobalMessenger<uint, string, ConversationType>.AddListener(EventNames.QSBConversation, Handler);
 
-        public override void CloseListener() => GlobalMessenger<int, string, ConversationType>.RemoveListener(EventNames.QSBConversation, Handler);
+        public override void CloseListener() => GlobalMessenger<uint, string, ConversationType>.RemoveListener(EventNames.QSBConversation, Handler);
 
-        private void Handler(int id, string message, ConversationType type) => SendEvent(CreateMessage(id, message, type));
+        private void Handler(uint id, string message, ConversationType type) => SendEvent(CreateMessage(id, message, type));
 
-        private ConversationMessage CreateMessage(int id, string message, ConversationType type) => new ConversationMessage
+        private ConversationMessage CreateMessage(uint id, string message, ConversationType type) => new ConversationMessage
         {
             AboutId = LocalPlayerId,
-            ObjectId = id,
+            ObjectId = (int)id,
             Type = type,
             Message = message
         };
 
         public override void OnReceiveRemote(ConversationMessage message)
         {
-            DebugLog.DebugWrite($"Got conversation event for type [{message.Type}] id [{message.ObjectId}] text [{message.Message}]");
+            switch (message.Type)
+            {
+                case ConversationType.Character:
+                    var translated = TextTranslation.Translate(message.Message).Trim();
+                    DebugLog.DebugWrite($"CHARACTER id [{message.ObjectId}] text [{translated}]");
+                    break;
+                case ConversationType.Player:
+                    ConversationManager.Instance.DisplayPlayerConversationBox((uint)message.ObjectId, message.Message);
+                    break;
+            }
         }
     }
 }

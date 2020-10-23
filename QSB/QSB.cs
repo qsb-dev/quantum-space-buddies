@@ -49,6 +49,23 @@ namespace QSB
             gameObject.AddComponent<OrbManager>();
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
+
+            Helper.Events.Unity.RunWhen(() => PlayerData.IsLoaded(), RebuildSettingsSave);
+        }
+
+        private void RebuildSettingsSave()
+        {
+            if (PlayerData.GetFreezeTimeWhileReadingConversations()
+                || PlayerData.GetFreezeTimeWhileReadingTranslator()
+                || PlayerData.GetFreezeTimeWhileReadingShipLog())
+            {
+                DebugLog.DebugWrite("Rebuilding SettingsSave...");
+                var clonedData = PlayerData.CloneSettingsData();
+                clonedData.freezeTimeWhileReading = false;
+                clonedData.freezeTimeWhileReadingConversations = false;
+                clonedData.freezeTimeWhileReadingShipLog = false;
+                PlayerData.SetSettingsData(clonedData);
+            }
         }
 
         public override void Configure(IModConfig config)
