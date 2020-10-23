@@ -87,6 +87,15 @@ namespace QSB
             gameObject.AddComponent<Events.PlayerState>();
         }
 
+        public override void OnStartServer()
+        {
+            DebugLog.DebugWrite("~~ ON START SERVER ~~", MessageType.Info);
+            if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
+            {
+                //OrbManager.Instance.QueueBuildOrbs();
+            }
+        }
+
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
             DebugLog.DebugWrite("[S] Add player");
