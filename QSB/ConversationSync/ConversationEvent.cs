@@ -28,10 +28,15 @@ namespace QSB.ConversationSync
             {
                 case ConversationType.Character:
                     var translated = TextTranslation.Translate(message.Message).Trim();
-                    DebugLog.DebugWrite($"CHARACTER id [{message.ObjectId}] text [{translated}]");
+                    ConversationManager.Instance.DisplayCharacterConversationBox(message.ObjectId, translated);
                     break;
                 case ConversationType.Player:
                     ConversationManager.Instance.DisplayPlayerConversationBox((uint)message.ObjectId, message.Message);
+                    break;
+                case ConversationType.EndCharacter:
+                    break;
+                case ConversationType.EndPlayer:
+                    UnityEngine.Object.Destroy(PlayerRegistry.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
                     break;
             }
         }

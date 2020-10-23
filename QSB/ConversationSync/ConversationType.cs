@@ -3,6 +3,8 @@
     public enum ConversationType
     {
         Character,
-        Player
+        Player,
+        EndCharacter,
+        EndPlayer
     }
 }
