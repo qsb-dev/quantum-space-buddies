@@ -3,6 +3,7 @@ using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine.Networking;
 
@@ -20,6 +21,8 @@ namespace QSB
         {
             if (id == uint.MaxValue || id == 0U)
             {
+                var stacktrace = new StackTrace();
+                DebugLog.ToConsole($"GetPlayer() got uint.MaxValue or 0 - returning default. Ran from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}.", MessageType.Warning);
                 return default;
             }
             var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
@@ -37,6 +40,12 @@ namespace QSB
         {
             DebugLog.DebugWrite($"Removing player {GetPlayer(id).Name} id {id}", MessageType.Info);
             PlayerList.Remove(GetPlayer(id));
+        }
+
+        public static void RemoveAllPlayers()
+        {
+            DebugLog.DebugWrite($"Removing all players.", MessageType.Info);
+            PlayerList.Clear();
         }
 
         public static bool PlayerExists(uint id)
@@ -74,20 +83,43 @@ namespace QSB
 
         public static uint GetPlayerOfObject(this PlayerSyncObject syncObject)
         {
+            if (PlayerList.Count == 0)
+            {
+                DebugLog.ToConsole($"Error - No players exist to find owner of object. (Attached NetID : {syncObject.AttachedNetId})", MessageType.Error);
+                syncObject.PreviousPlayerId = uint.MaxValue;
+                return uint.MaxValue;
+            }
+            // Get all Player IDs
             var playerIds = PlayerList.Select(x => x.PlayerId).ToList();
+            // Get highest ID below the given syncobject's netid. A netid cannot belong to a netid above it, only below or equal to it.
             var lowerBound = playerIds.Where(x => x <= syncObject.AttachedNetId).ToList().Max();
+            if (playerIds.Min() > syncObject.AttachedNetId)
+            {
+                DebugLog.ToConsole($"Warning - Minimum playerid is greater than syncobject's netid. (Attached NetID : {syncObject.AttachedNetId})", MessageType.Warning);
+                syncObject.PreviousPlayerId = uint.MaxValue;
+                return uint.MaxValue;
+            }
+            // If the player list count is not the same as the count of the same type syncobject (eg. 3 players and 4 PlayerTransformSyncs) 
+            // and the highest ID below the syncobject's id is the same as the highest player id.
             if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == syncObject.GetType()) && lowerBound == playerIds.Max())
             {
+                // If the previous player id was not the error value, return it. To smooth over discrepancies between player list and object list.
                 if (syncObject.PreviousPlayerId != uint.MaxValue)
                 {
                     return syncObject.PreviousPlayerId;
                 }
+                // If the syncobject is a PlayerTransformSync, make a player.
                 if (syncObject.GetType() == typeof(PlayerTransformSync) && syncObject.AttachedNetId != 0U)
                 {
                     return GetPlayer(syncObject.AttachedNetId).PlayerId;
                 }
+                DebugLog.ToConsole($"Warning - Unequal player:syncobject count. ({PlayerList.Count}:{PlayerSyncObjects.Count(x => x.GetType() == syncObject.GetType())}) (Attached NetID : {syncObject.AttachedNetId})", MessageType.Warning);
                 syncObject.PreviousPlayerId = uint.MaxValue;
                 return uint.MaxValue;
+            }
+            if (syncObject.PreviousPlayerId == uint.MaxValue)
+            {
+                DebugLog.ToConsole($"Warning - Syncobject previously had uint.MaxValue as it's playerid. (Attached NetID : {syncObject.AttachedNetId})", MessageType.Warning);
             }
             syncObject.PreviousPlayerId = lowerBound;
             return lowerBound;
@@ -95,7 +127,25 @@ namespace QSB
 
         public static List<uint> GetPlayerNetIds(PlayerInfo player)
         {
-            var count = PlayerSyncObjects.DistinctBy(x => x.AttachedNetId).Count(x => x.Player.PlayerId == player.PlayerId);
+            if (PlayerSyncObjects.Count == 0)
+            {
+                return default;
+            }
+            int count = 0;
+            int totalCount = PlayerSyncObjects.Count;
+            PlayerSyncObjects.RemoveAll(x => x == null);
+            PlayerSyncObjects.RemoveAll(x => x.GetComponent<NetworkIdentity>() == null);
+            if (PlayerSyncObjects.Count != totalCount)
+            {
+                DebugLog.ToConsole($"Warning - Removed {totalCount - PlayerSyncObjects.Count} items from PlayerSyncObjects.", MessageType.Warning);
+            }
+            foreach (var item in PlayerSyncObjects.DistinctBy(x => x.AttachedNetId))
+            {
+                if (item.PlayerId == player.PlayerId)
+                {
+                    count++;
+                }
+            }
             return Enumerable.Range((int)player.PlayerId, count).Select(x => (uint)x).ToList();
         }
     }

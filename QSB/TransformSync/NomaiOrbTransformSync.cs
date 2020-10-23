@@ -22,7 +22,7 @@ namespace QSB.TransformSync
         {
             WorldRegistry.OrbSyncList.Add(this);
 
-            QSB.Helper.Events.Unity.RunWhen(() => WorldRegistry.OldOrbList.Count > 0, OnReady);
+            QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
         }
 
         private void OnReady()
@@ -35,6 +35,12 @@ namespace QSB.TransformSync
         {
             DontDestroyOnLoad(this);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDestroy()
+        {
+            WorldRegistry.OrbSyncList.Remove(this);
+            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse) => _isInitialized = false;

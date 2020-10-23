@@ -7,7 +7,6 @@ namespace QSB.Tools
 {
     public class PlayerToolsManager
     {
-        private static Transform _cameraBody;
         private static Transform _toolStowTransform;
         private static Transform _toolHoldTransform;
         private static Material _playerToolsMaterial;
@@ -20,16 +19,15 @@ namespace QSB.Tools
 
         public static void Init(Transform camera)
         {
-            _cameraBody = camera;
-            CreateStowTransforms();
+            CreateStowTransforms(camera);
 
             _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
             _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
 
-            CreateFlashlight();
-            CreateSignalscope();
-            CreateProbeLauncher();
-            CreateTranslator();
+            CreateFlashlight(camera);
+            CreateSignalscope(camera);
+            CreateProbeLauncher(camera);
+            CreateTranslator(camera);
         }
 
         public static void CreateProbe(Transform body, PlayerInfo player)
@@ -38,22 +36,22 @@ namespace QSB.Tools
             player.Probe = newProbe;
         }
 
-        private static void CreateStowTransforms()
+        private static void CreateStowTransforms(Transform cameraBody)
         {
             var stow = new GameObject("ToolStowTransform");
             _toolStowTransform = stow.transform;
-            stow.transform.parent = _cameraBody;
+            stow.transform.parent = cameraBody;
             stow.transform.localPosition = Vector3.zero;
             stow.transform.localRotation = Quaternion.Euler(45f, 0f, 0f);
 
             var hold = new GameObject("ToolHoldTransform");
             _toolHoldTransform = hold.transform;
-            hold.transform.parent = _cameraBody;
+            hold.transform.parent = cameraBody;
             hold.transform.localPosition = Vector3.zero;
             hold.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
         }
 
-        private static void CreateFlashlight()
+        private static GameObject CreateFlashlight(Transform cameraBody)
         {
             var flashlightRoot = Object.Instantiate(GameObject.Find("FlashlightRoot"));
             flashlightRoot.SetActive(false);
@@ -63,12 +61,14 @@ namespace QSB.Tools
             component.Init(oldComponent);
             oldComponent.enabled = false;
 
-            flashlightRoot.transform.parent = _cameraBody;
+            flashlightRoot.transform.parent = cameraBody;
             flashlightRoot.transform.localPosition = FlashlightOffset;
             flashlightRoot.SetActive(true);
+
+            return flashlightRoot;
         }
 
-        private static void CreateSignalscope()
+        private static GameObject CreateSignalscope(Transform cameraBody)
         {
             var signalscopeRoot = Object.Instantiate(GameObject.Find("Signalscope"));
             signalscopeRoot.SetActive(false);
@@ -89,13 +89,15 @@ namespace QSB.Tools
 
             GetRenderer(signalscopeRoot, "Props_HEA_Signalscope").material = _playerToolsMaterial;
 
-            signalscopeRoot.transform.parent = _cameraBody;
+            signalscopeRoot.transform.parent = cameraBody;
             signalscopeRoot.transform.localPosition = Vector3.zero;
             signalscopeRoot.transform.localScale = SignalscopeScale;
             signalscopeRoot.SetActive(true);
+
+            return signalscopeRoot;
         }
 
-        private static void CreateTranslator()
+        private static GameObject CreateTranslator(Transform cameraBody)
         {
             var original = GameObject.Find("NomaiTranslatorProp");
 
@@ -128,13 +130,15 @@ namespace QSB.Tools
             GetRenderer(translatorRoot, "Props_HEA_Translator_Button_L").material = _lightbulbMaterial;
             GetRenderer(translatorRoot, "Props_HEA_Translator_Button_R").material = _lightbulbMaterial;
 
-            translatorRoot.transform.parent = _cameraBody;
+            translatorRoot.transform.parent = cameraBody;
             translatorRoot.transform.localPosition = Vector3.zero;
             translatorRoot.transform.localScale = TranslatorScale;
             QSB.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
+
+            return translatorRoot;
         }
 
-        private static void CreateProbeLauncher()
+        private static GameObject CreateProbeLauncher(Transform cameraBody)
         {
             var launcherRoot = new GameObject("ProbeLauncher");
             var modelOrig = GameObject.Find("PlayerCamera/ProbeLauncher/Props_HEA_ProbeLauncher");
@@ -167,9 +171,11 @@ namespace QSB.Tools
             GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;
             GetRenderer(launcherRoot, "ProbeLauncherChassis").material = _playerToolsMaterial;
 
-            launcherRoot.transform.parent = _cameraBody;
+            launcherRoot.transform.parent = cameraBody;
             launcherRoot.transform.localPosition = ProbeLauncherOffset;
             launcherRoot.SetActive(true);
+
+            return launcherRoot;
         }
 
         private static MeshRenderer GetRenderer(GameObject root, string gameObjectName)

@@ -33,7 +33,7 @@ namespace QSB
         private GameObject _shipPrefab;
         private GameObject _cameraPrefab;
         private GameObject _probePrefab;
-        private GameObject _orbPrefab;
+        public GameObject OrbPrefab;
 
         private void Awake()
         {
@@ -63,13 +63,21 @@ namespace QSB
             spawnPrefabs.Add(_probePrefab);
             DebugLog.LogState("ProbePrefab", _probePrefab);
 
-            _orbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-            _orbPrefab.AddComponent<NomaiOrbTransformSync>();
-            spawnPrefabs.Add(_orbPrefab);
-            DebugLog.LogState("OrbPrefab", _orbPrefab);
+            OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            OrbPrefab.AddComponent<NomaiOrbTransformSync>();
+            spawnPrefabs.Add(OrbPrefab);
+            DebugLog.LogState("OrbPrefab", OrbPrefab);
 
             ConfigureNetworkManager();
-            QSBSceneManager.OnSceneLoaded += (scene, b) => WorldRegistry.InitOnSceneLoaded(_orbPrefab);
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(OWScene scene, bool inUniverse)
+        {
+            if (inUniverse)
+            {
+                OrbManager.Instance.BuildOrbs();
+            }
         }
 
         private void ConfigureNetworkManager()
@@ -92,7 +100,7 @@ namespace QSB
             DebugLog.DebugWrite("~~ ON START SERVER ~~", MessageType.Info);
             if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
             {
-                //OrbManager.Instance.QueueBuildOrbs();
+                OrbManager.Instance.QueueBuildOrbs();
             }
         }
 
@@ -115,6 +123,9 @@ namespace QSB
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
 
+            QSBSectorManager.Instance.RebuildSectors();
+            OrbManager.Instance.QueueBuildSlots();
+
             if (NetworkClient.active && !NetworkServer.active)
             {
                 GeyserManager.Instance.EmptyUpdate();
@@ -136,7 +147,6 @@ namespace QSB
 
             QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
                 () => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
-
         }
 
         public override void OnStopClient() // Called on the client when closing connection
@@ -152,13 +162,14 @@ namespace QSB
             {
                 PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
             }
-            PlayerRegistry.PlayerList.ForEach(x => PlayerRegistry.PlayerList.Remove(x));
+            PlayerRegistry.RemoveAllPlayers();
 
-            WorldRegistry.OrbSyncList.ForEach(x => Destroy(x));
             WorldRegistry.RemoveObjects<QSBOrbSlot>();
             WorldRegistry.RemoveObjects<QSBElevator>();
             WorldRegistry.RemoveObjects<QSBGeyser>();
             WorldRegistry.RemoveObjects<QSBSector>();
+            DebugLog.DebugWrite("Clearing OrbSyncList...", MessageType.Info);
+            WorldRegistry.OrbSyncList.Clear();
 
             _lobby.CanEditName = true;
         }
@@ -168,6 +179,16 @@ namespace QSB
             var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
             var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
+
+            foreach (var item in WorldRegistry.OrbSyncList)
+            {
+                var identity = item.GetComponent<NetworkIdentity>();
+                if (identity.clientAuthorityOwner == connection)
+                {
+                    identity.RemoveClientAuthority(connection);
+                }
+            }
+
             PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
             CleanupConnection(connection);
         }
@@ -182,7 +203,6 @@ namespace QSB
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
 
-            WorldRegistry.OrbSyncList.ForEach(x => Destroy(x));
             WorldRegistry.RemoveObjects<QSBOrbSlot>();
             WorldRegistry.RemoveObjects<QSBElevator>();
             WorldRegistry.RemoveObjects<QSBGeyser>();
@@ -211,11 +231,8 @@ namespace QSB
             DebugLog.ToConsole($"{playerName} disconnected.", MessageType.Info);
             PlayerRegistry.RemovePlayer(playerId);
 
-            if (playerId != PlayerRegistry.LocalPlayerId) // We don't want to delete the local player!
-            {
-                var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
-                netIds.ForEach(CleanupNetworkBehaviour);
-            }
+            var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
+            netIds.ForEach(CleanupNetworkBehaviour);
         }
 
         public void CleanupNetworkBehaviour(uint netId)
@@ -230,15 +247,26 @@ namespace QSB
 
                 if (transformSync != null)
                 {
+                    DebugLog.DebugWrite($"  * Removing TransformSync from syncobjects");
                     PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
                     if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId && !networkBehaviour.hasAuthority)
                     {
+                        DebugLog.DebugWrite($"  * Destroying {transformSync.SyncedTransform.gameObject.name}");
                         Destroy(transformSync.SyncedTransform.gameObject);
                     }
                 }
 
+                var animationSync = networkBehaviour.GetComponent<AnimationSync>();
+
+                if (animationSync != null)
+                {
+                    DebugLog.DebugWrite($"  * Removing AnimationSync from syncobjects");
+                    PlayerRegistry.PlayerSyncObjects.Remove(animationSync);
+                }
+
                 if (!networkBehaviour.hasAuthority)
                 {
+                    DebugLog.DebugWrite($"  * Destroying {networkBehaviour.gameObject.name}");
                     Destroy(networkBehaviour.gameObject);
                 }
             }

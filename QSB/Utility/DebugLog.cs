@@ -45,7 +45,10 @@ namespace QSB.Utility
         {
             var status = state ? "OK" : "FAIL";
             var messageType = state ? MessageType.Success : MessageType.Error;
-            DebugWrite($"* {name} {status}", messageType);
+            if (!state) // to stop "OK" spam
+            {
+                DebugWrite($"* {name} {status}", messageType);
+            }
         }
 
         private static string GetCallingType(StackTrace frame)
