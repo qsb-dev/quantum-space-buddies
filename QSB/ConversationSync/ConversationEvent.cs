@@ -1,5 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.Utility;
+using QSB.WorldSync;
 
 namespace QSB.ConversationSync
 {
@@ -23,6 +25,7 @@ namespace QSB.ConversationSync
 
         public override void OnReceiveRemote(ConversationMessage message)
         {
+            DebugLog.DebugWrite($"Conv. type {message.Type} id {message.ObjectId} text {message.Message}");
             switch (message.Type)
             {
                 case ConversationType.Character:
@@ -33,6 +36,7 @@ namespace QSB.ConversationSync
                     ConversationManager.Instance.DisplayPlayerConversationBox((uint)message.ObjectId, message.Message);
                     break;
                 case ConversationType.EndCharacter:
+                    UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[WorldRegistry.OldDialogueTrees[message.ObjectId]]);
                     break;
                 case ConversationType.EndPlayer:
                     UnityEngine.Object.Destroy(PlayerRegistry.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);

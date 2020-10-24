@@ -2,6 +2,8 @@
 using OWML.ModHelper.Events;
 using QSB.Events;
 using QSB.Utility;
+using QSB.WorldSync;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +14,7 @@ namespace QSB.ConversationSync
         public static ConversationManager Instance { get; private set; }
         public AssetBundle ConversationAssetBundle { get; private set; }
         private GameObject BoxPrefab;
+        public Dictionary<CharacterDialogueTree, GameObject> BoxMappings = new Dictionary<CharacterDialogueTree, GameObject>();
 
         private void Start()
         {
@@ -21,7 +24,7 @@ namespace QSB.ConversationSync
             DebugLog.LogState("ConversationBundle", ConversationAssetBundle);
 
             BoxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
-            var font = (Font)Resources.Load(@"fonts\english - latin\SpaceMono-Bold");
+            var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
             if (font == null)
             {
                 DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
@@ -32,21 +35,25 @@ namespace QSB.ConversationSync
 
         public void SendPlayerOption(string text)
         {
+            DebugLog.DebugWrite("sending player option - " + text);
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, text, ConversationType.Player);
         }
 
         public void SendCharacterDialogue(int id, string text)
         {
+            DebugLog.DebugWrite("sending char dialoge - " + text);
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
         }
 
         public void EndConversationPlayer()
         {
+            DebugLog.DebugWrite("Ending conversation -- player");
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.EndPlayer);
         }
 
         public void EndConversationCharacter(int id)
         {
+            DebugLog.DebugWrite("Ending conversation -- character");
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.EndCharacter);
         }
 
@@ -63,7 +70,6 @@ namespace QSB.ConversationSync
             newBox.transform.parent = PlayerRegistry.GetPlayer(playerId).Body.transform;
             newBox.transform.localPosition = new Vector3(0, 25, 0);
             newBox.transform.rotation = PlayerRegistry.GetPlayer(playerId).Body.transform.rotation;
-            //newBox.transform.LookAt(PlayerRegistry.LocalPlayer.Camera.transform, PlayerRegistry.GetPlayer(playerId).Body.transform.up);
             var lookAt = newBox.AddComponent<FaceActiveCamera>();
             lookAt.SetValue("_useLookAt", false);
             lookAt.SetValue("_localFacingVector", Vector3.back);
@@ -76,7 +82,26 @@ namespace QSB.ConversationSync
 
         public void DisplayCharacterConversationBox(int index, string text)
         {
+            var oldDialogueTree = WorldRegistry.OldDialogueTrees[index];
+            if (BoxMappings.ContainsKey(oldDialogueTree))
+            {
+                Destroy(BoxMappings[oldDialogueTree]);
+                BoxMappings.Remove(oldDialogueTree);
+            }
 
+            var newBox = Instantiate(BoxPrefab);
+            newBox.SetActive(false);
+            newBox.transform.parent = oldDialogueTree.gameObject.transform;
+            newBox.transform.localPosition = new Vector3(0, 2, 0);
+            newBox.transform.rotation = oldDialogueTree.gameObject.transform.rotation;
+            var lookAt = newBox.AddComponent<FaceActiveCamera>();
+            lookAt.SetValue("_useLookAt", false);
+            lookAt.SetValue("_localFacingVector", Vector3.back);
+            lookAt.SetValue("_localRotationAxis", Vector3.up);
+            newBox.GetComponent<Text>().text = text;
+            newBox.SetActive(true);
+
+            BoxMappings.Add(oldDialogueTree, newBox);
         }
     }
 }
