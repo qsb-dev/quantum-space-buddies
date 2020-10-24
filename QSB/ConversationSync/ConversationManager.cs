@@ -35,25 +35,21 @@ namespace QSB.ConversationSync
 
         public void SendPlayerOption(string text)
         {
-            DebugLog.DebugWrite("sending player option - " + text);
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, text, ConversationType.Player);
         }
 
         public void SendCharacterDialogue(int id, string text)
         {
-            DebugLog.DebugWrite("sending char dialoge - " + text);
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
         }
 
-        public void EndConversationPlayer()
+        public void CloseBoxPlayer()
         {
-            DebugLog.DebugWrite("Ending conversation -- player");
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.EndPlayer);
         }
 
-        public void EndConversationCharacter(int id)
+        public void CloseBoxCharacter(int id)
         {
-            DebugLog.DebugWrite("Ending conversation -- character");
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.EndCharacter);
         }
 

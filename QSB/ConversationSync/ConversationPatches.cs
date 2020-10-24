@@ -15,9 +15,9 @@ namespace QSB.ConversationSync
 
         public static void EndConversation()
         {
-            ConversationManager.Instance.EndConversationCharacter(PlayerRegistry.LocalPlayer.CurrentDialogueID);
+            ConversationManager.Instance.CloseBoxCharacter(PlayerRegistry.LocalPlayer.CurrentDialogueID);
             PlayerRegistry.LocalPlayer.CurrentDialogueID = -1;
-            ConversationManager.Instance.EndConversationPlayer();
+            ConversationManager.Instance.CloseBoxPlayer();
         }
 
         public static bool InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
@@ -25,8 +25,7 @@ namespace QSB.ConversationSync
             if (optionIndex < 0)
             {
                 // in a page where there is no selectable options
-                //PlayerRegistry.LocalPlayer.CurrentDialogueID = -1;
-                ConversationManager.Instance.EndConversationPlayer();
+                ConversationManager.Instance.CloseBoxPlayer();
                 return true;
             }
 
