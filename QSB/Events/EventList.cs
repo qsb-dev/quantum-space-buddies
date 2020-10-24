@@ -42,7 +42,8 @@ namespace QSB.Events
                 new AnimTriggerEvent(),
                 new OrbSlotEvent(),
                 new OrbUserEvent(),
-                new ConversationEvent()
+                new ConversationEvent(),
+                new ConversationStartEndEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());

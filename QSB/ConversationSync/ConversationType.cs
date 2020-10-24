@@ -4,7 +4,7 @@
     {
         Character,
         Player,
-        EndCharacter,
-        EndPlayer
+        CloseCharacter,
+        ClosePlayer
     }
 }

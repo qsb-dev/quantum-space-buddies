@@ -79,6 +79,12 @@ namespace QSB
                 OrbManager.Instance.BuildOrbs();
                 WorldRegistry.OldDialogueTrees.Clear();
                 WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+
+                foreach (var item in Resources.FindObjectsOfTypeAll<FacePlayerWhenTalking>())
+                {
+                    item.gameObject.AddComponent<QSBFacePlayerWhenTalking>();
+                    Destroy(item);
+                }
             }
         }
 
@@ -104,9 +110,14 @@ namespace QSB
             {
                 OrbManager.Instance.QueueBuildOrbs();
             }
-            if (WorldRegistry.OldDialogueTrees.Count == 0)
+            if (WorldRegistry.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
             {
                 WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+                foreach (var item in Resources.FindObjectsOfTypeAll<FacePlayerWhenTalking>())
+                {
+                    item.gameObject.AddComponent<QSBFacePlayerWhenTalking>();
+                    Destroy(item);
+                }
             }
         }
 

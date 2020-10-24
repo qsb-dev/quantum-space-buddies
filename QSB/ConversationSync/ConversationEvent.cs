@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ConversationSync
@@ -34,14 +33,14 @@ namespace QSB.ConversationSync
                 case ConversationType.Player:
                     ConversationManager.Instance.DisplayPlayerConversationBox((uint)message.ObjectId, message.Message);
                     break;
-                case ConversationType.EndCharacter:
+                case ConversationType.CloseCharacter:
                     if (message.ObjectId == -1)
                     {
                         break;
                     }
                     UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[WorldRegistry.OldDialogueTrees[message.ObjectId]]);
                     break;
-                case ConversationType.EndPlayer:
+                case ConversationType.ClosePlayer:
                     UnityEngine.Object.Destroy(PlayerRegistry.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
                     break;
             }

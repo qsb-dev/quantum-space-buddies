@@ -33,5 +33,6 @@
         public static string QSBOrbSlot = "QSBOrbSlot";
         public static string QSBOrbUser = "QSBOrbUser";
         public static string QSBConversation = "QSBConversation";
+        public static string QSBConversationStartEnd = "QSBConversationStartEnd";
     }
 }

@@ -23,6 +23,6 @@
         OrbSlot,
         OrbUser,
         Conversation,
-        ConversationStatus
+        ConversationStartEnd
     }
 }

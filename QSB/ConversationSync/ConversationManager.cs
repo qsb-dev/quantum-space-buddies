@@ -4,6 +4,7 @@ using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +34,16 @@ namespace QSB.ConversationSync
             DebugLog.LogState("BoxPrefab", BoxPrefab);
         }
 
+        public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
+        {
+            var treeIndex = WorldRegistry.OldDialogueTrees.IndexOf(tree);
+            if (!PlayerRegistry.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
+            {
+                return uint.MaxValue;
+            }
+            return PlayerRegistry.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
+        }
+
         public void SendPlayerOption(string text)
         {
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, text, ConversationType.Player);
@@ -45,12 +56,22 @@ namespace QSB.ConversationSync
 
         public void CloseBoxPlayer()
         {
-            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.EndPlayer);
+            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.ClosePlayer);
         }
 
         public void CloseBoxCharacter(int id)
         {
-            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.EndCharacter);
+            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+        }
+
+        public void SendStart(int charId)
+        {
+            GlobalMessenger<int, uint, bool>.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, true);
+        }
+
+        public void SendEnd(int charId)
+        {
+            GlobalMessenger<int, uint, bool>.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, false);
         }
 
         public void DisplayPlayerConversationBox(uint playerId, string text)
