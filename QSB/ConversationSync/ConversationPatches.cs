@@ -63,13 +63,22 @@ namespace QSB.ConversationSync
             {
                 position = PlayerRegistry.GetPlayer(playerId).Camera.transform.position;
             }
-            float b = ___headTrackingWeight * (float)Mathf.Min(1, (!___lookOnlyWhenTalking) ? ((!____playerInHeadZone) ? 0 : 1) : ((!____inConversation || !____playerInHeadZone) ? 0 : 1));
+            float b = ___headTrackingWeight * Mathf.Min(1, (!___lookOnlyWhenTalking) ? ((!____playerInHeadZone) ? 0 : 1) : ((!____inConversation || !____playerInHeadZone) ? 0 : 1));
             ____currentLookWeight = Mathf.Lerp(____currentLookWeight, b, Time.deltaTime * 2f);
             ____currentLookTarget = ___lookSpring.Update(____currentLookTarget, position, Time.deltaTime);
             ____animator.SetLookAtPosition(____currentLookTarget);
             ____animator.SetLookAtWeight(____currentLookWeight);
             return false;
+        }
 
+        public static bool OnZoneExit(CharacterDialogueTree ____dialogueTree)
+        {
+            var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
+            if (playerId == uint.MaxValue)
+            {
+                return true;
+            }
+            return false;
         }
 
         public static void AddPatches()
@@ -79,6 +88,7 @@ namespace QSB.ConversationSync
             QSB.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(StartConversation));
             QSB.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(EndConversation));
             QSB.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(OnAnimatorIK));
+            QSB.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(OnZoneExit));
         }
     }
 }

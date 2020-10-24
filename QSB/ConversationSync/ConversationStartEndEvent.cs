@@ -34,25 +34,28 @@ namespace QSB.ConversationSync
                 return;
             }
             var dialogueTree = WorldRegistry.OldDialogueTrees[message.CharacterId];
-            var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().First(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
-            if (message.State)
+            var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
+            if (animController != default(CharacterAnimController))
             {
-                PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = message.CharacterId;
-                animController.SetValue("_inConversation", true);
-                animController.SetValue("_playerInHeadZone", true);
-                if (animController.GetValue<bool>("_hasTalkAnimation"))
+                if (message.State)
                 {
-                    animController.GetValue<Animator>("_animator").SetTrigger("Talking");
+                    PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = message.CharacterId;
+                    animController.SetValue("_inConversation", true);
+                    animController.SetValue("_playerInHeadZone", true);
+                    if (animController.GetValue<bool>("_hasTalkAnimation"))
+                    {
+                        animController.GetValue<Animator>("_animator").SetTrigger("Talking");
+                    }
                 }
-            }
-            else
-            {
-                PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = -1;
-                animController.SetValue("_inConversation", false);
-                animController.SetValue("_playerInHeadZone", false);
-                if (animController.GetValue<bool>("_hasTalkAnimation"))
+                else
                 {
-                    animController.GetValue<Animator>("_animator").SetTrigger("Idle");
+                    PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = -1;
+                    animController.SetValue("_inConversation", false);
+                    animController.SetValue("_playerInHeadZone", false);
+                    if (animController.GetValue<bool>("_hasTalkAnimation"))
+                    {
+                        animController.GetValue<Animator>("_animator").SetTrigger("Idle");
+                    }
                 }
             }
             
