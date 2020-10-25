@@ -73,6 +73,7 @@ namespace QSB.ConversationSync
             Vector3 position;
             if (playerId == uint.MaxValue)
             {
+                // TODO : Find closest player and track to that camera.
                 position = Locator.GetActiveCamera().transform.position;
             }
             else
