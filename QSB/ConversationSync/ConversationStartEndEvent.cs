@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
 using QSB.Events;
-using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -62,7 +61,7 @@ namespace QSB.ConversationSync
                     dialogueTree.GetComponent<InteractVolume>().EnableInteraction();
                 }
             }
-            
+
             /*
             var qsbFacePlayer = dialogueTree.GetComponent<QSBFacePlayerWhenTalking>();
             if (qsbFacePlayer == null)
