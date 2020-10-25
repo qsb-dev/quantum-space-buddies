@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using OWML.Common;
+using QSB.Utility;
+using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,16 +11,30 @@ namespace QSB.ConversationSync
         public static void StartConversation(CharacterDialogueTree __instance)
         {
             var index = WorldRegistry.OldDialogueTrees.FindIndex(x => x == __instance);
+            if (index == -1)
+            {
+                DebugLog.ToConsole($"Warning - Index for tree {__instance.name} was -1.", MessageType.Warning);
+            }
             PlayerRegistry.LocalPlayer.CurrentDialogueID = index;
             ConversationManager.Instance.SendStart(index);
         }
 
-        public static void EndConversation()
+        public static bool EndConversation(CharacterDialogueTree __instance)
         {
+            if (!__instance.enabled)
+            {
+                return false;
+            }
+            if (PlayerRegistry.LocalPlayer.CurrentDialogueID == -1)
+            {
+                DebugLog.ToConsole($"Warning - Ending conversation with CurrentDialogueId of -1! Called from {__instance.name}", MessageType.Warning);
+                return false;
+            }
             ConversationManager.Instance.SendEnd(PlayerRegistry.LocalPlayer.CurrentDialogueID);
             ConversationManager.Instance.CloseBoxCharacter(PlayerRegistry.LocalPlayer.CurrentDialogueID);
             PlayerRegistry.LocalPlayer.CurrentDialogueID = -1;
             ConversationManager.Instance.CloseBoxPlayer();
+            return true;
         }
 
         public static bool InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
@@ -86,7 +102,7 @@ namespace QSB.ConversationSync
             QSB.Helper.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(GetNextPage));
             QSB.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(InputDialogueOption));
             QSB.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(StartConversation));
-            QSB.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(EndConversation));
+            QSB.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(EndConversation));
             QSB.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(OnAnimatorIK));
             QSB.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(OnZoneExit));
         }

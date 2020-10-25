@@ -52,6 +52,11 @@ namespace QSB.ConversationSync
 
         public void SendCharacterDialogue(int id, string text)
         {
+            if (id == -1)
+            {
+                DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
+                return;
+            }
             GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
         }
 
@@ -67,11 +72,21 @@ namespace QSB.ConversationSync
 
         public void SendStart(int charId)
         {
+            if (charId == -1)
+            {
+                DebugLog.ToConsole("Warning - Tried to send conv. start event with char id -1.", MessageType.Warning);
+                return;
+            }
             GlobalMessenger<int, uint, bool>.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, true);
         }
 
         public void SendEnd(int charId)
         {
+            if (charId == -1)
+            {
+                DebugLog.ToConsole("Warning - Tried to send conv. end event with char id -1.", MessageType.Warning);
+                return;
+            }
             GlobalMessenger<int, uint, bool>.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, false);
         }
 
@@ -100,6 +115,11 @@ namespace QSB.ConversationSync
 
         public void DisplayCharacterConversationBox(int index, string text)
         {
+            if (WorldRegistry.OldDialogueTrees.ElementAtOrDefault(index) == null)
+            {
+                DebugLog.ToConsole($"Error - Tried to display character conversation box for id {index}! (Doesn't exist!)", MessageType.Error);
+                return;
+            }
             var oldDialogueTree = WorldRegistry.OldDialogueTrees[index];
             if (BoxMappings.ContainsKey(oldDialogueTree))
             {

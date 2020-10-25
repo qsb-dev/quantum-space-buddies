@@ -31,6 +31,7 @@ namespace QSB.ConversationSync
         {
             if (message.CharacterId == -1)
             {
+                DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
                 return;
             }
             var dialogueTree = WorldRegistry.OldDialogueTrees[message.CharacterId];
@@ -46,6 +47,8 @@ namespace QSB.ConversationSync
                     {
                         animController.GetValue<Animator>("_animator").SetTrigger("Talking");
                     }
+                    dialogueTree.GetComponent<InteractVolume>().DisableInteraction();
+
                 }
                 else
                 {
@@ -56,6 +59,7 @@ namespace QSB.ConversationSync
                     {
                         animController.GetValue<Animator>("_animator").SetTrigger("Idle");
                     }
+                    dialogueTree.GetComponent<InteractVolume>().EnableInteraction();
                 }
             }
             
