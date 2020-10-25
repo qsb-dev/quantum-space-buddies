@@ -359,11 +359,11 @@ MigrationBackup/
 /AssetBundles/AssetBundles*
 
 QSB.csproj.user
-UnityProject/Assets/AnimationClip
-UnityProject/Assets/AnimationController
-UnityProject/Assets/AnimatorOverrideController
-UnityProject/Assets/Avatar
-UnityProject/Assets/Avatars
-UnityProject/Assets/Material
-UnityProject/Assets/Mesh
-UnityProject/Assets/Texture2D
+UnityProject/Assets/AnimationClip/
+UnityProject/Assets/AnimationController/
+UnityProject/Assets/AnimatorOverrideController/
+UnityProject/Assets/Avatar/
+UnityProject/Assets/Avatars/
+UnityProject/Assets/Material/
+UnityProject/Assets/Mesh/
+UnityProject/Assets/Texture2D/
