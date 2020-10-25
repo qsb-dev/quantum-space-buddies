@@ -40,14 +40,17 @@ namespace QSB.ConversationSync
             var treeIndex = WorldRegistry.OldDialogueTrees.IndexOf(tree);
             if (!PlayerRegistry.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
             {
+                // No player talking to tree
                 return uint.MaxValue;
             }
+            // .First() should be fine here as only one player should be talking to a character.
             return PlayerRegistry.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
         }
 
         public void SendPlayerOption(string text)
         {
-            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, text, ConversationType.Player);
+            GlobalMessenger<uint, string, ConversationType>
+                .FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, text, ConversationType.Player);
         }
 
         public void SendCharacterDialogue(int id, string text)
@@ -57,37 +60,31 @@ namespace QSB.ConversationSync
                 DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
                 return;
             }
-            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
+            GlobalMessenger<uint, string, ConversationType>
+                .FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
         }
 
         public void CloseBoxPlayer()
         {
-            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.ClosePlayer);
+            GlobalMessenger<uint, string, ConversationType>
+                .FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.ClosePlayer);
         }
 
         public void CloseBoxCharacter(int id)
         {
-            GlobalMessenger<uint, string, ConversationType>.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+            GlobalMessenger<uint, string, ConversationType>
+                .FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
         }
 
-        public void SendStart(int charId)
+        public void SendConvState(int charId, bool state)
         {
             if (charId == -1)
             {
-                DebugLog.ToConsole("Warning - Tried to send conv. start event with char id -1.", MessageType.Warning);
+                DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
                 return;
             }
-            GlobalMessenger<int, uint, bool>.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, true);
-        }
-
-        public void SendEnd(int charId)
-        {
-            if (charId == -1)
-            {
-                DebugLog.ToConsole("Warning - Tried to send conv. end event with char id -1.", MessageType.Warning);
-                return;
-            }
-            GlobalMessenger<int, uint, bool>.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, false);
+            GlobalMessenger<int, uint, bool>
+                .FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, state);
         }
 
         public void DisplayPlayerConversationBox(uint playerId, string text)

@@ -16,7 +16,7 @@ namespace QSB.ConversationSync
                 DebugLog.ToConsole($"Warning - Index for tree {__instance.name} was -1.", MessageType.Warning);
             }
             PlayerRegistry.LocalPlayer.CurrentDialogueID = index;
-            ConversationManager.Instance.SendStart(index);
+            ConversationManager.Instance.SendConvState(index, true);
         }
 
         public static bool EndConversation(CharacterDialogueTree __instance)
@@ -30,7 +30,7 @@ namespace QSB.ConversationSync
                 DebugLog.ToConsole($"Warning - Ending conversation with CurrentDialogueId of -1! Called from {__instance.name}", MessageType.Warning);
                 return false;
             }
-            ConversationManager.Instance.SendEnd(PlayerRegistry.LocalPlayer.CurrentDialogueID);
+            ConversationManager.Instance.SendConvState(PlayerRegistry.LocalPlayer.CurrentDialogueID, false);
             ConversationManager.Instance.CloseBoxCharacter(PlayerRegistry.LocalPlayer.CurrentDialogueID);
             PlayerRegistry.LocalPlayer.CurrentDialogueID = -1;
             ConversationManager.Instance.CloseBoxPlayer();

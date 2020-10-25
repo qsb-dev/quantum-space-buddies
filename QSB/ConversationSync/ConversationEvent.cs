@@ -38,7 +38,8 @@ namespace QSB.ConversationSync
                     {
                         break;
                     }
-                    UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[WorldRegistry.OldDialogueTrees[message.ObjectId]]);
+                    var tree = WorldRegistry.OldDialogueTrees[message.ObjectId];
+                    UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
                     break;
                 case ConversationType.ClosePlayer:
                     UnityEngine.Object.Destroy(PlayerRegistry.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);

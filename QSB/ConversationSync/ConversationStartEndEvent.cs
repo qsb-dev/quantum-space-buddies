@@ -35,10 +35,13 @@ namespace QSB.ConversationSync
             }
             var dialogueTree = WorldRegistry.OldDialogueTrees[message.CharacterId];
             var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
+
+            // Make character face player and talk
             if (animController != default(CharacterAnimController))
             {
                 if (message.State)
                 {
+                    // Start talking
                     PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = message.CharacterId;
                     animController.SetValue("_inConversation", true);
                     animController.SetValue("_playerInHeadZone", true);
@@ -47,10 +50,10 @@ namespace QSB.ConversationSync
                         animController.GetValue<Animator>("_animator").SetTrigger("Talking");
                     }
                     dialogueTree.GetComponent<InteractVolume>().DisableInteraction();
-
                 }
                 else
                 {
+                    // Stop talking
                     PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = -1;
                     animController.SetValue("_inConversation", false);
                     animController.SetValue("_playerInHeadZone", false);
@@ -62,21 +65,20 @@ namespace QSB.ConversationSync
                 }
             }
 
-            /*
-            var qsbFacePlayer = dialogueTree.GetComponent<QSBFacePlayerWhenTalking>();
-            if (qsbFacePlayer == null)
+            // Make character turn to player (if they're meant to)
+            var qsbFacePlayer = dialogueTree.GetComponentInParent<QSBFacePlayerWhenTalking>();
+            if (qsbFacePlayer != null)
             {
-                DebugLog.ToConsole($"Error - QSBFacePlayerWhenTalking not found for object ID {message.CharacterId}!", MessageType.Error);
+                if (message.State)
+                {
+                    DebugLog.DebugWrite("start convo faceplayer for " + message.CharacterId);
+                    qsbFacePlayer.StartConversation(PlayerRegistry.GetPlayer(message.PlayerId).Body.transform.position);
+                }
+                else
+                {
+                    qsbFacePlayer.EndConversation();
+                }
             }
-            if (message.State)
-            {
-                qsbFacePlayer.StartConversation(PlayerRegistry.GetPlayer(message.PlayerId).Camera.transform.position);
-            }
-            else
-            {
-                qsbFacePlayer.EndConversation();
-            }
-            */
         }
     }
 }
