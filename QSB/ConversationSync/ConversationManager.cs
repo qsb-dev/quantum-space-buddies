@@ -89,25 +89,22 @@ namespace QSB.ConversationSync
 
         public void DisplayPlayerConversationBox(uint playerId, string text)
         {
-            Destroy(PlayerRegistry.GetPlayer(playerId).CurrentDialogueBox);
             if (playerId == PlayerRegistry.LocalPlayerId)
             {
                 DebugLog.ToConsole("Error - Cannot display conversation box for local player!", MessageType.Error);
                 return;
             }
-            var newBox = Instantiate(BoxPrefab);
-            newBox.SetActive(false);
-            newBox.transform.parent = PlayerRegistry.GetPlayer(playerId).Body.transform;
-            newBox.transform.localPosition = new Vector3(0, 25, 0);
-            newBox.transform.rotation = PlayerRegistry.GetPlayer(playerId).Body.transform.rotation;
-            var lookAt = newBox.AddComponent<FaceActiveCamera>();
-            lookAt.SetValue("_useLookAt", false);
-            lookAt.SetValue("_localFacingVector", Vector3.back);
-            lookAt.SetValue("_localRotationAxis", Vector3.up);
-            newBox.GetComponent<Text>().text = text;
-            newBox.SetActive(true);
 
-            PlayerRegistry.GetPlayer(playerId).CurrentDialogueBox = newBox;
+            var player = PlayerRegistry.GetPlayer(playerId);
+
+            // Destroy old box if it exists
+            var playerBox = player.CurrentDialogueBox;
+            if (playerBox != null)
+            {
+                Destroy(playerBox);
+            }
+
+            PlayerRegistry.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
         }
 
         public void DisplayCharacterConversationBox(int index, string text)
@@ -117,6 +114,8 @@ namespace QSB.ConversationSync
                 DebugLog.ToConsole($"Error - Tried to display character conversation box for id {index}! (Doesn't exist!)", MessageType.Error);
                 return;
             }
+
+            // Remove old box if it exists
             var oldDialogueTree = WorldRegistry.OldDialogueTrees[index];
             if (BoxMappings.ContainsKey(oldDialogueTree))
             {
@@ -124,19 +123,23 @@ namespace QSB.ConversationSync
                 BoxMappings.Remove(oldDialogueTree);
             }
 
+            BoxMappings.Add(oldDialogueTree, CreateBox(oldDialogueTree.gameObject.transform, 2, text));
+        }
+
+        private GameObject CreateBox(Transform parent, float vertOffset, string text)
+        {
             var newBox = Instantiate(BoxPrefab);
             newBox.SetActive(false);
-            newBox.transform.parent = oldDialogueTree.gameObject.transform;
-            newBox.transform.localPosition = new Vector3(0, 2, 0);
-            newBox.transform.rotation = oldDialogueTree.gameObject.transform.rotation;
+            newBox.transform.parent = parent;
+            newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
+            newBox.transform.rotation = parent.rotation;
             var lookAt = newBox.AddComponent<FaceActiveCamera>();
             lookAt.SetValue("_useLookAt", false);
             lookAt.SetValue("_localFacingVector", Vector3.back);
             lookAt.SetValue("_localRotationAxis", Vector3.up);
             newBox.GetComponent<Text>().text = text;
             newBox.SetActive(true);
-
-            BoxMappings.Add(oldDialogueTree, newBox);
+            return newBox;
         }
     }
 }
