@@ -4,6 +4,7 @@ using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Tools;
 using QSB.TransformSync;
@@ -49,6 +50,7 @@ namespace QSB
             gameObject.AddComponent<OrbManager>();
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
+            gameObject.AddComponent<InstrumentsManager>();
 
             Helper.Events.Unity.RunWhen(() => PlayerData.IsLoaded(), RebuildSettingsSave);
         }

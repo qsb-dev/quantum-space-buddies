@@ -37,6 +37,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OWML.0.7.3\lib\net35\NAudio-Unity.dll</HintPath>
     </Reference>
@@ -144,6 +148,11 @@
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
+    <Compile Include="Instruments\QSBCamera\Patches.cs" />
+    <Compile Include="Instruments\QSBCamera\ThirdPersonCamera.cs" />
+    <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
+    <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
+    <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="OrbSync\OrbManager.cs" />
     <Compile Include="OrbSync\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbPatches.cs" />
@@ -223,9 +232,7 @@
     <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Instruments\Camera\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"
