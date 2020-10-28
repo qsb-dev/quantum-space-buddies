@@ -66,8 +66,8 @@ namespace QSB.Instruments.QSBCamera
             var fogImage = CameraObj.AddComponent<PlanetaryFogImageEffect>();
             fogImage.fogShader = Locator.GetPlayerCamera().gameObject.GetComponent<PlanetaryFogImageEffect>().fogShader;
 
-            var postProcessing = CameraObj.AddComponent<PostProcessingBehaviour>();
-            postProcessing.profile = Locator.GetPlayerCamera().gameObject.GetAddComponent<PostProcessingBehaviour>().profile;
+            //var postProcessing = CameraObj.AddComponent<PostProcessingBehaviour>();
+            //postProcessing.profile = Locator.GetPlayerCamera().gameObject.GetAddComponent<PostProcessingBehaviour>().profile;
 
             CameraBase.SetActive(true);
 
