@@ -148,6 +148,7 @@
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
+    <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
