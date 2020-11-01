@@ -41,7 +41,7 @@ namespace QSB.Instruments.QSBCamera
 
             CameraObj = new GameObject();
             CameraObj.transform.parent = CameraBase.transform;
-            CameraObj.transform.localPosition = new Vector3(0, 0.8f, -5f);
+            CameraObj.transform.localPosition = new Vector3(0, 0, -5f);
             CameraObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
             Camera = CameraObj.AddComponent<Camera>();
             Camera.cullingMask = Locator.GetPlayerCamera().mainCamera.cullingMask & ~(1 << 27) | (1 << 22);
