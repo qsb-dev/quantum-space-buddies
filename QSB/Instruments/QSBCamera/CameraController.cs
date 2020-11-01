@@ -9,7 +9,10 @@ namespace QSB.Instruments.QSBCamera
         private Quaternion _rotationX;
         private Quaternion _rotationY;
 
+        // How far along the ray to move the camera. Avoids clipping into the walls.
         private const float PercentToMove = 0.75f;
+        // Maximum distance for camera clipping
+        private const float RayLength = 10f;
 
         public GameObject CameraObject;
 
@@ -29,13 +32,13 @@ namespace QSB.Instruments.QSBCamera
             var origin = transform.position;
             var localDirection = CameraObject.transform.localPosition.normalized;
             Vector3 localTargetPoint;
-            if (Physics.Raycast(origin, transform.TransformDirection(localDirection), out RaycastHit outRay, 10, LayerMask.GetMask("Default")))
+            if (Physics.Raycast(origin, transform.TransformDirection(localDirection), out RaycastHit outRay, RayLength, LayerMask.GetMask("Default")))
             {
                 localTargetPoint = transform.InverseTransformPoint(outRay.point) * PercentToMove;
             }
             else
             {
-                localTargetPoint = localDirection * 10 * PercentToMove;
+                localTargetPoint = localDirection * RayLength * PercentToMove;
             }
             var targetDistance = Vector3.Distance(origin, transform.TransformPoint(localTargetPoint));
             var currentDistance = Vector3.Distance(origin, CameraObject.transform.position);
@@ -66,7 +69,7 @@ namespace QSB.Instruments.QSBCamera
             _degreesY %= 360f;
             _degreesY = Mathf.Clamp(_degreesY, -80f, 80f);
             _rotationX = Quaternion.AngleAxis(_degreesX, Vector3.up);
-            _rotationY = Quaternion.AngleAxis(_degreesY, -Vector3.right);
+            _rotationY = Quaternion.AngleAxis(_degreesY, Vector3.left);
             var localRotation = _rotationX * _rotationY * Quaternion.identity;
             transform.localRotation = localRotation;
         }

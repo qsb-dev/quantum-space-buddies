@@ -113,5 +113,15 @@ namespace QSB.Instruments.QSBCamera
             Camera.enabled = false;
             Mode = CameraMode.FirstPerson;
         }
+
+        public void ToggleViewMode()
+        {
+            if (Mode == CameraMode.FirstPerson)
+            {
+                SwitchTo3rdPerson();
+                return;
+            }
+            SwitchTo1stPerson();
+        }
     }
 }

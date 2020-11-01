@@ -17,14 +17,7 @@ namespace QSB.Instruments
         {
             if (Input.GetKeyDown(KeyCode.Keypad9))
             {
-                if (CameraManager.Instance.Mode == CameraMode.FirstPerson)
-                {
-                    CameraManager.Instance.SwitchTo3rdPerson();
-                }
-                else
-                {
-                    CameraManager.Instance.SwitchTo1stPerson();
-                }
+                CameraManager.Instance.ToggleViewMode();
             }
         }
     }
