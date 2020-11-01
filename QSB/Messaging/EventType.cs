@@ -23,6 +23,7 @@
         OrbSlot,
         OrbUser,
         Conversation,
-        ConversationStartEnd
+        ConversationStartEnd,
+        PlayInstrument
     }
 }

@@ -21,14 +21,20 @@ namespace QSB.Instruments
                 if (!PlayerRegistry.LocalPlayer.PlayingInstrument)
                 {
                     CameraManager.Instance.SwitchTo3rdPerson();
-                    GlobalMessenger<InstrumentType, bool>.FireEvent(EventNames.QSBPlayInstrument, InstrumentType.REIBECK, true);
+                    SwitchToInstrument(InstrumentType.REIBECK);
                 }
                 else
                 {
                     CameraManager.Instance.SwitchTo1stPerson();
-                    GlobalMessenger<InstrumentType, bool>.FireEvent(EventNames.QSBPlayInstrument, InstrumentType.REIBECK, false);
+                    SwitchToInstrument(InstrumentType.NONE);
                 }
             }
+        }
+
+        public void SwitchToInstrument(InstrumentType type)
+        {
+            PlayerRegistry.LocalPlayer.CurrentInstrument = type;
+            GlobalMessenger<InstrumentType>.FireEvent(EventNames.QSBPlayInstrument, type);
         }
     }
 }
