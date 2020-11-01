@@ -1,4 +1,5 @@
-﻿using QSB.Instruments.QSBCamera;
+﻿using QSB.Events;
+using QSB.Instruments.QSBCamera;
 using UnityEngine;
 
 namespace QSB.Instruments
@@ -17,7 +18,16 @@ namespace QSB.Instruments
         {
             if (Input.GetKeyDown(KeyCode.Keypad9))
             {
-                CameraManager.Instance.ToggleViewMode();
+                if (!PlayerRegistry.LocalPlayer.PlayingInstrument)
+                {
+                    CameraManager.Instance.SwitchTo3rdPerson();
+                    GlobalMessenger<InstrumentType, bool>.FireEvent(EventNames.QSBPlayInstrument, InstrumentType.REIBECK, true);
+                }
+                else
+                {
+                    CameraManager.Instance.SwitchTo1stPerson();
+                    GlobalMessenger<InstrumentType, bool>.FireEvent(EventNames.QSBPlayInstrument, InstrumentType.REIBECK, false);
+                }
             }
         }
     }

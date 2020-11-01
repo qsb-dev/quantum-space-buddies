@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.Instruments;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -10,6 +11,12 @@ namespace QSB
     public class PlayerInfo
     {
         public uint PlayerId { get; }
+        public string Name { get; set; }
+        public bool IsReady { get; set; }
+        public PlayerHUDMarker HudMarker { get; set; }
+        public State State { get; set; }
+
+        // Body Objects
         public GameObject Camera { get; set; }
         public GameObject Body { get; set; }
 
@@ -21,12 +28,13 @@ namespace QSB
         public QSBTool Translator => GetToolByType(ToolType.Translator);
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
 
-        public PlayerHUDMarker HudMarker { get; set; }
-        public string Name { get; set; }
-        public bool IsReady { get; set; }
+        // Conversation
         public int CurrentDialogueID { get; set; }
         public GameObject CurrentDialogueBox { get; set; }
-        public State State { get; set; }
+
+        // Instruments
+        public InstrumentType CurrentInstrument { get; set; }
+        public bool PlayingInstrument => CurrentInstrument != InstrumentType.NONE;
 
         public PlayerInfo(uint id)
         {

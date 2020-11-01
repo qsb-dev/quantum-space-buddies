@@ -34,10 +34,12 @@ namespace QSB.Instruments.QSBCamera
             Vector3 localTargetPoint;
             if (Physics.Raycast(origin, transform.TransformDirection(localDirection), out RaycastHit outRay, RayLength, LayerMask.GetMask("Default")))
             {
+                // Raycast hit collider, get target from hitpoint.
                 localTargetPoint = transform.InverseTransformPoint(outRay.point) * PercentToMove;
             }
             else
             {
+                // Raycast didn't hit collider, get target from camera direction
                 localTargetPoint = localDirection * RayLength * PercentToMove;
             }
             var targetDistance = Vector3.Distance(origin, transform.TransformPoint(localTargetPoint));
