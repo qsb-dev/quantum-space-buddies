@@ -3,6 +3,7 @@ using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.Instruments.Events;
 using QSB.OrbSync;
 using QSB.TimeSync;
 using QSB.Tools;
@@ -11,9 +12,6 @@ using System.Collections.Generic;
 
 namespace QSB.Events
 {
-    /// <summary>
-    /// Creates instances of all of the events QSB uses.
-    /// </summary>
     public static class EventList
     {
         public static bool Ready { get; private set; }
@@ -43,7 +41,8 @@ namespace QSB.Events
                 new OrbSlotEvent(),
                 new OrbUserEvent(),
                 new ConversationEvent(),
-                new ConversationStartEndEvent()
+                new ConversationStartEndEvent(),
+                new PlayInstrumentEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());
