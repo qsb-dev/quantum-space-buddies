@@ -1,11 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
 namespace QSB.Instruments.QSBCamera
 {
@@ -59,7 +54,8 @@ namespace QSB.Instruments.QSBCamera
             Camera.enabled = false;
             OWCamera = CameraObj.AddComponent<OWCamera>();
             OWCamera.renderSkybox = true;
-            CameraObj.AddComponent<CameraController>();
+
+            CameraBase.AddComponent<CameraController>().CameraObject = CameraObj;
 
             var screenGrab = CameraObj.AddComponent<FlashbackScreenGrabImageEffect>();
             screenGrab._downsampleShader = Locator.GetPlayerCamera().gameObject.GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader;
