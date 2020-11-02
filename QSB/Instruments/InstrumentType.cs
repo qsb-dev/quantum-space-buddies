@@ -12,7 +12,7 @@ namespace QSB.Instruments
         ESKER,
         FELDSPAR,
         GABBRO,
-        REIBECK,
+        RIEBECK,
         SOLANUM
     }
 }

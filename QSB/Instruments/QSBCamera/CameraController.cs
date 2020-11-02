@@ -10,9 +10,9 @@ namespace QSB.Instruments.QSBCamera
         private Quaternion _rotationY;
 
         // How far along the ray to move the camera. Avoids clipping into the walls.
-        private const float PercentToMove = 0.75f;
+        private const float PercentToMove = 0.80f;
         // Maximum distance for camera clipping
-        private const float RayLength = 10f;
+        private const float RayLength = 5f;
 
         public GameObject CameraObject;
 
