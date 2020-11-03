@@ -1,11 +1,13 @@
 ﻿using QSB.Messaging;
+using QSB.Player;
+using QSB.Player.Events;
 using UnityEngine.Networking;
 
 namespace QSB.Events
 {
-    public class PlayerState : NetworkBehaviour
+    public class PlayerStateEvent : NetworkBehaviour
     {
-        public static PlayerState LocalInstance { get; private set; }
+        public static PlayerStateEvent LocalInstance { get; private set; }
 
         private MessageHandler<PlayerStateMessage> _messageHandler;
 

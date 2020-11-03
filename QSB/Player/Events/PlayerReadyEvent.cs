@@ -1,10 +1,11 @@
 ﻿using OWML.Common;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 
-namespace QSB.Events
+namespace QSB.Player.Events
 {
     public class PlayerReadyEvent : QSBEvent<ToggleMessage>
     {
@@ -30,7 +31,7 @@ namespace QSB.Events
                 return;
             }
             QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
-            PlayerState.LocalInstance.Send();
+            PlayerStateEvent.LocalInstance.Send();
         }
 
         public override void OnReceiveRemote(ToggleMessage message)

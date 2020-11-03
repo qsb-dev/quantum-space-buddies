@@ -7,6 +7,7 @@ using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
 using QSB.Instruments.Events;
 using QSB.OrbSync.Events;
+using QSB.Player.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.TransformSync;

@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.Player
 {
     public abstract class PlayerSyncObject : NetworkBehaviour
     {

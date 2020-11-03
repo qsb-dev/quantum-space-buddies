@@ -8,6 +8,7 @@ using QSB.Events;
 using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
+using QSB.Player;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -101,7 +102,7 @@ namespace QSB
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
 
-            gameObject.AddComponent<Events.PlayerState>();
+            gameObject.AddComponent<Events.PlayerStateEvent>();
         }
 
         public override void OnStartServer()

@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
 using QSB.Events;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;

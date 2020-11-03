@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.Player;
 
 namespace QSB.Tools.Events
 {

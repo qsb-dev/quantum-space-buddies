@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 
 namespace QSB.TransformSync
 {

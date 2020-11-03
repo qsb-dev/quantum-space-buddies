@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;

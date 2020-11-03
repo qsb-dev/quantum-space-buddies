@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSB
+namespace QSB.Player
 {
     [Flags]
     public enum State

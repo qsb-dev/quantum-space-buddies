@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
+using QSB.Player.Events;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine.Networking;
 
-namespace QSB
+namespace QSB.Player
 {
     public static class QSBPlayerManager
     {

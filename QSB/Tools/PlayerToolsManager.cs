@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.Player;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;

@@ -1,8 +1,9 @@
 ﻿using OWML.Common;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.Events
+namespace QSB.Player.Events
 {
     public class PlayerJoinEvent : QSBEvent<PlayerJoinMessage>
     {

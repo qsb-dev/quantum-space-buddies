@@ -1,9 +1,10 @@
 ﻿using OWML.Common;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 using System.Linq;
 
-namespace QSB.Events
+namespace QSB.Player.Events
 {
     public class PlayerLeaveEvent : QSBEvent<PlayerLeaveMessage>
     {

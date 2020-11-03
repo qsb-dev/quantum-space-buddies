@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;

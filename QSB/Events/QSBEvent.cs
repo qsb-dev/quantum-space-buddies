@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Player;
 using QSB.TransformSync;
 using UnityEngine.Networking;
 

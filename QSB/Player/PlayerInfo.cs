@@ -6,7 +6,7 @@ using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB
+namespace QSB.Player
 {
     public class PlayerInfo
     {

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using QSB.Messaging;
+using System;
 using System.Linq;
 using UnityEngine.Networking;
 
-namespace QSB.Messaging
+namespace QSB.Player.Events
 {
     public class PlayerLeaveMessage : PlayerMessage
     {
