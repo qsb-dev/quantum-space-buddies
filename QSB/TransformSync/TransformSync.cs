@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.SectorSync;
 using QSB.Utility;
 using UnityEngine;
 

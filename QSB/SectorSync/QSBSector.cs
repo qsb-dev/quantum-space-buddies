@@ -1,7 +1,7 @@
 ﻿using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.SectorSync
 {
     public class QSBSector : WorldObject
     {

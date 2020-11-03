@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.SectorSync
 {
     public class QSBSectorManager : MonoBehaviour
     {

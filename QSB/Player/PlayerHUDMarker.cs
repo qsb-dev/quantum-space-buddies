@@ -1,7 +1,7 @@
 ﻿using QSB.Player;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Player
 {
     public class PlayerHUDMarker : HUDDistanceMarker
     {

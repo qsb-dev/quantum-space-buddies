@@ -3,7 +3,7 @@ using QSB.Player;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.SectorSync
 {
     public class SectorSync : MonoBehaviour
     {
@@ -21,11 +21,11 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            QSBPlayerManager.GetSyncObjects<TransformSync>().Where(x => x.hasAuthority).ToList().ForEach(CheckTransformSyncSector);
+            QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>().Where(x => x.hasAuthority).ToList().ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 
-        private void CheckTransformSyncSector(TransformSync transformSync)
+        private void CheckTransformSyncSector(TransformSync.TransformSync transformSync)
         {
             var syncedTransform = transformSync.SyncedTransform;
             if (syncedTransform == null || syncedTransform.position == Vector3.zero)

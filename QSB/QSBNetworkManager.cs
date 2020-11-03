@@ -10,6 +10,7 @@ using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Events;
+using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -139,7 +140,7 @@ namespace QSB
         {
             base.OnClientConnect(connection);
 
-            gameObject.AddComponent<SectorSync>();
+            gameObject.AddComponent<SectorSync.SectorSync>();
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
 
@@ -170,7 +171,7 @@ namespace QSB
         public override void OnStopClient() // Called on the client when closing connection
         {
             DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
-            Destroy(GetComponent<SectorSync>());
+            Destroy(GetComponent<SectorSync.SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             QSBEventManager.Reset();
@@ -213,7 +214,7 @@ namespace QSB
 
         public override void OnStopServer()
         {
-            Destroy(GetComponent<SectorSync>());
+            Destroy(GetComponent<SectorSync.SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             QSBEventManager.Reset();
@@ -289,6 +290,5 @@ namespace QSB
                 }
             }
         }
-
     }
 }

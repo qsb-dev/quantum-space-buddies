@@ -6,7 +6,7 @@ using QSB.GeyserSync;
 using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Patches;
-using QSB.TransformSync;
+using QSB.SectorSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;

@@ -10,7 +10,6 @@ using QSB.OrbSync.Events;
 using QSB.Player.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
-using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 
