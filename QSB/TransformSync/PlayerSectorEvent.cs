@@ -3,6 +3,7 @@ using QSB.EventsCore;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using QSB.WorldSync.Events;
 
 namespace QSB.TransformSync
 {

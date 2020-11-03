@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.WorldSync
+namespace QSB.WorldSync.Events
 {
     public class WorldObjectMessage : PlayerMessage
     {

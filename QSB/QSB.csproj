@@ -191,8 +191,8 @@
     <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
     <Compile Include="Utility\ListExtensions.cs" />
-    <Compile Include="WorldSync\BoolWorldObjectMessage.cs" />
-    <Compile Include="WorldSync\WorldObjectMessage.cs" />
+    <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />
+    <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />
     <Compile Include="Tools\QSBTool.cs" />

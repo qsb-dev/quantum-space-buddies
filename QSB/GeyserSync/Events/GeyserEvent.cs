@@ -1,5 +1,6 @@
 ﻿using QSB.EventsCore;
 using QSB.WorldSync;
+using QSB.WorldSync.Events;
 
 namespace QSB.GeyserSync.Events
 {
