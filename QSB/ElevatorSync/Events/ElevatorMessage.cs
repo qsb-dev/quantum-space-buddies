@@ -1,7 +1,7 @@
 ﻿using QSB.WorldSync;
 using UnityEngine.Networking;
 
-namespace QSB.ElevatorSync
+namespace QSB.ElevatorSync.Events
 {
     public class ElevatorMessage : WorldObjectMessage
     {

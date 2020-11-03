@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.GeyserSync
+namespace QSB.GeyserSync.Events
 {
     public class GeyserEvent : QSBEvent<BoolWorldObjectMessage>
     {

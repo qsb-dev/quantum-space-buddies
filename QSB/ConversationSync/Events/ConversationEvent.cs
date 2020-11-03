@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ConversationSync
+namespace QSB.ConversationSync.Events
 {
     public class ConversationEvent : QSBEvent<ConversationMessage>
     {

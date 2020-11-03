@@ -7,7 +7,7 @@ using QSB.WorldSync;
 using System.Linq;
 using UnityEngine.Networking;
 
-namespace QSB.OrbSync
+namespace QSB.OrbSync.Events
 {
     public class OrbUserEvent : QSBEvent<WorldObjectMessage>
     {

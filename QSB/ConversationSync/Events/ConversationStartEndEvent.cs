@@ -6,7 +6,7 @@ using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.ConversationSync
+namespace QSB.ConversationSync.Events
 {
     public class ConversationStartEndEvent : QSBEvent<ConversationStartEndMessage>
     {

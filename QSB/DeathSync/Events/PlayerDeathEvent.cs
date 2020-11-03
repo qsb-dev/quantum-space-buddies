@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.DeathSync
+namespace QSB.DeathSync.Events
 {
     public class PlayerDeathEvent : QSBEvent<PlayerDeathMessage>
     {

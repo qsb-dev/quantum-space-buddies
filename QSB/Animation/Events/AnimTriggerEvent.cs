@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 
-namespace QSB.Animation
+namespace QSB.Animation.Events
 {
     public class AnimTriggerEvent : QSBEvent<AnimTriggerMessage>
     {

@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.TimeSync
+namespace QSB.TimeSync.Events
 {
     public class ServerTimeMessage : PlayerMessage
     {

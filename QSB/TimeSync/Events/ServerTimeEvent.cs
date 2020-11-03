@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 
-namespace QSB.TimeSync
+namespace QSB.TimeSync.Events
 {
     public class ServerTimeEvent : QSBEvent<ServerTimeMessage>
     {

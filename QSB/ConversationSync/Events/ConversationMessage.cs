@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.ConversationSync
+namespace QSB.ConversationSync.Events
 {
     public class ConversationMessage : PlayerMessage
     {

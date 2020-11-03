@@ -1,12 +1,13 @@
 ﻿using QSB.Animation;
-using QSB.ConversationSync;
-using QSB.DeathSync;
-using QSB.ElevatorSync;
-using QSB.GeyserSync;
+using QSB.Animation.Events;
+using QSB.ConversationSync.Events;
+using QSB.DeathSync.Events;
+using QSB.ElevatorSync.Events;
+using QSB.GeyserSync.Events;
 using QSB.Instruments.Events;
-using QSB.OrbSync;
-using QSB.TimeSync;
-using QSB.Tools;
+using QSB.OrbSync.Events;
+using QSB.TimeSync.Events;
+using QSB.Tools.Events;
 using QSB.TransformSync;
 using System.Collections.Generic;
 

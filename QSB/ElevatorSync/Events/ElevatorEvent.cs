@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ElevatorSync
+namespace QSB.ElevatorSync.Events
 {
     public class ElevatorEvent : QSBEvent<ElevatorMessage>
     {

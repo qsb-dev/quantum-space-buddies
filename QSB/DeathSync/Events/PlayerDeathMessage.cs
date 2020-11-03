@@ -1,25 +1,22 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.Animation
+namespace QSB.DeathSync.Events
 {
-    public class AnimTriggerMessage : PlayerMessage
+    public class PlayerDeathMessage : PlayerMessage
     {
-        public short TriggerId;
-        public float Value;
+        public DeathType DeathType { get; set; }
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            Value = reader.ReadSingle();
-            TriggerId = reader.ReadInt16();
+            DeathType = (DeathType)reader.ReadInt16();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(Value);
-            writer.Write(TriggerId);
+            writer.Write((short)DeathType);
         }
     }
 }

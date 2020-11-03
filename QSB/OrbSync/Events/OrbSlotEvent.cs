@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.OrbSync
+namespace QSB.OrbSync.Events
 {
     public class OrbSlotEvent : QSBEvent<BoolWorldObjectMessage>
     {

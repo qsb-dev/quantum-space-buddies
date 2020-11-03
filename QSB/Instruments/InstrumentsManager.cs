@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Instruments.QSBCamera;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Instruments
