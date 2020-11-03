@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 namespace QSB
 {
-    public static class PlayerRegistry
+    public static class QSBPlayerManager
     {
         public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.GetComponent<NetworkIdentity>()?.netId.Value ?? uint.MaxValue;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);

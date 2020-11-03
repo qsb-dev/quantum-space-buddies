@@ -30,13 +30,13 @@ namespace QSB.Animation
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
-            var player = PlayerRegistry.GetPlayer(message.AboutId);
+            var player = QSBPlayerManager.GetPlayer(message.AboutId);
             player?.UpdateState(State.Suit, message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
-            PlayerRegistry.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
+            QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
         }
     }
 }

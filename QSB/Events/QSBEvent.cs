@@ -11,7 +11,7 @@ namespace QSB.Events
     public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
     {
         public abstract EventType Type { get; }
-        public uint LocalPlayerId => PlayerRegistry.LocalPlayerId;
+        public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
         private readonly MessageHandler<T> _eventHandler;
 
         protected QSBEvent()
@@ -58,7 +58,7 @@ namespace QSB.Events
 
         public void SendEvent(T message)
         {
-            message.FromId = PlayerRegistry.LocalPlayerId;
+            message.FromId = QSBPlayerManager.LocalPlayerId;
             QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
         }
 
@@ -76,8 +76,8 @@ namespace QSB.Events
 
         private void OnClientReceive(T message)
         {
-            if (message.FromId == PlayerRegistry.LocalPlayerId ||
-                PlayerRegistry.IsBelongingToLocalPlayer(message.AboutId))
+            if (message.FromId == QSBPlayerManager.LocalPlayerId ||
+                QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
             {
                 OnReceiveLocal(message);
                 return;

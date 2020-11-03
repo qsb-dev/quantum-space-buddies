@@ -42,7 +42,7 @@ namespace QSB.ConversationSync.Events
                 if (message.State)
                 {
                     // Start talking
-                    PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = message.CharacterId;
+                    QSBPlayerManager.GetPlayer(message.PlayerId).CurrentDialogueID = message.CharacterId;
                     animController.SetValue("_inConversation", true);
                     animController.SetValue("_playerInHeadZone", true);
                     if (animController.GetValue<bool>("_hasTalkAnimation"))
@@ -54,7 +54,7 @@ namespace QSB.ConversationSync.Events
                 else
                 {
                     // Stop talking
-                    PlayerRegistry.GetPlayer(message.PlayerId).CurrentDialogueID = -1;
+                    QSBPlayerManager.GetPlayer(message.PlayerId).CurrentDialogueID = -1;
                     animController.SetValue("_inConversation", false);
                     animController.SetValue("_playerInHeadZone", false);
                     if (animController.GetValue<bool>("_hasTalkAnimation"))
@@ -72,7 +72,7 @@ namespace QSB.ConversationSync.Events
                 if (message.State)
                 {
                     DebugLog.DebugWrite("start convo faceplayer for " + message.CharacterId);
-                    qsbFacePlayer.StartConversation(PlayerRegistry.GetPlayer(message.PlayerId).Body.transform.position);
+                    qsbFacePlayer.StartConversation(QSBPlayerManager.GetPlayer(message.PlayerId).Body.transform.position);
                 }
                 else
                 {

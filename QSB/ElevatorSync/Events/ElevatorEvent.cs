@@ -4,26 +4,26 @@ using QSB.WorldSync;
 
 namespace QSB.ElevatorSync.Events
 {
-    public class ElevatorEvent : QSBEvent<ElevatorMessage>
+    public class ElevatorEvent : QSBEvent<BoolWorldObjectMessage>
     {
         public override EventType Type => EventType.Elevator;
 
-        public override void SetupListener() => GlobalMessenger<int, ElevatorDirection>.AddListener(EventNames.QSBStartLift, Handler);
+        public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBStartLift, Handler);
 
-        public override void CloseListener() => GlobalMessenger<int, ElevatorDirection>.RemoveListener(EventNames.QSBStartLift, Handler);
+        public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBStartLift, Handler);
 
-        private void Handler(int id, ElevatorDirection direction) => SendEvent(CreateMessage(id, direction));
+        private void Handler(int id, bool direction) => SendEvent(CreateMessage(id, direction));
 
-        private ElevatorMessage CreateMessage(int id, ElevatorDirection direction) => new ElevatorMessage
+        private BoolWorldObjectMessage CreateMessage(int id, bool direction) => new BoolWorldObjectMessage
         {
-            Direction = direction,
+            State = direction,
             ObjectId = id
         };
 
-        public override void OnReceiveRemote(ElevatorMessage message)
+        public override void OnReceiveRemote(BoolWorldObjectMessage message)
         {
             var elevator = WorldRegistry.GetObject<QSBElevator>(message.ObjectId);
-            elevator?.RemoteCall(message.Direction);
+            elevator?.RemoteCall(message.State);
         }
     }
 }

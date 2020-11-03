@@ -25,18 +25,18 @@ namespace QSB.Events
         public override void OnServerReceive(ToggleMessage message)
         {
             DebugLog.DebugWrite($"[S] Get ready event from {message.FromId}", MessageType.Success);
-            if (message.FromId == PlayerRegistry.LocalPlayerId)
+            if (message.FromId == QSBPlayerManager.LocalPlayerId)
             {
                 return;
             }
-            PlayerRegistry.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
+            QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
             PlayerState.LocalInstance.Send();
         }
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
             DebugLog.DebugWrite($"Get ready event from {message.FromId}", MessageType.Success);
-            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
+            foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
             {
                 GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector);

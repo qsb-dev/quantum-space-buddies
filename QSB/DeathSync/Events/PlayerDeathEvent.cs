@@ -22,7 +22,7 @@ namespace QSB.DeathSync.Events
 
         public override void OnReceiveRemote(PlayerDeathMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
+            var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
             var deathMessage = Necronomicon.GetPhrase(message.DeathType);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }

@@ -41,7 +41,7 @@ namespace QSB.TransformSync
 
         public override bool IsReady => Locator.GetPlayerTransform() != null
             && Player != null
-            && PlayerRegistry.PlayerExists(Player.PlayerId)
+            && QSBPlayerManager.PlayerExists(Player.PlayerId)
             && netId.Value != uint.MaxValue
             && netId.Value != 0U;
     }

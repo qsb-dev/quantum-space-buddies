@@ -42,7 +42,7 @@ namespace QSB.ConversationSync.Events
                     UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
                     break;
                 case ConversationType.ClosePlayer:
-                    UnityEngine.Object.Destroy(PlayerRegistry.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
+                    UnityEngine.Object.Destroy(QSBPlayerManager.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
                     break;
             }
         }

@@ -172,13 +172,13 @@ namespace QSB
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
             QSBEventManager.Reset();
-            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
+            QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            foreach (var player in PlayerRegistry.PlayerList)
+            foreach (var player in QSBPlayerManager.PlayerList)
             {
-                PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
+                QSBPlayerManager.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
             }
-            PlayerRegistry.RemoveAllPlayers();
+            QSBPlayerManager.RemoveAllPlayers();
 
             WorldRegistry.RemoveObjects<QSBOrbSlot>();
             WorldRegistry.RemoveObjects<QSBElevator>();
@@ -205,7 +205,7 @@ namespace QSB
                 }
             }
 
-            PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
+            QSBPlayerManager.GetPlayer(playerId).HudMarker?.Remove();
             CleanupConnection(connection);
         }
 
@@ -216,7 +216,7 @@ namespace QSB
             Destroy(GetComponent<PreventShipDestruction>());
             QSBEventManager.Reset();
             DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
-            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
+            QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);
 
             WorldRegistry.RemoveObjects<QSBOrbSlot>();
@@ -239,13 +239,13 @@ namespace QSB
                 DebugLog.ToConsole("Error when getting playerId in CleanupConnection: " + ex.Message, MessageType.Error);
                 return;
             }
-            if (!PlayerRegistry.PlayerExists(playerId))
+            if (!QSBPlayerManager.PlayerExists(playerId))
             {
                 return;
             }
-            var playerName = PlayerRegistry.GetPlayer(playerId).Name;
+            var playerName = QSBPlayerManager.GetPlayer(playerId).Name;
             DebugLog.ToConsole($"{playerName} disconnected.", MessageType.Info);
-            PlayerRegistry.RemovePlayer(playerId);
+            QSBPlayerManager.RemovePlayer(playerId);
 
             var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
             netIds.ForEach(CleanupNetworkBehaviour);
@@ -264,8 +264,8 @@ namespace QSB
                 if (transformSync != null)
                 {
                     DebugLog.DebugWrite($"  * Removing TransformSync from syncobjects");
-                    PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId && !networkBehaviour.hasAuthority)
+                    QSBPlayerManager.PlayerSyncObjects.Remove(transformSync);
+                    if (transformSync.SyncedTransform != null && netId != QSBPlayerManager.LocalPlayerId && !networkBehaviour.hasAuthority)
                     {
                         DebugLog.DebugWrite($"  * Destroying {transformSync.SyncedTransform.gameObject.name}");
                         Destroy(transformSync.SyncedTransform.gameObject);
@@ -277,7 +277,7 @@ namespace QSB
                 if (animationSync != null)
                 {
                     DebugLog.DebugWrite($"  * Removing AnimationSync from syncobjects");
-                    PlayerRegistry.PlayerSyncObjects.Remove(animationSync);
+                    QSBPlayerManager.PlayerSyncObjects.Remove(animationSync);
                 }
 
                 if (!networkBehaviour.hasAuthority)

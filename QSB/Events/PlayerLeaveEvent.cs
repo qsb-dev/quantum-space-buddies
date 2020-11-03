@@ -23,10 +23,10 @@ namespace QSB.Events
 
         public override void OnReceiveRemote(PlayerLeaveMessage message)
         {
-            var playerName = PlayerRegistry.GetPlayer(message.AboutId).Name;
+            var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
             DebugLog.ToAll($"{playerName} disconnected.", MessageType.Info);
-            PlayerRegistry.GetPlayer(message.AboutId).HudMarker?.Remove();
-            PlayerRegistry.RemovePlayer(message.AboutId);
+            QSBPlayerManager.GetPlayer(message.AboutId).HudMarker?.Remove();
+            QSBPlayerManager.RemovePlayer(message.AboutId);
             message.NetIds.ToList().ForEach(netId => QSBNetworkManager.Instance.CleanupNetworkBehaviour(netId));
         }
     }

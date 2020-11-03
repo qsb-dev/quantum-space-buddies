@@ -23,7 +23,7 @@ namespace QSB.Instruments.Events
 
         public override void OnReceiveRemote(PlayInstrumentMessage message)
         {
-            PlayerRegistry.GetPlayer(message.AboutId).CurrentInstrument = message.Type;
+            QSBPlayerManager.GetPlayer(message.AboutId).CurrentInstrument = message.Type;
             DebugLog.DebugWrite($"Player ID {message.AboutId} now playing instrument {Enum.GetName(typeof(InstrumentType), message.Type)}");
         }
     }

@@ -7,6 +7,6 @@ namespace QSB
         public uint AttachedNetId => GetComponent<NetworkIdentity>()?.netId.Value ?? uint.MaxValue;
         public uint PlayerId => this.GetPlayerOfObject();
         public uint PreviousPlayerId { get; set; }
-        public PlayerInfo Player => PlayerRegistry.GetPlayer(PlayerId);
+        public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
     }
 }

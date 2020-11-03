@@ -20,7 +20,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            PlayerRegistry.GetSyncObjects<TransformSync>().Where(x => x.hasAuthority).ToList().ForEach(CheckTransformSyncSector);
+            QSBPlayerManager.GetSyncObjects<TransformSync>().Where(x => x.hasAuthority).ToList().ForEach(CheckTransformSyncSector);
             _checkTimer = 0;
         }
 

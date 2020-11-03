@@ -19,18 +19,18 @@ namespace QSB.Events
 
         private void OnClientReceiveMessage(PlayerStateMessage message)
         {
-            if (message.AboutId == PlayerRegistry.LocalPlayerId)
+            if (message.AboutId == QSBPlayerManager.LocalPlayerId)
             {
                 return;
             }
             QSB.Helper.Events.Unity.RunWhen(
-                () => PlayerRegistry.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
-                () => PlayerRegistry.HandleFullStateMessage(message));
+                () => QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
+                () => QSBPlayerManager.HandleFullStateMessage(message));
         }
 
         public void Send()
         {
-            foreach (var player in PlayerRegistry.PlayerList)
+            foreach (var player in QSBPlayerManager.PlayerList)
             {
                 var message = new PlayerStateMessage
                 {

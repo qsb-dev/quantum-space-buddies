@@ -24,7 +24,7 @@ namespace QSB.Events
         {
             DebugLog.DebugWrite($"[S] Get state request from {message.FromId}");
             PlayerState.LocalInstance.Send();
-            foreach (var item in PlayerRegistry.GetSyncObjects<TransformSync.TransformSync>()
+            foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
                 GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.netId.Value, item.ReferenceSector);

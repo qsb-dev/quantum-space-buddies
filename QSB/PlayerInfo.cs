@@ -67,8 +67,8 @@ namespace QSB
             Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
             ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
             Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-            QSB.Helper.Events.Unity.RunWhen(() => PlayerRegistry.GetSyncObject<AnimationSync>(PlayerId) != null,
-                () => PlayerRegistry.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
+            QSB.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
+                () => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
         }
 
         public bool GetState(State state)

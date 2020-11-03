@@ -56,7 +56,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerRegistry.PlayerSyncObjects.Add(this);
+            QSBPlayerManager.PlayerSyncObjects.Add(this);
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {

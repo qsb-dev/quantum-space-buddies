@@ -139,11 +139,9 @@
     <Compile Include="ConversationSync\ConversationManager.cs" />
     <Compile Include="ConversationSync\QSBFacePlayerWhenTalking.cs" />
     <Compile Include="DeathSync\DeathPatches.cs" />
-    <Compile Include="ElevatorSync\ElevatorDirection.cs" />
     <Compile Include="ElevatorSync\QSBElevator.cs" />
     <Compile Include="ElevatorSync\Events\ElevatorEvent.cs" />
     <Compile Include="ElevatorSync\ElevatorManager.cs" />
-    <Compile Include="ElevatorSync\Events\ElevatorMessage.cs" />
     <Compile Include="ElevatorSync\ElevatorPatches.cs" />
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
@@ -213,7 +211,7 @@
     <Compile Include="State.cs" />
     <Compile Include="DeathSync\PreventShipDestruction.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
-    <Compile Include="PlayerRegistry.cs" />
+    <Compile Include="QSBPlayerManager.cs" />
     <Compile Include="TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Utility\FlagsHelper.cs" />
     <Compile Include="TransformSync\PlayerHUDMarker.cs" />

@@ -22,7 +22,7 @@ namespace QSB.Animation.Events
 
         public override void OnReceiveRemote(AnimTriggerMessage message)
         {
-            var animationSync = PlayerRegistry.GetSyncObject<AnimationSync>(message.AboutId);
+            var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AboutId);
             if (animationSync == null)
             {
                 return;
