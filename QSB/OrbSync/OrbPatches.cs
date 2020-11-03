@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace QSB.OrbSync
 {
-    public static class OrbPatches
+    public class OrbPatches : QSBPatch
     {
+        public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
         public static void StartDragCallEvent(bool __result, NomaiInterfaceOrb __instance)
         {
             if (__result)
@@ -52,7 +54,7 @@ namespace QSB.OrbSync
             return false;
         }
 
-        public static void AddPatches()
+        public override void DoPatches()
         {
             QSB.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
             QSB.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));

@@ -15,7 +15,6 @@ namespace QSB.ElevatorSync
         {
             Instance = this;
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-            QSB.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(ElevatorPatches.StartLift));
         }
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)

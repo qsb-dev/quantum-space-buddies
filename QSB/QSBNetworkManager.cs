@@ -7,6 +7,7 @@ using QSB.ElevatorSync;
 using QSB.Events;
 using QSB.GeyserSync;
 using QSB.OrbSync;
+using QSB.Patches;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -145,24 +146,22 @@ namespace QSB
 
             if (NetworkClient.active && !NetworkServer.active)
             {
-                GeyserManager.Instance.EmptyUpdate();
-                WakeUpPatches.AddPatches();
+                QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
             }
 
-            OrbPatches.AddPatches();
-            ConversationPatches.AddPatches();
+            QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
             _lobby.CanEditName = false;
 
             OnNetworkManagerReady?.Invoke();
             IsReady = true;
 
-            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
+            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, QSBEventManager.Init);
 
-            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
+            QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
                 () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
-            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
+            QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
                 () => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
         }
 
@@ -172,7 +171,7 @@ namespace QSB
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
-            EventList.Reset();
+            QSBEventManager.Reset();
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
             foreach (var player in PlayerRegistry.PlayerList)
@@ -215,7 +214,7 @@ namespace QSB
             Destroy(GetComponent<SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
-            EventList.Reset();
+            QSBEventManager.Reset();
             DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
             PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
             NetworkServer.connections.ToList().ForEach(CleanupConnection);

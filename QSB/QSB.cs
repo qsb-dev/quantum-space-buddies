@@ -6,9 +6,11 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Instruments;
 using QSB.OrbSync;
+using QSB.Patches;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -36,8 +38,9 @@ namespace QSB
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
             DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
 
-            ProbePatches.DoPatches();
-            DeathPatches.DoPatches();
+            QSBPatchManager.Init();
+
+            QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 

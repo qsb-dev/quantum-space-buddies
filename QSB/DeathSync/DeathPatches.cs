@@ -3,8 +3,10 @@ using System.Linq;
 
 namespace QSB.DeathSync
 {
-    public static class DeathPatches
+    public class DeathPatches : QSBPatch
     {
+        public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
         public static bool PreFinishDeathSequence(DeathType deathType)
         {
             if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
@@ -25,11 +27,10 @@ namespace QSB.DeathSync
             GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
         }
 
-        public static void DoPatches()
+        public override void DoPatches()
         {
             QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
             QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
         }
-
     }
 }

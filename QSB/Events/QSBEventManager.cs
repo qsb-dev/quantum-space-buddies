@@ -1,4 +1,5 @@
-﻿using QSB.Animation;
+﻿using OWML.Common;
+using QSB.Animation;
 using QSB.Animation.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
@@ -9,11 +10,12 @@ using QSB.OrbSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.TransformSync;
+using QSB.Utility;
 using System.Collections.Generic;
 
 namespace QSB.Events
 {
-    public static class EventList
+    public static class QSBEventManager
     {
         public static bool Ready { get; private set; }
 
@@ -49,6 +51,8 @@ namespace QSB.Events
             _eventList.ForEach(ev => ev.SetupListener());
 
             Ready = true;
+
+            DebugLog.DebugWrite($"Event manager ready.", MessageType.Success);
         }
 
         public static void Reset()

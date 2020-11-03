@@ -6,8 +6,10 @@ using UnityEngine;
 
 namespace QSB.ConversationSync
 {
-    public static class ConversationPatches
+    public class ConversationPatches : QSBPatch
     {
+        public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
         public static void StartConversation(CharacterDialogueTree __instance)
         {
             var index = WorldRegistry.OldDialogueTrees.FindIndex(x => x == __instance);
@@ -98,7 +100,7 @@ namespace QSB.ConversationSync
             return false;
         }
 
-        public static void AddPatches()
+        public override void DoPatches()
         {
             QSB.Helper.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(GetNextPage));
             QSB.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(InputDialogueOption));
