@@ -1,16 +1,13 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using QSB.ConversationSync;
-using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Patches;
-using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
