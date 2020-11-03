@@ -11,7 +11,7 @@ namespace QSB.ConversationSync.Events
 {
     public class ConversationStartEndEvent : QSBEvent<ConversationStartEndMessage>
     {
-        public override Messaging.EventType Type => Messaging.EventType.ConversationStartEnd;
+        public override EventsCore.EventType Type => EventsCore.EventType.ConversationStartEnd;
 
         public override void SetupListener() => GlobalMessenger<int, uint, bool>.AddListener(EventNames.QSBConversationStartEnd, Handler);
 

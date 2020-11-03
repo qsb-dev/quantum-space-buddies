@@ -1,5 +1,4 @@
 ﻿using QSB.EventsCore;
-using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 

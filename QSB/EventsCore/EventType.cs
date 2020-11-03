@@ -1,4 +1,4 @@
-﻿namespace QSB.Messaging
+﻿namespace QSB.EventsCore
 {
     public enum EventType
     {

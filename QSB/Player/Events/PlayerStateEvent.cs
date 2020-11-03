@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.EventsCore;
+using QSB.Messaging;
 using UnityEngine.Networking;
 
 namespace QSB.Player.Events

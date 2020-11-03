@@ -206,7 +206,7 @@
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="MessagesCore\PlayerMessage.cs" />
     <Compile Include="MessagesCore\QSBMessageHandler.cs" />
-    <Compile Include="MessagesCore\EventType.cs" />
+    <Compile Include="EventsCore\EventType.cs" />
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="Player\State.cs" />
     <Compile Include="DeathSync\PreventShipDestruction.cs" />

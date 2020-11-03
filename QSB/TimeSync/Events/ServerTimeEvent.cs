@@ -1,5 +1,4 @@
 ﻿using QSB.EventsCore;
-using QSB.Messaging;
 
 namespace QSB.TimeSync.Events
 {
