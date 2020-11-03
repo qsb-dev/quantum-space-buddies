@@ -1,4 +1,4 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;

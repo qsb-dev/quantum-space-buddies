@@ -1,19 +1,17 @@
 ﻿using QSB.Messaging;
-using QSB.Player;
-using QSB.Player.Events;
 using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.Player.Events
 {
     public class PlayerStateEvent : NetworkBehaviour
     {
         public static PlayerStateEvent LocalInstance { get; private set; }
 
-        private MessageHandler<PlayerStateMessage> _messageHandler;
+        private QSBMessageHandler<PlayerStateMessage> _messageHandler;
 
         private void Awake()
         {
-            _messageHandler = new MessageHandler<PlayerStateMessage>(EventType.FullState);
+            _messageHandler = new QSBMessageHandler<PlayerStateMessage>(EventType.FullState);
             _messageHandler.OnClientReceiveMessage += OnClientReceiveMessage;
 
             LocalInstance = this;

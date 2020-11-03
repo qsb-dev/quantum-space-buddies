@@ -3,7 +3,7 @@ using QSB.Player;
 using QSB.TransformSync;
 using UnityEngine.Networking;
 
-namespace QSB.Events
+namespace QSB.EventsCore
 {
     /// <summary>
     /// Abstract class that handles all event code.
@@ -13,11 +13,11 @@ namespace QSB.Events
     {
         public abstract EventType Type { get; }
         public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
-        private readonly MessageHandler<T> _eventHandler;
+        private readonly QSBMessageHandler<T> _eventHandler;
 
         protected QSBEvent()
         {
-            _eventHandler = new MessageHandler<T>(Type);
+            _eventHandler = new QSBMessageHandler<T>(Type);
             _eventHandler.OnClientReceiveMessage += OnClientReceive;
             _eventHandler.OnServerReceiveMessage += OnServerReceive;
         }

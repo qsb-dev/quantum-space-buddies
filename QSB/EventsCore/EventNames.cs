@@ -1,4 +1,4 @@
-﻿namespace QSB.Events
+﻿namespace QSB.EventsCore
 {
     public static class EventNames
     {

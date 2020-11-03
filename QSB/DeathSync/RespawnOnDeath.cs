@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.Events;
+using QSB.EventsCore;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;

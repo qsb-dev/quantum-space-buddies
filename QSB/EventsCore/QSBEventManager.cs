@@ -14,7 +14,7 @@ using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 
-namespace QSB.Events
+namespace QSB.EventsCore
 {
     public static class QSBEventManager
     {

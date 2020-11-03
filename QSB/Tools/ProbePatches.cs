@@ -1,4 +1,4 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 
 namespace QSB.Tools
 {

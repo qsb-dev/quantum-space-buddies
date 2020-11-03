@@ -1,4 +1,4 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
 using UnityEngine;

@@ -1,5 +1,5 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.Events;
+using QSB.EventsCore;
 
 namespace QSB.ElevatorSync
 {

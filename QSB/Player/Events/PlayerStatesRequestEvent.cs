@@ -1,4 +1,4 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 using QSB.Messaging;
 using QSB.TransformSync;
 using QSB.Utility;

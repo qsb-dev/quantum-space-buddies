@@ -1,4 +1,4 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 using System.Linq;
 
 namespace QSB.DeathSync
