@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Messaging;
 using QSB.Player.Events;
 using QSB.TransformSync;
 using QSB.Utility;
