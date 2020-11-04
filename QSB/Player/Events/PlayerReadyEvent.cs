@@ -31,7 +31,7 @@ namespace QSB.Player.Events
                 return;
             }
             QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
-            PlayerStateEvent.LocalInstance.Send();
+            GlobalMessenger.FireEvent(EventNames.QSBServerSendPlayerStates);
         }
 
         public override void OnReceiveRemote(ToggleMessage message)

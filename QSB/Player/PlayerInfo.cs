@@ -1,7 +1,6 @@
 ﻿using QSB.Animation;
 using QSB.Instruments;
 using QSB.Tools;
-using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;

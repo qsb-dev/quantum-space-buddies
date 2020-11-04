@@ -35,5 +35,6 @@
         public static string QSBConversation = "QSBConversation";
         public static string QSBConversationStartEnd = "QSBConversationStartEnd";
         public static string QSBPlayInstrument = "QSBPlayInstrument";
+        public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
     }
 }

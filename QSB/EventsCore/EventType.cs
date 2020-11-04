@@ -5,7 +5,7 @@
         Sector,
         ServerTime,
         AnimTrigger,
-        FullState,
+        PlayerState,
         FullStateRequest,
         FlashlightActiveChange,
         SignalscopeActiveChange,

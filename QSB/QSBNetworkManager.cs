@@ -9,7 +9,6 @@ using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.Events;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
@@ -103,8 +102,6 @@ namespace QSB
             this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
-
-            gameObject.AddComponent<PlayerStateEvent>();
         }
 
         public override void OnStartServer()

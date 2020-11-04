@@ -159,6 +159,7 @@
     <Compile Include="OrbSync\Events\OrbUserEvent.cs" />
     <Compile Include="OrbSync\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
+    <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
@@ -201,7 +202,6 @@
     <Compile Include="Utility\DebugActions.cs" />
     <Compile Include="EventsCore\QSBEventManager.cs" />
     <Compile Include="Player\Events\PlayerStateMessage.cs" />
-    <Compile Include="Player\Events\PlayerStateEvent.cs" />
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="MessagesCore\PlayerMessage.cs" />

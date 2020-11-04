@@ -24,7 +24,7 @@ namespace QSB.Player.Events
         public override void OnServerReceive(PlayerMessage message)
         {
             DebugLog.DebugWrite($"[S] Get state request from {message.FromId}");
-            PlayerStateEvent.LocalInstance.Send();
+            GlobalMessenger.FireEvent(EventNames.QSBServerSendPlayerStates);
             foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
                 .Where(x => x != null && x.IsReady && x.ReferenceSector != null))
             {
