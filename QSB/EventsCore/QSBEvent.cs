@@ -13,11 +13,11 @@ namespace QSB.EventsCore
     {
         public abstract EventType Type { get; }
         public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
-        private readonly QSBMessageHandler<T> _eventHandler;
+        private readonly MessageHandler<T> _eventHandler;
 
         protected QSBEvent()
         {
-            _eventHandler = new QSBMessageHandler<T>(Type);
+            _eventHandler = new MessageHandler<T>(Type);
             _eventHandler.OnClientReceiveMessage += OnClientReceive;
             _eventHandler.OnServerReceiveMessage += OnServerReceive;
         }

@@ -6,7 +6,7 @@
         ServerTime,
         AnimTrigger,
         PlayerState,
-        FullStateRequest,
+        PlayerStatesRequest,
         FlashlightActiveChange,
         SignalscopeActiveChange,
         TranslatorActiveChange,

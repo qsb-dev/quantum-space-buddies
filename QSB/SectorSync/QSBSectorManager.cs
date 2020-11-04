@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using OWML.Common;
+using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -19,10 +21,12 @@ namespace QSB.SectorSync
         {
             Instance = this;
             QSBSceneManager.OnSceneLoaded += (OWScene scene, bool universe) => RebuildSectors();
+            DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
         }
 
         public void RebuildSectors()
         {
+            DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
             WorldRegistry.RemoveObjects<QSBSector>();
             var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
             for (var id = 0; id < sectors.Count; id++)

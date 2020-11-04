@@ -45,14 +45,15 @@ namespace QSB.EventsCore
                 new OrbUserEvent(),
                 new ConversationEvent(),
                 new ConversationStartEndEvent(),
-                new PlayInstrumentEvent()
+                new PlayInstrumentEvent(),
+                new ServerSendPlayerStatesEvent()
             };
 
             _eventList.ForEach(ev => ev.SetupListener());
 
             Ready = true;
 
-            DebugLog.DebugWrite($"Event manager ready.", MessageType.Success);
+            DebugLog.DebugWrite("Event Manager ready.", MessageType.Success);
         }
 
         public static void Reset()

@@ -8,14 +8,14 @@ using UnityEngine.Networking;
 namespace QSB.Messaging
 {
     // Extend this to create new message handlers.
-    public class QSBMessageHandler<T> where T : MessageBase, new()
+    public class MessageHandler<T> where T : MessageBase, new()
     {
         public event Action<T> OnClientReceiveMessage;
         public event Action<T> OnServerReceiveMessage;
 
         private readonly EventType _eventType;
 
-        public QSBMessageHandler(EventType eventType)
+        public MessageHandler(EventType eventType)
         {
             _eventType = eventType + MsgType.Highest + 1;
             if (QSBNetworkManager.Instance.IsReady)
@@ -33,13 +33,11 @@ namespace QSB.Messaging
             var eventName = Enum.GetName(typeof(EventType), _eventType - 1 - MsgType.Highest).ToUpper();
             if (NetworkServer.handlers.Keys.Contains((short)_eventType))
             {
-                DebugLog.LogState($"({_eventType}) {eventName} HANDLER", false);
                 DebugLog.ToConsole($"Warning - NetworkServer already contains a handler for EventType {_eventType}", MessageType.Warning);
                 NetworkServer.handlers.Remove((short)_eventType);
             }
             NetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
             NetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
-            DebugLog.LogState($"({_eventType}) {eventName} HANDLER", true);
         }
 
         public void SendToAll(T message)

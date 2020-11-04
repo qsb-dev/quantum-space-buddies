@@ -8,7 +8,7 @@ namespace QSB.Player.Events
 {
     public class PlayerStatesRequestEvent : QSBEvent<PlayerMessage>
     {
-        public override EventType Type => EventType.FullStateRequest;
+        public override EventType Type => EventType.PlayerStatesRequest;
 
         public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, Handler);
 

@@ -28,7 +28,7 @@ namespace QSB.Patches
                 new ProbePatches()
             };
 
-            DebugLog.DebugWrite($"Patch manager ready.", MessageType.Success);
+            DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
         }
 
         public static void DoPatchType(QSBPatchTypes type)

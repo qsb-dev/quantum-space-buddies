@@ -205,7 +205,7 @@
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="MessagesCore\PlayerMessage.cs" />
-    <Compile Include="MessagesCore\QSBMessageHandler.cs" />
+    <Compile Include="MessagesCore\MessageHandler.cs" />
     <Compile Include="EventsCore\EventType.cs" />
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="Player\State.cs" />

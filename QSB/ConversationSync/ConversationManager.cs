@@ -23,7 +23,6 @@ namespace QSB.ConversationSync
             Instance = this;
 
             ConversationAssetBundle = QSB.Helper.Assets.LoadBundle("assets/conversation");
-            DebugLog.LogState("ConversationBundle", ConversationAssetBundle);
 
             BoxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
             var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
@@ -33,7 +32,6 @@ namespace QSB.ConversationSync
             }
             BoxPrefab.GetComponent<Text>().font = font;
             BoxPrefab.GetComponent<Text>().color = Color.white;
-            DebugLog.LogState("BoxPrefab", BoxPrefab);
         }
 
         public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)

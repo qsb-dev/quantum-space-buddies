@@ -49,27 +49,22 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
-            DebugLog.LogState("PlayerPrefab", playerPrefab);
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
-            DebugLog.LogState("ShipPrefab", _shipPrefab);
 
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
-            DebugLog.LogState("CameraPrefab", _cameraPrefab);
 
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
-            DebugLog.LogState("ProbePrefab", _probePrefab);
 
             OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
             OrbPrefab.AddComponent<NomaiOrbTransformSync>();
             spawnPrefabs.Add(OrbPrefab);
-            DebugLog.LogState("OrbPrefab", OrbPrefab);
 
             ConfigureNetworkManager();
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -102,6 +97,8 @@ namespace QSB
             this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
             channels.Add(QosType.Reliable);
             channels.Add(QosType.Unreliable);
+
+            DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
         }
 
         public override void OnStartServer()
