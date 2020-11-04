@@ -264,6 +264,5 @@ namespace QSB.TimeSync
                 DisableInput();
             }
         }
-
     }
 }

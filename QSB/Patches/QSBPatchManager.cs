@@ -12,9 +12,13 @@ using System.Linq;
 
 namespace QSB.Patches
 {
+    public delegate void PatchEvent(QSBPatchTypes type);
+
     public static class QSBPatchManager
     {
         public static List<QSBPatch> _patchList = new List<QSBPatch>();
+
+        public static event PatchEvent OnPatchType;
 
         public static void Init()
         {
@@ -33,10 +37,11 @@ namespace QSB.Patches
 
         public static void DoPatchType(QSBPatchTypes type)
         {
-            DebugLog.DebugWrite($"Setting up patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+            OnPatchType(type);
+            DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
             foreach (var patch in _patchList.Where(x => x.Type == type))
             {
-                DebugLog.DebugWrite($" - Doing patches for {patch.GetType().Name}", MessageType.Info);
+                DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
                 patch.DoPatches();
             }
         }
