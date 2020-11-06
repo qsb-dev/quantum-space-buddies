@@ -26,6 +26,10 @@ namespace QSB.SectorSync
 
         public void RebuildSectors()
         {
+            if (!QSBSceneManager.IsInUniverse)
+            {
+                return;
+            }
             DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
             WorldRegistry.RemoveObjects<QSBSector>();
             var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();

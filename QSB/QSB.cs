@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using OWML.ModHelper.Events;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
@@ -25,6 +26,9 @@ namespace QSB
         private void Awake()
         {
             Application.runInBackground = true;
+
+            var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
+            instance.theUITable[(int)UITextType.PleaseUseController] = "<color=orange>Outer Wilds</color> is best experienced with fellow travellers...";
         }
 
         private void Start()

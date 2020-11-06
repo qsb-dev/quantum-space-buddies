@@ -37,7 +37,7 @@ namespace QSB.Patches
 
         public static void DoPatchType(QSBPatchTypes type)
         {
-            OnPatchType(type);
+            OnPatchType?.Invoke(type);
             DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
             foreach (var patch in _patchList.Where(x => x.Type == type))
             {
