@@ -21,6 +21,8 @@
         Elevator,
         Geyser,
         OrbSlot,
-        OrbUser
+        OrbUser,
+        Conversation,
+        ConversationStartEnd
     }
 }

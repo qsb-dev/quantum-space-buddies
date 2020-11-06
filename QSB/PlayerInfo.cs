@@ -11,21 +11,28 @@ namespace QSB
     {
         public uint PlayerId { get; }
         public GameObject Camera { get; set; }
+        public GameObject Body { get; set; }
+
+        // Tools
         public GameObject ProbeBody { get; set; }
         public QSBProbe Probe { get; set; }
         public QSBFlashlight FlashLight => Camera?.GetComponentInChildren<QSBFlashlight>();
         public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
         public QSBTool Translator => GetToolByType(ToolType.Translator);
         public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
+
         public PlayerHUDMarker HudMarker { get; set; }
         public string Name { get; set; }
         public bool IsReady { get; set; }
+        public int CurrentDialogueID { get; set; }
+        public GameObject CurrentDialogueBox { get; set; }
         public State State { get; set; }
 
         public PlayerInfo(uint id)
         {
             DebugLog.DebugWrite($"Creating PlayerInfo with id {id}");
             PlayerId = id;
+            CurrentDialogueID = -1;
         }
 
         public void UpdateState(State state, bool value)

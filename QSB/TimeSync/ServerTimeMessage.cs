@@ -21,6 +21,5 @@ namespace QSB.TimeSync
             writer.Write(ServerTime);
             writer.Write(LoopCount);
         }
-
     }
 }

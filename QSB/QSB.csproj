@@ -126,6 +126,14 @@
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
+    <Compile Include="ConversationSync\ConversationEvent.cs" />
+    <Compile Include="ConversationSync\ConversationMessage.cs" />
+    <Compile Include="ConversationSync\ConversationPatches.cs" />
+    <Compile Include="ConversationSync\ConversationStartEndEvent.cs" />
+    <Compile Include="ConversationSync\ConversationStartEndMessage.cs" />
+    <Compile Include="ConversationSync\ConversationType.cs" />
+    <Compile Include="ConversationSync\ConversationManager.cs" />
+    <Compile Include="ConversationSync\QSBFacePlayerWhenTalking.cs" />
     <Compile Include="DeathSync\DeathPatches.cs" />
     <Compile Include="ElevatorSync\ElevatorDirection.cs" />
     <Compile Include="ElevatorSync\QSBElevator.cs" />

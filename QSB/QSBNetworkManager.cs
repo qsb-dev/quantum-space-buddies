@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
 using QSB.Animation;
+using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.Events;
@@ -76,6 +77,14 @@ namespace QSB
             if (inUniverse)
             {
                 OrbManager.Instance.BuildOrbs();
+                WorldRegistry.OldDialogueTrees.Clear();
+                WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+
+                foreach (var item in Resources.FindObjectsOfTypeAll<FacePlayerWhenTalking>())
+                {
+                    item.gameObject.AddComponent<QSBFacePlayerWhenTalking>();
+                    Destroy(item);
+                }
             }
         }
 
@@ -99,7 +108,16 @@ namespace QSB
             DebugLog.DebugWrite("~~ ON START SERVER ~~", MessageType.Info);
             if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
             {
-                QSB.Helper.Events.Unity.RunWhen(() => NetworkServer.active, OrbManager.Instance.BuildOrbs);
+                OrbManager.Instance.QueueBuildOrbs();
+            }
+            if (WorldRegistry.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
+            {
+                WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+                foreach (var item in Resources.FindObjectsOfTypeAll<FacePlayerWhenTalking>())
+                {
+                    item.gameObject.AddComponent<QSBFacePlayerWhenTalking>();
+                    Destroy(item);
+                }
             }
         }
 
@@ -132,6 +150,7 @@ namespace QSB
             }
 
             OrbPatches.AddPatches();
+            ConversationPatches.AddPatches();
 
             _lobby.CanEditName = false;
 
@@ -166,8 +185,8 @@ namespace QSB
             WorldRegistry.RemoveObjects<QSBElevator>();
             WorldRegistry.RemoveObjects<QSBGeyser>();
             WorldRegistry.RemoveObjects<QSBSector>();
-            DebugLog.DebugWrite("Clearing OrbSyncList...", MessageType.Info);
             WorldRegistry.OrbSyncList.Clear();
+            WorldRegistry.OldDialogueTrees.Clear();
 
             _lobby.CanEditName = true;
         }

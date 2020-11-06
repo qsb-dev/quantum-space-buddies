@@ -72,6 +72,7 @@ namespace QSB.Tools
 
         private void FixedUpdate()
         {
+            // This really isn't needed... but it makes it look that extra bit nicer.
             var lhs = Quaternion.FromToRotation(_basePivot.up, _root.up) * Quaternion.FromToRotation(_baseForward, _root.forward);
             var b = lhs * _baseRotation;
             _baseRotation = Quaternion.Slerp(_baseRotation, b, 6f * Time.deltaTime);

@@ -14,6 +14,7 @@ namespace QSB.WorldSync
         private static readonly List<WorldObject> WorldObjects = new List<WorldObject>();
         public static List<NomaiOrbTransformSync> OrbSyncList = new List<NomaiOrbTransformSync>();
         public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
+        public static List<CharacterDialogueTree> OldDialogueTrees = new List<CharacterDialogueTree>();
 
         public static void AddObject(WorldObject worldObject)
         {
