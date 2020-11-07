@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Patches;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.GeyserSync
@@ -11,6 +12,7 @@ namespace QSB.GeyserSync
         {
             Instance = this;
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+            QSBPatchManager.OnPatchType += OnPatchType;
         }
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
@@ -24,10 +26,13 @@ namespace QSB.GeyserSync
             }
         }
 
-        public void EmptyUpdate()
+        public void OnPatchType(QSBPatchTypes type)
         {
+            if (type != QSBPatchTypes.OnNonServerClientConnect)
+            {
+                return;
+            }
             QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
         }
-
     }
 }

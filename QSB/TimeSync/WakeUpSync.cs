@@ -1,6 +1,7 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.DeathSync;
-using QSB.Events;
+using QSB.EventsCore;
+using QSB.TimeSync.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -263,6 +264,5 @@ namespace QSB.TimeSync
                 DisableInput();
             }
         }
-
     }
 }

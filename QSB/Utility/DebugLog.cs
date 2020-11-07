@@ -43,13 +43,6 @@ namespace QSB.Utility
             }
         }
 
-        public static void LogState(string name, bool state)
-        {
-            var status = state ? "OK" : "FAIL";
-            var messageType = state ? MessageType.Success : MessageType.Error;
-            DebugWrite($"* {name} {status}", messageType);
-        }
-
         private static string GetCallingType(StackTrace frame)
         {
             var stackFrame = frame.GetFrames().First(x => x.GetMethod().DeclaringType.Name != "DebugLog");

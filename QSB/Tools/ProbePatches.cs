@@ -1,9 +1,11 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 
 namespace QSB.Tools
 {
-    public static class ProbePatches
+    public class ProbePatches : QSBPatch
     {
+        public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
         private static void ProbeAnchor()
         {
             GlobalMessenger.FireEvent(EventNames.QSBOnProbeAnchor);
@@ -18,7 +20,7 @@ namespace QSB.Tools
             return true;
         }
 
-        public static void DoPatches()
+        public override void DoPatches()
         {
             QSB.Helper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(ProbePatches), nameof(ProbeAnchor));
             QSB.Helper.HarmonyHelper.AddPrefix<SurveyorProbe>("Retrieve", typeof(ProbePatches), nameof(ProbeWarp));

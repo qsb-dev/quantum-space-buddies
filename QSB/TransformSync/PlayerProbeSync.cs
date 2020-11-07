@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
@@ -97,7 +98,7 @@ namespace QSB.TransformSync
 
         public override bool IsReady => Locator.GetProbe() != null
             && Player != null
-            && PlayerRegistry.PlayerExists(Player.PlayerId)
+            && QSBPlayerManager.PlayerExists(Player.PlayerId)
             && Player.IsReady
             && netId.Value != uint.MaxValue
             && netId.Value != 0U;

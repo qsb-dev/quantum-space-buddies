@@ -1,13 +1,13 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using OWML.ModHelper.Events;
 using QSB.ConversationSync;
-using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Instruments;
 using QSB.OrbSync;
-using QSB.Tools;
-using QSB.TransformSync;
+using QSB.Patches;
+using QSB.SectorSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -26,6 +26,9 @@ namespace QSB
         private void Awake()
         {
             Application.runInBackground = true;
+
+            var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
+            instance.theUITable[(int)UITextType.PleaseUseController] = "<color=orange>Outer Wilds</color> is best experienced with fellow travellers...";
         }
 
         private void Start()
@@ -34,10 +37,10 @@ namespace QSB
             DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-            DebugLog.LogState("NetworkBundle", NetworkAssetBundle);
 
-            ProbePatches.DoPatches();
-            DeathPatches.DoPatches();
+            QSBPatchManager.Init();
+
+            QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
             // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 

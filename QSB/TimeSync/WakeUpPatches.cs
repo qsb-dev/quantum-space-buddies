@@ -2,12 +2,9 @@
 
 namespace QSB.TimeSync
 {
-    public static class WakeUpPatches
+    public class WakeUpPatches : QSBPatch
     {
-        public static void AddPatches()
-        {
-            QSB.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
-        }
+        public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 
         public static bool OnStartOfTimeLoopPrefix(ref PlayerCameraEffectController __instance)
         {
@@ -16,6 +13,11 @@ namespace QSB.TimeSync
                 __instance.Invoke("WakeUp");
             }
             return false;
+        }
+
+        public override void DoPatches()
+        {
+            QSB.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
         }
     }
 }

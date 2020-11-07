@@ -1,4 +1,6 @@
 ﻿using OWML.Common;
+using QSB.Player;
+using QSB.SectorSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -22,7 +24,7 @@ namespace QSB.TransformSync
         protected virtual void Awake()
         {
             DebugLog.DebugWrite($"Awake of {AttachedNetId} ({GetType().Name})");
-            PlayerRegistry.PlayerSyncObjects.Add(this);
+            QSBPlayerManager.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }

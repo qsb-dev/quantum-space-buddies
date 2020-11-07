@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.Events;
+using QSB.EventsCore;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -22,7 +23,6 @@ namespace QSB.ConversationSync
             Instance = this;
 
             ConversationAssetBundle = QSB.Helper.Assets.LoadBundle("assets/conversation");
-            DebugLog.LogState("ConversationBundle", ConversationAssetBundle);
 
             BoxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
             var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
@@ -32,25 +32,24 @@ namespace QSB.ConversationSync
             }
             BoxPrefab.GetComponent<Text>().font = font;
             BoxPrefab.GetComponent<Text>().color = Color.white;
-            DebugLog.LogState("BoxPrefab", BoxPrefab);
         }
 
         public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
         {
             var treeIndex = WorldRegistry.OldDialogueTrees.IndexOf(tree);
-            if (!PlayerRegistry.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
+            if (!QSBPlayerManager.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
             {
                 // No player talking to tree
                 return uint.MaxValue;
             }
             // .First() should be fine here as only one player should be talking to a character.
-            return PlayerRegistry.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
+            return QSBPlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
         }
 
         public void SendPlayerOption(string text)
         {
             GlobalMessenger<uint, string, ConversationType>
-                .FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, text, ConversationType.Player);
+                .FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
         }
 
         public void SendCharacterDialogue(int id, string text)
@@ -67,7 +66,7 @@ namespace QSB.ConversationSync
         public void CloseBoxPlayer()
         {
             GlobalMessenger<uint, string, ConversationType>
-                .FireEvent(EventNames.QSBConversation, PlayerRegistry.LocalPlayerId, "", ConversationType.ClosePlayer);
+                .FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
         }
 
         public void CloseBoxCharacter(int id)
@@ -84,18 +83,18 @@ namespace QSB.ConversationSync
                 return;
             }
             GlobalMessenger<int, uint, bool>
-                .FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerRegistry.LocalPlayerId, state);
+                .FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
         }
 
         public void DisplayPlayerConversationBox(uint playerId, string text)
         {
-            if (playerId == PlayerRegistry.LocalPlayerId)
+            if (playerId == QSBPlayerManager.LocalPlayerId)
             {
                 DebugLog.ToConsole("Error - Cannot display conversation box for local player!", MessageType.Error);
                 return;
             }
 
-            var player = PlayerRegistry.GetPlayer(playerId);
+            var player = QSBPlayerManager.GetPlayer(playerId);
 
             // Destroy old box if it exists
             var playerBox = player.CurrentDialogueBox;
@@ -104,7 +103,7 @@ namespace QSB.ConversationSync
                 Destroy(playerBox);
             }
 
-            PlayerRegistry.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
+            QSBPlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
         }
 
         public void DisplayCharacterConversationBox(int index, string text)

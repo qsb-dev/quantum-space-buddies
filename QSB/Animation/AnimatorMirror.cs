@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using OWML.Common;
+using QSB.Utility;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -52,6 +54,11 @@ namespace QSB.Animation
                 switch (fromParam.type)
                 {
                     case AnimatorControllerParameterType.Float:
+                        if (!_floatParams.ContainsKey(fromParam.name))
+                        {
+                            DebugLog.ToConsole($"Warning - Tried to sync anim float that doesn't exist in dict : {fromParam.name}", MessageType.Warning);
+                            break;
+                        }
                         _floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
                         break;
                     case AnimatorControllerParameterType.Bool:

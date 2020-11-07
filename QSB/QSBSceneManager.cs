@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OWML.Common;
+using QSB.Utility;
+using System;
 
 namespace QSB
 {
@@ -13,6 +15,7 @@ namespace QSB
         static QSBSceneManager()
         {
             LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+            DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
         }
 
         private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)

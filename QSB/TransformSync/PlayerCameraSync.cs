@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
+using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace QSB.TransformSync
 
         public override bool IsReady => Locator.GetPlayerTransform() != null
             && Player != null
-            && PlayerRegistry.PlayerExists(Player.PlayerId)
+            && QSBPlayerManager.PlayerExists(Player.PlayerId)
             && netId.Value != uint.MaxValue
             && netId.Value != 0U;
     }

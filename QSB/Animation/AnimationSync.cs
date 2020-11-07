@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.Events;
+using QSB.EventsCore;
+using QSB.Player;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -56,7 +57,7 @@ namespace QSB.Animation
                 mirror.Init(_anim, _bodyAnim);
             }
 
-            PlayerRegistry.PlayerSyncObjects.Add(this);
+            QSBPlayerManager.PlayerSyncObjects.Add(this);
 
             for (var i = 0; i < _anim.parameterCount; i++)
             {
