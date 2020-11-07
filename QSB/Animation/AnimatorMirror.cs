@@ -21,10 +21,12 @@ namespace QSB.Animation
             _to = to;
             if (_from.runtimeAnimatorController == null)
             {
+                DebugLog.DebugWrite($"Warning - \"From\" ({from.name}) controller is null.", MessageType.Warning);
                 _from.runtimeAnimatorController = _to.runtimeAnimatorController;
             }
             else if (_to.runtimeAnimatorController == null)
             {
+                DebugLog.DebugWrite($"Warning - \"To\" ({to.name}) controller is null.", MessageType.Warning);
                 _to.runtimeAnimatorController = _from.runtimeAnimatorController;
             }
             foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))

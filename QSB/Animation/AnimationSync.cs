@@ -21,12 +21,19 @@ namespace QSB.Animation
         private PlayerCharacterController _playerController;
         private CrouchSync _crouchSync;
 
+        private RuntimeAnimatorController RiebeckController;
+        private RuntimeAnimatorController ChertController;
+        private RuntimeAnimatorController GabbroController;
+        private RuntimeAnimatorController FeldsparController;
+
         private void Awake()
         {
             _anim = gameObject.AddComponent<Animator>();
             _netAnim = gameObject.AddComponent<NetworkAnimator>();
             _netAnim.enabled = false;
             _netAnim.animator = _anim;
+
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
         }
 
         private void OnDestroy()
@@ -41,6 +48,20 @@ namespace QSB.Animation
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
             GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
             GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
+
+            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(OWScene scene, bool inUniverse)
+        {
+            var reibeckRoot = GameObject.Find("Traveller_HEA_Riebeck_ANIM_Talking");
+            RiebeckController = reibeckRoot.GetComponent<Animator>().runtimeAnimatorController;
+            var chertRoot = GameObject.Find("Traveller_HEA_Chert_ANIM_Chatter_Chipper");
+            ChertController = chertRoot.GetComponent<Animator>().runtimeAnimatorController;
+            var gabbroRoot = GameObject.Find("Traveller_HEA_Gabbro_ANIM_IdleFlute");
+            GabbroController = gabbroRoot.GetComponent<Animator>().runtimeAnimatorController;
+            var feldsparRoot = GameObject.Find("Traveller_HEA_Feldspar_ANIM_Talking");
+            FeldsparController = feldsparRoot.GetComponent<Animator>().runtimeAnimatorController;
         }
 
         private void InitCommon(Transform body)
@@ -172,6 +193,27 @@ namespace QSB.Animation
                 return;
             }
             SuitDown();
+        }
+
+        public void SetAnimationType(AnimationType type)
+        {
+            switch (type)
+            {
+                case AnimationType.PlayerSuited:
+                    _bodyAnim.runtimeAnimatorController = _suitedAnimController;
+                    _anim.runtimeAnimatorController = _suitedAnimController;
+                    break;
+                case AnimationType.PlayerUnsuited:
+                    _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
+                    _anim.runtimeAnimatorController = _unsuitedAnimController;
+                    break;
+                case AnimationType.Chert:
+                    _bodyAnim.runtimeAnimatorController = ChertController;
+                    _bodyAnim.SetTrigger("Playing");
+                    _anim.runtimeAnimatorController = ChertController;
+                    _anim.SetTrigger("Playing");
+                    break;
+            }
         }
     }
 }

@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\AnimationSync.cs" />
+    <Compile Include="Animation\AnimationType.cs" />
     <Compile Include="Animation\Events\AnimTriggerEvent.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimControllerPatch.cs" />
