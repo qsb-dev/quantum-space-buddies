@@ -27,10 +27,10 @@ namespace QSB.Instruments.QSBCamera
                 return;
             }
             IsSetUp = false;
-            QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerCamera() != null && Locator.GetPlayerTransform() != null, FinishSetup);
+            QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerCamera() != null && Locator.GetPlayerTransform() != null, Setup);
         }
 
-        private void FinishSetup()
+        private void Setup()
         {
             CameraBase = new GameObject();
             CameraBase.SetActive(false);
