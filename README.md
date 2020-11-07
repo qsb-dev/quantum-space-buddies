@@ -31,19 +31,18 @@
 
 ## Playing as a client
 
-- Run `OWML.Launcher.exe` to start the game;
+- Run the game;
 - You'll see some new buttons on the top left;
 - Replace `localhost` with the server's IP address;
-- Press "LAN Client(C)";
+- Press "LAN Client(C). You can join servers in the menu or in-game, but it is recommended to join in the main menu.";
 - If you see "Stop (X)", you are connected.
 
 ## Playing as a host
 
 - Open port `7777` on your router;
-- Run `OWML.Launcher.exe` to start the game;
+- Run the game;
 - You'll see some new buttons on the top left;
-- Don't start the game (expedition) before starting the server;
-- Press "LAN Host(H)";
+- Press "LAN Host(H)". This can be done in-game or in the menu, but it is recommened to start servers in the menu.;
 - If you now see the "Stop (X)" button, you are serving;
 - Give your external IPv4 address to your clients ([like what you see here](http://whatismyip.host/)).
 
@@ -66,11 +65,13 @@ If for some reason none of this is working, you might have to set everything man
 - To fix the references, right*click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 - If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
 
+Refer to this repo's wiki for documentation on core QSB design specifications and mechanics.
+
 ## Authors
 
-- [Mister_Nebula](https://github.com/misternebula) - Current lead
-- [AmazingAlek](https://github.com/amazingalek)
-- [Raicuparta](https://github.com/Raicuparta)
+- [Mister_Nebula](https://github.com/misternebula) - Developer of v0.3 onwards
+- [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidyer
+- [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1 - v0.2
 
 ## Help / Discuss development / Whatever
 
