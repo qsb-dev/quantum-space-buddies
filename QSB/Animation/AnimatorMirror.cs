@@ -78,5 +78,14 @@ namespace QSB.Animation
                 _to.SetFloat(floatParam.Key, current);
             }
         }
+
+        public void RebuildFloatParams()
+        {
+            _floatParams.Clear();
+            foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
+            {
+                _floatParams.Add(param.name, new AnimFloatParam());
+            }
+        }
     }
 }

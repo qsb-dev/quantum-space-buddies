@@ -13,6 +13,7 @@ namespace QSB.Animation
         private Animator _anim;
         private Animator _bodyAnim;
         private NetworkAnimator _netAnim;
+        private AnimatorMirror _mirror;
 
         private RuntimeAnimatorController _suitedAnimController;
         private AnimatorOverrideController _unsuitedAnimController;
@@ -68,14 +69,14 @@ namespace QSB.Animation
         {
             _netAnim.enabled = true;
             _bodyAnim = body.GetComponent<Animator>();
-            var mirror = body.gameObject.AddComponent<AnimatorMirror>();
+            _mirror = body.gameObject.AddComponent<AnimatorMirror>();
             if (isLocalPlayer)
             {
-                mirror.Init(_bodyAnim, _anim);
+                _mirror.Init(_bodyAnim, _anim);
             }
             else
             {
-                mirror.Init(_anim, _bodyAnim);
+                _mirror.Init(_anim, _bodyAnim);
             }
 
             QSBPlayerManager.PlayerSyncObjects.Add(this);
@@ -171,16 +172,14 @@ namespace QSB.Animation
 
         private void SuitUp()
         {
-            _bodyAnim.runtimeAnimatorController = _suitedAnimController;
-            _anim.runtimeAnimatorController = _suitedAnimController;
+            SetAnimationType(AnimationType.PlayerSuited);
             _unsuitedGraphics.SetActive(false);
             _suitedGraphics.SetActive(true);
         }
 
         private void SuitDown()
         {
-            _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
-            _anim.runtimeAnimatorController = _unsuitedAnimController;
+            SetAnimationType(AnimationType.PlayerUnsuited);
             _unsuitedGraphics.SetActive(true);
             _suitedGraphics.SetActive(false);
         }
@@ -212,6 +211,7 @@ namespace QSB.Animation
                     _bodyAnim.SetTrigger("Playing");
                     _anim.runtimeAnimatorController = ChertController;
                     _anim.SetTrigger("Playing");
+                    _mirror.RebuildFloatParams();
                     break;
             }
         }
