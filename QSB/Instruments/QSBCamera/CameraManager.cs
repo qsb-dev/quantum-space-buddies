@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Utility;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace QSB.Instruments.QSBCamera
 {
@@ -63,9 +64,6 @@ namespace QSB.Instruments.QSBCamera
             var fogImage = CameraObj.AddComponent<PlanetaryFogImageEffect>();
             fogImage.fogShader = Locator.GetPlayerCamera().gameObject.GetComponent<PlanetaryFogImageEffect>().fogShader;
 
-            //var postProcessing = CameraObj.AddComponent<PostProcessingBehaviour>();
-            //postProcessing.profile = Locator.GetPlayerCamera().gameObject.GetAddComponent<PostProcessingBehaviour>().profile;
-
             CameraBase.SetActive(true);
 
             IsSetUp = true;
@@ -90,7 +88,12 @@ namespace QSB.Instruments.QSBCamera
             }
             OWInput.ChangeInputMode(InputMode.None);
             GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", OWCamera);
-            Locator.GetActiveCamera().mainCamera.enabled = false;
+            Locator.GetPlayerCamera().mainCamera.enabled = false;
+            if (CameraObj.GetComponent<PostProcessingBehaviour>() == null)
+            {
+                var postProcessing = CameraObj.AddComponent<PostProcessingBehaviour>();
+                postProcessing.profile = Locator.GetPlayerCamera().gameObject.GetComponent<PostProcessingBehaviour>().profile;
+            }
             Camera.enabled = true;
             Mode = CameraMode.ThirdPerson;
         }
