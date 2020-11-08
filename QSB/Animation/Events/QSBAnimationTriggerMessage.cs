@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Networking;
 
-namespace QSB.Animation
+namespace QSB.Animation.Events
 {
     class QSBAnimationTriggerMessage : MessageBase
     {

@@ -39,7 +39,7 @@ namespace QSB.EventsCore
                 new ElevatorEvent(),
                 new GeyserEvent(),
                 new ServerTimeEvent(),
-                new AnimTriggerEvent(),
+                new CrouchEvent(),
                 new OrbSlotEvent(),
                 new OrbUserEvent(),
                 new ConversationEvent(),

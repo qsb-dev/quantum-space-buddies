@@ -53,7 +53,7 @@ namespace QSB.Animation
             {
                 return;
             }
-            _animationSync.SendTrigger(AnimTrigger.Crouch, jumpChargeFraction);
+            _animationSync.SendCrouch(jumpChargeFraction);
             _lastSentJumpChargeFraction = jumpChargeFraction;
             _sendTimer = 0;
         }

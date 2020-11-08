@@ -49,8 +49,6 @@ namespace QSB.Animation
             _playerController.OnJump -= OnJump;
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-            GlobalMessenger.RemoveListener(EventNames.SuitUp, OnSuitUp);
-            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, OnSuitDown);
 
             QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
         }
@@ -98,9 +96,6 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded += OnBecomeGrounded;
             _playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
-            GlobalMessenger.AddListener(EventNames.SuitUp, OnSuitUp);
-            GlobalMessenger.AddListener(EventNames.RemoveSuit, OnSuitDown);
-
             InitCrouchSync();
         }
 
@@ -141,30 +136,14 @@ namespace QSB.Animation
         private void OnBecomeGrounded() => _netAnim.SetTrigger("Grounded");
         private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
 
-        private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
-        private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
-
-        public void SendTrigger(AnimTrigger trigger, float value = 0)
+        public void SendCrouch(float value = 0)
         {
-            GlobalMessenger<short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)trigger, value);
+            GlobalMessenger<float>.FireEvent(EventNames.QSBCrouch, value);
         }
 
-        public void HandleTrigger(AnimTrigger trigger, float value)
+        public void HandleCrouch(float value)
         {
-            switch (trigger)
-            {
-                case AnimTrigger.SuitUp:
-                    SuitUp();
-                    break;
-                case AnimTrigger.SuitDown:
-                    SuitDown();
-                    break;
-                case AnimTrigger.Crouch:
-                    _crouchSync.CrouchParam.Target = value;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
-            }
+            _crouchSync.CrouchParam.Target = value;
         }
 
         private void SuitUp()

@@ -1,18 +1,20 @@
-﻿using QSB.Utility;
-using System.Collections;
+﻿using QSB.Animation.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
 
 namespace QSB.Animation
 {
+    // Cleaned up unity code. UNET is so broken I gave up and fixed it myself.
+
     [RequireComponent(typeof(NetworkIdentity))]
     [RequireComponent(typeof(Animator))]
     class QSBNetworkAnimator : NetworkBehaviour
     {
-        private static QSBAnimationMessage s_AnimationMessage = new QSBAnimationMessage();
-        private static QSBAnimationParametersMessage s_AnimationParametersMessage = new QSBAnimationParametersMessage();
-        private static QSBAnimationTriggerMessage s_AnimationTriggerMessage = new QSBAnimationTriggerMessage();
+        private static QSBAnimationMessage AnimationMessage = new QSBAnimationMessage();
+        private static QSBAnimationParametersMessage ParametersMessage = new QSBAnimationParametersMessage();
+        private static QSBAnimationTriggerMessage TriggersMessage = new QSBAnimationTriggerMessage();
+
         private Animator m_Animator;
         private uint m_ParameterSendBits;
         private int m_AnimationHash;
@@ -28,9 +30,8 @@ namespace QSB.Animation
             }
             set
             {
-                DebugLog.DebugWrite("SETTING ANIMATOR");
                 m_Animator = value;
-                ResetParameterOptions();
+                m_ParameterSendBits = 0U;
             }
         }
 
@@ -45,12 +46,6 @@ namespace QSB.Animation
         public bool GetParameterAutoSend(int index)
         {
             return ((int)m_ParameterSendBits & 1 << index) != 0;
-        }
-
-        internal void ResetParameterOptions()
-        {
-            DebugLog.DebugWrite("Reset parameter options");
-            m_ParameterSendBits = 0U;
         }
 
         public override void OnStartAuthority()
@@ -75,9 +70,11 @@ namespace QSB.Animation
                 stateHash = stateHash,
                 normalizedTime = normalizedTime
             };
+
             m_ParameterWriter.SeekZero();
             WriteParameters(m_ParameterWriter, false);
             animationMessage.parameters = m_ParameterWriter.ToArray();
+
             if (hasAuthority || ClientScene.readyConnection != null)
             {
                 ClientScene.readyConnection.Send(40, animationMessage);
@@ -85,7 +82,9 @@ namespace QSB.Animation
             else
             {
                 if (!isServer || localPlayerAuthority)
+                {
                     return;
+                }
                 NetworkServer.SendToReady(gameObject, 40, animationMessage);
             }
         }
@@ -297,81 +296,81 @@ namespace QSB.Animation
 
         internal static void OnAnimationServerMessage(NetworkMessage netMsg)
         {
-            netMsg.ReadMessage<QSBAnimationMessage>(QSBNetworkAnimator.s_AnimationMessage);
-            GameObject localObject = NetworkServer.FindLocalObject(QSBNetworkAnimator.s_AnimationMessage.netId);
-            if ((Object)localObject == (Object)null)
+            netMsg.ReadMessage(AnimationMessage);
+            var localObject = NetworkServer.FindLocalObject(AnimationMessage.netId);
+            if (localObject == null)
+            {
                 return;
-            QSBNetworkAnimator component = localObject.GetComponent<QSBNetworkAnimator>();
-            if (!((Object)component != (Object)null))
-                return;
-            NetworkReader reader = new NetworkReader(QSBNetworkAnimator.s_AnimationMessage.parameters);
-            component.HandleAnimMsg(QSBNetworkAnimator.s_AnimationMessage, reader);
-            NetworkServer.SendToReady(localObject, (short)40, (MessageBase)QSBNetworkAnimator.s_AnimationMessage);
+            }
+            var component = localObject.GetComponent<QSBNetworkAnimator>();
+            var reader = new NetworkReader(AnimationMessage.parameters);
+            component?.HandleAnimMsg(AnimationMessage, reader);
+            NetworkServer.SendToReady(localObject, 40, AnimationMessage);
         }
 
         internal static void OnAnimationParametersServerMessage(NetworkMessage netMsg)
         {
-            netMsg.ReadMessage<QSBAnimationParametersMessage>(QSBNetworkAnimator.s_AnimationParametersMessage);
-            GameObject localObject = NetworkServer.FindLocalObject(QSBNetworkAnimator.s_AnimationParametersMessage.netId);
-            if ((Object)localObject == (Object)null)
+            netMsg.ReadMessage(ParametersMessage);
+            var localObject = NetworkServer.FindLocalObject(ParametersMessage.netId);
+            if (localObject == null)
+            {
                 return;
-            QSBNetworkAnimator component = localObject.GetComponent<QSBNetworkAnimator>();
-            if (!((Object)component != (Object)null))
-                return;
-            NetworkReader reader = new NetworkReader(QSBNetworkAnimator.s_AnimationParametersMessage.parameters);
-            component.HandleAnimParamsMsg(QSBNetworkAnimator.s_AnimationParametersMessage, reader);
-            NetworkServer.SendToReady(localObject, (short)41, (MessageBase)QSBNetworkAnimator.s_AnimationParametersMessage);
+            }
+            var component = localObject.GetComponent<QSBNetworkAnimator>();
+            var reader = new NetworkReader(ParametersMessage.parameters);
+            component?.HandleAnimParamsMsg(ParametersMessage, reader);
+            NetworkServer.SendToReady(localObject, 41, ParametersMessage);
         }
 
         internal static void OnAnimationTriggerServerMessage(NetworkMessage netMsg)
         {
-            netMsg.ReadMessage<QSBAnimationTriggerMessage>(QSBNetworkAnimator.s_AnimationTriggerMessage);
-            GameObject localObject = NetworkServer.FindLocalObject(QSBNetworkAnimator.s_AnimationTriggerMessage.netId);
-            if ((Object)localObject == (Object)null)
+            netMsg.ReadMessage(TriggersMessage);
+            var localObject = NetworkServer.FindLocalObject(TriggersMessage.netId);
+            if (localObject == null)
+            {
                 return;
-            QSBNetworkAnimator component = localObject.GetComponent<QSBNetworkAnimator>();
-            if (!((Object)component != (Object)null))
-                return;
-            component.HandleAnimTriggerMsg(QSBNetworkAnimator.s_AnimationTriggerMessage.hash);
-            NetworkServer.SendToReady(localObject, (short)42, (MessageBase)QSBNetworkAnimator.s_AnimationTriggerMessage);
+            }
+            var component = localObject.GetComponent<QSBNetworkAnimator>();
+            component?.HandleAnimTriggerMsg(TriggersMessage.hash);
+            NetworkServer.SendToReady(localObject, 42, TriggersMessage);
         }
 
         internal static void OnAnimationClientMessage(NetworkMessage netMsg)
         {
-            netMsg.ReadMessage(s_AnimationMessage);
-            GameObject localObject = ClientScene.FindLocalObject(QSBNetworkAnimator.s_AnimationMessage.netId);
+            netMsg.ReadMessage(AnimationMessage);
+            GameObject localObject = ClientScene.FindLocalObject(QSBNetworkAnimator.AnimationMessage.netId);
             if ((Object)localObject == (Object)null)
                 return;
             QSBNetworkAnimator component = localObject.GetComponent<QSBNetworkAnimator>();
             if (!((Object)component != (Object)null))
                 return;
-            NetworkReader reader = new NetworkReader(QSBNetworkAnimator.s_AnimationMessage.parameters);
-            component.HandleAnimMsg(QSBNetworkAnimator.s_AnimationMessage, reader);
+            NetworkReader reader = new NetworkReader(QSBNetworkAnimator.AnimationMessage.parameters);
+            component.HandleAnimMsg(QSBNetworkAnimator.AnimationMessage, reader);
         }
 
         internal static void OnAnimationParametersClientMessage(NetworkMessage netMsg)
         {
-            netMsg.ReadMessage<QSBAnimationParametersMessage>(QSBNetworkAnimator.s_AnimationParametersMessage);
-            GameObject localObject = ClientScene.FindLocalObject(QSBNetworkAnimator.s_AnimationParametersMessage.netId);
+            netMsg.ReadMessage<QSBAnimationParametersMessage>(QSBNetworkAnimator.ParametersMessage);
+            GameObject localObject = ClientScene.FindLocalObject(QSBNetworkAnimator.ParametersMessage.netId);
             if ((Object)localObject == (Object)null)
                 return;
             QSBNetworkAnimator component = localObject.GetComponent<QSBNetworkAnimator>();
             if (!((Object)component != (Object)null))
                 return;
-            NetworkReader reader = new NetworkReader(QSBNetworkAnimator.s_AnimationParametersMessage.parameters);
-            component.HandleAnimParamsMsg(QSBNetworkAnimator.s_AnimationParametersMessage, reader);
+            NetworkReader reader = new NetworkReader(QSBNetworkAnimator.ParametersMessage.parameters);
+            component.HandleAnimParamsMsg(QSBNetworkAnimator.ParametersMessage, reader);
         }
 
         internal static void OnAnimationTriggerClientMessage(NetworkMessage netMsg)
         {
-            netMsg.ReadMessage<QSBAnimationTriggerMessage>(QSBNetworkAnimator.s_AnimationTriggerMessage);
-            GameObject localObject = ClientScene.FindLocalObject(QSBNetworkAnimator.s_AnimationTriggerMessage.netId);
+            netMsg.ReadMessage<QSBAnimationTriggerMessage>(QSBNetworkAnimator.TriggersMessage);
+            GameObject localObject = ClientScene.FindLocalObject(QSBNetworkAnimator.TriggersMessage.netId);
             if ((Object)localObject == (Object)null)
                 return;
             QSBNetworkAnimator component = localObject.GetComponent<QSBNetworkAnimator>();
             if (!((Object)component != (Object)null))
                 return;
-            component.HandleAnimTriggerMsg(QSBNetworkAnimator.s_AnimationTriggerMessage.hash);
+            component.HandleAnimTriggerMsg(QSBNetworkAnimator.TriggersMessage.hash);
         }
     }
 }

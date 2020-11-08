@@ -124,16 +124,14 @@
   <ItemGroup>
     <Compile Include="Animation\AnimationSync.cs" />
     <Compile Include="Animation\AnimationType.cs" />
-    <Compile Include="Animation\Events\AnimTriggerEvent.cs" />
+    <Compile Include="Animation\Events\CrouchEvent.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimControllerPatch.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
-    <Compile Include="Animation\AnimTrigger.cs" />
-    <Compile Include="Animation\Events\AnimTriggerMessage.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
-    <Compile Include="Animation\QSBAnimationMessage.cs" />
-    <Compile Include="Animation\QSBAnimationParametersMessage.cs" />
-    <Compile Include="Animation\QSBAnimationTriggerMessage.cs" />
+    <Compile Include="Animation\Events\QSBAnimationMessage.cs" />
+    <Compile Include="Animation\Events\QSBAnimationParametersMessage.cs" />
+    <Compile Include="Animation\Events\QSBAnimationTriggerMessage.cs" />
     <Compile Include="Animation\QSBNetworkAnimator.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
@@ -157,6 +155,7 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="MessagesCore\FloatMessage.cs" />
     <Compile Include="OrbSync\OrbManager.cs" />
     <Compile Include="OrbSync\Events\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbPatches.cs" />
