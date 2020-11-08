@@ -1,10 +1,10 @@
 ﻿using OWML.ModHelper.Events;
 using QSB.EventsCore;
 using QSB.Player;
+using QSB.Utility;
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Animation
 {
@@ -12,7 +12,7 @@ namespace QSB.Animation
     {
         private Animator _anim;
         private Animator _bodyAnim;
-        private NetworkAnimator _netAnim;
+        private QSBNetworkAnimator _netAnim;
         private AnimatorMirror _mirror;
 
         private RuntimeAnimatorController _suitedAnimController;
@@ -27,12 +27,12 @@ namespace QSB.Animation
         private RuntimeAnimatorController _gabbroController;
         private RuntimeAnimatorController _feldsparController;
 
-        public AnimationType CurrentType;
+        public AnimationType CurrentType = AnimationType.PlayerUnsuited;
 
         private void Awake()
         {
             _anim = gameObject.AddComponent<Animator>();
-            _netAnim = gameObject.AddComponent<NetworkAnimator>();
+            _netAnim = gameObject.AddComponent<QSBNetworkAnimator>();
             _netAnim.enabled = false;
             _netAnim.animator = _anim;
 
@@ -137,27 +137,22 @@ namespace QSB.Animation
             _crouchSync.Init(this, _playerController, _bodyAnim);
         }
 
-        private void OnJump() => SendTrigger(AnimTrigger.Jump);
-        private void OnBecomeGrounded() => SendTrigger(AnimTrigger.Grounded);
-        private void OnBecomeUngrounded() => SendTrigger(AnimTrigger.Ungrounded);
+        private void OnJump() => _netAnim.SetTrigger("Jump");
+        private void OnBecomeGrounded() => _netAnim.SetTrigger("Grounded");
+        private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
 
         private void OnSuitUp() => SendTrigger(AnimTrigger.SuitUp);
         private void OnSuitDown() => SendTrigger(AnimTrigger.SuitDown);
 
         public void SendTrigger(AnimTrigger trigger, float value = 0)
         {
-            GlobalMessenger<short, short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)CurrentType, (short)trigger, value);
+            GlobalMessenger<short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)trigger, value);
         }
 
         public void HandleTrigger(AnimTrigger trigger, float value)
         {
             switch (trigger)
             {
-                case AnimTrigger.Jump:
-                case AnimTrigger.Grounded:
-                case AnimTrigger.Ungrounded:
-                    _bodyAnim.SetTrigger(trigger.ToString());
-                    break;
                 case AnimTrigger.SuitUp:
                     SuitUp();
                     break;
@@ -202,7 +197,11 @@ namespace QSB.Animation
             {
                 return;
             }
+            DebugLog.DebugWrite($"{_bodyAnim.name} Changing animtype to {Enum.GetName(typeof(AnimationType), type)}");
+            GlobalMessenger<AnimationType>.FireEvent(EventNames.QSBChangeAnimType, type);
             CurrentType = type;
+            _netAnim.enabled = false;
+            _netAnim.animator = null;
             switch (type)
             {
                 case AnimationType.PlayerSuited:
@@ -218,8 +217,14 @@ namespace QSB.Animation
                     _bodyAnim.SetTrigger("Playing");
                     _anim.runtimeAnimatorController = _chertController;
                     _anim.SetTrigger("Playing");
-                    _mirror.RebuildFloatParams();
                     break;
+            }
+            _mirror.RebuildFloatParams();
+            _netAnim.animator = _anim;
+            _netAnim.enabled = true;
+            for (var i = 0; i < _anim.parameterCount; i++)
+            {
+                _netAnim.SetParameterAutoSend(i, true);
             }
         }
     }

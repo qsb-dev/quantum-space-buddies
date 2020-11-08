@@ -1,5 +1,4 @@
 ﻿using QSB.Animation;
-using QSB.EventsCore;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
 using UnityEngine;
@@ -23,21 +22,19 @@ namespace QSB.Instruments
                 if (!QSBPlayerManager.LocalPlayer.PlayingInstrument)
                 {
                     CameraManager.Instance.SwitchTo3rdPerson();
-                    SwitchToInstrument(InstrumentType.RIEBECK);
-                    QSBPlayerManager.GetSyncObject<AnimationSync>(QSBPlayerManager.LocalPlayerId).SetAnimationType(AnimationType.Chert);
+                    SwitchToInstrument(AnimationType.Chert);
                 }
                 else
                 {
                     CameraManager.Instance.SwitchTo1stPerson();
-                    SwitchToInstrument(InstrumentType.NONE);
+                    SwitchToInstrument(AnimationType.PlayerUnsuited);
                 }
             }
         }
 
-        public void SwitchToInstrument(InstrumentType type)
+        public void SwitchToInstrument(AnimationType type)
         {
-            QSBPlayerManager.LocalPlayer.CurrentInstrument = type;
-            GlobalMessenger<InstrumentType>.FireEvent(EventNames.QSBPlayInstrument, type);
+            QSBPlayerManager.GetSyncObject<AnimationSync>(QSBPlayerManager.LocalPlayerId).SetAnimationType(type);
         }
     }
 }

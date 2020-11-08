@@ -1,5 +1,4 @@
 ﻿using QSB.Animation;
-using QSB.Instruments;
 using QSB.Tools;
 using QSB.Utility;
 using System.Linq;
@@ -31,9 +30,10 @@ namespace QSB.Player
         public int CurrentDialogueID { get; set; }
         public GameObject CurrentDialogueBox { get; set; }
 
-        // Instruments
-        public InstrumentType CurrentInstrument { get; set; }
-        public bool PlayingInstrument => CurrentInstrument != InstrumentType.NONE;
+        // Animation
+        public AnimationSync Animator => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
+        public bool PlayingInstrument => Animator.CurrentType != AnimationType.PlayerSuited
+            && Animator.CurrentType != AnimationType.PlayerUnsuited;
 
         public PlayerInfo(uint id)
         {

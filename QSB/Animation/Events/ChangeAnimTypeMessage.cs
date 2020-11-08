@@ -1,16 +1,16 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.Instruments.Events
+namespace QSB.Animation.Events
 {
-    public class PlayInstrumentMessage : PlayerMessage
+    public class ChangeAnimTypeMessage : PlayerMessage
     {
-        public InstrumentType Type;
+        public AnimationType Type;
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            Type = (InstrumentType)reader.ReadInt32();
+            Type = (AnimationType)reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)

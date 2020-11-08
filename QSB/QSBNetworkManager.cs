@@ -117,6 +117,13 @@ namespace QSB
                     Destroy(item);
                 }
             }
+
+            NetworkServer.UnregisterHandler(40);
+            NetworkServer.UnregisterHandler(41);
+            NetworkServer.UnregisterHandler(42);
+            NetworkServer.RegisterHandler(40, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
+            NetworkServer.RegisterHandler(41, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
+            NetworkServer.RegisterHandler(42, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
         }
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -145,6 +152,13 @@ namespace QSB
             {
                 QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
             }
+
+            singleton.client.UnregisterHandler(40);
+            singleton.client.UnregisterHandler(41);
+            singleton.client.UnregisterHandler(42);
+            singleton.client.RegisterHandlerSafe(40, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
+            singleton.client.RegisterHandlerSafe(41, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
+            singleton.client.RegisterHandlerSafe(42, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
 
             QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 

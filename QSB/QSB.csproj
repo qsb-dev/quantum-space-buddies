@@ -131,6 +131,10 @@
     <Compile Include="Animation\AnimTrigger.cs" />
     <Compile Include="Animation\Events\AnimTriggerMessage.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
+    <Compile Include="Animation\QSBAnimationMessage.cs" />
+    <Compile Include="Animation\QSBAnimationParametersMessage.cs" />
+    <Compile Include="Animation\QSBAnimationTriggerMessage.cs" />
+    <Compile Include="Animation\QSBNetworkAnimator.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
     <Compile Include="ConversationSync\ConversationPatches.cs" />
@@ -147,9 +151,8 @@
     <Compile Include="EventsCore\EventNames.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
     <Compile Include="EventsCore\IQSBEvent.cs" />
-    <Compile Include="Instruments\Events\PlayInstrumentEvent.cs" />
-    <Compile Include="Instruments\Events\PlayInstrumentMessage.cs" />
-    <Compile Include="Instruments\InstrumentType.cs" />
+    <Compile Include="Animation\Events\ChangeAnimTypeEvent.cs" />
+    <Compile Include="Animation\Events\ChangeAnimTypeMessage.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
