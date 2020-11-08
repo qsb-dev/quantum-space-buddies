@@ -5,6 +5,7 @@ namespace QSB.Animation.Events
 {
     public class AnimTriggerMessage : PlayerMessage
     {
+        public short TypeId;
         public short TriggerId;
         public float Value;
 
@@ -13,6 +14,7 @@ namespace QSB.Animation.Events
             base.Deserialize(reader);
             Value = reader.ReadSingle();
             TriggerId = reader.ReadInt16();
+            TypeId = reader.ReadInt16();
         }
 
         public override void Serialize(NetworkWriter writer)
@@ -20,6 +22,7 @@ namespace QSB.Animation.Events
             base.Serialize(writer);
             writer.Write(Value);
             writer.Write(TriggerId);
+            writer.Write(TypeId);
         }
     }
 }

@@ -22,10 +22,12 @@ namespace QSB.Animation
         private PlayerCharacterController _playerController;
         private CrouchSync _crouchSync;
 
-        private RuntimeAnimatorController RiebeckController;
-        private RuntimeAnimatorController ChertController;
-        private RuntimeAnimatorController GabbroController;
-        private RuntimeAnimatorController FeldsparController;
+        private RuntimeAnimatorController _riebeckController;
+        private RuntimeAnimatorController _chertController;
+        private RuntimeAnimatorController _gabbroController;
+        private RuntimeAnimatorController _feldsparController;
+
+        public AnimationType CurrentType;
 
         private void Awake()
         {
@@ -56,13 +58,13 @@ namespace QSB.Animation
         private void OnSceneLoaded(OWScene scene, bool inUniverse)
         {
             var reibeckRoot = GameObject.Find("Traveller_HEA_Riebeck_ANIM_Talking");
-            RiebeckController = reibeckRoot.GetComponent<Animator>().runtimeAnimatorController;
+            _riebeckController = reibeckRoot.GetComponent<Animator>().runtimeAnimatorController;
             var chertRoot = GameObject.Find("Traveller_HEA_Chert_ANIM_Chatter_Chipper");
-            ChertController = chertRoot.GetComponent<Animator>().runtimeAnimatorController;
+            _chertController = chertRoot.GetComponent<Animator>().runtimeAnimatorController;
             var gabbroRoot = GameObject.Find("Traveller_HEA_Gabbro_ANIM_IdleFlute");
-            GabbroController = gabbroRoot.GetComponent<Animator>().runtimeAnimatorController;
+            _gabbroController = gabbroRoot.GetComponent<Animator>().runtimeAnimatorController;
             var feldsparRoot = GameObject.Find("Traveller_HEA_Feldspar_ANIM_Talking");
-            FeldsparController = feldsparRoot.GetComponent<Animator>().runtimeAnimatorController;
+            _feldsparController = feldsparRoot.GetComponent<Animator>().runtimeAnimatorController;
         }
 
         private void InitCommon(Transform body)
@@ -144,7 +146,7 @@ namespace QSB.Animation
 
         public void SendTrigger(AnimTrigger trigger, float value = 0)
         {
-            GlobalMessenger<short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)trigger, value);
+            GlobalMessenger<short, short, float>.FireEvent(EventNames.QSBAnimTrigger, (short)CurrentType, (short)trigger, value);
         }
 
         public void HandleTrigger(AnimTrigger trigger, float value)
@@ -196,6 +198,11 @@ namespace QSB.Animation
 
         public void SetAnimationType(AnimationType type)
         {
+            if (CurrentType == type)
+            {
+                return;
+            }
+            CurrentType = type;
             switch (type)
             {
                 case AnimationType.PlayerSuited:
@@ -207,9 +214,9 @@ namespace QSB.Animation
                     _anim.runtimeAnimatorController = _unsuitedAnimController;
                     break;
                 case AnimationType.Chert:
-                    _bodyAnim.runtimeAnimatorController = ChertController;
+                    _bodyAnim.runtimeAnimatorController = _chertController;
                     _bodyAnim.SetTrigger("Playing");
-                    _anim.runtimeAnimatorController = ChertController;
+                    _anim.runtimeAnimatorController = _chertController;
                     _anim.SetTrigger("Playing");
                     _mirror.RebuildFloatParams();
                     break;

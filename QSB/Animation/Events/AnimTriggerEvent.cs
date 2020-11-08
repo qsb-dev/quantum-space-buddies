@@ -7,15 +7,16 @@ namespace QSB.Animation.Events
     {
         public override EventType Type => EventType.AnimTrigger;
 
-        public override void SetupListener() => GlobalMessenger<short, float>.AddListener(EventNames.QSBAnimTrigger, Handler);
+        public override void SetupListener() => GlobalMessenger<short, short, float>.AddListener(EventNames.QSBAnimTrigger, Handler);
 
-        public override void CloseListener() => GlobalMessenger<short, float>.RemoveListener(EventNames.QSBAnimTrigger, Handler);
+        public override void CloseListener() => GlobalMessenger<short, short, float>.RemoveListener(EventNames.QSBAnimTrigger, Handler);
 
-        private void Handler(short triggerId, float value) => SendEvent(CreateMessage(triggerId, value));
+        private void Handler(short typeId, short triggerId, float value) => SendEvent(CreateMessage(typeId, triggerId, value));
 
-        private AnimTriggerMessage CreateMessage(short triggerId, float value) => new AnimTriggerMessage
+        private AnimTriggerMessage CreateMessage(short typeId, short triggerId, float value) => new AnimTriggerMessage
         {
             AboutId = LocalPlayerId,
+            TypeId = typeId,
             TriggerId = triggerId,
             Value = value
         };
@@ -27,6 +28,7 @@ namespace QSB.Animation.Events
             {
                 return;
             }
+            animationSync.SetAnimationType((AnimationType)message.TypeId);
             animationSync.HandleTrigger((AnimTrigger)message.TriggerId, message.Value);
         }
     }
