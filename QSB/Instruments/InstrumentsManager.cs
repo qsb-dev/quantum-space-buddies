@@ -8,6 +8,7 @@ namespace QSB.Instruments
     public class InstrumentsManager : MonoBehaviour
     {
         public static InstrumentsManager Instance;
+        private AnimationType _savedType;
 
         private void Awake()
         {
@@ -21,20 +22,21 @@ namespace QSB.Instruments
             {
                 if (!QSBPlayerManager.LocalPlayer.PlayingInstrument)
                 {
+                    _savedType = QSBPlayerManager.LocalPlayer.Animator.CurrentType;
                     CameraManager.Instance.SwitchTo3rdPerson();
-                    SwitchToInstrument(AnimationType.Chert);
+                    SwitchToType(AnimationType.Chert);
                 }
                 else
                 {
                     CameraManager.Instance.SwitchTo1stPerson();
-                    SwitchToInstrument(AnimationType.PlayerUnsuited);
+                    SwitchToType(_savedType);
                 }
             }
         }
 
-        public void SwitchToInstrument(AnimationType type)
+        public void SwitchToType(AnimationType type)
         {
-            QSBPlayerManager.GetSyncObject<AnimationSync>(QSBPlayerManager.LocalPlayerId).SetAnimationType(type);
+            QSBPlayerManager.LocalPlayer.Animator.SetAnimationType(type);
         }
     }
 }

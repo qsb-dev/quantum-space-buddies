@@ -1,4 +1,5 @@
-﻿using OWML.ModHelper.Events;
+﻿using OWML.Common;
+using OWML.ModHelper.Events;
 using QSB.EventsCore;
 using QSB.Player;
 using QSB.Utility;
@@ -13,7 +14,6 @@ namespace QSB.Animation
         private Animator _anim;
         private Animator _bodyAnim;
         private QSBNetworkAnimator _netAnim;
-        private AnimatorMirror _mirror;
 
         private RuntimeAnimatorController _suitedAnimController;
         private AnimatorOverrideController _unsuitedAnimController;
@@ -27,6 +27,7 @@ namespace QSB.Animation
         private RuntimeAnimatorController _gabbroController;
         private RuntimeAnimatorController _feldsparController;
 
+        public AnimatorMirror Mirror { get; private set; }
         public AnimationType CurrentType = AnimationType.PlayerUnsuited;
 
         private void Awake()
@@ -69,14 +70,14 @@ namespace QSB.Animation
         {
             _netAnim.enabled = true;
             _bodyAnim = body.GetComponent<Animator>();
-            _mirror = body.gameObject.AddComponent<AnimatorMirror>();
+            Mirror = body.gameObject.AddComponent<AnimatorMirror>();
             if (isLocalPlayer)
             {
-                _mirror.Init(_bodyAnim, _anim);
+                Mirror.Init(_bodyAnim, _anim);
             }
             else
             {
-                _mirror.Init(_anim, _bodyAnim);
+                Mirror.Init(_anim, _bodyAnim);
             }
 
             QSBPlayerManager.PlayerSyncObjects.Add(this);
@@ -149,15 +150,15 @@ namespace QSB.Animation
         private void SuitUp()
         {
             SetAnimationType(AnimationType.PlayerSuited);
-            _unsuitedGraphics.SetActive(false);
-            _suitedGraphics.SetActive(true);
+            _unsuitedGraphics?.SetActive(false);
+            _suitedGraphics?.SetActive(true);
         }
 
         private void SuitDown()
         {
             SetAnimationType(AnimationType.PlayerUnsuited);
-            _unsuitedGraphics.SetActive(true);
-            _suitedGraphics.SetActive(false);
+            _unsuitedGraphics?.SetActive(true);
+            _suitedGraphics?.SetActive(false);
         }
 
         public void SetSuitState(bool state)
@@ -179,17 +180,17 @@ namespace QSB.Animation
             DebugLog.DebugWrite($"{_bodyAnim.name} Changing animtype to {Enum.GetName(typeof(AnimationType), type)}");
             GlobalMessenger<AnimationType>.FireEvent(EventNames.QSBChangeAnimType, type);
             CurrentType = type;
-            _netAnim.enabled = false;
-            _netAnim.animator = null;
             switch (type)
             {
                 case AnimationType.PlayerSuited:
                     _bodyAnim.runtimeAnimatorController = _suitedAnimController;
                     _anim.runtimeAnimatorController = _suitedAnimController;
+                    DebugLog.DebugWrite("done suited");
                     break;
                 case AnimationType.PlayerUnsuited:
                     _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
                     _anim.runtimeAnimatorController = _unsuitedAnimController;
+                    DebugLog.DebugWrite("done unsuited");
                     break;
                 case AnimationType.Chert:
                     _bodyAnim.runtimeAnimatorController = _chertController;
@@ -198,9 +199,12 @@ namespace QSB.Animation
                     _anim.SetTrigger("Playing");
                     break;
             }
-            _mirror.RebuildFloatParams();
+            if (_bodyAnim.runtimeAnimatorController == null)
+            {
+                DebugLog.ToConsole("Error - Somehow set RAC of bodyAnim to null?", MessageType.Error);
+            }
             _netAnim.animator = _anim;
-            _netAnim.enabled = true;
+            Mirror.RebuildFloatParams();
             for (var i = 0; i < _anim.parameterCount; i++)
             {
                 _netAnim.SetParameterAutoSend(i, true);

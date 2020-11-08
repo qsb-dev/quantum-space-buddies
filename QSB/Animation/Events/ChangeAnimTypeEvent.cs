@@ -1,5 +1,6 @@
 ﻿using QSB.EventsCore;
 using QSB.Player;
+using QSB.Utility;
 
 namespace QSB.Animation.Events
 {
@@ -21,6 +22,7 @@ namespace QSB.Animation.Events
 
         public override void OnReceiveRemote(ChangeAnimTypeMessage message)
         {
+            DebugLog.DebugWrite("Receive remote ChangeAnimType - " + message.Type);
             QSBPlayerManager.GetPlayer(message.AboutId).Animator.SetAnimationType(message.Type);
         }
     }

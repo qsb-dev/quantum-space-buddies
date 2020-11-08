@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,11 @@ namespace QSB.Animation
             }
         }
 
+        private PlayerInfo GetPlayer()
+        {
+            return QSBPlayerManager.GetSyncObjects<AnimationSync>().First(x => x.Mirror == this).Player;
+        }
+
         private void Update()
         {
             if (_to == null || _from == null)
@@ -59,6 +65,7 @@ namespace QSB.Animation
                         if (!_floatParams.ContainsKey(fromParam.name))
                         {
                             DebugLog.ToConsole($"Warning - Tried to sync anim float that doesn't exist in dict : {fromParam.name}", MessageType.Warning);
+                            RebuildFloatParams();
                             break;
                         }
                         _floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
@@ -81,7 +88,12 @@ namespace QSB.Animation
 
         public void RebuildFloatParams()
         {
+            if (_from.runtimeAnimatorController == null)
+            {
+                DebugLog.ToConsole($"Error - Controller of \"from\" for player {GetPlayer().PlayerId} is null! Current animtype is {GetPlayer().Animator.CurrentType}.", MessageType.Error);
+            }
             _floatParams.Clear();
+            DebugLog.DebugWrite($"REBUILD FLOAT PARAMS id {GetPlayer().PlayerId}");
             foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
             {
                 _floatParams.Add(param.name, new AnimFloatParam());

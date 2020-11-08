@@ -38,6 +38,16 @@ namespace QSB.Animation
         public override void OnReceiveLocal(ToggleMessage message)
         {
             QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
+            var animator = QSBPlayerManager.LocalPlayer.Animator;
+            if (message.ToggleValue)
+            {
+                animator.CurrentType = AnimationType.PlayerSuited;
+            }
+            else
+            {
+                animator.CurrentType = AnimationType.PlayerUnsuited;
+            }
+            animator.Mirror.RebuildFloatParams();
         }
     }
 }
