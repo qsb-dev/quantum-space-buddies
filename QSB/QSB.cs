@@ -28,7 +28,8 @@ namespace QSB
             Application.runInBackground = true;
 
             var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
-            instance.theUITable[(int)UITextType.PleaseUseController] = "<color=orange>Outer Wilds</color> is best experienced with fellow travellers...";
+            instance.theUITable[(int)UITextType.PleaseUseController] = 
+                "<color=orange>Quantum Space Buddies</color> is best experienced with fellow travellers...";
         }
 
         private void Start()
