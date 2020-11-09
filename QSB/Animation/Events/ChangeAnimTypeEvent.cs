@@ -8,21 +8,21 @@ namespace QSB.Animation.Events
     {
         public override EventType Type => EventType.PlayInstrument;
 
-        public override void SetupListener() => GlobalMessenger<AnimationType>.AddListener(EventNames.QSBChangeAnimType, Handler);
+        public override void SetupListener() => GlobalMessenger<uint, AnimationType>.AddListener(EventNames.QSBChangeAnimType, Handler);
 
-        public override void CloseListener() => GlobalMessenger<AnimationType>.RemoveListener(EventNames.QSBChangeAnimType, Handler);
+        public override void CloseListener() => GlobalMessenger<uint, AnimationType>.RemoveListener(EventNames.QSBChangeAnimType, Handler);
 
-        private void Handler(AnimationType type) => SendEvent(CreateMessage(type));
+        private void Handler(uint player, AnimationType type) => SendEvent(CreateMessage(player, type));
 
-        private ChangeAnimTypeMessage CreateMessage(AnimationType type) => new ChangeAnimTypeMessage
+        private ChangeAnimTypeMessage CreateMessage(uint player, AnimationType type) => new ChangeAnimTypeMessage
         {
-            AboutId = LocalPlayerId,
+            AboutId = player,
             Type = type
         };
 
         public override void OnReceiveRemote(ChangeAnimTypeMessage message)
         {
-            DebugLog.DebugWrite("Receive remote ChangeAnimType - " + message.Type);
+            DebugLog.DebugWrite($"ChangeAnimType for {message.AboutId} - {message.Type}");
             QSBPlayerManager.GetPlayer(message.AboutId).Animator.SetAnimationType(message.Type);
         }
     }

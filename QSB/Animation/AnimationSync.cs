@@ -3,7 +3,6 @@ using OWML.ModHelper.Events;
 using QSB.EventsCore;
 using QSB.Player;
 using QSB.Utility;
-using System;
 using System.Linq;
 using UnityEngine;
 
@@ -37,7 +36,7 @@ namespace QSB.Animation
             _netAnim.enabled = false;
             _netAnim.animator = _anim;
 
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+            QSBSceneManager.OnSceneLoaded += (OWScene scene, bool universe) => LoadControllers(universe);
         }
 
         private void OnDestroy()
@@ -51,11 +50,15 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
 
-            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+            QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool universe) => LoadControllers(universe);
         }
 
-        private void OnSceneLoaded(OWScene scene, bool inUniverse)
+        private void LoadControllers(bool universe)
         {
+            if (!universe)
+            {
+                return;
+            }
             var reibeckRoot = GameObject.Find("Traveller_HEA_Riebeck_ANIM_Talking");
             _riebeckController = reibeckRoot.GetComponent<Animator>().runtimeAnimatorController;
             var chertRoot = GameObject.Find("Traveller_HEA_Chert_ANIM_Chatter_Chipper");
@@ -68,6 +71,10 @@ namespace QSB.Animation
 
         private void InitCommon(Transform body)
         {
+            if (QSBSceneManager.IsInUniverse)
+            {
+                LoadControllers(true);
+            }
             _netAnim.enabled = true;
             _bodyAnim = body.GetComponent<Animator>();
             Mirror = body.gameObject.AddComponent<AnimatorMirror>();
@@ -86,10 +93,17 @@ namespace QSB.Animation
             {
                 _netAnim.SetParameterAutoSend(i, true);
             }
+
+            var playerAnimController = body.GetComponent<PlayerAnimController>();
+            _suitedAnimController = AnimControllerPatch.SuitedAnimController;
+            _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
+            _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
+            _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
         }
 
         public void InitLocal(Transform body)
         {
+            DebugLog.DebugWrite($"InitLocal ({PlayerId})");
             InitCommon(body);
 
             _playerController = body.parent.GetComponent<PlayerCharacterController>();
@@ -102,15 +116,11 @@ namespace QSB.Animation
 
         public void InitRemote(Transform body)
         {
+            DebugLog.DebugWrite($"InitRemote ({PlayerId})");
             InitCommon(body);
 
             var playerAnimController = body.GetComponent<PlayerAnimController>();
             playerAnimController.enabled = false;
-
-            _suitedAnimController = AnimControllerPatch.SuitedAnimController;
-            _unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
-            _suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
-            _unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
 
             playerAnimController.SetValue("_suitedGroup", new GameObject());
             playerAnimController.SetValue("_unsuitedGroup", new GameObject());
@@ -149,16 +159,14 @@ namespace QSB.Animation
 
         private void SuitUp()
         {
+            GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerSuited);
             SetAnimationType(AnimationType.PlayerSuited);
-            _unsuitedGraphics?.SetActive(false);
-            _suitedGraphics?.SetActive(true);
         }
 
         private void SuitDown()
         {
+            GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerUnsuited);
             SetAnimationType(AnimationType.PlayerUnsuited);
-            _unsuitedGraphics?.SetActive(true);
-            _suitedGraphics?.SetActive(false);
         }
 
         public void SetSuitState(bool state)
@@ -177,33 +185,46 @@ namespace QSB.Animation
             {
                 return;
             }
-            DebugLog.DebugWrite($"{_bodyAnim.name} Changing animtype to {Enum.GetName(typeof(AnimationType), type)}");
-            GlobalMessenger<AnimationType>.FireEvent(EventNames.QSBChangeAnimType, type);
             CurrentType = type;
+            if (_unsuitedAnimController == null)
+            {
+                DebugLog.DebugWrite($"Error - Unsuited controller is null. ({PlayerId})", MessageType.Error);
+            }
+            if (_suitedAnimController == null)
+            {
+                DebugLog.DebugWrite($"Error - Suited controller is null. ({PlayerId})", MessageType.Error);
+            }
+            RuntimeAnimatorController controller = default;
             switch (type)
             {
                 case AnimationType.PlayerSuited:
-                    _bodyAnim.runtimeAnimatorController = _suitedAnimController;
-                    _anim.runtimeAnimatorController = _suitedAnimController;
-                    DebugLog.DebugWrite("done suited");
+                    controller = _suitedAnimController;
+                    _unsuitedGraphics?.SetActive(false);
+                    _suitedGraphics?.SetActive(true);
                     break;
                 case AnimationType.PlayerUnsuited:
-                    _bodyAnim.runtimeAnimatorController = _unsuitedAnimController;
-                    _anim.runtimeAnimatorController = _unsuitedAnimController;
-                    DebugLog.DebugWrite("done unsuited");
+                    controller = _unsuitedAnimController;
+                    _unsuitedGraphics?.SetActive(true);
+                    _suitedGraphics?.SetActive(false);
                     break;
                 case AnimationType.Chert:
-                    _bodyAnim.runtimeAnimatorController = _chertController;
-                    _bodyAnim.SetTrigger("Playing");
-                    _anim.runtimeAnimatorController = _chertController;
-                    _anim.SetTrigger("Playing");
+                    controller = _chertController;
                     break;
             }
-            if (_bodyAnim.runtimeAnimatorController == null)
+            _anim.runtimeAnimatorController = controller;
+            _bodyAnim.runtimeAnimatorController = controller;
+            if (type != AnimationType.PlayerSuited && type != AnimationType.PlayerUnsuited)
             {
-                DebugLog.ToConsole("Error - Somehow set RAC of bodyAnim to null?", MessageType.Error);
+                _bodyAnim.SetTrigger("Playing");
+                _anim.SetTrigger("Playing");
             }
-            _netAnim.animator = _anim;
+            else
+            {
+                // Avoids "jumping" look when exiting instrument
+                _bodyAnim.SetTrigger("Grounded");
+                _anim.SetTrigger("Grounded");
+            }
+            _netAnim.animator = _anim; // Probably not needed.
             Mirror.RebuildFloatParams();
             for (var i = 0; i < _anim.parameterCount; i++)
             {

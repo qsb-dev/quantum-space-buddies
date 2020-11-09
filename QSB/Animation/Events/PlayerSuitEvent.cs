@@ -1,6 +1,7 @@
 ﻿using QSB.EventsCore;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 
 namespace QSB.Animation
 {
@@ -31,12 +32,14 @@ namespace QSB.Animation
 
         public override void OnReceiveRemote(ToggleMessage message)
         {
+            DebugLog.DebugWrite($"remote suit {(message.ToggleValue ? "on" : "off")} player {message.AboutId}");
             var player = QSBPlayerManager.GetPlayer(message.AboutId);
             player?.UpdateState(State.Suit, message.ToggleValue);
         }
 
         public override void OnReceiveLocal(ToggleMessage message)
         {
+            DebugLog.DebugWrite($"local suit {(message.ToggleValue ? "on" : "off")}");
             QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
             var animator = QSBPlayerManager.LocalPlayer.Animator;
             if (message.ToggleValue)

@@ -148,16 +148,15 @@ namespace QSB
             QSBSectorManager.Instance.RebuildSectors();
             OrbManager.Instance.QueueBuildSlots();
 
-            if (NetworkClient.active && !NetworkServer.active)
+            if (!NetworkServer.localClientActive)
             {
                 QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
+                singleton.client.UnregisterHandler(40);
+                singleton.client.UnregisterHandler(41);
+                singleton.client.RegisterHandlerSafe(40, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
+                singleton.client.RegisterHandlerSafe(41, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
             }
-
-            singleton.client.UnregisterHandler(40);
-            singleton.client.UnregisterHandler(41);
             singleton.client.UnregisterHandler(42);
-            singleton.client.RegisterHandlerSafe(40, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
-            singleton.client.RegisterHandlerSafe(41, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
             singleton.client.RegisterHandlerSafe(42, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
 
             QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);

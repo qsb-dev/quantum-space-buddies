@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.EventsCore;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
 using UnityEngine;
@@ -36,6 +37,7 @@ namespace QSB.Instruments
 
         public void SwitchToType(AnimationType type)
         {
+            GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
             QSBPlayerManager.LocalPlayer.Animator.SetAnimationType(type);
         }
     }
