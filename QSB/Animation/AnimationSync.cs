@@ -103,7 +103,6 @@ namespace QSB.Animation
 
         public void InitLocal(Transform body)
         {
-            DebugLog.DebugWrite($"InitLocal ({PlayerId})");
             InitCommon(body);
 
             _playerController = body.parent.GetComponent<PlayerCharacterController>();
@@ -116,7 +115,6 @@ namespace QSB.Animation
 
         public void InitRemote(Transform body)
         {
-            DebugLog.DebugWrite($"InitRemote ({PlayerId})");
             InitCommon(body);
 
             var playerAnimController = body.GetComponent<PlayerAnimController>();

@@ -1,22 +1,22 @@
 ﻿using QSB.Messaging;
 using UnityEngine.Networking;
 
-namespace QSB.DeathSync.Events
+namespace QSB.MessagesCore
 {
-    public class PlayerDeathMessage : PlayerMessage
+    public class EnumMessage<T> : PlayerMessage
     {
-        public DeathType DeathType { get; set; }
+        public T Value;
 
         public override void Deserialize(NetworkReader reader)
         {
             base.Deserialize(reader);
-            DeathType = (DeathType)reader.ReadInt16();
+            Value = (T)(object)reader.ReadInt32();
         }
 
         public override void Serialize(NetworkWriter writer)
         {
             base.Serialize(writer);
-            writer.Write((short)DeathType);
+            writer.Write((int)(object)Value);
         }
     }
 }

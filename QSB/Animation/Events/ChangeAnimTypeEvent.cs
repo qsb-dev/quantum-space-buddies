@@ -1,10 +1,10 @@
 ﻿using QSB.EventsCore;
+using QSB.MessagesCore;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.Animation.Events
 {
-    public class ChangeAnimTypeEvent : QSBEvent<ChangeAnimTypeMessage>
+    public class ChangeAnimTypeEvent : QSBEvent<EnumMessage<AnimationType>>
     {
         public override EventType Type => EventType.PlayInstrument;
 
@@ -14,16 +14,15 @@ namespace QSB.Animation.Events
 
         private void Handler(uint player, AnimationType type) => SendEvent(CreateMessage(player, type));
 
-        private ChangeAnimTypeMessage CreateMessage(uint player, AnimationType type) => new ChangeAnimTypeMessage
+        private EnumMessage<AnimationType> CreateMessage(uint player, AnimationType type) => new EnumMessage<AnimationType>
         {
             AboutId = player,
-            Type = type
+            Value = type
         };
 
-        public override void OnReceiveRemote(ChangeAnimTypeMessage message)
+        public override void OnReceiveRemote(EnumMessage<AnimationType> message)
         {
-            DebugLog.DebugWrite($"ChangeAnimType for {message.AboutId} - {message.Type}");
-            QSBPlayerManager.GetPlayer(message.AboutId).Animator.SetAnimationType(message.Type);
+            QSBPlayerManager.GetPlayer(message.AboutId).Animator.SetAnimationType(message.Value);
         }
     }
 }

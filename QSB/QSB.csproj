@@ -150,11 +150,11 @@
     <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
     <Compile Include="EventsCore\IQSBEvent.cs" />
     <Compile Include="Animation\Events\ChangeAnimTypeEvent.cs" />
-    <Compile Include="Animation\Events\ChangeAnimTypeMessage.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="MessagesCore\EnumMessage.cs" />
     <Compile Include="MessagesCore\FloatMessage.cs" />
     <Compile Include="OrbSync\OrbManager.cs" />
     <Compile Include="OrbSync\Events\OrbSlotEvent.cs" />
@@ -182,7 +182,6 @@
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\QSBGeyser.cs" />
-    <Compile Include="DeathSync\Events\PlayerDeathMessage.cs" />
     <Compile Include="Player\Events\PlayerLeaveMessage.cs" />
     <Compile Include="Tools\Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />

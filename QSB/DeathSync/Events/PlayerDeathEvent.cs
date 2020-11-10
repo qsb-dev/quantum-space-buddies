@@ -1,10 +1,11 @@
 ﻿using QSB.EventsCore;
+using QSB.MessagesCore;
 using QSB.Player;
 using QSB.Utility;
 
 namespace QSB.DeathSync.Events
 {
-    public class PlayerDeathEvent : QSBEvent<PlayerDeathMessage>
+    public class PlayerDeathEvent : QSBEvent<EnumMessage<DeathType>>
     {
         public override EventType Type => EventType.PlayerDeath;
 
@@ -14,19 +15,19 @@ namespace QSB.DeathSync.Events
 
         private void Handler(DeathType type) => SendEvent(CreateMessage(type));
 
-        private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
+        private EnumMessage<DeathType> CreateMessage(DeathType type) => new EnumMessage<DeathType>
         {
             AboutId = LocalPlayerId,
-            DeathType = type
+            Value = type
         };
 
-        public override void OnReceiveRemote(PlayerDeathMessage message)
+        public override void OnReceiveRemote(EnumMessage<DeathType> message)
         {
             var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
-            var deathMessage = Necronomicon.GetPhrase(message.DeathType);
+            var deathMessage = Necronomicon.GetPhrase(message.Value);
             DebugLog.ToAll(string.Format(deathMessage, playerName));
         }
 
-        public override void OnReceiveLocal(PlayerDeathMessage message) => OnReceiveRemote(message);
+        public override void OnReceiveLocal(EnumMessage<DeathType> message) => OnReceiveRemote(message);
     }
 }

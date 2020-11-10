@@ -1,8 +1,6 @@
 ﻿using QSB.Animation.Events;
-using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
-using Object = UnityEngine.Object;
 
 namespace QSB.Animation
 {
