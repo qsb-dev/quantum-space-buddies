@@ -21,10 +21,13 @@ namespace QSB.Animation
         private PlayerCharacterController _playerController;
         private CrouchSync _crouchSync;
 
-        private RuntimeAnimatorController _riebeckController;
         private RuntimeAnimatorController _chertController;
-        private RuntimeAnimatorController _gabbroController;
+        private RuntimeAnimatorController _eskerController;
         private RuntimeAnimatorController _feldsparController;
+        private RuntimeAnimatorController _gabbroController;
+        private RuntimeAnimatorController _riebeckController;
+        private RuntimeAnimatorController _solanumController;
+        
 
         public AnimatorMirror Mirror { get; private set; }
         public AnimationType CurrentType = AnimationType.PlayerUnsuited;
@@ -207,6 +210,21 @@ namespace QSB.Animation
                     break;
                 case AnimationType.Chert:
                     controller = _chertController;
+                    break;
+                case AnimationType.Esker:
+                    controller = _eskerController;
+                    break;
+                case AnimationType.Feldspar:
+                    controller = _feldsparController;
+                    break;
+                case AnimationType.Gabbro:
+                    controller = _gabbroController;
+                    break;
+                case AnimationType.Riebeck:
+                    controller = _riebeckController;
+                    break;
+                case AnimationType.Solanum:
+                    controller = _solanumController;
                     break;
             }
             _anim.runtimeAnimatorController = controller;
