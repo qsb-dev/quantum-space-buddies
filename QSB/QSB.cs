@@ -29,7 +29,7 @@ namespace QSB
 
             var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
             instance.theUITable[(int)UITextType.PleaseUseController] =
-                "<color=orange>Quantum Space Buddies</color> is best experienced with fellow travellers...";
+                "<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
         }
 
         private void Start()

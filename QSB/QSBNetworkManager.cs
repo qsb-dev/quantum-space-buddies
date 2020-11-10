@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
 using QSB.Animation;
-using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.EventsCore;
@@ -77,12 +76,6 @@ namespace QSB
                 OrbManager.Instance.BuildOrbs();
                 WorldRegistry.OldDialogueTrees.Clear();
                 WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
-
-                foreach (var item in Resources.FindObjectsOfTypeAll<FacePlayerWhenTalking>())
-                {
-                    item.gameObject.AddComponent<QSBFacePlayerWhenTalking>();
-                    Destroy(item);
-                }
             }
         }
 
@@ -111,11 +104,6 @@ namespace QSB
             if (WorldRegistry.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
             {
                 WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
-                foreach (var item in Resources.FindObjectsOfTypeAll<FacePlayerWhenTalking>())
-                {
-                    item.gameObject.AddComponent<QSBFacePlayerWhenTalking>();
-                    Destroy(item);
-                }
             }
 
             NetworkServer.UnregisterHandler(40);

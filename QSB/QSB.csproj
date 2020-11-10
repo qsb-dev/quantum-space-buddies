@@ -140,7 +140,6 @@
     <Compile Include="ConversationSync\Events\ConversationStartEndMessage.cs" />
     <Compile Include="ConversationSync\ConversationType.cs" />
     <Compile Include="ConversationSync\ConversationManager.cs" />
-    <Compile Include="ConversationSync\QSBFacePlayerWhenTalking.cs" />
     <Compile Include="DeathSync\DeathPatches.cs" />
     <Compile Include="ElevatorSync\QSBElevator.cs" />
     <Compile Include="ElevatorSync\Events\ElevatorEvent.cs" />

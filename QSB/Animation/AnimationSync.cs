@@ -27,7 +27,7 @@ namespace QSB.Animation
         private RuntimeAnimatorController _gabbroController;
         private RuntimeAnimatorController _riebeckController;
         private RuntimeAnimatorController _solanumController;
-        
+
 
         public AnimatorMirror Mirror { get; private set; }
         public AnimationType CurrentType = AnimationType.PlayerUnsuited;

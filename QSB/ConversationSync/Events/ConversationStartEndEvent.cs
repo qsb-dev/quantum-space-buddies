@@ -65,21 +65,6 @@ namespace QSB.ConversationSync.Events
                     dialogueTree.GetComponent<InteractVolume>().EnableInteraction();
                 }
             }
-
-            // Make character turn to player (if they're meant to)
-            var qsbFacePlayer = dialogueTree.GetComponentInParent<QSBFacePlayerWhenTalking>();
-            if (qsbFacePlayer != null)
-            {
-                if (message.State)
-                {
-                    DebugLog.DebugWrite("start convo faceplayer for " + message.CharacterId);
-                    qsbFacePlayer.StartConversation(QSBPlayerManager.GetPlayer(message.PlayerId).Body.transform.position);
-                }
-                else
-                {
-                    qsbFacePlayer.EndConversation();
-                }
-            }
         }
     }
 }
