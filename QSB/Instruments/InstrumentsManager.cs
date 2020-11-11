@@ -2,7 +2,6 @@
 using QSB.EventsCore;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Instruments
