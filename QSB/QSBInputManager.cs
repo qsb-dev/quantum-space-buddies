@@ -47,7 +47,7 @@ namespace QSB
                 }
                 if (Input.GetKeyDown(KeyCode.Alpha6))
                 {
-                    SolanmTaunt?.Invoke();
+                    SolanumTaunt?.Invoke();
                 }
             }
         }
