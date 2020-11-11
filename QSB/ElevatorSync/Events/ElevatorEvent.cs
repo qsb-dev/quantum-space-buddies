@@ -12,11 +12,11 @@ namespace QSB.ElevatorSync.Events
 
         public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBStartLift, Handler);
 
-        private void Handler(int id, bool direction) => SendEvent(CreateMessage(id, direction));
+        private void Handler(int id, bool isGoingUp) => SendEvent(CreateMessage(id, isGoingUp));
 
-        private BoolWorldObjectMessage CreateMessage(int id, bool direction) => new BoolWorldObjectMessage
+        private BoolWorldObjectMessage CreateMessage(int id, bool isGoingUp) => new BoolWorldObjectMessage
         {
-            State = direction,
+            State = isGoingUp,
             ObjectId = id
         };
 

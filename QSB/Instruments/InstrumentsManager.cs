@@ -2,6 +2,7 @@
 using QSB.EventsCore;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Instruments
@@ -15,24 +16,44 @@ namespace QSB.Instruments
         {
             Instance = this;
             gameObject.AddComponent<CameraManager>();
+
+            QSBInputManager.ChertTaunt += () => StartInstrument(AnimationType.Chert);
+            QSBInputManager.EskerTaunt += () => StartInstrument(AnimationType.Esker);
+            QSBInputManager.FeldsparTaunt += () => StartInstrument(AnimationType.Feldspar);
+            QSBInputManager.GabbroTaunt += () => StartInstrument(AnimationType.Gabbro);
+            QSBInputManager.RiebeckTaunt += () => StartInstrument(AnimationType.Riebeck);
+            QSBInputManager.SolanumTaunt += () => StartInstrument(AnimationType.Solanum);
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            if (Input.GetKeyDown(KeyCode.Keypad9))
+            QSBInputManager.ChertTaunt -= () => StartInstrument(AnimationType.Chert);
+            QSBInputManager.EskerTaunt -= () => StartInstrument(AnimationType.Esker);
+            QSBInputManager.FeldsparTaunt -= () => StartInstrument(AnimationType.Feldspar);
+            QSBInputManager.GabbroTaunt -= () => StartInstrument(AnimationType.Gabbro);
+            QSBInputManager.RiebeckTaunt -= () => StartInstrument(AnimationType.Riebeck);
+            QSBInputManager.SolanumTaunt -= () => StartInstrument(AnimationType.Solanum);
+        }
+
+        public void StartInstrument(AnimationType type)
+        {
+            if (QSBPlayerManager.LocalPlayer.PlayingInstrument)
             {
-                if (!QSBPlayerManager.LocalPlayer.PlayingInstrument)
-                {
-                    _savedType = QSBPlayerManager.LocalPlayer.Animator.CurrentType;
-                    CameraManager.Instance.SwitchTo3rdPerson();
-                    SwitchToType(AnimationType.Chert);
-                }
-                else
-                {
-                    CameraManager.Instance.SwitchTo1stPerson();
-                    SwitchToType(_savedType);
-                }
+                return;
             }
+            _savedType = QSBPlayerManager.LocalPlayer.Animator.CurrentType;
+            CameraManager.Instance.SwitchTo3rdPerson();
+            SwitchToType(type);
+        }
+
+        public void ReturnToPlayer()
+        {
+            if (!QSBPlayerManager.LocalPlayer.PlayingInstrument)
+            {
+                return;
+            }
+            CameraManager.Instance.SwitchTo1stPerson();
+            SwitchToType(_savedType);
         }
 
         public void SwitchToType(AnimationType type)

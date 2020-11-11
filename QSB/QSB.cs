@@ -16,6 +16,7 @@ namespace QSB
 {
     public class QSB : ModBehaviour
     {
+        public static IModBehaviour ModBehaviour { get; private set; }
         public static IModHelper Helper { get; private set; }
         public static string DefaultServerIP { get; private set; }
         public static int Port { get; private set; }
@@ -30,6 +31,8 @@ namespace QSB
             var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
             instance.theUITable[(int)UITextType.PleaseUseController] =
                 "<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
+
+            ModBehaviour = this;
         }
 
         private void Start()
@@ -55,6 +58,7 @@ namespace QSB
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
             gameObject.AddComponent<InstrumentsManager>();
+            gameObject.AddComponent<QSBInputManager>();
 
             Helper.Events.Unity.RunWhen(() => PlayerData.IsLoaded(), RebuildSettingsSave);
         }

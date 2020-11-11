@@ -30,15 +30,14 @@ namespace QSB.ElevatorSync
             _owAudioSourceLP = _elevator.GetValue<OWAudioSource>("_owAudioSourceLP");
         }
 
-        public void RemoteCall(bool direction)
+        public void RemoteCall(bool isGoingUp)
         {
-            SetDirection(direction);
+            SetDirection(isGoingUp);
             RemoteStartLift();
         }
 
-        private void SetDirection(bool direction)
+        private void SetDirection(bool isGoingUp)
         {
-            var isGoingUp = direction;
             var targetPos = isGoingUp ? _endLocalPos : _startLocalPos;
             _elevator.SetValue("_goingToTheEnd", isGoingUp);
             _elevator.SetValue("_targetLocalPos", targetPos);
