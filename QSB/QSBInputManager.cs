@@ -8,25 +8,31 @@ using UnityEngine;
 
 namespace QSB
 {
-    public delegate void TauntEvent();
+    public delegate void InputEvent();
 
     public class QSBInputManager : MonoBehaviour
     {
         public static QSBInputManager Instance;
-        public static event TauntEvent ChertTaunt;
-        public static event TauntEvent EskerTaunt;
-        public static event TauntEvent FeldsparTaunt;
-        public static event TauntEvent GabbroTaunt;
-        public static event TauntEvent RiebeckTaunt;
-        public static event TauntEvent SolanumTaunt;
+        public static event InputEvent ChertTaunt;
+        public static event InputEvent EskerTaunt;
+        public static event InputEvent FeldsparTaunt;
+        public static event InputEvent GabbroTaunt;
+        public static event InputEvent RiebeckTaunt;
+        public static event InputEvent SolanumTaunt;
+        public static event InputEvent ExitTaunt;
 
         public void Awake()
         {
             Instance = this;
-            if (Input.GetKeyDown(KeyCode.T))
+        }
+
+        public void Update()
+        {
+            if (Input.GetKey(KeyCode.T))
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
+                    DebugLog.DebugWrite("chert");
                     ChertTaunt?.Invoke();
                 }
                 if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -49,6 +55,12 @@ namespace QSB
                 {
                     SolanumTaunt?.Invoke();
                 }
+            }
+
+            if (OWInput.GetValue(InputLibrary.moveXZ, InputMode.None) != Vector2.zero 
+                || OWInput.GetValue(InputLibrary.jump, InputMode.None) != 0f)
+            {
+                ExitTaunt?.Invoke();
             }
         }
     }

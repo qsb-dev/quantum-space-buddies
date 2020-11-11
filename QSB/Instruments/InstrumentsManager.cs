@@ -23,6 +23,7 @@ namespace QSB.Instruments
             QSBInputManager.GabbroTaunt += () => StartInstrument(AnimationType.Gabbro);
             QSBInputManager.RiebeckTaunt += () => StartInstrument(AnimationType.Riebeck);
             QSBInputManager.SolanumTaunt += () => StartInstrument(AnimationType.Solanum);
+            QSBInputManager.ExitTaunt += () => ReturnToPlayer();
         }
 
         private void OnDestroy()
@@ -33,6 +34,7 @@ namespace QSB.Instruments
             QSBInputManager.GabbroTaunt -= () => StartInstrument(AnimationType.Gabbro);
             QSBInputManager.RiebeckTaunt -= () => StartInstrument(AnimationType.Riebeck);
             QSBInputManager.SolanumTaunt -= () => StartInstrument(AnimationType.Solanum);
+            QSBInputManager.ExitTaunt -= () => ReturnToPlayer();
         }
 
         public void StartInstrument(AnimationType type)
