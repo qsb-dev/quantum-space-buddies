@@ -32,7 +32,7 @@ namespace QSB.Instruments.QSBCamera
             var origin = transform.position;
             var localDirection = CameraObject.transform.localPosition.normalized;
             Vector3 localTargetPoint;
-            if (Physics.Raycast(origin, transform.TransformDirection(localDirection), out RaycastHit outRay, RayLength, LayerMask.GetMask("Default")))
+            if (Physics.Raycast(origin, transform.TransformDirection(localDirection), out var outRay, RayLength, LayerMask.GetMask("Default")))
             {
                 // Raycast hit collider, get target from hitpoint.
                 localTargetPoint = transform.InverseTransformPoint(outRay.point) * PercentToMove;

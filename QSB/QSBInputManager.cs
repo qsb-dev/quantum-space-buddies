@@ -32,26 +32,25 @@ namespace QSB
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
-                    DebugLog.DebugWrite("chert");
                     ChertTaunt?.Invoke();
                 }
-                if (Input.GetKeyDown(KeyCode.Alpha2))
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
                     EskerTaunt?.Invoke();
                 }
-                if (Input.GetKeyDown(KeyCode.Alpha3))
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
                     FeldsparTaunt?.Invoke();
                 }
-                if (Input.GetKeyDown(KeyCode.Alpha4))
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
                 {
                     GabbroTaunt?.Invoke();
                 }
-                if (Input.GetKeyDown(KeyCode.Alpha5))
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
                 {
                     RiebeckTaunt?.Invoke();
                 }
-                if (Input.GetKeyDown(KeyCode.Alpha6))
+                else if (Input.GetKeyDown(KeyCode.Alpha6))
                 {
                     SolanumTaunt?.Invoke();
                 }
