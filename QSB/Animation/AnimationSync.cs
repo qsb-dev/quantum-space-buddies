@@ -62,14 +62,16 @@ namespace QSB.Animation
             {
                 return;
             }
-            var reibeckRoot = GameObject.Find("Traveller_HEA_Riebeck_ANIM_Talking");
-            _riebeckController = reibeckRoot.GetComponent<Animator>().runtimeAnimatorController;
             var chertRoot = GameObject.Find("Traveller_HEA_Chert_ANIM_Chatter_Chipper");
             _chertController = chertRoot.GetComponent<Animator>().runtimeAnimatorController;
-            var gabbroRoot = GameObject.Find("Traveller_HEA_Gabbro_ANIM_IdleFlute");
-            _gabbroController = gabbroRoot.GetComponent<Animator>().runtimeAnimatorController;
+            var eskerRoot = GameObject.Find("Villager_HEA_Esker_ANIM_Rocker");
+            _eskerController = eskerRoot.GetComponent<Animator>().runtimeAnimatorController;
             var feldsparRoot = GameObject.Find("Traveller_HEA_Feldspar_ANIM_Talking");
             _feldsparController = feldsparRoot.GetComponent<Animator>().runtimeAnimatorController;
+            var gabbroRoot = GameObject.Find("Traveller_HEA_Gabbro_ANIM_IdleFlute");
+            _gabbroController = gabbroRoot.GetComponent<Animator>().runtimeAnimatorController;
+            var reibeckRoot = GameObject.Find("Traveller_HEA_Riebeck_ANIM_Talking");
+            _riebeckController = reibeckRoot.GetComponent<Animator>().runtimeAnimatorController;
         }
 
         private void InitCommon(Transform body)
