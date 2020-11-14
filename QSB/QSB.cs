@@ -22,6 +22,7 @@ namespace QSB
         public static int Port { get; private set; }
         public static bool DebugMode { get; private set; }
         public static AssetBundle NetworkAssetBundle { get; private set; }
+        public static AssetBundle InstrumentAssetBundle { get; private set; }
         public static bool HasWokenUp { get; set; }
 
         private void Awake()
@@ -41,6 +42,7 @@ namespace QSB
             DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
             NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
+            InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 
             QSBPatchManager.Init();
 
