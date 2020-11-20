@@ -7,12 +7,12 @@ namespace QSB
     public class QSBInputManager : MonoBehaviour
     {
         public static QSBInputManager Instance;
+
         public static event InputEvent ChertTaunt;
         public static event InputEvent EskerTaunt;
-        public static event InputEvent FeldsparTaunt;
-        public static event InputEvent GabbroTaunt;
         public static event InputEvent RiebeckTaunt;
-        public static event InputEvent SolanumTaunt;
+        public static event InputEvent GabbroTaunt;
+        public static event InputEvent FeldsparTaunt;
         public static event InputEvent ExitTaunt;
 
         public void Awake()
@@ -24,6 +24,7 @@ namespace QSB
         {
             if (Input.GetKey(KeyCode.T))
             {
+                // Listed order is from sun to dark bramble
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
                     ChertTaunt?.Invoke();
@@ -32,21 +33,17 @@ namespace QSB
                 {
                     EskerTaunt?.Invoke();
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
                 {
-                    FeldsparTaunt?.Invoke();
+                    RiebeckTaunt?.Invoke();
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha4))
                 {
                     GabbroTaunt?.Invoke();
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
-                    RiebeckTaunt?.Invoke();
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha6))
-                {
-                    SolanumTaunt?.Invoke();
+                    FeldsparTaunt?.Invoke();
                 }
             }
 

@@ -5,6 +5,7 @@ using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.EventsCore;
 using QSB.GeyserSync;
+using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
@@ -48,6 +49,7 @@ namespace QSB
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
+            playerPrefab.AddComponent<InstrumentsManager>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             _shipPrefab.AddComponent<ShipTransformSync>();

@@ -9,7 +9,7 @@ namespace QSB.Utility
     {
         public static void ToConsole(string message, MessageType type = MessageType.Message)
         {
-            // hack to make custom method name in owml log.
+            // make custom method name in owml log.
             // i wrote the owml code for this so this is fine?? shut up i dont want to change owml
             var console = (ModSocketOutput)QSB.Helper.Console;
             var method = console.GetType()

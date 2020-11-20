@@ -22,7 +22,7 @@ namespace QSB.Player
             if (id == uint.MaxValue || id == 0U)
             {
                 var stacktrace = new StackTrace();
-                DebugLog.ToConsole($"GetPlayer() got uint.MaxValue or 0 - returning default. Ran from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}.", MessageType.Warning);
+                DebugLog.ToConsole($"GetPlayer() called with uint.MaxValue or 0 - returning default. Ran from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}.", MessageType.Warning);
                 return default;
             }
             var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);

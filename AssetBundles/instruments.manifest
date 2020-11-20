@@ -1,14 +1,16 @@
 ManifestFileVersion: 0
-CRC: 1507627652
+CRC: 2593345828
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 956e49974e4fb0e1a12a59be8c945f24
+    Hash: d97fbc9cde41b6514223a2f68ba96af8
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 0a4381b8d24d7546af2f9b5d2b1de238
+    Hash: ff0e1233df027a80b5add90668c49830
 HashAppended: 0
 ClassTypes:
+- Class: 43
+  Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
 - Class: 91
@@ -24,6 +26,7 @@ Assets:
 - Assets/Riebeck/Riebeck_Playing.anim
 - Assets/Chert/Chert_Chatter_Panicked.anim
 - Assets/Chert/Chert_Chatter_Nervous.anim
+- Assets/Chert/hourglasstwinsmeshescharacters2.asset
 - Assets/Riebeck/Playing_banjo.anim
 - Assets/Riebeck/Playing_to_idle.anim
 - Assets/Chert/Chert_Dream.anim

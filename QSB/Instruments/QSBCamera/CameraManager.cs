@@ -18,20 +18,10 @@ namespace QSB.Instruments.QSBCamera
         public void Start()
         {
             Instance = this;
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+            SetupCamera();
         }
 
-        private void OnSceneLoaded(OWScene scene, bool inUniverse)
-        {
-            if (!inUniverse)
-            {
-                return;
-            }
-            IsSetUp = false;
-            QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerCamera() != null && Locator.GetPlayerTransform() != null, Setup);
-        }
-
-        private void Setup()
+        private void SetupCamera()
         {
             CameraBase = new GameObject();
             CameraBase.SetActive(false);
@@ -74,6 +64,8 @@ namespace QSB.Instruments.QSBCamera
             if (!IsSetUp)
             {
                 DebugLog.ToConsole("Warning - Camera not set up!", MessageType.Warning);
+                OWInput.ChangeInputMode(InputMode.None);
+                Mode = CameraMode.ThirdPerson;
                 return;
             }
             if (Mode == CameraMode.ThirdPerson)
@@ -103,6 +95,8 @@ namespace QSB.Instruments.QSBCamera
             if (!IsSetUp)
             {
                 DebugLog.ToConsole("Warning - Camera not set up!", MessageType.Warning);
+                OWInput.ChangeInputMode(InputMode.Character);
+                Mode = CameraMode.FirstPerson;
                 return;
             }
             if (Mode == CameraMode.FirstPerson)
@@ -115,16 +109,6 @@ namespace QSB.Instruments.QSBCamera
             Locator.GetActiveCamera().mainCamera.enabled = true;
             Camera.enabled = false;
             Mode = CameraMode.FirstPerson;
-        }
-
-        public void ToggleViewMode()
-        {
-            if (Mode == CameraMode.FirstPerson)
-            {
-                SwitchTo3rdPerson();
-                return;
-            }
-            SwitchTo1stPerson();
         }
     }
 }

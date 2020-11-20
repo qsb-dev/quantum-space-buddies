@@ -4,7 +4,6 @@ using OWML.ModHelper.Events;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
-using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.SectorSync;
@@ -59,7 +58,6 @@ namespace QSB
             gameObject.AddComponent<OrbManager>();
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
-            gameObject.AddComponent<InstrumentsManager>();
             gameObject.AddComponent<QSBInputManager>();
 
             Helper.Events.Unity.RunWhen(() => PlayerData.IsLoaded(), RebuildSettingsSave);

@@ -1,19 +1,22 @@
-﻿using QSB.Animation;
+﻿using OWML.Common;
+using QSB.Animation;
 using QSB.EventsCore;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Instruments
 {
-    public class InstrumentsManager : MonoBehaviour
+    public class InstrumentsManager : PlayerSyncObject
     {
-        public static InstrumentsManager Instance;
+        private Transform rootObj;
         private AnimationType _savedType;
+        private GameObject ChertDrum;
 
-        private void Awake()
+        public void InitLocal(Transform root)
         {
-            Instance = this;
+            rootObj = root;
             gameObject.AddComponent<CameraManager>();
 
             QSBInputManager.ChertTaunt += () => StartInstrument(AnimationType.Chert);
@@ -21,35 +24,83 @@ namespace QSB.Instruments
             QSBInputManager.FeldsparTaunt += () => StartInstrument(AnimationType.Feldspar);
             QSBInputManager.GabbroTaunt += () => StartInstrument(AnimationType.Gabbro);
             QSBInputManager.RiebeckTaunt += () => StartInstrument(AnimationType.Riebeck);
-            QSBInputManager.SolanumTaunt += () => StartInstrument(AnimationType.Solanum);
             QSBInputManager.ExitTaunt += () => ReturnToPlayer();
+
+            QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+
+            QSBPlayerManager.PlayerSyncObjects.Add(this);
+        }
+
+        public void InitRemote(Transform root)
+        {
+            rootObj = root;
+            QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+
+            QSBPlayerManager.PlayerSyncObjects.Add(this);
         }
 
         private void OnDestroy()
         {
+            if (!isLocalPlayer)
+            {
+                return;
+            }
+            DebugLog.DebugWrite($"OnDestroy {PlayerId}");
             QSBInputManager.ChertTaunt -= () => StartInstrument(AnimationType.Chert);
             QSBInputManager.EskerTaunt -= () => StartInstrument(AnimationType.Esker);
             QSBInputManager.FeldsparTaunt -= () => StartInstrument(AnimationType.Feldspar);
             QSBInputManager.GabbroTaunt -= () => StartInstrument(AnimationType.Gabbro);
             QSBInputManager.RiebeckTaunt -= () => StartInstrument(AnimationType.Riebeck);
-            QSBInputManager.SolanumTaunt -= () => StartInstrument(AnimationType.Solanum);
             QSBInputManager.ExitTaunt -= () => ReturnToPlayer();
+        }
+
+        private void SetupInstruments()
+        {
+            DebugLog.DebugWrite($"Setup instruments {PlayerId}");
+            var bundle = QSB.InstrumentAssetBundle;
+            ChertDrum = MakeChertDrum(bundle);
+        }
+
+        // EyeCompatibility : Need to find right object.
+        private GameObject MakeChertDrum(AssetBundle bundle)
+        {
+            var drum = new GameObject();
+            var mf = drum.AddComponent<MeshFilter>();
+            mf.sharedMesh = bundle.LoadAsset("assets/Chert/hourglasstwinsmeshescharacters2.asset") as Mesh;
+            var mr = drum.AddComponent<MeshRenderer>();
+            mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().material;
+            foreach (var item in mr.sharedMaterial.shaderKeywords)
+            {
+                DebugLog.DebugWrite(item);
+            }
+            drum.transform.parent = rootObj;
+            drum.transform.rotation = rootObj.rotation;
+            drum.transform.localPosition = Vector3.zero;
+            drum.transform.localScale = new Vector3(16.0f, 16.5f, 16.0f);
+            drum.SetActive(false);
+
+            return drum;
         }
 
         public void StartInstrument(AnimationType type)
         {
-            if (QSBPlayerManager.LocalPlayer.PlayingInstrument)
+            if (!isLocalPlayer)
+            {
+                DebugLog.DebugWrite("Error - Tried to start instrument on non-local player!", MessageType.Error);
+                return;
+            }
+            if (Player.PlayingInstrument || !Locator.GetPlayerController().IsGrounded())
             {
                 return;
             }
-            _savedType = QSBPlayerManager.LocalPlayer.Animator.CurrentType;
+            _savedType = Player.Animator.CurrentType;
             CameraManager.Instance.SwitchTo3rdPerson();
             SwitchToType(type);
         }
 
         public void ReturnToPlayer()
         {
-            if (!QSBPlayerManager.LocalPlayer.PlayingInstrument)
+            if (!Player.PlayingInstrument)
             {
                 return;
             }
@@ -59,8 +110,24 @@ namespace QSB.Instruments
 
         public void SwitchToType(AnimationType type)
         {
+            DebugLog.DebugWrite($"switch to type {type} player {PlayerId}");
             GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
             QSBPlayerManager.LocalPlayer.Animator.SetAnimationType(type);
+            CheckInstrumentProps(type);
+        }
+
+        public void CheckInstrumentProps(AnimationType type)
+        {
+            switch (type)
+            {
+                case AnimationType.Chert:
+                    ChertDrum.SetActive(true);
+                    break;
+                case AnimationType.PlayerSuited:
+                case AnimationType.PlayerUnsuited:
+                    ChertDrum.SetActive(false);
+                    break;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using QSB.EventsCore;
+using QSB.Instruments;
 using QSB.MessagesCore;
 using QSB.Player;
 
@@ -23,6 +24,7 @@ namespace QSB.Animation.Events
         public override void OnReceiveRemote(EnumMessage<AnimationType> message)
         {
             QSBPlayerManager.GetPlayer(message.AboutId).Animator.SetAnimationType(message.Value);
+            QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.Value);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.Instruments;
 using QSB.Player;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ namespace QSB.TransformSync
             var body = GetPlayerModel();
 
             GetComponent<AnimationSync>().InitLocal(body);
+            GetComponent<InstrumentsManager>().InitLocal(body);
 
             Player.Body = body.gameObject;
 
@@ -39,6 +41,7 @@ namespace QSB.TransformSync
             var body = Instantiate(GetPlayerModel());
 
             GetComponent<AnimationSync>().InitRemote(body);
+            GetComponent<InstrumentsManager>().InitRemote(body);
 
             var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
             marker.Init(Player);

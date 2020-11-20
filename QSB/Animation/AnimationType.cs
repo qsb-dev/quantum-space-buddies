@@ -8,7 +8,6 @@
         Gabbro,
         PlayerSuited,
         PlayerUnsuited,
-        Riebeck,
-        Solanum
+        Riebeck
     }
 }
