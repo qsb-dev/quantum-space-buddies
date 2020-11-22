@@ -16,8 +16,8 @@ namespace QSB.Animation
         void LateUpdate()
         {
             var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);
-            // Get the camera's local rotation with respect to the head
-            var lookLocalRotation = Quaternion.Inverse(bone.transform.rotation) * _lookBase.rotation;
+            // Get the camera's local rotation with respect to the player body
+            var lookLocalRotation = Quaternion.Inverse(_attachedAnimator.transform.rotation) * _lookBase.rotation;
             bone.localRotation = Quaternion.Euler(0f, 0f, lookLocalRotation.eulerAngles.x);
         }
     }
