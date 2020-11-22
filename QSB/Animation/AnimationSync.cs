@@ -29,6 +29,10 @@ namespace QSB.Animation
 
         public AnimatorMirror Mirror { get; private set; }
         public AnimationType CurrentType = AnimationType.PlayerUnsuited;
+        public Animator Animator
+        {
+            get { return _bodyAnim; }
+        }
 
         private void Awake()
         {
@@ -129,6 +133,9 @@ namespace QSB.Animation
             body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
             InitCrouchSync();
+
+            var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
+            QSB.Helper.Events.Unity.RunWhen(() => Player.Camera != null, () => ikSync.Init(Player.Camera.transform));
         }
 
         private void InitCrouchSync()

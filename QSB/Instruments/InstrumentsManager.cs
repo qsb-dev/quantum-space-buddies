@@ -56,7 +56,6 @@ namespace QSB.Instruments
 
         private void SetupInstruments()
         {
-            DebugLog.DebugWrite($"Setup instruments {PlayerId}");
             var bundle = QSB.InstrumentAssetBundle;
             ChertDrum = MakeChertDrum(bundle);
         }
@@ -69,10 +68,6 @@ namespace QSB.Instruments
             mf.sharedMesh = bundle.LoadAsset("assets/Chert/hourglasstwinsmeshescharacters2.asset") as Mesh;
             var mr = drum.AddComponent<MeshRenderer>();
             mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().material;
-            foreach (var item in mr.sharedMaterial.shaderKeywords)
-            {
-                DebugLog.DebugWrite(item);
-            }
             drum.transform.parent = rootObj;
             drum.transform.rotation = rootObj.rotation;
             drum.transform.localPosition = Vector3.zero;
@@ -93,7 +88,7 @@ namespace QSB.Instruments
             {
                 return;
             }
-            _savedType = Player.Animator.CurrentType;
+            _savedType = Player.AnimationSync.CurrentType;
             CameraManager.Instance.SwitchTo3rdPerson();
             SwitchToType(type);
         }
@@ -112,7 +107,7 @@ namespace QSB.Instruments
         {
             DebugLog.DebugWrite($"switch to type {type} player {PlayerId}");
             GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
-            QSBPlayerManager.LocalPlayer.Animator.SetAnimationType(type);
+            QSBPlayerManager.LocalPlayer.AnimationSync.SetAnimationType(type);
             CheckInstrumentProps(type);
         }
 

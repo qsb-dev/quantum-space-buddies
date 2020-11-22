@@ -34,7 +34,12 @@ namespace QSB.Animation
             var player = QSBPlayerManager.GetPlayer(message.AboutId);
             player?.UpdateState(State.Suit, message.ToggleValue);
 
-            var animator = player.Animator;
+            if (!player.IsReady)
+            {
+                return;
+            }
+
+            var animator = player.AnimationSync;
             var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
             animator.SetAnimationType(type);
         }
@@ -42,7 +47,7 @@ namespace QSB.Animation
         public override void OnReceiveLocal(ToggleMessage message)
         {
             QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
-            var animator = QSBPlayerManager.LocalPlayer.Animator;
+            var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
             var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
             animator.CurrentType = type;
         }

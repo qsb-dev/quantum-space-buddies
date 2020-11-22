@@ -31,9 +31,9 @@ namespace QSB.Player
         public GameObject CurrentDialogueBox { get; set; }
 
         // Animation
-        public AnimationSync Animator => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
-        public bool PlayingInstrument => Animator.CurrentType != AnimationType.PlayerSuited
-            && Animator.CurrentType != AnimationType.PlayerUnsuited;
+        public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
+        public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
+            && AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
 
         public PlayerInfo(uint id)
         {

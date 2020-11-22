@@ -130,6 +130,7 @@
     <Compile Include="Animation\Events\QSBAnimationMessage.cs" />
     <Compile Include="Animation\Events\QSBAnimationParametersMessage.cs" />
     <Compile Include="Animation\Events\QSBAnimationTriggerMessage.cs" />
+    <Compile Include="Animation\PlayerHeadRotationSync.cs" />
     <Compile Include="Animation\QSBNetworkAnimator.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
