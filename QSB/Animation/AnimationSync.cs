@@ -233,7 +233,7 @@ namespace QSB.Animation
             }
             else
             {
-                // Avoids "jumping" look when exiting instrument
+                // Avoids "jumping" when exiting instrument and putting on suit
                 _bodyAnim.SetTrigger("Grounded");
                 _anim.SetTrigger("Grounded");
             }
