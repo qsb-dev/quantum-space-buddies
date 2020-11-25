@@ -3,7 +3,6 @@ using QSB.Player.Events;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine.Networking;
 
@@ -21,8 +20,6 @@ namespace QSB.Player
         {
             if (id == uint.MaxValue || id == 0U)
             {
-                var stacktrace = new StackTrace();
-                DebugLog.ToConsole($"GetPlayer() called with uint.MaxValue or 0 - returning default. Ran from {stacktrace.GetFrame(1).GetMethod().DeclaringType.Name}.{stacktrace.GetFrame(1).GetMethod().Name}.", MessageType.Warning);
                 return default;
             }
             var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
@@ -91,7 +88,7 @@ namespace QSB.Player
             }
             // Get all Player IDs
             var playerIds = PlayerList.Select(x => x.PlayerId).ToList();
-            // Get highest ID below the given syncobject's netid. A netid cannot belong to a netid above it, only below or equal to it.
+            // Get highest ID below the given syncobject's netid. A netid cannot belong to a playerid above it, only below or equal to it.
             var lowerBound = playerIds.Where(x => x <= syncObject.AttachedNetId).ToList().Max();
             if (playerIds.Min() > syncObject.AttachedNetId)
             {

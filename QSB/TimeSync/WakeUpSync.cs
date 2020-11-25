@@ -1,8 +1,6 @@
-﻿using OWML.ModHelper.Events;
-using QSB.DeathSync;
+﻿using QSB.DeathSync;
 using QSB.EventsCore;
 using QSB.TimeSync.Events;
-using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -87,7 +85,6 @@ namespace QSB.TimeSync
 
         private void Init()
         {
-            DebugLog.DebugWrite("WakeUpSync init - Request state!");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
@@ -152,7 +149,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
-            FindObjectOfType<SleepTimerUI>().Invoke("OnStartFastForward");
+            FastForwardUI.Start();
         }
 
         private void StartPausing()
@@ -179,8 +176,7 @@ namespace QSB.TimeSync
             QSB.HasWokenUp = true;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
-            DebugLog.DebugWrite("ResetTimeScale - Request state!");
-            FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
+            FastForwardUI.Stop();
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             RespawnOnDeath.Instance.Init();
         }
