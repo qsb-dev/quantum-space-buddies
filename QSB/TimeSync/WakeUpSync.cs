@@ -1,5 +1,4 @@
-﻿using OWML.ModHelper.Events;
-using QSB.DeathSync;
+﻿using QSB.DeathSync;
 using QSB.EventsCore;
 using QSB.TimeSync.Events;
 using QSB.Utility;
@@ -44,10 +43,7 @@ namespace QSB.TimeSync
             {
                 Init();
             }
-            else
-            {
-                QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-            }
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
@@ -55,6 +51,7 @@ namespace QSB.TimeSync
 
         private void OnWakeUp()
         {
+            DebugLog.DebugWrite("ON WAKE UP!");
             if (NetworkServer.active)
             {
                 QSB.HasWokenUp = true;
@@ -65,6 +62,7 @@ namespace QSB.TimeSync
         {
             QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
             GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
+            GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
         }
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
@@ -76,7 +74,7 @@ namespace QSB.TimeSync
             }
             else
             {
-                Reset();
+                _state = State.NotLoaded;
             }
         }
 
@@ -87,7 +85,6 @@ namespace QSB.TimeSync
 
         private void Init()
         {
-            DebugLog.DebugWrite("WakeUpSync init - Request state!");
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
@@ -101,11 +98,6 @@ namespace QSB.TimeSync
             }
         }
 
-        private void Reset()
-        {
-            _state = State.NotLoaded;
-        }
-
         private void SendServerTime()
         {
             GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
@@ -113,10 +105,6 @@ namespace QSB.TimeSync
 
         public void OnClientReceiveMessage(ServerTimeMessage message)
         {
-            if (isServer)
-            {
-                return;
-            }
             _serverTime = message.ServerTime;
             _serverLoopCount = message.LoopCount;
             WakeUpOrSleep();
@@ -152,7 +140,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
-            FindObjectOfType<SleepTimerUI>().Invoke("OnStartFastForward");
+            TimeSyncUI.Start(TimeSyncType.Fastforwarding);
         }
 
         private void StartPausing()
@@ -164,6 +152,7 @@ namespace QSB.TimeSync
             _timeScale = 0f;
             _state = State.Pausing;
             SpinnerUI.Show();
+            TimeSyncUI.Start(TimeSyncType.Pausing);
         }
 
         private void ResetTimeScale()
@@ -179,8 +168,7 @@ namespace QSB.TimeSync
             QSB.HasWokenUp = true;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
-            DebugLog.DebugWrite("ResetTimeScale - Request state!");
-            FindObjectOfType<SleepTimerUI>().Invoke("OnEndFastForward");
+            TimeSyncUI.Stop();
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             RespawnOnDeath.Instance.Init();
         }

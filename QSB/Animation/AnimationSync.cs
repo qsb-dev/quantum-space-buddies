@@ -41,7 +41,7 @@ namespace QSB.Animation
             _netAnim.enabled = false;
             _netAnim.animator = _anim;
 
-            QSBSceneManager.OnSceneLoaded += (OWScene scene, bool universe) => LoadControllers(universe);
+            QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => LoadControllers();
         }
 
         private void OnDestroy()
@@ -55,15 +55,11 @@ namespace QSB.Animation
             _playerController.OnBecomeGrounded -= OnBecomeGrounded;
             _playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
 
-            QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool universe) => LoadControllers(universe);
+            QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => LoadControllers();
         }
 
-        private void LoadControllers(bool universe)
+        private void LoadControllers()
         {
-            if (!universe)
-            {
-                return;
-            }
             var bundle = QSB.InstrumentAssetBundle;
             _chertController = bundle.LoadAsset("assets/Chert/Traveller_Chert.controller") as RuntimeAnimatorController;
             _riebeckController = bundle.LoadAsset("assets/Riebeck/Traveller_Riebeck.controller") as RuntimeAnimatorController;
@@ -73,7 +69,7 @@ namespace QSB.Animation
         {
             if (QSBSceneManager.IsInUniverse)
             {
-                LoadControllers(true);
+                LoadControllers();
             }
             _netAnim.enabled = true;
             _bodyAnim = body.GetComponent<Animator>();

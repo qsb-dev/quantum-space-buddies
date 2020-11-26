@@ -15,6 +15,12 @@ namespace QSB.GeyserSync
             QSBPatchManager.OnPatchType += OnPatchType;
         }
 
+        private void OnDestroy()
+        {
+            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+            QSBPatchManager.OnPatchType -= OnPatchType;
+        }
+
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
         {
             var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();

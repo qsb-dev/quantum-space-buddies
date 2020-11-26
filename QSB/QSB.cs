@@ -7,6 +7,7 @@ using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.SectorSync;
+using QSB.TimeSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -59,23 +60,10 @@ namespace QSB
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
             gameObject.AddComponent<QSBInputManager>();
+            gameObject.AddComponent<TimeSyncUI>();
 
-            Helper.Events.Unity.RunWhen(() => PlayerData.IsLoaded(), RebuildSettingsSave);
-        }
-
-        private void RebuildSettingsSave()
-        {
-            if (PlayerData.GetFreezeTimeWhileReadingConversations()
-                || PlayerData.GetFreezeTimeWhileReadingTranslator()
-                || PlayerData.GetFreezeTimeWhileReadingShipLog())
-            {
-                DebugLog.DebugWrite("Rebuilding SettingsSave...");
-                var clonedData = PlayerData.CloneSettingsData();
-                clonedData.freezeTimeWhileReading = false;
-                clonedData.freezeTimeWhileReadingConversations = false;
-                clonedData.freezeTimeWhileReadingShipLog = false;
-                PlayerData.SetSettingsData(clonedData);
-            }
+            // Stop players being able to pause
+            Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
         }
 
         public override void Configure(IModConfig config)

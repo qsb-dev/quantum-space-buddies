@@ -20,16 +20,16 @@ namespace QSB.SectorSync
         private void Awake()
         {
             Instance = this;
-            QSBSceneManager.OnSceneLoaded += (OWScene scene, bool universe) => RebuildSectors();
+            QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
             DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
+        }
+        private void OnDestroy()
+        {
+            QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
         }
 
         public void RebuildSectors()
         {
-            if (!QSBSceneManager.IsInUniverse)
-            {
-                return;
-            }
             DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
             WorldRegistry.RemoveObjects<QSBSector>();
             var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();

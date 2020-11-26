@@ -68,17 +68,19 @@ namespace QSB
             spawnPrefabs.Add(OrbPrefab);
 
             ConfigureNetworkManager();
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+            QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnSceneLoaded(OWScene scene, bool inUniverse)
+        private void OnDestroy()
         {
-            if (inUniverse)
-            {
-                OrbManager.Instance.BuildOrbs();
-                WorldRegistry.OldDialogueTrees.Clear();
-                WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
-            }
+            QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(OWScene scene)
+        {
+            OrbManager.Instance.BuildOrbs();
+            WorldRegistry.OldDialogueTrees.Clear();
+            WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
         }
 
         private void ConfigureNetworkManager()
@@ -135,7 +137,10 @@ namespace QSB
             gameObject.AddComponent<RespawnOnDeath>();
             gameObject.AddComponent<PreventShipDestruction>();
 
-            QSBSectorManager.Instance.RebuildSectors();
+            if (QSBSceneManager.IsInUniverse)
+            {
+                QSBSectorManager.Instance.RebuildSectors();
+            }
             OrbManager.Instance.QueueBuildSlots();
 
             if (!NetworkServer.localClientActive)
