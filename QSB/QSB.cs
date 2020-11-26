@@ -7,6 +7,7 @@ using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.SectorSync;
+using QSB.TimeSync;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -59,6 +60,7 @@ namespace QSB
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
             gameObject.AddComponent<QSBInputManager>();
+            gameObject.AddComponent<FastForwardUI>();
 
             Helper.Events.Unity.RunWhen(() => PlayerData.IsLoaded(), RebuildSettingsSave);
         }
