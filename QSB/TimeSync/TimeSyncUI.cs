@@ -12,7 +12,6 @@ namespace QSB.TimeSync
 		private Canvas _canvas;
 		private Text _text;
 		private float _startTime;
-		private float _startTimeUnscaled;
 		private bool _isSetUp;
 		private TimeSyncType _currentType;
 
@@ -49,7 +48,6 @@ namespace QSB.TimeSync
 		{
 			_currentType = type;
 			_startTime = Time.timeSinceLevelLoad;
-			_startTimeUnscaled = Time.unscaledTime;
 			enabled = true;
 			_canvas.enabled = true;
 			Canvas.willRenderCanvases += OnWillRenderCanvases;
