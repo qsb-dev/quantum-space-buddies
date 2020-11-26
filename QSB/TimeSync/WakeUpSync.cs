@@ -74,7 +74,7 @@ namespace QSB.TimeSync
             }
             else
             {
-                Reset();
+                _state = State.NotLoaded;
             }
         }
 
@@ -98,11 +98,6 @@ namespace QSB.TimeSync
             }
         }
 
-        private void Reset()
-        {
-            _state = State.NotLoaded;
-        }
-
         private void SendServerTime()
         {
             GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
@@ -110,10 +105,6 @@ namespace QSB.TimeSync
 
         public void OnClientReceiveMessage(ServerTimeMessage message)
         {
-            if (isServer)
-            {
-                return;
-            }
             _serverTime = message.ServerTime;
             _serverLoopCount = message.LoopCount;
             WakeUpOrSleep();
@@ -149,7 +140,7 @@ namespace QSB.TimeSync
             }
             _timeScale = MaxFastForwardSpeed;
             _state = State.FastForwarding;
-            FastForwardUI.Start();
+            TimeSyncUI.Start(TimeSyncType.Fastforwarding);
         }
 
         private void StartPausing()
@@ -161,6 +152,7 @@ namespace QSB.TimeSync
             _timeScale = 0f;
             _state = State.Pausing;
             SpinnerUI.Show();
+            TimeSyncUI.Start(TimeSyncType.Pausing);
         }
 
         private void ResetTimeScale()
@@ -176,7 +168,7 @@ namespace QSB.TimeSync
             QSB.HasWokenUp = true;
             Physics.SyncTransforms();
             SpinnerUI.Hide();
-            FastForwardUI.Stop();
+            TimeSyncUI.Stop();
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             RespawnOnDeath.Instance.Init();
         }

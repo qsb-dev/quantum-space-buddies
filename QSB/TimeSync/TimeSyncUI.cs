@@ -5,15 +5,16 @@ using UnityEngine.UI;
 
 namespace QSB.TimeSync
 {
-	class FastForwardUI : MonoBehaviour
+	class TimeSyncUI : MonoBehaviour
 	{
-		public static FastForwardUI Instance;
+		public static TimeSyncUI Instance;
 
 		private Canvas _canvas;
 		private Text _text;
 		private float _startTime;
 		private float _startTimeUnscaled;
 		private bool _isSetUp;
+		private TimeSyncType _currentType;
 
 		private void Awake()
 		{
@@ -41,21 +42,22 @@ namespace QSB.TimeSync
 			}
 		}
 
-		public static void Start() => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, Instance.StartFastForward);
-		public static void Stop() => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, Instance.EndFastForward);
+		public static void Start(TimeSyncType type) => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type));
+		public static void Stop() => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
 
-		private void StartFastForward()
+		private void StartTimeSync(TimeSyncType type)
 		{
+			_currentType = type;
 			_startTime = Time.timeSinceLevelLoad;
 			_startTimeUnscaled = Time.unscaledTime;
 			enabled = true;
 			_canvas.enabled = true;
-			_text.text = "00:00";
 			Canvas.willRenderCanvases += OnWillRenderCanvases;
 		}
 
-		private void EndFastForward()
+		private void EndTimeSync()
 		{
+			_currentType = TimeSyncType.None;
 			enabled = false;
 			_canvas.enabled = false;
 			Canvas.willRenderCanvases -= OnWillRenderCanvases;
@@ -70,9 +72,19 @@ namespace QSB.TimeSync
 			var totalSeconds = Mathf.Max(Time.timeSinceLevelLoad - _startTime, 0f);
 			var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 			var seconds = Mathf.FloorToInt(totalSeconds) % 60;
-			_text.text = $"{minutes.ToString("D2")}:{seconds.ToString("D2")}" 
-				+ Environment.NewLine 
-				+ "Fast-forwarding to match server time...";
+			var text = "";
+			switch (_currentType)
+			{
+				case TimeSyncType.Fastforwarding:
+					text = $"{minutes.ToString("D2")}:{seconds.ToString("D2")}"
+						+ Environment.NewLine
+						+ "Fast-forwarding to match server time...";
+					break;
+				case TimeSyncType.Pausing:
+					text = "Pausing to match server time...";
+					break;
+			}
+			_text.text = text;
 		}
 	}
 }

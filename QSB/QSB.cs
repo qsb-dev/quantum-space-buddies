@@ -60,8 +60,9 @@ namespace QSB
             gameObject.AddComponent<QSBSectorManager>();
             gameObject.AddComponent<ConversationManager>();
             gameObject.AddComponent<QSBInputManager>();
-            gameObject.AddComponent<FastForwardUI>();
+            gameObject.AddComponent<TimeSyncUI>();
 
+            // Stop players being able to pause
             Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
         }
 

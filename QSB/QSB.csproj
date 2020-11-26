@@ -167,7 +167,8 @@
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
     <Compile Include="QSBSceneManager.cs" />
-    <Compile Include="TimeSync\FastForwardUI.cs" />
+    <Compile Include="TimeSync\TimeSyncType.cs" />
+    <Compile Include="TimeSync\TimeSyncUI.cs" />
     <Compile Include="TimeSync\WakeUpPatches.cs" />
     <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
