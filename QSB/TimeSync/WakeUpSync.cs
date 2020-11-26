@@ -1,6 +1,7 @@
 ﻿using QSB.DeathSync;
 using QSB.EventsCore;
 using QSB.TimeSync.Events;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -42,10 +43,7 @@ namespace QSB.TimeSync
             {
                 Init();
             }
-            else
-            {
-                QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-            }
+            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
             GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
             GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
@@ -53,6 +51,7 @@ namespace QSB.TimeSync
 
         private void OnWakeUp()
         {
+            DebugLog.DebugWrite("ON WAKE UP!");
             if (NetworkServer.active)
             {
                 QSB.HasWokenUp = true;
@@ -63,6 +62,7 @@ namespace QSB.TimeSync
         {
             QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
             GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
+            GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
         }
 
         private void OnSceneLoaded(OWScene scene, bool isInUniverse)
