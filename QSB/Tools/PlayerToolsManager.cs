@@ -21,7 +21,7 @@ namespace QSB.Tools
         public static void Init(Transform camera)
         {
             CreateStowTransforms(camera);
-            
+
             if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
             {
                 _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
