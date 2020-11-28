@@ -9,7 +9,7 @@ namespace QSB.TimeSync
 {
     public class WakeUpSync : NetworkBehaviour
     {
-        public static WakeUpSync LocalInstance { get; private set; }
+        public static WakeUpSync Instance { get; private set; }
 
         private const float TimeThreshold = 0.5f;
         private const float MaxFastForwardSpeed = 60f;
@@ -27,10 +27,8 @@ namespace QSB.TimeSync
         private int _localLoopCount;
         private int _serverLoopCount;
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+        public override void OnStartLocalPlayer() 
+            => Instance = this;
 
         private void Start()
         {
@@ -78,10 +76,8 @@ namespace QSB.TimeSync
             }
         }
 
-        private void OnLoopStart()
-        {
-            _localLoopCount++;
-        }
+        private void OnLoopStart() 
+            => _localLoopCount++;
 
         private void Init()
         {
@@ -98,10 +94,8 @@ namespace QSB.TimeSync
             }
         }
 
-        private void SendServerTime()
-        {
-            GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
-        }
+        private void SendServerTime() 
+            => GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 
         public void OnClientReceiveMessage(ServerTimeMessage message)
         {

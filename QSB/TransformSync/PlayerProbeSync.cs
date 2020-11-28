@@ -12,15 +12,11 @@ namespace QSB.TransformSync
 
         private Transform _disabledSocket;
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+        public override void OnStartLocalPlayer() 
+            => LocalInstance = this;
 
-        private Transform GetProbe()
-        {
-            return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-        }
+        private Transform GetProbe() 
+            => Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
         protected override Transform InitLocalTransform()
         {

@@ -23,10 +23,9 @@ namespace QSB.SectorSync
             QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
             DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
         }
-        private void OnDestroy()
-        {
-            QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
-        }
+
+        private void OnDestroy() 
+            => QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
 
         public void RebuildSectors()
         {

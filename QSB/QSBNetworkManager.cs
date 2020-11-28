@@ -71,10 +71,8 @@ namespace QSB
             QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
         }
 
-        private void OnDestroy()
-        {
-            QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
-        }
+        private void OnDestroy() 
+            => QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
 
         private void OnSceneLoaded(OWScene scene)
         {

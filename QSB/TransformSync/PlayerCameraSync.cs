@@ -10,10 +10,8 @@ namespace QSB.TransformSync
     {
         public static PlayerCameraSync LocalInstance { get; private set; }
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+        public override void OnStartLocalPlayer() 
+            => LocalInstance = this;
 
         protected override Transform InitLocalTransform()
         {

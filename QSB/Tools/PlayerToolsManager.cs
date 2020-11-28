@@ -188,9 +188,7 @@ namespace QSB.Tools
             return launcherRoot;
         }
 
-        private static MeshRenderer GetRenderer(GameObject root, string gameObjectName)
-        {
-            return root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
-        }
+        private static MeshRenderer GetRenderer(GameObject root, string gameObjectName) 
+            => root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
     }
 }

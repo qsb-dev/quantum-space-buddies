@@ -19,9 +19,7 @@ namespace QSB.TimeSync.Events
             LoopCount = count
         };
 
-        public override void OnReceiveRemote(ServerTimeMessage message)
-        {
-            WakeUpSync.LocalInstance.OnClientReceiveMessage(message);
-        }
+        public override void OnReceiveRemote(ServerTimeMessage message) 
+            => WakeUpSync.Instance.OnClientReceiveMessage(message);
     }
 }

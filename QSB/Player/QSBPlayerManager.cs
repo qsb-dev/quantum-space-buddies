@@ -45,10 +45,8 @@ namespace QSB.Player
             PlayerList.Clear();
         }
 
-        public static bool PlayerExists(uint id)
-        {
-            return id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
-        }
+        public static bool PlayerExists(uint id) 
+            => id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 
         public static void HandleFullStateMessage(PlayerStateMessage message)
         {
@@ -62,15 +60,11 @@ namespace QSB.Player
             }
         }
 
-        public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject
-        {
-            return PlayerSyncObjects.OfType<T>().Where(x => x != null);
-        }
+        public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject 
+            => PlayerSyncObjects.OfType<T>().Where(x => x != null);
 
-        public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
-        {
-            return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
-        }
+        public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject 
+            => GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
 
         public static bool IsBelongingToLocalPlayer(uint id)
         {
@@ -128,8 +122,8 @@ namespace QSB.Player
             {
                 return default;
             }
-            int count = 0;
-            int totalCount = PlayerSyncObjects.Count;
+            var count = 0;
+            var totalCount = PlayerSyncObjects.Count;
             PlayerSyncObjects.RemoveAll(x => x == null);
             PlayerSyncObjects.RemoveAll(x => x.GetComponent<NetworkIdentity>() == null);
             if (PlayerSyncObjects.Count != totalCount)
