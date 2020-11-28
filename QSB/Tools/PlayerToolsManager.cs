@@ -21,15 +21,16 @@ namespace QSB.Tools
         public static void Init(Transform camera)
         {
             CreateStowTransforms(camera);
-
-            _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
+            
             if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
             {
+                _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
                 _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
             }
             else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
             {
-                // EyeCompatibility : Get this material another way.
+                // EyeCompatibility : Get these materials another way.
+                _playerToolsMaterial = null;
                 _lightbulbMaterial = null;
             }
 
