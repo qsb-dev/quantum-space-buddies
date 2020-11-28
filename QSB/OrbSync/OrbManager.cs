@@ -38,7 +38,7 @@ namespace QSB.OrbSync
             WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
             if (NetworkServer.active)
             {
-                DebugLog.DebugWrite("IS SERVER - INSTANTIATING!");
+                DebugLog.DebugWrite("- Is server, instantiating orb prefabs.");
                 WorldRegistry.OrbSyncList.Clear();
                 WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
             }

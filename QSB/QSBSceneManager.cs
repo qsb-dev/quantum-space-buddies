@@ -21,6 +21,7 @@ namespace QSB
 
         private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
         {
+            DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
             var universe = InUniverse(newScene);
             OnSceneLoaded?.Invoke(newScene, universe);
             if (universe)

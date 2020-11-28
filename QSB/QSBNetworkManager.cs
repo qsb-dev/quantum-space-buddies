@@ -78,7 +78,9 @@ namespace QSB
 
         private void OnSceneLoaded(OWScene scene)
         {
+            DebugLog.DebugWrite("scene loaded");
             OrbManager.Instance.BuildOrbs();
+            OrbManager.Instance.QueueBuildSlots();
             WorldRegistry.OldDialogueTrees.Clear();
             WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
         }

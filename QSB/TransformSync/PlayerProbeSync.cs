@@ -69,11 +69,6 @@ namespace QSB.TransformSync
                 DebugLog.ToConsole($"Player is null for {AttachedNetId}!", MessageType.Error);
                 return;
             }
-            if (ReferenceSector == null)
-            {
-                DebugLog.ToConsole($"ReferenceSector is null for {AttachedNetId}!", MessageType.Error);
-                return;
-            }
             if (_disabledSocket == null)
             {
                 DebugLog.ToConsole($"DisabledSocket is null for {AttachedNetId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
