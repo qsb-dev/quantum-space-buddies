@@ -29,6 +29,7 @@ namespace QSB.Tools
             }
             else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
             {
+                // EyeCompatibility : Get this material another way.
                 _lightbulbMaterial = null;
             }
 
