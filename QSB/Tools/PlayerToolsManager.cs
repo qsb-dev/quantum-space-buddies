@@ -23,7 +23,14 @@ namespace QSB.Tools
             CreateStowTransforms(camera);
 
             _playerToolsMaterial = GameObject.Find("PlayerSuit_Jetpack").GetComponent<MeshRenderer>().materials[0];
-            _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
+            if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+            {
+                _lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
+            }
+            else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+            {
+                _lightbulbMaterial = null;
+            }
 
             CreateFlashlight(camera);
             CreateSignalscope(camera);
