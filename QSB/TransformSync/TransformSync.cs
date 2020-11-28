@@ -66,13 +66,8 @@ namespace QSB.TransformSync
 
             if (SyncedTransform == null)
             {
-                DebugLog.ToConsole($"Warning - SyncedTransform {AttachedNetId} ({Player.PlayerId}.{GetType().Name}) is null.", MessageType.Warning);
+                DebugLog.ToConsole($"Warning - SyncedTransform {Player.PlayerId}.{GetType().Name} is null.", MessageType.Warning);
                 return;
-            }
-
-            if (ReferenceSector == null)
-            {
-                DebugLog.ToConsole($"Error - {AttachedNetId} ({Player.PlayerId}.{GetType().Name}) doesn't have a reference sector", MessageType.Error);
             }
 
             UpdateTransform();
@@ -82,9 +77,9 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.	
             {
-                if (ReferenceSector == null || ReferenceSector.Transform == null || ReferenceSector.Sector == null)
+                if (ReferenceSector == null || ReferenceSector.Sector == null)
                 {
-                    DebugLog.ToConsole($"Error - Referencesector has null values for {AttachedNetId}. ({Player.PlayerId}.{GetType().Name})", MessageType.Error);
+                    DebugLog.ToConsole($"Error - ReferenceSector has null value for {Player.PlayerId}.{GetType().Name}", MessageType.Error);
                     return;
                 }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
