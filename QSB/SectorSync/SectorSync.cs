@@ -37,7 +37,7 @@ namespace QSB.SectorSync
             {
                 return;
             }
-            transformSync.ReferenceSector = closestSector;
+            transformSync.SetReferenceSector(closestSector);
             SendSector(transformSync.netId.Value, closestSector);
         }
 

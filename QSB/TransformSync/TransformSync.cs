@@ -42,12 +42,7 @@ namespace QSB.TransformSync
         protected void Init()
         {
             DebugLog.DebugWrite($"Init of {AttachedNetId} ({Player.PlayerId}.{GetType().Name})");
-            ReferenceSector = QSBSectorManager.Instance.GetStartPlanetSector();
             SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
-            if (!hasAuthority)
-            {
-                SyncedTransform.position = ReferenceSector.Position;
-            }
             _isInitialized = true;
             _isVisible = true;
         }
@@ -87,9 +82,10 @@ namespace QSB.TransformSync
         {
             if (hasAuthority) // If this script is attached to the client's own body on the client's side.	
             {
-                if (ReferenceSector.Sector == null)
+                if (ReferenceSector == null || ReferenceSector.Transform == null || ReferenceSector.Sector == null)
                 {
-                    DebugLog.ToConsole($"Error - Sector is null for referencesector for {AttachedNetId}. ({Player.PlayerId}.{GetType().Name})", MessageType.Error);
+                    DebugLog.ToConsole($"Error - Referencesector has null values for {AttachedNetId}. ({Player.PlayerId}.{GetType().Name})", MessageType.Error);
+                    return;
                 }
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
                 transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
@@ -112,6 +108,7 @@ namespace QSB.TransformSync
 
         public void SetReferenceSector(QSBSector sector)
         {
+            DebugLog.DebugWrite($"Setting {Player.PlayerId}.{GetType().Name} to {sector.Name}", MessageType.Info);
             _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
             if (!hasAuthority)

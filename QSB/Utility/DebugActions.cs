@@ -38,7 +38,7 @@ namespace QSB.Utility
             }
             if (Input.GetKeyDown(KeyCode.Keypad3))
             {
-                GlobalMessenger.FireEvent("DebugWarpVessel");
+                LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite, 1f, true);
             }
         }
     }

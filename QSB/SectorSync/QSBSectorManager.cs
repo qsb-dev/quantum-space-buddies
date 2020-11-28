@@ -49,14 +49,5 @@ namespace QSB.SectorSync
                 .OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
                 .First();
         }
-
-        public QSBSector GetStartPlanetSector()
-        {
-            var sector = QSBSceneManager.CurrentScene == OWScene.SolarSystem
-                ? Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetRootSector()
-                : Locator.GetAstroObject(AstroObject.Name.Eye).GetRootSector();
-            return WorldRegistry.GetObjects<QSBSector>()
-                .FirstOrDefault(x => x.Sector == sector);
-        }
     }
 }
