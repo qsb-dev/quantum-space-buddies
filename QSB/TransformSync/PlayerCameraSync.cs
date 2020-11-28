@@ -6,44 +6,42 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerCameraSync : TransformSync
-    {
-        public static PlayerCameraSync LocalInstance { get; private set; }
+	public class PlayerCameraSync : TransformSync
+	{
+		public static PlayerCameraSync LocalInstance { get; private set; }
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+		public override void OnStartLocalPlayer() 
+			=> LocalInstance = this;
 
-        protected override Transform InitLocalTransform()
-        {
-            var body = Locator.GetPlayerCamera().gameObject.transform;
+		protected override Transform InitLocalTransform()
+		{
+			var body = Locator.GetPlayerCamera().gameObject.transform;
 
-            Player.Camera = body.gameObject;
+			Player.Camera = body.gameObject;
 
-            Player.IsReady = true;
-            GlobalMessenger<bool>.FireEvent(EventNames.QSBPlayerReady, true);
-            DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
-            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+			Player.IsReady = true;
+			GlobalMessenger<bool>.FireEvent(EventNames.QSBPlayerReady, true);
+			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
+			GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
 
-            return body;
-        }
+			return body;
+		}
 
-        protected override Transform InitRemoteTransform()
-        {
-            var body = new GameObject("RemotePlayerCamera");
+		protected override Transform InitRemoteTransform()
+		{
+			var body = new GameObject("RemotePlayerCamera");
 
-            PlayerToolsManager.Init(body.transform);
+			PlayerToolsManager.Init(body.transform);
 
-            Player.Camera = body;
+			Player.Camera = body;
 
-            return body.transform;
-        }
+			return body.transform;
+		}
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null
-            && Player != null
-            && QSBPlayerManager.PlayerExists(Player.PlayerId)
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
-    }
+		public override bool IsReady => Locator.GetPlayerTransform() != null
+			&& Player != null
+			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& netId.Value != uint.MaxValue
+			&& netId.Value != 0U;
+	}
 }
