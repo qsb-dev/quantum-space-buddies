@@ -1,4 +1,5 @@
 ﻿using QSB.EventsCore;
+using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 
@@ -23,6 +24,7 @@ namespace QSB.OrbSync.Events
 
         public override void OnReceiveRemote(BoolWorldObjectMessage message)
         {
+            DebugLog.DebugWrite($"receive slot {message.ObjectId} to {message.State}");
             var orbSlot = WorldRegistry.GetObject<QSBOrbSlot>(message.ObjectId);
             orbSlot?.SetState(message.State);
         }

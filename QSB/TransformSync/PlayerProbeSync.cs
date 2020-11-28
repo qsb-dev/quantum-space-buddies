@@ -83,8 +83,7 @@ namespace QSB.TransformSync
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
                 return;
             }
-            if (SyncedTransform.position == Vector3.zero ||
-                SyncedTransform.position == Locator.GetAstroObject(AstroObject.Name.Sun).transform.position)
+            if (SyncedTransform.position == Vector3.zero)
             {
                 return;
             }
