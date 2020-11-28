@@ -1,8 +1,8 @@
 ﻿namespace QSB.EventsCore
 {
-	public interface IQSBEvent
-	{
-		void SetupListener();
-		void CloseListener();
-	}
+    public interface IQSBEvent
+    {
+        void SetupListener();
+        void CloseListener();
+    }
 }

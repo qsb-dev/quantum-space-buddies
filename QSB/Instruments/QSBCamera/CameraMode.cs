@@ -1,8 +1,8 @@
 ﻿namespace QSB.Instruments.QSBCamera
 {
-	public enum CameraMode
-	{
-		FirstPerson,
-		ThirdPerson
-	}
+    public enum CameraMode
+    {
+        FirstPerson,
+        ThirdPerson
+    }
 }

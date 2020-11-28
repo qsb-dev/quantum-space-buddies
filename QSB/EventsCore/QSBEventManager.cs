@@ -14,54 +14,54 @@ using System.Collections.Generic;
 
 namespace QSB.EventsCore
 {
-	public static class QSBEventManager
-	{
-		public static bool Ready { get; private set; }
+    public static class QSBEventManager
+    {
+        public static bool Ready { get; private set; }
 
-		private static List<IQSBEvent> _eventList = new List<IQSBEvent>();
+        private static List<IQSBEvent> _eventList = new List<IQSBEvent>();
 
-		public static void Init()
-		{
-			_eventList = new List<IQSBEvent>
-			{
-				new PlayerReadyEvent(),
-				new PlayerJoinEvent(),
-				new PlayerSuitEvent(),
-				new PlayerFlashlightEvent(),
-				new PlayerSignalscopeEvent(),
-				new PlayerTranslatorEvent(),
-				new PlayerProbeLauncherEvent(),
-				new PlayerProbeEvent(),
-				new PlayerSectorEvent(),
-				new PlayerLeaveEvent(),
-				new PlayerDeathEvent(),
-				new PlayerStatesRequestEvent(),
-				new ElevatorEvent(),
-				new GeyserEvent(),
-				new ServerTimeEvent(),
-				new CrouchEvent(),
-				new OrbSlotEvent(),
-				new OrbUserEvent(),
-				new ConversationEvent(),
-				new ConversationStartEndEvent(),
-				new ChangeAnimTypeEvent(),
-				new ServerSendPlayerStatesEvent()
-			};
+        public static void Init()
+        {
+            _eventList = new List<IQSBEvent>
+            {
+                new PlayerReadyEvent(),
+                new PlayerJoinEvent(),
+                new PlayerSuitEvent(),
+                new PlayerFlashlightEvent(),
+                new PlayerSignalscopeEvent(),
+                new PlayerTranslatorEvent(),
+                new PlayerProbeLauncherEvent(),
+                new PlayerProbeEvent(),
+                new PlayerSectorEvent(),
+                new PlayerLeaveEvent(),
+                new PlayerDeathEvent(),
+                new PlayerStatesRequestEvent(),
+                new ElevatorEvent(),
+                new GeyserEvent(),
+                new ServerTimeEvent(),
+                new CrouchEvent(),
+                new OrbSlotEvent(),
+                new OrbUserEvent(),
+                new ConversationEvent(),
+                new ConversationStartEndEvent(),
+                new ChangeAnimTypeEvent(),
+                new ServerSendPlayerStatesEvent()
+            };
 
-			_eventList.ForEach(ev => ev.SetupListener());
+            _eventList.ForEach(ev => ev.SetupListener());
 
-			Ready = true;
+            Ready = true;
 
-			DebugLog.DebugWrite("Event Manager ready.", MessageType.Success);
-		}
+            DebugLog.DebugWrite("Event Manager ready.", MessageType.Success);
+        }
 
-		public static void Reset()
-		{
-			Ready = false;
+        public static void Reset()
+        {
+            Ready = false;
 
-			_eventList.ForEach(ev => ev.CloseListener());
+            _eventList.ForEach(ev => ev.CloseListener());
 
-			_eventList = new List<IQSBEvent>();
-		}
-	}
+            _eventList = new List<IQSBEvent>();
+        }
+    }
 }
