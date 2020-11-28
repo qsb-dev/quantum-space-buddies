@@ -36,6 +36,10 @@ namespace QSB.Utility
             {
                 InsertWarpCore();
             }
+            if (Input.GetKeyDown(KeyCode.Keypad3))
+            {
+                GlobalMessenger.FireEvent("DebugWarpVessel");
+            }
         }
     }
 }
