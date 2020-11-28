@@ -15,10 +15,7 @@ namespace QSB
         public static event InputEvent FeldsparTaunt;
         public static event InputEvent ExitTaunt;
 
-        public void Awake()
-        {
-            Instance = this;
-        }
+        public void Awake() => Instance = this;
 
         public void Update()
         {

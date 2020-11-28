@@ -30,9 +30,7 @@ namespace QSB
             }
         }
 
-        private static bool InUniverse(OWScene scene)
-        {
-            return scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse;
-        }
+        private static bool InUniverse(OWScene scene) 
+            => scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse;
     }
 }

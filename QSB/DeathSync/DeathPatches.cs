@@ -22,10 +22,7 @@ namespace QSB.DeathSync
             return false;
         }
 
-        public static void BroadcastDeath(DeathType deathType)
-        {
-            GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
-        }
+        public static void BroadcastDeath(DeathType deathType) => GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
 
         public override void DoPatches()
         {
