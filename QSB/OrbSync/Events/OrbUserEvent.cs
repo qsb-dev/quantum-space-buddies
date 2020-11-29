@@ -57,6 +57,11 @@ namespace QSB.OrbSync.Events
 
         public override void OnReceiveRemote(WorldObjectMessage message)
         {
+            if (WorldRegistry.OrbSyncList.Count < message.ObjectId)
+            {
+                DebugLog.DebugWrite($"Error - Orb id {message.ObjectId} out of range of orb sync list {WorldRegistry.OrbSyncList.Count}.", MessageType.Error);
+                return;
+            }
             var orb = WorldRegistry.OrbSyncList
                 .First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
             orb.enabled = true;

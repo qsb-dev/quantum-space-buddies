@@ -32,12 +32,7 @@ namespace QSB.WorldSync
 
         public static T GetObject<T>(int id) where T : WorldObject
         {
-            var obj = GetObjects<T>().FirstOrDefault(x => x.ObjectId == id);
-            if (obj == default(T))
-            {
-                DebugLog.DebugWrite($"Warning - Could not find world object type {typeof(T).Name} id {id}", MessageType.Warning);
-            }
-            return obj;
+            return GetObjects<T>().FirstOrDefault(x => x.ObjectId == id);
         }
 
         public static void RemoveObjects<T>() where T : WorldObject
@@ -47,12 +42,15 @@ namespace QSB.WorldSync
 
         public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
         {
-            IEnumerable<QSBOrbSlot> slotList = null;
             QSBOrbSlot qsbSlot = null;
             NomaiOrbTransformSync orbSync = null;
+            var slotList = GetObjects<QSBOrbSlot>();
+            if (slotList.Count() == 0)
+            {
+                return;
+            }
             try
             {
-                slotList = GetObjects<QSBOrbSlot>();
                 qsbSlot = slotList.First(x => x.InterfaceSlot == slot);
                 orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
                 if (orbSync.hasAuthority)
@@ -63,9 +61,10 @@ namespace QSB.WorldSync
             catch
             {
                 DebugLog.DebugWrite("Error - Exception when handling slot state change."
-                    + Environment.NewLine + $"SlotList count {slotList?.Count()}"
-                    + Environment.NewLine + $"QSBOrbSlot null? {qsbSlot == null}"
-                    + Environment.NewLine + $"NomaiOrbTransformSync null? {orbSync == null}", MessageType.Error);
+                    + Environment.NewLine + $"Slot name {slot.name} to {state}"
+                    + Environment.NewLine + $"SlotList count : {slotList?.Count()}"
+                    + Environment.NewLine + $"QSBOrbSlot null? : {qsbSlot == null}"
+                    + Environment.NewLine + $"NomaiOrbTransformSync null? : {orbSync == null}", MessageType.Error);
             }
         }
 

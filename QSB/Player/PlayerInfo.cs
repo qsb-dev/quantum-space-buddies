@@ -37,7 +37,6 @@ namespace QSB.Player
 
         public PlayerInfo(uint id)
         {
-            DebugLog.DebugWrite($"Creating PlayerInfo with id {id}");
             PlayerId = id;
             CurrentDialogueID = -1;
         }

@@ -140,8 +140,8 @@ namespace QSB
             if (QSBSceneManager.IsInUniverse)
             {
                 QSBSectorManager.Instance.RebuildSectors();
+                OrbManager.Instance.QueueBuildSlots();
             }
-            OrbManager.Instance.QueueBuildSlots();
 
             if (!NetworkServer.localClientActive)
             {

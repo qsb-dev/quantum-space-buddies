@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -20,6 +21,8 @@ namespace QSB.TransformSync
 
         public override void OnStartClient()
         {
+            DontDestroyOnLoad(this);
+            DebugLog.DebugWrite($"onstartclient orb netid {netId.Value}");
             WorldRegistry.OrbSyncList.Add(this);
 
             QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
@@ -27,23 +30,16 @@ namespace QSB.TransformSync
 
         private void OnReady()
         {
+            DebugLog.DebugWrite($"onready orb netid {netId.Value}, index {Index}");
             AttachedOrb = WorldRegistry.OldOrbList[Index];
             _isReady = true;
         }
 
-        private void Awake()
-        {
-            DontDestroyOnLoad(this);
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-        }
-
         private void OnDestroy()
         {
+            DebugLog.DebugWrite($"ondestroy orb netid {netId.Value}");
             WorldRegistry.OrbSyncList.Remove(this);
-            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
         }
-
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse) => _isInitialized = false;
 
         protected void Init()
         {

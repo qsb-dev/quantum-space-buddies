@@ -23,7 +23,6 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
-            DebugLog.DebugWrite($"Awake of {AttachedNetId} ({GetType().Name})");
             QSBPlayerManager.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
