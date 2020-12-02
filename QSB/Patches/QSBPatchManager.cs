@@ -12,38 +12,38 @@ using System.Linq;
 
 namespace QSB.Patches
 {
-    public delegate void PatchEvent(QSBPatchTypes type);
+	public delegate void PatchEvent(QSBPatchTypes type);
 
-    public static class QSBPatchManager
-    {
-        public static List<QSBPatch> _patchList = new List<QSBPatch>();
+	public static class QSBPatchManager
+	{
+		public static List<QSBPatch> _patchList = new List<QSBPatch>();
 
-        public static event PatchEvent OnPatchType;
+		public static event PatchEvent OnPatchType;
 
-        public static void Init()
-        {
-            _patchList = new List<QSBPatch>
-            {
-                new ConversationPatches(),
-                new DeathPatches(),
-                new ElevatorPatches(),
-                new OrbPatches(),
-                new WakeUpPatches(),
-                new ProbePatches()
-            };
+		public static void Init()
+		{
+			_patchList = new List<QSBPatch>
+			{
+				new ConversationPatches(),
+				new DeathPatches(),
+				new ElevatorPatches(),
+				new OrbPatches(),
+				new WakeUpPatches(),
+				new ProbePatches()
+			};
 
-            DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
-        }
+			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
+		}
 
-        public static void DoPatchType(QSBPatchTypes type)
-        {
-            OnPatchType?.Invoke(type);
-            DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
-            foreach (var patch in _patchList.Where(x => x.Type == type))
-            {
-                DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
-                patch.DoPatches();
-            }
-        }
-    }
+		public static void DoPatchType(QSBPatchTypes type)
+		{
+			OnPatchType?.Invoke(type);
+			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			foreach (var patch in _patchList.Where(x => x.Type == type))
+			{
+				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
+				patch.DoPatches();
+			}
+		}
+	}
 }
