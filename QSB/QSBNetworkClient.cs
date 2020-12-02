@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,11 +7,12 @@ using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.Match;
 using UnityEngine.Networking.NetworkSystem;
 
 namespace QSB
 {
-	class QSBNetworkClient
+	public class QSBNetworkClient
 	{
 		public QSBNetworkClient()
 		{
@@ -366,16 +368,13 @@ namespace QSB
 		public void Connect(string serverIp, int serverPort)
 		{
 			PrepareForConnect();
-			if (LogFilter.logDebug)
+			DebugLog.DebugWrite(string.Concat(new object[]
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"Client Connect: ",
-					serverIp,
-					":",
-					serverPort
-				}));
-			}
+				"Client Connect: ",
+				serverIp,
+				":",
+				serverPort
+			}));
 			m_ServerPort = serverPort;
 			if (Application.platform == RuntimePlatform.WebGLPlayer)
 			{
@@ -394,10 +393,7 @@ namespace QSB
 			}
 			else
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("Async DNS START:" + serverIp);
-				}
+				DebugLog.DebugWrite("Async DNS START:" + serverIp);
 				m_RequestedServerHost = serverIp;
 				m_AsyncConnect = ConnectState.Resolving;
 				Dns.BeginGetHostAddresses(serverIp, new AsyncCallback(GetHostAddressesCallback), this);
@@ -406,7 +402,8 @@ namespace QSB
 
 		public void Connect(EndPoint secureTunnelEndPoint)
 		{
-			bool usePlatformSpecificProtocols = NetworkTransport.DoesEndPointUsePlatformProtocols(secureTunnelEndPoint);
+			//bool usePlatformSpecificProtocols = NetworkTransport.DoesEndPointUsePlatformProtocols(secureTunnelEndPoint);
+			bool usePlatformSpecificProtocols = false;
 			PrepareForConnect(usePlatformSpecificProtocols);
 			if (LogFilter.logDebug)
 			{
@@ -487,6 +484,7 @@ namespace QSB
 
 		private void PrepareForConnect(bool usePlatformSpecificProtocols)
 		{
+			DebugLog.DebugWrite("prepare for connect");
 			SetActive(true);
 			RegisterSystemHandlers(false);
 			if (m_HostTopology == null)
@@ -505,16 +503,13 @@ namespace QSB
 					num = 1;
 				}
 				int num2 = m_SimulatedLatency * 3;
-				if (LogFilter.logDebug)
+				DebugLog.DebugWrite(string.Concat(new object[]
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"AddHost Using Simulator ",
-						num,
-						"/",
-						num2
-					}));
-				}
+					"AddHost Using Simulator ",
+					num,
+					"/",
+					num2
+				}));
 				m_ClientId = NetworkTransport.AddHostWithSimulator(m_HostTopology, num, num2, m_HostPort);
 			}
 			else
@@ -531,47 +526,36 @@ namespace QSB
 				QSBNetworkClient networkClient = (QSBNetworkClient)ar.AsyncState;
 				if (array.Length == 0)
 				{
-					if (LogFilter.logError)
-					{
-						Debug.LogError("DNS lookup failed for:" + networkClient.m_RequestedServerHost);
-					}
+					Debug.LogError("DNS lookup failed for:" + networkClient.m_RequestedServerHost);
 					networkClient.m_AsyncConnect = ConnectState.Failed;
 				}
 				else
 				{
 					networkClient.m_ServerIp = array[0].ToString();
 					networkClient.m_AsyncConnect = ConnectState.Resolved;
-					if (LogFilter.logDebug)
+					Debug.Log(string.Concat(new string[]
 					{
-						Debug.Log(string.Concat(new string[]
-						{
-							"Async DNS Result:",
-							networkClient.m_ServerIp,
-							" for ",
-							networkClient.m_RequestedServerHost,
-							": ",
-							networkClient.m_ServerIp
-						}));
-					}
+						"Async DNS Result:",
+						networkClient.m_ServerIp,
+						" for ",
+						networkClient.m_RequestedServerHost,
+						": ",
+						networkClient.m_ServerIp
+					}));
 				}
 			}
 			catch (SocketException ex)
 			{
 				QSBNetworkClient networkClient2 = (QSBNetworkClient)ar.AsyncState;
-				if (LogFilter.logError)
-				{
-					Debug.LogError("DNS resolution failed: " + ex.GetErrorCode());
-				}
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("Exception:" + ex);
-				}
+				Debug.LogError("DNS resolution failed: " + ex.GetErrorCode());
+				Debug.LogError("Exception:" + ex);
 				networkClient2.m_AsyncConnect = ConnectState.Failed;
 			}
 		}
 
 		internal void ContinueConnect()
 		{
+			DebugLog.DebugWrite("continue connect");
 			if (m_UseSimulator)
 			{
 				int num = m_SimulatedLatency / 3;
@@ -579,16 +563,13 @@ namespace QSB
 				{
 					num = 1;
 				}
-				if (LogFilter.logDebug)
+				DebugLog.DebugWrite(string.Concat(new object[]
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"Connect Using Simulator ",
-						m_SimulatedLatency / 3,
-						"/",
-						m_SimulatedLatency
-					}));
-				}
+					"Connect Using Simulator ",
+					m_SimulatedLatency / 3,
+					"/",
+					m_SimulatedLatency
+				}));
 				ConnectionSimulatorConfig conf = new ConnectionSimulatorConfig(num, m_SimulatedLatency, num, m_SimulatedLatency, m_PacketLoss);
 				byte b;
 				m_ClientConnectionId = NetworkTransport.ConnectWithSimulator(m_ClientId, m_ServerIp, m_ServerPort, 0, out b, conf);
@@ -1066,8 +1047,8 @@ namespace QSB
 
 		private void OnCRC(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<CRCMessage>(s_CRCMessage);
-			NetworkCRC.Validate(s_CRCMessage.scripts, numChannels);
+			netMsg.ReadMessage<QSBCRCMessage>(s_CRCMessage);
+			QSBNetworkCRC.Validate(s_CRCMessage.scripts, numChannels);
 		}
 
 		public void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler)
@@ -1148,6 +1129,7 @@ namespace QSB
 
 		internal static void SetActive(bool state)
 		{
+			DebugLog.DebugWrite("set active");
 			if (!s_IsActive && state)
 			{
 				NetworkTransport.Init();
@@ -1185,7 +1167,7 @@ namespace QSB
 
 		private EndPoint m_RemoteEndPoint;
 
-		private static CRCMessage s_CRCMessage = new CRCMessage();
+		private static QSBCRCMessage s_CRCMessage = new QSBCRCMessage();
 
 		private QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
 

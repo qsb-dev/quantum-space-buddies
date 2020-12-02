@@ -1,10 +1,16 @@
-﻿using System;
+﻿using OWML.Common;
+using QSB.Animation;
+using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.Match;
+using UnityEngine.Networking.NetworkSystem;
+using UnityEngine.Networking.Types;
 
 namespace QSB
 {
@@ -12,10 +18,11 @@ namespace QSB
 	{
 		private QSBNetworkServer()
 		{
+			DebugLog.DebugWrite("ctor");
 			NetworkTransport.Init();
 			m_RemoveList = new HashSet<NetworkInstanceId>();
 			m_ExternalConnections = new HashSet<int>();
-			m_NetworkScene = new NetworkScene();
+			m_NetworkScene = new QSBNetworkScene();
 			m_SimpleServerSimple = new ServerSimpleWrapper(this);
 		}
 
@@ -51,7 +58,7 @@ namespace QSB
 			}
 		}
 
-		public static Dictionary<short, NetworkMessageDelegate> handlers
+		public static Dictionary<short, QSBNetworkMessageDelegate> handlers
 		{
 			get
 			{
@@ -117,7 +124,7 @@ namespace QSB
 			{
 				if (s_Instance == null)
 				{
-					object obj = s_Sync;
+					var obj = s_Sync;
 					lock (obj)
 					{
 						if (s_Instance == null)
@@ -134,7 +141,7 @@ namespace QSB
 		{
 			get
 			{
-				return NetworkServer.s_Active;
+				return s_Active;
 			}
 		}
 
@@ -174,7 +181,7 @@ namespace QSB
 			}
 		}
 
-		public static void SetNetworkConnectionClass<T>() where T : NetworkConnection
+		public static void SetNetworkConnectionClass<T>() where T : QSBNetworkConnection
 		{
 			instance.m_SimpleServerSimple.SetNetworkConnectionClass<T>();
 		}
@@ -221,7 +228,7 @@ namespace QSB
 			}
 			else
 			{
-				instance.InternalListenRelay(matchInfo.address, matchInfo.port, matchInfo.networkId, Utility.GetSourceID(), matchInfo.nodeId);
+				instance.InternalListenRelay(matchInfo.address, matchInfo.port, matchInfo.networkId, QSBUtility.GetSourceID(), matchInfo.nodeId);
 				result = true;
 			}
 			return result;
@@ -229,70 +236,15 @@ namespace QSB
 
 		internal void RegisterMessageHandlers()
 		{
-			NetworkServerSimple simpleServerSimple = m_SimpleServerSimple;
-			short msgType = 35;
-			if (NetworkServer.<> f__mg$cache0 == null)
-			{
-				NetworkServer.<> f__mg$cache0 = new NetworkMessageDelegate(NetworkServer.OnClientReadyMessage);
-			}
-			simpleServerSimple.RegisterHandlerSafe(msgType, NetworkServer.<> f__mg$cache0);
-			NetworkServerSimple simpleServerSimple2 = m_SimpleServerSimple;
-			short msgType2 = 5;
-			if (NetworkServer.<> f__mg$cache1 == null)
-			{
-				NetworkServer.<> f__mg$cache1 = new NetworkMessageDelegate(NetworkServer.OnCommandMessage);
-			}
-			simpleServerSimple2.RegisterHandlerSafe(msgType2, NetworkServer.<> f__mg$cache1);
-			NetworkServerSimple simpleServerSimple3 = m_SimpleServerSimple;
-			short msgType3 = 6;
-			if (NetworkServer.<> f__mg$cache2 == null)
-			{
-				NetworkServer.<> f__mg$cache2 = new NetworkMessageDelegate(NetworkTransform.HandleTransform);
-			}
-			simpleServerSimple3.RegisterHandlerSafe(msgType3, NetworkServer.<> f__mg$cache2);
-			NetworkServerSimple simpleServerSimple4 = m_SimpleServerSimple;
-			short msgType4 = 16;
-			if (NetworkServer.<> f__mg$cache3 == null)
-			{
-				NetworkServer.<> f__mg$cache3 = new NetworkMessageDelegate(NetworkTransformChild.HandleChildTransform);
-			}
-			simpleServerSimple4.RegisterHandlerSafe(msgType4, NetworkServer.<> f__mg$cache3);
-			NetworkServerSimple simpleServerSimple5 = m_SimpleServerSimple;
-			short msgType5 = 38;
-			if (NetworkServer.<> f__mg$cache4 == null)
-			{
-				NetworkServer.<> f__mg$cache4 = new NetworkMessageDelegate(NetworkServer.OnRemovePlayerMessage);
-			}
-			simpleServerSimple5.RegisterHandlerSafe(msgType5, NetworkServer.<> f__mg$cache4);
-			NetworkServerSimple simpleServerSimple6 = m_SimpleServerSimple;
-			short msgType6 = 40;
-			if (NetworkServer.<> f__mg$cache5 == null)
-			{
-				NetworkServer.<> f__mg$cache5 = new NetworkMessageDelegate(NetworkAnimator.OnAnimationServerMessage);
-			}
-			simpleServerSimple6.RegisterHandlerSafe(msgType6, NetworkServer.<> f__mg$cache5);
-			NetworkServerSimple simpleServerSimple7 = m_SimpleServerSimple;
-			short msgType7 = 41;
-			if (NetworkServer.<> f__mg$cache6 == null)
-			{
-				NetworkServer.<> f__mg$cache6 = new NetworkMessageDelegate(NetworkAnimator.OnAnimationParametersServerMessage);
-			}
-			simpleServerSimple7.RegisterHandlerSafe(msgType7, NetworkServer.<> f__mg$cache6);
-			NetworkServerSimple simpleServerSimple8 = m_SimpleServerSimple;
-			short msgType8 = 42;
-			if (NetworkServer.<> f__mg$cache7 == null)
-			{
-				NetworkServer.<> f__mg$cache7 = new NetworkMessageDelegate(NetworkAnimator.OnAnimationTriggerServerMessage);
-			}
-			simpleServerSimple8.RegisterHandlerSafe(msgType8, NetworkServer.<> f__mg$cache7);
-			NetworkServerSimple simpleServerSimple9 = m_SimpleServerSimple;
-			short msgType9 = 17;
-			if (NetworkServer.<> f__mg$cache8 == null)
-			{
-				NetworkServer.<> f__mg$cache8 = new NetworkMessageDelegate(NetworkConnection.OnFragment);
-			}
-			simpleServerSimple9.RegisterHandlerSafe(msgType9, NetworkServer.<> f__mg$cache8);
-			NetworkServer.maxPacketSize = NetworkServer.hostTopology.DefaultConfig.PacketSize;
+			m_SimpleServerSimple.RegisterHandlerSafe((short)35, new QSBNetworkMessageDelegate(OnClientReadyMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe((short)5, new QSBNetworkMessageDelegate(OnCommandMessage));
+			//m_SimpleServerSimple.RegisterHandlerSafe((short)6, new QSBNetworkMessageDelegate(NetworkTransform.HandleTransform));
+			//m_SimpleServerSimple.RegisterHandlerSafe((short)16, new QSBNetworkMessageDelegate(NetworkTransformChild.HandleChildTransform));
+			m_SimpleServerSimple.RegisterHandlerSafe((short)38, new QSBNetworkMessageDelegate(OnRemovePlayerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe((short)40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe((short)41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe((short)42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
+			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 		}
 
 		public static void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
@@ -327,7 +279,7 @@ namespace QSB
 			{
 				return false;
 			}
-			maxPacketSize = NetworkServer.hostTopology.DefaultConfig.PacketSize;
+			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 			s_Active = true;
 			RegisterMessageHandlers();
 			return true;
@@ -340,8 +292,8 @@ namespace QSB
 
 		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, PeerInfoMessage[] peers)
 		{
-			NetworkClient result;
-			if (NetworkServer.s_Active)
+			QSBNetworkClient result;
+			if (s_Active)
 			{
 				if (LogFilter.logError)
 				{
@@ -349,7 +301,7 @@ namespace QSB
 				}
 				result = null;
 			}
-			else if (!NetworkClient.active)
+			else if (!QSBNetworkClient.active)
 			{
 				if (LogFilter.logError)
 				{
@@ -359,14 +311,11 @@ namespace QSB
 			}
 			else
 			{
-				NetworkServer.Configure(NetworkServer.hostTopology);
+				Configure(hostTopology);
 				if (matchInfo == null)
 				{
-					if (LogFilter.logDev)
-					{
-						Debug.Log("BecomeHost Listen on " + port);
-					}
-					if (!NetworkServer.Listen(port))
+					Debug.Log("BecomeHost Listen on " + port);
+					if (!Listen(port))
 					{
 						if (LogFilter.logError)
 						{
@@ -377,41 +326,32 @@ namespace QSB
 				}
 				else
 				{
-					if (LogFilter.logDev)
-					{
-						Debug.Log("BecomeHost match:" + matchInfo.networkId);
-					}
-					NetworkServer.ListenRelay(matchInfo.address, matchInfo.port, matchInfo.networkId, Utility.GetSourceID(), matchInfo.nodeId);
+					Debug.Log("BecomeHost match:" + matchInfo.networkId);
+					ListenRelay(matchInfo.address, matchInfo.port, matchInfo.networkId, QSBUtility.GetSourceID(), matchInfo.nodeId);
 				}
-				foreach (NetworkIdentity networkIdentity in ClientScene.objects.Values)
+				foreach (var networkIdentity in QSBClientScene.Objects.Values)
 				{
 					if (!(networkIdentity == null) && !(networkIdentity.gameObject == null))
 					{
-						NetworkIdentity.AddNetworkId(networkIdentity.netId.Value);
-						m_NetworkScene.SetLocalObject(networkIdentity.netId, networkIdentity.gameObject, false, false);
+						QSBNetworkIdentity.AddNetworkId(networkIdentity.NetId.Value);
+						m_NetworkScene.SetLocalObject(networkIdentity.NetId, networkIdentity.gameObject, false, false);
 						networkIdentity.OnStartServer(true);
 					}
 				}
-				if (LogFilter.logDev)
-				{
-					Debug.Log("NetworkServer BecomeHost done. oldConnectionId:" + oldConnectionId);
-				}
+				Debug.Log("NetworkServer BecomeHost done. oldConnectionId:" + oldConnectionId);
 				RegisterMessageHandlers();
-				if (!NetworkClient.RemoveClient(oldClient))
+				if (!QSBNetworkClient.RemoveClient(oldClient))
 				{
 					if (LogFilter.logError)
 					{
 						Debug.LogError("BecomeHost failed to remove client");
 					}
 				}
-				if (LogFilter.logDev)
-				{
-					Debug.Log("BecomeHost localClient ready");
-				}
-				NetworkClient networkClient = ClientScene.ReconnectLocalServer();
-				ClientScene.Ready(networkClient.connection);
-				ClientScene.SetReconnectId(oldConnectionId, peers);
-				ClientScene.AddPlayer(ClientScene.readyConnection, 0);
+				Debug.Log("BecomeHost localClient ready");
+				var networkClient = QSBClientScene.ReconnectLocalServer();
+				QSBClientScene.Ready(networkClient.connection);
+				QSBClientScene.SetReconnectId(oldConnectionId, peers);
+				QSBClientScene.AddPlayer(QSBClientScene.readyConnection, 0);
 				result = networkClient;
 			}
 			return result;
@@ -419,9 +359,9 @@ namespace QSB
 
 		private void InternalSetMaxDelay(float seconds)
 		{
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.SetMaxDelay(seconds);
@@ -440,7 +380,7 @@ namespace QSB
 			}
 			else
 			{
-				m_LocalConnection = new ULocalConnectionToClient(localClient);
+				m_LocalConnection = new QSBULocalConnectionToClient(localClient);
 				m_LocalConnection.connectionId = 0;
 				m_SimpleServerSimple.SetConnectionAtIndex(m_LocalConnection);
 				m_LocalConnectionsFakeList.Add(m_LocalConnection);
@@ -452,7 +392,7 @@ namespace QSB
 
 		internal void RemoveLocalClient(QSBNetworkConnection localClientConnection)
 		{
-			for (int i = 0; i < m_LocalConnectionsFakeList.Count; i++)
+			for (var i = 0; i < m_LocalConnectionsFakeList.Count; i++)
 			{
 				if (m_LocalConnectionsFakeList[i].connectionId == localClientConnection.connectionId)
 				{
@@ -472,16 +412,13 @@ namespace QSB
 
 		internal void SetLocalObjectOnServer(NetworkInstanceId netId, GameObject obj)
 		{
-			if (LogFilter.logDev)
+			Debug.Log(string.Concat(new object[]
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"SetLocalObjectOnServer ",
-					netId,
-					" ",
-					obj
-				}));
-			}
+				"SetLocalObjectOnServer ",
+				netId,
+				" ",
+				obj
+			}));
 			m_NetworkScene.SetLocalObject(netId, obj, false, true);
 		}
 
@@ -490,21 +427,18 @@ namespace QSB
 			if (!m_LocalClientActive)
 			{
 				m_LocalClientActive = true;
-				foreach (NetworkIdentity networkIdentity in NetworkServer.objects.Values)
+				foreach (var networkIdentity in objects.Values)
 				{
-					if (!networkIdentity.isClient)
+					if (!networkIdentity.IsClient)
 					{
-						if (LogFilter.logDev)
+						Debug.Log(string.Concat(new object[]
 						{
-							Debug.Log(string.Concat(new object[]
-							{
-								"ActivateClientScene ",
-								networkIdentity.netId,
-								" ",
-								networkIdentity.gameObject
-							}));
-						}
-						ClientScene.SetLocalObject(networkIdentity.netId, networkIdentity.gameObject);
+							"ActivateClientScene ",
+							networkIdentity.NetId,
+							" ",
+							networkIdentity.gameObject
+						}));
+						QSBClientScene.SetLocalObject(networkIdentity.NetId, networkIdentity.gameObject);
 						networkIdentity.OnStartClient();
 					}
 				}
@@ -513,14 +447,11 @@ namespace QSB
 
 		public static bool SendToAll(short msgType, MessageBase msg)
 		{
-			if (LogFilter.logDev)
+			Debug.Log("Server.SendToAll msgType:" + msgType);
+			var flag = true;
+			for (var i = 0; i < connections.Count; i++)
 			{
-				Debug.Log("Server.SendToAll msgType:" + msgType);
-			}
-			bool flag = true;
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
-			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					flag &= networkConnection.Send(msgType, msg);
@@ -531,23 +462,20 @@ namespace QSB
 
 		private static bool SendToObservers(GameObject contextObj, short msgType, MessageBase msg)
 		{
-			if (LogFilter.logDev)
-			{
-				Debug.Log("Server.SendToObservers id:" + msgType);
-			}
-			bool flag = true;
-			NetworkIdentity component = contextObj.GetComponent<NetworkIdentity>();
+			Debug.Log("Server.SendToObservers id:" + msgType);
+			var flag = true;
+			var component = contextObj.GetComponent<QSBNetworkIdentity>();
 			bool result;
-			if (component == null || component.observers == null)
+			if (component == null || component.Observers == null)
 			{
 				result = false;
 			}
 			else
 			{
-				int count = component.observers.Count;
-				for (int i = 0; i < count; i++)
+				var count = component.Observers.Count;
+				for (var i = 0; i < count; i++)
 				{
-					NetworkConnection networkConnection = component.observers[i];
+					var networkConnection = component.Observers[i];
 					flag &= networkConnection.Send(msgType, msg);
 				}
 				result = flag;
@@ -557,16 +485,13 @@ namespace QSB
 
 		public static bool SendToReady(GameObject contextObj, short msgType, MessageBase msg)
 		{
-			if (LogFilter.logDev)
-			{
-				Debug.Log("Server.SendToReady id:" + msgType);
-			}
+			Debug.Log("Server.SendToReady id:" + msgType);
 			bool result;
 			if (contextObj == null)
 			{
-				for (int i = 0; i < NetworkServer.connections.Count; i++)
+				for (var i = 0; i < connections.Count; i++)
 				{
-					NetworkConnection networkConnection = NetworkServer.connections[i];
+					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						networkConnection.Send(msgType, msg);
@@ -576,18 +501,18 @@ namespace QSB
 			}
 			else
 			{
-				bool flag = true;
-				NetworkIdentity component = contextObj.GetComponent<NetworkIdentity>();
-				if (component == null || component.observers == null)
+				var flag = true;
+				var component = contextObj.GetComponent<QSBNetworkIdentity>();
+				if (component == null || component.Observers == null)
 				{
 					result = false;
 				}
 				else
 				{
-					int count = component.observers.Count;
-					for (int j = 0; j < count; j++)
+					var count = component.Observers.Count;
+					for (var j = 0; j < count; j++)
 					{
-						NetworkConnection networkConnection2 = component.observers[j];
+						var networkConnection2 = component.Observers[j];
 						if (networkConnection2.isReady)
 						{
 							flag &= networkConnection2.Send(msgType, msg);
@@ -601,21 +526,22 @@ namespace QSB
 
 		public static void SendWriterToReady(GameObject contextObj, NetworkWriter writer, int channelId)
 		{
-			if (writer.AsArraySegment().Count > 32767)
+			var arraySegment = (ArraySegment<byte>)writer.GetType().GetMethod("AsArraySegment").Invoke(writer, null);
+			if (arraySegment.Count > 32767)
 			{
 				throw new UnityException("NetworkWriter used buffer is too big!");
 			}
-			NetworkServer.SendBytesToReady(contextObj, writer.AsArraySegment().Array, writer.AsArraySegment().Count, channelId);
+			SendBytesToReady(contextObj, arraySegment.Array, arraySegment.Count, channelId);
 		}
 
 		public static void SendBytesToReady(GameObject contextObj, byte[] buffer, int numBytes, int channelId)
 		{
 			if (contextObj == null)
 			{
-				bool flag = true;
-				for (int i = 0; i < NetworkServer.connections.Count; i++)
+				var flag = true;
+				for (var i = 0; i < connections.Count; i++)
 				{
-					NetworkConnection networkConnection = NetworkServer.connections[i];
+					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						if (!networkConnection.SendBytes(buffer, numBytes, channelId))
@@ -634,14 +560,14 @@ namespace QSB
 			}
 			else
 			{
-				NetworkIdentity component = contextObj.GetComponent<NetworkIdentity>();
+				var component = contextObj.GetComponent<QSBNetworkIdentity>();
 				try
 				{
-					bool flag2 = true;
-					int count = component.observers.Count;
-					for (int j = 0; j < count; j++)
+					var flag2 = true;
+					var count = component.Observers.Count;
+					for (var j = 0; j < count; j++)
 					{
-						NetworkConnection networkConnection2 = component.observers[j];
+						var networkConnection2 = component.Observers[j];
 						if (networkConnection2.isReady)
 						{
 							if (!networkConnection2.SendBytes(buffer, numBytes, channelId))
@@ -670,14 +596,14 @@ namespace QSB
 
 		public static void SendBytesToPlayer(GameObject player, byte[] buffer, int numBytes, int channelId)
 		{
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					for (int j = 0; j < networkConnection.playerControllers.Count; j++)
+					for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
 					{
-						if (networkConnection.playerControllers[j].IsValid && networkConnection.playerControllers[j].gameObject == player)
+						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].gameObject == player)
 						{
 							networkConnection.SendBytes(buffer, numBytes, channelId);
 							break;
@@ -689,14 +615,11 @@ namespace QSB
 
 		public static bool SendUnreliableToAll(short msgType, MessageBase msg)
 		{
-			if (LogFilter.logDev)
+			Debug.Log("Server.SendUnreliableToAll msgType:" + msgType);
+			var flag = true;
+			for (var i = 0; i < connections.Count; i++)
 			{
-				Debug.Log("Server.SendUnreliableToAll msgType:" + msgType);
-			}
-			bool flag = true;
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
-			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					flag &= networkConnection.SendUnreliable(msgType, msg);
@@ -707,16 +630,13 @@ namespace QSB
 
 		public static bool SendUnreliableToReady(GameObject contextObj, short msgType, MessageBase msg)
 		{
-			if (LogFilter.logDev)
-			{
-				Debug.Log("Server.SendUnreliableToReady id:" + msgType);
-			}
+			Debug.Log("Server.SendUnreliableToReady id:" + msgType);
 			bool result;
 			if (contextObj == null)
 			{
-				for (int i = 0; i < NetworkServer.connections.Count; i++)
+				for (var i = 0; i < connections.Count; i++)
 				{
-					NetworkConnection networkConnection = NetworkServer.connections[i];
+					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						networkConnection.SendUnreliable(msgType, msg);
@@ -726,12 +646,12 @@ namespace QSB
 			}
 			else
 			{
-				bool flag = true;
-				NetworkIdentity component = contextObj.GetComponent<NetworkIdentity>();
-				int count = component.observers.Count;
-				for (int j = 0; j < count; j++)
+				var flag = true;
+				var component = contextObj.GetComponent<QSBNetworkIdentity>();
+				var count = component.Observers.Count;
+				for (var j = 0; j < count; j++)
 				{
-					NetworkConnection networkConnection2 = component.observers[j];
+					var networkConnection2 = component.Observers[j];
 					if (networkConnection2.isReady)
 					{
 						flag &= networkConnection2.SendUnreliable(msgType, msg);
@@ -744,14 +664,11 @@ namespace QSB
 
 		public static bool SendByChannelToAll(short msgType, MessageBase msg, int channelId)
 		{
-			if (LogFilter.logDev)
+			Debug.Log("Server.SendByChannelToAll id:" + msgType);
+			var flag = true;
+			for (var i = 0; i < connections.Count; i++)
 			{
-				Debug.Log("Server.SendByChannelToAll id:" + msgType);
-			}
-			bool flag = true;
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
-			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					flag &= networkConnection.SendByChannel(msgType, msg, channelId);
@@ -762,16 +679,13 @@ namespace QSB
 
 		public static bool SendByChannelToReady(GameObject contextObj, short msgType, MessageBase msg, int channelId)
 		{
-			if (LogFilter.logDev)
-			{
-				Debug.Log("Server.SendByChannelToReady msgType:" + msgType);
-			}
+			Debug.Log("Server.SendByChannelToReady msgType:" + msgType);
 			bool result;
 			if (contextObj == null)
 			{
-				for (int i = 0; i < NetworkServer.connections.Count; i++)
+				for (var i = 0; i < connections.Count; i++)
 				{
-					NetworkConnection networkConnection = NetworkServer.connections[i];
+					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						networkConnection.SendByChannel(msgType, msg, channelId);
@@ -781,12 +695,12 @@ namespace QSB
 			}
 			else
 			{
-				bool flag = true;
-				NetworkIdentity component = contextObj.GetComponent<NetworkIdentity>();
-				int count = component.observers.Count;
-				for (int j = 0; j < count; j++)
+				var flag = true;
+				var component = contextObj.GetComponent<QSBNetworkIdentity>();
+				var count = component.Observers.Count;
+				for (var j = 0; j < count; j++)
 				{
-					NetworkConnection networkConnection2 = component.observers[j];
+					var networkConnection2 = component.Observers[j];
 					if (networkConnection2.isReady)
 					{
 						flag &= networkConnection2.SendByChannel(msgType, msg, channelId);
@@ -816,15 +730,15 @@ namespace QSB
 
 		internal static void Update()
 		{
-			if (NetworkServer.s_Instance != null)
+			if (s_Instance != null)
 			{
-				NetworkServer.s_Instance.InternalUpdate();
+				s_Instance.InternalUpdate();
 			}
 		}
 
 		private void UpdateServerObjects()
 		{
-			foreach (NetworkIdentity networkIdentity in NetworkServer.objects.Values)
+			foreach (var networkIdentity in objects.Values)
 			{
 				try
 				{
@@ -845,9 +759,9 @@ namespace QSB
 
 		private void CheckForNullObjects()
 		{
-			foreach (NetworkInstanceId networkInstanceId in NetworkServer.objects.Keys)
+			foreach (var networkInstanceId in objects.Keys)
 			{
-				NetworkIdentity networkIdentity = NetworkServer.objects[networkInstanceId];
+				var networkIdentity = objects[networkInstanceId];
 				if (networkIdentity == null || networkIdentity.gameObject == null)
 				{
 					m_RemoveList.Add(networkInstanceId);
@@ -855,9 +769,9 @@ namespace QSB
 			}
 			if (m_RemoveList.Count > 0)
 			{
-				foreach (NetworkInstanceId key in m_RemoveList)
+				foreach (var key in m_RemoveList)
 				{
-					NetworkServer.objects.Remove(key);
+					objects.Remove(key);
 				}
 				m_RemoveList.Clear();
 			}
@@ -866,30 +780,27 @@ namespace QSB
 		internal void InternalUpdate()
 		{
 			m_SimpleServerSimple.Update();
-			if (NetworkServer.m_DontListen)
+			if (m_DontListen)
 			{
 				m_SimpleServerSimple.UpdateConnections();
 			}
 			UpdateServerObjects();
 		}
 
-		private void OnConnected(NetworkConnection conn)
+		private void OnConnected(QSBNetworkConnection conn)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("Server accepted client:" + conn.connectionId);
-			}
+			Debug.Log("Server accepted client:" + conn.connectionId);
 			conn.SetMaxDelay(m_MaxDelay);
 			conn.InvokeHandlerNoData(32);
-			NetworkServer.SendCrc(conn);
+			SendCrc(conn);
 		}
 
-		private void OnDisconnected(NetworkConnection conn)
+		private void OnDisconnected(QSBNetworkConnection conn)
 		{
 			conn.InvokeHandlerNoData(33);
-			for (int i = 0; i < conn.playerControllers.Count; i++)
+			for (var i = 0; i < conn.PlayerControllers.Count; i++)
 			{
-				if (conn.playerControllers[i].gameObject != null)
+				if (conn.PlayerControllers[i].gameObject != null)
 				{
 					if (LogFilter.logWarn)
 					{
@@ -905,7 +816,7 @@ namespace QSB
 			conn.Dispose();
 		}
 
-		private void OnData(NetworkConnection conn, int receivedSize, int channelId)
+		private void OnData(QSBNetworkConnection conn, int receivedSize, int channelId)
 		{
 			conn.TransportReceive(m_SimpleServerSimple.messageBuffer, receivedSize, channelId);
 		}
@@ -919,7 +830,7 @@ namespace QSB
 			GenerateError(null, error);
 		}
 
-		private void GenerateDataError(NetworkConnection conn, int error)
+		private void GenerateDataError(QSBNetworkConnection conn, int error)
 		{
 			if (LogFilter.logError)
 			{
@@ -928,7 +839,7 @@ namespace QSB
 			GenerateError(conn, error);
 		}
 
-		private void GenerateDisconnectError(NetworkConnection conn, int error)
+		private void GenerateDisconnectError(QSBNetworkConnection conn, int error)
 		{
 			if (LogFilter.logError)
 			{
@@ -945,15 +856,15 @@ namespace QSB
 			GenerateError(conn, error);
 		}
 
-		private void GenerateError(NetworkConnection conn, int error)
+		private void GenerateError(QSBNetworkConnection conn, int error)
 		{
-			if (NetworkServer.handlers.ContainsKey(34))
+			if (handlers.ContainsKey(34))
 			{
-				ErrorMessage errorMessage = new ErrorMessage();
+				var errorMessage = new ErrorMessage();
 				errorMessage.errorCode = error;
-				NetworkWriter writer = new NetworkWriter();
+				var writer = new NetworkWriter();
 				errorMessage.Serialize(writer);
-				NetworkReader reader = new NetworkReader(writer);
+				var reader = new NetworkReader(writer);
 				conn.InvokeHandler(34, reader, 0);
 			}
 		}
@@ -975,7 +886,7 @@ namespace QSB
 
 		public static void ClearSpawners()
 		{
-			NetworkScene.ClearSpawners();
+			QSBNetworkScene.ClearSpawners();
 		}
 
 		public static void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
@@ -984,9 +895,9 @@ namespace QSB
 			numBufferedMsgs = 0;
 			numBytes = 0;
 			lastBufferedPerSecond = 0;
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					int num;
@@ -1006,9 +917,9 @@ namespace QSB
 		{
 			numMsgs = 0;
 			numBytes = 0;
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					int num;
@@ -1022,14 +933,14 @@ namespace QSB
 
 		public static void SendToClientOfPlayer(GameObject player, short msgType, MessageBase msg)
 		{
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					for (int j = 0; j < networkConnection.playerControllers.Count; j++)
+					for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
 					{
-						if (networkConnection.playerControllers[j].IsValid && networkConnection.playerControllers[j].gameObject == player)
+						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].gameObject == player)
 						{
 							networkConnection.Send(msgType, msg);
 							return;
@@ -1046,9 +957,9 @@ namespace QSB
 
 		public static void SendToClient(int connectionId, short msgType, MessageBase msg)
 		{
-			if (connectionId < NetworkServer.connections.Count)
+			if (connectionId < connections.Count)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[connectionId];
+				var networkConnection = connections[connectionId];
 				if (networkConnection != null)
 				{
 					networkConnection.Send(msgType, msg);
@@ -1061,41 +972,41 @@ namespace QSB
 			}
 		}
 
-		public static bool ReplacePlayerForConnection(NetworkConnection conn, GameObject player, short playerControllerId, NetworkHash128 assetId)
+		public static bool ReplacePlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId, NetworkHash128 assetId)
 		{
-			NetworkIdentity networkIdentity;
-			if (NetworkServer.GetNetworkIdentity(player, out networkIdentity))
+			QSBNetworkIdentity networkIdentity;
+			if (GetNetworkIdentity(player, out networkIdentity))
 			{
 				networkIdentity.SetDynamicAssetId(assetId);
 			}
 			return instance.InternalReplacePlayerForConnection(conn, player, playerControllerId);
 		}
 
-		public static bool ReplacePlayerForConnection(NetworkConnection conn, GameObject player, short playerControllerId)
+		public static bool ReplacePlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId)
 		{
 			return instance.InternalReplacePlayerForConnection(conn, player, playerControllerId);
 		}
 
-		public static bool AddPlayerForConnection(NetworkConnection conn, GameObject player, short playerControllerId, NetworkHash128 assetId)
+		public static bool AddPlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId, NetworkHash128 assetId)
 		{
-			NetworkIdentity networkIdentity;
-			if (NetworkServer.GetNetworkIdentity(player, out networkIdentity))
+			QSBNetworkIdentity networkIdentity;
+			if (GetNetworkIdentity(player, out networkIdentity))
 			{
 				networkIdentity.SetDynamicAssetId(assetId);
 			}
 			return instance.InternalAddPlayerForConnection(conn, player, playerControllerId);
 		}
 
-		public static bool AddPlayerForConnection(NetworkConnection conn, GameObject player, short playerControllerId)
+		public static bool AddPlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId)
 		{
 			return instance.InternalAddPlayerForConnection(conn, player, playerControllerId);
 		}
 
-		internal bool InternalAddPlayerForConnection(NetworkConnection conn, GameObject playerGameObject, short playerControllerId)
+		internal bool InternalAddPlayerForConnection(QSBNetworkConnection conn, GameObject playerGameObject, short playerControllerId)
 		{
-			NetworkIdentity networkIdentity;
+			QSBNetworkIdentity networkIdentity;
 			bool result;
-			if (!NetworkServer.GetNetworkIdentity(playerGameObject, out networkIdentity))
+			if (!GetNetworkIdentity(playerGameObject, out networkIdentity))
 			{
 				if (LogFilter.logError)
 				{
@@ -1106,13 +1017,13 @@ namespace QSB
 			else
 			{
 				networkIdentity.Reset();
-				if (!NetworkServer.CheckPlayerControllerIdForConnection(conn, playerControllerId))
+				if (!CheckPlayerControllerIdForConnection(conn, playerControllerId))
 				{
 					result = false;
 				}
 				else
 				{
-					PlayerController playerController = null;
+					QSBPlayerController playerController = null;
 					GameObject x = null;
 					if (conn.GetPlayerController(playerControllerId, out playerController))
 					{
@@ -1128,10 +1039,10 @@ namespace QSB
 					}
 					else
 					{
-						PlayerController playerController2 = new PlayerController(playerGameObject, playerControllerId);
+						var playerController2 = new QSBPlayerController(playerGameObject, playerControllerId);
 						conn.SetPlayerController(playerController2);
 						networkIdentity.SetConnectionToClient(conn, playerController2.playerControllerId);
-						NetworkServer.SetClientReady(conn);
+						SetClientReady(conn);
 						if (SetupLocalPlayerForConnection(conn, networkIdentity, playerController2))
 						{
 							result = true;
@@ -1143,13 +1054,13 @@ namespace QSB
 								Debug.Log(string.Concat(new object[]
 								{
 									"Adding new playerGameObject object netId: ",
-									playerGameObject.GetComponent<NetworkIdentity>().netId,
+									playerGameObject.GetComponent<QSBNetworkIdentity>().NetId,
 									" asset ID ",
-									playerGameObject.GetComponent<NetworkIdentity>().assetId
+									playerGameObject.GetComponent<QSBNetworkIdentity>().AssetId
 								}));
 							}
-							NetworkServer.FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
-							if (networkIdentity.localPlayerAuthority)
+							FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
+							if (networkIdentity.LocalPlayerAuthority)
 							{
 								networkIdentity.SetClientOwner(conn);
 							}
@@ -1161,7 +1072,7 @@ namespace QSB
 			return result;
 		}
 
-		private static bool CheckPlayerControllerIdForConnection(NetworkConnection conn, short playerControllerId)
+		private static bool CheckPlayerControllerIdForConnection(QSBNetworkConnection conn, short playerControllerId)
 		{
 			bool result;
 			if (playerControllerId < 0)
@@ -1200,21 +1111,15 @@ namespace QSB
 			return result;
 		}
 
-		private bool SetupLocalPlayerForConnection(NetworkConnection conn, NetworkIdentity uv, PlayerController newPlayerController)
+		private bool SetupLocalPlayerForConnection(QSBNetworkConnection conn, QSBNetworkIdentity uv, QSBPlayerController newPlayerController)
 		{
-			if (LogFilter.logDev)
-			{
-				Debug.Log("NetworkServer SetupLocalPlayerForConnection netID:" + uv.netId);
-			}
-			ULocalConnectionToClient ulocalConnectionToClient = conn as ULocalConnectionToClient;
+			Debug.Log("NetworkServer SetupLocalPlayerForConnection netID:" + uv.NetId);
+			var ulocalConnectionToClient = conn as QSBULocalConnectionToClient;
 			bool result;
 			if (ulocalConnectionToClient != null)
 			{
-				if (LogFilter.logDev)
-				{
-					Debug.Log("NetworkServer AddPlayer handling ULocalConnectionToClient");
-				}
-				if (uv.netId.IsEmpty())
+				Debug.Log("NetworkServer AddPlayer handling ULocalConnectionToClient");
+				if (uv.NetId.IsEmpty())
 				{
 					uv.OnStartServer(true);
 				}
@@ -1233,24 +1138,24 @@ namespace QSB
 			return result;
 		}
 
-		private static void FinishPlayerForConnection(NetworkConnection conn, NetworkIdentity uv, GameObject playerGameObject)
+		private static void FinishPlayerForConnection(QSBNetworkConnection conn, QSBNetworkIdentity uv, GameObject playerGameObject)
 		{
-			if (uv.netId.IsEmpty())
+			if (uv.NetId.IsEmpty())
 			{
-				NetworkServer.Spawn(playerGameObject);
+				Spawn(playerGameObject);
 			}
-			conn.Send(4, new OwnerMessage
+			conn.Send(4, new QSBOwnerMessage
 			{
-				netId = uv.netId,
-				playerControllerId = uv.playerControllerId
+				netId = uv.NetId,
+				playerControllerId = uv.PlayerControllerId
 			});
 		}
 
-		internal bool InternalReplacePlayerForConnection(NetworkConnection conn, GameObject playerGameObject, short playerControllerId)
+		internal bool InternalReplacePlayerForConnection(QSBNetworkConnection conn, GameObject playerGameObject, short playerControllerId)
 		{
-			NetworkIdentity networkIdentity;
+			QSBNetworkIdentity networkIdentity;
 			bool result;
-			if (!NetworkServer.GetNetworkIdentity(playerGameObject, out networkIdentity))
+			if (!GetNetworkIdentity(playerGameObject, out networkIdentity))
 			{
 				if (LogFilter.logError)
 				{
@@ -1258,29 +1163,23 @@ namespace QSB
 				}
 				result = false;
 			}
-			else if (!NetworkServer.CheckPlayerControllerIdForConnection(conn, playerControllerId))
+			else if (!CheckPlayerControllerIdForConnection(conn, playerControllerId))
 			{
 				result = false;
 			}
 			else
 			{
-				if (LogFilter.logDev)
-				{
-					Debug.Log("NetworkServer ReplacePlayer");
-				}
-				PlayerController playerController;
+				Debug.Log("NetworkServer ReplacePlayer");
+				QSBPlayerController playerController;
 				if (conn.GetPlayerController(playerControllerId, out playerController))
 				{
 					playerController.unetView.SetNotLocalPlayer();
 					playerController.unetView.ClearClientOwner();
 				}
-				PlayerController playerController2 = new PlayerController(playerGameObject, playerControllerId);
+				var playerController2 = new QSBPlayerController(playerGameObject, playerControllerId);
 				conn.SetPlayerController(playerController2);
 				networkIdentity.SetConnectionToClient(conn, playerController2.playerControllerId);
-				if (LogFilter.logDev)
-				{
-					Debug.Log("NetworkServer ReplacePlayer setup local");
-				}
+				Debug.Log("NetworkServer ReplacePlayer setup local");
 				if (SetupLocalPlayerForConnection(conn, networkIdentity, playerController2))
 				{
 					result = true;
@@ -1297,8 +1196,8 @@ namespace QSB
 							playerGameObject.GetComponent<NetworkIdentity>().assetId
 						}));
 					}
-					NetworkServer.FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
-					if (networkIdentity.localPlayerAuthority)
+					FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
+					if (networkIdentity.LocalPlayerAuthority)
 					{
 						networkIdentity.SetClientOwner(conn);
 					}
@@ -1308,16 +1207,13 @@ namespace QSB
 			return result;
 		}
 
-		private static bool GetNetworkIdentity(GameObject go, out NetworkIdentity view)
+		private static bool GetNetworkIdentity(GameObject go, out QSBNetworkIdentity view)
 		{
-			view = go.GetComponent<NetworkIdentity>();
+			view = go.GetComponent<QSBNetworkIdentity>();
 			bool result;
 			if (view == null)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("UNET failure. GameObject doesn't have NetworkIdentity.");
-				}
+				Debug.LogError("UNET failure. GameObject doesn't have NetworkIdentity.");
 				result = false;
 			}
 			else
@@ -1327,12 +1223,12 @@ namespace QSB
 			return result;
 		}
 
-		public static void SetClientReady(NetworkConnection conn)
+		public static void SetClientReady(QSBNetworkConnection conn)
 		{
 			instance.SetClientReadyInternal(conn);
 		}
 
-		internal void SetClientReadyInternal(NetworkConnection conn)
+		internal void SetClientReadyInternal(QSBNetworkConnection conn)
 		{
 			if (LogFilter.logDebug)
 			{
@@ -1347,7 +1243,7 @@ namespace QSB
 			}
 			else
 			{
-				if (conn.playerControllers.Count == 0)
+				if (conn.PlayerControllers.Count == 0)
 				{
 					if (LogFilter.logDebug)
 					{
@@ -1355,14 +1251,11 @@ namespace QSB
 					}
 				}
 				conn.isReady = true;
-				ULocalConnectionToClient ulocalConnectionToClient = conn as ULocalConnectionToClient;
+				var ulocalConnectionToClient = conn as QSBULocalConnectionToClient;
 				if (ulocalConnectionToClient != null)
 				{
-					if (LogFilter.logDev)
-					{
-						Debug.Log("NetworkServer Ready handling ULocalConnectionToClient");
-					}
-					foreach (NetworkIdentity networkIdentity in NetworkServer.objects.Values)
+					Debug.Log("NetworkServer Ready handling ULocalConnectionToClient");
+					foreach (var networkIdentity in objects.Values)
 					{
 						if (networkIdentity != null && networkIdentity.gameObject != null)
 						{
@@ -1371,12 +1264,9 @@ namespace QSB
 							{
 								networkIdentity.AddObserver(conn);
 							}
-							if (!networkIdentity.isClient)
+							if (!networkIdentity.IsClient)
 							{
-								if (LogFilter.logDev)
-								{
-									Debug.Log("LocalClient.SetSpawnObject calling OnStartClient");
-								}
+								Debug.Log("LocalClient.SetSpawnObject calling OnStartClient");
 								networkIdentity.OnStartClient();
 							}
 						}
@@ -1389,15 +1279,15 @@ namespace QSB
 						Debug.Log(string.Concat(new object[]
 						{
 							"Spawning ",
-							NetworkServer.objects.Count,
+							objects.Count,
 							" objects for conn ",
 							conn.connectionId
 						}));
 					}
-					ObjectSpawnFinishedMessage objectSpawnFinishedMessage = new ObjectSpawnFinishedMessage();
+					var objectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage();
 					objectSpawnFinishedMessage.state = 0U;
 					conn.Send(12, objectSpawnFinishedMessage);
-					foreach (NetworkIdentity networkIdentity2 in NetworkServer.objects.Values)
+					foreach (var networkIdentity2 in objects.Values)
 					{
 						if (networkIdentity2 == null)
 						{
@@ -1415,7 +1305,7 @@ namespace QSB
 									"Sending spawn message for current server objects name='",
 									networkIdentity2.gameObject.name,
 									"' netId=",
-									networkIdentity2.netId
+									networkIdentity2.NetId
 								}));
 							}
 							bool flag2 = networkIdentity2.OnCheckObserver(conn);
@@ -1431,7 +1321,7 @@ namespace QSB
 			}
 		}
 
-		internal static void ShowForConnection(NetworkIdentity uv, NetworkConnection conn)
+		internal static void ShowForConnection(QSBNetworkIdentity uv, QSBNetworkConnection conn)
 		{
 			if (conn.isReady)
 			{
@@ -1449,22 +1339,22 @@ namespace QSB
 
 		public static void SetAllClientsNotReady()
 		{
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					NetworkServer.SetClientNotReady(networkConnection);
+					SetClientNotReady(networkConnection);
 				}
 			}
 		}
 
-		public static void SetClientNotReady(NetworkConnection conn)
+		public static void SetClientNotReady(QSBNetworkConnection conn)
 		{
 			instance.InternalSetClientNotReady(conn);
 		}
 
-		internal void InternalSetClientNotReady(NetworkConnection conn)
+		internal void InternalSetClientNotReady(QSBNetworkConnection conn)
 		{
 			if (conn.isReady)
 			{
@@ -1474,41 +1364,41 @@ namespace QSB
 				}
 				conn.isReady = false;
 				conn.RemoveObservers();
-				NotReadyMessage msg = new NotReadyMessage();
+				var msg = new NotReadyMessage();
 				conn.Send(36, msg);
 			}
 		}
 
-		private static void OnClientReadyMessage(NetworkMessage netMsg)
+		private static void OnClientReadyMessage(QSBNetworkMessage netMsg)
 		{
 			if (LogFilter.logDebug)
 			{
 				Debug.Log("Default handler for ready message from " + netMsg.conn);
 			}
-			NetworkServer.SetClientReady(netMsg.conn);
+			SetClientReady(netMsg.conn);
 		}
 
-		private static void OnRemovePlayerMessage(NetworkMessage netMsg)
+		private static void OnRemovePlayerMessage(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<RemovePlayerMessage>(NetworkServer.s_RemovePlayerMessage);
-			PlayerController playerController = null;
-			netMsg.conn.GetPlayerController(NetworkServer.s_RemovePlayerMessage.playerControllerId, out playerController);
+			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
+			QSBPlayerController playerController = null;
+			netMsg.conn.GetPlayerController(s_RemovePlayerMessage.playerControllerId, out playerController);
 			if (playerController != null)
 			{
-				netMsg.conn.RemovePlayerController(NetworkServer.s_RemovePlayerMessage.playerControllerId);
-				NetworkServer.Destroy(playerController.gameObject);
+				netMsg.conn.RemovePlayerController(s_RemovePlayerMessage.playerControllerId);
+				Destroy(playerController.gameObject);
 			}
 			else if (LogFilter.logError)
 			{
-				Debug.LogError("Received remove player message but could not find the player ID: " + NetworkServer.s_RemovePlayerMessage.playerControllerId);
+				Debug.LogError("Received remove player message but could not find the player ID: " + s_RemovePlayerMessage.playerControllerId);
 			}
 		}
 
-		private static void OnCommandMessage(NetworkMessage netMsg)
+		private static void OnCommandMessage(QSBNetworkMessage netMsg)
 		{
-			int cmdHash = (int)netMsg.reader.ReadPackedUInt32();
-			NetworkInstanceId networkInstanceId = netMsg.reader.ReadNetworkId();
-			GameObject gameObject = NetworkServer.FindLocalObject(networkInstanceId);
+			var cmdHash = (int)netMsg.reader.ReadPackedUInt32();
+			var networkInstanceId = netMsg.reader.ReadNetworkId();
+			var gameObject = FindLocalObject(networkInstanceId);
 			if (gameObject == null)
 			{
 				if (LogFilter.logWarn)
@@ -1518,7 +1408,7 @@ namespace QSB
 			}
 			else
 			{
-				NetworkIdentity component = gameObject.GetComponent<NetworkIdentity>();
+				var component = gameObject.GetComponent<QSBNetworkIdentity>();
 				if (component == null)
 				{
 					if (LogFilter.logWarn)
@@ -1528,11 +1418,11 @@ namespace QSB
 				}
 				else
 				{
-					bool flag = false;
-					for (int i = 0; i < netMsg.conn.playerControllers.Count; i++)
+					var flag = false;
+					for (var i = 0; i < netMsg.conn.PlayerControllers.Count; i++)
 					{
-						PlayerController playerController = netMsg.conn.playerControllers[i];
-						if (playerController.gameObject != null && playerController.gameObject.GetComponent<NetworkIdentity>().netId == component.netId)
+						var playerController = netMsg.conn.PlayerControllers[i];
+						if (playerController.gameObject != null && playerController.gameObject.GetComponent<QSBNetworkIdentity>().NetId == component.NetId)
 						{
 							flag = true;
 							break;
@@ -1540,7 +1430,7 @@ namespace QSB
 					}
 					if (!flag)
 					{
-						if (component.clientAuthorityOwner != netMsg.conn)
+						if (component.ClientAuthorityOwner != netMsg.conn)
 						{
 							if (LogFilter.logWarn)
 							{
@@ -1549,16 +1439,13 @@ namespace QSB
 							return;
 						}
 					}
-					if (LogFilter.logDev)
+					Debug.Log(string.Concat(new object[]
 					{
-						Debug.Log(string.Concat(new object[]
-						{
-							"OnCommandMessage for netId=",
-							networkInstanceId,
-							" conn=",
-							netMsg.conn
-						}));
-					}
+						"OnCommandMessage for netId=",
+						networkInstanceId,
+						" conn=",
+						netMsg.conn
+					}));
 					component.HandleCommand(cmdHash, netMsg.reader);
 				}
 			}
@@ -1566,57 +1453,48 @@ namespace QSB
 
 		internal void SpawnObject(GameObject obj)
 		{
-			NetworkIdentity networkIdentity;
-			if (!NetworkServer.active)
+			QSBNetworkIdentity networkIdentity;
+			if (!active)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("SpawnObject for " + obj + ", NetworkServer is not active. Cannot spawn objects without an active server.");
-				}
+				DebugLog.ToConsole("Error - SpawnObject for " + obj + ", NetworkServer is not active. Cannot spawn objects without an active server.", MessageType.Error);
 			}
-			else if (!NetworkServer.GetNetworkIdentity(obj, out networkIdentity))
+			else if (!GetNetworkIdentity(obj, out networkIdentity))
 			{
-				if (LogFilter.logError)
+				Debug.LogError(string.Concat(new object[]
 				{
-					Debug.LogError(string.Concat(new object[]
-					{
-						"SpawnObject ",
-						obj,
-						" has no NetworkIdentity. Please add a NetworkIdentity to ",
-						obj
-					}));
-				}
+					"SpawnObject ",
+					obj,
+					" has no QSBNetworkIdentity. Please add a NetworkIdentity to ",
+					obj
+				}));
 			}
 			else
 			{
 				networkIdentity.Reset();
 				networkIdentity.OnStartServer(false);
-				if (LogFilter.logDebug)
+				DebugLog.DebugWrite(string.Concat(new object[]
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"SpawnObject instance ID ",
-						networkIdentity.netId,
-						" asset ID ",
-						networkIdentity.assetId
-					}));
-				}
+					"SpawnObject instance ID ",
+					networkIdentity.NetId,
+					" asset ID ",
+					networkIdentity.AssetId
+				}));
 				networkIdentity.RebuildObservers(true);
 			}
 		}
 
-		internal void SendSpawnMessage(NetworkIdentity uv, NetworkConnection conn)
+		internal void SendSpawnMessage(QSBNetworkIdentity uv, QSBNetworkConnection conn)
 		{
-			if (!uv.serverOnly)
+			if (!uv.ServerOnly)
 			{
-				if (uv.sceneId.IsEmpty())
+				if (uv.SceneId.IsEmpty())
 				{
-					ObjectSpawnMessage objectSpawnMessage = new ObjectSpawnMessage();
-					objectSpawnMessage.netId = uv.netId;
-					objectSpawnMessage.assetId = uv.assetId;
+					var objectSpawnMessage = new QSBObjectSpawnMessage();
+					objectSpawnMessage.netId = uv.NetId;
+					objectSpawnMessage.assetId = uv.AssetId;
 					objectSpawnMessage.position = uv.transform.position;
 					objectSpawnMessage.rotation = uv.transform.rotation;
-					NetworkWriter networkWriter = new NetworkWriter();
+					var networkWriter = new NetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter);
 					if (networkWriter.Position > 0)
 					{
@@ -1628,16 +1506,16 @@ namespace QSB
 					}
 					else
 					{
-						NetworkServer.SendToReady(uv.gameObject, 3, objectSpawnMessage);
+						SendToReady(uv.gameObject, 3, objectSpawnMessage);
 					}
 				}
 				else
 				{
-					ObjectSpawnSceneMessage objectSpawnSceneMessage = new ObjectSpawnSceneMessage();
-					objectSpawnSceneMessage.netId = uv.netId;
-					objectSpawnSceneMessage.sceneId = uv.sceneId;
+					var objectSpawnSceneMessage = new QSBObjectSpawnSceneMessage();
+					objectSpawnSceneMessage.netId = uv.NetId;
+					objectSpawnSceneMessage.sceneId = uv.SceneId;
 					objectSpawnSceneMessage.position = uv.transform.position;
-					NetworkWriter networkWriter2 = new NetworkWriter();
+					var networkWriter2 = new NetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter2);
 					if (networkWriter2.Position > 0)
 					{
@@ -1649,15 +1527,15 @@ namespace QSB
 					}
 					else
 					{
-						NetworkServer.SendToReady(uv.gameObject, 3, objectSpawnSceneMessage);
+						SendToReady(uv.gameObject, 3, objectSpawnSceneMessage);
 					}
 				}
 			}
 		}
 
-		public static void DestroyPlayersForConnection(NetworkConnection conn)
+		public static void DestroyPlayersForConnection(QSBNetworkConnection conn)
 		{
-			if (conn.playerControllers.Count == 0)
+			if (conn.PlayerControllers.Count == 0)
 			{
 				if (LogFilter.logWarn)
 				{
@@ -1666,109 +1544,103 @@ namespace QSB
 			}
 			else
 			{
-				if (conn.clientOwnedObjects != null)
+				if (conn.ClientOwnedObjects != null)
 				{
-					HashSet<NetworkInstanceId> hashSet = new HashSet<NetworkInstanceId>(conn.clientOwnedObjects);
-					foreach (NetworkInstanceId netId in hashSet)
+					var hashSet = new HashSet<NetworkInstanceId>(conn.ClientOwnedObjects);
+					foreach (var netId in hashSet)
 					{
-						GameObject gameObject = NetworkServer.FindLocalObject(netId);
+						var gameObject = FindLocalObject(netId);
 						if (gameObject != null)
 						{
-							NetworkServer.DestroyObject(gameObject);
+							DestroyObject(gameObject);
 						}
 					}
 				}
-				for (int i = 0; i < conn.playerControllers.Count; i++)
+				for (var i = 0; i < conn.PlayerControllers.Count; i++)
 				{
-					PlayerController playerController = conn.playerControllers[i];
+					var playerController = conn.PlayerControllers[i];
 					if (playerController.IsValid)
 					{
 						if (!(playerController.unetView == null))
 						{
-							NetworkServer.DestroyObject(playerController.unetView, true);
+							DestroyObject(playerController.unetView, true);
 						}
 						playerController.gameObject = null;
 					}
 				}
-				conn.playerControllers.Clear();
+				conn.PlayerControllers.Clear();
 			}
 		}
 
 		private static void UnSpawnObject(GameObject obj)
 		{
-			NetworkIdentity uv;
+			QSBNetworkIdentity uv;
 			if (obj == null)
 			{
-				if (LogFilter.logDev)
-				{
-					Debug.Log("NetworkServer UnspawnObject is null");
-				}
+				Debug.Log("NetworkServer UnspawnObject is null");
 			}
-			else if (NetworkServer.GetNetworkIdentity(obj, out uv))
+			else if (GetNetworkIdentity(obj, out uv))
 			{
-				NetworkServer.UnSpawnObject(uv);
+				UnSpawnObject(uv);
 			}
 		}
 
-		private static void UnSpawnObject(NetworkIdentity uv)
+		private static void UnSpawnObject(QSBNetworkIdentity uv)
 		{
-			NetworkServer.DestroyObject(uv, false);
+			DestroyObject(uv, false);
 		}
 
 		private static void DestroyObject(GameObject obj)
 		{
-			NetworkIdentity uv;
+			QSBNetworkIdentity uv;
 			if (obj == null)
 			{
-				if (LogFilter.logDev)
-				{
-					Debug.Log("NetworkServer DestroyObject is null");
-				}
+				Debug.Log("NetworkServer DestroyObject is null");
 			}
-			else if (NetworkServer.GetNetworkIdentity(obj, out uv))
+			else if (GetNetworkIdentity(obj, out uv))
 			{
-				NetworkServer.DestroyObject(uv, true);
+				DestroyObject(uv, true);
 			}
 		}
 
-		private static void DestroyObject(NetworkIdentity uv, bool destroyServerObject)
+		private static void DestroyObject(QSBNetworkIdentity uv, bool destroyServerObject)
 		{
 			if (LogFilter.logDebug)
 			{
-				Debug.Log("DestroyObject instance:" + uv.netId);
+				Debug.Log("DestroyObject instance:" + uv.NetId);
 			}
-			if (NetworkServer.objects.ContainsKey(uv.netId))
+			if (objects.ContainsKey(uv.NetId))
 			{
-				NetworkServer.objects.Remove(uv.netId);
+				objects.Remove(uv.NetId);
 			}
-			if (uv.clientAuthorityOwner != null)
+			if (uv.ClientAuthorityOwner != null)
 			{
-				uv.clientAuthorityOwner.RemoveOwnedObject(uv);
+				uv.ClientAuthorityOwner.RemoveOwnedObject(uv);
 			}
-			ObjectDestroyMessage objectDestroyMessage = new ObjectDestroyMessage();
-			objectDestroyMessage.netId = uv.netId;
-			NetworkServer.SendToObservers(uv.gameObject, 1, objectDestroyMessage);
+			var objectDestroyMessage = new QSBObjectDestroyMessage();
+			objectDestroyMessage.netId = uv.NetId;
+			SendToObservers(uv.gameObject, 1, objectDestroyMessage);
 			uv.ClearObservers();
-			if (NetworkClient.active && instance.m_LocalClientActive)
+			if (QSBNetworkClient.active && instance.m_LocalClientActive)
 			{
 				uv.OnNetworkDestroy();
-				ClientScene.SetLocalObject(objectDestroyMessage.netId, null);
+				QSBClientScene.SetLocalObject(objectDestroyMessage.netId, null);
 			}
 			if (destroyServerObject)
 			{
-				Object.Destroy(uv.gameObject);
+				UnityEngine.Object.Destroy(uv.gameObject);
 			}
 			uv.MarkForReset();
 		}
 
 		public static void ClearLocalObjects()
 		{
-			NetworkServer.objects.Clear();
+			objects.Clear();
 		}
 
 		public static void Spawn(GameObject obj)
 		{
-			if (NetworkServer.VerifyCanSpawn(obj))
+			if (VerifyCanSpawn(obj))
 			{
 				instance.SpawnObject(obj);
 			}
@@ -1782,7 +1654,7 @@ namespace QSB
 		private static bool VerifyCanSpawn(GameObject obj)
 		{
 			bool result;
-			if (NetworkServer.CheckForPrefab(obj))
+			if (CheckForPrefab(obj))
 			{
 				Debug.LogErrorFormat("GameObject {0} is a prefab, it can't be spawned. This will cause errors in builds.", new object[]
 				{
@@ -1799,21 +1671,21 @@ namespace QSB
 
 		public static bool SpawnWithClientAuthority(GameObject obj, GameObject player)
 		{
-			NetworkIdentity component = player.GetComponent<NetworkIdentity>();
+			var component = player.GetComponent<QSBNetworkIdentity>();
 			bool result;
 			if (component == null)
 			{
 				Debug.LogError("SpawnWithClientAuthority player object has no NetworkIdentity");
 				result = false;
 			}
-			else if (component.connectionToClient == null)
+			else if (component.ConnectionToClient == null)
 			{
 				Debug.LogError("SpawnWithClientAuthority player object is not a player.");
 				result = false;
 			}
 			else
 			{
-				result = NetworkServer.SpawnWithClientAuthority(obj, component.connectionToClient);
+				result = SpawnWithClientAuthority(obj, component.ConnectionToClient);
 			}
 			return result;
 		}
@@ -1828,26 +1700,26 @@ namespace QSB
 			}
 			else
 			{
-				NetworkServer.Spawn(obj);
-				NetworkIdentity component = obj.GetComponent<NetworkIdentity>();
-				result = (!(component == null) && component.isServer && component.AssignClientAuthority(conn));
+				Spawn(obj);
+				var component = obj.GetComponent<QSBNetworkIdentity>();
+				result = (!(component == null) && component.IsServer && component.AssignClientAuthority(conn));
 			}
 			return result;
 		}
 
-		public static bool SpawnWithClientAuthority(GameObject obj, NetworkHash128 assetId, NetworkConnection conn)
+		public static bool SpawnWithClientAuthority(GameObject obj, NetworkHash128 assetId, QSBNetworkConnection conn)
 		{
-			NetworkServer.Spawn(obj, assetId);
-			NetworkIdentity component = obj.GetComponent<NetworkIdentity>();
-			return !(component == null) && component.isServer && component.AssignClientAuthority(conn);
+			Spawn(obj, assetId);
+			var component = obj.GetComponent<QSBNetworkIdentity>();
+			return !(component == null) && component.IsServer && component.AssignClientAuthority(conn);
 		}
 
 		public static void Spawn(GameObject obj, NetworkHash128 assetId)
 		{
-			if (NetworkServer.VerifyCanSpawn(obj))
+			if (VerifyCanSpawn(obj))
 			{
-				NetworkIdentity networkIdentity;
-				if (NetworkServer.GetNetworkIdentity(obj, out networkIdentity))
+				QSBNetworkIdentity networkIdentity;
+				if (GetNetworkIdentity(obj, out networkIdentity))
 				{
 					networkIdentity.SetDynamicAssetId(assetId);
 				}
@@ -1857,21 +1729,21 @@ namespace QSB
 
 		public static void Destroy(GameObject obj)
 		{
-			NetworkServer.DestroyObject(obj);
+			DestroyObject(obj);
 		}
 
 		public static void UnSpawn(GameObject obj)
 		{
-			NetworkServer.UnSpawnObject(obj);
+			UnSpawnObject(obj);
 		}
 
-		internal bool InvokeBytes(ULocalConnectionToServer conn, byte[] buffer, int numBytes, int channelId)
+		internal bool InvokeBytes(QSBULocalConnectionToServer conn, byte[] buffer, int numBytes, int channelId)
 		{
-			NetworkReader networkReader = new NetworkReader(buffer);
+			var networkReader = new NetworkReader(buffer);
 			networkReader.ReadInt16();
-			short num = networkReader.ReadInt16();
+			var num = networkReader.ReadInt16();
 			bool result;
-			if (NetworkServer.handlers.ContainsKey(num) && m_LocalConnection != null)
+			if (handlers.ContainsKey(num) && m_LocalConnection != null)
 			{
 				m_LocalConnection.InvokeHandler(num, networkReader, channelId);
 				result = true;
@@ -1883,14 +1755,14 @@ namespace QSB
 			return result;
 		}
 
-		internal bool InvokeHandlerOnServer(ULocalConnectionToServer conn, short msgType, MessageBase msg, int channelId)
+		internal bool InvokeHandlerOnServer(QSBULocalConnectionToServer conn, short msgType, MessageBase msg, int channelId)
 		{
 			bool result;
-			if (NetworkServer.handlers.ContainsKey(msgType) && m_LocalConnection != null)
+			if (handlers.ContainsKey(msgType) && m_LocalConnection != null)
 			{
-				NetworkWriter writer = new NetworkWriter();
+				var writer = new NetworkWriter();
 				msg.Serialize(writer);
-				NetworkReader reader = new NetworkReader(writer);
+				var reader = new NetworkReader(writer);
 				m_LocalConnection.InvokeHandler(msgType, reader, channelId);
 				result = true;
 			}
@@ -1916,26 +1788,26 @@ namespace QSB
 			return instance.m_NetworkScene.FindLocalObject(netId);
 		}
 
-		public static Dictionary<short, NetworkConnection.PacketStat> GetConnectionStats()
+		public static Dictionary<short, QSBNetworkConnection.PacketStat> GetConnectionStats()
 		{
-			Dictionary<short, NetworkConnection.PacketStat> dictionary = new Dictionary<short, NetworkConnection.PacketStat>();
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			var dictionary = new Dictionary<short, QSBNetworkConnection.PacketStat>();
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					foreach (short key in networkConnection.packetStats.Keys)
+					foreach (short key in networkConnection.PacketStats.Keys)
 					{
 						if (dictionary.ContainsKey(key))
 						{
-							NetworkConnection.PacketStat packetStat = dictionary[key];
-							packetStat.count += networkConnection.packetStats[key].count;
-							packetStat.bytes += networkConnection.packetStats[key].bytes;
+							var packetStat = dictionary[key];
+							packetStat.count += networkConnection.PacketStats[key].count;
+							packetStat.bytes += networkConnection.PacketStats[key].bytes;
 							dictionary[key] = packetStat;
 						}
 						else
 						{
-							dictionary[key] = new NetworkConnection.PacketStat(networkConnection.packetStats[key]);
+							dictionary[key] = new QSBNetworkConnection.PacketStat(networkConnection.PacketStats[key]);
 						}
 					}
 				}
@@ -1945,9 +1817,9 @@ namespace QSB
 
 		public static void ResetConnectionStats()
 		{
-			for (int i = 0; i < NetworkServer.connections.Count; i++)
+			for (var i = 0; i < connections.Count; i++)
 			{
-				NetworkConnection networkConnection = NetworkServer.connections[i];
+				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.ResetStats();
@@ -1955,19 +1827,19 @@ namespace QSB
 			}
 		}
 
-		public static bool AddExternalConnection(NetworkConnection conn)
+		public static bool AddExternalConnection(QSBNetworkConnection conn)
 		{
 			return instance.AddExternalConnectionInternal(conn);
 		}
 
-		private bool AddExternalConnectionInternal(NetworkConnection conn)
+		private bool AddExternalConnectionInternal(QSBNetworkConnection conn)
 		{
 			bool result;
 			if (conn.connectionId < 0)
 			{
 				result = false;
 			}
-			else if (conn.connectionId < NetworkServer.connections.Count && NetworkServer.connections[conn.connectionId] != null)
+			else if (conn.connectionId < connections.Count && connections[conn.connectionId] != null)
 			{
 				if (LogFilter.logError)
 				{
@@ -2011,7 +1883,7 @@ namespace QSB
 				{
 					Debug.Log("RemoveExternalConnection external connection " + connectionId);
 				}
-				NetworkConnection networkConnection = m_SimpleServerSimple.FindConnection(connectionId);
+				var networkConnection = m_SimpleServerSimple.FindConnection(connectionId);
 				if (networkConnection != null)
 				{
 					networkConnection.RemoveObservers();
@@ -2022,30 +1894,31 @@ namespace QSB
 			return result;
 		}
 
-		private static bool ValidateSceneObject(NetworkIdentity netId)
+		private static bool ValidateSceneObject(QSBNetworkIdentity netId)
 		{
-			return netId.gameObject.hideFlags != HideFlags.NotEditable && netId.gameObject.hideFlags != HideFlags.HideAndDontSave && !netId.sceneId.IsEmpty();
+			return netId.gameObject.hideFlags != HideFlags.NotEditable && netId.gameObject.hideFlags != HideFlags.HideAndDontSave && !netId.SceneId.IsEmpty();
 		}
 
 		public static bool SpawnObjects()
 		{
 			bool result;
-			if (!NetworkServer.active)
+			if (!active)
 			{
 				result = true;
 			}
 			else
 			{
-				foreach (NetworkIdentity networkIdentity in Resources.FindObjectsOfTypeAll<NetworkIdentity>())
+				var objectsOfTypeAll = Resources.FindObjectsOfTypeAll<QSBNetworkIdentity>();
+				foreach (var networkIdentity in objectsOfTypeAll)
 				{
-					if (NetworkServer.ValidateSceneObject(networkIdentity))
+					if (ValidateSceneObject(networkIdentity))
 					{
 						if (LogFilter.logDebug)
 						{
 							Debug.Log(string.Concat(new object[]
 							{
 								"SpawnObjects sceneId:",
-								networkIdentity.sceneId,
+								networkIdentity.SceneId,
 								" name:",
 								networkIdentity.gameObject.name
 							}));
@@ -2054,12 +1927,11 @@ namespace QSB
 						networkIdentity.gameObject.SetActive(true);
 					}
 				}
-				NetworkIdentity[] array;
-				foreach (NetworkIdentity networkIdentity2 in array)
+				foreach (var networkIdentity2 in objectsOfTypeAll)
 				{
-					if (NetworkServer.ValidateSceneObject(networkIdentity2))
+					if (ValidateSceneObject(networkIdentity2))
 					{
-						NetworkServer.Spawn(networkIdentity2.gameObject);
+						Spawn(networkIdentity2.gameObject);
 						networkIdentity2.ForceAuthority(true);
 					}
 				}
@@ -2068,20 +1940,20 @@ namespace QSB
 			return result;
 		}
 
-		private static void SendCrc(NetworkConnection targetConnection)
+		private static void SendCrc(QSBNetworkConnection targetConnection)
 		{
-			if (NetworkCRC.singleton != null)
+			if (QSBNetworkCRC.singleton != null)
 			{
-				if (NetworkCRC.scriptCRCCheck)
+				if (QSBNetworkCRC.scriptCRCCheck)
 				{
-					CRCMessage crcmessage = new CRCMessage();
-					List<CRCMessageEntry> list = new List<CRCMessageEntry>();
-					foreach (string text in NetworkCRC.singleton.scripts.Keys)
+					var crcmessage = new QSBCRCMessage();
+					var list = new List<QSBCRCMessageEntry>();
+					foreach (string text in QSBNetworkCRC.singleton.scripts.Keys)
 					{
-						list.Add(new CRCMessageEntry
+						list.Add(new QSBCRCMessageEntry
 						{
 							name = text,
-							channel = (byte)NetworkCRC.singleton.scripts[text]
+							channel = (byte)QSBNetworkCRC.singleton.scripts[text]
 						});
 					}
 					crcmessage.scripts = list.ToArray();
@@ -2099,17 +1971,17 @@ namespace QSB
 
 		private static volatile QSBNetworkServer s_Instance;
 
-		private static object s_Sync = new Object();
+		private static object s_Sync = new UnityEngine.Object();
 
 		private static bool m_DontListen;
 
 		private bool m_LocalClientActive;
 
-		private List<QSBNetworkConnection> m_LocalConnectionsFakeList = new List<NetworkConnection>();
+		private List<QSBNetworkConnection> m_LocalConnectionsFakeList = new List<QSBNetworkConnection>();
 
-		private ULocalConnectionToClient m_LocalConnection = null;
+		private QSBULocalConnectionToClient m_LocalConnection = null;
 
-		private NetworkScene m_NetworkScene;
+		private QSBNetworkScene m_NetworkScene;
 
 		private HashSet<int> m_ExternalConnections;
 
@@ -2125,36 +1997,9 @@ namespace QSB
 
 		internal static ushort maxPacketSize;
 
-		private static RemovePlayerMessage s_RemovePlayerMessage = new RemovePlayerMessage();
+		private static QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
 
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache0;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache1;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache2;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache3;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache4;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache5;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache6;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache7;
-
-		[CompilerGenerated]
-		private static NetworkMessageDelegate<> f__mg$cache8;
-
-		private class ServerSimpleWrapper : NetworkServerSimple
+		private class ServerSimpleWrapper : QSBNetworkServerSimple
 		{
 			public ServerSimpleWrapper(QSBNetworkServer server)
 			{

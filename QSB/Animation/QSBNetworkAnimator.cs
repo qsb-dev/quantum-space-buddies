@@ -82,7 +82,7 @@ namespace QSB.Animation
                 {
                     return;
                 }
-                NetworkServer.SendToReady(gameObject, 40, animationMessage);
+                QSBNetworkServer.SendToReady(gameObject, 40, animationMessage);
             }
         }
 
@@ -138,7 +138,7 @@ namespace QSB.Animation
             {
                 if (!IsServer || LocalPlayerAuthority)
                     return;
-                NetworkServer.SendToReady(gameObject, 41, parametersMessage);
+                QSBNetworkServer.SendToReady(gameObject, 41, parametersMessage);
             }
         }
 
@@ -270,7 +270,7 @@ namespace QSB.Animation
             };
             if (HasAuthority && LocalPlayerAuthority)
             {
-                if (NetworkClient.allClients.Count <= 0)
+                if (QSBNetworkClient.allClients.Count <= 0)
                 {
                     return;
                 }
@@ -287,14 +287,14 @@ namespace QSB.Animation
                 {
                     return;
                 }
-                NetworkServer.SendToReady(gameObject, 42, animationTriggerMessage);
+                QSBNetworkServer.SendToReady(gameObject, 42, animationTriggerMessage);
             }
         }
 
         internal static void OnAnimationServerMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(AnimationMessage);
-            var localObject = NetworkServer.FindLocalObject(AnimationMessage.netId);
+            var localObject = QSBNetworkServer.FindLocalObject(AnimationMessage.netId);
             if (localObject == null)
             {
                 return;
@@ -302,13 +302,13 @@ namespace QSB.Animation
             var component = localObject.GetComponent<QSBNetworkAnimator>();
             var reader = new NetworkReader(AnimationMessage.parameters);
             component?.HandleAnimMsg(AnimationMessage, reader);
-            NetworkServer.SendToReady(localObject, 40, AnimationMessage);
+            QSBNetworkServer.SendToReady(localObject, 40, AnimationMessage);
         }
 
         internal static void OnAnimationParametersServerMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(ParametersMessage);
-            var localObject = NetworkServer.FindLocalObject(ParametersMessage.netId);
+            var localObject = QSBNetworkServer.FindLocalObject(ParametersMessage.netId);
             if (localObject == null)
             {
                 return;
@@ -316,20 +316,20 @@ namespace QSB.Animation
             var component = localObject.GetComponent<QSBNetworkAnimator>();
             var reader = new NetworkReader(ParametersMessage.parameters);
             component?.HandleAnimParamsMsg(ParametersMessage, reader);
-            NetworkServer.SendToReady(localObject, 41, ParametersMessage);
+            QSBNetworkServer.SendToReady(localObject, 41, ParametersMessage);
         }
 
         internal static void OnAnimationTriggerServerMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(TriggersMessage);
-            var localObject = NetworkServer.FindLocalObject(TriggersMessage.netId);
+            var localObject = QSBNetworkServer.FindLocalObject(TriggersMessage.netId);
             if (localObject == null)
             {
                 return;
             }
             var component = localObject.GetComponent<QSBNetworkAnimator>();
             component?.HandleAnimTriggerMsg(TriggersMessage.hash);
-            NetworkServer.SendToReady(localObject, 42, TriggersMessage);
+            QSBNetworkServer.SendToReady(localObject, 42, TriggersMessage);
         }
 
         internal static void OnAnimationClientMessage(QSBNetworkMessage netMsg)

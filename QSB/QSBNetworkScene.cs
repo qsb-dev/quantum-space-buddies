@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -113,16 +114,13 @@ namespace QSB
 			if (component)
 			{
 				component.SetDynamicAssetId(newAssetId);
-				if (LogFilter.logDebug)
+				DebugLog.DebugWrite(string.Concat(new object[]
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"Registering prefab '",
-						prefab.name,
-						"' as asset:",
-						component.AssetId
-					}));
-				}
+					"Registering prefab '",
+					prefab.name,
+					"' as asset:",
+					component.AssetId
+				}));
 				guidToPrefab[component.AssetId] = prefab;
 			}
 			else if (LogFilter.logError)

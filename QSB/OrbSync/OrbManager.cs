@@ -35,12 +35,12 @@ namespace QSB.OrbSync
             DebugLog.DebugWrite("Building orb syncs...", MessageType.Info);
             WorldRegistry.OldOrbList.Clear();
             WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-            if (NetworkServer.active)
+            if (QSBNetworkServer.active)
             {
                 DebugLog.DebugWrite("- Is server, instantiating orb prefabs.");
-                WorldRegistry.OrbSyncList.ForEach(x => NetworkServer.Destroy(x.gameObject));
+                WorldRegistry.OrbSyncList.ForEach(x => QSBNetworkServer.Destroy(x.gameObject));
                 WorldRegistry.OrbSyncList.Clear();
-                WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
+                WorldRegistry.OldOrbList.ForEach(x => QSBNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
             }
             DebugLog.DebugWrite($"Finished orb build with {WorldRegistry.OldOrbList.Count} orbs.", MessageType.Success);
         }
@@ -54,7 +54,7 @@ namespace QSB.OrbSync
         public void QueueBuildOrbs()
         {
             DebugLog.DebugWrite("Queueing build of NetworkOrbs...", MessageType.Info);
-            QSB.Helper.Events.Unity.RunWhen(() => NetworkServer.active, BuildOrbs);
+            QSB.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
         }
     }
 }

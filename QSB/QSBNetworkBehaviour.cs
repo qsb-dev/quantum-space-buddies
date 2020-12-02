@@ -77,7 +77,7 @@ namespace QSB
 			else
 			{
 				writer.FinishMessage();
-				NetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
+				QSBNetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
 			}
 		}
 
@@ -98,14 +98,14 @@ namespace QSB
 
 		protected void SendEventInternal(NetworkWriter writer, int channelId, string eventName)
 		{
-			if (!NetworkServer.active)
+			if (!QSBNetworkServer.active)
 			{
 				Debug.LogWarning("SendEvent no server?");
 			}
 			else
 			{
 				writer.FinishMessage();
-				NetworkServer.SendWriterToReady(gameObject, writer, channelId);
+				QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 			}
 		}
 
@@ -560,7 +560,7 @@ namespace QSB
 		public virtual void OnStopAuthority() { }
 		public virtual bool OnRebuildObservers(HashSet<QSBNetworkConnection> observers, bool initialize) => false;
 		public virtual void OnSetLocalVisibility(bool vis) { }
-		public virtual bool OnCheckObserver(NetworkConnection conn) => true;
+		public virtual bool OnCheckObserver(QSBNetworkConnection conn) => true;
 		public virtual int GetNetworkChannel() => 0;
 		public virtual float GetNetworkSendInterval() => 0.1f;
 

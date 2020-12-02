@@ -21,7 +21,7 @@ using UnityEngine.Networking;
 
 namespace QSB
 {
-    public class QSBNetworkManager : NetworkManager
+    public class QSBNetworkManager : QSBNetworkManagerUNET
     {
         private const int MaxConnections = 128;
         private const int MaxBufferedPackets = 64;
@@ -40,35 +40,46 @@ namespace QSB
 
         private void Awake()
         {
+            DebugLog.DebugWrite("AWAKE");
             Instance = this;
 
             _lobby = gameObject.AddComponent<QSBNetworkLobby>();
             _assetBundle = QSB.NetworkAssetBundle;
 
+            DebugLog.DebugWrite("player");
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
-            playerPrefab.AddComponent<QSBNetworkIdentity>();
+            var ident = playerPrefab.AddComponent<QSBNetworkIdentity>();
+            ident.LocalPlayerAuthority = true;
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
             playerPrefab.AddComponent<InstrumentsManager>();
 
+            DebugLog.DebugWrite("ship");
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-            _shipPrefab.AddComponent<QSBNetworkIdentity>();
+            ident = _shipPrefab.AddComponent<QSBNetworkIdentity>();
+            ident.LocalPlayerAuthority = true;
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
 
+            DebugLog.DebugWrite("camera");
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
-            _cameraPrefab.AddComponent<QSBNetworkIdentity>();
+            ident = _cameraPrefab.AddComponent<QSBNetworkIdentity>();
+            ident.LocalPlayerAuthority = true;
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
 
+            DebugLog.DebugWrite("probe");
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
-            _probePrefab.AddComponent<QSBNetworkIdentity>();
+            ident = _probePrefab.AddComponent<QSBNetworkIdentity>();
+            ident.LocalPlayerAuthority = true;
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
 
+            DebugLog.DebugWrite("orb");
             OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-            OrbPrefab.AddComponent<QSBNetworkIdentity>();
+            ident = OrbPrefab.AddComponent<QSBNetworkIdentity>();
+            ident.LocalPlayerAuthority = true;
             OrbPrefab.AddComponent<NomaiOrbTransformSync>();
             spawnPrefabs.Add(OrbPrefab);
 
@@ -133,7 +144,7 @@ namespace QSB
             QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
         }
 
-        public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
+        public override void OnClientConnect(QSBNetworkConnection connection) // Called on the client when connecting to a server
         {
             DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
             base.OnClientConnect(connection);
@@ -148,7 +159,7 @@ namespace QSB
                 OrbManager.Instance.QueueBuildSlots();
             }
 
-            if (!NetworkServer.localClientActive)
+            if (!QSBNetworkServer.localClientActive)
             {
                 QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
                 singleton.client.UnregisterHandler(40);

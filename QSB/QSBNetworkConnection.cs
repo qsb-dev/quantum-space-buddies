@@ -38,7 +38,7 @@ namespace QSB
 			{
 				throw new ArgumentOutOfRangeException("Platform specific protocols are not supported on this platform");
 			}
-			m_Channels = new ChannelBuffer[channelCount];
+			m_Channels = new QSBChannelBuffer[channelCount];
 			for (var i = 0; i < channelCount; i++)
 			{
 				var channelQOS = hostTopology.DefaultConfig.Channels[i];
@@ -47,7 +47,7 @@ namespace QSB
 				{
 					bufferSize = (int)(hostTopology.DefaultConfig.FragmentSize * 128);
 				}
-				m_Channels[i] = new ChannelBuffer(this, bufferSize, (byte)i, IsReliableQoS(channelQOS.QOS), IsSequencedQoS(channelQOS.QOS));
+				m_Channels[i] = new QSBChannelBuffer(this, bufferSize, (byte)i, IsReliableQoS(channelQOS.QOS), IsSequencedQoS(channelQOS.QOS));
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace QSB
 			{
 				foreach (var netId in ClientOwnedObjects)
 				{
-					var gameObject = NetworkServer.FindLocalObject(netId);
+					var gameObject = QSBNetworkServer.FindLocalObject(netId);
 					if (gameObject != null)
 					{
 						gameObject.GetComponent<QSBNetworkIdentity>().ClearClientOwner();
@@ -500,7 +500,7 @@ namespace QSB
 
 		internal static void OnFragment(QSBNetworkMessage netMsg) => netMsg.conn.HandleFragment(netMsg.reader, netMsg.channelId);
 
-		private ChannelBuffer[] m_Channels;
+		private QSBChannelBuffer[] m_Channels;
 		private readonly QSBNetworkMessage m_NetMsg = new QSBNetworkMessage();
 		private NetworkWriter m_Writer;
 

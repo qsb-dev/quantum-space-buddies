@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -507,26 +508,20 @@ namespace QSB
 			netMsg.ReadMessage<QSBObjectSpawnMessage>(s_ObjectSpawnMessage);
 			if (!s_ObjectSpawnMessage.assetId.IsValid())
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("OnObjSpawn netId: " + s_ObjectSpawnMessage.netId + " has invalid asset Id");
-				}
+				Debug.LogError($"OnObjSpawn netId: {s_ObjectSpawnMessage.netId} has invalid asset Id. {s_ObjectSpawnMessage.assetId}");
 			}
 			else
 			{
-				if (LogFilter.logDebug)
+				DebugLog.DebugWrite(string.Concat(new object[]
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"Client spawn handler instantiating [netId:",
-						s_ObjectSpawnMessage.netId,
-						" asset ID:",
-						s_ObjectSpawnMessage.assetId,
-						" pos:",
-						s_ObjectSpawnMessage.position,
-						"]"
-					}));
-				}
+					"Client spawn handler instantiating [netId:",
+					s_ObjectSpawnMessage.netId,
+					" asset ID:",
+					s_ObjectSpawnMessage.assetId,
+					" pos:",
+					s_ObjectSpawnMessage.position,
+					"]"
+				}));
 				if (s_NetworkScene.GetNetworkIdentity(s_ObjectSpawnMessage.netId, out var component))
 				{
 					ApplySpawnPayload(component, s_ObjectSpawnMessage.position, s_ObjectSpawnMessage.payload, s_ObjectSpawnMessage.netId, null);
@@ -536,7 +531,7 @@ namespace QSB
 					GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(original, s_ObjectSpawnMessage.position, s_ObjectSpawnMessage.rotation);
 					if (LogFilter.logDebug)
 					{
-						Debug.Log(string.Concat(new object[]
+						DebugLog.DebugWrite(string.Concat(new object[]
 						{
 							"Client spawn handler instantiating [netId:",
 							s_ObjectSpawnMessage.netId,
@@ -552,10 +547,7 @@ namespace QSB
 					component = gameObject.GetComponent<QSBNetworkIdentity>();
 					if (component == null)
 					{
-						if (LogFilter.logError)
-						{
-							Debug.LogError("Client object spawned for " + s_ObjectSpawnMessage.assetId + " does not have a NetworkIdentity");
-						}
+						Debug.LogError("Client object spawned for " + s_ObjectSpawnMessage.assetId + " does not have a NetworkIdentity");
 					}
 					else
 					{
@@ -568,20 +560,14 @@ namespace QSB
 					var gameObject2 = spawnDelegate(s_ObjectSpawnMessage.position, s_ObjectSpawnMessage.assetId);
 					if (gameObject2 == null)
 					{
-						if (LogFilter.logWarn)
-						{
-							Debug.LogWarning("Client spawn handler for " + s_ObjectSpawnMessage.assetId + " returned null");
-						}
+						Debug.LogWarning("Client spawn handler for " + s_ObjectSpawnMessage.assetId + " returned null");
 					}
 					else
 					{
 						component = gameObject2.GetComponent<QSBNetworkIdentity>();
 						if (component == null)
 						{
-							if (LogFilter.logError)
-							{
-								Debug.LogError("Client object spawned for " + s_ObjectSpawnMessage.assetId + " does not have a network identity");
-							}
+							Debug.LogError("Client object spawned for " + s_ObjectSpawnMessage.assetId + " does not have a network identity");
 						}
 						else
 						{
@@ -591,7 +577,7 @@ namespace QSB
 						}
 					}
 				}
-				else if (LogFilter.logError)
+				else
 				{
 					Debug.LogError(string.Concat(new object[]
 					{

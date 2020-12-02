@@ -31,13 +31,13 @@ namespace QSB.Messaging
         private void Init()
         {
             var eventName = Enum.GetName(typeof(EventType), _eventType - 1 - MsgType.Highest).ToUpper();
-            if (NetworkServer.handlers.Keys.Contains((short)_eventType))
+            if (QSBNetworkServer.handlers.Keys.Contains((short)_eventType))
             {
                 DebugLog.ToConsole($"Warning - NetworkServer already contains a handler for EventType {_eventType}", MessageType.Warning);
-                NetworkServer.handlers.Remove((short)_eventType);
+                QSBNetworkServer.handlers.Remove((short)_eventType);
             }
-            NetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
-            NetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
+            QSBNetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
+            QSBNetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
         }
 
         public void SendToAll(T message)
@@ -46,7 +46,7 @@ namespace QSB.Messaging
             {
                 return;
             }
-            NetworkServer.SendToAll((short)_eventType, message);
+            QSBNetworkServer.SendToAll((short)_eventType, message);
         }
 
         public void SendToServer(T message)
@@ -55,16 +55,16 @@ namespace QSB.Messaging
             {
                 return;
             }
-            NetworkManager.singleton.client.Send((short)_eventType, message);
+            QSBNetworkManager.singleton.client.Send((short)_eventType, message);
         }
 
-        private void OnClientReceiveMessageHandler(NetworkMessage netMsg)
+        private void OnClientReceiveMessageHandler(QSBNetworkMessage netMsg)
         {
             var message = netMsg.ReadMessage<T>();
             OnClientReceiveMessage?.Invoke(message);
         }
 
-        private void OnServerReceiveMessageHandler(NetworkMessage netMsg)
+        private void OnServerReceiveMessageHandler(QSBNetworkMessage netMsg)
         {
             var message = netMsg.ReadMessage<T>();
             OnServerReceiveMessage?.Invoke(message);

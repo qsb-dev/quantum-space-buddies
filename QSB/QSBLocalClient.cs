@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,7 @@ namespace QSB
 				}
 			}
 			m_LocalServer = QSBNetworkServer.instance;
-			m_Connection = new ULocalConnectionToServer(m_LocalServer);
+			m_Connection = new QSBULocalConnectionToServer(m_LocalServer);
 			base.SetHandlers(m_Connection);
 			m_Connection.connectionId = m_LocalServer.AddLocalClient(this);
 			m_AsyncConnect = QSBNetworkClient.ConnectState.Connected;
@@ -107,7 +108,8 @@ namespace QSB
 					}
 					else
 					{
-						s_InternalMessage.reader.Replace(t.buffer);
+						DebugLog.DebugWrite("try replace");
+						s_InternalMessage.reader.GetType().GetMethod("Replace", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public).Invoke(s_InternalMessage.reader, new object[] { t.buffer });
 					}
 					s_InternalMessage.reader.ReadInt16();
 					s_InternalMessage.channelId = t.channelId;

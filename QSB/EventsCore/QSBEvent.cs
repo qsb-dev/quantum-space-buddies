@@ -43,7 +43,7 @@ namespace QSB.EventsCore
 
         private void Send(T message)
         {
-            if (NetworkServer.active)
+            if (QSBNetworkServer.active)
             {
                 _eventHandler.SendToAll(message);
             }

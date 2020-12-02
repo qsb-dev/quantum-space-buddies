@@ -27,8 +27,8 @@ namespace QSB.OrbSync.Events
 
         public override void OnServerReceive(WorldObjectMessage message)
         {
-            var fromPlayer = NetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
-            foreach (var item in NetworkServer.connections)
+            var fromPlayer = QSBNetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
+            foreach (var item in QSBNetworkServer.connections)
             {
                 DebugLog.DebugWrite(item.GetPlayer().PlayerId.ToString());
             }
@@ -78,7 +78,7 @@ namespace QSB.OrbSync.Events
 
         public override void OnReceiveLocal(WorldObjectMessage message)
         {
-            if (NetworkServer.active)
+            if (QSBNetworkServer.active)
             {
                 OnServerReceive(message);
             }

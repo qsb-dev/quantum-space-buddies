@@ -72,7 +72,7 @@ namespace QSB
             // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
             // null (even though it isn't...)
             gameObject.AddComponent<QSBNetworkManager>();
-            gameObject.AddComponent<NetworkManagerHUD>();
+            gameObject.AddComponent<QSBNetworkManagerHUD>();
             gameObject.AddComponent<DebugActions>();
             gameObject.AddComponent<ElevatorManager>();
             gameObject.AddComponent<GeyserManager>();
@@ -84,6 +84,11 @@ namespace QSB
 
             // Stop players being able to pause
             Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
+        }
+
+        void Update()
+        {
+            QSBNetworkIdentity.UNetStaticUpdate();
         }
 
         public override void Configure(IModConfig config)

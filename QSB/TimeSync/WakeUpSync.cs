@@ -52,7 +52,7 @@ namespace QSB.TimeSync
         private void OnWakeUp()
         {
             DebugLog.DebugWrite("ON WAKE UP!");
-            if (NetworkServer.active)
+            if (QSBNetworkServer.active)
             {
                 QSB.HasWokenUp = true;
             }

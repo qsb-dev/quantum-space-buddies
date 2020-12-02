@@ -11,7 +11,7 @@ namespace QSB
 	public sealed class QSBNetworkIdentity : MonoBehaviour
 	{
 		public bool IsClient { get; private set; }
-		public bool IsServer => m_IsServer && NetworkServer.active && m_IsServer;
+		public bool IsServer => m_IsServer && QSBNetworkServer.active && m_IsServer;
 		public bool HasAuthority { get; private set; }
 		public NetworkInstanceId NetId { get; private set; }
 		public NetworkSceneId SceneId => m_SceneId;
@@ -48,6 +48,7 @@ namespace QSB
 
 		internal void SetDynamicAssetId(NetworkHash128 newAssetId)
 		{
+			DebugLog.DebugWrite($"Setting asset of {NetId} to {newAssetId}");
 			if (!m_AssetId.IsValid() || m_AssetId.Equals(newAssetId))
 			{
 				m_AssetId = newAssetId;
@@ -65,7 +66,7 @@ namespace QSB
 				Debug.LogError("SetClientOwner m_ClientAuthorityOwner already set!");
 			}
 			ClientAuthorityOwner = conn;
-			ClientAuthorityOwner.GetType().GetMethod("AddOwnedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(ClientAuthorityOwner, new object[] { this });
+			ClientAuthorityOwner.AddOwnedObject(this);
 		}
 
 		internal void ClearClientOwner() => ClientAuthorityOwner = null;
@@ -148,7 +149,7 @@ namespace QSB
 		internal void SetNotLocalPlayer()
 		{
 			IsLocalPlayer = false;
-			if (!NetworkServer.active || !NetworkServer.localClientActive)
+			if (!QSBNetworkServer.active || !QSBNetworkServer.localClientActive)
 			{
 				HasAuthority = false;
 			}
@@ -165,9 +166,9 @@ namespace QSB
 
 		private void OnDestroy()
 		{
-			if (m_IsServer && NetworkServer.active)
+			if (m_IsServer && QSBNetworkServer.active)
 			{
-				NetworkServer.Destroy(base.gameObject);
+				QSBNetworkServer.Destroy(base.gameObject);
 			}
 		}
 
@@ -175,6 +176,7 @@ namespace QSB
 		{
 			if (!m_IsServer)
 			{
+				DebugLog.DebugWrite("is server");
 				m_IsServer = true;
 				if (m_LocalPlayerAuthority)
 				{
@@ -190,27 +192,22 @@ namespace QSB
 				if (NetId.IsEmpty())
 				{
 					NetId = GetNextNetworkId();
+					DebugLog.DebugWrite($"was empty - netid is {NetId}");
 				}
 				else if (!allowNonZeroNetId)
 				{
+					DebugLog.DebugWrite($"netid is {NetId}");
 					Debug.LogError(string.Concat(new object[]
 					{
 						"Object has non-zero netId ",
 						NetId,
 						" for ",
-						base.gameObject
+						gameObject
 					}));
 					return;
 				}
-				Debug.Log(string.Concat(new object[]
-				{
-					"OnStartServer ",
-					base.gameObject,
-					" GUID:",
-					NetId
-				}));
-				var server = (NetworkServer)typeof(NetworkServer).GetField("instance", System.Reflection.BindingFlags.Static).GetValue(null);
-				server.GetType().GetMethod("SetLocalObjectOnServer", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(server, new object[] { NetId, gameObject });
+				DebugLog.DebugWrite($"OnStartServer {gameObject} GUID:{NetId}");
+				QSBNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
 				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 				{
 					var networkBehaviour = m_NetworkBehaviours[i];
@@ -223,7 +220,7 @@ namespace QSB
 						Debug.LogError("Exception in OnStartServer:" + ex.Message + " " + ex.StackTrace);
 					}
 				}
-				if (NetworkClient.active && NetworkServer.localClientActive)
+				if (QSBNetworkClient.active && QSBNetworkServer.localClientActive)
 				{
 					QSBClientScene.SetLocalObject(NetId, base.gameObject);
 					OnStartClient();
@@ -314,7 +311,7 @@ namespace QSB
 			}
 		}
 
-		internal bool OnCheckObserver(NetworkConnection conn)
+		internal bool OnCheckObserver(QSBNetworkConnection conn)
 		{
 			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 			{
@@ -591,7 +588,7 @@ namespace QSB
 			if (num != 0U)
 			{
 				var j = 0;
-				while (j < NetworkServer.numChannels)
+				while (j < QSBNetworkServer.numChannels)
 				{
 					if ((num & (1U << j)) != 0U)
 					{
@@ -613,7 +610,7 @@ namespace QSB
 									networkBehaviour2.ClearAllDirtyBits();
 									flag = true;
 								}
-								var maxPacketSize = (ushort)typeof(NetworkServer).GetField("maxPacketSize", System.Reflection.BindingFlags.Static).GetValue(null);
+								var maxPacketSize = QSBNetworkServer.maxPacketSize;
 								if (s_UpdateWriter.Position - position > maxPacketSize)
 								{
 									Debug.LogWarning(string.Concat(new object[]
@@ -631,7 +628,7 @@ namespace QSB
 						if (flag)
 						{
 							s_UpdateWriter.FinishMessage();
-							NetworkServer.SendWriterToReady(base.gameObject, s_UpdateWriter, j);
+							QSBNetworkServer.SendWriterToReady(base.gameObject, s_UpdateWriter, j);
 						}
 					}
 					IL_197:
@@ -704,7 +701,7 @@ namespace QSB
 				for (var i = 0; i < count; i++)
 				{
 					var networkConnection = m_Observers[i];
-					networkConnection.GetType().GetMethod("RemoveFromVisList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(networkConnection, new object[] { this, true });
+					networkConnection.RemoveFromVisList(this, true);
 				}
 				m_Observers.Clear();
 				m_ObserverConnections.Clear();
@@ -738,7 +735,7 @@ namespace QSB
 				}));
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
-				conn.GetType().GetMethod("AddToVisList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(conn, new object[] { this });
+				conn.AddToVisList(this);
 			}
 		}
 
@@ -748,7 +745,7 @@ namespace QSB
 			{
 				m_Observers.Remove(conn);
 				m_ObserverConnections.Remove(conn.connectionId);
-				conn.GetType().GetMethod("RemoveFromVisList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(conn, new object[] { this, true });
+				conn.RemoveFromVisList(this, true);
 			}
 		}
 
@@ -811,7 +808,7 @@ namespace QSB
 							}
 							else if (initialize || !hashSet2.Contains(networkConnection3))
 							{
-								networkConnection3.GetType().GetMethod("AddToVisList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(networkConnection3, new object[] { this });
+								networkConnection3.AddToVisList(this);
 								Debug.Log(string.Concat(new object[]
 								{
 									"New Observer for ",
@@ -827,7 +824,7 @@ namespace QSB
 					{
 						if (!hashSet.Contains(networkConnection4))
 						{
-							networkConnection4.GetType().GetMethod("RemoveFromVisList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(networkConnection4, new object[] { this, true });
+							networkConnection4.RemoveFromVisList(this, true);
 							Debug.Log(string.Concat(new object[]
 							{
 								"Removed Observer for ",
@@ -886,7 +883,7 @@ namespace QSB
 			}
 			else
 			{
-				ClientAuthorityOwner.GetType().GetMethod("RemoveOwnedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(ClientAuthorityOwner, new object[] { this });
+				ClientAuthorityOwner.RemoveOwnedObject(this);
 				ClientAuthorityOwner = null;
 				ForceAuthority(true);
 				conn.Send(15, new QSBClientAuthorityMessage
@@ -926,7 +923,7 @@ namespace QSB
 			else
 			{
 				ClientAuthorityOwner = conn;
-				ClientAuthorityOwner.GetType().GetMethod("AddOwnedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(ClientAuthorityOwner, new object[] { this });
+				ClientAuthorityOwner.AddOwnedObject(this);
 
 				ForceAuthority(false);
 				conn.Send(15, new QSBClientAuthorityMessage
@@ -963,9 +960,9 @@ namespace QSB
 
 		internal static void UNetStaticUpdate()
 		{
-			typeof(NetworkServer).GetMethod("Update", System.Reflection.BindingFlags.Static).Invoke(null, null);
-			typeof(NetworkClient).GetMethod("UpdateClients", System.Reflection.BindingFlags.Static).Invoke(null, null);
-			typeof(NetworkManager).GetMethod("UpdateScene", System.Reflection.BindingFlags.Static).Invoke(null, null);
+			QSBNetworkServer.Update();
+			QSBNetworkClient.UpdateClients();
+			QSBNetworkManagerUNET.UpdateScene();
 		}
 
 		[SerializeField]
