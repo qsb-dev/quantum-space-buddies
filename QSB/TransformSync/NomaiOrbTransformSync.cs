@@ -22,22 +22,29 @@ namespace QSB.TransformSync
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);
-            DebugLog.DebugWrite($"onstartclient orb netid {netId.Value}");
             WorldRegistry.OrbSyncList.Add(this);
 
             QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
         }
 
+        public override void OnStartAuthority()
+        {
+            DebugLog.DebugWrite("START AUTHORITY - has auth? : " + hasAuthority);
+        }
+
+        public override void OnStopAuthority()
+        {
+            DebugLog.DebugWrite("END AUTHORITY - has auth? : " + hasAuthority);
+        }
+
         private void OnReady()
         {
-            DebugLog.DebugWrite($"onready orb netid {netId.Value}, index {Index}");
             AttachedOrb = WorldRegistry.OldOrbList[Index];
             _isReady = true;
         }
 
         private void OnDestroy()
         {
-            DebugLog.DebugWrite($"ondestroy orb netid {netId.Value}");
             WorldRegistry.OrbSyncList.Remove(this);
         }
 

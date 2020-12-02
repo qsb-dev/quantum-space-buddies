@@ -27,12 +27,19 @@ namespace QSB.OrbSync.Events
 
         public override void OnServerReceive(WorldObjectMessage message)
         {
-            var fromPlayer = NetworkServer.connections
-                .First(x => x.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value == message.FromId);
+            var fromPlayer = NetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
+            foreach (var item in NetworkServer.connections)
+            {
+                DebugLog.DebugWrite(item.GetPlayer().PlayerId.ToString());
+            }
             if (WorldRegistry.OrbSyncList.Count == 0)
             {
                 DebugLog.ToConsole($"Error - OrbSyncList is empty. (ID {message.ObjectId})", MessageType.Error);
                 return;
+            }
+            if (fromPlayer == null)
+            {
+                DebugLog.DebugWrite("Error - FromPlayer is null!", MessageType.Error);
             }
             var orb = WorldRegistry.OrbSyncList
                 .First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
@@ -47,10 +54,12 @@ namespace QSB.OrbSync.Events
                 DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
                 return;
             }
-            if (orbIdentity.clientAuthorityOwner != null)
+            if (orbIdentity.clientAuthorityOwner != null && orbIdentity.clientAuthorityOwner != fromPlayer)
             {
+                DebugLog.DebugWrite($"Removed authority of orb {message.ObjectId} from {orbIdentity.clientAuthorityOwner.GetPlayer().PlayerId}");
                 orbIdentity.RemoveClientAuthority(orbIdentity.clientAuthorityOwner);
             }
+            DebugLog.DebugWrite($"Assigned authority of orb {message.ObjectId} to player {message.FromId}.");
             orbIdentity.AssignClientAuthority(fromPlayer);
             orb.enabled = true;
         }

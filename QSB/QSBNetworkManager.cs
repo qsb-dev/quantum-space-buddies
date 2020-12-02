@@ -197,9 +197,9 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
-            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
+            var player = connection.GetPlayer();
             var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
+            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, player.PlayerId, netIds);
 
             foreach (var item in WorldRegistry.OrbSyncList)
             {
@@ -210,7 +210,7 @@ namespace QSB
                 }
             }
 
-            QSBPlayerManager.GetPlayer(playerId).HudMarker?.Remove();
+            player.HudMarker?.Remove();
             CleanupConnection(connection);
         }
 
@@ -234,23 +234,9 @@ namespace QSB
 
         private void CleanupConnection(NetworkConnection connection)
         {
-            uint playerId;
-            try
-            {
-                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            }
-            catch (Exception ex)
-            {
-                DebugLog.ToConsole("Error when getting playerId in CleanupConnection: " + ex.Message, MessageType.Error);
-                return;
-            }
-            if (!QSBPlayerManager.PlayerExists(playerId))
-            {
-                return;
-            }
-            var playerName = QSBPlayerManager.GetPlayer(playerId).Name;
-            DebugLog.ToConsole($"{playerName} disconnected.", MessageType.Info);
-            QSBPlayerManager.RemovePlayer(playerId);
+            var player = connection.GetPlayer();
+            DebugLog.ToConsole($"{player.Name} disconnected.", MessageType.Info);
+            QSBPlayerManager.RemovePlayer(player.PlayerId);
 
             var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
             netIds.ForEach(CleanupNetworkBehaviour);

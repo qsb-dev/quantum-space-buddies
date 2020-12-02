@@ -34,6 +34,26 @@ namespace QSB
                 "<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
 
             ModBehaviour = this;
+
+            LogFilter.currentLogLevel = LogFilter.Debug;
+
+            Application.logMessageReceived += Application_logMessageReceived;
+        }
+
+        private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
+        {
+            switch (type)
+            {
+                case LogType.Assert:
+                    DebugLog.DebugWrite($"Assert - {condition}", MessageType.Message);
+                    break;
+                case LogType.Log:
+                    DebugLog.DebugWrite($"Log - {condition}", MessageType.Message);
+                    break;
+                case LogType.Warning:
+                    DebugLog.DebugWrite($"Warning - {condition}", MessageType.Warning);
+                    break;
+            }
         }
 
         private void Start()
