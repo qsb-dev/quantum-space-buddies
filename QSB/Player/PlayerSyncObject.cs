@@ -1,4 +1,5 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.QuantumUNET;
+using UnityEngine.Networking;
 
 namespace QSB.Player
 {

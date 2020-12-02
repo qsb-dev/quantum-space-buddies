@@ -1,4 +1,5 @@
 ﻿using QSB.EventsCore;
+using QSB.QuantumUNET;
 using QSB.WorldSync;
 using UnityEngine.Networking;
 

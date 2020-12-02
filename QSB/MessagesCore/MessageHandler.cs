@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.EventsCore;
+using QSB.QuantumUNET;
 using QSB.Utility;
 using System;
 using System.Linq;

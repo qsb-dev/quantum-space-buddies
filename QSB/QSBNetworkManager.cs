@@ -9,6 +9,7 @@ using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
+using QSB.QuantumUNET;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.TransformSync;

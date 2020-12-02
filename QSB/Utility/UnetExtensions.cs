@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.QuantumUNET;
 using QSB.TransformSync;
 using UnityEngine.Networking;
 
