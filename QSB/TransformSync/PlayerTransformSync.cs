@@ -1,6 +1,8 @@
-﻿using QSB.Animation;
+﻿using OWML.Common;
+using QSB.Animation;
 using QSB.Instruments;
 using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -11,11 +13,13 @@ namespace QSB.TransformSync
 
         static PlayerTransformSync()
         {
+            DebugLog.DebugWrite("Constructor", MessageType.Info);
             AnimControllerPatch.Init();
         }
 
         public override void OnStartLocalPlayer()
         {
+            DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
             LocalInstance = this;
         }
 
@@ -55,7 +59,7 @@ namespace QSB.TransformSync
             && Player != null
             && QSBPlayerManager.PlayerExists(Player.PlayerId)
             && Player.IsReady
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
+            && NetId.Value != uint.MaxValue
+            && NetId.Value != 0U;
     }
 }

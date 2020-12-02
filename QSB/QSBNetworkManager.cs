@@ -46,24 +46,29 @@ namespace QSB
             _assetBundle = QSB.NetworkAssetBundle;
 
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
+            playerPrefab.AddComponent<QSBNetworkIdentity>();
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
             playerPrefab.AddComponent<InstrumentsManager>();
 
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
+            _shipPrefab.AddComponent<QSBNetworkIdentity>();
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
 
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
+            _cameraPrefab.AddComponent<QSBNetworkIdentity>();
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
 
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
+            _probePrefab.AddComponent<QSBNetworkIdentity>();
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
 
             OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+            OrbPrefab.AddComponent<QSBNetworkIdentity>();
             OrbPrefab.AddComponent<NomaiOrbTransformSync>();
             spawnPrefabs.Add(OrbPrefab);
 
@@ -100,7 +105,7 @@ namespace QSB
 
         public override void OnStartServer()
         {
-            DebugLog.DebugWrite("~~ ON START SERVER ~~", MessageType.Info);
+            DebugLog.DebugWrite("OnStartServer", MessageType.Info);
             if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
             {
                 OrbManager.Instance.QueueBuildOrbs();
@@ -120,10 +125,9 @@ namespace QSB
 
         public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
-            DebugLog.DebugWrite("[S] Add player");
+            DebugLog.DebugWrite("OnServerAddPlayer", MessageType.Info);
             base.OnServerAddPlayer(connection, playerControllerId);
 
-            // These have to be in a constant order (for now, until we get a better netId getting system...)
             NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
             NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
@@ -131,6 +135,7 @@ namespace QSB
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
         {
+            DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
             base.OnClientConnect(connection);
 
             gameObject.AddComponent<SectorSync.SectorSync>();
@@ -172,6 +177,7 @@ namespace QSB
 
         public override void OnStopClient() // Called on the client when closing connection
         {
+            DebugLog.DebugWrite("OnStopClient", MessageType.Info);
             DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
             Destroy(GetComponent<SectorSync.SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
@@ -197,14 +203,15 @@ namespace QSB
 
         public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
         {
+            DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
             var player = connection.GetPlayer();
             var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, player.PlayerId, netIds);
 
             foreach (var item in WorldRegistry.OrbSyncList)
             {
-                var identity = item.GetComponent<NetworkIdentity>();
-                if (identity.clientAuthorityOwner == connection)
+                var identity = item.GetComponent<QSBNetworkIdentity>();
+                if (identity.ClientAuthorityOwner == connection)
                 {
                     identity.RemoveClientAuthority(connection);
                 }
@@ -216,6 +223,7 @@ namespace QSB
 
         public override void OnStopServer()
         {
+            DebugLog.DebugWrite("OnStopServer", MessageType.Info);
             Destroy(GetComponent<SectorSync.SectorSync>());
             Destroy(GetComponent<RespawnOnDeath>());
             Destroy(GetComponent<PreventShipDestruction>());
@@ -246,8 +254,8 @@ namespace QSB
         {
             DebugLog.DebugWrite($"Cleaning up netId {netId}");
             // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
-            var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x != null && x.netId.Value == netId);
+            var networkBehaviours = FindObjectsOfType<QSBNetworkBehaviour>()
+                .Where(x => x != null && x.NetId.Value == netId);
             foreach (var networkBehaviour in networkBehaviours)
             {
                 var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
@@ -256,7 +264,7 @@ namespace QSB
                 {
                     DebugLog.DebugWrite($"  * Removing TransformSync from syncobjects");
                     QSBPlayerManager.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null && netId != QSBPlayerManager.LocalPlayerId && !networkBehaviour.hasAuthority)
+                    if (transformSync.SyncedTransform != null && netId != QSBPlayerManager.LocalPlayerId && !networkBehaviour.HasAuthority)
                     {
                         DebugLog.DebugWrite($"  * Destroying {transformSync.SyncedTransform.gameObject.name}");
                         Destroy(transformSync.SyncedTransform.gameObject);
@@ -271,7 +279,7 @@ namespace QSB
                     QSBPlayerManager.PlayerSyncObjects.Remove(animationSync);
                 }
 
-                if (!networkBehaviour.hasAuthority)
+                if (!networkBehaviour.HasAuthority)
                 {
                     DebugLog.DebugWrite($"  * Destroying {networkBehaviour.gameObject.name}");
                     Destroy(networkBehaviour.gameObject);

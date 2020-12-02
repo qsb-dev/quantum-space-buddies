@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 namespace QSB.TimeSync
 {
-    public class WakeUpSync : NetworkBehaviour
+    public class WakeUpSync : QSBNetworkBehaviour
     {
         public static WakeUpSync LocalInstance { get; private set; }
 
@@ -34,7 +34,7 @@ namespace QSB.TimeSync
 
         private void Start()
         {
-            if (!isLocalPlayer)
+            if (!IsLocalPlayer)
             {
                 return;
             }
@@ -88,7 +88,7 @@ namespace QSB.TimeSync
             GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
             _state = State.Loaded;
             gameObject.AddComponent<PreserveTimeScale>();
-            if (isServer)
+            if (IsServer)
             {
                 SendServerTime();
             }
@@ -187,11 +187,11 @@ namespace QSB.TimeSync
 
         private void Update()
         {
-            if (isServer)
+            if (IsServer)
             {
                 UpdateServer();
             }
-            else if (isLocalPlayer)
+            else if (IsLocalPlayer)
             {
                 UpdateLocal();
             }

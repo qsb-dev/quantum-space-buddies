@@ -10,7 +10,7 @@ namespace QSB.Player
 {
     public static class QSBPlayerManager
     {
-        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.GetComponent<NetworkIdentity>()?.netId.Value ?? uint.MaxValue;
+        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.GetComponent<QSBNetworkIdentity>()?.NetId.Value ?? uint.MaxValue;
         public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
         public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
@@ -75,7 +75,7 @@ namespace QSB.Player
         public static bool IsBelongingToLocalPlayer(uint id)
         {
             return id == LocalPlayerId ||
-                PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.isLocalPlayer);
+                PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
         }
 
         public static uint GetPlayerOfObject(this PlayerSyncObject syncObject)
@@ -131,7 +131,7 @@ namespace QSB.Player
             int count = 0;
             int totalCount = PlayerSyncObjects.Count;
             PlayerSyncObjects.RemoveAll(x => x == null);
-            PlayerSyncObjects.RemoveAll(x => x.GetComponent<NetworkIdentity>() == null);
+            PlayerSyncObjects.RemoveAll(x => x.GetComponent<QSBNetworkIdentity>() == null);
             if (PlayerSyncObjects.Count != totalCount)
             {
                 DebugLog.ToConsole($"Warning - Removed {totalCount - PlayerSyncObjects.Count} items from PlayerSyncObjects.", MessageType.Warning);

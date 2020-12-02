@@ -74,7 +74,7 @@ namespace QSB.Animation
             _netAnim.enabled = true;
             _bodyAnim = body.GetComponent<Animator>();
             Mirror = body.gameObject.AddComponent<AnimatorMirror>();
-            if (isLocalPlayer)
+            if (IsLocalPlayer)
             {
                 Mirror.Init(_bodyAnim, _anim);
             }

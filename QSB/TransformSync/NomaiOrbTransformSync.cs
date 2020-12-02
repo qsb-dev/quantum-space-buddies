@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
-    public class NomaiOrbTransformSync : NetworkBehaviour
+    public class NomaiOrbTransformSync : QSBNetworkBehaviour
     {
         public NomaiInterfaceOrb AttachedOrb { get; private set; }
         public Transform OrbTransform { get; private set; }
@@ -29,12 +29,12 @@ namespace QSB.TransformSync
 
         public override void OnStartAuthority()
         {
-            DebugLog.DebugWrite("START AUTHORITY - has auth? : " + hasAuthority);
+            DebugLog.DebugWrite("START AUTHORITY - has auth? : " + HasAuthority);
         }
 
         public override void OnStopAuthority()
         {
-            DebugLog.DebugWrite("END AUTHORITY - has auth? : " + hasAuthority);
+            DebugLog.DebugWrite("END AUTHORITY - has auth? : " + HasAuthority);
         }
 
         private void OnReady()
@@ -76,7 +76,7 @@ namespace QSB.TransformSync
 
         protected virtual void UpdateTransform()
         {
-            if (hasAuthority)
+            if (HasAuthority)
             {
                 transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
                 transform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);

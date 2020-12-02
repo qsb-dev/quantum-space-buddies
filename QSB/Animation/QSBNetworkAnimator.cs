@@ -6,9 +6,7 @@ namespace QSB.Animation
 {
     // Cleaned up unity code. UNET is so broken I gave up and fixed it myself.
 
-    [RequireComponent(typeof(NetworkIdentity))]
-    [RequireComponent(typeof(Animator))]
-    class QSBNetworkAnimator : NetworkBehaviour
+    class QSBNetworkAnimator : QSBNetworkBehaviour
     {
         private static QSBAnimationMessage AnimationMessage = new QSBAnimationMessage();
         private static QSBAnimationParametersMessage ParametersMessage = new QSBAnimationParametersMessage();
@@ -65,7 +63,7 @@ namespace QSB.Animation
             }
             var animationMessage = new QSBAnimationMessage
             {
-                netId = netId,
+                netId = NetId,
                 stateHash = stateHash,
                 normalizedTime = normalizedTime
             };
@@ -74,13 +72,13 @@ namespace QSB.Animation
             WriteParameters(m_ParameterWriter, false);
             animationMessage.parameters = m_ParameterWriter.ToArray();
 
-            if (hasAuthority || ClientScene.readyConnection != null)
+            if (HasAuthority || ClientScene.readyConnection != null)
             {
                 ClientScene.readyConnection.Send(40, animationMessage);
             }
             else
             {
-                if (!isServer || localPlayerAuthority)
+                if (!IsServer || LocalPlayerAuthority)
                 {
                     return;
                 }
@@ -127,18 +125,18 @@ namespace QSB.Animation
             m_SendTimer = Time.time + GetNetworkSendInterval();
             var parametersMessage = new QSBAnimationParametersMessage
             {
-                netId = netId
+                netId = NetId
             };
             m_ParameterWriter.SeekZero();
             WriteParameters(m_ParameterWriter, true);
             parametersMessage.parameters = m_ParameterWriter.ToArray();
-            if (hasAuthority && ClientScene.readyConnection != null)
+            if (HasAuthority && ClientScene.readyConnection != null)
             {
                 ClientScene.readyConnection.Send(41, parametersMessage);
             }
             else
             {
-                if (!isServer || localPlayerAuthority)
+                if (!IsServer || LocalPlayerAuthority)
                     return;
                 NetworkServer.SendToReady(gameObject, 41, parametersMessage);
             }
@@ -146,7 +144,7 @@ namespace QSB.Animation
 
         internal void HandleAnimMsg(QSBAnimationMessage msg, NetworkReader reader)
         {
-            if (hasAuthority)
+            if (HasAuthority)
             {
                 return;
             }
@@ -159,7 +157,7 @@ namespace QSB.Animation
 
         internal void HandleAnimParamsMsg(QSBAnimationParametersMessage msg, NetworkReader reader)
         {
-            if (hasAuthority)
+            if (HasAuthority)
             {
                 return;
             }
@@ -267,10 +265,10 @@ namespace QSB.Animation
         {
             var animationTriggerMessage = new QSBAnimationTriggerMessage
             {
-                netId = netId,
+                netId = NetId,
                 hash = hash
             };
-            if (hasAuthority && localPlayerAuthority)
+            if (HasAuthority && LocalPlayerAuthority)
             {
                 if (NetworkClient.allClients.Count <= 0)
                 {
@@ -285,7 +283,7 @@ namespace QSB.Animation
             }
             else
             {
-                if (!isServer || localPlayerAuthority)
+                if (!IsServer || LocalPlayerAuthority)
                 {
                     return;
                 }

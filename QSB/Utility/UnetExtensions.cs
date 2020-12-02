@@ -10,7 +10,7 @@ namespace QSB.Utility
 		{
 			var go = connection.playerControllers[0].gameObject;
 			var controller = go.GetComponent<PlayerTransformSync>();
-			return QSBPlayerManager.GetPlayer(controller.netId.Value);
+			return QSBPlayerManager.GetPlayer(controller.NetId.Value);
 		}
 	}
 }

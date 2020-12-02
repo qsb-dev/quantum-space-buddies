@@ -163,6 +163,8 @@
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />
     <Compile Include="QSBInputManager.cs" />
+    <Compile Include="QSBNetworkBehaviour.cs" />
+    <Compile Include="QSBNetworkIdentity.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />

@@ -48,16 +48,16 @@ namespace QSB.OrbSync.Events
                 DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
                 return;
             }
-            var orbIdentity = orb.GetComponent<NetworkIdentity>();
+            var orbIdentity = orb.GetComponent<QSBNetworkIdentity>();
             if (orbIdentity == null)
             {
                 DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
                 return;
             }
-            if (orbIdentity.clientAuthorityOwner != null && orbIdentity.clientAuthorityOwner != fromPlayer)
+            if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
             {
-                DebugLog.DebugWrite($"Removed authority of orb {message.ObjectId} from {orbIdentity.clientAuthorityOwner.GetPlayer().PlayerId}");
-                orbIdentity.RemoveClientAuthority(orbIdentity.clientAuthorityOwner);
+                DebugLog.DebugWrite($"Removed authority of orb {message.ObjectId} from {orbIdentity.ClientAuthorityOwner.GetPlayer().PlayerId}");
+                orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
             }
             DebugLog.DebugWrite($"Assigned authority of orb {message.ObjectId} to player {message.FromId}.");
             orbIdentity.AssignClientAuthority(fromPlayer);

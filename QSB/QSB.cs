@@ -37,7 +37,7 @@ namespace QSB
 
             LogFilter.currentLogLevel = LogFilter.Debug;
 
-            Application.logMessageReceived += Application_logMessageReceived;
+            // Application.logMessageReceived += Application_logMessageReceived;
         }
 
         private void Application_logMessageReceived(string condition, string stackTrace, LogType type)

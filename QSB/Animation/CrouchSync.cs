@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace QSB.Animation
 {
-    public class CrouchSync : NetworkBehaviour
+    public class CrouchSync : QSBNetworkBehaviour
     {
         public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
 
@@ -29,7 +29,7 @@ namespace QSB.Animation
 
         private void Update()
         {
-            if (isLocalPlayer)
+            if (IsLocalPlayer)
             {
                 SyncLocalCrouch();
                 return;

@@ -53,7 +53,7 @@ namespace QSB.WorldSync
             {
                 qsbSlot = slotList.First(x => x.InterfaceSlot == slot);
                 orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
-                if (orbSync.hasAuthority)
+                if (orbSync.HasAuthority)
                 {
                     qsbSlot.HandleEvent(state);
                 }

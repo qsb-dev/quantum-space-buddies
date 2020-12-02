@@ -23,6 +23,7 @@ namespace QSB.TransformSync
 
         protected virtual void Awake()
         {
+            DebugLog.DebugWrite($"Awake of {GetType().Name}", MessageType.Info);
             QSBPlayerManager.PlayerSyncObjects.Add(this);
             DontDestroyOnLoad(gameObject);
             QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -41,7 +42,7 @@ namespace QSB.TransformSync
         protected void Init()
         {
             DebugLog.DebugWrite($"Init of {AttachedNetId} ({Player.PlayerId}.{GetType().Name})");
-            SyncedTransform = hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+            SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
             _isInitialized = true;
             _isVisible = true;
         }
@@ -74,7 +75,7 @@ namespace QSB.TransformSync
 
         protected virtual void UpdateTransform()
         {
-            if (hasAuthority) // If this script is attached to the client's own body on the client's side.	
+            if (HasAuthority) // If this script is attached to the client's own body on the client's side.	
             {
                 if (ReferenceSector == null || ReferenceSector.Sector == null)
                 {
@@ -105,7 +106,7 @@ namespace QSB.TransformSync
             DebugLog.DebugWrite($"Setting {Player.PlayerId}.{GetType().Name} to {sector.Name}", MessageType.Info);
             _positionSmoothVelocity = Vector3.zero;
             ReferenceSector = sector;
-            if (!hasAuthority)
+            if (!HasAuthority)
             {
                 SyncedTransform.SetParent(sector.Transform, true);
                 transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);

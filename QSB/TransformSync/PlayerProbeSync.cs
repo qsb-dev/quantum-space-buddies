@@ -14,6 +14,7 @@ namespace QSB.TransformSync
 
         public override void OnStartLocalPlayer()
         {
+            DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
             LocalInstance = this;
         }
 
@@ -78,7 +79,7 @@ namespace QSB.TransformSync
             {
                 return;
             }
-            if (hasAuthority)
+            if (HasAuthority)
             {
                 transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
                 return;
@@ -94,7 +95,7 @@ namespace QSB.TransformSync
             && Player != null
             && QSBPlayerManager.PlayerExists(Player.PlayerId)
             && Player.IsReady
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
+            && NetId.Value != uint.MaxValue
+            && NetId.Value != 0U;
     }
 }

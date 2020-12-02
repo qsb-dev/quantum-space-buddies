@@ -1,4 +1,6 @@
-﻿using QSB.Player;
+﻿using OWML.Common;
+using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -9,6 +11,7 @@ namespace QSB.TransformSync
 
         public override void OnStartLocalPlayer()
         {
+            DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
             LocalInstance = this;
         }
 
@@ -54,7 +57,7 @@ namespace QSB.TransformSync
             && Player != null
             && QSBPlayerManager.PlayerExists(Player.PlayerId)
             && Player.IsReady
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
+            && NetId.Value != uint.MaxValue
+            && NetId.Value != 0U;
     }
 }

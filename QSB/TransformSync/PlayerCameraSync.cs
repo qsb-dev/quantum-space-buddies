@@ -1,4 +1,5 @@
-﻿using QSB.EventsCore;
+﻿using OWML.Common;
+using QSB.EventsCore;
 using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
@@ -12,6 +13,7 @@ namespace QSB.TransformSync
 
         public override void OnStartLocalPlayer()
         {
+            DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
             LocalInstance = this;
         }
 
@@ -43,7 +45,7 @@ namespace QSB.TransformSync
         public override bool IsReady => Locator.GetPlayerTransform() != null
             && Player != null
             && QSBPlayerManager.PlayerExists(Player.PlayerId)
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
+            && NetId.Value != uint.MaxValue
+            && NetId.Value != 0U;
     }
 }
