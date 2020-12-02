@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -212,16 +211,16 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal static bool GetInvokerForHashCommand(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction) 
+		internal static bool GetInvokerForHashCommand(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
 			=> GetInvokerForHash(cmdHash, UNetInvokeType.Command, out invokeClass, out invokeFunction);
 
-		internal static bool GetInvokerForHashClientRpc(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction) 
+		internal static bool GetInvokerForHashClientRpc(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
 			=> GetInvokerForHash(cmdHash, UNetInvokeType.ClientRpc, out invokeClass, out invokeFunction);
 
-		internal static bool GetInvokerForHashSyncList(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction) 
+		internal static bool GetInvokerForHashSyncList(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
 			=> GetInvokerForHash(cmdHash, UNetInvokeType.SyncList, out invokeClass, out invokeFunction);
 
-		internal static bool GetInvokerForHashSyncEvent(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction) 
+		internal static bool GetInvokerForHashSyncEvent(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
 			=> GetInvokerForHash(cmdHash, UNetInvokeType.SyncEvent, out invokeClass, out invokeFunction);
 
 		private static bool GetInvokerForHash(int cmdHash, UNetInvokeType invokeType, out Type invokeClass, out CmdDelegate invokeFunction)
@@ -276,7 +275,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal bool ContainsCommandDelegate(int cmdHash) 
+		internal bool ContainsCommandDelegate(int cmdHash)
 			=> s_CmdHandlerDelegates.ContainsKey(cmdHash);
 
 		internal bool InvokeCommandDelegate(int cmdHash, NetworkReader reader)
@@ -425,16 +424,16 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal static string GetCmdHashCmdName(int cmdHash) 
+		internal static string GetCmdHashCmdName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeCmd");
 
-		internal static string GetCmdHashRpcName(int cmdHash) 
+		internal static string GetCmdHashRpcName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeRpc");
 
-		internal static string GetCmdHashEventName(int cmdHash) 
+		internal static string GetCmdHashEventName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncEvent");
 
-		internal static string GetCmdHashListName(int cmdHash) 
+		internal static string GetCmdHashListName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncList");
 
 		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref NetworkInstanceId netIdField)

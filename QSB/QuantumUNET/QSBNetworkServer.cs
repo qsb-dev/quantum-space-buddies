@@ -4,8 +4,6 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;

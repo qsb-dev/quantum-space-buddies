@@ -80,7 +80,7 @@ namespace QSB
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
             ident = _probePrefab.AddComponent<QSBNetworkIdentity>();
             ident.LocalPlayerAuthority = true;
-            ident.SetValue("m_AssetId",_probePrefab.GetComponent<NetworkIdentity>().assetId);
+            ident.SetValue("m_AssetId", _probePrefab.GetComponent<NetworkIdentity>().assetId);
             ident.SetValue("m_SceneId", _probePrefab.GetComponent<NetworkIdentity>().sceneId);
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);

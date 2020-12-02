@@ -5,7 +5,6 @@ using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Networking;
 
 namespace QSB.Player
 {

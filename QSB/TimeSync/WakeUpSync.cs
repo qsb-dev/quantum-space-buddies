@@ -4,7 +4,6 @@ using QSB.QuantumUNET;
 using QSB.TimeSync.Events;
 using QSB.Utility;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.TimeSync
 {

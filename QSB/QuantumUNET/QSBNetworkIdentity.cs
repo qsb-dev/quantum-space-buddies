@@ -1,10 +1,9 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Networking;
-using OWML.ModHelper.Events;
-using QSB.Utility;
 
 namespace QSB.QuantumUNET
 {
@@ -87,7 +86,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		
+
 
 		public ReadOnlyCollection<QSBNetworkConnection> Observers
 		{
