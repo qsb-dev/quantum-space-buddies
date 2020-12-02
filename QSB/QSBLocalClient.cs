@@ -108,7 +108,6 @@ namespace QSB
 					}
 					else
 					{
-						DebugLog.DebugWrite("try replace");
 						s_InternalMessage.reader.GetType().GetMethod("Replace", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public).Invoke(s_InternalMessage.reader, new object[] { t.buffer });
 					}
 					s_InternalMessage.reader.ReadInt16();

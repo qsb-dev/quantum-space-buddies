@@ -50,6 +50,8 @@ namespace QSB
             playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
             var ident = playerPrefab.AddComponent<QSBNetworkIdentity>();
             ident.LocalPlayerAuthority = true;
+            ident.SetValue("m_AssetId", playerPrefab.GetComponent<NetworkIdentity>().assetId);
+            ident.SetValue("m_SceneId", playerPrefab.GetComponent<NetworkIdentity>().sceneId);
             playerPrefab.AddComponent<PlayerTransformSync>();
             playerPrefab.AddComponent<AnimationSync>();
             playerPrefab.AddComponent<WakeUpSync>();
@@ -59,6 +61,8 @@ namespace QSB
             _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
             ident = _shipPrefab.AddComponent<QSBNetworkIdentity>();
             ident.LocalPlayerAuthority = true;
+            ident.SetValue("m_AssetId", _shipPrefab.GetComponent<NetworkIdentity>().assetId);
+            ident.SetValue("m_SceneId", _shipPrefab.GetComponent<NetworkIdentity>().sceneId);
             _shipPrefab.AddComponent<ShipTransformSync>();
             spawnPrefabs.Add(_shipPrefab);
 
@@ -66,6 +70,8 @@ namespace QSB
             _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
             ident = _cameraPrefab.AddComponent<QSBNetworkIdentity>();
             ident.LocalPlayerAuthority = true;
+            ident.SetValue("m_AssetId", _cameraPrefab.GetComponent<NetworkIdentity>().assetId);
+            ident.SetValue("m_SceneId", _cameraPrefab.GetComponent<NetworkIdentity>().sceneId);
             _cameraPrefab.AddComponent<PlayerCameraSync>();
             spawnPrefabs.Add(_cameraPrefab);
 
@@ -73,6 +79,8 @@ namespace QSB
             _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
             ident = _probePrefab.AddComponent<QSBNetworkIdentity>();
             ident.LocalPlayerAuthority = true;
+            ident.SetValue("m_AssetId",_probePrefab.GetComponent<NetworkIdentity>().assetId);
+            ident.SetValue("m_SceneId", _probePrefab.GetComponent<NetworkIdentity>().sceneId);
             _probePrefab.AddComponent<PlayerProbeSync>();
             spawnPrefabs.Add(_probePrefab);
 
@@ -80,6 +88,8 @@ namespace QSB
             OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
             ident = OrbPrefab.AddComponent<QSBNetworkIdentity>();
             ident.LocalPlayerAuthority = true;
+            ident.SetValue("m_AssetId", OrbPrefab.GetComponent<NetworkIdentity>().assetId);
+            ident.SetValue("m_SceneId", OrbPrefab.GetComponent<NetworkIdentity>().sceneId);
             OrbPrefab.AddComponent<NomaiOrbTransformSync>();
             spawnPrefabs.Add(OrbPrefab);
 

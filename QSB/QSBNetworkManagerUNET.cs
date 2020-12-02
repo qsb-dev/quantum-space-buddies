@@ -623,14 +623,14 @@ namespace QSB
 			client.RegisterHandler(39, new QSBNetworkMessageDelegate(OnClientSceneInternal));
 			if (m_PlayerPrefab != null)
 			{
-				ClientScene.RegisterPrefab(m_PlayerPrefab);
+				QSBClientScene.RegisterPrefab(m_PlayerPrefab);
 			}
 			for (int i = 0; i < m_SpawnPrefabs.Count; i++)
 			{
 				GameObject gameObject = m_SpawnPrefabs[i];
 				if (gameObject != null)
 				{
-					ClientScene.RegisterPrefab(gameObject);
+					QSBClientScene.RegisterPrefab(gameObject);
 				}
 			}
 		}
@@ -988,10 +988,7 @@ namespace QSB
 				{
 					if (s_LoadingSceneAsync.isDone)
 					{
-						if (LogFilter.logDebug)
-						{
-							Debug.Log("ClientChangeScene done readyCon:" + s_ClientReadyConnection);
-						}
+						DebugLog.DebugWrite("ClientChangeScene done readyCon:" + s_ClientReadyConnection);
 						singleton.FinishLoadScene();
 						s_LoadingSceneAsync.allowSceneActivation = true;
 						s_LoadingSceneAsync = null;

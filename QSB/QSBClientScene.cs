@@ -581,7 +581,7 @@ namespace QSB
 				{
 					Debug.LogError(string.Concat(new object[]
 					{
-						"Failed to spawn server object, did you forget to add it to the NetworkManager? assetId=",
+						"Failed to spawn server object, did you forget to add it to the QSBNetworkManager? assetId=",
 						s_ObjectSpawnMessage.assetId,
 						" netId=",
 						s_ObjectSpawnMessage.netId

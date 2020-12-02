@@ -10,13 +10,21 @@ namespace QSB
 {
 	class QSBNetworkScene
 	{
-		internal Dictionary<NetworkInstanceId, QSBNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QSBNetworkIdentity>();
+		private Dictionary<NetworkInstanceId, QSBNetworkIdentity> m_LocalObjects = new Dictionary<NetworkInstanceId, QSBNetworkIdentity>();
 
 		internal static Dictionary<NetworkHash128, GameObject> guidToPrefab { get; } = new Dictionary<NetworkHash128, GameObject>();
 
 		internal static Dictionary<NetworkHash128, SpawnDelegate> spawnHandlers { get; } = new Dictionary<NetworkHash128, SpawnDelegate>();
 
 		internal static Dictionary<NetworkHash128, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<NetworkHash128, UnSpawnDelegate>();
+
+		internal Dictionary<NetworkInstanceId, QSBNetworkIdentity> localObjects
+		{
+			get
+			{
+				return this.m_LocalObjects;
+			}
+		}
 
 		internal void Shutdown()
 		{
@@ -26,13 +34,6 @@ namespace QSB
 
 		internal void SetLocalObject(NetworkInstanceId netId, GameObject obj, bool isClient, bool isServer)
 		{
-			Debug.Log(string.Concat(new object[]
-			{
-				"SetLocalObject ",
-				netId,
-				" ",
-				obj
-			}));
 			if (obj == null)
 			{
 				this.localObjects[netId] = null;
@@ -46,6 +47,7 @@ namespace QSB
 				}
 				if (networkIdentity == null)
 				{
+					DebugLog.DebugWrite($"Adding {netId} to local objects.");
 					networkIdentity = obj.GetComponent<QSBNetworkIdentity>();
 					this.localObjects[netId] = networkIdentity;
 				}
@@ -69,9 +71,9 @@ namespace QSB
 		internal bool GetNetworkIdentity(NetworkInstanceId netId, out QSBNetworkIdentity uv)
 		{
 			bool result;
-			if (this.localObjects.ContainsKey(netId) && this.localObjects[netId] != null)
+			if (localObjects.ContainsKey(netId) && localObjects[netId] != null)
 			{
-				uv = this.localObjects[netId];
+				uv = localObjects[netId];
 				result = true;
 			}
 			else
@@ -84,7 +86,7 @@ namespace QSB
 
 		internal bool RemoveLocalObject(NetworkInstanceId netId)
 		{
-			return this.localObjects.Remove(netId);
+			return localObjects.Remove(netId);
 		}
 
 		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
@@ -114,13 +116,6 @@ namespace QSB
 			if (component)
 			{
 				component.SetDynamicAssetId(newAssetId);
-				DebugLog.DebugWrite(string.Concat(new object[]
-				{
-					"Registering prefab '",
-					prefab.name,
-					"' as asset:",
-					component.AssetId
-				}));
 				guidToPrefab[component.AssetId] = prefab;
 			}
 			else if (LogFilter.logError)
@@ -131,20 +126,10 @@ namespace QSB
 
 		internal static void RegisterPrefab(GameObject prefab)
 		{
-			NetworkIdentity component = prefab.GetComponent<NetworkIdentity>();
+			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component)
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"Registering prefab '",
-						prefab.name,
-						"' as asset:",
-						component.assetId
-					}));
-				}
-				guidToPrefab[component.assetId] = prefab;
+				guidToPrefab[component.AssetId] = prefab;
 				NetworkIdentity[] componentsInChildren = prefab.GetComponentsInChildren<NetworkIdentity>();
 				if (componentsInChildren.Length > 1)
 				{
@@ -205,18 +190,6 @@ namespace QSB
 			}
 			else
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"RegisterSpawnHandler asset '",
-						assetId,
-						"' ",
-						spawnHandler.GetMethodName(),
-						"/",
-						unspawnHandler.GetMethodName()
-					}));
-				}
 				spawnHandlers[assetId] = spawnHandler;
 				unspawnHandlers[assetId] = unspawnHandler;
 			}
@@ -224,7 +197,7 @@ namespace QSB
 
 		internal static void UnregisterPrefab(GameObject prefab)
 		{
-			NetworkIdentity component = prefab.GetComponent<NetworkIdentity>();
+			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component == null)
 			{
 				if (LogFilter.logError)
@@ -234,53 +207,30 @@ namespace QSB
 			}
 			else
 			{
-				spawnHandlers.Remove(component.assetId);
-				unspawnHandlers.Remove(component.assetId);
+				spawnHandlers.Remove(component.AssetId);
+				unspawnHandlers.Remove(component.AssetId);
 			}
 		}
 
 		internal static void RegisterPrefab(GameObject prefab, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
 		{
-			NetworkIdentity component = prefab.GetComponent<NetworkIdentity>();
+			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component == null)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("Could not register '" + prefab.name + "' since it contains no NetworkIdentity component");
-				}
+				Debug.LogError("Could not register '" + prefab.name + "' since it contains no NetworkIdentity component");
 			}
 			else if (spawnHandler == null || unspawnHandler == null)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("RegisterPrefab custom spawn function null for " + component.assetId);
-				}
+				Debug.LogError("RegisterPrefab custom spawn function null for " + component.AssetId);
 			}
-			else if (!component.assetId.IsValid())
+			else if (!component.AssetId.IsValid())
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("RegisterPrefab game object " + prefab.name + " has no prefab. Use RegisterSpawnHandler() instead?");
-				}
+				Debug.LogError("RegisterPrefab game object " + prefab.name + " has no prefab. Use RegisterSpawnHandler() instead?");
 			}
 			else
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"Registering custom prefab '",
-						prefab.name,
-						"' as asset:",
-						component.assetId,
-						" ",
-						spawnHandler.GetMethodName(),
-						"/",
-						unspawnHandler.GetMethodName()
-					}));
-				}
-				spawnHandlers[component.assetId] = spawnHandler;
-				unspawnHandlers[component.assetId] = unspawnHandler;
+				spawnHandlers[component.AssetId] = spawnHandler;
+				unspawnHandlers[component.AssetId] = unspawnHandler;
 			}
 		}
 
