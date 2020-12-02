@@ -15,12 +15,12 @@ namespace QSB
 		public bool HasAuthority { get; private set; }
 		public NetworkInstanceId NetId { get; private set; }
 		public NetworkSceneId SceneId => m_SceneId;
-		public NetworkConnection ClientAuthorityOwner { get; private set; }
+		public QSBNetworkConnection ClientAuthorityOwner { get; private set; }
 		public NetworkHash128 AssetId => m_AssetId;
 		public bool IsLocalPlayer { get; private set; }
 		public short PlayerControllerId { get; private set; } = -1;
-		public NetworkConnection ConnectionToServer { get; private set; }
-		public NetworkConnection ConnectionToClient { get; private set; }
+		public QSBNetworkConnection ConnectionToServer { get; private set; }
+		public QSBNetworkConnection ConnectionToClient { get; private set; }
 
 		public bool ServerOnly
 		{
@@ -58,7 +58,7 @@ namespace QSB
 			}
 		}
 
-		internal void SetClientOwner(NetworkConnection conn)
+		internal void SetClientOwner(QSBNetworkConnection conn)
 		{
 			if (ClientAuthorityOwner != null)
 			{
@@ -88,18 +88,18 @@ namespace QSB
 
 		
 
-		public ReadOnlyCollection<NetworkConnection> Observers
+		public ReadOnlyCollection<QSBNetworkConnection> Observers
 		{
 			get
 			{
-				ReadOnlyCollection<NetworkConnection> result;
+				ReadOnlyCollection<QSBNetworkConnection> result;
 				if (m_Observers == null)
 				{
 					result = null;
 				}
 				else
 				{
-					result = new ReadOnlyCollection<NetworkConnection>(m_Observers);
+					result = new ReadOnlyCollection<QSBNetworkConnection>(m_Observers);
 				}
 				return result;
 			}
@@ -154,7 +154,7 @@ namespace QSB
 			}
 		}
 
-		internal void RemoveObserverInternal(NetworkConnection conn)
+		internal void RemoveObserverInternal(QSBNetworkConnection conn)
 		{
 			if (m_Observers != null)
 			{
@@ -184,7 +184,7 @@ namespace QSB
 				{
 					HasAuthority = true;
 				}
-				m_Observers = new List<NetworkConnection>();
+				m_Observers = new List<QSBNetworkConnection>();
 				m_ObserverConnections = new HashSet<int>();
 				CacheBehaviours();
 				if (NetId.IsEmpty())
@@ -225,7 +225,7 @@ namespace QSB
 				}
 				if (NetworkClient.active && NetworkServer.localClientActive)
 				{
-					ClientScene.SetLocalObject(NetId, base.gameObject);
+					QSBClientScene.SetLocalObject(NetId, base.gameObject);
 					OnStartClient();
 				}
 				if (HasAuthority)
@@ -676,9 +676,9 @@ namespace QSB
 			}
 		}
 
-		internal void SetConnectionToServer(NetworkConnection conn) => ConnectionToServer = conn;
+		internal void SetConnectionToServer(QSBNetworkConnection conn) => ConnectionToServer = conn;
 
-		internal void SetConnectionToClient(NetworkConnection conn, short newPlayerControllerId)
+		internal void SetConnectionToClient(QSBNetworkConnection conn, short newPlayerControllerId)
 		{
 			PlayerControllerId = newPlayerControllerId;
 			ConnectionToClient = conn;
@@ -711,7 +711,7 @@ namespace QSB
 			}
 		}
 
-		internal void AddObserver(NetworkConnection conn)
+		internal void AddObserver(QSBNetworkConnection conn)
 		{
 			if (m_Observers == null)
 			{
@@ -742,7 +742,7 @@ namespace QSB
 			}
 		}
 
-		internal void RemoveObserver(NetworkConnection conn)
+		internal void RemoveObserver(QSBNetworkConnection conn)
 		{
 			if (m_Observers != null)
 			{
@@ -758,8 +758,8 @@ namespace QSB
 			{
 				var flag = false;
 				var flag2 = false;
-				var hashSet = new HashSet<NetworkConnection>();
-				var hashSet2 = new HashSet<NetworkConnection>(m_Observers);
+				var hashSet = new HashSet<QSBNetworkConnection>();
+				var hashSet2 = new HashSet<QSBNetworkConnection>(m_Observers);
 				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 				{
 					var networkBehaviour = m_NetworkBehaviours[i];
@@ -769,9 +769,9 @@ namespace QSB
 				{
 					if (initialize)
 					{
-						for (var j = 0; j < NetworkServer.connections.Count; j++)
+						for (var j = 0; j < QSBNetworkServer.connections.Count; j++)
 						{
-							var networkConnection = NetworkServer.connections[j];
+							var networkConnection = QSBNetworkServer.connections[j];
 							if (networkConnection != null)
 							{
 								if (networkConnection.isReady)
@@ -780,9 +780,9 @@ namespace QSB
 								}
 							}
 						}
-						for (var k = 0; k < NetworkServer.localConnections.Count; k++)
+						for (var k = 0; k < QSBNetworkServer.localConnections.Count; k++)
 						{
-							var networkConnection2 = NetworkServer.localConnections[k];
+							var networkConnection2 = QSBNetworkServer.localConnections[k];
 							if (networkConnection2 != null)
 							{
 								if (networkConnection2.isReady)
@@ -840,9 +840,9 @@ namespace QSB
 					}
 					if (initialize)
 					{
-						for (var l = 0; l < NetworkServer.localConnections.Count; l++)
+						for (var l = 0; l < QSBNetworkServer.localConnections.Count; l++)
 						{
-							if (!hashSet.Contains(NetworkServer.localConnections[l]))
+							if (!hashSet.Contains(QSBNetworkServer.localConnections[l]))
 							{
 								OnSetLocalVisibility(false);
 							}
@@ -850,7 +850,7 @@ namespace QSB
 					}
 					if (flag)
 					{
-						m_Observers = new List<NetworkConnection>(hashSet);
+						m_Observers = new List<QSBNetworkConnection>(hashSet);
 						m_ObserverConnections.Clear();
 						for (var m = 0; m < m_Observers.Count; m++)
 						{
@@ -861,7 +861,7 @@ namespace QSB
 			}
 		}
 
-		public bool RemoveClientAuthority(NetworkConnection conn)
+		public bool RemoveClientAuthority(QSBNetworkConnection conn)
 		{
 			bool result;
 			if (!IsServer)
@@ -889,20 +889,18 @@ namespace QSB
 				ClientAuthorityOwner.GetType().GetMethod("RemoveOwnedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(ClientAuthorityOwner, new object[] { this });
 				ClientAuthorityOwner = null;
 				ForceAuthority(true);
-				/*
-				conn.Send(15, new ClientAuthorityMessage
+				conn.Send(15, new QSBClientAuthorityMessage
 				{
 					netId = NetId,
 					authority = false
 				});
-				*/
 				clientAuthorityCallback?.Invoke(conn, this, false);
 				result = true;
 			}
 			return result;
 		}
 
-		public bool AssignClientAuthority(NetworkConnection conn)
+		public bool AssignClientAuthority(QSBNetworkConnection conn)
 		{
 			bool result;
 			if (!IsServer)
@@ -931,13 +929,11 @@ namespace QSB
 				ClientAuthorityOwner.GetType().GetMethod("AddOwnedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(ClientAuthorityOwner, new object[] { this });
 
 				ForceAuthority(false);
-				/*
-				conn.Send(15, new ClientAuthorityMessage
+				conn.Send(15, new QSBClientAuthorityMessage
 				{
 					netId = NetId,
 					authority = true
 				});
-				*/
 				clientAuthorityCallback?.Invoke(conn, this, true);
 				result = true;
 			}
@@ -988,7 +984,7 @@ namespace QSB
 
 		private HashSet<int> m_ObserverConnections;
 
-		private List<NetworkConnection> m_Observers;
+		private List<QSBNetworkConnection> m_Observers;
 		private bool m_Reset = false;
 
 		private static uint s_NextNetworkId = 1U;
@@ -997,6 +993,6 @@ namespace QSB
 
 		public static ClientAuthorityCallback clientAuthorityCallback;
 
-		public delegate void ClientAuthorityCallback(NetworkConnection conn, QSBNetworkIdentity uv, bool authorityState);
+		public delegate void ClientAuthorityCallback(QSBNetworkConnection conn, QSBNetworkIdentity uv, bool authorityState);
 	}
 }

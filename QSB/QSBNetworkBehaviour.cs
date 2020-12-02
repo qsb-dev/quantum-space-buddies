@@ -15,8 +15,8 @@ namespace QSB
 		public bool IsLocalPlayer => MyView.IsLocalPlayer;
 		public bool HasAuthority => MyView.HasAuthority;
 		public NetworkInstanceId NetId => MyView.NetId;
-		public NetworkConnection ConnectionToServer => MyView.ConnectionToServer;
-		public NetworkConnection ConnectionToClient => MyView.ConnectionToClient;
+		public QSBNetworkConnection ConnectionToServer => MyView.ConnectionToServer;
+		public QSBNetworkConnection ConnectionToClient => MyView.ConnectionToClient;
 		public short PlayerControllerId => MyView.PlayerControllerId;
 
 		protected uint SyncVarDirtyBits { get; private set; }
@@ -52,14 +52,14 @@ namespace QSB
 			{
 				Debug.LogWarning("Trying to send command for object without authority.");
 			}
-			else if (ClientScene.readyConnection == null)
+			else if (QSBClientScene.readyConnection == null)
 			{
 				Debug.LogError("Send command attempted with no client running [client=" + ConnectionToServer + "].");
 			}
 			else
 			{
 				writer.FinishMessage();
-				ClientScene.readyConnection.SendWriter(writer, channelId);
+				QSBClientScene.readyConnection.SendWriter(writer, channelId);
 			}
 		}
 
@@ -558,7 +558,7 @@ namespace QSB
 		public virtual void OnStartLocalPlayer() { }
 		public virtual void OnStartAuthority() { }
 		public virtual void OnStopAuthority() { }
-		public virtual bool OnRebuildObservers(HashSet<NetworkConnection> observers, bool initialize) => false;
+		public virtual bool OnRebuildObservers(HashSet<QSBNetworkConnection> observers, bool initialize) => false;
 		public virtual void OnSetLocalVisibility(bool vis) { }
 		public virtual bool OnCheckObserver(NetworkConnection conn) => true;
 		public virtual int GetNetworkChannel() => 0;

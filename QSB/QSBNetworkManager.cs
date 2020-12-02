@@ -115,22 +115,22 @@ namespace QSB
                 WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
             }
 
-            NetworkServer.UnregisterHandler(40);
-            NetworkServer.UnregisterHandler(41);
-            NetworkServer.UnregisterHandler(42);
-            NetworkServer.RegisterHandler(40, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
-            NetworkServer.RegisterHandler(41, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
-            NetworkServer.RegisterHandler(42, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
+            QSBNetworkServer.UnregisterHandler(40);
+            QSBNetworkServer.UnregisterHandler(41);
+            QSBNetworkServer.UnregisterHandler(42);
+            QSBNetworkServer.RegisterHandler(40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
+            QSBNetworkServer.RegisterHandler(41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
+            QSBNetworkServer.RegisterHandler(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
         }
 
-        public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
+        public override void OnServerAddPlayer(QSBNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
         {
             DebugLog.DebugWrite("OnServerAddPlayer", MessageType.Info);
             base.OnServerAddPlayer(connection, playerControllerId);
 
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
+            QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
+            QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
+            QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
         }
 
         public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
@@ -153,11 +153,11 @@ namespace QSB
                 QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
                 singleton.client.UnregisterHandler(40);
                 singleton.client.UnregisterHandler(41);
-                singleton.client.RegisterHandlerSafe(40, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
-                singleton.client.RegisterHandlerSafe(41, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
+                singleton.client.RegisterHandlerSafe(40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
+                singleton.client.RegisterHandlerSafe(41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
             }
             singleton.client.UnregisterHandler(42);
-            singleton.client.RegisterHandlerSafe(42, new NetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
+            singleton.client.RegisterHandlerSafe(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
 
             QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
@@ -201,11 +201,11 @@ namespace QSB
             _lobby.CanEditName = true;
         }
 
-        public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
+        public override void OnServerDisconnect(QSBNetworkConnection connection) // Called on the server when any client disconnects
         {
             DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
             var player = connection.GetPlayer();
-            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
+            var netIds = connection.ClientOwnedObjects.Select(x => x.Value).ToArray();
             GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, player.PlayerId, netIds);
 
             foreach (var item in WorldRegistry.OrbSyncList)
@@ -230,7 +230,7 @@ namespace QSB
             QSBEventManager.Reset();
             DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
             QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
-            NetworkServer.connections.ToList().ForEach(CleanupConnection);
+            QSBNetworkServer.connections.ToList().ForEach(CleanupConnection);
 
             WorldRegistry.RemoveObjects<QSBOrbSlot>();
             WorldRegistry.RemoveObjects<QSBElevator>();
@@ -240,13 +240,13 @@ namespace QSB
             base.OnStopServer();
         }
 
-        private void CleanupConnection(NetworkConnection connection)
+        private void CleanupConnection(QSBNetworkConnection connection)
         {
             var player = connection.GetPlayer();
             DebugLog.ToConsole($"{player.Name} disconnected.", MessageType.Info);
             QSBPlayerManager.RemovePlayer(player.PlayerId);
 
-            var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
+            var netIds = connection.ClientOwnedObjects?.Select(x => x.Value).ToList();
             netIds.ForEach(CleanupNetworkBehaviour);
         }
 

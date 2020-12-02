@@ -72,9 +72,9 @@ namespace QSB.Animation
             WriteParameters(m_ParameterWriter, false);
             animationMessage.parameters = m_ParameterWriter.ToArray();
 
-            if (HasAuthority || ClientScene.readyConnection != null)
+            if (HasAuthority || QSBClientScene.readyConnection != null)
             {
-                ClientScene.readyConnection.Send(40, animationMessage);
+                QSBClientScene.readyConnection.Send(40, animationMessage);
             }
             else
             {
@@ -130,9 +130,9 @@ namespace QSB.Animation
             m_ParameterWriter.SeekZero();
             WriteParameters(m_ParameterWriter, true);
             parametersMessage.parameters = m_ParameterWriter.ToArray();
-            if (HasAuthority && ClientScene.readyConnection != null)
+            if (HasAuthority && QSBClientScene.readyConnection != null)
             {
-                ClientScene.readyConnection.Send(41, parametersMessage);
+                QSBClientScene.readyConnection.Send(41, parametersMessage);
             }
             else
             {
@@ -274,7 +274,7 @@ namespace QSB.Animation
                 {
                     return;
                 }
-                var readyConnection = ClientScene.readyConnection;
+                var readyConnection = QSBClientScene.readyConnection;
                 if (readyConnection == null)
                 {
                     return;
@@ -291,7 +291,7 @@ namespace QSB.Animation
             }
         }
 
-        internal static void OnAnimationServerMessage(NetworkMessage netMsg)
+        internal static void OnAnimationServerMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(AnimationMessage);
             var localObject = NetworkServer.FindLocalObject(AnimationMessage.netId);
@@ -305,7 +305,7 @@ namespace QSB.Animation
             NetworkServer.SendToReady(localObject, 40, AnimationMessage);
         }
 
-        internal static void OnAnimationParametersServerMessage(NetworkMessage netMsg)
+        internal static void OnAnimationParametersServerMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(ParametersMessage);
             var localObject = NetworkServer.FindLocalObject(ParametersMessage.netId);
@@ -319,7 +319,7 @@ namespace QSB.Animation
             NetworkServer.SendToReady(localObject, 41, ParametersMessage);
         }
 
-        internal static void OnAnimationTriggerServerMessage(NetworkMessage netMsg)
+        internal static void OnAnimationTriggerServerMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(TriggersMessage);
             var localObject = NetworkServer.FindLocalObject(TriggersMessage.netId);
@@ -332,10 +332,10 @@ namespace QSB.Animation
             NetworkServer.SendToReady(localObject, 42, TriggersMessage);
         }
 
-        internal static void OnAnimationClientMessage(NetworkMessage netMsg)
+        internal static void OnAnimationClientMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(AnimationMessage);
-            var localObject = ClientScene.FindLocalObject(AnimationMessage.netId);
+            var localObject = QSBClientScene.FindLocalObject(AnimationMessage.netId);
             if (localObject == null)
                 return;
             var component = localObject.GetComponent<QSBNetworkAnimator>();
@@ -345,10 +345,10 @@ namespace QSB.Animation
             component.HandleAnimMsg(AnimationMessage, reader);
         }
 
-        internal static void OnAnimationParametersClientMessage(NetworkMessage netMsg)
+        internal static void OnAnimationParametersClientMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(ParametersMessage);
-            var localObject = ClientScene.FindLocalObject(ParametersMessage.netId);
+            var localObject = QSBClientScene.FindLocalObject(ParametersMessage.netId);
             if (localObject == null)
                 return;
             var component = localObject.GetComponent<QSBNetworkAnimator>();
@@ -358,10 +358,10 @@ namespace QSB.Animation
             component.HandleAnimParamsMsg(ParametersMessage, reader);
         }
 
-        internal static void OnAnimationTriggerClientMessage(NetworkMessage netMsg)
+        internal static void OnAnimationTriggerClientMessage(QSBNetworkMessage netMsg)
         {
             netMsg.ReadMessage(TriggersMessage);
-            var localObject = ClientScene.FindLocalObject(TriggersMessage.netId);
+            var localObject = QSBClientScene.FindLocalObject(TriggersMessage.netId);
             if (localObject == null)
                 return;
             var component = localObject.GetComponent<QSBNetworkAnimator>();
