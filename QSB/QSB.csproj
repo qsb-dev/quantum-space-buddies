@@ -188,6 +188,7 @@
     <Compile Include="QuantumUNET\QSBNetworkScene.cs" />
     <Compile Include="QuantumUNET\QSBNetworkServer.cs" />
     <Compile Include="QuantumUNET\QSBNetworkServerSimple.cs" />
+    <Compile Include="QuantumUNET\QSBNetworkTransform.cs" />
     <Compile Include="QuantumUNET\QSBObjectDestroyMessage.cs" />
     <Compile Include="QuantumUNET\QSBObjectSpawnFinishedMessage.cs" />
     <Compile Include="QuantumUNET\QSBObjectSpawnMessage.cs" />

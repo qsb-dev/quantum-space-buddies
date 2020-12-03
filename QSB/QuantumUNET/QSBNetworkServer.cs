@@ -235,7 +235,7 @@ namespace QSB.QuantumUNET
 		{
 			m_SimpleServerSimple.RegisterHandlerSafe((short)35, new QSBNetworkMessageDelegate(OnClientReadyMessage));
 			m_SimpleServerSimple.RegisterHandlerSafe((short)5, new QSBNetworkMessageDelegate(OnCommandMessage));
-			//m_SimpleServerSimple.RegisterHandlerSafe((short)6, new QSBNetworkMessageDelegate(NetworkTransform.HandleTransform));
+			m_SimpleServerSimple.RegisterHandlerSafe((short)6, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));
 			//m_SimpleServerSimple.RegisterHandlerSafe((short)16, new QSBNetworkMessageDelegate(NetworkTransformChild.HandleChildTransform));
 			m_SimpleServerSimple.RegisterHandlerSafe((short)38, new QSBNetworkMessageDelegate(OnRemovePlayerMessage));
 			m_SimpleServerSimple.RegisterHandlerSafe((short)40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
