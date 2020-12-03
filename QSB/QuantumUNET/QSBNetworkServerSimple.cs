@@ -320,14 +320,18 @@ namespace QSB.QuantumUNET
 						case NetworkEventType.DataEvent:
 							this.HandleData(connectionId, channelId, receivedSize, b);
 							break;
+
 						case NetworkEventType.ConnectEvent:
 							this.HandleConnect(connectionId, b);
 							break;
+
 						case NetworkEventType.DisconnectEvent:
 							this.HandleDisconnect(connectionId, b);
 							break;
+
 						case NetworkEventType.Nothing:
 							break;
+
 						default:
 							if (LogFilter.logError)
 							{

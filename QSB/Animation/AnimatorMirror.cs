@@ -70,6 +70,7 @@ namespace QSB.Animation
 						}
 						_floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
 						break;
+
 					case AnimatorControllerParameterType.Bool:
 						_to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
 						break;

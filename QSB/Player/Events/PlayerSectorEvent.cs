@@ -48,6 +48,5 @@ namespace QSB.Player.Events
 			QSB.Helper.Events.Unity.RunWhen(() => transformSync?.SyncedTransform != null,
 				() => transformSync?.SetReferenceSector(sector));
 		}
-
 	}
 }

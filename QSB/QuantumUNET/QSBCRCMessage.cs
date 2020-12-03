@@ -2,7 +2,7 @@
 
 namespace QSB.QuantumUNET
 {
-	class QSBCRCMessage : MessageBase
+	internal class QSBCRCMessage : MessageBase
 	{
 		public override void Deserialize(NetworkReader reader)
 		{

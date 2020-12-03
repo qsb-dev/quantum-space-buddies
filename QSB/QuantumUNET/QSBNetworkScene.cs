@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	class QSBNetworkScene
+	internal class QSBNetworkScene
 	{
 		private Dictionary<NetworkInstanceId, QSBNetworkIdentity> m_LocalObjects = new Dictionary<NetworkInstanceId, QSBNetworkIdentity>();
 

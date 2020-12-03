@@ -86,8 +86,6 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-
-
 		public ReadOnlyCollection<QSBNetworkConnection> Observers
 		{
 			get
@@ -975,6 +973,7 @@ namespace QSB.QuantumUNET
 
 		[SerializeField]
 		private bool m_LocalPlayerAuthority;
+
 		private bool m_IsServer;
 		private QSBNetworkBehaviour[] m_NetworkBehaviours;
 

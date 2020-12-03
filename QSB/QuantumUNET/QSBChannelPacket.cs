@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	struct QSBChannelPacket
+	internal struct QSBChannelPacket
 	{
 		public QSBChannelPacket(int packetSize, bool isReliable)
 		{

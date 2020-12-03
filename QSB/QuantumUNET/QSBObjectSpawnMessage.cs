@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	class QSBObjectSpawnMessage : MessageBase
+	internal class QSBObjectSpawnMessage : MessageBase
 	{
 		public override void Deserialize(NetworkReader reader)
 		{

@@ -1,6 +1,6 @@
 ﻿namespace QSB.QuantumUNET
 {
-	struct QSBCRCMessageEntry
+	internal struct QSBCRCMessageEntry
 	{
 		public string name;
 

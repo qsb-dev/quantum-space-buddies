@@ -17,6 +17,7 @@ namespace QSB.TimeSync
 		private const float MinFastForwardSpeed = 2f;
 
 		private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
+
 		private State _state = State.NotLoaded;
 
 		private float _sendTimer;

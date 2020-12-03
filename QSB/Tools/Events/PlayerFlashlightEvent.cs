@@ -21,6 +21,7 @@ namespace QSB.Tools.Events
 		}
 
 		private void HandleTurnOn() => SendEvent(CreateMessage(true));
+
 		private void HandleTurnOff() => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage

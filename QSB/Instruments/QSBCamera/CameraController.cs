@@ -2,7 +2,7 @@
 
 namespace QSB.Instruments.QSBCamera
 {
-	class CameraController : MonoBehaviour
+	internal class CameraController : MonoBehaviour
 	{
 		private float _degreesX;
 		private float _degreesY;
@@ -11,12 +11,13 @@ namespace QSB.Instruments.QSBCamera
 
 		// How far along the ray to move the camera. Avoids clipping into the walls.
 		private const float PercentToMove = 0.80f;
+
 		// Maximum distance for camera clipping
 		private const float RayLength = 5f;
 
 		public GameObject CameraObject;
 
-		void FixedUpdate()
+		private void FixedUpdate()
 		{
 			if (CameraManager.Instance.Mode != CameraMode.ThirdPerson)
 			{

@@ -29,6 +29,7 @@ namespace QSB.Animation
 
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType = AnimationType.PlayerUnsuited;
+
 		public Animator Animator
 		{
 			get { return _bodyAnim; }
@@ -141,7 +142,9 @@ namespace QSB.Animation
 		}
 
 		private void OnJump() => _netAnim.SetTrigger("Jump");
+
 		private void OnBecomeGrounded() => _netAnim.SetTrigger("Grounded");
+
 		private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
 
 		public void SendCrouch(float value = 0)
@@ -199,23 +202,29 @@ namespace QSB.Animation
 					_unsuitedGraphics?.SetActive(false);
 					_suitedGraphics?.SetActive(true);
 					break;
+
 				case AnimationType.PlayerUnsuited:
 					controller = _unsuitedAnimController;
 					_unsuitedGraphics?.SetActive(true);
 					_suitedGraphics?.SetActive(false);
 					break;
+
 				case AnimationType.Chert:
 					controller = _chertController;
 					break;
+
 				case AnimationType.Esker:
 					controller = _eskerController;
 					break;
+
 				case AnimationType.Feldspar:
 					controller = _feldsparController;
 					break;
+
 				case AnimationType.Gabbro:
 					controller = _gabbroController;
 					break;
+
 				case AnimationType.Riebeck:
 					controller = _riebeckController;
 					break;

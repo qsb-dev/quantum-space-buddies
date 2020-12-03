@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.QuantumUNET
 {
-	class QSBNetworkMessageHandlers
+	internal class QSBNetworkMessageHandlers
 	{
 		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{

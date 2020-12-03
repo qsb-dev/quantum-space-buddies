@@ -2,7 +2,7 @@
 
 namespace QSB.Animation.Events
 {
-	class QSBAnimationParametersMessage : MessageBase
+	internal class QSBAnimationParametersMessage : MessageBase
 	{
 		public NetworkInstanceId netId;
 		public byte[] parameters;

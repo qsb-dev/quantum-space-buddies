@@ -30,6 +30,7 @@ namespace QSB
 		public static QSBNetworkManager Instance { get; private set; }
 
 		public event Action OnNetworkManagerReady;
+
 		public bool IsReady { get; private set; }
 
 		private QSBNetworkLobby _lobby;

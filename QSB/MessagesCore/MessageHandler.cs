@@ -12,6 +12,7 @@ namespace QSB.Messaging
 	public class MessageHandler<T> where T : MessageBase, new()
 	{
 		public event Action<T> OnClientReceiveMessage;
+
 		public event Action<T> OnServerReceiveMessage;
 
 		private readonly EventType _eventType;
@@ -70,6 +71,5 @@ namespace QSB.Messaging
 			var message = netMsg.ReadMessage<T>();
 			OnServerReceiveMessage?.Invoke(message);
 		}
-
 	}
 }

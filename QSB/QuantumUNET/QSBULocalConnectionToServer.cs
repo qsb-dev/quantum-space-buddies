@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	class QSBULocalConnectionToServer : QSBNetworkConnection
+	internal class QSBULocalConnectionToServer : QSBNetworkConnection
 	{
 		public QSBULocalConnectionToServer(QSBNetworkServer localServer)
 		{

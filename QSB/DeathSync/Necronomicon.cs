@@ -6,7 +6,6 @@ namespace QSB.DeathSync
 {
 	public static class Necronomicon
 	{
-
 		private static readonly Dictionary<DeathType, string[]> DeathDictionary = new Dictionary<DeathType, string[]>
 		{
 			{ DeathType.Default, new[]
@@ -100,6 +99,5 @@ namespace QSB.DeathSync
 		{
 			return DeathDictionary[deathType].OrderBy(x => Guid.NewGuid()).First();
 		}
-
 	}
 }

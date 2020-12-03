@@ -13,7 +13,7 @@ namespace QSB.Animation
 			_lookBase = lookBase;
 		}
 
-		void LateUpdate()
+		private void LateUpdate()
 		{
 			var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);
 			// Get the camera's local rotation with respect to the player body

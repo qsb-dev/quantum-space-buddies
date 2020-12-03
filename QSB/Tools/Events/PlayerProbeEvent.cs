@@ -21,6 +21,7 @@ namespace QSB.Tools.Events
 		}
 
 		private void HandleLaunch(SurveyorProbe probe) => SendEvent(CreateMessage(true));
+
 		private void HandleRetrieve(SurveyorProbe probe) => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage

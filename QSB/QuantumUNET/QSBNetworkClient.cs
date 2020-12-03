@@ -802,10 +802,12 @@ namespace QSB.QuantumUNET
 					case ConnectState.Resolving:
 					case ConnectState.Disconnected:
 						return;
+
 					case ConnectState.Resolved:
 						m_AsyncConnect = ConnectState.Connecting;
 						ContinueConnect();
 						return;
+
 					case ConnectState.Failed:
 						GenerateConnectError(11);
 						m_AsyncConnect = ConnectState.Disconnected;
@@ -853,6 +855,7 @@ namespace QSB.QuantumUNET
 							m_MsgReader.SeekZero();
 							m_Connection.TransportReceive(m_MsgBuffer, numBytes, channelId);
 							break;
+
 						case NetworkEventType.ConnectEvent:
 							if (LogFilter.logDebug)
 							{
@@ -865,6 +868,7 @@ namespace QSB.QuantumUNET
 							m_AsyncConnect = ConnectState.Connected;
 							m_Connection.InvokeHandlerNoData(32);
 							break;
+
 						case NetworkEventType.DisconnectEvent:
 							if (LogFilter.logDebug)
 							{
@@ -884,8 +888,10 @@ namespace QSB.QuantumUNET
 								m_Connection.InvokeHandlerNoData(33);
 							}
 							break;
+
 						case NetworkEventType.Nothing:
 							break;
+
 						default:
 							if (LogFilter.logError)
 							{

@@ -2,7 +2,7 @@
 
 namespace QSB.QuantumUNET
 {
-	class QSBObjectDestroyMessage : MessageBase
+	internal class QSBObjectDestroyMessage : MessageBase
 	{
 		public override void Deserialize(NetworkReader reader)
 		{

@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	class QSBLocalClient : QSBNetworkClient
+	internal class QSBLocalClient : QSBNetworkClient
 	{
 		public override void Disconnect()
 		{

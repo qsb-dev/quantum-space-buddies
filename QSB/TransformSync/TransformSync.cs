@@ -9,7 +9,9 @@ namespace QSB.TransformSync
 	public abstract class TransformSync : PlayerSyncObject
 	{
 		public abstract bool IsReady { get; }
+
 		protected abstract Transform InitLocalTransform();
+
 		protected abstract Transform InitRemoteTransform();
 
 		public Transform SyncedTransform { get; private set; }
@@ -75,7 +77,7 @@ namespace QSB.TransformSync
 
 		protected virtual void UpdateTransform()
 		{
-			if (HasAuthority) // If this script is attached to the client's own body on the client's side.	
+			if (HasAuthority) // If this script is attached to the client's own body on the client's side.
 			{
 				if (ReferenceSector == null || ReferenceSector.Sector == null)
 				{
@@ -87,7 +89,7 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			// If this script is attached to any other body, eg the representations of other players	
+			// If this script is attached to any other body, eg the representations of other players
 			if (SyncedTransform.position == Vector3.zero)
 			{
 				Hide();
@@ -131,6 +133,5 @@ namespace QSB.TransformSync
 				_isVisible = false;
 			}
 		}
-
 	}
 }

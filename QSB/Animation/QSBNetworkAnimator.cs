@@ -7,7 +7,7 @@ namespace QSB.Animation
 {
 	// Cleaned up unity code. UNET is so broken I gave up and fixed it myself.
 
-	class QSBNetworkAnimator : QSBNetworkBehaviour
+	internal class QSBNetworkAnimator : QSBNetworkBehaviour
 	{
 		private static QSBAnimationMessage AnimationMessage = new QSBAnimationMessage();
 		private static QSBAnimationParametersMessage ParametersMessage = new QSBAnimationParametersMessage();
@@ -182,9 +182,11 @@ namespace QSB.Animation
 						case AnimatorControllerParameterType.Int:
 							writer.WritePackedUInt32((uint)m_Animator.GetInteger(parameter.nameHash));
 							break;
+
 						case AnimatorControllerParameterType.Float:
 							writer.Write(m_Animator.GetFloat(parameter.nameHash));
 							break;
+
 						case AnimatorControllerParameterType.Bool:
 							writer.Write(m_Animator.GetBool(parameter.nameHash));
 							break;
@@ -210,10 +212,12 @@ namespace QSB.Animation
 							var num = (int)reader.ReadPackedUInt32();
 							m_Animator.SetInteger(parameter.nameHash, num);
 							break;
+
 						case AnimatorControllerParameterType.Float:
 							var single = reader.ReadSingle();
 							m_Animator.SetFloat(parameter.nameHash, single);
 							break;
+
 						case AnimatorControllerParameterType.Bool:
 							var flag = reader.ReadBoolean();
 							m_Animator.SetBool(parameter.nameHash, flag);

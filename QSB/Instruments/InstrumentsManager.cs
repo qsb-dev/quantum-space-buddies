@@ -118,6 +118,7 @@ namespace QSB.Instruments
 				case AnimationType.Chert:
 					ChertDrum.SetActive(true);
 					break;
+
 				case AnimationType.PlayerSuited:
 				case AnimationType.PlayerUnsuited:
 					ChertDrum.SetActive(false);

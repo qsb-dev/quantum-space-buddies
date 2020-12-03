@@ -21,6 +21,7 @@ namespace QSB.Tools.Events
 		}
 
 		private void HandleEquip() => SendEvent(CreateMessage(true));
+
 		private void HandleUnequip() => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage

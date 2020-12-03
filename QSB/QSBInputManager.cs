@@ -9,10 +9,15 @@ namespace QSB
 		public static QSBInputManager Instance;
 
 		public static event InputEvent ChertTaunt;
+
 		public static event InputEvent EskerTaunt;
+
 		public static event InputEvent RiebeckTaunt;
+
 		public static event InputEvent GabbroTaunt;
+
 		public static event InputEvent FeldsparTaunt;
+
 		public static event InputEvent ExitTaunt;
 
 		public void Awake() => Instance = this;

@@ -96,7 +96,7 @@ namespace QSB.Player
 				syncObject.PreviousPlayerId = uint.MaxValue;
 				return uint.MaxValue;
 			}
-			// If the player list count is not the same as the count of the same type syncobject (eg. 3 players and 4 PlayerTransformSyncs) 
+			// If the player list count is not the same as the count of the same type syncobject (eg. 3 players and 4 PlayerTransformSyncs)
 			// and the highest ID below the syncobject's id is the same as the highest player id.
 			if (PlayerList.Count != PlayerSyncObjects.Count(x => x.GetType() == syncObject.GetType()) && lowerBound == playerIds.Max())
 			{

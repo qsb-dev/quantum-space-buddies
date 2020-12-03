@@ -48,9 +48,11 @@ namespace QSB
 				case LogType.Assert:
 					DebugLog.DebugWrite($"Assert - {condition}", MessageType.Message);
 					break;
+
 				case LogType.Log:
 					DebugLog.DebugWrite($"Log - {condition}", MessageType.Message);
 					break;
+
 				case LogType.Warning:
 					DebugLog.DebugWrite($"Warning - {condition}", MessageType.Warning);
 					break;
@@ -69,8 +71,8 @@ namespace QSB
 
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
-			// Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
-			// want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
+			// Turns out these are very finicky about what order they go. QSBNetworkManager seems to
+			// want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being
 			// null (even though it isn't...)
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QSBNetworkManagerHUD>();
@@ -87,7 +89,7 @@ namespace QSB
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 		}
 
-		void Update()
+		private void Update()
 		{
 			QSBNetworkIdentity.UNetStaticUpdate();
 		}

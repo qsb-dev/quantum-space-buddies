@@ -30,9 +30,11 @@ namespace QSB.ConversationSync.Events
 					var translated = TextTranslation.Translate(message.Message).Trim();
 					ConversationManager.Instance.DisplayCharacterConversationBox(message.ObjectId, translated);
 					break;
+
 				case ConversationType.Player:
 					ConversationManager.Instance.DisplayPlayerConversationBox((uint)message.ObjectId, message.Message);
 					break;
+
 				case ConversationType.CloseCharacter:
 					if (message.ObjectId == -1)
 					{
@@ -41,6 +43,7 @@ namespace QSB.ConversationSync.Events
 					var tree = WorldRegistry.OldDialogueTrees[message.ObjectId];
 					UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;
+
 				case ConversationType.ClosePlayer:
 					UnityEngine.Object.Destroy(QSBPlayerManager.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
 					break;

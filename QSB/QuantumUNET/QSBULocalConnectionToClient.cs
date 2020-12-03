@@ -2,7 +2,7 @@
 
 namespace QSB.QuantumUNET
 {
-	class QSBULocalConnectionToClient : QSBNetworkConnection
+	internal class QSBULocalConnectionToClient : QSBNetworkConnection
 	{
 		public QSBULocalConnectionToClient(QSBLocalClient localClient)
 		{

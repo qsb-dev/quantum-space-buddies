@@ -16,10 +16,12 @@ namespace QSB.Player
 
 		// Body Objects
 		public GameObject Camera { get; set; }
+
 		public GameObject Body { get; set; }
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
+
 		public QSBProbe Probe { get; set; }
 		public QSBFlashlight FlashLight => Camera?.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
@@ -28,10 +30,12 @@ namespace QSB.Player
 
 		// Conversation
 		public int CurrentDialogueID { get; set; }
+
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
+
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
 

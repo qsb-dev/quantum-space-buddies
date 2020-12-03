@@ -54,6 +54,5 @@ namespace QSB.Player
 			Destroy(_markerTarget.gameObject);
 			Destroy(this);
 		}
-
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.QuantumUNET
 {
-	class QSBNetBuffer
+	internal class QSBNetBuffer
 	{
 		public QSBNetBuffer()
 		{

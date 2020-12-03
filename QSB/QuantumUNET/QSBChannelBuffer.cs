@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	class QSBChannelBuffer : IDisposable
+	internal class QSBChannelBuffer : IDisposable
 	{
 		public QSBChannelBuffer(QSBNetworkConnection conn, int bufferSize, byte cid, bool isReliable, bool isSequenced)
 		{
