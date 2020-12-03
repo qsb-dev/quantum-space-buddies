@@ -976,10 +976,10 @@ namespace QSB.QuantumUNET
 				NetworkReader reader = new NetworkReader(buffer);
 				handler(new QSBNetworkMessage
 				{
-					msgType = 34,
-					reader = reader,
-					conn = m_Connection,
-					channelId = 0
+					MsgType = 34,
+					Reader = reader,
+					Connection = m_Connection,
+					ChannelId = 0
 				});
 			}
 		}

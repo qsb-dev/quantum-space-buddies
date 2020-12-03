@@ -16,7 +16,6 @@ namespace QSB.QuantumUNET
 	{
 		private QSBNetworkServer()
 		{
-			DebugLog.DebugWrite("ctor");
 			NetworkTransport.Init();
 			m_RemoveList = new HashSet<NetworkInstanceId>();
 			m_ExternalConnections = new HashSet<int>();
@@ -601,7 +600,7 @@ namespace QSB.QuantumUNET
 				{
 					for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
 					{
-						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].gameObject == player)
+						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].Gameobject == player)
 						{
 							networkConnection.SendBytes(buffer, numBytes, channelId);
 							break;
@@ -798,7 +797,7 @@ namespace QSB.QuantumUNET
 			conn.InvokeHandlerNoData(33);
 			for (var i = 0; i < conn.PlayerControllers.Count; i++)
 			{
-				if (conn.PlayerControllers[i].gameObject != null)
+				if (conn.PlayerControllers[i].Gameobject != null)
 				{
 					if (LogFilter.logWarn)
 					{
@@ -938,7 +937,7 @@ namespace QSB.QuantumUNET
 				{
 					for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
 					{
-						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].gameObject == player)
+						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].Gameobject == player)
 						{
 							networkConnection.Send(msgType, msg);
 							return;
@@ -1025,7 +1024,7 @@ namespace QSB.QuantumUNET
 					GameObject x = null;
 					if (conn.GetPlayerController(playerControllerId, out playerController))
 					{
-						x = playerController.gameObject;
+						x = playerController.Gameobject;
 					}
 					if (x != null)
 					{
@@ -1039,7 +1038,7 @@ namespace QSB.QuantumUNET
 					{
 						var playerController2 = new QSBPlayerController(playerGameObject, playerControllerId);
 						conn.SetPlayerController(playerController2);
-						networkIdentity.SetConnectionToClient(conn, playerController2.playerControllerId);
+						networkIdentity.SetConnectionToClient(conn, playerController2.PlayerControllerId);
 						SetClientReady(conn);
 						if (SetupLocalPlayerForConnection(conn, networkIdentity, playerController2))
 						{
@@ -1126,7 +1125,7 @@ namespace QSB.QuantumUNET
 				ulocalConnectionToClient.localClient.AddLocalPlayer(newPlayerController);
 				uv.SetClientOwner(conn);
 				uv.ForceAuthority(true);
-				uv.SetLocalPlayer(newPlayerController.playerControllerId);
+				uv.SetLocalPlayer(newPlayerController.PlayerControllerId);
 				result = true;
 			}
 			else
@@ -1144,8 +1143,8 @@ namespace QSB.QuantumUNET
 			}
 			conn.Send(4, new QSBOwnerMessage
 			{
-				netId = uv.NetId,
-				playerControllerId = uv.PlayerControllerId
+				NetId = uv.NetId,
+				PlayerControllerId = uv.PlayerControllerId
 			});
 		}
 
@@ -1171,12 +1170,12 @@ namespace QSB.QuantumUNET
 				QSBPlayerController playerController;
 				if (conn.GetPlayerController(playerControllerId, out playerController))
 				{
-					playerController.unetView.SetNotLocalPlayer();
-					playerController.unetView.ClearClientOwner();
+					playerController.UnetView.SetNotLocalPlayer();
+					playerController.UnetView.ClearClientOwner();
 				}
 				var playerController2 = new QSBPlayerController(playerGameObject, playerControllerId);
 				conn.SetPlayerController(playerController2);
-				networkIdentity.SetConnectionToClient(conn, playerController2.playerControllerId);
+				networkIdentity.SetConnectionToClient(conn, playerController2.PlayerControllerId);
 				Debug.Log("NetworkServer ReplacePlayer setup local");
 				if (SetupLocalPlayerForConnection(conn, networkIdentity, playerController2))
 				{
@@ -1283,7 +1282,7 @@ namespace QSB.QuantumUNET
 						}));
 					}
 					var objectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage();
-					objectSpawnFinishedMessage.state = 0U;
+					objectSpawnFinishedMessage.State = 0U;
 					conn.Send(12, objectSpawnFinishedMessage);
 					foreach (var networkIdentity2 in objects.Values)
 					{
@@ -1313,7 +1312,7 @@ namespace QSB.QuantumUNET
 							}
 						}
 					}
-					objectSpawnFinishedMessage.state = 1U;
+					objectSpawnFinishedMessage.State = 1U;
 					conn.Send(12, objectSpawnFinishedMessage);
 				}
 			}
@@ -1331,7 +1330,7 @@ namespace QSB.QuantumUNET
 		{
 			conn.Send(13, new QSBObjectDestroyMessage
 			{
-				netId = uv.NetId
+				NetId = uv.NetId
 			});
 		}
 
@@ -1371,31 +1370,31 @@ namespace QSB.QuantumUNET
 		{
 			if (LogFilter.logDebug)
 			{
-				Debug.Log("Default handler for ready message from " + netMsg.conn);
+				Debug.Log("Default handler for ready message from " + netMsg.Connection);
 			}
-			SetClientReady(netMsg.conn);
+			SetClientReady(netMsg.Connection);
 		}
 
 		private static void OnRemovePlayerMessage(QSBNetworkMessage netMsg)
 		{
 			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
 			QSBPlayerController playerController = null;
-			netMsg.conn.GetPlayerController(s_RemovePlayerMessage.playerControllerId, out playerController);
+			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out playerController);
 			if (playerController != null)
 			{
-				netMsg.conn.RemovePlayerController(s_RemovePlayerMessage.playerControllerId);
-				Destroy(playerController.gameObject);
+				netMsg.Connection.RemovePlayerController(s_RemovePlayerMessage.PlayerControllerId);
+				Destroy(playerController.Gameobject);
 			}
 			else if (LogFilter.logError)
 			{
-				Debug.LogError("Received remove player message but could not find the player ID: " + s_RemovePlayerMessage.playerControllerId);
+				Debug.LogError("Received remove player message but could not find the player ID: " + s_RemovePlayerMessage.PlayerControllerId);
 			}
 		}
 
 		private static void OnCommandMessage(QSBNetworkMessage netMsg)
 		{
-			var cmdHash = (int)netMsg.reader.ReadPackedUInt32();
-			var networkInstanceId = netMsg.reader.ReadNetworkId();
+			var cmdHash = (int)netMsg.Reader.ReadPackedUInt32();
+			var networkInstanceId = netMsg.Reader.ReadNetworkId();
 			var gameObject = FindLocalObject(networkInstanceId);
 			if (gameObject == null)
 			{
@@ -1417,10 +1416,10 @@ namespace QSB.QuantumUNET
 				else
 				{
 					var flag = false;
-					for (var i = 0; i < netMsg.conn.PlayerControllers.Count; i++)
+					for (var i = 0; i < netMsg.Connection.PlayerControllers.Count; i++)
 					{
-						var playerController = netMsg.conn.PlayerControllers[i];
-						if (playerController.gameObject != null && playerController.gameObject.GetComponent<QSBNetworkIdentity>().NetId == component.NetId)
+						var playerController = netMsg.Connection.PlayerControllers[i];
+						if (playerController.Gameobject != null && playerController.Gameobject.GetComponent<QSBNetworkIdentity>().NetId == component.NetId)
 						{
 							flag = true;
 							break;
@@ -1428,7 +1427,7 @@ namespace QSB.QuantumUNET
 					}
 					if (!flag)
 					{
-						if (component.ClientAuthorityOwner != netMsg.conn)
+						if (component.ClientAuthorityOwner != netMsg.Connection)
 						{
 							if (LogFilter.logWarn)
 							{
@@ -1442,9 +1441,9 @@ namespace QSB.QuantumUNET
 						"OnCommandMessage for netId=",
 						networkInstanceId,
 						" conn=",
-						netMsg.conn
+						netMsg.Connection
 					}));
-					component.HandleCommand(cmdHash, netMsg.reader);
+					component.HandleCommand(cmdHash, netMsg.Reader);
 				}
 			}
 		}
@@ -1488,15 +1487,15 @@ namespace QSB.QuantumUNET
 				if (uv.SceneId.IsEmpty())
 				{
 					var objectSpawnMessage = new QSBObjectSpawnMessage();
-					objectSpawnMessage.netId = uv.NetId;
+					objectSpawnMessage.NetId = uv.NetId;
 					objectSpawnMessage.assetId = uv.AssetId;
-					objectSpawnMessage.position = uv.transform.position;
-					objectSpawnMessage.rotation = uv.transform.rotation;
+					objectSpawnMessage.Position = uv.transform.position;
+					objectSpawnMessage.Rotation = uv.transform.rotation;
 					var networkWriter = new NetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter);
 					if (networkWriter.Position > 0)
 					{
-						objectSpawnMessage.payload = networkWriter.ToArray();
+						objectSpawnMessage.Payload = networkWriter.ToArray();
 					}
 					if (conn != null)
 					{
@@ -1510,14 +1509,14 @@ namespace QSB.QuantumUNET
 				else
 				{
 					var objectSpawnSceneMessage = new QSBObjectSpawnSceneMessage();
-					objectSpawnSceneMessage.netId = uv.NetId;
-					objectSpawnSceneMessage.sceneId = uv.SceneId;
-					objectSpawnSceneMessage.position = uv.transform.position;
+					objectSpawnSceneMessage.NetId = uv.NetId;
+					objectSpawnSceneMessage.SceneId = uv.SceneId;
+					objectSpawnSceneMessage.Position = uv.transform.position;
 					var networkWriter2 = new NetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter2);
 					if (networkWriter2.Position > 0)
 					{
-						objectSpawnSceneMessage.payload = networkWriter2.ToArray();
+						objectSpawnSceneMessage.Payload = networkWriter2.ToArray();
 					}
 					if (conn != null)
 					{
@@ -1559,11 +1558,11 @@ namespace QSB.QuantumUNET
 					var playerController = conn.PlayerControllers[i];
 					if (playerController.IsValid)
 					{
-						if (!(playerController.unetView == null))
+						if (!(playerController.UnetView == null))
 						{
-							DestroyObject(playerController.unetView, true);
+							DestroyObject(playerController.UnetView, true);
 						}
-						playerController.gameObject = null;
+						playerController.Gameobject = null;
 					}
 				}
 				conn.PlayerControllers.Clear();
@@ -1616,13 +1615,13 @@ namespace QSB.QuantumUNET
 				uv.ClientAuthorityOwner.RemoveOwnedObject(uv);
 			}
 			var objectDestroyMessage = new QSBObjectDestroyMessage();
-			objectDestroyMessage.netId = uv.NetId;
+			objectDestroyMessage.NetId = uv.NetId;
 			SendToObservers(uv.gameObject, 1, objectDestroyMessage);
 			uv.ClearObservers();
 			if (QSBNetworkClient.active && instance.m_LocalClientActive)
 			{
 				uv.OnNetworkDestroy();
-				QSBClientScene.SetLocalObject(objectDestroyMessage.netId, null);
+				QSBClientScene.SetLocalObject(objectDestroyMessage.NetId, null);
 			}
 			if (destroyServerObject)
 			{

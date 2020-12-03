@@ -313,11 +313,11 @@ namespace QSB.QuantumUNET
 						for (int j = 0; j < networkConnection.PlayerControllers.Count; j++)
 						{
 							QSBPlayerController playerController = networkConnection.PlayerControllers[j];
-							if (playerController != null && playerController.unetView != null)
+							if (playerController != null && playerController.UnetView != null)
 							{
 								PeerInfoPlayer item;
-								item.netId = playerController.unetView.NetId;
-								item.playerControllerId = playerController.unetView.PlayerControllerId;
+								item.netId = playerController.UnetView.NetId;
+								item.playerControllerId = playerController.UnetView.PlayerControllerId;
 								list2.Add(item);
 							}
 						}
@@ -494,16 +494,16 @@ namespace QSB.QuantumUNET
 				{
 					if (networkReader == null)
 					{
-						this.OnServerReconnectPlayer(netMsg.conn, gameObject, reconnectMessage.oldConnectionId, reconnectMessage.playerControllerId);
+						this.OnServerReconnectPlayer(netMsg.Connection, gameObject, reconnectMessage.oldConnectionId, reconnectMessage.playerControllerId);
 					}
 					else
 					{
-						this.OnServerReconnectPlayer(netMsg.conn, gameObject, reconnectMessage.oldConnectionId, reconnectMessage.playerControllerId, networkReader);
+						this.OnServerReconnectPlayer(netMsg.Connection, gameObject, reconnectMessage.oldConnectionId, reconnectMessage.playerControllerId, networkReader);
 					}
 				}
 				else
 				{
-					this.OnServerReconnectObject(netMsg.conn, gameObject, reconnectMessage.oldConnectionId);
+					this.OnServerReconnectObject(netMsg.Connection, gameObject, reconnectMessage.oldConnectionId);
 				}
 			}
 		}

@@ -44,7 +44,6 @@ namespace QSB.QuantumUNET
 				}
 				if (networkIdentity == null)
 				{
-					DebugLog.DebugWrite($"Adding {netId} to local objects.");
 					networkIdentity = obj.GetComponent<QSBNetworkIdentity>();
 					this.localObjects[netId] = networkIdentity;
 				}

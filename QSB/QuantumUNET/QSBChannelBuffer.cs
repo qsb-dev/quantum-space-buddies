@@ -7,38 +7,56 @@ namespace QSB.QuantumUNET
 {
 	internal class QSBChannelBuffer : IDisposable
 	{
+		public int NumMsgsOut { get; private set; }
+		public int NumBufferedMsgsOut { get; private set; }
+		public int NumBytesOut { get; private set; }
+		public int NumMsgsIn { get; private set; }
+		public int NumBytesIn { get; private set; }
+		public int NumBufferedPerSecond { get; private set; }
+		public int LastBufferedPerSecond { get; private set; }
+		public const int MaxPendingPacketCount = 16;
+		public const int MaxBufferedPackets = 512;
+		public float MaxDelay = 0.01f;
+
+		private QSBNetworkConnection _connection;
+		private QSBChannelPacket _currentPacket;
+		private float _lastFlushTime;
+		private byte _channelId;
+		private int _maxPacketSize;
+		private bool _isReliable;
+		private bool _allowFragmentation;
+		private bool _isBroken;
+		private int _maxPendingPacketCount;
+		private const int _maxFreePacketCount = 512;
+		private Queue<QSBChannelPacket> _pendingPackets;
+		private static List<QSBChannelPacket> _freePackets;
+		internal static int _pendingPacketCount;
+		private float _lastBufferedMessageCountTimer = Time.realtimeSinceStartup;
+		private static NetworkWriter _sendWriter = new NetworkWriter();
+		private static NetworkWriter _fragmentWriter = new NetworkWriter();
+		private const int _packetHeaderReserveSize = 100;
+		private bool _disposed;
+		internal QSBNetBuffer _fragmentBuffer = new QSBNetBuffer();
+		private bool _readingFragment = false;
+
 		public QSBChannelBuffer(QSBNetworkConnection conn, int bufferSize, byte cid, bool isReliable, bool isSequenced)
 		{
-			m_Connection = conn;
-			m_MaxPacketSize = bufferSize - 100;
-			m_CurrentPacket = new QSBChannelPacket(m_MaxPacketSize, isReliable);
-			m_ChannelId = cid;
-			m_MaxPendingPacketCount = 16;
-			m_IsReliable = isReliable;
-			m_AllowFragmentation = isReliable && isSequenced;
+			_connection = conn;
+			_maxPacketSize = bufferSize - 100;
+			_currentPacket = new QSBChannelPacket(_maxPacketSize, isReliable);
+			_channelId = cid;
+			_maxPendingPacketCount = 16;
+			_isReliable = isReliable;
+			_allowFragmentation = isReliable && isSequenced;
 			if (isReliable)
 			{
-				m_PendingPackets = new Queue<QSBChannelPacket>();
-				if (s_FreePackets == null)
+				_pendingPackets = new Queue<QSBChannelPacket>();
+				if (_freePackets == null)
 				{
-					s_FreePackets = new List<QSBChannelPacket>();
+					_freePackets = new List<QSBChannelPacket>();
 				}
 			}
 		}
-
-		public int numMsgsOut { get; private set; }
-
-		public int numBufferedMsgsOut { get; private set; }
-
-		public int numBytesOut { get; private set; }
-
-		public int numMsgsIn { get; private set; }
-
-		public int numBytesIn { get; private set; }
-
-		public int numBufferedPerSecond { get; private set; }
-
-		public int lastBufferedPerSecond { get; private set; }
 
 		public void Dispose()
 		{
@@ -48,26 +66,23 @@ namespace QSB.QuantumUNET
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!m_Disposed)
+			if (!_disposed && disposing)
 			{
-				if (disposing)
+				if (_pendingPackets != null)
 				{
-					if (m_PendingPackets != null)
+					while (_pendingPackets.Count > 0)
 					{
-						while (m_PendingPackets.Count > 0)
+						_pendingPacketCount--;
+						var item = _pendingPackets.Dequeue();
+						if (_freePackets.Count < 512)
 						{
-							pendingPacketCount--;
-							var item = m_PendingPackets.Dequeue();
-							if (s_FreePackets.Count < 512)
-							{
-								s_FreePackets.Add(item);
-							}
+							_freePackets.Add(item);
 						}
-						m_PendingPackets.Clear();
 					}
+					_pendingPackets.Clear();
 				}
 			}
-			m_Disposed = true;
+			_disposed = true;
 		}
 
 		public bool SetOption(ChannelOption option, int value)
@@ -81,7 +96,7 @@ namespace QSB.QuantumUNET
 					{
 						result = false;
 					}
-					else if (!m_CurrentPacket.IsEmpty() || m_PendingPackets.Count > 0)
+					else if (!_currentPacket.IsEmpty() || _pendingPackets.Count > 0)
 					{
 						if (LogFilter.logError)
 						{
@@ -97,28 +112,28 @@ namespace QSB.QuantumUNET
 						}
 						result = false;
 					}
-					else if (value > m_MaxPacketSize)
+					else if (value > _maxPacketSize)
 					{
 						if (LogFilter.logError)
 						{
-							Debug.LogError("Cannot set MaxPacketSize to greater than the existing maximum (" + m_MaxPacketSize + ").");
+							Debug.LogError("Cannot set MaxPacketSize to greater than the existing maximum (" + _maxPacketSize + ").");
 						}
 						result = false;
 					}
 					else
 					{
-						m_CurrentPacket = new QSBChannelPacket(value, m_IsReliable);
-						m_MaxPacketSize = value;
+						_currentPacket = new QSBChannelPacket(value, _isReliable);
+						_maxPacketSize = value;
 						result = true;
 					}
 				}
 				else
 				{
-					m_AllowFragmentation = value != 0;
+					_allowFragmentation = value != 0;
 					result = true;
 				}
 			}
-			else if (!m_IsReliable)
+			else if (!_isReliable)
 			{
 				result = false;
 			}
@@ -129,7 +144,7 @@ namespace QSB.QuantumUNET
 					Debug.LogError(string.Concat(new object[]
 					{
 						"Invalid MaxPendingBuffers for channel ",
-						m_ChannelId,
+						_channelId,
 						". Must be greater than zero and less than ",
 						512
 					}));
@@ -138,7 +153,7 @@ namespace QSB.QuantumUNET
 			}
 			else
 			{
-				m_MaxPendingPacketCount = value;
+				_maxPendingPacketCount = value;
 				result = true;
 			}
 			return result;
@@ -146,16 +161,16 @@ namespace QSB.QuantumUNET
 
 		public void CheckInternalBuffer()
 		{
-			if (Time.realtimeSinceStartup - m_LastFlushTime > maxDelay && !m_CurrentPacket.IsEmpty())
+			if (Time.realtimeSinceStartup - _lastFlushTime > MaxDelay && !_currentPacket.IsEmpty())
 			{
 				SendInternalBuffer();
-				m_LastFlushTime = Time.realtimeSinceStartup;
+				_lastFlushTime = Time.realtimeSinceStartup;
 			}
-			if (Time.realtimeSinceStartup - m_LastBufferedMessageCountTimer > 1f)
+			if (Time.realtimeSinceStartup - _lastBufferedMessageCountTimer > 1f)
 			{
-				lastBufferedPerSecond = numBufferedPerSecond;
-				numBufferedPerSecond = 0;
-				m_LastBufferedMessageCountTimer = Time.realtimeSinceStartup;
+				LastBufferedPerSecond = NumBufferedPerSecond;
+				NumBufferedPerSecond = 0;
+				_lastBufferedMessageCountTimer = Time.realtimeSinceStartup;
 			}
 		}
 
@@ -167,11 +182,11 @@ namespace QSB.QuantumUNET
 
 		public bool Send(short msgType, MessageBase msg)
 		{
-			s_SendWriter.StartMessage(msgType);
-			msg.Serialize(s_SendWriter);
-			s_SendWriter.FinishMessage();
-			numMsgsOut++;
-			return SendWriter(s_SendWriter);
+			_sendWriter.StartMessage(msgType);
+			msg.Serialize(_sendWriter);
+			_sendWriter.FinishMessage();
+			NumMsgsOut++;
+			return SendWriter(_sendWriter);
 		}
 
 		internal bool HandleFragment(NetworkReader reader)
@@ -179,18 +194,18 @@ namespace QSB.QuantumUNET
 			bool result;
 			if (reader.ReadByte() == 0)
 			{
-				if (!readingFragment)
+				if (!_readingFragment)
 				{
-					fragmentBuffer.SeekZero();
-					readingFragment = true;
+					_fragmentBuffer.SeekZero();
+					_readingFragment = true;
 				}
 				var array = reader.ReadBytesAndSize();
-				fragmentBuffer.WriteBytes(array, (ushort)array.Length);
+				_fragmentBuffer.WriteBytes(array, (ushort)array.Length);
 				result = false;
 			}
 			else
 			{
-				readingFragment = false;
+				_readingFragment = false;
 				result = true;
 			}
 			return result;
@@ -201,21 +216,21 @@ namespace QSB.QuantumUNET
 			var num = 0;
 			while (bytesToSend > 0)
 			{
-				var num2 = Math.Min(bytesToSend, m_MaxPacketSize - 32);
+				var num2 = Math.Min(bytesToSend, _maxPacketSize - 32);
 				var array = new byte[num2];
 				Array.Copy(bytes, num, array, 0, num2);
-				s_FragmentWriter.StartMessage(17);
-				s_FragmentWriter.Write(0);
-				s_FragmentWriter.WriteBytesFull(array);
-				s_FragmentWriter.FinishMessage();
-				SendWriter(s_FragmentWriter);
+				_fragmentWriter.StartMessage(17);
+				_fragmentWriter.Write(0);
+				_fragmentWriter.WriteBytesFull(array);
+				_fragmentWriter.FinishMessage();
+				SendWriter(_fragmentWriter);
 				num += num2;
 				bytesToSend -= num2;
 			}
-			s_FragmentWriter.StartMessage(17);
-			s_FragmentWriter.Write(1);
-			s_FragmentWriter.FinishMessage();
-			SendWriter(s_FragmentWriter);
+			_fragmentWriter.StartMessage(17);
+			_fragmentWriter.Write(1);
+			_fragmentWriter.FinishMessage();
+			SendWriter(_fragmentWriter);
 			return true;
 		}
 
@@ -238,9 +253,9 @@ namespace QSB.QuantumUNET
 				}
 				result = false;
 			}
-			else if (bytesToSend > m_MaxPacketSize)
+			else if (bytesToSend > _maxPacketSize)
 			{
-				if (m_AllowFragmentation)
+				if (_allowFragmentation)
 				{
 					result = SendFragmentBytes(bytes, bytesToSend);
 				}
@@ -253,86 +268,86 @@ namespace QSB.QuantumUNET
 							"Failed to send big message of ",
 							bytesToSend,
 							" bytes. The maximum is ",
-							m_MaxPacketSize,
+							_maxPacketSize,
 							" bytes on channel:",
-							m_ChannelId
+							_channelId
 						}));
 					}
 					result = false;
 				}
 			}
-			else if (!m_CurrentPacket.HasSpace(bytesToSend))
+			else if (!_currentPacket.HasSpace(bytesToSend))
 			{
-				if (m_IsReliable)
+				if (_isReliable)
 				{
-					if (m_PendingPackets.Count == 0)
+					if (_pendingPackets.Count == 0)
 					{
-						if (!m_CurrentPacket.SendToTransport(m_Connection, m_ChannelId))
+						if (!_currentPacket.SendToTransport(_connection, _channelId))
 						{
 							QueuePacket();
 						}
-						m_CurrentPacket.Write(bytes, bytesToSend);
+						_currentPacket.Write(bytes, bytesToSend);
 						result = true;
 					}
-					else if (m_PendingPackets.Count >= m_MaxPendingPacketCount)
+					else if (_pendingPackets.Count >= _maxPendingPacketCount)
 					{
-						if (!m_IsBroken)
+						if (!_isBroken)
 						{
 							if (LogFilter.logError)
 							{
-								Debug.LogError("ChannelBuffer buffer limit of " + m_PendingPackets.Count + " packets reached.");
+								Debug.LogError("ChannelBuffer buffer limit of " + _pendingPackets.Count + " packets reached.");
 							}
 						}
-						m_IsBroken = true;
+						_isBroken = true;
 						result = false;
 					}
 					else
 					{
 						QueuePacket();
-						m_CurrentPacket.Write(bytes, bytesToSend);
+						_currentPacket.Write(bytes, bytesToSend);
 						result = true;
 					}
 				}
-				else if (!m_CurrentPacket.SendToTransport(m_Connection, m_ChannelId))
+				else if (!_currentPacket.SendToTransport(_connection, _channelId))
 				{
 					if (LogFilter.logError)
 					{
-						Debug.Log("ChannelBuffer SendBytes no space on unreliable channel " + m_ChannelId);
+						Debug.Log("ChannelBuffer SendBytes no space on unreliable channel " + _channelId);
 					}
 					result = false;
 				}
 				else
 				{
-					m_CurrentPacket.Write(bytes, bytesToSend);
+					_currentPacket.Write(bytes, bytesToSend);
 					result = true;
 				}
 			}
 			else
 			{
-				m_CurrentPacket.Write(bytes, bytesToSend);
-				result = maxDelay != 0f || SendInternalBuffer();
+				_currentPacket.Write(bytes, bytesToSend);
+				result = MaxDelay != 0f || SendInternalBuffer();
 			}
 			return result;
 		}
 
 		private void QueuePacket()
 		{
-			pendingPacketCount++;
-			m_PendingPackets.Enqueue(m_CurrentPacket);
-			m_CurrentPacket = AllocPacket();
+			_pendingPacketCount++;
+			_pendingPackets.Enqueue(_currentPacket);
+			_currentPacket = AllocPacket();
 		}
 
 		private QSBChannelPacket AllocPacket()
 		{
 			QSBChannelPacket result;
-			if (s_FreePackets.Count == 0)
+			if (_freePackets.Count == 0)
 			{
-				result = new QSBChannelPacket(m_MaxPacketSize, m_IsReliable);
+				result = new QSBChannelPacket(_maxPacketSize, _isReliable);
 			}
 			else
 			{
-				var channelPacket = s_FreePackets[s_FreePackets.Count - 1];
-				s_FreePackets.RemoveAt(s_FreePackets.Count - 1);
+				var channelPacket = _freePackets[_freePackets.Count - 1];
+				_freePackets.RemoveAt(_freePackets.Count - 1);
 				channelPacket.Reset();
 				result = channelPacket;
 			}
@@ -341,89 +356,43 @@ namespace QSB.QuantumUNET
 
 		private static void FreePacket(QSBChannelPacket packet)
 		{
-			if (s_FreePackets.Count < 512)
+			if (_freePackets.Count < 512)
 			{
-				s_FreePackets.Add(packet);
+				_freePackets.Add(packet);
 			}
 		}
 
 		public bool SendInternalBuffer()
 		{
 			bool result;
-			if (m_IsReliable && m_PendingPackets.Count > 0)
+			if (_isReliable && _pendingPackets.Count > 0)
 			{
-				while (m_PendingPackets.Count > 0)
+				while (_pendingPackets.Count > 0)
 				{
-					var channelPacket = m_PendingPackets.Dequeue();
-					if (!channelPacket.SendToTransport(m_Connection, m_ChannelId))
+					var channelPacket = _pendingPackets.Dequeue();
+					if (!channelPacket.SendToTransport(_connection, _channelId))
 					{
-						m_PendingPackets.Enqueue(channelPacket);
+						_pendingPackets.Enqueue(channelPacket);
 						break;
 					}
-					pendingPacketCount--;
+					_pendingPacketCount--;
 					FreePacket(channelPacket);
-					if (m_IsBroken && m_PendingPackets.Count < m_MaxPendingPacketCount / 2)
+					if (_isBroken && _pendingPackets.Count < _maxPendingPacketCount / 2)
 					{
 						if (LogFilter.logWarn)
 						{
 							Debug.LogWarning("ChannelBuffer recovered from overflow but data was lost.");
 						}
-						m_IsBroken = false;
+						_isBroken = false;
 					}
 				}
 				result = true;
 			}
 			else
 			{
-				result = m_CurrentPacket.SendToTransport(m_Connection, m_ChannelId);
+				result = _currentPacket.SendToTransport(_connection, _channelId);
 			}
 			return result;
 		}
-
-		private QSBNetworkConnection m_Connection;
-
-		private QSBChannelPacket m_CurrentPacket;
-
-		private float m_LastFlushTime;
-
-		private byte m_ChannelId;
-
-		private int m_MaxPacketSize;
-
-		private bool m_IsReliable;
-
-		private bool m_AllowFragmentation;
-
-		private bool m_IsBroken;
-
-		private int m_MaxPendingPacketCount;
-
-		private const int k_MaxFreePacketCount = 512;
-
-		public const int MaxPendingPacketCount = 16;
-
-		public const int MaxBufferedPackets = 512;
-
-		private Queue<QSBChannelPacket> m_PendingPackets;
-
-		private static List<QSBChannelPacket> s_FreePackets;
-
-		internal static int pendingPacketCount;
-
-		public float maxDelay = 0.01f;
-
-		private float m_LastBufferedMessageCountTimer = Time.realtimeSinceStartup;
-
-		private static NetworkWriter s_SendWriter = new NetworkWriter();
-
-		private static NetworkWriter s_FragmentWriter = new NetworkWriter();
-
-		private const int k_PacketHeaderReserveSize = 100;
-
-		private bool m_Disposed;
-
-		internal QSBNetBuffer fragmentBuffer = new QSBNetBuffer();
-
-		private bool readingFragment = false;
 	}
 }

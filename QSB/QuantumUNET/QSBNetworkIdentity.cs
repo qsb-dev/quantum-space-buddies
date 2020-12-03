@@ -47,7 +47,6 @@ namespace QSB.QuantumUNET
 
 		internal void SetDynamicAssetId(NetworkHash128 newAssetId)
 		{
-			DebugLog.DebugWrite($"Setting asset of {NetId} to {newAssetId}");
 			if (!m_AssetId.IsValid() || m_AssetId.Equals(newAssetId))
 			{
 				m_AssetId = newAssetId;
@@ -173,7 +172,6 @@ namespace QSB.QuantumUNET
 		{
 			if (!m_IsServer)
 			{
-				DebugLog.DebugWrite("is server");
 				m_IsServer = true;
 				if (m_LocalPlayerAuthority)
 				{
@@ -189,7 +187,6 @@ namespace QSB.QuantumUNET
 				if (NetId.IsEmpty())
 				{
 					NetId = GetNextNetworkId();
-					DebugLog.DebugWrite($"was empty - netid is {NetId}");
 				}
 				else if (!allowNonZeroNetId)
 				{

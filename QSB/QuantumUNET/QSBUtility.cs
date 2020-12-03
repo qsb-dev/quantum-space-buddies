@@ -7,57 +7,27 @@ namespace QSB.QuantumUNET
 {
 	public class QSBUtility
 	{
-		private QSBUtility()
-		{
-		}
+		private static readonly Dictionary<NetworkID, NetworkAccessToken> _dictTokens = new Dictionary<NetworkID, NetworkAccessToken>();
 
-		[Obsolete("This property is unused and should not be referenced in code.", true)]
-		public static bool useRandomSourceID
-		{
-			get
-			{
-				return false;
-			}
-			set
-			{
-			}
-		}
-
-		public static SourceID GetSourceID()
-		{
-			return (SourceID)((long)SystemInfo.deviceUniqueIdentifier.GetHashCode());
-		}
-
-		[Obsolete("This function is unused and should not be referenced in code. Please sign in and setup your project in the editor instead.", true)]
-		public static void SetAppID(AppID newAppID)
-		{
-		}
-
-		[Obsolete("This function is unused and should not be referenced in code. Please sign in and setup your project in the editor instead.", true)]
-		public static AppID GetAppID()
-		{
-			return AppID.Invalid;
-		}
+		public static SourceID GetSourceID() 
+			=> (SourceID)SystemInfo.deviceUniqueIdentifier.GetHashCode();
 
 		public static void SetAccessTokenForNetwork(NetworkID netId, NetworkAccessToken accessToken)
 		{
-			if (s_dictTokens.ContainsKey(netId))
+			if (_dictTokens.ContainsKey(netId))
 			{
-				s_dictTokens.Remove(netId);
+				_dictTokens.Remove(netId);
 			}
-			s_dictTokens.Add(netId, accessToken);
+			_dictTokens.Add(netId, accessToken);
 		}
 
 		public static NetworkAccessToken GetAccessTokenForNetwork(NetworkID netId)
 		{
-			NetworkAccessToken result;
-			if (!s_dictTokens.TryGetValue(netId, out result))
+			if (!_dictTokens.TryGetValue(netId, out var result))
 			{
 				result = new NetworkAccessToken();
 			}
 			return result;
 		}
-
-		private static Dictionary<NetworkID, NetworkAccessToken> s_dictTokens = new Dictionary<NetworkID, NetworkAccessToken>();
 	}
 }

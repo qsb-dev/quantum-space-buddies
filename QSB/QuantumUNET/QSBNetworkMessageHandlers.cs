@@ -5,6 +5,8 @@ namespace QSB.QuantumUNET
 {
 	internal class QSBNetworkMessageHandlers
 	{
+		private Dictionary<short, QSBNetworkMessageDelegate> _msgHandlers = new Dictionary<short, QSBNetworkMessageDelegate>();
+
 		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{
 			if (handler == null)
@@ -20,9 +22,9 @@ namespace QSB.QuantumUNET
 					" handler:",
 					handler.GetMethodName()
 				}));
-				if (!this.m_MsgHandlers.ContainsKey(msgType))
+				if (!_msgHandlers.ContainsKey(msgType))
 				{
-					this.m_MsgHandlers.Add(msgType, handler);
+					_msgHandlers.Add(msgType, handler);
 				}
 			}
 		}
@@ -39,10 +41,10 @@ namespace QSB.QuantumUNET
 			}
 			else
 			{
-				if (this.m_MsgHandlers.ContainsKey(msgType))
+				if (_msgHandlers.ContainsKey(msgType))
 				{
 					Debug.Log("RegisterHandler replacing " + msgType);
-					this.m_MsgHandlers.Remove(msgType);
+					_msgHandlers.Remove(msgType);
 				}
 				Debug.Log(string.Concat(new object[]
 				{
@@ -51,21 +53,18 @@ namespace QSB.QuantumUNET
 					" handler:",
 					handler.GetMethodName()
 				}));
-				this.m_MsgHandlers.Add(msgType, handler);
+				_msgHandlers.Add(msgType, handler);
 			}
 		}
 
-		public void UnregisterHandler(short msgType)
-		{
-			this.m_MsgHandlers.Remove(msgType);
-		}
+		public void UnregisterHandler(short msgType) => _msgHandlers.Remove(msgType);
 
 		internal QSBNetworkMessageDelegate GetHandler(short msgType)
 		{
 			QSBNetworkMessageDelegate result;
-			if (this.m_MsgHandlers.ContainsKey(msgType))
+			if (_msgHandlers.ContainsKey(msgType))
 			{
-				result = this.m_MsgHandlers[msgType];
+				result = _msgHandlers[msgType];
 			}
 			else
 			{
@@ -74,16 +73,8 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal Dictionary<short, QSBNetworkMessageDelegate> GetHandlers()
-		{
-			return this.m_MsgHandlers;
-		}
+		internal Dictionary<short, QSBNetworkMessageDelegate> GetHandlers() => _msgHandlers;
 
-		internal void ClearMessageHandlers()
-		{
-			this.m_MsgHandlers.Clear();
-		}
-
-		private Dictionary<short, QSBNetworkMessageDelegate> m_MsgHandlers = new Dictionary<short, QSBNetworkMessageDelegate>();
+		internal void ClearMessageHandlers() => _msgHandlers.Clear();
 	}
 }

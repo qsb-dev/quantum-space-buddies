@@ -120,10 +120,10 @@ namespace QSB.QuantumUNET
 			bool result;
 			if (m_MessageHandlersDict.ContainsKey(msgType))
 			{
-				m_MessageInfo.msgType = msgType;
-				m_MessageInfo.conn = this;
-				m_MessageInfo.reader = reader;
-				m_MessageInfo.channelId = channelId;
+				m_MessageInfo.MsgType = msgType;
+				m_MessageInfo.Connection = this;
+				m_MessageInfo.Reader = reader;
+				m_MessageInfo.ChannelId = channelId;
 				var networkMessageDelegate = m_MessageHandlersDict[msgType];
 				if (networkMessageDelegate == null)
 				{
@@ -149,9 +149,9 @@ namespace QSB.QuantumUNET
 		public bool InvokeHandler(QSBNetworkMessage netMsg)
 		{
 			bool result;
-			if (m_MessageHandlersDict.ContainsKey(netMsg.msgType))
+			if (m_MessageHandlersDict.ContainsKey(netMsg.MsgType))
 			{
-				var networkMessageDelegate = m_MessageHandlersDict[netMsg.msgType];
+				var networkMessageDelegate = m_MessageHandlersDict[netMsg.MsgType];
 				networkMessageDelegate(netMsg);
 				result = true;
 			}
@@ -169,7 +169,7 @@ namespace QSB.QuantumUNET
 				var channelBuffer = m_Channels[channelId];
 				if (channelBuffer.HandleFragment(reader))
 				{
-					var networkReader = new NetworkReader(channelBuffer.fragmentBuffer.AsArraySegment().Array);
+					var networkReader = new NetworkReader(channelBuffer._fragmentBuffer.AsArraySegment().Array);
 					networkReader.ReadInt16();
 					var msgType = networkReader.ReadInt16();
 					InvokeHandler(msgType, networkReader, channelId);
@@ -183,18 +183,18 @@ namespace QSB.QuantumUNET
 
 		internal void SetPlayerController(QSBPlayerController player)
 		{
-			while ((int)player.playerControllerId >= PlayerControllers.Count)
+			while ((int)player.PlayerControllerId >= PlayerControllers.Count)
 			{
 				PlayerControllers.Add(new QSBPlayerController());
 			}
-			PlayerControllers[(int)player.playerControllerId] = player;
+			PlayerControllers[(int)player.PlayerControllerId] = player;
 		}
 
 		internal void RemovePlayerController(short playerControllerId)
 		{
 			for (var i = PlayerControllers.Count; i >= 0; i--)
 			{
-				if ((int)playerControllerId == i && playerControllerId == PlayerControllers[i].playerControllerId)
+				if ((int)playerControllerId == i && playerControllerId == PlayerControllers[i].PlayerControllerId)
 				{
 					PlayerControllers[i] = new QSBPlayerController();
 					return;
@@ -215,7 +215,7 @@ namespace QSB.QuantumUNET
 			{
 				for (var i = 0; i < PlayerControllers.Count; i++)
 				{
-					if (PlayerControllers[i].IsValid && PlayerControllers[i].playerControllerId == playerControllerId)
+					if (PlayerControllers[i].IsValid && PlayerControllers[i].PlayerControllerId == playerControllerId)
 					{
 						playerController = PlayerControllers[i];
 						return true;
@@ -247,7 +247,7 @@ namespace QSB.QuantumUNET
 			{
 				for (var i = 0; i < m_Channels.Length; i++)
 				{
-					m_Channels[i].maxDelay = seconds;
+					m_Channels[i].MaxDelay = seconds;
 				}
 			}
 		}
@@ -401,10 +401,10 @@ namespace QSB.QuantumUNET
 					}
 					break;
 				}
-				m_NetMsg.msgType = num2;
-				m_NetMsg.reader = reader2;
-				m_NetMsg.conn = this;
-				m_NetMsg.channelId = channelId;
+				m_NetMsg.MsgType = num2;
+				m_NetMsg.Reader = reader2;
+				m_NetMsg.Connection = this;
+				m_NetMsg.ChannelId = channelId;
 				networkMessageDelegate(m_NetMsg);
 				lastMessageTime = Time.time;
 			}
@@ -419,10 +419,10 @@ namespace QSB.QuantumUNET
 			for (var i = 0; i < m_Channels.Length; i++)
 			{
 				var channelBuffer = m_Channels[i];
-				numMsgs += channelBuffer.numMsgsOut;
-				numBufferedMsgs += channelBuffer.numBufferedMsgsOut;
-				numBytes += channelBuffer.numBytesOut;
-				lastBufferedPerSecond += channelBuffer.lastBufferedPerSecond;
+				numMsgs += channelBuffer.NumMsgsOut;
+				numBufferedMsgs += channelBuffer.NumBufferedMsgsOut;
+				numBytes += channelBuffer.NumBytesOut;
+				lastBufferedPerSecond += channelBuffer.LastBufferedPerSecond;
 			}
 		}
 
@@ -433,8 +433,8 @@ namespace QSB.QuantumUNET
 			for (var i = 0; i < m_Channels.Length; i++)
 			{
 				var channelBuffer = m_Channels[i];
-				numMsgs += channelBuffer.numMsgsIn;
-				numBytes += channelBuffer.numBytesIn;
+				numMsgs += channelBuffer.NumMsgsIn;
+				numBytes += channelBuffer.NumBytesIn;
 			}
 		}
 
@@ -497,7 +497,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal static void OnFragment(QSBNetworkMessage netMsg) => netMsg.conn.HandleFragment(netMsg.reader, netMsg.channelId);
+		internal static void OnFragment(QSBNetworkMessage netMsg) => netMsg.Connection.HandleFragment(netMsg.Reader, netMsg.ChannelId);
 
 		private QSBChannelBuffer[] m_Channels;
 		private readonly QSBNetworkMessage m_NetMsg = new QSBNetworkMessage();

@@ -143,7 +143,6 @@ namespace QSB.QuantumUNET
 			}
 			set
 			{
-				DebugLog.DebugWrite("setting player prefab");
 				m_PlayerPrefab = value;
 			}
 		}
@@ -1053,31 +1052,31 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnServerConnectInternal");
 			}
-			netMsg.conn.SetMaxDelay(m_MaxDelay);
+			netMsg.Connection.SetMaxDelay(m_MaxDelay);
 			if (m_MaxBufferedPackets != 512)
 			{
 				for (int i = 0; i < QSBNetworkServer.numChannels; i++)
 				{
-					netMsg.conn.SetChannelOption(i, ChannelOption.MaxPendingBuffers, m_MaxBufferedPackets);
+					netMsg.Connection.SetChannelOption(i, ChannelOption.MaxPendingBuffers, m_MaxBufferedPackets);
 				}
 			}
 			if (!m_AllowFragmentation)
 			{
 				for (int j = 0; j < QSBNetworkServer.numChannels; j++)
 				{
-					netMsg.conn.SetChannelOption(j, ChannelOption.AllowFragmentation, 0);
+					netMsg.Connection.SetChannelOption(j, ChannelOption.AllowFragmentation, 0);
 				}
 			}
 			if (networkSceneName != "" && networkSceneName != m_OfflineScene)
 			{
 				StringMessage msg = new StringMessage(networkSceneName);
-				netMsg.conn.Send(39, msg);
+				netMsg.Connection.Send(39, msg);
 			}
 			if (m_MigrationManager != null)
 			{
 				m_MigrationManager.SendPeerInfo();
 			}
-			OnServerConnect(netMsg.conn);
+			OnServerConnect(netMsg.Connection);
 		}
 
 		internal void OnServerDisconnectInternal(QSBNetworkMessage netMsg)
@@ -1090,7 +1089,7 @@ namespace QSB.QuantumUNET
 			{
 				m_MigrationManager.SendPeerInfo();
 			}
-			OnServerDisconnect(netMsg.conn);
+			OnServerDisconnect(netMsg.Connection);
 		}
 
 		internal void OnServerReadyMessageInternal(QSBNetworkMessage netMsg)
@@ -1099,7 +1098,7 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnServerReadyMessageInternal");
 			}
-			OnServerReady(netMsg.conn);
+			OnServerReady(netMsg.Connection);
 		}
 
 		internal void OnServerAddPlayerMessageInternal(QSBNetworkMessage netMsg)
@@ -1112,11 +1111,11 @@ namespace QSB.QuantumUNET
 			if (s_AddPlayerMessage.msgSize != 0)
 			{
 				NetworkReader extraMessageReader = new NetworkReader(s_AddPlayerMessage.msgData);
-				this.OnServerAddPlayer(netMsg.conn, s_AddPlayerMessage.playerControllerId, extraMessageReader);
+				this.OnServerAddPlayer(netMsg.Connection, s_AddPlayerMessage.playerControllerId, extraMessageReader);
 			}
 			else
 			{
-				this.OnServerAddPlayer(netMsg.conn, s_AddPlayerMessage.playerControllerId);
+				this.OnServerAddPlayer(netMsg.Connection, s_AddPlayerMessage.playerControllerId);
 			}
 			if (m_MigrationManager != null)
 			{
@@ -1132,9 +1131,9 @@ namespace QSB.QuantumUNET
 			}
 			netMsg.ReadMessage<RemovePlayerMessage>(s_RemovePlayerMessage);
 			QSBPlayerController player;
-			netMsg.conn.GetPlayerController(s_RemovePlayerMessage.playerControllerId, out player);
-			OnServerRemovePlayer(netMsg.conn, player);
-			netMsg.conn.RemovePlayerController(s_RemovePlayerMessage.playerControllerId);
+			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.playerControllerId, out player);
+			OnServerRemovePlayer(netMsg.Connection, player);
+			netMsg.Connection.RemovePlayerController(s_RemovePlayerMessage.playerControllerId);
 			if (m_MigrationManager != null)
 			{
 				m_MigrationManager.SendPeerInfo();
@@ -1148,7 +1147,7 @@ namespace QSB.QuantumUNET
 				Debug.Log("NetworkManager:OnServerErrorInternal");
 			}
 			netMsg.ReadMessage<ErrorMessage>(s_ErrorMessage);
-			this.OnServerError(netMsg.conn, s_ErrorMessage.errorCode);
+			this.OnServerError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
 		internal void OnClientConnectInternal(QSBNetworkMessage netMsg)
@@ -1157,16 +1156,16 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnClientConnectInternal");
 			}
-			netMsg.conn.SetMaxDelay(m_MaxDelay);
+			netMsg.Connection.SetMaxDelay(m_MaxDelay);
 			string name = SceneManager.GetSceneAt(0).name;
 			if (string.IsNullOrEmpty(m_OnlineScene) || m_OnlineScene == m_OfflineScene || name == m_OnlineScene)
 			{
 				m_ClientLoadedScene = false;
-				OnClientConnect(netMsg.conn);
+				OnClientConnect(netMsg.Connection);
 			}
 			else
 			{
-				s_ClientReadyConnection = netMsg.conn;
+				s_ClientReadyConnection = netMsg.Connection;
 			}
 		}
 
@@ -1178,7 +1177,7 @@ namespace QSB.QuantumUNET
 			}
 			if (m_MigrationManager != null)
 			{
-				if (m_MigrationManager.LostHostOnClient(netMsg.conn))
+				if (m_MigrationManager.LostHostOnClient(netMsg.Connection))
 				{
 					return;
 				}
@@ -1191,7 +1190,7 @@ namespace QSB.QuantumUNET
 			{
 				matchMaker.DropConnection(matchInfo.networkId, matchInfo.nodeId, matchInfo.domain, new NetworkMatch.BasicResponseDelegate(OnDropConnection));
 			}
-			OnClientDisconnect(netMsg.conn);
+			OnClientDisconnect(netMsg.Connection);
 		}
 
 		internal void OnClientNotReadyMessageInternal(QSBNetworkMessage netMsg)
@@ -1201,7 +1200,7 @@ namespace QSB.QuantumUNET
 				Debug.Log("NetworkManager:OnClientNotReadyMessageInternal");
 			}
 			QSBClientScene.SetNotReady();
-			OnClientNotReady(netMsg.conn);
+			OnClientNotReady(netMsg.Connection);
 		}
 
 		internal void OnClientErrorInternal(QSBNetworkMessage netMsg)
@@ -1211,7 +1210,7 @@ namespace QSB.QuantumUNET
 				Debug.Log("NetworkManager:OnClientErrorInternal");
 			}
 			netMsg.ReadMessage<ErrorMessage>(s_ErrorMessage);
-			this.OnClientError(netMsg.conn, s_ErrorMessage.errorCode);
+			this.OnClientError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
 		internal void OnClientSceneInternal(QSBNetworkMessage netMsg)
@@ -1220,7 +1219,7 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnClientSceneInternal");
 			}
-			string newSceneName = netMsg.reader.ReadString();
+			string newSceneName = netMsg.Reader.ReadString();
 			if (IsClientConnected() && !QSBNetworkServer.active)
 			{
 				ClientChangeScene(newSceneName, true);
@@ -1281,7 +1280,7 @@ namespace QSB.QuantumUNET
 					DebugLog.ToConsole("Error - The PlayerPrefab does not have a QSBNetworkIdentity. Please add a QSBNetworkIdentity to the player prefab.", MessageType.Error);
 				}
 			}
-			else if ((int)playerControllerId < conn.PlayerControllers.Count && conn.PlayerControllers[(int)playerControllerId].IsValid && conn.PlayerControllers[(int)playerControllerId].gameObject != null)
+			else if ((int)playerControllerId < conn.PlayerControllers.Count && conn.PlayerControllers[(int)playerControllerId].IsValid && conn.PlayerControllers[(int)playerControllerId].Gameobject != null)
 			{
 				if (LogFilter.logError)
 				{
@@ -1341,9 +1340,9 @@ namespace QSB.QuantumUNET
 
 		public virtual void OnServerRemovePlayer(QSBNetworkConnection conn, QSBPlayerController player)
 		{
-			if (player.gameObject != null)
+			if (player.Gameobject != null)
 			{
-				QSBNetworkServer.Destroy(player.gameObject);
+				QSBNetworkServer.Destroy(player.Gameobject);
 			}
 		}
 
@@ -1396,7 +1395,7 @@ namespace QSB.QuantumUNET
 				bool flag2 = false;
 				for (int i = 0; i < QSBClientScene.localPlayers.Count; i++)
 				{
-					if (QSBClientScene.localPlayers[i].gameObject != null)
+					if (QSBClientScene.localPlayers[i].Gameobject != null)
 					{
 						flag2 = true;
 						break;

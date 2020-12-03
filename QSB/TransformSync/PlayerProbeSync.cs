@@ -58,7 +58,6 @@ namespace QSB.TransformSync
 
 		private void SetSocket(Transform socket)
 		{
-			DebugLog.DebugWrite($"Setting DisabledSocket for {AttachedNetId} to {socket.name}");
 			_disabledSocket = socket;
 		}
 

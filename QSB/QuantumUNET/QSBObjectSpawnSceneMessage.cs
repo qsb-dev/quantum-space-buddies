@@ -5,28 +5,25 @@ namespace QSB.QuantumUNET
 {
 	internal class QSBObjectSpawnSceneMessage : MessageBase
 	{
+		public NetworkInstanceId NetId;
+		public NetworkSceneId SceneId;
+		public Vector3 Position;
+		public byte[] Payload;
+
 		public override void Deserialize(NetworkReader reader)
 		{
-			this.netId = reader.ReadNetworkId();
-			this.sceneId = reader.ReadSceneId();
-			this.position = reader.ReadVector3();
-			this.payload = reader.ReadBytesAndSize();
+			NetId = reader.ReadNetworkId();
+			SceneId = reader.ReadSceneId();
+			Position = reader.ReadVector3();
+			Payload = reader.ReadBytesAndSize();
 		}
 
 		public override void Serialize(NetworkWriter writer)
 		{
-			writer.Write(this.netId);
-			writer.Write(this.sceneId);
-			writer.Write(this.position);
-			writer.WriteBytesFull(this.payload);
+			writer.Write(NetId);
+			writer.Write(SceneId);
+			writer.Write(Position);
+			writer.WriteBytesFull(Payload);
 		}
-
-		public NetworkInstanceId netId;
-
-		public NetworkSceneId sceneId;
-
-		public Vector3 position;
-
-		public byte[] payload;
 	}
 }

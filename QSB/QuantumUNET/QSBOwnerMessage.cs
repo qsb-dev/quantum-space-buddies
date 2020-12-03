@@ -4,20 +4,19 @@ namespace QSB.QuantumUNET
 {
 	internal class QSBOwnerMessage : MessageBase
 	{
+		public NetworkInstanceId NetId;
+		public short PlayerControllerId;
+
 		public override void Deserialize(NetworkReader reader)
 		{
-			netId = reader.ReadNetworkId();
-			playerControllerId = (short)reader.ReadPackedUInt32();
+			NetId = reader.ReadNetworkId();
+			PlayerControllerId = (short)reader.ReadPackedUInt32();
 		}
 
 		public override void Serialize(NetworkWriter writer)
 		{
-			writer.Write(netId);
-			writer.WritePackedUInt32((uint)playerControllerId);
+			writer.Write(NetId);
+			writer.WritePackedUInt32((uint)PlayerControllerId);
 		}
-
-		public NetworkInstanceId netId;
-
-		public short playerControllerId;
 	}
 }

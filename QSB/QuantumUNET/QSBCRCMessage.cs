@@ -4,29 +4,29 @@ namespace QSB.QuantumUNET
 {
 	internal class QSBCRCMessage : MessageBase
 	{
+		public QSBCRCMessageEntry[] scripts;
+
 		public override void Deserialize(NetworkReader reader)
 		{
-			int num = (int)reader.ReadUInt16();
-			this.scripts = new QSBCRCMessageEntry[num];
-			for (int i = 0; i < this.scripts.Length; i++)
+			var num = (int)reader.ReadUInt16();
+			scripts = new QSBCRCMessageEntry[num];
+			for (var i = 0; i < scripts.Length; i++)
 			{
-				QSBCRCMessageEntry crcmessageEntry = default(QSBCRCMessageEntry);
+				var crcmessageEntry = default(QSBCRCMessageEntry);
 				crcmessageEntry.name = reader.ReadString();
 				crcmessageEntry.channel = reader.ReadByte();
-				this.scripts[i] = crcmessageEntry;
+				scripts[i] = crcmessageEntry;
 			}
 		}
 
 		public override void Serialize(NetworkWriter writer)
 		{
-			writer.Write((ushort)this.scripts.Length);
-			for (int i = 0; i < this.scripts.Length; i++)
+			writer.Write((ushort)scripts.Length);
+			for (var i = 0; i < scripts.Length; i++)
 			{
-				writer.Write(this.scripts[i].name);
-				writer.Write(this.scripts[i].channel);
+				writer.Write(scripts[i].name);
+				writer.Write(scripts[i].channel);
 			}
 		}
-
-		public QSBCRCMessageEntry[] scripts;
 	}
 }

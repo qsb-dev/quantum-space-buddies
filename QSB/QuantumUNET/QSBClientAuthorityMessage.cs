@@ -4,6 +4,9 @@ namespace QSB.QuantumUNET
 {
 	internal class QSBClientAuthorityMessage : MessageBase
 	{
+		public NetworkInstanceId netId;
+		public bool authority;
+
 		public override void Deserialize(NetworkReader reader)
 		{
 			netId = reader.ReadNetworkId();
@@ -15,9 +18,5 @@ namespace QSB.QuantumUNET
 			writer.Write(netId);
 			writer.Write(authority);
 		}
-
-		public NetworkInstanceId netId;
-
-		public bool authority;
 	}
 }
