@@ -268,7 +268,6 @@ namespace QSB.QuantumUNET
 
 		public static void HandleTransform(QSBNetworkMessage netMsg)
 		{
-			DebugLog.DebugWrite("handle transform");
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
 			var gameObject = QSBNetworkServer.FindLocalObject(networkInstanceId);
 			if (gameObject == null)
