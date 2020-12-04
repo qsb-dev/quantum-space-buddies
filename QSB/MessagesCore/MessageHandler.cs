@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using QSB.EventsCore;
-using QuantumUNET;
 using QSB.Utility;
+using QuantumUNET;
 using System;
 using System.Linq;
 using UnityEngine.Networking;

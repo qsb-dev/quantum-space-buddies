@@ -1,5 +1,4 @@
-﻿using OWML.Common;
-using OWML.Logging;
+﻿using OWML.Logging;
 using UnityEngine;
 using UnityEngine.Networking;
 

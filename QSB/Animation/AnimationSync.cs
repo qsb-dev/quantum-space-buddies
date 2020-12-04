@@ -3,9 +3,9 @@ using OWML.ModHelper.Events;
 using QSB.EventsCore;
 using QSB.Player;
 using QSB.Utility;
+using QuantumUNET;
 using System.Linq;
 using UnityEngine;
-using QuantumUNET;
 
 namespace QSB.Animation
 {

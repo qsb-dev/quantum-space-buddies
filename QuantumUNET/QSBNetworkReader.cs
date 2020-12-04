@@ -10,27 +10,27 @@ namespace QuantumUNET
 		public QSBNetworkReader()
 		{
 			m_buf = new QSBNetBuffer();
-            Initialize();
+			Initialize();
 		}
 
 		public QSBNetworkReader(QSBNetworkWriter writer)
 		{
 			m_buf = new QSBNetBuffer(writer.AsArray());
-            Initialize();
+			Initialize();
 		}
 
 		public QSBNetworkReader(byte[] buffer)
 		{
 			m_buf = new QSBNetBuffer(buffer);
-            Initialize();
+			Initialize();
 		}
 
 		private static void Initialize()
 		{
 			if (s_Encoding == null)
 			{
-                s_StringReaderBuffer = new byte[1024];
-                s_Encoding = new UTF8Encoding();
+				s_StringReaderBuffer = new byte[1024];
+				s_Encoding = new UTF8Encoding();
 			}
 		}
 
@@ -312,7 +312,7 @@ namespace QuantumUNET
 				}
 				while ((int)num > s_StringReaderBuffer.Length)
 				{
-                    s_StringReaderBuffer = new byte[s_StringReaderBuffer.Length * 2];
+					s_StringReaderBuffer = new byte[s_StringReaderBuffer.Length * 2];
 				}
 				m_buf.ReadBytes(s_StringReaderBuffer, (uint)num);
 				char[] chars = s_Encoding.GetChars(s_StringReaderBuffer, 0, (int)num);

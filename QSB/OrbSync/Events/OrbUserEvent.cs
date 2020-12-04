@@ -1,9 +1,9 @@
 ﻿using OWML.Common;
 using QSB.EventsCore;
-using QuantumUNET;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
+using QuantumUNET;
 using System.Linq;
 
 namespace QSB.OrbSync.Events

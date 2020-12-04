@@ -6,10 +6,10 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
-using QuantumUNET;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;
+using QuantumUNET;
 using UnityEngine;
 using UnityEngine.Networking;
 

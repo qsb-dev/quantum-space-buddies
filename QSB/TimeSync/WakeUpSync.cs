@@ -1,8 +1,8 @@
 ﻿using QSB.DeathSync;
 using QSB.EventsCore;
-using QuantumUNET;
 using QSB.TimeSync.Events;
 using QSB.Utility;
+using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.TimeSync

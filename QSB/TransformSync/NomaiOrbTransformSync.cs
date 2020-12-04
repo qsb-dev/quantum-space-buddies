@@ -1,6 +1,6 @@
-﻿using QuantumUNET;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.TransformSync
