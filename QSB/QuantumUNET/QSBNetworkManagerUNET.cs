@@ -660,7 +660,6 @@ namespace QSB.QuantumUNET
 
 		public QSBNetworkClient StartClient(MatchInfo info, ConnectionConfig config, int hostPort)
 		{
-			DebugLog.DebugWrite("start client proper");
 			InitializeSingleton();
 			matchInfo = info;
 			if (m_RunInBackground)
@@ -747,7 +746,6 @@ namespace QSB.QuantumUNET
 
 		public QSBNetworkClient StartClient()
 		{
-			DebugLog.DebugWrite("start client");
 			return StartClient(null, null);
 		}
 

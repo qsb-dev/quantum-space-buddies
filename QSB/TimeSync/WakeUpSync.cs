@@ -101,11 +101,13 @@ namespace QSB.TimeSync
 
 		private void SendServerTime()
 		{
+			DebugLog.DebugWrite($"send server time {Time.timeSinceLevelLoad}");
 			GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 		}
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
+			DebugLog.DebugWrite($"get server time {message.ServerTime}");
 			_serverTime = message.ServerTime;
 			_serverLoopCount = message.LoopCount;
 			WakeUpOrSleep();

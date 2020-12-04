@@ -219,14 +219,12 @@ namespace QSB.QuantumUNET
 
 		public void Write(float value)
 		{
-			s_FloatConverter.floatValue = value;
-			this.Write(s_FloatConverter.intValue);
+			m_Buffer.WriteBytes(BitConverter.GetBytes(value), 4);
 		}
 
 		public void Write(double value)
 		{
-			s_FloatConverter.doubleValue = value;
-			this.Write(s_FloatConverter.longValue);
+			m_Buffer.WriteBytes(BitConverter.GetBytes(value), 8);
 		}
 
 		public void Write(decimal value)
@@ -533,7 +531,5 @@ namespace QSB.QuantumUNET
 		private static Encoding s_Encoding;
 
 		private static byte[] s_StringWriteBuffer;
-
-		private static QSBUIntFloat s_FloatConverter;
 	}
 }

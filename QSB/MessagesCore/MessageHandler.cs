@@ -63,7 +63,6 @@ namespace QSB.Messaging
 		private void OnClientReceiveMessageHandler(QSBNetworkMessage netMsg)
 		{
 			var message = netMsg.ReadMessage<T>();
-			DebugLog.DebugWrite($"receive message {message.GetType()}");
 			OnClientReceiveMessage?.Invoke(message);
 		}
 

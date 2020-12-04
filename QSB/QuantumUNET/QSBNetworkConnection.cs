@@ -354,38 +354,16 @@ namespace QSB.QuantumUNET
 
 		protected void HandleReader(NetworkReader reader, int receivedSize, int channelId)
 		{
-			DebugLog.DebugWrite($"handle reader size:{receivedSize}");
 			while (reader.Position < receivedSize)
 			{
 				var num = reader.ReadUInt16();
 				var num2 = reader.ReadInt16();
 				var array = reader.ReadBytes((int)num);
 				var reader2 = new QSBNetworkReader(array);
-				var stringBuilder = new StringBuilder();
-				for (var i = 0; i < (int)num; i++)
-				{
-					stringBuilder.AppendFormat("{0:X2}", array[i]);
-					if (i > 150)
-					{
-						break;
-					}
-				}
-				DebugLog.DebugWrite(string.Concat(new object[]
-				{
-					"ConnectionRecv con:",
-					connectionId,
-					" bytes:",
-					num,
-					" msgId:",
-					num2,
-					" ",
-					stringBuilder
-				}));
 				QSBNetworkMessageDelegate networkMessageDelegate = null;
 				if (m_MessageHandlersDict.ContainsKey(num2))
 				{
 					networkMessageDelegate = m_MessageHandlersDict[num2];
-					DebugLog.DebugWrite(networkMessageDelegate.GetMethodName());
 				}
 				if (networkMessageDelegate == null)
 				{

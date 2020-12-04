@@ -201,7 +201,6 @@ namespace QSB.QuantumUNET
 					}));
 					return;
 				}
-				DebugLog.DebugWrite($"OnStartServer {gameObject} GUID:{NetId}");
 				QSBNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
 				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 				{
@@ -328,7 +327,6 @@ namespace QSB.QuantumUNET
 
 		internal void UNetSerializeAllVars(QSBNetworkWriter writer)
 		{
-			DebugLog.DebugWrite($"Sync all vars (NetId:{NetId}, Gameobject:{gameObject.name})");
 			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 			{
 				var networkBehaviour = m_NetworkBehaviours[i];
@@ -588,7 +586,6 @@ namespace QSB.QuantumUNET
 				{
 					if ((num & (1U << j)) != 0U)
 					{
-						DebugLog.DebugWrite("sending update vars message");
 						s_UpdateWriter.StartMessage(8);
 						s_UpdateWriter.Write(NetId);
 						var flag = false;
@@ -624,7 +621,6 @@ namespace QSB.QuantumUNET
 						}
 						if (flag)
 						{
-							DebugLog.DebugWrite("FINISH MESSAGE");
 							s_UpdateWriter.FinishMessage();
 							QSBNetworkServer.SendWriterToReady(base.gameObject, s_UpdateWriter, j);
 						}

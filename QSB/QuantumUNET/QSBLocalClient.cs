@@ -103,7 +103,7 @@ namespace QSB.QuantumUNET
 					}
 					else
 					{
-						s_InternalMessage.Reader.GetType().GetMethod("Replace", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public).Invoke(s_InternalMessage.Reader, new object[] { t.buffer });
+						s_InternalMessage.Reader.Replace(t.buffer);
 					}
 					s_InternalMessage.Reader.ReadInt16();
 					s_InternalMessage.ChannelId = t.channelId;

@@ -138,7 +138,6 @@
     <Compile Include="QuantumUNET\QSBCRCMessageEntry.cs" />
     <Compile Include="QuantumUNET\QSBEmptyMessage.cs" />
     <Compile Include="QuantumUNET\QSBErrorMessage.cs" />
-    <Compile Include="QuantumUNET\QSBFloatConversion.cs" />
     <Compile Include="QuantumUNET\QSBMessageBase.cs" />
     <Compile Include="QuantumUNET\QSBNetworkCRC.cs" />
     <Compile Include="QuantumUNET\QSBChannelPacket.cs" />
@@ -212,8 +211,6 @@
     <Compile Include="QuantumUNET\QSBRemovePlayerMessage.cs" />
     <Compile Include="QSBSceneManager.cs" />
     <Compile Include="QuantumUNET\QSBStringMessage.cs" />
-    <Compile Include="QuantumUNET\QSBUIntDecimal.cs" />
-    <Compile Include="QuantumUNET\QSBUIntFloat.cs" />
     <Compile Include="QuantumUNET\QSBULocalConnectionToClient.cs" />
     <Compile Include="QuantumUNET\QSBULocalConnectionToServer.cs" />
     <Compile Include="QuantumUNET\QSBUtility.cs" />

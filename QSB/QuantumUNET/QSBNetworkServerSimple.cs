@@ -236,7 +236,6 @@ namespace QSB.QuantumUNET
 
 		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{
-			DebugLog.DebugWrite($"Registering message {msgType}.");
 			m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 		}
 

@@ -553,7 +553,6 @@ namespace QSB.QuantumUNET
 
 		internal void ContinueConnect()
 		{
-			DebugLog.DebugWrite("continue connect");
 			if (m_UseSimulator)
 			{
 				int num = m_SimulatedLatency / 3;
@@ -833,18 +832,6 @@ namespace QSB.QuantumUNET
 					{
 						m_Connection.LastError = (NetworkError)b;
 					}
-					if (networkEventType != NetworkEventType.Nothing)
-					{
-						DebugLog.DebugWrite(string.Concat(new object[]
-						{
-							"Client event: host=",
-							m_ClientId,
-							" event=",
-							networkEventType,
-							" error=",
-							b
-						}));
-					}
 					switch (networkEventType)
 					{
 						case NetworkEventType.DataEvent:
@@ -1057,13 +1044,11 @@ namespace QSB.QuantumUNET
 
 		public void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler)
 		{
-			DebugLog.DebugWrite($"Register event id {msgType}");
 			m_MessageHandlers.RegisterHandler(msgType, handler);
 		}
 
 		public void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{
-			DebugLog.DebugWrite($"Safe register event id {msgType}");
 			m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 		}
 
@@ -1135,7 +1120,6 @@ namespace QSB.QuantumUNET
 
 		internal static void SetActive(bool state)
 		{
-			DebugLog.DebugWrite("set active");
 			if (!s_IsActive && state)
 			{
 				NetworkTransport.Init();

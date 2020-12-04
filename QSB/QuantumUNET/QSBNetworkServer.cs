@@ -522,19 +522,16 @@ namespace QSB.QuantumUNET
 
 		public static void SendWriterToReady(GameObject contextObj, QSBNetworkWriter writer, int channelId)
 		{
-			DebugLog.DebugWrite("send writer to ready");
-			var arraySegment = (ArraySegment<byte>)writer.GetType().GetMethod("AsArraySegment").Invoke(writer, null);
+			var arraySegment = writer.AsArraySegment();
 			if (arraySegment.Count > 32767)
 			{
 				throw new UnityException("NetworkWriter used buffer is too big!");
 			}
-			DebugLog.DebugWrite("pre send bytes");
 			SendBytesToReady(contextObj, arraySegment.Array, arraySegment.Count, channelId);
 		}
 
 		public static void SendBytesToReady(GameObject contextObj, byte[] buffer, int numBytes, int channelId)
 		{
-			DebugLog.DebugWrite("send bytes to ready");
 			if (contextObj == null)
 			{
 				var flag = true;
@@ -543,15 +540,10 @@ namespace QSB.QuantumUNET
 					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
-						DebugLog.DebugWrite($"sending bytes to connection {networkConnection.connectionId}");
 						if (!networkConnection.SendBytes(buffer, numBytes, channelId))
 						{
 							flag = false;
 						}
-					}
-					else
-					{
-						DebugLog.DebugWrite($"- Connection {networkConnection.connectionId} is not ready!");
 					}
 				}
 				if (!flag)
@@ -571,15 +563,10 @@ namespace QSB.QuantumUNET
 						var networkConnection2 = component.Observers[j];
 						if (networkConnection2.isReady)
 						{
-							DebugLog.DebugWrite($"sending bytes to connection {networkConnection2.connectionId}");
 							if (!networkConnection2.SendBytes(buffer, numBytes, channelId))
 							{
 								flag2 = false;
 							}
-						}
-						else
-						{
-							DebugLog.DebugWrite($"- Connection {networkConnection2.connectionId} is not ready!");
 						}
 					}
 					if (!flag2)
@@ -1472,13 +1459,6 @@ namespace QSB.QuantumUNET
 			{
 				networkIdentity.Reset();
 				networkIdentity.OnStartServer(false);
-				DebugLog.DebugWrite(string.Concat(new object[]
-				{
-					"SpawnObject instance ID ",
-					networkIdentity.NetId,
-					" asset ID ",
-					networkIdentity.AssetId
-				}));
 				networkIdentity.RebuildObservers(true);
 			}
 		}

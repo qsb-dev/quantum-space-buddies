@@ -54,7 +54,6 @@ namespace QSB
 			ident.SetValue("m_SceneId", playerPrefab.GetComponent<NetworkIdentity>().sceneId);
 			Destroy(playerPrefab.GetComponent<NetworkTransform>());
 			Destroy(playerPrefab.GetComponent<NetworkIdentity>());
-			DebugLog.DebugWrite(ident.LocalPlayerAuthority.ToString());
 			var transform = playerPrefab.AddComponent<QSBNetworkTransform>();
 			transform.SendInterval = 0.1f;
 			transform.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
@@ -70,7 +69,6 @@ namespace QSB
 			ident.SetValue("m_SceneId", _shipPrefab.GetComponent<NetworkIdentity>().sceneId);
 			Destroy(_shipPrefab.GetComponent<NetworkTransform>());
 			Destroy(_shipPrefab.GetComponent<NetworkIdentity>());
-			DebugLog.DebugWrite(ident.LocalPlayerAuthority.ToString());
 			transform = _shipPrefab.AddComponent<QSBNetworkTransform>();
 			transform.SendInterval = 0.1f;
 			transform.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
@@ -84,7 +82,6 @@ namespace QSB
 			ident.SetValue("m_SceneId", _cameraPrefab.GetComponent<NetworkIdentity>().sceneId);
 			Destroy(_cameraPrefab.GetComponent<NetworkTransform>());
 			Destroy(_cameraPrefab.GetComponent<NetworkIdentity>());
-			DebugLog.DebugWrite(ident.LocalPlayerAuthority.ToString());
 			transform = _cameraPrefab.AddComponent<QSBNetworkTransform>();
 			transform.SendInterval = 0.1f;
 			transform.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
@@ -98,7 +95,6 @@ namespace QSB
 			ident.SetValue("m_SceneId", _probePrefab.GetComponent<NetworkIdentity>().sceneId);
 			Destroy(_probePrefab.GetComponent<NetworkTransform>());
 			Destroy(_probePrefab.GetComponent<NetworkIdentity>());
-			DebugLog.DebugWrite(ident.LocalPlayerAuthority.ToString());
 			transform = _probePrefab.AddComponent<QSBNetworkTransform>();
 			transform.SendInterval = 0.1f;
 			transform.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;

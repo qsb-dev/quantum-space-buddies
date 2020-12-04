@@ -176,7 +176,7 @@ namespace QSB.QuantumUNET
 
 		public bool SendWriter(QSBNetworkWriter writer)
 		{
-			var arraySegment = (ArraySegment<byte>)writer.GetType().GetMethod("AsArraySegment", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(writer, null);
+			var arraySegment = writer.AsArraySegment();
 			return SendBytes(arraySegment.Array, arraySegment.Count);
 		}
 

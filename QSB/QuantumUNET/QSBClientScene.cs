@@ -325,7 +325,6 @@ namespace QSB.QuantumUNET
 				{
 					var msg = new QSBReadyMessage();
 					conn.Send(35, msg);
-					DebugLog.DebugWrite("SENDING READY");
 					ready = true;
 					readyConnection = conn;
 					readyConnection.isReady = true;
@@ -502,7 +501,6 @@ namespace QSB.QuantumUNET
 
 		private static void OnObjectSpawn(QSBNetworkMessage netMsg)
 		{
-			DebugLog.DebugWrite("OnObjectSpawn");
 			netMsg.ReadMessage<QSBObjectSpawnMessage>(s_ObjectSpawnMessage);
 			if (!s_ObjectSpawnMessage.assetId.IsValid())
 			{
@@ -510,16 +508,6 @@ namespace QSB.QuantumUNET
 			}
 			else
 			{
-				DebugLog.DebugWrite(string.Concat(new object[]
-				{
-					"Client spawn handler instantiating [netId:",
-					s_ObjectSpawnMessage.NetId,
-					" asset ID:",
-					s_ObjectSpawnMessage.assetId,
-					" pos:",
-					s_ObjectSpawnMessage.Position,
-					"]"
-				}));
 				if (s_NetworkScene.GetNetworkIdentity(s_ObjectSpawnMessage.NetId, out var component))
 				{
 					ApplySpawnPayload(component, s_ObjectSpawnMessage.Position, s_ObjectSpawnMessage.Payload, s_ObjectSpawnMessage.NetId, null);
@@ -527,21 +515,6 @@ namespace QSB.QuantumUNET
 				else if (QSBNetworkScene.GetPrefab(s_ObjectSpawnMessage.assetId, out var original))
 				{
 					GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(original, s_ObjectSpawnMessage.Position, s_ObjectSpawnMessage.Rotation);
-					if (LogFilter.logDebug)
-					{
-						DebugLog.DebugWrite(string.Concat(new object[]
-						{
-							"Client spawn handler instantiating [netId:",
-							s_ObjectSpawnMessage.NetId,
-							" asset ID:",
-							s_ObjectSpawnMessage.assetId,
-							" pos:",
-							s_ObjectSpawnMessage.Position,
-							" rotation: ",
-							s_ObjectSpawnMessage.Rotation,
-							"]"
-						}));
-					}
 					component = gameObject.GetComponent<QSBNetworkIdentity>();
 					if (component == null)
 					{
@@ -591,18 +564,6 @@ namespace QSB.QuantumUNET
 		private static void OnObjectSpawnScene(QSBNetworkMessage netMsg)
 		{
 			netMsg.ReadMessage<QSBObjectSpawnSceneMessage>(s_ObjectSpawnSceneMessage);
-			if (LogFilter.logDebug)
-			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"Client spawn scene handler instantiating [netId:",
-					s_ObjectSpawnSceneMessage.NetId,
-					" sceneId:",
-					s_ObjectSpawnSceneMessage.SceneId,
-					" pos:",
-					s_ObjectSpawnSceneMessage.Position
-				}));
-			}
 			if (s_NetworkScene.GetNetworkIdentity(s_ObjectSpawnSceneMessage.NetId, out var networkIdentity))
 			{
 				ApplySpawnPayload(networkIdentity, s_ObjectSpawnSceneMessage.Position, s_ObjectSpawnSceneMessage.Payload, s_ObjectSpawnSceneMessage.NetId, networkIdentity.gameObject);
@@ -737,13 +698,6 @@ namespace QSB.QuantumUNET
 		private static void OnUpdateVarsMessage(QSBNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
-			DebugLog.DebugWrite(string.Concat(new object[]
-			{
-				"ClientScene::OnUpdateVarsMessage ",
-				networkInstanceId,
-				" channel:",
-				netMsg.ChannelId
-			}));
 			if (s_NetworkScene.GetNetworkIdentity(networkInstanceId, out var networkIdentity))
 			{
 				networkIdentity.OnUpdateVars(netMsg.Reader, false);

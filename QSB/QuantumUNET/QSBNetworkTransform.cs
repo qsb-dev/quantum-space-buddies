@@ -119,7 +119,6 @@ namespace QSB.QuantumUNET
 
 		private void SerializeModeTransform(QSBNetworkWriter writer)
 		{
-			DebugLog.DebugWrite("serialize");
 			writer.Write(transform.position);
 			if (SyncRotationAxis != AxisSyncMode.None)
 			{
