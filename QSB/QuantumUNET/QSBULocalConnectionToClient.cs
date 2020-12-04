@@ -18,19 +18,19 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public override bool Send(short msgType, MessageBase msg)
+		public override bool Send(short msgType, QSBMessageBase msg)
 		{
 			m_LocalClient.InvokeHandlerOnClient(msgType, msg, 0);
 			return true;
 		}
 
-		public override bool SendUnreliable(short msgType, MessageBase msg)
+		public override bool SendUnreliable(short msgType, QSBMessageBase msg)
 		{
 			m_LocalClient.InvokeHandlerOnClient(msgType, msg, 1);
 			return true;
 		}
 
-		public override bool SendByChannel(short msgType, MessageBase msg, int channelId)
+		public override bool SendByChannel(short msgType, QSBMessageBase msg, int channelId)
 		{
 			m_LocalClient.InvokeHandlerOnClient(msgType, msg, channelId);
 			return true;
@@ -42,7 +42,7 @@ namespace QSB.QuantumUNET
 			return true;
 		}
 
-		public override bool SendWriter(NetworkWriter writer, int channelId)
+		public override bool SendWriter(QSBNetworkWriter writer, int channelId)
 		{
 			m_LocalClient.InvokeBytesOnClient(writer.AsArray(), channelId);
 			return true;

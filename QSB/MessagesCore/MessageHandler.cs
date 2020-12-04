@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 namespace QSB.Messaging
 {
 	// Extend this to create new message handlers.
-	public class MessageHandler<T> where T : MessageBase, new()
+	public class MessageHandler<T> where T : QSBMessageBase, new()
 	{
 		public event Action<T> OnClientReceiveMessage;
 
@@ -63,6 +63,7 @@ namespace QSB.Messaging
 		private void OnClientReceiveMessageHandler(QSBNetworkMessage netMsg)
 		{
 			var message = netMsg.ReadMessage<T>();
+			DebugLog.DebugWrite($"receive message {message.GetType()}");
 			OnClientReceiveMessage?.Invoke(message);
 		}
 

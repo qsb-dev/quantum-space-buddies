@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.QuantumUNET;
 using UnityEngine.Networking;
 
 namespace QSB.ConversationSync.Events
@@ -9,7 +10,7 @@ namespace QSB.ConversationSync.Events
 		public uint PlayerId { get; set; }
 		public bool State { get; set; }
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			CharacterId = reader.ReadInt32();
@@ -17,7 +18,7 @@ namespace QSB.ConversationSync.Events
 			State = reader.ReadBoolean();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(CharacterId);

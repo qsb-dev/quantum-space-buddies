@@ -8,17 +8,17 @@ namespace QSB.QuantumUNET
 		public const int MaxMessageSize = 65535;
 		public short MsgType;
 		public QSBNetworkConnection Connection;
-		public NetworkReader Reader;
+		public QSBNetworkReader Reader;
 		public int ChannelId;
 
-		public TMsg ReadMessage<TMsg>() where TMsg : MessageBase, new()
+		public TMsg ReadMessage<TMsg>() where TMsg : QSBMessageBase, new()
 		{
 			var result = Activator.CreateInstance<TMsg>();
 			result.Deserialize(Reader);
 			return result;
 		}
 
-		public void ReadMessage<TMsg>(TMsg msg) where TMsg : MessageBase
+		public void ReadMessage<TMsg>(TMsg msg) where TMsg : QSBMessageBase
 		{
 			msg.Deserialize(Reader);
 		}

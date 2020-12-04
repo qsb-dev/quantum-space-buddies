@@ -32,8 +32,8 @@ namespace QSB.QuantumUNET
 		private static List<QSBChannelPacket> _freePackets;
 		internal static int _pendingPacketCount;
 		private float _lastBufferedMessageCountTimer = Time.realtimeSinceStartup;
-		private static NetworkWriter _sendWriter = new NetworkWriter();
-		private static NetworkWriter _fragmentWriter = new NetworkWriter();
+		private static QSBNetworkWriter _sendWriter = new QSBNetworkWriter();
+		private static QSBNetworkWriter _fragmentWriter = new QSBNetworkWriter();
 		private const int _packetHeaderReserveSize = 100;
 		private bool _disposed;
 		internal QSBNetBuffer _fragmentBuffer = new QSBNetBuffer();
@@ -174,13 +174,13 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public bool SendWriter(NetworkWriter writer)
+		public bool SendWriter(QSBNetworkWriter writer)
 		{
 			var arraySegment = (ArraySegment<byte>)writer.GetType().GetMethod("AsArraySegment", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic).Invoke(writer, null);
 			return SendBytes(arraySegment.Array, arraySegment.Count);
 		}
 
-		public bool Send(short msgType, MessageBase msg)
+		public bool Send(short msgType, QSBMessageBase msg)
 		{
 			_sendWriter.StartMessage(msgType);
 			msg.Serialize(_sendWriter);
@@ -189,7 +189,7 @@ namespace QSB.QuantumUNET
 			return SendWriter(_sendWriter);
 		}
 
-		internal bool HandleFragment(NetworkReader reader)
+		internal bool HandleFragment(QSBNetworkReader reader)
 		{
 			bool result;
 			if (reader.ReadByte() == 0)

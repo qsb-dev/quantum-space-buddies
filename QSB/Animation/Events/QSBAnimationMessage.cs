@@ -1,15 +1,16 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.QuantumUNET;
+using UnityEngine.Networking;
 
 namespace QSB.Animation.Events
 {
-	internal class QSBAnimationMessage : MessageBase
+	internal class QSBAnimationMessage : QSBMessageBase
 	{
 		public NetworkInstanceId netId;
 		public int stateHash;
 		public float normalizedTime;
 		public byte[] parameters;
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			netId = reader.ReadNetworkId();
 			stateHash = (int)reader.ReadPackedUInt32();
@@ -17,7 +18,7 @@ namespace QSB.Animation.Events
 			parameters = reader.ReadBytesAndSize();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(netId);
 			writer.WritePackedUInt32((uint)stateHash);

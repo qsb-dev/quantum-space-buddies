@@ -11,7 +11,7 @@ namespace QSB.QuantumUNET
 	{
 		private static bool HasMigrationPending() => reconnectId != -1;
 
-		public static void SetReconnectId(int newReconnectId, PeerInfoMessage[] peers)
+		public static void SetReconnectId(int newReconnectId, QSBPeerInfoMessage[] peers)
 		{
 			reconnectId = newReconnectId;
 			s_Peers = peers;
@@ -110,7 +110,7 @@ namespace QSB.QuantumUNET
 
 		public static bool AddPlayer(QSBNetworkConnection readyConn, short playerControllerId) => AddPlayer(readyConn, playerControllerId, null);
 
-		public static bool AddPlayer(QSBNetworkConnection readyConn, short playerControllerId, MessageBase extraMessage)
+		public static bool AddPlayer(QSBNetworkConnection readyConn, short playerControllerId, QSBMessageBase extraMessage)
 		{
 			bool result;
 			if (playerControllerId < 0)
@@ -188,13 +188,13 @@ namespace QSB.QuantumUNET
 				}
 				if (!HasMigrationPending())
 				{
-					var addPlayerMessage = new AddPlayerMessage
+					var addPlayerMessage = new QSBAddPlayerMessage
 					{
 						playerControllerId = playerControllerId
 					};
 					if (extraMessage != null)
 					{
-						var networkWriter = new NetworkWriter();
+						var networkWriter = new QSBNetworkWriter();
 						extraMessage.Serialize(networkWriter);
 						addPlayerMessage.msgData = networkWriter.ToArray();
 						addPlayerMessage.msgSize = (int)networkWriter.Position;
@@ -210,7 +210,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public static bool SendReconnectMessage(MessageBase extraMessage)
+		public static bool SendReconnectMessage(QSBMessageBase extraMessage)
 		{
 			bool result;
 			if (!HasMigrationPending())
@@ -243,7 +243,7 @@ namespace QSB.QuantumUNET
 							{
 								for (var j = 0; j < peerInfoMessage.playerIds.Length; j++)
 								{
-									var reconnectMessage = new ReconnectMessage
+									var reconnectMessage = new QSBReconnectMessage
 									{
 										oldConnectionId = reconnectId,
 										netId = peerInfoMessage.playerIds[j].netId,
@@ -251,7 +251,7 @@ namespace QSB.QuantumUNET
 									};
 									if (extraMessage != null)
 									{
-										var networkWriter = new NetworkWriter();
+										var networkWriter = new QSBNetworkWriter();
 										extraMessage.Serialize(networkWriter);
 										reconnectMessage.msgData = networkWriter.ToArray();
 										reconnectMessage.msgSize = (int)networkWriter.Position;
@@ -284,9 +284,9 @@ namespace QSB.QuantumUNET
 			bool result;
 			if (readyConnection.GetPlayerController(playerControllerId, out var playerController))
 			{
-				var removePlayerMessage = new RemovePlayerMessage
+				var removePlayerMessage = new QSBRemovePlayerMessage
 				{
-					playerControllerId = playerControllerId
+					PlayerControllerId = playerControllerId
 				};
 				readyConnection.Send(38, removePlayerMessage);
 				readyConnection.RemovePlayerController(playerControllerId);
@@ -324,8 +324,9 @@ namespace QSB.QuantumUNET
 				}
 				if (conn != null)
 				{
-					var msg = new ReadyMessage();
+					var msg = new QSBReadyMessage();
 					conn.Send(35, msg);
+					DebugLog.DebugWrite("SENDING READY");
 					ready = true;
 					readyConnection = conn;
 					readyConnection.isReady = true;
@@ -484,7 +485,7 @@ namespace QSB.QuantumUNET
 			uv.transform.position = position;
 			if (payload != null && payload.Length > 0)
 			{
-				var reader = new NetworkReader(payload);
+				var reader = new QSBNetworkReader(payload);
 				uv.OnUpdateVars(reader, true);
 			}
 			if (!(newGameObject == null))
@@ -502,6 +503,7 @@ namespace QSB.QuantumUNET
 
 		private static void OnObjectSpawn(QSBNetworkMessage netMsg)
 		{
+			DebugLog.DebugWrite("OnObjectSpawn");
 			netMsg.ReadMessage<QSBObjectSpawnMessage>(s_ObjectSpawnMessage);
 			if (!s_ObjectSpawnMessage.assetId.IsValid())
 			{
@@ -736,7 +738,7 @@ namespace QSB.QuantumUNET
 		private static void OnUpdateVarsMessage(QSBNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
-			Debug.Log(string.Concat(new object[]
+			DebugLog.DebugWrite(string.Concat(new object[]
 			{
 				"ClientScene::OnUpdateVarsMessage ",
 				networkInstanceId,
@@ -921,7 +923,7 @@ namespace QSB.QuantumUNET
 
 		public const int ReconnectIdHost = 0;
 
-		private static PeerInfoMessage[] s_Peers;
+		private static QSBPeerInfoMessage[] s_Peers;
 
 		private static List<PendingOwner> s_PendingOwnerIds = new List<PendingOwner>();
 

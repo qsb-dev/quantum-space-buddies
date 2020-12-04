@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace QSB.QuantumUNET
 	{
 		public QSBNetworkConnection()
 		{
-			m_Writer = new NetworkWriter();
+			m_Writer = new QSBNetworkWriter();
 		}
 
 		internal HashSet<QSBNetworkIdentity> VisList { get; } = new HashSet<QSBNetworkIdentity>();
@@ -27,7 +28,7 @@ namespace QSB.QuantumUNET
 
 		public virtual void Initialize(string networkAddress, int networkHostId, int networkConnectionId, HostTopology hostTopology)
 		{
-			m_Writer = new NetworkWriter();
+			m_Writer = new QSBNetworkWriter();
 			address = networkAddress;
 			hostId = networkHostId;
 			connectionId = networkConnectionId;
@@ -115,7 +116,7 @@ namespace QSB.QuantumUNET
 
 		public bool InvokeHandlerNoData(short msgType) => InvokeHandler(msgType, null, 0);
 
-		public bool InvokeHandler(short msgType, NetworkReader reader, int channelId)
+		public bool InvokeHandler(short msgType, QSBNetworkReader reader, int channelId)
 		{
 			bool result;
 			if (m_MessageHandlersDict.ContainsKey(msgType))
@@ -162,14 +163,14 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal void HandleFragment(NetworkReader reader, int channelId)
+		internal void HandleFragment(QSBNetworkReader reader, int channelId)
 		{
 			if (channelId >= 0 && channelId < m_Channels.Length)
 			{
 				var channelBuffer = m_Channels[channelId];
 				if (channelBuffer.HandleFragment(reader))
 				{
-					var networkReader = new NetworkReader(channelBuffer._fragmentBuffer.AsArraySegment().Array);
+					var networkReader = new QSBNetworkReader(channelBuffer._fragmentBuffer.AsArraySegment().Array);
 					networkReader.ReadInt16();
 					var msgType = networkReader.ReadInt16();
 					InvokeHandler(msgType, networkReader, channelId);
@@ -252,11 +253,11 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public virtual bool Send(short msgType, MessageBase msg) => SendByChannel(msgType, msg, 0);
+		public virtual bool Send(short msgType, QSBMessageBase msg) => SendByChannel(msgType, msg, 0);
 
-		public virtual bool SendUnreliable(short msgType, MessageBase msg) => SendByChannel(msgType, msg, 1);
+		public virtual bool SendUnreliable(short msgType, QSBMessageBase msg) => SendByChannel(msgType, msg, 1);
 
-		public virtual bool SendByChannel(short msgType, MessageBase msg, int channelId)
+		public virtual bool SendByChannel(short msgType, QSBMessageBase msg, int channelId)
 		{
 			m_Writer.StartMessage(msgType);
 			msg.Serialize(m_Writer);
@@ -273,7 +274,7 @@ namespace QSB.QuantumUNET
 			return CheckChannel(channelId) && m_Channels[channelId].SendBytes(bytes, numBytes);
 		}
 
-		public virtual bool SendWriter(NetworkWriter writer, int channelId)
+		public virtual bool SendWriter(QSBNetworkWriter writer, int channelId)
 		{
 			if (logNetworkMessages)
 			{
@@ -353,52 +354,48 @@ namespace QSB.QuantumUNET
 
 		protected void HandleReader(NetworkReader reader, int receivedSize, int channelId)
 		{
-			while ((ulong)reader.Position < (ulong)((long)receivedSize))
+			DebugLog.DebugWrite($"handle reader size:{receivedSize}");
+			while (reader.Position < receivedSize)
 			{
 				var num = reader.ReadUInt16();
 				var num2 = reader.ReadInt16();
 				var array = reader.ReadBytes((int)num);
-				var reader2 = new NetworkReader(array);
-				if (logNetworkMessages)
+				var reader2 = new QSBNetworkReader(array);
+				var stringBuilder = new StringBuilder();
+				for (var i = 0; i < (int)num; i++)
 				{
-					var stringBuilder = new StringBuilder();
-					for (var i = 0; i < (int)num; i++)
+					stringBuilder.AppendFormat("{0:X2}", array[i]);
+					if (i > 150)
 					{
-						stringBuilder.AppendFormat("{0:X2}", array[i]);
-						if (i > 150)
-						{
-							break;
-						}
+						break;
 					}
-					Debug.Log(string.Concat(new object[]
-					{
-						"ConnectionRecv con:",
-						connectionId,
-						" bytes:",
-						num,
-						" msgId:",
-						num2,
-						" ",
-						stringBuilder
-					}));
 				}
+				DebugLog.DebugWrite(string.Concat(new object[]
+				{
+					"ConnectionRecv con:",
+					connectionId,
+					" bytes:",
+					num,
+					" msgId:",
+					num2,
+					" ",
+					stringBuilder
+				}));
 				QSBNetworkMessageDelegate networkMessageDelegate = null;
 				if (m_MessageHandlersDict.ContainsKey(num2))
 				{
 					networkMessageDelegate = m_MessageHandlersDict[num2];
+					DebugLog.DebugWrite(networkMessageDelegate.GetMethodName());
 				}
 				if (networkMessageDelegate == null)
 				{
-					if (LogFilter.logError)
+					DebugLog.ToConsole(string.Concat(new object[]
 					{
-						Debug.LogError(string.Concat(new object[]
-						{
-							"Unknown message ID ",
-							num2,
-							" connId:",
-							connectionId
-						}));
-					}
+						"Unknown message ID ",
+						num2,
+						" connId:",
+						connectionId
+					}));
 					break;
 				}
 				m_NetMsg.MsgType = num2;
@@ -501,7 +498,7 @@ namespace QSB.QuantumUNET
 
 		private QSBChannelBuffer[] m_Channels;
 		private readonly QSBNetworkMessage m_NetMsg = new QSBNetworkMessage();
-		private NetworkWriter m_Writer;
+		private QSBNetworkWriter m_Writer;
 
 		private Dictionary<short, QSBNetworkMessageDelegate> m_MessageHandlersDict;
 

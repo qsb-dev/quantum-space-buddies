@@ -169,7 +169,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public PeerInfoMessage[] peers
+		public QSBPeerInfoMessage[] peers
 		{
 			get
 			{
@@ -206,7 +206,7 @@ namespace QSB.QuantumUNET
 
 		internal void AssignAuthorityCallback(QSBNetworkConnection conn, QSBNetworkIdentity uv, bool authorityState)
 		{
-			PeerAuthorityMessage peerAuthorityMessage = new PeerAuthorityMessage();
+			QSBPeerAuthorityMessage peerAuthorityMessage = new QSBPeerAuthorityMessage();
 			peerAuthorityMessage.connectionId = conn.connectionId;
 			peerAuthorityMessage.netId = uv.NetId;
 			peerAuthorityMessage.authorityState = authorityState;
@@ -241,12 +241,12 @@ namespace QSB.QuantumUNET
 			{
 				for (int i = 0; i < this.m_Peers.Length; i++)
 				{
-					PeerInfoMessage peerInfoMessage = this.m_Peers[i];
+					QSBPeerInfoMessage peerInfoMessage = this.m_Peers[i];
 					if (peerInfoMessage.playerIds != null)
 					{
 						for (int j = 0; j < peerInfoMessage.playerIds.Length; j++)
 						{
-							PeerInfoPlayer peerInfoPlayer = peerInfoMessage.playerIds[j];
+							QSBPeerInfoPlayer peerInfoPlayer = peerInfoMessage.playerIds[j];
 							Debug.Log(string.Concat(new object[]
 							{
 								"DisablePlayerObjects disable player for ",
@@ -282,14 +282,14 @@ namespace QSB.QuantumUNET
 		{
 			if (this.m_HostMigration)
 			{
-				PeerListMessage peerListMessage = new PeerListMessage();
-				List<PeerInfoMessage> list = new List<PeerInfoMessage>();
+				QSBPeerListMessage peerListMessage = new QSBPeerListMessage();
+				List<QSBPeerInfoMessage> list = new List<QSBPeerInfoMessage>();
 				for (int i = 0; i < QSBNetworkServer.connections.Count; i++)
 				{
 					QSBNetworkConnection networkConnection = QSBNetworkServer.connections[i];
 					if (networkConnection != null)
 					{
-						PeerInfoMessage peerInfoMessage = new PeerInfoMessage();
+						QSBPeerInfoMessage peerInfoMessage = new QSBPeerInfoMessage();
 						string address;
 						int port;
 						NetworkID networkID;
@@ -309,13 +309,13 @@ namespace QSB.QuantumUNET
 							peerInfoMessage.address = address;
 							peerInfoMessage.isHost = false;
 						}
-						List<PeerInfoPlayer> list2 = new List<PeerInfoPlayer>();
+						List<QSBPeerInfoPlayer> list2 = new List<QSBPeerInfoPlayer>();
 						for (int j = 0; j < networkConnection.PlayerControllers.Count; j++)
 						{
 							QSBPlayerController playerController = networkConnection.PlayerControllers[j];
 							if (playerController != null && playerController.UnetView != null)
 							{
-								PeerInfoPlayer item;
+								QSBPeerInfoPlayer item;
 								item.netId = playerController.UnetView.NetId;
 								item.playerControllerId = playerController.UnetView.PlayerControllerId;
 								list2.Add(item);
@@ -331,7 +331,7 @@ namespace QSB.QuantumUNET
 									QSBNetworkIdentity component = gameObject.GetComponent<QSBNetworkIdentity>();
 									if (component.PlayerControllerId == -1)
 									{
-										PeerInfoPlayer item2;
+										QSBPeerInfoPlayer item2;
 										item2.netId = netId;
 										item2.playerControllerId = -1;
 										list2.Add(item2);
@@ -361,7 +361,7 @@ namespace QSB.QuantumUNET
 
 		private void OnPeerClientAuthority(QSBNetworkMessage netMsg)
 		{
-			PeerAuthorityMessage peerAuthorityMessage = netMsg.ReadMessage<PeerAuthorityMessage>();
+			QSBPeerAuthorityMessage peerAuthorityMessage = netMsg.ReadMessage<QSBPeerAuthorityMessage>();
 			if (LogFilter.logDebug)
 			{
 				Debug.Log("OnPeerClientAuthority for netId:" + peerAuthorityMessage.netId);
@@ -370,12 +370,12 @@ namespace QSB.QuantumUNET
 			{
 				for (int i = 0; i < this.m_Peers.Length; i++)
 				{
-					PeerInfoMessage peerInfoMessage = this.m_Peers[i];
+					QSBPeerInfoMessage peerInfoMessage = this.m_Peers[i];
 					if (peerInfoMessage.connectionId == peerAuthorityMessage.connectionId)
 					{
 						if (peerInfoMessage.playerIds == null)
 						{
-							peerInfoMessage.playerIds = new PeerInfoPlayer[0];
+							peerInfoMessage.playerIds = new QSBPeerInfoPlayer[0];
 						}
 						if (peerAuthorityMessage.authorityState)
 						{
@@ -386,10 +386,10 @@ namespace QSB.QuantumUNET
 									return;
 								}
 							}
-							PeerInfoPlayer item = default(PeerInfoPlayer);
+							QSBPeerInfoPlayer item = default(QSBPeerInfoPlayer);
 							item.netId = peerAuthorityMessage.netId;
 							item.playerControllerId = -1;
-							peerInfoMessage.playerIds = new List<PeerInfoPlayer>(peerInfoMessage.playerIds)
+							peerInfoMessage.playerIds = new List<QSBPeerInfoPlayer>(peerInfoMessage.playerIds)
 							{
 								item
 							}.ToArray();
@@ -400,7 +400,7 @@ namespace QSB.QuantumUNET
 							{
 								if (peerInfoMessage.playerIds[k].netId == peerAuthorityMessage.netId)
 								{
-									List<PeerInfoPlayer> list = new List<PeerInfoPlayer>(peerInfoMessage.playerIds);
+									List<QSBPeerInfoPlayer> list = new List<QSBPeerInfoPlayer>(peerInfoMessage.playerIds);
 									list.RemoveAt(k);
 									peerInfoMessage.playerIds = list.ToArray();
 									break;
@@ -420,7 +420,7 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("OnPeerInfo");
 			}
-			netMsg.ReadMessage<PeerListMessage>(this.m_PeerListMessage);
+			netMsg.ReadMessage<QSBPeerListMessage>(this.m_PeerListMessage);
 			this.m_Peers = this.m_PeerListMessage.peers;
 			this.m_OldServerConnectionId = this.m_PeerListMessage.oldServerConnectionId;
 			for (int i = 0; i < this.m_Peers.Length; i++)
@@ -446,7 +446,7 @@ namespace QSB.QuantumUNET
 
 		private void OnServerReconnectPlayerMessage(QSBNetworkMessage netMsg)
 		{
-			ReconnectMessage reconnectMessage = netMsg.ReadMessage<ReconnectMessage>();
+			QSBReconnectMessage reconnectMessage = netMsg.ReadMessage<QSBReconnectMessage>();
 			Debug.Log(string.Concat(new object[]
 			{
 				"OnReconnectMessage: connId=",
@@ -762,7 +762,7 @@ namespace QSB.QuantumUNET
 			this.ReconnectObjectForConnection(newConnection, oldObject, oldConnectionId);
 		}
 
-		protected virtual void OnPeersUpdated(PeerListMessage peers)
+		protected virtual void OnPeersUpdated(QSBPeerListMessage peers)
 		{
 			Debug.Log("NetworkMigrationManager NumPeers " + peers.peers.Length);
 		}
@@ -780,7 +780,7 @@ namespace QSB.QuantumUNET
 			}));
 		}
 
-		public virtual bool FindNewHost(out PeerInfoMessage newHostInfo, out bool youAreNewHost)
+		public virtual bool FindNewHost(out QSBPeerInfoMessage newHostInfo, out bool youAreNewHost)
 		{
 			bool result;
 			if (this.m_Peers == null)
@@ -796,7 +796,7 @@ namespace QSB.QuantumUNET
 			else
 			{
 				Debug.Log("NetworkMigrationManager FindLowestHost");
-				newHostInfo = new PeerInfoMessage();
+				newHostInfo = new QSBPeerInfoMessage();
 				newHostInfo.connectionId = 50000;
 				newHostInfo.address = "";
 				newHostInfo.port = 0;
@@ -810,7 +810,7 @@ namespace QSB.QuantumUNET
 				{
 					for (int i = 0; i < this.m_Peers.Length; i++)
 					{
-						PeerInfoMessage peerInfoMessage = this.m_Peers[i];
+						QSBPeerInfoMessage peerInfoMessage = this.m_Peers[i];
 						if (peerInfoMessage.connectionId != 0)
 						{
 							if (!peerInfoMessage.isHost)
@@ -1036,11 +1036,11 @@ namespace QSB.QuantumUNET
 
 		private string m_NewHostAddress;
 
-		private PeerInfoMessage m_NewHostInfo = new PeerInfoMessage();
+		private QSBPeerInfoMessage m_NewHostInfo = new QSBPeerInfoMessage();
 
-		private PeerListMessage m_PeerListMessage = new PeerListMessage();
+		private QSBPeerListMessage m_PeerListMessage = new QSBPeerListMessage();
 
-		private PeerInfoMessage[] m_Peers;
+		private QSBPeerInfoMessage[] m_Peers;
 
 		private Dictionary<int, ConnectionPendingPlayers> m_PendingPlayers = new Dictionary<int, ConnectionPendingPlayers>();
 

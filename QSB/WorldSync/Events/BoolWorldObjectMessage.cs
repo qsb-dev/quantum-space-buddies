@@ -1,4 +1,5 @@
-﻿using UnityEngine.Networking;
+﻿using QSB.QuantumUNET;
+using UnityEngine.Networking;
 
 namespace QSB.WorldSync.Events
 {
@@ -6,13 +7,13 @@ namespace QSB.WorldSync.Events
 	{
 		public bool State { get; set; }
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			State = reader.ReadBoolean();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(State);

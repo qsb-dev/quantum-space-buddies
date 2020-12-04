@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.QuantumUNET;
 using UnityEngine.Networking;
 
 namespace QSB.MessagesCore
@@ -7,13 +8,13 @@ namespace QSB.MessagesCore
 	{
 		public T Value;
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			Value = (T)(object)reader.ReadInt32();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write((int)(object)Value);

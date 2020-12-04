@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace QSB.QuantumUNET
 {
-	internal class QSBObjectSpawnMessage : MessageBase
+	internal class QSBObjectSpawnMessage : QSBMessageBase
 	{
 		public NetworkInstanceId NetId;
 		public NetworkHash128 assetId;
@@ -11,7 +11,7 @@ namespace QSB.QuantumUNET
 		public byte[] Payload;
 		public Quaternion Rotation;
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			NetId = reader.ReadNetworkId();
 			assetId = reader.ReadNetworkHash128();
@@ -23,7 +23,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(NetId);
 			writer.Write(assetId);

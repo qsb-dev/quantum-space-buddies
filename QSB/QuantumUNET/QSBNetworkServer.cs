@@ -235,7 +235,7 @@ namespace QSB.QuantumUNET
 		{
 			m_SimpleServerSimple.RegisterHandlerSafe((short)35, new QSBNetworkMessageDelegate(OnClientReadyMessage));
 			m_SimpleServerSimple.RegisterHandlerSafe((short)5, new QSBNetworkMessageDelegate(OnCommandMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe((short)6, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));
+			m_SimpleServerSimple.RegisterHandlerSafe(6, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));
 			//m_SimpleServerSimple.RegisterHandlerSafe((short)16, new QSBNetworkMessageDelegate(NetworkTransformChild.HandleChildTransform));
 			m_SimpleServerSimple.RegisterHandlerSafe((short)38, new QSBNetworkMessageDelegate(OnRemovePlayerMessage));
 			m_SimpleServerSimple.RegisterHandlerSafe((short)40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
@@ -282,12 +282,12 @@ namespace QSB.QuantumUNET
 			return true;
 		}
 
-		public static QSBNetworkClient BecomeHost(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, PeerInfoMessage[] peers)
+		public static QSBNetworkClient BecomeHost(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, QSBPeerInfoMessage[] peers)
 		{
 			return instance.BecomeHostInternal(oldClient, port, matchInfo, oldConnectionId, peers);
 		}
 
-		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, PeerInfoMessage[] peers)
+		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, QSBPeerInfoMessage[] peers)
 		{
 			QSBNetworkClient result;
 			if (s_Active)
@@ -442,7 +442,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public static bool SendToAll(short msgType, MessageBase msg)
+		public static bool SendToAll(short msgType, QSBMessageBase msg)
 		{
 			Debug.Log("Server.SendToAll msgType:" + msgType);
 			var flag = true;
@@ -457,7 +457,7 @@ namespace QSB.QuantumUNET
 			return flag;
 		}
 
-		private static bool SendToObservers(GameObject contextObj, short msgType, MessageBase msg)
+		private static bool SendToObservers(GameObject contextObj, short msgType, QSBMessageBase msg)
 		{
 			Debug.Log("Server.SendToObservers id:" + msgType);
 			var flag = true;
@@ -480,7 +480,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public static bool SendToReady(GameObject contextObj, short msgType, MessageBase msg)
+		public static bool SendToReady(GameObject contextObj, short msgType, QSBMessageBase msg)
 		{
 			Debug.Log("Server.SendToReady id:" + msgType);
 			bool result;
@@ -521,18 +521,21 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public static void SendWriterToReady(GameObject contextObj, NetworkWriter writer, int channelId)
+		public static void SendWriterToReady(GameObject contextObj, QSBNetworkWriter writer, int channelId)
 		{
+			DebugLog.DebugWrite("send writer to ready");
 			var arraySegment = (ArraySegment<byte>)writer.GetType().GetMethod("AsArraySegment").Invoke(writer, null);
 			if (arraySegment.Count > 32767)
 			{
 				throw new UnityException("NetworkWriter used buffer is too big!");
 			}
+			DebugLog.DebugWrite("pre send bytes");
 			SendBytesToReady(contextObj, arraySegment.Array, arraySegment.Count, channelId);
 		}
 
 		public static void SendBytesToReady(GameObject contextObj, byte[] buffer, int numBytes, int channelId)
 		{
+			DebugLog.DebugWrite("send bytes to ready");
 			if (contextObj == null)
 			{
 				var flag = true;
@@ -541,18 +544,20 @@ namespace QSB.QuantumUNET
 					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
+						DebugLog.DebugWrite($"sending bytes to connection {networkConnection.connectionId}");
 						if (!networkConnection.SendBytes(buffer, numBytes, channelId))
 						{
 							flag = false;
 						}
 					}
+					else
+					{
+						DebugLog.DebugWrite($"- Connection {networkConnection.connectionId} is not ready!");
+					}
 				}
 				if (!flag)
 				{
-					if (LogFilter.logWarn)
-					{
-						Debug.LogWarning("SendBytesToReady failed");
-					}
+					DebugLog.DebugWrite("SendBytesToReady failed");
 				}
 			}
 			else
@@ -567,26 +572,25 @@ namespace QSB.QuantumUNET
 						var networkConnection2 = component.Observers[j];
 						if (networkConnection2.isReady)
 						{
+							DebugLog.DebugWrite($"sending bytes to connection {networkConnection2.connectionId}");
 							if (!networkConnection2.SendBytes(buffer, numBytes, channelId))
 							{
 								flag2 = false;
 							}
 						}
+						else
+						{
+							DebugLog.DebugWrite($"- Connection {networkConnection2.connectionId} is not ready!");
+						}
 					}
 					if (!flag2)
 					{
-						if (LogFilter.logWarn)
-						{
-							Debug.LogWarning("SendBytesToReady failed for " + contextObj);
-						}
+						DebugLog.DebugWrite("SendBytesToReady failed for " + contextObj);
 					}
 				}
 				catch (NullReferenceException)
 				{
-					if (LogFilter.logWarn)
-					{
-						Debug.LogWarning("SendBytesToReady object " + contextObj + " has not been spawned");
-					}
+					DebugLog.DebugWrite("SendBytesToReady object " + contextObj + " has not been spawned");
 				}
 			}
 		}
@@ -610,7 +614,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public static bool SendUnreliableToAll(short msgType, MessageBase msg)
+		public static bool SendUnreliableToAll(short msgType, QSBMessageBase msg)
 		{
 			Debug.Log("Server.SendUnreliableToAll msgType:" + msgType);
 			var flag = true;
@@ -625,7 +629,7 @@ namespace QSB.QuantumUNET
 			return flag;
 		}
 
-		public static bool SendUnreliableToReady(GameObject contextObj, short msgType, MessageBase msg)
+		public static bool SendUnreliableToReady(GameObject contextObj, short msgType, QSBMessageBase msg)
 		{
 			Debug.Log("Server.SendUnreliableToReady id:" + msgType);
 			bool result;
@@ -659,7 +663,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public static bool SendByChannelToAll(short msgType, MessageBase msg, int channelId)
+		public static bool SendByChannelToAll(short msgType, QSBMessageBase msg, int channelId)
 		{
 			Debug.Log("Server.SendByChannelToAll id:" + msgType);
 			var flag = true;
@@ -674,7 +678,7 @@ namespace QSB.QuantumUNET
 			return flag;
 		}
 
-		public static bool SendByChannelToReady(GameObject contextObj, short msgType, MessageBase msg, int channelId)
+		public static bool SendByChannelToReady(GameObject contextObj, short msgType, QSBMessageBase msg, int channelId)
 		{
 			Debug.Log("Server.SendByChannelToReady msgType:" + msgType);
 			bool result;
@@ -857,11 +861,11 @@ namespace QSB.QuantumUNET
 		{
 			if (handlers.ContainsKey(34))
 			{
-				var errorMessage = new ErrorMessage();
+				var errorMessage = new QSBErrorMessage();
 				errorMessage.errorCode = error;
-				var writer = new NetworkWriter();
+				var writer = new QSBNetworkWriter();
 				errorMessage.Serialize(writer);
-				var reader = new NetworkReader(writer);
+				var reader = new QSBNetworkReader(writer);
 				conn.InvokeHandler(34, reader, 0);
 			}
 		}
@@ -928,7 +932,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public static void SendToClientOfPlayer(GameObject player, short msgType, MessageBase msg)
+		public static void SendToClientOfPlayer(GameObject player, short msgType, QSBMessageBase msg)
 		{
 			for (var i = 0; i < connections.Count; i++)
 			{
@@ -952,7 +956,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public static void SendToClient(int connectionId, short msgType, MessageBase msg)
+		public static void SendToClient(int connectionId, short msgType, QSBMessageBase msg)
 		{
 			if (connectionId < connections.Count)
 			{
@@ -1361,7 +1365,7 @@ namespace QSB.QuantumUNET
 				}
 				conn.isReady = false;
 				conn.RemoveObservers();
-				var msg = new NotReadyMessage();
+				var msg = new QSBNotReadyMessage();
 				conn.Send(36, msg);
 			}
 		}
@@ -1491,7 +1495,7 @@ namespace QSB.QuantumUNET
 					objectSpawnMessage.assetId = uv.AssetId;
 					objectSpawnMessage.Position = uv.transform.position;
 					objectSpawnMessage.Rotation = uv.transform.rotation;
-					var networkWriter = new NetworkWriter();
+					var networkWriter = new QSBNetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter);
 					if (networkWriter.Position > 0)
 					{
@@ -1512,7 +1516,7 @@ namespace QSB.QuantumUNET
 					objectSpawnSceneMessage.NetId = uv.NetId;
 					objectSpawnSceneMessage.SceneId = uv.SceneId;
 					objectSpawnSceneMessage.Position = uv.transform.position;
-					var networkWriter2 = new NetworkWriter();
+					var networkWriter2 = new QSBNetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter2);
 					if (networkWriter2.Position > 0)
 					{
@@ -1736,7 +1740,7 @@ namespace QSB.QuantumUNET
 
 		internal bool InvokeBytes(QSBULocalConnectionToServer conn, byte[] buffer, int numBytes, int channelId)
 		{
-			var networkReader = new NetworkReader(buffer);
+			var networkReader = new QSBNetworkReader(buffer);
 			networkReader.ReadInt16();
 			var num = networkReader.ReadInt16();
 			bool result;
@@ -1752,14 +1756,14 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal bool InvokeHandlerOnServer(QSBULocalConnectionToServer conn, short msgType, MessageBase msg, int channelId)
+		internal bool InvokeHandlerOnServer(QSBULocalConnectionToServer conn, short msgType, QSBMessageBase msg, int channelId)
 		{
 			bool result;
 			if (handlers.ContainsKey(msgType) && m_LocalConnection != null)
 			{
-				var writer = new NetworkWriter();
+				var writer = new QSBNetworkWriter();
 				msg.Serialize(writer);
-				var reader = new NetworkReader(writer);
+				var reader = new QSBNetworkReader(writer);
 				m_LocalConnection.InvokeHandler(msgType, reader, channelId);
 				result = true;
 			}

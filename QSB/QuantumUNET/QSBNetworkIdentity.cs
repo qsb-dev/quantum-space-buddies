@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using OWML.Common;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -325,8 +326,9 @@ namespace QSB.QuantumUNET
 			return true;
 		}
 
-		internal void UNetSerializeAllVars(NetworkWriter writer)
+		internal void UNetSerializeAllVars(QSBNetworkWriter writer)
 		{
+			DebugLog.DebugWrite($"Sync all vars (NetId:{NetId}, Gameobject:{gameObject.name})");
 			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 			{
 				var networkBehaviour = m_NetworkBehaviours[i];
@@ -383,7 +385,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal void HandleSyncEvent(int cmdHash, NetworkReader reader)
+		internal void HandleSyncEvent(int cmdHash, QSBNetworkReader reader)
 		{
 			if (base.gameObject == null)
 			{
@@ -429,7 +431,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal void HandleSyncList(int cmdHash, NetworkReader reader)
+		internal void HandleSyncList(int cmdHash, QSBNetworkReader reader)
 		{
 			if (base.gameObject == null)
 			{
@@ -475,7 +477,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal void HandleCommand(int cmdHash, NetworkReader reader)
+		internal void HandleCommand(int cmdHash, QSBNetworkReader reader)
 		{
 			if (base.gameObject == null)
 			{
@@ -521,7 +523,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal void HandleRPC(int cmdHash, NetworkReader reader)
+		internal void HandleRPC(int cmdHash, QSBNetworkReader reader)
 		{
 			if (base.gameObject == null)
 			{
@@ -586,6 +588,7 @@ namespace QSB.QuantumUNET
 				{
 					if ((num & (1U << j)) != 0U)
 					{
+						DebugLog.DebugWrite("sending update vars message");
 						s_UpdateWriter.StartMessage(8);
 						s_UpdateWriter.Write(NetId);
 						var flag = false;
@@ -621,6 +624,7 @@ namespace QSB.QuantumUNET
 						}
 						if (flag)
 						{
+							DebugLog.DebugWrite("FINISH MESSAGE");
 							s_UpdateWriter.FinishMessage();
 							QSBNetworkServer.SendWriterToReady(base.gameObject, s_UpdateWriter, j);
 						}
@@ -633,7 +637,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal void OnUpdateVars(NetworkReader reader, bool initialState)
+		internal void OnUpdateVars(QSBNetworkReader reader, bool initialState)
 		{
 			if (initialState && m_NetworkBehaviours == null)
 			{
@@ -854,81 +858,71 @@ namespace QSB.QuantumUNET
 
 		public bool RemoveClientAuthority(QSBNetworkConnection conn)
 		{
-			bool result;
 			if (!IsServer)
 			{
-				Debug.LogError("RemoveClientAuthority can only be call on the server for spawned objects.");
-				result = false;
+				DebugLog.ToConsole($"Warning - Cannot remove authority on client-side. (NetId:{NetId}, Gameobject:{gameObject.name})", MessageType.Warning);
+				return false;
 			}
 			else if (ConnectionToClient != null)
 			{
 				Debug.LogError("RemoveClientAuthority cannot remove authority for a player object");
-				result = false;
+				return false;
 			}
 			else if (ClientAuthorityOwner == null)
 			{
 				Debug.LogError("RemoveClientAuthority for " + base.gameObject + " has no clientAuthority owner.");
-				result = false;
+				return false;
 			}
 			else if (ClientAuthorityOwner != conn)
 			{
 				Debug.LogError("RemoveClientAuthority for " + base.gameObject + " has different owner.");
-				result = false;
+				return false;
 			}
-			else
+			ClientAuthorityOwner.RemoveOwnedObject(this);
+			ClientAuthorityOwner = null;
+			ForceAuthority(true);
+			conn.Send(15, new QSBClientAuthorityMessage
 			{
-				ClientAuthorityOwner.RemoveOwnedObject(this);
-				ClientAuthorityOwner = null;
-				ForceAuthority(true);
-				conn.Send(15, new QSBClientAuthorityMessage
-				{
-					netId = NetId,
-					authority = false
-				});
-				clientAuthorityCallback?.Invoke(conn, this, false);
-				result = true;
-			}
-			return result;
+				netId = NetId,
+				authority = false
+			});
+			clientAuthorityCallback?.Invoke(conn, this, false);
+			return true;
 		}
 
 		public bool AssignClientAuthority(QSBNetworkConnection conn)
 		{
-			bool result;
 			if (!IsServer)
 			{
-				Debug.LogError("AssignClientAuthority can only be call on the server for spawned objects.");
-				result = false;
+				DebugLog.ToConsole($"Warning - Cannot assign authority on client-side. (NetId:{NetId}, Gameobject:{gameObject.name})", MessageType.Warning);
+				return false;
 			}
 			else if (!LocalPlayerAuthority)
 			{
-				Debug.LogError("AssignClientAuthority can only be used for NetworkIdentity component with LocalPlayerAuthority set.");
-				result = false;
+				DebugLog.ToConsole($"Warning - Cannot assign authority on object without LocalPlayerAuthority. (NetId:{NetId}, Gameobject:{gameObject.name})", MessageType.Warning);
+				return false;
 			}
 			else if (ClientAuthorityOwner != null && conn != ClientAuthorityOwner)
 			{
 				Debug.LogError("AssignClientAuthority for " + base.gameObject + " already has an owner. Use RemoveClientAuthority() first.");
-				result = false;
+				return false;
 			}
 			else if (conn == null)
 			{
 				Debug.LogError("AssignClientAuthority for " + base.gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
-				result = false;
+				return false;
 			}
-			else
-			{
-				ClientAuthorityOwner = conn;
-				ClientAuthorityOwner.AddOwnedObject(this);
+			ClientAuthorityOwner = conn;
+			ClientAuthorityOwner.AddOwnedObject(this);
 
-				ForceAuthority(false);
-				conn.Send(15, new QSBClientAuthorityMessage
-				{
-					netId = NetId,
-					authority = true
-				});
-				clientAuthorityCallback?.Invoke(conn, this, true);
-				result = true;
-			}
-			return result;
+			ForceAuthority(false);
+			conn.Send(15, new QSBClientAuthorityMessage
+			{
+				netId = NetId,
+				authority = true
+			});
+			clientAuthorityCallback?.Invoke(conn, this, true);
+			return true;
 		}
 
 		internal void MarkForReset() => m_Reset = true;
@@ -981,7 +975,7 @@ namespace QSB.QuantumUNET
 
 		private static uint s_NextNetworkId = 1U;
 
-		private static readonly NetworkWriter s_UpdateWriter = new NetworkWriter();
+		private static readonly QSBNetworkWriter s_UpdateWriter = new QSBNetworkWriter();
 
 		public static ClientAuthorityCallback clientAuthorityCallback;
 

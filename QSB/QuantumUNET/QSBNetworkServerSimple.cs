@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -235,7 +236,8 @@ namespace QSB.QuantumUNET
 
 		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{
-			this.m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
+			DebugLog.DebugWrite($"Registering message {msgType}.");
+			m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 		}
 
 		public void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler)
@@ -498,7 +500,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public void SendWriterTo(int connectionId, NetworkWriter writer, int channelId)
+		public void SendWriterTo(int connectionId, QSBNetworkWriter writer, int channelId)
 		{
 			QSBNetworkConnection networkConnection = this.FindConnection(connectionId);
 			if (networkConnection != null)

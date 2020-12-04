@@ -2,16 +2,16 @@
 
 namespace QSB.QuantumUNET
 {
-	internal class QSBObjectDestroyMessage : MessageBase
+	internal class QSBObjectDestroyMessage : QSBMessageBase
 	{
 		public NetworkInstanceId NetId;
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			NetId = reader.ReadNetworkId();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(NetId);
 		}

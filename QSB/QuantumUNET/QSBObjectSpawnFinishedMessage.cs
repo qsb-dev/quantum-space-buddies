@@ -2,16 +2,16 @@
 
 namespace QSB.QuantumUNET
 {
-	internal class QSBObjectSpawnFinishedMessage : MessageBase
+	internal class QSBObjectSpawnFinishedMessage : QSBMessageBase
 	{
 		public uint State;
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			State = reader.ReadPackedUInt32();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.WritePackedUInt32(State);
 		}

@@ -17,7 +17,7 @@ namespace QSB.Animation
 		private uint m_ParameterSendBits;
 		private int m_AnimationHash;
 		private int m_TransitionHash;
-		private NetworkWriter m_ParameterWriter;
+		private QSBNetworkWriter m_ParameterWriter;
 		private float m_SendTimer;
 
 		public Animator animator
@@ -48,7 +48,7 @@ namespace QSB.Animation
 
 		public override void OnStartAuthority()
 		{
-			m_ParameterWriter = new NetworkWriter();
+			m_ParameterWriter = new QSBNetworkWriter();
 		}
 
 		private void FixedUpdate()
@@ -143,7 +143,7 @@ namespace QSB.Animation
 			}
 		}
 
-		internal void HandleAnimMsg(QSBAnimationMessage msg, NetworkReader reader)
+		internal void HandleAnimMsg(QSBAnimationMessage msg, QSBNetworkReader reader)
 		{
 			if (HasAuthority)
 			{
@@ -156,7 +156,7 @@ namespace QSB.Animation
 			ReadParameters(reader, false);
 		}
 
-		internal void HandleAnimParamsMsg(QSBAnimationParametersMessage msg, NetworkReader reader)
+		internal void HandleAnimParamsMsg(QSBAnimationParametersMessage msg, QSBNetworkReader reader)
 		{
 			if (HasAuthority)
 			{
@@ -170,7 +170,7 @@ namespace QSB.Animation
 			m_Animator.SetTrigger(hash);
 		}
 
-		private void WriteParameters(NetworkWriter writer, bool autoSend)
+		private void WriteParameters(QSBNetworkWriter writer, bool autoSend)
 		{
 			for (int index = 0; index < m_Animator.parameters.Length; ++index)
 			{
@@ -195,7 +195,7 @@ namespace QSB.Animation
 			}
 		}
 
-		private void ReadParameters(NetworkReader reader, bool autoSend)
+		private void ReadParameters(QSBNetworkReader reader, bool autoSend)
 		{
 			for (int index = 0; index < m_Animator.parameters.Length; ++index)
 			{
@@ -227,7 +227,7 @@ namespace QSB.Animation
 			}
 		}
 
-		public override bool OnSerialize(NetworkWriter writer, bool forceAll)
+		public override bool OnSerialize(QSBNetworkWriter writer, bool forceAll)
 		{
 			if (!forceAll)
 			{
@@ -249,7 +249,7 @@ namespace QSB.Animation
 			return true;
 		}
 
-		public override void OnDeserialize(NetworkReader reader, bool initialState)
+		public override void OnDeserialize(QSBNetworkReader reader, bool initialState)
 		{
 			if (!initialState)
 			{
@@ -305,7 +305,7 @@ namespace QSB.Animation
 				return;
 			}
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
-			var reader = new NetworkReader(AnimationMessage.parameters);
+			var reader = new QSBNetworkReader(AnimationMessage.parameters);
 			component?.HandleAnimMsg(AnimationMessage, reader);
 			QSBNetworkServer.SendToReady(localObject, 40, AnimationMessage);
 		}
@@ -319,7 +319,7 @@ namespace QSB.Animation
 				return;
 			}
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
-			var reader = new NetworkReader(ParametersMessage.parameters);
+			var reader = new QSBNetworkReader(ParametersMessage.parameters);
 			component?.HandleAnimParamsMsg(ParametersMessage, reader);
 			QSBNetworkServer.SendToReady(localObject, 41, ParametersMessage);
 		}
@@ -346,7 +346,7 @@ namespace QSB.Animation
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
 			if (component == null)
 				return;
-			var reader = new NetworkReader(AnimationMessage.parameters);
+			var reader = new QSBNetworkReader(AnimationMessage.parameters);
 			component.HandleAnimMsg(AnimationMessage, reader);
 		}
 
@@ -359,7 +359,7 @@ namespace QSB.Animation
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
 			if (component == null)
 				return;
-			var reader = new NetworkReader(ParametersMessage.parameters);
+			var reader = new QSBNetworkReader(ParametersMessage.parameters);
 			component.HandleAnimParamsMsg(ParametersMessage, reader);
 		}
 

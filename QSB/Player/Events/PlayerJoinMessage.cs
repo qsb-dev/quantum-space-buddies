@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.QuantumUNET;
 using UnityEngine.Networking;
 
 namespace QSB.Player.Events
@@ -7,13 +8,13 @@ namespace QSB.Player.Events
 	{
 		public string PlayerName { get; set; }
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerName = reader.ReadString();
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerName);

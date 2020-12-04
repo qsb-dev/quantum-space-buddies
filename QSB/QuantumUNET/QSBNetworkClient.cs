@@ -614,7 +614,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public bool Send(short msgType, MessageBase msg)
+		public bool Send(short msgType, QSBMessageBase msg)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -643,7 +643,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public bool SendWriter(NetworkWriter writer, int channelId)
+		public bool SendWriter(QSBNetworkWriter writer, int channelId)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -701,7 +701,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public bool SendUnreliable(short msgType, MessageBase msg)
+		public bool SendUnreliable(short msgType, QSBMessageBase msg)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -730,7 +730,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		public bool SendByChannel(short msgType, MessageBase msg, int channelId)
+		public bool SendByChannel(short msgType, QSBMessageBase msg, int channelId)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -835,7 +835,7 @@ namespace QSB.QuantumUNET
 					}
 					if (networkEventType != NetworkEventType.Nothing)
 					{
-						Debug.Log(string.Concat(new object[]
+						DebugLog.DebugWrite(string.Concat(new object[]
 						{
 							"Client event: host=",
 							m_ClientId,
@@ -968,12 +968,12 @@ namespace QSB.QuantumUNET
 			}
 			if (handler != null)
 			{
-				ErrorMessage errorMessage = new ErrorMessage();
+				QSBErrorMessage errorMessage = new QSBErrorMessage();
 				errorMessage.errorCode = error;
 				byte[] buffer = new byte[200];
-				NetworkWriter writer = new NetworkWriter(buffer);
+				QSBNetworkWriter writer = new QSBNetworkWriter(buffer);
 				errorMessage.Serialize(writer);
-				NetworkReader reader = new NetworkReader(buffer);
+				QSBNetworkReader reader = new QSBNetworkReader(buffer);
 				handler(new QSBNetworkMessage
 				{
 					MsgType = 34,
@@ -1057,11 +1057,13 @@ namespace QSB.QuantumUNET
 
 		public void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler)
 		{
+			DebugLog.DebugWrite($"Register event id {msgType}");
 			m_MessageHandlers.RegisterHandler(msgType, handler);
 		}
 
 		public void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{
+			DebugLog.DebugWrite($"Safe register event id {msgType}");
 			m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 		}
 

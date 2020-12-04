@@ -83,7 +83,7 @@ namespace QSB.QuantumUNET
 
 		private void PostInternalMessage(short msgType)
 		{
-			var networkWriter = new NetworkWriter();
+			var networkWriter = new QSBNetworkWriter();
 			networkWriter.StartMessage(msgType);
 			networkWriter.FinishMessage();
 			PostInternalMessage(networkWriter.AsArray(), 0);
@@ -100,7 +100,7 @@ namespace QSB.QuantumUNET
 					var t = internalMsgs[i];
 					if (s_InternalMessage.Reader == null)
 					{
-						s_InternalMessage.Reader = new NetworkReader(t.buffer);
+						s_InternalMessage.Reader = new QSBNetworkReader(t.buffer);
 					}
 					else
 					{
@@ -124,9 +124,9 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		internal void InvokeHandlerOnClient(short msgType, MessageBase msg, int channelId)
+		internal void InvokeHandlerOnClient(short msgType, QSBMessageBase msg, int channelId)
 		{
-			var networkWriter = new NetworkWriter();
+			var networkWriter = new QSBNetworkWriter();
 			networkWriter.StartMessage(msgType);
 			msg.Serialize(networkWriter);
 			networkWriter.FinishMessage();

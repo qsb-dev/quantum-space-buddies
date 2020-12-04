@@ -902,7 +902,7 @@ namespace QSB.QuantumUNET
 				QSBNetworkServer.SetAllClientsNotReady();
 				networkSceneName = newSceneName;
 				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
-				StringMessage msg = new StringMessage(networkSceneName);
+				QSBStringMessage msg = new QSBStringMessage(networkSceneName);
 				QSBNetworkServer.SendToAll(39, msg);
 				s_StartPositionIndex = 0;
 				s_StartPositions.Clear();
@@ -1069,7 +1069,7 @@ namespace QSB.QuantumUNET
 			}
 			if (networkSceneName != "" && networkSceneName != m_OfflineScene)
 			{
-				StringMessage msg = new StringMessage(networkSceneName);
+				QSBStringMessage msg = new QSBStringMessage(networkSceneName);
 				netMsg.Connection.Send(39, msg);
 			}
 			if (m_MigrationManager != null)
@@ -1107,7 +1107,7 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnServerAddPlayerMessageInternal");
 			}
-			netMsg.ReadMessage<AddPlayerMessage>(s_AddPlayerMessage);
+			netMsg.ReadMessage<QSBAddPlayerMessage>(s_AddPlayerMessage);
 			if (s_AddPlayerMessage.msgSize != 0)
 			{
 				NetworkReader extraMessageReader = new NetworkReader(s_AddPlayerMessage.msgData);
@@ -1129,11 +1129,11 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnServerRemovePlayerMessageInternal");
 			}
-			netMsg.ReadMessage<RemovePlayerMessage>(s_RemovePlayerMessage);
+			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
 			QSBPlayerController player;
-			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.playerControllerId, out player);
+			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out player);
 			OnServerRemovePlayer(netMsg.Connection, player);
-			netMsg.Connection.RemovePlayerController(s_RemovePlayerMessage.playerControllerId);
+			netMsg.Connection.RemovePlayerController(s_RemovePlayerMessage.PlayerControllerId);
 			if (m_MigrationManager != null)
 			{
 				m_MigrationManager.SendPeerInfo();
@@ -1146,7 +1146,7 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnServerErrorInternal");
 			}
-			netMsg.ReadMessage<ErrorMessage>(s_ErrorMessage);
+			netMsg.ReadMessage<QSBErrorMessage>(s_ErrorMessage);
 			this.OnServerError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
@@ -1209,7 +1209,7 @@ namespace QSB.QuantumUNET
 			{
 				Debug.Log("NetworkManager:OnClientErrorInternal");
 			}
-			netMsg.ReadMessage<ErrorMessage>(s_ErrorMessage);
+			netMsg.ReadMessage<QSBErrorMessage>(s_ErrorMessage);
 			this.OnClientError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
@@ -1697,11 +1697,11 @@ namespace QSB.QuantumUNET
 
 		public static QSBNetworkManagerUNET singleton;
 
-		private static AddPlayerMessage s_AddPlayerMessage = new AddPlayerMessage();
+		private static QSBAddPlayerMessage s_AddPlayerMessage = new QSBAddPlayerMessage();
 
-		private static RemovePlayerMessage s_RemovePlayerMessage = new RemovePlayerMessage();
+		private static QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
 
-		private static ErrorMessage s_ErrorMessage = new ErrorMessage();
+		private static QSBErrorMessage s_ErrorMessage = new QSBErrorMessage();
 
 		private static AsyncOperation s_LoadingSceneAsync;
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OWML.Common;
+using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
@@ -45,7 +47,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		protected void SendCommandInternal(NetworkWriter writer, int channelId, string cmdName)
+		protected void SendCommandInternal(QSBNetworkWriter writer, int channelId, string cmdName)
 		{
 			if (!IsLocalPlayer && !HasAuthority)
 			{
@@ -62,55 +64,49 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public virtual bool InvokeCommand(int cmdHash, NetworkReader reader) => InvokeCommandDelegate(cmdHash, reader);
+		public virtual bool InvokeCommand(int cmdHash, QSBNetworkReader reader) => InvokeCommandDelegate(cmdHash, reader);
 
-		protected void SendRPCInternal(NetworkWriter writer, int channelId, string rpcName)
+		protected void SendRPCInternal(QSBNetworkWriter writer, int channelId, string rpcName)
 		{
 			if (!IsServer)
 			{
 				if (LogFilter.logWarn)
 				{
 					Debug.LogWarning("ClientRpc call on un-spawned object");
+					return;
 				}
 			}
-			else
-			{
-				writer.FinishMessage();
-				QSBNetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
-			}
+			writer.FinishMessage();
+			QSBNetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
 		}
 
-		protected void SendTargetRPCInternal(NetworkConnection conn, NetworkWriter writer, int channelId, string rpcName)
+		protected void SendTargetRPCInternal(QSBNetworkConnection conn, QSBNetworkWriter writer, int channelId, string rpcName)
 		{
 			if (!IsServer)
 			{
 				Debug.LogWarning("TargetRpc call on un-spawned object");
+				return;
 			}
-			else
-			{
-				writer.FinishMessage();
-				conn.SendWriter(writer, channelId);
-			}
+			writer.FinishMessage();
+			conn.SendWriter(writer, channelId);
 		}
 
-		public virtual bool InvokeRPC(int cmdHash, NetworkReader reader) => InvokeRpcDelegate(cmdHash, reader);
+		public virtual bool InvokeRPC(int cmdHash, QSBNetworkReader reader) => InvokeRpcDelegate(cmdHash, reader);
 
-		protected void SendEventInternal(NetworkWriter writer, int channelId, string eventName)
+		protected void SendEventInternal(QSBNetworkWriter writer, int channelId, string eventName)
 		{
 			if (!QSBNetworkServer.active)
 			{
-				Debug.LogWarning("SendEvent no server?");
+				DebugLog.ToConsole($"Error - Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.", MessageType.Error);
+				return;
 			}
-			else
-			{
-				writer.FinishMessage();
-				QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
-			}
+			writer.FinishMessage();
+			QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 		}
 
-		public virtual bool InvokeSyncEvent(int cmdHash, NetworkReader reader) => InvokeSyncEventDelegate(cmdHash, reader);
+		public virtual bool InvokeSyncEvent(int cmdHash, QSBNetworkReader reader) => InvokeSyncEventDelegate(cmdHash, reader);
 
-		public virtual bool InvokeSyncList(int cmdHash, NetworkReader reader) => InvokeSyncListDelegate(cmdHash, reader);
+		public virtual bool InvokeSyncList(int cmdHash, QSBNetworkReader reader) => InvokeSyncListDelegate(cmdHash, reader);
 
 		protected static void RegisterCommandDelegate(Type invokeClass, int cmdHash, CmdDelegate func)
 		{
@@ -123,13 +119,6 @@ namespace QSB.QuantumUNET
 					invokeFunction = func
 				};
 				s_CmdHandlerDelegates[cmdHash] = invoker;
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterCommandDelegate hash:",
-					cmdHash,
-					" ",
-					func.GetMethodName()
-				}));
 			}
 		}
 
@@ -144,13 +133,6 @@ namespace QSB.QuantumUNET
 					invokeFunction = func
 				};
 				s_CmdHandlerDelegates[cmdHash] = invoker;
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterRpcDelegate hash:",
-					cmdHash,
-					" ",
-					func.GetMethodName()
-				}));
 			}
 		}
 
@@ -165,13 +147,6 @@ namespace QSB.QuantumUNET
 					invokeFunction = func
 				};
 				s_CmdHandlerDelegates[cmdHash] = invoker;
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterEventDelegate hash:",
-					cmdHash,
-					" ",
-					func.GetMethodName()
-				}));
 			}
 		}
 
@@ -186,13 +161,6 @@ namespace QSB.QuantumUNET
 					invokeFunction = func
 				};
 				s_CmdHandlerDelegates[cmdHash] = invoker;
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterSyncListDelegate hash:",
-					cmdHash,
-					" ",
-					func.GetMethodName()
-				}));
 			}
 		}
 
@@ -278,7 +246,7 @@ namespace QSB.QuantumUNET
 		internal bool ContainsCommandDelegate(int cmdHash)
 			=> s_CmdHandlerDelegates.ContainsKey(cmdHash);
 
-		internal bool InvokeCommandDelegate(int cmdHash, NetworkReader reader)
+		internal bool InvokeCommandDelegate(int cmdHash, QSBNetworkReader reader)
 		{
 			bool result;
 			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
@@ -308,7 +276,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal bool InvokeRpcDelegate(int cmdHash, NetworkReader reader)
+		internal bool InvokeRpcDelegate(int cmdHash, QSBNetworkReader reader)
 		{
 			bool result;
 			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
@@ -338,7 +306,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal bool InvokeSyncEventDelegate(int cmdHash, NetworkReader reader)
+		internal bool InvokeSyncEventDelegate(int cmdHash, QSBNetworkReader reader)
 		{
 			bool result;
 			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
@@ -361,7 +329,7 @@ namespace QSB.QuantumUNET
 			return result;
 		}
 
-		internal bool InvokeSyncListDelegate(int cmdHash, NetworkReader reader)
+		internal bool InvokeSyncListDelegate(int cmdHash, QSBNetworkReader reader)
 		{
 			bool result;
 			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
@@ -495,6 +463,7 @@ namespace QSB.QuantumUNET
 			{
 				flag = !value.Equals(fieldValue);
 			}
+
 			if (flag)
 			{
 				Debug.Log(string.Concat(new object[]
@@ -508,6 +477,7 @@ namespace QSB.QuantumUNET
 					"->",
 					value
 				}));
+
 				SetDirtyBit(dirtyBit);
 				fieldValue = value;
 			}
@@ -533,7 +503,7 @@ namespace QSB.QuantumUNET
 			return -1;
 		}
 
-		public virtual bool OnSerialize(NetworkWriter writer, bool initialState)
+		public virtual bool OnSerialize(QSBNetworkWriter writer, bool initialState)
 		{
 			if (!initialState)
 			{
@@ -542,7 +512,7 @@ namespace QSB.QuantumUNET
 			return false;
 		}
 
-		public virtual void OnDeserialize(NetworkReader reader, bool initialState)
+		public virtual void OnDeserialize(QSBNetworkReader reader, bool initialState)
 		{
 			if (!initialState)
 			{
@@ -550,44 +520,17 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public virtual void PreStartClient()
-		{
-		}
-
-		public virtual void OnNetworkDestroy()
-		{
-		}
-
-		public virtual void OnStartServer()
-		{
-		}
-
-		public virtual void OnStartClient()
-		{
-		}
-
-		public virtual void OnStartLocalPlayer()
-		{
-		}
-
-		public virtual void OnStartAuthority()
-		{
-		}
-
-		public virtual void OnStopAuthority()
-		{
-		}
-
+		public virtual void PreStartClient() { }
+		public virtual void OnNetworkDestroy() { }
+		public virtual void OnStartServer() { }
+		public virtual void OnStartClient() { }
+		public virtual void OnStartLocalPlayer() { }
+		public virtual void OnStartAuthority() { }
+		public virtual void OnStopAuthority() { }
 		public virtual bool OnRebuildObservers(HashSet<QSBNetworkConnection> observers, bool initialize) => false;
-
-		public virtual void OnSetLocalVisibility(bool vis)
-		{
-		}
-
+		public virtual void OnSetLocalVisibility(bool vis) { }
 		public virtual bool OnCheckObserver(QSBNetworkConnection conn) => true;
-
 		public virtual int GetNetworkChannel() => 0;
-
 		public virtual float GetNetworkSendInterval() => 0.1f;
 
 		private float m_LastSendTime;
@@ -595,9 +538,9 @@ namespace QSB.QuantumUNET
 
 		private static readonly Dictionary<int, Invoker> s_CmdHandlerDelegates = new Dictionary<int, Invoker>();
 
-		public delegate void CmdDelegate(QSBNetworkBehaviour obj, NetworkReader reader);
+		public delegate void CmdDelegate(QSBNetworkBehaviour obj, QSBNetworkReader reader);
 
-		protected delegate void EventDelegate(List<Delegate> targets, NetworkReader reader);
+		protected delegate void EventDelegate(List<Delegate> targets, QSBNetworkReader reader);
 
 		protected enum UNetInvokeType
 		{

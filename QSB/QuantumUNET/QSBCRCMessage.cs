@@ -2,11 +2,11 @@
 
 namespace QSB.QuantumUNET
 {
-	internal class QSBCRCMessage : MessageBase
+	internal class QSBCRCMessage : QSBMessageBase
 	{
 		public QSBCRCMessageEntry[] scripts;
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QSBNetworkReader reader)
 		{
 			var num = (int)reader.ReadUInt16();
 			scripts = new QSBCRCMessageEntry[num];
@@ -19,7 +19,7 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write((ushort)scripts.Length);
 			for (var i = 0; i < scripts.Length; i++)
