@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.EventsCore;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;

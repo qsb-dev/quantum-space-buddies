@@ -1,6 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using QSB.TransformSync;
 
 namespace QSB.EventsCore

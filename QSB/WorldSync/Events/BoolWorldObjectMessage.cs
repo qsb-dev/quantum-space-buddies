@@ -1,4 +1,4 @@
-﻿using QSB.QuantumUNET;
+﻿using QuantumUNET;
 
 namespace QSB.WorldSync.Events
 {

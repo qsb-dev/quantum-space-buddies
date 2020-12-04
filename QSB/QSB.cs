@@ -6,7 +6,7 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;

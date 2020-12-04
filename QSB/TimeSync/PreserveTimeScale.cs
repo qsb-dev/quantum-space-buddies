@@ -1,5 +1,5 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.QuantumUNET;
+using QuantumUNET;
 
 namespace QSB.TimeSync
 {

@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;

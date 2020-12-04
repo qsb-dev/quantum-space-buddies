@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player.Events;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿using QSB.QuantumUNET;
+﻿using QuantumUNET;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;

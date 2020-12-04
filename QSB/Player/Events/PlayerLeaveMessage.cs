@@ -1,5 +1,5 @@
 ﻿using QSB.Messaging;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using System;
 using System.Linq;
 

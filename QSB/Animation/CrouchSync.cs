@@ -1,4 +1,4 @@
-﻿using QSB.QuantumUNET;
+﻿using QuantumUNET;
 using System;
 using UnityEngine;
 

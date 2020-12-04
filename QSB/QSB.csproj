@@ -127,21 +127,7 @@
     <Compile Include="Animation\AnimControllerPatch.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
-    <Compile Include="Animation\Events\QSBAnimationMessage.cs" />
-    <Compile Include="Animation\Events\QSBAnimationParametersMessage.cs" />
-    <Compile Include="Animation\Events\QSBAnimationTriggerMessage.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
-    <Compile Include="Animation\QSBNetworkAnimator.cs" />
-    <Compile Include="QuantumUNET\QSBAddPlayerMessage.cs" />
-    <Compile Include="QuantumUNET\QSBChannelBuffer.cs" />
-    <Compile Include="QuantumUNET\QSBCRCMessage.cs" />
-    <Compile Include="QuantumUNET\QSBCRCMessageEntry.cs" />
-    <Compile Include="QuantumUNET\QSBEmptyMessage.cs" />
-    <Compile Include="QuantumUNET\QSBErrorMessage.cs" />
-    <Compile Include="QuantumUNET\QSBMessageBase.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkCRC.cs" />
-    <Compile Include="QuantumUNET\QSBChannelPacket.cs" />
-    <Compile Include="QuantumUNET\QSBClientAuthorityMessage.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
     <Compile Include="ConversationSync\ConversationPatches.cs" />
@@ -172,48 +158,11 @@
     <Compile Include="Patches\QSBPatchManager.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />
-    <Compile Include="QuantumUNET\QSBClientScene.cs" />
     <Compile Include="QSBInputManager.cs" />
-    <Compile Include="QuantumUNET\QSBLocalClient.cs" />
-    <Compile Include="QuantumUNET\QSBNetBuffer.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkBehaviour.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkClient.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkConnection.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkIdentity.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkManagerHUD.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkManagerUNET.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkMessage.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkMessageDelegate.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkMessageHandlers.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkMigrationManager.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkReader.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkScene.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkServer.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkServerSimple.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkTransform.cs" />
-    <Compile Include="QuantumUNET\QSBNetworkWriter.cs" />
-    <Compile Include="QuantumUNET\QSBNotReadyMessage.cs" />
-    <Compile Include="QuantumUNET\QSBObjectDestroyMessage.cs" />
-    <Compile Include="QuantumUNET\QSBObjectSpawnFinishedMessage.cs" />
-    <Compile Include="QuantumUNET\QSBObjectSpawnMessage.cs" />
-    <Compile Include="QuantumUNET\QSBObjectSpawnSceneMessage.cs" />
-    <Compile Include="QuantumUNET\QSBOwnerMessage.cs" />
-    <Compile Include="QuantumUNET\QSBPeerAuthorityMessage.cs" />
-    <Compile Include="QuantumUNET\QSBPeerInfoMessage.cs" />
-    <Compile Include="QuantumUNET\QSBPeerInfoPlayer.cs" />
-    <Compile Include="QuantumUNET\QSBPeerListMessage.cs" />
-    <Compile Include="QuantumUNET\QSBPlayerController.cs" />
-    <Compile Include="QuantumUNET\QSBReadyMessage.cs" />
-    <Compile Include="QuantumUNET\QSBReconnectMessage.cs" />
-    <Compile Include="QuantumUNET\QSBRemovePlayerMessage.cs" />
     <Compile Include="QSBSceneManager.cs" />
-    <Compile Include="QuantumUNET\QSBStringMessage.cs" />
-    <Compile Include="QuantumUNET\QSBULocalConnectionToClient.cs" />
-    <Compile Include="QuantumUNET\QSBULocalConnectionToServer.cs" />
-    <Compile Include="QuantumUNET\QSBUtility.cs" />
     <Compile Include="TimeSync\TimeSyncType.cs" />
     <Compile Include="TimeSync\TimeSyncUI.cs" />
     <Compile Include="TimeSync\WakeUpPatches.cs" />
@@ -286,7 +235,12 @@
     <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj">
+      <Project>{C8C53004-1508-4F86-A419-4292C188DC2A}</Project>
+      <Name>QuantumUNET</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"

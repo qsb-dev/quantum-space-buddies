@@ -9,7 +9,7 @@ using QSB.Instruments;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.QuantumUNET;
+using QuantumUNET;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
@@ -156,13 +156,6 @@ namespace QSB
 			{
 				WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 			}
-
-			QSBNetworkServer.UnregisterHandler(40);
-			QSBNetworkServer.UnregisterHandler(41);
-			QSBNetworkServer.UnregisterHandler(42);
-			QSBNetworkServer.RegisterHandler(40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
-			QSBNetworkServer.RegisterHandler(41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
-			QSBNetworkServer.RegisterHandler(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
 		}
 
 		public override void OnServerAddPlayer(QSBNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -193,13 +186,7 @@ namespace QSB
 			if (!QSBNetworkServer.localClientActive)
 			{
 				QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
-				singleton.client.UnregisterHandler(40);
-				singleton.client.UnregisterHandler(41);
-				singleton.client.RegisterHandlerSafe(40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
-				singleton.client.RegisterHandlerSafe(41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
 			}
-			singleton.client.UnregisterHandler(42);
-			singleton.client.RegisterHandlerSafe(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
 
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
