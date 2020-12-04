@@ -520,17 +520,44 @@ namespace QSB.QuantumUNET
 			}
 		}
 
-		public virtual void PreStartClient() { }
-		public virtual void OnNetworkDestroy() { }
-		public virtual void OnStartServer() { }
-		public virtual void OnStartClient() { }
-		public virtual void OnStartLocalPlayer() { }
-		public virtual void OnStartAuthority() { }
-		public virtual void OnStopAuthority() { }
+		public virtual void PreStartClient()
+		{
+		}
+
+		public virtual void OnNetworkDestroy()
+		{
+		}
+
+		public virtual void OnStartServer()
+		{
+		}
+
+		public virtual void OnStartClient()
+		{
+		}
+
+		public virtual void OnStartLocalPlayer()
+		{
+		}
+
+		public virtual void OnStartAuthority()
+		{
+		}
+
+		public virtual void OnStopAuthority()
+		{
+		}
+
 		public virtual bool OnRebuildObservers(HashSet<QSBNetworkConnection> observers, bool initialize) => false;
-		public virtual void OnSetLocalVisibility(bool vis) { }
+
+		public virtual void OnSetLocalVisibility(bool vis)
+		{
+		}
+
 		public virtual bool OnCheckObserver(QSBNetworkConnection conn) => true;
+
 		public virtual int GetNetworkChannel() => 0;
+
 		public virtual float GetNetworkSendInterval() => 0.1f;
 
 		private float m_LastSendTime;

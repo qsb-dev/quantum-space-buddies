@@ -1,5 +1,4 @@
 ﻿using QSB.QuantumUNET;
-using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {

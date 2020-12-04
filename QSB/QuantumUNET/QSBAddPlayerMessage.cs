@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine.Networking;
-
-namespace QSB.QuantumUNET
+﻿namespace QSB.QuantumUNET
 {
-	class QSBAddPlayerMessage : QSBMessageBase
+	internal class QSBAddPlayerMessage : QSBMessageBase
 	{
 		public override void Deserialize(QSBNetworkReader reader)
 		{

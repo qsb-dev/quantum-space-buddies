@@ -1,6 +1,5 @@
 ﻿using QSB.Messaging;
 using QSB.QuantumUNET;
-using UnityEngine.Networking;
 
 namespace QSB.Player.Events
 {

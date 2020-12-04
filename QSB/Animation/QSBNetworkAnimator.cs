@@ -1,7 +1,6 @@
 ﻿using QSB.Animation.Events;
 using QSB.QuantumUNET;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Animation
 {

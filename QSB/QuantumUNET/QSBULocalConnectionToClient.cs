@@ -1,6 +1,4 @@
-﻿using UnityEngine.Networking;
-
-namespace QSB.QuantumUNET
+﻿namespace QSB.QuantumUNET
 {
 	internal class QSBULocalConnectionToClient : QSBNetworkConnection
 	{

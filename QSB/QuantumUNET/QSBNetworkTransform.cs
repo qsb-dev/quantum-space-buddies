@@ -1,8 +1,4 @@
 ﻿using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -369,24 +365,30 @@ namespace QSB.QuantumUNET
 				case AxisSyncMode.AxisX:
 					WriteAngle(writer, rot.eulerAngles.x, compression);
 					break;
+
 				case AxisSyncMode.AxisY:
 					WriteAngle(writer, rot.eulerAngles.y, compression);
 					break;
+
 				case AxisSyncMode.AxisZ:
 					WriteAngle(writer, rot.eulerAngles.z, compression);
 					break;
+
 				case AxisSyncMode.AxisXY:
 					WriteAngle(writer, rot.eulerAngles.x, compression);
 					WriteAngle(writer, rot.eulerAngles.y, compression);
 					break;
+
 				case AxisSyncMode.AxisXZ:
 					WriteAngle(writer, rot.eulerAngles.x, compression);
 					WriteAngle(writer, rot.eulerAngles.z, compression);
 					break;
+
 				case AxisSyncMode.AxisYZ:
 					WriteAngle(writer, rot.eulerAngles.y, compression);
 					WriteAngle(writer, rot.eulerAngles.z, compression);
 					break;
+
 				case AxisSyncMode.AxisXYZ:
 					WriteAngle(writer, rot.eulerAngles.x, compression);
 					WriteAngle(writer, rot.eulerAngles.y, compression);
@@ -402,24 +404,30 @@ namespace QSB.QuantumUNET
 				case AxisSyncMode.AxisX:
 					WriteAngle(writer, angularVelocity.x, compression);
 					break;
+
 				case AxisSyncMode.AxisY:
 					WriteAngle(writer, angularVelocity.y, compression);
 					break;
+
 				case AxisSyncMode.AxisZ:
 					WriteAngle(writer, angularVelocity.z, compression);
 					break;
+
 				case AxisSyncMode.AxisXY:
 					WriteAngle(writer, angularVelocity.x, compression);
 					WriteAngle(writer, angularVelocity.y, compression);
 					break;
+
 				case AxisSyncMode.AxisXZ:
 					WriteAngle(writer, angularVelocity.x, compression);
 					WriteAngle(writer, angularVelocity.z, compression);
 					break;
+
 				case AxisSyncMode.AxisYZ:
 					WriteAngle(writer, angularVelocity.y, compression);
 					WriteAngle(writer, angularVelocity.z, compression);
 					break;
+
 				case AxisSyncMode.AxisXYZ:
 					WriteAngle(writer, angularVelocity.x, compression);
 					WriteAngle(writer, angularVelocity.y, compression);
@@ -443,26 +451,32 @@ namespace QSB.QuantumUNET
 					zero.Set(ReadAngle(reader, compression), 0f, 0f);
 					identity.eulerAngles = zero;
 					break;
+
 				case AxisSyncMode.AxisY:
 					zero.Set(0f, ReadAngle(reader, compression), 0f);
 					identity.eulerAngles = zero;
 					break;
+
 				case AxisSyncMode.AxisZ:
 					zero.Set(0f, 0f, ReadAngle(reader, compression));
 					identity.eulerAngles = zero;
 					break;
+
 				case AxisSyncMode.AxisXY:
 					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), 0f);
 					identity.eulerAngles = zero;
 					break;
+
 				case AxisSyncMode.AxisXZ:
 					zero.Set(ReadAngle(reader, compression), 0f, ReadAngle(reader, compression));
 					identity.eulerAngles = zero;
 					break;
+
 				case AxisSyncMode.AxisYZ:
 					zero.Set(0f, ReadAngle(reader, compression), ReadAngle(reader, compression));
 					identity.eulerAngles = zero;
 					break;
+
 				case AxisSyncMode.AxisXYZ:
 					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), ReadAngle(reader, compression));
 					identity.eulerAngles = zero;
@@ -479,21 +493,27 @@ namespace QSB.QuantumUNET
 				case AxisSyncMode.AxisX:
 					zero.Set(ReadAngle(reader, compression), 0f, 0f);
 					break;
+
 				case AxisSyncMode.AxisY:
 					zero.Set(0f, ReadAngle(reader, compression), 0f);
 					break;
+
 				case AxisSyncMode.AxisZ:
 					zero.Set(0f, 0f, ReadAngle(reader, compression));
 					break;
+
 				case AxisSyncMode.AxisXY:
 					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), 0f);
 					break;
+
 				case AxisSyncMode.AxisXZ:
 					zero.Set(ReadAngle(reader, compression), 0f, ReadAngle(reader, compression));
 					break;
+
 				case AxisSyncMode.AxisYZ:
 					zero.Set(0f, ReadAngle(reader, compression), ReadAngle(reader, compression));
 					break;
+
 				case AxisSyncMode.AxisXYZ:
 					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), ReadAngle(reader, compression));
 					break;

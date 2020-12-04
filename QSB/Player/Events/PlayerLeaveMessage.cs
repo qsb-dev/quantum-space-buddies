@@ -2,7 +2,6 @@
 using QSB.QuantumUNET;
 using System;
 using System.Linq;
-using UnityEngine.Networking;
 
 namespace QSB.Player.Events
 {

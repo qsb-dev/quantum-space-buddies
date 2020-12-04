@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking.Types;
 
@@ -9,7 +8,7 @@ namespace QSB.QuantumUNET
 	{
 		private static readonly Dictionary<NetworkID, NetworkAccessToken> _dictTokens = new Dictionary<NetworkID, NetworkAccessToken>();
 
-		public static SourceID GetSourceID() 
+		public static SourceID GetSourceID()
 			=> (SourceID)SystemInfo.deviceUniqueIdentifier.GetHashCode();
 
 		public static void SetAccessTokenForNetwork(NetworkID netId, NetworkAccessToken accessToken)
