@@ -11,45 +11,6 @@ namespace QuantumUNET
 			this.manager = base.GetComponent<QSBNetworkManagerUNET>();
 		}
 
-		private void Update()
-		{
-			if (this.showGUI)
-			{
-				if (!this.manager.IsClientConnected() && !QSBNetworkServer.active && this.manager.matchMaker == null)
-				{
-					if (Application.platform != RuntimePlatform.WebGLPlayer)
-					{
-						if (Input.GetKeyDown(KeyCode.S))
-						{
-							this.manager.StartServer();
-						}
-						if (Input.GetKeyDown(KeyCode.H))
-						{
-							this.manager.StartHost();
-						}
-					}
-					if (Input.GetKeyDown(KeyCode.C))
-					{
-						this.manager.StartClient();
-					}
-				}
-				if (QSBNetworkServer.active)
-				{
-					if (this.manager.IsClientConnected())
-					{
-						if (Input.GetKeyDown(KeyCode.X))
-						{
-							this.manager.StopHost();
-						}
-					}
-					else if (Input.GetKeyDown(KeyCode.X))
-					{
-						this.manager.StopServer();
-					}
-				}
-			}
-		}
-
 		private void OnGUI()
 		{
 			if (this.showGUI)
