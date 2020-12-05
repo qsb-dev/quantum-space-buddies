@@ -35,7 +35,7 @@ namespace QSB.Animation
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player?.UpdateState(State.Suit, message.ToggleValue);
 
-			if (!player.IsReady)
+			if (!QSB.HasWokenUp)
 			{
 				return;
 			}

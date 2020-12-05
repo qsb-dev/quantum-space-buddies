@@ -6,6 +6,7 @@ namespace QSB.OrbSync
 	public class QSBOrbSlot : WorldObject
 	{
 		public NomaiInterfaceSlot InterfaceSlot { get; private set; }
+		public bool Activated { get; private set; }
 
 		private bool _initialized;
 
@@ -33,6 +34,7 @@ namespace QSB.OrbSync
 			}
 			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
 			WorldRegistry.RaiseEvent(InterfaceSlot, ev);
+			Activated = state;
 		}
 	}
 }

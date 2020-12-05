@@ -29,7 +29,7 @@ namespace QSB.Animation
 		private RuntimeAnimatorController _riebeckController;
 
 		public AnimatorMirror Mirror { get; private set; }
-		public AnimationType CurrentType = AnimationType.PlayerUnsuited;
+		public AnimationType CurrentType;
 
 		public Animator Animator
 		{
@@ -129,6 +129,8 @@ namespace QSB.Animation
 
 			body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
 			body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+
+			SetAnimationType(AnimationType.PlayerUnsuited);
 
 			InitCrouchSync();
 
