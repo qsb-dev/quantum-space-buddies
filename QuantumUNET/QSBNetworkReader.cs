@@ -458,7 +458,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				GameObject gameObject = ClientScene.FindLocalObject(networkInstanceId);
+				GameObject gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
 					if (LogFilter.logDebug)

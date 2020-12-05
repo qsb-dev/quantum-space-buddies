@@ -12,12 +12,9 @@ namespace QSB.TransformSync
 
 		private int Index => WorldRegistry.OrbSyncList.IndexOf(this);
 
-		private const int MaxUpdatesBeforeDisable = 5;
-
 		private bool _isInitialized;
 		private bool _isReady;
 		private Transform _orbParent;
-		private int _updateCount;
 
 		public override void OnStartClient()
 		{
@@ -25,16 +22,6 @@ namespace QSB.TransformSync
 			WorldRegistry.OrbSyncList.Add(this);
 
 			QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
-		}
-
-		public override void OnStartAuthority()
-		{
-			DebugLog.DebugWrite("START AUTHORITY - has auth? : " + HasAuthority);
-		}
-
-		public override void OnStopAuthority()
-		{
-			DebugLog.DebugWrite("END AUTHORITY - has auth? : " + HasAuthority);
 		}
 
 		private void OnReady()
@@ -74,7 +61,7 @@ namespace QSB.TransformSync
 			UpdateTransform();
 		}
 
-		protected virtual void UpdateTransform()
+		private void UpdateTransform()
 		{
 			if (HasAuthority)
 			{
@@ -84,16 +71,6 @@ namespace QSB.TransformSync
 			}
 			OrbTransform.position = _orbParent.TransformPoint(transform.position);
 			OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
-
-			if (transform.localPosition == Vector3.zero)
-			{
-				_updateCount++;
-			}
-			if (_updateCount >= MaxUpdatesBeforeDisable)
-			{
-				enabled = false;
-				_updateCount = 0;
-			}
 		}
 	}
 }

@@ -255,7 +255,7 @@ namespace QuantumUNET
 								" control:",
 								peerInfoPlayer.playerControllerId
 							}));
-							GameObject gameObject = ClientScene.FindLocalObject(peerInfoPlayer.netId);
+							GameObject gameObject = QSBClientScene.FindLocalObject(peerInfoPlayer.netId);
 							if (gameObject != null)
 							{
 								gameObject.SetActive(false);
@@ -408,7 +408,7 @@ namespace QuantumUNET
 						}
 					}
 				}
-				GameObject go = ClientScene.FindLocalObject(peerAuthorityMessage.netId);
+				GameObject go = QSBClientScene.FindLocalObject(peerAuthorityMessage.netId);
 				this.OnAuthorityUpdated(go, peerAuthorityMessage.connectionId, peerAuthorityMessage.authorityState);
 			}
 		}

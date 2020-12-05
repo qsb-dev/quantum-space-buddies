@@ -872,7 +872,7 @@ namespace QuantumUNET
 				client = null;
 			}
 			StopMatchMaker();
-			ClientScene.DestroyAllClientObjects();
+			QSBClientScene.DestroyAllClientObjects();
 			if (!string.IsNullOrEmpty(m_OfflineScene))
 			{
 				ClientChangeScene(m_OfflineScene, false);

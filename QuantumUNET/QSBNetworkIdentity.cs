@@ -898,12 +898,12 @@ namespace QuantumUNET
 			}
 			else if (ClientAuthorityOwner != null && conn != ClientAuthorityOwner)
 			{
-				Debug.LogError("AssignClientAuthority for " + base.gameObject + " already has an owner. Use RemoveClientAuthority() first.");
+				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + base.gameObject + " already has an owner. Use RemoveClientAuthority() first.");
 				return false;
 			}
 			else if (conn == null)
 			{
-				Debug.LogError("AssignClientAuthority for " + base.gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
+				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + base.gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
 				return false;
 			}
 			ClientAuthorityOwner = conn;
