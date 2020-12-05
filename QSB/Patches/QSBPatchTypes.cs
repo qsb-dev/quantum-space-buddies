@@ -1,9 +1,9 @@
 ﻿namespace QSB
 {
-    public enum QSBPatchTypes
-    {
-        OnModStart,
-        OnClientConnect,
-        OnNonServerClientConnect
-    }
+	public enum QSBPatchTypes
+	{
+		OnModStart,
+		OnClientConnect,
+		OnNonServerClientConnect
+	}
 }

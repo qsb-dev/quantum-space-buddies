@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace QSB.TimeSync
 {
-	class TimeSyncUI : MonoBehaviour
+	internal class TimeSyncUI : MonoBehaviour
 	{
 		public static TimeSyncUI Instance;
 
@@ -42,6 +42,7 @@ namespace QSB.TimeSync
 		}
 
 		public static void Start(TimeSyncType type) => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type));
+
 		public static void Stop() => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
 
 		private void StartTimeSync(TimeSyncType type)
@@ -78,6 +79,7 @@ namespace QSB.TimeSync
 						+ Environment.NewLine
 						+ "Fast-forwarding to match server time...";
 					break;
+
 				case TimeSyncType.Pausing:
 					text = "Pausing to match server time...";
 					break;

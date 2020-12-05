@@ -9,92 +9,80 @@ using QSB.Patches;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;
+using QuantumUNET;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
 {
-    public class QSB : ModBehaviour
-    {
-        public static IModBehaviour ModBehaviour { get; private set; }
-        public static IModHelper Helper { get; private set; }
-        public static string DefaultServerIP { get; private set; }
-        public static int Port { get; private set; }
-        public static bool DebugMode { get; private set; }
-        public static AssetBundle NetworkAssetBundle { get; private set; }
-        public static AssetBundle InstrumentAssetBundle { get; private set; }
-        public static bool HasWokenUp { get; set; }
+	public class QSB : ModBehaviour
+	{
+		public static IModBehaviour ModBehaviour { get; private set; }
+		public static IModHelper Helper { get; private set; }
+		public static string DefaultServerIP { get; private set; }
+		public static int Port { get; private set; }
+		public static bool DebugMode { get; private set; }
+		public static AssetBundle NetworkAssetBundle { get; private set; }
+		public static AssetBundle InstrumentAssetBundle { get; private set; }
+		public static bool HasWokenUp { get; set; }
 
-        private void Awake()
-        {
-            Application.runInBackground = true;
+		private void Awake()
+		{
+			Application.runInBackground = true;
 
-            var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
-            instance.theUITable[(int)UITextType.PleaseUseController] =
-                "<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
+			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
+			instance.theUITable[(int)UITextType.PleaseUseController] =
+				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
 
-            ModBehaviour = this;
+			ModBehaviour = this;
 
-            LogFilter.currentLogLevel = LogFilter.Debug;
+			LogFilter.currentLogLevel = LogFilter.Debug;
+		}
 
-            Application.logMessageReceived += Application_logMessageReceived;
-        }
+		private void Start()
+		{
+			Helper = ModHelper;
+			DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-        private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
-        {
-            switch (type)
-            {
-                case LogType.Assert:
-                    DebugLog.DebugWrite($"Assert - {condition}", MessageType.Message);
-                    break;
-                case LogType.Log:
-                    DebugLog.DebugWrite($"Log - {condition}", MessageType.Message);
-                    break;
-                case LogType.Warning:
-                    DebugLog.DebugWrite($"Warning - {condition}", MessageType.Warning);
-                    break;
-            }
-        }
+			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
+			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 
-        private void Start()
-        {
-            Helper = ModHelper;
-            DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
+			QSBPatchManager.Init();
 
-            NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-            InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
+			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
-            QSBPatchManager.Init();
+			// Turns out these are very finicky about what order they go. QSBNetworkManager seems to
+			// want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being
+			// null (even though it isn't...)
+			gameObject.AddComponent<QSBNetworkManager>();
+			gameObject.AddComponent<QSBNetworkManagerHUD>();
+			gameObject.AddComponent<DebugActions>();
+			gameObject.AddComponent<ElevatorManager>();
+			gameObject.AddComponent<GeyserManager>();
+			gameObject.AddComponent<OrbManager>();
+			gameObject.AddComponent<QSBSectorManager>();
+			gameObject.AddComponent<ConversationManager>();
+			gameObject.AddComponent<QSBInputManager>();
+			gameObject.AddComponent<TimeSyncUI>();
 
-            QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+			// Stop players being able to pause
+			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
+		}
 
-            // Turns out these are very finicky about what order they go. QSBNetworkManager seems to 
-            // want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being 
-            // null (even though it isn't...)
-            gameObject.AddComponent<QSBNetworkManager>();
-            gameObject.AddComponent<NetworkManagerHUD>();
-            gameObject.AddComponent<DebugActions>();
-            gameObject.AddComponent<ElevatorManager>();
-            gameObject.AddComponent<GeyserManager>();
-            gameObject.AddComponent<OrbManager>();
-            gameObject.AddComponent<QSBSectorManager>();
-            gameObject.AddComponent<ConversationManager>();
-            gameObject.AddComponent<QSBInputManager>();
-            gameObject.AddComponent<TimeSyncUI>();
+		private void Update()
+		{
+			QSBNetworkIdentity.UNetStaticUpdate();
+		}
 
-            // Stop players being able to pause
-            Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
-        }
-
-        public override void Configure(IModConfig config)
-        {
-            DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-            Port = config.GetSettingsValue<int>("port");
-            if (QSBNetworkManager.Instance != null)
-            {
-                QSBNetworkManager.Instance.networkPort = Port;
-            }
-            DebugMode = config.GetSettingsValue<bool>("debugMode");
-        }
-    }
+		public override void Configure(IModConfig config)
+		{
+			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+			Port = config.GetSettingsValue<int>("port");
+			if (QSBNetworkManager.Instance != null)
+			{
+				QSBNetworkManager.Instance.networkPort = Port;
+			}
+			DebugMode = config.GetSettingsValue<bool>("debugMode");
+		}
+	}
 }

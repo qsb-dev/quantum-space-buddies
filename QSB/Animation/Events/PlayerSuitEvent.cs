@@ -4,52 +4,53 @@ using QSB.Player;
 
 namespace QSB.Animation
 {
-    public class PlayerSuitEvent : QSBEvent<ToggleMessage>
-    {
-        public override EventType Type => EventType.SuitActiveChange;
+	public class PlayerSuitEvent : QSBEvent<ToggleMessage>
+	{
+		public override EventType Type => EventType.SuitActiveChange;
 
-        public override void SetupListener()
-        {
-            GlobalMessenger.AddListener(EventNames.SuitUp, HandleSuitUp);
-            GlobalMessenger.AddListener(EventNames.RemoveSuit, HandleSuitDown);
-        }
+		public override void SetupListener()
+		{
+			GlobalMessenger.AddListener(EventNames.SuitUp, HandleSuitUp);
+			GlobalMessenger.AddListener(EventNames.RemoveSuit, HandleSuitDown);
+		}
 
-        public override void CloseListener()
-        {
-            GlobalMessenger.RemoveListener(EventNames.SuitUp, HandleSuitUp);
-            GlobalMessenger.RemoveListener(EventNames.RemoveSuit, HandleSuitDown);
-        }
+		public override void CloseListener()
+		{
+			GlobalMessenger.RemoveListener(EventNames.SuitUp, HandleSuitUp);
+			GlobalMessenger.RemoveListener(EventNames.RemoveSuit, HandleSuitDown);
+		}
 
-        private void HandleSuitUp() => SendEvent(CreateMessage(true));
-        private void HandleSuitDown() => SendEvent(CreateMessage(false));
+		private void HandleSuitUp() => SendEvent(CreateMessage(true));
 
-        private ToggleMessage CreateMessage(bool value) => new ToggleMessage
-        {
-            AboutId = LocalPlayerId,
-            ToggleValue = value
-        };
+		private void HandleSuitDown() => SendEvent(CreateMessage(false));
 
-        public override void OnReceiveRemote(ToggleMessage message)
-        {
-            var player = QSBPlayerManager.GetPlayer(message.AboutId);
-            player?.UpdateState(State.Suit, message.ToggleValue);
+		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		{
+			AboutId = LocalPlayerId,
+			ToggleValue = value
+		};
 
-            if (!player.IsReady)
-            {
-                return;
-            }
+		public override void OnReceiveRemote(ToggleMessage message)
+		{
+			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			player?.UpdateState(State.Suit, message.ToggleValue);
 
-            var animator = player.AnimationSync;
-            var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
-            animator.SetAnimationType(type);
-        }
+			if (!player.IsReady)
+			{
+				return;
+			}
 
-        public override void OnReceiveLocal(ToggleMessage message)
-        {
-            QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
-            var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
-            var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
-            animator.CurrentType = type;
-        }
-    }
+			var animator = player.AnimationSync;
+			var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
+			animator.SetAnimationType(type);
+		}
+
+		public override void OnReceiveLocal(ToggleMessage message)
+		{
+			QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
+			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
+			var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
+			animator.CurrentType = type;
+		}
+	}
 }

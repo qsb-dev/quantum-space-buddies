@@ -1,29 +1,29 @@
 ﻿namespace QSB.EventsCore
 {
-    public enum EventType
-    {
-        Sector,
-        ServerTime,
-        AnimTrigger,
-        PlayerState,
-        PlayerStatesRequest,
-        FlashlightActiveChange,
-        SignalscopeActiveChange,
-        TranslatorActiveChange,
-        ProbeLauncherActiveChange,
-        SuitActiveChange,
-        PlayerJoin,
-        PlayerLeave,
-        PlayerDeath,
-        PlayerSectorChange,
-        PlayerReady,
-        ProbeActiveChange,
-        Elevator,
-        Geyser,
-        OrbSlot,
-        OrbUser,
-        Conversation,
-        ConversationStartEnd,
-        PlayInstrument
-    }
+	public enum EventType
+	{
+		Sector,
+		ServerTime,
+		AnimTrigger,
+		PlayerState,
+		PlayerStatesRequest,
+		FlashlightActiveChange,
+		SignalscopeActiveChange,
+		TranslatorActiveChange,
+		ProbeLauncherActiveChange,
+		SuitActiveChange,
+		PlayerJoin,
+		PlayerLeave,
+		PlayerDeath,
+		PlayerSectorChange,
+		PlayerReady,
+		ProbeActiveChange,
+		Elevator,
+		Geyser,
+		OrbSlot,
+		OrbUser,
+		Conversation,
+		ConversationStartEnd,
+		PlayInstrument
+	}
 }

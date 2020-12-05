@@ -127,11 +127,7 @@
     <Compile Include="Animation\AnimControllerPatch.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
-    <Compile Include="Animation\Events\QSBAnimationMessage.cs" />
-    <Compile Include="Animation\Events\QSBAnimationParametersMessage.cs" />
-    <Compile Include="Animation\Events\QSBAnimationTriggerMessage.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
-    <Compile Include="Animation\QSBNetworkAnimator.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
     <Compile Include="ConversationSync\ConversationPatches.cs" />
@@ -239,7 +235,12 @@
     <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj">
+      <Project>{C8C53004-1508-4F86-A419-4292C188DC2A}</Project>
+      <Name>QuantumUNET</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"

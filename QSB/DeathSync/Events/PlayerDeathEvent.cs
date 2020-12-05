@@ -5,29 +5,29 @@ using QSB.Utility;
 
 namespace QSB.DeathSync.Events
 {
-    public class PlayerDeathEvent : QSBEvent<EnumMessage<DeathType>>
-    {
-        public override EventType Type => EventType.PlayerDeath;
+	public class PlayerDeathEvent : QSBEvent<EnumMessage<DeathType>>
+	{
+		public override EventType Type => EventType.PlayerDeath;
 
-        public override void SetupListener() => GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, Handler);
+		public override void SetupListener() => GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, Handler);
 
-        public override void CloseListener() => GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, Handler);
+		public override void CloseListener() => GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, Handler);
 
-        private void Handler(DeathType type) => SendEvent(CreateMessage(type));
+		private void Handler(DeathType type) => SendEvent(CreateMessage(type));
 
-        private EnumMessage<DeathType> CreateMessage(DeathType type) => new EnumMessage<DeathType>
-        {
-            AboutId = LocalPlayerId,
-            Value = type
-        };
+		private EnumMessage<DeathType> CreateMessage(DeathType type) => new EnumMessage<DeathType>
+		{
+			AboutId = LocalPlayerId,
+			Value = type
+		};
 
-        public override void OnReceiveRemote(EnumMessage<DeathType> message)
-        {
-            var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
-            var deathMessage = Necronomicon.GetPhrase(message.Value);
-            DebugLog.ToAll(string.Format(deathMessage, playerName));
-        }
+		public override void OnReceiveRemote(EnumMessage<DeathType> message)
+		{
+			var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
+			var deathMessage = Necronomicon.GetPhrase(message.Value);
+			DebugLog.ToAll(string.Format(deathMessage, playerName));
+		}
 
-        public override void OnReceiveLocal(EnumMessage<DeathType> message) => OnReceiveRemote(message);
-    }
+		public override void OnReceiveLocal(EnumMessage<DeathType> message) => OnReceiveRemote(message);
+	}
 }
