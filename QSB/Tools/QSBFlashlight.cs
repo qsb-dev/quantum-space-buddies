@@ -26,6 +26,12 @@ namespace QSB.Tools
 			_root = oldComponent.GetValue<Transform>("_root");
 			_basePivot = oldComponent.GetValue<Transform>("_basePivot");
 			_wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
+
+			foreach (var light in _lights)
+			{
+				light.GetLight().enabled = false;
+			}
+			_flashlightOn = false;
 		}
 
 		public void UpdateState(bool value)
