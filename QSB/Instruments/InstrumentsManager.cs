@@ -60,14 +60,22 @@ namespace QSB.Instruments
 			ChertDrum = MakeChertDrum(bundle);
 		}
 
-		// EyeCompatibility : Need to find right object.
 		private GameObject MakeChertDrum(AssetBundle bundle)
 		{
 			var drum = new GameObject();
 			var mf = drum.AddComponent<MeshFilter>();
 			mf.sharedMesh = bundle.LoadAsset("assets/Chert/hourglasstwinsmeshescharacters2.asset") as Mesh;
 			var mr = drum.AddComponent<MeshRenderer>();
-			mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().material;
+			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			{
+				mr.sharedMaterial = GameObject.Find("NewDrum:polySurface2").GetComponent<MeshRenderer>().material;
+			}
+			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+			{
+				//mr.sharedMaterial = GameObject.Find("Props_HEA_Drums").GetComponent<MeshRenderer>().material;
+				// TODO : fix for instrument release
+				mr.sharedMaterial = null;
+			}
 			drum.transform.parent = rootObj;
 			drum.transform.rotation = rootObj.rotation;
 			drum.transform.localPosition = Vector3.zero;
