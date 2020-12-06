@@ -26,10 +26,12 @@ namespace QSB.Tools
 			_root = oldComponent.GetValue<Transform>("_root");
 			_basePivot = oldComponent.GetValue<Transform>("_basePivot");
 			_wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
+			Destroy(oldComponent.GetComponent<LightLOD>());
 
 			foreach (var light in _lights)
 			{
 				light.GetLight().enabled = false;
+				light.GetLight().shadows = LightShadows.Soft;
 			}
 			_flashlightOn = false;
 		}
