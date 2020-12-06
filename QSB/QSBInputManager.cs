@@ -6,8 +6,6 @@ namespace QSB
 
 	public class QSBInputManager : MonoBehaviour
 	{
-		public static QSBInputManager Instance;
-
 		public static event InputEvent ChertTaunt;
 
 		public static event InputEvent EskerTaunt;
@@ -20,8 +18,8 @@ namespace QSB
 
 		public static event InputEvent ExitTaunt;
 
-		public void Awake() => Instance = this;
-
+		// TODO : finish instruments - disabled for 0.7.0 release
+		/*
 		public void Update()
 		{
 			if (Input.GetKey(KeyCode.T))
@@ -55,5 +53,6 @@ namespace QSB
 				ExitTaunt?.Invoke();
 			}
 		}
+		*/
 	}
 }
