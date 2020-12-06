@@ -51,9 +51,6 @@ namespace QSB
 
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
-			// Turns out these are very finicky about what order they go. QSBNetworkManager seems to
-			// want to go first-ish, otherwise the NetworkManager complains about the PlayerPrefab being
-			// null (even though it isn't...)
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QSBNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
