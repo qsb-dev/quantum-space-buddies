@@ -68,8 +68,11 @@ namespace QSB.TransformSync
 				transform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
 				return;
 			}
-			OrbTransform.position = _orbParent.TransformPoint(transform.position);
-			OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
+			if (transform.position != Vector3.zero)
+			{
+				OrbTransform.position = _orbParent.TransformPoint(transform.position);
+				OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
+			}
 		}
 	}
 }

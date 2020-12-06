@@ -77,7 +77,10 @@ namespace QSB.WorldSync
 				return;
 			}
 			var delegateList = multiDelegate.GetInvocationList().ToList();
-			delegateList.ForEach(x => x.DynamicInvoke(instance));
+			foreach (var del in delegateList)
+			{
+				del.DynamicInvoke(instance);
+			}
 		}
 	}
 }
