@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Match;
 using UnityEngine.SceneManagement;
 
 namespace QuantumUNET
@@ -33,8 +32,6 @@ namespace QuantumUNET
 		public GameObject playerPrefab { get; set; }
 		public PlayerSpawnMethod playerSpawnMethod { get; set; }
 		public List<GameObject> spawnPrefabs { get; } = new List<GameObject>();
-		public string matchName = "default";
-		public uint matchSize = 4U;
 		public QSBNetworkClient client;
 		public int maxConnections { get; set; } = 4;
 		public List<QosType> channels { get; } = new List<QosType>();
@@ -159,22 +156,12 @@ namespace QuantumUNET
 			QSBNetworkServer.RegisterHandler(34, new QSBNetworkMessageDelegate(OnServerErrorInternal));
 		}
 
-		public bool StartServer(ConnectionConfig config, int maxConnections)
-		{
-			return StartServer(null, config, maxConnections);
-		}
-
 		public bool StartServer()
 		{
-			return StartServer(null);
+			return StartServer(null, -1);
 		}
 
-		public bool StartServer(MatchInfo info)
-		{
-			return StartServer(info, null, -1);
-		}
-
-		private bool StartServer(MatchInfo info, ConnectionConfig config, int maxConnections)
+		private bool StartServer(ConnectionConfig config, int maxConnections)
 		{
 			InitializeSingleton();
 			OnStartServer();
@@ -201,18 +188,7 @@ namespace QuantumUNET
 			{
 				QSBNetworkServer.Configure(config, maxConnections);
 			}
-			if (info != null)
-			{
-				if (!QSBNetworkServer.Listen(info, networkPort))
-				{
-					if (LogFilter.logError)
-					{
-						Debug.LogError("StartServer listen failed.");
-					}
-					return false;
-				}
-			}
-			else if (serverBindToIP && !string.IsNullOrEmpty(serverBindAddress))
+			if (serverBindToIP && !string.IsNullOrEmpty(serverBindAddress))
 			{
 				if (!QSBNetworkServer.Listen(serverBindAddress, networkPort))
 				{
@@ -380,23 +356,6 @@ namespace QuantumUNET
 			{
 				var networkClient = ConnectLocalClient();
 				OnServerConnect(networkClient.connection);
-				OnStartClient(networkClient);
-				result = networkClient;
-			}
-			else
-			{
-				result = null;
-			}
-			return result;
-		}
-
-		public virtual QSBNetworkClient StartHost(MatchInfo info)
-		{
-			OnStartHost();
-			QSBNetworkClient result;
-			if (StartServer(info))
-			{
-				var networkClient = ConnectLocalClient();
 				OnStartClient(networkClient);
 				result = networkClient;
 			}
