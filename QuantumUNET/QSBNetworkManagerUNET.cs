@@ -1,7 +1,6 @@
 ﻿using OWML.Logging;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
