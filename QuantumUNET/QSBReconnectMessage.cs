@@ -4,31 +4,27 @@ namespace QuantumUNET
 {
 	public class QSBReconnectMessage : QSBMessageBase
 	{
+		public int oldConnectionId;
+		public short playerControllerId;
+		public NetworkInstanceId netId;
+		public int msgSize;
+		public byte[] msgData;
+
 		public override void Deserialize(QSBNetworkReader reader)
 		{
-			this.oldConnectionId = (int)reader.ReadPackedUInt32();
-			this.playerControllerId = (short)reader.ReadPackedUInt32();
-			this.netId = reader.ReadNetworkId();
-			this.msgData = reader.ReadBytesAndSize();
-			this.msgSize = this.msgData.Length;
+			oldConnectionId = (int)reader.ReadPackedUInt32();
+			playerControllerId = (short)reader.ReadPackedUInt32();
+			netId = reader.ReadNetworkId();
+			msgData = reader.ReadBytesAndSize();
+			msgSize = msgData.Length;
 		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
-			writer.WritePackedUInt32((uint)this.oldConnectionId);
-			writer.WritePackedUInt32((uint)this.playerControllerId);
-			writer.Write(this.netId);
-			writer.WriteBytesAndSize(this.msgData, this.msgSize);
+			writer.WritePackedUInt32((uint)oldConnectionId);
+			writer.WritePackedUInt32((uint)playerControllerId);
+			writer.Write(netId);
+			writer.WriteBytesAndSize(msgData, msgSize);
 		}
-
-		public int oldConnectionId;
-
-		public short playerControllerId;
-
-		public NetworkInstanceId netId;
-
-		public int msgSize;
-
-		public byte[] msgData;
 	}
 }
