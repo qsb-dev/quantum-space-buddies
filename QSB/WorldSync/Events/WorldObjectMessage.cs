@@ -1,22 +1,22 @@
 ﻿using QSB.Messaging;
-using UnityEngine.Networking;
+using QuantumUNET;
 
 namespace QSB.WorldSync.Events
 {
-    public class WorldObjectMessage : PlayerMessage
-    {
-        public int ObjectId { get; set; }
+	public class WorldObjectMessage : PlayerMessage
+	{
+		public int ObjectId { get; set; }
 
-        public override void Deserialize(NetworkReader reader)
-        {
-            base.Deserialize(reader);
-            ObjectId = reader.ReadInt32();
-        }
+		public override void Deserialize(QSBNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			ObjectId = reader.ReadInt32();
+		}
 
-        public override void Serialize(NetworkWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(ObjectId);
-        }
-    }
+		public override void Serialize(QSBNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(ObjectId);
+		}
+	}
 }

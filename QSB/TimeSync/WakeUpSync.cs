@@ -1,256 +1,255 @@
 ﻿using QSB.DeathSync;
 using QSB.EventsCore;
 using QSB.TimeSync.Events;
-using QSB.Utility;
+using QuantumUNET;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.TimeSync
 {
-    public class WakeUpSync : NetworkBehaviour
-    {
-        public static WakeUpSync LocalInstance { get; private set; }
+	public class WakeUpSync : QSBNetworkBehaviour
+	{
+		public static WakeUpSync LocalInstance { get; private set; }
 
-        private const float TimeThreshold = 0.5f;
-        private const float MaxFastForwardSpeed = 60f;
-        private const float MaxFastForwardDiff = 20f;
-        private const float MinFastForwardSpeed = 2f;
+		private const float TimeThreshold = 0.5f;
+		private const float MaxFastForwardSpeed = 60f;
+		private const float MaxFastForwardDiff = 20f;
+		private const float MinFastForwardSpeed = 2f;
 
-        private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
-        private State _state = State.NotLoaded;
+		private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
 
-        private float _sendTimer;
-        private float _serverTime;
-        private float _timeScale;
-        private bool _isInputEnabled = true;
-        private bool _isFirstFastForward = true;
-        private int _localLoopCount;
-        private int _serverLoopCount;
+		private State _state = State.NotLoaded;
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+		private float _sendTimer;
+		private float _serverTime;
+		private float _timeScale;
+		private bool _isInputEnabled = true;
+		private bool _isFirstFastForward = true;
+		private int _localLoopCount;
+		private int _serverLoopCount;
 
-        private void Start()
-        {
-            if (!isLocalPlayer)
-            {
-                return;
-            }
+		public override void OnStartLocalPlayer()
+		{
+			LocalInstance = this;
+		}
 
-            if (QSBSceneManager.IsInUniverse)
-            {
-                Init();
-            }
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		private void Start()
+		{
+			if (!IsLocalPlayer)
+			{
+				return;
+			}
 
-            GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
-            GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
-        }
+			if (QSBSceneManager.IsInUniverse)
+			{
+				Init();
+			}
+			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-        private void OnWakeUp()
-        {
-            DebugLog.DebugWrite("ON WAKE UP!");
-            if (NetworkServer.active)
-            {
-                QSB.HasWokenUp = true;
-            }
-        }
+			GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
+			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+		}
 
-        private void OnDestroy()
-        {
-            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-            GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
-            GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
-        }
+		private void OnWakeUp()
+		{
+			if (QSBNetworkServer.active)
+			{
+				QSB.HasWokenUp = true;
+			}
+		}
 
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-        {
-            QSB.HasWokenUp = false;
-            if (isInUniverse)
-            {
-                Init();
-            }
-            else
-            {
-                _state = State.NotLoaded;
-            }
-        }
+		private void OnDestroy()
+		{
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
+			GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
+		}
 
-        private void OnLoopStart()
-        {
-            _localLoopCount++;
-        }
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		{
+			QSB.HasWokenUp = (scene == OWScene.EyeOfTheUniverse);
+			if (isInUniverse)
+			{
+				Init();
+			}
+			else
+			{
+				_state = State.NotLoaded;
+			}
+		}
 
-        private void Init()
-        {
-            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
-            _state = State.Loaded;
-            gameObject.AddComponent<PreserveTimeScale>();
-            if (isServer)
-            {
-                SendServerTime();
-            }
-            else
-            {
-                WakeUpOrSleep();
-            }
-        }
+		private void OnLoopStart()
+		{
+			_localLoopCount++;
+		}
 
-        private void SendServerTime()
-        {
-            GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
-        }
+		private void Init()
+		{
+			GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+			_state = State.Loaded;
+			gameObject.AddComponent<PreserveTimeScale>();
+			if (IsServer)
+			{
+				SendServerTime();
+			}
+			else
+			{
+				WakeUpOrSleep();
+			}
+		}
 
-        public void OnClientReceiveMessage(ServerTimeMessage message)
-        {
-            _serverTime = message.ServerTime;
-            _serverLoopCount = message.LoopCount;
-            WakeUpOrSleep();
-        }
+		private void SendServerTime()
+		{
+			GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
+		}
 
-        private void WakeUpOrSleep()
-        {
-            if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
-            {
-                return;
-            }
+		public void OnClientReceiveMessage(ServerTimeMessage message)
+		{
+			_serverTime = message.ServerTime;
+			_serverLoopCount = message.LoopCount;
+			WakeUpOrSleep();
+		}
 
-            var myTime = Time.timeSinceLevelLoad;
-            var diff = myTime - _serverTime;
+		private void WakeUpOrSleep()
+		{
+			if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
+			{
+				return;
+			}
 
-            if (diff > TimeThreshold)
-            {
-                StartPausing();
-                return;
-            }
+			var myTime = Time.timeSinceLevelLoad;
+			var diff = myTime - _serverTime;
 
-            if (diff < -TimeThreshold)
-            {
-                StartFastForwarding();
-            }
-        }
+			if (diff > TimeThreshold)
+			{
+				StartPausing();
+				return;
+			}
 
-        private void StartFastForwarding()
-        {
-            if (_state == State.FastForwarding)
-            {
-                return;
-            }
-            _timeScale = MaxFastForwardSpeed;
-            _state = State.FastForwarding;
-            TimeSyncUI.Start(TimeSyncType.Fastforwarding);
-        }
+			if (diff < -TimeThreshold)
+			{
+				StartFastForwarding();
+			}
+		}
 
-        private void StartPausing()
-        {
-            if (_state == State.Pausing)
-            {
-                return;
-            }
-            _timeScale = 0f;
-            _state = State.Pausing;
-            SpinnerUI.Show();
-            TimeSyncUI.Start(TimeSyncType.Pausing);
-        }
+		private void StartFastForwarding()
+		{
+			if (_state == State.FastForwarding)
+			{
+				return;
+			}
+			_timeScale = MaxFastForwardSpeed;
+			_state = State.FastForwarding;
+			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
+		}
 
-        private void ResetTimeScale()
-        {
-            _timeScale = 1f;
-            _state = State.Loaded;
+		private void StartPausing()
+		{
+			if (_state == State.Pausing)
+			{
+				return;
+			}
+			_timeScale = 0f;
+			_state = State.Pausing;
+			SpinnerUI.Show();
+			TimeSyncUI.Start(TimeSyncType.Pausing);
+		}
 
-            if (!_isInputEnabled)
-            {
-                EnableInput();
-            }
-            _isFirstFastForward = false;
-            QSB.HasWokenUp = true;
-            Physics.SyncTransforms();
-            SpinnerUI.Hide();
-            TimeSyncUI.Stop();
-            GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
-            RespawnOnDeath.Instance.Init();
-        }
+		private void ResetTimeScale()
+		{
+			_timeScale = 1f;
+			_state = State.Loaded;
 
-        private void DisableInput()
-        {
-            _isInputEnabled = false;
-            OWInput.ChangeInputMode(InputMode.None);
-        }
+			if (!_isInputEnabled)
+			{
+				EnableInput();
+			}
+			_isFirstFastForward = false;
+			QSB.HasWokenUp = true;
+			Physics.SyncTransforms();
+			SpinnerUI.Hide();
+			TimeSyncUI.Stop();
+			GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+			RespawnOnDeath.Instance.Init();
+		}
 
-        private void EnableInput()
-        {
-            _isInputEnabled = true;
-            OWInput.ChangeInputMode(InputMode.Character);
-        }
+		private void DisableInput()
+		{
+			_isInputEnabled = false;
+			OWInput.ChangeInputMode(InputMode.None);
+		}
 
-        private void Update()
-        {
-            if (isServer)
-            {
-                UpdateServer();
-            }
-            else if (isLocalPlayer)
-            {
-                UpdateLocal();
-            }
-        }
+		private void EnableInput()
+		{
+			_isInputEnabled = true;
+			OWInput.ChangeInputMode(InputMode.Character);
+		}
 
-        private void UpdateServer()
-        {
-            if (_state != State.Loaded)
-            {
-                return;
-            }
+		private void Update()
+		{
+			if (IsServer)
+			{
+				UpdateServer();
+			}
+			else if (IsLocalPlayer)
+			{
+				UpdateLocal();
+			}
+		}
 
-            _sendTimer += Time.unscaledDeltaTime;
-            if (_sendTimer > 1)
-            {
-                SendServerTime();
-                _sendTimer = 0;
-            }
-        }
+		private void UpdateServer()
+		{
+			if (_state != State.Loaded)
+			{
+				return;
+			}
 
-        private void UpdateLocal()
-        {
-            _serverTime += Time.unscaledDeltaTime;
+			_sendTimer += Time.unscaledDeltaTime;
+			if (_sendTimer > 1)
+			{
+				SendServerTime();
+				_sendTimer = 0;
+			}
+		}
 
-            if (_state == State.NotLoaded)
-            {
-                return;
-            }
+		private void UpdateLocal()
+		{
+			_serverTime += Time.unscaledDeltaTime;
 
-            if (_state == State.FastForwarding)
-            {
-                var diff = _serverTime - Time.timeSinceLevelLoad;
-                Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+			if (_state == State.NotLoaded)
+			{
+				return;
+			}
 
-                if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
-                {
-                    var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
-                    Locator.GetPlayerTransform().position = spawnPoint.position;
-                    Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
-                    Physics.SyncTransforms();
-                }
-            }
-            else
-            {
-                Time.timeScale = _timeScale;
-            }
+			if (_state == State.FastForwarding)
+			{
+				var diff = _serverTime - Time.timeSinceLevelLoad;
+				Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
 
-            var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
-            var isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
+				{
+					var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
+					Locator.GetPlayerTransform().position = spawnPoint.position;
+					Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
+					Physics.SyncTransforms();
+				}
+			}
+			else
+			{
+				Time.timeScale = _timeScale;
+			}
 
-            if (isDoneFastForwarding || isDonePausing)
-            {
-                ResetTimeScale();
-            }
+			var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
+			var isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
 
-            if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
-            {
-                DisableInput();
-            }
-        }
-    }
+			if (isDoneFastForwarding || isDonePausing)
+			{
+				ResetTimeScale();
+			}
+
+			if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
+			{
+				DisableInput();
+			}
+		}
+	}
 }

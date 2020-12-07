@@ -1,38 +1,43 @@
-﻿using QSB.EventsCore;
+﻿using OWML.ModHelper.Events;
+using QSB.EventsCore;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync
 {
-    public class QSBOrbSlot : WorldObject
-    {
-        public NomaiInterfaceSlot InterfaceSlot { get; private set; }
+	public class QSBOrbSlot : WorldObject
+	{
+		public NomaiInterfaceSlot InterfaceSlot { get; private set; }
+		public bool Activated { get; private set; }
 
-        private bool _initialized;
+		private bool _initialized;
 
-        public void Init(NomaiInterfaceSlot slot, int id)
-        {
-            ObjectId = id;
-            InterfaceSlot = slot;
-            _initialized = true;
-            WorldRegistry.AddObject(this);
-        }
+		public void Init(NomaiInterfaceSlot slot, int id)
+		{
+			ObjectId = id;
+			InterfaceSlot = slot;
+			_initialized = true;
+			WorldRegistry.AddObject(this);
+		}
 
-        public void HandleEvent(bool state)
-        {
-            if (QSB.HasWokenUp)
-            {
-                GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
-            }
-        }
+		public void HandleEvent(bool state, int orbId)
+		{
+			if (QSB.HasWokenUp)
+			{
+				GlobalMessenger<int, int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
+			}
+		}
 
-        public void SetState(bool state)
-        {
-            if (!_initialized)
-            {
-                return;
-            }
-            var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
-            WorldRegistry.RaiseEvent(InterfaceSlot, ev);
-        }
-    }
+		public void SetState(bool state, int orbId)
+		{
+			if (!_initialized)
+			{
+				return;
+			}
+			var occOrb = state ? WorldRegistry.OldOrbList[orbId] : null;
+			InterfaceSlot.SetValue("_occupyingOrb", occOrb);
+			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
+			WorldRegistry.RaiseEvent(InterfaceSlot, ev);
+			Activated = state;
+		}
+	}
 }

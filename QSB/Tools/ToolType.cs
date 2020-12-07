@@ -1,9 +1,9 @@
 ﻿namespace QSB.Tools
 {
-    public enum ToolType
-    {
-        Signalscope,
-        ProbeLauncher,
-        Translator
-    }
+	public enum ToolType
+	{
+		Signalscope,
+		ProbeLauncher,
+		Translator
+	}
 }
