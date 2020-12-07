@@ -1,35 +1,33 @@
-﻿using QSB.Events;
+﻿using QSB.EventsCore;
 using System.Linq;
 
 namespace QSB.DeathSync
 {
-    public static class DeathPatches
-    {
-        public static bool PreFinishDeathSequence(DeathType deathType)
-        {
-            if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
-            {
-                // Allow real death
-                return true;
-            }
+	public class DeathPatches : QSBPatch
+	{
+		public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 
-            RespawnOnDeath.Instance.ResetShip();
-            RespawnOnDeath.Instance.ResetPlayer();
+		public static bool PreFinishDeathSequence(DeathType deathType)
+		{
+			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
+			{
+				// Allow real death
+				return true;
+			}
 
-            // Prevent original death method from running.
-            return false;
-        }
+			RespawnOnDeath.Instance.ResetShip();
+			RespawnOnDeath.Instance.ResetPlayer();
 
-        public static void BroadcastDeath(DeathType deathType)
-        {
-            GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
-        }
+			// Prevent original death method from running.
+			return false;
+		}
 
-        public static void DoPatches()
-        {
-            QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
-            QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
-        }
+		public static void BroadcastDeath(DeathType deathType) => GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
 
-    }
+		public override void DoPatches()
+		{
+			QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
+			QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
+		}
+	}
 }
