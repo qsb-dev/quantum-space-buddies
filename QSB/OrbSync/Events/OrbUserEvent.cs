@@ -27,10 +27,6 @@ namespace QSB.OrbSync.Events
 		public override void OnServerReceive(WorldObjectMessage message)
 		{
 			var fromPlayer = QSBNetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
-			foreach (var item in QSBNetworkServer.connections)
-			{
-				DebugLog.DebugWrite(item.GetPlayer().PlayerId.ToString());
-			}
 			if (WorldRegistry.OrbSyncList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OrbSyncList is empty. (ID {message.ObjectId})", MessageType.Error);
@@ -55,10 +51,8 @@ namespace QSB.OrbSync.Events
 			}
 			if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
 			{
-				DebugLog.DebugWrite($"Removed authority of orb {message.ObjectId} from {orbIdentity.ClientAuthorityOwner.GetPlayer().PlayerId}");
 				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
 			}
-			DebugLog.DebugWrite($"Assigned authority of orb {message.ObjectId} to player {message.FromId}.");
 			orbIdentity.AssignClientAuthority(fromPlayer);
 			orb.enabled = true;
 		}

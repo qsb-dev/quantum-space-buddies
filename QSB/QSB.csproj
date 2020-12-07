@@ -150,6 +150,7 @@
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="MessagesCore\EnumMessage.cs" />
     <Compile Include="MessagesCore\FloatMessage.cs" />
+    <Compile Include="OrbSync\Events\OrbSlotMessage.cs" />
     <Compile Include="OrbSync\OrbManager.cs" />
     <Compile Include="OrbSync\Events\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbPatches.cs" />

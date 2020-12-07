@@ -1,4 +1,5 @@
-﻿using QSB.EventsCore;
+﻿using OWML.ModHelper.Events;
+using QSB.EventsCore;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync
@@ -18,20 +19,22 @@ namespace QSB.OrbSync
 			WorldRegistry.AddObject(this);
 		}
 
-		public void HandleEvent(bool state)
+		public void HandleEvent(bool state, int orbId)
 		{
 			if (QSB.HasWokenUp)
 			{
-				GlobalMessenger<int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, state);
+				GlobalMessenger<int, int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
 			}
 		}
 
-		public void SetState(bool state)
+		public void SetState(bool state, int orbId)
 		{
 			if (!_initialized)
 			{
 				return;
 			}
+			var occOrb = state ? WorldRegistry.OldOrbList[orbId] : null;
+			InterfaceSlot.SetValue("_occupyingOrb", occOrb);
 			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
 			WorldRegistry.RaiseEvent(InterfaceSlot, ev);
 			Activated = state;

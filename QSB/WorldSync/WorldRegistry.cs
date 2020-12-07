@@ -55,7 +55,7 @@ namespace QSB.WorldSync
 				orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
 				if (orbSync.HasAuthority)
 				{
-					qsbSlot.HandleEvent(state);
+					qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
 				}
 			}
 			catch
