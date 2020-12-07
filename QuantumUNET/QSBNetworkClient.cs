@@ -1,12 +1,11 @@
 ﻿using OWML.Logging;
+using QuantumUNET.Messages;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Match;
-using UnityEngine.Networking.NetworkSystem;
 
 namespace QuantumUNET
 {
@@ -73,15 +72,6 @@ namespace QuantumUNET
 			get
 			{
 				return m_Connection;
-			}
-		}
-
-		[Obsolete("Moved to NetworkMigrationManager.")]
-		public PeerInfoMessage[] peers
-		{
-			get
-			{
-				return null;
 			}
 		}
 
@@ -168,12 +158,6 @@ namespace QuantumUNET
 		{
 			m_HostTopology = topology;
 			return true;
-		}
-
-		public void Connect(MatchInfo matchInfo)
-		{
-			PrepareForConnect();
-			ConnectWithRelay(matchInfo);
 		}
 
 		public bool ReconnectToNewHost(string serverIp, int serverPort)
@@ -578,21 +562,6 @@ namespace QuantumUNET
 			m_Connection = (QSBNetworkConnection)Activator.CreateInstance(m_NetworkConnectionClass);
 			m_Connection.SetHandlers(m_MessageHandlers);
 			m_Connection.Initialize(m_ServerIp, m_ClientId, m_ClientConnectionId, m_HostTopology);
-		}
-
-		private void ConnectWithRelay(MatchInfo info)
-		{
-			m_AsyncConnect = ConnectState.Connecting;
-			Update();
-			byte b;
-			m_ClientConnectionId = NetworkTransport.ConnectToNetworkPeer(m_ClientId, info.address, info.port, 0, 0, info.networkId, QSBUtility.GetSourceID(), info.nodeId, out b);
-			m_Connection = (QSBNetworkConnection)Activator.CreateInstance(m_NetworkConnectionClass);
-			m_Connection.SetHandlers(m_MessageHandlers);
-			m_Connection.Initialize(info.address, m_ClientId, m_ClientConnectionId, m_HostTopology);
-			if (b != 0)
-			{
-				Debug.LogError("ConnectToNetworkPeer Error: " + b);
-			}
 		}
 
 		public virtual void Disconnect()

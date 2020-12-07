@@ -1,8 +1,9 @@
 ﻿using OWML.Logging;
+using QuantumUNET.Messages;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QuantumUNET
+namespace QuantumUNET.Components
 {
 	public class QSBNetworkTransform : QSBNetworkBehaviour
 	{

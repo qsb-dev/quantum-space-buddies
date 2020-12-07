@@ -1,4 +1,6 @@
-﻿using System;
+﻿using QuantumUNET.Components;
+using QuantumUNET.Messages;
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,11 +9,9 @@ namespace QuantumUNET
 {
 	public class QSBNetworkReader
 	{
-		public QSBNetworkReader()
-		{
-			m_buf = new QSBNetBuffer();
-			Initialize();
-		}
+		private QSBNetBuffer m_buf;
+		private static byte[] s_StringReaderBuffer;
+		private static Encoding s_Encoding;
 
 		public QSBNetworkReader(QSBNetworkWriter writer)
 		{
@@ -34,69 +34,51 @@ namespace QuantumUNET
 			}
 		}
 
-		public uint Position
-		{
-			get
-			{
-				return m_buf.Position;
-			}
-		}
+		public uint Position => m_buf.Position;
 
-		public int Length
-		{
-			get
-			{
-				return m_buf.Length;
-			}
-		}
+		public int Length => m_buf.Length;
 
-		public void SeekZero()
-		{
-			m_buf.SeekZero();
-		}
+		public void SeekZero() => m_buf.SeekZero();
 
-		internal void Replace(byte[] buffer)
-		{
-			m_buf.Replace(buffer);
-		}
+		internal void Replace(byte[] buffer) => m_buf.Replace(buffer);
 
 		public uint ReadPackedUInt32()
 		{
-			byte b = ReadByte();
+			var b = ReadByte();
 			uint result;
 			if (b < 241)
 			{
-				result = (uint)b;
+				result = b;
 			}
 			else
 			{
-				byte b2 = ReadByte();
+				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240U + 256U * (uint)(b - 241) + (uint)b2;
+					result = 240U + (256U * (uint)(b - 241)) + b2;
 				}
 				else
 				{
-					byte b3 = ReadByte();
+					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288U + 256U * (uint)b2 + (uint)b3;
+						result = 2288U + (256U * b2) + b3;
 					}
 					else
 					{
-						byte b4 = ReadByte();
+						var b4 = ReadByte();
 						if (b == 250)
 						{
-							result = (uint)((int)b2 + ((int)b3 << 8) + ((int)b4 << 16));
+							result = (uint)(b2 + (b3 << 8) + (b4 << 16));
 						}
 						else
 						{
-							byte b5 = ReadByte();
+							var b5 = ReadByte();
 							if (b < 251)
 							{
 								throw new IndexOutOfRangeException("ReadPackedUInt32() failure: " + b);
 							}
-							result = (uint)((int)b2 + ((int)b3 << 8) + ((int)b4 << 16) + ((int)b5 << 24));
+							result = (uint)(b2 + (b3 << 8) + (b4 << 16) + (b5 << 24));
 						}
 					}
 				}
@@ -106,69 +88,69 @@ namespace QuantumUNET
 
 		public ulong ReadPackedUInt64()
 		{
-			byte b = ReadByte();
+			var b = ReadByte();
 			ulong result;
 			if (b < 241)
 			{
-				result = (ulong)b;
+				result = b;
 			}
 			else
 			{
-				byte b2 = ReadByte();
+				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240UL + 256UL * ((ulong)b - 241UL) + (ulong)b2;
+					result = 240UL + (256UL * (b - 241UL)) + b2;
 				}
 				else
 				{
-					byte b3 = ReadByte();
+					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288UL + 256UL * (ulong)b2 + (ulong)b3;
+						result = 2288UL + (256UL * b2) + b3;
 					}
 					else
 					{
-						byte b4 = ReadByte();
+						var b4 = ReadByte();
 						if (b == 250)
 						{
-							result = (ulong)b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16);
+							result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16);
 						}
 						else
 						{
-							byte b5 = ReadByte();
+							var b5 = ReadByte();
 							if (b == 251)
 							{
-								result = (ulong)b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24);
+								result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24);
 							}
 							else
 							{
-								byte b6 = ReadByte();
+								var b6 = ReadByte();
 								if (b == 252)
 								{
-									result = (ulong)b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32);
+									result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32);
 								}
 								else
 								{
-									byte b7 = ReadByte();
+									var b7 = ReadByte();
 									if (b == 253)
 									{
-										result = (ulong)b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40);
+										result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40);
 									}
 									else
 									{
-										byte b8 = ReadByte();
+										var b8 = ReadByte();
 										if (b == 254)
 										{
-											result = (ulong)b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48);
+											result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48);
 										}
 										else
 										{
-											byte b9 = ReadByte();
+											var b9 = ReadByte();
 											if (b != 255)
 											{
 												throw new IndexOutOfRangeException("ReadPackedUInt64() failure: " + b);
 											}
-											result = (ulong)b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48) + ((ulong)b9 << 56);
+											result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48) + ((ulong)b9 << 56);
 										}
 									}
 								}
@@ -180,61 +162,46 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public NetworkInstanceId ReadNetworkId()
-		{
-			return new NetworkInstanceId(ReadPackedUInt32());
-		}
+		public NetworkInstanceId ReadNetworkId() => new NetworkInstanceId(ReadPackedUInt32());
 
-		public NetworkSceneId ReadSceneId()
-		{
-			return new NetworkSceneId(ReadPackedUInt32());
-		}
+		public NetworkSceneId ReadSceneId() => new NetworkSceneId(ReadPackedUInt32());
 
-		public byte ReadByte()
-		{
-			return m_buf.ReadByte();
-		}
+		public byte ReadByte() => m_buf.ReadByte();
 
-		public sbyte ReadSByte()
-		{
-			return (sbyte)m_buf.ReadByte();
-		}
+		public sbyte ReadSByte() => (sbyte)m_buf.ReadByte();
 
 		public short ReadInt16()
 		{
 			ushort num = 0;
-			num |= (ushort)m_buf.ReadByte();
+			num |= m_buf.ReadByte();
 			num |= (ushort)(m_buf.ReadByte() << 8);
 			return (short)num;
 		}
 
-		public ushort ReadUInt16()
-		{
-			return (ushort)((uint)(ushort)(0U | (uint)m_buf.ReadByte()) | (uint)(ushort)((uint)m_buf.ReadByte() << 8));
-		}
+		public ushort ReadUInt16() => (ushort)((ushort)(0U | m_buf.ReadByte()) | (uint)(ushort)((uint)m_buf.ReadByte() << 8));
 
 		public int ReadInt32()
 		{
-			uint num = 0U;
-			num |= (uint)m_buf.ReadByte();
-			num |= (uint)((uint)m_buf.ReadByte() << 8);
-			num |= (uint)((uint)m_buf.ReadByte() << 16);
-			return (int)(num | (uint)((uint)m_buf.ReadByte() << 24));
+			var num = 0U;
+			num |= m_buf.ReadByte();
+			num |= (uint)m_buf.ReadByte() << 8;
+			num |= (uint)m_buf.ReadByte() << 16;
+			return (int)(num | ((uint)m_buf.ReadByte() << 24));
 		}
 
 		public uint ReadUInt32()
 		{
-			uint num = 0U;
-			num |= (uint)m_buf.ReadByte();
-			num |= (uint)((uint)m_buf.ReadByte() << 8);
-			num |= (uint)((uint)m_buf.ReadByte() << 16);
-			return num | (uint)((uint)m_buf.ReadByte() << 24);
+			var num = 0U;
+			num |= m_buf.ReadByte();
+			num |= (uint)m_buf.ReadByte() << 8;
+			num |= (uint)m_buf.ReadByte() << 16;
+			return num | ((uint)m_buf.ReadByte() << 24);
 		}
 
 		public long ReadInt64()
 		{
-			ulong num = 0UL;
-			ulong num2 = (ulong)m_buf.ReadByte();
+			var num = 0UL;
+			var num2 = (ulong)m_buf.ReadByte();
 			num |= num2;
 			num2 = (ulong)m_buf.ReadByte() << 8;
 			num |= num2;
@@ -254,8 +221,8 @@ namespace QuantumUNET
 
 		public ulong ReadUInt64()
 		{
-			ulong num = 0UL;
-			ulong num2 = (ulong)m_buf.ReadByte();
+			var num = 0UL;
+			var num2 = (ulong)m_buf.ReadByte();
 			num |= num2;
 			num2 = (ulong)m_buf.ReadByte() << 8;
 			num |= num2;
@@ -298,7 +265,7 @@ namespace QuantumUNET
 
 		public string ReadString()
 		{
-			ushort num = ReadUInt16();
+			var num = ReadUInt16();
 			string result;
 			if (num == 0)
 			{
@@ -310,25 +277,22 @@ namespace QuantumUNET
 				{
 					throw new IndexOutOfRangeException("ReadString() too long: " + num);
 				}
-				while ((int)num > s_StringReaderBuffer.Length)
+				while (num > s_StringReaderBuffer.Length)
 				{
 					s_StringReaderBuffer = new byte[s_StringReaderBuffer.Length * 2];
 				}
-				m_buf.ReadBytes(s_StringReaderBuffer, (uint)num);
-				char[] chars = s_Encoding.GetChars(s_StringReaderBuffer, 0, (int)num);
+				m_buf.ReadBytes(s_StringReaderBuffer, num);
+				var chars = s_Encoding.GetChars(s_StringReaderBuffer, 0, num);
 				result = new string(chars);
 			}
 			return result;
 		}
 
-		public char ReadChar()
-		{
-			return (char)m_buf.ReadByte();
-		}
+		public char ReadChar() => (char)m_buf.ReadByte();
 
 		public bool ReadBoolean()
 		{
-			int num = (int)m_buf.ReadByte();
+			var num = (int)m_buf.ReadByte();
 			return num == 1;
 		}
 
@@ -338,14 +302,14 @@ namespace QuantumUNET
 			{
 				throw new IndexOutOfRangeException("NetworkReader ReadBytes " + count);
 			}
-			byte[] array = new byte[count];
+			var array = new byte[count];
 			m_buf.ReadBytes(array, (uint)count);
 			return array;
 		}
 
 		public byte[] ReadBytesAndSize()
 		{
-			ushort num = ReadUInt16();
+			var num = ReadUInt16();
 			byte[] result;
 			if (num == 0)
 			{
@@ -353,55 +317,28 @@ namespace QuantumUNET
 			}
 			else
 			{
-				result = ReadBytes((int)num);
+				result = ReadBytes(num);
 			}
 			return result;
 		}
 
-		public Vector2 ReadVector2()
-		{
-			return new Vector2(ReadSingle(), ReadSingle());
-		}
+		public Vector2 ReadVector2() => new Vector2(ReadSingle(), ReadSingle());
 
-		public Vector3 ReadVector3()
-		{
-			return new Vector3(ReadSingle(), ReadSingle(), ReadSingle());
-		}
+		public Vector3 ReadVector3() => new Vector3(ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Vector4 ReadVector4()
-		{
-			return new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-		}
+		public Vector4 ReadVector4() => new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Color ReadColor()
-		{
-			return new Color(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-		}
+		public Color ReadColor() => new Color(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Color32 ReadColor32()
-		{
-			return new Color32(ReadByte(), ReadByte(), ReadByte(), ReadByte());
-		}
+		public Color32 ReadColor32() => new Color32(ReadByte(), ReadByte(), ReadByte(), ReadByte());
 
-		public Quaternion ReadQuaternion()
-		{
-			return new Quaternion(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-		}
+		public Quaternion ReadQuaternion() => new Quaternion(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Rect ReadRect()
-		{
-			return new Rect(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-		}
+		public Rect ReadRect() => new Rect(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Plane ReadPlane()
-		{
-			return new Plane(ReadVector3(), ReadSingle());
-		}
+		public Plane ReadPlane() => new Plane(ReadVector3(), ReadSingle());
 
-		public Ray ReadRay()
-		{
-			return new Ray(ReadVector3(), ReadVector3());
-		}
+		public Ray ReadRay() => new Ray(ReadVector3(), ReadVector3());
 
 		public Matrix4x4 ReadMatrix4x4()
 		{
@@ -450,7 +387,7 @@ namespace QuantumUNET
 
 		public Transform ReadTransform()
 		{
-			NetworkInstanceId networkInstanceId = ReadNetworkId();
+			var networkInstanceId = ReadNetworkId();
 			Transform result;
 			if (networkInstanceId.IsEmpty())
 			{
@@ -458,7 +395,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				GameObject gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
+				var gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
 					if (LogFilter.logDebug)
@@ -477,7 +414,7 @@ namespace QuantumUNET
 
 		public GameObject ReadGameObject()
 		{
-			NetworkInstanceId networkInstanceId = ReadNetworkId();
+			var networkInstanceId = ReadNetworkId();
 			GameObject result;
 			if (networkInstanceId.IsEmpty())
 			{
@@ -508,7 +445,7 @@ namespace QuantumUNET
 
 		public QSBNetworkIdentity ReadNetworkIdentity()
 		{
-			NetworkInstanceId networkInstanceId = ReadNetworkId();
+			var networkInstanceId = ReadNetworkId();
 			QSBNetworkIdentity result;
 			if (networkInstanceId.IsEmpty())
 			{
@@ -541,26 +478,13 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public override string ToString()
-		{
-			return m_buf.ToString();
-		}
+		public override string ToString() => m_buf.ToString();
 
 		public TMsg ReadMessage<TMsg>() where TMsg : QSBMessageBase, new()
 		{
-			TMsg result = Activator.CreateInstance<TMsg>();
+			var result = Activator.CreateInstance<TMsg>();
 			result.Deserialize(this);
 			return result;
 		}
-
-		private QSBNetBuffer m_buf;
-
-		private const int k_MaxStringLength = 32768;
-
-		private const int k_InitialStringBufferSize = 1024;
-
-		private static byte[] s_StringReaderBuffer;
-
-		private static Encoding s_Encoding;
 	}
 }

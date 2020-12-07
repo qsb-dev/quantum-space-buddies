@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantumUNET
+namespace QuantumUNET.Messages
 {
 	public class QSBNetworkMessage
 	{

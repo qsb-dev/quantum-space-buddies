@@ -9,7 +9,7 @@ using QSB.Patches;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;
-using QuantumUNET;
+using QuantumUNET.Components;
 using UnityEngine;
 using UnityEngine.Networking;
 

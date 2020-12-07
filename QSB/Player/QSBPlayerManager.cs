@@ -2,7 +2,7 @@
 using QSB.Player.Events;
 using QSB.TransformSync;
 using QSB.Utility;
-using QuantumUNET;
+using QuantumUNET.Components;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -1,4 +1,6 @@
-﻿namespace QuantumUNET
+﻿using QuantumUNET.Messages;
+
+namespace QuantumUNET
 {
 	internal class QSBULocalConnectionToClient : QSBNetworkConnection
 	{

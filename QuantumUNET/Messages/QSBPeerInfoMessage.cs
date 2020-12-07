@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuantumUNET
+namespace QuantumUNET.Messages
 {
 	public class QSBPeerInfoMessage : QSBMessageBase
 	{

@@ -1,4 +1,4 @@
-﻿namespace QuantumUNET
+﻿namespace QuantumUNET.Messages
 {
 	public class QSBErrorMessage : QSBMessageBase
 	{

@@ -1,4 +1,6 @@
 ﻿using OWML.Logging;
+using QuantumUNET.Components;
+using QuantumUNET.Messages;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -449,9 +451,6 @@ namespace QuantumUNET
 		}
 
 		public virtual void TransportReceive(byte[] bytes, int numBytes, int channelId) => HandleBytes(bytes, numBytes, channelId);
-
-		[Obsolete("TransportRecieve has been deprecated. Use TransportReceive instead (UnityUpgradable) -> TransportReceive(*)", false)]
-		public virtual void TransportRecieve(byte[] bytes, int numBytes, int channelId) => TransportReceive(bytes, numBytes, channelId);
 
 		public virtual bool TransportSend(byte[] bytes, int numBytes, int channelId, out byte error) => NetworkTransport.Send(hostId, connectionId, channelId, bytes, numBytes, out error);
 

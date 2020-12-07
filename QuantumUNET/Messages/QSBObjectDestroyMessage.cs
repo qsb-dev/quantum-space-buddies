@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Networking;
 
-namespace QuantumUNET
+namespace QuantumUNET.Messages
 {
 	internal class QSBObjectDestroyMessage : QSBMessageBase
 	{
