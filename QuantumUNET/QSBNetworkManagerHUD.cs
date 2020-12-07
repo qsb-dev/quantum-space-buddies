@@ -34,19 +34,6 @@ namespace QuantumUNET
 						}
 						manager.networkAddress = GUI.TextField(new Rect(num + 100, num2, 95f, 20f), manager.networkAddress);
 						num2 += 24;
-						if (Application.platform == RuntimePlatform.WebGLPlayer)
-						{
-							GUI.Box(new Rect(num, num2, 200f, 25f), "(  WebGL cannot be server  )");
-							num2 += 24;
-						}
-						else
-						{
-							if (GUI.Button(new Rect(num, num2, 200f, 20f), "LAN Server Only"))
-							{
-								manager.StartServer();
-							}
-							num2 += 24;
-						}
 					}
 					else
 					{
@@ -102,14 +89,6 @@ namespace QuantumUNET
 						manager.StopHost();
 					}
 					num2 += 24;
-				}
-				if (!QSBNetworkServer.active && !manager.IsClientConnected() && flag)
-				{
-					num2 += 10;
-					if (Application.platform == RuntimePlatform.WebGLPlayer)
-					{
-						GUI.Box(new Rect(num - 5, num2, 220f, 25f), "(WebGL cannot use Match Maker)");
-					}
 				}
 			}
 		}

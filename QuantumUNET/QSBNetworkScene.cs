@@ -18,13 +18,13 @@ namespace QuantumUNET
 		{
 			get
 			{
-				return this.m_LocalObjects;
+				return m_LocalObjects;
 			}
 		}
 
 		internal void Shutdown()
 		{
-			this.ClearLocalObjects();
+			ClearLocalObjects();
 			ClearSpawners();
 		}
 
@@ -32,19 +32,19 @@ namespace QuantumUNET
 		{
 			if (obj == null)
 			{
-				this.localObjects[netId] = null;
+				localObjects[netId] = null;
 			}
 			else
 			{
 				QSBNetworkIdentity networkIdentity = null;
-				if (this.localObjects.ContainsKey(netId))
+				if (localObjects.ContainsKey(netId))
 				{
-					networkIdentity = this.localObjects[netId];
+					networkIdentity = localObjects[netId];
 				}
 				if (networkIdentity == null)
 				{
 					networkIdentity = obj.GetComponent<QSBNetworkIdentity>();
-					this.localObjects[netId] = networkIdentity;
+					localObjects[netId] = networkIdentity;
 				}
 				networkIdentity.UpdateClientServer(isClient, isServer);
 			}
@@ -52,9 +52,9 @@ namespace QuantumUNET
 
 		internal GameObject FindLocalObject(NetworkInstanceId netId)
 		{
-			if (this.localObjects.ContainsKey(netId))
+			if (localObjects.ContainsKey(netId))
 			{
-				QSBNetworkIdentity networkIdentity = this.localObjects[netId];
+				var networkIdentity = localObjects[netId];
 				if (networkIdentity != null)
 				{
 					return networkIdentity.gameObject;
@@ -87,11 +87,11 @@ namespace QuantumUNET
 		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
 		{
 			bool result;
-			if (this.localObjects.ContainsKey(netId))
+			if (localObjects.ContainsKey(netId))
 			{
-				QSBNetworkIdentity networkIdentity = this.localObjects[netId];
+				var networkIdentity = localObjects[netId];
 				UnityEngine.Object.Destroy(networkIdentity.gameObject);
-				result = this.localObjects.Remove(netId);
+				result = localObjects.Remove(netId);
 			}
 			else
 			{
@@ -102,12 +102,12 @@ namespace QuantumUNET
 
 		internal void ClearLocalObjects()
 		{
-			this.localObjects.Clear();
+			localObjects.Clear();
 		}
 
 		internal static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId)
 		{
-			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
+			var component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component)
 			{
 				component.SetDynamicAssetId(newAssetId);
@@ -121,11 +121,11 @@ namespace QuantumUNET
 
 		internal static void RegisterPrefab(GameObject prefab)
 		{
-			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
+			var component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component)
 			{
 				guidToPrefab[component.AssetId] = prefab;
-				NetworkIdentity[] componentsInChildren = prefab.GetComponentsInChildren<NetworkIdentity>();
+				var componentsInChildren = prefab.GetComponentsInChildren<NetworkIdentity>();
 				if (componentsInChildren.Length > 1)
 				{
 					if (LogFilter.logWarn)
@@ -192,7 +192,7 @@ namespace QuantumUNET
 
 		internal static void UnregisterPrefab(GameObject prefab)
 		{
-			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
+			var component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component == null)
 			{
 				if (LogFilter.logError)
@@ -209,7 +209,7 @@ namespace QuantumUNET
 
 		internal static void RegisterPrefab(GameObject prefab, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
 		{
-			QSBNetworkIdentity component = prefab.GetComponent<QSBNetworkIdentity>();
+			var component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component == null)
 			{
 				Debug.LogError("Could not register '" + prefab.name + "' since it contains no NetworkIdentity component");
@@ -250,7 +250,7 @@ namespace QuantumUNET
 			bool result;
 			if (unspawnHandlers.ContainsKey(assetId) && unspawnHandlers[assetId] != null)
 			{
-				UnSpawnDelegate unSpawnDelegate = unspawnHandlers[assetId];
+				var unSpawnDelegate = unspawnHandlers[assetId];
 				unSpawnDelegate(obj);
 				result = true;
 			}
@@ -263,9 +263,9 @@ namespace QuantumUNET
 
 		internal void DestroyAllClientObjects()
 		{
-			foreach (NetworkInstanceId key in this.localObjects.Keys)
+			foreach (var key in localObjects.Keys)
 			{
-				QSBNetworkIdentity networkIdentity = this.localObjects[key];
+				var networkIdentity = localObjects[key];
 				if (networkIdentity != null && networkIdentity.gameObject != null)
 				{
 					if (!InvokeUnSpawnHandler(networkIdentity.AssetId, networkIdentity.gameObject))
@@ -282,14 +282,14 @@ namespace QuantumUNET
 					}
 				}
 			}
-			this.ClearLocalObjects();
+			ClearLocalObjects();
 		}
 
 		internal void DumpAllClientObjects()
 		{
-			foreach (NetworkInstanceId networkInstanceId in this.localObjects.Keys)
+			foreach (var networkInstanceId in localObjects.Keys)
 			{
-				QSBNetworkIdentity networkIdentity = this.localObjects[networkInstanceId];
+				var networkIdentity = localObjects[networkInstanceId];
 				if (networkIdentity != null)
 				{
 					Debug.Log(string.Concat(new object[]

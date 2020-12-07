@@ -75,29 +75,7 @@ namespace QuantumUNET
 			}
 		}
 
-		[Obsolete("Moved to NetworkMigrationManager")]
-		public static bool sendPeerInfo
-		{
-			get
-			{
-				return false;
-			}
-			set
-			{
-			}
-		}
-
-		public static bool dontListen
-		{
-			get
-			{
-				return m_DontListen;
-			}
-			set
-			{
-				m_DontListen = value;
-			}
-		}
+		public static bool dontListen { get; set; }
 
 		public static bool useWebSockets
 		{
@@ -130,13 +108,7 @@ namespace QuantumUNET
 			}
 		}
 
-		public static bool active
-		{
-			get
-			{
-				return s_Active;
-			}
-		}
+		public static bool active { get; private set; }
 
 		public static bool localClientActive
 		{
@@ -194,7 +166,7 @@ namespace QuantumUNET
 			NetworkTransport.Shutdown();
 			NetworkTransport.Init();
 			s_Instance = null;
-			s_Active = false;
+			active = false;
 		}
 
 		public static void Shutdown()
@@ -202,14 +174,14 @@ namespace QuantumUNET
 			if (s_Instance != null)
 			{
 				s_Instance.InternalDisconnectAll();
-				if (!m_DontListen)
+				if (!dontListen)
 				{
 					s_Instance.m_SimpleServerSimple.Stop();
 				}
 				s_Instance = null;
 			}
-			m_DontListen = false;
-			s_Active = false;
+			dontListen = false;
+			active = false;
 		}
 
 		internal void RegisterMessageHandlers()
@@ -233,7 +205,7 @@ namespace QuantumUNET
 		private void InternalListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
 		{
 			m_SimpleServerSimple.ListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
-			s_Active = true;
+			active = true;
 			RegisterMessageHandlers();
 		}
 
@@ -249,7 +221,7 @@ namespace QuantumUNET
 
 		internal bool InternalListen(string ipAddress, int serverPort)
 		{
-			if (m_DontListen)
+			if (dontListen)
 			{
 				m_SimpleServerSimple.Initialize();
 			}
@@ -258,7 +230,7 @@ namespace QuantumUNET
 				return false;
 			}
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
-			s_Active = true;
+			active = true;
 			RegisterMessageHandlers();
 			return true;
 		}
@@ -271,7 +243,7 @@ namespace QuantumUNET
 		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, int oldConnectionId, QSBPeerInfoMessage[] peers)
 		{
 			QSBNetworkClient result;
-			if (s_Active)
+			if (active)
 			{
 				if (LogFilter.logError)
 				{
@@ -741,7 +713,7 @@ namespace QuantumUNET
 		internal void InternalUpdate()
 		{
 			m_SimpleServerSimple.Update();
-			if (m_DontListen)
+			if (dontListen)
 			{
 				m_SimpleServerSimple.UpdateConnections();
 			}
@@ -1916,18 +1888,9 @@ namespace QuantumUNET
 			}
 		}
 
-		[Obsolete("moved to NetworkMigrationManager")]
-		public void SendNetworkInfo(NetworkConnection targetConnection)
-		{
-		}
-
-		private static bool s_Active;
-
 		private static volatile QSBNetworkServer s_Instance;
 
 		private static object s_Sync = new UnityEngine.Object();
-
-		private static bool m_DontListen;
 
 		private bool m_LocalClientActive;
 

@@ -75,15 +75,6 @@ namespace QuantumUNET
 			}
 		}
 
-		[Obsolete("Moved to NetworkMigrationManager.")]
-		public PeerInfoMessage[] peers
-		{
-			get
-			{
-				return null;
-			}
-		}
-
 		internal int hostId
 		{
 			get
