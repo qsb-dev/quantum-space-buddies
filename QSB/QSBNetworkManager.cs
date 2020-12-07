@@ -15,6 +15,7 @@ using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
+using QuantumUNET.Components;
 using System;
 using System.Linq;
 using UnityEngine;

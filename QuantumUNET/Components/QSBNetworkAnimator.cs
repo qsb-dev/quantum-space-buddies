@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using QuantumUNET.Messages;
+using UnityEngine;
 
-namespace QuantumUNET
+namespace QuantumUNET.Components
 {
 	public class QSBNetworkAnimator : QSBNetworkBehaviour
 	{

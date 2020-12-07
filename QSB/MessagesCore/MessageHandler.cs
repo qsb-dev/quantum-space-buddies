@@ -2,6 +2,7 @@
 using QSB.EventsCore;
 using QSB.Utility;
 using QuantumUNET;
+using QuantumUNET.Messages;
 using System;
 using System.Linq;
 using UnityEngine.Networking;

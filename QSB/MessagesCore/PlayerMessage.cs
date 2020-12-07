@@ -1,4 +1,5 @@
 ﻿using QuantumUNET;
+using QuantumUNET.Messages;
 
 namespace QSB.Messaging
 {

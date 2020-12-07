@@ -4,6 +4,7 @@ using QSB.EventsCore;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET;
+using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
 

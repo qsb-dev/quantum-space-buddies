@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QuantumUNET
+namespace QuantumUNET.Components
 {
 	public class QSBNetworkManagerHUD : MonoBehaviour
 	{

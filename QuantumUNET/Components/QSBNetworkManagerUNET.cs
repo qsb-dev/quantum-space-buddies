@@ -1,11 +1,12 @@
 ﻿using OWML.Logging;
+using QuantumUNET.Messages;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
-namespace QuantumUNET
+namespace QuantumUNET.Components
 {
 	public class QSBNetworkManagerUNET : MonoBehaviour
 	{

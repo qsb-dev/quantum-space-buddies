@@ -1,22 +1,22 @@
 ﻿using UnityEngine.Networking;
 
-namespace QuantumUNET
+namespace QuantumUNET.Messages
 {
-	internal class QSBAnimationTriggerMessage : QSBMessageBase
+	internal class QSBClientAuthorityMessage : QSBMessageBase
 	{
 		public NetworkInstanceId netId;
-		public int hash;
+		public bool authority;
 
 		public override void Deserialize(QSBNetworkReader reader)
 		{
 			netId = reader.ReadNetworkId();
-			hash = (int)reader.ReadPackedUInt32();
+			authority = reader.ReadBoolean();
 		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(netId);
-			writer.WritePackedUInt32((uint)hash);
+			writer.Write(authority);
 		}
 	}
 }

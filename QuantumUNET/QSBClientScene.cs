@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using QuantumUNET.Components;
+using QuantumUNET.Messages;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 

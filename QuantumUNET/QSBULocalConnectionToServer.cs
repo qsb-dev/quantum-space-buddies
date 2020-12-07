@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QuantumUNET.Messages;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QuantumUNET

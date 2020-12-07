@@ -4,6 +4,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 using QuantumUNET;
+using QuantumUNET.Components;
 using System.Linq;
 
 namespace QSB.OrbSync.Events

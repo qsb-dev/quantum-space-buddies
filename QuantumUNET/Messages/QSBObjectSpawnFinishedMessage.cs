@@ -1,4 +1,4 @@
-﻿namespace QuantumUNET
+﻿namespace QuantumUNET.Messages
 {
 	internal class QSBObjectSpawnFinishedMessage : QSBMessageBase
 	{
