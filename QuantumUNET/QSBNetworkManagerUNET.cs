@@ -413,7 +413,6 @@ namespace QuantumUNET
 				}
 				isNetworkActive = false;
 				QSBNetworkServer.Shutdown();
-				//StopMatchMaker();
 				if (!string.IsNullOrEmpty(offlineScene))
 				{
 					ServerChangeScene(offlineScene);
@@ -436,7 +435,6 @@ namespace QuantumUNET
 				client.Shutdown();
 				client = null;
 			}
-			//StopMatchMaker();
 			QSBClientScene.DestroyAllClientObjects();
 			if (!string.IsNullOrEmpty(offlineScene))
 			{

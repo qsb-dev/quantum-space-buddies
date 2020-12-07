@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Match;
 using UnityEngine.Networking.Types;
 
 namespace QuantumUNET
@@ -213,21 +212,6 @@ namespace QuantumUNET
 			s_Active = false;
 		}
 
-		public static bool Listen(MatchInfo matchInfo, int listenPort)
-		{
-			bool result;
-			if (!matchInfo.usingRelay)
-			{
-				result = instance.InternalListen(null, listenPort);
-			}
-			else
-			{
-				instance.InternalListenRelay(matchInfo.address, matchInfo.port, matchInfo.networkId, QSBUtility.GetSourceID(), matchInfo.nodeId);
-				result = true;
-			}
-			return result;
-		}
-
 		internal void RegisterMessageHandlers()
 		{
 			m_SimpleServerSimple.RegisterHandlerSafe((short)35, new QSBNetworkMessageDelegate(OnClientReadyMessage));
@@ -279,12 +263,12 @@ namespace QuantumUNET
 			return true;
 		}
 
-		public static QSBNetworkClient BecomeHost(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, QSBPeerInfoMessage[] peers)
+		public static QSBNetworkClient BecomeHost(QSBNetworkClient oldClient, int port, int oldConnectionId, QSBPeerInfoMessage[] peers)
 		{
-			return instance.BecomeHostInternal(oldClient, port, matchInfo, oldConnectionId, peers);
+			return instance.BecomeHostInternal(oldClient, port, oldConnectionId, peers);
 		}
 
-		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, MatchInfo matchInfo, int oldConnectionId, QSBPeerInfoMessage[] peers)
+		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, int oldConnectionId, QSBPeerInfoMessage[] peers)
 		{
 			QSBNetworkClient result;
 			if (s_Active)
@@ -306,22 +290,14 @@ namespace QuantumUNET
 			else
 			{
 				Configure(hostTopology);
-				if (matchInfo == null)
+				Debug.Log("BecomeHost Listen on " + port);
+				if (!Listen(port))
 				{
-					Debug.Log("BecomeHost Listen on " + port);
-					if (!Listen(port))
+					if (LogFilter.logError)
 					{
-						if (LogFilter.logError)
-						{
-							Debug.LogError("BecomeHost bind failed.");
-						}
-						return null;
+						Debug.LogError("BecomeHost bind failed.");
 					}
-				}
-				else
-				{
-					Debug.Log("BecomeHost match:" + matchInfo.networkId);
-					ListenRelay(matchInfo.address, matchInfo.port, matchInfo.networkId, QSBUtility.GetSourceID(), matchInfo.nodeId);
+					return null;
 				}
 				foreach (var networkIdentity in QSBClientScene.Objects.Values)
 				{
