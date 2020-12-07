@@ -2,30 +2,28 @@
 {
 	internal class QSBAddPlayerMessage : QSBMessageBase
 	{
+		public short playerControllerId;
+		public int msgSize;
+		public byte[] msgData;
+
 		public override void Deserialize(QSBNetworkReader reader)
 		{
-			this.playerControllerId = (short)reader.ReadUInt16();
-			this.msgData = reader.ReadBytesAndSize();
-			if (this.msgData == null)
+			playerControllerId = reader.ReadInt16();
+			msgData = reader.ReadBytesAndSize();
+			if (msgData == null)
 			{
-				this.msgSize = 0;
+				msgSize = 0;
 			}
 			else
 			{
-				this.msgSize = this.msgData.Length;
+				msgSize = msgData.Length;
 			}
 		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
-			writer.Write((ushort)this.playerControllerId);
-			writer.WriteBytesAndSize(this.msgData, this.msgSize);
+			writer.Write(playerControllerId);
+			writer.WriteBytesAndSize(msgData, msgSize);
 		}
-
-		public short playerControllerId;
-
-		public int msgSize;
-
-		public byte[] msgData;
 	}
 }
