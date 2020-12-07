@@ -120,7 +120,6 @@
     <Compile Include="QSBNetworkMessage.cs" />
     <Compile Include="QSBNetworkMessageDelegate.cs" />
     <Compile Include="QSBNetworkMessageHandlers.cs" />
-    <Compile Include="QSBNetworkMigrationManager.cs" />
     <Compile Include="QSBNetworkReader.cs" />
     <Compile Include="QSBNetworkScene.cs" />
     <Compile Include="QSBNetworkServer.cs" />
@@ -133,10 +132,8 @@
     <Compile Include="QSBObjectSpawnMessage.cs" />
     <Compile Include="QSBObjectSpawnSceneMessage.cs" />
     <Compile Include="QSBOwnerMessage.cs" />
-    <Compile Include="QSBPeerAuthorityMessage.cs" />
     <Compile Include="QSBPeerInfoMessage.cs" />
     <Compile Include="QSBPeerInfoPlayer.cs" />
-    <Compile Include="QSBPeerListMessage.cs" />
     <Compile Include="QSBPlayerController.cs" />
     <Compile Include="QSBReadyMessage.cs" />
     <Compile Include="QSBReconnectMessage.cs" />

@@ -170,12 +170,6 @@ namespace QuantumUNET
 			return true;
 		}
 
-		public void Connect(MatchInfo matchInfo)
-		{
-			PrepareForConnect();
-			ConnectWithRelay(matchInfo);
-		}
-
 		public bool ReconnectToNewHost(string serverIp, int serverPort)
 		{
 			bool result;
