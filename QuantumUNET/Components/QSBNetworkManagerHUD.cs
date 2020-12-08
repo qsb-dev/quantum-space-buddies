@@ -4,6 +4,11 @@ namespace QuantumUNET.Components
 {
 	public class QSBNetworkManagerHUD : MonoBehaviour
 	{
+		public QSBNetworkManagerUNET manager;
+		public bool showGUI = true;
+		public int offsetX;
+		public int offsetY;
+
 		private void Awake()
 		{
 			manager = GetComponent<QSBNetworkManagerUNET>();
@@ -92,18 +97,5 @@ namespace QuantumUNET.Components
 				}
 			}
 		}
-
-		public QSBNetworkManagerUNET manager;
-
-		[SerializeField]
-		public bool showGUI = true;
-
-		[SerializeField]
-		public int offsetX;
-
-		[SerializeField]
-		public int offsetY;
-
-		private bool m_ShowServer;
 	}
 }

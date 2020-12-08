@@ -1060,7 +1060,7 @@ namespace QuantumUNET
 				}
 				uv.RebuildObservers(true);
 				SendSpawnMessage(uv, null);
-				ulocalConnectionToClient.localClient.AddLocalPlayer(newPlayerController);
+				ulocalConnectionToClient.LocalClient.AddLocalPlayer(newPlayerController);
 				uv.SetClientOwner(conn);
 				uv.ForceAuthority(true);
 				uv.SetLocalPlayer(newPlayerController.PlayerControllerId);

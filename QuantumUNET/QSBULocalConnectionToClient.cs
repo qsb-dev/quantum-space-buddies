@@ -7,44 +7,38 @@ namespace QuantumUNET
 		public QSBULocalConnectionToClient(QSBLocalClient localClient)
 		{
 			address = "localClient";
-			m_LocalClient = localClient;
+			LocalClient = localClient;
 		}
 
-		public QSBLocalClient localClient
-		{
-			get
-			{
-				return m_LocalClient;
-			}
-		}
+		public QSBLocalClient LocalClient { get; }
 
 		public override bool Send(short msgType, QSBMessageBase msg)
 		{
-			m_LocalClient.InvokeHandlerOnClient(msgType, msg, 0);
+			LocalClient.InvokeHandlerOnClient(msgType, msg, 0);
 			return true;
 		}
 
 		public override bool SendUnreliable(short msgType, QSBMessageBase msg)
 		{
-			m_LocalClient.InvokeHandlerOnClient(msgType, msg, 1);
+			LocalClient.InvokeHandlerOnClient(msgType, msg, 1);
 			return true;
 		}
 
 		public override bool SendByChannel(short msgType, QSBMessageBase msg, int channelId)
 		{
-			m_LocalClient.InvokeHandlerOnClient(msgType, msg, channelId);
+			LocalClient.InvokeHandlerOnClient(msgType, msg, channelId);
 			return true;
 		}
 
 		public override bool SendBytes(byte[] bytes, int numBytes, int channelId)
 		{
-			m_LocalClient.InvokeBytesOnClient(bytes, channelId);
+			LocalClient.InvokeBytesOnClient(bytes, channelId);
 			return true;
 		}
 
 		public override bool SendWriter(QSBNetworkWriter writer, int channelId)
 		{
-			m_LocalClient.InvokeBytesOnClient(writer.AsArray(), channelId);
+			LocalClient.InvokeBytesOnClient(writer.AsArray(), channelId);
 			return true;
 		}
 
@@ -61,7 +55,5 @@ namespace QuantumUNET
 			numMsgs = 0;
 			numBytes = 0;
 		}
-
-		private QSBLocalClient m_LocalClient;
 	}
 }
