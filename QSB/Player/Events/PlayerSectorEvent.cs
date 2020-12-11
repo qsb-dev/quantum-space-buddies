@@ -11,15 +11,8 @@ namespace QSB.Player.Events
 	{
 		public override EventType Type => EventType.PlayerSectorChange;
 
-		public override void SetupListener()
-		{
-			GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
-		}
-
-		public override void CloseListener()
-		{
-			GlobalMessenger<uint, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
-		}
+		public override void SetupListener() => GlobalMessenger<uint, QSBSector>.AddListener(EventNames.QSBSectorChange, Handler);
+		public override void CloseListener() => GlobalMessenger<uint, QSBSector>.RemoveListener(EventNames.QSBSectorChange, Handler);
 
 		private void Handler(uint netId, QSBSector sector) => SendEvent(CreateMessage(netId, sector));
 
@@ -35,7 +28,7 @@ namespace QSB.Player.Events
 			{
 				return;
 			}
-			var sector = WorldRegistry.GetObject<QSBSector>(message.ObjectId);
+			var sector = QSBWorldSync.GetWorldObject<QSBSector>(message.ObjectId);
 
 			if (sector == null)
 			{

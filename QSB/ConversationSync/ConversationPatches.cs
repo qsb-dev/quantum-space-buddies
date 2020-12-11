@@ -13,7 +13,7 @@ namespace QSB.ConversationSync
 
 		public static void StartConversation(CharacterDialogueTree __instance)
 		{
-			var index = WorldRegistry.OldDialogueTrees.FindIndex(x => x == __instance);
+			var index = QSBWorldSync.OldDialogueTrees.FindIndex(x => x == __instance);
 			if (index == -1)
 			{
 				DebugLog.ToConsole($"Warning - Index for tree {__instance.name} was -1.", MessageType.Warning);

@@ -127,8 +127,8 @@ namespace QSB
 			DebugLog.DebugWrite("scene loaded");
 			OrbManager.Instance.BuildOrbs();
 			OrbManager.Instance.QueueBuildSlots();
-			WorldRegistry.OldDialogueTrees.Clear();
-			WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+			QSBWorldSync.OldDialogueTrees.Clear();
+			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
 
 		private void ConfigureNetworkManager()
@@ -149,13 +149,13 @@ namespace QSB
 		public override void OnStartServer()
 		{
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
+			if (QSBWorldSync.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
 				OrbManager.Instance.QueueBuildOrbs();
 			}
-			if (WorldRegistry.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
+			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
-				WorldRegistry.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 			}
 		}
 
@@ -221,12 +221,12 @@ namespace QSB
 			}
 			QSBPlayerManager.RemoveAllPlayers();
 
-			WorldRegistry.RemoveObjects<QSBOrbSlot>();
-			WorldRegistry.RemoveObjects<QSBElevator>();
-			WorldRegistry.RemoveObjects<QSBGeyser>();
-			WorldRegistry.RemoveObjects<QSBSector>();
-			WorldRegistry.OrbSyncList.Clear();
-			WorldRegistry.OldDialogueTrees.Clear();
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
+			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
+			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector>();
+			QSBWorldSync.OrbSyncList.Clear();
+			QSBWorldSync.OldDialogueTrees.Clear();
 
 			_lobby.CanEditName = true;
 		}
@@ -238,7 +238,7 @@ namespace QSB
 			var netIds = connection.ClientOwnedObjects.Select(x => x.Value).ToArray();
 			GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, player.PlayerId, netIds);
 
-			foreach (var item in WorldRegistry.OrbSyncList)
+			foreach (var item in QSBWorldSync.OrbSyncList)
 			{
 				var identity = item.GetComponent<QSBNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)
@@ -262,10 +262,10 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 			QSBNetworkServer.connections.ToList().ForEach(CleanupConnection);
 
-			WorldRegistry.RemoveObjects<QSBOrbSlot>();
-			WorldRegistry.RemoveObjects<QSBElevator>();
-			WorldRegistry.RemoveObjects<QSBGeyser>();
-			WorldRegistry.RemoveObjects<QSBSector>();
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
+			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
+			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 
 			base.OnStopServer();
 		}

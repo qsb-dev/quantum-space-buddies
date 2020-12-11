@@ -14,7 +14,6 @@ namespace QSB.ConversationSync.Events
 		public override EventsCore.EventType Type => EventsCore.EventType.ConversationStartEnd;
 
 		public override void SetupListener() => GlobalMessenger<int, uint, bool>.AddListener(EventNames.QSBConversationStartEnd, Handler);
-
 		public override void CloseListener() => GlobalMessenger<int, uint, bool>.RemoveListener(EventNames.QSBConversationStartEnd, Handler);
 
 		private void Handler(int charId, uint playerId, bool state) => SendEvent(CreateMessage(charId, playerId, state));
@@ -34,7 +33,7 @@ namespace QSB.ConversationSync.Events
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
-			var dialogueTree = WorldRegistry.OldDialogueTrees[message.CharacterId];
+			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.CharacterId];
 			var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
 
 			// Make character face player and talk

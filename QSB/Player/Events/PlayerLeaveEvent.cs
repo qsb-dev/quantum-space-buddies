@@ -10,7 +10,6 @@ namespace QSB.Player.Events
 		public override EventType Type => EventType.PlayerLeave;
 
 		public override void SetupListener() => GlobalMessenger<uint, uint[]>.AddListener(EventNames.QSBPlayerLeave, Handler);
-
 		public override void CloseListener() => GlobalMessenger<uint, uint[]>.RemoveListener(EventNames.QSBPlayerLeave, Handler);
 
 		private void Handler(uint playerId, uint[] netIds) => SendEvent(CreateMessage(playerId, netIds));

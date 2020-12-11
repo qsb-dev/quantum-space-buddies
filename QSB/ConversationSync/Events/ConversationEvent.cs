@@ -9,7 +9,6 @@ namespace QSB.ConversationSync.Events
 		public override EventType Type => EventType.Conversation;
 
 		public override void SetupListener() => GlobalMessenger<uint, string, ConversationType>.AddListener(EventNames.QSBConversation, Handler);
-
 		public override void CloseListener() => GlobalMessenger<uint, string, ConversationType>.RemoveListener(EventNames.QSBConversation, Handler);
 
 		private void Handler(uint id, string message, ConversationType type) => SendEvent(CreateMessage(id, message, type));
@@ -40,7 +39,7 @@ namespace QSB.ConversationSync.Events
 					{
 						break;
 					}
-					var tree = WorldRegistry.OldDialogueTrees[message.ObjectId];
+					var tree = QSBWorldSync.OldDialogueTrees[message.ObjectId];
 					UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;
 

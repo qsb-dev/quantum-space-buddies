@@ -26,9 +26,9 @@ namespace QSB.GeyserSync
 			var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();
 			for (var id = 0; id < geyserControllers.Length; id++)
 			{
-				var qsbGeyser = WorldRegistry.GetObject<QSBGeyser>(id) ?? new QSBGeyser();
+				var qsbGeyser = QSBWorldSync.GetWorldObject<QSBGeyser>(id) ?? new QSBGeyser();
 				qsbGeyser.Init(geyserControllers[id], id);
-				WorldRegistry.AddObject(qsbGeyser);
+				QSBWorldSync.AddWorldObject(qsbGeyser);
 			}
 		}
 

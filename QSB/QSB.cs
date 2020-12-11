@@ -9,6 +9,7 @@ using QSB.Patches;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;
+using QuantumUNET;
 using QuantumUNET.Components;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -25,6 +26,7 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
+		public static bool IsServer => QSBNetworkServer.active;
 
 		private void Awake()
 		{

@@ -9,7 +9,6 @@ namespace QSB.Player.Events
 		public override EventType Type => EventType.PlayerState;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBServerSendPlayerStates, Handler);
-
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBServerSendPlayerStates, Handler);
 
 		private void Handler()

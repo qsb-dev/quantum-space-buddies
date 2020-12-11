@@ -9,14 +9,15 @@ using System.Reflection;
 
 namespace QSB.WorldSync
 {
-	public static class WorldRegistry
+	public static class QSBWorldSync
 	{
 		private static readonly List<WorldObject> WorldObjects = new List<WorldObject>();
 		public static List<NomaiOrbTransformSync> OrbSyncList = new List<NomaiOrbTransformSync>();
 		public static List<NomaiInterfaceOrb> OldOrbList = new List<NomaiInterfaceOrb>();
 		public static List<CharacterDialogueTree> OldDialogueTrees = new List<CharacterDialogueTree>();
+		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
 
-		public static void AddObject(WorldObject worldObject)
+		public static void AddWorldObject(WorldObject worldObject)
 		{
 			if (WorldObjects.Contains(worldObject))
 			{
@@ -25,17 +26,17 @@ namespace QSB.WorldSync
 			WorldObjects.Add(worldObject);
 		}
 
-		public static IEnumerable<T> GetObjects<T>()
+		public static IEnumerable<T> GetWorldObjects<T>()
 		{
 			return WorldObjects.OfType<T>();
 		}
 
-		public static T GetObject<T>(int id) where T : WorldObject
+		public static T GetWorldObject<T>(int id) where T : WorldObject
 		{
-			return GetObjects<T>().FirstOrDefault(x => x.ObjectId == id);
+			return GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
 		}
 
-		public static void RemoveObjects<T>() where T : WorldObject
+		public static void RemoveWorldObjects<T>() where T : WorldObject
 		{
 			WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
 		}
@@ -44,7 +45,7 @@ namespace QSB.WorldSync
 		{
 			QSBOrbSlot qsbSlot = null;
 			NomaiOrbTransformSync orbSync = null;
-			var slotList = GetObjects<QSBOrbSlot>();
+			var slotList = GetWorldObjects<QSBOrbSlot>();
 			if (slotList.Count() == 0)
 			{
 				return;
@@ -81,6 +82,16 @@ namespace QSB.WorldSync
 			{
 				del.DynamicInvoke(instance);
 			}
+		}
+
+		public static void AddDialogueCondition(string name, bool state)
+		{
+			if (!QSB.IsServer)
+			{
+				DebugLog.DebugWrite("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
+				return;
+			}
+			DialogueConditions[name] = state;
 		}
 	}
 }

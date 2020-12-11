@@ -40,7 +40,7 @@ namespace QSB.Messaging
 				QSBNetworkServer.handlers.Remove((short)_eventType);
 			}
 			QSBNetworkServer.RegisterHandler((short)_eventType, OnServerReceiveMessageHandler);
-			QSBNetworkManager.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
+			QuantumUNET.Components.QSBNetworkManagerUNET.singleton.client.RegisterHandler((short)_eventType, OnClientReceiveMessageHandler);
 		}
 
 		public void SendToAll(T message)
@@ -58,7 +58,7 @@ namespace QSB.Messaging
 			{
 				return;
 			}
-			QSBNetworkManager.singleton.client.Send((short)_eventType, message);
+			QuantumUNET.Components.QSBNetworkManagerUNET.singleton.client.Send((short)_eventType, message);
 		}
 
 		private void OnClientReceiveMessageHandler(QSBNetworkMessage netMsg)

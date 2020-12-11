@@ -10,7 +10,6 @@ namespace QSB.DeathSync.Events
 		public override EventType Type => EventType.PlayerDeath;
 
 		public override void SetupListener() => GlobalMessenger<DeathType>.AddListener(EventNames.QSBPlayerDeath, Handler);
-
 		public override void CloseListener() => GlobalMessenger<DeathType>.RemoveListener(EventNames.QSBPlayerDeath, Handler);
 
 		private void Handler(DeathType type) => SendEvent(CreateMessage(type));

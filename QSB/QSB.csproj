@@ -128,8 +128,8 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
-    <Compile Include="DialogueConditionSync\DialogueConditionEvent.cs" />
-    <Compile Include="DialogueConditionSync\DialogueConditionMessage.cs" />
+    <Compile Include="DialogueConditionSync\Events\DialogueConditionEvent.cs" />
+    <Compile Include="DialogueConditionSync\Events\DialogueConditionMessage.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
     <Compile Include="ConversationSync\ConversationPatches.cs" />
@@ -230,7 +230,7 @@
     <Compile Include="QSB.cs" />
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldSync\WorldRegistry.cs" />
+    <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,6 @@ namespace QSB.Animation.Events
 		public override EventType Type => EventType.AnimTrigger;
 
 		public override void SetupListener() => GlobalMessenger<float>.AddListener(EventNames.QSBCrouch, Handler);
-
 		public override void CloseListener() => GlobalMessenger<float>.RemoveListener(EventNames.QSBCrouch, Handler);
 
 		private void Handler(float value) => SendEvent(CreateMessage(value));

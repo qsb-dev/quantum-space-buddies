@@ -37,7 +37,7 @@ namespace QSB.ConversationSync
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 		{
-			var treeIndex = WorldRegistry.OldDialogueTrees.IndexOf(tree);
+			var treeIndex = QSBWorldSync.OldDialogueTrees.IndexOf(tree);
 			if (!QSBPlayerManager.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
 			{
 				// No player talking to tree
@@ -109,14 +109,14 @@ namespace QSB.ConversationSync
 
 		public void DisplayCharacterConversationBox(int index, string text)
 		{
-			if (WorldRegistry.OldDialogueTrees.ElementAtOrDefault(index) == null)
+			if (QSBWorldSync.OldDialogueTrees.ElementAtOrDefault(index) == null)
 			{
 				DebugLog.ToConsole($"Error - Tried to display character conversation box for id {index}! (Doesn't exist!)", MessageType.Error);
 				return;
 			}
 
 			// Remove old box if it exists
-			var oldDialogueTree = WorldRegistry.OldDialogueTrees[index];
+			var oldDialogueTree = QSBWorldSync.OldDialogueTrees[index];
 			if (BoxMappings.ContainsKey(oldDialogueTree))
 			{
 				Destroy(BoxMappings[oldDialogueTree]);

@@ -3,7 +3,7 @@ using QSB.Animation;
 using QSB.Animation.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
-using QSB.DialogueConditionSync;
+using QSB.DialogueConditionSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
 using QSB.OrbSync.Events;

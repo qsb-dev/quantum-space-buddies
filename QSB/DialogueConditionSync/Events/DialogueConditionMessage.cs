@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using QuantumUNET;
 
-namespace QSB.DialogueConditionSync
+namespace QSB.DialogueConditionSync.Events
 {
 	public class DialogueConditionMessage : PlayerMessage
 	{

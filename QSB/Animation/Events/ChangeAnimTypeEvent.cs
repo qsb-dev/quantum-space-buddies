@@ -10,7 +10,6 @@ namespace QSB.Animation.Events
 		public override EventType Type => EventType.PlayInstrument;
 
 		public override void SetupListener() => GlobalMessenger<uint, AnimationType>.AddListener(EventNames.QSBChangeAnimType, Handler);
-
 		public override void CloseListener() => GlobalMessenger<uint, AnimationType>.RemoveListener(EventNames.QSBChangeAnimType, Handler);
 
 		private void Handler(uint player, AnimationType type) => SendEvent(CreateMessage(player, type));

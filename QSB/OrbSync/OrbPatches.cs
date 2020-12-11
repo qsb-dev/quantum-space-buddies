@@ -12,7 +12,7 @@ namespace QSB.OrbSync
 		{
 			if (__result)
 			{
-				GlobalMessenger<int>.FireEvent(EventNames.QSBOrbUser, WorldRegistry.OldOrbList.FindIndex(x => x == __instance));
+				GlobalMessenger<int>.FireEvent(EventNames.QSBOrbUser, QSBWorldSync.OldOrbList.FindIndex(x => x == __instance));
 			}
 		}
 
@@ -31,8 +31,8 @@ namespace QSB.OrbSync
 				____occupyingOrb = orb;
 				if (Time.timeSinceLevelLoad > 1f)
 				{
-					WorldRegistry.HandleSlotStateChange(__instance, orb, true);
-					WorldRegistry.RaiseEvent(__instance, "OnSlotActivated");
+					QSBWorldSync.HandleSlotStateChange(__instance, orb, true);
+					QSBWorldSync.RaiseEvent(__instance, "OnSlotActivated");
 				}
 				__result = true;
 				return false;
@@ -44,9 +44,9 @@ namespace QSB.OrbSync
 			}
 			if (orbDistance > triggerRadius)
 			{
-				WorldRegistry.HandleSlotStateChange(__instance, orb, false);
+				QSBWorldSync.HandleSlotStateChange(__instance, orb, false);
 				____occupyingOrb = null;
-				WorldRegistry.RaiseEvent(__instance, "OnSlotDeactivated");
+				QSBWorldSync.RaiseEvent(__instance, "OnSlotDeactivated");
 				__result = false;
 				return false;
 			}
