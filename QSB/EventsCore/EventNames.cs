@@ -17,6 +17,7 @@
 		public static string ExitShip = "ExitShip";
 		public static string RestartTimeLoop = "RestartTimeLoop";
 		public static string WakeUp = "WakeUp";
+		public static string DialogueCondition = "DialogueConditionChanged";
 
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";

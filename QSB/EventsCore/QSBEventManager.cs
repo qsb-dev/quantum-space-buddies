@@ -3,6 +3,7 @@ using QSB.Animation;
 using QSB.Animation.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
+using QSB.DialogueConditionSync;
 using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
 using QSB.OrbSync.Events;
@@ -45,7 +46,8 @@ namespace QSB.EventsCore
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
 				new ChangeAnimTypeEvent(),
-				new ServerSendPlayerStatesEvent()
+				new ServerSendPlayerStatesEvent(),
+				new DialogueConditionEvent()
 			};
 
 			_eventList.ForEach(ev => ev.SetupListener());

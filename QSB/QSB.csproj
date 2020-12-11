@@ -128,6 +128,8 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
+    <Compile Include="DialogueConditionSync\DialogueConditionEvent.cs" />
+    <Compile Include="DialogueConditionSync\DialogueConditionMessage.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
     <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
     <Compile Include="ConversationSync\ConversationPatches.cs" />

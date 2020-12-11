@@ -24,6 +24,7 @@
 		OrbUser,
 		Conversation,
 		ConversationStartEnd,
-		PlayInstrument
+		PlayInstrument,
+		DialogueCondition
 	}
 }
