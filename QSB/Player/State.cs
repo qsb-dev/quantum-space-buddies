@@ -12,6 +12,5 @@ namespace QSB.Player
 		Signalscope = 8,
 		Translator = 16,
 		ProbeActive = 32
-		//Increment these in binary to add more states
 	}
 }

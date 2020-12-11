@@ -7,18 +7,7 @@ namespace QSB.TransformSync
 {
 	public class ShipTransformSync : TransformSync
 	{
-		public static ShipTransformSync LocalInstance { get; private set; }
-
-		public override void OnStartLocalPlayer()
-		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
-			LocalInstance = this;
-		}
-
-		private Transform GetShipModel()
-		{
-			return Locator.GetShipTransform();
-		}
+		private Transform GetShipModel() => Locator.GetShipTransform();
 
 		protected override Transform InitLocalTransform()
 		{

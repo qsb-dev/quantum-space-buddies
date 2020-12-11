@@ -19,7 +19,6 @@ namespace QSB.EventsCore
 		}
 
 		public abstract void SetupListener();
-
 		public abstract void CloseListener();
 
 		public virtual void OnReceiveRemote(bool server, T message) { }
@@ -45,12 +44,6 @@ namespace QSB.EventsCore
 
 		private void OnReceive(T message)
 		{
-			/* Uncomment for event debugging - very noisey and annoying (keeping as I don't want to have to rewrite this each time)
-			if (_eventHandler.BaseEventType != EventType.ServerTime && _eventHandler.BaseEventType != EventType.Geyser)
-			{
-				DebugLog.DebugWrite($"message type {_eventHandler.BaseEventType} from {message.FromId}, about {message.AboutId}. isserver? {QSB.IsServer}");
-			}
-			*/
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{

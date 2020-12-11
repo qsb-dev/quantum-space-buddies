@@ -21,7 +21,6 @@ namespace QSB.Animation
 		}
 
 		private void HandleSuitUp() => SendEvent(CreateMessage(true));
-
 		private void HandleSuitDown() => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage

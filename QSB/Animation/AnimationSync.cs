@@ -31,11 +31,6 @@ namespace QSB.Animation
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType;
 
-		public Animator Animator
-		{
-			get { return _bodyAnim; }
-		}
-
 		private void Awake()
 		{
 			_anim = gameObject.AddComponent<Animator>();

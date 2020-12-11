@@ -13,20 +13,14 @@ namespace QSB.TransformSync
 
 		static PlayerTransformSync()
 		{
-			DebugLog.DebugWrite("Constructor", MessageType.Info);
 			AnimControllerPatch.Init();
 		}
 
-		public override void OnStartLocalPlayer()
-		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
-			LocalInstance = this;
-		}
+		public override void OnStartLocalPlayer() 
+			=> LocalInstance = this;
 
-		private Transform GetPlayerModel()
-		{
-			return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
-		}
+		private Transform GetPlayerModel() 
+			=> Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
 		protected override Transform InitLocalTransform()
 		{

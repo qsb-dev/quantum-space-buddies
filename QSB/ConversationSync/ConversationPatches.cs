@@ -83,7 +83,7 @@ namespace QSB.ConversationSync
 			{
 				position = QSBPlayerManager.GetPlayer(playerId).Camera.transform.position;
 			}
-			float b = ___headTrackingWeight * Mathf.Min(1, (!___lookOnlyWhenTalking) ? ((!____playerInHeadZone) ? 0 : 1) : ((!____inConversation || !____playerInHeadZone) ? 0 : 1));
+			var b = ___headTrackingWeight * Mathf.Min(1, (!___lookOnlyWhenTalking) ? ((!____playerInHeadZone) ? 0 : 1) : ((!____inConversation || !____playerInHeadZone) ? 0 : 1));
 			____currentLookWeight = Mathf.Lerp(____currentLookWeight, b, Time.deltaTime * 2f);
 			____currentLookTarget = ___lookSpring.Update(____currentLookTarget, position, Time.deltaTime);
 			____animator.SetLookAtPosition(____currentLookTarget);

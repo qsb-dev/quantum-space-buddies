@@ -40,10 +40,8 @@ namespace QSB.ConversationSync
 			var treeIndex = QSBWorldSync.OldDialogueTrees.IndexOf(tree);
 			if (!QSBPlayerManager.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
 			{
-				// No player talking to tree
 				return uint.MaxValue;
 			}
-			// .First() should be fine here as only one player should be talking to a character.
 			return QSBPlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
 		}
 

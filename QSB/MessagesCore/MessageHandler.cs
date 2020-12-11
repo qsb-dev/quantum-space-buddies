@@ -2,6 +2,7 @@
 using QSB.EventsCore;
 using QSB.Utility;
 using QuantumUNET;
+using QuantumUNET.Components;
 using QuantumUNET.Messages;
 using System;
 using System.Linq;
@@ -12,7 +13,6 @@ namespace QSB.Messaging
 	public class MessageHandler<T> where T : QSBMessageBase, new()
 	{
 		public event Action<T> OnClientReceiveMessage;
-
 		public event Action<T> OnServerReceiveMessage;
 
 		private readonly short _eventType;
@@ -39,7 +39,7 @@ namespace QSB.Messaging
 				QSBNetworkServer.handlers.Remove(_eventType);
 			}
 			QSBNetworkServer.RegisterHandler(_eventType, OnServerReceiveMessageHandler);
-			QuantumUNET.Components.QSBNetworkManagerUNET.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
+			QSBNetworkManagerUNET.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
 		}
 
 		public void SendToAll(T message)
@@ -57,7 +57,7 @@ namespace QSB.Messaging
 			{
 				return;
 			}
-			QuantumUNET.Components.QSBNetworkManagerUNET.singleton.client.Send(_eventType, message);
+			QSBNetworkManagerUNET.singleton.client.Send(_eventType, message);
 		}
 
 		private void OnClientReceiveMessageHandler(QSBNetworkMessage netMsg)

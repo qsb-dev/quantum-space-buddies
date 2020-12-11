@@ -8,20 +8,10 @@ namespace QSB.TransformSync
 {
 	public class PlayerProbeSync : TransformSync
 	{
-		public static PlayerProbeSync LocalInstance { get; private set; }
-
 		private Transform _disabledSocket;
 
-		public override void OnStartLocalPlayer()
-		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
-			LocalInstance = this;
-		}
-
-		private Transform GetProbe()
-		{
-			return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-		}
+		private Transform GetProbe() 
+			=> Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
 		protected override Transform InitLocalTransform()
 		{

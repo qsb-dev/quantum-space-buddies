@@ -43,7 +43,7 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		public QSBSector GetClosestSector(Transform trans)
+		public QSBSector GetClosestSector(Transform trans) // trans rights
 		{
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
 				.Where(sector => sector.Sector != null && !_sectorBlacklist.Contains(sector.Type))

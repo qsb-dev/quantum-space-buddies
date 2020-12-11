@@ -7,9 +7,6 @@ using UnityEngine;
 
 namespace QSB.DeathSync
 {
-	/// <summary>
-	/// Client-only-side component for managing respawning after death.
-	/// </summary>
 	public class RespawnOnDeath : MonoBehaviour
 	{
 		public static RespawnOnDeath Instance;

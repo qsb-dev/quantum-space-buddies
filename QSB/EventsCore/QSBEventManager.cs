@@ -60,9 +60,7 @@ namespace QSB.EventsCore
 		public static void Reset()
 		{
 			Ready = false;
-
 			_eventList.ForEach(ev => ev.CloseListener());
-
 			_eventList = new List<IQSBEvent>();
 		}
 	}

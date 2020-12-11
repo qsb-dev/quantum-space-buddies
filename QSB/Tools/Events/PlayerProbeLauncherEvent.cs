@@ -21,7 +21,6 @@ namespace QSB.Tools.Events
 		}
 
 		private void HandleEquip(ProbeLauncher var) => SendEvent(CreateMessage(true));
-
 		private void HandleUnequip(ProbeLauncher var) => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage

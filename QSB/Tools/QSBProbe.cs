@@ -9,22 +9,10 @@ namespace QSB.Tools
 		{
 			if (state)
 			{
-				Activate();
+				gameObject.SetActive(true);
+				gameObject.Show();
+				return;
 			}
-			else
-			{
-				Deactivate();
-			}
-		}
-
-		private void Activate()
-		{
-			gameObject.SetActive(true);
-			gameObject.Show();
-		}
-
-		private void Deactivate()
-		{
 			gameObject.Hide();
 		}
 	}
