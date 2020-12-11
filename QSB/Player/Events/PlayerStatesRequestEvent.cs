@@ -1,10 +1,8 @@
-﻿using OWML.ModHelper.Events;
-using QSB.EventsCore;
+﻿using QSB.EventsCore;
 using QSB.Messaging;
 using QSB.SectorSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace QSB.Player.Events
