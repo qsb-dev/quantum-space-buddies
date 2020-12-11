@@ -1,5 +1,4 @@
-﻿using OWML.Common;
-using QSB.EventsCore;
+﻿using QSB.EventsCore;
 using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;

@@ -1,8 +1,6 @@
-﻿using OWML.Common;
-using QSB.Animation;
+﻿using QSB.Animation;
 using QSB.Instruments;
 using QSB.Player;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -16,10 +14,10 @@ namespace QSB.TransformSync
 			AnimControllerPatch.Init();
 		}
 
-		public override void OnStartLocalPlayer() 
+		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
 
-		private Transform GetPlayerModel() 
+		private Transform GetPlayerModel()
 			=> Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
 		protected override Transform InitLocalTransform()
