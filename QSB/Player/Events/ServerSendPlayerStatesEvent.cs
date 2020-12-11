@@ -28,7 +28,7 @@ namespace QSB.Player.Events
 			PlayerState = player.State
 		};
 
-		public override void OnReceiveRemote(PlayerStateMessage message)
+		public override void OnReceiveRemote(bool server, PlayerStateMessage message)
 		{
 			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
 			QSB.Helper.Events.Unity.RunWhen(

@@ -43,29 +43,16 @@ namespace QSB.WorldSync
 
 		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
 		{
-			QSBOrbSlot qsbSlot = null;
-			NomaiOrbTransformSync orbSync = null;
 			var slotList = GetWorldObjects<QSBOrbSlot>();
 			if (slotList.Count() == 0)
 			{
 				return;
 			}
-			try
+			var qsbSlot = slotList.First(x => x.InterfaceSlot == slot);
+			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
+			if (orbSync.HasAuthority)
 			{
-				qsbSlot = slotList.First(x => x.InterfaceSlot == slot);
-				orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
-				if (orbSync.HasAuthority)
-				{
-					qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
-				}
-			}
-			catch
-			{
-				DebugLog.DebugWrite("Error - Exception when handling slot state change."
-					+ Environment.NewLine + $"Slot name {slot.name} to {state}"
-					+ Environment.NewLine + $"SlotList count : {slotList?.Count()}"
-					+ Environment.NewLine + $"QSBOrbSlot null? : {qsbSlot == null}"
-					+ Environment.NewLine + $"NomaiOrbTransformSync null? : {orbSync == null}", MessageType.Error);
+				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
 			}
 		}
 
@@ -84,7 +71,7 @@ namespace QSB.WorldSync
 			}
 		}
 
-		public static void AddDialogueCondition(string name, bool state)
+		public static void SetDialogueCondition(string name, bool state)
 		{
 			if (!QSB.IsServer)
 			{

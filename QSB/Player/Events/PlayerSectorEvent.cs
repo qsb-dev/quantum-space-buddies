@@ -22,7 +22,7 @@ namespace QSB.Player.Events
 			ObjectId = sector.ObjectId
 		};
 
-		public override void OnReceiveRemote(WorldObjectMessage message)
+		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
 			if (!QSBSceneManager.IsInUniverse)
 			{
@@ -32,7 +32,7 @@ namespace QSB.Player.Events
 
 			if (sector == null)
 			{
-				DebugLog.ToConsole($"Sector with order id {message.ObjectId} not found!", MessageType.Warning);
+				DebugLog.ToConsole($"Sector with index id {message.ObjectId} not found!", MessageType.Warning);
 				return;
 			}
 

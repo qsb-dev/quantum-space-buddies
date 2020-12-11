@@ -1,7 +1,10 @@
-﻿using QSB.Messaging;
+﻿using OWML.ModHelper.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.TransformSync;
+using QSB.Utility;
 using QuantumUNET;
+using System;
 
 namespace QSB.EventsCore
 {
@@ -14,26 +17,16 @@ namespace QSB.EventsCore
 		protected QSBEvent()
 		{
 			_eventHandler = new MessageHandler<T>(Type);
-			_eventHandler.OnClientReceiveMessage += OnClientReceive;
-			_eventHandler.OnServerReceiveMessage += OnServerReceive;
+			_eventHandler.OnClientReceiveMessage += OnReceive;
+			_eventHandler.OnServerReceiveMessage += OnReceive;
 		}
 
 		public abstract void SetupListener();
 
 		public abstract void CloseListener();
 
-		public virtual void OnReceiveRemote(T message)
-		{
-		}
-
-		public virtual void OnReceiveLocal(T message)
-		{
-		}
-
-		public virtual void OnServerReceive(T message)
-		{
-			_eventHandler.SendToAll(message);
-		}
+		public virtual void OnReceiveRemote(bool server, T message) { }
+		public virtual void OnReceiveLocal(bool server, T message) { }
 
 		public void SendEvent(T message)
 		{
@@ -53,16 +46,22 @@ namespace QSB.EventsCore
 			}
 		}
 
-		private void OnClientReceive(T message)
+		private void OnReceive(T message)
 		{
+			/* Uncomment for event debugging - very noisey and annoying (keeping as I don't want to have to rewrite this each time)
+			if (_eventHandler.BaseEventType != EventType.ServerTime && _eventHandler.BaseEventType != EventType.Geyser)
+			{
+				DebugLog.DebugWrite($"message type {_eventHandler.BaseEventType} from {message.FromId}, about {message.AboutId}. isserver? {QSB.IsServer}");
+			}
+			*/
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
-				OnReceiveLocal(message);
+				OnReceiveLocal(QSB.IsServer, message);
 				return;
 			}
 
-			OnReceiveRemote(message);
+			OnReceiveRemote(QSB.IsServer, message);
 		}
 	}
 }

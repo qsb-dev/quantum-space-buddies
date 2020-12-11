@@ -201,8 +201,11 @@ namespace QSB
 			QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
 				() => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
-			QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
+			if (!QSB.IsServer)
+			{
+				QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
 				() => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
+			}
 		}
 
 		public override void OnStopClient() // Called on the client when closing connection

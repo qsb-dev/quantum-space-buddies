@@ -19,7 +19,7 @@ namespace QSB.ElevatorSync.Events
 			ObjectId = id
 		};
 
-		public override void OnReceiveRemote(BoolWorldObjectMessage message)
+		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
 			var elevator = QSBWorldSync.GetWorldObject<QSBElevator>(message.ObjectId);
 			elevator?.RemoteCall(message.State);

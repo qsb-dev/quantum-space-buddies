@@ -21,7 +21,7 @@ namespace QSB.ConversationSync.Events
 			Message = message
 		};
 
-		public override void OnReceiveRemote(ConversationMessage message)
+		public override void OnReceiveRemote(bool server, ConversationMessage message)
 		{
 			switch (message.Type)
 			{

@@ -19,7 +19,7 @@ namespace QSB.Animation.Events
 			Value = value
 		};
 
-		public override void OnReceiveRemote(FloatMessage message)
+		public override void OnReceiveRemote(bool server, FloatMessage message)
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AboutId);
 			if (animationSync == null)

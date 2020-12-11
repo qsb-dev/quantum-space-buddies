@@ -20,13 +20,22 @@ namespace QSB.DialogueConditionSync.Events
 			ConditionState = state
 		};
 
-		public override void OnReceiveRemote(DialogueConditionMessage message)
-			=> DialogueConditionManager.SharedInstance.SetConditionState(message.ConditionName, message.ConditionState);
-
-		public override void OnServerReceive(DialogueConditionMessage message)
+		public override void OnReceiveLocal(bool server, DialogueConditionMessage message)
 		{
-			DebugLog.DebugWrite($"dialoguecondition \"{message.ConditionName} to {message.ConditionState}\"");
-			QSBWorldSync.AddDialogueCondition(message.ConditionName, message.ConditionState);
+			if (server)
+			{
+				QSBWorldSync.SetDialogueCondition(message.ConditionName, message.ConditionState);
+			}
+		}
+
+		public override void OnReceiveRemote(bool server, DialogueConditionMessage message)
+		{
+			if (server)
+			{
+				QSBWorldSync.SetDialogueCondition(message.ConditionName, message.ConditionState);
+			}
+			DebugLog.DebugWrite($"set {message.ConditionName} to {message.ConditionState}");
+			DialogueConditionManager.SharedInstance.SetConditionState(message.ConditionName, message.ConditionState);
 		}
 	}
 }

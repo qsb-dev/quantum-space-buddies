@@ -20,7 +20,7 @@ namespace QSB.Player.Events
 			NetIds = netIds
 		};
 
-		public override void OnReceiveRemote(PlayerLeaveMessage message)
+		public override void OnReceiveRemote(bool server, PlayerLeaveMessage message)
 		{
 			var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
 			DebugLog.ToAll($"{playerName} disconnected.", MessageType.Info);

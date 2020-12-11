@@ -20,13 +20,11 @@ namespace QSB.DeathSync.Events
 			Value = type
 		};
 
-		public override void OnReceiveRemote(EnumMessage<DeathType> message)
+		public override void OnReceiveRemote(bool server, EnumMessage<DeathType> message)
 		{
 			var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
 			var deathMessage = Necronomicon.GetPhrase(message.Value);
 			DebugLog.ToAll(string.Format(deathMessage, playerName));
 		}
-
-		public override void OnReceiveLocal(EnumMessage<DeathType> message) => OnReceiveRemote(message);
 	}
 }

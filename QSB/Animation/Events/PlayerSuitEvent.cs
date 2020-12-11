@@ -30,7 +30,7 @@ namespace QSB.Animation
 			ToggleValue = value
 		};
 
-		public override void OnReceiveRemote(ToggleMessage message)
+		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player?.UpdateState(State.Suit, message.ToggleValue);
@@ -45,7 +45,7 @@ namespace QSB.Animation
 			animator.SetAnimationType(type);
 		}
 
-		public override void OnReceiveLocal(ToggleMessage message)
+		public override void OnReceiveLocal(bool server, ToggleMessage message)
 		{
 			QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
 			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;

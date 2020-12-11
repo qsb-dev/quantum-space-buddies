@@ -19,7 +19,7 @@ namespace QSB.Player.Events
 			PlayerName = name
 		};
 
-		public override void OnReceiveRemote(PlayerJoinMessage message)
+		public override void OnReceiveRemote(bool server, PlayerJoinMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
@@ -27,7 +27,7 @@ namespace QSB.Player.Events
 			DebugLog.DebugWrite($"{player.Name} joined as id {player.PlayerId}", MessageType.Info);
 		}
 
-		public override void OnReceiveLocal(PlayerJoinMessage message)
+		public override void OnReceiveLocal(bool server, PlayerJoinMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(QSBPlayerManager.LocalPlayerId);
 			player.Name = message.PlayerName;

@@ -20,7 +20,7 @@ namespace QSB.Animation.Events
 			Value = type
 		};
 
-		public override void OnReceiveRemote(EnumMessage<AnimationType> message)
+		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
 			QSBPlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.Value);
 			QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.Value);
