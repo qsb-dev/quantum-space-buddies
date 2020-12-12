@@ -218,10 +218,6 @@ namespace QSB
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			foreach (var player in QSBPlayerManager.PlayerList)
-			{
-				QSBPlayerManager.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
-			}
 			QSBPlayerManager.RemoveAllPlayers();
 
 			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
@@ -236,10 +232,8 @@ namespace QSB
 
 		public override void OnServerDisconnect(QSBNetworkConnection connection) // Called on the server when any client disconnects
 		{
+			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
-			var player = connection.GetPlayer();
-			var netIds = connection.ClientOwnedObjects.Select(x => x.Value).ToArray();
-			GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, player.PlayerId, netIds);
 
 			foreach (var item in QSBWorldSync.OrbSyncList)
 			{
@@ -250,8 +244,7 @@ namespace QSB
 				}
 			}
 
-			player.HudMarker?.Remove();
-			CleanupConnection(connection);
+			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 		}
 
 		public override void OnStopServer()
@@ -263,7 +256,6 @@ namespace QSB
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
-			QSBNetworkServer.connections.ToList().ForEach(CleanupConnection);
 
 			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
 			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
@@ -271,53 +263,6 @@ namespace QSB
 			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 
 			base.OnStopServer();
-		}
-
-		private void CleanupConnection(QSBNetworkConnection connection)
-		{
-			var player = connection.GetPlayer();
-			DebugLog.ToConsole($"{player.Name} disconnected.", MessageType.Info);
-			QSBPlayerManager.RemovePlayer(player.PlayerId);
-
-			var netIds = connection.ClientOwnedObjects?.Select(x => x.Value).ToList();
-			netIds.ForEach(CleanupNetworkBehaviour);
-		}
-
-		public void CleanupNetworkBehaviour(uint netId)
-		{
-			DebugLog.DebugWrite($"Cleaning up netId {netId}");
-			// Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
-			var networkBehaviours = FindObjectsOfType<QSBNetworkBehaviour>()
-				.Where(x => x != null && x.NetId.Value == netId);
-			foreach (var networkBehaviour in networkBehaviours)
-			{
-				var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
-
-				if (transformSync != null)
-				{
-					DebugLog.DebugWrite($"  * Removing TransformSync from syncobjects");
-					QSBPlayerManager.PlayerSyncObjects.Remove(transformSync);
-					if (transformSync.SyncedTransform != null && netId != QSBPlayerManager.LocalPlayerId && !networkBehaviour.HasAuthority)
-					{
-						DebugLog.DebugWrite($"  * Destroying {transformSync.SyncedTransform.gameObject.name}");
-						Destroy(transformSync.SyncedTransform.gameObject);
-					}
-				}
-
-				var animationSync = networkBehaviour.GetComponent<AnimationSync>();
-
-				if (animationSync != null)
-				{
-					DebugLog.DebugWrite($"  * Removing AnimationSync from syncobjects");
-					QSBPlayerManager.PlayerSyncObjects.Remove(animationSync);
-				}
-
-				if (!networkBehaviour.HasAuthority)
-				{
-					DebugLog.DebugWrite($"  * Destroying {networkBehaviour.gameObject.name}");
-					Destroy(networkBehaviour.gameObject);
-				}
-			}
 		}
 	}
 }

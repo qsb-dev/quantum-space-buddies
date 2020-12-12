@@ -171,7 +171,6 @@
     <Compile Include="TimeSync\WakeUpPatches.cs" />
     <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
-    <Compile Include="Player\Events\PlayerLeaveEvent.cs" />
     <Compile Include="Tools\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
     <Compile Include="TransformSync\NomaiOrbTransformSync.cs" />
@@ -182,7 +181,6 @@
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\QSBGeyser.cs" />
-    <Compile Include="Player\Events\PlayerLeaveMessage.cs" />
     <Compile Include="Tools\Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />

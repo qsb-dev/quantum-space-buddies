@@ -43,7 +43,6 @@ namespace QSB.Animation
 
 		private void OnDestroy()
 		{
-			_netAnim.enabled = false;
 			if (_playerController == null)
 			{
 				return;

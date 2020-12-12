@@ -13,7 +13,6 @@
 		ProbeLauncherActiveChange,
 		SuitActiveChange,
 		PlayerJoin,
-		PlayerLeave,
 		PlayerDeath,
 		PlayerSectorChange,
 		PlayerReady,

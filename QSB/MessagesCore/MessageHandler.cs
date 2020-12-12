@@ -1,6 +1,4 @@
-﻿using OWML.Common;
-using QSB.EventsCore;
-using QSB.Utility;
+﻿using QSB.EventsCore;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
@@ -35,8 +33,8 @@ namespace QSB.Messaging
 		{
 			if (QSBNetworkServer.handlers.Keys.Contains(_eventType))
 			{
-				DebugLog.ToConsole($"Warning - NetworkServer already contains a handler for EventType {BaseEventType}", MessageType.Warning);
 				QSBNetworkServer.handlers.Remove(_eventType);
+				QSBNetworkManagerUNET.singleton.client.handlers.Remove(_eventType);
 			}
 			QSBNetworkServer.RegisterHandler(_eventType, OnServerReceiveMessageHandler);
 			QSBNetworkManagerUNET.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);

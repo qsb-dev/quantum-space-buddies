@@ -34,7 +34,6 @@ namespace QSB.EventsCore
 				new PlayerProbeLauncherEvent(),
 				new PlayerProbeEvent(),
 				new PlayerSectorEvent(),
-				new PlayerLeaveEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
 				new ElevatorEvent(),

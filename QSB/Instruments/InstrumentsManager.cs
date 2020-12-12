@@ -45,7 +45,6 @@ namespace QSB.Instruments
 			{
 				return;
 			}
-			DebugLog.DebugWrite($"OnDestroy {PlayerId}");
 			QSBInputManager.ChertTaunt -= () => StartInstrument(AnimationType.Chert);
 			QSBInputManager.EskerTaunt -= () => StartInstrument(AnimationType.Esker);
 			QSBInputManager.FeldsparTaunt -= () => StartInstrument(AnimationType.Feldspar);

@@ -32,6 +32,10 @@ namespace QSB.TransformSync
 		protected virtual void OnDestroy()
 		{
 			QSBPlayerManager.PlayerSyncObjects.Remove(this);
+			if (!HasAuthority && SyncedTransform != null)
+			{
+				Destroy(SyncedTransform.gameObject);
+			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
@@ -43,6 +47,7 @@ namespace QSB.TransformSync
 		protected void Init()
 		{
 			SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
+			SetReferenceSector(QSBSectorManager.Instance.GetClosestSector(SyncedTransform));
 			_isInitialized = true;
 			_isVisible = true;
 		}
