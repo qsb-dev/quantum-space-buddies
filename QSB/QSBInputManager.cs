@@ -7,15 +7,10 @@ namespace QSB
 	public class QSBInputManager : MonoBehaviour
 	{
 		public static event InputEvent ChertTaunt;
-
 		public static event InputEvent EskerTaunt;
-
 		public static event InputEvent RiebeckTaunt;
-
 		public static event InputEvent GabbroTaunt;
-
 		public static event InputEvent FeldsparTaunt;
-
 		public static event InputEvent ExitTaunt;
 
 		// TODO : finish instruments - disabled for 0.7.0 release
