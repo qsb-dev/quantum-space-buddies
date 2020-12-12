@@ -11,7 +11,6 @@ namespace QSB.TransformSync
 		public abstract bool IsReady { get; }
 
 		protected abstract Transform InitLocalTransform();
-
 		protected abstract Transform InitRemoteTransform();
 
 		public Transform SyncedTransform { get; private set; }
@@ -25,7 +24,6 @@ namespace QSB.TransformSync
 
 		protected virtual void Awake()
 		{
-			DebugLog.DebugWrite($"Awake of {GetType().Name}", MessageType.Info);
 			QSBPlayerManager.PlayerSyncObjects.Add(this);
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -33,6 +31,7 @@ namespace QSB.TransformSync
 
 		protected virtual void OnDestroy()
 		{
+			QSBPlayerManager.PlayerSyncObjects.Remove(this);
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
@@ -43,7 +42,6 @@ namespace QSB.TransformSync
 
 		protected void Init()
 		{
-			DebugLog.DebugWrite($"Init of {AttachedNetId} ({Player.PlayerId}.{GetType().Name})");
 			SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
 			_isVisible = true;
