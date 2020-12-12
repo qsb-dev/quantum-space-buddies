@@ -161,7 +161,7 @@ namespace QSB
 
 		public override void OnServerAddPlayer(QSBNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
 		{
-			DebugLog.DebugWrite("OnServerAddPlayer", MessageType.Info);
+			DebugLog.DebugWrite($"OnServerAddPlayer {playerControllerId}", MessageType.Info);
 			base.OnServerAddPlayer(connection, playerControllerId);
 
 			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
@@ -173,6 +173,8 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
 			base.OnClientConnect(connection);
+
+			QSBEventManager.Init();
 
 			gameObject.AddComponent<SectorSync.SectorSync>();
 			gameObject.AddComponent<RespawnOnDeath>();
@@ -196,14 +198,12 @@ namespace QSB
 			OnNetworkManagerReady?.Invoke();
 			IsReady = true;
 
-			QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, QSBEventManager.Init);
-
-			QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
+			QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
 			if (!QSB.IsServer)
 			{
-				QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready,
+				QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
 		}
@@ -243,8 +243,6 @@ namespace QSB
 					identity.RemoveClientAuthority(connection);
 				}
 			}
-
-			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 		}
 
 		public override void OnStopServer()

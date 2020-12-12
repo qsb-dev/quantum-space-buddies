@@ -23,7 +23,7 @@ namespace QuantumUNET
 		protected uint SyncVarDirtyBits { get; private set; }
 		protected bool SyncVarHookGuard { get; set; }
 
-		internal QSBNetworkIdentity NetIdentity => MyView;
+		public QSBNetworkIdentity NetIdentity => MyView;
 
 		private QSBNetworkIdentity MyView
 		{

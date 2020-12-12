@@ -31,6 +31,7 @@ namespace QSB.TransformSync
 
 		protected virtual void OnDestroy()
 		{
+			DebugLog.DebugWrite($"destroy of {PlayerId}.{GetType().Name}");
 			QSBPlayerManager.PlayerSyncObjects.Remove(this);
 			if (!HasAuthority && SyncedTransform != null)
 			{

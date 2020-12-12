@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -9,6 +10,12 @@ namespace QSB.TransformSync
 	public class PlayerProbeSync : TransformSync
 	{
 		private Transform _disabledSocket;
+
+		protected void Start()
+		{
+			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>().Where(x => x.NetId.Value < NetId.Value).OrderBy(x => x.NetId.Value).Last();
+			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+		}
 
 		private Transform GetProbe()
 			=> Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
