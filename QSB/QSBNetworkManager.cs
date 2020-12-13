@@ -124,7 +124,6 @@ namespace QSB
 
 		private void OnSceneLoaded(OWScene scene)
 		{
-			DebugLog.DebugWrite("scene loaded");
 			OrbManager.Instance.BuildOrbs();
 			OrbManager.Instance.QueueBuildSlots();
 			QSBWorldSync.OldDialogueTrees.Clear();
@@ -252,7 +251,7 @@ namespace QSB
 			Destroy(GetComponent<RespawnOnDeath>());
 			Destroy(GetComponent<PreventShipDestruction>());
 			QSBEventManager.Reset();
-			DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
+			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();

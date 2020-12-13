@@ -188,14 +188,15 @@ namespace QuantumUNET
 
 		internal void RegisterMessageHandlers()
 		{
-			m_SimpleServerSimple.RegisterHandlerSafe((short)35, new QSBNetworkMessageDelegate(OnClientReadyMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe((short)5, new QSBNetworkMessageDelegate(OnCommandMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe(6, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));
+			ModConsole.OwmlConsole.WriteLine("Register Message Handlers (NetworkServer)");
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Ready, new QSBNetworkMessageDelegate(OnClientReadyMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Command, new QSBNetworkMessageDelegate(OnCommandMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.LocalPlayerTransform, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));
 			//m_SimpleServerSimple.RegisterHandlerSafe((short)16, new QSBNetworkMessageDelegate(NetworkTransformChild.HandleChildTransform));
-			m_SimpleServerSimple.RegisterHandlerSafe((short)38, new QSBNetworkMessageDelegate(OnRemovePlayerMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe((short)40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe((short)41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe((short)42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.RemovePlayer, new QSBNetworkMessageDelegate(OnRemovePlayerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Animation, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.AnimationParameters, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.AnimationTrigger, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 		}
 
@@ -237,70 +238,6 @@ namespace QuantumUNET
 			return true;
 		}
 
-		public static QSBNetworkClient BecomeHost(QSBNetworkClient oldClient, int port, int oldConnectionId, QSBPeerInfoMessage[] peers)
-		{
-			return instance.BecomeHostInternal(oldClient, port, oldConnectionId, peers);
-		}
-
-		internal QSBNetworkClient BecomeHostInternal(QSBNetworkClient oldClient, int port, int oldConnectionId, QSBPeerInfoMessage[] peers)
-		{
-			QSBNetworkClient result;
-			if (active)
-			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("BecomeHost already a server.");
-				}
-				result = null;
-			}
-			else if (!QSBNetworkClient.active)
-			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("BecomeHost NetworkClient not active.");
-				}
-				result = null;
-			}
-			else
-			{
-				Configure(hostTopology);
-				Debug.Log("BecomeHost Listen on " + port);
-				if (!Listen(port))
-				{
-					if (LogFilter.logError)
-					{
-						Debug.LogError("BecomeHost bind failed.");
-					}
-					return null;
-				}
-				foreach (var networkIdentity in QSBClientScene.Objects.Values)
-				{
-					if (!(networkIdentity == null) && !(networkIdentity.gameObject == null))
-					{
-						QSBNetworkIdentity.AddNetworkId(networkIdentity.NetId.Value);
-						m_NetworkScene.SetLocalObject(networkIdentity.NetId, networkIdentity.gameObject, false, false);
-						networkIdentity.OnStartServer(true);
-					}
-				}
-				Debug.Log("NetworkServer BecomeHost done. oldConnectionId:" + oldConnectionId);
-				RegisterMessageHandlers();
-				if (!QSBNetworkClient.RemoveClient(oldClient))
-				{
-					if (LogFilter.logError)
-					{
-						Debug.LogError("BecomeHost failed to remove client");
-					}
-				}
-				Debug.Log("BecomeHost localClient ready");
-				var networkClient = QSBClientScene.ReconnectLocalServer();
-				QSBClientScene.Ready(networkClient.connection);
-				QSBClientScene.SetReconnectId(oldConnectionId, peers);
-				QSBClientScene.AddPlayer(QSBClientScene.readyConnection, 0);
-				result = networkClient;
-			}
-			return result;
-		}
-
 		private void InternalSetMaxDelay(float seconds)
 		{
 			for (var i = 0; i < connections.Count; i++)
@@ -324,8 +261,10 @@ namespace QuantumUNET
 			}
 			else
 			{
-				m_LocalConnection = new QSBULocalConnectionToClient(localClient);
-				m_LocalConnection.connectionId = 0;
+				m_LocalConnection = new QSBULocalConnectionToClient(localClient)
+				{
+					connectionId = 0
+				};
 				m_SimpleServerSimple.SetConnectionAtIndex(m_LocalConnection);
 				m_LocalConnectionsFakeList.Add(m_LocalConnection);
 				m_LocalConnection.InvokeHandlerNoData(32);
@@ -905,31 +844,6 @@ namespace QuantumUNET
 			{
 				Debug.LogError("Failed to send message to connection ID '" + connectionId + ", not found in connection list");
 			}
-		}
-
-		public static bool ReplacePlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId, NetworkHash128 assetId)
-		{
-			QSBNetworkIdentity networkIdentity;
-			if (GetNetworkIdentity(player, out networkIdentity))
-			{
-				networkIdentity.SetDynamicAssetId(assetId);
-			}
-			return instance.InternalReplacePlayerForConnection(conn, player, playerControllerId);
-		}
-
-		public static bool ReplacePlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId)
-		{
-			return instance.InternalReplacePlayerForConnection(conn, player, playerControllerId);
-		}
-
-		public static bool AddPlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId, NetworkHash128 assetId)
-		{
-			QSBNetworkIdentity networkIdentity;
-			if (GetNetworkIdentity(player, out networkIdentity))
-			{
-				networkIdentity.SetDynamicAssetId(assetId);
-			}
-			return instance.InternalAddPlayerForConnection(conn, player, playerControllerId);
 		}
 
 		public static bool AddPlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId)
@@ -1714,112 +1628,6 @@ namespace QuantumUNET
 		public static GameObject FindLocalObject(NetworkInstanceId netId)
 		{
 			return instance.m_NetworkScene.FindLocalObject(netId);
-		}
-
-		public static Dictionary<short, QSBNetworkConnection.PacketStat> GetConnectionStats()
-		{
-			var dictionary = new Dictionary<short, QSBNetworkConnection.PacketStat>();
-			for (var i = 0; i < connections.Count; i++)
-			{
-				var networkConnection = connections[i];
-				if (networkConnection != null)
-				{
-					foreach (short key in networkConnection.PacketStats.Keys)
-					{
-						if (dictionary.ContainsKey(key))
-						{
-							var packetStat = dictionary[key];
-							packetStat.count += networkConnection.PacketStats[key].count;
-							packetStat.bytes += networkConnection.PacketStats[key].bytes;
-							dictionary[key] = packetStat;
-						}
-						else
-						{
-							dictionary[key] = new QSBNetworkConnection.PacketStat(networkConnection.PacketStats[key]);
-						}
-					}
-				}
-			}
-			return dictionary;
-		}
-
-		public static void ResetConnectionStats()
-		{
-			for (var i = 0; i < connections.Count; i++)
-			{
-				var networkConnection = connections[i];
-				if (networkConnection != null)
-				{
-					networkConnection.ResetStats();
-				}
-			}
-		}
-
-		public static bool AddExternalConnection(QSBNetworkConnection conn)
-		{
-			return instance.AddExternalConnectionInternal(conn);
-		}
-
-		private bool AddExternalConnectionInternal(QSBNetworkConnection conn)
-		{
-			bool result;
-			if (conn.connectionId < 0)
-			{
-				result = false;
-			}
-			else if (conn.connectionId < connections.Count && connections[conn.connectionId] != null)
-			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("AddExternalConnection failed, already connection for id:" + conn.connectionId);
-				}
-				result = false;
-			}
-			else
-			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("AddExternalConnection external connection " + conn.connectionId);
-				}
-				m_SimpleServerSimple.SetConnectionAtIndex(conn);
-				m_ExternalConnections.Add(conn.connectionId);
-				conn.InvokeHandlerNoData(32);
-				result = true;
-			}
-			return result;
-		}
-
-		public static void RemoveExternalConnection(int connectionId)
-		{
-			instance.RemoveExternalConnectionInternal(connectionId);
-		}
-
-		private bool RemoveExternalConnectionInternal(int connectionId)
-		{
-			bool result;
-			if (!m_ExternalConnections.Contains(connectionId))
-			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("RemoveExternalConnection failed, no connection for id:" + connectionId);
-				}
-				result = false;
-			}
-			else
-			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("RemoveExternalConnection external connection " + connectionId);
-				}
-				var networkConnection = m_SimpleServerSimple.FindConnection(connectionId);
-				if (networkConnection != null)
-				{
-					networkConnection.RemoveObservers();
-				}
-				m_SimpleServerSimple.RemoveConnectionAtIndex(connectionId);
-				result = true;
-			}
-			return result;
 		}
 
 		private static bool ValidateSceneObject(QSBNetworkIdentity netId)

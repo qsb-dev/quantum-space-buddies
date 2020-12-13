@@ -17,6 +17,13 @@ namespace QSB.TransformSync
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
 
+		protected override void OnDestroy()
+		{
+			base.OnDestroy();
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.RemovePlayer(PlayerId);
+		}
+
 		private Transform GetPlayerModel()
 			=> Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 

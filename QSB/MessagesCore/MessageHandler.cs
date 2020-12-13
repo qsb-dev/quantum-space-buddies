@@ -1,10 +1,10 @@
 ﻿using QSB.EventsCore;
+using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
 using System;
 using System.Linq;
-using UnityEngine.Networking;
 
 namespace QSB.Messaging
 {
@@ -14,11 +14,11 @@ namespace QSB.Messaging
 		public event Action<T> OnServerReceiveMessage;
 
 		private readonly short _eventType;
-		public EventType BaseEventType => (EventType)(_eventType - 1 - MsgType.Highest);
+		public EventType BaseEventType => (EventType)(_eventType - 1 - QSBMsgType.Highest);
 
 		public MessageHandler(EventType eventType)
 		{
-			_eventType = (short)(eventType + MsgType.Highest + 1);
+			_eventType = (short)(eventType + QSBMsgType.Highest + 1);
 			if (QSBNetworkManager.Instance.IsReady)
 			{
 				Init();
@@ -46,6 +46,7 @@ namespace QSB.Messaging
 			{
 				return;
 			}
+			DebugLog.DebugWrite("SEND MESSAGE TO ALL");
 			QSBNetworkServer.SendToAll(_eventType, message);
 		}
 

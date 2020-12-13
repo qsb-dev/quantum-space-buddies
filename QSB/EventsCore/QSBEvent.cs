@@ -44,6 +44,10 @@ namespace QSB.EventsCore
 
 		private void OnReceive(T message)
 		{
+			if (QSB.IsServer)
+			{
+				_eventHandler.SendToAll(message);
+			}
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
