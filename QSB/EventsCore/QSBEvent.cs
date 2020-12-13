@@ -44,7 +44,7 @@ namespace QSB.EventsCore
 
 		private void OnReceive(T message)
 		{
-			if (QSB.IsServer)
+			if (QSB.IsServer && !message.OnlySendToServer)
 			{
 				_eventHandler.SendToAll(message);
 			}
