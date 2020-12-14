@@ -34,7 +34,6 @@ namespace QSB.DialogueConditionSync.Events
 			{
 				QSBWorldSync.SetDialogueCondition(message.ConditionName, message.ConditionState);
 			}
-			DebugLog.DebugWrite($"set {message.ConditionName} to {message.ConditionState}");
 			DialogueConditionManager.SharedInstance.SetConditionState(message.ConditionName, message.ConditionState);
 		}
 	}

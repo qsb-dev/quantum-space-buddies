@@ -18,15 +18,12 @@ namespace QSB.Player.Events
 
 		private PlayerMessage CreateMessage() => new PlayerMessage
 		{
-			AboutId = LocalPlayerId
+			AboutId = LocalPlayerId,
+			OnlySendToServer = true
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerMessage message)
 		{
-			if (!server)
-			{
-				return;
-			}
 			DebugLog.DebugWrite($"Get state request from {message.FromId}");
 			GlobalMessenger.FireEvent(EventNames.QSBServerSendPlayerStates);
 			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
@@ -37,7 +34,6 @@ namespace QSB.Player.Events
 
 			foreach (var condition in QSBWorldSync.DialogueConditions)
 			{
-				DebugLog.DebugWrite($"SENDING STATE OF CONDITION {condition.Key}");
 				GlobalMessenger<string, bool>.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value);
 			}
 		}

@@ -20,7 +20,6 @@ namespace QSB.Tools
 
 		public static void Init(Transform camera)
 		{
-			DebugLog.DebugWrite($"TOOLS INIT ON {camera.name}");
 			CreateStowTransforms(camera);
 
 			_playerToolsMaterial = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
