@@ -10,8 +10,8 @@ namespace QSB.TransformSync
 	{
 		private Transform _disabledSocket;
 
-		private Transform GetProbe()
-			=> Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
+		private Transform GetProbe() =>
+			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
 		protected override Transform InitLocalTransform()
 		{
@@ -46,10 +46,7 @@ namespace QSB.TransformSync
 			return body;
 		}
 
-		private void SetSocket(Transform socket)
-		{
-			_disabledSocket = socket;
-		}
+		private void SetSocket(Transform socket) => _disabledSocket = socket;
 
 		protected override void UpdateTransform()
 		{

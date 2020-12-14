@@ -29,7 +29,7 @@ namespace QSB.Animation
 		private RuntimeAnimatorController _riebeckController;
 
 		public AnimatorMirror Mirror { get; private set; }
-		public AnimationType CurrentType;
+		public AnimationType CurrentType { get; set; }
 
 		protected void Awake()
 		{
@@ -38,7 +38,7 @@ namespace QSB.Animation
 			_netAnim.enabled = false;
 			_netAnim.animator = _anim;
 
-			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => LoadControllers();
+			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
 		protected override void OnDestroy()
@@ -52,8 +52,10 @@ namespace QSB.Animation
 			_playerController.OnBecomeGrounded -= OnBecomeGrounded;
 			_playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
 
-			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => LoadControllers();
+			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 		}
+
+		private void OnUniverseSceneLoaded(OWScene obj) => LoadControllers();
 
 		private void LoadControllers()
 		{

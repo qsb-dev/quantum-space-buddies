@@ -2,8 +2,8 @@
 {
 	public enum ToolType
 	{
-		Signalscope,
-		ProbeLauncher,
-		Translator
+		Signalscope = 0,
+		ProbeLauncher = 1,
+		Translator = 2
 	}
 }

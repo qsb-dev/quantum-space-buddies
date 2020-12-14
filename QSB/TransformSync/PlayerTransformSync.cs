@@ -9,13 +9,10 @@ namespace QSB.TransformSync
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
-		static PlayerTransformSync()
-		{
-			AnimControllerPatch.Init();
-		}
+		static PlayerTransformSync() => AnimControllerPatch.Init();
 
-		public override void OnStartLocalPlayer()
-			=> LocalInstance = this;
+		public override void OnStartLocalPlayer() =>
+			LocalInstance = this;
 
 		protected override void OnDestroy()
 		{
@@ -24,8 +21,8 @@ namespace QSB.TransformSync
 			QSBPlayerManager.RemovePlayer(PlayerId);
 		}
 
-		private Transform GetPlayerModel()
-			=> Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
+		private Transform GetPlayerModel() =>
+			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
 		protected override Transform InitLocalTransform()
 		{

@@ -7,10 +7,8 @@ namespace QSB.TransformSync
 	{
 		private Transform GetShipModel() => Locator.GetShipTransform();
 
-		protected override Transform InitLocalTransform()
-		{
-			return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
-		}
+		protected override Transform InitLocalTransform() =>
+			GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
 
 		protected override Transform InitRemoteTransform()
 		{

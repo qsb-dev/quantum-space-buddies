@@ -15,9 +15,9 @@ namespace QSB.Patches
 
 	public static class QSBPatchManager
 	{
-		public static List<QSBPatch> _patchList = new List<QSBPatch>();
-
 		public static event PatchEvent OnPatchType;
+
+		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
 		public static void Init()
 		{

@@ -15,41 +15,38 @@ namespace QSB.ConversationSync
 	{
 		public static ConversationManager Instance { get; private set; }
 		public AssetBundle ConversationAssetBundle { get; private set; }
-		private GameObject BoxPrefab;
-		public Dictionary<CharacterDialogueTree, GameObject> BoxMappings = new Dictionary<CharacterDialogueTree, GameObject>();
+		public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();
 
-		private void Start()
+		private GameObject _boxPrefab;
+
+		public void Start()
 		{
 			Instance = this;
 
 			ConversationAssetBundle = QSBCore.Helper.Assets.LoadBundle("assets/conversation");
 
-			BoxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
+			_boxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
 			// TODO : make dynamic so it can be different sizes!
 			var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
 			if (font == null)
 			{
 				DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
 			}
-			BoxPrefab.GetComponent<Text>().font = font;
-			BoxPrefab.GetComponent<Text>().color = Color.white;
+			_boxPrefab.GetComponent<Text>().font = font;
+			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 		{
 			var treeIndex = QSBWorldSync.OldDialogueTrees.IndexOf(tree);
-			if (!QSBPlayerManager.PlayerList.Any(x => x.CurrentDialogueID == treeIndex))
-			{
-				return uint.MaxValue;
-			}
-			return QSBPlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
+			return QSBPlayerManager.PlayerList.All(x => x.CurrentDialogueID != treeIndex)
+				? uint.MaxValue
+				: QSBPlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
 		}
 
-		public void SendPlayerOption(string text)
-		{
+		public void SendPlayerOption(string text) =>
 			GlobalMessenger<uint, string, ConversationType>
 				.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
-		}
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -62,17 +59,13 @@ namespace QSB.ConversationSync
 				.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
 		}
 
-		public void CloseBoxPlayer()
-		{
+		public void CloseBoxPlayer() =>
 			GlobalMessenger<uint, string, ConversationType>
 				.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
-		}
 
-		public void CloseBoxCharacter(int id)
-		{
+		public void CloseBoxCharacter(int id) =>
 			GlobalMessenger<uint, string, ConversationType>
 				.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
-		}
 
 		public void SendConvState(int charId, bool state)
 		{
@@ -126,7 +119,7 @@ namespace QSB.ConversationSync
 
 		private GameObject CreateBox(Transform parent, float vertOffset, string text)
 		{
-			var newBox = Instantiate(BoxPrefab);
+			var newBox = Instantiate(_boxPrefab);
 			newBox.SetActive(false);
 			newBox.transform.parent = parent;
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);

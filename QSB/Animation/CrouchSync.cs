@@ -27,7 +27,7 @@ namespace QSB.Animation
 			_bodyAnim = bodyAnim;
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (IsLocalPlayer)
 			{

@@ -36,9 +36,7 @@ namespace QSB.Tools.Events
 			player.Signalscope?.ChangeEquipState(message.ToggleValue);
 		}
 
-		public override void OnReceiveLocal(bool server, ToggleMessage message)
-		{
+		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
 			QSBPlayerManager.LocalPlayer.UpdateState(State.Signalscope, message.ToggleValue);
-		}
 	}
 }

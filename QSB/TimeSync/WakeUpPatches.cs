@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.Patches;
 
 namespace QSB.TimeSync
 {

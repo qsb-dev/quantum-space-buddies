@@ -13,7 +13,7 @@ namespace QSB.Player
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-		private static List<PlayerSyncObject> _playerSyncObjects = new List<PlayerSyncObject>();
+		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new List<PlayerSyncObject>();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
@@ -44,8 +44,8 @@ namespace QSB.Player
 			PlayerList.Clear();
 		}
 
-		public static bool PlayerExists(uint id)
-			=> id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
+		public static bool PlayerExists(uint id) =>
+			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 
 		public static void HandleFullStateMessage(PlayerStateMessage message)
 		{
@@ -59,28 +59,28 @@ namespace QSB.Player
 			}
 		}
 
-		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject
-			=> _playerSyncObjects.OfType<T>().Where(x => x != null);
+		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
+			PlayerSyncObjects.OfType<T>().Where(x => x != null);
 
-		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
-			=> GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
+		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
+			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
 
 		public static void AddSyncObject(PlayerSyncObject obj)
 		{
 			DebugLog.DebugWrite($"SyncObject Add : type<{obj.GetType().Name}>, netid<{obj.NetId}>");
-			_playerSyncObjects.Add(obj);
+			PlayerSyncObjects.Add(obj);
 		}
 
 		public static void RemoveSyncObject(PlayerSyncObject obj)
 		{
 			DebugLog.DebugWrite($"SyncObject Remove : type<{obj.GetType().Name}>, netid<{obj.NetId}>");
-			_playerSyncObjects.Remove(obj);
+			PlayerSyncObjects.Remove(obj);
 		}
 
 		public static bool IsBelongingToLocalPlayer(uint id)
 		{
 			return id == LocalPlayerId ||
-				_playerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
+				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 {
 	public enum CameraMode
 	{
-		FirstPerson,
-		ThirdPerson
+		FirstPerson = 0,
+		ThirdPerson = 1
 	}
 }

@@ -17,14 +17,14 @@ namespace QSB.SectorSync
 			Sector.Name.Ship
 		};
 
-		private void Awake()
+		public void Awake()
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
 		}
@@ -43,7 +43,7 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		public QSBSector GetClosestSector(Transform trans) // trans rights
+		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
 				.Where(sector => sector.Sector != null && !_sectorBlacklist.Contains(sector.Type))

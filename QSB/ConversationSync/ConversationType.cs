@@ -2,9 +2,9 @@
 {
 	public enum ConversationType
 	{
-		Character,
-		Player,
-		CloseCharacter,
-		ClosePlayer
+		Character = 0,
+		Player = 1,
+		CloseCharacter = 2,
+		ClosePlayer = 3
 	}
 }

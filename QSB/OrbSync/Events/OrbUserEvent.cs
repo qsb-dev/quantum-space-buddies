@@ -26,19 +26,18 @@ namespace QSB.OrbSync.Events
 
 		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
-			if (!server)
+			if (server)
 			{
-				if (QSBWorldSync.OrbSyncList.Count < message.ObjectId)
-				{
-					DebugLog.DebugWrite($"Error - Orb id {message.ObjectId} out of range of orb sync list {QSBWorldSync.OrbSyncList.Count}.", MessageType.Error);
-					return;
-				}
-				var orb = QSBWorldSync.OrbSyncList
-					.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
-				orb.enabled = true;
-				return;
+				HandleServer(message);
 			}
+			else
+			{
+				HandleClient(message);
+			}
+		}
 
+		private static void HandleServer(WorldObjectMessage message)
+		{
 			var fromPlayer = QSBNetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
 			if (QSBWorldSync.OrbSyncList.Count == 0)
 			{
@@ -68,6 +67,20 @@ namespace QSB.OrbSync.Events
 			}
 			orbIdentity.AssignClientAuthority(fromPlayer);
 			orbSync.enabled = true;
+		}
+
+		private static void HandleClient(WorldObjectMessage message)
+		{
+			if (QSBWorldSync.OrbSyncList.Count < message.ObjectId)
+			{
+				DebugLog.DebugWrite(
+					$"Error - Orb id {message.ObjectId} out of range of orb sync list {QSBWorldSync.OrbSyncList.Count}.",
+					MessageType.Error);
+				return;
+			}
+			var orb = QSBWorldSync.OrbSyncList
+				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+			orb.enabled = true;
 		}
 	}
 }

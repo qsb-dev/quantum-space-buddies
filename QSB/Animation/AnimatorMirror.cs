@@ -35,7 +35,7 @@ namespace QSB.Animation
 			}
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (_to == null || _from == null)
 			{

@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Animation;
 using QSB.Animation.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;

@@ -11,16 +11,13 @@ namespace QSB.ElevatorSync
 
 		private List<Elevator> _elevators;
 
-		private void Awake()
+		public void Awake()
 		{
 			Instance = this;
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		private void OnDestroy()
-		{
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-		}
+		public void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{

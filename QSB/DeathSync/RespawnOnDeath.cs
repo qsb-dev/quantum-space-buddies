@@ -28,7 +28,7 @@ namespace QSB.DeathSync
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
 
-		private void Awake()
+		public void Awake()
 		{
 			Instance = this;
 
@@ -126,11 +126,9 @@ namespace QSB.DeathSync
 			_spaceSuit.RemoveSuit(true);
 		}
 
-		private SpawnPoint GetSpawnPoint(bool isShip = false)
-		{
-			return _playerSpawner
+		private SpawnPoint GetSpawnPoint(bool isShip = false) =>
+			_playerSpawner
 				.GetValue<SpawnPoint[]>("_spawnList")
 				.FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
-		}
 	}
 }

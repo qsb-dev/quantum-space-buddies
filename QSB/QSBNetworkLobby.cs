@@ -36,7 +36,7 @@ namespace QSB
 			"Jinha"
 		};
 
-		private void Awake()
+		public void Awake()
 		{
 			PlayerName = GetPlayerName();
 			CanEditName = true;
@@ -54,7 +54,7 @@ namespace QSB
 				: _defaultNames.OrderBy(x => Guid.NewGuid()).First();
 		}
 
-		private void OnGUI()
+		public void OnGUI()
 		{
 			GUI.Label(new Rect(10, 10, 200f, 20f), "Name:");
 			if (CanEditName)

@@ -43,10 +43,8 @@ namespace QSB.TransformSync
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-		{
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
 			_isInitialized = false;
-		}
 
 		protected void Init()
 		{
@@ -56,7 +54,7 @@ namespace QSB.TransformSync
 			_isVisible = true;
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (!_isInitialized && IsReady)
 			{

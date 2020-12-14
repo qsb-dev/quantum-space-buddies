@@ -15,7 +15,7 @@ namespace QSB.TimeSync
 		private bool _isSetUp;
 		private TimeSyncType _currentType;
 
-		private void Awake()
+		public void Awake()
 		{
 			Instance = this;
 			enabled = false;
@@ -32,7 +32,7 @@ namespace QSB.TimeSync
 			_canvas.enabled = false;
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoad;
 			if (_canvas.enabled)
@@ -41,9 +41,11 @@ namespace QSB.TimeSync
 			}
 		}
 
-		public static void Start(TimeSyncType type) => QSBCore.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type));
+		public static void Start(TimeSyncType type) =>
+			QSBCore.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type));
 
-		public static void Stop() => QSBCore.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
+		public static void Stop() =>
+			QSBCore.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
 
 		private void StartTimeSync(TimeSyncType type)
 		{
@@ -75,7 +77,7 @@ namespace QSB.TimeSync
 			switch (_currentType)
 			{
 				case TimeSyncType.Fastforwarding:
-					text = $"{minutes.ToString("D2")}:{seconds.ToString("D2")}"
+					text = $"{minutes:D2}:{seconds:D2}"
 						+ Environment.NewLine
 						+ "Fast-forwarding to match server time...";
 					break;
