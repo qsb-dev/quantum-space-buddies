@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Events;
-using QSB.Messages;
+using QSB.Messaging;
 using QSB.SectorSync;
 using QSB.Utility;
 using System.Linq;

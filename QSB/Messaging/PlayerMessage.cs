@@ -1,7 +1,7 @@
 ﻿using QuantumUNET;
 using QuantumUNET.Messages;
 
-namespace QSB.Messages
+namespace QSB.Messaging
 {
 	public class PlayerMessage : QSBMessageBase
 	{

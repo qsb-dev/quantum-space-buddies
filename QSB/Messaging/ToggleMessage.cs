@@ -1,6 +1,6 @@
 ﻿using QuantumUNET;
 
-namespace QSB.Messages
+namespace QSB.Messaging
 {
 	public class ToggleMessage : PlayerMessage
 	{

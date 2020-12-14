@@ -1,6 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Instruments;
-using QSB.Messages;
+using QSB.Messaging;
 using QSB.Player;
 
 namespace QSB.Animation.Events

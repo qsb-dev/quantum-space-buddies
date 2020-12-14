@@ -1,4 +1,4 @@
-﻿using QSB.Messages;
+﻿using QSB.Messaging;
 using QuantumUNET;
 
 namespace QSB.OrbSync.Events
