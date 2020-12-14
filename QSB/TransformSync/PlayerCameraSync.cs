@@ -9,12 +9,6 @@ namespace QSB.TransformSync
 {
 	public class PlayerCameraSync : TransformSync
 	{
-		protected void Start()
-		{
-			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>().Where(x => x.NetId.Value < NetId.Value).OrderBy(x => x.NetId.Value).Last();
-			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
-		}
-
 		protected override Transform InitLocalTransform()
 		{
 			var body = Locator.GetPlayerCamera().gameObject.transform;

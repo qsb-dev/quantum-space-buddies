@@ -6,12 +6,6 @@ namespace QSB.TransformSync
 {
 	public class ShipTransformSync : TransformSync
 	{
-		protected void Start()
-		{
-			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>().Where(x => x.NetId.Value < NetId.Value).OrderBy(x => x.NetId.Value).Last();
-			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
-		}
-
 		private Transform GetShipModel() => Locator.GetShipTransform();
 
 		protected override Transform InitLocalTransform()

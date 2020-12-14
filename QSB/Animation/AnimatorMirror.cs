@@ -36,11 +36,6 @@ namespace QSB.Animation
 			}
 		}
 
-		private PlayerInfo GetPlayer()
-		{
-			return QSBPlayerManager.GetSyncObjects<AnimationSync>().First(x => x.Mirror == this).Player;
-		}
-
 		private void Update()
 		{
 			if (_to == null || _from == null)

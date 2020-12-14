@@ -45,7 +45,7 @@ namespace QSB.Events
 		private void OnReceive(bool isServer, T message)
 		{
 			if (isServer
-				&& !message.OnlySendToServer 
+				&& !message.OnlySendToServer
 				&& message.FromId != QSBPlayerManager.LocalPlayerId)
 			{
 				_eventHandler.SendToAll(message);

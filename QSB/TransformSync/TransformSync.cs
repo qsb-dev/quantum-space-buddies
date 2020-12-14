@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.SectorSync;
 using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -22,9 +23,12 @@ namespace QSB.TransformSync
 		private Quaternion _rotationSmoothVelocity;
 		private bool _isVisible;
 
-		protected override void Awake()
+		protected override void Start()
 		{
-			base.Awake();
+			base.Start();
+			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>().Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
+			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
