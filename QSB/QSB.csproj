@@ -191,7 +191,6 @@
     <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
-    <Compile Include="Utility\ListExtensions.cs" />
     <Compile Include="Utility\UnetExtensions.cs" />
     <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />
     <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />
