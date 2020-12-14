@@ -298,7 +298,7 @@ namespace QuantumUNET.Components
 			return result;
 		}
 
-		public static void SerializeVelocity3D(QSBNetworkWriter writer, Vector3 velocity, CompressionSyncMode compression) => 
+		public static void SerializeVelocity3D(QSBNetworkWriter writer, Vector3 velocity, CompressionSyncMode compression) =>
 			writer.Write(velocity);
 
 		public static void SerializeRotation3D(QSBNetworkWriter writer, Quaternion rot, AxisSyncMode mode, CompressionSyncMode compression)

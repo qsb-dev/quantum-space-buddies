@@ -8,8 +8,8 @@ namespace QuantumUNET
 	{
 		private static readonly Dictionary<NetworkID, NetworkAccessToken> _dictTokens = new Dictionary<NetworkID, NetworkAccessToken>();
 
-		public static SourceID GetSourceID()
-			=> (SourceID)SystemInfo.deviceUniqueIdentifier.GetHashCode();
+		public static SourceID GetSourceID() =>
+			(SourceID)SystemInfo.deviceUniqueIdentifier.GetHashCode();
 
 		public static void SetAccessTokenForNetwork(NetworkID netId, NetworkAccessToken accessToken)
 		{

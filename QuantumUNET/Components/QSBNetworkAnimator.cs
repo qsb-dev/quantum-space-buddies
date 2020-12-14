@@ -41,7 +41,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public bool GetParameterAutoSend(int index) => 
+		public bool GetParameterAutoSend(int index) =>
 			((int)m_ParameterSendBits & (1 << index)) != 0;
 
 		public override void OnStartAuthority() =>
