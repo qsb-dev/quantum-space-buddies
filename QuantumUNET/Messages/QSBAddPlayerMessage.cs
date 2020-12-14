@@ -6,6 +6,12 @@
 		public int msgSize;
 		public byte[] msgData;
 
+		public override void Serialize(QSBNetworkWriter writer)
+		{
+			writer.Write(playerControllerId);
+			writer.WriteBytesAndSize(msgData, msgSize);
+		}
+
 		public override void Deserialize(QSBNetworkReader reader)
 		{
 			playerControllerId = reader.ReadInt16();
@@ -18,12 +24,6 @@
 			{
 				msgSize = msgData.Length;
 			}
-		}
-
-		public override void Serialize(QSBNetworkWriter writer)
-		{
-			writer.Write(playerControllerId);
-			writer.WriteBytesAndSize(msgData, msgSize);
 		}
 	}
 }

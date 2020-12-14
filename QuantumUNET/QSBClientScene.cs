@@ -8,18 +8,6 @@ namespace QuantumUNET
 {
 	public class QSBClientScene
 	{
-		private static bool HasMigrationPending() => reconnectId != -1;
-
-		public static void SetReconnectId(int newReconnectId, QSBPeerInfoMessage[] peers)
-		{
-			reconnectId = newReconnectId;
-			s_Peers = peers;
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("ClientScene::SetReconnectId: " + newReconnectId);
-			}
-		}
-
 		internal static void SetNotReady() => ready = false;
 
 		public static List<QSBPlayerController> localPlayers { get; private set; } = new List<QSBPlayerController>();
@@ -810,8 +798,6 @@ namespace QuantumUNET
 		public const int ReconnectIdInvalid = -1;
 
 		public const int ReconnectIdHost = 0;
-
-		private static QSBPeerInfoMessage[] s_Peers;
 
 		private static List<PendingOwner> s_PendingOwnerIds = new List<PendingOwner>();
 

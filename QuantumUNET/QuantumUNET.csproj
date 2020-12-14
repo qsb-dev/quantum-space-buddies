@@ -134,8 +134,6 @@
     <Compile Include="Messages\QSBObjectSpawnMessage.cs" />
     <Compile Include="Messages\QSBObjectSpawnSceneMessage.cs" />
     <Compile Include="Messages\QSBOwnerMessage.cs" />
-    <Compile Include="Messages\QSBPeerInfoMessage.cs" />
-    <Compile Include="QSBPeerInfoPlayer.cs" />
     <Compile Include="QSBPlayerController.cs" />
     <Compile Include="Messages\QSBReadyMessage.cs" />
     <Compile Include="Messages\QSBReconnectMessage.cs" />

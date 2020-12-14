@@ -16,7 +16,6 @@ namespace QuantumUNET
 		}
 
 		public uint Position { get; private set; }
-
 		public int Length => m_Buffer.Length;
 
 		public byte ReadByte()
@@ -154,7 +153,8 @@ namespace QuantumUNET
 			m_Buffer[1] = (byte)((num >> 8) & 255);
 		}
 
-		public void SeekZero() => Position = 0U;
+		public void SeekZero() =>
+			Position = 0U;
 
 		public void Replace(byte[] buffer)
 		{
@@ -165,10 +165,5 @@ namespace QuantumUNET
 		public override string ToString() => string.Format("NetBuf sz:{0} pos:{1}", m_Buffer.Length, Position);
 
 		private byte[] m_Buffer;
-		private const int k_InitialSize = 64;
-
-		private const float k_GrowthFactor = 1.5f;
-
-		private const int k_BufferSizeWarning = 134217728;
 	}
 }
