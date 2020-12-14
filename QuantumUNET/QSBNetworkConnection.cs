@@ -130,10 +130,6 @@ namespace QuantumUNET
 				var networkMessageDelegate = m_MessageHandlersDict[msgType];
 				if (networkMessageDelegate == null)
 				{
-					if (LogFilter.logError)
-					{
-						Debug.LogError("NetworkConnection InvokeHandler no handler for " + msgType);
-					}
 					result = false;
 				}
 				else
@@ -269,25 +265,17 @@ namespace QuantumUNET
 
 		public virtual bool SendBytes(byte[] bytes, int numBytes, int channelId)
 		{
-			if (logNetworkMessages)
-			{
-				LogSend(bytes);
-			}
 			return CheckChannel(channelId) && m_Channels[channelId].SendBytes(bytes, numBytes);
 		}
 
 		public virtual bool SendWriter(QSBNetworkWriter writer, int channelId)
 		{
-			if (logNetworkMessages)
-			{
-				LogSend(writer.ToArray());
-			}
 			return CheckChannel(channelId) && m_Channels[channelId].SendWriter(writer);
 		}
 
 		private void LogSend(byte[] bytes)
 		{
-			var networkReader = new NetworkReader(bytes);
+			var networkReader = new QSBNetworkReader(bytes);
 			var num = networkReader.ReadUInt16();
 			var num2 = networkReader.ReadUInt16();
 			var stringBuilder = new StringBuilder();
@@ -299,7 +287,7 @@ namespace QuantumUNET
 					break;
 				}
 			}
-			Debug.Log(string.Concat(new object[]
+			ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
 			{
 				"ConnectionSend con:",
 				connectionId,
@@ -350,11 +338,11 @@ namespace QuantumUNET
 
 		protected void HandleBytes(byte[] buffer, int receivedSize, int channelId)
 		{
-			var reader = new NetworkReader(buffer);
+			var reader = new QSBNetworkReader(buffer);
 			HandleReader(reader, receivedSize, channelId);
 		}
 
-		protected void HandleReader(NetworkReader reader, int receivedSize, int channelId)
+		protected void HandleReader(QSBNetworkReader reader, int receivedSize, int channelId)
 		{
 			while (reader.Position < receivedSize)
 			{
@@ -516,7 +504,7 @@ namespace QuantumUNET
 			{
 				return string.Concat(new object[]
 				{
-					MsgType.MsgTypeToString(msgType),
+					QSBMsgType.MsgTypeToString(msgType),
 					": count=",
 					count,
 					" bytes=",

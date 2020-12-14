@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 
@@ -21,7 +21,6 @@ namespace QSB.Tools.Events
 		}
 
 		private void HandleLaunch(SurveyorProbe probe) => SendEvent(CreateMessage(true));
-
 		private void HandleRetrieve(SurveyorProbe probe) => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
@@ -30,16 +29,14 @@ namespace QSB.Tools.Events
 			ToggleValue = value
 		};
 
-		public override void OnReceiveRemote(ToggleMessage message)
+		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.UpdateState(State.ProbeActive, message.ToggleValue);
 			player.Probe?.SetState(message.ToggleValue);
 		}
 
-		public override void OnReceiveLocal(ToggleMessage message)
-		{
+		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
 			QSBPlayerManager.LocalPlayer.UpdateState(State.ProbeActive, message.ToggleValue);
-		}
 	}
 }

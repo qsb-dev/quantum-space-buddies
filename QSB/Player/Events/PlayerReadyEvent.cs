@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.SectorSync;
 using QSB.Utility;
@@ -12,7 +12,6 @@ namespace QSB.Player.Events
 		public override EventType Type => EventType.PlayerReady;
 
 		public override void SetupListener() => GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
-
 		public override void CloseListener() => GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
 
 		private void Handler(bool ready) => SendEvent(CreateMessage(ready));
@@ -23,23 +22,33 @@ namespace QSB.Player.Events
 			ToggleValue = ready
 		};
 
-		public override void OnServerReceive(ToggleMessage message)
+		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
-			DebugLog.DebugWrite($"[S] Get ready event from {message.FromId}", MessageType.Success);
-			if (message.FromId == QSBPlayerManager.LocalPlayerId)
+			if (server)
 			{
-				return;
+				HandleServer(message);
 			}
+			else
+			{
+				HandleClient(message);
+			}
+		}
+
+		private static void HandleServer(ToggleMessage message)
+		{
+			DebugLog.DebugWrite($"Get ready event from {message.FromId}", MessageType.Success);
 			QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
 			GlobalMessenger.FireEvent(EventNames.QSBServerSendPlayerStates);
 		}
 
-		public override void OnReceiveRemote(ToggleMessage message)
+		private void HandleClient(ToggleMessage message)
 		{
 			DebugLog.DebugWrite($"Get ready event from {message.FromId}", MessageType.Success);
 			if (!QSBPlayerManager.PlayerExists(message.FromId))
 			{
-				DebugLog.ToConsole("Error - Got ready event for non-existent player! Did we not send a PlayerStatesRequestEvent? Or was it not handled?", MessageType.Error);
+				DebugLog.ToConsole(
+					"Error - Got ready event for non-existent player! Did we not send a PlayerStatesRequestEvent? Or was it not handled?",
+					MessageType.Error);
 				return;
 			}
 			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()

@@ -95,9 +95,7 @@ namespace QSB.DeathSync
 			} }
 		};
 
-		public static string GetPhrase(DeathType deathType)
-		{
-			return DeathDictionary[deathType].OrderBy(x => Guid.NewGuid()).First();
-		}
+		public static string GetPhrase(DeathType deathType) =>
+			DeathDictionary[deathType].OrderBy(x => Guid.NewGuid()).First();
 	}
 }

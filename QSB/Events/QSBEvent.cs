@@ -3,42 +3,32 @@ using QSB.Player;
 using QSB.TransformSync;
 using QuantumUNET;
 
-namespace QSB.EventsCore
+namespace QSB.Events
 {
 	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
 	{
 		public abstract EventType Type { get; }
 		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
+
 		private readonly MessageHandler<T> _eventHandler;
 
 		protected QSBEvent()
 		{
 			_eventHandler = new MessageHandler<T>(Type);
-			_eventHandler.OnClientReceiveMessage += OnClientReceive;
-			_eventHandler.OnServerReceiveMessage += OnServerReceive;
+			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
+			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
 		}
 
 		public abstract void SetupListener();
-
 		public abstract void CloseListener();
 
-		public virtual void OnReceiveRemote(T message)
-		{
-		}
-
-		public virtual void OnReceiveLocal(T message)
-		{
-		}
-
-		public virtual void OnServerReceive(T message)
-		{
-			_eventHandler.SendToAll(message);
-		}
+		public virtual void OnReceiveRemote(bool server, T message) { }
+		public virtual void OnReceiveLocal(bool server, T message) { }
 
 		public void SendEvent(T message)
 		{
 			message.FromId = QSBPlayerManager.LocalPlayerId;
-			QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
+			QSBCore.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
 		}
 
 		private void Send(T message)
@@ -53,16 +43,22 @@ namespace QSB.EventsCore
 			}
 		}
 
-		private void OnClientReceive(T message)
+		private void OnReceive(bool isServer, T message)
 		{
+			if (isServer
+				&& !message.OnlySendToServer
+				&& message.FromId != QSBPlayerManager.LocalPlayerId)
+			{
+				_eventHandler.SendToAll(message);
+			}
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
-				OnReceiveLocal(message);
+				OnReceiveLocal(isServer, message);
 				return;
 			}
 
-			OnReceiveRemote(message);
+			OnReceiveRemote(isServer, message);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Utility;
 
 namespace QSB.Player.Events
@@ -9,7 +9,6 @@ namespace QSB.Player.Events
 		public override EventType Type => EventType.PlayerState;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBServerSendPlayerStates, Handler);
-
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBServerSendPlayerStates, Handler);
 
 		private void Handler()
@@ -29,10 +28,10 @@ namespace QSB.Player.Events
 			PlayerState = player.State
 		};
 
-		public override void OnReceiveRemote(PlayerStateMessage message)
+		public override void OnReceiveRemote(bool server, PlayerStateMessage message)
 		{
 			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
-			QSB.Helper.Events.Unity.RunWhen(
+			QSBCore.Helper.Events.Unity.RunWhen(
 				() => QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
 				() => QSBPlayerManager.HandleFullStateMessage(message));
 		}

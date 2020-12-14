@@ -9,13 +9,14 @@ using QSB.Patches;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;
+using QuantumUNET;
 using QuantumUNET.Components;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QSB
 {
-	public class QSB : ModBehaviour
+	public class QSBCore : ModBehaviour
 	{
 		public static IModBehaviour ModBehaviour { get; private set; }
 		public static IModHelper Helper { get; private set; }
@@ -25,8 +26,9 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
+		public static bool IsServer => QSBNetworkServer.active;
 
-		private void Awake()
+		public void Awake()
 		{
 			Application.runInBackground = true;
 
@@ -39,7 +41,7 @@ namespace QSB
 			LogFilter.currentLogLevel = LogFilter.Debug;
 		}
 
-		private void Start()
+		public void Start()
 		{
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
@@ -66,10 +68,8 @@ namespace QSB
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 		}
 
-		private void Update()
-		{
+		public void Update() =>
 			QSBNetworkIdentity.UNetStaticUpdate();
-		}
 
 		public override void Configure(IModConfig config)
 		{

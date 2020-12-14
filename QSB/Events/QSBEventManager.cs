@@ -1,8 +1,8 @@
 ﻿using OWML.Common;
-using QSB.Animation;
 using QSB.Animation.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
+using QSB.DialogueConditionSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
 using QSB.OrbSync.Events;
@@ -12,7 +12,7 @@ using QSB.Tools.Events;
 using QSB.Utility;
 using System.Collections.Generic;
 
-namespace QSB.EventsCore
+namespace QSB.Events
 {
 	public static class QSBEventManager
 	{
@@ -33,7 +33,6 @@ namespace QSB.EventsCore
 				new PlayerProbeLauncherEvent(),
 				new PlayerProbeEvent(),
 				new PlayerSectorEvent(),
-				new PlayerLeaveEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
 				new ElevatorEvent(),
@@ -45,7 +44,8 @@ namespace QSB.EventsCore
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
 				new ChangeAnimTypeEvent(),
-				new ServerSendPlayerStatesEvent()
+				new ServerSendPlayerStatesEvent(),
+				new DialogueConditionEvent()
 			};
 
 			_eventList.ForEach(ev => ev.SetupListener());
@@ -58,9 +58,7 @@ namespace QSB.EventsCore
 		public static void Reset()
 		{
 			Ready = false;
-
 			_eventList.ForEach(ev => ev.CloseListener());
-
 			_eventList = new List<IQSBEvent>();
 		}
 	}

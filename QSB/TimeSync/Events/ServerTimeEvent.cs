@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 
 namespace QSB.TimeSync.Events
 {
@@ -7,7 +7,6 @@ namespace QSB.TimeSync.Events
 		public override EventType Type => EventType.ServerTime;
 
 		public override void SetupListener() => GlobalMessenger<float, int>.AddListener(EventNames.QSBServerTime, Handler);
-
 		public override void CloseListener() => GlobalMessenger<float, int>.RemoveListener(EventNames.QSBServerTime, Handler);
 
 		private void Handler(float time, int count) => SendEvent(CreateMessage(time, count));
@@ -19,9 +18,7 @@ namespace QSB.TimeSync.Events
 			LoopCount = count
 		};
 
-		public override void OnReceiveRemote(ServerTimeMessage message)
-		{
+		public override void OnReceiveRemote(bool server, ServerTimeMessage message) =>
 			WakeUpSync.LocalInstance.OnClientReceiveMessage(message);
-		}
 	}
 }

@@ -9,7 +9,7 @@ namespace QSB.TransformSync
 		public NomaiInterfaceOrb AttachedOrb { get; private set; }
 		public Transform OrbTransform { get; private set; }
 
-		private int Index => WorldRegistry.OrbSyncList.IndexOf(this);
+		private int Index => QSBWorldSync.OrbSyncList.IndexOf(this);
 
 		private bool _isInitialized;
 		private bool _isReady;
@@ -18,20 +18,20 @@ namespace QSB.TransformSync
 		public override void OnStartClient()
 		{
 			DontDestroyOnLoad(this);
-			WorldRegistry.OrbSyncList.Add(this);
+			QSBWorldSync.OrbSyncList.Add(this);
 
-			QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
+			QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, () => QSBCore.Helper.Events.Unity.FireOnNextUpdate(OnReady));
 		}
 
 		private void OnReady()
 		{
-			AttachedOrb = WorldRegistry.OldOrbList[Index];
+			AttachedOrb = QSBWorldSync.OldOrbList[Index];
 			_isReady = true;
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
-			WorldRegistry.OrbSyncList.Remove(this);
+			QSBWorldSync.OrbSyncList.Remove(this);
 		}
 
 		protected void Init()
@@ -41,7 +41,7 @@ namespace QSB.TransformSync
 			_isInitialized = true;
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (!_isInitialized && _isReady)
 			{

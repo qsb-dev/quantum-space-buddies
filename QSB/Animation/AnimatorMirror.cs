@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +35,7 @@ namespace QSB.Animation
 			}
 		}
 
-		private PlayerInfo GetPlayer()
-		{
-			return QSBPlayerManager.GetSyncObjects<AnimationSync>().First(x => x.Mirror == this).Player;
-		}
-
-		private void Update()
+		public void Update()
 		{
 			if (_to == null || _from == null)
 			{

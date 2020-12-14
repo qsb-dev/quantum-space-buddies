@@ -2,12 +2,12 @@
 {
 	public enum AnimationType
 	{
-		Chert,
-		Esker,
-		Feldspar,
-		Gabbro,
-		PlayerSuited,
-		PlayerUnsuited,
-		Riebeck
+		Chert = 0,
+		Esker = 1,
+		Feldspar = 2,
+		Gabbro = 3,
+		PlayerSuited = 4,
+		PlayerUnsuited = 5,
+		Riebeck = 6
 	}
 }

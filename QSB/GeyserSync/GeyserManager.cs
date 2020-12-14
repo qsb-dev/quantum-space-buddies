@@ -6,16 +6,13 @@ namespace QSB.GeyserSync
 {
 	public class GeyserManager : MonoBehaviour
 	{
-		public static GeyserManager Instance { get; private set; }
-
-		private void Awake()
+		public void Awake()
 		{
-			Instance = this;
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			QSBPatchManager.OnPatchType += OnPatchType;
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			QSBPatchManager.OnPatchType -= OnPatchType;
@@ -26,9 +23,9 @@ namespace QSB.GeyserSync
 			var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();
 			for (var id = 0; id < geyserControllers.Length; id++)
 			{
-				var qsbGeyser = WorldRegistry.GetObject<QSBGeyser>(id) ?? new QSBGeyser();
+				var qsbGeyser = QSBWorldSync.GetWorldObject<QSBGeyser>(id) ?? new QSBGeyser();
 				qsbGeyser.Init(geyserControllers[id], id);
-				WorldRegistry.AddObject(qsbGeyser);
+				QSBWorldSync.AddWorldObject(qsbGeyser);
 			}
 		}
 
@@ -38,7 +35,7 @@ namespace QSB.GeyserSync
 			{
 				return;
 			}
-			QSB.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
+			QSBCore.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
 		}
 	}
 }

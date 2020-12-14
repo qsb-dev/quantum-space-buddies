@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.SectorSync;
 using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -11,7 +12,6 @@ namespace QSB.TransformSync
 		public abstract bool IsReady { get; }
 
 		protected abstract Transform InitLocalTransform();
-
 		protected abstract Transform InitRemoteTransform();
 
 		public Transform SyncedTransform { get; private set; }
@@ -23,33 +23,38 @@ namespace QSB.TransformSync
 		private Quaternion _rotationSmoothVelocity;
 		private bool _isVisible;
 
-		protected virtual void Awake()
+		protected override void Start()
 		{
-			DebugLog.DebugWrite($"Awake of {GetType().Name}", MessageType.Info);
-			QSBPlayerManager.PlayerSyncObjects.Add(this);
+			base.Start();
+			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>().Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
+			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy()
+		protected override void OnDestroy()
 		{
+			base.OnDestroy();
+			if (!HasAuthority && SyncedTransform != null)
+			{
+				Destroy(SyncedTransform.gameObject);
+			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-		{
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
 			_isInitialized = false;
-		}
 
 		protected void Init()
 		{
-			DebugLog.DebugWrite($"Init of {AttachedNetId} ({Player.PlayerId}.{GetType().Name})");
 			SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
+			SetReferenceSector(QSBSectorManager.Instance.GetClosestSector(SyncedTransform));
 			_isInitialized = true;
 			_isVisible = true;
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (!_isInitialized && IsReady)
 			{

@@ -21,6 +21,8 @@ namespace QuantumUNET.Components
 		public short PlayerControllerId { get; private set; } = -1;
 		public QSBNetworkConnection ConnectionToServer { get; private set; }
 		public QSBNetworkConnection ConnectionToClient { get; private set; }
+		public QSBNetworkIdentity RootIdentity { get; private set; }
+		public List<QSBNetworkIdentity> SubIdentities { get; private set; } = new List<QSBNetworkIdentity>();
 
 		public bool ServerOnly
 		{
@@ -45,6 +47,22 @@ namespace QuantumUNET.Components
 				m_LocalPlayerAuthority = value;
 			}
 		}
+
+		public void SetRootIdentity(QSBNetworkIdentity newRoot)
+		{
+			if (RootIdentity != null)
+			{
+				RootIdentity.RemoveSubIdentity(this);
+			}
+			RootIdentity = newRoot;
+			RootIdentity.AddSubIndentity(this);
+		}
+
+		internal void AddSubIndentity(QSBNetworkIdentity identityToAdd)
+			=> SubIdentities.Add(identityToAdd);
+
+		internal void RemoveSubIdentity(QSBNetworkIdentity identityToRemove)
+			=> SubIdentities.Remove(identityToRemove);
 
 		internal void SetDynamicAssetId(NetworkHash128 newAssetId)
 		{
@@ -961,11 +979,13 @@ namespace QuantumUNET.Components
 		private bool m_LocalPlayerAuthority;
 
 		private bool m_IsServer;
+
 		private QSBNetworkBehaviour[] m_NetworkBehaviours;
 
 		private HashSet<int> m_ObserverConnections;
 
 		private List<QSBNetworkConnection> m_Observers;
+
 		private bool m_Reset = false;
 
 		private static uint s_NextNetworkId = 1U;

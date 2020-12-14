@@ -4,7 +4,6 @@ using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.OrbSync;
 using QSB.TimeSync;
-using QSB.Tools;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -16,9 +15,9 @@ namespace QSB.Patches
 
 	public static class QSBPatchManager
 	{
-		public static List<QSBPatch> _patchList = new List<QSBPatch>();
-
 		public static event PatchEvent OnPatchType;
+
+		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
 		public static void Init()
 		{
@@ -28,8 +27,7 @@ namespace QSB.Patches
 				new DeathPatches(),
 				new ElevatorPatches(),
 				new OrbPatches(),
-				new WakeUpPatches(),
-				new ProbePatches()
+				new WakeUpPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

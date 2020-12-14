@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.WorldSync;
 using QuantumUNET;
 
@@ -30,11 +30,9 @@ namespace QSB.GeyserSync
 			if (state)
 			{
 				_geyserController?.ActivateGeyser();
+				return;
 			}
-			else
-			{
-				_geyserController?.DeactivateGeyser();
-			}
+			_geyserController?.DeactivateGeyser();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 
@@ -9,7 +9,6 @@ namespace QSB.ElevatorSync.Events
 		public override EventType Type => EventType.Elevator;
 
 		public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBStartLift, Handler);
-
 		public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBStartLift, Handler);
 
 		private void Handler(int id, bool isGoingUp) => SendEvent(CreateMessage(id, isGoingUp));
@@ -20,9 +19,9 @@ namespace QSB.ElevatorSync.Events
 			ObjectId = id
 		};
 
-		public override void OnReceiveRemote(BoolWorldObjectMessage message)
+		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
-			var elevator = WorldRegistry.GetObject<QSBElevator>(message.ObjectId);
+			var elevator = QSBWorldSync.GetWorldObject<QSBElevator>(message.ObjectId);
 			elevator?.RemoteCall(message.State);
 		}
 	}

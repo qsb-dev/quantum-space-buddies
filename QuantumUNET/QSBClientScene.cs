@@ -185,84 +185,19 @@ namespace QuantumUNET
 						"]"
 					}));
 				}
-				if (!HasMigrationPending())
+				var addPlayerMessage = new QSBAddPlayerMessage
 				{
-					var addPlayerMessage = new QSBAddPlayerMessage
-					{
-						playerControllerId = playerControllerId
-					};
-					if (extraMessage != null)
-					{
-						var networkWriter = new QSBNetworkWriter();
-						extraMessage.Serialize(networkWriter);
-						addPlayerMessage.msgData = networkWriter.ToArray();
-						addPlayerMessage.msgSize = (int)networkWriter.Position;
-					}
-					readyConnection.Send(37, addPlayerMessage);
-					result = true;
-				}
-				else
+					playerControllerId = playerControllerId
+				};
+				if (extraMessage != null)
 				{
-					result = SendReconnectMessage(extraMessage);
+					var networkWriter = new QSBNetworkWriter();
+					extraMessage.Serialize(networkWriter);
+					addPlayerMessage.msgData = networkWriter.ToArray();
+					addPlayerMessage.msgSize = (int)networkWriter.Position;
 				}
-			}
-			return result;
-		}
-
-		public static bool SendReconnectMessage(QSBMessageBase extraMessage)
-		{
-			bool result;
-			if (!HasMigrationPending())
-			{
-				result = false;
-			}
-			else
-			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("ClientScene::AddPlayer reconnect " + reconnectId);
-				}
-				if (s_Peers == null)
-				{
-					SetReconnectId(-1, null);
-					if (LogFilter.logError)
-					{
-						Debug.LogError("ClientScene::AddPlayer: reconnecting, but no peers.");
-					}
-					result = false;
-				}
-				else
-				{
-					for (var i = 0; i < s_Peers.Length; i++)
-					{
-						var peerInfoMessage = s_Peers[i];
-						if (peerInfoMessage.playerIds != null)
-						{
-							if (peerInfoMessage.connectionId == reconnectId)
-							{
-								for (var j = 0; j < peerInfoMessage.playerIds.Length; j++)
-								{
-									var reconnectMessage = new QSBReconnectMessage
-									{
-										oldConnectionId = reconnectId,
-										netId = peerInfoMessage.playerIds[j].netId,
-										playerControllerId = peerInfoMessage.playerIds[j].playerControllerId
-									};
-									if (extraMessage != null)
-									{
-										var networkWriter = new QSBNetworkWriter();
-										extraMessage.Serialize(networkWriter);
-										reconnectMessage.msgData = networkWriter.ToArray();
-										reconnectMessage.msgSize = (int)networkWriter.Position;
-									}
-									readyConnection.Send(47, reconnectMessage);
-								}
-							}
-						}
-					}
-					SetReconnectId(-1, null);
-					result = true;
-				}
+				readyConnection.Send(37, addPlayerMessage);
+				result = true;
 			}
 			return result;
 		}

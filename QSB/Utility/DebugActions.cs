@@ -24,9 +24,9 @@ namespace QSB.Utility
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
-		private void Update()
+		public void Update()
 		{
-			if (!QSB.DebugMode)
+			if (!QSBCore.DebugMode)
 			{
 				return;
 			}
@@ -40,7 +40,7 @@ namespace QSB.Utility
 			}
 			if (Input.GetKeyDown(KeyCode.Keypad3))
 			{
-				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite, 1f, true);
+				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
 			}
 		}
 	}

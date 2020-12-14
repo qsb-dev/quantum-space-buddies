@@ -1,5 +1,5 @@
-﻿using QSB.EventsCore;
-using QSB.MessagesCore;
+﻿using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 
 namespace QSB.Animation.Events
@@ -9,7 +9,6 @@ namespace QSB.Animation.Events
 		public override EventType Type => EventType.AnimTrigger;
 
 		public override void SetupListener() => GlobalMessenger<float>.AddListener(EventNames.QSBCrouch, Handler);
-
 		public override void CloseListener() => GlobalMessenger<float>.RemoveListener(EventNames.QSBCrouch, Handler);
 
 		private void Handler(float value) => SendEvent(CreateMessage(value));
@@ -20,14 +19,10 @@ namespace QSB.Animation.Events
 			Value = value
 		};
 
-		public override void OnReceiveRemote(FloatMessage message)
+		public override void OnReceiveRemote(bool server, FloatMessage message)
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AboutId);
-			if (animationSync == null)
-			{
-				return;
-			}
-			animationSync.HandleCrouch(message.Value);
+			animationSync?.HandleCrouch(message.Value);
 		}
 	}
 }

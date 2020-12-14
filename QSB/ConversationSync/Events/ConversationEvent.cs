@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Player;
 using QSB.WorldSync;
 
@@ -9,7 +9,6 @@ namespace QSB.ConversationSync.Events
 		public override EventType Type => EventType.Conversation;
 
 		public override void SetupListener() => GlobalMessenger<uint, string, ConversationType>.AddListener(EventNames.QSBConversation, Handler);
-
 		public override void CloseListener() => GlobalMessenger<uint, string, ConversationType>.RemoveListener(EventNames.QSBConversation, Handler);
 
 		private void Handler(uint id, string message, ConversationType type) => SendEvent(CreateMessage(id, message, type));
@@ -22,7 +21,7 @@ namespace QSB.ConversationSync.Events
 			Message = message
 		};
 
-		public override void OnReceiveRemote(ConversationMessage message)
+		public override void OnReceiveRemote(bool server, ConversationMessage message)
 		{
 			switch (message.Type)
 			{
@@ -40,7 +39,7 @@ namespace QSB.ConversationSync.Events
 					{
 						break;
 					}
-					var tree = WorldRegistry.OldDialogueTrees[message.ObjectId];
+					var tree = QSBWorldSync.OldDialogueTrees[message.ObjectId];
 					UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;
 

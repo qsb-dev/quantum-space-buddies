@@ -18,12 +18,11 @@ namespace QSB.OrbSync
 
 		private void BuildOrbSlots()
 		{
-			DebugLog.DebugWrite("Building QSBOrbSlots...", MessageType.Info);
-			WorldRegistry.RemoveObjects<QSBOrbSlot>();
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
 			var orbSlots = Resources.FindObjectsOfTypeAll<NomaiInterfaceSlot>();
 			for (var id = 0; id < orbSlots.Length; id++)
 			{
-				var qsbOrbSlot = WorldRegistry.GetObject<QSBOrbSlot>(id) ?? new QSBOrbSlot();
+				var qsbOrbSlot = QSBWorldSync.GetWorldObject<QSBOrbSlot>(id) ?? new QSBOrbSlot();
 				qsbOrbSlot.Init(orbSlots[id], id);
 			}
 
@@ -32,29 +31,18 @@ namespace QSB.OrbSync
 
 		public void BuildOrbs()
 		{
-			DebugLog.DebugWrite("Building orb syncs...", MessageType.Info);
-			WorldRegistry.OldOrbList.Clear();
-			WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
+			QSBWorldSync.OldOrbList.Clear();
+			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QSBNetworkServer.active)
 			{
-				DebugLog.DebugWrite("- Is server, instantiating orb prefabs.");
-				WorldRegistry.OrbSyncList.ForEach(x => QSBNetworkServer.Destroy(x.gameObject));
-				WorldRegistry.OrbSyncList.Clear();
-				WorldRegistry.OldOrbList.ForEach(x => QSBNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
+				QSBWorldSync.OrbSyncList.ForEach(x => QSBNetworkServer.Destroy(x.gameObject));
+				QSBWorldSync.OrbSyncList.Clear();
+				QSBWorldSync.OldOrbList.ForEach(x => QSBNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
 			}
-			DebugLog.DebugWrite($"Finished orb build with {WorldRegistry.OldOrbList.Count} orbs.", MessageType.Success);
+			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
 		}
 
-		public void QueueBuildSlots()
-		{
-			DebugLog.DebugWrite("Queueing build of QSBOrbSlots...", MessageType.Info);
-			QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, BuildOrbSlots);
-		}
-
-		public void QueueBuildOrbs()
-		{
-			DebugLog.DebugWrite("Queueing build of NetworkOrbs...", MessageType.Info);
-			QSB.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
-		}
+		public void QueueBuildSlots() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
+		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
 	}
 }
