@@ -25,7 +25,6 @@ namespace QSB.TransformSync
 		protected override void Awake()
 		{
 			base.Awake();
-			QSBPlayerManager.PlayerSyncObjects.Add(this);
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
@@ -34,7 +33,6 @@ namespace QSB.TransformSync
 		{
 			base.OnDestroy();
 			DebugLog.DebugWrite($"destroy of {PlayerId}.{GetType().Name}");
-			QSBPlayerManager.PlayerSyncObjects.Remove(this);
 			if (!HasAuthority && SyncedTransform != null)
 			{
 				Destroy(SyncedTransform.gameObject);
