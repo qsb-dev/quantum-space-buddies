@@ -1,5 +1,5 @@
 ﻿using QSB.Events;
-using QSB.MessagesCore;
+using QSB.Messages;
 using QSB.Player;
 
 namespace QSB.Animation.Events

@@ -6,7 +6,7 @@ using QuantumUNET.Messages;
 using System;
 using System.Linq;
 
-namespace QSB.Messaging
+namespace QSB.Messages
 {
 	public class MessageHandler<T> where T : QSBMessageBase, new()
 	{

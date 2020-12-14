@@ -150,8 +150,8 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
-    <Compile Include="MessagesCore\EnumMessage.cs" />
-    <Compile Include="MessagesCore\FloatMessage.cs" />
+    <Compile Include="Messages\EnumMessage.cs" />
+    <Compile Include="Messages\FloatMessage.cs" />
     <Compile Include="OrbSync\Events\OrbSlotMessage.cs" />
     <Compile Include="OrbSync\OrbManager.cs" />
     <Compile Include="OrbSync\Events\OrbSlotEvent.cs" />
@@ -186,7 +186,7 @@
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinMessage.cs" />
-    <Compile Include="MessagesCore\ToggleMessage.cs" />
+    <Compile Include="Messages\ToggleMessage.cs" />
     <Compile Include="SectorSync\QSBSector.cs" />
     <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
@@ -205,8 +205,8 @@
     <Compile Include="Player\Events\PlayerStateMessage.cs" />
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
-    <Compile Include="MessagesCore\PlayerMessage.cs" />
-    <Compile Include="MessagesCore\MessageHandler.cs" />
+    <Compile Include="Messages\PlayerMessage.cs" />
+    <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Events\EventType.cs" />
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="Player\State.cs" />

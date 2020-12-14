@@ -1,4 +1,4 @@
-﻿using QSB.Messaging;
+﻿using QSB.Messages;
 using QuantumUNET;
 
 namespace QSB.DialogueConditionSync.Events

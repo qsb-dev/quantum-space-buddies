@@ -1,4 +1,4 @@
-﻿using QSB.Messaging;
+﻿using QSB.Messages;
 using QSB.Player;
 using QSB.TransformSync;
 using QuantumUNET;

@@ -1,22 +1,22 @@
-﻿using QSB.Messaging;
+﻿using QSB.Messages;
 using QuantumUNET;
 
-namespace QSB.MessagesCore
+namespace QSB.Messages
 {
-	public class FloatMessage : PlayerMessage
+	public class EnumMessage<T> : PlayerMessage
 	{
-		public float Value;
+		public T Value;
 
 		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.ReadSingle();
+			Value = (T)(object)reader.ReadInt32();
 		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(Value);
+			writer.Write((int)(object)Value);
 		}
 	}
 }

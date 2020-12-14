@@ -1,21 +1,22 @@
-﻿using QuantumUNET;
+﻿using QSB.Messages;
+using QuantumUNET;
 
-namespace QSB.Messaging
+namespace QSB.Messages
 {
-	public class ToggleMessage : PlayerMessage
+	public class FloatMessage : PlayerMessage
 	{
-		public bool ToggleValue { get; set; }
+		public float Value;
 
 		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ToggleValue = reader.ReadBoolean();
+			Value = reader.ReadSingle();
 		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(ToggleValue);
+			writer.Write(Value);
 		}
 	}
 }
