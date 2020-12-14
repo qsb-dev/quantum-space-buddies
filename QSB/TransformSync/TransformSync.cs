@@ -32,7 +32,6 @@ namespace QSB.TransformSync
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			DebugLog.DebugWrite($"destroy of {PlayerId}.{GetType().Name}");
 			if (!HasAuthority && SyncedTransform != null)
 			{
 				Destroy(SyncedTransform.gameObject);
