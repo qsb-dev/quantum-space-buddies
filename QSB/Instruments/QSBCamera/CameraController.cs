@@ -3,8 +3,10 @@
 namespace QSB.Instruments.QSBCamera
 {
 	internal class CameraController : MonoBehaviour
-	{
-		private float _degreesX;
+    {
+        public GameObject CameraObject { get; set; }
+
+        private float _degreesX;
 		private float _degreesY;
 		private Quaternion _rotationX;
 		private Quaternion _rotationY;
@@ -15,9 +17,7 @@ namespace QSB.Instruments.QSBCamera
 		// Maximum distance for camera clipping
 		private const float RayLength = 5f;
 
-		public GameObject CameraObject;
-
-		private void FixedUpdate()
+		public void FixedUpdate()
 		{
 			if (CameraManager.Instance.Mode != CameraMode.ThirdPerson)
 			{
@@ -41,27 +41,19 @@ namespace QSB.Instruments.QSBCamera
 			else
 			{
 				// Raycast didn't hit collider, get target from camera direction
-				localTargetPoint = localDirection * RayLength * PercentToMove;
+				localTargetPoint = RayLength * PercentToMove * localDirection;
 			}
 			var targetDistance = Vector3.Distance(origin, transform.TransformPoint(localTargetPoint));
 			var currentDistance = Vector3.Distance(origin, CameraObject.transform.position);
-			Vector3 movement;
-			if (targetDistance < currentDistance)
-			{
-				// Snap to target to avoid clipping
-				movement = localTargetPoint;
-			}
-			else
-			{
-				// Move camera out slowly
-				movement = Vector3.MoveTowards(CameraObject.transform.localPosition, localTargetPoint, Time.fixedDeltaTime * 2f);
-			}
+            var movement = targetDistance < currentDistance 
+                ? localTargetPoint 
+                : Vector3.MoveTowards(CameraObject.transform.localPosition, localTargetPoint, Time.fixedDeltaTime * 2f);
 			CameraObject.transform.localPosition = movement;
 		}
 
 		private void UpdateInput()
 		{
-			var input = OWInput.GetValue(InputLibrary.look, false, InputMode.All);
+			var input = OWInput.GetValue(InputLibrary.look, false);
 			_degreesX += input.x * 180f * Time.fixedDeltaTime;
 			_degreesY += input.y * 180f * Time.fixedDeltaTime;
 		}

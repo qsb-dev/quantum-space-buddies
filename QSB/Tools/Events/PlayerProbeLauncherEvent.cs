@@ -36,9 +36,7 @@ namespace QSB.Tools.Events
 			player.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
 		}
 
-		public override void OnReceiveLocal(bool server, ToggleMessage message)
-		{
-			QSBPlayerManager.LocalPlayer.UpdateState(State.ProbeLauncher, message.ToggleValue);
-		}
-	}
+		public override void OnReceiveLocal(bool server, ToggleMessage message) => 
+            QSBPlayerManager.LocalPlayer.UpdateState(State.ProbeLauncher, message.ToggleValue);
+    }
 }

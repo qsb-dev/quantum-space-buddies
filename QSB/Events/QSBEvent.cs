@@ -8,14 +8,15 @@ namespace QSB.Events
 	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
 	{
 		public abstract EventType Type { get; }
-		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
+        public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
+
 		private readonly MessageHandler<T> _eventHandler;
 
 		protected QSBEvent()
 		{
 			_eventHandler = new MessageHandler<T>(Type);
-			_eventHandler.OnClientReceiveMessage += (T message) => OnReceive(false, message);
-			_eventHandler.OnServerReceiveMessage += (T message) => OnReceive(true, message);
+			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
+			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
 		}
 
 		public abstract void SetupListener();

@@ -39,12 +39,10 @@ namespace QSB.TransformSync
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-		{
-			_isInitialized = false;
-		}
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) => 
+            _isInitialized = false;
 
-		protected void Init()
+        protected void Init()
 		{
 			SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			SetReferenceSector(QSBSectorManager.Instance.GetClosestSector(SyncedTransform));
@@ -52,7 +50,7 @@ namespace QSB.TransformSync
 			_isVisible = true;
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (!_isInitialized && IsReady)
 			{

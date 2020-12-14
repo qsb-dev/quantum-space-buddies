@@ -14,7 +14,7 @@ namespace QSB.Tools
 		private Vector3 _baseForward;
 		private Quaternion _baseRotation;
 
-		private void Start()
+		public void Start()
 		{
 			_baseForward = _basePivot.forward;
 			_baseRotation = _basePivot.rotation;
@@ -78,9 +78,9 @@ namespace QSB.Tools
 			_flashlightOn = false;
 		}
 
-		private void FixedUpdate()
+		public void FixedUpdate()
 		{
-			// This really isn't needed... but it makes it look that extra bit nicer.
+			// This really isn't needed... but it makes it look that extra bit nicer. ^_^
 			var lhs = Quaternion.FromToRotation(_basePivot.up, _root.up) * Quaternion.FromToRotation(_baseForward, _root.forward);
 			var b = lhs * _baseRotation;
 			_baseRotation = Quaternion.Slerp(_baseRotation, b, 6f * Time.deltaTime);

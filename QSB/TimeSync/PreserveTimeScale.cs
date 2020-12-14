@@ -5,7 +5,7 @@ namespace QSB.TimeSync
 {
 	public class PreserveTimeScale : QSBNetworkBehaviour
 	{
-		private void Start()
+		public void Start()
 		{
 			QSBCore.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
 

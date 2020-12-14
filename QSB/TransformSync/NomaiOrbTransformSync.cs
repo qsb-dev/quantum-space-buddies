@@ -29,7 +29,7 @@ namespace QSB.TransformSync
 			_isReady = true;
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBWorldSync.OrbSyncList.Remove(this);
 		}
@@ -41,7 +41,7 @@ namespace QSB.TransformSync
 			_isInitialized = true;
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (!_isInitialized && _isReady)
 			{

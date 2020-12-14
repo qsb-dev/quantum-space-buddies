@@ -32,7 +32,7 @@ namespace QSB.TimeSync
 			LocalInstance = this;
 		}
 
-		private void Start()
+		public void Start()
 		{
 			if (!IsLocalPlayer)
 			{
@@ -57,7 +57,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
@@ -184,7 +184,7 @@ namespace QSB.TimeSync
 			OWInput.ChangeInputMode(InputMode.Character);
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (IsServer)
 			{

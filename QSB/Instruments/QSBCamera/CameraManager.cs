@@ -8,14 +8,17 @@ namespace QSB.Instruments.QSBCamera
 	public class CameraManager : MonoBehaviour
 	{
 		public static CameraManager Instance;
-		private GameObject CameraBase;
-		private GameObject CameraObj;
-		private Camera Camera;
-		private OWCamera OWCamera;
+
+
 		public bool IsSetUp { get; private set; }
 		public CameraMode Mode { get; private set; }
 
-		public void Start()
+        private GameObject _cameraBase;
+        private GameObject _cameraObj;
+        private Camera _camera;
+        private OWCamera _owCamera;
+
+        public void Start()
 		{
 			Instance = this;
 			SetupCamera();
@@ -23,38 +26,38 @@ namespace QSB.Instruments.QSBCamera
 
 		private void SetupCamera()
 		{
-			CameraBase = new GameObject();
-			CameraBase.SetActive(false);
-			CameraBase.AddComponent<Transform>();
-			CameraBase.transform.parent = Locator.GetPlayerTransform();
-			CameraBase.transform.localPosition = Vector3.zero;
-			CameraBase.transform.localRotation = Quaternion.Euler(0, 0, 0);
+			_cameraBase = new GameObject();
+			_cameraBase.SetActive(false);
+			_cameraBase.AddComponent<Transform>();
+			_cameraBase.transform.parent = Locator.GetPlayerTransform();
+			_cameraBase.transform.localPosition = Vector3.zero;
+			_cameraBase.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-			CameraObj = new GameObject();
-			CameraObj.transform.parent = CameraBase.transform;
-			CameraObj.transform.localPosition = new Vector3(0, 0, -5f);
-			CameraObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
-			Camera = CameraObj.AddComponent<Camera>();
-			Camera.cullingMask = Locator.GetPlayerCamera().mainCamera.cullingMask & ~(1 << 27) | (1 << 22);
-			Camera.clearFlags = CameraClearFlags.Color;
-			Camera.backgroundColor = Color.black;
-			Camera.fieldOfView = 90f;
-			Camera.nearClipPlane = 0.1f;
-			Camera.farClipPlane = 40000f;
-			Camera.depth = 0f;
-			Camera.enabled = false;
-			OWCamera = CameraObj.AddComponent<OWCamera>();
-			OWCamera.renderSkybox = true;
+			_cameraObj = new GameObject();
+			_cameraObj.transform.parent = _cameraBase.transform;
+			_cameraObj.transform.localPosition = new Vector3(0, 0, -5f);
+			_cameraObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
+			_camera = _cameraObj.AddComponent<Camera>();
+			_camera.cullingMask = Locator.GetPlayerCamera().mainCamera.cullingMask & ~(1 << 27) | (1 << 22);
+			_camera.clearFlags = CameraClearFlags.Color;
+			_camera.backgroundColor = Color.black;
+			_camera.fieldOfView = 90f;
+			_camera.nearClipPlane = 0.1f;
+			_camera.farClipPlane = 40000f;
+			_camera.depth = 0f;
+			_camera.enabled = false;
+			_owCamera = _cameraObj.AddComponent<OWCamera>();
+			_owCamera.renderSkybox = true;
 
-			CameraBase.AddComponent<CameraController>().CameraObject = CameraObj;
+			_cameraBase.AddComponent<CameraController>().CameraObject = _cameraObj;
 
-			var screenGrab = CameraObj.AddComponent<FlashbackScreenGrabImageEffect>();
+			var screenGrab = _cameraObj.AddComponent<FlashbackScreenGrabImageEffect>();
 			screenGrab._downsampleShader = Locator.GetPlayerCamera().gameObject.GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader;
 
-			var fogImage = CameraObj.AddComponent<PlanetaryFogImageEffect>();
+			var fogImage = _cameraObj.AddComponent<PlanetaryFogImageEffect>();
 			fogImage.fogShader = Locator.GetPlayerCamera().gameObject.GetComponent<PlanetaryFogImageEffect>().fogShader;
 
-			CameraBase.SetActive(true);
+			_cameraBase.SetActive(true);
 
 			IsSetUp = true;
 		}
@@ -79,14 +82,14 @@ namespace QSB.Instruments.QSBCamera
 				return;
 			}
 			OWInput.ChangeInputMode(InputMode.None);
-			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", OWCamera);
+			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", _owCamera);
 			Locator.GetPlayerCamera().mainCamera.enabled = false;
-			if (CameraObj.GetComponent<PostProcessingBehaviour>() == null)
+			if (_cameraObj.GetComponent<PostProcessingBehaviour>() == null)
 			{
-				var postProcessing = CameraObj.AddComponent<PostProcessingBehaviour>();
+				var postProcessing = _cameraObj.AddComponent<PostProcessingBehaviour>();
 				postProcessing.profile = Locator.GetPlayerCamera().gameObject.GetComponent<PostProcessingBehaviour>().profile;
 			}
-			Camera.enabled = true;
+			_camera.enabled = true;
 			Mode = CameraMode.ThirdPerson;
 		}
 
@@ -107,7 +110,7 @@ namespace QSB.Instruments.QSBCamera
 			OWInput.ChangeInputMode(InputMode.Character);
 			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", Locator.GetPlayerCamera());
 			Locator.GetActiveCamera().mainCamera.enabled = true;
-			Camera.enabled = false;
+			_camera.enabled = false;
 			Mode = CameraMode.FirstPerson;
 		}
 	}

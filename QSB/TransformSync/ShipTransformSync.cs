@@ -8,18 +8,17 @@ namespace QSB.TransformSync
 	{
 		protected void Start()
 		{
-			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>().Where(x => x.NetId.Value < NetId.Value).OrderBy(x => x.NetId.Value).Last();
+			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>()
+                .Where(x => x.NetId.Value < NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 		}
 
 		private Transform GetShipModel() => Locator.GetShipTransform();
 
-		protected override Transform InitLocalTransform()
-		{
-			return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
-		}
+		protected override Transform InitLocalTransform() => 
+            GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
 
-		protected override Transform InitRemoteTransform()
+        protected override Transform InitRemoteTransform()
 		{
 			var shipModel = GetShipModel();
 

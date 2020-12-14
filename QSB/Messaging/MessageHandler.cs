@@ -13,7 +13,6 @@ namespace QSB.Messaging
 		public event Action<T> OnServerReceiveMessage;
 
 		private readonly short _eventType;
-		public EventType BaseEventType => (EventType)(_eventType - 1 - QSBMsgType.Highest);
 
 		public MessageHandler(EventType eventType)
 		{

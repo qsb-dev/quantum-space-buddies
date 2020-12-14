@@ -74,17 +74,12 @@ namespace QSB.ConversationSync
 			CharacterDialogueTree ____dialogueTree)
 		{
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-			Vector3 position;
-			if (playerId == uint.MaxValue)
-			{
-				// TODO : Find closest player and track to that camera.
-				position = Locator.GetActiveCamera().transform.position;
-			}
-			else
-			{
-				position = QSBPlayerManager.GetPlayer(playerId).Camera.transform.position;
-			}
-			var b = ___headTrackingWeight * Mathf.Min(1, (!___lookOnlyWhenTalking) ? ((!____playerInHeadZone) ? 0 : 1) : ((!____inConversation || !____playerInHeadZone) ? 0 : 1));
+            var position = playerId == uint.MaxValue 
+                ? Locator.GetActiveCamera().transform.position 
+                : QSBPlayerManager.GetPlayer(playerId).Camera.transform.position;
+			var b = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking 
+                        ? !____playerInHeadZone ? 0 : 1 
+                        : !____inConversation || !____playerInHeadZone ? 0 : 1);
 			____currentLookWeight = Mathf.Lerp(____currentLookWeight, b, Time.deltaTime * 2f);
 			____currentLookTarget = ___lookSpring.Update(____currentLookTarget, position, Time.deltaTime);
 			____animator.SetLookAtPosition(____currentLookTarget);
@@ -95,12 +90,8 @@ namespace QSB.ConversationSync
 		public static bool OnZoneExit(CharacterDialogueTree ____dialogueTree)
 		{
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-			if (playerId == uint.MaxValue)
-			{
-				return true;
-			}
-			return false;
-		}
+			return playerId == uint.MaxValue;
+        }
 
 		public override void DoPatches()
 		{

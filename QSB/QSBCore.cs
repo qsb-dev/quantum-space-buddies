@@ -28,7 +28,7 @@ namespace QSB
 		public static bool HasWokenUp { get; set; }
 		public static bool IsServer => QSBNetworkServer.active;
 
-		private void Awake()
+		public void Awake()
 		{
 			Application.runInBackground = true;
 
@@ -41,7 +41,7 @@ namespace QSB
 			LogFilter.currentLogLevel = LogFilter.Debug;
 		}
 
-		private void Start()
+		public void Start()
 		{
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
@@ -68,12 +68,10 @@ namespace QSB
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 		}
 
-		private void Update()
-		{
-			QSBNetworkIdentity.UNetStaticUpdate();
-		}
+		public void Update() => 
+            QSBNetworkIdentity.UNetStaticUpdate();
 
-		public override void Configure(IModConfig config)
+        public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 			Port = config.GetSettingsValue<int>("port");

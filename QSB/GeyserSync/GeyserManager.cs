@@ -6,13 +6,13 @@ namespace QSB.GeyserSync
 {
 	public class GeyserManager : MonoBehaviour
 	{
-		private void Awake()
+		public void Awake()
 		{
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			QSBPatchManager.OnPatchType += OnPatchType;
 		}
 
-		private void OnDestroy()
+        public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			QSBPatchManager.OnPatchType -= OnPatchType;

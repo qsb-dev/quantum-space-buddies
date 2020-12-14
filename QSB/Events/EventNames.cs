@@ -25,8 +25,6 @@
 		public static string QSBSectorChange = "QSBSectorChange";
 		public static string QSBPlayerStatesRequest = "QSBPlayerStatesRequest";
 		public static string QSBServerTime = "QSBServerTime";
-		public static string QSBOnProbeAnchor = "QSBOnProbeAnchor";
-		public static string QSBOnProbeWarp = "QSBOnProbeWarp";
 		public static string QSBStartLift = "QSBStartLift";
 		public static string QSBGeyserState = "QSBGeyserState";
 		public static string QSBCrouch = "QSBAnimTrigger";

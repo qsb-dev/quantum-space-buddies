@@ -36,9 +36,7 @@ namespace QSB.Tools.Events
 			player.Translator?.ChangeEquipState(message.ToggleValue);
 		}
 
-		public override void OnReceiveLocal(bool server, ToggleMessage message)
-		{
-			QSBPlayerManager.LocalPlayer.UpdateState(State.Translator, message.ToggleValue);
-		}
-	}
+		public override void OnReceiveLocal(bool server, ToggleMessage message) => 
+            QSBPlayerManager.LocalPlayer.UpdateState(State.Translator, message.ToggleValue);
+    }
 }

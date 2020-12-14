@@ -10,13 +10,13 @@ namespace QSB.Instruments
 {
 	public class InstrumentsManager : PlayerSyncObject
 	{
-		private Transform rootObj;
+		private Transform _rootObj;
 		private AnimationType _savedType;
-		private GameObject ChertDrum;
+		private GameObject _chertDrum;
 
 		public void InitLocal(Transform root)
 		{
-			rootObj = root;
+			_rootObj = root;
 			gameObject.AddComponent<CameraManager>();
 
 			QSBInputManager.ChertTaunt += () => StartInstrument(AnimationType.Chert);
@@ -24,14 +24,14 @@ namespace QSB.Instruments
 			QSBInputManager.FeldsparTaunt += () => StartInstrument(AnimationType.Feldspar);
 			QSBInputManager.GabbroTaunt += () => StartInstrument(AnimationType.Gabbro);
 			QSBInputManager.RiebeckTaunt += () => StartInstrument(AnimationType.Riebeck);
-			QSBInputManager.ExitTaunt += () => ReturnToPlayer();
+			QSBInputManager.ExitTaunt += ReturnToPlayer;
 
 			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		public void InitRemote(Transform root)
 		{
-			rootObj = root;
+			_rootObj = root;
 			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
@@ -42,18 +42,24 @@ namespace QSB.Instruments
 			{
 				return;
 			}
-			QSBInputManager.ChertTaunt -= () => StartInstrument(AnimationType.Chert);
-			QSBInputManager.EskerTaunt -= () => StartInstrument(AnimationType.Esker);
-			QSBInputManager.FeldsparTaunt -= () => StartInstrument(AnimationType.Feldspar);
-			QSBInputManager.GabbroTaunt -= () => StartInstrument(AnimationType.Gabbro);
-			QSBInputManager.RiebeckTaunt -= () => StartInstrument(AnimationType.Riebeck);
-			QSBInputManager.ExitTaunt -= () => ReturnToPlayer();
+			QSBInputManager.ChertTaunt -= OnChertTaunt;
+			QSBInputManager.EskerTaunt -= OnEskerTaunt;
+			QSBInputManager.FeldsparTaunt -= OnFeldsparTaunt;
+			QSBInputManager.GabbroTaunt -= OnGabbroTaunt;
+			QSBInputManager.RiebeckTaunt -= OnRiebeckTaunt;
+			QSBInputManager.ExitTaunt -= ReturnToPlayer;
 		}
+        
+        private void OnChertTaunt() => StartInstrument(AnimationType.Chert);
+        private void OnEskerTaunt() => StartInstrument(AnimationType.Esker);
+        private void OnFeldsparTaunt() => StartInstrument(AnimationType.Feldspar);
+        private void OnGabbroTaunt() => StartInstrument(AnimationType.Gabbro);
+        private void OnRiebeckTaunt() => StartInstrument(AnimationType.Riebeck);
 
-		private void SetupInstruments()
+        private void SetupInstruments()
 		{
 			var bundle = QSBCore.InstrumentAssetBundle;
-			ChertDrum = MakeChertDrum(bundle);
+			_chertDrum = MakeChertDrum(bundle);
 		}
 
 		private GameObject MakeChertDrum(AssetBundle bundle)
@@ -72,8 +78,8 @@ namespace QSB.Instruments
 				// TODO : fix for instrument release
 				mr.sharedMaterial = null;
 			}
-			drum.transform.parent = rootObj;
-			drum.transform.rotation = rootObj.rotation;
+			drum.transform.parent = _rootObj;
+			drum.transform.rotation = _rootObj.rotation;
 			drum.transform.localPosition = Vector3.zero;
 			drum.transform.localScale = new Vector3(16.0f, 16.5f, 16.0f);
 			drum.SetActive(false);
@@ -120,12 +126,12 @@ namespace QSB.Instruments
 			switch (type)
 			{
 				case AnimationType.Chert:
-					ChertDrum.SetActive(true);
+					_chertDrum.SetActive(true);
 					break;
 
 				case AnimationType.PlayerSuited:
 				case AnimationType.PlayerUnsuited:
-					ChertDrum.SetActive(false);
+					_chertDrum.SetActive(false);
 					break;
 			}
 		}

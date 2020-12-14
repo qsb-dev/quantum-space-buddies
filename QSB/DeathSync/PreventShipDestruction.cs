@@ -8,7 +8,7 @@ namespace QSB.DeathSync
 {
 	public class PreventShipDestruction : MonoBehaviour
 	{
-		private void Awake()
+		public void Awake()
 		{
 			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), nameof(Patch.ReturnNull));
 			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), nameof(Patch.ReturnNull));
