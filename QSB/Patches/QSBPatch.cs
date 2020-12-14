@@ -1,4 +1,4 @@
-﻿namespace QSB
+﻿namespace QSB.Patches
 {
 	public abstract class QSBPatch
 	{

@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using System.Linq;
+using QSB.Patches;
 
 namespace QSB.DeathSync
 {

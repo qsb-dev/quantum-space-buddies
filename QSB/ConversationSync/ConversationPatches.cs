@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using QSB.Patches;
 using UnityEngine;
 
 namespace QSB.ConversationSync
