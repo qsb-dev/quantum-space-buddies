@@ -37,7 +37,7 @@ namespace QSB.Instruments
 
 		protected override void OnDestroy()
 		{
-			base.Awake();
+			base.OnDestroy();
 			if (!IsLocalPlayer)
 			{
 				return;
@@ -126,12 +126,11 @@ namespace QSB.Instruments
 			switch (type)
 			{
 				case AnimationType.Chert:
-					_chertDrum.SetActive(true);
+					_chertDrum?.SetActive(true);
 					break;
-
 				case AnimationType.PlayerSuited:
 				case AnimationType.PlayerUnsuited:
-					_chertDrum.SetActive(false);
+					_chertDrum?.SetActive(false);
 					break;
 			}
 		}

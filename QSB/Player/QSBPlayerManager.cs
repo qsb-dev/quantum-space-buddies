@@ -7,41 +7,42 @@ using System.Linq;
 
 namespace QSB.Player
 {
-    public static class QSBPlayerManager
-    {
-        public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.NetIdentity?.NetId.Value ?? uint.MaxValue;
-        public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
-        public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
-        public static List<PlayerSyncObject> PlayerSyncObjects { get; } = new List<PlayerSyncObject>();
+	public static class QSBPlayerManager
+	{
+		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.NetIdentity?.NetId.Value ?? uint.MaxValue;
+		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
+		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-        public static PlayerInfo GetPlayer(uint id)
-        {
-            if (id == uint.MaxValue || id == 0U)
-            {
-                return default;
-            }
-            var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
-            if (player != null)
-            {
-                return player;
-            }
-            DebugLog.DebugWrite($"Creating player id {id}", MessageType.Info);
-            player = new PlayerInfo(id);
-            PlayerList.Add(player);
-            return player;
-        }
+		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new List<PlayerSyncObject>();
 
-        public static void RemovePlayer(uint id)
-        {
-            DebugLog.DebugWrite($"Removing player {GetPlayer(id).Name} id {id}", MessageType.Info);
-            PlayerList.Remove(GetPlayer(id));
-        }
+		public static PlayerInfo GetPlayer(uint id)
+		{
+			if (id == uint.MaxValue || id == 0U)
+			{
+				return default;
+			}
+			var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
+			if (player != null)
+			{
+				return player;
+			}
+			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
+			player = new PlayerInfo(id);
+			PlayerList.Add(player);
+			return player;
+		}
 
-        public static void RemoveAllPlayers()
-        {
-            DebugLog.DebugWrite($"Removing all players.", MessageType.Info);
-            PlayerList.Clear();
-        }
+		public static void RemovePlayer(uint id)
+		{
+			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
+			PlayerList.Remove(GetPlayer(id));
+		}
+
+		public static void RemoveAllPlayers()
+		{
+			DebugLog.DebugWrite($"Remove All Players", MessageType.Info);
+			PlayerList.Clear();
+		}
 
         public static bool PlayerExists(uint id) =>
             id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
@@ -64,8 +65,22 @@ namespace QSB.Player
         public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
             GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
 
-        public static bool IsBelongingToLocalPlayer(uint id) =>
-            id == LocalPlayerId ||
-            PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
-    }
+		public static void AddSyncObject(PlayerSyncObject obj)
+		{
+			DebugLog.DebugWrite($"SyncObject Add : type<{obj.GetType().Name}>, netid<{obj.NetId}>");
+			PlayerSyncObjects.Add(obj);
+		}
+
+		public static void RemoveSyncObject(PlayerSyncObject obj)
+		{
+			DebugLog.DebugWrite($"SyncObject Remove : type<{obj.GetType().Name}>, netid<{obj.NetId}>");
+			PlayerSyncObjects.Remove(obj);
+		}
+
+		public static bool IsBelongingToLocalPlayer(uint id)
+		{
+			return id == LocalPlayerId ||
+				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
+		}
+	}
 }

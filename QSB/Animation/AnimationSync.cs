@@ -31,9 +31,8 @@ namespace QSB.Animation
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType { get; set; }
 
-        protected override void Awake()
+		protected void Awake()
 		{
-			base.Awake();
 			_anim = gameObject.AddComponent<Animator>();
 			_netAnim = gameObject.AddComponent<QSBNetworkAnimator>();
 			_netAnim.enabled = false;

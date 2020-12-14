@@ -8,7 +8,7 @@ namespace QSB.Player
 		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
-		protected virtual void Awake() => QSBPlayerManager.PlayerSyncObjects.Add(this);
-		protected virtual void OnDestroy() => QSBPlayerManager.PlayerSyncObjects.Remove(this);
+		protected virtual void Start() => QSBPlayerManager.AddSyncObject(this);
+		protected virtual void OnDestroy() => QSBPlayerManager.AddSyncObject(this);
 	}
 }
