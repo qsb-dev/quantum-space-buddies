@@ -19,11 +19,11 @@ namespace QSB.Instruments
 			_rootObj = root;
 			gameObject.AddComponent<CameraManager>();
 
-			QSBInputManager.ChertTaunt += () => StartInstrument(AnimationType.Chert);
-			QSBInputManager.EskerTaunt += () => StartInstrument(AnimationType.Esker);
-			QSBInputManager.FeldsparTaunt += () => StartInstrument(AnimationType.Feldspar);
-			QSBInputManager.GabbroTaunt += () => StartInstrument(AnimationType.Gabbro);
-			QSBInputManager.RiebeckTaunt += () => StartInstrument(AnimationType.Riebeck);
+			QSBInputManager.ChertTaunt += OnChertTaunt;
+			QSBInputManager.EskerTaunt += OnEskerTaunt;
+			QSBInputManager.FeldsparTaunt += OnFeldsparTaunt;
+			QSBInputManager.GabbroTaunt += OnGabbroTaunt;
+			QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
 			QSBInputManager.ExitTaunt += ReturnToPlayer;
 
 			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
