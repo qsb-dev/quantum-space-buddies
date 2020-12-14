@@ -2,7 +2,6 @@
 using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.TransformSync
