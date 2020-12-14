@@ -27,20 +27,17 @@ namespace QSB.Instruments
 			QSBInputManager.ExitTaunt += () => ReturnToPlayer();
 
 			QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
-
-			QSBPlayerManager.PlayerSyncObjects.Add(this);
 		}
 
 		public void InitRemote(Transform root)
 		{
 			rootObj = root;
 			QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
-
-			QSBPlayerManager.PlayerSyncObjects.Add(this);
 		}
 
-		private void OnDestroy()
+		protected override void OnDestroy()
 		{
+			base.Awake();
 			if (!IsLocalPlayer)
 			{
 				return;

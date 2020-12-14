@@ -31,8 +31,9 @@ namespace QSB.Animation
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType;
 
-		private void Awake()
+		protected override void Awake()
 		{
+			base.Awake();
 			_anim = gameObject.AddComponent<Animator>();
 			_netAnim = gameObject.AddComponent<QSBNetworkAnimator>();
 			_netAnim.enabled = false;
@@ -41,8 +42,9 @@ namespace QSB.Animation
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => LoadControllers();
 		}
 
-		private void OnDestroy()
+		protected override void OnDestroy()
 		{
+			base.OnDestroy();
 			if (_playerController == null)
 			{
 				return;
@@ -78,8 +80,6 @@ namespace QSB.Animation
 			{
 				Mirror.Init(_anim, _bodyAnim);
 			}
-
-			QSBPlayerManager.PlayerSyncObjects.Add(this);
 
 			for (var i = 0; i < _anim.parameterCount; i++)
 			{

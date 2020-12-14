@@ -22,15 +22,17 @@ namespace QSB.TransformSync
 		private Quaternion _rotationSmoothVelocity;
 		private bool _isVisible;
 
-		protected virtual void Awake()
+		protected override void Awake()
 		{
+			base.Awake();
 			QSBPlayerManager.PlayerSyncObjects.Add(this);
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy()
+		protected override void OnDestroy()
 		{
+			base.OnDestroy();
 			DebugLog.DebugWrite($"destroy of {PlayerId}.{GetType().Name}");
 			QSBPlayerManager.PlayerSyncObjects.Remove(this);
 			if (!HasAuthority && SyncedTransform != null)
