@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
@@ -46,7 +45,6 @@ namespace QSB.Messaging
 			{
 				return;
 			}
-			DebugLog.DebugWrite("SEND MESSAGE TO ALL");
 			QSBNetworkServer.SendToAll(_eventType, message);
 		}
 

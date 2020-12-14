@@ -14,8 +14,8 @@ namespace QSB.Events
 		protected QSBEvent()
 		{
 			_eventHandler = new MessageHandler<T>(Type);
-			_eventHandler.OnClientReceiveMessage += OnReceive;
-			_eventHandler.OnServerReceiveMessage += OnReceive;
+			_eventHandler.OnClientReceiveMessage += (T message) => OnReceive(false, message);
+			_eventHandler.OnServerReceiveMessage += (T message) => OnReceive(true, message);
 		}
 
 		public abstract void SetupListener();
@@ -42,20 +42,22 @@ namespace QSB.Events
 			}
 		}
 
-		private void OnReceive(T message)
+		private void OnReceive(bool isServer, T message)
 		{
-			if (QSBCore.IsServer && !message.OnlySendToServer)
+			if (isServer
+				&& !message.OnlySendToServer 
+				&& message.FromId != QSBPlayerManager.LocalPlayerId)
 			{
 				_eventHandler.SendToAll(message);
 			}
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
-				OnReceiveLocal(QSBCore.IsServer, message);
+				OnReceiveLocal(isServer, message);
 				return;
 			}
 
-			OnReceiveRemote(QSBCore.IsServer, message);
+			OnReceiveRemote(isServer, message);
 		}
 	}
 }
