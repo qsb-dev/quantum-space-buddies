@@ -16,9 +16,9 @@ namespace QSB.WorldSync
 		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new List<CharacterDialogueTree>();
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
 
-        private static readonly List<WorldObject> WorldObjects = new List<WorldObject>();
+		private static readonly List<WorldObject> WorldObjects = new List<WorldObject>();
 
-        public static void AddWorldObject(WorldObject worldObject)
+		public static void AddWorldObject(WorldObject worldObject)
 		{
 			if (WorldObjects.Contains(worldObject))
 			{

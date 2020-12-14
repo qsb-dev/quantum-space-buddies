@@ -44,26 +44,26 @@ namespace QSB.Player
 			PlayerList.Clear();
 		}
 
-        public static bool PlayerExists(uint id) =>
-            id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
+		public static bool PlayerExists(uint id) =>
+			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 
-        public static void HandleFullStateMessage(PlayerStateMessage message)
-        {
-            var player = GetPlayer(message.AboutId);
-            player.Name = message.PlayerName;
-            player.IsReady = message.PlayerReady;
-            player.State = message.PlayerState;
-            if (LocalPlayer.IsReady)
-            {
-                player.UpdateStateObjects();
-            }
-        }
+		public static void HandleFullStateMessage(PlayerStateMessage message)
+		{
+			var player = GetPlayer(message.AboutId);
+			player.Name = message.PlayerName;
+			player.IsReady = message.PlayerReady;
+			player.State = message.PlayerState;
+			if (LocalPlayer.IsReady)
+			{
+				player.UpdateStateObjects();
+			}
+		}
 
-        public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
-            PlayerSyncObjects.OfType<T>().Where(x => x != null);
+		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
+			PlayerSyncObjects.OfType<T>().Where(x => x != null);
 
-        public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
-            GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
+		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
+			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
 
 		public static void AddSyncObject(PlayerSyncObject obj)
 		{

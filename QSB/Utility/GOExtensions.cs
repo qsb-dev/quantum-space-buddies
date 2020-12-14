@@ -25,7 +25,7 @@ namespace QSB.Utility
 			return copy;
 		}
 
-		public static Transform InstantiateInactive(this Transform original) => 
-            original.gameObject.InstantiateInactive().transform;
-    }
+		public static Transform InstantiateInactive(this Transform original) =>
+			original.gameObject.InstantiateInactive().transform;
+	}
 }

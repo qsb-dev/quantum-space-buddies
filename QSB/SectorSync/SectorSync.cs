@@ -22,7 +22,7 @@ namespace QSB.SectorSync
 				return;
 			}
 			QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
-                .Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
+				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
 			_checkTimer = 0;
 		}
 
@@ -42,7 +42,7 @@ namespace QSB.SectorSync
 			SendSector(transformSync.NetId.Value, closestSector);
 		}
 
-		private void SendSector(uint id, QSBSector sector) => 
-            GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
-    }
+		private void SendSector(uint id, QSBSector sector) =>
+			GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
+	}
 }

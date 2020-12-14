@@ -72,7 +72,7 @@ namespace QSB.Tools
 			flashlightRoot.transform.parent = cameraBody;
 			flashlightRoot.transform.localPosition = FlashlightOffset;
 			flashlightRoot.SetActive(true);
-        }
+		}
 
 		private static void CreateSignalscope(Transform cameraBody)
 		{
@@ -99,7 +99,7 @@ namespace QSB.Tools
 			signalscopeRoot.transform.localPosition = Vector3.zero;
 			signalscopeRoot.transform.localScale = SignalscopeScale;
 			signalscopeRoot.SetActive(true);
-        }
+		}
 
 		private static void CreateTranslator(Transform cameraBody)
 		{
@@ -138,7 +138,7 @@ namespace QSB.Tools
 			translatorRoot.transform.localPosition = Vector3.zero;
 			translatorRoot.transform.localScale = TranslatorScale;
 			QSBCore.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
-        }
+		}
 
 		private static void CreateProbeLauncher(Transform cameraBody)
 		{
@@ -176,9 +176,9 @@ namespace QSB.Tools
 			launcherRoot.transform.parent = cameraBody;
 			launcherRoot.transform.localPosition = ProbeLauncherOffset;
 			launcherRoot.SetActive(true);
-        }
+		}
 
-		private static MeshRenderer GetRenderer(GameObject root, string gameObjectName) => 
-            root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
-    }
+		private static MeshRenderer GetRenderer(GameObject root, string gameObjectName) =>
+			root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
+	}
 }

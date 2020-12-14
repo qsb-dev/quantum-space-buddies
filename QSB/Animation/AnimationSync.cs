@@ -40,8 +40,8 @@ namespace QSB.Animation
 
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
-        
-        protected override void OnDestroy()
+
+		protected override void OnDestroy()
 		{
 			base.OnDestroy();
 			if (_playerController == null)
@@ -52,12 +52,12 @@ namespace QSB.Animation
 			_playerController.OnBecomeGrounded -= OnBecomeGrounded;
 			_playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
 
-            QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
-        }
+			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
+		}
 
-        private void OnUniverseSceneLoaded(OWScene obj) => LoadControllers();
+		private void OnUniverseSceneLoaded(OWScene obj) => LoadControllers();
 
-        private void LoadControllers()
+		private void LoadControllers()
 		{
 			var bundle = QSBCore.InstrumentAssetBundle;
 			_chertController = bundle.LoadAsset("assets/Chert/Traveller_Chert.controller") as RuntimeAnimatorController;

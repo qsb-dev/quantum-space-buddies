@@ -3,10 +3,10 @@
 namespace QSB.Instruments.QSBCamera
 {
 	internal class CameraController : MonoBehaviour
-    {
-        public GameObject CameraObject { get; set; }
+	{
+		public GameObject CameraObject { get; set; }
 
-        private float _degreesX;
+		private float _degreesX;
 		private float _degreesY;
 		private Quaternion _rotationX;
 		private Quaternion _rotationY;
@@ -45,9 +45,9 @@ namespace QSB.Instruments.QSBCamera
 			}
 			var targetDistance = Vector3.Distance(origin, transform.TransformPoint(localTargetPoint));
 			var currentDistance = Vector3.Distance(origin, CameraObject.transform.position);
-            var movement = targetDistance < currentDistance 
-                ? localTargetPoint 
-                : Vector3.MoveTowards(CameraObject.transform.localPosition, localTargetPoint, Time.fixedDeltaTime * 2f);
+			var movement = targetDistance < currentDistance
+				? localTargetPoint
+				: Vector3.MoveTowards(CameraObject.transform.localPosition, localTargetPoint, Time.fixedDeltaTime * 2f);
 			CameraObject.transform.localPosition = movement;
 		}
 

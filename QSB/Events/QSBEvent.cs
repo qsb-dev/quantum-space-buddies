@@ -8,7 +8,7 @@ namespace QSB.Events
 	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
 	{
 		public abstract EventType Type { get; }
-        public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
+		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
 
 		private readonly MessageHandler<T> _eventHandler;
 

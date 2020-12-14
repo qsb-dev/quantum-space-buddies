@@ -68,10 +68,10 @@ namespace QSB
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 		}
 
-		public void Update() => 
-            QSBNetworkIdentity.UNetStaticUpdate();
+		public void Update() =>
+			QSBNetworkIdentity.UNetStaticUpdate();
 
-        public override void Configure(IModConfig config)
+		public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 			Port = config.GetSettingsValue<int>("port");

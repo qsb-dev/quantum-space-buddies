@@ -12,7 +12,7 @@ namespace QSB.GeyserSync
 			QSBPatchManager.OnPatchType += OnPatchType;
 		}
 
-        public void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			QSBPatchManager.OnPatchType -= OnPatchType;

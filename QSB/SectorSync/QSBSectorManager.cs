@@ -24,7 +24,7 @@ namespace QSB.SectorSync
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-        public void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
 		}
@@ -44,7 +44,7 @@ namespace QSB.SectorSync
 		}
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
-        {
+		{
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
 				.Where(sector => sector.Sector != null && !_sectorBlacklist.Contains(sector.Type))
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))

@@ -36,7 +36,7 @@ namespace QSB.Tools.Events
 			player.FlashLight?.UpdateState(message.ToggleValue);
 		}
 
-		public override void OnReceiveLocal(bool server, ToggleMessage message) => 
-            QSBPlayerManager.LocalPlayer.UpdateState(State.Flashlight, message.ToggleValue);
-    }
+		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
+			QSBPlayerManager.LocalPlayer.UpdateState(State.Flashlight, message.ToggleValue);
+	}
 }

@@ -13,12 +13,12 @@ namespace QSB.Instruments.QSBCamera
 		public bool IsSetUp { get; private set; }
 		public CameraMode Mode { get; private set; }
 
-        private GameObject _cameraBase;
-        private GameObject _cameraObj;
-        private Camera _camera;
-        private OWCamera _owCamera;
+		private GameObject _cameraBase;
+		private GameObject _cameraObj;
+		private Camera _camera;
+		private OWCamera _owCamera;
 
-        public void Start()
+		public void Start()
 		{
 			Instance = this;
 			SetupCamera();

@@ -32,7 +32,7 @@ namespace QSB.Tools
 		}
 
 		public void OnEnable() => ToolGameObject?.SetActive(true);
-        public void OnDisable() => ToolGameObject?.SetActive(false);
+		public void OnDisable() => ToolGameObject?.SetActive(false);
 
 		public void ChangeEquipState(bool equipState)
 		{

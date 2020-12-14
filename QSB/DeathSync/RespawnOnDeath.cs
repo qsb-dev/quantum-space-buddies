@@ -127,8 +127,8 @@ namespace QSB.DeathSync
 		}
 
 		private SpawnPoint GetSpawnPoint(bool isShip = false) =>
-            _playerSpawner
-                .GetValue<SpawnPoint[]>("_spawnList")
-                .FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
-    }
+			_playerSpawner
+				.GetValue<SpawnPoint[]>("_spawnList")
+				.FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
+	}
 }

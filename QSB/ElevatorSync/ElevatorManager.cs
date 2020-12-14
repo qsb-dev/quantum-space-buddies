@@ -19,7 +19,7 @@ namespace QSB.ElevatorSync
 
 		public void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
 			_elevators = Resources.FindObjectsOfTypeAll<Elevator>().ToList();
 			for (var id = 0; id < _elevators.Count; id++)

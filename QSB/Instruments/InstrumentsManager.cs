@@ -49,14 +49,14 @@ namespace QSB.Instruments
 			QSBInputManager.RiebeckTaunt -= OnRiebeckTaunt;
 			QSBInputManager.ExitTaunt -= ReturnToPlayer;
 		}
-        
-        private void OnChertTaunt() => StartInstrument(AnimationType.Chert);
-        private void OnEskerTaunt() => StartInstrument(AnimationType.Esker);
-        private void OnFeldsparTaunt() => StartInstrument(AnimationType.Feldspar);
-        private void OnGabbroTaunt() => StartInstrument(AnimationType.Gabbro);
-        private void OnRiebeckTaunt() => StartInstrument(AnimationType.Riebeck);
 
-        private void SetupInstruments()
+		private void OnChertTaunt() => StartInstrument(AnimationType.Chert);
+		private void OnEskerTaunt() => StartInstrument(AnimationType.Esker);
+		private void OnFeldsparTaunt() => StartInstrument(AnimationType.Feldspar);
+		private void OnGabbroTaunt() => StartInstrument(AnimationType.Gabbro);
+		private void OnRiebeckTaunt() => StartInstrument(AnimationType.Riebeck);
+
+		private void SetupInstruments()
 		{
 			var bundle = QSBCore.InstrumentAssetBundle;
 			_chertDrum = MakeChertDrum(bundle);
