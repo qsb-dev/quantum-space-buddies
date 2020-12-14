@@ -11,7 +11,7 @@ namespace QuantumUNET
 	{
 		public QSBNetworkWriter()
 		{
-			this.m_Buffer = new QSBNetBuffer();
+			m_Buffer = new QSBNetBuffer();
 			if (s_Encoding == null)
 			{
 				s_Encoding = new UTF8Encoding();
@@ -21,7 +21,7 @@ namespace QuantumUNET
 
 		public QSBNetworkWriter(byte[] buffer)
 		{
-			this.m_Buffer = new QSBNetBuffer(buffer);
+			m_Buffer = new QSBNetBuffer(buffer);
 			if (s_Encoding == null)
 			{
 				s_Encoding = new UTF8Encoding();
@@ -29,62 +29,50 @@ namespace QuantumUNET
 			}
 		}
 
-		public short Position
-		{
-			get
-			{
-				return (short)this.m_Buffer.Position;
-			}
-		}
+		public short Position => (short)m_Buffer.Position;
 
 		public byte[] ToArray()
 		{
-			byte[] array = new byte[this.m_Buffer.AsArraySegment().Count];
-			Array.Copy(this.m_Buffer.AsArraySegment().Array, array, this.m_Buffer.AsArraySegment().Count);
+			var array = new byte[m_Buffer.AsArraySegment().Count];
+			Array.Copy(m_Buffer.AsArraySegment().Array, array, m_Buffer.AsArraySegment().Count);
 			return array;
 		}
 
-		public byte[] AsArray()
-		{
-			return this.AsArraySegment().Array;
-		}
+		public byte[] AsArray() => AsArraySegment().Array;
 
-		internal ArraySegment<byte> AsArraySegment()
-		{
-			return this.m_Buffer.AsArraySegment();
-		}
+		internal ArraySegment<byte> AsArraySegment() => m_Buffer.AsArraySegment();
 
 		public void WritePackedUInt32(uint value)
 		{
 			if (value <= 240U)
 			{
-				this.Write((byte)value);
+				Write((byte)value);
 			}
 			else if (value <= 2287U)
 			{
-				this.Write((byte)((value - 240U) / 256U + 241U));
-				this.Write((byte)((value - 240U) % 256U));
+				Write((byte)(((value - 240U) / 256U) + 241U));
+				Write((byte)((value - 240U) % 256U));
 			}
 			else if (value <= 67823U)
 			{
-				this.Write(249);
-				this.Write((byte)((value - 2288U) / 256U));
-				this.Write((byte)((value - 2288U) % 256U));
+				Write(249);
+				Write((byte)((value - 2288U) / 256U));
+				Write((byte)((value - 2288U) % 256U));
 			}
 			else if (value <= 16777215U)
 			{
-				this.Write(250);
-				this.Write((byte)(value & 255U));
-				this.Write((byte)(value >> 8 & 255U));
-				this.Write((byte)(value >> 16 & 255U));
+				Write(250);
+				Write((byte)(value & 255U));
+				Write((byte)((value >> 8) & 255U));
+				Write((byte)((value >> 16) & 255U));
 			}
 			else
 			{
-				this.Write(251);
-				this.Write((byte)(value & 255U));
-				this.Write((byte)(value >> 8 & 255U));
-				this.Write((byte)(value >> 16 & 255U));
-				this.Write((byte)(value >> 24 & 255U));
+				Write(251);
+				Write((byte)(value & 255U));
+				Write((byte)((value >> 8) & 255U));
+				Write((byte)((value >> 16) & 255U));
+				Write((byte)((value >> 24) & 255U));
 			}
 		}
 
@@ -92,168 +80,129 @@ namespace QuantumUNET
 		{
 			if (value <= 240UL)
 			{
-				this.Write((byte)value);
+				Write((byte)value);
 			}
 			else if (value <= 2287UL)
 			{
-				this.Write((byte)((value - 240UL) / 256UL + 241UL));
-				this.Write((byte)((value - 240UL) % 256UL));
+				Write((byte)(((value - 240UL) / 256UL) + 241UL));
+				Write((byte)((value - 240UL) % 256UL));
 			}
 			else if (value <= 67823UL)
 			{
-				this.Write(249);
-				this.Write((byte)((value - 2288UL) / 256UL));
-				this.Write((byte)((value - 2288UL) % 256UL));
+				Write(249);
+				Write((byte)((value - 2288UL) / 256UL));
+				Write((byte)((value - 2288UL) % 256UL));
 			}
 			else if (value <= 16777215UL)
 			{
-				this.Write(250);
-				this.Write((byte)(value & 255UL));
-				this.Write((byte)(value >> 8 & 255UL));
-				this.Write((byte)(value >> 16 & 255UL));
+				Write(250);
+				Write((byte)(value & 255UL));
+				Write((byte)((value >> 8) & 255UL));
+				Write((byte)((value >> 16) & 255UL));
 			}
 			else if (value <= uint.MaxValue)
 			{
-				this.Write(251);
-				this.Write((byte)(value & 255UL));
-				this.Write((byte)(value >> 8 & 255UL));
-				this.Write((byte)(value >> 16 & 255UL));
-				this.Write((byte)(value >> 24 & 255UL));
+				Write(251);
+				Write((byte)(value & 255UL));
+				Write((byte)((value >> 8) & 255UL));
+				Write((byte)((value >> 16) & 255UL));
+				Write((byte)((value >> 24) & 255UL));
 			}
 			else if (value <= 1099511627775UL)
 			{
-				this.Write(252);
-				this.Write((byte)(value & 255UL));
-				this.Write((byte)(value >> 8 & 255UL));
-				this.Write((byte)(value >> 16 & 255UL));
-				this.Write((byte)(value >> 24 & 255UL));
-				this.Write((byte)(value >> 32 & 255UL));
+				Write(252);
+				Write((byte)(value & 255UL));
+				Write((byte)((value >> 8) & 255UL));
+				Write((byte)((value >> 16) & 255UL));
+				Write((byte)((value >> 24) & 255UL));
+				Write((byte)((value >> 32) & 255UL));
 			}
 			else if (value <= 281474976710655UL)
 			{
-				this.Write(253);
-				this.Write((byte)(value & 255UL));
-				this.Write((byte)(value >> 8 & 255UL));
-				this.Write((byte)(value >> 16 & 255UL));
-				this.Write((byte)(value >> 24 & 255UL));
-				this.Write((byte)(value >> 32 & 255UL));
-				this.Write((byte)(value >> 40 & 255UL));
+				Write(253);
+				Write((byte)(value & 255UL));
+				Write((byte)((value >> 8) & 255UL));
+				Write((byte)((value >> 16) & 255UL));
+				Write((byte)((value >> 24) & 255UL));
+				Write((byte)((value >> 32) & 255UL));
+				Write((byte)((value >> 40) & 255UL));
 			}
 			else if (value <= 72057594037927935UL)
 			{
-				this.Write(254);
-				this.Write((byte)(value & 255UL));
-				this.Write((byte)(value >> 8 & 255UL));
-				this.Write((byte)(value >> 16 & 255UL));
-				this.Write((byte)(value >> 24 & 255UL));
-				this.Write((byte)(value >> 32 & 255UL));
-				this.Write((byte)(value >> 40 & 255UL));
-				this.Write((byte)(value >> 48 & 255UL));
+				Write(254);
+				Write((byte)(value & 255UL));
+				Write((byte)((value >> 8) & 255UL));
+				Write((byte)((value >> 16) & 255UL));
+				Write((byte)((value >> 24) & 255UL));
+				Write((byte)((value >> 32) & 255UL));
+				Write((byte)((value >> 40) & 255UL));
+				Write((byte)((value >> 48) & 255UL));
 			}
 			else
 			{
-				this.Write(byte.MaxValue);
-				this.Write((byte)(value & 255UL));
-				this.Write((byte)(value >> 8 & 255UL));
-				this.Write((byte)(value >> 16 & 255UL));
-				this.Write((byte)(value >> 24 & 255UL));
-				this.Write((byte)(value >> 32 & 255UL));
-				this.Write((byte)(value >> 40 & 255UL));
-				this.Write((byte)(value >> 48 & 255UL));
-				this.Write((byte)(value >> 56 & 255UL));
+				Write(byte.MaxValue);
+				Write((byte)(value & 255UL));
+				Write((byte)((value >> 8) & 255UL));
+				Write((byte)((value >> 16) & 255UL));
+				Write((byte)((value >> 24) & 255UL));
+				Write((byte)((value >> 32) & 255UL));
+				Write((byte)((value >> 40) & 255UL));
+				Write((byte)((value >> 48) & 255UL));
+				Write((byte)((value >> 56) & 255UL));
 			}
 		}
 
-		public void Write(NetworkInstanceId value)
-		{
-			this.WritePackedUInt32(value.Value);
-		}
+		public void Write(NetworkInstanceId value) => WritePackedUInt32(value.Value);
 
-		public void Write(NetworkSceneId value)
-		{
-			this.WritePackedUInt32(value.Value);
-		}
+		public void Write(NetworkSceneId value) => WritePackedUInt32(value.Value);
 
-		public void Write(char value)
-		{
-			this.m_Buffer.WriteByte((byte)value);
-		}
+		public void Write(char value) => m_Buffer.WriteByte((byte)value);
 
-		public void Write(byte value)
-		{
-			this.m_Buffer.WriteByte(value);
-		}
+		public void Write(byte value) => m_Buffer.WriteByte(value);
 
-		public void Write(sbyte value)
-		{
-			this.m_Buffer.WriteByte((byte)value);
-		}
+		public void Write(sbyte value) => m_Buffer.WriteByte((byte)value);
 
-		public void Write(short value)
-		{
-			this.m_Buffer.WriteByte2((byte)(value & 255), (byte)(value >> 8 & 255));
-		}
+		public void Write(short value) => m_Buffer.WriteByte2((byte)(value & 255), (byte)((value >> 8) & 255));
 
-		public void Write(ushort value)
-		{
-			this.m_Buffer.WriteByte2((byte)(value & 255), (byte)(value >> 8 & 255));
-		}
+		public void Write(ushort value) => m_Buffer.WriteByte2((byte)(value & 255), (byte)((value >> 8) & 255));
 
-		public void Write(int value)
-		{
-			this.m_Buffer.WriteByte4((byte)(value & 255), (byte)(value >> 8 & 255), (byte)(value >> 16 & 255), (byte)(value >> 24 & 255));
-		}
+		public void Write(int value) => m_Buffer.WriteByte4((byte)(value & 255), (byte)((value >> 8) & 255), (byte)((value >> 16) & 255), (byte)((value >> 24) & 255));
 
-		public void Write(uint value)
-		{
-			this.m_Buffer.WriteByte4((byte)(value & 255U), (byte)(value >> 8 & 255U), (byte)(value >> 16 & 255U), (byte)(value >> 24 & 255U));
-		}
+		public void Write(uint value) => m_Buffer.WriteByte4((byte)(value & 255U), (byte)((value >> 8) & 255U), (byte)((value >> 16) & 255U), (byte)((value >> 24) & 255U));
 
-		public void Write(long value)
-		{
-			this.m_Buffer.WriteByte8((byte)(value & 255L), (byte)(value >> 8 & 255L), (byte)(value >> 16 & 255L), (byte)(value >> 24 & 255L), (byte)(value >> 32 & 255L), (byte)(value >> 40 & 255L), (byte)(value >> 48 & 255L), (byte)(value >> 56 & 255L));
-		}
+		public void Write(long value) => m_Buffer.WriteByte8((byte)(value & 255L), (byte)((value >> 8) & 255L), (byte)((value >> 16) & 255L), (byte)((value >> 24) & 255L), (byte)((value >> 32) & 255L), (byte)((value >> 40) & 255L), (byte)((value >> 48) & 255L), (byte)((value >> 56) & 255L));
 
-		public void Write(ulong value)
-		{
-			this.m_Buffer.WriteByte8((byte)(value & 255UL), (byte)(value >> 8 & 255UL), (byte)(value >> 16 & 255UL), (byte)(value >> 24 & 255UL), (byte)(value >> 32 & 255UL), (byte)(value >> 40 & 255UL), (byte)(value >> 48 & 255UL), (byte)(value >> 56 & 255UL));
-		}
+		public void Write(ulong value) => m_Buffer.WriteByte8((byte)(value & 255UL), (byte)((value >> 8) & 255UL), (byte)((value >> 16) & 255UL), (byte)((value >> 24) & 255UL), (byte)((value >> 32) & 255UL), (byte)((value >> 40) & 255UL), (byte)((value >> 48) & 255UL), (byte)((value >> 56) & 255UL));
 
-		public void Write(float value)
-		{
-			m_Buffer.WriteBytes(BitConverter.GetBytes(value), 4);
-		}
+		public void Write(float value) => m_Buffer.WriteBytes(BitConverter.GetBytes(value), 4);
 
-		public void Write(double value)
-		{
-			m_Buffer.WriteBytes(BitConverter.GetBytes(value), 8);
-		}
+		public void Write(double value) => m_Buffer.WriteBytes(BitConverter.GetBytes(value), 8);
 
 		public void Write(decimal value)
 		{
-			int[] bits = decimal.GetBits(value);
-			this.Write(bits[0]);
-			this.Write(bits[1]);
-			this.Write(bits[2]);
-			this.Write(bits[3]);
+			var bits = decimal.GetBits(value);
+			Write(bits[0]);
+			Write(bits[1]);
+			Write(bits[2]);
+			Write(bits[3]);
 		}
 
 		public void Write(string value)
 		{
 			if (value == null)
 			{
-				this.m_Buffer.WriteByte2(0, 0);
+				m_Buffer.WriteByte2(0, 0);
 			}
 			else
 			{
-				int byteCount = s_Encoding.GetByteCount(value);
+				var byteCount = s_Encoding.GetByteCount(value);
 				if (byteCount >= 32768)
 				{
 					throw new IndexOutOfRangeException("Serialize(string) too long: " + value.Length);
 				}
-				this.Write((ushort)byteCount);
-				int bytes = s_Encoding.GetBytes(value, 0, value.Length, s_StringWriteBuffer, 0);
-				this.m_Buffer.WriteBytes(s_StringWriteBuffer, (ushort)bytes);
+				Write((ushort)byteCount);
+				var bytes = s_Encoding.GetBytes(value, 0, value.Length, s_StringWriteBuffer, 0);
+				m_Buffer.WriteBytes(s_StringWriteBuffer, (ushort)bytes);
 			}
 		}
 
@@ -261,11 +210,11 @@ namespace QuantumUNET
 		{
 			if (value)
 			{
-				this.m_Buffer.WriteByte(1);
+				m_Buffer.WriteByte(1);
 			}
 			else
 			{
-				this.m_Buffer.WriteByte(0);
+				m_Buffer.WriteByte(0);
 			}
 		}
 
@@ -280,7 +229,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				this.m_Buffer.WriteBytes(buffer, (ushort)count);
+				m_Buffer.WriteBytes(buffer, (ushort)count);
 			}
 		}
 
@@ -295,7 +244,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				this.m_Buffer.WriteBytesAtOffset(buffer, (ushort)offset, (ushort)count);
+				m_Buffer.WriteBytesAtOffset(buffer, (ushort)offset, (ushort)count);
 			}
 		}
 
@@ -303,7 +252,7 @@ namespace QuantumUNET
 		{
 			if (buffer == null || count == 0)
 			{
-				this.Write(0);
+				Write(0);
 			}
 			else if (count > 65535)
 			{
@@ -314,8 +263,8 @@ namespace QuantumUNET
 			}
 			else
 			{
-				this.Write((ushort)count);
-				this.m_Buffer.WriteBytes(buffer, (ushort)count);
+				Write((ushort)count);
+				m_Buffer.WriteBytes(buffer, (ushort)count);
 			}
 		}
 
@@ -323,7 +272,7 @@ namespace QuantumUNET
 		{
 			if (buffer == null)
 			{
-				this.Write(0);
+				Write(0);
 			}
 			else if (buffer.Length > 65535)
 			{
@@ -334,125 +283,125 @@ namespace QuantumUNET
 			}
 			else
 			{
-				this.Write((ushort)buffer.Length);
-				this.m_Buffer.WriteBytes(buffer, (ushort)buffer.Length);
+				Write((ushort)buffer.Length);
+				m_Buffer.WriteBytes(buffer, (ushort)buffer.Length);
 			}
 		}
 
 		public void Write(Vector2 value)
 		{
-			this.Write(value.x);
-			this.Write(value.y);
+			Write(value.x);
+			Write(value.y);
 		}
 
 		public void Write(Vector3 value)
 		{
-			this.Write(value.x);
-			this.Write(value.y);
-			this.Write(value.z);
+			Write(value.x);
+			Write(value.y);
+			Write(value.z);
 		}
 
 		public void Write(Vector4 value)
 		{
-			this.Write(value.x);
-			this.Write(value.y);
-			this.Write(value.z);
-			this.Write(value.w);
+			Write(value.x);
+			Write(value.y);
+			Write(value.z);
+			Write(value.w);
 		}
 
 		public void Write(Color value)
 		{
-			this.Write(value.r);
-			this.Write(value.g);
-			this.Write(value.b);
-			this.Write(value.a);
+			Write(value.r);
+			Write(value.g);
+			Write(value.b);
+			Write(value.a);
 		}
 
 		public void Write(Color32 value)
 		{
-			this.Write(value.r);
-			this.Write(value.g);
-			this.Write(value.b);
-			this.Write(value.a);
+			Write(value.r);
+			Write(value.g);
+			Write(value.b);
+			Write(value.a);
 		}
 
 		public void Write(Quaternion value)
 		{
-			this.Write(value.x);
-			this.Write(value.y);
-			this.Write(value.z);
-			this.Write(value.w);
+			Write(value.x);
+			Write(value.y);
+			Write(value.z);
+			Write(value.w);
 		}
 
 		public void Write(Rect value)
 		{
-			this.Write(value.xMin);
-			this.Write(value.yMin);
-			this.Write(value.width);
-			this.Write(value.height);
+			Write(value.xMin);
+			Write(value.yMin);
+			Write(value.width);
+			Write(value.height);
 		}
 
 		public void Write(Plane value)
 		{
-			this.Write(value.normal);
-			this.Write(value.distance);
+			Write(value.normal);
+			Write(value.distance);
 		}
 
 		public void Write(Ray value)
 		{
-			this.Write(value.direction);
-			this.Write(value.origin);
+			Write(value.direction);
+			Write(value.origin);
 		}
 
 		public void Write(Matrix4x4 value)
 		{
-			this.Write(value.m00);
-			this.Write(value.m01);
-			this.Write(value.m02);
-			this.Write(value.m03);
-			this.Write(value.m10);
-			this.Write(value.m11);
-			this.Write(value.m12);
-			this.Write(value.m13);
-			this.Write(value.m20);
-			this.Write(value.m21);
-			this.Write(value.m22);
-			this.Write(value.m23);
-			this.Write(value.m30);
-			this.Write(value.m31);
-			this.Write(value.m32);
-			this.Write(value.m33);
+			Write(value.m00);
+			Write(value.m01);
+			Write(value.m02);
+			Write(value.m03);
+			Write(value.m10);
+			Write(value.m11);
+			Write(value.m12);
+			Write(value.m13);
+			Write(value.m20);
+			Write(value.m21);
+			Write(value.m22);
+			Write(value.m23);
+			Write(value.m30);
+			Write(value.m31);
+			Write(value.m32);
+			Write(value.m33);
 		}
 
 		public void Write(NetworkHash128 value)
 		{
-			this.Write(value.i0);
-			this.Write(value.i1);
-			this.Write(value.i2);
-			this.Write(value.i3);
-			this.Write(value.i4);
-			this.Write(value.i5);
-			this.Write(value.i6);
-			this.Write(value.i7);
-			this.Write(value.i8);
-			this.Write(value.i9);
-			this.Write(value.i10);
-			this.Write(value.i11);
-			this.Write(value.i12);
-			this.Write(value.i13);
-			this.Write(value.i14);
-			this.Write(value.i15);
+			Write(value.i0);
+			Write(value.i1);
+			Write(value.i2);
+			Write(value.i3);
+			Write(value.i4);
+			Write(value.i5);
+			Write(value.i6);
+			Write(value.i7);
+			Write(value.i8);
+			Write(value.i9);
+			Write(value.i10);
+			Write(value.i11);
+			Write(value.i12);
+			Write(value.i13);
+			Write(value.i14);
+			Write(value.i15);
 		}
 
 		public void Write(NetworkIdentity value)
 		{
 			if (value == null)
 			{
-				this.WritePackedUInt32(0U);
+				WritePackedUInt32(0U);
 			}
 			else
 			{
-				this.Write(value.netId);
+				Write(value.netId);
 			}
 		}
 
@@ -460,14 +409,14 @@ namespace QuantumUNET
 		{
 			if (value == null || value.gameObject == null)
 			{
-				this.WritePackedUInt32(0U);
+				WritePackedUInt32(0U);
 			}
 			else
 			{
-				NetworkIdentity component = value.gameObject.GetComponent<NetworkIdentity>();
+				var component = value.gameObject.GetComponent<NetworkIdentity>();
 				if (component != null)
 				{
-					this.Write(component.netId);
+					Write(component.netId);
 				}
 				else
 				{
@@ -475,7 +424,7 @@ namespace QuantumUNET
 					{
 						Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
 					}
-					this.WritePackedUInt32(0U);
+					WritePackedUInt32(0U);
 				}
 			}
 		}
@@ -484,14 +433,14 @@ namespace QuantumUNET
 		{
 			if (value == null)
 			{
-				this.WritePackedUInt32(0U);
+				WritePackedUInt32(0U);
 			}
 			else
 			{
-				QSBNetworkIdentity component = value.GetComponent<QSBNetworkIdentity>();
+				var component = value.GetComponent<QSBNetworkIdentity>();
 				if (component != null)
 				{
-					this.Write(component.NetId);
+					Write(component.NetId);
 				}
 				else
 				{
@@ -499,32 +448,23 @@ namespace QuantumUNET
 					{
 						Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
 					}
-					this.WritePackedUInt32(0U);
+					WritePackedUInt32(0U);
 				}
 			}
 		}
 
-		public void Write(QSBMessageBase msg)
-		{
-			msg.Serialize(this);
-		}
+		public void Write(QSBMessageBase msg) => msg.Serialize(this);
 
-		public void SeekZero()
-		{
-			this.m_Buffer.SeekZero();
-		}
+		public void SeekZero() => m_Buffer.SeekZero();
 
 		public void StartMessage(short msgType)
 		{
-			this.SeekZero();
-			this.m_Buffer.WriteByte2(0, 0);
-			this.Write(msgType);
+			SeekZero();
+			m_Buffer.WriteByte2(0, 0);
+			Write(msgType);
 		}
 
-		public void FinishMessage()
-		{
-			this.m_Buffer.FinishMessage();
-		}
+		public void FinishMessage() => m_Buffer.FinishMessage();
 
 		private const int k_MaxStringLength = 32768;
 

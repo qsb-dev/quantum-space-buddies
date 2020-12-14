@@ -7,21 +7,13 @@ namespace QuantumUNET
 {
 	internal class QSBNetworkScene
 	{
-		private Dictionary<NetworkInstanceId, QSBNetworkIdentity> m_LocalObjects = new Dictionary<NetworkInstanceId, QSBNetworkIdentity>();
-
 		internal static Dictionary<NetworkHash128, GameObject> guidToPrefab { get; } = new Dictionary<NetworkHash128, GameObject>();
 
 		internal static Dictionary<NetworkHash128, SpawnDelegate> spawnHandlers { get; } = new Dictionary<NetworkHash128, SpawnDelegate>();
 
 		internal static Dictionary<NetworkHash128, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<NetworkHash128, UnSpawnDelegate>();
 
-		internal Dictionary<NetworkInstanceId, QSBNetworkIdentity> localObjects
-		{
-			get
-			{
-				return m_LocalObjects;
-			}
-		}
+		internal Dictionary<NetworkInstanceId, QSBNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QSBNetworkIdentity>();
 
 		internal void Shutdown()
 		{
@@ -80,10 +72,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal bool RemoveLocalObject(NetworkInstanceId netId)
-		{
-			return localObjects.Remove(netId);
-		}
+		internal bool RemoveLocalObject(NetworkInstanceId netId) => localObjects.Remove(netId);
 
 		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
 		{
@@ -91,7 +80,7 @@ namespace QuantumUNET
 			if (localObjects.ContainsKey(netId))
 			{
 				var networkIdentity = localObjects[netId];
-				UnityEngine.Object.Destroy(networkIdentity.gameObject);
+				Object.Destroy(networkIdentity.gameObject);
 				result = localObjects.Remove(netId);
 			}
 			else
@@ -101,10 +90,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal void ClearLocalObjects()
-		{
-			localObjects.Clear();
-		}
+		internal void ClearLocalObjects() => localObjects.Clear();
 
 		internal static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId)
 		{
@@ -273,7 +259,7 @@ namespace QuantumUNET
 					{
 						if (networkIdentity.SceneId.IsEmpty())
 						{
-							UnityEngine.Object.Destroy(networkIdentity.gameObject);
+							Object.Destroy(networkIdentity.gameObject);
 						}
 						else
 						{

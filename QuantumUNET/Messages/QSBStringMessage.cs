@@ -8,18 +8,12 @@
 
 		public QSBStringMessage(string v)
 		{
-			this.value = v;
+			value = v;
 		}
 
-		public override void Deserialize(QSBNetworkReader reader)
-		{
-			this.value = reader.ReadString();
-		}
+		public override void Deserialize(QSBNetworkReader reader) => value = reader.ReadString();
 
-		public override void Serialize(QSBNetworkWriter writer)
-		{
-			writer.Write(this.value);
-		}
+		public override void Serialize(QSBNetworkWriter writer) => writer.Write(value);
 
 		public string value;
 	}

@@ -6,14 +6,8 @@ namespace QuantumUNET.Messages
 	{
 		public NetworkInstanceId NetId;
 
-		public override void Deserialize(QSBNetworkReader reader)
-		{
-			NetId = reader.ReadNetworkId();
-		}
+		public override void Deserialize(QSBNetworkReader reader) => NetId = reader.ReadNetworkId();
 
-		public override void Serialize(QSBNetworkWriter writer)
-		{
-			writer.Write(NetId);
-		}
+		public override void Serialize(QSBNetworkWriter writer) => writer.Write(NetId);
 	}
 }

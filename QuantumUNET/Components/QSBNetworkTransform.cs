@@ -29,65 +29,15 @@ namespace QuantumUNET.Components
 
 		public float LastSyncTime { get; private set; }
 
-		public Vector3 TargetSyncPosition
-		{
-			get
-			{
-				return m_TargetSyncPosition;
-			}
-		}
+		public Vector3 TargetSyncPosition => m_TargetSyncPosition;
 
-		public Vector3 targetSyncVelocity
-		{
-			get
-			{
-				return m_TargetSyncVelocity;
-			}
-		}
+		public Vector3 targetSyncVelocity => m_TargetSyncVelocity;
 
-		public Quaternion targetSyncRotation3D
-		{
-			get
-			{
-				return m_TargetSyncRotation3D;
-			}
-		}
+		public Quaternion targetSyncRotation3D => m_TargetSyncRotation3D;
 
 		public bool Grounded { get; set; } = true;
 
-		private void OnValidate()
-		{
-			if (SendInterval < 0f)
-			{
-				SendInterval = 0f;
-			}
-			if (SyncRotationAxis < AxisSyncMode.None || SyncRotationAxis > AxisSyncMode.AxisXYZ)
-			{
-				SyncRotationAxis = AxisSyncMode.None;
-			}
-			if (MovementTheshold < 0f)
-			{
-				MovementTheshold = 0f;
-			}
-			if (velocityThreshold < 0f)
-			{
-				velocityThreshold = 0f;
-			}
-			if (SnapThreshold < 0f)
-			{
-				SnapThreshold = 0.01f;
-			}
-			if (InterpolateRotation < 0f)
-			{
-				InterpolateRotation = 0.01f;
-			}
-			if (InterpolateMovement < 0f)
-			{
-				InterpolateMovement = 0.01f;
-			}
-		}
-
-		private void Awake()
+		public void Awake()
 		{
 			m_PrevPosition = transform.position;
 			m_PrevRotation = transform.rotation;
@@ -97,10 +47,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public override void OnStartServer()
-		{
-			LastSyncTime = 0f;
-		}
+		public override void OnStartServer() => LastSyncTime = 0f;
 
 		public override bool OnSerialize(QSBNetworkWriter writer, bool initialState)
 		{
@@ -336,12 +283,12 @@ namespace QuantumUNET.Components
 					}
 					else
 					{
-						result = (float)reader.ReadInt16();
+						result = reader.ReadInt16();
 					}
 				}
 				else
 				{
-					result = (float)reader.ReadInt16();
+					result = reader.ReadInt16();
 				}
 			}
 			else
@@ -351,10 +298,8 @@ namespace QuantumUNET.Components
 			return result;
 		}
 
-		public static void SerializeVelocity3D(QSBNetworkWriter writer, Vector3 velocity, CompressionSyncMode compression)
-		{
+		public static void SerializeVelocity3D(QSBNetworkWriter writer, Vector3 velocity, CompressionSyncMode compression) => 
 			writer.Write(velocity);
-		}
 
 		public static void SerializeRotation3D(QSBNetworkWriter writer, Quaternion rot, AxisSyncMode mode, CompressionSyncMode compression)
 		{
@@ -434,10 +379,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public static Vector3 UnserializeVelocity3D(QSBNetworkReader reader, CompressionSyncMode compression)
-		{
-			return reader.ReadVector3();
-		}
+		public static Vector3 UnserializeVelocity3D(QSBNetworkReader reader, CompressionSyncMode compression) => reader.ReadVector3();
 
 		public static Quaternion UnserializeRotation3D(QSBNetworkReader reader, AxisSyncMode mode, CompressionSyncMode compression)
 		{
@@ -519,20 +461,11 @@ namespace QuantumUNET.Components
 			return zero;
 		}
 
-		public override int GetNetworkChannel()
-		{
-			return 1;
-		}
+		public override int GetNetworkChannel() => 1;
 
-		public override float GetNetworkSendInterval()
-		{
-			return SendInterval;
-		}
+		public override float GetNetworkSendInterval() => SendInterval;
 
-		public override void OnStartAuthority()
-		{
-			LastSyncTime = 0f;
-		}
+		public override void OnStartAuthority() => LastSyncTime = 0f;
 
 		private Vector3 m_TargetSyncPosition;
 

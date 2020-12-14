@@ -47,7 +47,7 @@ namespace QuantumUNET
 				var bufferSize = packetSize;
 				if (channelQOS.QOS == QosType.ReliableFragmented || channelQOS.QOS == QosType.UnreliableFragmented)
 				{
-					bufferSize = (int)(hostTopology.DefaultConfig.FragmentSize * 128);
+					bufferSize = hostTopology.DefaultConfig.FragmentSize * 128;
 				}
 				m_Channels[i] = new QSBChannelBuffer(this, bufferSize, (byte)i, IsReliableQoS(channelQOS.QOS), IsSequencedQoS(channelQOS.QOS));
 			}
@@ -102,8 +102,7 @@ namespace QuantumUNET
 			QSBClientScene.HandleClientDisconnect(this);
 			if (hostId != -1)
 			{
-				byte b;
-				NetworkTransport.Disconnect(hostId, connectionId, out b);
+				NetworkTransport.Disconnect(hostId, connectionId, out var b);
 				RemoveObservers();
 			}
 		}
@@ -182,18 +181,18 @@ namespace QuantumUNET
 
 		internal void SetPlayerController(QSBPlayerController player)
 		{
-			while ((int)player.PlayerControllerId >= PlayerControllers.Count)
+			while (player.PlayerControllerId >= PlayerControllers.Count)
 			{
 				PlayerControllers.Add(new QSBPlayerController());
 			}
-			PlayerControllers[(int)player.PlayerControllerId] = player;
+			PlayerControllers[player.PlayerControllerId] = player;
 		}
 
 		internal void RemovePlayerController(short playerControllerId)
 		{
 			for (var i = PlayerControllers.Count; i >= 0; i--)
 			{
-				if ((int)playerControllerId == i && playerControllerId == PlayerControllers[i].PlayerControllerId)
+				if (playerControllerId == i && playerControllerId == PlayerControllers[i].PlayerControllerId)
 				{
 					PlayerControllers[i] = new QSBPlayerController();
 					return;
@@ -263,15 +262,9 @@ namespace QuantumUNET
 			return SendWriter(m_Writer, channelId);
 		}
 
-		public virtual bool SendBytes(byte[] bytes, int numBytes, int channelId)
-		{
-			return CheckChannel(channelId) && m_Channels[channelId].SendBytes(bytes, numBytes);
-		}
+		public virtual bool SendBytes(byte[] bytes, int numBytes, int channelId) => CheckChannel(channelId) && m_Channels[channelId].SendBytes(bytes, numBytes);
 
-		public virtual bool SendWriter(QSBNetworkWriter writer, int channelId)
-		{
-			return CheckChannel(channelId) && m_Channels[channelId].SendWriter(writer);
-		}
+		public virtual bool SendWriter(QSBNetworkWriter writer, int channelId) => CheckChannel(channelId) && m_Channels[channelId].SendWriter(writer);
 
 		private void LogSend(byte[] bytes)
 		{
@@ -279,7 +272,7 @@ namespace QuantumUNET
 			var num = networkReader.ReadUInt16();
 			var num2 = networkReader.ReadUInt16();
 			var stringBuilder = new StringBuilder();
-			for (var i = 4; i < (int)(4 + num); i++)
+			for (var i = 4; i < 4 + num; i++)
 			{
 				stringBuilder.AppendFormat("{0:X2}", bytes[i]);
 				if (i > 150)
@@ -348,7 +341,7 @@ namespace QuantumUNET
 			{
 				var num = reader.ReadUInt16();
 				var num2 = reader.ReadInt16();
-				var array = reader.ReadBytes((int)num);
+				var array = reader.ReadBytes(num);
 				var reader2 = new QSBNetworkReader(array);
 				QSBNetworkMessageDelegate networkMessageDelegate = null;
 				if (m_MessageHandlersDict.ContainsKey(num2))

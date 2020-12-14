@@ -50,13 +50,7 @@ namespace QuantumUNET.Components
 		private static QSBNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;
 
-		public List<Transform> startPositions
-		{
-			get
-			{
-				return s_StartPositions;
-			}
-		}
+		public List<Transform> startPositions => s_StartPositions;
 
 		public bool customConfig { get; set; }
 
@@ -107,10 +101,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		private void Awake()
-		{
-			InitializeSingleton();
-		}
+		public void Awake() => InitializeSingleton();
 
 		private void InitializeSingleton()
 		{
@@ -121,14 +112,14 @@ namespace QuantumUNET.Components
 					if (singleton != null)
 					{
 						Debug.Log("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.");
-						Destroy(base.gameObject);
+						Destroy(gameObject);
 						return;
 					}
 					Debug.Log("NetworkManager created singleton (DontDestroyOnLoad)");
 					singleton = this;
 					if (Application.isPlaying)
 					{
-						DontDestroyOnLoad(base.gameObject);
+						DontDestroyOnLoad(gameObject);
 					}
 				}
 				else
@@ -157,10 +148,7 @@ namespace QuantumUNET.Components
 			QSBNetworkServer.RegisterHandler(QSBMsgType.Error, new QSBNetworkMessageDelegate(OnServerErrorInternal));
 		}
 
-		public bool StartServer()
-		{
-			return StartServer(null, -1);
-		}
+		public bool StartServer() => StartServer(null, -1);
 
 		private bool StartServer(ConnectionConfig config, int maxConnections)
 		{
@@ -339,15 +327,9 @@ namespace QuantumUNET.Components
 			return client;
 		}
 
-		public QSBNetworkClient StartClient()
-		{
-			return StartClient(null);
-		}
+		public QSBNetworkClient StartClient() => StartClient(null);
 
-		public QSBNetworkClient StartClient(ConnectionConfig config)
-		{
-			return StartClient(config, 0);
-		}
+		public QSBNetworkClient StartClient(ConnectionConfig config) => StartClient(config, 0);
 
 		public virtual QSBNetworkClient StartHost(ConnectionConfig config, int maxConnections)
 		{
@@ -579,10 +561,7 @@ namespace QuantumUNET.Components
 			s_StartPositions.Remove(start);
 		}
 
-		public bool IsClientConnected()
-		{
-			return client != null && client.isConnected;
-		}
+		public bool IsClientConnected() => client != null && client.isConnected;
 
 		public static void Shutdown()
 		{
@@ -776,15 +755,9 @@ namespace QuantumUNET.Components
 			QSBNetworkServer.SetClientReady(conn);
 		}
 
-		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader)
-		{
-			OnServerAddPlayerInternal(conn, playerControllerId);
-		}
+		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader) => OnServerAddPlayerInternal(conn, playerControllerId);
 
-		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId)
-		{
-			OnServerAddPlayerInternal(conn, playerControllerId);
-		}
+		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId) => OnServerAddPlayerInternal(conn, playerControllerId);
 
 		private void OnServerAddPlayerInternal(QSBNetworkConnection conn, short playerControllerId)
 		{

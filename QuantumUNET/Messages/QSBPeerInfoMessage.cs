@@ -6,44 +6,44 @@ namespace QuantumUNET.Messages
 	{
 		public override void Deserialize(QSBNetworkReader reader)
 		{
-			this.connectionId = (int)reader.ReadPackedUInt32();
-			this.address = reader.ReadString();
-			this.port = (int)reader.ReadPackedUInt32();
-			this.isHost = reader.ReadBoolean();
-			this.isYou = reader.ReadBoolean();
-			uint num = reader.ReadPackedUInt32();
+			connectionId = (int)reader.ReadPackedUInt32();
+			address = reader.ReadString();
+			port = (int)reader.ReadPackedUInt32();
+			isHost = reader.ReadBoolean();
+			isYou = reader.ReadBoolean();
+			var num = reader.ReadPackedUInt32();
 			if (num > 0U)
 			{
-				List<QSBPeerInfoPlayer> list = new List<QSBPeerInfoPlayer>();
-				for (uint num2 = 0U; num2 < num; num2 += 1U)
+				var list = new List<QSBPeerInfoPlayer>();
+				for (var num2 = 0U; num2 < num; num2 += 1U)
 				{
 					QSBPeerInfoPlayer item;
 					item.netId = reader.ReadNetworkId();
 					item.playerControllerId = (short)reader.ReadPackedUInt32();
 					list.Add(item);
 				}
-				this.playerIds = list.ToArray();
+				playerIds = list.ToArray();
 			}
 		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
-			writer.WritePackedUInt32((uint)this.connectionId);
-			writer.Write(this.address);
-			writer.WritePackedUInt32((uint)this.port);
-			writer.Write(this.isHost);
-			writer.Write(this.isYou);
-			if (this.playerIds == null)
+			writer.WritePackedUInt32((uint)connectionId);
+			writer.Write(address);
+			writer.WritePackedUInt32((uint)port);
+			writer.Write(isHost);
+			writer.Write(isYou);
+			if (playerIds == null)
 			{
 				writer.WritePackedUInt32(0U);
 			}
 			else
 			{
-				writer.WritePackedUInt32((uint)this.playerIds.Length);
-				for (int i = 0; i < this.playerIds.Length; i++)
+				writer.WritePackedUInt32((uint)playerIds.Length);
+				for (var i = 0; i < playerIds.Length; i++)
 				{
-					writer.Write(this.playerIds[i].netId);
-					writer.WritePackedUInt32((uint)this.playerIds[i].playerControllerId);
+					writer.Write(playerIds[i].netId);
+					writer.WritePackedUInt32((uint)playerIds[i].playerControllerId);
 				}
 			}
 		}
@@ -53,15 +53,15 @@ namespace QuantumUNET.Messages
 			return string.Concat(new object[]
 			{
 				"PeerInfo conn:",
-				this.connectionId,
+				connectionId,
 				" addr:",
-				this.address,
+				address,
 				":",
-				this.port,
+				port,
 				" host:",
-				this.isHost,
+				isHost,
 				" isYou:",
-				this.isYou
+				isYou
 			});
 		}
 

@@ -17,9 +17,6 @@ namespace QuantumUNET.Messages
 			return result;
 		}
 
-		public void ReadMessage<TMsg>(TMsg msg) where TMsg : QSBMessageBase
-		{
-			msg.Deserialize(Reader);
-		}
+		public void ReadMessage<TMsg>(TMsg msg) where TMsg : QSBMessageBase => msg.Deserialize(Reader);
 	}
 }

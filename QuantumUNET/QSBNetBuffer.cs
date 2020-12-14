@@ -15,34 +15,22 @@ namespace QuantumUNET
 			m_Buffer = buffer;
 		}
 
-		public uint Position
-		{
-			get
-			{
-				return m_Pos;
-			}
-		}
+		public uint Position { get; private set; }
 
-		public int Length
-		{
-			get
-			{
-				return m_Buffer.Length;
-			}
-		}
+		public int Length => m_Buffer.Length;
 
 		public byte ReadByte()
 		{
-			if ((ulong)m_Pos >= (ulong)((long)m_Buffer.Length))
+			if (Position >= (ulong)m_Buffer.Length)
 			{
 				throw new IndexOutOfRangeException("NetworkReader:ReadByte out of range:" + ToString());
 			}
-			return m_Buffer[(int)((UIntPtr)(m_Pos++))];
+			return m_Buffer[(int)((UIntPtr)(Position++))];
 		}
 
 		public void ReadBytes(byte[] buffer, uint count)
 		{
-			if ((ulong)(m_Pos + count) > (ulong)((long)m_Buffer.Length))
+			if (Position + count > (ulong)m_Buffer.Length)
 			{
 				throw new IndexOutOfRangeException(string.Concat(new object[]
 				{
@@ -53,110 +41,107 @@ namespace QuantumUNET
 				}));
 			}
 			ushort num = 0;
-			while ((uint)num < count)
+			while (num < count)
 			{
-				buffer[(int)num] = m_Buffer[(int)((UIntPtr)(m_Pos + (uint)num))];
+				buffer[num] = m_Buffer[(int)((UIntPtr)(Position + num))];
 				num += 1;
 			}
-			m_Pos += count;
+			Position += count;
 		}
 
-		internal ArraySegment<byte> AsArraySegment()
-		{
-			return new ArraySegment<byte>(m_Buffer, 0, (int)m_Pos);
-		}
+		internal ArraySegment<byte> AsArraySegment() => new ArraySegment<byte>(m_Buffer, 0, (int)Position);
 
 		public void WriteByte(byte value)
 		{
 			WriteCheckForSpace(1);
-			m_Buffer[(int)((UIntPtr)m_Pos)] = value;
-			m_Pos += 1U;
+			m_Buffer[(int)((UIntPtr)Position)] = value;
+			Position += 1U;
 		}
 
 		public void WriteByte2(byte value0, byte value1)
 		{
 			WriteCheckForSpace(2);
-			m_Buffer[(int)((UIntPtr)m_Pos)] = value0;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 1U))] = value1;
-			m_Pos += 2U;
+			m_Buffer[(int)((UIntPtr)Position)] = value0;
+			m_Buffer[(int)((UIntPtr)(Position + 1U))] = value1;
+			Position += 2U;
 		}
 
 		public void WriteByte4(byte value0, byte value1, byte value2, byte value3)
 		{
 			WriteCheckForSpace(4);
-			m_Buffer[(int)((UIntPtr)m_Pos)] = value0;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 1U))] = value1;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 2U))] = value2;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 3U))] = value3;
-			m_Pos += 4U;
+			m_Buffer[(int)((UIntPtr)Position)] = value0;
+			m_Buffer[(int)((UIntPtr)(Position + 1U))] = value1;
+			m_Buffer[(int)((UIntPtr)(Position + 2U))] = value2;
+			m_Buffer[(int)((UIntPtr)(Position + 3U))] = value3;
+			Position += 4U;
 		}
 
 		public void WriteByte8(byte value0, byte value1, byte value2, byte value3, byte value4, byte value5, byte value6, byte value7)
 		{
 			WriteCheckForSpace(8);
-			m_Buffer[(int)((UIntPtr)m_Pos)] = value0;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 1U))] = value1;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 2U))] = value2;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 3U))] = value3;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 4U))] = value4;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 5U))] = value5;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 6U))] = value6;
-			m_Buffer[(int)((UIntPtr)(m_Pos + 7U))] = value7;
-			m_Pos += 8U;
+			m_Buffer[(int)((UIntPtr)Position)] = value0;
+			m_Buffer[(int)((UIntPtr)(Position + 1U))] = value1;
+			m_Buffer[(int)((UIntPtr)(Position + 2U))] = value2;
+			m_Buffer[(int)((UIntPtr)(Position + 3U))] = value3;
+			m_Buffer[(int)((UIntPtr)(Position + 4U))] = value4;
+			m_Buffer[(int)((UIntPtr)(Position + 5U))] = value5;
+			m_Buffer[(int)((UIntPtr)(Position + 6U))] = value6;
+			m_Buffer[(int)((UIntPtr)(Position + 7U))] = value7;
+			Position += 8U;
 		}
 
 		public void WriteBytesAtOffset(byte[] buffer, ushort targetOffset, ushort count)
 		{
-			uint num = (uint)(count + targetOffset);
+			var num = (uint)(count + targetOffset);
 			WriteCheckForSpace((ushort)num);
-			if (targetOffset == 0 && (int)count == buffer.Length)
+			if (targetOffset == 0 && count == buffer.Length)
 			{
-				buffer.CopyTo(m_Buffer, (int)m_Pos);
+				buffer.CopyTo(m_Buffer, (int)Position);
 			}
 			else
 			{
-				for (int i = 0; i < (int)count; i++)
+				for (var i = 0; i < count; i++)
 				{
-					m_Buffer[(int)targetOffset + i] = buffer[i];
+					m_Buffer[targetOffset + i] = buffer[i];
 				}
 			}
-			if (num > m_Pos)
+			if (num > Position)
 			{
-				m_Pos = num;
+				Position = num;
 			}
 		}
 
 		public void WriteBytes(byte[] buffer, ushort count)
 		{
 			WriteCheckForSpace(count);
-			if ((int)count == buffer.Length)
+			if (count == buffer.Length)
 			{
-				buffer.CopyTo(m_Buffer, (int)m_Pos);
+				buffer.CopyTo(m_Buffer, (int)Position);
 			}
 			else
 			{
-				for (int i = 0; i < (int)count; i++)
+				for (var i = 0; i < count; i++)
 				{
-					m_Buffer[(int)(checked((IntPtr)(unchecked((ulong)m_Pos + (ulong)((long)i)))))] = buffer[i];
+					m_Buffer[(int)(checked((IntPtr)(unchecked(Position + (ulong)i))))] = buffer[i];
 				}
 			}
-			m_Pos += (uint)count;
+			Position += count;
 		}
 
 		private void WriteCheckForSpace(ushort count)
 		{
-			if ((ulong)(m_Pos + (uint)count) >= (ulong)((long)m_Buffer.Length))
+			if (Position + count >= (ulong)m_Buffer.Length)
 			{
-				int num = (int)Math.Ceiling((double)((float)m_Buffer.Length * 1.5f));
-				while ((ulong)(m_Pos + (uint)count) >= (ulong)((long)num))
+				var num = (int)Math.Ceiling(m_Buffer.Length * 1.5f);
+				while (Position + count >= (ulong)num)
 				{
-					num = (int)Math.Ceiling((double)((float)num * 1.5f));
+					num = (int)Math.Ceiling(num * 1.5f);
 					if (num > 134217728)
 					{
 						Debug.LogWarning("NetworkBuffer size is " + num + " bytes!");
 					}
 				}
-				byte[] array = new byte[num];
+				var array = new byte[num];
 				m_Buffer.CopyTo(array, 0);
 				m_Buffer = array;
 			}
@@ -164,31 +149,22 @@ namespace QuantumUNET
 
 		public void FinishMessage()
 		{
-			ushort num = (ushort)(m_Pos - 4U);
+			var num = (ushort)(Position - 4U);
 			m_Buffer[0] = (byte)(num & 255);
-			m_Buffer[1] = (byte)(num >> 8 & 255);
+			m_Buffer[1] = (byte)((num >> 8) & 255);
 		}
 
-		public void SeekZero()
-		{
-			m_Pos = 0U;
-		}
+		public void SeekZero() => Position = 0U;
 
 		public void Replace(byte[] buffer)
 		{
 			m_Buffer = buffer;
-			m_Pos = 0U;
+			Position = 0U;
 		}
 
-		public override string ToString()
-		{
-			return string.Format("NetBuf sz:{0} pos:{1}", m_Buffer.Length, m_Pos);
-		}
+		public override string ToString() => string.Format("NetBuf sz:{0} pos:{1}", m_Buffer.Length, Position);
 
 		private byte[] m_Buffer;
-
-		private uint m_Pos;
-
 		private const int k_InitialSize = 64;
 
 		private const float k_GrowthFactor = 1.5f;
