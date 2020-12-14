@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Player;
 using System.Linq;
 using UnityEngine;

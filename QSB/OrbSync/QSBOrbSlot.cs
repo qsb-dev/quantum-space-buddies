@@ -1,5 +1,5 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync
@@ -21,7 +21,7 @@ namespace QSB.OrbSync
 
 		public void HandleEvent(bool state, int orbId)
 		{
-			if (QSB.HasWokenUp)
+			if (QSBCore.HasWokenUp)
 			{
 				GlobalMessenger<int, int, bool>.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
 			}

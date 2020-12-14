@@ -3,7 +3,7 @@ using OWML.ModHelper.Events;
 using QSB.Animation;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.GeyserSync;
 using QSB.Instruments;
 using QSB.OrbSync;
@@ -46,7 +46,7 @@ namespace QSB
 			Instance = this;
 
 			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
-			_assetBundle = QSB.NetworkAssetBundle;
+			_assetBundle = QSBCore.NetworkAssetBundle;
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
 			var ident = playerPrefab.AddComponent<QSBNetworkIdentity>();
@@ -132,8 +132,8 @@ namespace QSB
 
 		private void ConfigureNetworkManager()
 		{
-			networkAddress = QSB.DefaultServerIP;
-			networkPort = QSB.Port;
+			networkAddress = QSBCore.DefaultServerIP;
+			networkPort = QSBCore.Port;
 			maxConnections = MaxConnections;
 			customConfig = true;
 			connectionConfig.AddChannel(QosType.Reliable);
@@ -197,12 +197,12 @@ namespace QSB
 			OnNetworkManagerReady?.Invoke();
 			IsReady = true;
 
-			QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
-			if (!QSB.IsServer)
+			if (!QSBCore.IsServer)
 			{
-				QSB.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
 		}

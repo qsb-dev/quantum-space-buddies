@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using System.Linq;
 
 namespace QSB.DeathSync
@@ -26,8 +26,8 @@ namespace QSB.DeathSync
 
 		public override void DoPatches()
 		{
-			QSB.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
-			QSB.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
 		}
 	}
 }

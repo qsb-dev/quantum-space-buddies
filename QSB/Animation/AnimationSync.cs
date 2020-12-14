@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET.Components;
@@ -58,7 +58,7 @@ namespace QSB.Animation
 
 		private void LoadControllers()
 		{
-			var bundle = QSB.InstrumentAssetBundle;
+			var bundle = QSBCore.InstrumentAssetBundle;
 			_chertController = bundle.LoadAsset("assets/Chert/Traveller_Chert.controller") as RuntimeAnimatorController;
 			_riebeckController = bundle.LoadAsset("assets/Riebeck/Traveller_Riebeck.controller") as RuntimeAnimatorController;
 		}
@@ -129,7 +129,7 @@ namespace QSB.Animation
 			InitCrouchSync();
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
-			QSB.Helper.Events.Unity.RunWhen(() => Player.Camera != null, () => ikSync.Init(Player.Camera.transform));
+			QSBCore.Helper.Events.Unity.RunWhen(() => Player.Camera != null, () => ikSync.Init(Player.Camera.transform));
 		}
 
 		private void InitCrouchSync()

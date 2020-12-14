@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -11,7 +11,7 @@ namespace QSB.ConversationSync.Events
 {
 	public class ConversationStartEndEvent : QSBEvent<ConversationStartEndMessage>
 	{
-		public override EventsCore.EventType Type => EventsCore.EventType.ConversationStartEnd;
+		public override QSB.Events.EventType Type => QSB.Events.EventType.ConversationStartEnd;
 
 		public override void SetupListener() => GlobalMessenger<int, uint, bool>.AddListener(EventNames.QSBConversationStartEnd, Handler);
 		public override void CloseListener() => GlobalMessenger<int, uint, bool>.RemoveListener(EventNames.QSBConversationStartEnd, Handler);

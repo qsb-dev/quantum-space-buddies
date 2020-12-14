@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;

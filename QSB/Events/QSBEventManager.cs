@@ -13,7 +13,7 @@ using QSB.Tools.Events;
 using QSB.Utility;
 using System.Collections.Generic;
 
-namespace QSB.EventsCore
+namespace QSB.Events
 {
 	public static class QSBEventManager
 	{

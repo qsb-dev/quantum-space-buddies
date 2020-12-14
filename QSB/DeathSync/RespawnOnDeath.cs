@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -32,8 +32,8 @@ namespace QSB.DeathSync
 		{
 			Instance = this;
 
-			QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
-			QSB.Helper.Events.Event += OnEvent;
+			QSBCore.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
+			QSBCore.Helper.Events.Event += OnEvent;
 		}
 
 		private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)

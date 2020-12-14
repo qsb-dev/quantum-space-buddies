@@ -18,7 +18,7 @@ namespace QSB.ElevatorSync
 		{
 			_elevator = elevator;
 			ObjectId = id;
-			QSB.Helper.Events.Unity.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
+			QSBCore.Helper.Events.Unity.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
 		}
 
 		private void InitValues()

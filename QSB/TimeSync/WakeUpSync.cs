@@ -1,5 +1,5 @@
 ﻿using QSB.DeathSync;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.TimeSync.Events;
 using QuantumUNET;
 using UnityEngine;
@@ -53,7 +53,7 @@ namespace QSB.TimeSync
 		{
 			if (QSBNetworkServer.active)
 			{
-				QSB.HasWokenUp = true;
+				QSBCore.HasWokenUp = true;
 			}
 		}
 
@@ -66,7 +66,7 @@ namespace QSB.TimeSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			QSB.HasWokenUp = (scene == OWScene.EyeOfTheUniverse);
+			QSBCore.HasWokenUp = (scene == OWScene.EyeOfTheUniverse);
 			if (isInUniverse)
 			{
 				Init();
@@ -164,7 +164,7 @@ namespace QSB.TimeSync
 				EnableInput();
 			}
 			_isFirstFastForward = false;
-			QSB.HasWokenUp = true;
+			QSBCore.HasWokenUp = true;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();

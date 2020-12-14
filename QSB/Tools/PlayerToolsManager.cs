@@ -141,7 +141,7 @@ namespace QSB.Tools
 			translatorRoot.transform.parent = cameraBody;
 			translatorRoot.transform.localPosition = Vector3.zero;
 			translatorRoot.transform.localScale = TranslatorScale;
-			QSB.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
+			QSBCore.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
 
 			return translatorRoot;
 		}

@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Utility;
 
 namespace QSB.Player.Events
@@ -31,7 +31,7 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool server, PlayerStateMessage message)
 		{
 			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
-			QSB.Helper.Events.Unity.RunWhen(
+			QSBCore.Helper.Events.Unity.RunWhen(
 				() => QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
 				() => QSBPlayerManager.HandleFullStateMessage(message));
 		}

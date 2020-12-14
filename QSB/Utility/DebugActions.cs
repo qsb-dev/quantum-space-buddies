@@ -26,7 +26,7 @@ namespace QSB.Utility
 
 		private void Update()
 		{
-			if (!QSB.DebugMode)
+			if (!QSBCore.DebugMode)
 			{
 				return;
 			}

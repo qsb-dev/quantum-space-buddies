@@ -58,7 +58,7 @@ namespace QSB.ConversationSync
 		{
 			var key = ____name + ____listPagesToDisplay[____currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
-			QSB.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
+			QSBCore.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentDialogueID, key));
 		}
 
@@ -103,12 +103,12 @@ namespace QSB.ConversationSync
 
 		public override void DoPatches()
 		{
-			QSB.Helper.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(GetNextPage));
-			QSB.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(InputDialogueOption));
-			QSB.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(StartConversation));
-			QSB.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(EndConversation));
-			QSB.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(OnAnimatorIK));
-			QSB.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(OnZoneExit));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(GetNextPage));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(InputDialogueOption));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(StartConversation));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(EndConversation));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(OnAnimatorIK));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(OnZoneExit));
 		}
 	}
 }

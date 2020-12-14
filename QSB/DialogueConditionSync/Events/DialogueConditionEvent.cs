@@ -1,5 +1,4 @@
-﻿using QSB.EventsCore;
-using QSB.Utility;
+﻿using QSB.Events;
 using QSB.WorldSync;
 
 namespace QSB.DialogueConditionSync.Events

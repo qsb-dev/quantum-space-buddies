@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Animation;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;
 using QSB.Utility;
@@ -26,13 +26,13 @@ namespace QSB.Instruments
 			QSBInputManager.RiebeckTaunt += () => StartInstrument(AnimationType.Riebeck);
 			QSBInputManager.ExitTaunt += () => ReturnToPlayer();
 
-			QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		public void InitRemote(Transform root)
 		{
 			rootObj = root;
-			QSB.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		protected override void OnDestroy()
@@ -52,7 +52,7 @@ namespace QSB.Instruments
 
 		private void SetupInstruments()
 		{
-			var bundle = QSB.InstrumentAssetBundle;
+			var bundle = QSBCore.InstrumentAssetBundle;
 			ChertDrum = MakeChertDrum(bundle);
 		}
 

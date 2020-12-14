@@ -20,7 +20,7 @@ namespace QSB.TransformSync
 			DontDestroyOnLoad(this);
 			QSBWorldSync.OrbSyncList.Add(this);
 
-			QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
+			QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, () => QSBCore.Helper.Events.Unity.FireOnNextUpdate(OnReady));
 		}
 
 		private void OnReady()

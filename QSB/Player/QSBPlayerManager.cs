@@ -12,7 +12,6 @@ namespace QSB.Player
 		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
-
 		public static List<PlayerSyncObject> PlayerSyncObjects { get; } = new List<PlayerSyncObject>();
 
 		public static PlayerInfo GetPlayer(uint id)
@@ -45,9 +44,7 @@ namespace QSB.Player
 		}
 
 		public static bool PlayerExists(uint id)
-		{
-			return id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
-		}
+			=> id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 
 		public static void HandleFullStateMessage(PlayerStateMessage message)
 		{
@@ -62,14 +59,10 @@ namespace QSB.Player
 		}
 
 		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject
-		{
-			return PlayerSyncObjects.OfType<T>().Where(x => x != null);
-		}
+			=> PlayerSyncObjects.OfType<T>().Where(x => x != null);
 
 		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject
-		{
-			return GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
-		}
+			=> GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
 
 		public static bool IsBelongingToLocalPlayer(uint id)
 		{

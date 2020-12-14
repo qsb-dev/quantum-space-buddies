@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.MessagesCore;
 using QSB.Player;
 

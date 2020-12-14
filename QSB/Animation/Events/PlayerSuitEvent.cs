@@ -1,4 +1,4 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 
@@ -34,7 +34,7 @@ namespace QSB.Animation
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player?.UpdateState(State.Suit, message.ToggleValue);
 
-			if (!QSB.HasWokenUp)
+			if (!QSBCore.HasWokenUp)
 			{
 				return;
 			}

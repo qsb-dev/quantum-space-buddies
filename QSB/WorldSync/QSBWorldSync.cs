@@ -73,7 +73,7 @@ namespace QSB.WorldSync
 
 		public static void SetDialogueCondition(string name, bool state)
 		{
-			if (!QSB.IsServer)
+			if (!QSBCore.IsServer)
 			{
 				DebugLog.DebugWrite("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
 				return;

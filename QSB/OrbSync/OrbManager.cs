@@ -42,7 +42,7 @@ namespace QSB.OrbSync
 			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
 		}
 
-		public void QueueBuildSlots() => QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, BuildOrbSlots);
-		public void QueueBuildOrbs() => QSB.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
+		public void QueueBuildSlots() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
+		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
 	}
 }

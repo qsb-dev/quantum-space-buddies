@@ -7,7 +7,7 @@ namespace QSB.TimeSync
 	{
 		private void Start()
 		{
-			QSB.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
+			QSBCore.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
 
 			// Allow server to sleep at campfires
 			if (IsServer)

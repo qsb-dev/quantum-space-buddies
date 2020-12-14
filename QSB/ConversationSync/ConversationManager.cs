@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -22,7 +22,7 @@ namespace QSB.ConversationSync
 		{
 			Instance = this;
 
-			ConversationAssetBundle = QSB.Helper.Assets.LoadBundle("assets/conversation");
+			ConversationAssetBundle = QSBCore.Helper.Assets.LoadBundle("assets/conversation");
 
 			BoxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
 			// TODO : make dynamic so it can be different sizes!

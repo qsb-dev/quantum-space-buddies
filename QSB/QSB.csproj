@@ -142,9 +142,9 @@
     <Compile Include="ElevatorSync\Events\ElevatorEvent.cs" />
     <Compile Include="ElevatorSync\ElevatorManager.cs" />
     <Compile Include="ElevatorSync\ElevatorPatches.cs" />
-    <Compile Include="EventsCore\EventNames.cs" />
+    <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
-    <Compile Include="EventsCore\IQSBEvent.cs" />
+    <Compile Include="Events\IQSBEvent.cs" />
     <Compile Include="Animation\Events\ChangeAnimTypeEvent.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
@@ -184,7 +184,7 @@
     <Compile Include="Tools\Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
-    <Compile Include="EventsCore\QSBEvent.cs" />
+    <Compile Include="Events\QSBEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinMessage.cs" />
     <Compile Include="MessagesCore\ToggleMessage.cs" />
     <Compile Include="SectorSync\QSBSector.cs" />
@@ -201,13 +201,13 @@
     <Compile Include="Tools\ToolType.cs" />
     <Compile Include="TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
-    <Compile Include="EventsCore\QSBEventManager.cs" />
+    <Compile Include="Events\QSBEventManager.cs" />
     <Compile Include="Player\Events\PlayerStateMessage.cs" />
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="MessagesCore\PlayerMessage.cs" />
     <Compile Include="MessagesCore\MessageHandler.cs" />
-    <Compile Include="EventsCore\EventType.cs" />
+    <Compile Include="Events\EventType.cs" />
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="Player\State.cs" />
     <Compile Include="DeathSync\PreventShipDestruction.cs" />
@@ -224,7 +224,7 @@
     <Compile Include="TimeSync\Events\ServerTimeMessage.cs" />
     <Compile Include="TimeSync\WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
-    <Compile Include="QSB.cs" />
+    <Compile Include="QSBCore.cs" />
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldSync\QSBWorldSync.cs" />

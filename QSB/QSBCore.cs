@@ -16,7 +16,7 @@ using UnityEngine.Networking;
 
 namespace QSB
 {
-	public class QSB : ModBehaviour
+	public class QSBCore : ModBehaviour
 	{
 		public static IModBehaviour ModBehaviour { get; private set; }
 		public static IModHelper Helper { get; private set; }

@@ -9,8 +9,8 @@ namespace QSB.Animation
 
 		public static void Init()
 		{
-			QSB.Helper.Events.Subscribe<PlayerAnimController>(OWML.Common.Events.BeforeStart);
-			QSB.Helper.Events.Event += OnEvent;
+			QSBCore.Helper.Events.Subscribe<PlayerAnimController>(OWML.Common.Events.BeforeStart);
+			QSBCore.Helper.Events.Event += OnEvent;
 		}
 
 		private static void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)

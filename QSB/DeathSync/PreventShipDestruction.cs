@@ -10,13 +10,13 @@ namespace QSB.DeathSync
 	{
 		private void Awake()
 		{
-			QSB.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), nameof(Patch.ReturnNull));
-			QSB.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), nameof(Patch.ReturnNull));
+			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(Patch), nameof(Patch.ReturnNull));
+			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(Patch), nameof(Patch.ReturnNull));
 
-			QSB.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
+			QSBCore.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
 
-			QSB.Helper.Events.Subscribe<ShipDamageController>(OWML.Common.Events.AfterAwake);
-			QSB.Helper.Events.Event += OnEvent;
+			QSBCore.Helper.Events.Subscribe<ShipDamageController>(OWML.Common.Events.AfterAwake);
+			QSBCore.Helper.Events.Event += OnEvent;
 		}
 
 		private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)

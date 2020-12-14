@@ -40,7 +40,7 @@ namespace QSB
 		{
 			PlayerName = GetPlayerName();
 			CanEditName = true;
-			QSB.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
+			QSBCore.Helper.HarmonyHelper.EmptyMethod<NetworkManagerHUD>("Update");
 		}
 
 		private string GetPlayerName()

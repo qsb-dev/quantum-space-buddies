@@ -3,7 +3,7 @@ using QSB.Player;
 using QSB.TransformSync;
 using QuantumUNET;
 
-namespace QSB.EventsCore
+namespace QSB.Events
 {
 	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
 	{
@@ -27,7 +27,7 @@ namespace QSB.EventsCore
 		public void SendEvent(T message)
 		{
 			message.FromId = QSBPlayerManager.LocalPlayerId;
-			QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
+			QSBCore.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
 		}
 
 		private void Send(T message)
@@ -44,18 +44,18 @@ namespace QSB.EventsCore
 
 		private void OnReceive(T message)
 		{
-			if (QSB.IsServer && !message.OnlySendToServer)
+			if (QSBCore.IsServer && !message.OnlySendToServer)
 			{
 				_eventHandler.SendToAll(message);
 			}
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
-				OnReceiveLocal(QSB.IsServer, message);
+				OnReceiveLocal(QSBCore.IsServer, message);
 				return;
 			}
 
-			OnReceiveRemote(QSB.IsServer, message);
+			OnReceiveRemote(QSBCore.IsServer, message);
 		}
 	}
 }

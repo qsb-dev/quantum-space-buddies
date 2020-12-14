@@ -41,9 +41,9 @@ namespace QSB.TimeSync
 			}
 		}
 
-		public static void Start(TimeSyncType type) => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type));
+		public static void Start(TimeSyncType type) => QSBCore.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type));
 
-		public static void Stop() => QSB.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
+		public static void Stop() => QSBCore.Helper.Events.Unity.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
 
 		private void StartTimeSync(TimeSyncType type)
 		{

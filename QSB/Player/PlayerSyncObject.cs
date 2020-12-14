@@ -9,7 +9,6 @@ namespace QSB.Player
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		protected virtual void Awake() => QSBPlayerManager.PlayerSyncObjects.Add(this);
-
 		protected virtual void OnDestroy() => QSBPlayerManager.PlayerSyncObjects.Remove(this);
 	}
 }
