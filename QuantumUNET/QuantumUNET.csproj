@@ -136,12 +136,10 @@
     <Compile Include="Messages\QSBOwnerMessage.cs" />
     <Compile Include="QSBPlayerController.cs" />
     <Compile Include="Messages\QSBReadyMessage.cs" />
-    <Compile Include="Messages\QSBReconnectMessage.cs" />
     <Compile Include="Messages\QSBRemovePlayerMessage.cs" />
     <Compile Include="Messages\QSBStringMessage.cs" />
     <Compile Include="QSBULocalConnectionToClient.cs" />
     <Compile Include="QSBULocalConnectionToServer.cs" />
-    <Compile Include="QSBUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

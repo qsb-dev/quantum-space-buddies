@@ -145,15 +145,9 @@ namespace QSB.Animation
 
 		private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
 
-		public void SendCrouch(float value = 0)
-		{
-			GlobalMessenger<float>.FireEvent(EventNames.QSBCrouch, value);
-		}
+		public void SendCrouch(float value = 0) => GlobalMessenger<float>.FireEvent(EventNames.QSBCrouch, value);
 
-		public void HandleCrouch(float value)
-		{
-			_crouchSync.CrouchParam.Target = value;
-		}
+		public void HandleCrouch(float value) => _crouchSync.CrouchParam.Target = value;
 
 		private void SuitUp()
 		{
