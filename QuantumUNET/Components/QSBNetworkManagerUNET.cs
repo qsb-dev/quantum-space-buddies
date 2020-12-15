@@ -31,7 +31,6 @@ namespace QuantumUNET.Components
 		public float packetLossPercentage { get; set; }
 		public float maxDelay { get; set; } = 0.01f;
 		public GameObject playerPrefab { get; set; }
-		public PlayerSpawnMethod playerSpawnMethod { get; set; }
 		public List<GameObject> spawnPrefabs { get; } = new List<GameObject>();
 		public QSBNetworkClient client;
 		public int maxConnections { get; set; } = 4;
@@ -41,16 +40,12 @@ namespace QuantumUNET.Components
 		private GlobalConfig m_GlobalConfig;
 		private int m_MaxBufferedPackets = 16;
 		private bool m_AllowFragmentation = true;
-		private static List<Transform> s_StartPositions = new List<Transform>();
-		private static int s_StartPositionIndex;
 		private static QSBAddPlayerMessage s_AddPlayerMessage = new QSBAddPlayerMessage();
 		private static QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
 		private static QSBErrorMessage s_ErrorMessage = new QSBErrorMessage();
 		private static AsyncOperation s_LoadingSceneAsync;
 		private static QSBNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;
-
-		public List<Transform> startPositions => s_StartPositions;
 
 		public bool customConfig { get; set; }
 
@@ -446,8 +441,6 @@ namespace QuantumUNET.Components
 				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
 				var msg = new QSBStringMessage(networkSceneName);
 				QSBNetworkServer.SendToAll(39, msg);
-				s_StartPositionIndex = 0;
-				s_StartPositions.Clear();
 			}
 		}
 
@@ -531,44 +524,12 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public static void RegisterStartPosition(Transform start)
-		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterStartPosition: (",
-					start.gameObject.name,
-					") ",
-					start.position
-				}));
-			}
-			s_StartPositions.Add(start);
-		}
-
-		public static void UnRegisterStartPosition(Transform start)
-		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"UnRegisterStartPosition: (",
-					start.gameObject.name,
-					") ",
-					start.position
-				}));
-			}
-			s_StartPositions.Remove(start);
-		}
-
 		public bool IsClientConnected() => client != null && client.isConnected;
 
 		public static void Shutdown()
 		{
 			if (!(singleton == null))
 			{
-				s_StartPositions.Clear();
-				s_StartPositionIndex = 0;
 				s_ClientReadyConnection = null;
 				singleton.StopHost();
 				singleton = null;
@@ -784,53 +745,9 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				var startPosition = GetStartPosition();
-				GameObject player;
-				if (startPosition != null)
-				{
-					player = Instantiate<GameObject>(playerPrefab, startPosition.position, startPosition.rotation);
-				}
-				else
-				{
-					player = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
-				}
+				var player = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
 				QSBNetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 			}
-		}
-
-		public Transform GetStartPosition()
-		{
-			if (s_StartPositions.Count > 0)
-			{
-				for (var i = s_StartPositions.Count - 1; i >= 0; i--)
-				{
-					if (s_StartPositions[i] == null)
-					{
-						s_StartPositions.RemoveAt(i);
-					}
-				}
-			}
-			Transform result;
-			if (playerSpawnMethod == PlayerSpawnMethod.Random && s_StartPositions.Count > 0)
-			{
-				var index = UnityEngine.Random.Range(0, s_StartPositions.Count);
-				result = s_StartPositions[index];
-			}
-			else if (playerSpawnMethod == PlayerSpawnMethod.RoundRobin && s_StartPositions.Count > 0)
-			{
-				if (s_StartPositionIndex >= s_StartPositions.Count)
-				{
-					s_StartPositionIndex = 0;
-				}
-				var transform = s_StartPositions[s_StartPositionIndex];
-				s_StartPositionIndex++;
-				result = transform;
-			}
-			else
-			{
-				result = null;
-			}
-			return result;
 		}
 
 		public virtual void OnServerRemovePlayer(QSBNetworkConnection conn, QSBPlayerController player)
