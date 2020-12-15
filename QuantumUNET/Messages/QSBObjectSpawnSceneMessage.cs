@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBObjectSpawnSceneMessage : QSBMessageBase
 	{
-		public NetworkInstanceId NetId;
-		public NetworkSceneId SceneId;
+		public QSBNetworkInstanceId NetId;
+		public QSBNetworkSceneId SceneId;
 		public Vector3 Position;
 		public byte[] Payload;
 

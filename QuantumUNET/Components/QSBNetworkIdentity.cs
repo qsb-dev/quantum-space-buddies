@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Components
 {
@@ -13,10 +12,10 @@ namespace QuantumUNET.Components
 		public bool IsClient { get; private set; }
 		public bool IsServer => m_IsServer && QSBNetworkServer.active && m_IsServer;
 		public bool HasAuthority { get; private set; }
-		public NetworkInstanceId NetId { get; private set; }
-		public NetworkSceneId SceneId => m_SceneId;
+		public QSBNetworkInstanceId NetId { get; private set; }
+		public QSBNetworkSceneId SceneId => m_SceneId;
 		public QSBNetworkConnection ClientAuthorityOwner { get; private set; }
-		public NetworkHash128 AssetId => m_AssetId;
+		public QSBNetworkHash128 AssetId => m_AssetId;
 		public bool IsLocalPlayer { get; private set; }
 		public short PlayerControllerId { get; private set; } = -1;
 		public QSBNetworkConnection ConnectionToServer { get; private set; }
@@ -64,7 +63,7 @@ namespace QuantumUNET.Components
 		internal void RemoveSubIdentity(QSBNetworkIdentity identityToRemove)
 			=> SubIdentities.Remove(identityToRemove);
 
-		internal void SetDynamicAssetId(NetworkHash128 newAssetId)
+		internal void SetDynamicAssetId(QSBNetworkHash128 newAssetId)
 		{
 			if (!m_AssetId.IsValid() || m_AssetId.Equals(newAssetId))
 			{
@@ -121,11 +120,11 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		internal static NetworkInstanceId GetNextNetworkId()
+		internal static QSBNetworkInstanceId GetNextNetworkId()
 		{
 			var value = s_NextNetworkId;
 			s_NextNetworkId += 1U;
-			return new NetworkInstanceId(value);
+			return new QSBNetworkInstanceId(value);
 		}
 
 		private void CacheBehaviours()
@@ -144,7 +143,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		internal void SetNetworkInstanceId(NetworkInstanceId newNetId)
+		internal void SetNetworkInstanceId(QSBNetworkInstanceId newNetId)
 		{
 			NetId = newNetId;
 			if (newNetId.Value == 0U)
@@ -153,7 +152,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public void ForceSceneId(int newSceneId) => m_SceneId = new NetworkSceneId((uint)newSceneId);
+		public void ForceSceneId(int newSceneId) => m_SceneId = new QSBNetworkSceneId((uint)newSceneId);
 
 		internal void UpdateClientServer(bool isClientFlag, bool isServerFlag)
 		{
@@ -948,7 +947,7 @@ namespace QuantumUNET.Components
 				m_IsServer = false;
 				IsClient = false;
 				HasAuthority = false;
-				NetId = (NetworkInstanceId)typeof(NetworkInstanceId).GetField("Zero", System.Reflection.BindingFlags.Static).GetValue(null);
+				NetId = (QSBNetworkInstanceId)typeof(QSBNetworkInstanceId).GetField("Zero", System.Reflection.BindingFlags.Static).GetValue(null);
 				IsLocalPlayer = false;
 				ConnectionToServer = null;
 				ConnectionToClient = null;
@@ -967,10 +966,10 @@ namespace QuantumUNET.Components
 		}
 
 		[SerializeField]
-		private NetworkSceneId m_SceneId;
+		private QSBNetworkSceneId m_SceneId;
 
 		[SerializeField]
-		private NetworkHash128 m_AssetId;
+		private QSBNetworkHash128 m_AssetId;
 
 		[SerializeField]
 		private bool m_ServerOnly;

@@ -15,7 +15,7 @@ namespace QuantumUNET
 		public bool IsClient => MyView.IsClient;
 		public bool IsLocalPlayer => MyView.IsLocalPlayer;
 		public bool HasAuthority => MyView.HasAuthority;
-		public NetworkInstanceId NetId => MyView.NetId;
+		public QSBNetworkInstanceId NetId => MyView.NetId;
 		public QSBNetworkConnection ConnectionToServer => MyView.ConnectionToServer;
 		public QSBNetworkConnection ConnectionToClient => MyView.ConnectionToClient;
 		public short PlayerControllerId => MyView.PlayerControllerId;
@@ -404,11 +404,11 @@ namespace QuantumUNET
 		internal static string GetCmdHashListName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncList");
 
-		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref NetworkInstanceId netIdField)
+		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref QSBNetworkInstanceId netIdField)
 		{
 			if (!SyncVarHookGuard)
 			{
-				NetworkInstanceId networkInstanceId = default;
+				QSBNetworkInstanceId networkInstanceId = default;
 				if (newGameObject != null)
 				{
 					var component = newGameObject.GetComponent<QSBNetworkIdentity>();
@@ -424,7 +424,7 @@ namespace QuantumUNET
 						}
 					}
 				}
-				NetworkInstanceId networkInstanceId2 = default;
+				QSBNetworkInstanceId networkInstanceId2 = default;
 				if (gameObjectField != null)
 				{
 					networkInstanceId2 = gameObjectField.GetComponent<QSBNetworkIdentity>().NetId;

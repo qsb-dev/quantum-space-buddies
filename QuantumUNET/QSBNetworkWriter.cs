@@ -152,9 +152,9 @@ namespace QuantumUNET
 			}
 		}
 
-		public void Write(NetworkInstanceId value) => WritePackedUInt32(value.Value);
+		public void Write(QSBNetworkInstanceId value) => WritePackedUInt32(value.Value);
 
-		public void Write(NetworkSceneId value) => WritePackedUInt32(value.Value);
+		public void Write(QSBNetworkSceneId value) => WritePackedUInt32(value.Value);
 
 		public void Write(char value) => m_Buffer.WriteByte((byte)value);
 
@@ -373,7 +373,7 @@ namespace QuantumUNET
 			Write(value.m33);
 		}
 
-		public void Write(NetworkHash128 value)
+		public void Write(QSBNetworkHash128 value)
 		{
 			Write(value.i0);
 			Write(value.i1);
@@ -393,7 +393,7 @@ namespace QuantumUNET
 			Write(value.i15);
 		}
 
-		public void Write(NetworkIdentity value)
+		public void Write(QSBNetworkIdentity value)
 		{
 			if (value == null)
 			{
@@ -401,7 +401,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Write(value.netId);
+				Write(value.NetId);
 			}
 		}
 
@@ -413,10 +413,10 @@ namespace QuantumUNET
 			}
 			else
 			{
-				var component = value.gameObject.GetComponent<NetworkIdentity>();
+				var component = value.gameObject.GetComponent<QSBNetworkIdentity>();
 				if (component != null)
 				{
-					Write(component.netId);
+					Write(component.NetId);
 				}
 				else
 				{

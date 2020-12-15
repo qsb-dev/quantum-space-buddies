@@ -121,9 +121,12 @@
     <Compile Include="Components\QSBNetworkManagerUNET.cs" />
     <Compile Include="Messages\QSBNetworkMessage.cs" />
     <Compile Include="Messages\QSBNetworkMessageDelegate.cs" />
+    <Compile Include="QSBNetworkHash128.cs" />
+    <Compile Include="QSBNetworkInstanceId.cs" />
     <Compile Include="QSBNetworkMessageHandlers.cs" />
     <Compile Include="QSBNetworkReader.cs" />
     <Compile Include="QSBNetworkScene.cs" />
+    <Compile Include="QSBNetworkSceneId.cs" />
     <Compile Include="QSBNetworkServer.cs" />
     <Compile Include="QSBNetworkServerSimple.cs" />
     <Compile Include="Components\QSBNetworkTransform.cs" />

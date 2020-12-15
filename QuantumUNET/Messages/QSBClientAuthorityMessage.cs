@@ -1,10 +1,8 @@
-﻿using UnityEngine.Networking;
-
-namespace QuantumUNET.Messages
+﻿namespace QuantumUNET.Messages
 {
 	internal class QSBClientAuthorityMessage : QSBMessageBase
 	{
-		public NetworkInstanceId netId;
+		public QSBNetworkInstanceId netId;
 		public bool authority;
 
 		public override void Deserialize(QSBNetworkReader reader)

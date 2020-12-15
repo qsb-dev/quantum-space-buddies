@@ -1,10 +1,8 @@
-﻿using UnityEngine.Networking;
-
-namespace QuantumUNET.Messages
+﻿namespace QuantumUNET.Messages
 {
 	internal class QSBObjectDestroyMessage : QSBMessageBase
 	{
-		public NetworkInstanceId NetId;
+		public QSBNetworkInstanceId NetId;
 
 		public override void Deserialize(QSBNetworkReader reader) => NetId = reader.ReadNetworkId();
 
