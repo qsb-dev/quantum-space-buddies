@@ -100,8 +100,8 @@
     <Compile Include="Messages\QSBAnimationMessage.cs" />
     <Compile Include="Messages\QSBAnimationParametersMessage.cs" />
     <Compile Include="Messages\QSBAnimationTriggerMessage.cs" />
-    <Compile Include="QSBChannelBuffer.cs" />
-    <Compile Include="QSBChannelPacket.cs" />
+    <Compile Include="Transport\QSBChannelBuffer.cs" />
+    <Compile Include="Transport\QSBChannelPacket.cs" />
     <Compile Include="Messages\QSBClientAuthorityMessage.cs" />
     <Compile Include="QSBClientScene.cs" />
     <Compile Include="Messages\QSBCRCMessage.cs" />
@@ -110,7 +110,7 @@
     <Compile Include="Messages\QSBErrorMessage.cs" />
     <Compile Include="QSBLocalClient.cs" />
     <Compile Include="Messages\QSBMessageBase.cs" />
-    <Compile Include="QSBNetBuffer.cs" />
+    <Compile Include="Transport\QSBNetBuffer.cs" />
     <Compile Include="Components\QSBNetworkAnimator.cs" />
     <Compile Include="QSBNetworkBehaviour.cs" />
     <Compile Include="QSBNetworkClient.cs" />
@@ -124,13 +124,13 @@
     <Compile Include="QSBNetworkHash128.cs" />
     <Compile Include="QSBNetworkInstanceId.cs" />
     <Compile Include="QSBNetworkMessageHandlers.cs" />
-    <Compile Include="QSBNetworkReader.cs" />
+    <Compile Include="Transport\QSBNetworkReader.cs" />
     <Compile Include="QSBNetworkScene.cs" />
     <Compile Include="QSBNetworkSceneId.cs" />
     <Compile Include="QSBNetworkServer.cs" />
     <Compile Include="QSBNetworkServerSimple.cs" />
     <Compile Include="Components\QSBNetworkTransform.cs" />
-    <Compile Include="QSBNetworkWriter.cs" />
+    <Compile Include="Transport\QSBNetworkWriter.cs" />
     <Compile Include="Messages\QSBNotReadyMessage.cs" />
     <Compile Include="Messages\QSBObjectDestroyMessage.cs" />
     <Compile Include="Messages\QSBObjectSpawnFinishedMessage.cs" />
@@ -141,6 +141,7 @@
     <Compile Include="Messages\QSBReadyMessage.cs" />
     <Compile Include="Messages\QSBRemovePlayerMessage.cs" />
     <Compile Include="Messages\QSBStringMessage.cs" />
+    <Compile Include="Messages\QSBSpawnDelegate.cs" />
     <Compile Include="QSBULocalConnectionToClient.cs" />
     <Compile Include="QSBULocalConnectionToServer.cs" />
   </ItemGroup>

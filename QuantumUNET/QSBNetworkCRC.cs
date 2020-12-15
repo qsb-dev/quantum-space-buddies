@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
@@ -58,10 +57,7 @@ namespace QuantumUNET
 			bool result;
 			if (scripts.Count != remoteScripts.Length)
 			{
-				if (LogFilter.logWarn)
-				{
-					Debug.LogWarning("Network configuration mismatch detected. The number of networked scripts on the client does not match the number of networked scripts on the server. This could be caused by lazy loading of scripts on the client. This warning can be disabled by the checkbox in NetworkManager Script CRC Check.");
-				}
+				Debug.LogWarning("Network configuration mismatch detected. The number of networked scripts on the client does not match the number of networked scripts on the server. This could be caused by lazy loading of scripts on the client. This warning can be disabled by the checkbox in NetworkManager Script CRC Check.");
 				Dump(remoteScripts);
 				result = false;
 			}
@@ -69,49 +65,40 @@ namespace QuantumUNET
 			{
 				foreach (var crcmessageEntry in remoteScripts)
 				{
-					if (LogFilter.logDebug)
+					Debug.Log(string.Concat(new object[]
 					{
-						Debug.Log(string.Concat(new object[]
-						{
-							"Script: ",
-							crcmessageEntry.name,
-							" Channel: ",
-							crcmessageEntry.channel
-						}));
-					}
+						"Script: ",
+						crcmessageEntry.name,
+						" Channel: ",
+						crcmessageEntry.channel
+					}));
 					if (scripts.ContainsKey(crcmessageEntry.name))
 					{
 						var num = scripts[crcmessageEntry.name];
 						if (num != crcmessageEntry.channel)
 						{
-							if (LogFilter.logError)
+							Debug.LogError(string.Concat(new object[]
 							{
-								Debug.LogError(string.Concat(new object[]
-								{
-									"HLAPI CRC Channel Mismatch. Script: ",
-									crcmessageEntry.name,
-									" LocalChannel: ",
-									num,
-									" RemoteChannel: ",
-									crcmessageEntry.channel
-								}));
-							}
+								"HLAPI CRC Channel Mismatch. Script: ",
+								crcmessageEntry.name,
+								" LocalChannel: ",
+								num,
+								" RemoteChannel: ",
+								crcmessageEntry.channel
+							}));
 							Dump(remoteScripts);
 							return false;
 						}
 					}
 					if (crcmessageEntry.channel >= numChannels)
 					{
-						if (LogFilter.logError)
+						Debug.LogError(string.Concat(new object[]
 						{
-							Debug.LogError(string.Concat(new object[]
-							{
-								"HLAPI CRC channel out of range! Script: ",
-								crcmessageEntry.name,
-								" Channel: ",
-								crcmessageEntry.channel
-							}));
-						}
+							"HLAPI CRC channel out of range! Script: ",
+							crcmessageEntry.name,
+							" Channel: ",
+							crcmessageEntry.channel
+						}));
 						Dump(remoteScripts);
 						return false;
 					}

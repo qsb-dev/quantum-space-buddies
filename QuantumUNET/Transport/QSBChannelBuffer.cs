@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QuantumUNET
+namespace QuantumUNET.Transport
 {
 	internal class QSBChannelBuffer : IDisposable
 	{
@@ -99,26 +99,17 @@ namespace QuantumUNET
 					}
 					else if (!_currentPacket.IsEmpty() || _pendingPackets.Count > 0)
 					{
-						if (LogFilter.logError)
-						{
-							Debug.LogError("Cannot set MaxPacketSize after sending data.");
-						}
+						Debug.LogError("Cannot set MaxPacketSize after sending data.");
 						result = false;
 					}
 					else if (value <= 0)
 					{
-						if (LogFilter.logError)
-						{
-							Debug.LogError("Cannot set MaxPacketSize less than one.");
-						}
+						Debug.LogError("Cannot set MaxPacketSize less than one.");
 						result = false;
 					}
 					else if (value > _maxPacketSize)
 					{
-						if (LogFilter.logError)
-						{
-							Debug.LogError("Cannot set MaxPacketSize to greater than the existing maximum (" + _maxPacketSize + ").");
-						}
+						Debug.LogError("Cannot set MaxPacketSize to greater than the existing maximum (" + _maxPacketSize + ").");
 						result = false;
 					}
 					else

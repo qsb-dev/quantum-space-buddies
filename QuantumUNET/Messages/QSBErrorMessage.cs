@@ -1,4 +1,6 @@
-﻿namespace QuantumUNET.Messages
+﻿using QuantumUNET.Transport;
+
+namespace QuantumUNET.Messages
 {
 	public class QSBErrorMessage : QSBMessageBase
 	{

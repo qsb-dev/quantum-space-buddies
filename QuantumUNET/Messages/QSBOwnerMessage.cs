@@ -1,4 +1,6 @@
-﻿namespace QuantumUNET.Messages
+﻿using QuantumUNET.Transport;
+
+namespace QuantumUNET.Messages
 {
 	internal class QSBOwnerMessage : QSBMessageBase
 	{

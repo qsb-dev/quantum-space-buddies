@@ -1,5 +1,6 @@
 ﻿using QuantumUNET.Components;
 using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -102,24 +103,18 @@ namespace QuantumUNET
 			bool result;
 			if (playerControllerId < 0)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ClientScene::AddPlayer: playerControllerId of " + playerControllerId + " is negative");
-				}
+				Debug.LogError("ClientScene::AddPlayer: playerControllerId of " + playerControllerId + " is negative");
 				result = false;
 			}
 			else if (playerControllerId > 32)
 			{
-				if (LogFilter.logError)
+				Debug.LogError(string.Concat(new object[]
 				{
-					Debug.LogError(string.Concat(new object[]
-					{
 						"ClientScene::AddPlayer: playerControllerId of ",
 						playerControllerId,
 						" is too high, max is ",
 						32
-					}));
-				}
+				}));
 				result = false;
 			}
 			else
@@ -381,11 +376,11 @@ namespace QuantumUNET
 
 		public static void RegisterPrefab(GameObject prefab) => QSBNetworkScene.RegisterPrefab(prefab);
 
-		public static void RegisterPrefab(GameObject prefab, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterPrefab(prefab, spawnHandler, unspawnHandler);
+		public static void RegisterPrefab(GameObject prefab, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterPrefab(prefab, spawnHandler, unspawnHandler);
 
 		public static void UnregisterPrefab(GameObject prefab) => QSBNetworkScene.UnregisterPrefab(prefab);
 
-		public static void RegisterSpawnHandler(QSBNetworkHash128 assetId, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
+		public static void RegisterSpawnHandler(QSBNetworkHash128 assetId, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
 
 		public static void UnregisterSpawnHandler(QSBNetworkHash128 assetId) => QSBNetworkScene.UnregisterSpawnHandler(assetId);
 

@@ -1,5 +1,6 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -8,33 +9,19 @@ namespace QuantumUNET.Components
 	public class QSBNetworkTransform : QSBNetworkBehaviour
 	{
 		public float SendInterval { get; set; } = 0.1f;
-
 		public AxisSyncMode SyncRotationAxis { get; set; } = AxisSyncMode.AxisXYZ;
-
 		public CompressionSyncMode RotationSyncCompression { get; set; } = CompressionSyncMode.None;
-
 		public bool SyncSpin { get; set; }
-
 		public float MovementTheshold { get; set; } = 0.001f;
-
 		public float velocityThreshold { get; set; } = 0.0001f;
-
 		public float SnapThreshold { get; set; } = 5f;
-
 		public float InterpolateRotation { get; set; } = 1f;
-
 		public float InterpolateMovement { get; set; } = 1f;
-
 		public ClientMoveCallback3D clientMoveCallback3D { get; set; }
-
 		public float LastSyncTime { get; private set; }
-
 		public Vector3 TargetSyncPosition => m_TargetSyncPosition;
-
 		public Vector3 targetSyncVelocity => m_TargetSyncVelocity;
-
 		public Quaternion targetSyncRotation3D => m_TargetSyncRotation3D;
-
 		public bool Grounded { get; set; } = true;
 
 		public void Awake()
@@ -241,10 +228,7 @@ namespace QuantumUNET.Components
 					component.UnserializeModeTransform(netMsg.Reader, false);
 					component.LastSyncTime = Time.time;
 				}
-				else if (LogFilter.logWarn)
-				{
-					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform netId:" + networkInstanceId + " is not for a valid player");
-				}
+				ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform netId:" + networkInstanceId + " is not for a valid player");
 			}
 		}
 

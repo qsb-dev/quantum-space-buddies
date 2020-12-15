@@ -1,4 +1,6 @@
-﻿namespace QuantumUNET.Messages
+﻿using QuantumUNET.Transport;
+
+namespace QuantumUNET.Messages
 {
 	public abstract class QSBMessageBase
 	{

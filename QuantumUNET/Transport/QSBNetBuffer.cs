@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace QuantumUNET
+namespace QuantumUNET.Transport
 {
 	internal class QSBNetBuffer
 	{
