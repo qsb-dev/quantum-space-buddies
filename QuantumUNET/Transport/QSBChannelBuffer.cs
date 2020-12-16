@@ -131,16 +131,13 @@ namespace QuantumUNET.Transport
 			}
 			else if (value < 0 || value >= 512)
 			{
-				if (LogFilter.logError)
+				Debug.LogError(string.Concat(new object[]
 				{
-					Debug.LogError(string.Concat(new object[]
-					{
 						"Invalid MaxPendingBuffers for channel ",
 						_channelId,
 						". Must be greater than zero and less than ",
 						512
-					}));
-				}
+				}));
 				result = false;
 			}
 			else
@@ -231,18 +228,12 @@ namespace QuantumUNET.Transport
 			bool result;
 			if (bytesToSend >= 65535)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ChannelBuffer:SendBytes cannot send packet larger than " + ushort.MaxValue + " bytes");
-				}
+				Debug.LogError("ChannelBuffer:SendBytes cannot send packet larger than " + ushort.MaxValue + " bytes");
 				result = false;
 			}
 			else if (bytesToSend <= 0)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ChannelBuffer:SendBytes cannot send zero bytes");
-				}
+				Debug.LogError("ChannelBuffer:SendBytes cannot send zero bytes");
 				result = false;
 			}
 			else if (bytesToSend > _maxPacketSize)
@@ -253,18 +244,15 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					if (LogFilter.logError)
+					Debug.LogError(string.Concat(new object[]
 					{
-						Debug.LogError(string.Concat(new object[]
-						{
 							"Failed to send big message of ",
 							bytesToSend,
 							" bytes. The maximum is ",
 							_maxPacketSize,
 							" bytes on channel:",
 							_channelId
-						}));
-					}
+					}));
 					result = false;
 				}
 			}
@@ -285,10 +273,7 @@ namespace QuantumUNET.Transport
 					{
 						if (!_isBroken)
 						{
-							if (LogFilter.logError)
-							{
-								Debug.LogError("ChannelBuffer buffer limit of " + _pendingPackets.Count + " packets reached.");
-							}
+							Debug.LogError("ChannelBuffer buffer limit of " + _pendingPackets.Count + " packets reached.");
 						}
 						_isBroken = true;
 						result = false;
@@ -302,10 +287,7 @@ namespace QuantumUNET.Transport
 				}
 				else if (!_currentPacket.SendToTransport(_connection, _channelId))
 				{
-					if (LogFilter.logError)
-					{
-						Debug.Log("ChannelBuffer SendBytes no space on unreliable channel " + _channelId);
-					}
+					Debug.Log("ChannelBuffer SendBytes no space on unreliable channel " + _channelId);
 					result = false;
 				}
 				else
@@ -371,10 +353,7 @@ namespace QuantumUNET.Transport
 					FreePacket(channelPacket);
 					if (_isBroken && _pendingPackets.Count < _maxPendingPacketCount / 2)
 					{
-						if (LogFilter.logWarn)
-						{
-							Debug.LogWarning("ChannelBuffer recovered from overflow but data was lost.");
-						}
+						Debug.LogWarning("ChannelBuffer recovered from overflow but data was lost.");
 						_isBroken = false;
 					}
 				}

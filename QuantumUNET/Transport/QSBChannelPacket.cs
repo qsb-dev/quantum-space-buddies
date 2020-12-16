@@ -6,6 +6,10 @@ namespace QuantumUNET.Transport
 {
 	internal struct QSBChannelPacket
 	{
+		private int m_Position;
+		private byte[] m_Buffer;
+		private bool m_IsReliable;
+
 		public QSBChannelPacket(int packetSize, bool isReliable)
 		{
 			m_Position = 0;
@@ -32,13 +36,7 @@ namespace QuantumUNET.Transport
 			{
 				if (!m_IsReliable || b != 4)
 				{
-					Debug.LogError(string.Concat(new object[]
-					{
-						"Failed to send internal buffer channel:",
-						channelId,
-						" bytesToSend:",
-						m_Position
-					}));
+					Debug.LogError($"Failed to send internal buffer channel:{channelId} bytesToSend:{m_Position}");
 					result = false;
 				}
 			}
@@ -48,25 +46,11 @@ namespace QuantumUNET.Transport
 				{
 					return false;
 				}
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Send Error: ",
-					(NetworkError)b,
-					" channel:",
-					channelId,
-					" bytesToSend:",
-					m_Position
-				}));
+				Debug.LogError($"Send Error: {(NetworkError)b} channel:{channelId} bytesToSend:{m_Position}");
 				result = false;
 			}
 			m_Position = 0;
 			return result;
 		}
-
-		private int m_Position;
-
-		private byte[] m_Buffer;
-
-		private bool m_IsReliable;
 	}
 }

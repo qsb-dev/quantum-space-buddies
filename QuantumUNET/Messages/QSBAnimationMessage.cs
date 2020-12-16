@@ -9,14 +9,6 @@ namespace QuantumUNET.Messages
 		public float normalizedTime;
 		public byte[] parameters;
 
-		public override void Deserialize(QSBNetworkReader reader)
-		{
-			netId = reader.ReadNetworkId();
-			stateHash = (int)reader.ReadPackedUInt32();
-			normalizedTime = reader.ReadSingle();
-			parameters = reader.ReadBytesAndSize();
-		}
-
 		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(netId);
@@ -30,6 +22,14 @@ namespace QuantumUNET.Messages
 			{
 				writer.WriteBytesAndSize(parameters, parameters.Length);
 			}
+		}
+
+		public override void Deserialize(QSBNetworkReader reader)
+		{
+			netId = reader.ReadNetworkId();
+			stateHash = (int)reader.ReadPackedUInt32();
+			normalizedTime = reader.ReadSingle();
+			parameters = reader.ReadBytesAndSize();
 		}
 	}
 }

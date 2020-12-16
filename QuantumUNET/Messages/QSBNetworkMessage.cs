@@ -5,7 +5,6 @@ namespace QuantumUNET.Messages
 {
 	public class QSBNetworkMessage
 	{
-		public const int MaxMessageSize = 65535;
 		public short MsgType;
 		public QSBNetworkConnection Connection;
 		public QSBNetworkReader Reader;

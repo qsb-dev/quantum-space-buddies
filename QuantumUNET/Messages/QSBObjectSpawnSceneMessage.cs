@@ -10,20 +10,20 @@ namespace QuantumUNET.Messages
 		public Vector3 Position;
 		public byte[] Payload;
 
-		public override void Deserialize(QSBNetworkReader reader)
-		{
-			NetId = reader.ReadNetworkId();
-			SceneId = reader.ReadSceneId();
-			Position = reader.ReadVector3();
-			Payload = reader.ReadBytesAndSize();
-		}
-
 		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(NetId);
 			writer.Write(SceneId);
 			writer.Write(Position);
 			writer.WriteBytesFull(Payload);
+		}
+
+		public override void Deserialize(QSBNetworkReader reader)
+		{
+			NetId = reader.ReadNetworkId();
+			SceneId = reader.ReadSceneId();
+			Position = reader.ReadVector3();
+			Payload = reader.ReadBytesAndSize();
 		}
 	}
 }
