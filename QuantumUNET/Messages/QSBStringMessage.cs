@@ -1,26 +1,18 @@
-﻿namespace QuantumUNET.Messages
+﻿using QuantumUNET.Transport;
+
+namespace QuantumUNET.Messages
 {
 	public class QSBStringMessage : QSBMessageBase
 	{
-		public QSBStringMessage()
-		{
-		}
+		public string value;
 
 		public QSBStringMessage(string v)
 		{
-			this.value = v;
+			value = v;
 		}
 
-		public override void Deserialize(QSBNetworkReader reader)
-		{
-			this.value = reader.ReadString();
-		}
+		public override void Serialize(QSBNetworkWriter writer) => writer.Write(value);
 
-		public override void Serialize(QSBNetworkWriter writer)
-		{
-			writer.Write(this.value);
-		}
-
-		public string value;
+		public override void Deserialize(QSBNetworkReader reader) => value = reader.ReadString();
 	}
 }

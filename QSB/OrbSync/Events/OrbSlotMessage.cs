@@ -1,5 +1,5 @@
 ﻿using QSB.Messaging;
-using QuantumUNET;
+using QuantumUNET.Transport;
 
 namespace QSB.OrbSync.Events
 {

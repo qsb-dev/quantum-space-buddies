@@ -1,3 +1,4 @@
+﻿using QuantumUNET.Transport;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -11,6 +12,15 @@ namespace QuantumUNET.Messages
 		public byte[] Payload;
 		public Quaternion Rotation;
 
+		public override void Serialize(QSBNetworkWriter writer)
+		{
+			writer.Write(NetId);
+			writer.Write(assetId);
+			writer.Write(Position);
+			writer.WriteBytesFull(Payload);
+			writer.Write(Rotation);
+		}
+
 		public override void Deserialize(QSBNetworkReader reader)
 		{
 			NetId = reader.ReadNetworkId();
@@ -21,15 +31,6 @@ namespace QuantumUNET.Messages
 			{
 				Rotation = reader.ReadQuaternion();
 			}
-		}
-
-		public override void Serialize(QSBNetworkWriter writer)
-		{
-			writer.Write(NetId);
-			writer.Write(assetId);
-			writer.Write(Position);
-			writer.WriteBytesFull(Payload);
-			writer.Write(Rotation);
 		}
 	}
 }

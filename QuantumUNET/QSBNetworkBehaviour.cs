@@ -1,5 +1,6 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Components;
+using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -77,7 +78,7 @@ namespace QuantumUNET
 				}
 			}
 			writer.FinishMessage();
-			QSBNetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
+			QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 		}
 
 		protected void SendTargetRPCInternal(QSBNetworkConnection conn, QSBNetworkWriter writer, int channelId, string rpcName)
@@ -434,7 +435,7 @@ namespace QuantumUNET
 					Debug.Log(string.Concat(new object[]
 					{
 						"SetSyncVar GameObject ",
-						base.GetType().Name,
+						GetType().Name,
 						" bit [",
 						dirtyBit,
 						"] netfieldId:",

@@ -43,6 +43,7 @@ namespace QSB
 
 		public void Awake()
 		{
+			base.Awake();
 			Instance = this;
 
 			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
