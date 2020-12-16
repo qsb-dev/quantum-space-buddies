@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
@@ -121,5 +122,8 @@ namespace QuantumUNET
 				i15
 			});
 		}
+
+		public static explicit operator QSBNetworkHash128(NetworkHash128 v) 
+			=> Parse(v.ToString());
 	}
 }

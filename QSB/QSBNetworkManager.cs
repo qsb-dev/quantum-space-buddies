@@ -99,8 +99,8 @@ namespace QSB
 		{
 			var ident = go.AddComponent<QSBNetworkIdentity>();
 			ident.LocalPlayerAuthority = true;
-			ident.SetValue("m_AssetId", playerPrefab.GetComponent<NetworkIdentity>().assetId);
-			ident.SetValue("m_SceneId", playerPrefab.GetComponent<NetworkIdentity>().sceneId);
+			ident.SetValue("m_AssetId", (QSBNetworkHash128)playerPrefab.GetComponent<NetworkIdentity>().assetId);
+			ident.SetValue("m_SceneId", (QSBNetworkSceneId)playerPrefab.GetComponent<NetworkIdentity>().sceneId);
 		}
 
 		private void SetupNetworkTransform(GameObject go)

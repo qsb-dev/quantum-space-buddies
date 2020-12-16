@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
@@ -32,5 +33,13 @@ namespace QuantumUNET
 			=> c1.m_Value != c2.m_Value;
 
 		public override string ToString() => m_Value.ToString();
+
+		public static explicit operator QSBNetworkSceneId(NetworkSceneId v)
+		{
+			return new QSBNetworkSceneId
+			{
+				m_Value = v.Value
+			};
+		}
 	}
 }
