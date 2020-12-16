@@ -1,6 +1,7 @@
 ﻿using QSB.Animation;
 using QSB.Instruments;
 using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -11,8 +12,11 @@ namespace QSB.TransformSync
 
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 
-		public override void OnStartLocalPlayer() =>
+		public override void OnStartLocalPlayer()
+		{
 			LocalInstance = this;
+			DebugLog.DebugWrite("SET LOCAL INSTANCE");
+		}
 
 		protected override void OnDestroy()
 		{

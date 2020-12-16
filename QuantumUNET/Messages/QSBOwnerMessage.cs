@@ -1,10 +1,11 @@
 ﻿using QuantumUNET.Transport;
+using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBOwnerMessage : QSBMessageBase
 	{
-		public QSBNetworkInstanceId NetId;
+		public NetworkInstanceId NetId;
 		public short PlayerControllerId;
 
 		public override void Serialize(QSBNetworkWriter writer)

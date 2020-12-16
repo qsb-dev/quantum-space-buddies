@@ -6,7 +6,7 @@ namespace QuantumUNET.Messages
 {
 	internal class QSBObjectSpawnSceneMessage : QSBMessageBase
 	{
-		public QSBNetworkInstanceId NetId;
+		public NetworkInstanceId NetId;
 		public NetworkSceneId SceneId;
 		public Vector3 Position;
 		public byte[] Payload;

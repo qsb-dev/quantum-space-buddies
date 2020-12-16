@@ -1,10 +1,11 @@
 ﻿using QuantumUNET.Transport;
+using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBAnimationParametersMessage : QSBMessageBase
 	{
-		public QSBNetworkInstanceId netId;
+		public NetworkInstanceId netId;
 		public byte[] parameters;
 
 		public override void Deserialize(QSBNetworkReader reader)

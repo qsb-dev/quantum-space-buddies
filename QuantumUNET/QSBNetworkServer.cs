@@ -16,7 +16,7 @@ namespace QuantumUNET
 		private QSBNetworkServer()
 		{
 			NetworkTransport.Init();
-			m_RemoveList = new HashSet<QSBNetworkInstanceId>();
+			m_RemoveList = new HashSet<NetworkInstanceId>();
 			m_ExternalConnections = new HashSet<int>();
 			m_NetworkScene = new QSBNetworkScene();
 			m_SimpleServerSimple = new ServerSimpleWrapper(this);
@@ -34,7 +34,7 @@ namespace QuantumUNET
 
 		public static HostTopology hostTopology => instance.m_SimpleServerSimple.hostTopology;
 
-		public static Dictionary<QSBNetworkInstanceId, QSBNetworkIdentity> objects => instance.m_NetworkScene.localObjects;
+		public static Dictionary<NetworkInstanceId, QSBNetworkIdentity> objects => instance.m_NetworkScene.localObjects;
 
 		public static bool dontListen { get; set; }
 
@@ -216,7 +216,7 @@ namespace QuantumUNET
 			m_SimpleServerSimple.RemoveConnectionAtIndex(0);
 		}
 
-		internal void SetLocalObjectOnServer(QSBNetworkInstanceId netId, GameObject obj)
+		internal void SetLocalObjectOnServer(NetworkInstanceId netId, GameObject obj)
 		{
 			Debug.Log(string.Concat(new object[]
 			{
@@ -1278,7 +1278,7 @@ namespace QuantumUNET
 			{
 				if (conn.ClientOwnedObjects != null)
 				{
-					var hashSet = new HashSet<QSBNetworkInstanceId>(conn.ClientOwnedObjects);
+					var hashSet = new HashSet<NetworkInstanceId>(conn.ClientOwnedObjects);
 					foreach (var netId in hashSet)
 					{
 						var gameObject = FindLocalObject(netId);
@@ -1499,7 +1499,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static GameObject FindLocalObject(QSBNetworkInstanceId netId) => instance.m_NetworkScene.FindLocalObject(netId);
+		public static GameObject FindLocalObject(NetworkInstanceId netId) => instance.m_NetworkScene.FindLocalObject(netId);
 
 		private static bool ValidateSceneObject(QSBNetworkIdentity netId) => netId.gameObject.hideFlags != HideFlags.NotEditable && netId.gameObject.hideFlags != HideFlags.HideAndDontSave && !netId.SceneId.IsEmpty();
 
@@ -1584,7 +1584,7 @@ namespace QuantumUNET
 
 		private float m_MaxDelay = 0.1f;
 
-		private HashSet<QSBNetworkInstanceId> m_RemoveList;
+		private HashSet<NetworkInstanceId> m_RemoveList;
 
 		private int m_RemoveListCount;
 
