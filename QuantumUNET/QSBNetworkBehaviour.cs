@@ -1,5 +1,6 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Components;
+using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -15,7 +16,7 @@ namespace QuantumUNET
 		public bool IsClient => MyView.IsClient;
 		public bool IsLocalPlayer => MyView.IsLocalPlayer;
 		public bool HasAuthority => MyView.HasAuthority;
-		public NetworkInstanceId NetId => MyView.NetId;
+		public QSBNetworkInstanceId NetId => MyView.NetId;
 		public QSBNetworkConnection ConnectionToServer => MyView.ConnectionToServer;
 		public QSBNetworkConnection ConnectionToClient => MyView.ConnectionToClient;
 		public short PlayerControllerId => MyView.PlayerControllerId;
@@ -77,7 +78,7 @@ namespace QuantumUNET
 				}
 			}
 			writer.FinishMessage();
-			QSBNetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
+			QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 		}
 
 		protected void SendTargetRPCInternal(QSBNetworkConnection conn, QSBNetworkWriter writer, int channelId, string rpcName)
@@ -404,11 +405,11 @@ namespace QuantumUNET
 		internal static string GetCmdHashListName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncList");
 
-		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref NetworkInstanceId netIdField)
+		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref QSBNetworkInstanceId netIdField)
 		{
 			if (!SyncVarHookGuard)
 			{
-				NetworkInstanceId networkInstanceId = default;
+				QSBNetworkInstanceId networkInstanceId = default;
 				if (newGameObject != null)
 				{
 					var component = newGameObject.GetComponent<QSBNetworkIdentity>();
@@ -424,7 +425,7 @@ namespace QuantumUNET
 						}
 					}
 				}
-				NetworkInstanceId networkInstanceId2 = default;
+				QSBNetworkInstanceId networkInstanceId2 = default;
 				if (gameObjectField != null)
 				{
 					networkInstanceId2 = gameObjectField.GetComponent<QSBNetworkIdentity>().NetId;
@@ -434,7 +435,7 @@ namespace QuantumUNET
 					Debug.Log(string.Concat(new object[]
 					{
 						"SetSyncVar GameObject ",
-						base.GetType().Name,
+						GetType().Name,
 						" bit [",
 						dirtyBit,
 						"] netfieldId:",

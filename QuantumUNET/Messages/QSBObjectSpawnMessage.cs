@@ -1,15 +1,24 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+﻿using QuantumUNET.Transport;
+using UnityEngine;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBObjectSpawnMessage : QSBMessageBase
 	{
-		public NetworkInstanceId NetId;
-		public NetworkHash128 assetId;
+		public QSBNetworkInstanceId NetId;
+		public QSBNetworkHash128 assetId;
 		public Vector3 Position;
 		public byte[] Payload;
 		public Quaternion Rotation;
+
+		public override void Serialize(QSBNetworkWriter writer)
+		{
+			writer.Write(NetId);
+			writer.Write(assetId);
+			writer.Write(Position);
+			writer.WriteBytesFull(Payload);
+			writer.Write(Rotation);
+		}
 
 		public override void Deserialize(QSBNetworkReader reader)
 		{
@@ -21,15 +30,6 @@ namespace QuantumUNET.Messages
 			{
 				Rotation = reader.ReadQuaternion();
 			}
-		}
-
-		public override void Serialize(QSBNetworkWriter writer)
-		{
-			writer.Write(NetId);
-			writer.Write(assetId);
-			writer.Write(Position);
-			writer.WriteBytesFull(Payload);
-			writer.Write(Rotation);
 		}
 	}
 }

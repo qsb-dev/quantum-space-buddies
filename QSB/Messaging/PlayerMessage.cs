@@ -1,5 +1,5 @@
-﻿using QuantumUNET;
-using QuantumUNET.Messages;
+﻿using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 
 namespace QSB.Messaging
 {

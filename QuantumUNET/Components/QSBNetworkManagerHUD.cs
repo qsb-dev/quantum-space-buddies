@@ -9,10 +9,7 @@ namespace QuantumUNET.Components
 		public int offsetX;
 		public int offsetY;
 
-		private void Awake()
-		{
-			manager = GetComponent<QSBNetworkManagerUNET>();
-		}
+		private void Awake() => manager = GetComponent<QSBNetworkManagerUNET>();
 
 		private void OnGUI()
 		{

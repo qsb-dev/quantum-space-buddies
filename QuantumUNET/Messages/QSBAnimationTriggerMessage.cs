@@ -1,10 +1,10 @@
-﻿using UnityEngine.Networking;
+﻿using QuantumUNET.Transport;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBAnimationTriggerMessage : QSBMessageBase
 	{
-		public NetworkInstanceId netId;
+		public QSBNetworkInstanceId netId;
 		public int hash;
 
 		public override void Deserialize(QSBNetworkReader reader)

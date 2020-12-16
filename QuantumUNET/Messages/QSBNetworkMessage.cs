@@ -1,10 +1,10 @@
-﻿using System;
+﻿using QuantumUNET.Transport;
+using System;
 
 namespace QuantumUNET.Messages
 {
 	public class QSBNetworkMessage
 	{
-		public const int MaxMessageSize = 65535;
 		public short MsgType;
 		public QSBNetworkConnection Connection;
 		public QSBNetworkReader Reader;
@@ -17,9 +17,7 @@ namespace QuantumUNET.Messages
 			return result;
 		}
 
-		public void ReadMessage<TMsg>(TMsg msg) where TMsg : QSBMessageBase
-		{
+		public void ReadMessage<TMsg>(TMsg msg) where TMsg : QSBMessageBase =>
 			msg.Deserialize(Reader);
-		}
 	}
 }

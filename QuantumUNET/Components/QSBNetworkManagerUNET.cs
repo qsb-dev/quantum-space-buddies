@@ -31,7 +31,6 @@ namespace QuantumUNET.Components
 		public float packetLossPercentage { get; set; }
 		public float maxDelay { get; set; } = 0.01f;
 		public GameObject playerPrefab { get; set; }
-		public PlayerSpawnMethod playerSpawnMethod { get; set; }
 		public List<GameObject> spawnPrefabs { get; } = new List<GameObject>();
 		public QSBNetworkClient client;
 		public int maxConnections { get; set; } = 4;
@@ -41,22 +40,12 @@ namespace QuantumUNET.Components
 		private GlobalConfig m_GlobalConfig;
 		private int m_MaxBufferedPackets = 16;
 		private bool m_AllowFragmentation = true;
-		private static List<Transform> s_StartPositions = new List<Transform>();
-		private static int s_StartPositionIndex;
 		private static QSBAddPlayerMessage s_AddPlayerMessage = new QSBAddPlayerMessage();
 		private static QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
 		private static QSBErrorMessage s_ErrorMessage = new QSBErrorMessage();
 		private static AsyncOperation s_LoadingSceneAsync;
 		private static QSBNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;
-
-		public List<Transform> startPositions
-		{
-			get
-			{
-				return s_StartPositions;
-			}
-		}
 
 		public bool customConfig { get; set; }
 
@@ -107,10 +96,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		private void Awake()
-		{
-			InitializeSingleton();
-		}
+		public void Awake() => InitializeSingleton();
 
 		private void InitializeSingleton()
 		{
@@ -121,14 +107,14 @@ namespace QuantumUNET.Components
 					if (singleton != null)
 					{
 						Debug.Log("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.");
-						Destroy(base.gameObject);
+						Destroy(gameObject);
 						return;
 					}
 					Debug.Log("NetworkManager created singleton (DontDestroyOnLoad)");
 					singleton = this;
 					if (Application.isPlaying)
 					{
-						DontDestroyOnLoad(base.gameObject);
+						DontDestroyOnLoad(gameObject);
 					}
 				}
 				else
@@ -157,10 +143,7 @@ namespace QuantumUNET.Components
 			QSBNetworkServer.RegisterHandler(QSBMsgType.Error, new QSBNetworkMessageDelegate(OnServerErrorInternal));
 		}
 
-		public bool StartServer()
-		{
-			return StartServer(null, -1);
-		}
+		public bool StartServer() => StartServer(null, -1);
 
 		private bool StartServer(ConnectionConfig config, int maxConnections)
 		{
@@ -193,26 +176,17 @@ namespace QuantumUNET.Components
 			{
 				if (!QSBNetworkServer.Listen(serverBindAddress, networkPort))
 				{
-					if (LogFilter.logError)
-					{
-						Debug.LogError("StartServer listen on " + serverBindAddress + " failed.");
-					}
+					Debug.LogError("StartServer listen on " + serverBindAddress + " failed.");
 					return false;
 				}
 			}
 			else if (!QSBNetworkServer.Listen(networkPort))
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("StartServer listen failed.");
-				}
+				Debug.LogError("StartServer listen failed.");
 				return false;
 			}
 			RegisterServerMessages();
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager StartServer port:" + networkPort);
-			}
+			Debug.Log("NetworkManager StartServer port:" + networkPort);
 			isNetworkActive = true;
 			var name = SceneManager.GetSceneAt(0).name;
 			if (!string.IsNullOrEmpty(onlineScene) && onlineScene != name && onlineScene != offlineScene)
@@ -339,15 +313,9 @@ namespace QuantumUNET.Components
 			return client;
 		}
 
-		public QSBNetworkClient StartClient()
-		{
-			return StartClient(null);
-		}
+		public QSBNetworkClient StartClient() => StartClient(null);
 
-		public QSBNetworkClient StartClient(ConnectionConfig config)
-		{
-			return StartClient(config, 0);
-		}
+		public QSBNetworkClient StartClient(ConnectionConfig config) => StartClient(config, 0);
 
 		public virtual QSBNetworkClient StartHost(ConnectionConfig config, int maxConnections)
 		{
@@ -386,10 +354,7 @@ namespace QuantumUNET.Components
 
 		private QSBNetworkClient ConnectLocalClient()
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager StartHost port:" + networkPort);
-			}
+			Debug.Log("NetworkManager StartHost port:" + networkPort);
 			networkAddress = "localhost";
 			client = QSBClientScene.ConnectLocalServer();
 			RegisterClientMessages(client);
@@ -408,10 +373,7 @@ namespace QuantumUNET.Components
 			if (QSBNetworkServer.active)
 			{
 				OnStopServer();
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("NetworkManager StopServer");
-				}
+				Debug.Log("NetworkManager StopServer");
 				isNetworkActive = false;
 				QSBNetworkServer.Shutdown();
 				if (!string.IsNullOrEmpty(offlineScene))
@@ -425,10 +387,7 @@ namespace QuantumUNET.Components
 		public void StopClient()
 		{
 			OnStopClient();
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager StopClient");
-			}
+			Debug.Log("NetworkManager StopClient");
 			isNetworkActive = false;
 			if (client != null)
 			{
@@ -448,24 +407,16 @@ namespace QuantumUNET.Components
 		{
 			if (string.IsNullOrEmpty(newSceneName))
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ServerChangeScene empty scene name");
-				}
+				Debug.LogError("ServerChangeScene empty scene name");
 			}
 			else
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("ServerChangeScene " + newSceneName);
-				}
+				Debug.Log("ServerChangeScene " + newSceneName);
 				QSBNetworkServer.SetAllClientsNotReady();
 				networkSceneName = newSceneName;
 				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
 				var msg = new QSBStringMessage(networkSceneName);
 				QSBNetworkServer.SendToAll(39, msg);
-				s_StartPositionIndex = 0;
-				s_StartPositions.Clear();
 			}
 		}
 
@@ -481,17 +432,11 @@ namespace QuantumUNET.Components
 		{
 			if (string.IsNullOrEmpty(newSceneName))
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ClientChangeScene empty scene name");
-				}
+				Debug.LogError("ClientChangeScene empty scene name");
 			}
 			else
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("ClientChangeScene newSceneName:" + newSceneName + " networkSceneName:" + networkSceneName);
-				}
+				Debug.Log("ClientChangeScene newSceneName:" + newSceneName + " networkSceneName:" + networkSceneName);
 				if (newSceneName == networkSceneName)
 				{
 					if (!forceReload)
@@ -549,47 +494,12 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public static void RegisterStartPosition(Transform start)
-		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterStartPosition: (",
-					start.gameObject.name,
-					") ",
-					start.position
-				}));
-			}
-			s_StartPositions.Add(start);
-		}
-
-		public static void UnRegisterStartPosition(Transform start)
-		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"UnRegisterStartPosition: (",
-					start.gameObject.name,
-					") ",
-					start.position
-				}));
-			}
-			s_StartPositions.Remove(start);
-		}
-
-		public bool IsClientConnected()
-		{
-			return client != null && client.isConnected;
-		}
+		public bool IsClientConnected() => client != null && client.isConnected;
 
 		public static void Shutdown()
 		{
 			if (!(singleton == null))
 			{
-				s_StartPositions.Clear();
-				s_StartPositionIndex = 0;
 				s_ClientReadyConnection = null;
 				singleton.StopHost();
 				singleton = null;
@@ -598,10 +508,7 @@ namespace QuantumUNET.Components
 
 		internal void OnServerConnectInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnServerConnectInternal");
-			}
+			Debug.Log("NetworkManager:OnServerConnectInternal");
 			netMsg.Connection.SetMaxDelay(maxDelay);
 			if (m_MaxBufferedPackets != 512)
 			{
@@ -627,28 +534,19 @@ namespace QuantumUNET.Components
 
 		internal void OnServerDisconnectInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnServerDisconnectInternal");
-			}
+			Debug.Log("NetworkManager:OnServerDisconnectInternal");
 			OnServerDisconnect(netMsg.Connection);
 		}
 
 		internal void OnServerReadyMessageInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnServerReadyMessageInternal");
-			}
+			Debug.Log("NetworkManager:OnServerReadyMessageInternal");
 			OnServerReady(netMsg.Connection);
 		}
 
 		internal void OnServerAddPlayerMessageInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnServerAddPlayerMessageInternal");
-			}
+			Debug.Log("NetworkManager:OnServerAddPlayerMessageInternal");
 			netMsg.ReadMessage<QSBAddPlayerMessage>(s_AddPlayerMessage);
 			if (s_AddPlayerMessage.msgSize != 0)
 			{
@@ -663,10 +561,7 @@ namespace QuantumUNET.Components
 
 		internal void OnServerRemovePlayerMessageInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnServerRemovePlayerMessageInternal");
-			}
+			Debug.Log("NetworkManager:OnServerRemovePlayerMessageInternal");
 			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
 			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out var player);
 			OnServerRemovePlayer(netMsg.Connection, player);
@@ -675,20 +570,14 @@ namespace QuantumUNET.Components
 
 		internal void OnServerErrorInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnServerErrorInternal");
-			}
+			Debug.Log("NetworkManager:OnServerErrorInternal");
 			netMsg.ReadMessage<QSBErrorMessage>(s_ErrorMessage);
 			OnServerError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
 		internal void OnClientConnectInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnClientConnectInternal");
-			}
+			Debug.Log("NetworkManager:OnClientConnectInternal");
 			netMsg.Connection.SetMaxDelay(maxDelay);
 			var name = SceneManager.GetSceneAt(0).name;
 			if (string.IsNullOrEmpty(onlineScene) || onlineScene == offlineScene || name == onlineScene)
@@ -704,10 +593,7 @@ namespace QuantumUNET.Components
 
 		internal void OnClientDisconnectInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnClientDisconnectInternal");
-			}
+			Debug.Log("NetworkManager:OnClientDisconnectInternal");
 			if (!string.IsNullOrEmpty(offlineScene))
 			{
 				ClientChangeScene(offlineScene, false);
@@ -717,30 +603,21 @@ namespace QuantumUNET.Components
 
 		internal void OnClientNotReadyMessageInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnClientNotReadyMessageInternal");
-			}
+			Debug.Log("NetworkManager:OnClientNotReadyMessageInternal");
 			QSBClientScene.SetNotReady();
 			OnClientNotReady(netMsg.Connection);
 		}
 
 		internal void OnClientErrorInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnClientErrorInternal");
-			}
+			Debug.Log("NetworkManager:OnClientErrorInternal");
 			netMsg.ReadMessage<QSBErrorMessage>(s_ErrorMessage);
 			OnClientError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
 		internal void OnClientSceneInternal(QSBNetworkMessage netMsg)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkManager:OnClientSceneInternal");
-			}
+			Debug.Log("NetworkManager:OnClientSceneInternal");
 			var newSceneName = netMsg.Reader.ReadString();
 			if (IsClientConnected() && !QSBNetworkServer.active)
 			{
@@ -757,10 +634,7 @@ namespace QuantumUNET.Components
 			QSBNetworkServer.DestroyPlayersForConnection(conn);
 			if (conn.LastError != NetworkError.Ok)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ServerDisconnected due to error: " + conn.LastError);
-				}
+				Debug.LogError("ServerDisconnected due to error: " + conn.LastError);
 			}
 		}
 
@@ -768,96 +642,34 @@ namespace QuantumUNET.Components
 		{
 			if (conn.PlayerControllers.Count == 0)
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("Ready with no player object");
-				}
+				Debug.Log("Ready with no player object");
 			}
 			QSBNetworkServer.SetClientReady(conn);
 		}
 
-		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader)
-		{
-			OnServerAddPlayerInternal(conn, playerControllerId);
-		}
+		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader) => OnServerAddPlayerInternal(conn, playerControllerId);
 
-		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId)
-		{
-			OnServerAddPlayerInternal(conn, playerControllerId);
-		}
+		public virtual void OnServerAddPlayer(QSBNetworkConnection conn, short playerControllerId) => OnServerAddPlayerInternal(conn, playerControllerId);
 
 		private void OnServerAddPlayerInternal(QSBNetworkConnection conn, short playerControllerId)
 		{
 			if (playerPrefab == null)
 			{
-				if (LogFilter.logError)
-				{
-					ModConsole.OwmlConsole.WriteLine("Error - The PlayerPrefab is empty on the QSBNetworkManager. Please setup a PlayerPrefab object.");
-				}
+				ModConsole.OwmlConsole.WriteLine("Error - The PlayerPrefab is empty on the QSBNetworkManager. Please setup a PlayerPrefab object.");
 			}
 			else if (playerPrefab.GetComponent<QSBNetworkIdentity>() == null)
 			{
-				if (LogFilter.logError)
-				{
-					ModConsole.OwmlConsole.WriteLine("Error - The PlayerPrefab does not have a QSBNetworkIdentity. Please add a QSBNetworkIdentity to the player prefab.");
-				}
+				ModConsole.OwmlConsole.WriteLine("Error - The PlayerPrefab does not have a QSBNetworkIdentity. Please add a QSBNetworkIdentity to the player prefab.");
 			}
 			else if (playerControllerId < conn.PlayerControllers.Count && conn.PlayerControllers[playerControllerId].IsValid && conn.PlayerControllers[playerControllerId].Gameobject != null)
 			{
-				if (LogFilter.logError)
-				{
-					ModConsole.OwmlConsole.WriteLine("Warning - There is already a player at that playerControllerId for this connections.");
-				}
+				ModConsole.OwmlConsole.WriteLine("Warning - There is already a player at that playerControllerId for this connections.");
 			}
 			else
 			{
-				var startPosition = GetStartPosition();
-				GameObject player;
-				if (startPosition != null)
-				{
-					player = Instantiate<GameObject>(playerPrefab, startPosition.position, startPosition.rotation);
-				}
-				else
-				{
-					player = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
-				}
+				var player = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
 				QSBNetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 			}
-		}
-
-		public Transform GetStartPosition()
-		{
-			if (s_StartPositions.Count > 0)
-			{
-				for (var i = s_StartPositions.Count - 1; i >= 0; i--)
-				{
-					if (s_StartPositions[i] == null)
-					{
-						s_StartPositions.RemoveAt(i);
-					}
-				}
-			}
-			Transform result;
-			if (playerSpawnMethod == PlayerSpawnMethod.Random && s_StartPositions.Count > 0)
-			{
-				var index = UnityEngine.Random.Range(0, s_StartPositions.Count);
-				result = s_StartPositions[index];
-			}
-			else if (playerSpawnMethod == PlayerSpawnMethod.RoundRobin && s_StartPositions.Count > 0)
-			{
-				if (s_StartPositionIndex >= s_StartPositions.Count)
-				{
-					s_StartPositionIndex = 0;
-				}
-				var transform = s_StartPositions[s_StartPositionIndex];
-				s_StartPositionIndex++;
-				result = transform;
-			}
-			else
-			{
-				result = null;
-			}
-			return result;
 		}
 
 		public virtual void OnServerRemovePlayer(QSBNetworkConnection conn, QSBPlayerController player)
@@ -893,10 +705,7 @@ namespace QuantumUNET.Components
 			StopClient();
 			if (conn.LastError != NetworkError.Ok)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("ClientDisconnected due to error: " + conn.LastError);
-				}
+				Debug.LogError("ClientDisconnected due to error: " + conn.LastError);
 			}
 		}
 

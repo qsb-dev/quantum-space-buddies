@@ -1,21 +1,13 @@
-﻿using UnityEngine.Networking;
+﻿using QuantumUNET.Transport;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBAnimationMessage : QSBMessageBase
 	{
-		public NetworkInstanceId netId;
+		public QSBNetworkInstanceId netId;
 		public int stateHash;
 		public float normalizedTime;
 		public byte[] parameters;
-
-		public override void Deserialize(QSBNetworkReader reader)
-		{
-			netId = reader.ReadNetworkId();
-			stateHash = (int)reader.ReadPackedUInt32();
-			normalizedTime = reader.ReadSingle();
-			parameters = reader.ReadBytesAndSize();
-		}
 
 		public override void Serialize(QSBNetworkWriter writer)
 		{
@@ -30,6 +22,14 @@ namespace QuantumUNET.Messages
 			{
 				writer.WriteBytesAndSize(parameters, parameters.Length);
 			}
+		}
+
+		public override void Deserialize(QSBNetworkReader reader)
+		{
+			netId = reader.ReadNetworkId();
+			stateHash = (int)reader.ReadPackedUInt32();
+			normalizedTime = reader.ReadSingle();
+			parameters = reader.ReadBytesAndSize();
 		}
 	}
 }

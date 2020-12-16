@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QuantumUNET
+namespace QuantumUNET.Transport
 {
 	public class QSBNetworkReader
 	{
@@ -162,9 +162,9 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public NetworkInstanceId ReadNetworkId() => new NetworkInstanceId(ReadPackedUInt32());
+		public QSBNetworkInstanceId ReadNetworkId() => new QSBNetworkInstanceId(ReadPackedUInt32());
 
-		public NetworkSceneId ReadSceneId() => new NetworkSceneId(ReadPackedUInt32());
+		public QSBNetworkSceneId ReadSceneId() => new QSBNetworkSceneId(ReadPackedUInt32());
 
 		public byte ReadByte() => m_buf.ReadByte();
 
@@ -363,9 +363,9 @@ namespace QuantumUNET
 			};
 		}
 
-		public NetworkHash128 ReadNetworkHash128()
+		public QSBNetworkHash128 ReadNetworkHash128()
 		{
-			NetworkHash128 result;
+			QSBNetworkHash128 result;
 			result.i0 = ReadByte();
 			result.i1 = ReadByte();
 			result.i2 = ReadByte();
