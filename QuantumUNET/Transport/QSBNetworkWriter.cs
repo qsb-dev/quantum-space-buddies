@@ -154,7 +154,7 @@ namespace QuantumUNET.Transport
 
 		public void Write(QSBNetworkInstanceId value) => WritePackedUInt32(value.Value);
 
-		public void Write(QSBNetworkSceneId value) => WritePackedUInt32(value.Value);
+		public void Write(NetworkSceneId value) => WritePackedUInt32(value.Value);
 
 		public void Write(char value) => m_Buffer.WriteByte((byte)value);
 
@@ -373,7 +373,7 @@ namespace QuantumUNET.Transport
 			Write(value.m33);
 		}
 
-		public void Write(QSBNetworkHash128 value)
+		public void Write(NetworkHash128 value)
 		{
 			Write(value.i0);
 			Write(value.i1);

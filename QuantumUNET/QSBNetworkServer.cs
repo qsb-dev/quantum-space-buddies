@@ -1430,14 +1430,14 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static bool SpawnWithClientAuthority(GameObject obj, QSBNetworkHash128 assetId, QSBNetworkConnection conn)
+		public static bool SpawnWithClientAuthority(GameObject obj, NetworkHash128 assetId, QSBNetworkConnection conn)
 		{
 			Spawn(obj, assetId);
 			var component = obj.GetComponent<QSBNetworkIdentity>();
 			return !(component == null) && component.IsServer && component.AssignClientAuthority(conn);
 		}
 
-		public static void Spawn(GameObject obj, QSBNetworkHash128 assetId)
+		public static void Spawn(GameObject obj, NetworkHash128 assetId)
 		{
 			if (VerifyCanSpawn(obj))
 			{

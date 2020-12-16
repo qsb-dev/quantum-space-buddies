@@ -1,12 +1,13 @@
 ﻿using QuantumUNET.Transport;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBObjectSpawnSceneMessage : QSBMessageBase
 	{
 		public QSBNetworkInstanceId NetId;
-		public QSBNetworkSceneId SceneId;
+		public NetworkSceneId SceneId;
 		public Vector3 Position;
 		public byte[] Payload;
 

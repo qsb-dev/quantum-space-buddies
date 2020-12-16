@@ -164,7 +164,7 @@ namespace QuantumUNET.Transport
 
 		public QSBNetworkInstanceId ReadNetworkId() => new QSBNetworkInstanceId(ReadPackedUInt32());
 
-		public QSBNetworkSceneId ReadSceneId() => new QSBNetworkSceneId(ReadPackedUInt32());
+		public NetworkSceneId ReadSceneId() => new NetworkSceneId(ReadPackedUInt32());
 
 		public byte ReadByte() => m_buf.ReadByte();
 
@@ -363,9 +363,9 @@ namespace QuantumUNET.Transport
 			};
 		}
 
-		public QSBNetworkHash128 ReadNetworkHash128()
+		public NetworkHash128 ReadNetworkHash128()
 		{
-			QSBNetworkHash128 result;
+			NetworkHash128 result;
 			result.i0 = ReadByte();
 			result.i1 = ReadByte();
 			result.i2 = ReadByte();

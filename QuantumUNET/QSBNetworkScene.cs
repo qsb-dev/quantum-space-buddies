@@ -7,11 +7,11 @@ namespace QuantumUNET
 {
 	internal class QSBNetworkScene
 	{
-		internal static Dictionary<QSBNetworkHash128, GameObject> guidToPrefab { get; } = new Dictionary<QSBNetworkHash128, GameObject>();
+		internal static Dictionary<NetworkHash128, GameObject> guidToPrefab { get; } = new Dictionary<NetworkHash128, GameObject>();
 
-		internal static Dictionary<QSBNetworkHash128, QSBSpawnDelegate> spawnHandlers { get; } = new Dictionary<QSBNetworkHash128, QSBSpawnDelegate>();
+		internal static Dictionary<NetworkHash128, QSBSpawnDelegate> spawnHandlers { get; } = new Dictionary<NetworkHash128, QSBSpawnDelegate>();
 
-		internal static Dictionary<QSBNetworkHash128, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<QSBNetworkHash128, UnSpawnDelegate>();
+		internal static Dictionary<NetworkHash128, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<NetworkHash128, UnSpawnDelegate>();
 
 		internal Dictionary<QSBNetworkInstanceId, QSBNetworkIdentity> localObjects { get; } = new Dictionary<QSBNetworkInstanceId, QSBNetworkIdentity>();
 
@@ -92,7 +92,7 @@ namespace QuantumUNET
 
 		internal void ClearLocalObjects() => localObjects.Clear();
 
-		internal static void RegisterPrefab(GameObject prefab, QSBNetworkHash128 newAssetId)
+		internal static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId)
 		{
 			var component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component)
@@ -127,7 +127,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static bool GetPrefab(QSBNetworkHash128 assetId, out GameObject prefab)
+		internal static bool GetPrefab(NetworkHash128 assetId, out GameObject prefab)
 		{
 			bool result;
 			if (!assetId.IsValid())
@@ -155,13 +155,13 @@ namespace QuantumUNET
 			unspawnHandlers.Clear();
 		}
 
-		public static void UnregisterSpawnHandler(QSBNetworkHash128 assetId)
+		public static void UnregisterSpawnHandler(NetworkHash128 assetId)
 		{
 			spawnHandlers.Remove(assetId);
 			unspawnHandlers.Remove(assetId);
 		}
 
-		internal static void RegisterSpawnHandler(QSBNetworkHash128 assetId, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+		internal static void RegisterSpawnHandler(NetworkHash128 assetId, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
 		{
 			if (spawnHandler == null || unspawnHandler == null)
 			{
@@ -216,7 +216,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static bool GetSpawnHandler(QSBNetworkHash128 assetId, out QSBSpawnDelegate handler)
+		internal static bool GetSpawnHandler(NetworkHash128 assetId, out QSBSpawnDelegate handler)
 		{
 			bool result;
 			if (spawnHandlers.ContainsKey(assetId))
@@ -232,7 +232,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal static bool InvokeUnSpawnHandler(QSBNetworkHash128 assetId, GameObject obj)
+		internal static bool InvokeUnSpawnHandler(NetworkHash128 assetId, GameObject obj)
 		{
 			bool result;
 			if (unspawnHandlers.ContainsKey(assetId) && unspawnHandlers[assetId] != null)

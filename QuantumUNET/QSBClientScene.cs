@@ -21,9 +21,9 @@ namespace QuantumUNET
 
 		public static Dictionary<QSBNetworkInstanceId, QSBNetworkIdentity> Objects => s_NetworkScene.localObjects;
 
-		public static Dictionary<QSBNetworkHash128, GameObject> Prefabs => QSBNetworkScene.guidToPrefab;
+		public static Dictionary<NetworkHash128, GameObject> Prefabs => QSBNetworkScene.guidToPrefab;
 
-		public static Dictionary<QSBNetworkSceneId, QSBNetworkIdentity> SpawnableObjects { get; private set; }
+		public static Dictionary<NetworkSceneId, QSBNetworkIdentity> SpawnableObjects { get; private set; }
 
 		internal static void Shutdown()
 		{
@@ -289,7 +289,7 @@ namespace QuantumUNET
 
 		internal static void PrepareToSpawnSceneObjects()
 		{
-			SpawnableObjects = new Dictionary<QSBNetworkSceneId, QSBNetworkIdentity>();
+			SpawnableObjects = new Dictionary<NetworkSceneId, QSBNetworkIdentity>();
 			foreach (var networkIdentity in Resources.FindObjectsOfTypeAll<QSBNetworkIdentity>())
 			{
 				if (!networkIdentity.gameObject.activeSelf)
@@ -309,7 +309,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static QSBNetworkIdentity SpawnSceneObject(QSBNetworkSceneId sceneId)
+		internal static QSBNetworkIdentity SpawnSceneObject(NetworkSceneId sceneId)
 		{
 			QSBNetworkIdentity result;
 			if (SpawnableObjects.ContainsKey(sceneId))
@@ -354,7 +354,7 @@ namespace QuantumUNET
 			client.RegisterHandlerSafe(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
 		}
 
-		internal static string GetStringForAssetId(QSBNetworkHash128 assetId)
+		internal static string GetStringForAssetId(NetworkHash128 assetId)
 		{
 			string result;
 			if (QSBNetworkScene.GetPrefab(assetId, out var gameObject))
@@ -372,7 +372,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static void RegisterPrefab(GameObject prefab, QSBNetworkHash128 newAssetId) => QSBNetworkScene.RegisterPrefab(prefab, newAssetId);
+		public static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId) => QSBNetworkScene.RegisterPrefab(prefab, newAssetId);
 
 		public static void RegisterPrefab(GameObject prefab) => QSBNetworkScene.RegisterPrefab(prefab);
 
@@ -380,9 +380,9 @@ namespace QuantumUNET
 
 		public static void UnregisterPrefab(GameObject prefab) => QSBNetworkScene.UnregisterPrefab(prefab);
 
-		public static void RegisterSpawnHandler(QSBNetworkHash128 assetId, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
+		public static void RegisterSpawnHandler(NetworkHash128 assetId, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
 
-		public static void UnregisterSpawnHandler(QSBNetworkHash128 assetId) => QSBNetworkScene.UnregisterSpawnHandler(assetId);
+		public static void UnregisterSpawnHandler(NetworkHash128 assetId) => QSBNetworkScene.UnregisterSpawnHandler(assetId);
 
 		public static void ClearSpawners() => QSBNetworkScene.ClearSpawners();
 

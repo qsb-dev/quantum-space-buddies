@@ -1,12 +1,13 @@
 ﻿using QuantumUNET.Transport;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QSBObjectSpawnMessage : QSBMessageBase
 	{
 		public QSBNetworkInstanceId NetId;
-		public QSBNetworkHash128 assetId;
+		public NetworkHash128 assetId;
 		public Vector3 Position;
 		public byte[] Payload;
 		public Quaternion Rotation;
