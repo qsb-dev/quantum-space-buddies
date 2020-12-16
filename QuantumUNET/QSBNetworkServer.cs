@@ -1,7 +1,6 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
-using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,19 +21,61 @@ namespace QuantumUNET
 			m_SimpleServerSimple = new ServerSimpleWrapper(this);
 		}
 
-		public static List<QSBNetworkConnection> localConnections => instance.m_LocalConnectionsFakeList;
+		public static List<QSBNetworkConnection> localConnections
+		{
+			get
+			{
+				return instance.m_LocalConnectionsFakeList;
+			}
+		}
 
-		public static int listenPort => instance.m_SimpleServerSimple.listenPort;
+		public static int listenPort
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.listenPort;
+			}
+		}
 
-		public static int serverHostId => instance.m_SimpleServerSimple.serverHostId;
+		public static int serverHostId
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.serverHostId;
+			}
+		}
 
-		public static ReadOnlyCollection<QSBNetworkConnection> connections => instance.m_SimpleServerSimple.connections;
+		public static ReadOnlyCollection<QSBNetworkConnection> connections
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.connections;
+			}
+		}
 
-		public static Dictionary<short, QSBNetworkMessageDelegate> handlers => instance.m_SimpleServerSimple.handlers;
+		public static Dictionary<short, QSBNetworkMessageDelegate> handlers
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.handlers;
+			}
+		}
 
-		public static HostTopology hostTopology => instance.m_SimpleServerSimple.hostTopology;
+		public static HostTopology hostTopology
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.hostTopology;
+			}
+		}
 
-		public static Dictionary<NetworkInstanceId, QSBNetworkIdentity> objects => instance.m_NetworkScene.localObjects;
+		public static Dictionary<NetworkInstanceId, QSBNetworkIdentity> objects
+		{
+			get
+			{
+				return instance.m_NetworkScene.localObjects;
+			}
+		}
 
 		public static bool dontListen { get; set; }
 
@@ -71,9 +112,21 @@ namespace QuantumUNET
 
 		public static bool active { get; private set; }
 
-		public static bool localClientActive => instance.m_LocalClientActive;
+		public static bool localClientActive
+		{
+			get
+			{
+				return instance.m_LocalClientActive;
+			}
+		}
 
-		public static int numChannels => instance.m_SimpleServerSimple.hostTopology.DefaultConfig.ChannelCount;
+		public static int numChannels
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.hostTopology.DefaultConfig.ChannelCount;
+			}
+		}
 
 		public static float maxDelay
 		{
@@ -87,13 +140,28 @@ namespace QuantumUNET
 			}
 		}
 
-		public static Type networkConnectionClass => instance.m_SimpleServerSimple.networkConnectionClass;
+		public static Type networkConnectionClass
+		{
+			get
+			{
+				return instance.m_SimpleServerSimple.networkConnectionClass;
+			}
+		}
 
-		public static void SetNetworkConnectionClass<T>() where T : QSBNetworkConnection => instance.m_SimpleServerSimple.SetNetworkConnectionClass<T>();
+		public static void SetNetworkConnectionClass<T>() where T : QSBNetworkConnection
+		{
+			instance.m_SimpleServerSimple.SetNetworkConnectionClass<T>();
+		}
 
-		public static bool Configure(ConnectionConfig config, int maxConnections) => instance.m_SimpleServerSimple.Configure(config, maxConnections);
+		public static bool Configure(ConnectionConfig config, int maxConnections)
+		{
+			return instance.m_SimpleServerSimple.Configure(config, maxConnections);
+		}
 
-		public static bool Configure(HostTopology topology) => instance.m_SimpleServerSimple.Configure(topology);
+		public static bool Configure(HostTopology topology)
+		{
+			return instance.m_SimpleServerSimple.Configure(topology);
+		}
 
 		public static void Reset()
 		{
@@ -132,7 +200,10 @@ namespace QuantumUNET
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 		}
 
-		public static void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId) => instance.InternalListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
+		public static void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
+		{
+			instance.InternalListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
+		}
 
 		private void InternalListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
 		{
@@ -141,9 +212,15 @@ namespace QuantumUNET
 			RegisterMessageHandlers();
 		}
 
-		public static bool Listen(int serverPort) => instance.InternalListen(null, serverPort);
+		public static bool Listen(int serverPort)
+		{
+			return instance.InternalListen(null, serverPort);
+		}
 
-		public static bool Listen(string ipAddress, int serverPort) => instance.InternalListen(ipAddress, serverPort);
+		public static bool Listen(string ipAddress, int serverPort)
+		{
+			return instance.InternalListen(ipAddress, serverPort);
+		}
 
 		internal bool InternalListen(string ipAddress, int serverPort)
 		{
@@ -508,7 +585,10 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static void DisconnectAll() => instance.InternalDisconnectAll();
+		public static void DisconnectAll()
+		{
+			instance.InternalDisconnectAll();
+		}
 
 		internal void InternalDisconnectAll()
 		{
@@ -610,7 +690,10 @@ namespace QuantumUNET
 			conn.Dispose();
 		}
 
-		private void OnData(QSBNetworkConnection conn, int receivedSize, int channelId) => conn.TransportReceive(m_SimpleServerSimple.messageBuffer, receivedSize, channelId);
+		private void OnData(QSBNetworkConnection conn, int receivedSize, int channelId)
+		{
+			conn.TransportReceive(m_SimpleServerSimple.messageBuffer, receivedSize, channelId);
+		}
 
 		private void GenerateConnectError(int error)
 		{
@@ -651,10 +734,8 @@ namespace QuantumUNET
 		{
 			if (handlers.ContainsKey(34))
 			{
-				var errorMessage = new QSBErrorMessage
-				{
-					errorCode = error
-				};
+				var errorMessage = new QSBErrorMessage();
+				errorMessage.errorCode = error;
 				var writer = new QSBNetworkWriter();
 				errorMessage.Serialize(writer);
 				var reader = new QSBNetworkReader(writer);
@@ -662,13 +743,25 @@ namespace QuantumUNET
 			}
 		}
 
-		public static void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler) => instance.m_SimpleServerSimple.RegisterHandler(msgType, handler);
+		public static void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler)
+		{
+			instance.m_SimpleServerSimple.RegisterHandler(msgType, handler);
+		}
 
-		public static void UnregisterHandler(short msgType) => instance.m_SimpleServerSimple.UnregisterHandler(msgType);
+		public static void UnregisterHandler(short msgType)
+		{
+			instance.m_SimpleServerSimple.UnregisterHandler(msgType);
+		}
 
-		public static void ClearHandlers() => instance.m_SimpleServerSimple.ClearHandlers();
+		public static void ClearHandlers()
+		{
+			instance.m_SimpleServerSimple.ClearHandlers();
+		}
 
-		public static void ClearSpawners() => QSBNetworkScene.ClearSpawners();
+		public static void ClearSpawners()
+		{
+			QSBNetworkScene.ClearSpawners();
+		}
 
 		public static void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
 		{
@@ -681,7 +774,11 @@ namespace QuantumUNET
 				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					networkConnection.GetStatsOut(out var num, out var num2, out var num3, out var num4);
+					int num;
+					int num2;
+					int num3;
+					int num4;
+					networkConnection.GetStatsOut(out num, out num2, out num3, out num4);
 					numMsgs += num;
 					numBufferedMsgs += num2;
 					numBytes += num3;
@@ -699,7 +796,9 @@ namespace QuantumUNET
 				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					networkConnection.GetStatsIn(out var num, out var num2);
+					int num;
+					int num2;
+					networkConnection.GetStatsIn(out num, out num2);
 					numMsgs += num;
 					numBytes += num2;
 				}
@@ -747,12 +846,16 @@ namespace QuantumUNET
 			}
 		}
 
-		public static bool AddPlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId) => instance.InternalAddPlayerForConnection(conn, player, playerControllerId);
+		public static bool AddPlayerForConnection(QSBNetworkConnection conn, GameObject player, short playerControllerId)
+		{
+			return instance.InternalAddPlayerForConnection(conn, player, playerControllerId);
+		}
 
 		internal bool InternalAddPlayerForConnection(QSBNetworkConnection conn, GameObject playerGameObject, short playerControllerId)
 		{
+			QSBNetworkIdentity networkIdentity;
 			bool result;
-			if (!GetNetworkIdentity(playerGameObject, out var networkIdentity))
+			if (!GetNetworkIdentity(playerGameObject, out networkIdentity))
 			{
 				if (LogFilter.logError)
 				{
@@ -769,8 +872,9 @@ namespace QuantumUNET
 				}
 				else
 				{
+					QSBPlayerController playerController = null;
 					GameObject x = null;
-					if (conn.GetPlayerController(playerControllerId, out var playerController))
+					if (conn.GetPlayerController(playerControllerId, out playerController))
 					{
 						x = playerController.Gameobject;
 					}
@@ -859,8 +963,9 @@ namespace QuantumUNET
 		private bool SetupLocalPlayerForConnection(QSBNetworkConnection conn, QSBNetworkIdentity uv, QSBPlayerController newPlayerController)
 		{
 			Debug.Log("NetworkServer SetupLocalPlayerForConnection netID:" + uv.NetId);
+			var ulocalConnectionToClient = conn as QSBULocalConnectionToClient;
 			bool result;
-			if (conn is QSBULocalConnectionToClient ulocalConnectionToClient)
+			if (ulocalConnectionToClient != null)
 			{
 				Debug.Log("NetworkServer AddPlayer handling ULocalConnectionToClient");
 				if (uv.NetId.IsEmpty())
@@ -897,8 +1002,9 @@ namespace QuantumUNET
 
 		internal bool InternalReplacePlayerForConnection(QSBNetworkConnection conn, GameObject playerGameObject, short playerControllerId)
 		{
+			QSBNetworkIdentity networkIdentity;
 			bool result;
-			if (!GetNetworkIdentity(playerGameObject, out var networkIdentity))
+			if (!GetNetworkIdentity(playerGameObject, out networkIdentity))
 			{
 				if (LogFilter.logError)
 				{
@@ -913,7 +1019,8 @@ namespace QuantumUNET
 			else
 			{
 				Debug.Log("NetworkServer ReplacePlayer");
-				if (conn.GetPlayerController(playerControllerId, out var playerController))
+				QSBPlayerController playerController;
+				if (conn.GetPlayerController(playerControllerId, out playerController))
 				{
 					playerController.UnetView.SetNotLocalPlayer();
 					playerController.UnetView.ClearClientOwner();
@@ -965,7 +1072,10 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static void SetClientReady(QSBNetworkConnection conn) => instance.SetClientReadyInternal(conn);
+		public static void SetClientReady(QSBNetworkConnection conn)
+		{
+			instance.SetClientReadyInternal(conn);
+		}
 
 		internal void SetClientReadyInternal(QSBNetworkConnection conn)
 		{
@@ -990,14 +1100,15 @@ namespace QuantumUNET
 					}
 				}
 				conn.isReady = true;
-				if (conn is QSBULocalConnectionToClient ulocalConnectionToClient)
+				var ulocalConnectionToClient = conn as QSBULocalConnectionToClient;
+				if (ulocalConnectionToClient != null)
 				{
 					Debug.Log("NetworkServer Ready handling ULocalConnectionToClient");
 					foreach (var networkIdentity in objects.Values)
 					{
 						if (networkIdentity != null && networkIdentity.gameObject != null)
 						{
-							var flag = networkIdentity.OnCheckObserver(conn);
+							bool flag = networkIdentity.OnCheckObserver(conn);
 							if (flag)
 							{
 								networkIdentity.AddObserver(conn);
@@ -1022,10 +1133,8 @@ namespace QuantumUNET
 							conn.connectionId
 						}));
 					}
-					var objectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage
-					{
-						State = 0U
-					};
+					var objectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage();
+					objectSpawnFinishedMessage.State = 0U;
 					conn.Send(12, objectSpawnFinishedMessage);
 					foreach (var networkIdentity2 in objects.Values)
 					{
@@ -1048,7 +1157,7 @@ namespace QuantumUNET
 									networkIdentity2.NetId
 								}));
 							}
-							var flag2 = networkIdentity2.OnCheckObserver(conn);
+							bool flag2 = networkIdentity2.OnCheckObserver(conn);
 							if (flag2)
 							{
 								networkIdentity2.AddObserver(conn);
@@ -1089,7 +1198,10 @@ namespace QuantumUNET
 			}
 		}
 
-		public static void SetClientNotReady(QSBNetworkConnection conn) => instance.InternalSetClientNotReady(conn);
+		public static void SetClientNotReady(QSBNetworkConnection conn)
+		{
+			instance.InternalSetClientNotReady(conn);
+		}
 
 		internal void InternalSetClientNotReady(QSBNetworkConnection conn)
 		{
@@ -1118,7 +1230,8 @@ namespace QuantumUNET
 		private static void OnRemovePlayerMessage(QSBNetworkMessage netMsg)
 		{
 			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
-			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out var playerController);
+			QSBPlayerController playerController = null;
+			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out playerController);
 			if (playerController != null)
 			{
 				netMsg.Connection.RemovePlayerController(s_RemovePlayerMessage.PlayerControllerId);
@@ -1189,11 +1302,12 @@ namespace QuantumUNET
 
 		internal void SpawnObject(GameObject obj)
 		{
+			QSBNetworkIdentity networkIdentity;
 			if (!active)
 			{
 				ModConsole.OwmlConsole.WriteLine("Error - SpawnObject for " + obj + ", NetworkServer is not active. Cannot spawn objects without an active server.");
 			}
-			else if (!GetNetworkIdentity(obj, out var networkIdentity))
+			else if (!GetNetworkIdentity(obj, out networkIdentity))
 			{
 				Debug.LogError(string.Concat(new object[]
 				{
@@ -1217,13 +1331,11 @@ namespace QuantumUNET
 			{
 				if (uv.SceneId.IsEmpty())
 				{
-					var objectSpawnMessage = new QSBObjectSpawnMessage
-					{
-						NetId = uv.NetId,
-						assetId = uv.AssetId,
-						Position = uv.transform.position,
-						Rotation = uv.transform.rotation
-					};
+					var objectSpawnMessage = new QSBObjectSpawnMessage();
+					objectSpawnMessage.NetId = uv.NetId;
+					objectSpawnMessage.assetId = uv.AssetId;
+					objectSpawnMessage.Position = uv.transform.position;
+					objectSpawnMessage.Rotation = uv.transform.rotation;
 					var networkWriter = new QSBNetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter);
 					if (networkWriter.Position > 0)
@@ -1241,12 +1353,10 @@ namespace QuantumUNET
 				}
 				else
 				{
-					var objectSpawnSceneMessage = new QSBObjectSpawnSceneMessage
-					{
-						NetId = uv.NetId,
-						SceneId = uv.SceneId,
-						Position = uv.transform.position
-					};
+					var objectSpawnSceneMessage = new QSBObjectSpawnSceneMessage();
+					objectSpawnSceneMessage.NetId = uv.NetId;
+					objectSpawnSceneMessage.SceneId = uv.SceneId;
+					objectSpawnSceneMessage.Position = uv.transform.position;
 					var networkWriter2 = new QSBNetworkWriter();
 					uv.UNetSerializeAllVars(networkWriter2);
 					if (networkWriter2.Position > 0)
@@ -1306,25 +1416,30 @@ namespace QuantumUNET
 
 		private static void UnSpawnObject(GameObject obj)
 		{
+			QSBNetworkIdentity uv;
 			if (obj == null)
 			{
 				Debug.Log("NetworkServer UnspawnObject is null");
 			}
-			else if (GetNetworkIdentity(obj, out var uv))
+			else if (GetNetworkIdentity(obj, out uv))
 			{
 				UnSpawnObject(uv);
 			}
 		}
 
-		private static void UnSpawnObject(QSBNetworkIdentity uv) => DestroyObject(uv, false);
+		private static void UnSpawnObject(QSBNetworkIdentity uv)
+		{
+			DestroyObject(uv, false);
+		}
 
 		private static void DestroyObject(GameObject obj)
 		{
+			QSBNetworkIdentity uv;
 			if (obj == null)
 			{
 				Debug.Log("NetworkServer DestroyObject is null");
 			}
-			else if (GetNetworkIdentity(obj, out var uv))
+			else if (GetNetworkIdentity(obj, out uv))
 			{
 				DestroyObject(uv, true);
 			}
@@ -1344,10 +1459,8 @@ namespace QuantumUNET
 			{
 				uv.ClientAuthorityOwner.RemoveOwnedObject(uv);
 			}
-			var objectDestroyMessage = new QSBObjectDestroyMessage
-			{
-				NetId = uv.NetId
-			};
+			var objectDestroyMessage = new QSBObjectDestroyMessage();
+			objectDestroyMessage.NetId = uv.NetId;
 			SendToObservers(uv.gameObject, 1, objectDestroyMessage);
 			uv.ClearObservers();
 			if (QSBNetworkClient.active && instance.m_LocalClientActive)
@@ -1362,7 +1475,10 @@ namespace QuantumUNET
 			uv.MarkForReset();
 		}
 
-		public static void ClearLocalObjects() => objects.Clear();
+		public static void ClearLocalObjects()
+		{
+			objects.Clear();
+		}
 
 		public static void Spawn(GameObject obj)
 		{
@@ -1372,7 +1488,10 @@ namespace QuantumUNET
 			}
 		}
 
-		private static bool CheckForPrefab(GameObject obj) => false;
+		private static bool CheckForPrefab(GameObject obj)
+		{
+			return false;
+		}
 
 		private static bool VerifyCanSpawn(GameObject obj)
 		{
@@ -1441,7 +1560,8 @@ namespace QuantumUNET
 		{
 			if (VerifyCanSpawn(obj))
 			{
-				if (GetNetworkIdentity(obj, out var networkIdentity))
+				QSBNetworkIdentity networkIdentity;
+				if (GetNetworkIdentity(obj, out networkIdentity))
 				{
 					networkIdentity.SetDynamicAssetId(assetId);
 				}
@@ -1449,9 +1569,15 @@ namespace QuantumUNET
 			}
 		}
 
-		public static void Destroy(GameObject obj) => DestroyObject(obj);
+		public static void Destroy(GameObject obj)
+		{
+			DestroyObject(obj);
+		}
 
-		public static void UnSpawn(GameObject obj) => UnSpawnObject(obj);
+		public static void UnSpawn(GameObject obj)
+		{
+			UnSpawnObject(obj);
+		}
 
 		internal bool InvokeBytes(QSBULocalConnectionToServer conn, byte[] buffer, int numBytes, int channelId)
 		{
@@ -1501,7 +1627,10 @@ namespace QuantumUNET
 
 		public static GameObject FindLocalObject(NetworkInstanceId netId) => instance.m_NetworkScene.FindLocalObject(netId);
 
-		private static bool ValidateSceneObject(QSBNetworkIdentity netId) => netId.gameObject.hideFlags != HideFlags.NotEditable && netId.gameObject.hideFlags != HideFlags.HideAndDontSave && !netId.SceneId.IsEmpty();
+		private static bool ValidateSceneObject(QSBNetworkIdentity netId)
+		{
+			return netId.gameObject.hideFlags != HideFlags.NotEditable && netId.gameObject.hideFlags != HideFlags.HideAndDontSave && !netId.SceneId.IsEmpty();
+		}
 
 		public static bool SpawnObjects()
 		{
@@ -1552,7 +1681,7 @@ namespace QuantumUNET
 				{
 					var crcmessage = new QSBCRCMessage();
 					var list = new List<QSBCRCMessageEntry>();
-					foreach (var text in QSBNetworkCRC.singleton.scripts.Keys)
+					foreach (string text in QSBNetworkCRC.singleton.scripts.Keys)
 					{
 						list.Add(new QSBCRCMessageEntry
 						{
@@ -1601,17 +1730,35 @@ namespace QuantumUNET
 				m_Server = server;
 			}
 
-			public override void OnConnectError(int connectionId, byte error) => m_Server.GenerateConnectError(error);
+			public override void OnConnectError(int connectionId, byte error)
+			{
+				m_Server.GenerateConnectError((int)error);
+			}
 
-			public override void OnDataError(QSBNetworkConnection conn, byte error) => m_Server.GenerateDataError(conn, error);
+			public override void OnDataError(QSBNetworkConnection conn, byte error)
+			{
+				m_Server.GenerateDataError(conn, (int)error);
+			}
 
-			public override void OnDisconnectError(QSBNetworkConnection conn, byte error) => m_Server.GenerateDisconnectError(conn, error);
+			public override void OnDisconnectError(QSBNetworkConnection conn, byte error)
+			{
+				m_Server.GenerateDisconnectError(conn, (int)error);
+			}
 
-			public override void OnConnected(QSBNetworkConnection conn) => m_Server.OnConnected(conn);
+			public override void OnConnected(QSBNetworkConnection conn)
+			{
+				m_Server.OnConnected(conn);
+			}
 
-			public override void OnDisconnected(QSBNetworkConnection conn) => m_Server.OnDisconnected(conn);
+			public override void OnDisconnected(QSBNetworkConnection conn)
+			{
+				m_Server.OnDisconnected(conn);
+			}
 
-			public override void OnData(QSBNetworkConnection conn, int receivedSize, int channelId) => m_Server.OnData(conn, receivedSize, channelId);
+			public override void OnData(QSBNetworkConnection conn, int receivedSize, int channelId)
+			{
+				m_Server.OnData(conn, receivedSize, channelId);
+			}
 
 			private QSBNetworkServer m_Server;
 		}

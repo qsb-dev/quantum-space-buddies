@@ -1,5 +1,4 @@
 ﻿using QuantumUNET.Messages;
-using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QuantumUNET.Components
@@ -33,22 +32,22 @@ namespace QuantumUNET.Components
 		public void SetParameterAutoSend(int index, bool value)
 		{
 			if (value)
-			{
 				m_ParameterSendBits |= (uint)(1 << index);
-			}
 			else
-			{
 				m_ParameterSendBits &= (uint)~(1 << index);
-			}
 		}
 
-		public bool GetParameterAutoSend(int index) =>
-			((int)m_ParameterSendBits & (1 << index)) != 0;
+		public bool GetParameterAutoSend(int index)
+		{
+			return ((int)m_ParameterSendBits & 1 << index) != 0;
+		}
 
-		public override void OnStartAuthority() =>
+		public override void OnStartAuthority()
+		{
 			m_ParameterWriter = new QSBNetworkWriter();
+		}
 
-		public void FixedUpdate()
+		private void FixedUpdate()
 		{
 			if (m_ParameterWriter == null)
 			{
@@ -135,10 +134,7 @@ namespace QuantumUNET.Components
 			else
 			{
 				if (!IsServer || LocalPlayerAuthority)
-				{
 					return;
-				}
-
 				QSBNetworkServer.SendToReady(gameObject, 41, parametersMessage);
 			}
 		}
@@ -165,11 +161,14 @@ namespace QuantumUNET.Components
 			ReadParameters(reader, true);
 		}
 
-		internal void HandleAnimTriggerMsg(int hash) => m_Animator.SetTrigger(hash);
+		internal void HandleAnimTriggerMsg(int hash)
+		{
+			m_Animator.SetTrigger(hash);
+		}
 
 		private void WriteParameters(QSBNetworkWriter writer, bool autoSend)
 		{
-			for (var index = 0; index < m_Animator.parameters.Length; ++index)
+			for (int index = 0; index < m_Animator.parameters.Length; ++index)
 			{
 				if (!autoSend || GetParameterAutoSend(index))
 				{
@@ -194,7 +193,7 @@ namespace QuantumUNET.Components
 
 		private void ReadParameters(QSBNetworkReader reader, bool autoSend)
 		{
-			for (var index = 0; index < m_Animator.parameters.Length; ++index)
+			for (int index = 0; index < m_Animator.parameters.Length; ++index)
 			{
 				if (!autoSend || GetParameterAutoSend(index))
 				{
@@ -258,7 +257,10 @@ namespace QuantumUNET.Components
 			m_Animator.Play(stateNameHash, 0, normalizedTime);
 		}
 
-		public void SetTrigger(string triggerName) => SetTrigger(Animator.StringToHash(triggerName));
+		public void SetTrigger(string triggerName)
+		{
+			SetTrigger(Animator.StringToHash(triggerName));
+		}
 
 		public void SetTrigger(int hash)
 		{
@@ -336,16 +338,10 @@ namespace QuantumUNET.Components
 			netMsg.ReadMessage(AnimationMessage);
 			var localObject = QSBClientScene.FindLocalObject(AnimationMessage.netId);
 			if (localObject == null)
-			{
 				return;
-			}
-
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
 			if (component == null)
-			{
 				return;
-			}
-
 			var reader = new QSBNetworkReader(AnimationMessage.parameters);
 			component.HandleAnimMsg(AnimationMessage, reader);
 		}
@@ -355,16 +351,10 @@ namespace QuantumUNET.Components
 			netMsg.ReadMessage(ParametersMessage);
 			var localObject = QSBClientScene.FindLocalObject(ParametersMessage.netId);
 			if (localObject == null)
-			{
 				return;
-			}
-
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
 			if (component == null)
-			{
 				return;
-			}
-
 			var reader = new QSBNetworkReader(ParametersMessage.parameters);
 			component.HandleAnimParamsMsg(ParametersMessage, reader);
 		}
@@ -374,16 +364,10 @@ namespace QuantumUNET.Components
 			netMsg.ReadMessage(TriggersMessage);
 			var localObject = QSBClientScene.FindLocalObject(TriggersMessage.netId);
 			if (localObject == null)
-			{
 				return;
-			}
-
 			var component = localObject.GetComponent<QSBNetworkAnimator>();
 			if (component == null)
-			{
 				return;
-			}
-
 			component.HandleAnimTriggerMsg(TriggersMessage.hash);
 		}
 	}

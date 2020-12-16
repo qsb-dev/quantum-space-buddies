@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QuantumUNET.Transport
+namespace QuantumUNET
 {
 	public class QSBNetworkReader
 	{

@@ -1,5 +1,5 @@
 ﻿using QSB.Messaging;
-using QuantumUNET.Transport;
+using QuantumUNET;
 
 namespace QSB.Player.Events
 {

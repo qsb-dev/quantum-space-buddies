@@ -1,6 +1,5 @@
 ﻿using QuantumUNET.Components;
 using QuantumUNET.Messages;
-using QuantumUNET.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,6 +8,18 @@ namespace QuantumUNET
 {
 	public class QSBClientScene
 	{
+		private static bool HasMigrationPending() => reconnectId != -1;
+
+		public static void SetReconnectId(int newReconnectId, QSBPeerInfoMessage[] peers)
+		{
+			reconnectId = newReconnectId;
+			s_Peers = peers;
+			if (LogFilter.logDebug)
+			{
+				Debug.Log("ClientScene::SetReconnectId: " + newReconnectId);
+			}
+		}
+
 		internal static void SetNotReady() => ready = false;
 
 		public static List<QSBPlayerController> localPlayers { get; private set; } = new List<QSBPlayerController>();
@@ -43,7 +54,7 @@ namespace QuantumUNET
 		{
 			player = null;
 			bool result;
-			if (playerControllerId >= localPlayers.Count)
+			if ((int)playerControllerId >= localPlayers.Count)
 			{
 				if (LogFilter.logWarn)
 				{
@@ -51,7 +62,7 @@ namespace QuantumUNET
 				}
 				result = false;
 			}
-			else if (localPlayers[playerControllerId] == null)
+			else if (localPlayers[(int)playerControllerId] == null)
 			{
 				if (LogFilter.logWarn)
 				{
@@ -61,7 +72,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				player = localPlayers[playerControllerId];
+				player = localPlayers[(int)playerControllerId];
 				result = (player.Gameobject != null);
 			}
 			return result;
@@ -73,13 +84,13 @@ namespace QuantumUNET
 			{
 				Debug.LogWarning("ClientScene::InternalAddPlayer: playerControllerId : " + playerControllerId);
 			}
-			if (playerControllerId >= localPlayers.Count)
+			if ((int)playerControllerId >= localPlayers.Count)
 			{
 				if (LogFilter.logWarn)
 				{
 					Debug.LogWarning("ClientScene::InternalAddPlayer: playerControllerId higher than expected: " + playerControllerId);
 				}
-				while (playerControllerId >= localPlayers.Count)
+				while ((int)playerControllerId >= localPlayers.Count)
 				{
 					localPlayers.Add(new QSBPlayerController());
 				}
@@ -90,7 +101,7 @@ namespace QuantumUNET
 				PlayerControllerId = playerControllerId,
 				UnetView = view
 			};
-			localPlayers[playerControllerId] = playerController;
+			localPlayers[(int)playerControllerId] = playerController;
 			readyConnection.SetPlayerController(playerController);
 		}
 
@@ -103,18 +114,24 @@ namespace QuantumUNET
 			bool result;
 			if (playerControllerId < 0)
 			{
-				Debug.LogError("ClientScene::AddPlayer: playerControllerId of " + playerControllerId + " is negative");
+				if (LogFilter.logError)
+				{
+					Debug.LogError("ClientScene::AddPlayer: playerControllerId of " + playerControllerId + " is negative");
+				}
 				result = false;
 			}
 			else if (playerControllerId > 32)
 			{
-				Debug.LogError(string.Concat(new object[]
+				if (LogFilter.logError)
 				{
+					Debug.LogError(string.Concat(new object[]
+					{
 						"ClientScene::AddPlayer: playerControllerId of ",
 						playerControllerId,
 						" is too high, max is ",
 						32
-				}));
+					}));
+				}
 				result = false;
 			}
 			else
@@ -126,7 +143,7 @@ namespace QuantumUNET
 						Debug.LogWarning("ClientScene::AddPlayer: playerControllerId of " + playerControllerId + " is unusually high");
 					}
 				}
-				while (playerControllerId >= localPlayers.Count)
+				while ((int)playerControllerId >= localPlayers.Count)
 				{
 					localPlayers.Add(new QSBPlayerController());
 				}
@@ -177,7 +194,7 @@ namespace QuantumUNET
 					var networkWriter = new QSBNetworkWriter();
 					extraMessage.Serialize(networkWriter);
 					addPlayerMessage.msgData = networkWriter.ToArray();
-					addPlayerMessage.msgSize = networkWriter.Position;
+					addPlayerMessage.msgSize = (int)networkWriter.Position;
 				}
 				readyConnection.Send(37, addPlayerMessage);
 				result = true;
@@ -207,8 +224,8 @@ namespace QuantumUNET
 				};
 				readyConnection.Send(38, removePlayerMessage);
 				readyConnection.RemovePlayerController(playerControllerId);
-				localPlayers[playerControllerId] = new QSBPlayerController();
-				Object.Destroy(playerController.Gameobject);
+				localPlayers[(int)playerControllerId] = new QSBPlayerController();
+				UnityEngine.Object.Destroy(playerController.Gameobject);
 				result = true;
 			}
 			else
@@ -329,29 +346,29 @@ namespace QuantumUNET
 		{
 			if (localClient)
 			{
-				client.RegisterHandlerSafe(1, new QSBNetworkMessageDelegate(OnLocalClientObjectDestroy));
-				client.RegisterHandlerSafe(13, new QSBNetworkMessageDelegate(OnLocalClientObjectHide));
-				client.RegisterHandlerSafe(3, new QSBNetworkMessageDelegate(OnLocalClientObjectSpawn));
-				client.RegisterHandlerSafe(10, new QSBNetworkMessageDelegate(OnLocalClientObjectSpawnScene));
-				client.RegisterHandlerSafe(15, new QSBNetworkMessageDelegate(OnClientAuthority));
+				client.RegisterHandlerSafe((short)1, new QSBNetworkMessageDelegate(OnLocalClientObjectDestroy));
+				client.RegisterHandlerSafe((short)13, new QSBNetworkMessageDelegate(OnLocalClientObjectHide));
+				client.RegisterHandlerSafe((short)3, new QSBNetworkMessageDelegate(OnLocalClientObjectSpawn));
+				client.RegisterHandlerSafe((short)10, new QSBNetworkMessageDelegate(OnLocalClientObjectSpawnScene));
+				client.RegisterHandlerSafe((short)15, new QSBNetworkMessageDelegate(OnClientAuthority));
 			}
 			else
 			{
-				client.RegisterHandlerSafe(3, new QSBNetworkMessageDelegate(OnObjectSpawn));
-				client.RegisterHandlerSafe(10, new QSBNetworkMessageDelegate(OnObjectSpawnScene));
-				client.RegisterHandlerSafe(12, new QSBNetworkMessageDelegate(OnObjectSpawnFinished));
-				client.RegisterHandlerSafe(1, new QSBNetworkMessageDelegate(OnObjectDestroy));
-				client.RegisterHandlerSafe(13, new QSBNetworkMessageDelegate(OnObjectDestroy));
-				client.RegisterHandlerSafe(8, new QSBNetworkMessageDelegate(OnUpdateVarsMessage));
-				client.RegisterHandlerSafe(4, new QSBNetworkMessageDelegate(OnOwnerMessage));
-				client.RegisterHandlerSafe(9, new QSBNetworkMessageDelegate(OnSyncListMessage));
-				client.RegisterHandlerSafe(40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
-				client.RegisterHandlerSafe(41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
-				client.RegisterHandlerSafe(15, new QSBNetworkMessageDelegate(OnClientAuthority));
+				client.RegisterHandlerSafe((short)3, new QSBNetworkMessageDelegate(OnObjectSpawn));
+				client.RegisterHandlerSafe((short)10, new QSBNetworkMessageDelegate(OnObjectSpawnScene));
+				client.RegisterHandlerSafe((short)12, new QSBNetworkMessageDelegate(OnObjectSpawnFinished));
+				client.RegisterHandlerSafe((short)1, new QSBNetworkMessageDelegate(OnObjectDestroy));
+				client.RegisterHandlerSafe((short)13, new QSBNetworkMessageDelegate(OnObjectDestroy));
+				client.RegisterHandlerSafe((short)8, new QSBNetworkMessageDelegate(OnUpdateVarsMessage));
+				client.RegisterHandlerSafe((short)4, new QSBNetworkMessageDelegate(OnOwnerMessage));
+				client.RegisterHandlerSafe((short)9, new QSBNetworkMessageDelegate(OnSyncListMessage));
+				client.RegisterHandlerSafe((short)40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
+				client.RegisterHandlerSafe((short)41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
+				client.RegisterHandlerSafe((short)15, new QSBNetworkMessageDelegate(OnClientAuthority));
 			}
-			client.RegisterHandlerSafe(2, new QSBNetworkMessageDelegate(OnRPCMessage));
-			client.RegisterHandlerSafe(7, new QSBNetworkMessageDelegate(OnSyncEventMessage));
-			client.RegisterHandlerSafe(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
+			client.RegisterHandlerSafe((short)2, new QSBNetworkMessageDelegate(OnRPCMessage));
+			client.RegisterHandlerSafe((short)7, new QSBNetworkMessageDelegate(OnSyncEventMessage));
+			client.RegisterHandlerSafe((short)42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
 		}
 
 		internal static string GetStringForAssetId(NetworkHash128 assetId)
@@ -376,11 +393,11 @@ namespace QuantumUNET
 
 		public static void RegisterPrefab(GameObject prefab) => QSBNetworkScene.RegisterPrefab(prefab);
 
-		public static void RegisterPrefab(GameObject prefab, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterPrefab(prefab, spawnHandler, unspawnHandler);
+		public static void RegisterPrefab(GameObject prefab, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterPrefab(prefab, spawnHandler, unspawnHandler);
 
 		public static void UnregisterPrefab(GameObject prefab) => QSBNetworkScene.UnregisterPrefab(prefab);
 
-		public static void RegisterSpawnHandler(NetworkHash128 assetId, QSBSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
+		public static void RegisterSpawnHandler(NetworkHash128 assetId, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QSBNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
 
 		public static void UnregisterSpawnHandler(NetworkHash128 assetId) => QSBNetworkScene.UnregisterSpawnHandler(assetId);
 
@@ -432,7 +449,7 @@ namespace QuantumUNET
 				}
 				else if (QSBNetworkScene.GetPrefab(s_ObjectSpawnMessage.assetId, out var original))
 				{
-					var gameObject = Object.Instantiate<GameObject>(original, s_ObjectSpawnMessage.Position, s_ObjectSpawnMessage.Rotation);
+					GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(original, s_ObjectSpawnMessage.Position, s_ObjectSpawnMessage.Rotation);
 					component = gameObject.GetComponent<QSBNetworkIdentity>();
 					if (component == null)
 					{
@@ -555,7 +572,7 @@ namespace QuantumUNET
 				{
 					if (networkIdentity.SceneId.IsEmpty())
 					{
-						Object.Destroy(networkIdentity.gameObject);
+						UnityEngine.Object.Destroy(networkIdentity.gameObject);
 					}
 					else
 					{
@@ -646,7 +663,7 @@ namespace QuantumUNET
 			}
 			else if (LogFilter.logWarn)
 			{
-				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(num);
+				string cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(num);
 				Debug.LogWarningFormat("Could not find target object with netId:{0} for RPC call {1}", new object[]
 				{
 					networkInstanceId,
@@ -793,6 +810,8 @@ namespace QuantumUNET
 		public const int ReconnectIdInvalid = -1;
 
 		public const int ReconnectIdHost = 0;
+
+		private static QSBPeerInfoMessage[] s_Peers;
 
 		private static List<PendingOwner> s_PendingOwnerIds = new List<PendingOwner>();
 

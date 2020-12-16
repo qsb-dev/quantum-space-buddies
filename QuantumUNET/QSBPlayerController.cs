@@ -9,7 +9,6 @@ namespace QuantumUNET
 		public QSBNetworkIdentity UnetView;
 		public GameObject Gameobject;
 		public const int MaxPlayersPerClient = 32;
-		public bool IsValid => PlayerControllerId != -1;
 
 		internal const short kMaxLocalPlayers = 8;
 
@@ -23,6 +22,8 @@ namespace QuantumUNET
 			UnetView = go.GetComponent<QSBNetworkIdentity>();
 			PlayerControllerId = playerControllerId;
 		}
+
+		public bool IsValid => PlayerControllerId != -1;
 
 		public override string ToString()
 		{

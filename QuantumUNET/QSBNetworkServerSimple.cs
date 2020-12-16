@@ -1,5 +1,4 @@
 ﻿using QuantumUNET.Messages;
-using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,43 +12,112 @@ namespace QuantumUNET
 	{
 		public QSBNetworkServerSimple()
 		{
-			connections = new ReadOnlyCollection<QSBNetworkConnection>(m_Connections);
+			this.m_ConnectionsReadOnly = new ReadOnlyCollection<QSBNetworkConnection>(this.m_Connections);
 		}
 
-		public int listenPort { get; set; }
+		public int listenPort
+		{
+			get
+			{
+				return this.m_ListenPort;
+			}
+			set
+			{
+				this.m_ListenPort = value;
+			}
+		}
 
-		public int serverHostId { get; set; } = -1;
+		public int serverHostId
+		{
+			get
+			{
+				return this.m_ServerHostId;
+			}
+			set
+			{
+				this.m_ServerHostId = value;
+			}
+		}
 
-		public HostTopology hostTopology { get; private set; }
+		public HostTopology hostTopology
+		{
+			get
+			{
+				return this.m_HostTopology;
+			}
+		}
 
-		public bool useWebSockets { get; set; }
+		public bool useWebSockets
+		{
+			get
+			{
+				return this.m_UseWebSockets;
+			}
+			set
+			{
+				this.m_UseWebSockets = value;
+			}
+		}
 
-		public ReadOnlyCollection<QSBNetworkConnection> connections { get; }
+		public ReadOnlyCollection<QSBNetworkConnection> connections
+		{
+			get
+			{
+				return this.m_ConnectionsReadOnly;
+			}
+		}
 
-		public Dictionary<short, QSBNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
+		public Dictionary<short, QSBNetworkMessageDelegate> handlers
+		{
+			get
+			{
+				return this.m_MessageHandlers.GetHandlers();
+			}
+		}
 
-		public byte[] messageBuffer { get; private set; } = null;
+		public byte[] messageBuffer
+		{
+			get
+			{
+				return this.m_MsgBuffer;
+			}
+		}
 
-		public NetworkReader messageReader { get; private set; } = null;
+		public NetworkReader messageReader
+		{
+			get
+			{
+				return this.m_MsgReader;
+			}
+		}
 
-		public Type networkConnectionClass { get; private set; } = typeof(QSBNetworkConnection);
+		public Type networkConnectionClass
+		{
+			get
+			{
+				return this.m_NetworkConnectionClass;
+			}
+		}
 
-		public void SetNetworkConnectionClass<T>() where T : QSBNetworkConnection => networkConnectionClass = typeof(T);
+		public void SetNetworkConnectionClass<T>() where T : QSBNetworkConnection
+		{
+			this.m_NetworkConnectionClass = typeof(T);
+		}
 
 		public virtual void Initialize()
 		{
-			if (!m_Initialized)
+			if (!this.m_Initialized)
 			{
-				m_Initialized = true;
+				this.m_Initialized = true;
 				NetworkTransport.Init();
-				messageBuffer = new byte[65535];
-				messageReader = new NetworkReader(messageBuffer);
-				if (hostTopology == null)
+				this.m_MsgBuffer = new byte[65535];
+				this.m_MsgReader = new NetworkReader(this.m_MsgBuffer);
+				if (this.m_HostTopology == null)
 				{
-					var connectionConfig = new ConnectionConfig();
+					ConnectionConfig connectionConfig = new ConnectionConfig();
 					connectionConfig.AddChannel(QosType.ReliableSequenced);
 					connectionConfig.AddChannel(QosType.Unreliable);
-					hostTopology = new HostTopology(connectionConfig, 8);
+					this.m_HostTopology = new HostTopology(connectionConfig, 8);
 				}
 				if (LogFilter.logDebug)
 				{
@@ -60,30 +128,30 @@ namespace QuantumUNET
 
 		public bool Configure(ConnectionConfig config, int maxConnections)
 		{
-			var topology = new HostTopology(config, maxConnections);
-			return Configure(topology);
+			HostTopology topology = new HostTopology(config, maxConnections);
+			return this.Configure(topology);
 		}
 
 		public bool Configure(HostTopology topology)
 		{
-			hostTopology = topology;
+			this.m_HostTopology = topology;
 			return true;
 		}
 
 		public bool Listen(string ipAddress, int serverListenPort)
 		{
-			Initialize();
-			listenPort = serverListenPort;
-			if (useWebSockets)
+			this.Initialize();
+			this.m_ListenPort = serverListenPort;
+			if (this.m_UseWebSockets)
 			{
-				serverHostId = NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort, ipAddress);
+				this.m_ServerHostId = NetworkTransport.AddWebsocketHost(this.m_HostTopology, serverListenPort, ipAddress);
 			}
 			else
 			{
-				serverHostId = NetworkTransport.AddHost(hostTopology, serverListenPort, ipAddress);
+				this.m_ServerHostId = NetworkTransport.AddHost(this.m_HostTopology, serverListenPort, ipAddress);
 			}
 			bool result;
-			if (serverHostId == -1)
+			if (this.m_ServerHostId == -1)
 			{
 				result = false;
 			}
@@ -96,7 +164,7 @@ namespace QuantumUNET
 						"NetworkServerSimple listen: ",
 						ipAddress,
 						":",
-						listenPort
+						this.m_ListenPort
 					}));
 				}
 				result = true;
@@ -104,23 +172,26 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool Listen(int serverListenPort) => Listen(serverListenPort, hostTopology);
+		public bool Listen(int serverListenPort)
+		{
+			return this.Listen(serverListenPort, this.m_HostTopology);
+		}
 
 		public bool Listen(int serverListenPort, HostTopology topology)
 		{
-			hostTopology = topology;
-			Initialize();
-			listenPort = serverListenPort;
-			if (useWebSockets)
+			this.m_HostTopology = topology;
+			this.Initialize();
+			this.m_ListenPort = serverListenPort;
+			if (this.m_UseWebSockets)
 			{
-				serverHostId = NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort);
+				this.m_ServerHostId = NetworkTransport.AddWebsocketHost(this.m_HostTopology, serverListenPort);
 			}
 			else
 			{
-				serverHostId = NetworkTransport.AddHost(hostTopology, serverListenPort);
+				this.m_ServerHostId = NetworkTransport.AddHost(this.m_HostTopology, serverListenPort);
 			}
 			bool result;
-			if (serverHostId == -1)
+			if (this.m_ServerHostId == -1)
 			{
 				result = false;
 			}
@@ -128,7 +199,7 @@ namespace QuantumUNET
 			{
 				if (LogFilter.logDebug)
 				{
-					Debug.Log("NetworkServerSimple listen " + listenPort);
+					Debug.Log("NetworkServerSimple listen " + this.m_ListenPort);
 				}
 				result = true;
 			}
@@ -137,18 +208,19 @@ namespace QuantumUNET
 
 		public void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
 		{
-			Initialize();
-			serverHostId = NetworkTransport.AddHost(hostTopology, listenPort);
+			this.Initialize();
+			this.m_ServerHostId = NetworkTransport.AddHost(this.m_HostTopology, this.listenPort);
 			if (LogFilter.logDebug)
 			{
-				Debug.Log("Server Host Slot Id: " + serverHostId);
+				Debug.Log("Server Host Slot Id: " + this.m_ServerHostId);
 			}
-			Update();
-			NetworkTransport.ConnectAsNetworkHost(serverHostId, relayIp, relayPort, netGuid, sourceId, nodeId, out var b);
-			m_RelaySlotId = 0;
+			this.Update();
+			byte b;
+			NetworkTransport.ConnectAsNetworkHost(this.m_ServerHostId, relayIp, relayPort, netGuid, sourceId, nodeId, out b);
+			this.m_RelaySlotId = 0;
 			if (LogFilter.logDebug)
 			{
-				Debug.Log("Relay Slot Id: " + m_RelaySlotId);
+				Debug.Log("Relay Slot Id: " + this.m_RelaySlotId);
 			}
 		}
 
@@ -158,23 +230,35 @@ namespace QuantumUNET
 			{
 				Debug.Log("NetworkServerSimple stop ");
 			}
-			NetworkTransport.RemoveHost(serverHostId);
-			serverHostId = -1;
+			NetworkTransport.RemoveHost(this.m_ServerHostId);
+			this.m_ServerHostId = -1;
 		}
 
-		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
+		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
+		{
+			m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
+		}
 
-		public void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandler(msgType, handler);
+		public void RegisterHandler(short msgType, QSBNetworkMessageDelegate handler)
+		{
+			this.m_MessageHandlers.RegisterHandler(msgType, handler);
+		}
 
-		public void UnregisterHandler(short msgType) => m_MessageHandlers.UnregisterHandler(msgType);
+		public void UnregisterHandler(short msgType)
+		{
+			this.m_MessageHandlers.UnregisterHandler(msgType);
+		}
 
-		public void ClearHandlers() => m_MessageHandlers.ClearMessageHandlers();
+		public void ClearHandlers()
+		{
+			this.m_MessageHandlers.ClearMessageHandlers();
+		}
 
 		public void UpdateConnections()
 		{
-			for (var i = 0; i < m_Connections.Count; i++)
+			for (int i = 0; i < this.m_Connections.Count; i++)
 			{
-				var networkConnection = m_Connections[i];
+				QSBNetworkConnection networkConnection = this.m_Connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.FlushChannels();
@@ -184,12 +268,13 @@ namespace QuantumUNET
 
 		public void Update()
 		{
-			if (serverHostId != -1)
+			if (this.m_ServerHostId != -1)
 			{
 				NetworkEventType networkEventType;
-				if (m_RelaySlotId != -1)
+				if (this.m_RelaySlotId != -1)
 				{
-					networkEventType = NetworkTransport.ReceiveRelayEventFromHost(serverHostId, out var b);
+					byte b;
+					networkEventType = NetworkTransport.ReceiveRelayEventFromHost(this.m_ServerHostId, out b);
 					if (networkEventType != NetworkEventType.Nothing)
 					{
 						if (LogFilter.logDebug)
@@ -214,13 +299,17 @@ namespace QuantumUNET
 				}
 				do
 				{
-					networkEventType = NetworkTransport.ReceiveFromHost(serverHostId, out var connectionId, out var channelId, messageBuffer, messageBuffer.Length, out var receivedSize, out var b);
+					byte b;
+					int connectionId;
+					int channelId;
+					int receivedSize;
+					networkEventType = NetworkTransport.ReceiveFromHost(this.m_ServerHostId, out connectionId, out channelId, this.m_MsgBuffer, this.m_MsgBuffer.Length, out receivedSize, out b);
 					if (networkEventType != NetworkEventType.Nothing)
 					{
 						Debug.Log(string.Concat(new object[]
 						{
 							"Server event: host=",
-							serverHostId,
+							this.m_ServerHostId,
 							" event=",
 							networkEventType,
 							" error=",
@@ -230,15 +319,15 @@ namespace QuantumUNET
 					switch (networkEventType)
 					{
 						case NetworkEventType.DataEvent:
-							HandleData(connectionId, channelId, receivedSize, b);
+							this.HandleData(connectionId, channelId, receivedSize, b);
 							break;
 
 						case NetworkEventType.ConnectEvent:
-							HandleConnect(connectionId, b);
+							this.HandleConnect(connectionId, b);
 							break;
 
 						case NetworkEventType.DisconnectEvent:
-							HandleDisconnect(connectionId, b);
+							this.HandleDisconnect(connectionId, b);
 							break;
 
 						case NetworkEventType.Nothing:
@@ -253,39 +342,39 @@ namespace QuantumUNET
 					}
 				}
 				while (networkEventType != NetworkEventType.Nothing);
-				UpdateConnections();
+				this.UpdateConnections();
 			}
 		}
 
 		public QSBNetworkConnection FindConnection(int connectionId)
 		{
 			QSBNetworkConnection result;
-			if (connectionId < 0 || connectionId >= m_Connections.Count)
+			if (connectionId < 0 || connectionId >= this.m_Connections.Count)
 			{
 				result = null;
 			}
 			else
 			{
-				result = m_Connections[connectionId];
+				result = this.m_Connections[connectionId];
 			}
 			return result;
 		}
 
 		public bool SetConnectionAtIndex(QSBNetworkConnection conn)
 		{
-			while (m_Connections.Count <= conn.connectionId)
+			while (this.m_Connections.Count <= conn.connectionId)
 			{
-				m_Connections.Add(null);
+				this.m_Connections.Add(null);
 			}
 			bool result;
-			if (m_Connections[conn.connectionId] != null)
+			if (this.m_Connections[conn.connectionId] != null)
 			{
 				result = false;
 			}
 			else
 			{
-				m_Connections[conn.connectionId] = conn;
-				conn.SetHandlers(m_MessageHandlers);
+				this.m_Connections[conn.connectionId] = conn;
+				conn.SetHandlers(this.m_MessageHandlers);
 				result = true;
 			}
 			return result;
@@ -294,13 +383,13 @@ namespace QuantumUNET
 		public bool RemoveConnectionAtIndex(int connectionId)
 		{
 			bool result;
-			if (connectionId < 0 || connectionId >= m_Connections.Count)
+			if (connectionId < 0 || connectionId >= this.m_Connections.Count)
 			{
 				result = false;
 			}
 			else
 			{
-				m_Connections[connectionId] = null;
+				this.m_Connections[connectionId] = null;
 				result = true;
 			}
 			return result;
@@ -314,21 +403,26 @@ namespace QuantumUNET
 			}
 			if (error != 0)
 			{
-				OnConnectError(connectionId, error);
+				this.OnConnectError(connectionId, error);
 			}
 			else
 			{
-				NetworkTransport.GetConnectionInfo(serverHostId, connectionId, out var networkAddress, out var num, out var networkID, out var nodeID, out var lastError);
-				var networkConnection = (QSBNetworkConnection)Activator.CreateInstance(networkConnectionClass);
-				networkConnection.SetHandlers(m_MessageHandlers);
-				networkConnection.Initialize(networkAddress, serverHostId, connectionId, hostTopology);
+				string networkAddress;
+				int num;
+				NetworkID networkID;
+				NodeID nodeID;
+				byte lastError;
+				NetworkTransport.GetConnectionInfo(this.m_ServerHostId, connectionId, out networkAddress, out num, out networkID, out nodeID, out lastError);
+				QSBNetworkConnection networkConnection = (QSBNetworkConnection)Activator.CreateInstance(this.m_NetworkConnectionClass);
+				networkConnection.SetHandlers(this.m_MessageHandlers);
+				networkConnection.Initialize(networkAddress, this.m_ServerHostId, connectionId, this.m_HostTopology);
 				networkConnection.LastError = (NetworkError)lastError;
-				while (m_Connections.Count <= connectionId)
+				while (this.m_Connections.Count <= connectionId)
 				{
-					m_Connections.Add(null);
+					this.m_Connections.Add(null);
 				}
-				m_Connections[connectionId] = networkConnection;
-				OnConnected(networkConnection);
+				this.m_Connections[connectionId] = networkConnection;
+				this.OnConnected(networkConnection);
 			}
 		}
 
@@ -338,7 +432,7 @@ namespace QuantumUNET
 			{
 				Debug.Log("NetworkServerSimple disconnect client:" + connectionId);
 			}
-			var networkConnection = FindConnection(connectionId);
+			QSBNetworkConnection networkConnection = this.FindConnection(connectionId);
 			if (networkConnection != null)
 			{
 				networkConnection.LastError = (NetworkError)error;
@@ -346,7 +440,7 @@ namespace QuantumUNET
 				{
 					if (error != 6)
 					{
-						m_Connections[connectionId] = null;
+						this.m_Connections[connectionId] = null;
 						if (LogFilter.logError)
 						{
 							Debug.LogError(string.Concat(new object[]
@@ -357,23 +451,23 @@ namespace QuantumUNET
 								(NetworkError)error
 							}));
 						}
-						OnDisconnectError(networkConnection, error);
+						this.OnDisconnectError(networkConnection, error);
 						return;
 					}
 				}
 				networkConnection.Disconnect();
-				m_Connections[connectionId] = null;
+				this.m_Connections[connectionId] = null;
 				if (LogFilter.logDebug)
 				{
 					Debug.Log("Server lost client:" + connectionId);
 				}
-				OnDisconnected(networkConnection);
+				this.OnDisconnected(networkConnection);
 			}
 		}
 
 		private void HandleData(int connectionId, int channelId, int receivedSize, byte error)
 		{
-			var networkConnection = FindConnection(connectionId);
+			QSBNetworkConnection networkConnection = this.FindConnection(connectionId);
 			if (networkConnection == null)
 			{
 				if (LogFilter.logError)
@@ -386,19 +480,19 @@ namespace QuantumUNET
 				networkConnection.LastError = (NetworkError)error;
 				if (error != 0)
 				{
-					OnDataError(networkConnection, error);
+					this.OnDataError(networkConnection, error);
 				}
 				else
 				{
-					messageReader.SeekZero();
-					OnData(networkConnection, receivedSize, channelId);
+					this.m_MsgReader.SeekZero();
+					this.OnData(networkConnection, receivedSize, channelId);
 				}
 			}
 		}
 
 		public void SendBytesTo(int connectionId, byte[] bytes, int numBytes, int channelId)
 		{
-			var networkConnection = FindConnection(connectionId);
+			QSBNetworkConnection networkConnection = this.FindConnection(connectionId);
 			if (networkConnection != null)
 			{
 				networkConnection.SendBytes(bytes, numBytes, channelId);
@@ -407,7 +501,7 @@ namespace QuantumUNET
 
 		public void SendWriterTo(int connectionId, QSBNetworkWriter writer, int channelId)
 		{
-			var networkConnection = FindConnection(connectionId);
+			QSBNetworkConnection networkConnection = this.FindConnection(connectionId);
 			if (networkConnection != null)
 			{
 				networkConnection.SendWriter(writer, channelId);
@@ -416,19 +510,19 @@ namespace QuantumUNET
 
 		public void Disconnect(int connectionId)
 		{
-			var networkConnection = FindConnection(connectionId);
+			QSBNetworkConnection networkConnection = this.FindConnection(connectionId);
 			if (networkConnection != null)
 			{
 				networkConnection.Disconnect();
-				m_Connections[connectionId] = null;
+				this.m_Connections[connectionId] = null;
 			}
 		}
 
 		public void DisconnectAllConnections()
 		{
-			for (var i = 0; i < m_Connections.Count; i++)
+			for (int i = 0; i < this.m_Connections.Count; i++)
 			{
-				var networkConnection = m_Connections[i];
+				QSBNetworkConnection networkConnection = this.m_Connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.Disconnect();
@@ -437,21 +531,58 @@ namespace QuantumUNET
 			}
 		}
 
-		public virtual void OnConnectError(int connectionId, byte error) => Debug.LogError("OnConnectError error:" + error);
+		public virtual void OnConnectError(int connectionId, byte error)
+		{
+			Debug.LogError("OnConnectError error:" + error);
+		}
 
-		public virtual void OnDataError(QSBNetworkConnection conn, byte error) => Debug.LogError("OnDataError error:" + error);
+		public virtual void OnDataError(QSBNetworkConnection conn, byte error)
+		{
+			Debug.LogError("OnDataError error:" + error);
+		}
 
-		public virtual void OnDisconnectError(QSBNetworkConnection conn, byte error) => Debug.LogError("OnDisconnectError error:" + error);
+		public virtual void OnDisconnectError(QSBNetworkConnection conn, byte error)
+		{
+			Debug.LogError("OnDisconnectError error:" + error);
+		}
 
-		public virtual void OnConnected(QSBNetworkConnection conn) => conn.InvokeHandlerNoData(32);
+		public virtual void OnConnected(QSBNetworkConnection conn)
+		{
+			conn.InvokeHandlerNoData(32);
+		}
 
-		public virtual void OnDisconnected(QSBNetworkConnection conn) => conn.InvokeHandlerNoData(33);
+		public virtual void OnDisconnected(QSBNetworkConnection conn)
+		{
+			conn.InvokeHandlerNoData(33);
+		}
 
-		public virtual void OnData(QSBNetworkConnection conn, int receivedSize, int channelId) => conn.TransportReceive(messageBuffer, receivedSize, channelId);
+		public virtual void OnData(QSBNetworkConnection conn, int receivedSize, int channelId)
+		{
+			conn.TransportReceive(this.m_MsgBuffer, receivedSize, channelId);
+		}
 
 		private bool m_Initialized = false;
+
+		private int m_ListenPort;
+
+		private int m_ServerHostId = -1;
+
 		private int m_RelaySlotId = -1;
+
+		private bool m_UseWebSockets;
+
+		private byte[] m_MsgBuffer = null;
+
+		private NetworkReader m_MsgReader = null;
+
+		private Type m_NetworkConnectionClass = typeof(QSBNetworkConnection);
+
+		private HostTopology m_HostTopology;
+
 		private List<QSBNetworkConnection> m_Connections = new List<QSBNetworkConnection>();
+
+		private ReadOnlyCollection<QSBNetworkConnection> m_ConnectionsReadOnly;
+
 		private QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
 	}
 }

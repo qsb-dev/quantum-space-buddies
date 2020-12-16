@@ -1,6 +1,4 @@
-﻿using QuantumUNET.Transport;
-
-namespace QuantumUNET.Messages
+﻿namespace QuantumUNET.Messages
 {
 	internal class QSBCRCMessage : QSBMessageBase
 	{

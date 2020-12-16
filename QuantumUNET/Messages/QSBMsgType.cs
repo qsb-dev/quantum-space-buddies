@@ -11,7 +11,7 @@
 			}
 			else
 			{
-				var text = msgLabels[value];
+				string text = msgLabels[(int)value];
 				if (string.IsNullOrEmpty(text))
 				{
 					text = "[" + value + "]";

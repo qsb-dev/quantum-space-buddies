@@ -1,6 +1,5 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Messages;
-using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -133,7 +132,7 @@ namespace QuantumUNET.Components
 		{
 			if (m_NetworkBehaviours == null)
 			{
-				m_NetworkBehaviours = GetComponents<QSBNetworkBehaviour>();
+				m_NetworkBehaviours = base.GetComponents<QSBNetworkBehaviour>();
 			}
 		}
 
@@ -180,11 +179,11 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public void OnDestroy()
+		private void OnDestroy()
 		{
 			if (m_IsServer && QSBNetworkServer.active)
 			{
-				QSBNetworkServer.Destroy(gameObject);
+				QSBNetworkServer.Destroy(base.gameObject);
 			}
 		}
 
@@ -234,7 +233,7 @@ namespace QuantumUNET.Components
 				}
 				if (QSBNetworkClient.active && QSBNetworkServer.localClientActive)
 				{
-					QSBClientScene.SetLocalObject(NetId, gameObject);
+					QSBClientScene.SetLocalObject(NetId, base.gameObject);
 					OnStartClient();
 				}
 				if (HasAuthority)
@@ -254,7 +253,7 @@ namespace QuantumUNET.Components
 			Debug.Log(string.Concat(new object[]
 			{
 				"OnStartClient ",
-				gameObject,
+				base.gameObject,
 				" GUID:",
 				NetId,
 				" localPlayerAuthority:",
@@ -356,7 +355,7 @@ namespace QuantumUNET.Components
 		{
 			if (!LocalPlayerAuthority)
 			{
-				Debug.LogError("HandleClientAuthority " + gameObject + " does not have localPlayerAuthority");
+				Debug.LogError("HandleClientAuthority " + base.gameObject + " does not have localPlayerAuthority");
 			}
 			else
 			{
@@ -385,7 +384,7 @@ namespace QuantumUNET.Components
 					"Found no behaviour for incoming [",
 					cmdHashHandlerName,
 					"] on ",
-					gameObject,
+					base.gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -403,7 +402,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleSyncEvent(int cmdHash, QSBNetworkReader reader)
 		{
-			if (gameObject == null)
+			if (base.gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -423,7 +422,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					gameObject,
+					base.gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -449,7 +448,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleSyncList(int cmdHash, QSBNetworkReader reader)
 		{
-			if (gameObject == null)
+			if (base.gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -469,7 +468,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					gameObject,
+					base.gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -495,7 +494,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleCommand(int cmdHash, QSBNetworkReader reader)
 		{
-			if (gameObject == null)
+			if (base.gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -515,7 +514,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					gameObject,
+					base.gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -541,7 +540,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleRPC(int cmdHash, QSBNetworkReader reader)
 		{
-			if (gameObject == null)
+			if (base.gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -561,7 +560,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					gameObject,
+					base.gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -628,7 +627,7 @@ namespace QuantumUNET.Components
 									Debug.LogWarning(string.Concat(new object[]
 									{
 										"Large state update of ",
-										s_UpdateWriter.Position - position,
+										(int)(s_UpdateWriter.Position - position),
 										" bytes for netId:",
 										NetId,
 										" from script:",
@@ -640,7 +639,7 @@ namespace QuantumUNET.Components
 						if (flag)
 						{
 							s_UpdateWriter.FinishMessage();
-							QSBNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter, j);
+							QSBNetworkServer.SendWriterToReady(base.gameObject, s_UpdateWriter, j);
 						}
 					}
 					IL_197:
@@ -655,7 +654,7 @@ namespace QuantumUNET.Components
 		{
 			if (initialState && m_NetworkBehaviours == null)
 			{
-				m_NetworkBehaviours = GetComponents<QSBNetworkBehaviour>();
+				m_NetworkBehaviours = base.GetComponents<QSBNetworkBehaviour>();
 			}
 			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 			{
@@ -669,7 +668,7 @@ namespace QuantumUNET.Components
 			ModConsole.OwmlConsole.WriteLine($"SetLocalPlayer {localPlayerControllerId}");
 			IsLocalPlayer = true;
 			PlayerControllerId = localPlayerControllerId;
-			var hasAuthority = HasAuthority;
+			var hasAuthority = this.HasAuthority;
 			if (LocalPlayerAuthority)
 			{
 				HasAuthority = true;
@@ -724,7 +723,7 @@ namespace QuantumUNET.Components
 		{
 			if (m_Observers == null)
 			{
-				Debug.LogError("AddObserver for " + gameObject + " observer list is null");
+				Debug.LogError("AddObserver for " + base.gameObject + " observer list is null");
 			}
 			else if (m_ObserverConnections.Contains(conn.connectionId))
 			{
@@ -733,7 +732,7 @@ namespace QuantumUNET.Components
 					"Duplicate observer ",
 					conn.address,
 					" added for ",
-					gameObject
+					base.gameObject
 				}));
 			}
 			else
@@ -743,7 +742,7 @@ namespace QuantumUNET.Components
 					"Added observer ",
 					conn.address,
 					" added for ",
-					gameObject
+					base.gameObject
 				}));
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
@@ -813,7 +812,7 @@ namespace QuantumUNET.Components
 								Debug.LogWarning(string.Concat(new object[]
 								{
 									"Observer is not ready for ",
-									gameObject,
+									base.gameObject,
 									" ",
 									networkConnection3
 								}));
@@ -824,7 +823,7 @@ namespace QuantumUNET.Components
 								Debug.Log(string.Concat(new object[]
 								{
 									"New Observer for ",
-									gameObject,
+									base.gameObject,
 									" ",
 									networkConnection3
 								}));
@@ -840,7 +839,7 @@ namespace QuantumUNET.Components
 							Debug.Log(string.Concat(new object[]
 							{
 								"Removed Observer for ",
-								gameObject,
+								base.gameObject,
 								" ",
 								networkConnection4
 							}));
@@ -884,12 +883,12 @@ namespace QuantumUNET.Components
 			}
 			else if (ClientAuthorityOwner == null)
 			{
-				Debug.LogError("RemoveClientAuthority for " + gameObject + " has no clientAuthority owner.");
+				Debug.LogError("RemoveClientAuthority for " + base.gameObject + " has no clientAuthority owner.");
 				return false;
 			}
 			else if (ClientAuthorityOwner != conn)
 			{
-				Debug.LogError("RemoveClientAuthority for " + gameObject + " has different owner.");
+				Debug.LogError("RemoveClientAuthority for " + base.gameObject + " has different owner.");
 				return false;
 			}
 			ClientAuthorityOwner.RemoveOwnedObject(this);
@@ -918,12 +917,12 @@ namespace QuantumUNET.Components
 			}
 			else if (ClientAuthorityOwner != null && conn != ClientAuthorityOwner)
 			{
-				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + gameObject + " already has an owner. Use RemoveClientAuthority() first.");
+				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + base.gameObject + " already has an owner. Use RemoveClientAuthority() first.");
 				return false;
 			}
 			else if (conn == null)
 			{
-				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
+				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + base.gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
 				return false;
 			}
 			ClientAuthorityOwner = conn;
