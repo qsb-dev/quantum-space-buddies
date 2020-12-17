@@ -66,6 +66,7 @@ namespace QSB.Animation
 
 		private void InitCommon(Transform body)
 		{
+			DebugLog.DebugWrite("INIT COMMON");
 			if (QSBSceneManager.IsInUniverse)
 			{
 				LoadControllers();
