@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.WorldSync;
 
-namespace QSB.DialogueConditionSync.Events
+namespace QSB.ConversationSync.Events
 {
 	public class DialogueConditionEvent : QSBEvent<DialogueConditionMessage>
 	{
