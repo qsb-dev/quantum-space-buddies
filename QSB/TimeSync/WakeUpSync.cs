@@ -27,10 +27,7 @@ namespace QSB.TimeSync
 		private int _localLoopCount;
 		private int _serverLoopCount;
 
-		public override void OnStartLocalPlayer()
-		{
-			LocalInstance = this;
-		}
+		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		public void Start()
 		{
@@ -77,10 +74,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void OnLoopStart()
-		{
-			_localLoopCount++;
-		}
+		private void OnLoopStart() => _localLoopCount++;
 
 		private void Init()
 		{
@@ -97,10 +91,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime()
-		{
-			GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
-		}
+		private void SendServerTime() => GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{

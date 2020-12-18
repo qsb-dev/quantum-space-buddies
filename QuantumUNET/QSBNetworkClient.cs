@@ -53,10 +53,7 @@ namespace QuantumUNET
 
 		public int hostPort
 		{
-			get
-			{
-				return m_HostPort;
-			}
+			get => m_HostPort;
 			set
 			{
 				if (value < 0)

@@ -15,9 +15,6 @@ namespace QSB.ElevatorSync
 			GlobalMessenger<int, bool>.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
 		}
 
-		public override void DoPatches()
-		{
-			QSBCore.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(StartLift));
-		}
+		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(StartLift));
 	}
 }

@@ -29,10 +29,7 @@ namespace QSB.TransformSync
 			_isReady = true;
 		}
 
-		public void OnDestroy()
-		{
-			QSBWorldSync.OrbSyncList.Remove(this);
-		}
+		public void OnDestroy() => QSBWorldSync.OrbSyncList.Remove(this);
 
 		protected void Init()
 		{

@@ -11,10 +11,7 @@ namespace QSB.OrbSync
 	{
 		public static OrbManager Instance { get; private set; }
 
-		private void Awake()
-		{
-			Instance = this;
-		}
+		private void Awake() => Instance = this;
 
 		private void BuildOrbSlots()
 		{

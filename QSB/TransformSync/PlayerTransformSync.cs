@@ -10,7 +10,10 @@ namespace QSB.TransformSync
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
-		static PlayerTransformSync() => AnimControllerPatch.Init();
+		static PlayerTransformSync()
+		{
+			AnimControllerPatch.Init();
+		}
 
 		public override void OnStartLocalPlayer()
 		{

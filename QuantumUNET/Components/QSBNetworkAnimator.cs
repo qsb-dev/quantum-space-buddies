@@ -19,10 +19,7 @@ namespace QuantumUNET.Components
 
 		public Animator animator
 		{
-			get
-			{
-				return m_Animator;
-			}
+			get => m_Animator;
 			set
 			{
 				m_Animator = value;

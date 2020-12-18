@@ -27,26 +27,14 @@ namespace QuantumUNET.Components
 
 		public bool ServerOnly
 		{
-			get
-			{
-				return m_ServerOnly;
-			}
-			set
-			{
-				m_ServerOnly = value;
-			}
+			get => m_ServerOnly;
+			set => m_ServerOnly = value;
 		}
 
 		public bool LocalPlayerAuthority
 		{
-			get
-			{
-				return m_LocalPlayerAuthority;
-			}
-			set
-			{
-				m_LocalPlayerAuthority = value;
-			}
+			get => m_LocalPlayerAuthority;
+			set => m_LocalPlayerAuthority = value;
 		}
 
 		public void SetRootIdentity(QSBNetworkIdentity newRoot)

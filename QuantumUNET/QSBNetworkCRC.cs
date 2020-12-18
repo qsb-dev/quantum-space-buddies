@@ -22,14 +22,8 @@ namespace QuantumUNET
 
 		public static bool scriptCRCCheck
 		{
-			get
-			{
-				return singleton.m_ScriptCRCCheck;
-			}
-			set
-			{
-				singleton.m_ScriptCRCCheck = value;
-			}
+			get => singleton.m_ScriptCRCCheck;
+			set => singleton.m_ScriptCRCCheck = value;
 		}
 
 		public static void ReinitializeScriptCRCs(Assembly callingAssembly)

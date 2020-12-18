@@ -27,20 +27,11 @@ namespace QSB.WorldSync
 			WorldObjects.Add(worldObject);
 		}
 
-		public static IEnumerable<T> GetWorldObjects<T>()
-		{
-			return WorldObjects.OfType<T>();
-		}
+		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
 
-		public static T GetWorldObject<T>(int id) where T : WorldObject
-		{
-			return GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
-		}
+		public static T GetWorldObject<T>(int id) where T : WorldObject => GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
 
-		public static void RemoveWorldObjects<T>() where T : WorldObject
-		{
-			WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
-		}
+		public static void RemoveWorldObjects<T>() where T : WorldObject => WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
 
 		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
 		{

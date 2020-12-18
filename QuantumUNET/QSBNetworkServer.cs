@@ -40,14 +40,8 @@ namespace QuantumUNET
 
 		public static bool useWebSockets
 		{
-			get
-			{
-				return instance.m_SimpleServerSimple.useWebSockets;
-			}
-			set
-			{
-				instance.m_SimpleServerSimple.useWebSockets = value;
-			}
+			get => instance.m_SimpleServerSimple.useWebSockets;
+			set => instance.m_SimpleServerSimple.useWebSockets = value;
 		}
 
 		internal static QSBNetworkServer instance
@@ -77,14 +71,8 @@ namespace QuantumUNET
 
 		public static float maxDelay
 		{
-			get
-			{
-				return instance.m_MaxDelay;
-			}
-			set
-			{
-				instance.InternalSetMaxDelay(value);
-			}
+			get => instance.m_MaxDelay;
+			set => instance.InternalSetMaxDelay(value);
 		}
 
 		public static Type networkConnectionClass => instance.m_SimpleServerSimple.networkConnectionClass;
