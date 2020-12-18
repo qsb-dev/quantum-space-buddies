@@ -100,7 +100,7 @@ namespace QuantumUNET
 				component.SetDynamicAssetId(newAssetId);
 				guidToPrefab[component.AssetId] = prefab;
 			}
-			else if (LogFilter.logError)
+			else
 			{
 				Debug.LogError("Could not register '" + prefab.name + "' since it contains no NetworkIdentity component");
 			}
@@ -115,13 +115,10 @@ namespace QuantumUNET
 				var componentsInChildren = prefab.GetComponentsInChildren<NetworkIdentity>();
 				if (componentsInChildren.Length > 1)
 				{
-					if (LogFilter.logWarn)
-					{
-						Debug.LogWarning("The prefab '" + prefab.name + "' has multiple NetworkIdentity components. There can only be one NetworkIdentity on a prefab, and it must be on the root object.");
-					}
+					Debug.LogWarning("The prefab '" + prefab.name + "' has multiple NetworkIdentity components. There can only be one NetworkIdentity on a prefab, and it must be on the root object.");
 				}
 			}
-			else if (LogFilter.logError)
+			else
 			{
 				Debug.LogError("Could not register '" + prefab.name + "' since it contains no NetworkIdentity component");
 			}
@@ -165,10 +162,7 @@ namespace QuantumUNET
 		{
 			if (spawnHandler == null || unspawnHandler == null)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("RegisterSpawnHandler custom spawn function null for " + assetId);
-				}
+				Debug.LogError("RegisterSpawnHandler custom spawn function null for " + assetId);
 			}
 			else
 			{
@@ -182,10 +176,7 @@ namespace QuantumUNET
 			var component = prefab.GetComponent<QSBNetworkIdentity>();
 			if (component == null)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("Could not unregister '" + prefab.name + "' since it contains no NetworkIdentity component");
-				}
+				Debug.LogError("Could not unregister '" + prefab.name + "' since it contains no NetworkIdentity component");
 			}
 			else
 			{

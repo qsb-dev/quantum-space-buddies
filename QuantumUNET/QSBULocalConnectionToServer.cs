@@ -1,7 +1,6 @@
 ﻿using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
@@ -27,10 +26,7 @@ namespace QuantumUNET
 			bool result;
 			if (numBytes <= 0)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("LocalConnection:SendBytes cannot send zero bytes");
-				}
+				Debug.LogError("LocalConnection:SendBytes cannot send zero bytes");
 				result = false;
 			}
 			else

@@ -51,10 +51,7 @@ namespace QuantumUNET
 					connectionConfig.AddChannel(QosType.Unreliable);
 					hostTopology = new HostTopology(connectionConfig, 8);
 				}
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("NetworkServerSimple initialize.");
-				}
+				Debug.Log("NetworkServerSimple initialize.");
 			}
 		}
 
@@ -89,16 +86,13 @@ namespace QuantumUNET
 			}
 			else
 			{
-				if (LogFilter.logDebug)
+				Debug.Log(string.Concat(new object[]
 				{
-					Debug.Log(string.Concat(new object[]
-					{
 						"NetworkServerSimple listen: ",
 						ipAddress,
 						":",
 						listenPort
-					}));
-				}
+				}));
 				result = true;
 			}
 			return result;
@@ -126,10 +120,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("NetworkServerSimple listen " + listenPort);
-				}
+				Debug.Log("NetworkServerSimple listen " + listenPort);
 				result = true;
 			}
 			return result;
@@ -139,25 +130,16 @@ namespace QuantumUNET
 		{
 			Initialize();
 			serverHostId = NetworkTransport.AddHost(hostTopology, listenPort);
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("Server Host Slot Id: " + serverHostId);
-			}
+			Debug.Log("Server Host Slot Id: " + serverHostId);
 			Update();
 			NetworkTransport.ConnectAsNetworkHost(serverHostId, relayIp, relayPort, netGuid, sourceId, nodeId, out var b);
 			m_RelaySlotId = 0;
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("Relay Slot Id: " + m_RelaySlotId);
-			}
+			Debug.Log("Relay Slot Id: " + m_RelaySlotId);
 		}
 
 		public void Stop()
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkServerSimple stop ");
-			}
+			Debug.Log("NetworkServerSimple stop ");
 			NetworkTransport.RemoveHost(serverHostId);
 			serverHostId = -1;
 		}
@@ -192,24 +174,15 @@ namespace QuantumUNET
 					networkEventType = NetworkTransport.ReceiveRelayEventFromHost(serverHostId, out var b);
 					if (networkEventType != NetworkEventType.Nothing)
 					{
-						if (LogFilter.logDebug)
-						{
-							Debug.Log("NetGroup event:" + networkEventType);
-						}
+						Debug.Log("NetGroup event:" + networkEventType);
 					}
 					if (networkEventType == NetworkEventType.ConnectEvent)
 					{
-						if (LogFilter.logDebug)
-						{
-							Debug.Log("NetGroup server connected");
-						}
+						Debug.Log("NetGroup server connected");
 					}
 					if (networkEventType == NetworkEventType.DisconnectEvent)
 					{
-						if (LogFilter.logDebug)
-						{
-							Debug.Log("NetGroup server disconnected");
-						}
+						Debug.Log("NetGroup server disconnected");
 					}
 				}
 				do
@@ -245,10 +218,7 @@ namespace QuantumUNET
 							break;
 
 						default:
-							if (LogFilter.logError)
-							{
-								Debug.LogError("Unknown network message type received: " + networkEventType);
-							}
+							Debug.LogError("Unknown network message type received: " + networkEventType);
 							break;
 					}
 				}
@@ -308,10 +278,7 @@ namespace QuantumUNET
 
 		private void HandleConnect(int connectionId, byte error)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkServerSimple accepted client:" + connectionId);
-			}
+			Debug.Log("NetworkServerSimple accepted client:" + connectionId);
 			if (error != 0)
 			{
 				OnConnectError(connectionId, error);
@@ -334,10 +301,7 @@ namespace QuantumUNET
 
 		private void HandleDisconnect(int connectionId, byte error)
 		{
-			if (LogFilter.logDebug)
-			{
-				Debug.Log("NetworkServerSimple disconnect client:" + connectionId);
-			}
+			Debug.Log("NetworkServerSimple disconnect client:" + connectionId);
 			var networkConnection = FindConnection(connectionId);
 			if (networkConnection != null)
 			{
@@ -347,26 +311,20 @@ namespace QuantumUNET
 					if (error != 6)
 					{
 						m_Connections[connectionId] = null;
-						if (LogFilter.logError)
+						Debug.LogError(string.Concat(new object[]
 						{
-							Debug.LogError(string.Concat(new object[]
-							{
 								"Server client disconnect error, connectionId: ",
 								connectionId,
 								" error: ",
 								(NetworkError)error
-							}));
-						}
+						}));
 						OnDisconnectError(networkConnection, error);
 						return;
 					}
 				}
 				networkConnection.Disconnect();
 				m_Connections[connectionId] = null;
-				if (LogFilter.logDebug)
-				{
-					Debug.Log("Server lost client:" + connectionId);
-				}
+				Debug.Log("Server lost client:" + connectionId);
 				OnDisconnected(networkConnection);
 			}
 		}
@@ -376,10 +334,7 @@ namespace QuantumUNET
 			var networkConnection = FindConnection(connectionId);
 			if (networkConnection == null)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("HandleData Unknown connectionId:" + connectionId);
-				}
+				Debug.LogError("HandleData Unknown connectionId:" + connectionId);
 			}
 			else
 			{

@@ -199,11 +199,8 @@ namespace QuantumUNET
 					return;
 				}
 			}
-			if (LogFilter.logError)
-			{
-				Debug.LogError("RemovePlayer player at playerControllerId " + playerControllerId + " not found");
-				return;
-			}
+			Debug.LogError("RemovePlayer player at playerControllerId " + playerControllerId + " not found");
+			return;
 		}
 
 		internal bool GetPlayerController(short playerControllerId, out QSBPlayerController playerController)
@@ -299,24 +296,18 @@ namespace QuantumUNET
 			bool result;
 			if (m_Channels == null)
 			{
-				if (LogFilter.logWarn)
-				{
-					Debug.LogWarning("Channels not initialized sending on id '" + channelId);
-				}
+				Debug.LogWarning("Channels not initialized sending on id '" + channelId);
 				result = false;
 			}
 			else if (channelId < 0 || channelId >= m_Channels.Length)
 			{
-				if (LogFilter.logError)
+				Debug.LogError(string.Concat(new object[]
 				{
-					Debug.LogError(string.Concat(new object[]
-					{
 						"Invalid channel when sending buffered data, '",
 						channelId,
 						"'. Current channel count is ",
 						m_Channels.Length
-					}));
-				}
+				}));
 				result = false;
 			}
 			else

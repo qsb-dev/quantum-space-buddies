@@ -12,7 +12,6 @@ using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
 using UnityEngine;
-using UnityEngine.Networking;
 
 /*
 Copyright (C) 2020 Henry Pointer (_nebula / misternebula), Aleksander Waage (AmazingAlek), Ricardo Lopes (Raicuparta)
@@ -54,8 +53,6 @@ namespace QSB
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
 
 			ModBehaviour = this;
-
-			LogFilter.currentLogLevel = LogFilter.Debug;
 		}
 
 		public void Start()

@@ -71,11 +71,8 @@ namespace QuantumUNET
 		{
 			if (!IsServer)
 			{
-				if (LogFilter.logWarn)
-				{
-					Debug.LogWarning("ClientRpc call on un-spawned object");
-					return;
-				}
+				Debug.LogWarning("ClientRpc call on un-spawned object");
+				return;
 			}
 			writer.FinishMessage();
 			QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
@@ -418,10 +415,7 @@ namespace QuantumUNET
 						networkInstanceId = component.NetId;
 						if (networkInstanceId.IsEmpty())
 						{
-							if (LogFilter.logWarn)
-							{
-								Debug.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
-							}
+							Debug.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
 						}
 					}
 				}

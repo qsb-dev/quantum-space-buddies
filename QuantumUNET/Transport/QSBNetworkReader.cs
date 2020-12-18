@@ -398,10 +398,7 @@ namespace QuantumUNET.Transport
 				var gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
-					if (LogFilter.logDebug)
-					{
-						Debug.Log("ReadTransform netId:" + networkInstanceId);
-					}
+					Debug.Log("ReadTransform netId:" + networkInstanceId);
 					result = null;
 				}
 				else
@@ -433,10 +430,7 @@ namespace QuantumUNET.Transport
 				}
 				if (gameObject == null)
 				{
-					if (LogFilter.logDebug)
-					{
-						Debug.Log("ReadGameObject netId:" + networkInstanceId + "go: null");
-					}
+					Debug.Log("ReadGameObject netId:" + networkInstanceId + "go: null");
 				}
 				result = gameObject;
 			}
@@ -464,10 +458,7 @@ namespace QuantumUNET.Transport
 				}
 				if (gameObject == null)
 				{
-					if (LogFilter.logDebug)
-					{
-						Debug.Log("ReadNetworkIdentity netId:" + networkInstanceId + "go: null");
-					}
+					Debug.Log("ReadNetworkIdentity netId:" + networkInstanceId + "go: null");
 					result = null;
 				}
 				else

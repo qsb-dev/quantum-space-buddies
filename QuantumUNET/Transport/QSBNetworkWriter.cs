@@ -222,10 +222,7 @@ namespace QuantumUNET.Transport
 		{
 			if (count > 65535)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("NetworkWriter Write: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
-				}
+				Debug.LogError("NetworkWriter Write: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -237,10 +234,7 @@ namespace QuantumUNET.Transport
 		{
 			if (count > 65535)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("NetworkWriter Write: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
-				}
+				Debug.LogError("NetworkWriter Write: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -256,10 +250,7 @@ namespace QuantumUNET.Transport
 			}
 			else if (count > 65535)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("NetworkWriter WriteBytesAndSize: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
-				}
+				Debug.LogError("NetworkWriter WriteBytesAndSize: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -276,10 +267,7 @@ namespace QuantumUNET.Transport
 			}
 			else if (buffer.Length > 65535)
 			{
-				if (LogFilter.logError)
-				{
-					Debug.LogError("NetworkWriter WriteBytes: buffer is too large (" + buffer.Length + ") bytes. The maximum buffer size is 64K bytes.");
-				}
+				Debug.LogError("NetworkWriter WriteBytes: buffer is too large (" + buffer.Length + ") bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -420,10 +408,7 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					if (LogFilter.logWarn)
-					{
-						Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-					}
+					Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
 					WritePackedUInt32(0U);
 				}
 			}
@@ -444,10 +429,7 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					if (LogFilter.logWarn)
-					{
-						Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-					}
+					Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
 					WritePackedUInt32(0U);
 				}
 			}
