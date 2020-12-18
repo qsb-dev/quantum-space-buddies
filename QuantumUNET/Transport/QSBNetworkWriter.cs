@@ -450,7 +450,7 @@ namespace QuantumUNET.Transport
 
 		private const int k_MaxStringLength = 32768;
 
-		private QSBNetBuffer m_Buffer;
+		private readonly QSBNetBuffer m_Buffer;
 
 		private static Encoding s_Encoding;
 

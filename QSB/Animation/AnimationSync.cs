@@ -23,9 +23,9 @@ namespace QSB.Animation
 		private CrouchSync _crouchSync;
 
 		private RuntimeAnimatorController _chertController;
-		private RuntimeAnimatorController _eskerController;
-		private RuntimeAnimatorController _feldsparController;
-		private RuntimeAnimatorController _gabbroController;
+		private readonly RuntimeAnimatorController _eskerController;
+		private readonly RuntimeAnimatorController _feldsparController;
+		private readonly RuntimeAnimatorController _gabbroController;
 		private RuntimeAnimatorController _riebeckController;
 
 		public AnimatorMirror Mirror { get; private set; }

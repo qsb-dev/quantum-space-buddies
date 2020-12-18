@@ -19,22 +19,22 @@ namespace QuantumUNET.Transport
 		public const int MaxBufferedPackets = 512;
 		public float MaxDelay = 0.01f;
 
-		private QSBNetworkConnection _connection;
+		private readonly QSBNetworkConnection _connection;
 		private QSBChannelPacket _currentPacket;
 		private float _lastFlushTime;
-		private byte _channelId;
+		private readonly byte _channelId;
 		private int _maxPacketSize;
-		private bool _isReliable;
+		private readonly bool _isReliable;
 		private bool _allowFragmentation;
 		private bool _isBroken;
 		private int _maxPendingPacketCount;
 		private const int _maxFreePacketCount = 512;
-		private Queue<QSBChannelPacket> _pendingPackets;
+		private readonly Queue<QSBChannelPacket> _pendingPackets;
 		private static List<QSBChannelPacket> _freePackets;
 		internal static int _pendingPacketCount;
 		private float _lastBufferedMessageCountTimer = Time.realtimeSinceStartup;
-		private static QSBNetworkWriter _sendWriter = new QSBNetworkWriter();
-		private static QSBNetworkWriter _fragmentWriter = new QSBNetworkWriter();
+		private static readonly QSBNetworkWriter _sendWriter = new QSBNetworkWriter();
+		private static readonly QSBNetworkWriter _fragmentWriter = new QSBNetworkWriter();
 		private const int _packetHeaderReserveSize = 100;
 		private bool _disposed;
 		internal QSBNetBuffer _fragmentBuffer = new QSBNetBuffer();

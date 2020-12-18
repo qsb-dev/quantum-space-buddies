@@ -38,11 +38,11 @@ namespace QuantumUNET.Components
 
 		private ConnectionConfig m_ConnectionConfig;
 		private GlobalConfig m_GlobalConfig;
-		private int m_MaxBufferedPackets = 16;
-		private bool m_AllowFragmentation = true;
-		private static QSBAddPlayerMessage s_AddPlayerMessage = new QSBAddPlayerMessage();
-		private static QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
-		private static QSBErrorMessage s_ErrorMessage = new QSBErrorMessage();
+		private readonly int m_MaxBufferedPackets = 16;
+		private readonly bool m_AllowFragmentation = true;
+		private static readonly QSBAddPlayerMessage s_AddPlayerMessage = new QSBAddPlayerMessage();
+		private static readonly QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
+		private static readonly QSBErrorMessage s_ErrorMessage = new QSBErrorMessage();
 		private static AsyncOperation s_LoadingSceneAsync;
 		private static QSBNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;

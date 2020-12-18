@@ -698,19 +698,19 @@ namespace QuantumUNET
 
 		private static bool s_IsSpawnFinished;
 
-		private static QSBNetworkScene s_NetworkScene = new QSBNetworkScene();
+		private static readonly QSBNetworkScene s_NetworkScene = new QSBNetworkScene();
 
-		private static QSBObjectSpawnSceneMessage s_ObjectSpawnSceneMessage = new QSBObjectSpawnSceneMessage();
+		private static readonly QSBObjectSpawnSceneMessage s_ObjectSpawnSceneMessage = new QSBObjectSpawnSceneMessage();
 
-		private static QSBObjectSpawnFinishedMessage s_ObjectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage();
+		private static readonly QSBObjectSpawnFinishedMessage s_ObjectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage();
 
-		private static QSBObjectDestroyMessage s_ObjectDestroyMessage = new QSBObjectDestroyMessage();
+		private static readonly QSBObjectDestroyMessage s_ObjectDestroyMessage = new QSBObjectDestroyMessage();
 
-		private static QSBObjectSpawnMessage s_ObjectSpawnMessage = new QSBObjectSpawnMessage();
+		private static readonly QSBObjectSpawnMessage s_ObjectSpawnMessage = new QSBObjectSpawnMessage();
 
-		private static QSBOwnerMessage s_OwnerMessage = new QSBOwnerMessage();
+		private static readonly QSBOwnerMessage s_OwnerMessage = new QSBOwnerMessage();
 
-		private static QSBClientAuthorityMessage s_ClientAuthorityMessage = new QSBClientAuthorityMessage();
+		private static readonly QSBClientAuthorityMessage s_ClientAuthorityMessage = new QSBClientAuthorityMessage();
 
 		public const int ReconnectIdInvalid = -1;
 

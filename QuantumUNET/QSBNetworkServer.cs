@@ -1466,23 +1466,23 @@ namespace QuantumUNET
 
 		private static volatile QSBNetworkServer s_Instance;
 
-		private static object s_Sync = new UnityEngine.Object();
+		private static readonly object s_Sync = new UnityEngine.Object();
 
 		private bool m_LocalClientActive;
 
-		private List<QSBNetworkConnection> m_LocalConnectionsFakeList = new List<QSBNetworkConnection>();
+		private readonly List<QSBNetworkConnection> m_LocalConnectionsFakeList = new List<QSBNetworkConnection>();
 
 		private QSBULocalConnectionToClient m_LocalConnection = null;
 
-		private QSBNetworkScene m_NetworkScene;
+		private readonly QSBNetworkScene m_NetworkScene;
 
-		private HashSet<int> m_ExternalConnections;
+		private readonly HashSet<int> m_ExternalConnections;
 
-		private ServerSimpleWrapper m_SimpleServerSimple;
+		private readonly ServerSimpleWrapper m_SimpleServerSimple;
 
 		private float m_MaxDelay = 0.1f;
 
-		private HashSet<NetworkInstanceId> m_RemoveList;
+		private readonly HashSet<NetworkInstanceId> m_RemoveList;
 
 		private int m_RemoveListCount;
 
@@ -1490,7 +1490,7 @@ namespace QuantumUNET
 
 		internal static ushort maxPacketSize;
 
-		private static QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
+		private static readonly QSBRemovePlayerMessage s_RemovePlayerMessage = new QSBRemovePlayerMessage();
 
 		private class ServerSimpleWrapper : QSBNetworkServerSimple
 		{
@@ -1511,7 +1511,7 @@ namespace QuantumUNET
 
 			public override void OnData(QSBNetworkConnection conn, int receivedSize, int channelId) => m_Server.OnData(conn, receivedSize, channelId);
 
-			private QSBNetworkServer m_Server;
+			private readonly QSBNetworkServer m_Server;
 		}
 	}
 }

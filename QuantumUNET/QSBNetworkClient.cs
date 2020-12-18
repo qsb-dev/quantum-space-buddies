@@ -900,15 +900,15 @@ namespace QuantumUNET
 
 		private EndPoint m_RemoteEndPoint;
 
-		private static QSBCRCMessage s_CRCMessage = new QSBCRCMessage();
+		private static readonly QSBCRCMessage s_CRCMessage = new QSBCRCMessage();
 
-		private QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
+		private readonly QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
 
 		protected QSBNetworkConnection m_Connection;
 
-		private byte[] m_MsgBuffer;
+		private readonly byte[] m_MsgBuffer;
 
-		private NetworkReader m_MsgReader;
+		private readonly NetworkReader m_MsgReader;
 
 		protected ConnectState m_AsyncConnect = ConnectState.None;
 

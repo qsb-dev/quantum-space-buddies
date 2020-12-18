@@ -53,6 +53,6 @@ namespace QuantumUNET
 			numBytes = 0;
 		}
 
-		private QSBNetworkServer m_LocalServer;
+		private readonly QSBNetworkServer m_LocalServer;
 	}
 }

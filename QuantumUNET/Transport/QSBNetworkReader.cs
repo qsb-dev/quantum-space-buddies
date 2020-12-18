@@ -9,7 +9,7 @@ namespace QuantumUNET.Transport
 {
 	public class QSBNetworkReader
 	{
-		private QSBNetBuffer m_buf;
+		private readonly QSBNetBuffer m_buf;
 		private static byte[] s_StringReaderBuffer;
 		private static Encoding s_Encoding;
 

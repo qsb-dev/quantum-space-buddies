@@ -7,8 +7,8 @@ namespace QuantumUNET.Transport
 	internal struct QSBChannelPacket
 	{
 		private int m_Position;
-		private byte[] m_Buffer;
-		private bool m_IsReliable;
+		private readonly byte[] m_Buffer;
+		private readonly bool m_IsReliable;
 
 		public QSBChannelPacket(int packetSize, bool isReliable)
 		{

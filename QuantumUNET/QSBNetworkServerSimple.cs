@@ -406,7 +406,7 @@ namespace QuantumUNET
 
 		private bool m_Initialized = false;
 		private int m_RelaySlotId = -1;
-		private List<QSBNetworkConnection> m_Connections = new List<QSBNetworkConnection>();
-		private QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
+		private readonly List<QSBNetworkConnection> m_Connections = new List<QSBNetworkConnection>();
+		private readonly QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
 	}
 }

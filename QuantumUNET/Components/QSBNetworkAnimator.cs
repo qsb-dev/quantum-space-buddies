@@ -6,9 +6,9 @@ namespace QuantumUNET.Components
 {
 	public class QSBNetworkAnimator : QSBNetworkBehaviour
 	{
-		private static QSBAnimationMessage AnimationMessage = new QSBAnimationMessage();
-		private static QSBAnimationParametersMessage ParametersMessage = new QSBAnimationParametersMessage();
-		private static QSBAnimationTriggerMessage TriggersMessage = new QSBAnimationTriggerMessage();
+		private static readonly QSBAnimationMessage AnimationMessage = new QSBAnimationMessage();
+		private static readonly QSBAnimationParametersMessage ParametersMessage = new QSBAnimationParametersMessage();
+		private static readonly QSBAnimationTriggerMessage TriggersMessage = new QSBAnimationTriggerMessage();
 
 		private Animator m_Animator;
 		private uint m_ParameterSendBits;
