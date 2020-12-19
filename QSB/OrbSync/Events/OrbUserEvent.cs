@@ -90,6 +90,11 @@ namespace QSB.OrbSync.Events
 					MessageType.Error);
 				return;
 			}
+			if (!QSBWorldSync.OrbSyncList.Any(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]))
+			{
+				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
+				return;
+			}
 			var orb = QSBWorldSync.OrbSyncList
 				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
 			orb.enabled = true;
