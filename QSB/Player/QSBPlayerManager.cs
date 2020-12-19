@@ -65,15 +65,9 @@ namespace QSB.Player
 		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
 			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
 
-		public static void AddSyncObject(PlayerSyncObject obj)
-		{
-			PlayerSyncObjects.Add(obj);
-		}
+		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
 
-		public static void RemoveSyncObject(PlayerSyncObject obj)
-		{
-			PlayerSyncObjects.Remove(obj);
-		}
+		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
 
 		public static bool IsBelongingToLocalPlayer(uint id)
 		{
