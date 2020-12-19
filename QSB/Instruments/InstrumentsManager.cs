@@ -56,8 +56,11 @@ namespace QSB.Instruments
 		private void OnGabbroTaunt() => StartInstrument(AnimationType.Gabbro);
 		private void OnRiebeckTaunt() => StartInstrument(AnimationType.Riebeck);
 
-		private void SetupInstruments() 
-			=> _chertDrum = MakeChertDrum(QSBCore.InstrumentAssetBundle);
+		private void SetupInstruments()
+		{
+			var bundle = QSBCore.InstrumentAssetBundle;
+			_chertDrum = MakeChertDrum(bundle);
+		}
 
 		private GameObject MakeChertDrum(AssetBundle bundle)
 		{
