@@ -57,17 +57,18 @@ namespace QSB.DeathSync
 
 		public void ResetShip()
 		{
+			if (_shipSpawnPoint == null)
+			{
+				DebugLog.ToConsole("_shipSpawnPoint is null!", MessageType.Warning);
+				Init();
+			}
+
 			if (_shipBody == null)
 			{
 				return;
 			}
-
+			
 			// Reset ship position.
-			if (_shipSpawnPoint == null)
-			{
-				DebugLog.ToConsole("_shipSpawnPoint is null!", MessageType.Warning);
-				return;
-			}
 			_shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
 			_shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
 
