@@ -108,7 +108,6 @@ namespace QuantumUNET
 
 		internal void RegisterMessageHandlers()
 		{
-			ModConsole.OwmlConsole.WriteLine("Register Message Handlers (NetworkServer)");
 			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Ready, new QSBNetworkMessageDelegate(OnClientReadyMessage));
 			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Command, new QSBNetworkMessageDelegate(OnCommandMessage));
 			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.LocalPlayerTransform, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));

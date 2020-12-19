@@ -240,13 +240,6 @@ namespace QuantumUNET
 		public void Connect(string serverIp, int serverPort)
 		{
 			PrepareForConnect();
-			ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-			{
-				"Client Connect: ",
-				serverIp,
-				":",
-				serverPort
-			}));
 			this.serverPort = serverPort;
 			if (Application.platform == RuntimePlatform.WebGLPlayer)
 			{

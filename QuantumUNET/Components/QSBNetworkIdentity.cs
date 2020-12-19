@@ -654,7 +654,6 @@ namespace QuantumUNET.Components
 
 		internal void SetLocalPlayer(short localPlayerControllerId)
 		{
-			ModConsole.OwmlConsole.WriteLine($"SetLocalPlayer {localPlayerControllerId}");
 			IsLocalPlayer = true;
 			PlayerControllerId = localPlayerControllerId;
 			var hasAuthority = HasAuthority;

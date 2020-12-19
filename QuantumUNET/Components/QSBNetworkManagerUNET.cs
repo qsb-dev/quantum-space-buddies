@@ -291,21 +291,12 @@ namespace QuantumUNET.Components
 				ModConsole.OwmlConsole.WriteLine("Must set the Network Address field in the manager");
 				return null;
 			}
-			ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-			{
-				"NetworkManager StartClient address:",
-				networkAddress,
-				" port:",
-				networkPort
-			}));
 			if (useSimulator)
 			{
-				ModConsole.OwmlConsole.WriteLine("connecting with simulator");
 				client.ConnectWithSimulator(networkAddress, networkPort, simulatedLatency, packetLossPercentage);
 			}
 			else
 			{
-				ModConsole.OwmlConsole.WriteLine("connecting");
 				client.Connect(networkAddress, networkPort);
 			}
 			OnStartClient(client);
