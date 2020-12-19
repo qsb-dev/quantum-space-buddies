@@ -161,6 +161,14 @@ namespace QSB
 			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 		}
 
+		public override void OnStartClient(QSBNetworkClient _)
+		{
+			DebugLog.DebugWrite($"Setting defaultServerIP to {networkAddress}");
+			var config = QSBCore.Helper.Config;
+			config.SetSettingsValue("defaultServerIP", networkAddress);
+			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
+		}
+
 		public override void OnClientConnect(QSBNetworkConnection connection) // Called on the client when connecting to a server
 		{
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
