@@ -1,5 +1,4 @@
-﻿using OWML.Common;
-using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
@@ -9,14 +8,6 @@ namespace QSB.TransformSync
 {
 	public class PlayerCameraSync : TransformSync
 	{
-		public static PlayerCameraSync LocalInstance { get; private set; }
-
-		public override void OnStartLocalPlayer()
-		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
-			LocalInstance = this;
-		}
-
 		protected override Transform InitLocalTransform()
 		{
 			var body = Locator.GetPlayerCamera().gameObject.transform;

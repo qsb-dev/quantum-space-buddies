@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using OWML.ModHelper.Events;
+using UnityEngine;
 
 namespace QSB.Utility
 {
@@ -18,11 +19,14 @@ namespace QSB.Utility
 			var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
 			var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
 			socket.PlaceIntoSocket(warpCore);
+			var bridgeVolume = FindObjectOfType<VesselWarpController>().GetValue<OWTriggerVolume>("_bridgeVolume");
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
-		private void Update()
+		public void Update()
 		{
-			if (!QSB.DebugMode)
+			if (!QSBCore.DebugMode)
 			{
 				return;
 			}
@@ -36,7 +40,7 @@ namespace QSB.Utility
 			}
 			if (Input.GetKeyDown(KeyCode.Keypad3))
 			{
-				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite, 1f, true);
+				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
 			}
 		}
 	}

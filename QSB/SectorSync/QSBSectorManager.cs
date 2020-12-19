@@ -17,35 +17,32 @@ namespace QSB.SectorSync
 			Sector.Name.Ship
 		};
 
-		private void Awake()
+		public void Awake()
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		private void OnDestroy()
-		{
-			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
-		}
+		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
 
 		public void RebuildSectors()
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
-			WorldRegistry.RemoveObjects<QSBSector>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 			var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
 			for (var id = 0; id < sectors.Count; id++)
 			{
-				var qsbSector = WorldRegistry.GetObject<QSBSector>(id) ?? new QSBSector();
+				var qsbSector = QSBWorldSync.GetWorldObject<QSBSector>(id) ?? new QSBSector();
 				qsbSector.Init(sectors[id], id);
-				WorldRegistry.AddObject(qsbSector);
+				QSBWorldSync.AddWorldObject(qsbSector);
 			}
-			IsReady = WorldRegistry.GetObjects<QSBSector>().Any();
+			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		public QSBSector GetClosestSector(Transform trans)
+		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			return WorldRegistry.GetObjects<QSBSector>()
+			return QSBWorldSync.GetWorldObjects<QSBSector>()
 				.Where(sector => sector.Sector != null && !_sectorBlacklist.Contains(sector.Type))
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
 				.First();

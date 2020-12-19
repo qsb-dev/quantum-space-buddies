@@ -1,6 +1,6 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Instruments;
-using QSB.MessagesCore;
+using QSB.Messaging;
 using QSB.Player;
 
 namespace QSB.Animation.Events
@@ -10,7 +10,6 @@ namespace QSB.Animation.Events
 		public override EventType Type => EventType.PlayInstrument;
 
 		public override void SetupListener() => GlobalMessenger<uint, AnimationType>.AddListener(EventNames.QSBChangeAnimType, Handler);
-
 		public override void CloseListener() => GlobalMessenger<uint, AnimationType>.RemoveListener(EventNames.QSBChangeAnimType, Handler);
 
 		private void Handler(uint player, AnimationType type) => SendEvent(CreateMessage(player, type));
@@ -21,8 +20,12 @@ namespace QSB.Animation.Events
 			Value = type
 		};
 
-		public override void OnReceiveRemote(EnumMessage<AnimationType> message)
+		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
+			if (!QSBCore.HasWokenUp || !QSBPlayerManager.GetPlayer(message.AboutId).IsReady)
+			{
+				return;
+			}
 			QSBPlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.Value);
 			QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.Value);
 		}

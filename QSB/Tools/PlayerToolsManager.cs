@@ -59,7 +59,7 @@ namespace QSB.Tools
 			hold.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 		}
 
-		private static GameObject CreateFlashlight(Transform cameraBody)
+		private static void CreateFlashlight(Transform cameraBody)
 		{
 			var flashlightRoot = Object.Instantiate(GameObject.Find("FlashlightRoot"));
 			flashlightRoot.SetActive(false);
@@ -72,11 +72,9 @@ namespace QSB.Tools
 			flashlightRoot.transform.parent = cameraBody;
 			flashlightRoot.transform.localPosition = FlashlightOffset;
 			flashlightRoot.SetActive(true);
-
-			return flashlightRoot;
 		}
 
-		private static GameObject CreateSignalscope(Transform cameraBody)
+		private static void CreateSignalscope(Transform cameraBody)
 		{
 			var signalscopeRoot = Object.Instantiate(GameObject.Find("Signalscope"));
 			signalscopeRoot.SetActive(false);
@@ -101,11 +99,9 @@ namespace QSB.Tools
 			signalscopeRoot.transform.localPosition = Vector3.zero;
 			signalscopeRoot.transform.localScale = SignalscopeScale;
 			signalscopeRoot.SetActive(true);
-
-			return signalscopeRoot;
 		}
 
-		private static GameObject CreateTranslator(Transform cameraBody)
+		private static void CreateTranslator(Transform cameraBody)
 		{
 			var original = GameObject.Find("NomaiTranslatorProp");
 
@@ -141,12 +137,10 @@ namespace QSB.Tools
 			translatorRoot.transform.parent = cameraBody;
 			translatorRoot.transform.localPosition = Vector3.zero;
 			translatorRoot.transform.localScale = TranslatorScale;
-			QSB.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
-
-			return translatorRoot;
+			QSBCore.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
 		}
 
-		private static GameObject CreateProbeLauncher(Transform cameraBody)
+		private static void CreateProbeLauncher(Transform cameraBody)
 		{
 			var launcherRoot = new GameObject("ProbeLauncher");
 			var modelOrig = GameObject.Find("PlayerCamera/ProbeLauncher/Props_HEA_ProbeLauncher");
@@ -182,13 +176,9 @@ namespace QSB.Tools
 			launcherRoot.transform.parent = cameraBody;
 			launcherRoot.transform.localPosition = ProbeLauncherOffset;
 			launcherRoot.SetActive(true);
-
-			return launcherRoot;
 		}
 
-		private static MeshRenderer GetRenderer(GameObject root, string gameObjectName)
-		{
-			return root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
-		}
+		private static MeshRenderer GetRenderer(GameObject root, string gameObjectName) =>
+			root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
 	}
 }

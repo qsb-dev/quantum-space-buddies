@@ -1,5 +1,6 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Components;
+using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -23,7 +24,7 @@ namespace QuantumUNET
 		protected uint SyncVarDirtyBits { get; private set; }
 		protected bool SyncVarHookGuard { get; set; }
 
-		internal QSBNetworkIdentity NetIdentity => MyView;
+		public QSBNetworkIdentity NetIdentity => MyView;
 
 		private QSBNetworkIdentity MyView
 		{
@@ -70,14 +71,11 @@ namespace QuantumUNET
 		{
 			if (!IsServer)
 			{
-				if (LogFilter.logWarn)
-				{
-					Debug.LogWarning("ClientRpc call on un-spawned object");
-					return;
-				}
+				Debug.LogWarning("ClientRpc call on un-spawned object");
+				return;
 			}
 			writer.FinishMessage();
-			QSBNetworkServer.SendWriterToReady(base.gameObject, writer, channelId);
+			QSBNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 		}
 
 		protected void SendTargetRPCInternal(QSBNetworkConnection conn, QSBNetworkWriter writer, int channelId, string rpcName)
@@ -417,10 +415,7 @@ namespace QuantumUNET
 						networkInstanceId = component.NetId;
 						if (networkInstanceId.IsEmpty())
 						{
-							if (LogFilter.logWarn)
-							{
-								Debug.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
-							}
+							Debug.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
 						}
 					}
 				}
@@ -434,7 +429,7 @@ namespace QuantumUNET
 					Debug.Log(string.Concat(new object[]
 					{
 						"SetSyncVar GameObject ",
-						base.GetType().Name,
+						GetType().Name,
 						" bit [",
 						dirtyBit,
 						"] netfieldId:",

@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
+using QSB.Patches;
 
 namespace QSB.ElevatorSync
 {
@@ -14,9 +15,6 @@ namespace QSB.ElevatorSync
 			GlobalMessenger<int, bool>.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
 		}
 
-		public override void DoPatches()
-		{
-			QSB.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(StartLift));
-		}
+		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(StartLift));
 	}
 }

@@ -1,5 +1,4 @@
-﻿using OWML.Common;
-using QSB.Animation;
+﻿using QSB.Animation;
 using QSB.Instruments;
 using QSB.Player;
 using QSB.Utility;
@@ -13,20 +12,24 @@ namespace QSB.TransformSync
 
 		static PlayerTransformSync()
 		{
-			DebugLog.DebugWrite("Constructor", MessageType.Info);
 			AnimControllerPatch.Init();
 		}
 
 		public override void OnStartLocalPlayer()
 		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
 			LocalInstance = this;
+			DebugLog.DebugWrite("SET LOCAL INSTANCE");
 		}
 
-		private Transform GetPlayerModel()
+		protected override void OnDestroy()
 		{
-			return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
+			base.OnDestroy();
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.RemovePlayer(PlayerId);
 		}
+
+		private Transform GetPlayerModel() =>
+			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
 		protected override Transform InitLocalTransform()
 		{

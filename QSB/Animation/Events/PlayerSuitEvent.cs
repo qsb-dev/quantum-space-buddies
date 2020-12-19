@@ -1,8 +1,8 @@
-﻿using QSB.EventsCore;
+﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Animation
+namespace QSB.Animation.Events
 {
 	public class PlayerSuitEvent : QSBEvent<ToggleMessage>
 	{
@@ -21,7 +21,6 @@ namespace QSB.Animation
 		}
 
 		private void HandleSuitUp() => SendEvent(CreateMessage(true));
-
 		private void HandleSuitDown() => SendEvent(CreateMessage(false));
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
@@ -30,12 +29,12 @@ namespace QSB.Animation
 			ToggleValue = value
 		};
 
-		public override void OnReceiveRemote(ToggleMessage message)
+		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player?.UpdateState(State.Suit, message.ToggleValue);
 
-			if (!QSB.HasWokenUp)
+			if (!QSBCore.HasWokenUp || !player.IsReady)
 			{
 				return;
 			}
@@ -45,7 +44,7 @@ namespace QSB.Animation
 			animator.SetAnimationType(type);
 		}
 
-		public override void OnReceiveLocal(ToggleMessage message)
+		public override void OnReceiveLocal(bool server, ToggleMessage message)
 		{
 			QSBPlayerManager.LocalPlayer.UpdateState(State.Suit, message.ToggleValue);
 			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;

@@ -1,4 +1,5 @@
 ﻿using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace QuantumUNET
 				PostInternalMessage(33);
 				m_Connected = false;
 			}
-			m_AsyncConnect = QSBNetworkClient.ConnectState.Disconnected;
+			m_AsyncConnect = ConnectState.Disconnected;
 			m_LocalServer.RemoveLocalClient(m_Connection);
 		}
 
@@ -31,11 +32,11 @@ namespace QuantumUNET
 			}
 			m_LocalServer = QSBNetworkServer.instance;
 			m_Connection = new QSBULocalConnectionToServer(m_LocalServer);
-			base.SetHandlers(m_Connection);
+			SetHandlers(m_Connection);
 			m_Connection.connectionId = m_LocalServer.AddLocalClient(this);
-			m_AsyncConnect = QSBNetworkClient.ConnectState.Connected;
-			QSBNetworkClient.SetActive(true);
-			base.RegisterSystemHandlers(true);
+			m_AsyncConnect = ConnectState.Connected;
+			SetActive(true);
+			RegisterSystemHandlers(true);
 			if (generateConnectMsg)
 			{
 				PostInternalMessage(32);
@@ -108,11 +109,11 @@ namespace QuantumUNET
 					}
 					s_InternalMessage.Reader.ReadInt16();
 					s_InternalMessage.ChannelId = t.channelId;
-					s_InternalMessage.Connection = base.connection;
+					s_InternalMessage.Connection = connection;
 					s_InternalMessage.MsgType = s_InternalMessage.Reader.ReadInt16();
 					m_Connection.InvokeHandler(s_InternalMessage);
 					m_FreeMessages.Push(t);
-					base.connection.lastMessageTime = Time.time;
+					connection.lastMessageTime = Time.time;
 				}
 				m_InternalMsgs = internalMsgs;
 				m_InternalMsgs.Clear();

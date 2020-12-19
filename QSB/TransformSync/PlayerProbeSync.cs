@@ -8,20 +8,10 @@ namespace QSB.TransformSync
 {
 	public class PlayerProbeSync : TransformSync
 	{
-		public static PlayerProbeSync LocalInstance { get; private set; }
-
 		private Transform _disabledSocket;
 
-		public override void OnStartLocalPlayer()
-		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
-			LocalInstance = this;
-		}
-
-		private Transform GetProbe()
-		{
-			return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-		}
+		private Transform GetProbe() =>
+			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
 		protected override Transform InitLocalTransform()
 		{
@@ -50,16 +40,13 @@ namespace QSB.TransformSync
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
-			QSB.Helper.Events.Unity.RunWhen(() => (Player.ProbeLauncher != null), () => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
+			QSBCore.Helper.Events.Unity.RunWhen(() => (Player.ProbeLauncher != null), () => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
 			Player.ProbeBody = body.gameObject;
 
 			return body;
 		}
 
-		private void SetSocket(Transform socket)
-		{
-			_disabledSocket = socket;
-		}
+		private void SetSocket(Transform socket) => _disabledSocket = socket;
 
 		protected override void UpdateTransform()
 		{

@@ -1,4 +1,5 @@
-﻿using UnityEngine.Networking;
+﻿using QuantumUNET.Transport;
+using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {

@@ -1,15 +1,12 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.DeathSync
 {
-	/// <summary>
-	/// Client-only-side component for managing respawning after death.
-	/// </summary>
 	public class RespawnOnDeath : MonoBehaviour
 	{
 		public static RespawnOnDeath Instance;
@@ -31,12 +28,12 @@ namespace QSB.DeathSync
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
 
-		private void Awake()
+		public void Awake()
 		{
 			Instance = this;
 
-			QSB.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
-			QSB.Helper.Events.Event += OnEvent;
+			QSBCore.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
+			QSBCore.Helper.Events.Event += OnEvent;
 		}
 
 		private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
@@ -129,11 +126,9 @@ namespace QSB.DeathSync
 			_spaceSuit.RemoveSuit(true);
 		}
 
-		private SpawnPoint GetSpawnPoint(bool isShip = false)
-		{
-			return _playerSpawner
+		private SpawnPoint GetSpawnPoint(bool isShip = false) =>
+			_playerSpawner
 				.GetValue<SpawnPoint[]>("_spawnList")
 				.FirstOrDefault(spawnPoint => spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth && spawnPoint.IsShipSpawn() == isShip);
-		}
 	}
 }

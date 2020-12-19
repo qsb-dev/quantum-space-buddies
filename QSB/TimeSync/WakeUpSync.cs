@@ -1,5 +1,5 @@
 ﻿using QSB.DeathSync;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.TimeSync.Events;
 using QuantumUNET;
 using UnityEngine;
@@ -27,12 +27,9 @@ namespace QSB.TimeSync
 		private int _localLoopCount;
 		private int _serverLoopCount;
 
-		public override void OnStartLocalPlayer()
-		{
-			LocalInstance = this;
-		}
+		public override void OnStartLocalPlayer() => LocalInstance = this;
 
-		private void Start()
+		public void Start()
 		{
 			if (!IsLocalPlayer)
 			{
@@ -53,11 +50,11 @@ namespace QSB.TimeSync
 		{
 			if (QSBNetworkServer.active)
 			{
-				QSB.HasWokenUp = true;
+				QSBCore.HasWokenUp = true;
 			}
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
@@ -66,7 +63,7 @@ namespace QSB.TimeSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			QSB.HasWokenUp = (scene == OWScene.EyeOfTheUniverse);
+			QSBCore.HasWokenUp = (scene == OWScene.EyeOfTheUniverse);
 			if (isInUniverse)
 			{
 				Init();
@@ -77,10 +74,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void OnLoopStart()
-		{
-			_localLoopCount++;
-		}
+		private void OnLoopStart() => _localLoopCount++;
 
 		private void Init()
 		{
@@ -97,10 +91,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime()
-		{
-			GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
-		}
+		private void SendServerTime() => GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
@@ -164,7 +155,7 @@ namespace QSB.TimeSync
 				EnableInput();
 			}
 			_isFirstFastForward = false;
-			QSB.HasWokenUp = true;
+			QSBCore.HasWokenUp = true;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
@@ -184,7 +175,7 @@ namespace QSB.TimeSync
 			OWInput.ChangeInputMode(InputMode.Character);
 		}
 
-		private void Update()
+		public void Update()
 		{
 			if (IsServer)
 			{

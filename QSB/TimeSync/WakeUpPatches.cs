@@ -1,4 +1,5 @@
 ﻿using OWML.ModHelper.Events;
+using QSB.Patches;
 
 namespace QSB.TimeSync
 {
@@ -15,9 +16,6 @@ namespace QSB.TimeSync
 			return false;
 		}
 
-		public override void DoPatches()
-		{
-			QSB.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
-		}
+		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
 	}
 }

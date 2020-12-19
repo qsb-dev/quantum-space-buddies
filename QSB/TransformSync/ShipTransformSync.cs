@@ -1,29 +1,14 @@
-﻿using OWML.Common;
-using QSB.Player;
-using QSB.Utility;
+﻿using QSB.Player;
 using UnityEngine;
 
 namespace QSB.TransformSync
 {
 	public class ShipTransformSync : TransformSync
 	{
-		public static ShipTransformSync LocalInstance { get; private set; }
+		private Transform GetShipModel() => Locator.GetShipTransform();
 
-		public override void OnStartLocalPlayer()
-		{
-			DebugLog.DebugWrite("OnStartLocalPlayer", MessageType.Info);
-			LocalInstance = this;
-		}
-
-		private Transform GetShipModel()
-		{
-			return Locator.GetShipTransform();
-		}
-
-		protected override Transform InitLocalTransform()
-		{
-			return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
-		}
+		protected override Transform InitLocalTransform() =>
+			GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
 
 		protected override Transform InitRemoteTransform()
 		{

@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper.Events;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET.Components;
@@ -23,32 +23,27 @@ namespace QSB.Animation
 		private CrouchSync _crouchSync;
 
 		private RuntimeAnimatorController _chertController;
-		private RuntimeAnimatorController _eskerController;
-		private RuntimeAnimatorController _feldsparController;
-		private RuntimeAnimatorController _gabbroController;
+		private readonly RuntimeAnimatorController _eskerController;
+		private readonly RuntimeAnimatorController _feldsparController;
+		private readonly RuntimeAnimatorController _gabbroController;
 		private RuntimeAnimatorController _riebeckController;
 
 		public AnimatorMirror Mirror { get; private set; }
-		public AnimationType CurrentType;
+		public AnimationType CurrentType { get; set; }
 
-		public Animator Animator
-		{
-			get { return _bodyAnim; }
-		}
-
-		private void Awake()
+		protected void Awake()
 		{
 			_anim = gameObject.AddComponent<Animator>();
 			_netAnim = gameObject.AddComponent<QSBNetworkAnimator>();
 			_netAnim.enabled = false;
 			_netAnim.animator = _anim;
 
-			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => LoadControllers();
+			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
-		private void OnDestroy()
+		protected override void OnDestroy()
 		{
-			_netAnim.enabled = false;
+			base.OnDestroy();
 			if (_playerController == null)
 			{
 				return;
@@ -57,12 +52,14 @@ namespace QSB.Animation
 			_playerController.OnBecomeGrounded -= OnBecomeGrounded;
 			_playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
 
-			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => LoadControllers();
+			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 		}
+
+		private void OnUniverseSceneLoaded(OWScene obj) => LoadControllers();
 
 		private void LoadControllers()
 		{
-			var bundle = QSB.InstrumentAssetBundle;
+			var bundle = QSBCore.InstrumentAssetBundle;
 			_chertController = bundle.LoadAsset("assets/Chert/Traveller_Chert.controller") as RuntimeAnimatorController;
 			_riebeckController = bundle.LoadAsset("assets/Riebeck/Traveller_Riebeck.controller") as RuntimeAnimatorController;
 		}
@@ -84,8 +81,6 @@ namespace QSB.Animation
 			{
 				Mirror.Init(_anim, _bodyAnim);
 			}
-
-			QSBPlayerManager.PlayerSyncObjects.Add(this);
 
 			for (var i = 0; i < _anim.parameterCount; i++)
 			{
@@ -135,7 +130,7 @@ namespace QSB.Animation
 			InitCrouchSync();
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
-			QSB.Helper.Events.Unity.RunWhen(() => Player.Camera != null, () => ikSync.Init(Player.Camera.transform));
+			QSBCore.Helper.Events.Unity.RunWhen(() => Player.Camera != null, () => ikSync.Init(Player.Camera.transform));
 		}
 
 		private void InitCrouchSync()
@@ -150,15 +145,9 @@ namespace QSB.Animation
 
 		private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
 
-		public void SendCrouch(float value = 0)
-		{
-			GlobalMessenger<float>.FireEvent(EventNames.QSBCrouch, value);
-		}
+		public void SendCrouch(float value = 0) => GlobalMessenger<float>.FireEvent(EventNames.QSBCrouch, value);
 
-		public void HandleCrouch(float value)
-		{
-			_crouchSync.CrouchParam.Target = value;
-		}
+		public void HandleCrouch(float value) => _crouchSync.CrouchParam.Target = value;
 
 		private void SuitUp()
 		{
@@ -174,6 +163,10 @@ namespace QSB.Animation
 
 		public void SetSuitState(bool state)
 		{
+			if (!Player.IsReady)
+			{
+				return;
+			}
 			if (state)
 			{
 				SuitUp();

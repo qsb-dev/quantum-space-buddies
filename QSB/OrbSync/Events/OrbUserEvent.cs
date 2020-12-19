@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.EventsCore;
+using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
@@ -14,7 +14,6 @@ namespace QSB.OrbSync.Events
 		public override EventType Type => EventType.OrbUser;
 
 		public override void SetupListener() => GlobalMessenger<int>.AddListener(EventNames.QSBOrbUser, Handler);
-
 		public override void CloseListener() => GlobalMessenger<int>.RemoveListener(EventNames.QSBOrbUser, Handler);
 
 		private void Handler(int id) => SendEvent(CreateMessage(id));
@@ -25,10 +24,34 @@ namespace QSB.OrbSync.Events
 			ObjectId = id
 		};
 
-		public override void OnServerReceive(WorldObjectMessage message)
+		public override void OnReceiveLocal(bool server, WorldObjectMessage message)
+		{
+			if (server)
+			{
+				HandleServer(message);
+			}
+			else
+			{
+				HandleClient(message);
+			}
+		}
+
+		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
+		{
+			if (server)
+			{
+				HandleServer(message);
+			}
+			else
+			{
+				HandleClient(message);
+			}
+		}
+
+		private static void HandleServer(WorldObjectMessage message)
 		{
 			var fromPlayer = QSBNetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
-			if (WorldRegistry.OrbSyncList.Count == 0)
+			if (QSBWorldSync.OrbSyncList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OrbSyncList is empty. (ID {message.ObjectId})", MessageType.Error);
 				return;
@@ -37,14 +60,14 @@ namespace QSB.OrbSync.Events
 			{
 				DebugLog.DebugWrite("Error - FromPlayer is null!", MessageType.Error);
 			}
-			var orb = WorldRegistry.OrbSyncList
-				.First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
-			if (orb == null)
+			var orbSync = QSBWorldSync.OrbSyncList
+				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
-			var orbIdentity = orb.GetComponent<QSBNetworkIdentity>();
+			var orbIdentity = orbSync.GetComponent<QSBNetworkIdentity>();
 			if (orbIdentity == null)
 			{
 				DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
@@ -55,27 +78,21 @@ namespace QSB.OrbSync.Events
 				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
 			}
 			orbIdentity.AssignClientAuthority(fromPlayer);
-			orb.enabled = true;
+			orbSync.enabled = true;
 		}
 
-		public override void OnReceiveRemote(WorldObjectMessage message)
+		private static void HandleClient(WorldObjectMessage message)
 		{
-			if (WorldRegistry.OrbSyncList.Count < message.ObjectId)
+			if (QSBWorldSync.OrbSyncList.Count < message.ObjectId)
 			{
-				DebugLog.DebugWrite($"Error - Orb id {message.ObjectId} out of range of orb sync list {WorldRegistry.OrbSyncList.Count}.", MessageType.Error);
+				DebugLog.DebugWrite(
+					$"Error - Orb id {message.ObjectId} out of range of orb sync list {QSBWorldSync.OrbSyncList.Count}.",
+					MessageType.Error);
 				return;
 			}
-			var orb = WorldRegistry.OrbSyncList
-				.First(x => x.AttachedOrb == WorldRegistry.OldOrbList[message.ObjectId]);
+			var orb = QSBWorldSync.OrbSyncList
+				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
 			orb.enabled = true;
-		}
-
-		public override void OnReceiveLocal(WorldObjectMessage message)
-		{
-			if (QSBNetworkServer.active)
-			{
-				OnServerReceive(message);
-			}
 		}
 	}
 }

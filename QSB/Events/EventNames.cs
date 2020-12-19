@@ -1,4 +1,4 @@
-﻿namespace QSB.EventsCore
+﻿namespace QSB.Events
 {
 	public static class EventNames
 	{
@@ -17,16 +17,14 @@
 		public static string ExitShip = "ExitShip";
 		public static string RestartTimeLoop = "RestartTimeLoop";
 		public static string WakeUp = "WakeUp";
+		public static string DialogueCondition = "DialogueConditionChanged";
 
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";
-		public static string QSBPlayerLeave = "QSBPlayerLeave";
 		public static string QSBPlayerReady = "QSBPlayerReady";
 		public static string QSBSectorChange = "QSBSectorChange";
 		public static string QSBPlayerStatesRequest = "QSBPlayerStatesRequest";
 		public static string QSBServerTime = "QSBServerTime";
-		public static string QSBOnProbeAnchor = "QSBOnProbeAnchor";
-		public static string QSBOnProbeWarp = "QSBOnProbeWarp";
 		public static string QSBStartLift = "QSBStartLift";
 		public static string QSBGeyserState = "QSBGeyserState";
 		public static string QSBCrouch = "QSBAnimTrigger";
@@ -36,5 +34,6 @@
 		public static string QSBConversationStartEnd = "QSBConversationStartEnd";
 		public static string QSBChangeAnimType = "QSBPlayInstrument";
 		public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
+		public static string QSBRevealFact = "QSBRevealFact";
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using OWML.Logging;
 using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,30 +22,36 @@ namespace QuantumUNET.Components
 		public short PlayerControllerId { get; private set; } = -1;
 		public QSBNetworkConnection ConnectionToServer { get; private set; }
 		public QSBNetworkConnection ConnectionToClient { get; private set; }
+		public QSBNetworkIdentity RootIdentity { get; private set; }
+		public List<QSBNetworkIdentity> SubIdentities { get; private set; } = new List<QSBNetworkIdentity>();
 
 		public bool ServerOnly
 		{
-			get
-			{
-				return m_ServerOnly;
-			}
-			set
-			{
-				m_ServerOnly = value;
-			}
+			get => m_ServerOnly;
+			set => m_ServerOnly = value;
 		}
 
 		public bool LocalPlayerAuthority
 		{
-			get
-			{
-				return m_LocalPlayerAuthority;
-			}
-			set
-			{
-				m_LocalPlayerAuthority = value;
-			}
+			get => m_LocalPlayerAuthority;
+			set => m_LocalPlayerAuthority = value;
 		}
+
+		public void SetRootIdentity(QSBNetworkIdentity newRoot)
+		{
+			if (RootIdentity != null)
+			{
+				RootIdentity.RemoveSubIdentity(this);
+			}
+			RootIdentity = newRoot;
+			RootIdentity.AddSubIndentity(this);
+		}
+
+		internal void AddSubIndentity(QSBNetworkIdentity identityToAdd)
+			=> SubIdentities.Add(identityToAdd);
+
+		internal void RemoveSubIdentity(QSBNetworkIdentity identityToRemove)
+			=> SubIdentities.Remove(identityToRemove);
 
 		internal void SetDynamicAssetId(NetworkHash128 newAssetId)
 		{
@@ -114,7 +121,7 @@ namespace QuantumUNET.Components
 		{
 			if (m_NetworkBehaviours == null)
 			{
-				m_NetworkBehaviours = base.GetComponents<QSBNetworkBehaviour>();
+				m_NetworkBehaviours = GetComponents<QSBNetworkBehaviour>();
 			}
 		}
 
@@ -161,11 +168,11 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		private void OnDestroy()
+		public void OnDestroy()
 		{
 			if (m_IsServer && QSBNetworkServer.active)
 			{
-				QSBNetworkServer.Destroy(base.gameObject);
+				QSBNetworkServer.Destroy(gameObject);
 			}
 		}
 
@@ -215,7 +222,7 @@ namespace QuantumUNET.Components
 				}
 				if (QSBNetworkClient.active && QSBNetworkServer.localClientActive)
 				{
-					QSBClientScene.SetLocalObject(NetId, base.gameObject);
+					QSBClientScene.SetLocalObject(NetId, gameObject);
 					OnStartClient();
 				}
 				if (HasAuthority)
@@ -235,7 +242,7 @@ namespace QuantumUNET.Components
 			Debug.Log(string.Concat(new object[]
 			{
 				"OnStartClient ",
-				base.gameObject,
+				gameObject,
 				" GUID:",
 				NetId,
 				" localPlayerAuthority:",
@@ -337,7 +344,7 @@ namespace QuantumUNET.Components
 		{
 			if (!LocalPlayerAuthority)
 			{
-				Debug.LogError("HandleClientAuthority " + base.gameObject + " does not have localPlayerAuthority");
+				Debug.LogError("HandleClientAuthority " + gameObject + " does not have localPlayerAuthority");
 			}
 			else
 			{
@@ -366,7 +373,7 @@ namespace QuantumUNET.Components
 					"Found no behaviour for incoming [",
 					cmdHashHandlerName,
 					"] on ",
-					base.gameObject,
+					gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -384,7 +391,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleSyncEvent(int cmdHash, QSBNetworkReader reader)
 		{
-			if (base.gameObject == null)
+			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -404,7 +411,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					base.gameObject,
+					gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -430,7 +437,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleSyncList(int cmdHash, QSBNetworkReader reader)
 		{
-			if (base.gameObject == null)
+			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -450,7 +457,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					base.gameObject,
+					gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -476,7 +483,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleCommand(int cmdHash, QSBNetworkReader reader)
 		{
-			if (base.gameObject == null)
+			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -496,7 +503,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					base.gameObject,
+					gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -522,7 +529,7 @@ namespace QuantumUNET.Components
 
 		internal void HandleRPC(int cmdHash, QSBNetworkReader reader)
 		{
-			if (base.gameObject == null)
+			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
 				Debug.LogWarning(string.Concat(new object[]
@@ -542,7 +549,7 @@ namespace QuantumUNET.Components
 					"Found no receiver for incoming [",
 					cmdHashHandlerName2,
 					"] on ",
-					base.gameObject,
+					gameObject,
 					",  the server and client should have the same NetworkBehaviour instances [netId=",
 					NetId,
 					"]."
@@ -609,7 +616,7 @@ namespace QuantumUNET.Components
 									Debug.LogWarning(string.Concat(new object[]
 									{
 										"Large state update of ",
-										(int)(s_UpdateWriter.Position - position),
+										s_UpdateWriter.Position - position,
 										" bytes for netId:",
 										NetId,
 										" from script:",
@@ -621,7 +628,7 @@ namespace QuantumUNET.Components
 						if (flag)
 						{
 							s_UpdateWriter.FinishMessage();
-							QSBNetworkServer.SendWriterToReady(base.gameObject, s_UpdateWriter, j);
+							QSBNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter, j);
 						}
 					}
 					IL_197:
@@ -636,7 +643,7 @@ namespace QuantumUNET.Components
 		{
 			if (initialState && m_NetworkBehaviours == null)
 			{
-				m_NetworkBehaviours = base.GetComponents<QSBNetworkBehaviour>();
+				m_NetworkBehaviours = GetComponents<QSBNetworkBehaviour>();
 			}
 			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 			{
@@ -650,7 +657,7 @@ namespace QuantumUNET.Components
 			ModConsole.OwmlConsole.WriteLine($"SetLocalPlayer {localPlayerControllerId}");
 			IsLocalPlayer = true;
 			PlayerControllerId = localPlayerControllerId;
-			var hasAuthority = this.HasAuthority;
+			var hasAuthority = HasAuthority;
 			if (LocalPlayerAuthority)
 			{
 				HasAuthority = true;
@@ -705,7 +712,7 @@ namespace QuantumUNET.Components
 		{
 			if (m_Observers == null)
 			{
-				Debug.LogError("AddObserver for " + base.gameObject + " observer list is null");
+				Debug.LogError("AddObserver for " + gameObject + " observer list is null");
 			}
 			else if (m_ObserverConnections.Contains(conn.connectionId))
 			{
@@ -714,7 +721,7 @@ namespace QuantumUNET.Components
 					"Duplicate observer ",
 					conn.address,
 					" added for ",
-					base.gameObject
+					gameObject
 				}));
 			}
 			else
@@ -724,7 +731,7 @@ namespace QuantumUNET.Components
 					"Added observer ",
 					conn.address,
 					" added for ",
-					base.gameObject
+					gameObject
 				}));
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
@@ -794,7 +801,7 @@ namespace QuantumUNET.Components
 								Debug.LogWarning(string.Concat(new object[]
 								{
 									"Observer is not ready for ",
-									base.gameObject,
+									gameObject,
 									" ",
 									networkConnection3
 								}));
@@ -805,7 +812,7 @@ namespace QuantumUNET.Components
 								Debug.Log(string.Concat(new object[]
 								{
 									"New Observer for ",
-									base.gameObject,
+									gameObject,
 									" ",
 									networkConnection3
 								}));
@@ -821,7 +828,7 @@ namespace QuantumUNET.Components
 							Debug.Log(string.Concat(new object[]
 							{
 								"Removed Observer for ",
-								base.gameObject,
+								gameObject,
 								" ",
 								networkConnection4
 							}));
@@ -865,12 +872,12 @@ namespace QuantumUNET.Components
 			}
 			else if (ClientAuthorityOwner == null)
 			{
-				Debug.LogError("RemoveClientAuthority for " + base.gameObject + " has no clientAuthority owner.");
+				Debug.LogError("RemoveClientAuthority for " + gameObject + " has no clientAuthority owner.");
 				return false;
 			}
 			else if (ClientAuthorityOwner != conn)
 			{
-				Debug.LogError("RemoveClientAuthority for " + base.gameObject + " has different owner.");
+				Debug.LogError("RemoveClientAuthority for " + gameObject + " has different owner.");
 				return false;
 			}
 			ClientAuthorityOwner.RemoveOwnedObject(this);
@@ -899,12 +906,12 @@ namespace QuantumUNET.Components
 			}
 			else if (ClientAuthorityOwner != null && conn != ClientAuthorityOwner)
 			{
-				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + base.gameObject + " already has an owner. Use RemoveClientAuthority() first.");
+				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + gameObject + " already has an owner. Use RemoveClientAuthority() first.");
 				return false;
 			}
 			else if (conn == null)
 			{
-				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + base.gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
+				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
 				return false;
 			}
 			ClientAuthorityOwner = conn;
@@ -961,11 +968,13 @@ namespace QuantumUNET.Components
 		private bool m_LocalPlayerAuthority;
 
 		private bool m_IsServer;
+
 		private QSBNetworkBehaviour[] m_NetworkBehaviours;
 
 		private HashSet<int> m_ObserverConnections;
 
 		private List<QSBNetworkConnection> m_Observers;
+
 		private bool m_Reset = false;
 
 		private static uint s_NextNetworkId = 1U;

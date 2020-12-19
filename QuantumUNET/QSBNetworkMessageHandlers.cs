@@ -6,7 +6,7 @@ namespace QuantumUNET
 {
 	internal class QSBNetworkMessageHandlers
 	{
-		private Dictionary<short, QSBNetworkMessageDelegate> _msgHandlers = new Dictionary<short, QSBNetworkMessageDelegate>();
+		private readonly Dictionary<short, QSBNetworkMessageDelegate> _msgHandlers = new Dictionary<short, QSBNetworkMessageDelegate>();
 
 		internal void RegisterHandlerSafe(short msgType, QSBNetworkMessageDelegate handler)
 		{

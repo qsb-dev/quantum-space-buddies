@@ -5,9 +5,9 @@ namespace QSB.TimeSync
 {
 	public class PreserveTimeScale : QSBNetworkBehaviour
 	{
-		private void Start()
+		public void Start()
 		{
-			QSB.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
+			QSBCore.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
 
 			// Allow server to sleep at campfires
 			if (IsServer)
