@@ -91,7 +91,7 @@ namespace QSB.Instruments
 		{
 			if (!IsLocalPlayer)
 			{
-				DebugLog.DebugWrite("Error - Tried to start instrument on non-local player!", MessageType.Error);
+				DebugLog.ToConsole("Error - Tried to start instrument on non-local player!", MessageType.Error);
 				return;
 			}
 			if (Player.PlayingInstrument || !Locator.GetPlayerController().IsGrounded())
@@ -115,7 +115,6 @@ namespace QSB.Instruments
 
 		public void SwitchToType(AnimationType type)
 		{
-			DebugLog.DebugWrite($"switch to type {type} player {PlayerId}");
 			GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
 			QSBPlayerManager.LocalPlayer.AnimationSync.SetAnimationType(type);
 			CheckInstrumentProps(type);

@@ -67,13 +67,11 @@ namespace QSB.Player
 
 		public static void AddSyncObject(PlayerSyncObject obj)
 		{
-			DebugLog.DebugWrite($"SyncObject Add : type<{obj.GetType().Name}>, netid<{obj.NetId}>");
 			PlayerSyncObjects.Add(obj);
 		}
 
 		public static void RemoveSyncObject(PlayerSyncObject obj)
 		{
-			DebugLog.DebugWrite($"SyncObject Remove : type<{obj.GetType().Name}>, netid<{obj.NetId}>");
 			PlayerSyncObjects.Remove(obj);
 		}
 

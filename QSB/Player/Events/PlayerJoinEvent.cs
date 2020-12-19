@@ -23,7 +23,7 @@ namespace QSB.Player.Events
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
-			DebugLog.ToHud($"{player.Name} joined!");
+			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
 			DebugLog.DebugWrite($"{player.Name} joined as id {player.PlayerId}", MessageType.Info);
 		}
 
