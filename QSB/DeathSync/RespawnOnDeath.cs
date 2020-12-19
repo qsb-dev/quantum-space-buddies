@@ -28,21 +28,7 @@ namespace QSB.DeathSync
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
 
-		public void Awake()
-		{
-			Instance = this;
-
-			QSBCore.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
-			QSBCore.Helper.Events.Event += OnEvent;
-		}
-
-		private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
-		{
-			if (behaviour is PlayerResources && ev == OWML.Common.Events.AfterStart)
-			{
-				Init();
-			}
-		}
+		public void Awake() => Instance = this;
 
 		public void Init()
 		{
