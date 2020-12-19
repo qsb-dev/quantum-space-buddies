@@ -32,7 +32,7 @@ namespace QSB.ConversationSync
 			if (QSBPlayerManager.LocalPlayer.CurrentDialogueID == -1)
 			{
 				DebugLog.ToConsole($"Warning - Ending conversation with CurrentDialogueId of -1! Called from {__instance.name}", MessageType.Warning);
-				return false;
+				return true;
 			}
 			ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentDialogueID, false);
 			ConversationManager.Instance.CloseBoxCharacter(QSBPlayerManager.LocalPlayer.CurrentDialogueID);
