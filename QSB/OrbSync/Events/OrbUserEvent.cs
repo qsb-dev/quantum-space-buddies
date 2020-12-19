@@ -24,6 +24,18 @@ namespace QSB.OrbSync.Events
 			ObjectId = id
 		};
 
+		public override void OnReceiveLocal(bool server, WorldObjectMessage message)
+		{
+			if (server)
+			{
+				HandleServer(message);
+			}
+			else
+			{
+				HandleClient(message);
+			}
+		}
+
 		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
 			if (server)
