@@ -42,35 +42,50 @@ namespace QSB.ConversationSync.Events
 			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.CharacterId];
 			var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
 
-			// Make character face player and talk
 			if (animController == default(CharacterAnimController))
 			{
 				return;
 			}
+
 			if (message.State)
 			{
-				// Start talking
-				QSBPlayerManager.GetPlayer(message.PlayerId).CurrentDialogueID = message.CharacterId;
-				animController.SetValue("_inConversation", true);
-				animController.SetValue("_playerInHeadZone", true);
-				if (animController.GetValue<bool>("_hasTalkAnimation"))
-				{
-					animController.GetValue<Animator>("_animator").SetTrigger("Talking");
-				}
-				dialogueTree.GetComponent<InteractVolume>().DisableInteraction();
+				StartConversation(message.PlayerId, message.CharacterId, animController, dialogueTree);
 			}
 			else
 			{
-				// Stop talking
-				QSBPlayerManager.GetPlayer(message.PlayerId).CurrentDialogueID = -1;
-				animController.SetValue("_inConversation", false);
-				animController.SetValue("_playerInHeadZone", false);
-				if (animController.GetValue<bool>("_hasTalkAnimation"))
-				{
-					animController.GetValue<Animator>("_animator").SetTrigger("Idle");
-				}
-				dialogueTree.GetComponent<InteractVolume>().EnableInteraction();
+				EndConversation(message.PlayerId, animController, dialogueTree);
 			}
+		}
+
+		private void StartConversation(
+			uint playerId,
+			int characterId,
+			CharacterAnimController controller,
+			CharacterDialogueTree tree)
+		{
+			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = characterId;
+			controller.SetValue("_inConversation", true);
+			controller.SetValue("_playerInHeadZone", true);
+			if (controller.GetValue<bool>("_hasTalkAnimation"))
+			{
+				controller.GetValue<Animator>("_animator").SetTrigger("Talking");
+			}
+			tree.GetComponent<InteractVolume>().DisableInteraction();
+		}
+
+		private void EndConversation(
+			uint playerId,
+			CharacterAnimController controller,
+			CharacterDialogueTree tree)
+		{
+			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = -1;
+			controller.SetValue("_inConversation", false);
+			controller.SetValue("_playerInHeadZone", false);
+			if (controller.GetValue<bool>("_hasTalkAnimation"))
+			{
+				controller.GetValue<Animator>("_animator").SetTrigger("Idle");
+			}
+			tree.GetComponent<InteractVolume>().EnableInteraction();
 		}
 	}
 }
