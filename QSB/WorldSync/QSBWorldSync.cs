@@ -15,6 +15,7 @@ namespace QSB.WorldSync
 		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new List<NomaiInterfaceOrb>();
 		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new List<CharacterDialogueTree>();
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
+		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
 		private static readonly List<WorldObject> WorldObjects = new List<WorldObject>();
 
@@ -71,6 +72,28 @@ namespace QSB.WorldSync
 				return;
 			}
 			DialogueConditions[name] = state;
+		}
+
+		public static void AddFactReveal(string id, bool saveGame, bool showNotification)
+		{
+			DebugLog.DebugWrite($"AddFactReveal {id}");
+			if (!QSBCore.IsServer)
+			{
+				DebugLog.DebugWrite("Warning - Cannot write to fact list when not server!", MessageType.Warning);
+				return;
+			}
+			if (ShipLogFacts.Any(x => x.Id == id))
+			{
+				DebugLog.DebugWrite($"Warning - Fact with id {id} already exists in list!", MessageType.Warning);
+				return;
+			}
+			DebugLog.DebugWrite($"adding {id} to shiplogs");
+			ShipLogFacts.Add(new FactReveal
+			{
+				Id = id,
+				SaveGame = saveGame,
+				ShowNotification = showNotification
+			});
 		}
 	}
 }

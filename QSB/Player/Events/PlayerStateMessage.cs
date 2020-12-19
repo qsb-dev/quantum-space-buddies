@@ -9,7 +9,6 @@ namespace QSB.Player.Events
 		public bool PlayerReady { get; set; }
 		public State PlayerState { get; set; }
 
-
 		public override void Deserialize(QSBNetworkReader reader)
 		{
 			base.Deserialize(reader);

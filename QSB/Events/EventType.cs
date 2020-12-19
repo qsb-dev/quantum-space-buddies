@@ -24,6 +24,7 @@
 		Conversation,
 		ConversationStartEnd,
 		PlayInstrument,
-		DialogueCondition
+		DialogueCondition,
+		RevealFact
 	}
 }

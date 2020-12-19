@@ -24,7 +24,7 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveRemote(bool server, PlayerMessage message)
 		{
-			DebugLog.DebugWrite($"Get state request from {message.FromId}");
+			DebugLog.DebugWrite($"Get state request from {message.FromId} - isServer?{server}");
 			GlobalMessenger.FireEvent(EventNames.QSBServerSendPlayerStates);
 			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
 				.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
@@ -32,9 +32,19 @@ namespace QSB.Player.Events
 				GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
 			}
 
+			if (!server)
+			{
+				return;
+			}
+
 			foreach (var condition in QSBWorldSync.DialogueConditions)
 			{
 				GlobalMessenger<string, bool>.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value);
+			}
+
+			foreach (var fact in QSBWorldSync.ShipLogFacts)
+			{
+				GlobalMessenger<string, bool, bool>.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false);
 			}
 		}
 	}

@@ -2,6 +2,7 @@
 using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
+using QSB.LogSync;
 using QSB.OrbSync;
 using QSB.TimeSync;
 using QSB.Utility;
@@ -27,7 +28,8 @@ namespace QSB.Patches
 				new DeathPatches(),
 				new ElevatorPatches(),
 				new OrbPatches(),
-				new WakeUpPatches()
+				new WakeUpPatches(),
+				new LogPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

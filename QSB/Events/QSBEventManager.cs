@@ -4,6 +4,7 @@ using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
+using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
 using QSB.TimeSync.Events;
@@ -44,7 +45,8 @@ namespace QSB.Events
 				new ConversationStartEndEvent(),
 				new ChangeAnimTypeEvent(),
 				new ServerSendPlayerStatesEvent(),
-				new DialogueConditionEvent()
+				new DialogueConditionEvent(),
+				new RevealFactEvent()
 			};
 
 			_eventList.ForEach(ev => ev.SetupListener());

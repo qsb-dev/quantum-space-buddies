@@ -23,6 +23,10 @@ namespace QSB.ConversationSync.Events
 
 		public override void OnReceiveRemote(bool server, ConversationMessage message)
 		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
 			switch (message.Type)
 			{
 				case ConversationType.Character:

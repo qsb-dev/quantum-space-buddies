@@ -21,6 +21,10 @@ namespace QSB.Animation.Events
 
 		public override void OnReceiveRemote(bool server, FloatMessage message)
 		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AboutId);
 			animationSync?.HandleCrouch(message.Value);
 		}

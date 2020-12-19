@@ -228,7 +228,10 @@ namespace QuantumUNET.Components
 					component.UnserializeModeTransform(netMsg.Reader, false);
 					component.LastSyncTime = Time.time;
 				}
-				ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform netId:" + networkInstanceId + " is not for a valid player");
+				else
+				{
+					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform netId:" + networkInstanceId + " is not for a valid player");
+				}
 			}
 		}
 

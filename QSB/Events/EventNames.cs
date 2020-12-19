@@ -34,5 +34,6 @@
 		public static string QSBConversationStartEnd = "QSBConversationStartEnd";
 		public static string QSBChangeAnimType = "QSBPlayInstrument";
 		public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
+		public static string QSBRevealFact = "QSBRevealFact";
 	}
 }

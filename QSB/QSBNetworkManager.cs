@@ -101,7 +101,6 @@ namespace QSB
 			ident.LocalPlayerAuthority = true;
 			ident.SetValue("m_AssetId", go.GetComponent<NetworkIdentity>().assetId);
 			ident.SetValue("m_SceneId", go.GetComponent<NetworkIdentity>().sceneId);
-			Destroy(go.GetComponent<NetworkIdentity>());
 		}
 
 		private void SetupNetworkTransform(GameObject go)
@@ -110,6 +109,7 @@ namespace QSB
 			trans.SendInterval = 0.1f;
 			trans.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
 			Destroy(go.GetComponent<NetworkTransform>());
+			Destroy(go.GetComponent<NetworkIdentity>());
 		}
 
 		public void OnDestroy() =>

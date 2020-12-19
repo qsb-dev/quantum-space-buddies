@@ -33,6 +33,12 @@ namespace QSB.ConversationSync.Events
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
+
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
+
 			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.CharacterId];
 			var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
 

@@ -28,37 +28,39 @@ namespace QSB.Events
 		public void SendEvent(T message)
 		{
 			message.FromId = QSBPlayerManager.LocalPlayerId;
-			QSBCore.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => Send(message));
-		}
-
-		private void Send(T message)
-		{
-			if (QSBNetworkServer.active)
-			{
-				_eventHandler.SendToAll(message);
-			}
-			else
-			{
-				_eventHandler.SendToServer(message);
-			}
+			QSBCore.Helper.Events.Unity.RunWhen(
+				() => PlayerTransformSync.LocalInstance != null,
+				() => _eventHandler.SendToServer(message));
 		}
 
 		private void OnReceive(bool isServer, T message)
 		{
-			if (isServer
-				&& !message.OnlySendToServer
-				&& message.FromId != QSBPlayerManager.LocalPlayerId)
+			/* Explanation :
+			 * if <isServer> is true, this message has been received on the server *server*.
+			 * Therefore, we don't want to do any event handling code - that should be dealt
+			 * with on the server *client* and any other client. So just forward the message
+			 * onto all clients. This way, the server *server* just acts as the ditribution
+			 * hub for all events.
+			 */
+			if (isServer)
 			{
 				_eventHandler.SendToAll(message);
-			}
-			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
-				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
-			{
-				OnReceiveLocal(isServer, message);
 				return;
 			}
 
-			OnReceiveRemote(isServer, message);
+			if (message.OnlySendToServer && !QSBNetworkServer.active)
+			{
+				return;
+			}
+
+			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
+				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
+			{
+				OnReceiveLocal(QSBNetworkServer.active, message);
+				return;
+			}
+
+			OnReceiveRemote(QSBNetworkServer.active, message);
 		}
 	}
 }

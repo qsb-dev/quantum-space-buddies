@@ -150,6 +150,9 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="LogSync\Events\RevealFactEvent.cs" />
+    <Compile Include="LogSync\Events\RevealFactMessage.cs" />
+    <Compile Include="LogSync\LogPatches.cs" />
     <Compile Include="Messaging\EnumMessage.cs" />
     <Compile Include="Messaging\FloatMessage.cs" />
     <Compile Include="OrbSync\Events\OrbSlotMessage.cs" />
@@ -226,6 +229,7 @@
     <Compile Include="QSBCore.cs" />
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldSync\FactReveal.cs" />
     <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
   </ItemGroup>
