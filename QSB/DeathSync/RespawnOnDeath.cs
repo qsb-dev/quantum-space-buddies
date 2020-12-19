@@ -59,7 +59,7 @@ namespace QSB.DeathSync
 		{
 			if (_shipSpawnPoint == null)
 			{
-				DebugLog.ToConsole("_shipSpawnPoint is null!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - _shipSpawnPoint is null!", MessageType.Warning);
 				Init();
 			}
 
@@ -95,6 +95,12 @@ namespace QSB.DeathSync
 
 		public void ResetPlayer()
 		{
+			if (_shipSpawnPoint == null)
+			{
+				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
+				Init();
+			}
+
 			// Reset player position.
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);

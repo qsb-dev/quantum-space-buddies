@@ -180,8 +180,6 @@ namespace QSB
 			gameObject.AddComponent<RespawnOnDeath>();
 			gameObject.AddComponent<PreventShipDestruction>();
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, RespawnOnDeath.Instance.Init);
-
 			if (QSBSceneManager.IsInUniverse)
 			{
 				QSBSectorManager.Instance.RebuildSectors();
