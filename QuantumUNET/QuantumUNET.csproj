@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C8C53004-1508-4F86-A419-4292C188DC2A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QuantumUNET</RootNamespace>
+    <AssemblyName>QuantumUNET</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\NAudio-Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Input, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Interaction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
+    </Reference>
+    <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Messages\QSBMsgType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Messages\QSBAddPlayerMessage.cs" />
+    <Compile Include="Messages\QSBAnimationMessage.cs" />
+    <Compile Include="Messages\QSBAnimationParametersMessage.cs" />
+    <Compile Include="Messages\QSBAnimationTriggerMessage.cs" />
+    <Compile Include="Transport\QSBChannelBuffer.cs" />
+    <Compile Include="Transport\QSBChannelPacket.cs" />
+    <Compile Include="Messages\QSBClientAuthorityMessage.cs" />
+    <Compile Include="QSBClientScene.cs" />
+    <Compile Include="Messages\QSBCRCMessage.cs" />
+    <Compile Include="QSBCRCMessageEntry.cs" />
+    <Compile Include="Messages\QSBEmptyMessage.cs" />
+    <Compile Include="Messages\QSBErrorMessage.cs" />
+    <Compile Include="QSBLocalClient.cs" />
+    <Compile Include="Messages\QSBMessageBase.cs" />
+    <Compile Include="Transport\QSBNetBuffer.cs" />
+    <Compile Include="Components\QSBNetworkAnimator.cs" />
+    <Compile Include="QSBNetworkBehaviour.cs" />
+    <Compile Include="QSBNetworkClient.cs" />
+    <Compile Include="QSBNetworkConnection.cs" />
+    <Compile Include="QSBNetworkCRC.cs" />
+    <Compile Include="Components\QSBNetworkIdentity.cs" />
+    <Compile Include="Components\QSBNetworkManagerHUD.cs" />
+    <Compile Include="Components\QSBNetworkManagerUNET.cs" />
+    <Compile Include="Messages\QSBNetworkMessage.cs" />
+    <Compile Include="Messages\QSBNetworkMessageDelegate.cs" />
+    <Compile Include="QSBNetworkMessageHandlers.cs" />
+    <Compile Include="Transport\QSBNetworkReader.cs" />
+    <Compile Include="QSBNetworkScene.cs" />
+    <Compile Include="QSBNetworkServer.cs" />
+    <Compile Include="QSBNetworkServerSimple.cs" />
+    <Compile Include="Components\QSBNetworkTransform.cs" />
+    <Compile Include="Transport\QSBNetworkWriter.cs" />
+    <Compile Include="Messages\QSBNotReadyMessage.cs" />
+    <Compile Include="Messages\QSBObjectDestroyMessage.cs" />
+    <Compile Include="Messages\QSBObjectSpawnFinishedMessage.cs" />
+    <Compile Include="Messages\QSBObjectSpawnMessage.cs" />
+    <Compile Include="Messages\QSBObjectSpawnSceneMessage.cs" />
+    <Compile Include="Messages\QSBOwnerMessage.cs" />
+    <Compile Include="QSBPlayerController.cs" />
+    <Compile Include="Messages\QSBReadyMessage.cs" />
+    <Compile Include="Messages\QSBRemovePlayerMessage.cs" />
+    <Compile Include="Messages\QSBStringMessage.cs" />
+    <Compile Include="Messages\QSBSpawnDelegate.cs" />
+    <Compile Include="QSBULocalConnectionToClient.cs" />
+    <Compile Include="QSBULocalConnectionToServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /y "$(TargetPath)" "$(OwmlDir)\Mods\QSB"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

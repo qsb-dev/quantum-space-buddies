@@ -1,52 +1,45 @@
-﻿using QSB.Utility;
+﻿using OWML.Common;
+using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.OrbSync
 {
-    public class OrbManager : MonoBehaviour
-    {
-        public static OrbManager Instance { get; private set; }
+	public class OrbManager : MonoBehaviour
+	{
+		public static OrbManager Instance { get; private set; }
 
-        private void Awake()
-        {
-            Instance = this;
-        }
+		private void Awake() => Instance = this;
 
-        private void BuildOrbSlots()
-        {
-            DebugLog.DebugWrite("Building QSBOrbSlots...");
+		private void BuildOrbSlots()
+		{
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
+			var orbSlots = Resources.FindObjectsOfTypeAll<NomaiInterfaceSlot>();
+			for (var id = 0; id < orbSlots.Length; id++)
+			{
+				var qsbOrbSlot = QSBWorldSync.GetWorldObject<QSBOrbSlot>(id) ?? new QSBOrbSlot();
+				qsbOrbSlot.Init(orbSlots[id], id);
+			}
 
-            var orbSlots = Resources.FindObjectsOfTypeAll<NomaiInterfaceSlot>();
-            for (var id = 0; id < orbSlots.Length; id++)
-            {
-                var qsbOrbSlot = WorldRegistry.GetObject<QSBOrbSlot>(id) ?? new QSBOrbSlot();
-                qsbOrbSlot.Init(orbSlots[id], id);
-            }
+			DebugLog.DebugWrite($"Finished orb slot build with {orbSlots.Length} slots.", MessageType.Success);
+		}
 
-            DebugLog.DebugWrite($"Finished orb build with {WorldRegistry.OldOrbList.Count} interface orbs and {WorldRegistry.OrbSyncList.Count} orb syncs.");
-        }
+		public void BuildOrbs()
+		{
+			QSBWorldSync.OldOrbList.Clear();
+			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
+			if (QSBNetworkServer.active)
+			{
+				QSBWorldSync.OrbSyncList.ForEach(x => QSBNetworkServer.Destroy(x.gameObject));
+				QSBWorldSync.OrbSyncList.Clear();
+				QSBWorldSync.OldOrbList.ForEach(x => QSBNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
+			}
+			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
+		}
 
-        public void BuildOrbs()
-        {
-            DebugLog.DebugWrite("Building orb syncs...");
-            WorldRegistry.OldOrbList.Clear();
-
-            WorldRegistry.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-            if (NetworkServer.active)
-            {
-                DebugLog.DebugWrite("IS SERVER - INSTANTIATING!");
-                WorldRegistry.OrbSyncList.Clear();
-                WorldRegistry.OldOrbList.ForEach(x => NetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
-            }
-        }
-
-        public void QueueBuildSlots()
-        {
-            DebugLog.DebugWrite("Queueing build of QSBOrbSlots...");
-            QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, BuildOrbSlots);
-        }
-    }
+		public void QueueBuildSlots() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
+		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
+	}
 }

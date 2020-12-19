@@ -1,0 +1,34 @@
+ManifestFileVersion: 0
+CRC: 2593345828
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d97fbc9cde41b6514223a2f68ba96af8
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ff0e1233df027a80b5add90668c49830
+HashAppended: 0
+ClassTypes:
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+Assets:
+- Assets/Riebeck/Idle_to_playing.anim
+- Assets/Chert/Chert_Drum_Panicked.anim
+- Assets/Riebeck/Traveller_Riebeck.controller
+- Assets/Chert/Traveller_Chert.controller
+- Assets/Chert/Chert_Drum_Chipper.anim
+- Assets/Riebeck/Riebeck_DreamIdle.anim
+- Assets/Chert/Chert_Chatter_Chipper.anim
+- Assets/Riebeck/Riebeck_Playing.anim
+- Assets/Chert/Chert_Chatter_Panicked.anim
+- Assets/Chert/Chert_Chatter_Nervous.anim
+- Assets/Chert/hourglasstwinsmeshescharacters2.asset
+- Assets/Riebeck/Playing_banjo.anim
+- Assets/Riebeck/Playing_to_idle.anim
+- Assets/Chert/Chert_Dream.anim
+- Assets/Riebeck/Riebeck_Talking.anim
+Dependencies: []

@@ -37,6 +37,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OWML.0.7.3\lib\net35\NAudio-Unity.dll</HintPath>
     </Reference>
@@ -76,8 +80,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Epic\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -86,10 +91,7 @@
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
@@ -119,95 +121,116 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\AnimationSync.cs" />
-    <Compile Include="Animation\AnimTriggerEvent.cs" />
+    <Compile Include="Animation\AnimationType.cs" />
+    <Compile Include="Animation\Events\CrouchEvent.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimControllerPatch.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
-    <Compile Include="Animation\AnimTrigger.cs" />
-    <Compile Include="Animation\AnimTriggerMessage.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
+    <Compile Include="Animation\PlayerHeadRotationSync.cs" />
+    <Compile Include="ConversationSync\Events\DialogueConditionEvent.cs" />
+    <Compile Include="ConversationSync\Events\DialogueConditionMessage.cs" />
+    <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
+    <Compile Include="ConversationSync\Events\ConversationMessage.cs" />
+    <Compile Include="ConversationSync\ConversationPatches.cs" />
+    <Compile Include="ConversationSync\Events\ConversationStartEndEvent.cs" />
+    <Compile Include="ConversationSync\Events\ConversationStartEndMessage.cs" />
+    <Compile Include="ConversationSync\ConversationType.cs" />
+    <Compile Include="ConversationSync\ConversationManager.cs" />
     <Compile Include="DeathSync\DeathPatches.cs" />
-    <Compile Include="ElevatorSync\ElevatorDirection.cs" />
     <Compile Include="ElevatorSync\QSBElevator.cs" />
-    <Compile Include="ElevatorSync\ElevatorEvent.cs" />
+    <Compile Include="ElevatorSync\Events\ElevatorEvent.cs" />
     <Compile Include="ElevatorSync\ElevatorManager.cs" />
-    <Compile Include="ElevatorSync\ElevatorMessage.cs" />
     <Compile Include="ElevatorSync\ElevatorPatches.cs" />
     <Compile Include="Events\EventNames.cs" />
-    <Compile Include="DeathSync\PlayerDeathEvent.cs" />
+    <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
+    <Compile Include="Animation\Events\ChangeAnimTypeEvent.cs" />
+    <Compile Include="Instruments\QSBCamera\CameraController.cs" />
+    <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
+    <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
+    <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="LogSync\Events\RevealFactEvent.cs" />
+    <Compile Include="LogSync\Events\RevealFactMessage.cs" />
+    <Compile Include="LogSync\LogPatches.cs" />
+    <Compile Include="Messaging\EnumMessage.cs" />
+    <Compile Include="Messaging\FloatMessage.cs" />
+    <Compile Include="OrbSync\Events\OrbSlotMessage.cs" />
     <Compile Include="OrbSync\OrbManager.cs" />
-    <Compile Include="OrbSync\OrbSlotEvent.cs" />
+    <Compile Include="OrbSync\Events\OrbSlotEvent.cs" />
     <Compile Include="OrbSync\OrbPatches.cs" />
-    <Compile Include="OrbSync\OrbUserEvent.cs" />
+    <Compile Include="OrbSync\Events\OrbUserEvent.cs" />
     <Compile Include="OrbSync\QSBOrbSlot.cs" />
-    <Compile Include="PlayerSyncObject.cs" />
+    <Compile Include="Patches\QSBPatchManager.cs" />
+    <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
+    <Compile Include="Player\PlayerSyncObject.cs" />
+    <Compile Include="QSBInputManager.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
+    <Compile Include="Patches\QSBPatch.cs" />
+    <Compile Include="Patches\QSBPatchTypes.cs" />
     <Compile Include="QSBSceneManager.cs" />
+    <Compile Include="TimeSync\TimeSyncType.cs" />
+    <Compile Include="TimeSync\TimeSyncUI.cs" />
     <Compile Include="TimeSync\WakeUpPatches.cs" />
-    <Compile Include="Tools\PlayerFlashlightEvent.cs" />
-    <Compile Include="Events\PlayerJoinEvent.cs" />
-    <Compile Include="Events\PlayerLeaveEvent.cs" />
-    <Compile Include="Tools\PlayerProbeEvent.cs" />
-    <Compile Include="Events\PlayerReadyEvent.cs" />
+    <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
+    <Compile Include="Player\Events\PlayerJoinEvent.cs" />
+    <Compile Include="Tools\Events\PlayerProbeEvent.cs" />
+    <Compile Include="Player\Events\PlayerReadyEvent.cs" />
     <Compile Include="TransformSync\NomaiOrbTransformSync.cs" />
-    <Compile Include="TransformSync\PlayerSectorEvent.cs" />
-    <Compile Include="Events\PlayerStatesRequestEvent.cs" />
-    <Compile Include="Animation\PlayerSuitEvent.cs" />
-    <Compile Include="TimeSync\ServerTimeEvent.cs" />
-    <Compile Include="GeyserSync\GeyserEvent.cs" />
+    <Compile Include="Player\Events\PlayerSectorEvent.cs" />
+    <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
+    <Compile Include="Animation\Events\PlayerSuitEvent.cs" />
+    <Compile Include="TimeSync\Events\ServerTimeEvent.cs" />
+    <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\QSBGeyser.cs" />
-    <Compile Include="DeathSync\PlayerDeathMessage.cs" />
-    <Compile Include="Messaging\PlayerLeaveMessage.cs" />
-    <Compile Include="Tools\PlayerProbeLauncherEvent.cs" />
-    <Compile Include="Tools\PlayerSignalscopeEvent.cs" />
-    <Compile Include="Tools\PlayerTranslatorEvent.cs" />
+    <Compile Include="Tools\Events\PlayerProbeLauncherEvent.cs" />
+    <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
+    <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
-    <Compile Include="Messaging\PlayerJoinMessage.cs" />
+    <Compile Include="Player\Events\PlayerJoinMessage.cs" />
     <Compile Include="Messaging\ToggleMessage.cs" />
-    <Compile Include="TransformSync\QSBSector.cs" />
-    <Compile Include="TransformSync\QSBSectorManager.cs" />
+    <Compile Include="SectorSync\QSBSector.cs" />
+    <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
-    <Compile Include="Utility\ListExtensions.cs" />
-    <Compile Include="WorldSync\BoolWorldObjectMessage.cs" />
-    <Compile Include="WorldSync\WorldObjectMessage.cs" />
+    <Compile Include="Utility\UnetExtensions.cs" />
+    <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />
+    <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />
     <Compile Include="Tools\QSBTool.cs" />
     <Compile Include="Tools\ToolType.cs" />
     <Compile Include="TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
-    <Compile Include="Events\EventList.cs" />
-    <Compile Include="Messaging\PlayerStateMessage.cs" />
-    <Compile Include="Events\PlayerState.cs" />
+    <Compile Include="Events\QSBEventManager.cs" />
+    <Compile Include="Player\Events\PlayerStateMessage.cs" />
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="Messaging\PlayerMessage.cs" />
     <Compile Include="Messaging\MessageHandler.cs" />
-    <Compile Include="Messaging\EventType.cs" />
-    <Compile Include="PlayerInfo.cs" />
-    <Compile Include="State.cs" />
+    <Compile Include="Events\EventType.cs" />
+    <Compile Include="Player\PlayerInfo.cs" />
+    <Compile Include="Player\State.cs" />
     <Compile Include="DeathSync\PreventShipDestruction.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
-    <Compile Include="PlayerRegistry.cs" />
+    <Compile Include="Player\QSBPlayerManager.cs" />
     <Compile Include="TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Utility\FlagsHelper.cs" />
-    <Compile Include="TransformSync\PlayerHUDMarker.cs" />
+    <Compile Include="Player\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
-    <Compile Include="Tools\ProbePatches.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
-    <Compile Include="TransformSync\SectorSync.cs" />
-    <Compile Include="TimeSync\ServerTimeMessage.cs" />
+    <Compile Include="SectorSync\SectorSync.cs" />
+    <Compile Include="TimeSync\Events\ServerTimeMessage.cs" />
     <Compile Include="TimeSync\WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
-    <Compile Include="QSB.cs" />
+    <Compile Include="QSBCore.cs" />
     <Compile Include="TransformSync\PlayerTransformSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldSync\WorldRegistry.cs" />
+    <Compile Include="WorldSync\FactReveal.cs" />
+    <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +238,12 @@
     <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj">
+      <Project>{C8C53004-1508-4F86-A419-4292C188DC2A}</Project>
+      <Name>QuantumUNET</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"

@@ -1,53 +1,68 @@
 ﻿using QSB.Animation;
+using QSB.Instruments;
+using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerTransformSync : TransformSync
-    {
-        public static PlayerTransformSync LocalInstance { get; private set; }
+	public class PlayerTransformSync : TransformSync
+	{
+		public static PlayerTransformSync LocalInstance { get; private set; }
 
-        static PlayerTransformSync()
-        {
-            AnimControllerPatch.Init();
-        }
+		static PlayerTransformSync()
+		{
+			AnimControllerPatch.Init();
+		}
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+		public override void OnStartLocalPlayer()
+		{
+			LocalInstance = this;
+			DebugLog.DebugWrite("SET LOCAL INSTANCE");
+		}
 
-        private Transform GetPlayerModel()
-        {
-            return Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
-        }
+		protected override void OnDestroy()
+		{
+			base.OnDestroy();
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.RemovePlayer(PlayerId);
+		}
 
-        protected override Transform InitLocalTransform()
-        {
-            var body = GetPlayerModel();
+		private Transform GetPlayerModel() =>
+			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
-            GetComponent<AnimationSync>().InitLocal(body);
+		protected override Transform InitLocalTransform()
+		{
+			var body = GetPlayerModel();
 
-            return body;
-        }
+			GetComponent<AnimationSync>().InitLocal(body);
+			GetComponent<InstrumentsManager>().InitLocal(body);
 
-        protected override Transform InitRemoteTransform()
-        {
-            var body = Instantiate(GetPlayerModel());
+			Player.Body = body.gameObject;
 
-            GetComponent<AnimationSync>().InitRemote(body);
+			return body;
+		}
 
-            var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
-            marker.Init(Player);
+		protected override Transform InitRemoteTransform()
+		{
+			var body = Instantiate(GetPlayerModel());
 
-            return body;
-        }
+			GetComponent<AnimationSync>().InitRemote(body);
+			GetComponent<InstrumentsManager>().InitRemote(body);
 
-        public override bool IsReady => Locator.GetPlayerTransform() != null
-            && Player != null
-            && PlayerRegistry.PlayerExists(Player.PlayerId)
-            && Player.IsReady
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
-    }
+			var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
+			marker.Init(Player);
+
+			Player.Body = body.gameObject;
+
+			return body;
+		}
+
+		public override bool IsReady => Locator.GetPlayerTransform() != null
+			&& Player != null
+			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& Player.IsReady
+			&& NetId.Value != uint.MaxValue
+			&& NetId.Value != 0U;
+	}
 }

@@ -5,11 +5,17 @@ using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.Events;
 using QSB.GeyserSync;
+using QSB.Instruments;
 using QSB.OrbSync;
+using QSB.Patches;
+using QSB.Player;
+using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
+using QuantumUNET.Components;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -17,258 +23,236 @@ using UnityEngine.Networking;
 
 namespace QSB
 {
-    public class QSBNetworkManager : NetworkManager
-    {
-        private const int MaxConnections = 128;
-        private const int MaxBufferedPackets = 64;
+	public class QSBNetworkManager : QSBNetworkManagerUNET
+	{
+		public static QSBNetworkManager Instance { get; private set; }
 
-        public static QSBNetworkManager Instance { get; private set; }
+		public event Action OnNetworkManagerReady;
 
-        public event Action OnNetworkManagerReady;
-        public bool IsReady { get; private set; }
+		public bool IsReady { get; private set; }
+		public GameObject OrbPrefab { get; set; }
 
-        private QSBNetworkLobby _lobby;
-        private AssetBundle _assetBundle;
-        private GameObject _shipPrefab;
-        private GameObject _cameraPrefab;
-        private GameObject _probePrefab;
-        public GameObject OrbPrefab;
+		private const int MaxConnections = 128;
+		private const int MaxBufferedPackets = 64;
 
-        private void Awake()
-        {
-            Instance = this;
+		private QSBNetworkLobby _lobby;
+		private AssetBundle _assetBundle;
+		private GameObject _shipPrefab;
+		private GameObject _cameraPrefab;
+		private GameObject _probePrefab;
 
-            _lobby = gameObject.AddComponent<QSBNetworkLobby>();
-            _assetBundle = QSB.NetworkAssetBundle;
+		public void Awake()
+		{
+			base.Awake();
+			Instance = this;
 
-            playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
-            playerPrefab.AddComponent<PlayerTransformSync>();
-            playerPrefab.AddComponent<AnimationSync>();
-            playerPrefab.AddComponent<WakeUpSync>();
-            DebugLog.LogState("PlayerPrefab", playerPrefab);
+			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
+			_assetBundle = QSBCore.NetworkAssetBundle;
 
-            _shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-            _shipPrefab.AddComponent<ShipTransformSync>();
-            spawnPrefabs.Add(_shipPrefab);
-            DebugLog.LogState("ShipPrefab", _shipPrefab);
+			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
+			SetupNetworkId(playerPrefab);
+			Destroy(playerPrefab.GetComponent<NetworkTransform>());
+			Destroy(playerPrefab.GetComponent<NetworkIdentity>());
+			SetupNetworkTransform(playerPrefab);
+			playerPrefab.AddComponent<PlayerTransformSync>();
+			playerPrefab.AddComponent<AnimationSync>();
+			playerPrefab.AddComponent<WakeUpSync>();
+			playerPrefab.AddComponent<InstrumentsManager>();
 
-            _cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
-            _cameraPrefab.AddComponent<PlayerCameraSync>();
-            spawnPrefabs.Add(_cameraPrefab);
-            DebugLog.LogState("CameraPrefab", _cameraPrefab);
+			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
+			SetupNetworkId(_shipPrefab);
+			Destroy(_shipPrefab.GetComponent<NetworkTransform>());
+			Destroy(_shipPrefab.GetComponent<NetworkIdentity>());
+			SetupNetworkTransform(_shipPrefab);
+			_shipPrefab.AddComponent<ShipTransformSync>();
+			spawnPrefabs.Add(_shipPrefab);
 
-            _probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
-            _probePrefab.AddComponent<PlayerProbeSync>();
-            spawnPrefabs.Add(_probePrefab);
-            DebugLog.LogState("ProbePrefab", _probePrefab);
+			_cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
+			SetupNetworkId(_cameraPrefab);
+			Destroy(_cameraPrefab.GetComponent<NetworkTransform>());
+			Destroy(_cameraPrefab.GetComponent<NetworkIdentity>());
+			SetupNetworkTransform(_cameraPrefab);
+			_cameraPrefab.AddComponent<PlayerCameraSync>();
+			spawnPrefabs.Add(_cameraPrefab);
 
-            OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-            OrbPrefab.AddComponent<NomaiOrbTransformSync>();
-            spawnPrefabs.Add(OrbPrefab);
-            DebugLog.LogState("OrbPrefab", OrbPrefab);
+			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
+			SetupNetworkId(_probePrefab);
+			Destroy(_probePrefab.GetComponent<NetworkTransform>());
+			Destroy(_probePrefab.GetComponent<NetworkIdentity>());
+			SetupNetworkTransform(_probePrefab);
+			_probePrefab.AddComponent<PlayerProbeSync>();
+			spawnPrefabs.Add(_probePrefab);
 
-            ConfigureNetworkManager();
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-        }
+			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
+			SetupNetworkId(OrbPrefab);
+			Destroy(OrbPrefab.GetComponent<NetworkTransform>());
+			Destroy(OrbPrefab.GetComponent<NetworkIdentity>());
+			SetupNetworkTransform(OrbPrefab);
+			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
+			spawnPrefabs.Add(OrbPrefab);
 
-        private void OnSceneLoaded(OWScene scene, bool inUniverse)
-        {
-            if (inUniverse)
-            {
-                OrbManager.Instance.BuildOrbs();
-            }
-        }
+			ConfigureNetworkManager();
+			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
+		}
 
-        private void ConfigureNetworkManager()
-        {
-            networkAddress = QSB.DefaultServerIP;
-            networkPort = QSB.Port;
-            maxConnections = MaxConnections;
-            customConfig = true;
-            connectionConfig.AddChannel(QosType.Reliable);
-            connectionConfig.AddChannel(QosType.Unreliable);
-            this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
-            channels.Add(QosType.Reliable);
-            channels.Add(QosType.Unreliable);
+		private void SetupNetworkId(GameObject go)
+		{
+			var ident = go.AddComponent<QSBNetworkIdentity>();
+			ident.LocalPlayerAuthority = true;
+			ident.SetValue("m_AssetId", go.GetComponent<NetworkIdentity>().assetId);
+			ident.SetValue("m_SceneId", go.GetComponent<NetworkIdentity>().sceneId);
+		}
 
-            gameObject.AddComponent<Events.PlayerState>();
-        }
+		private void SetupNetworkTransform(GameObject go)
+		{
+			var trans = go.AddComponent<QSBNetworkTransform>();
+			trans.SendInterval = 0.1f;
+			trans.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
+			Destroy(go.GetComponent<NetworkTransform>());
+			Destroy(go.GetComponent<NetworkIdentity>());
+		}
 
-        public override void OnStartServer()
-        {
-            DebugLog.DebugWrite("~~ ON START SERVER ~~", MessageType.Info);
-            if (WorldRegistry.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
-            {
-                QSB.Helper.Events.Unity.RunWhen(() => NetworkServer.active, OrbManager.Instance.BuildOrbs);
-            }
-        }
+		public void OnDestroy() =>
+			QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
 
-        public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) // Called on the server when a client joins
-        {
-            DebugLog.DebugWrite("[S] Add player");
-            base.OnServerAddPlayer(connection, playerControllerId);
+		private void OnSceneLoaded(OWScene scene)
+		{
+			OrbManager.Instance.BuildOrbs();
+			OrbManager.Instance.QueueBuildSlots();
+			QSBWorldSync.OldDialogueTrees.Clear();
+			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+		}
 
-            // These have to be in a constant order (for now, until we get a better netId getting system...)
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
-            NetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
-        }
+		private void ConfigureNetworkManager()
+		{
+			networkAddress = QSBCore.DefaultServerIP;
+			networkPort = QSBCore.Port;
+			maxConnections = MaxConnections;
+			customConfig = true;
+			connectionConfig.AddChannel(QosType.Reliable);
+			connectionConfig.AddChannel(QosType.Unreliable);
+			this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
+			channels.Add(QosType.Reliable);
+			channels.Add(QosType.Unreliable);
 
-        public override void OnClientConnect(NetworkConnection connection) // Called on the client when connecting to a server
-        {
-            base.OnClientConnect(connection);
+			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
+		}
 
-            gameObject.AddComponent<SectorSync>();
-            gameObject.AddComponent<RespawnOnDeath>();
-            gameObject.AddComponent<PreventShipDestruction>();
+		public override void OnStartServer()
+		{
+			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
+			if (QSBWorldSync.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
+			{
+				OrbManager.Instance.QueueBuildOrbs();
+			}
+			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
+			{
+				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+			}
+		}
 
-            QSBSectorManager.Instance.RebuildSectors();
-            OrbManager.Instance.QueueBuildSlots();
+		public override void OnServerAddPlayer(QSBNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
+		{
+			DebugLog.DebugWrite($"OnServerAddPlayer {playerControllerId}", MessageType.Info);
+			base.OnServerAddPlayer(connection, playerControllerId);
 
-            if (NetworkClient.active && !NetworkServer.active)
-            {
-                GeyserManager.Instance.EmptyUpdate();
-                WakeUpPatches.AddPatches();
-            }
+			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
+			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
+			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
+		}
 
-            OrbPatches.AddPatches();
+		public override void OnClientConnect(QSBNetworkConnection connection) // Called on the client when connecting to a server
+		{
+			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
+			base.OnClientConnect(connection);
 
-            _lobby.CanEditName = false;
+			QSBEventManager.Init();
 
-            OnNetworkManagerReady?.Invoke();
-            IsReady = true;
+			gameObject.AddComponent<SectorSync.SectorSync>();
+			gameObject.AddComponent<RespawnOnDeath>();
+			gameObject.AddComponent<PreventShipDestruction>();
 
-            QSB.Helper.Events.Unity.RunWhen(() => PlayerTransformSync.LocalInstance != null, EventList.Init);
+			if (QSBSceneManager.IsInUniverse)
+			{
+				QSBSectorManager.Instance.RebuildSectors();
+				OrbManager.Instance.QueueBuildSlots();
+			}
 
-            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
-                () => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+			if (!QSBNetworkServer.localClientActive)
+			{
+				QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
+			}
 
-            QSB.Helper.Events.Unity.RunWhen(() => EventList.Ready,
-                () => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
-        }
+			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-        public override void OnStopClient() // Called on the client when closing connection
-        {
-            DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
-            Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<RespawnOnDeath>());
-            Destroy(GetComponent<PreventShipDestruction>());
-            EventList.Reset();
-            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
+			_lobby.CanEditName = false;
 
-            foreach (var player in PlayerRegistry.PlayerList)
-            {
-                PlayerRegistry.GetPlayerNetIds(player).ForEach(CleanupNetworkBehaviour);
-            }
-            PlayerRegistry.RemoveAllPlayers();
+			OnNetworkManagerReady?.Invoke();
+			IsReady = true;
 
-            WorldRegistry.RemoveObjects<QSBOrbSlot>();
-            WorldRegistry.RemoveObjects<QSBElevator>();
-            WorldRegistry.RemoveObjects<QSBGeyser>();
-            WorldRegistry.RemoveObjects<QSBSector>();
-            DebugLog.DebugWrite("Clearing OrbSyncList...", MessageType.Info);
-            WorldRegistry.OrbSyncList.Clear();
+			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				() => GlobalMessenger<string>.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
-            _lobby.CanEditName = true;
-        }
+			if (!QSBCore.IsServer)
+			{
+				QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				() => GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest));
+			}
+		}
 
-        public override void OnServerDisconnect(NetworkConnection connection) // Called on the server when any client disconnects
-        {
-            var playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            var netIds = connection.clientOwnedObjects.Select(x => x.Value).ToArray();
-            GlobalMessenger<uint, uint[]>.FireEvent(EventNames.QSBPlayerLeave, playerId, netIds);
+		public override void OnStopClient() // Called on the client when closing connection
+		{
+			DebugLog.DebugWrite("OnStopClient", MessageType.Info);
+			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
+			Destroy(GetComponent<SectorSync.SectorSync>());
+			Destroy(GetComponent<RespawnOnDeath>());
+			Destroy(GetComponent<PreventShipDestruction>());
+			QSBEventManager.Reset();
+			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            foreach (var item in WorldRegistry.OrbSyncList)
-            {
-                var identity = item.GetComponent<NetworkIdentity>();
-                if (identity.clientAuthorityOwner == connection)
-                {
-                    identity.RemoveClientAuthority(connection);
-                }
-            }
+			QSBPlayerManager.RemoveAllPlayers();
 
-            PlayerRegistry.GetPlayer(playerId).HudMarker?.Remove();
-            CleanupConnection(connection);
-        }
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
+			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
+			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector>();
+			QSBWorldSync.OrbSyncList.Clear();
+			QSBWorldSync.OldDialogueTrees.Clear();
 
-        public override void OnStopServer()
-        {
-            Destroy(GetComponent<SectorSync>());
-            Destroy(GetComponent<RespawnOnDeath>());
-            Destroy(GetComponent<PreventShipDestruction>());
-            EventList.Reset();
-            DebugLog.ToConsole("[S] Server stopped!", MessageType.Info);
-            PlayerRegistry.PlayerList.ForEach(player => player.HudMarker?.Remove());
-            NetworkServer.connections.ToList().ForEach(CleanupConnection);
+			_lobby.CanEditName = true;
+		}
 
-            WorldRegistry.RemoveObjects<QSBOrbSlot>();
-            WorldRegistry.RemoveObjects<QSBElevator>();
-            WorldRegistry.RemoveObjects<QSBGeyser>();
-            WorldRegistry.RemoveObjects<QSBSector>();
+		public override void OnServerDisconnect(QSBNetworkConnection connection) // Called on the server when any client disconnects
+		{
+			base.OnServerDisconnect(connection);
+			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-            base.OnStopServer();
-        }
+			foreach (var item in QSBWorldSync.OrbSyncList)
+			{
+				var identity = item.GetComponent<QSBNetworkIdentity>();
+				if (identity.ClientAuthorityOwner == connection)
+				{
+					identity.RemoveClientAuthority(connection);
+				}
+			}
+		}
 
-        private void CleanupConnection(NetworkConnection connection)
-        {
-            uint playerId;
-            try
-            {
-                playerId = connection.playerControllers[0].gameObject.GetComponent<PlayerTransformSync>().netId.Value;
-            }
-            catch (Exception ex)
-            {
-                DebugLog.ToConsole("Error when getting playerId in CleanupConnection: " + ex.Message, MessageType.Error);
-                return;
-            }
-            if (!PlayerRegistry.PlayerExists(playerId))
-            {
-                return;
-            }
-            var playerName = PlayerRegistry.GetPlayer(playerId).Name;
-            DebugLog.ToConsole($"{playerName} disconnected.", MessageType.Info);
-            PlayerRegistry.RemovePlayer(playerId);
+		public override void OnStopServer()
+		{
+			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
+			Destroy(GetComponent<SectorSync.SectorSync>());
+			Destroy(GetComponent<RespawnOnDeath>());
+			Destroy(GetComponent<PreventShipDestruction>());
+			QSBEventManager.Reset();
+			DebugLog.ToConsole("Server stopped!", MessageType.Info);
+			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-            var netIds = connection.clientOwnedObjects?.Select(x => x.Value).ToList();
-            netIds.ForEach(CleanupNetworkBehaviour);
-        }
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
+			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
+			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 
-        public void CleanupNetworkBehaviour(uint netId)
-        {
-            DebugLog.DebugWrite($"Cleaning up netId {netId}");
-            // Multiple networkbehaviours can use the same networkidentity (same netId), so get all of them
-            var networkBehaviours = FindObjectsOfType<NetworkBehaviour>()
-                .Where(x => x != null && x.netId.Value == netId);
-            foreach (var networkBehaviour in networkBehaviours)
-            {
-                var transformSync = networkBehaviour.GetComponent<TransformSync.TransformSync>();
-
-                if (transformSync != null)
-                {
-                    DebugLog.DebugWrite($"  * Removing TransformSync from syncobjects");
-                    PlayerRegistry.PlayerSyncObjects.Remove(transformSync);
-                    if (transformSync.SyncedTransform != null && netId != PlayerRegistry.LocalPlayerId && !networkBehaviour.hasAuthority)
-                    {
-                        DebugLog.DebugWrite($"  * Destroying {transformSync.SyncedTransform.gameObject.name}");
-                        Destroy(transformSync.SyncedTransform.gameObject);
-                    }
-                }
-
-                var animationSync = networkBehaviour.GetComponent<AnimationSync>();
-
-                if (animationSync != null)
-                {
-                    DebugLog.DebugWrite($"  * Removing AnimationSync from syncobjects");
-                    PlayerRegistry.PlayerSyncObjects.Remove(animationSync);
-                }
-
-                if (!networkBehaviour.hasAuthority)
-                {
-                    DebugLog.DebugWrite($"  * Destroying {networkBehaviour.gameObject.name}");
-                    Destroy(networkBehaviour.gameObject);
-                }
-            }
-        }
-
-    }
+			base.OnStopServer();
+		}
+	}
 }

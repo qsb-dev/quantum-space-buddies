@@ -1,7 +1,12 @@
 # Quantum Space Buddies - Outer Wilds Online Multiplayer Mod
 
+Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses the OWML mod loader and customized UNET code (internally referred to as QNet or QuantumUNET) for networking.
+
 <!-- TOC -->
 
+- [FAQs](#frequently-asked-questions)
+  - [What is synced?](#what-is-currently-synced)
+  - [Why can't I connect?](#why-cant-i-connect-to-a-server)
 - [Installation](#installation)
   - [Easy installation (recommended)](#easy-installation-recommended)
   - [Manual installation](#manual-installation)
@@ -9,10 +14,34 @@
 - [Playing as a host](#playing-as-a-host)
 - [Development Setup](#development-setup)
 - [Authors](#authors)
-- [Special thanks](#special-thanks)
 - [Help / Discuss development / Whatever](#help--discuss-development--whatever)
 
 <!-- /TOC -->
+
+## Frequently Asked Questions
+
+### What is currently synced?
+QSB does not operate on a strict server-client relationship. Each player's game is left as a completely seperate game, and individual elemets are synced or patched so they can be controlled though network messages. Right now, the list of synced objects are :
+- Geysers
+- Elevators
+- Nomai interface orbs
+- Player animations
+- Player tools
+- Player ships
+- Player probes
+- NPC heads in conversations
+
+### Why can't I connect to a server?
+#### For the host :
+- Open port 7777 TCP and UDP on your router. If access the internet through multiple layers of routers, the port will need to be opened on every router.
+- Open port 7777 TCP and UDP in and out on your firewall. Some AVs might block you editing firewall settings, so check with your specific software.
+- Make sure you are giving your public IPv4 address to your clients.
+#### For the client :
+- Open port 7777 TCP and UDP in and out on your firewall. Some AVs might block you editing firewall settings, so check with your specific software.
+- Sometimes, it has helped to change your network profile to "private".
+- Make sure you are putting the right address into the address box.
+
+If nothing here works, many people have got QSB working through programs such as Hamachi. Also make sure you are not running through a VPN while trying to connect.
 
 ## Installation
 
@@ -25,31 +54,31 @@
 ### Manual installation
 
 - [Install OWML](https://github.com/amazingalek/owml#installation);
-- [Download the latest Quantum Space Buddies release](https://github.com/Raicuparta/quantum-space-buddies/releases/latest);
+- [Download the latest Quantum Space Buddies release](https://github.com/misternebula/quantum-space-buddies/releases/latest);
 - Extract the `QSB` directory to the `OWML/Mods` directory;
 - Run `OWML.Launcher.exe` to start the game.
 
 ## Playing as a client
 
-- Run `OWML.Launcher.exe` to start the game;
+- Run the game;
 - You'll see some new buttons on the top left;
-- Replace `localhost` with the server's IP address;
-- Press "LAN Client(C)";
-- If you see "Stop (X)", you are connected.
+- Replace `localhost` with the server's public IP address;
+- Press "Connect". You can join servers in the menu or in-game, but it is recommended to join in the main menu.";
+- If you see "Stop", you are connected.
+- If it stops at "Connecting to..." then you or the host has issues with their firewall/router/other.
 
 ## Playing as a host
 
-- Open port `7777` on your router;
-- Run `OWML.Launcher.exe` to start the game;
-- You'll see some new buttons on the top left;
-- Don't start the game (expedition) before starting the server;
-- Press "LAN Host(H)";
-- If you now see the "Stop (X)" button, you are serving;
+- Open port `7777` on your router.;
+- Run the game.;
+- You'll see some new buttons on the top left.;
+- Press "Host". This can be done in-game or in the menu, but it is recommened to start servers in the menu.;
+- If you now see the "Stop" button, you are hosting.;
 - Give your external IPv4 address to your clients ([like what you see here](http://whatismyip.host/)).
 
 ## Development Setup
 
-- [Download the Outer Wilds Mod Manager](https://github.com/Raicuparta/ow*mod*manager) and install it anywhere you like;
+- [Download the Outer Wilds Mod Manager](https://github.com/misternebula/ow*mod*manager) and install it anywhere you like;
 - Install OWML using the Mod Manager;
 - Clone QSB's source;
 - Open the file `QSB/QSB.csproj.user` in your favorite text editor;
@@ -68,9 +97,9 @@ If for some reason none of this is working, you might have to set everything man
 
 ## Authors
 
-- [Mister_Nebula](https://github.com/misternebula) - Current lead
-- [AmazingAlek](https://github.com/amazingalek)
-- [Raicuparta](https://github.com/Raicuparta)
+- [\_nebula](https://github.com/misternebula) - Developer of v0.3 onwards
+- [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidyer
+- [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1 - v0.2
 
 ## Help / Discuss development / Whatever
 

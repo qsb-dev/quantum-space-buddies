@@ -1,96 +1,75 @@
 ﻿using QSB.WorldSync;
+using QuantumUNET;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.TransformSync
 {
-    public class NomaiOrbTransformSync : NetworkBehaviour
-    {
-        public NomaiInterfaceOrb AttachedOrb { get; private set; }
-        public Transform OrbTransform { get; private set; }
+	public class NomaiOrbTransformSync : QSBNetworkBehaviour
+	{
+		public NomaiInterfaceOrb AttachedOrb { get; private set; }
+		public Transform OrbTransform { get; private set; }
 
-        private int Index => WorldRegistry.OrbSyncList.IndexOf(this);
+		private int Index => QSBWorldSync.OrbSyncList.IndexOf(this);
 
-        private const int MaxUpdatesBeforeDisable = 5;
+		private bool _isInitialized;
+		private bool _isReady;
+		private Transform _orbParent;
 
-        private bool _isInitialized;
-        private bool _isReady;
-        private Transform _orbParent;
-        private int _updateCount;
+		public override void OnStartClient()
+		{
+			DontDestroyOnLoad(this);
+			QSBWorldSync.OrbSyncList.Add(this);
 
-        public override void OnStartClient()
-        {
-            WorldRegistry.OrbSyncList.Add(this);
+			QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, () => QSBCore.Helper.Events.Unity.FireOnNextUpdate(OnReady));
+		}
 
-            QSB.Helper.Events.Unity.RunWhen(() => QSB.HasWokenUp, () => QSB.Helper.Events.Unity.FireOnNextUpdate(OnReady));
-        }
+		private void OnReady()
+		{
+			AttachedOrb = QSBWorldSync.OldOrbList[Index];
+			_isReady = true;
+		}
 
-        private void OnReady()
-        {
-            AttachedOrb = WorldRegistry.OldOrbList[Index];
-            _isReady = true;
-        }
+		public void OnDestroy() => QSBWorldSync.OrbSyncList.Remove(this);
 
-        private void Awake()
-        {
-            DontDestroyOnLoad(this);
-            QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-        }
+		protected void Init()
+		{
+			OrbTransform = AttachedOrb.transform;
+			_orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
+			_isInitialized = true;
+		}
 
-        private void OnDestroy()
-        {
-            WorldRegistry.OrbSyncList.Remove(this);
-            QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-        }
+		public void Update()
+		{
+			if (!_isInitialized && _isReady)
+			{
+				Init();
+			}
+			else if (_isInitialized && !_isReady)
+			{
+				_isInitialized = false;
+			}
 
-        private void OnSceneLoaded(OWScene scene, bool isInUniverse) => _isInitialized = false;
+			if (OrbTransform == null || !_isInitialized)
+			{
+				return;
+			}
 
-        protected void Init()
-        {
-            OrbTransform = AttachedOrb.transform;
-            _orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
-            _isInitialized = true;
-        }
+			UpdateTransform();
+		}
 
-        private void Update()
-        {
-            if (!_isInitialized && _isReady)
-            {
-                Init();
-            }
-            else if (_isInitialized && !_isReady)
-            {
-                _isInitialized = false;
-            }
-
-            if (OrbTransform == null || !_isInitialized)
-            {
-                return;
-            }
-
-            UpdateTransform();
-        }
-
-        protected virtual void UpdateTransform()
-        {
-            if (hasAuthority)
-            {
-                transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
-                transform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
-                return;
-            }
-            OrbTransform.position = _orbParent.TransformPoint(transform.position);
-            OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
-
-            if (transform.localPosition == Vector3.zero)
-            {
-                _updateCount++;
-            }
-            if (_updateCount >= MaxUpdatesBeforeDisable)
-            {
-                enabled = false;
-                _updateCount = 0;
-            }
-        }
-    }
+		private void UpdateTransform()
+		{
+			if (HasAuthority)
+			{
+				transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
+				transform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
+				return;
+			}
+			if (transform.position != Vector3.zero)
+			{
+				OrbTransform.position = _orbParent.TransformPoint(transform.position);
+				OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
+			}
+		}
+	}
 }

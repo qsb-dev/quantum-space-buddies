@@ -1,72 +1,72 @@
-﻿using System;
+﻿using QuantumUNET;
+using System;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Animation
 {
-    public class CrouchSync : NetworkBehaviour
-    {
-        public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
+	public class CrouchSync : QSBNetworkBehaviour
+	{
+		public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
 
-        private const float CrouchSendInterval = 0.1f;
-        private const float CrouchChargeThreshold = 0.01f;
-        private const float CrouchSmoothTime = 0.05f;
-        private const int CrouchLayerIndex = 1;
+		private const float CrouchSendInterval = 0.1f;
+		private const float CrouchChargeThreshold = 0.01f;
+		private const float CrouchSmoothTime = 0.05f;
+		private const int CrouchLayerIndex = 1;
 
-        private float _sendTimer;
-        private float _lastSentJumpChargeFraction;
+		private float _sendTimer;
+		private float _lastSentJumpChargeFraction;
 
-        private AnimationSync _animationSync;
-        private PlayerCharacterController _playerController;
-        private Animator _bodyAnim;
+		private AnimationSync _animationSync;
+		private PlayerCharacterController _playerController;
+		private Animator _bodyAnim;
 
-        public void Init(AnimationSync animationSync, PlayerCharacterController playerController, Animator bodyAnim)
-        {
-            _animationSync = animationSync;
-            _playerController = playerController;
-            _bodyAnim = bodyAnim;
-        }
+		public void Init(AnimationSync animationSync, PlayerCharacterController playerController, Animator bodyAnim)
+		{
+			_animationSync = animationSync;
+			_playerController = playerController;
+			_bodyAnim = bodyAnim;
+		}
 
-        private void Update()
-        {
-            if (isLocalPlayer)
-            {
-                SyncLocalCrouch();
-                return;
-            }
-            SyncRemoteCrouch();
-        }
+		public void Update()
+		{
+			if (IsLocalPlayer)
+			{
+				SyncLocalCrouch();
+				return;
+			}
+			SyncRemoteCrouch();
+		}
 
-        private void SyncLocalCrouch()
-        {
-            if (_playerController == null)
-            {
-                return;
-            }
-            _sendTimer += Time.unscaledDeltaTime;
-            if (_sendTimer < CrouchSendInterval)
-            {
-                return;
-            }
-            var jumpChargeFraction = _playerController.GetJumpChargeFraction();
-            if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
-            {
-                return;
-            }
-            _animationSync.SendTrigger(AnimTrigger.Crouch, jumpChargeFraction);
-            _lastSentJumpChargeFraction = jumpChargeFraction;
-            _sendTimer = 0;
-        }
+		private void SyncLocalCrouch()
+		{
+			if (_playerController == null)
+			{
+				return;
+			}
+			_sendTimer += Time.unscaledDeltaTime;
+			if (_sendTimer < CrouchSendInterval)
+			{
+				return;
+			}
+			var jumpChargeFraction = _playerController.GetJumpChargeFraction();
+			if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
+			{
+				return;
+			}
+			_animationSync.SendCrouch(jumpChargeFraction);
+			_lastSentJumpChargeFraction = jumpChargeFraction;
+			_sendTimer = 0;
+		}
 
-        private void SyncRemoteCrouch()
-        {
-            if (_bodyAnim == null)
-            {
-                return;
-            }
-            CrouchParam.Smooth(CrouchSmoothTime);
-            var jumpChargeFraction = CrouchParam.Current;
-            _bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
-        }
-    }
+		private void SyncRemoteCrouch()
+		{
+			if (_bodyAnim == null)
+			{
+				return;
+			}
+			CrouchParam.Smooth(CrouchSmoothTime);
+			var jumpChargeFraction = CrouchParam.Current;
+			_bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
+		}
+	}
 }

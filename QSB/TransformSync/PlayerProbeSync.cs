@@ -1,105 +1,87 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
 {
-    public class PlayerProbeSync : TransformSync
-    {
-        public static PlayerProbeSync LocalInstance { get; private set; }
+	public class PlayerProbeSync : TransformSync
+	{
+		private Transform _disabledSocket;
 
-        private Transform _disabledSocket;
+		private Transform GetProbe() =>
+			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
-        public override void OnStartLocalPlayer()
-        {
-            LocalInstance = this;
-        }
+		protected override Transform InitLocalTransform()
+		{
+			var body = GetProbe();
 
-        private Transform GetProbe()
-        {
-            return Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-        }
+			SetSocket(Player.Camera.transform);
+			Player.ProbeBody = body.gameObject;
 
-        protected override Transform InitLocalTransform()
-        {
-            var body = GetProbe();
+			return body;
+		}
 
-            SetSocket(Player.Camera.transform);
-            Player.ProbeBody = body.gameObject;
+		protected override Transform InitRemoteTransform()
+		{
+			var probe = GetProbe();
 
-            return body;
-        }
+			if (probe == null)
+			{
+				DebugLog.ToConsole("Error - Probe is null!", MessageType.Error);
+				return default;
+			}
 
-        protected override Transform InitRemoteTransform()
-        {
-            var probe = GetProbe();
+			var body = probe.InstantiateInactive();
+			body.name = "RemoteProbeTransform";
 
-            if (probe == null)
-            {
-                DebugLog.ToConsole("Error - Probe is null!", MessageType.Error);
-                return default;
-            }
+			Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 
-            var body = probe.InstantiateInactive();
-            body.name = "RemoteProbeTransform";
+			PlayerToolsManager.CreateProbe(body, Player);
 
-            Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
+			QSBCore.Helper.Events.Unity.RunWhen(() => (Player.ProbeLauncher != null), () => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
+			Player.ProbeBody = body.gameObject;
 
-            PlayerToolsManager.CreateProbe(body, Player);
+			return body;
+		}
 
-            QSB.Helper.Events.Unity.RunWhen(() => (Player.ProbeLauncher != null), () => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
-            Player.ProbeBody = body.gameObject;
+		private void SetSocket(Transform socket) => _disabledSocket = socket;
 
-            return body;
-        }
+		protected override void UpdateTransform()
+		{
+			base.UpdateTransform();
+			if (Player == null)
+			{
+				DebugLog.ToConsole($"Player is null for {AttachedNetId}!", MessageType.Error);
+				return;
+			}
+			if (_disabledSocket == null)
+			{
+				DebugLog.ToConsole($"DisabledSocket is null for {AttachedNetId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
+				return;
+			}
+			if (Player.GetState(State.ProbeActive) || ReferenceSector?.Sector == null)
+			{
+				return;
+			}
+			if (HasAuthority)
+			{
+				transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
+				return;
+			}
+			if (SyncedTransform.position == Vector3.zero)
+			{
+				return;
+			}
+			SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
+		}
 
-        private void SetSocket(Transform socket)
-        {
-            DebugLog.DebugWrite($"Setting DisabledSocket for {AttachedNetId} to {socket.name}");
-            _disabledSocket = socket;
-        }
-
-        protected override void UpdateTransform()
-        {
-            base.UpdateTransform();
-            if (Player == null)
-            {
-                DebugLog.ToConsole($"Player is null for {AttachedNetId}!", MessageType.Error);
-                return;
-            }
-            if (ReferenceSector == null)
-            {
-                DebugLog.ToConsole($"ReferenceSector is null for {AttachedNetId}!", MessageType.Error);
-                return;
-            }
-            if (_disabledSocket == null)
-            {
-                DebugLog.ToConsole($"DisabledSocket is null for {AttachedNetId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
-                return;
-            }
-            if (Player.GetState(State.ProbeActive) || ReferenceSector?.Sector == null)
-            {
-                return;
-            }
-            if (hasAuthority)
-            {
-                transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
-                return;
-            }
-            if (SyncedTransform.position == Vector3.zero ||
-                SyncedTransform.position == Locator.GetAstroObject(AstroObject.Name.Sun).transform.position)
-            {
-                return;
-            }
-            SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
-        }
-
-        public override bool IsReady => Locator.GetProbe() != null
-            && Player != null
-            && PlayerRegistry.PlayerExists(Player.PlayerId)
-            && Player.IsReady
-            && netId.Value != uint.MaxValue
-            && netId.Value != 0U;
-    }
+		public override bool IsReady => Locator.GetProbe() != null
+			&& Player != null
+			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& Player.IsReady
+			&& NetId.Value != uint.MaxValue
+			&& NetId.Value != 0U;
+	}
 }
