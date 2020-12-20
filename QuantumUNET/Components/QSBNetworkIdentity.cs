@@ -814,7 +814,7 @@ namespace QuantumUNET.Components
 
 		private List<QSBNetworkConnection> m_Observers;
 
-		private bool m_Reset = false;
+		private bool m_Reset;
 
 		private static uint s_NextNetworkId = 1U;
 

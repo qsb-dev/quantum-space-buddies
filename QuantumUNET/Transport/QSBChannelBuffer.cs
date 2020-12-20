@@ -38,7 +38,7 @@ namespace QuantumUNET.Transport
 		private const int _packetHeaderReserveSize = 100;
 		private bool _disposed;
 		internal QSBNetBuffer _fragmentBuffer = new QSBNetBuffer();
-		private bool _readingFragment = false;
+		private bool _readingFragment;
 
 		public QSBChannelBuffer(QSBNetworkConnection conn, int bufferSize, byte cid, bool isReliable, bool isSequenced)
 		{

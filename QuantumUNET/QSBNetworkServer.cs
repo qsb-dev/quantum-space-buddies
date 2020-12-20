@@ -1380,7 +1380,7 @@ namespace QuantumUNET
 
 		private readonly List<QSBNetworkConnection> m_LocalConnectionsFakeList = new List<QSBNetworkConnection>();
 
-		private QSBULocalConnectionToClient m_LocalConnection = null;
+		private QSBULocalConnectionToClient m_LocalConnection;
 
 		private readonly QSBNetworkScene m_NetworkScene;
 

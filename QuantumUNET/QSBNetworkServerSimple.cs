@@ -29,9 +29,9 @@ namespace QuantumUNET
 
 		public Dictionary<short, QSBNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
 
-		public byte[] messageBuffer { get; private set; } = null;
+		public byte[] messageBuffer { get; private set; }
 
-		public NetworkReader messageReader { get; private set; } = null;
+		public NetworkReader messageReader { get; private set; }
 
 		public Type networkConnectionClass { get; private set; } = typeof(QSBNetworkConnection);
 
@@ -365,7 +365,7 @@ namespace QuantumUNET
 
 		public virtual void OnData(QSBNetworkConnection conn, int receivedSize, int channelId) => conn.TransportReceive(messageBuffer, receivedSize, channelId);
 
-		private bool m_Initialized = false;
+		private bool m_Initialized;
 		private int m_RelaySlotId = -1;
 		private readonly List<QSBNetworkConnection> m_Connections = new List<QSBNetworkConnection>();
 		private readonly QSBNetworkMessageHandlers m_MessageHandlers = new QSBNetworkMessageHandlers();
