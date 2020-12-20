@@ -58,7 +58,7 @@ namespace QSB.OrbSync.Events
 			}
 			if (fromPlayer == null)
 			{
-				DebugLog.DebugWrite("Error - FromPlayer is null!", MessageType.Error);
+				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
 			var orbSync = QSBWorldSync.OrbSyncList
 				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
@@ -85,9 +85,14 @@ namespace QSB.OrbSync.Events
 		{
 			if (QSBWorldSync.OrbSyncList.Count < message.ObjectId)
 			{
-				DebugLog.DebugWrite(
+				DebugLog.ToConsole(
 					$"Error - Orb id {message.ObjectId} out of range of orb sync list {QSBWorldSync.OrbSyncList.Count}.",
 					MessageType.Error);
+				return;
+			}
+			if (!QSBWorldSync.OrbSyncList.Any(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]))
+			{
+				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
 			var orb = QSBWorldSync.OrbSyncList

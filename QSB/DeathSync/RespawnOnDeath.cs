@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using QSB.Events;
 using QSB.Utility;
 using System.Linq;
@@ -28,21 +28,7 @@ namespace QSB.DeathSync
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
 
-		public void Awake()
-		{
-			Instance = this;
-
-			QSBCore.Helper.Events.Subscribe<PlayerResources>(OWML.Common.Events.AfterStart);
-			QSBCore.Helper.Events.Event += OnEvent;
-		}
-
-		private void OnEvent(MonoBehaviour behaviour, OWML.Common.Events ev)
-		{
-			if (behaviour is PlayerResources && ev == OWML.Common.Events.AfterStart)
-			{
-				Init();
-			}
-		}
+		public void Awake() => Instance = this;
 
 		public void Init()
 		{
@@ -71,17 +57,18 @@ namespace QSB.DeathSync
 
 		public void ResetShip()
 		{
+			if (_shipSpawnPoint == null)
+			{
+				DebugLog.ToConsole("Warning - _shipSpawnPoint is null!", MessageType.Warning);
+				Init();
+			}
+
 			if (_shipBody == null)
 			{
 				return;
 			}
 
 			// Reset ship position.
-			if (_shipSpawnPoint == null)
-			{
-				DebugLog.ToConsole("_shipSpawnPoint is null!", MessageType.Warning);
-				return;
-			}
 			_shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
 			_shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
 
@@ -108,6 +95,12 @@ namespace QSB.DeathSync
 
 		public void ResetPlayer()
 		{
+			if (_shipSpawnPoint == null)
+			{
+				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
+				Init();
+			}
+
 			// Reset player position.
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);

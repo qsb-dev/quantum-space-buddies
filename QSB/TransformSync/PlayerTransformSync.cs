@@ -1,7 +1,6 @@
 ﻿using QSB.Animation;
 using QSB.Instruments;
 using QSB.Player;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -15,11 +14,7 @@ namespace QSB.TransformSync
 			AnimControllerPatch.Init();
 		}
 
-		public override void OnStartLocalPlayer()
-		{
-			LocalInstance = this;
-			DebugLog.DebugWrite("SET LOCAL INSTANCE");
-		}
+		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		protected override void OnDestroy()
 		{
@@ -52,6 +47,8 @@ namespace QSB.TransformSync
 
 			var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
 			marker.Init(Player);
+
+			body.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
 			Player.Body = body.gameObject;
 

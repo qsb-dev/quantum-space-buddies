@@ -126,10 +126,12 @@ namespace QSB.TimeSync
 		{
 			if (_state == State.FastForwarding)
 			{
+				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
 			_timeScale = MaxFastForwardSpeed;
 			_state = State.FastForwarding;
+			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
 		}
 

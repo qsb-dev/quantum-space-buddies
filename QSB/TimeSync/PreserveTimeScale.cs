@@ -1,4 +1,4 @@
-﻿using OWML.ModHelper.Events;
+﻿using OWML.Utils;
 using QuantumUNET;
 
 namespace QSB.TimeSync

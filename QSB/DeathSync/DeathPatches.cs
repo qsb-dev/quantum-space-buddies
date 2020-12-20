@@ -10,6 +10,11 @@ namespace QSB.DeathSync
 
 		public static bool PreFinishDeathSequence(DeathType deathType)
 		{
+			if (RespawnOnDeath.Instance == null)
+			{
+				return true;
+			}
+
 			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
 			{
 				// Allow real death
