@@ -51,8 +51,6 @@ namespace QSB
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
 			SetupNetworkId(playerPrefab);
-			Destroy(playerPrefab.GetComponent<NetworkTransform>());
-			Destroy(playerPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();
 			playerPrefab.AddComponent<AnimationSync>();
@@ -61,32 +59,24 @@ namespace QSB
 
 			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
 			SetupNetworkId(_shipPrefab);
-			Destroy(_shipPrefab.GetComponent<NetworkTransform>());
-			Destroy(_shipPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(_shipPrefab);
 			_shipPrefab.AddComponent<ShipTransformSync>();
 			spawnPrefabs.Add(_shipPrefab);
 
 			_cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
 			SetupNetworkId(_cameraPrefab);
-			Destroy(_cameraPrefab.GetComponent<NetworkTransform>());
-			Destroy(_cameraPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(_cameraPrefab);
 			_cameraPrefab.AddComponent<PlayerCameraSync>();
 			spawnPrefabs.Add(_cameraPrefab);
 
 			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
 			SetupNetworkId(_probePrefab);
-			Destroy(_probePrefab.GetComponent<NetworkTransform>());
-			Destroy(_probePrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(_probePrefab);
 			_probePrefab.AddComponent<PlayerProbeSync>();
 			spawnPrefabs.Add(_probePrefab);
 
 			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
 			SetupNetworkId(OrbPrefab);
-			Destroy(OrbPrefab.GetComponent<NetworkTransform>());
-			Destroy(OrbPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(OrbPrefab);
 			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
 			spawnPrefabs.Add(OrbPrefab);
