@@ -1264,7 +1264,7 @@ namespace QuantumUNET
 			{
 				Spawn(obj);
 				var component = obj.GetComponent<QSBNetworkIdentity>();
-				result = (!(component == null) && component.IsServer && component.AssignClientAuthority(conn));
+				result = !(component == null) && component.IsServer && component.AssignClientAuthority(conn);
 			}
 			return result;
 		}

@@ -179,7 +179,7 @@ namespace QuantumUNET.Components
 				}
 				else
 				{
-					result = (num > 1E-05f);
+					result = num > 1E-05f;
 				}
 			}
 			return result;

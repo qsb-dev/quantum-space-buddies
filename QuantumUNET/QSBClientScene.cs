@@ -56,7 +56,7 @@ namespace QuantumUNET
 			else
 			{
 				player = localPlayers[playerControllerId];
-				result = (player.Gameobject != null);
+				result = player.Gameobject != null;
 			}
 			return result;
 		}

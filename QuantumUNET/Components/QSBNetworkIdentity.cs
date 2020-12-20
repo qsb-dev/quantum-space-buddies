@@ -146,8 +146,8 @@ namespace QuantumUNET.Components
 
 		internal void UpdateClientServer(bool isClientFlag, bool isServerFlag)
 		{
-			IsClient = (IsClient || isClientFlag);
-			m_IsServer = (m_IsServer || isServerFlag);
+			IsClient = IsClient || isClientFlag;
+			m_IsServer = m_IsServer || isServerFlag;
 		}
 
 		internal void SetNotLocalPlayer()

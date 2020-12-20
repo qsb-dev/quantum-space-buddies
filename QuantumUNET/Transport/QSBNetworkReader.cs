@@ -55,14 +55,14 @@ namespace QuantumUNET.Transport
 				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240U + (256U * (uint)(b - 241)) + b2;
+					result = 240U + 256U * (uint)(b - 241) + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288U + (256U * b2) + b3;
+						result = 2288U + 256U * b2 + b3;
 					}
 					else
 					{
@@ -99,14 +99,14 @@ namespace QuantumUNET.Transport
 				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240UL + (256UL * (b - 241UL)) + b2;
+					result = 240UL + 256UL * (b - 241UL) + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288UL + (256UL * b2) + b3;
+						result = 2288UL + 256UL * b2 + b3;
 					}
 					else
 					{

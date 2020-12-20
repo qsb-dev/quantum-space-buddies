@@ -169,7 +169,7 @@ namespace QuantumUNET
 					{
 						var ipendPoint = (IPEndPoint)secureTunnelEndPoint;
 						Connect(ipendPoint.Address.ToString(), ipendPoint.Port);
-						result = (m_AsyncConnect != ConnectState.Failed);
+						result = m_AsyncConnect != ConnectState.Failed;
 					}
 					else if (fullName != "UnityEngine.XboxOne.XboxOneEndPoint" && fullName != "UnityEngine.PS4.SceEndPoint")
 					{
@@ -334,7 +334,7 @@ namespace QuantumUNET
 			}
 			if (m_UseSimulator)
 			{
-				var num = (m_SimulatedLatency / 3) - 1;
+				var num = m_SimulatedLatency / 3 - 1;
 				if (num < 1)
 				{
 					num = 1;

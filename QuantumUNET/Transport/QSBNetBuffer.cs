@@ -24,7 +24,7 @@ namespace QuantumUNET.Transport
 			{
 				throw new IndexOutOfRangeException($"NetworkReader:ReadByte out of range:{ToString()}");
 			}
-			return m_Buffer[(int)((UIntPtr)(Position++))];
+			return m_Buffer[(int)(UIntPtr)Position++];
 		}
 
 		public void ReadBytes(byte[] buffer, uint count)
@@ -36,7 +36,7 @@ namespace QuantumUNET.Transport
 			ushort num = 0;
 			while (num < count)
 			{
-				buffer[num] = m_Buffer[(int)((UIntPtr)(Position + num))];
+				buffer[num] = m_Buffer[(int)(UIntPtr)(Position + num)];
 				num += 1;
 			}
 			Position += count;
@@ -47,39 +47,39 @@ namespace QuantumUNET.Transport
 		public void WriteByte(byte value)
 		{
 			WriteCheckForSpace(1);
-			m_Buffer[(int)((UIntPtr)Position)] = value;
+			m_Buffer[(int)(UIntPtr)Position] = value;
 			Position += 1U;
 		}
 
 		public void WriteByte2(byte value0, byte value1)
 		{
 			WriteCheckForSpace(2);
-			m_Buffer[(int)((UIntPtr)Position)] = value0;
-			m_Buffer[(int)((UIntPtr)(Position + 1U))] = value1;
+			m_Buffer[(int)(UIntPtr)Position] = value0;
+			m_Buffer[(int)(UIntPtr)(Position + 1U)] = value1;
 			Position += 2U;
 		}
 
 		public void WriteByte4(byte value0, byte value1, byte value2, byte value3)
 		{
 			WriteCheckForSpace(4);
-			m_Buffer[(int)((UIntPtr)Position)] = value0;
-			m_Buffer[(int)((UIntPtr)(Position + 1U))] = value1;
-			m_Buffer[(int)((UIntPtr)(Position + 2U))] = value2;
-			m_Buffer[(int)((UIntPtr)(Position + 3U))] = value3;
+			m_Buffer[(int)(UIntPtr)Position] = value0;
+			m_Buffer[(int)(UIntPtr)(Position + 1U)] = value1;
+			m_Buffer[(int)(UIntPtr)(Position + 2U)] = value2;
+			m_Buffer[(int)(UIntPtr)(Position + 3U)] = value3;
 			Position += 4U;
 		}
 
 		public void WriteByte8(byte value0, byte value1, byte value2, byte value3, byte value4, byte value5, byte value6, byte value7)
 		{
 			WriteCheckForSpace(8);
-			m_Buffer[(int)((UIntPtr)Position)] = value0;
-			m_Buffer[(int)((UIntPtr)(Position + 1U))] = value1;
-			m_Buffer[(int)((UIntPtr)(Position + 2U))] = value2;
-			m_Buffer[(int)((UIntPtr)(Position + 3U))] = value3;
-			m_Buffer[(int)((UIntPtr)(Position + 4U))] = value4;
-			m_Buffer[(int)((UIntPtr)(Position + 5U))] = value5;
-			m_Buffer[(int)((UIntPtr)(Position + 6U))] = value6;
-			m_Buffer[(int)((UIntPtr)(Position + 7U))] = value7;
+			m_Buffer[(int)(UIntPtr)Position] = value0;
+			m_Buffer[(int)(UIntPtr)(Position + 1U)] = value1;
+			m_Buffer[(int)(UIntPtr)(Position + 2U)] = value2;
+			m_Buffer[(int)(UIntPtr)(Position + 3U)] = value3;
+			m_Buffer[(int)(UIntPtr)(Position + 4U)] = value4;
+			m_Buffer[(int)(UIntPtr)(Position + 5U)] = value5;
+			m_Buffer[(int)(UIntPtr)(Position + 6U)] = value6;
+			m_Buffer[(int)(UIntPtr)(Position + 7U)] = value7;
 			Position += 8U;
 		}
 
@@ -115,7 +115,7 @@ namespace QuantumUNET.Transport
 			{
 				for (var i = 0; i < count; i++)
 				{
-					m_Buffer[(int)(checked((IntPtr)(unchecked(Position + (ulong)i))))] = buffer[i];
+					m_Buffer[(int)checked((IntPtr)unchecked(Position + (ulong)i))] = buffer[i];
 				}
 			}
 			Position += count;
