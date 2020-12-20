@@ -230,7 +230,8 @@ namespace QuantumUNET.Components
 				}
 				else
 				{
-					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform netId:" + networkInstanceId + " is not for a valid player");
+					ModConsole.OwmlConsole.WriteLine(
+						$"Warning - HandleTransform netId:{networkInstanceId} is not for a valid player");
 				}
 			}
 		}

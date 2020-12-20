@@ -59,20 +59,22 @@ namespace QuantumUNET
 			{
 				foreach (var crcmessageEntry in remoteScripts)
 				{
-					Debug.Log(string.Concat("Script: ", crcmessageEntry.name, " Channel: ", crcmessageEntry.channel));
+					Debug.Log($"Script: {crcmessageEntry.name} Channel: {crcmessageEntry.channel}");
 					if (scripts.ContainsKey(crcmessageEntry.name))
 					{
 						var num = scripts[crcmessageEntry.name];
 						if (num != crcmessageEntry.channel)
 						{
-							Debug.LogError(string.Concat("HLAPI CRC Channel Mismatch. Script: ", crcmessageEntry.name, " LocalChannel: ", num, " RemoteChannel: ", crcmessageEntry.channel));
+							Debug.LogError(
+								$"HLAPI CRC Channel Mismatch. Script: {crcmessageEntry.name} LocalChannel: {num} RemoteChannel: {crcmessageEntry.channel}");
 							Dump(remoteScripts);
 							return false;
 						}
 					}
 					if (crcmessageEntry.channel >= numChannels)
 					{
-						Debug.LogError(string.Concat("HLAPI CRC channel out of range! Script: ", crcmessageEntry.name, " Channel: ", crcmessageEntry.channel));
+						Debug.LogError(
+							$"HLAPI CRC channel out of range! Script: {crcmessageEntry.name} Channel: {crcmessageEntry.channel}");
 						Dump(remoteScripts);
 						return false;
 					}
@@ -86,11 +88,11 @@ namespace QuantumUNET
 		{
 			foreach (var text in scripts.Keys)
 			{
-				Debug.Log(string.Concat("CRC Local Dump ", text, " : ", scripts[text]));
+				Debug.Log($"CRC Local Dump {text} : {scripts[text]}");
 			}
 			foreach (var crcmessageEntry in remoteScripts)
 			{
-				Debug.Log(string.Concat("CRC Remote Dump ", crcmessageEntry.name, " : ", crcmessageEntry.channel));
+				Debug.Log($"CRC Remote Dump {crcmessageEntry.name} : {crcmessageEntry.channel}");
 			}
 		}
 

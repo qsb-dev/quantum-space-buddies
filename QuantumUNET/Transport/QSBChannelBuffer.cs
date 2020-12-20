@@ -109,7 +109,8 @@ namespace QuantumUNET.Transport
 					}
 					else if (value > _maxPacketSize)
 					{
-						Debug.LogError("Cannot set MaxPacketSize to greater than the existing maximum (" + _maxPacketSize + ").");
+						Debug.LogError(
+							$"Cannot set MaxPacketSize to greater than the existing maximum ({_maxPacketSize}).");
 						result = false;
 					}
 					else
@@ -131,7 +132,8 @@ namespace QuantumUNET.Transport
 			}
 			else if (value < 0 || value >= 512)
 			{
-				Debug.LogError(string.Concat("Invalid MaxPendingBuffers for channel ", _channelId, ". Must be greater than zero and less than ", 512));
+				Debug.LogError(
+					$"Invalid MaxPendingBuffers for channel {_channelId}. Must be greater than zero and less than {512}");
 				result = false;
 			}
 			else
@@ -222,7 +224,7 @@ namespace QuantumUNET.Transport
 			bool result;
 			if (bytesToSend >= 65535)
 			{
-				Debug.LogError("ChannelBuffer:SendBytes cannot send packet larger than " + ushort.MaxValue + " bytes");
+				Debug.LogError($"ChannelBuffer:SendBytes cannot send packet larger than {ushort.MaxValue} bytes");
 				result = false;
 			}
 			else if (bytesToSend <= 0)
@@ -238,7 +240,8 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					Debug.LogError(string.Concat("Failed to send big message of ", bytesToSend, " bytes. The maximum is ", _maxPacketSize, " bytes on channel:", _channelId));
+					Debug.LogError(
+						$"Failed to send big message of {bytesToSend} bytes. The maximum is {_maxPacketSize} bytes on channel:{_channelId}");
 					result = false;
 				}
 			}
@@ -259,7 +262,7 @@ namespace QuantumUNET.Transport
 					{
 						if (!_isBroken)
 						{
-							Debug.LogError("ChannelBuffer buffer limit of " + _pendingPackets.Count + " packets reached.");
+							Debug.LogError($"ChannelBuffer buffer limit of {_pendingPackets.Count} packets reached.");
 						}
 						_isBroken = true;
 						result = false;
@@ -273,7 +276,7 @@ namespace QuantumUNET.Transport
 				}
 				else if (!_currentPacket.SendToTransport(_connection, _channelId))
 				{
-					Debug.Log("ChannelBuffer SendBytes no space on unreliable channel " + _channelId);
+					Debug.Log($"ChannelBuffer SendBytes no space on unreliable channel {_channelId}");
 					result = false;
 				}
 				else

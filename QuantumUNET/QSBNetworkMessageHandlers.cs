@@ -12,11 +12,11 @@ namespace QuantumUNET
 		{
 			if (handler == null)
 			{
-				Debug.LogError("RegisterHandlerSafe id:" + msgType + " handler is null");
+				Debug.LogError($"RegisterHandlerSafe id:{msgType} handler is null");
 			}
 			else
 			{
-				Debug.Log(string.Concat("RegisterHandlerSafe id:", msgType, " handler:", handler.GetMethodName()));
+				Debug.Log($"RegisterHandlerSafe id:{msgType} handler:{handler.GetMethodName()}");
 				if (!_msgHandlers.ContainsKey(msgType))
 				{
 					_msgHandlers.Add(msgType, handler);
@@ -28,20 +28,20 @@ namespace QuantumUNET
 		{
 			if (handler == null)
 			{
-				Debug.LogError("RegisterHandler id:" + msgType + " handler is null");
+				Debug.LogError($"RegisterHandler id:{msgType} handler is null");
 			}
 			else if (msgType <= 31)
 			{
-				Debug.LogError("RegisterHandler: Cannot replace system message handler " + msgType);
+				Debug.LogError($"RegisterHandler: Cannot replace system message handler {msgType}");
 			}
 			else
 			{
 				if (_msgHandlers.ContainsKey(msgType))
 				{
-					Debug.Log("RegisterHandler replacing " + msgType);
+					Debug.Log($"RegisterHandler replacing {msgType}");
 					_msgHandlers.Remove(msgType);
 				}
-				Debug.Log(string.Concat("RegisterHandler id:", msgType, " handler:", handler.GetMethodName()));
+				Debug.Log($"RegisterHandler id:{msgType} handler:{handler.GetMethodName()}");
 				_msgHandlers.Add(msgType, handler);
 			}
 		}

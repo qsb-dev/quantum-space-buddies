@@ -86,7 +86,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.Log(string.Concat("NetworkServerSimple listen: ", ipAddress, ":", listenPort));
+				Debug.Log($"NetworkServerSimple listen: {ipAddress}:{listenPort}");
 				result = true;
 			}
 			return result;
@@ -114,7 +114,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.Log("NetworkServerSimple listen " + listenPort);
+				Debug.Log($"NetworkServerSimple listen {listenPort}");
 				result = true;
 			}
 			return result;
@@ -124,11 +124,11 @@ namespace QuantumUNET
 		{
 			Initialize();
 			serverHostId = NetworkTransport.AddHost(hostTopology, listenPort);
-			Debug.Log("Server Host Slot Id: " + serverHostId);
+			Debug.Log($"Server Host Slot Id: {serverHostId}");
 			Update();
 			NetworkTransport.ConnectAsNetworkHost(serverHostId, relayIp, relayPort, netGuid, sourceId, nodeId, out var b);
 			m_RelaySlotId = 0;
-			Debug.Log("Relay Slot Id: " + m_RelaySlotId);
+			Debug.Log($"Relay Slot Id: {m_RelaySlotId}");
 		}
 
 		public void Stop()
@@ -168,7 +168,7 @@ namespace QuantumUNET
 					networkEventType = NetworkTransport.ReceiveRelayEventFromHost(serverHostId, out var b);
 					if (networkEventType != NetworkEventType.Nothing)
 					{
-						Debug.Log("NetGroup event:" + networkEventType);
+						Debug.Log($"NetGroup event:{networkEventType}");
 					}
 					if (networkEventType == NetworkEventType.ConnectEvent)
 					{
@@ -184,7 +184,7 @@ namespace QuantumUNET
 					networkEventType = NetworkTransport.ReceiveFromHost(serverHostId, out var connectionId, out var channelId, messageBuffer, messageBuffer.Length, out var receivedSize, out var b);
 					if (networkEventType != NetworkEventType.Nothing)
 					{
-						Debug.Log(string.Concat("Server event: host=", serverHostId, " event=", networkEventType, " error=", b));
+						Debug.Log($"Server event: host={serverHostId} event={networkEventType} error={b}");
 					}
 					switch (networkEventType)
 					{
@@ -204,7 +204,7 @@ namespace QuantumUNET
 							break;
 
 						default:
-							Debug.LogError("Unknown network message type received: " + networkEventType);
+							Debug.LogError($"Unknown network message type received: {networkEventType}");
 							break;
 					}
 				}
@@ -264,7 +264,7 @@ namespace QuantumUNET
 
 		private void HandleConnect(int connectionId, byte error)
 		{
-			Debug.Log("NetworkServerSimple accepted client:" + connectionId);
+			Debug.Log($"NetworkServerSimple accepted client:{connectionId}");
 			if (error != 0)
 			{
 				OnConnectError(connectionId, error);
@@ -287,7 +287,7 @@ namespace QuantumUNET
 
 		private void HandleDisconnect(int connectionId, byte error)
 		{
-			Debug.Log("NetworkServerSimple disconnect client:" + connectionId);
+			Debug.Log($"NetworkServerSimple disconnect client:{connectionId}");
 			var networkConnection = FindConnection(connectionId);
 			if (networkConnection != null)
 			{
@@ -297,14 +297,15 @@ namespace QuantumUNET
 					if (error != 6)
 					{
 						m_Connections[connectionId] = null;
-						Debug.LogError(string.Concat("Server client disconnect error, connectionId: ", connectionId, " error: ", (NetworkError)error));
+						Debug.LogError(
+							$"Server client disconnect error, connectionId: {connectionId} error: {(NetworkError) error}");
 						OnDisconnectError(networkConnection, error);
 						return;
 					}
 				}
 				networkConnection.Disconnect();
 				m_Connections[connectionId] = null;
-				Debug.Log("Server lost client:" + connectionId);
+				Debug.Log($"Server lost client:{connectionId}");
 				OnDisconnected(networkConnection);
 			}
 		}
@@ -314,7 +315,7 @@ namespace QuantumUNET
 			var networkConnection = FindConnection(connectionId);
 			if (networkConnection == null)
 			{
-				Debug.LogError("HandleData Unknown connectionId:" + connectionId);
+				Debug.LogError($"HandleData Unknown connectionId:{connectionId}");
 			}
 			else
 			{
@@ -372,11 +373,14 @@ namespace QuantumUNET
 			}
 		}
 
-		public virtual void OnConnectError(int connectionId, byte error) => Debug.LogError("OnConnectError error:" + error);
+		public virtual void OnConnectError(int connectionId, byte error) => Debug.LogError(
+			$"OnConnectError error:{error}");
 
-		public virtual void OnDataError(QSBNetworkConnection conn, byte error) => Debug.LogError("OnDataError error:" + error);
+		public virtual void OnDataError(QSBNetworkConnection conn, byte error) => Debug.LogError(
+			$"OnDataError error:{error}");
 
-		public virtual void OnDisconnectError(QSBNetworkConnection conn, byte error) => Debug.LogError("OnDisconnectError error:" + error);
+		public virtual void OnDisconnectError(QSBNetworkConnection conn, byte error) => Debug.LogError(
+			$"OnDisconnectError error:{error}");
 
 		public virtual void OnConnected(QSBNetworkConnection conn) => conn.InvokeHandlerNoData(32);
 

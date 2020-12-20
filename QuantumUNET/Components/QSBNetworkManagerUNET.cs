@@ -176,7 +176,7 @@ namespace QuantumUNET.Components
 			{
 				if (!QSBNetworkServer.Listen(serverBindAddress, networkPort))
 				{
-					Debug.LogError("StartServer listen on " + serverBindAddress + " failed.");
+					Debug.LogError($"StartServer listen on {serverBindAddress} failed.");
 					return false;
 				}
 			}
@@ -186,7 +186,7 @@ namespace QuantumUNET.Components
 				return false;
 			}
 			RegisterServerMessages();
-			Debug.Log("NetworkManager StartServer port:" + networkPort);
+			Debug.Log($"NetworkManager StartServer port:{networkPort}");
 			isNetworkActive = true;
 			var name = SceneManager.GetSceneAt(0).name;
 			if (!string.IsNullOrEmpty(onlineScene) && onlineScene != name && onlineScene != offlineScene)
@@ -345,7 +345,7 @@ namespace QuantumUNET.Components
 
 		private QSBNetworkClient ConnectLocalClient()
 		{
-			Debug.Log("NetworkManager StartHost port:" + networkPort);
+			Debug.Log($"NetworkManager StartHost port:{networkPort}");
 			networkAddress = "localhost";
 			client = QSBClientScene.ConnectLocalServer();
 			RegisterClientMessages(client);
@@ -402,7 +402,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				Debug.Log("ServerChangeScene " + newSceneName);
+				Debug.Log($"ServerChangeScene {newSceneName}");
 				QSBNetworkServer.SetAllClientsNotReady();
 				networkSceneName = newSceneName;
 				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
@@ -427,7 +427,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				Debug.Log("ClientChangeScene newSceneName:" + newSceneName + " networkSceneName:" + networkSceneName);
+				Debug.Log($"ClientChangeScene newSceneName:{newSceneName} networkSceneName:{networkSceneName}");
 				if (newSceneName == networkSceneName)
 				{
 					if (!forceReload)
@@ -476,7 +476,7 @@ namespace QuantumUNET.Components
 				{
 					if (s_LoadingSceneAsync.isDone)
 					{
-						ModConsole.OwmlConsole.WriteLine("ClientChangeScene done readyCon:" + s_ClientReadyConnection);
+						ModConsole.OwmlConsole.WriteLine($"ClientChangeScene done readyCon:{s_ClientReadyConnection}");
 						singleton.FinishLoadScene();
 						s_LoadingSceneAsync.allowSceneActivation = true;
 						s_LoadingSceneAsync = null;
@@ -625,7 +625,7 @@ namespace QuantumUNET.Components
 			QSBNetworkServer.DestroyPlayersForConnection(conn);
 			if (conn.LastError != NetworkError.Ok)
 			{
-				Debug.LogError("ServerDisconnected due to error: " + conn.LastError);
+				Debug.LogError($"ServerDisconnected due to error: {conn.LastError}");
 			}
 		}
 
@@ -696,7 +696,7 @@ namespace QuantumUNET.Components
 			StopClient();
 			if (conn.LastError != NetworkError.Ok)
 			{
-				Debug.LogError("ClientDisconnected due to error: " + conn.LastError);
+				Debug.LogError($"ClientDisconnected due to error: {conn.LastError}");
 			}
 		}
 

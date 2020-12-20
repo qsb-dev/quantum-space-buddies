@@ -22,7 +22,7 @@ namespace QuantumUNET.Transport
 		{
 			if (Position >= (ulong)m_Buffer.Length)
 			{
-				throw new IndexOutOfRangeException("NetworkReader:ReadByte out of range:" + ToString());
+				throw new IndexOutOfRangeException($"NetworkReader:ReadByte out of range:{ToString()}");
 			}
 			return m_Buffer[(int)((UIntPtr)(Position++))];
 		}
@@ -31,7 +31,7 @@ namespace QuantumUNET.Transport
 		{
 			if (Position + count > (ulong)m_Buffer.Length)
 			{
-				throw new IndexOutOfRangeException(string.Concat("NetworkReader:ReadBytes out of range: (", count, ") ", ToString()));
+				throw new IndexOutOfRangeException($"NetworkReader:ReadBytes out of range: ({count}) {ToString()}");
 			}
 			ushort num = 0;
 			while (num < count)
@@ -131,7 +131,7 @@ namespace QuantumUNET.Transport
 					num = (int)Math.Ceiling(num * 1.5f);
 					if (num > 134217728)
 					{
-						Debug.LogWarning("NetworkBuffer size is " + num + " bytes!");
+						Debug.LogWarning($"NetworkBuffer size is {num} bytes!");
 					}
 				}
 				var array = new byte[num];

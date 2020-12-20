@@ -198,7 +198,7 @@ namespace QuantumUNET.Transport
 				var byteCount = s_Encoding.GetByteCount(value);
 				if (byteCount >= 32768)
 				{
-					throw new IndexOutOfRangeException("Serialize(string) too long: " + value.Length);
+					throw new IndexOutOfRangeException($"Serialize(string) too long: {value.Length}");
 				}
 				Write((ushort)byteCount);
 				var bytes = s_Encoding.GetBytes(value, 0, value.Length, s_StringWriteBuffer, 0);
@@ -222,7 +222,8 @@ namespace QuantumUNET.Transport
 		{
 			if (count > 65535)
 			{
-				Debug.LogError("NetworkWriter Write: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
+				Debug.LogError(
+					$"NetworkWriter Write: buffer is too large ({count}) bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -234,7 +235,8 @@ namespace QuantumUNET.Transport
 		{
 			if (count > 65535)
 			{
-				Debug.LogError("NetworkWriter Write: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
+				Debug.LogError(
+					$"NetworkWriter Write: buffer is too large ({count}) bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -250,7 +252,8 @@ namespace QuantumUNET.Transport
 			}
 			else if (count > 65535)
 			{
-				Debug.LogError("NetworkWriter WriteBytesAndSize: buffer is too large (" + count + ") bytes. The maximum buffer size is 64K bytes.");
+				Debug.LogError(
+					$"NetworkWriter WriteBytesAndSize: buffer is too large ({count}) bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -267,7 +270,8 @@ namespace QuantumUNET.Transport
 			}
 			else if (buffer.Length > 65535)
 			{
-				Debug.LogError("NetworkWriter WriteBytes: buffer is too large (" + buffer.Length + ") bytes. The maximum buffer size is 64K bytes.");
+				Debug.LogError(
+					$"NetworkWriter WriteBytes: buffer is too large ({buffer.Length}) bytes. The maximum buffer size is 64K bytes.");
 			}
 			else
 			{
@@ -408,7 +412,7 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+					Debug.LogWarning($"NetworkWriter {value} has no NetworkIdentity");
 					WritePackedUInt32(0U);
 				}
 			}
@@ -429,7 +433,7 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					Debug.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+					Debug.LogWarning($"NetworkWriter {value} has no NetworkIdentity");
 					WritePackedUInt32(0U);
 				}
 			}

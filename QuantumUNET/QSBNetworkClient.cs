@@ -101,7 +101,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.Log(string.Concat("NetworkClient Reconnect ", serverIp, ":", serverPort));
+				Debug.Log($"NetworkClient Reconnect {serverIp}:{serverPort}");
 				QSBClientScene.HandleClientDisconnect(m_Connection);
 				QSBClientScene.ClearLocalPlayers();
 				m_Connection.Disconnect();
@@ -120,7 +120,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					Debug.Log("Async DNS START:" + serverIp);
+					Debug.Log($"Async DNS START:{serverIp}");
 					m_AsyncConnect = ConnectState.Resolving;
 					Dns.BeginGetHostAddresses(serverIp, new AsyncCallback(GetHostAddressesCallback), this);
 				}
@@ -188,13 +188,13 @@ namespace QuantumUNET
 						}
 						catch (Exception arg)
 						{
-							Debug.LogError("Reconnect failed: Exception when trying to connect to EndPoint: " + arg);
+							Debug.LogError($"Reconnect failed: Exception when trying to connect to EndPoint: {arg}");
 							m_AsyncConnect = ConnectState.Failed;
 							return false;
 						}
 						if (m_ClientConnectionId == 0)
 						{
-							Debug.LogError("Reconnect failed: Unable to connect to EndPoint (" + b + ")");
+							Debug.LogError($"Reconnect failed: Unable to connect to EndPoint ({b})");
 							m_AsyncConnect = ConnectState.Failed;
 							result = false;
 						}
@@ -252,7 +252,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				ModConsole.OwmlConsole.WriteLine("Async DNS START:" + serverIp);
+				ModConsole.OwmlConsole.WriteLine($"Async DNS START:{serverIp}");
 				m_RequestedServerHost = serverIp;
 				m_AsyncConnect = ConnectState.Resolving;
 				Dns.BeginGetHostAddresses(serverIp, new AsyncCallback(GetHostAddressesCallback), this);
@@ -299,13 +299,13 @@ namespace QuantumUNET
 					}
 					catch (Exception arg)
 					{
-						Debug.LogError("Connect failed: Exception when trying to connect to EndPoint: " + arg);
+						Debug.LogError($"Connect failed: Exception when trying to connect to EndPoint: {arg}");
 						m_AsyncConnect = ConnectState.Failed;
 						return;
 					}
 					if (m_ClientConnectionId == 0)
 					{
-						Debug.LogError("Connect failed: Unable to connect to EndPoint (" + b + ")");
+						Debug.LogError($"Connect failed: Unable to connect to EndPoint ({b})");
 						m_AsyncConnect = ConnectState.Failed;
 					}
 					else
@@ -340,7 +340,7 @@ namespace QuantumUNET
 					num = 1;
 				}
 				var num2 = m_SimulatedLatency * 3;
-				ModConsole.OwmlConsole.WriteLine(string.Concat("AddHost Using Simulator ", num, "/", num2));
+				ModConsole.OwmlConsole.WriteLine($"AddHost Using Simulator {num}/{num2}");
 				hostId = NetworkTransport.AddHostWithSimulator(hostTopology, num, num2, m_HostPort);
 			}
 			else
@@ -357,21 +357,22 @@ namespace QuantumUNET
 				var networkClient = (QSBNetworkClient)ar.AsyncState;
 				if (array.Length == 0)
 				{
-					Debug.LogError("DNS lookup failed for:" + networkClient.m_RequestedServerHost);
+					Debug.LogError($"DNS lookup failed for:{networkClient.m_RequestedServerHost}");
 					networkClient.m_AsyncConnect = ConnectState.Failed;
 				}
 				else
 				{
 					networkClient.serverIp = array[0].ToString();
 					networkClient.m_AsyncConnect = ConnectState.Resolved;
-					Debug.Log(string.Concat("Async DNS Result:", networkClient.serverIp, " for ", networkClient.m_RequestedServerHost, ": ", networkClient.serverIp));
+					Debug.Log(
+						$"Async DNS Result:{networkClient.serverIp} for {networkClient.m_RequestedServerHost}: {networkClient.serverIp}");
 				}
 			}
 			catch (SocketException ex)
 			{
 				var networkClient2 = (QSBNetworkClient)ar.AsyncState;
-				Debug.LogError("DNS resolution failed: " + ex.GetErrorCode());
-				Debug.LogError("Exception:" + ex);
+				Debug.LogError($"DNS resolution failed: {ex.GetErrorCode()}");
+				Debug.LogError($"Exception:{ex}");
 				networkClient2.m_AsyncConnect = ConnectState.Failed;
 			}
 		}
@@ -385,7 +386,8 @@ namespace QuantumUNET
 				{
 					num = 1;
 				}
-				ModConsole.OwmlConsole.WriteLine(string.Concat("Connect Using Simulator ", m_SimulatedLatency / 3, "/", m_SimulatedLatency));
+				ModConsole.OwmlConsole.WriteLine(
+					$"Connect Using Simulator {m_SimulatedLatency / 3}/{m_SimulatedLatency}");
 				var conf = new ConnectionSimulatorConfig(num, m_SimulatedLatency, num, m_SimulatedLatency, m_PacketLoss);
 				m_ClientConnectionId = NetworkTransport.ConnectWithSimulator(hostId, serverIp, serverPort, 0, out var b, conf);
 			}
@@ -544,7 +546,7 @@ namespace QuantumUNET
 
 		public void Shutdown()
 		{
-			Debug.Log("Shutting down client " + hostId);
+			Debug.Log($"Shutting down client {hostId}");
 			if (hostId != -1)
 			{
 				NetworkTransport.RemoveHost(hostId);
@@ -635,7 +637,7 @@ namespace QuantumUNET
 							break;
 
 						default:
-							Debug.LogError("Unknown network message type received: " + networkEventType);
+							Debug.LogError($"Unknown network message type received: {networkEventType}");
 							break;
 					}
 					if (++num >= 500)
@@ -658,7 +660,7 @@ namespace QuantumUNET
 				GenerateDataError(b);
 				return;
 				Block_17:
-				Debug.Log("MaxEventsPerFrame hit (" + 500 + ")");
+				Debug.Log($"MaxEventsPerFrame hit ({500})");
 				Block_19:
 				IL_2C6:
 				if (m_Connection != null && m_AsyncConnect == ConnectState.Connected)
@@ -670,19 +672,19 @@ namespace QuantumUNET
 
 		private void GenerateConnectError(int error)
 		{
-			Debug.LogError("UNet Client Error Connect Error: " + error);
+			Debug.LogError($"UNet Client Error Connect Error: {error}");
 			GenerateError(error);
 		}
 
 		private void GenerateDataError(int error)
 		{
-			Debug.LogError("UNet Client Data Error: " + (NetworkError)error);
+			Debug.LogError($"UNet Client Data Error: {(NetworkError) error}");
 			GenerateError(error);
 		}
 
 		private void GenerateDisconnectError(int error)
 		{
-			Debug.LogError("UNet Client Disconnect Error: " + (NetworkError)error);
+			Debug.LogError($"UNet Client Disconnect Error: {(NetworkError) error}");
 			GenerateError(error);
 		}
 

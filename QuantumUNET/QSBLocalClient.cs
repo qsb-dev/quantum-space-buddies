@@ -48,7 +48,7 @@ namespace QuantumUNET
 
 		internal void AddLocalPlayer(QSBPlayerController localPlayer)
 		{
-			Debug.Log(string.Concat("Local client AddLocalPlayer ", localPlayer.Gameobject.name, " conn=", m_Connection.connectionId));
+			Debug.Log($"Local client AddLocalPlayer {localPlayer.Gameobject.name} conn={m_Connection.connectionId}");
 			m_Connection.isReady = true;
 			m_Connection.SetPlayerController(localPlayer);
 			var unetView = localPlayer.UnetView;

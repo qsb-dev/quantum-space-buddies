@@ -14,7 +14,7 @@
 				var text = msgLabels[value];
 				if (string.IsNullOrEmpty(text))
 				{
-					text = "[" + value + "]";
+					text = $"[{value}]";
 				}
 				result = text;
 			}

@@ -56,7 +56,7 @@ namespace QuantumUNET
 			}
 			else if (QSBClientScene.readyConnection == null)
 			{
-				Debug.LogError("Send command attempted with no client running [client=" + ConnectionToServer + "].");
+				Debug.LogError($"Send command attempted with no client running [client={ConnectionToServer}].");
 			}
 			else
 			{
@@ -194,21 +194,21 @@ namespace QuantumUNET
 			bool result;
 			if (!s_CmdHandlerDelegates.TryGetValue(cmdHash, out var invoker))
 			{
-				Debug.Log("GetInvokerForHash hash:" + cmdHash + " not found");
+				Debug.Log($"GetInvokerForHash hash:{cmdHash} not found");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
 			}
 			else if (invoker == null)
 			{
-				Debug.Log("GetInvokerForHash hash:" + cmdHash + " invoker null");
+				Debug.Log($"GetInvokerForHash hash:{cmdHash} invoker null");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
 			}
 			else if (invoker.invokeType != invokeType)
 			{
-				Debug.LogError("GetInvokerForHash hash:" + cmdHash + " mismatched invokeType");
+				Debug.LogError($"GetInvokerForHash hash:{cmdHash} mismatched invokeType");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
@@ -224,10 +224,11 @@ namespace QuantumUNET
 
 		internal static void DumpInvokers()
 		{
-			Debug.Log("DumpInvokers size:" + s_CmdHandlerDelegates.Count);
+			Debug.Log($"DumpInvokers size:{s_CmdHandlerDelegates.Count}");
 			foreach (var keyValuePair in s_CmdHandlerDelegates)
 			{
-				Debug.Log(string.Concat("  Invoker:", keyValuePair.Value.invokeClass, ":", keyValuePair.Value.invokeFunction.GetMethodName(), " ", keyValuePair.Value.invokeType, " ", keyValuePair.Key));
+				Debug.Log(
+					$"  Invoker:{keyValuePair.Value.invokeClass}:{keyValuePair.Value.invokeFunction.GetMethodName()} {keyValuePair.Value.invokeType} {keyValuePair.Key}");
 			}
 		}
 
@@ -354,7 +355,7 @@ namespace QuantumUNET
 			else
 			{
 				var invoker = s_CmdHandlerDelegates[cmdHash];
-				result = invoker.invokeType + ":" + invoker.invokeFunction.GetMethodName();
+				result = $"{invoker.invokeType}:{invoker.invokeFunction.GetMethodName()}";
 			}
 			return result;
 		}
@@ -405,7 +406,8 @@ namespace QuantumUNET
 						networkInstanceId = component.NetId;
 						if (networkInstanceId.IsEmpty())
 						{
-							Debug.LogWarning("SetSyncVarGameObject GameObject " + newGameObject + " has a zero netId. Maybe it is not spawned yet?");
+							Debug.LogWarning(
+								$"SetSyncVarGameObject GameObject {newGameObject} has a zero netId. Maybe it is not spawned yet?");
 						}
 					}
 				}
@@ -416,7 +418,8 @@ namespace QuantumUNET
 				}
 				if (networkInstanceId != networkInstanceId2)
 				{
-					Debug.Log(string.Concat("SetSyncVar GameObject ", GetType().Name, " bit [", dirtyBit, "] netfieldId:", networkInstanceId2, "->", networkInstanceId));
+					Debug.Log(
+						$"SetSyncVar GameObject {GetType().Name} bit [{dirtyBit}] netfieldId:{networkInstanceId2}->{networkInstanceId}");
 					SetDirtyBit(dirtyBit);
 					gameObjectField = newGameObject;
 					netIdField = networkInstanceId;
@@ -441,7 +444,7 @@ namespace QuantumUNET
 
 			if (flag)
 			{
-				Debug.Log(string.Concat("SetSyncVar ", GetType().Name, " bit [", dirtyBit, "] ", fieldValue, "->", value));
+				Debug.Log($"SetSyncVar {GetType().Name} bit [{dirtyBit}] {fieldValue}->{value}");
 
 				SetDirtyBit(dirtyBit);
 				fieldValue = value;

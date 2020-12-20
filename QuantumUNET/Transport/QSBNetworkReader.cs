@@ -76,7 +76,7 @@ namespace QuantumUNET.Transport
 							var b5 = ReadByte();
 							if (b < 251)
 							{
-								throw new IndexOutOfRangeException("ReadPackedUInt32() failure: " + b);
+								throw new IndexOutOfRangeException($"ReadPackedUInt32() failure: {b}");
 							}
 							result = (uint)(b2 + (b3 << 8) + (b4 << 16) + (b5 << 24));
 						}
@@ -148,7 +148,7 @@ namespace QuantumUNET.Transport
 											var b9 = ReadByte();
 											if (b != 255)
 											{
-												throw new IndexOutOfRangeException("ReadPackedUInt64() failure: " + b);
+												throw new IndexOutOfRangeException($"ReadPackedUInt64() failure: {b}");
 											}
 											result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48) + ((ulong)b9 << 56);
 										}
@@ -275,7 +275,7 @@ namespace QuantumUNET.Transport
 			{
 				if (num >= 32768)
 				{
-					throw new IndexOutOfRangeException("ReadString() too long: " + num);
+					throw new IndexOutOfRangeException($"ReadString() too long: {num}");
 				}
 				while (num > s_StringReaderBuffer.Length)
 				{
@@ -300,7 +300,7 @@ namespace QuantumUNET.Transport
 		{
 			if (count < 0)
 			{
-				throw new IndexOutOfRangeException("NetworkReader ReadBytes " + count);
+				throw new IndexOutOfRangeException($"NetworkReader ReadBytes {count}");
 			}
 			var array = new byte[count];
 			m_buf.ReadBytes(array, (uint)count);
@@ -398,7 +398,7 @@ namespace QuantumUNET.Transport
 				var gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
-					Debug.Log("ReadTransform netId:" + networkInstanceId);
+					Debug.Log($"ReadTransform netId:{networkInstanceId}");
 					result = null;
 				}
 				else
@@ -430,7 +430,7 @@ namespace QuantumUNET.Transport
 				}
 				if (gameObject == null)
 				{
-					Debug.Log("ReadGameObject netId:" + networkInstanceId + "go: null");
+					Debug.Log($"ReadGameObject netId:{networkInstanceId}go: null");
 				}
 				result = gameObject;
 			}
@@ -458,7 +458,7 @@ namespace QuantumUNET.Transport
 				}
 				if (gameObject == null)
 				{
-					Debug.Log("ReadNetworkIdentity netId:" + networkInstanceId + "go: null");
+					Debug.Log($"ReadNetworkIdentity netId:{networkInstanceId}go: null");
 					result = null;
 				}
 				else

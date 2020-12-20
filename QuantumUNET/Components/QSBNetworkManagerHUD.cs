@@ -39,7 +39,8 @@ namespace QuantumUNET.Components
 					}
 					else
 					{
-						GUI.Label(new Rect(num, num2, 200f, 20f), string.Concat("Connecting to ", manager.networkAddress, ":", manager.networkPort, ".."));
+						GUI.Label(new Rect(num, num2, 200f, 20f),
+							$"Connecting to {manager.networkAddress}:{manager.networkPort}..");
 						num2 += 24;
 						if (GUI.Button(new Rect(num, num2, 200f, 20f), "Cancel Connection Attempt"))
 						{
