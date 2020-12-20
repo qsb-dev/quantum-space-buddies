@@ -190,6 +190,7 @@
     <Compile Include="OrbSync\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
+    <Compile Include="Player\PlayerMapMarker.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />
     <Compile Include="QSBInputManager.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
