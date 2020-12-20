@@ -277,15 +277,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"
-md "$(OwmlDir)\Mods\$(ProjectName)\assets"
+    <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"
 
-copy /y "$(TargetPath)" "$(OwmlDir)\Mods\$(ProjectName)"
-
-copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ProjectName)"
-
-copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ProjectName)"
-
-copy /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"</PostBuildEvent>
+xcopy /e /i /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"</PostBuildEvent>
   </PropertyGroup>
 </Project>
