@@ -67,7 +67,7 @@ namespace QSB.DeathSync
 			{
 				return;
 			}
-			
+
 			// Reset ship position.
 			_shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
 			_shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);

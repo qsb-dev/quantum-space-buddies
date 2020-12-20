@@ -10,7 +10,7 @@ namespace QSB.SectorSync
 		private const float CheckInterval = 0.5f;
 		private float _checkTimer = CheckInterval;
 
-		private void Update()
+		public void Update()
 		{
 			if (!QSBSectorManager.Instance.IsReady)
 			{

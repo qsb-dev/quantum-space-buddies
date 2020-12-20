@@ -43,8 +43,8 @@ namespace QSB.SectorSync
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(sector => sector.Sector != null 
-					&& !_sectorBlacklist.Contains(sector.Type) 
+				.Where(sector => sector.Sector != null
+					&& !_sectorBlacklist.Contains(sector.Type)
 					&& sector.Transform.gameObject.activeInHierarchy)
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
 				.First();
