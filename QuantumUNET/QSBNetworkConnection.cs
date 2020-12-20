@@ -278,17 +278,7 @@ namespace QuantumUNET
 					break;
 				}
 			}
-			ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-			{
-				"ConnectionSend con:",
-				connectionId,
-				" bytes:",
-				num,
-				" msgId:",
-				num2,
-				" ",
-				stringBuilder
-			}));
+			ModConsole.OwmlConsole.WriteLine(string.Concat("ConnectionSend con:", connectionId, " bytes:", num, " msgId:", num2, " ", stringBuilder));
 		}
 
 		private bool CheckChannel(int channelId)
@@ -301,13 +291,7 @@ namespace QuantumUNET
 			}
 			else if (channelId < 0 || channelId >= m_Channels.Length)
 			{
-				Debug.LogError(string.Concat(new object[]
-				{
-						"Invalid channel when sending buffered data, '",
-						channelId,
-						"'. Current channel count is ",
-						m_Channels.Length
-				}));
+				Debug.LogError(string.Concat("Invalid channel when sending buffered data, '", channelId, "'. Current channel count is ", m_Channels.Length));
 				result = false;
 			}
 			else
@@ -342,13 +326,7 @@ namespace QuantumUNET
 				}
 				if (networkMessageDelegate == null)
 				{
-					ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-					{
-						"Unknown message ID ",
-						num2,
-						" connId:",
-						connectionId
-					}));
+					ModConsole.OwmlConsole.WriteLine(string.Concat("Unknown message ID ", num2, " connId:", connectionId));
 					break;
 				}
 				m_NetMsg.MsgType = num2;
@@ -390,13 +368,7 @@ namespace QuantumUNET
 
 		public override string ToString()
 		{
-			return string.Format("hostId: {0} connectionId: {1} isReady: {2} channel count: {3}", new object[]
-			{
-				hostId,
-				connectionId,
-				isReady,
-				(m_Channels == null) ? 0 : m_Channels.Length
-			});
+			return string.Format("hostId: {0} connectionId: {1} isReady: {2} channel count: {3}", hostId, connectionId, isReady, (m_Channels == null) ? 0 : m_Channels.Length);
 		}
 
 		internal void AddToVisList(QSBNetworkIdentity uv)
@@ -487,14 +459,7 @@ namespace QuantumUNET
 
 			public override string ToString()
 			{
-				return string.Concat(new object[]
-				{
-					QSBMsgType.MsgTypeToString(msgType),
-					": count=",
-					count,
-					" bytes=",
-					bytes
-				});
+				return string.Concat(QSBMsgType.MsgTypeToString(msgType), ": count=", count, " bytes=", bytes);
 			}
 
 			public short msgType;

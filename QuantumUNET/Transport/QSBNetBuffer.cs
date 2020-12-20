@@ -31,13 +31,7 @@ namespace QuantumUNET.Transport
 		{
 			if (Position + count > (ulong)m_Buffer.Length)
 			{
-				throw new IndexOutOfRangeException(string.Concat(new object[]
-				{
-					"NetworkReader:ReadBytes out of range: (",
-					count,
-					") ",
-					ToString()
-				}));
+				throw new IndexOutOfRangeException(string.Concat("NetworkReader:ReadBytes out of range: (", count, ") ", ToString()));
 			}
 			ushort num = 0;
 			while (num < count)

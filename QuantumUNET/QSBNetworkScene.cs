@@ -270,15 +270,7 @@ namespace QuantumUNET
 				var networkIdentity = localObjects[networkInstanceId];
 				if (networkIdentity != null)
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"ID:",
-						networkInstanceId,
-						" OBJ:",
-						networkIdentity.gameObject,
-						" AS:",
-						networkIdentity.AssetId
-					}));
+					Debug.Log(string.Concat("ID:", networkInstanceId, " OBJ:", networkIdentity.gameObject, " AS:", networkIdentity.AssetId));
 				}
 				else
 				{

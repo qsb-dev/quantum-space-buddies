@@ -86,13 +86,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-						"NetworkServerSimple listen: ",
-						ipAddress,
-						":",
-						listenPort
-				}));
+				Debug.Log(string.Concat("NetworkServerSimple listen: ", ipAddress, ":", listenPort));
 				result = true;
 			}
 			return result;
@@ -190,15 +184,7 @@ namespace QuantumUNET
 					networkEventType = NetworkTransport.ReceiveFromHost(serverHostId, out var connectionId, out var channelId, messageBuffer, messageBuffer.Length, out var receivedSize, out var b);
 					if (networkEventType != NetworkEventType.Nothing)
 					{
-						Debug.Log(string.Concat(new object[]
-						{
-							"Server event: host=",
-							serverHostId,
-							" event=",
-							networkEventType,
-							" error=",
-							b
-						}));
+						Debug.Log(string.Concat("Server event: host=", serverHostId, " event=", networkEventType, " error=", b));
 					}
 					switch (networkEventType)
 					{
@@ -311,13 +297,7 @@ namespace QuantumUNET
 					if (error != 6)
 					{
 						m_Connections[connectionId] = null;
-						Debug.LogError(string.Concat(new object[]
-						{
-								"Server client disconnect error, connectionId: ",
-								connectionId,
-								" error: ",
-								(NetworkError)error
-						}));
+						Debug.LogError(string.Concat("Server client disconnect error, connectionId: ", connectionId, " error: ", (NetworkError)error));
 						OnDisconnectError(networkConnection, error);
 						return;
 					}

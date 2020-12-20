@@ -16,13 +16,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterHandlerSafe id:",
-					msgType,
-					" handler:",
-					handler.GetMethodName()
-				}));
+				Debug.Log(string.Concat("RegisterHandlerSafe id:", msgType, " handler:", handler.GetMethodName()));
 				if (!_msgHandlers.ContainsKey(msgType))
 				{
 					_msgHandlers.Add(msgType, handler);
@@ -47,13 +41,7 @@ namespace QuantumUNET
 					Debug.Log("RegisterHandler replacing " + msgType);
 					_msgHandlers.Remove(msgType);
 				}
-				Debug.Log(string.Concat(new object[]
-				{
-					"RegisterHandler id:",
-					msgType,
-					" handler:",
-					handler.GetMethodName()
-				}));
+				Debug.Log(string.Concat("RegisterHandler id:", msgType, " handler:", handler.GetMethodName()));
 				_msgHandlers.Add(msgType, handler);
 			}
 		}

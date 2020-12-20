@@ -131,13 +131,7 @@ namespace QuantumUNET.Transport
 			}
 			else if (value < 0 || value >= 512)
 			{
-				Debug.LogError(string.Concat(new object[]
-				{
-						"Invalid MaxPendingBuffers for channel ",
-						_channelId,
-						". Must be greater than zero and less than ",
-						512
-				}));
+				Debug.LogError(string.Concat("Invalid MaxPendingBuffers for channel ", _channelId, ". Must be greater than zero and less than ", 512));
 				result = false;
 			}
 			else
@@ -244,15 +238,7 @@ namespace QuantumUNET.Transport
 				}
 				else
 				{
-					Debug.LogError(string.Concat(new object[]
-					{
-							"Failed to send big message of ",
-							bytesToSend,
-							" bytes. The maximum is ",
-							_maxPacketSize,
-							" bytes on channel:",
-							_channelId
-					}));
+					Debug.LogError(string.Concat("Failed to send big message of ", bytesToSend, " bytes. The maximum is ", _maxPacketSize, " bytes on channel:", _channelId));
 					result = false;
 				}
 			}

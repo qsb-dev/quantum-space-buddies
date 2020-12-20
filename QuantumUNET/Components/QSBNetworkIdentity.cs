@@ -198,13 +198,7 @@ namespace QuantumUNET.Components
 				}
 				else if (!allowNonZeroNetId)
 				{
-					ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-					{
-						"Object has non-zero netId ",
-						NetId,
-						" for ",
-						gameObject
-					}));
+					ModConsole.OwmlConsole.WriteLine(string.Concat("Object has non-zero netId ", NetId, " for ", gameObject));
 					return;
 				}
 				QSBNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
@@ -239,15 +233,7 @@ namespace QuantumUNET.Components
 				IsClient = true;
 			}
 			CacheBehaviours();
-			Debug.Log(string.Concat(new object[]
-			{
-				"OnStartClient ",
-				gameObject,
-				" GUID:",
-				NetId,
-				" localPlayerAuthority:",
-				LocalPlayerAuthority
-			}));
+			Debug.Log(string.Concat("OnStartClient ", gameObject, " GUID:", NetId, " localPlayerAuthority:", LocalPlayerAuthority));
 			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
 			{
 				var networkBehaviour = m_NetworkBehaviours[i];
@@ -368,16 +354,7 @@ namespace QuantumUNET.Components
 			if (networkBehaviour == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no behaviour for incoming [",
-					cmdHashHandlerName,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(string.Concat("Found no behaviour for incoming [", cmdHashHandlerName, "] on ", gameObject, ",  the server and client should have the same NetworkBehaviour instances [netId=", NetId, "]."));
 				invokeComponent = null;
 				result = false;
 			}
@@ -394,40 +371,17 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncEvent [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("SyncEvent [", cmdHashHandlerName, "] received for deleted object [netId=", NetId, "]"));
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashSyncEvent(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(string.Concat("Found no receiver for incoming [", cmdHashHandlerName2, "] on ", gameObject, ",  the server and client should have the same NetworkBehaviour instances [netId=", NetId, "]."));
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncEvent [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("SyncEvent [", cmdHashHandlerName3, "] handler not found [netId=", NetId, "]"));
 			}
 			else
 			{
@@ -440,40 +394,17 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncList [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("SyncList [", cmdHashHandlerName, "] received for deleted object [netId=", NetId, "]"));
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashSyncList(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(string.Concat("Found no receiver for incoming [", cmdHashHandlerName2, "] on ", gameObject, ",  the server and client should have the same NetworkBehaviour instances [netId=", NetId, "]."));
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncList [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("SyncList [", cmdHashHandlerName3, "] handler not found [netId=", NetId, "]"));
 			}
 			else
 			{
@@ -486,40 +417,17 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"Command [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("Command [", cmdHashHandlerName, "] received for deleted object [netId=", NetId, "]"));
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashCommand(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(string.Concat("Found no receiver for incoming [", cmdHashHandlerName2, "] on ", gameObject, ",  the server and client should have the same NetworkBehaviour instances [netId=", NetId, "]."));
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"Command [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("Command [", cmdHashHandlerName3, "] handler not found [netId=", NetId, "]"));
 			}
 			else
 			{
@@ -532,40 +440,17 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"ClientRpc [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("ClientRpc [", cmdHashHandlerName, "] received for deleted object [netId=", NetId, "]"));
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashClientRpc(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(string.Concat("Found no receiver for incoming [", cmdHashHandlerName2, "] on ", gameObject, ",  the server and client should have the same NetworkBehaviour instances [netId=", NetId, "]."));
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"ClientRpc [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning(string.Concat("ClientRpc [", cmdHashHandlerName3, "] handler not found [netId=", NetId, "]"));
 			}
 			else
 			{
@@ -613,15 +498,7 @@ namespace QuantumUNET.Components
 								var maxPacketSize = QSBNetworkServer.maxPacketSize;
 								if (s_UpdateWriter.Position - position > maxPacketSize)
 								{
-									Debug.LogWarning(string.Concat(new object[]
-									{
-										"Large state update of ",
-										s_UpdateWriter.Position - position,
-										" bytes for netId:",
-										NetId,
-										" from script:",
-										networkBehaviour2
-									}));
+									Debug.LogWarning(string.Concat("Large state update of ", s_UpdateWriter.Position - position, " bytes for netId:", NetId, " from script:", networkBehaviour2));
 								}
 							}
 						}
@@ -715,23 +592,11 @@ namespace QuantumUNET.Components
 			}
 			else if (m_ObserverConnections.Contains(conn.connectionId))
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"Duplicate observer ",
-					conn.address,
-					" added for ",
-					gameObject
-				}));
+				Debug.Log(string.Concat("Duplicate observer ", conn.address, " added for ", gameObject));
 			}
 			else
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"Added observer ",
-					conn.address,
-					" added for ",
-					gameObject
-				}));
+				Debug.Log(string.Concat("Added observer ", conn.address, " added for ", gameObject));
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
 				conn.AddToVisList(this);
@@ -797,24 +662,12 @@ namespace QuantumUNET.Components
 						{
 							if (!networkConnection3.isReady)
 							{
-								Debug.LogWarning(string.Concat(new object[]
-								{
-									"Observer is not ready for ",
-									gameObject,
-									" ",
-									networkConnection3
-								}));
+								Debug.LogWarning(string.Concat("Observer is not ready for ", gameObject, " ", networkConnection3));
 							}
 							else if (initialize || !hashSet2.Contains(networkConnection3))
 							{
 								networkConnection3.AddToVisList(this);
-								Debug.Log(string.Concat(new object[]
-								{
-									"New Observer for ",
-									gameObject,
-									" ",
-									networkConnection3
-								}));
+								Debug.Log(string.Concat("New Observer for ", gameObject, " ", networkConnection3));
 								flag = true;
 							}
 						}
@@ -824,13 +677,7 @@ namespace QuantumUNET.Components
 						if (!hashSet.Contains(networkConnection4))
 						{
 							networkConnection4.RemoveFromVisList(this, true);
-							Debug.Log(string.Concat(new object[]
-							{
-								"Removed Observer for ",
-								gameObject,
-								" ",
-								networkConnection4
-							}));
+							Debug.Log(string.Concat("Removed Observer for ", gameObject, " ", networkConnection4));
 							flag = true;
 						}
 					}

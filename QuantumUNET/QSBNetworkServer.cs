@@ -205,13 +205,7 @@ namespace QuantumUNET
 
 		internal void SetLocalObjectOnServer(NetworkInstanceId netId, GameObject obj)
 		{
-			Debug.Log(string.Concat(new object[]
-			{
-				"SetLocalObjectOnServer ",
-				netId,
-				" ",
-				obj
-			}));
+			Debug.Log(string.Concat("SetLocalObjectOnServer ", netId, " ", obj));
 			m_NetworkScene.SetLocalObject(netId, obj, false, true);
 		}
 
@@ -224,13 +218,7 @@ namespace QuantumUNET
 				{
 					if (!networkIdentity.IsClient)
 					{
-						Debug.Log(string.Concat(new object[]
-						{
-							"ActivateClientScene ",
-							networkIdentity.NetId,
-							" ",
-							networkIdentity.gameObject
-						}));
+						Debug.Log(string.Concat("ActivateClientScene ", networkIdentity.NetId, " ", networkIdentity.gameObject));
 						QSBClientScene.SetLocalObject(networkIdentity.NetId, networkIdentity.gameObject);
 						networkIdentity.OnStartClient();
 					}
@@ -607,15 +595,7 @@ namespace QuantumUNET
 
 		private void GenerateDisconnectError(QSBNetworkConnection conn, int error)
 		{
-			Debug.LogError(string.Concat(new object[]
-			{
-					"UNet Server Disconnect Error: ",
-					(NetworkError)error,
-					" conn:[",
-					conn,
-					"]:",
-					conn.connectionId
-			}));
+			Debug.LogError(string.Concat("UNet Server Disconnect Error: ", (NetworkError)error, " conn:[", conn, "]:", conn.connectionId));
 			GenerateError(conn, error);
 		}
 
@@ -754,13 +734,7 @@ namespace QuantumUNET
 						}
 						else
 						{
-							Debug.Log(string.Concat(new object[]
-							{
-									"Adding new playerGameObject object netId: ",
-									playerGameObject.GetComponent<QSBNetworkIdentity>().NetId,
-									" asset ID ",
-									playerGameObject.GetComponent<QSBNetworkIdentity>().AssetId
-							}));
+							Debug.Log(string.Concat("Adding new playerGameObject object netId: ", playerGameObject.GetComponent<QSBNetworkIdentity>().NetId, " asset ID ", playerGameObject.GetComponent<QSBNetworkIdentity>().AssetId));
 							FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
 							if (networkIdentity.LocalPlayerAuthority)
 							{
@@ -784,13 +758,7 @@ namespace QuantumUNET
 			}
 			else if (playerControllerId > 32)
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-						"AddPlayer: playerControllerId of ",
-						playerControllerId,
-						" is too high. max is ",
-						32
-				}));
+				Debug.Log(string.Concat("AddPlayer: playerControllerId of ", playerControllerId, " is too high. max is ", 32));
 				result = false;
 			}
 			else
@@ -873,13 +841,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-							"Replacing playerGameObject object netId: ",
-							playerGameObject.GetComponent<NetworkIdentity>().netId,
-							" asset ID ",
-							playerGameObject.GetComponent<NetworkIdentity>().assetId
-					}));
+					Debug.Log(string.Concat("Replacing playerGameObject object netId: ", playerGameObject.GetComponent<NetworkIdentity>().netId, " asset ID ", playerGameObject.GetComponent<NetworkIdentity>().assetId));
 					FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
 					if (networkIdentity.LocalPlayerAuthority)
 					{
@@ -945,13 +907,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-							"Spawning ",
-							objects.Count,
-							" objects for conn ",
-							conn.connectionId
-					}));
+					Debug.Log(string.Concat("Spawning ", objects.Count, " objects for conn ", conn.connectionId));
 					var objectSpawnFinishedMessage = new QSBObjectSpawnFinishedMessage
 					{
 						State = 0U
@@ -965,13 +921,7 @@ namespace QuantumUNET
 						}
 						else if (networkIdentity2.gameObject.activeSelf)
 						{
-							Debug.Log(string.Concat(new object[]
-							{
-									"Sending spawn message for current server objects name='",
-									networkIdentity2.gameObject.name,
-									"' netId=",
-									networkIdentity2.NetId
-							}));
+							Debug.Log(string.Concat("Sending spawn message for current server objects name='", networkIdentity2.gameObject.name, "' netId=", networkIdentity2.NetId));
 							var flag2 = networkIdentity2.OnCheckObserver(conn);
 							if (flag2)
 							{
@@ -1084,13 +1034,7 @@ namespace QuantumUNET
 							return;
 						}
 					}
-					Debug.Log(string.Concat(new object[]
-					{
-						"OnCommandMessage for netId=",
-						networkInstanceId,
-						" conn=",
-						netMsg.Connection
-					}));
+					Debug.Log(string.Concat("OnCommandMessage for netId=", networkInstanceId, " conn=", netMsg.Connection));
 					component.HandleCommand(cmdHash, netMsg.Reader);
 				}
 			}
@@ -1104,13 +1048,7 @@ namespace QuantumUNET
 			}
 			else if (!GetNetworkIdentity(obj, out var networkIdentity))
 			{
-				Debug.LogError(string.Concat(new object[]
-				{
-					"SpawnObject ",
-					obj,
-					" has no QSBNetworkIdentity. Please add a NetworkIdentity to ",
-					obj
-				}));
+				Debug.LogError(string.Concat("SpawnObject ", obj, " has no QSBNetworkIdentity. Please add a NetworkIdentity to ", obj));
 			}
 			else
 			{
@@ -1282,10 +1220,7 @@ namespace QuantumUNET
 			bool result;
 			if (CheckForPrefab(obj))
 			{
-				Debug.LogErrorFormat("GameObject {0} is a prefab, it can't be spawned. This will cause errors in builds.", new object[]
-				{
-					obj.name
-				});
+				Debug.LogErrorFormat("GameObject {0} is a prefab, it can't be spawned. This will cause errors in builds.", obj.name);
 				result = false;
 			}
 			else
@@ -1387,13 +1322,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.LogError(string.Concat(new object[]
-				{
-						"Local invoke: Failed to find local connection to invoke handler on [connectionId=",
-						conn.connectionId,
-						"] for MsgId:",
-						msgType
-				}));
+				Debug.LogError(string.Concat("Local invoke: Failed to find local connection to invoke handler on [connectionId=", conn.connectionId, "] for MsgId:", msgType));
 				result = false;
 			}
 			return result;
@@ -1417,13 +1346,7 @@ namespace QuantumUNET
 				{
 					if (ValidateSceneObject(networkIdentity))
 					{
-						Debug.Log(string.Concat(new object[]
-						{
-								"SpawnObjects sceneId:",
-								networkIdentity.SceneId,
-								" name:",
-								networkIdentity.gameObject.name
-						}));
+						Debug.Log(string.Concat("SpawnObjects sceneId:", networkIdentity.SceneId, " name:", networkIdentity.gameObject.name));
 						networkIdentity.Reset();
 						networkIdentity.gameObject.SetActive(true);
 					}

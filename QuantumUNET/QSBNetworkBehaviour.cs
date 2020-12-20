@@ -227,17 +227,7 @@ namespace QuantumUNET
 			Debug.Log("DumpInvokers size:" + s_CmdHandlerDelegates.Count);
 			foreach (var keyValuePair in s_CmdHandlerDelegates)
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"  Invoker:",
-					keyValuePair.Value.invokeClass,
-					":",
-					keyValuePair.Value.invokeFunction.GetMethodName(),
-					" ",
-					keyValuePair.Value.invokeType,
-					" ",
-					keyValuePair.Key
-				}));
+				Debug.Log(string.Concat("  Invoker:", keyValuePair.Value.invokeClass, ":", keyValuePair.Value.invokeFunction.GetMethodName(), " ", keyValuePair.Value.invokeType, " ", keyValuePair.Key));
 			}
 		}
 
@@ -426,17 +416,7 @@ namespace QuantumUNET
 				}
 				if (networkInstanceId != networkInstanceId2)
 				{
-					Debug.Log(string.Concat(new object[]
-					{
-						"SetSyncVar GameObject ",
-						GetType().Name,
-						" bit [",
-						dirtyBit,
-						"] netfieldId:",
-						networkInstanceId2,
-						"->",
-						networkInstanceId
-					}));
+					Debug.Log(string.Concat("SetSyncVar GameObject ", GetType().Name, " bit [", dirtyBit, "] netfieldId:", networkInstanceId2, "->", networkInstanceId));
 					SetDirtyBit(dirtyBit);
 					gameObjectField = newGameObject;
 					netIdField = networkInstanceId;
@@ -461,17 +441,7 @@ namespace QuantumUNET
 
 			if (flag)
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"SetSyncVar ",
-					GetType().Name,
-					" bit [",
-					dirtyBit,
-					"] ",
-					fieldValue,
-					"->",
-					value
-				}));
+				Debug.Log(string.Concat("SetSyncVar ", GetType().Name, " bit [", dirtyBit, "] ", fieldValue, "->", value));
 
 				SetDirtyBit(dirtyBit);
 				fieldValue = value;

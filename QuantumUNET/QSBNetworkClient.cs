@@ -101,13 +101,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-						"NetworkClient Reconnect ",
-						serverIp,
-						":",
-						serverPort
-				}));
+				Debug.Log(string.Concat("NetworkClient Reconnect ", serverIp, ":", serverPort));
 				QSBClientScene.HandleClientDisconnect(m_Connection);
 				QSBClientScene.ClearLocalPlayers();
 				m_Connection.Disconnect();
@@ -346,13 +340,7 @@ namespace QuantumUNET
 					num = 1;
 				}
 				var num2 = m_SimulatedLatency * 3;
-				ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-				{
-					"AddHost Using Simulator ",
-					num,
-					"/",
-					num2
-				}));
+				ModConsole.OwmlConsole.WriteLine(string.Concat("AddHost Using Simulator ", num, "/", num2));
 				hostId = NetworkTransport.AddHostWithSimulator(hostTopology, num, num2, m_HostPort);
 			}
 			else
@@ -376,15 +364,7 @@ namespace QuantumUNET
 				{
 					networkClient.serverIp = array[0].ToString();
 					networkClient.m_AsyncConnect = ConnectState.Resolved;
-					Debug.Log(string.Concat(new string[]
-					{
-						"Async DNS Result:",
-						networkClient.serverIp,
-						" for ",
-						networkClient.m_RequestedServerHost,
-						": ",
-						networkClient.serverIp
-					}));
+					Debug.Log(string.Concat("Async DNS Result:", networkClient.serverIp, " for ", networkClient.m_RequestedServerHost, ": ", networkClient.serverIp));
 				}
 			}
 			catch (SocketException ex)
@@ -405,13 +385,7 @@ namespace QuantumUNET
 				{
 					num = 1;
 				}
-				ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-				{
-					"Connect Using Simulator ",
-					m_SimulatedLatency / 3,
-					"/",
-					m_SimulatedLatency
-				}));
+				ModConsole.OwmlConsole.WriteLine(string.Concat("Connect Using Simulator ", m_SimulatedLatency / 3, "/", m_SimulatedLatency));
 				var conf = new ConnectionSimulatorConfig(num, m_SimulatedLatency, num, m_SimulatedLatency, m_PacketLoss);
 				m_ClientConnectionId = NetworkTransport.ConnectWithSimulator(hostId, serverIp, serverPort, 0, out var b, conf);
 			}
