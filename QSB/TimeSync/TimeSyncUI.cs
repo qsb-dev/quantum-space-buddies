@@ -1,4 +1,4 @@
-﻿using OWML.ModHelper.Events;
+﻿using OWML.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +8,8 @@ namespace QSB.TimeSync
 	internal class TimeSyncUI : MonoBehaviour
 	{
 		public static TimeSyncUI Instance;
+
+		public static float TargetTime;
 
 		private Canvas _canvas;
 		private Text _text;
@@ -70,7 +72,7 @@ namespace QSB.TimeSync
 			{
 				return;
 			}
-			var totalSeconds = Mathf.Max(Time.timeSinceLevelLoad - _startTime, 0f);
+			var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
 			var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 			var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 			var text = "";

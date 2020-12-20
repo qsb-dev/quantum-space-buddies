@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Logging;
 using System.Diagnostics;
 using System.Linq;
 
@@ -8,16 +7,7 @@ namespace QSB.Utility
 	public static class DebugLog
 	{
 		public static void ToConsole(string message, MessageType type = MessageType.Message)
-		{
-			// make custom method name in owml log.
-			// i wrote the owml code for this so this is fine?? shut up i dont want to change owml
-			var console = (ModSocketOutput)QSBCore.Helper.Console;
-			var method = console.GetType()
-				.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-				.Last(x => x.Name == "WriteLine");
-			var callingType = GetCallingType(new StackTrace());
-			method.Invoke(console, new object[] { type, message, callingType });
-		}
+			=> QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
 
 		public static void ToHud(string message)
 		{

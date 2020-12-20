@@ -112,6 +112,10 @@ namespace QSB.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
+			if (sector == ReferenceSector)
+			{
+				return;
+			}
 			_positionSmoothVelocity = Vector3.zero;
 			ReferenceSector = sector;
 			if (!HasAuthority)

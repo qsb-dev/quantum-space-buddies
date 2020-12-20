@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using QSB.Animation;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
@@ -51,8 +51,6 @@ namespace QSB
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
 			SetupNetworkId(playerPrefab);
-			Destroy(playerPrefab.GetComponent<NetworkTransform>());
-			Destroy(playerPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();
 			playerPrefab.AddComponent<AnimationSync>();
@@ -61,32 +59,24 @@ namespace QSB
 
 			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
 			SetupNetworkId(_shipPrefab);
-			Destroy(_shipPrefab.GetComponent<NetworkTransform>());
-			Destroy(_shipPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(_shipPrefab);
 			_shipPrefab.AddComponent<ShipTransformSync>();
 			spawnPrefabs.Add(_shipPrefab);
 
 			_cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
 			SetupNetworkId(_cameraPrefab);
-			Destroy(_cameraPrefab.GetComponent<NetworkTransform>());
-			Destroy(_cameraPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(_cameraPrefab);
 			_cameraPrefab.AddComponent<PlayerCameraSync>();
 			spawnPrefabs.Add(_cameraPrefab);
 
 			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
 			SetupNetworkId(_probePrefab);
-			Destroy(_probePrefab.GetComponent<NetworkTransform>());
-			Destroy(_probePrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(_probePrefab);
 			_probePrefab.AddComponent<PlayerProbeSync>();
 			spawnPrefabs.Add(_probePrefab);
 
 			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
 			SetupNetworkId(OrbPrefab);
-			Destroy(OrbPrefab.GetComponent<NetworkTransform>());
-			Destroy(OrbPrefab.GetComponent<NetworkIdentity>());
 			SetupNetworkTransform(OrbPrefab);
 			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
 			spawnPrefabs.Add(OrbPrefab);
@@ -159,6 +149,14 @@ namespace QSB
 			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
 			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
 			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
+		}
+
+		public override void OnStartClient(QSBNetworkClient _)
+		{
+			DebugLog.DebugWrite($"Setting defaultServerIP to {networkAddress}");
+			var config = QSBCore.Helper.Config;
+			config.SetSettingsValue("defaultServerIP", networkAddress);
+			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
 
 		public override void OnClientConnect(QSBNetworkConnection connection) // Called on the client when connecting to a server

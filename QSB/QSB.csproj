@@ -42,37 +42,37 @@
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\NAudio-Unity.dll</HintPath>
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\NAudio-Unity.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.dll</HintPath>
+    <Reference Include="OWML.Common, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.Common.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Common.dll</HintPath>
+    <Reference Include="OWML.Logging, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Logging.dll</HintPath>
+    <Reference Include="OWML.ModHelper, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Assets, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Events, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Events.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Input, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Input.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Input, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Input.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Interaction, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Interaction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Menus, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
+    <Reference Include="OWML.Utils, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -163,6 +163,7 @@
     <Compile Include="OrbSync\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
+    <Compile Include="Player\PlayerMapMarker.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />
     <Compile Include="QSBInputManager.cs" />
     <Compile Include="QSBNetworkLobby.cs" />

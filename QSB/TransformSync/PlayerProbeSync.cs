@@ -40,7 +40,9 @@ namespace QSB.TransformSync
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => (Player.ProbeLauncher != null), () => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
+			QSBCore.Helper.Events.Unity.RunWhen(
+				() => Player.ProbeLauncher != null,
+				() => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
 			Player.ProbeBody = body.gameObject;
 
 			return body;

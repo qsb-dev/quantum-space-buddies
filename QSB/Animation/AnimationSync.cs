@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -184,11 +184,11 @@ namespace QSB.Animation
 			CurrentType = type;
 			if (_unsuitedAnimController == null)
 			{
-				DebugLog.DebugWrite($"Error - Unsuited controller is null. ({PlayerId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - Unsuited controller is null. ({PlayerId})", MessageType.Error);
 			}
 			if (_suitedAnimController == null)
 			{
-				DebugLog.DebugWrite($"Error - Suited controller is null. ({PlayerId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - Suited controller is null. ({PlayerId})", MessageType.Error);
 			}
 			RuntimeAnimatorController controller = default;
 			switch (type)
