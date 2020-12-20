@@ -308,16 +308,7 @@ namespace QuantumUNET.Transport
 		public byte[] ReadBytesAndSize()
 		{
 			var num = ReadUInt16();
-			byte[] result;
-			if (num == 0)
-			{
-				result = new byte[0];
-			}
-			else
-			{
-				result = ReadBytes(num);
-			}
-			return result;
+			return num == 0 ? new byte[0] : ReadBytes(num);
 		}
 
 		public Vector2 ReadVector2() => new Vector2(ReadSingle(), ReadSingle());
@@ -417,15 +408,9 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				GameObject gameObject;
-				if (QSBNetworkServer.active)
-				{
-					gameObject = QSBNetworkServer.FindLocalObject(networkInstanceId);
-				}
-				else
-				{
-					gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
-				}
+				var gameObject = QSBNetworkServer.active 
+					? QSBNetworkServer.FindLocalObject(networkInstanceId)
+					: QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
 					Debug.Log($"ReadGameObject netId:{networkInstanceId}go: null");
@@ -445,15 +430,9 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				GameObject gameObject;
-				if (QSBNetworkServer.active)
-				{
-					gameObject = QSBNetworkServer.FindLocalObject(networkInstanceId);
-				}
-				else
-				{
-					gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
-				}
+				var gameObject = QSBNetworkServer.active
+					? QSBNetworkServer.FindLocalObject(networkInstanceId) 
+					: QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
 					Debug.Log($"ReadNetworkIdentity netId:{networkInstanceId}go: null");

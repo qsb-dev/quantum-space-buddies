@@ -300,12 +300,9 @@ namespace QuantumUNET
 				return gameObject.name;
 			}
 
-			if (QSBNetworkScene.GetSpawnHandler(assetId, out var func))
-			{
-				return func.GetMethodName();
-			}
-
-			return "unknown";
+			return QSBNetworkScene.GetSpawnHandler(assetId, out var func)
+				? func.GetMethodName()
+				: "unknown";
 		}
 
 		public static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId) => QSBNetworkScene.RegisterPrefab(prefab, newAssetId);
