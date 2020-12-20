@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Logging;
 using System.Diagnostics;
 using System.Linq;
 
@@ -7,10 +6,7 @@ namespace QSB.Utility
 {
 	public static class DebugLog
 	{
-		public static void ToConsole(string message, MessageType type = MessageType.Message)
-		{
-			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
-		}
+		public static void ToConsole(string message, MessageType type = MessageType.Message) => QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
 
 		public static void ToHud(string message)
 		{
