@@ -35,7 +35,6 @@ namespace QSB
 {
 	public class QSBCore : ModBehaviour
 	{
-		public static IModBehaviour ModBehaviour { get; private set; }
 		public static IModHelper Helper { get; private set; }
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
@@ -52,8 +51,6 @@ namespace QSB
 			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
 			instance.theUITable[(int)UITextType.PleaseUseController] =
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
-
-			ModBehaviour = this;
 		}
 
 		public void Start()
