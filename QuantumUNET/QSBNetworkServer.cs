@@ -153,10 +153,7 @@ namespace QuantumUNET
 			for (var i = 0; i < connections.Count; i++)
 			{
 				var networkConnection = connections[i];
-				if (networkConnection != null)
-				{
-					networkConnection.SetMaxDelay(seconds);
-				}
+				networkConnection?.SetMaxDelay(seconds);
 			}
 			m_MaxDelay = seconds;
 		}
@@ -499,10 +496,7 @@ namespace QuantumUNET
 
 		internal static void Update()
 		{
-			if (s_Instance != null)
-			{
-				s_Instance.InternalUpdate();
-			}
+			s_Instance?.InternalUpdate();
 		}
 
 		private void UpdateServerObjects()
@@ -1190,10 +1184,8 @@ namespace QuantumUNET
 			{
 				objects.Remove(uv.NetId);
 			}
-			if (uv.ClientAuthorityOwner != null)
-			{
-				uv.ClientAuthorityOwner.RemoveOwnedObject(uv);
-			}
+
+			uv.ClientAuthorityOwner?.RemoveOwnedObject(uv);
 			var objectDestroyMessage = new QSBObjectDestroyMessage
 			{
 				NetId = uv.NetId

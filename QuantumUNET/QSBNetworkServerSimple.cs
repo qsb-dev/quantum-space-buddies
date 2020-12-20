@@ -151,10 +151,7 @@ namespace QuantumUNET
 			for (var i = 0; i < m_Connections.Count; i++)
 			{
 				var networkConnection = m_Connections[i];
-				if (networkConnection != null)
-				{
-					networkConnection.FlushChannels();
-				}
+				networkConnection?.FlushChannels();
 			}
 		}
 
@@ -335,19 +332,13 @@ namespace QuantumUNET
 		public void SendBytesTo(int connectionId, byte[] bytes, int numBytes, int channelId)
 		{
 			var networkConnection = FindConnection(connectionId);
-			if (networkConnection != null)
-			{
-				networkConnection.SendBytes(bytes, numBytes, channelId);
-			}
+			networkConnection?.SendBytes(bytes, numBytes, channelId);
 		}
 
 		public void SendWriterTo(int connectionId, QSBNetworkWriter writer, int channelId)
 		{
 			var networkConnection = FindConnection(connectionId);
-			if (networkConnection != null)
-			{
-				networkConnection.SendWriter(writer, channelId);
-			}
+			networkConnection?.SendWriter(writer, channelId);
 		}
 
 		public void Disconnect(int connectionId)

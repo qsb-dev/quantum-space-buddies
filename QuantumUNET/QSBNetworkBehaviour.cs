@@ -547,17 +547,8 @@ namespace QuantumUNET
 
 		protected class Invoker
 		{
-			public string DebugString()
-			{
-				return string.Concat(new object[]
-				{
-					invokeType,
-					":",
-					invokeClass,
-					":",
-					invokeFunction.GetMethodName()
-				});
-			}
+			public string DebugString() => 
+				$"{invokeType}:{invokeClass}:{invokeFunction.GetMethodName()}";
 
 			public UNetInvokeType invokeType;
 			public Type invokeClass;

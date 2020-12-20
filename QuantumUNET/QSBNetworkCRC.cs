@@ -34,10 +34,7 @@ namespace QuantumUNET
 				if (type.GetBaseType() == typeof(QSBNetworkBehaviour))
 				{
 					var method = type.GetMethod(".cctor", BindingFlags.Static);
-					if (method != null)
-					{
-						method.Invoke(null, new object[0]);
-					}
+					method?.Invoke(null, new object[0]);
 				}
 			}
 		}

@@ -627,10 +627,7 @@ namespace QuantumUNET
 								}
 							}
 							QSBClientScene.HandleClientDisconnect(m_Connection);
-							if (m_Connection != null)
-							{
-								m_Connection.InvokeHandlerNoData(33);
-							}
+							m_Connection?.InvokeHandlerNoData(33);
 							break;
 
 						case NetworkEventType.Nothing:
@@ -753,10 +750,7 @@ namespace QuantumUNET
 
 		public void ResetConnectionStats()
 		{
-			if (m_Connection != null)
-			{
-				m_Connection.ResetStats();
-			}
+			m_Connection?.ResetStats();
 		}
 
 		public int GetRTT()

@@ -412,10 +412,7 @@ namespace QuantumUNET
 
 		internal void RemoveOwnedObject(QSBNetworkIdentity obj)
 		{
-			if (ClientOwnedObjects != null)
-			{
-				ClientOwnedObjects.Remove(obj.NetId);
-			}
+			ClientOwnedObjects?.Remove(obj.NetId);
 		}
 
 		internal static void OnFragment(QSBNetworkMessage netMsg) => netMsg.Connection.HandleFragment(netMsg.Reader, netMsg.ChannelId);
