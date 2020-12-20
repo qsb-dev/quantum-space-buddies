@@ -148,9 +148,8 @@ namespace QuantumUNET
 
 		public void UpdateConnections()
 		{
-			for (var i = 0; i < m_Connections.Count; i++)
+			foreach (var networkConnection in m_Connections)
 			{
-				var networkConnection = m_Connections[i];
 				networkConnection?.FlushChannels();
 			}
 		}
@@ -353,9 +352,8 @@ namespace QuantumUNET
 
 		public void DisconnectAllConnections()
 		{
-			for (var i = 0; i < m_Connections.Count; i++)
+			foreach (var networkConnection in m_Connections)
 			{
-				var networkConnection = m_Connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.Disconnect();

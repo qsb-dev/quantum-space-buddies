@@ -788,9 +788,8 @@ namespace QuantumUNET
 		public static Dictionary<short, QSBNetworkConnection.PacketStat> GetTotalConnectionStats()
 		{
 			var dictionary = new Dictionary<short, QSBNetworkConnection.PacketStat>();
-			for (var i = 0; i < allClients.Count; i++)
+			foreach (var networkClient in allClients)
 			{
-				var networkClient = allClients[i];
 				var connectionStats = networkClient.GetConnectionStats();
 				foreach (var key in connectionStats.Keys)
 				{

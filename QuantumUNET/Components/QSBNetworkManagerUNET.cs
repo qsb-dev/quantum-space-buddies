@@ -78,14 +78,13 @@ namespace QuantumUNET.Components
 			get
 			{
 				var num = 0;
-				for (var i = 0; i < QSBNetworkServer.connections.Count; i++)
+				foreach (var networkConnection in QSBNetworkServer.connections)
 				{
-					var networkConnection = QSBNetworkServer.connections[i];
 					if (networkConnection != null)
 					{
-						for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
+						foreach (var controller in networkConnection.PlayerControllers)
 						{
-							if (networkConnection.PlayerControllers[j].IsValid)
+							if (controller.IsValid)
 							{
 								num++;
 							}
@@ -162,9 +161,9 @@ namespace QuantumUNET.Components
 			if (customConfig && m_ConnectionConfig != null && config == null)
 			{
 				m_ConnectionConfig.Channels.Clear();
-				for (var i = 0; i < channels.Count; i++)
+				foreach (var channel in channels)
 				{
-					m_ConnectionConfig.AddChannel(channels[i]);
+					m_ConnectionConfig.AddChannel(channel);
 				}
 				QSBNetworkServer.Configure(m_ConnectionConfig, this.maxConnections);
 			}
@@ -211,9 +210,8 @@ namespace QuantumUNET.Components
 			{
 				QSBClientScene.RegisterPrefab(playerPrefab);
 			}
-			for (var i = 0; i < spawnPrefabs.Count; i++)
+			foreach (var gameObject in spawnPrefabs)
 			{
-				var gameObject = spawnPrefabs[i];
 				if (gameObject != null)
 				{
 					QSBClientScene.RegisterPrefab(gameObject);
@@ -275,9 +273,9 @@ namespace QuantumUNET.Components
 			else if (customConfig && m_ConnectionConfig != null)
 			{
 				m_ConnectionConfig.Channels.Clear();
-				for (var i = 0; i < channels.Count; i++)
+				foreach (var channel in channels)
 				{
-					m_ConnectionConfig.AddChannel(channels[i]);
+					m_ConnectionConfig.AddChannel(channel);
 				}
 				if (m_ConnectionConfig.UsePlatformSpecificProtocols && Application.platform != RuntimePlatform.PS4 && Application.platform != RuntimePlatform.PSP2)
 				{
@@ -715,9 +713,9 @@ namespace QuantumUNET.Components
 			{
 				var flag = QSBClientScene.localPlayers.Count == 0;
 				var flag2 = false;
-				for (var i = 0; i < QSBClientScene.localPlayers.Count; i++)
+				foreach (var player in QSBClientScene.localPlayers)
 				{
-					if (QSBClientScene.localPlayers[i].Gameobject != null)
+					if (player.Gameobject != null)
 					{
 						flag2 = true;
 						break;

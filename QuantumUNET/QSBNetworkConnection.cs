@@ -69,9 +69,9 @@ namespace QuantumUNET
 		{
 			if (!m_Disposed && m_Channels != null)
 			{
-				for (var i = 0; i < m_Channels.Length; i++)
+				foreach (var channel in m_Channels)
 				{
-					m_Channels[i].Dispose();
+					channel.Dispose();
 				}
 			}
 			m_Channels = null;
@@ -209,14 +209,15 @@ namespace QuantumUNET
 			bool result;
 			if (PlayerControllers.Count > 0)
 			{
-				for (var i = 0; i < PlayerControllers.Count; i++)
+				foreach (var controller in PlayerControllers)
 				{
-					if (PlayerControllers[i].IsValid && PlayerControllers[i].PlayerControllerId == playerControllerId)
+					if (controller.IsValid && controller.PlayerControllerId == playerControllerId)
 					{
-						playerController = PlayerControllers[i];
+						playerController = controller;
 						return true;
 					}
 				}
+
 				result = false;
 			}
 			else
@@ -230,9 +231,9 @@ namespace QuantumUNET
 		{
 			if (m_Channels != null)
 			{
-				for (var i = 0; i < m_Channels.Length; i++)
+				foreach (var channel in m_Channels)
 				{
-					m_Channels[i].CheckInternalBuffer();
+					channel.CheckInternalBuffer();
 				}
 			}
 		}
@@ -241,9 +242,9 @@ namespace QuantumUNET
 		{
 			if (m_Channels != null)
 			{
-				for (var i = 0; i < m_Channels.Length; i++)
+				foreach (var channel in m_Channels)
 				{
-					m_Channels[i].MaxDelay = seconds;
+					channel.MaxDelay = seconds;
 				}
 			}
 		}
@@ -346,9 +347,8 @@ namespace QuantumUNET
 			numBufferedMsgs = 0;
 			numBytes = 0;
 			lastBufferedPerSecond = 0;
-			for (var i = 0; i < m_Channels.Length; i++)
+			foreach (var channelBuffer in m_Channels)
 			{
-				var channelBuffer = m_Channels[i];
 				numMsgs += channelBuffer.NumMsgsOut;
 				numBufferedMsgs += channelBuffer.NumBufferedMsgsOut;
 				numBytes += channelBuffer.NumBytesOut;
@@ -360,9 +360,8 @@ namespace QuantumUNET
 		{
 			numMsgs = 0;
 			numBytes = 0;
-			for (var i = 0; i < m_Channels.Length; i++)
+			foreach (var channelBuffer in m_Channels)
 			{
-				var channelBuffer = m_Channels[i];
 				numMsgs += channelBuffer.NumMsgsIn;
 				numBytes += channelBuffer.NumBytesIn;
 			}

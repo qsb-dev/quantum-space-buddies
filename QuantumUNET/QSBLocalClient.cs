@@ -90,30 +90,29 @@ namespace QuantumUNET
 			{
 				var internalMsgs = m_InternalMsgs;
 				m_InternalMsgs = m_InternalMsgs2;
-				for (var i = 0; i < internalMsgs.Count; i++)
+				foreach (var msg in internalMsgs)
 				{
-					var t = internalMsgs[i];
 					if (s_InternalMessage.Reader == null)
 					{
-						s_InternalMessage.Reader = new QSBNetworkReader(t.buffer);
+						s_InternalMessage.Reader = new QSBNetworkReader(msg.buffer);
 					}
 					else
 					{
-						s_InternalMessage.Reader.Replace(t.buffer);
+						s_InternalMessage.Reader.Replace(msg.buffer);
 					}
 					s_InternalMessage.Reader.ReadInt16();
-					s_InternalMessage.ChannelId = t.channelId;
+					s_InternalMessage.ChannelId = msg.channelId;
 					s_InternalMessage.Connection = connection;
 					s_InternalMessage.MsgType = s_InternalMessage.Reader.ReadInt16();
 					m_Connection.InvokeHandler(s_InternalMessage);
-					m_FreeMessages.Push(t);
+					m_FreeMessages.Push(msg);
 					connection.lastMessageTime = Time.time;
 				}
 				m_InternalMsgs = internalMsgs;
 				m_InternalMsgs.Clear();
-				for (var j = 0; j < m_InternalMsgs2.Count; j++)
+				foreach (var msg in m_InternalMsgs2)
 				{
-					m_InternalMsgs.Add(m_InternalMsgs2[j]);
+					m_InternalMsgs.Add(msg);
 				}
 				m_InternalMsgs2.Clear();
 			}

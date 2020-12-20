@@ -150,11 +150,11 @@ namespace QuantumUNET
 
 		private void InternalSetMaxDelay(float seconds)
 		{
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				networkConnection?.SetMaxDelay(seconds);
 			}
+
 			m_MaxDelay = seconds;
 		}
 
@@ -227,9 +227,8 @@ namespace QuantumUNET
 		{
 			Debug.Log($"Server.SendToAll msgType:{msgType}");
 			var flag = true;
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					flag &= networkConnection.Send(msgType, msg);
@@ -267,14 +266,14 @@ namespace QuantumUNET
 			bool result;
 			if (contextObj == null)
 			{
-				for (var i = 0; i < connections.Count; i++)
+				foreach (var networkConnection in connections)
 				{
-					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						networkConnection.Send(msgType, msg);
 					}
 				}
+
 				result = true;
 			}
 			else
@@ -317,9 +316,8 @@ namespace QuantumUNET
 			if (contextObj == null)
 			{
 				var flag = true;
-				for (var i = 0; i < connections.Count; i++)
+				foreach (var networkConnection in connections)
 				{
-					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						if (!networkConnection.SendBytes(buffer, numBytes, channelId))
@@ -365,14 +363,13 @@ namespace QuantumUNET
 
 		public static void SendBytesToPlayer(GameObject player, byte[] buffer, int numBytes, int channelId)
 		{
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
+					foreach (var controller in networkConnection.PlayerControllers)
 					{
-						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].Gameobject == player)
+						if (controller.IsValid && controller.Gameobject == player)
 						{
 							networkConnection.SendBytes(buffer, numBytes, channelId);
 							break;
@@ -386,9 +383,8 @@ namespace QuantumUNET
 		{
 			Debug.Log($"Server.SendUnreliableToAll msgType:{msgType}");
 			var flag = true;
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					flag &= networkConnection.SendUnreliable(msgType, msg);
@@ -403,14 +399,14 @@ namespace QuantumUNET
 			bool result;
 			if (contextObj == null)
 			{
-				for (var i = 0; i < connections.Count; i++)
+				foreach (var networkConnection in connections)
 				{
-					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						networkConnection.SendUnreliable(msgType, msg);
 					}
 				}
+
 				result = true;
 			}
 			else
@@ -435,9 +431,8 @@ namespace QuantumUNET
 		{
 			Debug.Log($"Server.SendByChannelToAll id:{msgType}");
 			var flag = true;
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					flag &= networkConnection.SendByChannel(msgType, msg, channelId);
@@ -452,14 +447,14 @@ namespace QuantumUNET
 			bool result;
 			if (contextObj == null)
 			{
-				for (var i = 0; i < connections.Count; i++)
+				foreach (var networkConnection in connections)
 				{
-					var networkConnection = connections[i];
 					if (networkConnection != null && networkConnection.isReady)
 					{
 						networkConnection.SendByChannel(msgType, msg, channelId);
 					}
 				}
+
 				result = true;
 			}
 			else
@@ -561,9 +556,9 @@ namespace QuantumUNET
 		private void OnDisconnected(QSBNetworkConnection conn)
 		{
 			conn.InvokeHandlerNoData(33);
-			for (var i = 0; i < conn.PlayerControllers.Count; i++)
+			foreach (var controller in conn.PlayerControllers)
 			{
-				if (conn.PlayerControllers[i].Gameobject != null)
+				if (controller.Gameobject != null)
 				{
 					Debug.LogWarning("Player not destroyed when connection disconnected.");
 				}
@@ -622,9 +617,8 @@ namespace QuantumUNET
 			numBufferedMsgs = 0;
 			numBytes = 0;
 			lastBufferedPerSecond = 0;
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.GetStatsOut(out var num, out var num2, out var num3, out var num4);
@@ -640,9 +634,8 @@ namespace QuantumUNET
 		{
 			numMsgs = 0;
 			numBytes = 0;
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					networkConnection.GetStatsIn(out var num, out var num2);
@@ -654,14 +647,13 @@ namespace QuantumUNET
 
 		public static void SendToClientOfPlayer(GameObject player, short msgType, QSBMessageBase msg)
 		{
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
-					for (var j = 0; j < networkConnection.PlayerControllers.Count; j++)
+					foreach (var controller in networkConnection.PlayerControllers)
 					{
-						if (networkConnection.PlayerControllers[j].IsValid && networkConnection.PlayerControllers[j].Gameobject == player)
+						if (controller.IsValid && controller.Gameobject == player)
 						{
 							networkConnection.Send(msgType, msg);
 							return;
@@ -953,9 +945,8 @@ namespace QuantumUNET
 
 		public static void SetAllClientsNotReady()
 		{
-			for (var i = 0; i < connections.Count; i++)
+			foreach (var networkConnection in connections)
 			{
-				var networkConnection = connections[i];
 				if (networkConnection != null)
 				{
 					SetClientNotReady(networkConnection);
@@ -1019,9 +1010,8 @@ namespace QuantumUNET
 				else
 				{
 					var flag = false;
-					for (var i = 0; i < netMsg.Connection.PlayerControllers.Count; i++)
+					foreach (var playerController in netMsg.Connection.PlayerControllers)
 					{
-						var playerController = netMsg.Connection.PlayerControllers[i];
 						if (playerController.Gameobject != null && playerController.Gameobject.GetComponent<QSBNetworkIdentity>().NetId == component.NetId)
 						{
 							flag = true;
@@ -1135,9 +1125,8 @@ namespace QuantumUNET
 						}
 					}
 				}
-				for (var i = 0; i < conn.PlayerControllers.Count; i++)
+				foreach (var playerController in conn.PlayerControllers)
 				{
-					var playerController = conn.PlayerControllers[i];
 					if (playerController.IsValid)
 					{
 						if (!(playerController.UnetView == null))

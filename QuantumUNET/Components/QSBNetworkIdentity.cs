@@ -202,9 +202,8 @@ namespace QuantumUNET.Components
 					return;
 				}
 				QSBNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
-				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+				foreach (var networkBehaviour in m_NetworkBehaviours)
 				{
-					var networkBehaviour = m_NetworkBehaviours[i];
 					try
 					{
 						networkBehaviour.OnStartServer();
@@ -234,9 +233,8 @@ namespace QuantumUNET.Components
 			}
 			CacheBehaviours();
 			Debug.Log($"OnStartClient {gameObject} GUID:{NetId} localPlayerAuthority:{LocalPlayerAuthority}");
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.PreStartClient();
@@ -251,9 +249,8 @@ namespace QuantumUNET.Components
 
 		internal void OnStartAuthority()
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.OnStartAuthority();
@@ -267,9 +264,8 @@ namespace QuantumUNET.Components
 
 		internal void OnStopAuthority()
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.OnStopAuthority();
@@ -283,9 +279,8 @@ namespace QuantumUNET.Components
 
 		internal void OnSetLocalVisibility(bool vis)
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.OnSetLocalVisibility(vis);
@@ -299,9 +294,8 @@ namespace QuantumUNET.Components
 
 		internal bool OnCheckObserver(QSBNetworkConnection conn)
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					if (!networkBehaviour.OnCheckObserver(conn))
@@ -314,14 +308,14 @@ namespace QuantumUNET.Components
 					Debug.LogError($"Exception in OnCheckObserver:{ex.Message} {ex.StackTrace}");
 				}
 			}
+
 			return true;
 		}
 
 		internal void UNetSerializeAllVars(QSBNetworkWriter writer)
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				networkBehaviour.OnSerialize(writer, true);
 			}
 		}
@@ -341,9 +335,8 @@ namespace QuantumUNET.Components
 		private bool GetInvokeComponent(int cmdHash, Type invokeClass, out QSBNetworkBehaviour invokeComponent)
 		{
 			QSBNetworkBehaviour networkBehaviour = null;
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour2 in m_NetworkBehaviours)
 			{
-				var networkBehaviour2 = m_NetworkBehaviours[i];
 				if (networkBehaviour2.GetType() == invokeClass || networkBehaviour2.GetType().IsSubclassOf(invokeClass))
 				{
 					networkBehaviour = networkBehaviour2;
@@ -466,9 +459,8 @@ namespace QuantumUNET.Components
 		internal void UNetUpdate()
 		{
 			var num = 0U;
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				var dirtyChannel = networkBehaviour.GetDirtyChannel();
 				if (dirtyChannel != -1)
 				{
@@ -485,26 +477,25 @@ namespace QuantumUNET.Components
 						s_UpdateWriter.StartMessage(8);
 						s_UpdateWriter.Write(NetId);
 						var flag = false;
-						for (var k = 0; k < m_NetworkBehaviours.Length; k++)
+						foreach (var networkBehaviour in m_NetworkBehaviours)
 						{
 							var position = s_UpdateWriter.Position;
-							var networkBehaviour2 = m_NetworkBehaviours[k];
-							if (networkBehaviour2.GetDirtyChannel() != j)
+							if (networkBehaviour.GetDirtyChannel() != j)
 							{
-								networkBehaviour2.OnSerialize(s_UpdateWriter, false);
+								networkBehaviour.OnSerialize(s_UpdateWriter, false);
 							}
 							else
 							{
-								if (networkBehaviour2.OnSerialize(s_UpdateWriter, false))
+								if (networkBehaviour.OnSerialize(s_UpdateWriter, false))
 								{
-									networkBehaviour2.ClearAllDirtyBits();
+									networkBehaviour.ClearAllDirtyBits();
 									flag = true;
 								}
 								var maxPacketSize = QSBNetworkServer.maxPacketSize;
 								if (s_UpdateWriter.Position - position > maxPacketSize)
 								{
 									Debug.LogWarning(
-										$"Large state update of {s_UpdateWriter.Position - position} bytes for netId:{NetId} from script:{networkBehaviour2}");
+										$"Large state update of {s_UpdateWriter.Position - position} bytes for netId:{NetId} from script:{networkBehaviour}");
 								}
 							}
 						}
@@ -514,10 +505,7 @@ namespace QuantumUNET.Components
 							QSBNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter, j);
 						}
 					}
-					IL_197:
 					j++;
-					continue;
-					goto IL_197;
 				}
 			}
 		}
@@ -528,9 +516,9 @@ namespace QuantumUNET.Components
 			{
 				m_NetworkBehaviours = GetComponents<QSBNetworkBehaviour>();
 			}
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				networkBehaviour.OnDeserialize(reader, initialState);
 			}
 		}
@@ -544,9 +532,8 @@ namespace QuantumUNET.Components
 			{
 				HasAuthority = true;
 			}
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				networkBehaviour.OnStartLocalPlayer();
 				if (LocalPlayerAuthority && !hasAuthority)
 				{
@@ -627,18 +614,16 @@ namespace QuantumUNET.Components
 				var flag2 = false;
 				var hashSet = new HashSet<QSBNetworkConnection>();
 				var hashSet2 = new HashSet<QSBNetworkConnection>(m_Observers);
-				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+				foreach (var networkBehaviour in m_NetworkBehaviours)
 				{
-					var networkBehaviour = m_NetworkBehaviours[i];
 					flag2 |= networkBehaviour.OnRebuildObservers(hashSet, initialize);
 				}
 				if (!flag2)
 				{
 					if (initialize)
 					{
-						for (var j = 0; j < QSBNetworkServer.connections.Count; j++)
+						foreach (var networkConnection in QSBNetworkServer.connections)
 						{
-							var networkConnection = QSBNetworkServer.connections[j];
 							if (networkConnection != null)
 							{
 								if (networkConnection.isReady)
@@ -647,9 +632,9 @@ namespace QuantumUNET.Components
 								}
 							}
 						}
-						for (var k = 0; k < QSBNetworkServer.localConnections.Count; k++)
+
+						foreach (var networkConnection2 in QSBNetworkServer.localConnections)
 						{
-							var networkConnection2 = QSBNetworkServer.localConnections[k];
 							if (networkConnection2 != null)
 							{
 								if (networkConnection2.isReady)
@@ -689,9 +674,9 @@ namespace QuantumUNET.Components
 					}
 					if (initialize)
 					{
-						for (var l = 0; l < QSBNetworkServer.localConnections.Count; l++)
+						foreach (var connection in QSBNetworkServer.localConnections)
 						{
-							if (!hashSet.Contains(QSBNetworkServer.localConnections[l]))
+							if (!hashSet.Contains(connection))
 							{
 								OnSetLocalVisibility(false);
 							}
@@ -701,9 +686,9 @@ namespace QuantumUNET.Components
 					{
 						m_Observers = new List<QSBNetworkConnection>(hashSet);
 						m_ObserverConnections.Clear();
-						for (var m = 0; m < m_Observers.Count; m++)
+						foreach (var observer in m_Observers)
 						{
-							m_ObserverConnections.Add(m_Observers[m].connectionId);
+							m_ObserverConnections.Add(observer.connectionId);
 						}
 					}
 				}
