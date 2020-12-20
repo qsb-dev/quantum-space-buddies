@@ -72,8 +72,8 @@ namespace QuantumUNET
 		{
 			Initialize();
 			listenPort = serverListenPort;
-			serverHostId = useWebSockets 
-				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort, ipAddress) 
+			serverHostId = useWebSockets
+				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort, ipAddress)
 				: NetworkTransport.AddHost(hostTopology, serverListenPort, ipAddress);
 			bool result;
 			if (serverHostId == -1)
@@ -95,8 +95,8 @@ namespace QuantumUNET
 			hostTopology = topology;
 			Initialize();
 			listenPort = serverListenPort;
-			serverHostId = useWebSockets 
-				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort) 
+			serverHostId = useWebSockets
+				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort)
 				: NetworkTransport.AddHost(hostTopology, serverListenPort);
 			bool result;
 			if (serverHostId == -1)
@@ -285,7 +285,7 @@ namespace QuantumUNET
 					{
 						m_Connections[connectionId] = null;
 						Debug.LogError(
-							$"Server client disconnect error, connectionId: {connectionId} error: {(NetworkError) error}");
+							$"Server client disconnect error, connectionId: {connectionId} error: {(NetworkError)error}");
 						OnDisconnectError(networkConnection, error);
 						return;
 					}

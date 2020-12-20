@@ -220,7 +220,7 @@ namespace QuantumUNET
 			Connect(serverIp, serverPort);
 		}
 
-		private static bool IsValidIpV6(string address) => 
+		private static bool IsValidIpV6(string address) =>
 			address.All(c => c == ':' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 
 		public void Connect(string serverIp, int serverPort)
@@ -667,20 +667,20 @@ namespace QuantumUNET
 
 		private void GenerateDataError(int error)
 		{
-			Debug.LogError($"UNet Client Data Error: {(NetworkError) error}");
+			Debug.LogError($"UNet Client Data Error: {(NetworkError)error}");
 			GenerateError(error);
 		}
 
 		private void GenerateDisconnectError(int error)
 		{
-			Debug.LogError($"UNet Client Disconnect Error: {(NetworkError) error}");
+			Debug.LogError($"UNet Client Disconnect Error: {(NetworkError)error}");
 			GenerateError(error);
 		}
 
 		private void GenerateError(int error)
 		{
-			var handler = m_MessageHandlers.GetHandler(34) 
-			              ?? m_MessageHandlers.GetHandler(34);
+			var handler = m_MessageHandlers.GetHandler(34)
+						  ?? m_MessageHandlers.GetHandler(34);
 			if (handler != null)
 			{
 				var errorMessage = new QSBErrorMessage
@@ -723,7 +723,7 @@ namespace QuantumUNET
 			}
 		}
 
-		public Dictionary<short, QSBNetworkConnection.PacketStat> GetConnectionStats() => 
+		public Dictionary<short, QSBNetworkConnection.PacketStat> GetConnectionStats() =>
 			m_Connection?.PacketStats;
 
 		public void ResetConnectionStats()
@@ -731,7 +731,7 @@ namespace QuantumUNET
 			m_Connection?.ResetStats();
 		}
 
-		public int GetRTT() => 
+		public int GetRTT() =>
 			hostId == -1 ? 0 : NetworkTransport.GetCurrentRTT(hostId, m_ClientConnectionId, out var b);
 
 		internal void RegisterSystemHandlers(bool localClient)

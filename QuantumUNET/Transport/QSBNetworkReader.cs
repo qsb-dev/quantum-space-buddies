@@ -408,7 +408,7 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				var gameObject = QSBNetworkServer.active 
+				var gameObject = QSBNetworkServer.active
 					? QSBNetworkServer.FindLocalObject(networkInstanceId)
 					: QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
@@ -431,7 +431,7 @@ namespace QuantumUNET.Transport
 			else
 			{
 				var gameObject = QSBNetworkServer.active
-					? QSBNetworkServer.FindLocalObject(networkInstanceId) 
+					? QSBNetworkServer.FindLocalObject(networkInstanceId)
 					: QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{

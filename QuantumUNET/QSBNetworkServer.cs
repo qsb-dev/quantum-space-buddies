@@ -579,13 +579,13 @@ namespace QuantumUNET
 
 		private void GenerateDataError(QSBNetworkConnection conn, int error)
 		{
-			Debug.LogError($"UNet Server Data Error: {(NetworkError) error}");
+			Debug.LogError($"UNet Server Data Error: {(NetworkError)error}");
 			GenerateError(conn, error);
 		}
 
 		private void GenerateDisconnectError(QSBNetworkConnection conn, int error)
 		{
-			Debug.LogError($"UNet Server Disconnect Error: {(NetworkError) error} conn:[{conn}]:{conn.connectionId}");
+			Debug.LogError($"UNet Server Disconnect Error: {(NetworkError)error} conn:[{conn}]:{conn.connectionId}");
 			GenerateError(conn, error);
 		}
 

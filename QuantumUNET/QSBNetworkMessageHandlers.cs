@@ -46,10 +46,10 @@ namespace QuantumUNET
 			}
 		}
 
-		public void UnregisterHandler(short msgType) => 
+		public void UnregisterHandler(short msgType) =>
 			_msgHandlers.Remove(msgType);
 
-		internal QSBNetworkMessageDelegate GetHandler(short msgType) => 
+		internal QSBNetworkMessageDelegate GetHandler(short msgType) =>
 			_msgHandlers.ContainsKey(msgType) ? _msgHandlers[msgType] : null;
 
 		internal Dictionary<short, QSBNetworkMessageDelegate> GetHandlers() => _msgHandlers;
