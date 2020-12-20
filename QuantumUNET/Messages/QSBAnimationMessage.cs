@@ -15,14 +15,7 @@ namespace QuantumUNET.Messages
 			writer.Write(netId);
 			writer.WritePackedUInt32((uint)stateHash);
 			writer.Write(normalizedTime);
-			if (parameters == null)
-			{
-				writer.WriteBytesAndSize(parameters, 0);
-			}
-			else
-			{
-				writer.WriteBytesAndSize(parameters, parameters.Length);
-			}
+			writer.WriteBytesAndSize(parameters, parameters?.Length ?? 0);
 		}
 
 		public override void Deserialize(QSBNetworkReader reader)

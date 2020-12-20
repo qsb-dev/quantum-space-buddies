@@ -61,7 +61,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				Debug.LogWarning("SetDynamicAssetId object already has an assetId <" + m_AssetId + ">");
+				Debug.LogWarning($"SetDynamicAssetId object already has an assetId <{m_AssetId}>");
 			}
 		}
 
@@ -146,8 +146,8 @@ namespace QuantumUNET.Components
 
 		internal void UpdateClientServer(bool isClientFlag, bool isServerFlag)
 		{
-			IsClient = (IsClient || isClientFlag);
-			m_IsServer = (m_IsServer || isServerFlag);
+			IsClient = IsClient || isClientFlag;
+			m_IsServer = m_IsServer || isServerFlag;
 		}
 
 		internal void SetNotLocalPlayer()
@@ -198,26 +198,19 @@ namespace QuantumUNET.Components
 				}
 				else if (!allowNonZeroNetId)
 				{
-					ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-					{
-						"Object has non-zero netId ",
-						NetId,
-						" for ",
-						gameObject
-					}));
+					ModConsole.OwmlConsole.WriteLine($"Object has non-zero netId {NetId} for {gameObject}");
 					return;
 				}
 				QSBNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
-				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+				foreach (var networkBehaviour in m_NetworkBehaviours)
 				{
-					var networkBehaviour = m_NetworkBehaviours[i];
 					try
 					{
 						networkBehaviour.OnStartServer();
 					}
 					catch (Exception ex)
 					{
-						Debug.LogError("Exception in OnStartServer:" + ex.Message + " " + ex.StackTrace);
+						Debug.LogError($"Exception in OnStartServer:{ex.Message} {ex.StackTrace}");
 					}
 				}
 				if (QSBNetworkClient.active && QSBNetworkServer.localClientActive)
@@ -239,18 +232,9 @@ namespace QuantumUNET.Components
 				IsClient = true;
 			}
 			CacheBehaviours();
-			Debug.Log(string.Concat(new object[]
+			Debug.Log($"OnStartClient {gameObject} GUID:{NetId} localPlayerAuthority:{LocalPlayerAuthority}");
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				"OnStartClient ",
-				gameObject,
-				" GUID:",
-				NetId,
-				" localPlayerAuthority:",
-				LocalPlayerAuthority
-			}));
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
-			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.PreStartClient();
@@ -258,64 +242,60 @@ namespace QuantumUNET.Components
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Exception in OnStartClient:" + ex.Message + " " + ex.StackTrace);
+					Debug.LogError($"Exception in OnStartClient:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
 
 		internal void OnStartAuthority()
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.OnStartAuthority();
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Exception in OnStartAuthority:" + ex.Message + " " + ex.StackTrace);
+					Debug.LogError($"Exception in OnStartAuthority:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
 
 		internal void OnStopAuthority()
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.OnStopAuthority();
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Exception in OnStopAuthority:" + ex.Message + " " + ex.StackTrace);
+					Debug.LogError($"Exception in OnStopAuthority:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
 
 		internal void OnSetLocalVisibility(bool vis)
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					networkBehaviour.OnSetLocalVisibility(vis);
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Exception in OnSetLocalVisibility:" + ex.Message + " " + ex.StackTrace);
+					Debug.LogError($"Exception in OnSetLocalVisibility:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
 
 		internal bool OnCheckObserver(QSBNetworkConnection conn)
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				try
 				{
 					if (!networkBehaviour.OnCheckObserver(conn))
@@ -325,17 +305,17 @@ namespace QuantumUNET.Components
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Exception in OnCheckObserver:" + ex.Message + " " + ex.StackTrace);
+					Debug.LogError($"Exception in OnCheckObserver:{ex.Message} {ex.StackTrace}");
 				}
 			}
+
 			return true;
 		}
 
 		internal void UNetSerializeAllVars(QSBNetworkWriter writer)
 		{
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				networkBehaviour.OnSerialize(writer, true);
 			}
 		}
@@ -344,7 +324,7 @@ namespace QuantumUNET.Components
 		{
 			if (!LocalPlayerAuthority)
 			{
-				Debug.LogError("HandleClientAuthority " + gameObject + " does not have localPlayerAuthority");
+				Debug.LogError($"HandleClientAuthority {gameObject} does not have localPlayerAuthority");
 			}
 			else
 			{
@@ -355,9 +335,8 @@ namespace QuantumUNET.Components
 		private bool GetInvokeComponent(int cmdHash, Type invokeClass, out QSBNetworkBehaviour invokeComponent)
 		{
 			QSBNetworkBehaviour networkBehaviour = null;
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour2 in m_NetworkBehaviours)
 			{
-				var networkBehaviour2 = m_NetworkBehaviours[i];
 				if (networkBehaviour2.GetType() == invokeClass || networkBehaviour2.GetType().IsSubclassOf(invokeClass))
 				{
 					networkBehaviour = networkBehaviour2;
@@ -368,16 +347,8 @@ namespace QuantumUNET.Components
 			if (networkBehaviour == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no behaviour for incoming [",
-					cmdHashHandlerName,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(
+					$"Found no behaviour for incoming [{cmdHashHandlerName}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 				invokeComponent = null;
 				result = false;
 			}
@@ -394,40 +365,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncEvent [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"SyncEvent [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashSyncEvent(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncEvent [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"SyncEvent [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -440,40 +389,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncList [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"SyncList [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashSyncList(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"SyncList [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"SyncList [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -486,40 +413,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"Command [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"Command [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashCommand(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"Command [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"Command [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -532,40 +437,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"ClientRpc [",
-					cmdHashHandlerName,
-					"] received for deleted object [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"ClientRpc [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QSBNetworkBehaviour.GetInvokerForHashClientRpc(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogError(string.Concat(new object[]
-				{
-					"Found no receiver for incoming [",
-					cmdHashHandlerName2,
-					"] on ",
-					gameObject,
-					",  the server and client should have the same NetworkBehaviour instances [netId=",
-					NetId,
-					"]."
-				}));
+				Debug.LogError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QSBNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				Debug.LogWarning(string.Concat(new object[]
-				{
-					"ClientRpc [",
-					cmdHashHandlerName3,
-					"] handler not found [netId=",
-					NetId,
-					"]"
-				}));
+				Debug.LogWarning($"ClientRpc [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -576,9 +459,8 @@ namespace QuantumUNET.Components
 		internal void UNetUpdate()
 		{
 			var num = 0U;
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				var dirtyChannel = networkBehaviour.GetDirtyChannel();
 				if (dirtyChannel != -1)
 				{
@@ -595,33 +477,25 @@ namespace QuantumUNET.Components
 						s_UpdateWriter.StartMessage(8);
 						s_UpdateWriter.Write(NetId);
 						var flag = false;
-						for (var k = 0; k < m_NetworkBehaviours.Length; k++)
+						foreach (var networkBehaviour in m_NetworkBehaviours)
 						{
 							var position = s_UpdateWriter.Position;
-							var networkBehaviour2 = m_NetworkBehaviours[k];
-							if (networkBehaviour2.GetDirtyChannel() != j)
+							if (networkBehaviour.GetDirtyChannel() != j)
 							{
-								networkBehaviour2.OnSerialize(s_UpdateWriter, false);
+								networkBehaviour.OnSerialize(s_UpdateWriter, false);
 							}
 							else
 							{
-								if (networkBehaviour2.OnSerialize(s_UpdateWriter, false))
+								if (networkBehaviour.OnSerialize(s_UpdateWriter, false))
 								{
-									networkBehaviour2.ClearAllDirtyBits();
+									networkBehaviour.ClearAllDirtyBits();
 									flag = true;
 								}
 								var maxPacketSize = QSBNetworkServer.maxPacketSize;
 								if (s_UpdateWriter.Position - position > maxPacketSize)
 								{
-									Debug.LogWarning(string.Concat(new object[]
-									{
-										"Large state update of ",
-										s_UpdateWriter.Position - position,
-										" bytes for netId:",
-										NetId,
-										" from script:",
-										networkBehaviour2
-									}));
+									Debug.LogWarning(
+										$"Large state update of {s_UpdateWriter.Position - position} bytes for netId:{NetId} from script:{networkBehaviour}");
 								}
 							}
 						}
@@ -631,10 +505,7 @@ namespace QuantumUNET.Components
 							QSBNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter, j);
 						}
 					}
-					IL_197:
 					j++;
-					continue;
-					goto IL_197;
 				}
 			}
 		}
@@ -645,9 +516,9 @@ namespace QuantumUNET.Components
 			{
 				m_NetworkBehaviours = GetComponents<QSBNetworkBehaviour>();
 			}
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				networkBehaviour.OnDeserialize(reader, initialState);
 			}
 		}
@@ -661,9 +532,8 @@ namespace QuantumUNET.Components
 			{
 				HasAuthority = true;
 			}
-			for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
-				var networkBehaviour = m_NetworkBehaviours[i];
 				networkBehaviour.OnStartLocalPlayer();
 				if (LocalPlayerAuthority && !hasAuthority)
 				{
@@ -711,27 +581,15 @@ namespace QuantumUNET.Components
 		{
 			if (m_Observers == null)
 			{
-				Debug.LogError("AddObserver for " + gameObject + " observer list is null");
+				Debug.LogError($"AddObserver for {gameObject} observer list is null");
 			}
 			else if (m_ObserverConnections.Contains(conn.connectionId))
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"Duplicate observer ",
-					conn.address,
-					" added for ",
-					gameObject
-				}));
+				Debug.Log($"Duplicate observer {conn.address} added for {gameObject}");
 			}
 			else
 			{
-				Debug.Log(string.Concat(new object[]
-				{
-					"Added observer ",
-					conn.address,
-					" added for ",
-					gameObject
-				}));
+				Debug.Log($"Added observer {conn.address} added for {gameObject}");
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
 				conn.AddToVisList(this);
@@ -756,18 +614,16 @@ namespace QuantumUNET.Components
 				var flag2 = false;
 				var hashSet = new HashSet<QSBNetworkConnection>();
 				var hashSet2 = new HashSet<QSBNetworkConnection>(m_Observers);
-				for (var i = 0; i < m_NetworkBehaviours.Length; i++)
+				foreach (var networkBehaviour in m_NetworkBehaviours)
 				{
-					var networkBehaviour = m_NetworkBehaviours[i];
 					flag2 |= networkBehaviour.OnRebuildObservers(hashSet, initialize);
 				}
 				if (!flag2)
 				{
 					if (initialize)
 					{
-						for (var j = 0; j < QSBNetworkServer.connections.Count; j++)
+						foreach (var networkConnection in QSBNetworkServer.connections)
 						{
-							var networkConnection = QSBNetworkServer.connections[j];
 							if (networkConnection != null)
 							{
 								if (networkConnection.isReady)
@@ -776,9 +632,9 @@ namespace QuantumUNET.Components
 								}
 							}
 						}
-						for (var k = 0; k < QSBNetworkServer.localConnections.Count; k++)
+
+						foreach (var networkConnection2 in QSBNetworkServer.localConnections)
 						{
-							var networkConnection2 = QSBNetworkServer.localConnections[k];
 							if (networkConnection2 != null)
 							{
 								if (networkConnection2.isReady)
@@ -797,24 +653,12 @@ namespace QuantumUNET.Components
 						{
 							if (!networkConnection3.isReady)
 							{
-								Debug.LogWarning(string.Concat(new object[]
-								{
-									"Observer is not ready for ",
-									gameObject,
-									" ",
-									networkConnection3
-								}));
+								Debug.LogWarning($"Observer is not ready for {gameObject} {networkConnection3}");
 							}
 							else if (initialize || !hashSet2.Contains(networkConnection3))
 							{
 								networkConnection3.AddToVisList(this);
-								Debug.Log(string.Concat(new object[]
-								{
-									"New Observer for ",
-									gameObject,
-									" ",
-									networkConnection3
-								}));
+								Debug.Log($"New Observer for {gameObject} {networkConnection3}");
 								flag = true;
 							}
 						}
@@ -824,21 +668,15 @@ namespace QuantumUNET.Components
 						if (!hashSet.Contains(networkConnection4))
 						{
 							networkConnection4.RemoveFromVisList(this, true);
-							Debug.Log(string.Concat(new object[]
-							{
-								"Removed Observer for ",
-								gameObject,
-								" ",
-								networkConnection4
-							}));
+							Debug.Log($"Removed Observer for {gameObject} {networkConnection4}");
 							flag = true;
 						}
 					}
 					if (initialize)
 					{
-						for (var l = 0; l < QSBNetworkServer.localConnections.Count; l++)
+						foreach (var connection in QSBNetworkServer.localConnections)
 						{
-							if (!hashSet.Contains(QSBNetworkServer.localConnections[l]))
+							if (!hashSet.Contains(connection))
 							{
 								OnSetLocalVisibility(false);
 							}
@@ -848,9 +686,9 @@ namespace QuantumUNET.Components
 					{
 						m_Observers = new List<QSBNetworkConnection>(hashSet);
 						m_ObserverConnections.Clear();
-						for (var m = 0; m < m_Observers.Count; m++)
+						foreach (var observer in m_Observers)
 						{
-							m_ObserverConnections.Add(m_Observers[m].connectionId);
+							m_ObserverConnections.Add(observer.connectionId);
 						}
 					}
 				}
@@ -871,12 +709,12 @@ namespace QuantumUNET.Components
 			}
 			else if (ClientAuthorityOwner == null)
 			{
-				Debug.LogError("RemoveClientAuthority for " + gameObject + " has no clientAuthority owner.");
+				Debug.LogError($"RemoveClientAuthority for {gameObject} has no clientAuthority owner.");
 				return false;
 			}
 			else if (ClientAuthorityOwner != conn)
 			{
-				Debug.LogError("RemoveClientAuthority for " + gameObject + " has different owner.");
+				Debug.LogError($"RemoveClientAuthority for {gameObject} has different owner.");
 				return false;
 			}
 			ClientAuthorityOwner.RemoveOwnedObject(this);
@@ -905,12 +743,14 @@ namespace QuantumUNET.Components
 			}
 			else if (ClientAuthorityOwner != null && conn != ClientAuthorityOwner)
 			{
-				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + gameObject + " already has an owner. Use RemoveClientAuthority() first.");
+				ModConsole.OwmlConsole.WriteLine(
+					$"AssignClientAuthority for {gameObject} already has an owner. Use RemoveClientAuthority() first.");
 				return false;
 			}
 			else if (conn == null)
 			{
-				ModConsole.OwmlConsole.WriteLine("AssignClientAuthority for " + gameObject + " owner cannot be null. Use RemoveClientAuthority() instead.");
+				ModConsole.OwmlConsole.WriteLine(
+					$"AssignClientAuthority for {gameObject} owner cannot be null. Use RemoveClientAuthority() instead.");
 				return false;
 			}
 			ClientAuthorityOwner = conn;
@@ -974,7 +814,7 @@ namespace QuantumUNET.Components
 
 		private List<QSBNetworkConnection> m_Observers;
 
-		private bool m_Reset = false;
+		private bool m_Reset;
 
 		private static uint s_NextNetworkId = 1U;
 
