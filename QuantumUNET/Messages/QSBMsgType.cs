@@ -63,8 +63,7 @@
 		public const short ReconnectPlayer = 47;
 		public const short Highest = 47;
 
-		internal static string[] msgLabels = new string[]
-		{
+		internal static string[] msgLabels = {
 			"none",
 			"ObjectDestroy",
 			"Rpc",

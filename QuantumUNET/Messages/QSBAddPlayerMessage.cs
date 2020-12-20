@@ -18,14 +18,7 @@ namespace QuantumUNET.Messages
 		{
 			playerControllerId = reader.ReadInt16();
 			msgData = reader.ReadBytesAndSize();
-			if (msgData == null)
-			{
-				msgSize = 0;
-			}
-			else
-			{
-				msgSize = msgData.Length;
-			}
+			msgSize = msgData?.Length ?? 0;
 		}
 	}
 }

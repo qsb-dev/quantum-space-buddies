@@ -17,14 +17,7 @@ namespace QuantumUNET.Messages
 		public override void Serialize(QSBNetworkWriter writer)
 		{
 			writer.Write(netId);
-			if (parameters == null)
-			{
-				writer.WriteBytesAndSize(parameters, 0);
-			}
-			else
-			{
-				writer.WriteBytesAndSize(parameters, parameters.Length);
-			}
+			writer.WriteBytesAndSize(parameters, parameters?.Length ?? 0);
 		}
 	}
 }

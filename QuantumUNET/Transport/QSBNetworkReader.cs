@@ -240,16 +240,14 @@ namespace QuantumUNET.Transport
 			return num | num2;
 		}
 
-		public decimal ReadDecimal()
-		{
-			return new decimal(new int[]
+		public decimal ReadDecimal() =>
+			new decimal(new[]
 			{
 				ReadInt32(),
 				ReadInt32(),
 				ReadInt32(),
 				ReadInt32()
 			});
-		}
 
 		public float ReadSingle()
 		{
