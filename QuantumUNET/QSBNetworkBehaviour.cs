@@ -227,8 +227,7 @@ namespace QuantumUNET
 			Debug.Log($"DumpInvokers size:{s_CmdHandlerDelegates.Count}");
 			foreach (var keyValuePair in s_CmdHandlerDelegates)
 			{
-				Debug.Log(
-					$"  Invoker:{keyValuePair.Value.invokeClass}:{keyValuePair.Value.invokeFunction.GetMethodName()} {keyValuePair.Value.invokeType} {keyValuePair.Key}");
+				Debug.Log($"  Invoker:{keyValuePair.Value.invokeClass}:{keyValuePair.Value.invokeFunction.GetMethodName()} {keyValuePair.Value.invokeType} {keyValuePair.Key}");
 			}
 		}
 

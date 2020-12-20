@@ -62,15 +62,7 @@ namespace QuantumUNET
 
 		private void PostInternalMessage(byte[] buffer, int channelId)
 		{
-			InternalMsg item;
-			if (m_FreeMessages.Count == 0)
-			{
-				item = default;
-			}
-			else
-			{
-				item = m_FreeMessages.Pop();
-			}
+			var item = m_FreeMessages.Count == 0 ? default : m_FreeMessages.Pop();
 			item.buffer = buffer;
 			item.channelId = channelId;
 			m_InternalMsgs.Add(item);

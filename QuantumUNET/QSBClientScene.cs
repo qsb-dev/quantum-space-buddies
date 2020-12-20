@@ -97,16 +97,14 @@ namespace QuantumUNET
 			}
 			else if (playerControllerId > 32)
 			{
-				Debug.LogError(
-					$"ClientScene::AddPlayer: playerControllerId of {playerControllerId} is too high, max is {32}");
+				Debug.LogError($"ClientScene::AddPlayer: playerControllerId of {playerControllerId} is too high, max is {32}");
 				result = false;
 			}
 			else
 			{
 				if (playerControllerId > 16)
 				{
-					Debug.LogWarning(
-						$"ClientScene::AddPlayer: playerControllerId of {playerControllerId} is unusually high");
+					Debug.LogWarning($"ClientScene::AddPlayer: playerControllerId of {playerControllerId} is unusually high");
 				}
 				while (playerControllerId >= localPlayers.Count)
 				{
@@ -129,13 +127,11 @@ namespace QuantumUNET
 				{
 					if (playerController.IsValid && playerController.Gameobject != null)
 					{
-						Debug.LogError(
-							$"ClientScene::AddPlayer: playerControllerId of {playerControllerId} already in use.");
+						Debug.LogError($"ClientScene::AddPlayer: playerControllerId of {playerControllerId} already in use.");
 						return false;
 					}
 				}
-				Debug.Log(
-					$"ClientScene::AddPlayer() for ID {playerControllerId} called with connection [{readyConnection}]");
+				Debug.Log($"ClientScene::AddPlayer() for ID {playerControllerId} called with connection [{readyConnection}]");
 				var addPlayerMessage = new QSBAddPlayerMessage
 				{
 					playerControllerId = playerControllerId
@@ -155,8 +151,7 @@ namespace QuantumUNET
 
 		public static bool RemovePlayer(short playerControllerId)
 		{
-			Debug.Log(
-				$"ClientScene::RemovePlayer() for ID {playerControllerId} called with connection [{readyConnection}]");
+			Debug.Log($"ClientScene::RemovePlayer() for ID {playerControllerId} called with connection [{readyConnection}]");
 			bool result;
 			if (readyConnection.GetPlayerController(playerControllerId, out var playerController))
 			{
@@ -300,20 +295,17 @@ namespace QuantumUNET
 
 		internal static string GetStringForAssetId(NetworkHash128 assetId)
 		{
-			string result;
 			if (QSBNetworkScene.GetPrefab(assetId, out var gameObject))
 			{
-				result = gameObject.name;
+				return gameObject.name;
 			}
-			else if (QSBNetworkScene.GetSpawnHandler(assetId, out var func))
+
+			if (QSBNetworkScene.GetSpawnHandler(assetId, out var func))
 			{
-				result = func.GetMethodName();
+				return func.GetMethodName();
 			}
-			else
-			{
-				result = "unknown";
-			}
-			return result;
+
+			return "unknown";
 		}
 
 		public static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId) => QSBNetworkScene.RegisterPrefab(prefab, newAssetId);
@@ -348,7 +340,7 @@ namespace QuantumUNET
 				var reader = new QSBNetworkReader(payload);
 				uv.OnUpdateVars(reader, true);
 			}
-			if (!(newGameObject == null))
+			if (newGameObject != null)
 			{
 				newGameObject.SetActive(true);
 				uv.SetNetworkInstanceId(netId);
@@ -380,8 +372,7 @@ namespace QuantumUNET
 					component = gameObject.GetComponent<QSBNetworkIdentity>();
 					if (component == null)
 					{
-						Debug.LogError(
-							$"Client object spawned for {s_ObjectSpawnMessage.assetId} does not have a NetworkIdentity");
+						Debug.LogError($"Client object spawned for {s_ObjectSpawnMessage.assetId} does not have a NetworkIdentity");
 					}
 					else
 					{
@@ -401,8 +392,7 @@ namespace QuantumUNET
 						component = gameObject2.GetComponent<QSBNetworkIdentity>();
 						if (component == null)
 						{
-							Debug.LogError(
-								$"Client object spawned for {s_ObjectSpawnMessage.assetId} does not have a network identity");
+							Debug.LogError($"Client object spawned for {s_ObjectSpawnMessage.assetId} does not have a network identity");
 						}
 						else
 						{
@@ -414,8 +404,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					Debug.LogError(
-						$"Failed to spawn server object, did you forget to add it to the QSBNetworkManager? assetId={s_ObjectSpawnMessage.assetId} netId={s_ObjectSpawnMessage.NetId}");
+					Debug.LogError($"Failed to spawn server object, did you forget to add it to the QSBNetworkManager? assetId={s_ObjectSpawnMessage.assetId} netId={s_ObjectSpawnMessage.NetId}");
 				}
 			}
 		}
@@ -645,10 +634,8 @@ namespace QuantumUNET
 					s_PendingOwnerIds.RemoveAt(i);
 					break;
 				}
-				else
-				{
-					i++;
-				}
+
+				i++;
 			}
 		}
 

@@ -367,11 +367,8 @@ namespace QuantumUNET
 			}
 		}
 
-		public override string ToString()
-		{
-			return
-				$"hostId: {hostId} connectionId: {connectionId} isReady: {isReady} channel count: {(m_Channels == null ? 0 : m_Channels.Length)}";
-		}
+		public override string ToString() => 
+			$"hostId: {hostId} connectionId: {connectionId} isReady: {isReady} channel count: {m_Channels?.Length ?? 0}";
 
 		internal void AddToVisList(QSBNetworkIdentity uv)
 		{
