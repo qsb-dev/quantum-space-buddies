@@ -62,7 +62,6 @@ namespace QSB
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 
 			QSBPatchManager.Init();
-
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
