@@ -48,6 +48,8 @@ namespace QSB.TransformSync
 			var marker = body.gameObject.AddComponent<PlayerHUDMarker>();
 			marker.Init(Player);
 
+			body.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
+
 			Player.Body = body.gameObject;
 
 			return body;
