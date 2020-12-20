@@ -5,6 +5,7 @@ using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Types;
@@ -662,7 +663,6 @@ namespace QuantumUNET
 				}
 			}
 			Debug.LogError($"Failed to send message to player object '{player.name}, not found in connection list");
-			return;
 		}
 
 		public static void SendToClient(int connectionId, short msgType, QSBMessageBase msg)
@@ -805,8 +805,7 @@ namespace QuantumUNET
 			bool result;
 			if (!GetNetworkIdentity(playerGameObject, out var networkIdentity))
 			{
-				Debug.LogError(
-					$"ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to {playerGameObject}");
+				Debug.LogError($"ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to {playerGameObject}");
 				result = false;
 			}
 			else if (!CheckPlayerControllerIdForConnection(conn, playerControllerId))
@@ -876,7 +875,7 @@ namespace QuantumUNET
 					Debug.LogWarning("Ready with no player object");
 				}
 				conn.isReady = true;
-				if (conn is QSBULocalConnectionToClient ulocalConnectionToClient)
+				if (conn is QSBULocalConnectionToClient)
 				{
 					Debug.Log("NetworkServer Ready handling ULocalConnectionToClient");
 					foreach (var networkIdentity in objects.Values)
@@ -1116,13 +1115,9 @@ namespace QuantumUNET
 				if (conn.ClientOwnedObjects != null)
 				{
 					var hashSet = new HashSet<NetworkInstanceId>(conn.ClientOwnedObjects);
-					foreach (var netId in hashSet)
+					foreach (var gameObject in hashSet.Select(FindLocalObject).Where(gameObject => gameObject != null))
 					{
-						var gameObject = FindLocalObject(netId);
-						if (gameObject != null)
-						{
-							DestroyObject(gameObject);
-						}
+						DestroyObject(gameObject);
 					}
 				}
 				foreach (var playerController in conn.PlayerControllers)
@@ -1312,8 +1307,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				Debug.LogError(
-					$"Local invoke: Failed to find local connection to invoke handler on [connectionId={conn.connectionId}] for MsgId:{msgType}");
+				Debug.LogError($"Local invoke: Failed to find local connection to invoke handler on [connectionId={conn.connectionId}] for MsgId:{msgType}");
 				result = false;
 			}
 			return result;

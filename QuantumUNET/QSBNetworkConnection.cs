@@ -200,7 +200,6 @@ namespace QuantumUNET
 				}
 			}
 			Debug.LogError($"RemovePlayer player at playerControllerId {playerControllerId} not found");
-			return;
 		}
 
 		internal bool GetPlayerController(short playerControllerId, out QSBPlayerController playerController)

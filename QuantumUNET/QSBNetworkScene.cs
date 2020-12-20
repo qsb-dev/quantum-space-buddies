@@ -199,8 +199,7 @@ namespace QuantumUNET
 			}
 			else if (!component.AssetId.IsValid())
 			{
-				Debug.LogError(
-					$"RegisterPrefab game object {prefab.name} has no prefab. Use RegisterSpawnHandler() instead?");
+				Debug.LogError($"RegisterPrefab game object {prefab.name} has no prefab. Use RegisterSpawnHandler() instead?");
 			}
 			else
 			{
@@ -270,14 +269,9 @@ namespace QuantumUNET
 			foreach (var networkInstanceId in localObjects.Keys)
 			{
 				var networkIdentity = localObjects[networkInstanceId];
-				if (networkIdentity != null)
-				{
-					Debug.Log($"ID:{networkInstanceId} OBJ:{networkIdentity.gameObject} AS:{networkIdentity.AssetId}");
-				}
-				else
-				{
-					Debug.Log($"ID:{networkInstanceId} OBJ: null");
-				}
+				Debug.Log(networkIdentity != null
+					? $"ID:{networkInstanceId} OBJ:{networkIdentity.gameObject} AS:{networkIdentity.AssetId}"
+					: $"ID:{networkInstanceId} OBJ: null");
 			}
 		}
 	}

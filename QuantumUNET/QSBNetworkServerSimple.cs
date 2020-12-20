@@ -3,6 +3,7 @@ using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Types;
@@ -71,14 +72,9 @@ namespace QuantumUNET
 		{
 			Initialize();
 			listenPort = serverListenPort;
-			if (useWebSockets)
-			{
-				serverHostId = NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort, ipAddress);
-			}
-			else
-			{
-				serverHostId = NetworkTransport.AddHost(hostTopology, serverListenPort, ipAddress);
-			}
+			serverHostId = useWebSockets 
+				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort, ipAddress) 
+				: NetworkTransport.AddHost(hostTopology, serverListenPort, ipAddress);
 			bool result;
 			if (serverHostId == -1)
 			{
@@ -99,14 +95,9 @@ namespace QuantumUNET
 			hostTopology = topology;
 			Initialize();
 			listenPort = serverListenPort;
-			if (useWebSockets)
-			{
-				serverHostId = NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort);
-			}
-			else
-			{
-				serverHostId = NetworkTransport.AddHost(hostTopology, serverListenPort);
-			}
+			serverHostId = useWebSockets 
+				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort) 
+				: NetworkTransport.AddHost(hostTopology, serverListenPort);
 			bool result;
 			if (serverHostId == -1)
 			{
@@ -352,13 +343,10 @@ namespace QuantumUNET
 
 		public void DisconnectAllConnections()
 		{
-			foreach (var networkConnection in m_Connections)
+			foreach (var networkConnection in m_Connections.Where(networkConnection => networkConnection != null))
 			{
-				if (networkConnection != null)
-				{
-					networkConnection.Disconnect();
-					networkConnection.Dispose();
-				}
+				networkConnection.Disconnect();
+				networkConnection.Dispose();
 			}
 		}
 
