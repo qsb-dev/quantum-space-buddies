@@ -122,7 +122,7 @@ namespace QuantumUNET
 				{
 					Debug.Log($"Async DNS START:{serverIp}");
 					m_AsyncConnect = ConnectState.Resolving;
-					Dns.BeginGetHostAddresses(serverIp, new AsyncCallback(GetHostAddressesCallback), this);
+					Dns.BeginGetHostAddresses(serverIp, GetHostAddressesCallback, this);
 				}
 				result = true;
 			}
@@ -255,7 +255,7 @@ namespace QuantumUNET
 				ModConsole.OwmlConsole.WriteLine($"Async DNS START:{serverIp}");
 				m_RequestedServerHost = serverIp;
 				m_AsyncConnect = ConnectState.Resolving;
-				Dns.BeginGetHostAddresses(serverIp, new AsyncCallback(GetHostAddressesCallback), this);
+				Dns.BeginGetHostAddresses(serverIp, GetHostAddressesCallback, this);
 			}
 		}
 
@@ -776,7 +776,7 @@ namespace QuantumUNET
 		internal void RegisterSystemHandlers(bool localClient)
 		{
 			QSBClientScene.RegisterSystemHandlers(this, localClient);
-			RegisterHandlerSafe(14, new QSBNetworkMessageDelegate(OnCRC));
+			RegisterHandlerSafe(14, OnCRC);
 		}
 
 		private void OnCRC(QSBNetworkMessage netMsg)

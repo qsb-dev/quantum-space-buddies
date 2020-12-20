@@ -273,29 +273,29 @@ namespace QuantumUNET
 		{
 			if (localClient)
 			{
-				client.RegisterHandlerSafe(1, new QSBNetworkMessageDelegate(OnLocalClientObjectDestroy));
-				client.RegisterHandlerSafe(13, new QSBNetworkMessageDelegate(OnLocalClientObjectHide));
-				client.RegisterHandlerSafe(3, new QSBNetworkMessageDelegate(OnLocalClientObjectSpawn));
-				client.RegisterHandlerSafe(10, new QSBNetworkMessageDelegate(OnLocalClientObjectSpawnScene));
-				client.RegisterHandlerSafe(15, new QSBNetworkMessageDelegate(OnClientAuthority));
+				client.RegisterHandlerSafe(1, OnLocalClientObjectDestroy);
+				client.RegisterHandlerSafe(13, OnLocalClientObjectHide);
+				client.RegisterHandlerSafe(3, OnLocalClientObjectSpawn);
+				client.RegisterHandlerSafe(10, OnLocalClientObjectSpawnScene);
+				client.RegisterHandlerSafe(15, OnClientAuthority);
 			}
 			else
 			{
-				client.RegisterHandlerSafe(3, new QSBNetworkMessageDelegate(OnObjectSpawn));
-				client.RegisterHandlerSafe(10, new QSBNetworkMessageDelegate(OnObjectSpawnScene));
-				client.RegisterHandlerSafe(12, new QSBNetworkMessageDelegate(OnObjectSpawnFinished));
-				client.RegisterHandlerSafe(1, new QSBNetworkMessageDelegate(OnObjectDestroy));
-				client.RegisterHandlerSafe(13, new QSBNetworkMessageDelegate(OnObjectDestroy));
-				client.RegisterHandlerSafe(8, new QSBNetworkMessageDelegate(OnUpdateVarsMessage));
-				client.RegisterHandlerSafe(4, new QSBNetworkMessageDelegate(OnOwnerMessage));
-				client.RegisterHandlerSafe(9, new QSBNetworkMessageDelegate(OnSyncListMessage));
-				client.RegisterHandlerSafe(40, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationClientMessage));
-				client.RegisterHandlerSafe(41, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersClientMessage));
-				client.RegisterHandlerSafe(15, new QSBNetworkMessageDelegate(OnClientAuthority));
+				client.RegisterHandlerSafe(3, OnObjectSpawn);
+				client.RegisterHandlerSafe(10, OnObjectSpawnScene);
+				client.RegisterHandlerSafe(12, OnObjectSpawnFinished);
+				client.RegisterHandlerSafe(1, OnObjectDestroy);
+				client.RegisterHandlerSafe(13, OnObjectDestroy);
+				client.RegisterHandlerSafe(8, OnUpdateVarsMessage);
+				client.RegisterHandlerSafe(4, OnOwnerMessage);
+				client.RegisterHandlerSafe(9, OnSyncListMessage);
+				client.RegisterHandlerSafe(40, QSBNetworkAnimator.OnAnimationClientMessage);
+				client.RegisterHandlerSafe(41, QSBNetworkAnimator.OnAnimationParametersClientMessage);
+				client.RegisterHandlerSafe(15, OnClientAuthority);
 			}
-			client.RegisterHandlerSafe(2, new QSBNetworkMessageDelegate(OnRPCMessage));
-			client.RegisterHandlerSafe(7, new QSBNetworkMessageDelegate(OnSyncEventMessage));
-			client.RegisterHandlerSafe(42, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerClientMessage));
+			client.RegisterHandlerSafe(2, OnRPCMessage);
+			client.RegisterHandlerSafe(7, OnSyncEventMessage);
+			client.RegisterHandlerSafe(42, QSBNetworkAnimator.OnAnimationTriggerClientMessage);
 		}
 
 		internal static string GetStringForAssetId(NetworkHash128 assetId)

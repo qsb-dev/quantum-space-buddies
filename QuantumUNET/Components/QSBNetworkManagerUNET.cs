@@ -135,12 +135,12 @@ namespace QuantumUNET.Components
 
 		internal void RegisterServerMessages()
 		{
-			QSBNetworkServer.RegisterHandler(QSBMsgType.Connect, new QSBNetworkMessageDelegate(OnServerConnectInternal));
-			QSBNetworkServer.RegisterHandler(QSBMsgType.Disconnect, new QSBNetworkMessageDelegate(OnServerDisconnectInternal));
-			QSBNetworkServer.RegisterHandler(QSBMsgType.Ready, new QSBNetworkMessageDelegate(OnServerReadyMessageInternal));
-			QSBNetworkServer.RegisterHandler(QSBMsgType.AddPlayer, new QSBNetworkMessageDelegate(OnServerAddPlayerMessageInternal));
-			QSBNetworkServer.RegisterHandler(QSBMsgType.RemovePlayer, new QSBNetworkMessageDelegate(OnServerRemovePlayerMessageInternal));
-			QSBNetworkServer.RegisterHandler(QSBMsgType.Error, new QSBNetworkMessageDelegate(OnServerErrorInternal));
+			QSBNetworkServer.RegisterHandler(QSBMsgType.Connect, OnServerConnectInternal);
+			QSBNetworkServer.RegisterHandler(QSBMsgType.Disconnect, OnServerDisconnectInternal);
+			QSBNetworkServer.RegisterHandler(QSBMsgType.Ready, OnServerReadyMessageInternal);
+			QSBNetworkServer.RegisterHandler(QSBMsgType.AddPlayer, OnServerAddPlayerMessageInternal);
+			QSBNetworkServer.RegisterHandler(QSBMsgType.RemovePlayer, OnServerRemovePlayerMessageInternal);
+			QSBNetworkServer.RegisterHandler(QSBMsgType.Error, OnServerErrorInternal);
 		}
 
 		public bool StartServer() => StartServer(null, -1);
@@ -202,11 +202,11 @@ namespace QuantumUNET.Components
 
 		internal void RegisterClientMessages(QSBNetworkClient client)
 		{
-			client.RegisterHandler(QSBMsgType.Connect, new QSBNetworkMessageDelegate(OnClientConnectInternal));
-			client.RegisterHandler(QSBMsgType.Disconnect, new QSBNetworkMessageDelegate(OnClientDisconnectInternal));
-			client.RegisterHandler(QSBMsgType.NotReady, new QSBNetworkMessageDelegate(OnClientNotReadyMessageInternal));
-			client.RegisterHandler(QSBMsgType.Error, new QSBNetworkMessageDelegate(OnClientErrorInternal));
-			client.RegisterHandler(QSBMsgType.Scene, new QSBNetworkMessageDelegate(OnClientSceneInternal));
+			client.RegisterHandler(QSBMsgType.Connect, OnClientConnectInternal);
+			client.RegisterHandler(QSBMsgType.Disconnect, OnClientDisconnectInternal);
+			client.RegisterHandler(QSBMsgType.NotReady, OnClientNotReadyMessageInternal);
+			client.RegisterHandler(QSBMsgType.Error, OnClientErrorInternal);
+			client.RegisterHandler(QSBMsgType.Scene, OnClientSceneInternal);
 			if (playerPrefab != null)
 			{
 				QSBClientScene.RegisterPrefab(playerPrefab);

@@ -108,14 +108,14 @@ namespace QuantumUNET
 
 		internal void RegisterMessageHandlers()
 		{
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Ready, new QSBNetworkMessageDelegate(OnClientReadyMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Command, new QSBNetworkMessageDelegate(OnCommandMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.LocalPlayerTransform, new QSBNetworkMessageDelegate(QSBNetworkTransform.HandleTransform));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Ready, OnClientReadyMessage);
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Command, OnCommandMessage);
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.LocalPlayerTransform, QSBNetworkTransform.HandleTransform);
 			//m_SimpleServerSimple.RegisterHandlerSafe((short)16, new QSBNetworkMessageDelegate(NetworkTransformChild.HandleChildTransform));
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.RemovePlayer, new QSBNetworkMessageDelegate(OnRemovePlayerMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Animation, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationServerMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.AnimationParameters, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationParametersServerMessage));
-			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.AnimationTrigger, new QSBNetworkMessageDelegate(QSBNetworkAnimator.OnAnimationTriggerServerMessage));
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.RemovePlayer, OnRemovePlayerMessage);
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.Animation, QSBNetworkAnimator.OnAnimationServerMessage);
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.AnimationParameters, QSBNetworkAnimator.OnAnimationParametersServerMessage);
+			m_SimpleServerSimple.RegisterHandlerSafe(QSBMsgType.AnimationTrigger, QSBNetworkAnimator.OnAnimationTriggerServerMessage);
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 		}
 
