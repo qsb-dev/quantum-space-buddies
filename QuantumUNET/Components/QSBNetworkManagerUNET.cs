@@ -538,7 +538,7 @@ namespace QuantumUNET.Components
 		internal void OnServerAddPlayerMessageInternal(QSBNetworkMessage netMsg)
 		{
 			Debug.Log("NetworkManager:OnServerAddPlayerMessageInternal");
-			netMsg.ReadMessage<QSBAddPlayerMessage>(s_AddPlayerMessage);
+			netMsg.ReadMessage(s_AddPlayerMessage);
 			if (s_AddPlayerMessage.msgSize != 0)
 			{
 				var extraMessageReader = new NetworkReader(s_AddPlayerMessage.msgData);
@@ -553,7 +553,7 @@ namespace QuantumUNET.Components
 		internal void OnServerRemovePlayerMessageInternal(QSBNetworkMessage netMsg)
 		{
 			Debug.Log("NetworkManager:OnServerRemovePlayerMessageInternal");
-			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
+			netMsg.ReadMessage(s_RemovePlayerMessage);
 			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out var player);
 			OnServerRemovePlayer(netMsg.Connection, player);
 			netMsg.Connection.RemovePlayerController(s_RemovePlayerMessage.PlayerControllerId);
@@ -562,7 +562,7 @@ namespace QuantumUNET.Components
 		internal void OnServerErrorInternal(QSBNetworkMessage netMsg)
 		{
 			Debug.Log("NetworkManager:OnServerErrorInternal");
-			netMsg.ReadMessage<QSBErrorMessage>(s_ErrorMessage);
+			netMsg.ReadMessage(s_ErrorMessage);
 			OnServerError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
@@ -602,7 +602,7 @@ namespace QuantumUNET.Components
 		internal void OnClientErrorInternal(QSBNetworkMessage netMsg)
 		{
 			Debug.Log("NetworkManager:OnClientErrorInternal");
-			netMsg.ReadMessage<QSBErrorMessage>(s_ErrorMessage);
+			netMsg.ReadMessage(s_ErrorMessage);
 			OnClientError(netMsg.Connection, s_ErrorMessage.errorCode);
 		}
 
@@ -658,7 +658,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				var player = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
+				var player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
 				QSBNetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 			}
 		}

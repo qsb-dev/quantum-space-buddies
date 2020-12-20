@@ -781,7 +781,7 @@ namespace QuantumUNET
 
 		private void OnCRC(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBCRCMessage>(s_CRCMessage);
+			netMsg.ReadMessage(s_CRCMessage);
 			QSBNetworkCRC.Validate(s_CRCMessage.scripts, numChannels);
 		}
 

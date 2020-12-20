@@ -991,7 +991,7 @@ namespace QuantumUNET
 
 		private static void OnRemovePlayerMessage(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBRemovePlayerMessage>(s_RemovePlayerMessage);
+			netMsg.ReadMessage(s_RemovePlayerMessage);
 			netMsg.Connection.GetPlayerController(s_RemovePlayerMessage.PlayerControllerId, out var playerController);
 			if (playerController != null)
 			{

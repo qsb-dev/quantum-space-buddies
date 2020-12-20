@@ -363,7 +363,7 @@ namespace QuantumUNET
 
 		private static void OnObjectSpawn(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectSpawnMessage>(s_ObjectSpawnMessage);
+			netMsg.ReadMessage(s_ObjectSpawnMessage);
 			if (!s_ObjectSpawnMessage.assetId.IsValid())
 			{
 				Debug.LogError($"OnObjSpawn netId: {s_ObjectSpawnMessage.NetId} has invalid asset Id. {s_ObjectSpawnMessage.assetId}");
@@ -376,7 +376,7 @@ namespace QuantumUNET
 				}
 				else if (QSBNetworkScene.GetPrefab(s_ObjectSpawnMessage.assetId, out var original))
 				{
-					var gameObject = Object.Instantiate<GameObject>(original, s_ObjectSpawnMessage.Position, s_ObjectSpawnMessage.Rotation);
+					var gameObject = Object.Instantiate(original, s_ObjectSpawnMessage.Position, s_ObjectSpawnMessage.Rotation);
 					component = gameObject.GetComponent<QSBNetworkIdentity>();
 					if (component == null)
 					{
@@ -422,7 +422,7 @@ namespace QuantumUNET
 
 		private static void OnObjectSpawnScene(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectSpawnSceneMessage>(s_ObjectSpawnSceneMessage);
+			netMsg.ReadMessage(s_ObjectSpawnSceneMessage);
 			if (s_NetworkScene.GetNetworkIdentity(s_ObjectSpawnSceneMessage.NetId, out var networkIdentity))
 			{
 				ApplySpawnPayload(networkIdentity, s_ObjectSpawnSceneMessage.Position, s_ObjectSpawnSceneMessage.Payload, s_ObjectSpawnSceneMessage.NetId, networkIdentity.gameObject);
@@ -445,7 +445,7 @@ namespace QuantumUNET
 
 		private static void OnObjectSpawnFinished(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectSpawnFinishedMessage>(s_ObjectSpawnFinishedMessage);
+			netMsg.ReadMessage(s_ObjectSpawnFinishedMessage);
 			Debug.Log($"SpawnFinished:{s_ObjectSpawnFinishedMessage.State}");
 			if (s_ObjectSpawnFinishedMessage.State == 0U)
 			{
@@ -468,7 +468,7 @@ namespace QuantumUNET
 
 		private static void OnObjectDestroy(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectDestroyMessage>(s_ObjectDestroyMessage);
+			netMsg.ReadMessage(s_ObjectDestroyMessage);
 			Debug.Log($"ClientScene::OnObjDestroy netId:{s_ObjectDestroyMessage.NetId}");
 			if (s_NetworkScene.GetNetworkIdentity(s_ObjectDestroyMessage.NetId, out var networkIdentity))
 			{
@@ -496,14 +496,14 @@ namespace QuantumUNET
 
 		private static void OnLocalClientObjectDestroy(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectDestroyMessage>(s_ObjectDestroyMessage);
+			netMsg.ReadMessage(s_ObjectDestroyMessage);
 			Debug.Log($"ClientScene::OnLocalObjectObjDestroy netId:{s_ObjectDestroyMessage.NetId}");
 			s_NetworkScene.RemoveLocalObject(s_ObjectDestroyMessage.NetId);
 		}
 
 		private static void OnLocalClientObjectHide(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectDestroyMessage>(s_ObjectDestroyMessage);
+			netMsg.ReadMessage(s_ObjectDestroyMessage);
 			Debug.Log($"ClientScene::OnLocalObjectObjHide netId:{s_ObjectDestroyMessage.NetId}");
 			if (s_NetworkScene.GetNetworkIdentity(s_ObjectDestroyMessage.NetId, out var networkIdentity))
 			{
@@ -513,7 +513,7 @@ namespace QuantumUNET
 
 		private static void OnLocalClientObjectSpawn(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectSpawnMessage>(s_ObjectSpawnMessage);
+			netMsg.ReadMessage(s_ObjectSpawnMessage);
 			if (s_NetworkScene.GetNetworkIdentity(s_ObjectSpawnMessage.NetId, out var networkIdentity))
 			{
 				networkIdentity.OnSetLocalVisibility(true);
@@ -522,7 +522,7 @@ namespace QuantumUNET
 
 		private static void OnLocalClientObjectSpawnScene(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBObjectSpawnSceneMessage>(s_ObjectSpawnSceneMessage);
+			netMsg.ReadMessage(s_ObjectSpawnSceneMessage);
 			if (s_NetworkScene.GetNetworkIdentity(s_ObjectSpawnSceneMessage.NetId, out var networkIdentity))
 			{
 				networkIdentity.OnSetLocalVisibility(true);
@@ -590,7 +590,7 @@ namespace QuantumUNET
 
 		private static void OnClientAuthority(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBClientAuthorityMessage>(s_ClientAuthorityMessage);
+			netMsg.ReadMessage(s_ClientAuthorityMessage);
 			Debug.Log(
 				$"ClientScene::OnClientAuthority for  connectionId={netMsg.Connection.connectionId} netId: {s_ClientAuthorityMessage.netId}");
 			if (s_NetworkScene.GetNetworkIdentity(s_ClientAuthorityMessage.netId, out var networkIdentity))
@@ -601,7 +601,7 @@ namespace QuantumUNET
 
 		private static void OnOwnerMessage(QSBNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage<QSBOwnerMessage>(s_OwnerMessage);
+			netMsg.ReadMessage(s_OwnerMessage);
 			Debug.Log(
 				$"ClientScene::OnOwnerMessage - connectionId={netMsg.Connection.connectionId} netId: {s_OwnerMessage.NetId}");
 			if (netMsg.Connection.GetPlayerController(s_OwnerMessage.PlayerControllerId, out var playerController))
