@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;

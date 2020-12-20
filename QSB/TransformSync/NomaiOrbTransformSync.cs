@@ -11,6 +11,8 @@ namespace QSB.TransformSync
 
 		private int Index => QSBWorldSync.OrbSyncList.IndexOf(this);
 
+		private const float SmoothTime = 0.1f;
+		private Vector3 _positionSmoothVelocity;
 		private bool _isInitialized;
 		private bool _isReady;
 		private Transform _orbParent;
@@ -62,13 +64,13 @@ namespace QSB.TransformSync
 			if (HasAuthority)
 			{
 				transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
-				transform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
+				transform.rotation = OrbTransform.rotation;
 				return;
 			}
 			if (transform.position != Vector3.zero)
 			{
-				OrbTransform.position = _orbParent.TransformPoint(transform.position);
-				OrbTransform.rotation = _orbParent.InverseTransformRotation(OrbTransform.rotation);
+				OrbTransform.position = _orbParent.TransformPoint(Vector3.SmoothDamp(OrbTransform.position, transform.position, ref _positionSmoothVelocity, SmoothTime));
+				OrbTransform.rotation = transform.rotation;
 			}
 		}
 	}

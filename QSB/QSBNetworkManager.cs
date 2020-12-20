@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using QSB.Animation;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
