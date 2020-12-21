@@ -29,8 +29,8 @@ namespace QuantumUNET
 			return string.Format("ID={0} NetworkIdentity NetID={1} Player={2}", new object[]
 			{
 				PlayerControllerId,
-				(UnetView == null) ? "null" : UnetView.NetId.ToString(),
-				(Gameobject == null) ? "null" : Gameobject.name
+				UnetView == null ? "null" : UnetView.NetId.ToString(),
+				Gameobject == null ? "null" : Gameobject.name
 			});
 		}
 	}

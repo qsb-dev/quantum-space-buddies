@@ -69,9 +69,9 @@ namespace QuantumUNET
 		{
 			if (!m_Disposed && m_Channels != null)
 			{
-				for (var i = 0; i < m_Channels.Length; i++)
+				foreach (var channel in m_Channels)
 				{
-					m_Channels[i].Dispose();
+					channel.Dispose();
 				}
 			}
 			m_Channels = null;
@@ -199,8 +199,7 @@ namespace QuantumUNET
 					return;
 				}
 			}
-			Debug.LogError("RemovePlayer player at playerControllerId " + playerControllerId + " not found");
-			return;
+			Debug.LogError($"RemovePlayer player at playerControllerId {playerControllerId} not found");
 		}
 
 		internal bool GetPlayerController(short playerControllerId, out QSBPlayerController playerController)
@@ -209,14 +208,15 @@ namespace QuantumUNET
 			bool result;
 			if (PlayerControllers.Count > 0)
 			{
-				for (var i = 0; i < PlayerControllers.Count; i++)
+				foreach (var controller in PlayerControllers)
 				{
-					if (PlayerControllers[i].IsValid && PlayerControllers[i].PlayerControllerId == playerControllerId)
+					if (controller.IsValid && controller.PlayerControllerId == playerControllerId)
 					{
-						playerController = PlayerControllers[i];
+						playerController = controller;
 						return true;
 					}
 				}
+
 				result = false;
 			}
 			else
@@ -230,9 +230,9 @@ namespace QuantumUNET
 		{
 			if (m_Channels != null)
 			{
-				for (var i = 0; i < m_Channels.Length; i++)
+				foreach (var channel in m_Channels)
 				{
-					m_Channels[i].CheckInternalBuffer();
+					channel.CheckInternalBuffer();
 				}
 			}
 		}
@@ -241,9 +241,9 @@ namespace QuantumUNET
 		{
 			if (m_Channels != null)
 			{
-				for (var i = 0; i < m_Channels.Length; i++)
+				foreach (var channel in m_Channels)
 				{
-					m_Channels[i].MaxDelay = seconds;
+					channel.MaxDelay = seconds;
 				}
 			}
 		}
@@ -278,17 +278,8 @@ namespace QuantumUNET
 					break;
 				}
 			}
-			ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-			{
-				"ConnectionSend con:",
-				connectionId,
-				" bytes:",
-				num,
-				" msgId:",
-				num2,
-				" ",
-				stringBuilder
-			}));
+			ModConsole.OwmlConsole.WriteLine(
+				$"ConnectionSend con:{connectionId} bytes:{num} msgId:{num2} {stringBuilder}");
 		}
 
 		private bool CheckChannel(int channelId)
@@ -296,18 +287,13 @@ namespace QuantumUNET
 			bool result;
 			if (m_Channels == null)
 			{
-				Debug.LogWarning("Channels not initialized sending on id '" + channelId);
+				Debug.LogWarning($"Channels not initialized sending on id '{channelId}");
 				result = false;
 			}
 			else if (channelId < 0 || channelId >= m_Channels.Length)
 			{
-				Debug.LogError(string.Concat(new object[]
-				{
-						"Invalid channel when sending buffered data, '",
-						channelId,
-						"'. Current channel count is ",
-						m_Channels.Length
-				}));
+				Debug.LogError(
+					$"Invalid channel when sending buffered data, '{channelId}'. Current channel count is {m_Channels.Length}");
 				result = false;
 			}
 			else
@@ -342,13 +328,7 @@ namespace QuantumUNET
 				}
 				if (networkMessageDelegate == null)
 				{
-					ModConsole.OwmlConsole.WriteLine(string.Concat(new object[]
-					{
-						"Unknown message ID ",
-						num2,
-						" connId:",
-						connectionId
-					}));
+					ModConsole.OwmlConsole.WriteLine($"Unknown message ID {num2} connId:{connectionId}");
 					break;
 				}
 				m_NetMsg.MsgType = num2;
@@ -366,9 +346,8 @@ namespace QuantumUNET
 			numBufferedMsgs = 0;
 			numBytes = 0;
 			lastBufferedPerSecond = 0;
-			for (var i = 0; i < m_Channels.Length; i++)
+			foreach (var channelBuffer in m_Channels)
 			{
-				var channelBuffer = m_Channels[i];
 				numMsgs += channelBuffer.NumMsgsOut;
 				numBufferedMsgs += channelBuffer.NumBufferedMsgsOut;
 				numBytes += channelBuffer.NumBytesOut;
@@ -380,24 +359,15 @@ namespace QuantumUNET
 		{
 			numMsgs = 0;
 			numBytes = 0;
-			for (var i = 0; i < m_Channels.Length; i++)
+			foreach (var channelBuffer in m_Channels)
 			{
-				var channelBuffer = m_Channels[i];
 				numMsgs += channelBuffer.NumMsgsIn;
 				numBytes += channelBuffer.NumBytesIn;
 			}
 		}
 
-		public override string ToString()
-		{
-			return string.Format("hostId: {0} connectionId: {1} isReady: {2} channel count: {3}", new object[]
-			{
-				hostId,
-				connectionId,
-				isReady,
-				(m_Channels == null) ? 0 : m_Channels.Length
-			});
-		}
+		public override string ToString() =>
+			$"hostId: {hostId} connectionId: {connectionId} isReady: {isReady} channel count: {m_Channels?.Length ?? 0}";
 
 		internal void AddToVisList(QSBNetworkIdentity uv)
 		{
@@ -438,10 +408,7 @@ namespace QuantumUNET
 
 		internal void RemoveOwnedObject(QSBNetworkIdentity obj)
 		{
-			if (ClientOwnedObjects != null)
-			{
-				ClientOwnedObjects.Remove(obj.NetId);
-			}
+			ClientOwnedObjects?.Remove(obj.NetId);
 		}
 
 		internal static void OnFragment(QSBNetworkMessage netMsg) => netMsg.Connection.HandleFragment(netMsg.Reader, netMsg.ChannelId);
@@ -487,14 +454,7 @@ namespace QuantumUNET
 
 			public override string ToString()
 			{
-				return string.Concat(new object[]
-				{
-					QSBMsgType.MsgTypeToString(msgType),
-					": count=",
-					count,
-					" bytes=",
-					bytes
-				});
+				return $"{QSBMsgType.MsgTypeToString(msgType)}: count={count} bytes={bytes}";
 			}
 
 			public short msgType;

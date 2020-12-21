@@ -55,14 +55,14 @@ namespace QuantumUNET.Transport
 				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240U + (256U * (uint)(b - 241)) + b2;
+					result = 240U + 256U * (uint)(b - 241) + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288U + (256U * b2) + b3;
+						result = 2288U + 256U * b2 + b3;
 					}
 					else
 					{
@@ -76,7 +76,7 @@ namespace QuantumUNET.Transport
 							var b5 = ReadByte();
 							if (b < 251)
 							{
-								throw new IndexOutOfRangeException("ReadPackedUInt32() failure: " + b);
+								throw new IndexOutOfRangeException($"ReadPackedUInt32() failure: {b}");
 							}
 							result = (uint)(b2 + (b3 << 8) + (b4 << 16) + (b5 << 24));
 						}
@@ -99,14 +99,14 @@ namespace QuantumUNET.Transport
 				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240UL + (256UL * (b - 241UL)) + b2;
+					result = 240UL + 256UL * (b - 241UL) + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288UL + (256UL * b2) + b3;
+						result = 2288UL + 256UL * b2 + b3;
 					}
 					else
 					{
@@ -148,7 +148,7 @@ namespace QuantumUNET.Transport
 											var b9 = ReadByte();
 											if (b != 255)
 											{
-												throw new IndexOutOfRangeException("ReadPackedUInt64() failure: " + b);
+												throw new IndexOutOfRangeException($"ReadPackedUInt64() failure: {b}");
 											}
 											result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48) + ((ulong)b9 << 56);
 										}
@@ -240,16 +240,14 @@ namespace QuantumUNET.Transport
 			return num | num2;
 		}
 
-		public decimal ReadDecimal()
-		{
-			return new decimal(new int[]
+		public decimal ReadDecimal() =>
+			new decimal(new[]
 			{
 				ReadInt32(),
 				ReadInt32(),
 				ReadInt32(),
 				ReadInt32()
 			});
-		}
 
 		public float ReadSingle()
 		{
@@ -275,7 +273,7 @@ namespace QuantumUNET.Transport
 			{
 				if (num >= 32768)
 				{
-					throw new IndexOutOfRangeException("ReadString() too long: " + num);
+					throw new IndexOutOfRangeException($"ReadString() too long: {num}");
 				}
 				while (num > s_StringReaderBuffer.Length)
 				{
@@ -300,7 +298,7 @@ namespace QuantumUNET.Transport
 		{
 			if (count < 0)
 			{
-				throw new IndexOutOfRangeException("NetworkReader ReadBytes " + count);
+				throw new IndexOutOfRangeException($"NetworkReader ReadBytes {count}");
 			}
 			var array = new byte[count];
 			m_buf.ReadBytes(array, (uint)count);
@@ -310,16 +308,7 @@ namespace QuantumUNET.Transport
 		public byte[] ReadBytesAndSize()
 		{
 			var num = ReadUInt16();
-			byte[] result;
-			if (num == 0)
-			{
-				result = new byte[0];
-			}
-			else
-			{
-				result = ReadBytes(num);
-			}
-			return result;
+			return num == 0 ? new byte[0] : ReadBytes(num);
 		}
 
 		public Vector2 ReadVector2() => new Vector2(ReadSingle(), ReadSingle());
@@ -398,7 +387,7 @@ namespace QuantumUNET.Transport
 				var gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
-					Debug.Log("ReadTransform netId:" + networkInstanceId);
+					Debug.Log($"ReadTransform netId:{networkInstanceId}");
 					result = null;
 				}
 				else
@@ -419,18 +408,12 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				GameObject gameObject;
-				if (QSBNetworkServer.active)
-				{
-					gameObject = QSBNetworkServer.FindLocalObject(networkInstanceId);
-				}
-				else
-				{
-					gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
-				}
+				var gameObject = QSBNetworkServer.active
+					? QSBNetworkServer.FindLocalObject(networkInstanceId)
+					: QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
-					Debug.Log("ReadGameObject netId:" + networkInstanceId + "go: null");
+					Debug.Log($"ReadGameObject netId:{networkInstanceId}go: null");
 				}
 				result = gameObject;
 			}
@@ -447,18 +430,12 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				GameObject gameObject;
-				if (QSBNetworkServer.active)
-				{
-					gameObject = QSBNetworkServer.FindLocalObject(networkInstanceId);
-				}
-				else
-				{
-					gameObject = QSBClientScene.FindLocalObject(networkInstanceId);
-				}
+				var gameObject = QSBNetworkServer.active
+					? QSBNetworkServer.FindLocalObject(networkInstanceId)
+					: QSBClientScene.FindLocalObject(networkInstanceId);
 				if (gameObject == null)
 				{
-					Debug.Log("ReadNetworkIdentity netId:" + networkInstanceId + "go: null");
+					Debug.Log($"ReadNetworkIdentity netId:{networkInstanceId}go: null");
 					result = null;
 				}
 				else

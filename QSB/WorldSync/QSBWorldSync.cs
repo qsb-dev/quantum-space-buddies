@@ -68,7 +68,7 @@ namespace QSB.WorldSync
 		{
 			if (!QSBCore.IsServer)
 			{
-				DebugLog.DebugWrite("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
 				return;
 			}
 			DialogueConditions[name] = state;
@@ -76,18 +76,16 @@ namespace QSB.WorldSync
 
 		public static void AddFactReveal(string id, bool saveGame, bool showNotification)
 		{
-			DebugLog.DebugWrite($"AddFactReveal {id}");
 			if (!QSBCore.IsServer)
 			{
-				DebugLog.DebugWrite("Warning - Cannot write to fact list when not server!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Cannot write to fact list when not server!", MessageType.Warning);
 				return;
 			}
 			if (ShipLogFacts.Any(x => x.Id == id))
 			{
-				DebugLog.DebugWrite($"Warning - Fact with id {id} already exists in list!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Fact with id {id} already exists in list!", MessageType.Warning);
 				return;
 			}
-			DebugLog.DebugWrite($"adding {id} to shiplogs");
 			ShipLogFacts.Add(new FactReveal
 			{
 				Id = id,

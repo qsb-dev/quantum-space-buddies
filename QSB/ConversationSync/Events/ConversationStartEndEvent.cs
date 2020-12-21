@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;

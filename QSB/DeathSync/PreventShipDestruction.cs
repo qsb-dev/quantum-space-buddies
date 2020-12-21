@@ -1,5 +1,5 @@
 ﻿using Harmony;
-using OWML.ModHelper.Events;
+using OWML.Utils;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;

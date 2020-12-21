@@ -35,37 +35,37 @@
       <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\NAudio-Unity.dll</HintPath>
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\NAudio-Unity.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.dll</HintPath>
+    <Reference Include="OWML.Common, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.Common.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Common.dll</HintPath>
+    <Reference Include="OWML.Logging, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Logging.dll</HintPath>
+    <Reference Include="OWML.ModHelper, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Assets, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Events, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Events.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Input, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Input.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Input, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Input.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Interaction, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Interaction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Menus, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
+    <Reference Include="OWML.Utils, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.1.1.1\lib\net35\OWML.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,23 +74,23 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +147,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "$(OwmlDir)\Mods\QSB"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

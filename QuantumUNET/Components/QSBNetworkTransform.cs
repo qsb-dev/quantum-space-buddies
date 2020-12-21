@@ -179,7 +179,7 @@ namespace QuantumUNET.Components
 				}
 				else
 				{
-					result = (num > 1E-05f);
+					result = num > 1E-05f;
 				}
 			}
 			return result;
@@ -230,7 +230,8 @@ namespace QuantumUNET.Components
 				}
 				else
 				{
-					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform netId:" + networkInstanceId + " is not for a valid player");
+					ModConsole.OwmlConsole.WriteLine(
+						$"Warning - HandleTransform netId:{networkInstanceId} is not for a valid player");
 				}
 			}
 		}
