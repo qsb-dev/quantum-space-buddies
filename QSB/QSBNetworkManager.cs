@@ -176,11 +176,8 @@ namespace QSB
 				OrbManager.Instance.QueueBuildSlots();
 			}
 
-			if (!QSBNetworkServer.localClientActive)
-			{
-				QSBPatchManager.DoPatchType(QSBPatchTypes.OnNonServerClientConnect);
-			}
-
+			var specificType = QSBNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
 			_lobby.CanEditName = false;
