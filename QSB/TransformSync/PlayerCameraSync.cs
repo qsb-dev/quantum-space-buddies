@@ -12,7 +12,7 @@ namespace QSB.TransformSync
 		{
 			var body = Locator.GetPlayerCamera().gameObject.transform;
 
-			Player.Camera = body.gameObject;
+			Player.CameraBody = body.gameObject;
 
 			Player.IsReady = true;
 			GlobalMessenger<bool>.FireEvent(EventNames.QSBPlayerReady, true);
@@ -28,7 +28,12 @@ namespace QSB.TransformSync
 
 			PlayerToolsManager.Init(body.transform);
 
-			Player.Camera = body;
+			var camera = body.AddComponent<Camera>();
+			camera.enabled = false;
+			var owcamera = body.AddComponent<OWCamera>();
+			owcamera.fieldOfView = 70;
+			Player.Camera = owcamera;
+			Player.CameraBody = body;
 
 			return body.transform;
 		}

@@ -17,7 +17,7 @@ namespace QSB.TransformSync
 		{
 			var body = GetProbe();
 
-			SetSocket(Player.Camera.transform);
+			SetSocket(Player.CameraBody.transform);
 			Player.ProbeBody = body.gameObject;
 
 			return body;

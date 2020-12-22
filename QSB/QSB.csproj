@@ -197,7 +197,7 @@
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
     <Compile Include="QSBSceneManager.cs" />
-    <Compile Include="QuantumSync\ServerQuantumPatches.cs" />
+    <Compile Include="QuantumSync\QuantumVisibilityPatches.cs" />
     <Compile Include="TimeSync\TimeSyncType.cs" />
     <Compile Include="TimeSync\TimeSyncUI.cs" />
     <Compile Include="TimeSync\WakeUpPatches.cs" />

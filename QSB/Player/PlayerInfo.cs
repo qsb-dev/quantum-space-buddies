@@ -15,13 +15,14 @@ namespace QSB.Player
 		public State State { get; set; }
 
 		// Body Objects
-		public GameObject Camera { get; set; }
+		public OWCamera Camera { get; set; }
+		public GameObject CameraBody { get; set; }
 		public GameObject Body { get; set; }
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight => Camera?.GetComponentInChildren<QSBFlashlight>();
+		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
@@ -74,7 +75,7 @@ namespace QSB.Player
 
 		private QSBTool GetToolByType(ToolType type)
 		{
-			return Camera?.GetComponentsInChildren<QSBTool>()
+			return CameraBody?.GetComponentsInChildren<QSBTool>()
 				.FirstOrDefault(x => x.Type == type);
 		}
 	}

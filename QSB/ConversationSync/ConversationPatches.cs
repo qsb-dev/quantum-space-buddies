@@ -76,7 +76,7 @@ namespace QSB.ConversationSync
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var position = playerId == uint.MaxValue
 				? Locator.GetActiveCamera().transform.position
-				: QSBPlayerManager.GetPlayer(playerId).Camera.transform.position;
+				: QSBPlayerManager.GetPlayer(playerId).CameraBody.transform.position;
 			var b = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking
 						? !____playerInHeadZone ? 0 : 1
 						: !____inConversation || !____playerInHeadZone ? 0 : 1);

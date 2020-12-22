@@ -31,7 +31,7 @@ namespace QSB.Patches
 				new OrbPatches(),
 				new WakeUpPatches(),
 				new LogPatches(),
-				new ServerQuantumPatches()
+				new QuantumVisibilityPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

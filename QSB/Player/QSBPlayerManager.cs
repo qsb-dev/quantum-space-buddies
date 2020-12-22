@@ -74,5 +74,12 @@ namespace QSB.Player
 			return id == LocalPlayerId ||
 				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
 		}
+
+		public static List<OWCamera> GetPlayerCameras()
+		{
+			var cameraList = PlayerList.Where(x => x.Camera != null).Select(x => x.Camera).ToList();
+			cameraList.Add(Locator.GetPlayerCamera());
+			return cameraList;
+		}
 	}
 }
