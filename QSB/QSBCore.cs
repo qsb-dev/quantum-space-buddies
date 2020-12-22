@@ -6,6 +6,7 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
+using QSB.QuantumSync;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.Utility;
@@ -74,6 +75,7 @@ namespace QSB
 			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
+			gameObject.AddComponent<QuantumManager>();
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));

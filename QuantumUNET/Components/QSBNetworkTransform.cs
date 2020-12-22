@@ -11,18 +11,8 @@ namespace QuantumUNET.Components
 		public float SendInterval { get; set; } = 0.1f;
 		public AxisSyncMode SyncRotationAxis { get; set; } = AxisSyncMode.AxisXYZ;
 		public CompressionSyncMode RotationSyncCompression { get; set; } = CompressionSyncMode.None;
-		public bool SyncSpin { get; set; }
-		public float MovementTheshold { get; set; } = 0.001f;
-		public float velocityThreshold { get; set; } = 0.0001f;
-		public float SnapThreshold { get; set; } = 5f;
-		public float InterpolateRotation { get; set; } = 1f;
-		public float InterpolateMovement { get; set; } = 1f;
 		public ClientMoveCallback3D clientMoveCallback3D { get; set; }
 		public float LastSyncTime { get; private set; }
-		public Vector3 TargetSyncPosition => m_TargetSyncPosition;
-		public Vector3 targetSyncVelocity => m_TargetSyncVelocity;
-		public Quaternion targetSyncRotation3D => m_TargetSyncRotation3D;
-		public bool Grounded { get; set; } = true;
 
 		public void Awake()
 		{
@@ -455,28 +445,11 @@ namespace QuantumUNET.Components
 
 		public override void OnStartAuthority() => LastSyncTime = 0f;
 
-		private Vector3 m_TargetSyncPosition;
-
-		private Vector3 m_TargetSyncVelocity;
-
-		private Vector3 m_FixedPosDiff;
-
-		private Quaternion m_TargetSyncRotation3D;
-
-		private Vector3 m_TargetSyncAngularVelocity3D;
 		private float m_LastClientSendTime;
 
 		private Vector3 m_PrevPosition;
 
 		private Quaternion m_PrevRotation;
-
-		private const float k_LocalMovementThreshold = 1E-05f;
-
-		private const float k_LocalRotationThreshold = 1E-05f;
-
-		private const float k_LocalVelocityThreshold = 1E-05f;
-
-		private const float k_MoveAheadRatio = 0.1f;
 
 		private QSBNetworkWriter m_LocalTransformWriter;
 

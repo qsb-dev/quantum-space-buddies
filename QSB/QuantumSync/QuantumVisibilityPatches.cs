@@ -1,11 +1,7 @@
 ﻿using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.QuantumSync
@@ -14,7 +10,7 @@ namespace QSB.QuantumSync
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() 
+		public override void DoPatches()
 		{
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisibleUsingCameraFrustum));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisible", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisible));
@@ -25,7 +21,7 @@ namespace QSB.QuantumSync
 
 		public static bool ShapeIsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
 		{
-			__result = __instance.gameObject.activeInHierarchy 
+			__result = __instance.gameObject.activeInHierarchy
 				&& QSBPlayerManager.GetPlayerCameras()
 					.Any(x => (bool)__instance.GetType()
 						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -35,7 +31,7 @@ namespace QSB.QuantumSync
 
 		public static bool ShapeIsVisible(ShapeVisibilityTracker __instance, ref bool __result)
 		{
-			__result = __instance.gameObject.activeInHierarchy 
+			__result = __instance.gameObject.activeInHierarchy
 				&& __instance.IsVisibleUsingCameraFrustum()
 				&& QSBPlayerManager.GetPlayerCameras()
 					.Any(x => VisibilityOccluder.CanYouSee(__instance, x.mainCamera.transform.position));
@@ -44,10 +40,10 @@ namespace QSB.QuantumSync
 
 		// RendererVisibilityTracker patches
 
-		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance,ref  bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
+		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{
 			__result = QSBPlayerManager.GetPlayerCameras()
-					.Any(x => GeometryUtility.TestPlanesAABB(x.GetFrustumPlanes(), ____renderer.bounds)) 
+					.Any(x => GeometryUtility.TestPlanesAABB(x.GetFrustumPlanes(), ____renderer.bounds))
 				&& (!____checkFrustumOcclusion || QSBPlayerManager.GetPlayerCameras()
 					.Any(x => !(bool)__instance.GetType()
 					.GetMethod("IsOccludedFromPosition", BindingFlags.NonPublic | BindingFlags.Instance)

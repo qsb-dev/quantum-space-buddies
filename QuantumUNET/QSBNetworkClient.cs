@@ -726,10 +726,7 @@ namespace QuantumUNET
 		public Dictionary<short, QSBNetworkConnection.PacketStat> GetConnectionStats() =>
 			m_Connection?.PacketStats;
 
-		public void ResetConnectionStats()
-		{
-			m_Connection?.ResetStats();
-		}
+		public void ResetConnectionStats() => m_Connection?.ResetStats();
 
 		public int GetRTT() =>
 			hostId == -1 ? 0 : NetworkTransport.GetCurrentRTT(hostId, m_ClientConnectionId, out var b);

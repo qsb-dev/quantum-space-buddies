@@ -406,10 +406,7 @@ namespace QuantumUNET
 			ClientOwnedObjects.Add(obj.NetId);
 		}
 
-		internal void RemoveOwnedObject(QSBNetworkIdentity obj)
-		{
-			ClientOwnedObjects?.Remove(obj.NetId);
-		}
+		internal void RemoveOwnedObject(QSBNetworkIdentity obj) => ClientOwnedObjects?.Remove(obj.NetId);
 
 		internal static void OnFragment(QSBNetworkMessage netMsg) => netMsg.Connection.HandleFragment(netMsg.Reader, netMsg.ChannelId);
 
@@ -452,10 +449,7 @@ namespace QuantumUNET
 				bytes = s.bytes;
 			}
 
-			public override string ToString()
-			{
-				return $"{QSBMsgType.MsgTypeToString(msgType)}: count={count} bytes={bytes}";
-			}
+			public override string ToString() => $"{QSBMsgType.MsgTypeToString(msgType)}: count={count} bytes={bytes}";
 
 			public short msgType;
 

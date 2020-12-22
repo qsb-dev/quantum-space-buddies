@@ -35,5 +35,6 @@
 		public static string QSBChangeAnimType = "QSBPlayInstrument";
 		public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
 		public static string QSBRevealFact = "QSBRevealFact";
+		public static string QSBSocketStateChange = "QSBSocketStateChange";
 	}
 }

@@ -96,7 +96,6 @@ namespace QSB
 		private void SetupNetworkTransform(GameObject go)
 		{
 			var trans = go.AddComponent<QSBNetworkTransform>();
-			trans.SendInterval = 0.1f;
 			trans.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());

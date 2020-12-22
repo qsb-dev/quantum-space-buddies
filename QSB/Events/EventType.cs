@@ -25,6 +25,7 @@
 		ConversationStartEnd,
 		PlayInstrument,
 		DialogueCondition,
-		RevealFact
+		RevealFact,
+		SocketStateChange
 	}
 }

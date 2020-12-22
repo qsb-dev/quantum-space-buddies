@@ -490,10 +490,7 @@ namespace QuantumUNET
 			m_LocalClientActive = false;
 		}
 
-		internal static void Update()
-		{
-			s_Instance?.InternalUpdate();
-		}
+		internal static void Update() => s_Instance?.InternalUpdate();
 
 		private void UpdateServerObjects()
 		{

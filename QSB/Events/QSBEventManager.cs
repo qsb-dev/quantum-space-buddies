@@ -7,6 +7,7 @@ using QSB.GeyserSync.Events;
 using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
+using QSB.QuantumSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.Utility;
@@ -46,7 +47,8 @@ namespace QSB.Events
 				new ChangeAnimTypeEvent(),
 				new ServerSendPlayerStatesEvent(),
 				new DialogueConditionEvent(),
-				new RevealFactEvent()
+				new RevealFactEvent(),
+				new SocketStateChangeEvent()
 			};
 
 			_eventList.ForEach(ev => ev.SetupListener());

@@ -207,7 +207,7 @@ namespace QuantumUNET.Transport
 		}
 
 		public void Write(bool value) =>
-			m_Buffer.WriteByte(value ? (byte)1 : (byte)0);
+			m_Buffer.WriteByte(value ? 1 : 0);
 
 		public void Write(byte[] buffer, int count)
 		{
