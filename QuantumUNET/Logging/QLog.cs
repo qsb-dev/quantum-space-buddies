@@ -6,7 +6,7 @@ namespace QuantumUNET.Logging
 	{
 		private static QLogType LogType = QLogType.Warning | QLogType.Error | QLogType.FatalError;
 
-		public static void SetLogType(QLogType flags) 
+		public static void SetLogType(QLogType flags)
 			=> LogType = flags;
 
 		public static void SetSpecifcLogType(QLogType flag, bool state)

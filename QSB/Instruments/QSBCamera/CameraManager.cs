@@ -28,7 +28,6 @@ namespace QSB.Instruments.QSBCamera
 		{
 			_cameraBase = new GameObject();
 			_cameraBase.SetActive(false);
-			_cameraBase.AddComponent<Transform>();
 			_cameraBase.transform.parent = Locator.GetPlayerTransform();
 			_cameraBase.transform.localPosition = Vector3.zero;
 			_cameraBase.transform.localRotation = Quaternion.Euler(0, 0, 0);

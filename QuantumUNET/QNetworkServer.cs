@@ -908,7 +908,7 @@ namespace QuantumUNET
 						}
 						else if (networkIdentity2.gameObject.activeSelf)
 						{
-							QLog.Log(
+							QLog.LogDebug(
 								$"Sending spawn message for current server objects name='{networkIdentity2.gameObject.name}' netId={networkIdentity2.NetId}");
 							var flag2 = networkIdentity2.OnCheckObserver(conn);
 							if (flag2)

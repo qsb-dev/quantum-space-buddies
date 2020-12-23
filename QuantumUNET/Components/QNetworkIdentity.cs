@@ -589,7 +589,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				QLog.Log($"Added observer {conn.address} added for {gameObject}");
+				QLog.LogDebug($"Added observer {conn.address} added for {gameObject}");
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
 				conn.AddToVisList(this);
