@@ -27,7 +27,6 @@ namespace QSB.WorldSync
 			{
 				return;
 			}
-			DebugLog.DebugWrite($"adding {worldObject.GetType().Name}");
 			WorldObjects.Add(worldObject);
 		}
 

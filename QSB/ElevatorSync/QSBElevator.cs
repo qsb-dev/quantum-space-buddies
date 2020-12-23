@@ -6,7 +6,6 @@ namespace QSB.ElevatorSync
 {
 	public class QSBElevator : WorldObject<Elevator>
 	{
-		private Elevator _elevator;
 		private Vector3 _startLocalPos;
 		private Vector3 _endLocalPos;
 
@@ -16,18 +15,18 @@ namespace QSB.ElevatorSync
 
 		public override void Init(Elevator elevator, int id)
 		{
-			_elevator = elevator;
+			AttachedObject = elevator;
 			ObjectId = id;
-			QSBCore.Helper.Events.Unity.RunWhen(() => _elevator.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
+			QSBCore.Helper.Events.Unity.RunWhen(() => AttachedObject.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
 		}
 
 		private void InitValues()
 		{
-			_startLocalPos = _elevator.GetValue<Vector3>("_startLocalPos");
-			_endLocalPos = _elevator.GetValue<Vector3>("_endLocalPos");
-			_interactVolume = _elevator.GetValue<SingleInteractionVolume>("_interactVolume");
-			_owAudioSourceOneShot = _elevator.GetValue<OWAudioSource>("_owAudioSourceOneShot");
-			_owAudioSourceLP = _elevator.GetValue<OWAudioSource>("_owAudioSourceLP");
+			_startLocalPos = AttachedObject.GetValue<Vector3>("_startLocalPos");
+			_endLocalPos = AttachedObject.GetValue<Vector3>("_endLocalPos");
+			_interactVolume = AttachedObject.GetValue<SingleInteractionVolume>("_interactVolume");
+			_owAudioSourceOneShot = AttachedObject.GetValue<OWAudioSource>("_owAudioSourceOneShot");
+			_owAudioSourceLP = AttachedObject.GetValue<OWAudioSource>("_owAudioSourceLP");
 		}
 
 		public void RemoteCall(bool isGoingUp)
@@ -39,16 +38,16 @@ namespace QSB.ElevatorSync
 		private void SetDirection(bool isGoingUp)
 		{
 			var targetPos = isGoingUp ? _endLocalPos : _startLocalPos;
-			_elevator.SetValue("_goingToTheEnd", isGoingUp);
-			_elevator.SetValue("_targetLocalPos", targetPos);
+			AttachedObject.SetValue("_goingToTheEnd", isGoingUp);
+			AttachedObject.SetValue("_targetLocalPos", targetPos);
 			_interactVolume.transform.Rotate(0f, 180f, 0f);
 		}
 
 		private void RemoteStartLift()
 		{
-			_elevator.enabled = true;
-			_elevator.SetValue("_initLocalPos", _elevator.transform.localPosition);
-			_elevator.SetValue("_initLiftTime", Time.time);
+			AttachedObject.enabled = true;
+			AttachedObject.SetValue("_initLocalPos", AttachedObject.transform.localPosition);
+			AttachedObject.SetValue("_initLiftTime", Time.time);
 			_owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
 			_owAudioSourceLP.FadeIn(0.5f);
 			_interactVolume.DisableInteraction();

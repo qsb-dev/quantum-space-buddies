@@ -7,14 +7,12 @@ namespace QSB.GeyserSync
 {
 	public class QSBGeyser : WorldObject<GeyserController>
 	{
-		private GeyserController _geyserController;
-
 		public override void Init(GeyserController geyserController, int id)
 		{
 			ObjectId = id;
-			_geyserController = geyserController;
-			_geyserController.OnGeyserActivateEvent += () => HandleEvent(true);
-			_geyserController.OnGeyserDeactivateEvent += () => HandleEvent(false);
+			AttachedObject = geyserController;
+			AttachedObject.OnGeyserActivateEvent += () => HandleEvent(true);
+			AttachedObject.OnGeyserDeactivateEvent += () => HandleEvent(false);
 		}
 
 		private void HandleEvent(bool state)
@@ -29,10 +27,10 @@ namespace QSB.GeyserSync
 		{
 			if (state)
 			{
-				_geyserController?.ActivateGeyser();
+				AttachedObject?.ActivateGeyser();
 				return;
 			}
-			_geyserController?.DeactivateGeyser();
+			AttachedObject?.DeactivateGeyser();
 		}
 	}
 }
