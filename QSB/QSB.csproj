@@ -192,6 +192,7 @@
     <Compile Include="QuantumSync\Events\MultiStateChangeMessage.cs" />
     <Compile Include="QuantumSync\Events\SocketStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\SocketStateChangeMessage.cs" />
+    <Compile Include="QuantumSync\QSBMultiStateQuantumObject.cs" />
     <Compile Include="QuantumSync\QSBSocketedQuantumObject.cs" />
     <Compile Include="QuantumSync\QSBQuantumSocket.cs" />
     <Compile Include="QuantumSync\QuantumManager.cs" />
