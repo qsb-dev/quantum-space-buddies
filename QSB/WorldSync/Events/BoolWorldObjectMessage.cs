@@ -6,13 +6,13 @@ namespace QSB.WorldSync.Events
 	{
 		public bool State { get; set; }
 
-		public override void Deserialize(QSBNetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			State = reader.ReadBoolean();
 		}
 
-		public override void Serialize(QSBNetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(State);

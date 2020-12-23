@@ -8,14 +8,14 @@ namespace QSB.ConversationSync.Events
 		public string ConditionName { get; set; }
 		public bool ConditionState { get; set; }
 
-		public override void Deserialize(QSBNetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			ConditionName = reader.ReadString();
 			ConditionState = reader.ReadBoolean();
 		}
 
-		public override void Serialize(QSBNetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ConditionName);

@@ -9,7 +9,7 @@ namespace QSB.ConversationSync.Events
 		public uint PlayerId { get; set; }
 		public bool State { get; set; }
 
-		public override void Deserialize(QSBNetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			CharacterId = reader.ReadInt32();
@@ -17,7 +17,7 @@ namespace QSB.ConversationSync.Events
 			State = reader.ReadBoolean();
 		}
 
-		public override void Serialize(QSBNetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(CharacterId);

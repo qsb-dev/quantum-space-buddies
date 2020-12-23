@@ -23,7 +23,7 @@ using UnityEngine.Networking;
 
 namespace QSB
 {
-	public class QSBNetworkManager : QSBNetworkManagerUNET
+	public class QSBNetworkManager : QNetworkManager
 	{
 		public static QSBNetworkManager Instance { get; private set; }
 
@@ -87,7 +87,7 @@ namespace QSB
 
 		private void SetupNetworkId(GameObject go)
 		{
-			var ident = go.AddComponent<QSBNetworkIdentity>();
+			var ident = go.AddComponent<QNetworkIdentity>();
 			ident.LocalPlayerAuthority = true;
 			ident.SetValue("m_AssetId", go.GetComponent<NetworkIdentity>().assetId);
 			ident.SetValue("m_SceneId", go.GetComponent<NetworkIdentity>().sceneId);
@@ -95,9 +95,9 @@ namespace QSB
 
 		private void SetupNetworkTransform(GameObject go)
 		{
-			var trans = go.AddComponent<QSBNetworkTransform>();
-			trans.SyncRotationAxis = QSBNetworkTransform.AxisSyncMode.AxisXYZ;
-			Destroy(go.GetComponent<NetworkTransform>());
+			var trans = go.AddComponent<QuantumUNET.Components.QNetworkTransform>();
+			trans.SyncRotationAxis = QuantumUNET.Components.QNetworkTransform.AxisSyncMode.AxisXYZ;
+			Destroy(go.GetComponent<UnityEngine.Networking.NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
 		}
 
@@ -140,17 +140,17 @@ namespace QSB
 			}
 		}
 
-		public override void OnServerAddPlayer(QSBNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
+		public override void OnServerAddPlayer(QNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
 		{
 			DebugLog.DebugWrite($"OnServerAddPlayer {playerControllerId}", MessageType.Info);
 			base.OnServerAddPlayer(connection, playerControllerId);
 
-			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
-			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
-			QSBNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
+			QNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
+			QNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
+			QNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 		}
 
-		public override void OnStartClient(QSBNetworkClient _)
+		public override void OnStartClient(QNetworkClient _)
 		{
 			DebugLog.DebugWrite($"Setting defaultServerIP to {networkAddress}");
 			var config = QSBCore.Helper.Config;
@@ -158,7 +158,7 @@ namespace QSB
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
 
-		public override void OnClientConnect(QSBNetworkConnection connection) // Called on the client when connecting to a server
+		public override void OnClientConnect(QNetworkConnection connection) // Called on the client when connecting to a server
 		{
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
 			base.OnClientConnect(connection);
@@ -175,7 +175,7 @@ namespace QSB
 				OrbManager.Instance.QueueBuildSlots();
 			}
 
-			var specificType = QSBNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
@@ -216,14 +216,14 @@ namespace QSB
 			_lobby.CanEditName = true;
 		}
 
-		public override void OnServerDisconnect(QSBNetworkConnection connection) // Called on the server when any client disconnects
+		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects
 		{
 			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			foreach (var item in QSBWorldSync.OrbSyncList)
 			{
-				var identity = item.GetComponent<QSBNetworkIdentity>();
+				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)
 				{
 					identity.RemoveClientAuthority(connection);

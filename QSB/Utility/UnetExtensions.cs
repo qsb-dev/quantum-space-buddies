@@ -6,7 +6,7 @@ namespace QSB.Utility
 {
 	public static class UnetExtensions
 	{
-		public static PlayerInfo GetPlayer(this QSBNetworkConnection connection)
+		public static PlayerInfo GetPlayer(this QNetworkConnection connection)
 		{
 			var go = connection.PlayerControllers[0].Gameobject;
 			var controller = go.GetComponent<PlayerTransformSync>();

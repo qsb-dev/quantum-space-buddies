@@ -2,7 +2,7 @@
 
 namespace QSB.Player
 {
-	public abstract class PlayerSyncObject : QSBNetworkBehaviour
+	public abstract class PlayerSyncObject : QNetworkBehaviour
 	{
 		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;

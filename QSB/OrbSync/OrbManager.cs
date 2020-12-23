@@ -30,16 +30,16 @@ namespace QSB.OrbSync
 		{
 			QSBWorldSync.OldOrbList.Clear();
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-			if (QSBNetworkServer.active)
+			if (QNetworkServer.active)
 			{
-				QSBWorldSync.OrbSyncList.ForEach(x => QSBNetworkServer.Destroy(x.gameObject));
+				QSBWorldSync.OrbSyncList.ForEach(x => QNetworkServer.Destroy(x.gameObject));
 				QSBWorldSync.OrbSyncList.Clear();
-				QSBWorldSync.OldOrbList.ForEach(x => QSBNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
+				QSBWorldSync.OldOrbList.ForEach(x => QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
 			}
 			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
 		}
 
 		public void QueueBuildSlots() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
-		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBNetworkServer.active, BuildOrbs);
+		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QNetworkServer.active, BuildOrbs);
 	}
 }

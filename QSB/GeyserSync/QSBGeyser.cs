@@ -19,7 +19,7 @@ namespace QSB.GeyserSync
 
 		private void HandleEvent(bool state)
 		{
-			if (QSBNetworkServer.active)
+			if (QNetworkServer.active)
 			{
 				GlobalMessenger<int, bool>.FireEvent(EventNames.QSBGeyserState, ObjectId, state);
 			}
