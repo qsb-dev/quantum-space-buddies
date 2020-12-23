@@ -1,7 +1,6 @@
 ﻿using QSB.Events;
 using QSB.WorldSync;
 using QuantumUNET;
-using UnityEngine;
 
 namespace QSB.GeyserSync
 {

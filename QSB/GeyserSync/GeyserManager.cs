@@ -18,7 +18,7 @@ namespace QSB.GeyserSync
 			QSBPatchManager.OnPatchType -= OnPatchType;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse) 
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
 
 		public void OnPatchType(QSBPatchTypes type)

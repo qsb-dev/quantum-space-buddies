@@ -1,6 +1,5 @@
 ﻿using QSB.WorldSync;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.ElevatorSync
@@ -19,10 +18,7 @@ namespace QSB.ElevatorSync
 
 		public void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-		{
-			QSBWorldSync.Init<QSBElevator, Elevator>(ref _elevators);
-		}
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) => QSBWorldSync.Init<QSBElevator, Elevator>(ref _elevators);
 
 		public int GetId(Elevator elevator) => _elevators.IndexOf(elevator);
 	}

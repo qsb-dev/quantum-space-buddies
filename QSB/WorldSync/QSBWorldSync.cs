@@ -3,7 +3,6 @@ using QSB.OrbSync;
 using QSB.TransformSync;
 using QSB.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -32,15 +31,15 @@ namespace QSB.WorldSync
 
 		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
 
-		public static T GetWorldObject<T, U>(int id) where T : WorldObject<U> where U : UnityEngine.Object 
+		public static T GetWorldObject<T, U>(int id) where T : WorldObject<U> where U : UnityEngine.Object
 			=> GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
 
-		public static void RemoveWorldObjects<T, U>() where T : WorldObject<U> where U : UnityEngine.Object 
+		public static void RemoveWorldObjects<T, U>() where T : WorldObject<U> where U : UnityEngine.Object
 			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
 
 		public static void Init<QSBType, BaseType>(ref List<BaseType> list)
 			where QSBType : WorldObject<BaseType>
-			where BaseType : UnityEngine.Object 
+			where BaseType : UnityEngine.Object
 			=> list = Init<QSBType, BaseType>();
 
 		public static List<BaseType> Init<QSBType, BaseType>()
