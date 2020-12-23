@@ -26,6 +26,7 @@
 		PlayInstrument,
 		DialogueCondition,
 		RevealFact,
-		SocketStateChange
+		SocketStateChange,
+		MultiStateChange
 	}
 }

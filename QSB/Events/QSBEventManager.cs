@@ -25,6 +25,7 @@ namespace QSB.Events
 		{
 			_eventList = new List<IQSBEvent>
 			{
+				// Player
 				new PlayerReadyEvent(),
 				new PlayerJoinEvent(),
 				new PlayerSuitEvent(),
@@ -36,19 +37,22 @@ namespace QSB.Events
 				new PlayerSectorEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
+				new ServerSendPlayerStatesEvent(),
+				new ChangeAnimTypeEvent(),
+				new CrouchEvent(),
+				new ServerTimeEvent(),
+				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
-				new ServerTimeEvent(),
-				new CrouchEvent(),
 				new OrbSlotEvent(),
 				new OrbUserEvent(),
+				new SocketStateChangeEvent(),
+				new MultiStateChangeEvent(),
+				// Conversation/dialogue
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
-				new ChangeAnimTypeEvent(),
-				new ServerSendPlayerStatesEvent(),
 				new DialogueConditionEvent(),
-				new RevealFactEvent(),
-				new SocketStateChangeEvent()
+				new RevealFactEvent()
 			};
 
 			_eventList.ForEach(ev => ev.SetupListener());

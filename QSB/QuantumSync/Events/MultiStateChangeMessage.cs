@@ -3,7 +3,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Events
 {
-	internal class MultiStateChangeMessag : WorldObjectMessage
+	public class MultiStateChangeMessage : WorldObjectMessage
 	{
 		public int StateIndex { get; set; }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Events
 {
-	internal class SocketStateChangeEvent : QSBEvent<SocketStateChangeMessage>
+	public class SocketStateChangeEvent : QSBEvent<SocketStateChangeMessage>
 	{
 		public override QSB.Events.EventType Type => QSB.Events.EventType.SocketStateChange;
 

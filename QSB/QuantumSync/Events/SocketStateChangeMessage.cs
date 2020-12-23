@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Events
 {
-	internal class SocketStateChangeMessage : WorldObjectMessage
+	public class SocketStateChangeMessage : WorldObjectMessage
 	{
 		public int SocketId { get; set; }
 		public Quaternion LocalRotation { get; set; }

@@ -36,5 +36,6 @@
 		public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
 		public static string QSBRevealFact = "QSBRevealFact";
 		public static string QSBSocketStateChange = "QSBSocketStateChange";
+		public static string QSBMultiStateChange = "QSBMultiStateChange";
 	}
 }
