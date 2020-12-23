@@ -43,7 +43,7 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
-		public static bool IsServer => QSBNetworkServer.active;
+		public static bool IsServer => QNetworkServer.active;
 
 		public void Awake()
 		{
@@ -66,7 +66,7 @@ namespace QSB
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<QSBNetworkManagerHUD>();
+			gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
 			gameObject.AddComponent<ElevatorManager>();
 			gameObject.AddComponent<GeyserManager>();
@@ -82,7 +82,7 @@ namespace QSB
 		}
 
 		public void Update() =>
-			QSBNetworkIdentity.UNetStaticUpdate();
+			QNetworkIdentity.UNetStaticUpdate();
 
 		public override void Configure(IModConfig config)
 		{

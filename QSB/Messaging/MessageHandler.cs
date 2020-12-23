@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace QSB.Messaging
 {
-	public class MessageHandler<T> where T : QSBMessageBase, new()
+	public class MessageHandler<T> where T : QMessageBase, new()
 	{
 		public event Action<T> OnClientReceiveMessage;
 		public event Action<T> OnServerReceiveMessage;
@@ -16,7 +16,7 @@ namespace QSB.Messaging
 
 		public MessageHandler(EventType eventType)
 		{
-			_eventType = (short)(eventType + QSBMsgType.Highest + 1);
+			_eventType = (short)(eventType + QMsgType.Highest + 1);
 			if (QSBNetworkManager.Instance.IsReady)
 			{
 				Init();
@@ -29,13 +29,13 @@ namespace QSB.Messaging
 
 		private void Init()
 		{
-			if (QSBNetworkServer.handlers.Keys.Contains(_eventType))
+			if (QNetworkServer.handlers.Keys.Contains(_eventType))
 			{
-				QSBNetworkServer.handlers.Remove(_eventType);
-				QSBNetworkManagerUNET.singleton.client.handlers.Remove(_eventType);
+				QNetworkServer.handlers.Remove(_eventType);
+				QNetworkManager.singleton.client.handlers.Remove(_eventType);
 			}
-			QSBNetworkServer.RegisterHandler(_eventType, OnServerReceiveMessageHandler);
-			QSBNetworkManagerUNET.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
+			QNetworkServer.RegisterHandler(_eventType, OnServerReceiveMessageHandler);
+			QNetworkManager.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
 		}
 
 		public void SendToAll(T message)
@@ -44,7 +44,7 @@ namespace QSB.Messaging
 			{
 				return;
 			}
-			QSBNetworkServer.SendToAll(_eventType, message);
+			QNetworkServer.SendToAll(_eventType, message);
 		}
 
 		public void SendToServer(T message)
@@ -53,16 +53,16 @@ namespace QSB.Messaging
 			{
 				return;
 			}
-			QSBNetworkManagerUNET.singleton.client.Send(_eventType, message);
+			QNetworkManager.singleton.client.Send(_eventType, message);
 		}
 
-		private void OnClientReceiveMessageHandler(QSBNetworkMessage netMsg)
+		private void OnClientReceiveMessageHandler(QNetworkMessage netMsg)
 		{
 			var message = netMsg.ReadMessage<T>();
 			OnClientReceiveMessage?.Invoke(message);
 		}
 
-		private void OnServerReceiveMessageHandler(QSBNetworkMessage netMsg)
+		private void OnServerReceiveMessageHandler(QNetworkMessage netMsg)
 		{
 			var message = netMsg.ReadMessage<T>();
 			OnServerReceiveMessage?.Invoke(message);

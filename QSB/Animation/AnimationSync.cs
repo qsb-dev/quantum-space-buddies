@@ -13,7 +13,7 @@ namespace QSB.Animation
 	{
 		private Animator _anim;
 		private Animator _bodyAnim;
-		private QSBNetworkAnimator _netAnim;
+		private QNetworkAnimator _netAnim;
 
 		private RuntimeAnimatorController _suitedAnimController;
 		private AnimatorOverrideController _unsuitedAnimController;
@@ -34,7 +34,7 @@ namespace QSB.Animation
 		protected void Awake()
 		{
 			_anim = gameObject.AddComponent<Animator>();
-			_netAnim = gameObject.AddComponent<QSBNetworkAnimator>();
+			_netAnim = gameObject.AddComponent<QNetworkAnimator>();
 			_netAnim.enabled = false;
 			_netAnim.animator = _anim;
 

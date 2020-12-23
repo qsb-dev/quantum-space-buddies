@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.TimeSync
 {
-	public class WakeUpSync : QSBNetworkBehaviour
+	public class WakeUpSync : QNetworkBehaviour
 	{
 		public static WakeUpSync LocalInstance { get; private set; }
 
@@ -48,7 +48,7 @@ namespace QSB.TimeSync
 
 		private void OnWakeUp()
 		{
-			if (QSBNetworkServer.active)
+			if (QNetworkServer.active)
 			{
 				QSBCore.HasWokenUp = true;
 			}

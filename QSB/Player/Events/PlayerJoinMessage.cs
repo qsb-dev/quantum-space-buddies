@@ -7,13 +7,13 @@ namespace QSB.Player.Events
 	{
 		public string PlayerName { get; set; }
 
-		public override void Deserialize(QSBNetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerName = reader.ReadString();
 		}
 
-		public override void Serialize(QSBNetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerName);

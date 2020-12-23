@@ -51,12 +51,12 @@ namespace QSB.Events
 				return;
 			}
 
-			if (message.OnlySendToServer && !QSBNetworkServer.active)
+			if (message.OnlySendToServer && !QNetworkServer.active)
 			{
 				return;
 			}
 
-			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QSBNetworkIdentity>() == null)
+			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QNetworkIdentity>() == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message of type <{message.GetType().Name}> before localplayer was established.", MessageType.Warning);
 				return;
@@ -65,11 +65,11 @@ namespace QSB.Events
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
-				OnReceiveLocal(QSBNetworkServer.active, message);
+				OnReceiveLocal(QNetworkServer.active, message);
 				return;
 			}
 
-			OnReceiveRemote(QSBNetworkServer.active, message);
+			OnReceiveRemote(QNetworkServer.active, message);
 		}
 	}
 }
