@@ -1,5 +1,5 @@
-﻿using OWML.Logging;
-using QuantumUNET.Components;
+﻿using QuantumUNET.Components;
+using QuantumUNET.Logging;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using System;
@@ -199,7 +199,7 @@ namespace QuantumUNET
 					return;
 				}
 			}
-			Debug.LogError($"RemovePlayer player at playerControllerId {playerControllerId} not found");
+			QLog.LogError($"RemovePlayer player at playerControllerId {playerControllerId} not found");
 		}
 
 		internal bool GetPlayerController(short playerControllerId, out QPlayerController playerController)
@@ -278,7 +278,7 @@ namespace QuantumUNET
 					break;
 				}
 			}
-			ModConsole.OwmlConsole.WriteLine(
+			QLog.Log(
 				$"ConnectionSend con:{connectionId} bytes:{num} msgId:{num2} {stringBuilder}");
 		}
 
@@ -287,12 +287,12 @@ namespace QuantumUNET
 			bool result;
 			if (m_Channels == null)
 			{
-				Debug.LogWarning($"Channels not initialized sending on id '{channelId}");
+				QLog.LogWarning($"Channels not initialized sending on id '{channelId}");
 				result = false;
 			}
 			else if (channelId < 0 || channelId >= m_Channels.Length)
 			{
-				Debug.LogError(
+				QLog.LogError(
 					$"Invalid channel when sending buffered data, '{channelId}'. Current channel count is {m_Channels.Length}");
 				result = false;
 			}
@@ -328,7 +328,7 @@ namespace QuantumUNET
 				}
 				if (networkMessageDelegate == null)
 				{
-					ModConsole.OwmlConsole.WriteLine($"Unknown message ID {num2} connId:{connectionId}");
+					QLog.LogError($"Unknown message ID {num2} connId:{connectionId}");
 					break;
 				}
 				m_NetMsg.MsgType = num2;

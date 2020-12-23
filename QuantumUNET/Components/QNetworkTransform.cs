@@ -1,4 +1,4 @@
-﻿using OWML.Logging;
+﻿using QuantumUNET.Logging;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using UnityEngine;
@@ -196,22 +196,22 @@ namespace QuantumUNET.Components
 			var gameObject = QNetworkServer.FindLocalObject(networkInstanceId);
 			if (gameObject == null)
 			{
-				ModConsole.OwmlConsole.WriteLine("Warning - Received NetworkTransform data for GameObject that doesn't exist");
+				QLog.LogWarning("Received NetworkTransform data for GameObject that doesn't exist");
 			}
 			else
 			{
 				var component = gameObject.GetComponent<QNetworkTransform>();
 				if (component == null)
 				{
-					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform null target");
+					QLog.LogWarning("HandleTransform null target");
 				}
 				else if (!component.LocalPlayerAuthority)
 				{
-					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform no localPlayerAuthority");
+					QLog.LogWarning("HandleTransform no localPlayerAuthority");
 				}
 				else if (netMsg.Connection.ClientOwnedObjects == null)
 				{
-					ModConsole.OwmlConsole.WriteLine("Warning - HandleTransform object not owned by connection");
+					QLog.LogWarning("HandleTransform object not owned by connection");
 				}
 				else if (netMsg.Connection.ClientOwnedObjects.Contains(networkInstanceId))
 				{
@@ -220,8 +220,8 @@ namespace QuantumUNET.Components
 				}
 				else
 				{
-					ModConsole.OwmlConsole.WriteLine(
-						$"Warning - HandleTransform netId:{networkInstanceId} is not for a valid player");
+					QLog.LogWarning(
+						$"HandleTransform netId:{networkInstanceId} is not for a valid player");
 				}
 			}
 		}

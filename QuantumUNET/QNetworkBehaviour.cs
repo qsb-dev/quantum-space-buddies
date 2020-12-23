@@ -1,5 +1,5 @@
-﻿using OWML.Logging;
-using QuantumUNET.Components;
+﻿using QuantumUNET.Components;
+using QuantumUNET.Logging;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace QuantumUNET
 					m_MyView = GetComponent<QNetworkIdentity>();
 					if (m_MyView == null)
 					{
-						Debug.LogError("There is no NetworkIdentity on this object. Please add one.");
+						QLog.LogFatalError($"There is no QNetworkIdentity on this object (name={name}). Please add one.");
 					}
 					myView = m_MyView;
 				}
@@ -52,11 +52,11 @@ namespace QuantumUNET
 		{
 			if (!IsLocalPlayer && !HasAuthority)
 			{
-				Debug.LogWarning("Trying to send command for object without authority.");
+				QLog.LogWarning("Trying to send command for object without authority.");
 			}
 			else if (QClientScene.readyConnection == null)
 			{
-				Debug.LogError($"Send command attempted with no client running [client={ConnectionToServer}].");
+				QLog.LogError($"Send command attempted with no client running [client={ConnectionToServer}].");
 			}
 			else
 			{
@@ -71,7 +71,7 @@ namespace QuantumUNET
 		{
 			if (!IsServer)
 			{
-				Debug.LogWarning("ClientRpc call on un-spawned object");
+				QLog.LogWarning("ClientRpc call on un-spawned object");
 				return;
 			}
 			writer.FinishMessage();
@@ -82,7 +82,7 @@ namespace QuantumUNET
 		{
 			if (!IsServer)
 			{
-				Debug.LogWarning("TargetRpc call on un-spawned object");
+				QLog.LogWarning("TargetRpc call on un-spawned object");
 				return;
 			}
 			writer.FinishMessage();
@@ -95,7 +95,7 @@ namespace QuantumUNET
 		{
 			if (!QNetworkServer.active)
 			{
-				ModConsole.OwmlConsole.WriteLine($"Error - Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.");
+				QLog.LogError($"Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.");
 				return;
 			}
 			writer.FinishMessage();
@@ -194,21 +194,21 @@ namespace QuantumUNET
 			bool result;
 			if (!s_CmdHandlerDelegates.TryGetValue(cmdHash, out var invoker))
 			{
-				Debug.Log($"GetInvokerForHash hash:{cmdHash} not found");
+				QLog.LogError($"GetInvokerForHash hash:{cmdHash} not found");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
 			}
 			else if (invoker == null)
 			{
-				Debug.Log($"GetInvokerForHash hash:{cmdHash} invoker null");
+				QLog.LogError($"GetInvokerForHash hash:{cmdHash} invoker null");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
 			}
 			else if (invoker.invokeType != invokeType)
 			{
-				Debug.LogError($"GetInvokerForHash hash:{cmdHash} mismatched invokeType");
+				QLog.LogError($"GetInvokerForHash hash:{cmdHash} mismatched invokeType");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
@@ -224,10 +224,10 @@ namespace QuantumUNET
 
 		internal static void DumpInvokers()
 		{
-			Debug.Log($"DumpInvokers size:{s_CmdHandlerDelegates.Count}");
+			QLog.Log($"DumpInvokers size:{s_CmdHandlerDelegates.Count}");
 			foreach (var keyValuePair in s_CmdHandlerDelegates)
 			{
-				Debug.Log($"  Invoker:{keyValuePair.Value.invokeClass}:{keyValuePair.Value.invokeFunction.GetMethodName()} {keyValuePair.Value.invokeType} {keyValuePair.Key}");
+				QLog.Log($"  Invoker:{keyValuePair.Value.invokeClass}:{keyValuePair.Value.invokeFunction.GetMethodName()} {keyValuePair.Value.invokeType} {keyValuePair.Key}");
 			}
 		}
 
@@ -405,7 +405,7 @@ namespace QuantumUNET
 						networkInstanceId = component.NetId;
 						if (networkInstanceId.IsEmpty())
 						{
-							Debug.LogWarning(
+							QLog.LogWarning(
 								$"SetSyncVarGameObject GameObject {newGameObject} has a zero netId. Maybe it is not spawned yet?");
 						}
 					}
@@ -417,7 +417,7 @@ namespace QuantumUNET
 				}
 				if (networkInstanceId != networkInstanceId2)
 				{
-					Debug.Log(
+					QLog.Log(
 						$"SetSyncVar GameObject {GetType().Name} bit [{dirtyBit}] netfieldId:{networkInstanceId2}->{networkInstanceId}");
 					SetDirtyBit(dirtyBit);
 					gameObjectField = newGameObject;
@@ -443,7 +443,7 @@ namespace QuantumUNET
 
 			if (flag)
 			{
-				Debug.Log($"SetSyncVar {GetType().Name} bit [{dirtyBit}] {fieldValue}->{value}");
+				QLog.Log($"SetSyncVar {GetType().Name} bit [{dirtyBit}] {fieldValue}->{value}");
 
 				SetDirtyBit(dirtyBit);
 				fieldValue = value;
