@@ -11,7 +11,6 @@ namespace QSB.QuantumSync
 		{
 			ObjectId = id;
 			AttachedSocket = quantumSocket;
-
 			AttachedSocket.GetType().SetValue("_randomYRotation", false);
 		}
 	}
