@@ -30,13 +30,7 @@ namespace QSB.SectorSync
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
 			QSBWorldSync.RemoveWorldObjects<QSBSector, Sector>();
-			var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
-			for (var id = 0; id < sectors.Count; id++)
-			{
-				var qsbSector = QSBWorldSync.GetWorldObject<QSBSector, Sector>(id) ?? new QSBSector();
-				qsbSector.Init(sectors[id], id);
-				QSBWorldSync.AddWorldObject(qsbSector);
-			}
+			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 

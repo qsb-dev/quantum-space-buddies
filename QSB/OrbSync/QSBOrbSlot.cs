@@ -15,7 +15,6 @@ namespace QSB.OrbSync
 			ObjectId = id;
 			AttachedObject = slot;
 			_initialized = true;
-			QSBWorldSync.AddWorldObject(this);
 		}
 
 		public void HandleEvent(bool state, int orbId)
