@@ -22,7 +22,7 @@ namespace QSB.OrbSync.Events
 
 		public override void OnReceiveRemote(bool server, OrbSlotMessage message)
 		{
-			var orbSlot = QSBWorldSync.GetWorldObject<QSBOrbSlot>(message.SlotId);
+			var orbSlot = QSBWorldSync.GetWorldObject<QSBOrbSlot, NomaiInterfaceSlot>(message.SlotId);
 			orbSlot?.SetState(message.SlotState, message.OrbId);
 		}
 	}

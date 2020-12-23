@@ -1,6 +1,14 @@
-﻿namespace QSB.QuantumSync
+﻿using QSB.WorldSync;
+using UnityEngine;
+
+namespace QSB.QuantumSync
 {
-	internal class QSBMultiStateQuantumObject
+	public class QSBMultiStateQuantumObject : WorldObject<MultiStateQuantumObject>
 	{
+		public override void Init(MultiStateQuantumObject attachedObject, int id)
+		{
+			ObjectId = id;
+			AttachedObject = attachedObject;
+		}
 	}
 }

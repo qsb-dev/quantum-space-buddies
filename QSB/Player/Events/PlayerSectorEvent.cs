@@ -28,7 +28,7 @@ namespace QSB.Player.Events
 			{
 				return;
 			}
-			var sector = QSBWorldSync.GetWorldObject<QSBSector>(message.ObjectId);
+			var sector = QSBWorldSync.GetWorldObject<QSBSector, Sector>(message.ObjectId);
 
 			if (sector == null)
 			{

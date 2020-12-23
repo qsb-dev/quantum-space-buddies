@@ -1,20 +1,20 @@
 ﻿using QSB.Events;
 using QSB.WorldSync;
 using QuantumUNET;
+using UnityEngine;
 
 namespace QSB.GeyserSync
 {
-	public class QSBGeyser : WorldObject
+	public class QSBGeyser : WorldObject<GeyserController>
 	{
 		private GeyserController _geyserController;
 
-		public void Init(GeyserController geyserController, int id)
+		public override void Init(GeyserController geyserController, int id)
 		{
 			ObjectId = id;
 			_geyserController = geyserController;
-
-			geyserController.OnGeyserActivateEvent += () => HandleEvent(true);
-			geyserController.OnGeyserDeactivateEvent += () => HandleEvent(false);
+			_geyserController.OnGeyserActivateEvent += () => HandleEvent(true);
+			_geyserController.OnGeyserDeactivateEvent += () => HandleEvent(false);
 		}
 
 		private void HandleEvent(bool state)

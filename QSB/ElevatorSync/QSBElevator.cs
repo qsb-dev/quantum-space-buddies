@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.ElevatorSync
 {
-	public class QSBElevator : WorldObject
+	public class QSBElevator : WorldObject<Elevator>
 	{
 		private Elevator _elevator;
 		private Vector3 _startLocalPos;
@@ -14,7 +14,7 @@ namespace QSB.ElevatorSync
 		private OWAudioSource _owAudioSourceOneShot;
 		private OWAudioSource _owAudioSourceLP;
 
-		public void Init(Elevator elevator, int id)
+		public override void Init(Elevator elevator, int id)
 		{
 			_elevator = elevator;
 			ObjectId = id;

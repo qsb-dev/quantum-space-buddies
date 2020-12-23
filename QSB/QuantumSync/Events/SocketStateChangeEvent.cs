@@ -28,8 +28,8 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var obj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(message.ObjectId).AttachedObject;
-			var socket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId).AttachedSocket;
+			var obj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(message.ObjectId).AttachedObject;
+			var socket = QSBWorldSync.GetWorldObject<QSBQuantumSocket, QuantumSocket>(message.SocketId).AttachedSocket;
 			obj.GetType().GetMethod("MoveToSocket", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(obj, new object[] { socket });
 			obj.transform.localRotation = message.LocalRotation;
 		}

@@ -21,13 +21,7 @@ namespace QSB.ElevatorSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			_elevators = Resources.FindObjectsOfTypeAll<Elevator>().ToList();
-			for (var id = 0; id < _elevators.Count; id++)
-			{
-				var qsbElevator = QSBWorldSync.GetWorldObject<QSBElevator>(id) ?? new QSBElevator();
-				qsbElevator.Init(_elevators[id], id);
-				QSBWorldSync.AddWorldObject(qsbElevator);
-			}
+			QSBWorldSync.Init<QSBElevator, Elevator>(ref _elevators);
 		}
 
 		public int GetId(Elevator elevator) => _elevators.IndexOf(elevator);

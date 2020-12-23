@@ -4,17 +4,16 @@ using QSB.WorldSync;
 
 namespace QSB.OrbSync
 {
-	public class QSBOrbSlot : WorldObject
+	public class QSBOrbSlot : WorldObject<NomaiInterfaceSlot>
 	{
-		public NomaiInterfaceSlot InterfaceSlot { get; private set; }
 		public bool Activated { get; private set; }
 
 		private bool _initialized;
 
-		public void Init(NomaiInterfaceSlot slot, int id)
+		public override void Init(NomaiInterfaceSlot slot, int id)
 		{
 			ObjectId = id;
-			InterfaceSlot = slot;
+			AttachedObject = slot;
 			_initialized = true;
 			QSBWorldSync.AddWorldObject(this);
 		}
@@ -34,9 +33,9 @@ namespace QSB.OrbSync
 				return;
 			}
 			var occOrb = state ? QSBWorldSync.OldOrbList[orbId] : null;
-			InterfaceSlot.SetValue("_occupyingOrb", occOrb);
+			AttachedObject.SetValue("_occupyingOrb", occOrb);
 			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
-			QSBWorldSync.RaiseEvent(InterfaceSlot, ev);
+			QSBWorldSync.RaiseEvent(AttachedObject, ev);
 			Activated = state;
 		}
 	}

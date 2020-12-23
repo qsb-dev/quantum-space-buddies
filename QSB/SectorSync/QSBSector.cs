@@ -3,18 +3,17 @@ using UnityEngine;
 
 namespace QSB.SectorSync
 {
-	public class QSBSector : WorldObject
+	public class QSBSector : WorldObject<Sector>
 	{
-		public Sector Sector { get; private set; }
-		public Sector.Name Type => Sector.GetName();
-		public string Name => Sector.name;
-		public Transform Transform => Sector.transform;
+		public Sector.Name Type => AttachedObject.GetName();
+		public string Name => AttachedObject.name;
+		public Transform Transform => AttachedObject.transform;
 		public Vector3 Position => Transform.position;
 
-		public void Init(Sector sector, int id)
+		public override void Init(Sector sector, int id)
 		{
-			Sector = sector;
 			ObjectId = id;
+			AttachedObject = sector;
 		}
 	}
 }

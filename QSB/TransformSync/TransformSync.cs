@@ -86,7 +86,7 @@ namespace QSB.TransformSync
 		{
 			if (HasAuthority) // If this script is attached to the client's own body on the client's side.
 			{
-				if (ReferenceSector == null || ReferenceSector.Sector == null)
+				if (ReferenceSector == null || ReferenceSector.AttachedObject == null)
 				{
 					DebugLog.ToConsole($"Error - ReferenceSector has null value for {Player.PlayerId}.{GetType().Name}", MessageType.Error);
 					return;

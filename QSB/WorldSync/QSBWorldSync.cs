@@ -3,9 +3,11 @@ using QSB.OrbSync;
 using QSB.TransformSync;
 using QSB.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace QSB.WorldSync
 {
@@ -17,36 +19,43 @@ namespace QSB.WorldSync
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
-		private static readonly List<WorldObject> WorldObjects = new List<WorldObject>();
+		private static readonly List<object> WorldObjects = new List<object>();
 
-		public static void AddWorldObject(WorldObject worldObject)
+		public static void AddWorldObject(object worldObject)
 		{
 			if (WorldObjects.Contains(worldObject))
 			{
 				return;
 			}
+			DebugLog.DebugWrite($"adding {worldObject.GetType().Name}");
 			WorldObjects.Add(worldObject);
 		}
 
 		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
 
-		public static T GetWorldObject<T>(int id) where T : WorldObject => GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
+		public static T GetWorldObject<T, U>(int id) where T : WorldObject<U> where U : UnityEngine.Object 
+			=> GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
 
-		public static void RemoveWorldObjects<T>() where T : WorldObject => WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
+		public static void RemoveWorldObjects<T, U>() where T : WorldObject<U> where U : UnityEngine.Object 
+			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
 
-		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
+		public static void Init<QSBType, BaseType>(ref List<BaseType> list)
+			where QSBType : WorldObject<BaseType>
+			where BaseType : UnityEngine.Object 
+			=> list = Init<QSBType, BaseType>();
+
+		public static List<BaseType> Init<QSBType, BaseType>()
+			where QSBType : WorldObject<BaseType>
+			where BaseType : UnityEngine.Object
 		{
-			var slotList = GetWorldObjects<QSBOrbSlot>().ToList();
-			if (!slotList.Any())
+			var list = Resources.FindObjectsOfTypeAll<BaseType>().ToList();
+			for (var id = 0; id < list.Count; id++)
 			{
-				return;
+				var obj = GetWorldObject<QSBType, BaseType>(id) ?? (QSBType)Activator.CreateInstance(typeof(QSBType));
+				obj.Init(list[id], id);
+				AddWorldObject(obj);
 			}
-			var qsbSlot = slotList.First(x => x.InterfaceSlot == slot);
-			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
-			if (orbSync.HasAuthority)
-			{
-				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
-			}
+			return list;
 		}
 
 		public static void RaiseEvent(object instance, string eventName)
@@ -61,6 +70,21 @@ namespace QSB.WorldSync
 			foreach (var del in delegateList)
 			{
 				del.DynamicInvoke(instance);
+			}
+		}
+
+		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
+		{
+			var slotList = GetWorldObjects<QSBOrbSlot>().ToList();
+			if (!slotList.Any())
+			{
+				return;
+			}
+			var qsbSlot = slotList.First(x => x.AttachedObject == slot);
+			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
+			if (orbSync.HasAuthority)
+			{
+				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
 			}
 		}
 

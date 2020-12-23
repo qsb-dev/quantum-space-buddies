@@ -1,4 +1,5 @@
 ﻿using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace QSB.QuantumSync
 		public static QuantumManager Instance { get; private set; }
 
 		private List<SocketedQuantumObject> _socketedQuantumObjects;
+		private List<MultiStateQuantumObject> _multiStateQuantumObjects;
 		private List<QuantumSocket> _quantumSockets;
 
 		public void Awake()
@@ -18,26 +20,17 @@ namespace QSB.QuantumSync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
+		public void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			_socketedQuantumObjects = Resources.FindObjectsOfTypeAll<SocketedQuantumObject>().ToList();
-			for (var id = 0; id < _socketedQuantumObjects.Count; id++)
-			{
-				var qsbSocketQuantumObj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(id) ?? new QSBSocketedQuantumObject();
-				qsbSocketQuantumObj.Init(_socketedQuantumObjects[id], id);
-				QSBWorldSync.AddWorldObject(qsbSocketQuantumObj);
-			}
-
-			_quantumSockets = Resources.FindObjectsOfTypeAll<QuantumSocket>().ToList();
-			for (var id = 0; id < _quantumSockets.Count; id++)
-			{
-				var qsbQuantumSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(id) ?? new QSBQuantumSocket();
-				qsbQuantumSocket.Init(_quantumSockets[id], id);
-				QSBWorldSync.AddWorldObject(qsbQuantumSocket);
-			}
+			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>(ref _socketedQuantumObjects);
+			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>(ref _quantumSockets);
+			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>(ref _multiStateQuantumObjects);
 		}
 
 		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);
+		public int GetId(MultiStateQuantumObject obj) => _multiStateQuantumObjects.IndexOf(obj);
 		public int GetId(QuantumSocket obj) => _quantumSockets.IndexOf(obj);
 	}
 }

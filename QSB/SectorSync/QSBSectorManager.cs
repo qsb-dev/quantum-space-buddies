@@ -29,11 +29,11 @@ namespace QSB.SectorSync
 		public void RebuildSectors()
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
-			QSBWorldSync.RemoveWorldObjects<QSBSector>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector, Sector>();
 			var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
 			for (var id = 0; id < sectors.Count; id++)
 			{
-				var qsbSector = QSBWorldSync.GetWorldObject<QSBSector>(id) ?? new QSBSector();
+				var qsbSector = QSBWorldSync.GetWorldObject<QSBSector, Sector>(id) ?? new QSBSector();
 				qsbSector.Init(sectors[id], id);
 				QSBWorldSync.AddWorldObject(qsbSector);
 			}
@@ -43,7 +43,7 @@ namespace QSB.SectorSync
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(sector => sector.Sector != null
+				.Where(sector => sector.AttachedObject != null
 					&& !_sectorBlacklist.Contains(sector.Type)
 					&& sector.Transform.gameObject.activeInHierarchy)
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))

@@ -15,15 +15,8 @@ namespace QSB.OrbSync
 
 		private void BuildOrbSlots()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
-			var orbSlots = Resources.FindObjectsOfTypeAll<NomaiInterfaceSlot>();
-			for (var id = 0; id < orbSlots.Length; id++)
-			{
-				var qsbOrbSlot = QSBWorldSync.GetWorldObject<QSBOrbSlot>(id) ?? new QSBOrbSlot();
-				qsbOrbSlot.Init(orbSlots[id], id);
-			}
-
-			DebugLog.DebugWrite($"Finished orb slot build with {orbSlots.Length} slots.", MessageType.Success);
+			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot, NomaiInterfaceSlot>();
+			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
 		}
 
 		public void BuildOrbs()

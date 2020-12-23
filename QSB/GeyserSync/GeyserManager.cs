@@ -18,16 +18,8 @@ namespace QSB.GeyserSync
 			QSBPatchManager.OnPatchType -= OnPatchType;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-		{
-			var geyserControllers = Resources.FindObjectsOfTypeAll<GeyserController>();
-			for (var id = 0; id < geyserControllers.Length; id++)
-			{
-				var qsbGeyser = QSBWorldSync.GetWorldObject<QSBGeyser>(id) ?? new QSBGeyser();
-				qsbGeyser.Init(geyserControllers[id], id);
-				QSBWorldSync.AddWorldObject(qsbGeyser);
-			}
-		}
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) 
+			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
 
 		public void OnPatchType(QSBPatchTypes type)
 		{

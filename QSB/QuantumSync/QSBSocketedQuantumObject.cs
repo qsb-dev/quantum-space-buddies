@@ -2,11 +2,9 @@
 
 namespace QSB.QuantumSync
 {
-	internal class QSBSocketedQuantumObject : WorldObject
+	internal class QSBSocketedQuantumObject : WorldObject<SocketedQuantumObject>
 	{
-		public SocketedQuantumObject AttachedObject { get; private set; }
-
-		public void Init(SocketedQuantumObject quantumObject, int id)
+		public override void Init(SocketedQuantumObject quantumObject, int id)
 		{
 			ObjectId = id;
 			AttachedObject = quantumObject;
