@@ -1,6 +1,5 @@
 ﻿using OWML.Utils;
 using QSB.Events;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events
@@ -30,7 +29,6 @@ namespace QSB.QuantumSync.Events
 			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
 			var unityObj = qsbObj.AttachedObject;
 			var currentStateIndex = unityObj.GetValue<int>("_stateIndex");
-			DebugLog.DebugWrite($"Multistate obj {message.ObjectId} to state {message.StateIndex} - current state = {currentStateIndex}");
 			if (currentStateIndex != -1)
 			{
 				qsbObj.QuantumStates[currentStateIndex].SetVisible(false);
