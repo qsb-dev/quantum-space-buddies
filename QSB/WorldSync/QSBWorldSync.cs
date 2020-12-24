@@ -21,15 +21,6 @@ namespace QSB.WorldSync
 
 		private static readonly List<object> WorldObjects = new List<object>();
 
-		public static void AddWorldObject(object worldObject)
-		{
-			if (WorldObjects.Contains(worldObject))
-			{
-				return;
-			}
-			WorldObjects.Add(worldObject);
-		}
-
 		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
 
 		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(int id)
@@ -49,11 +40,17 @@ namespace QSB.WorldSync
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			for (var id = 0; id < list.Count; id++)
 			{
-				var obj = GetWorldObject<TWorldObject, TUnityObject>(id) ?? (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
+				var obj = GetWorldObject<TWorldObject, TUnityObject>(id) ?? CreateWorldObject<TWorldObject>();
 				obj.Init(list[id], id);
-				AddWorldObject(obj);
 			}
 			return list;
+		}
+
+		private static TWorldObject CreateWorldObject<TWorldObject>()
+		{
+			var worldObject = (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
+			WorldObjects.Add(worldObject);
+			return worldObject;
 		}
 
 		public static void RaiseEvent(object instance, string eventName)
