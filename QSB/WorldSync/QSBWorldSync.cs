@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.WorldSync
 {
@@ -33,17 +34,17 @@ namespace QSB.WorldSync
 
 		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(int id)
 			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : UnityEngine.Object
+			where TUnityObject : Object
 			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
 
 		public static void RemoveWorldObjects<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : UnityEngine.Object
+			where TUnityObject : Object
 			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(TWorldObject));
 
 		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : UnityEngine.Object
+			where TUnityObject : Object
 		{
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			for (var id = 0; id < list.Count; id++)
