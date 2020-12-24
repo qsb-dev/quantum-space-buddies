@@ -22,9 +22,9 @@ namespace QSB.QuantumSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>(ref _socketedQuantumObjects);
-			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>(ref _quantumSockets);
-			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>(ref _multiStateQuantumObjects);
+			_socketedQuantumObjects = QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
+			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
+			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 		}
 
 		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);

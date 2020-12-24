@@ -29,7 +29,7 @@ namespace QSB.SectorSync
 		public void RebuildSectors()
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
-			QSBWorldSync.RemoveWorldObjects<QSBSector, Sector>();
+			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
