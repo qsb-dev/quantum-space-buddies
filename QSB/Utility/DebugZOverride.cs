@@ -4,36 +4,36 @@ using UnityEngine.UI;
 
 namespace QSB.Utility
 {
-    public class DebugZOverride : MonoBehaviour
-    {
-        private const string shaderTestMode = "unity_GUIZTestMode";
+	public class DebugZOverride : MonoBehaviour
+	{
+		private const string shaderTestMode = "unity_GUIZTestMode";
 		private readonly UnityEngine.Rendering.CompareFunction desiredUIComparison = UnityEngine.Rendering.CompareFunction.Always;
-        private Graphic[] uiElementsToApplyTo;
-        private Dictionary<Material, Material> materialMappings = new Dictionary<Material, Material>();
+		private Graphic[] uiElementsToApplyTo;
+		private readonly Dictionary<Material, Material> materialMappings = new Dictionary<Material, Material>();
 
-        protected virtual void Start()
-        {
-            uiElementsToApplyTo = gameObject.GetComponentsInChildren<Graphic>();
-            foreach (var graphic in uiElementsToApplyTo)
-            {
-                var material = graphic.materialForRendering;
-                if (material == null)
-                {
-                    continue;
-                }
+		protected virtual void Start()
+		{
+			uiElementsToApplyTo = gameObject.GetComponentsInChildren<Graphic>();
+			foreach (var graphic in uiElementsToApplyTo)
+			{
+				var material = graphic.materialForRendering;
+				if (material == null)
+				{
+					continue;
+				}
 				Material materialCopy;
 				if (!materialMappings.ContainsKey(material))
-                {
-                    materialCopy = new Material(material);
-                    materialMappings.Add(material, materialCopy);
-                }
-                else
-                {
-                    materialCopy = materialMappings[material];
-                }
-                materialCopy.SetInt(shaderTestMode, (int)desiredUIComparison);
-                graphic.material = materialCopy;
-            }
-        }
-    }
+				{
+					materialCopy = new Material(material);
+					materialMappings.Add(material, materialCopy);
+				}
+				else
+				{
+					materialCopy = materialMappings[material];
+				}
+				materialCopy.SetInt(shaderTestMode, (int)desiredUIComparison);
+				graphic.material = materialCopy;
+			}
+		}
+	}
 }

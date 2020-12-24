@@ -1,8 +1,6 @@
 ﻿using OWML.Utils;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace QSB.ElevatorSync
 {
