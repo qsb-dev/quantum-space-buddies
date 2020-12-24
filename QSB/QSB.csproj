@@ -222,6 +222,8 @@
     <Compile Include="SectorSync\QSBSector.cs" />
     <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
+    <Compile Include="Utility\DebugBoxManager.cs" />
+    <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
     <Compile Include="Utility\UnetExtensions.cs" />
     <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />

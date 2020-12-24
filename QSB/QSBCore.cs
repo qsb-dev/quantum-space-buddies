@@ -12,6 +12,7 @@ using QSB.TimeSync;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System.Linq;
 using UnityEngine;
 
 /*
@@ -42,6 +43,7 @@ namespace QSB
 		public static bool DebugMode { get; private set; }
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
+		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
 		public static bool IsServer => QNetworkServer.active;
 
@@ -61,6 +63,7 @@ namespace QSB
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
+			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
 
 			QSBPatchManager.Init();
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
@@ -76,6 +79,8 @@ namespace QSB
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<QuantumManager>();
+
+			DebugBoxManager.Init();
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
@@ -93,6 +98,10 @@ namespace QSB
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
+			if (!DebugMode)
+			{
+				FindObjectsOfType<DebugZOverride>().ToList().ForEach(x => Destroy(x.gameObject));
+			}
 		}
 	}
 }

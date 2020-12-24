@@ -14,7 +14,6 @@ namespace QSB.ConversationSync
 	public class ConversationManager : MonoBehaviour
 	{
 		public static ConversationManager Instance { get; private set; }
-		public AssetBundle ConversationAssetBundle { get; private set; }
 		public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();
 
 		private GameObject _boxPrefab;
@@ -23,9 +22,7 @@ namespace QSB.ConversationSync
 		{
 			Instance = this;
 
-			ConversationAssetBundle = QSBCore.Helper.Assets.LoadBundle("assets/conversation");
-
-			_boxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
+			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
 			// TODO : make dynamic so it can be different sizes!
 			var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
 			if (font == null)

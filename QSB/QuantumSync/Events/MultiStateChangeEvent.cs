@@ -20,6 +20,16 @@ namespace QSB.QuantumSync.Events
 			StateIndex = stateIndex
 		};
 
+		public override void OnReceiveLocal(bool server, MultiStateChangeMessage message)
+		{
+			if (!QSBCore.DebugMode)
+			{
+				return;
+			}
+			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
+			qsbObj.DebugBoxText.text = message.StateIndex.ToString();
+		}
+
 		public override void OnReceiveRemote(bool server, MultiStateChangeMessage message)
 		{
 			if (!QSBCore.HasWokenUp)
@@ -35,6 +45,10 @@ namespace QSB.QuantumSync.Events
 			}
 			qsbObj.QuantumStates[message.StateIndex].SetVisible(true);
 			unityObj.SetValue("_stateIndex", message.StateIndex);
+			if (QSBCore.DebugMode)
+			{
+				qsbObj.DebugBoxText.text = message.StateIndex.ToString();
+			}
 		}
 	}
 }
