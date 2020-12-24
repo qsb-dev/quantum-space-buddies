@@ -3,6 +3,7 @@ using QSB.Animation.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
+using QSB.FrequencySync.Events;
 using QSB.GeyserSync.Events;
 using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
@@ -48,11 +49,13 @@ namespace QSB.Events
 				new OrbUserEvent(),
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
-				// Conversation/dialogue
+				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
 				new DialogueConditionEvent(),
-				new RevealFactEvent()
+				new RevealFactEvent(),
+				new IdentifyFrequencyEvent(),
+				new IdentifySignalEvent()
 			};
 
 			_eventList.ForEach(ev => ev.SetupListener());

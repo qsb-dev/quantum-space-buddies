@@ -163,6 +163,9 @@
     <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
     <Compile Include="Animation\Events\ChangeAnimTypeEvent.cs" />
+    <Compile Include="FrequencySync\Events\IdentifyFrequencyEvent.cs" />
+    <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
+    <Compile Include="FrequencySync\FrequencyPatches.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
