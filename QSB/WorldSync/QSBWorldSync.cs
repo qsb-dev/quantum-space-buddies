@@ -20,7 +20,8 @@ namespace QSB.WorldSync
 
 		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
 
-		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
+		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
+			=> WorldObjects.OfType<TWorldObject>();
 
 		public static TWorldObject GetWorldObject<TWorldObject>(int id)
 			where TWorldObject : IWorldObject
