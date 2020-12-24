@@ -31,25 +31,24 @@ namespace QSB.WorldSync
 
 		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
 
-		public static T GetWorldObject<T, U>(int id) where T : WorldObject<U> where U : UnityEngine.Object
-			=> GetWorldObjects<T>().FirstOrDefault(x => x.ObjectId == id);
+		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(int id)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : UnityEngine.Object
+			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
 
-		public static void RemoveWorldObjects<T, U>() where T : WorldObject<U> where U : UnityEngine.Object
-			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(T));
+		public static void RemoveWorldObjects<TWorldObject, TUnityObject>()
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : UnityEngine.Object
+			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(TWorldObject));
 
-		public static void Init<QSBType, BaseType>(ref List<BaseType> list)
-			where QSBType : WorldObject<BaseType>
-			where BaseType : UnityEngine.Object
-			=> list = Init<QSBType, BaseType>();
-
-		public static List<BaseType> Init<QSBType, BaseType>()
-			where QSBType : WorldObject<BaseType>
-			where BaseType : UnityEngine.Object
+		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : UnityEngine.Object
 		{
-			var list = Resources.FindObjectsOfTypeAll<BaseType>().ToList();
+			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			for (var id = 0; id < list.Count; id++)
 			{
-				var obj = GetWorldObject<QSBType, BaseType>(id) ?? (QSBType)Activator.CreateInstance(typeof(QSBType));
+				var obj = GetWorldObject<TWorldObject, TUnityObject>(id) ?? (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
 				obj.Init(list[id], id);
 				AddWorldObject(obj);
 			}
