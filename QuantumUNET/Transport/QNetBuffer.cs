@@ -5,15 +5,9 @@ namespace QuantumUNET.Transport
 {
 	internal class QNetBuffer
 	{
-		public QNetBuffer()
-		{
-			m_Buffer = new byte[64];
-		}
+		public QNetBuffer() => m_Buffer = new byte[64];
 
-		public QNetBuffer(byte[] buffer)
-		{
-			m_Buffer = buffer;
-		}
+		public QNetBuffer(byte[] buffer) => m_Buffer = buffer;
 
 		public uint Position { get; private set; }
 		public int Length => m_Buffer.Length;

@@ -12,10 +12,7 @@ namespace QuantumUNET
 {
 	public class QNetworkServerSimple
 	{
-		public QNetworkServerSimple()
-		{
-			connections = new ReadOnlyCollection<QNetworkConnection>(m_Connections);
-		}
+		public QNetworkServerSimple() => connections = new ReadOnlyCollection<QNetworkConnection>(m_Connections);
 
 		public int listenPort { get; set; }
 

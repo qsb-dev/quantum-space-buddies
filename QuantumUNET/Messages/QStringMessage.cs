@@ -6,10 +6,7 @@ namespace QuantumUNET.Messages
 	{
 		public string value;
 
-		public QStringMessage(string v)
-		{
-			value = v;
-		}
+		public QStringMessage(string v) => value = v;
 
 		public override void Serialize(QNetworkWriter writer) => writer.Write(value);
 

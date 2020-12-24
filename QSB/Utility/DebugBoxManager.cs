@@ -23,7 +23,7 @@ namespace QSB.Utility
 
 		public static GameObject CreateBox(Transform parent, float vertOffset, string text)
 		{
-			var newBox = UnityEngine.Object.Instantiate(_boxPrefab);
+			var newBox = Object.Instantiate(_boxPrefab);
 			newBox.SetActive(false);
 			newBox.transform.parent = parent;
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);

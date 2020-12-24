@@ -12,10 +12,7 @@ namespace QuantumUNET
 {
 	public class QNetworkConnection : IDisposable
 	{
-		public QNetworkConnection()
-		{
-			m_Writer = new QNetworkWriter();
-		}
+		public QNetworkConnection() => m_Writer = new QNetworkWriter();
 
 		internal HashSet<QNetworkIdentity> VisList { get; } = new HashSet<QNetworkIdentity>();
 

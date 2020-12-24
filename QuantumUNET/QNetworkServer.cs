@@ -1399,10 +1399,7 @@ namespace QuantumUNET
 
 		private class ServerSimpleWrapper : QNetworkServerSimple
 		{
-			public ServerSimpleWrapper(QNetworkServer server)
-			{
-				m_Server = server;
-			}
+			public ServerSimpleWrapper(QNetworkServer server) => m_Server = server;
 
 			public override void OnConnectError(int connectionId, byte error) => m_Server.GenerateConnectError(error);
 
