@@ -37,5 +37,7 @@
 		public static string QSBRevealFact = "QSBRevealFact";
 		public static string QSBSocketStateChange = "QSBSocketStateChange";
 		public static string QSBMultiStateChange = "QSBMultiStateChange";
+		public static string QSBIdentifyFrequency = "QSBIdentifyFrequency";
+		public static string QSBIdentifySignal = "QSBIdentifySignal";
 	}
 }

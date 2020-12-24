@@ -2,6 +2,7 @@
 using QSB.ConversationSync;
 using QSB.DeathSync;
 using QSB.ElevatorSync;
+using QSB.FrequencySync;
 using QSB.LogSync;
 using QSB.OrbSync;
 using QSB.QuantumSync;
@@ -33,7 +34,8 @@ namespace QSB.Patches
 				new LogPatches(),
 				new QuantumVisibilityPatches(),
 				new ServerQuantumStateChangePatches(),
-				new ClientQuantumStateChangePatches()
+				new ClientQuantumStateChangePatches(),
+				new FrequencyPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

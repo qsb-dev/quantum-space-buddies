@@ -27,6 +27,8 @@
 		DialogueCondition,
 		RevealFact,
 		SocketStateChange,
-		MultiStateChange
+		MultiStateChange,
+		IdentifyFrequency,
+		IdentifySignal
 	}
 }
