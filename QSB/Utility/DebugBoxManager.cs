@@ -16,7 +16,6 @@ namespace QSB.Utility
 		public static void Init()
 		{
 			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
-			// TODO : make dynamic so it can be different sizes!
 			var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
 			if (font == null)
 			{
