@@ -19,18 +19,16 @@ namespace QSB.WorldSync
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
-		private static readonly List<object> WorldObjects = new List<object>();
+		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
 
 		public static IEnumerable<T> GetWorldObjects<T>() => WorldObjects.OfType<T>();
 
-		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(int id)
-			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : Object
+		public static TWorldObject GetWorldObject<TWorldObject>(int id)
+			where TWorldObject : IWorldObject
 			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
 
-		public static void RemoveWorldObjects<TWorldObject, TUnityObject>()
-			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : Object
+		public static void RemoveWorldObjects<TWorldObject>()
+			where TWorldObject : IWorldObject
 			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(TWorldObject));
 
 		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
@@ -40,13 +38,14 @@ namespace QSB.WorldSync
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			for (var id = 0; id < list.Count; id++)
 			{
-				var obj = GetWorldObject<TWorldObject, TUnityObject>(id) ?? CreateWorldObject<TWorldObject>();
+				var obj = GetWorldObject<TWorldObject>(id) ?? CreateWorldObject<TWorldObject>();
 				obj.Init(list[id], id);
 			}
 			return list;
 		}
 
 		private static TWorldObject CreateWorldObject<TWorldObject>()
+			where TWorldObject : IWorldObject
 		{
 			var worldObject = (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
 			WorldObjects.Add(worldObject);
