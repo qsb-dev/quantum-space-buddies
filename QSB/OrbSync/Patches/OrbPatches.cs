@@ -3,7 +3,7 @@ using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.OrbSync
+namespace QSB.OrbSync.Patches
 {
 	public class OrbPatches : QSBPatch
 	{

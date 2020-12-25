@@ -1,7 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Patches;
 
-namespace QSB.TimeSync
+namespace QSB.TimeSync.Patches
 {
 	public class WakeUpPatches : QSBPatch
 	{

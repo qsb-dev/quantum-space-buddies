@@ -2,7 +2,7 @@
 using QSB.Events;
 using QSB.Patches;
 
-namespace QSB.ElevatorSync
+namespace QSB.ElevatorSync.Patches
 {
 	public class ElevatorPatches : QSBPatch
 	{
