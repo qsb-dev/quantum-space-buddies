@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Player;
+using QSB.SectorSync.WorldObjects;
 using System.Linq;
 using UnityEngine;
 
