@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace QSB.QuantumSync
+namespace QSB.QuantumSync.Patches
 {
 	public class QuantumVisibilityPatches : QSBPatch
 	{

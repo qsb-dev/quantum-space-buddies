@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.QuantumSync
+namespace QSB.QuantumSync.Patches
 {
 	public class ServerQuantumStateChangePatches : QSBPatch
 	{

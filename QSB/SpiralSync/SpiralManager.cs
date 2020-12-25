@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QSB.SpiralSync
+﻿namespace QSB.SpiralSync
 {
-	class SpiralManager
+	internal class SpiralManager
 	{
 	}
 }

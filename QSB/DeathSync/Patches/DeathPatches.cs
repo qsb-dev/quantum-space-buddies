@@ -2,7 +2,7 @@
 using QSB.Patches;
 using System.Linq;
 
-namespace QSB.DeathSync
+namespace QSB.DeathSync.Patches
 {
 	public class DeathPatches : QSBPatch
 	{
