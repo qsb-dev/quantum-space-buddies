@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;

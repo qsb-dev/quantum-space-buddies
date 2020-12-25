@@ -2,7 +2,7 @@
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.ElevatorSync
+namespace QSB.ElevatorSync.WorldObjects
 {
 	public class QSBElevator : WorldObject<Elevator>
 	{

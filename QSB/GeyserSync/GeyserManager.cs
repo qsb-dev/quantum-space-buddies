@@ -1,4 +1,5 @@
-﻿using QSB.Patches;
+﻿using QSB.GeyserSync.WorldObjects;
+using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
 

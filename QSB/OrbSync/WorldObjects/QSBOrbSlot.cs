@@ -4,7 +4,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine.UI;
 
-namespace QSB.OrbSync
+namespace QSB.OrbSync.WorldObjects
 {
 	public class QSBOrbSlot : WorldObject<NomaiInterfaceSlot>
 	{
