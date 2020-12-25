@@ -6,6 +6,7 @@ using QSB.FrequencySync;
 using QSB.LogSync;
 using QSB.OrbSync;
 using QSB.QuantumSync;
+using QSB.SpiralSync.Patches;
 using QSB.TimeSync;
 using QSB.Utility;
 using System;
@@ -35,7 +36,8 @@ namespace QSB.Patches
 				new QuantumVisibilityPatches(),
 				new ServerQuantumStateChangePatches(),
 				new ClientQuantumStateChangePatches(),
-				new FrequencyPatches()
+				new FrequencyPatches(),
+				new SpiralPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
