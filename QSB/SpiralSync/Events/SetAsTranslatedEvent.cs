@@ -26,7 +26,7 @@ namespace QSB.SpiralSync.Events
 			if (message.TextType == NomaiTextType.WallText)
 			{
 				var obj = QSBWorldSync.GetWorldObject<QSBWallText>(message.ObjectId);
-				obj.AttachedObject.SetAsTranslated(message.TextId);
+				obj.HandleSetAsTranslated(message.TextId);
 			}
 			else
 			{
