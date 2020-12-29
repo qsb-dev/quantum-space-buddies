@@ -2,10 +2,8 @@
 using OWML.Utils;
 using QSB.Animation;
 using QSB.DeathSync;
-using QSB.ElevatorSync;
 using QSB.ElevatorSync.WorldObjects;
 using QSB.Events;
-using QSB.GeyserSync;
 using QSB.GeyserSync.WorldObjects;
 using QSB.Instruments;
 using QSB.OrbSync;

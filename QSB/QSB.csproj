@@ -201,6 +201,9 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumStateChangePatches.cs" />
+    <Compile Include="SpiralSync\Events\SetAsTranslatedEvent.cs" />
+    <Compile Include="SpiralSync\Events\SetAsTranslatedMessage.cs" />
+    <Compile Include="SpiralSync\NomaiTextType.cs" />
     <Compile Include="SpiralSync\WorldObjects\QSBWallText.cs" />
     <Compile Include="SpiralSync\SpiralManager.cs" />
     <Compile Include="SpiralSync\Patches\SpiralPatches.cs" />

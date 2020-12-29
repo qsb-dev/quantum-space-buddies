@@ -9,6 +9,7 @@ using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
 using QSB.QuantumSync.Events;
+using QSB.SpiralSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.Utility;
@@ -49,6 +50,7 @@ namespace QSB.Events
 				new OrbUserEvent(),
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
+				new SetAsTranslatedEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

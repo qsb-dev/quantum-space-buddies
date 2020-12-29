@@ -2,6 +2,7 @@
 {
 	public static class EventNames
 	{
+		// Built into Outer Wilds -- don't change unless they change in-game!
 		public static string TurnOnFlashlight = "TurnOnFlashlight";
 		public static string TurnOffFlashlight = "TurnOffFlashlight";
 		public static string LaunchProbe = "LaunchProbe";
@@ -19,6 +20,8 @@
 		public static string WakeUp = "WakeUp";
 		public static string DialogueCondition = "DialogueConditionChanged";
 
+		// Custom event names -- change if you want! These can be anything, as long as both
+		// sides of the GlobalMessenger (fireevent and setuplistener) reference the same thing.
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";
 		public static string QSBPlayerReady = "QSBPlayerReady";
@@ -39,5 +42,6 @@
 		public static string QSBMultiStateChange = "QSBMultiStateChange";
 		public static string QSBIdentifyFrequency = "QSBIdentifyFrequency";
 		public static string QSBIdentifySignal = "QSBIdentifySignal";
+		public static string QSBTextTranslated = "QSBTextTranslated";
 	}
 }
