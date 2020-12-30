@@ -61,7 +61,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				QLog.LogWarning($"SetDynamicAssetId object already has an assetId <{m_AssetId}>");
+				QLog.Warning($"SetDynamicAssetId object already has an assetId <{m_AssetId}>");
 			}
 		}
 
@@ -69,7 +69,7 @@ namespace QuantumUNET.Components
 		{
 			if (ClientAuthorityOwner != null)
 			{
-				QLog.LogError("SetClientOwner m_ClientAuthorityOwner already set!");
+				QLog.Error("SetClientOwner m_ClientAuthorityOwner already set!");
 			}
 			ClientAuthorityOwner = conn;
 			ClientAuthorityOwner.AddOwnedObject(this);
@@ -198,7 +198,7 @@ namespace QuantumUNET.Components
 				}
 				else if (!allowNonZeroNetId)
 				{
-					QLog.LogWarning($"Object has non-zero netId {NetId} for {gameObject}");
+					QLog.Warning($"Object has non-zero netId {NetId} for {gameObject}");
 					return;
 				}
 				QNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
@@ -210,7 +210,7 @@ namespace QuantumUNET.Components
 					}
 					catch (Exception ex)
 					{
-						QLog.LogFatalError($"Exception in OnStartServer:{ex.Message} {ex.StackTrace}");
+						QLog.FatalError($"Exception in OnStartServer:{ex.Message} {ex.StackTrace}");
 					}
 				}
 				if (QNetworkClient.active && QNetworkServer.localClientActive)
@@ -232,7 +232,7 @@ namespace QuantumUNET.Components
 				IsClient = true;
 			}
 			CacheBehaviours();
-			QLog.LogDebug($"OnStartClient {gameObject} GUID:{NetId} localPlayerAuthority:{LocalPlayerAuthority}");
+			QLog.Debug($"OnStartClient {gameObject} GUID:{NetId} localPlayerAuthority:{LocalPlayerAuthority}");
 			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
 				try
@@ -242,7 +242,7 @@ namespace QuantumUNET.Components
 				}
 				catch (Exception ex)
 				{
-					QLog.LogFatalError($"Exception in OnStartClient:{ex.Message} {ex.StackTrace}");
+					QLog.FatalError($"Exception in OnStartClient:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
@@ -272,7 +272,7 @@ namespace QuantumUNET.Components
 				}
 				catch (Exception ex)
 				{
-					QLog.LogFatalError($"Exception in OnStopAuthority:{ex.Message} {ex.StackTrace}");
+					QLog.FatalError($"Exception in OnStopAuthority:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
@@ -287,7 +287,7 @@ namespace QuantumUNET.Components
 				}
 				catch (Exception ex)
 				{
-					QLog.LogFatalError($"Exception in OnSetLocalVisibility:{ex.Message} {ex.StackTrace}");
+					QLog.FatalError($"Exception in OnSetLocalVisibility:{ex.Message} {ex.StackTrace}");
 				}
 			}
 		}
@@ -305,7 +305,7 @@ namespace QuantumUNET.Components
 				}
 				catch (Exception ex)
 				{
-					QLog.LogFatalError($"Exception in OnCheckObserver:{ex.Message} {ex.StackTrace}");
+					QLog.FatalError($"Exception in OnCheckObserver:{ex.Message} {ex.StackTrace}");
 				}
 			}
 
@@ -324,7 +324,7 @@ namespace QuantumUNET.Components
 		{
 			if (!LocalPlayerAuthority)
 			{
-				QLog.LogError($"HandleClientAuthority {gameObject} does not have localPlayerAuthority");
+				QLog.Error($"HandleClientAuthority {gameObject} does not have localPlayerAuthority");
 			}
 			else
 			{
@@ -347,7 +347,7 @@ namespace QuantumUNET.Components
 			if (networkBehaviour == null)
 			{
 				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogFatalError(
+				QLog.FatalError(
 					$"Found no behaviour for incoming [{cmdHashHandlerName}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 				invokeComponent = null;
 				result = false;
@@ -365,18 +365,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"SyncEvent [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+				QLog.Warning($"SyncEvent [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QNetworkBehaviour.GetInvokerForHashSyncEvent(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogFatalError(
+				QLog.FatalError(
 					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"SyncEvent [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+				QLog.Warning($"SyncEvent [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -389,18 +389,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"SyncList [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+				QLog.Warning($"SyncList [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QNetworkBehaviour.GetInvokerForHashSyncList(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogFatalError(
+				QLog.FatalError(
 					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"SyncList [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+				QLog.Warning($"SyncList [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -413,18 +413,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"Command [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+				QLog.Warning($"Command [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QNetworkBehaviour.GetInvokerForHashCommand(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogFatalError(
+				QLog.FatalError(
 					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"Command [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+				QLog.Warning($"Command [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -437,18 +437,18 @@ namespace QuantumUNET.Components
 			if (gameObject == null)
 			{
 				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"ClientRpc [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+				QLog.Warning($"ClientRpc [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
 			}
 			else if (!QNetworkBehaviour.GetInvokerForHashClientRpc(cmdHash, out var invokeClass, out var cmdDelegate))
 			{
 				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogFatalError(
+				QLog.FatalError(
 					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
 			}
 			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
 			{
 				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
-				QLog.LogWarning($"ClientRpc [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+				QLog.Warning($"ClientRpc [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
 			}
 			else
 			{
@@ -494,7 +494,7 @@ namespace QuantumUNET.Components
 								var maxPacketSize = QNetworkServer.maxPacketSize;
 								if (s_UpdateWriter.Position - position > maxPacketSize)
 								{
-									QLog.LogWarning(
+									QLog.Warning(
 										$"Large state update of {s_UpdateWriter.Position - position} bytes for netId:{NetId} from script:{networkBehaviour}");
 								}
 							}
@@ -581,15 +581,15 @@ namespace QuantumUNET.Components
 		{
 			if (m_Observers == null)
 			{
-				QLog.LogError($"AddObserver for {gameObject} observer list is null");
+				QLog.Error($"AddObserver for {gameObject} observer list is null");
 			}
 			else if (m_ObserverConnections.Contains(conn.connectionId))
 			{
-				QLog.LogWarning($"Duplicate observer {conn.address} added for {gameObject}");
+				QLog.Warning($"Duplicate observer {conn.address} added for {gameObject}");
 			}
 			else
 			{
-				QLog.LogDebug($"Added observer {conn.address} added for {gameObject}");
+				QLog.Debug($"Added observer {conn.address} added for {gameObject}");
 				m_Observers.Add(conn);
 				m_ObserverConnections.Add(conn.connectionId);
 				conn.AddToVisList(this);
@@ -653,7 +653,7 @@ namespace QuantumUNET.Components
 						{
 							if (!networkConnection3.isReady)
 							{
-								QLog.LogWarning($"Observer is not ready for {gameObject} {networkConnection3}");
+								QLog.Warning($"Observer is not ready for {gameObject} {networkConnection3}");
 							}
 							else if (initialize || !hashSet2.Contains(networkConnection3))
 							{
@@ -699,22 +699,22 @@ namespace QuantumUNET.Components
 		{
 			if (!IsServer)
 			{
-				QLog.LogWarning($"Cannot remove authority on client-side. (NetId:{NetId}, Gameobject:{gameObject.name})");
+				QLog.Warning($"Cannot remove authority on client-side. (NetId:{NetId}, Gameobject:{gameObject.name})");
 				return false;
 			}
 			else if (ConnectionToClient != null)
 			{
-				QLog.LogWarning("RemoveClientAuthority cannot remove authority for a player object");
+				QLog.Warning("RemoveClientAuthority cannot remove authority for a player object");
 				return false;
 			}
 			else if (ClientAuthorityOwner == null)
 			{
-				QLog.LogWarning($"RemoveClientAuthority for {gameObject} has no clientAuthority owner.");
+				QLog.Warning($"RemoveClientAuthority for {gameObject} has no clientAuthority owner.");
 				return false;
 			}
 			else if (ClientAuthorityOwner != conn)
 			{
-				QLog.LogWarning($"RemoveClientAuthority for {gameObject} has different owner.");
+				QLog.Warning($"RemoveClientAuthority for {gameObject} has different owner.");
 				return false;
 			}
 			ClientAuthorityOwner.RemoveOwnedObject(this);
@@ -733,22 +733,22 @@ namespace QuantumUNET.Components
 		{
 			if (!IsServer)
 			{
-				QLog.LogWarning($"Cannot assign authority on client-side. (NetId:{NetId}, Gameobject:{gameObject.name})");
+				QLog.Warning($"Cannot assign authority on client-side. (NetId:{NetId}, Gameobject:{gameObject.name})");
 				return false;
 			}
 			else if (!LocalPlayerAuthority)
 			{
-				QLog.LogWarning($"Cannot assign authority on object without LocalPlayerAuthority. (NetId:{NetId}, Gameobject:{gameObject.name})");
+				QLog.Warning($"Cannot assign authority on object without LocalPlayerAuthority. (NetId:{NetId}, Gameobject:{gameObject.name})");
 				return false;
 			}
 			else if (ClientAuthorityOwner != null && conn != ClientAuthorityOwner)
 			{
-				QLog.LogWarning($"AssignClientAuthority for {gameObject} already has an owner. Use RemoveClientAuthority() first.");
+				QLog.Warning($"AssignClientAuthority for {gameObject} already has an owner. Use RemoveClientAuthority() first.");
 				return false;
 			}
 			else if (conn == null)
 			{
-				QLog.LogWarning($"AssignClientAuthority for {gameObject} owner cannot be null. Use RemoveClientAuthority() instead.");
+				QLog.Warning($"AssignClientAuthority for {gameObject} owner cannot be null. Use RemoveClientAuthority() instead.");
 				return false;
 			}
 			ClientAuthorityOwner = conn;

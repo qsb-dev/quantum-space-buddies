@@ -72,7 +72,6 @@
     <Compile Include="Messages\QAnimationParametersMessage.cs" />
     <Compile Include="Messages\QAnimationTriggerMessage.cs" />
     <Compile Include="Logging\QLog.cs" />
-    <Compile Include="Logging\QLogType.cs" />
     <Compile Include="Transport\QChannelBuffer.cs" />
     <Compile Include="Transport\QChannelPacket.cs" />
     <Compile Include="Messages\QClientAuthorityMessage.cs" />

@@ -23,6 +23,10 @@ namespace QSB.SpiralSync.Events
 
 		public override void OnReceiveRemote(bool server, SetAsTranslatedMessage message)
 		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
 			if (message.TextType == NomaiTextType.WallText)
 			{
 				var obj = QSBWorldSync.GetWorldObject<QSBWallText>(message.ObjectId);

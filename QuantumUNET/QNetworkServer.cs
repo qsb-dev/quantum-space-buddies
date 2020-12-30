@@ -164,7 +164,7 @@ namespace QuantumUNET
 			int result;
 			if (m_LocalConnectionsFakeList.Count != 0)
 			{
-				QLog.LogError("Local Connection already exists");
+				QLog.Error("Local Connection already exists");
 				result = -1;
 			}
 			else
@@ -203,7 +203,7 @@ namespace QuantumUNET
 
 		internal void SetLocalObjectOnServer(NetworkInstanceId netId, GameObject obj)
 		{
-			QLog.LogDebug($"SetLocalObjectOnServer {netId} {obj}");
+			QLog.Debug($"SetLocalObjectOnServer {netId} {obj}");
 			m_NetworkScene.SetLocalObject(netId, obj, false, true);
 		}
 
@@ -226,7 +226,7 @@ namespace QuantumUNET
 
 		public static bool SendToAll(short msgType, QMessageBase msg)
 		{
-			QLog.LogDebug($"Server.SendToAll msgType:{msgType}");
+			QLog.Debug($"Server.SendToAll msgType:{msgType}");
 			var flag = true;
 			foreach (var networkConnection in connections)
 			{
@@ -240,7 +240,7 @@ namespace QuantumUNET
 
 		private static bool SendToObservers(GameObject contextObj, short msgType, QMessageBase msg)
 		{
-			QLog.LogDebug($"Server.SendToObservers id:{msgType}");
+			QLog.Debug($"Server.SendToObservers id:{msgType}");
 			var flag = true;
 			var component = contextObj.GetComponent<QNetworkIdentity>();
 			bool result;
@@ -263,7 +263,7 @@ namespace QuantumUNET
 
 		public static bool SendToReady(GameObject contextObj, short msgType, QMessageBase msg)
 		{
-			QLog.LogDebug($"Server.SendToReady id:{msgType}");
+			QLog.Debug($"Server.SendToReady id:{msgType}");
 			bool result;
 			if (contextObj == null)
 			{
@@ -329,7 +329,7 @@ namespace QuantumUNET
 				}
 				if (!flag)
 				{
-					QLog.LogError("SendBytesToReady failed");
+					QLog.Error("SendBytesToReady failed");
 				}
 			}
 			else
@@ -352,12 +352,12 @@ namespace QuantumUNET
 					}
 					if (!flag2)
 					{
-						QLog.LogError($"SendBytesToReady failed for {contextObj}");
+						QLog.Error($"SendBytesToReady failed for {contextObj}");
 					}
 				}
 				catch (NullReferenceException)
 				{
-					QLog.LogError($"SendBytesToReady object {contextObj} has not been spawned");
+					QLog.Error($"SendBytesToReady object {contextObj} has not been spawned");
 				}
 			}
 		}
@@ -558,7 +558,7 @@ namespace QuantumUNET
 			{
 				if (controller.Gameobject != null)
 				{
-					QLog.LogWarning("Player not destroyed when connection disconnected.");
+					QLog.Warning("Player not destroyed when connection disconnected.");
 				}
 			}
 			QLog.Log($"Server lost client:{conn.connectionId}");
@@ -570,19 +570,19 @@ namespace QuantumUNET
 
 		private void GenerateConnectError(int error)
 		{
-			QLog.LogError($"UNet Server Connect Error: {error}");
+			QLog.Error($"UNet Server Connect Error: {error}");
 			GenerateError(null, error);
 		}
 
 		private void GenerateDataError(QNetworkConnection conn, int error)
 		{
-			QLog.LogError($"UNet Server Data Error: {(NetworkError)error}");
+			QLog.Error($"UNet Server Data Error: {(NetworkError)error}");
 			GenerateError(conn, error);
 		}
 
 		private void GenerateDisconnectError(QNetworkConnection conn, int error)
 		{
-			QLog.LogError($"UNet Server Disconnect Error: {(NetworkError)error} conn:[{conn}]:{conn.connectionId}");
+			QLog.Error($"UNet Server Disconnect Error: {(NetworkError)error} conn:[{conn}]:{conn.connectionId}");
 			GenerateError(conn, error);
 		}
 
@@ -659,7 +659,7 @@ namespace QuantumUNET
 					}
 				}
 			}
-			QLog.LogError($"Failed to send message to player object '{player.name}, not found in connection list");
+			QLog.Error($"Failed to send message to player object '{player.name}, not found in connection list");
 		}
 
 		public static void SendToClient(int connectionId, short msgType, QMessageBase msg)
@@ -673,7 +673,7 @@ namespace QuantumUNET
 					return;
 				}
 			}
-			QLog.LogError($"Failed to send message to connection ID '{connectionId}, not found in connection list");
+			QLog.Error($"Failed to send message to connection ID '{connectionId}, not found in connection list");
 		}
 
 		public static bool AddPlayerForConnection(QNetworkConnection conn, GameObject player, short playerControllerId) => instance.InternalAddPlayerForConnection(conn, player, playerControllerId);
@@ -739,7 +739,7 @@ namespace QuantumUNET
 			bool result;
 			if (playerControllerId < 0)
 			{
-				QLog.LogError($"AddPlayer: playerControllerId of {playerControllerId} is negative");
+				QLog.Error($"AddPlayer: playerControllerId of {playerControllerId} is negative");
 				result = false;
 			}
 			else if (playerControllerId > 32)
@@ -751,7 +751,7 @@ namespace QuantumUNET
 			{
 				if (playerControllerId > 16)
 				{
-					QLog.LogWarning($"AddPlayer: playerControllerId of {playerControllerId} is unusually high");
+					QLog.Warning($"AddPlayer: playerControllerId of {playerControllerId} is unusually high");
 				}
 				result = true;
 			}
@@ -802,7 +802,7 @@ namespace QuantumUNET
 			bool result;
 			if (!GetNetworkIdentity(playerGameObject, out var networkIdentity))
 			{
-				QLog.LogError($"ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to {playerGameObject}");
+				QLog.Error($"ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to {playerGameObject}");
 				result = false;
 			}
 			else if (!CheckPlayerControllerIdForConnection(conn, playerControllerId))
@@ -846,7 +846,7 @@ namespace QuantumUNET
 			bool result;
 			if (view == null)
 			{
-				QLog.LogError("UNET failure. GameObject doesn't have NetworkIdentity.");
+				QLog.Error("UNET failure. GameObject doesn't have NetworkIdentity.");
 				result = false;
 			}
 			else
@@ -869,7 +869,7 @@ namespace QuantumUNET
 			{
 				if (conn.PlayerControllers.Count == 0)
 				{
-					QLog.LogWarning("Ready with no player object");
+					QLog.Warning("Ready with no player object");
 				}
 				conn.isReady = true;
 				if (conn is QULocalConnectionToClient)
@@ -904,11 +904,11 @@ namespace QuantumUNET
 					{
 						if (networkIdentity2 == null)
 						{
-							QLog.LogWarning("Invalid object found in server local object list (null NetworkIdentity).");
+							QLog.Warning("Invalid object found in server local object list (null NetworkIdentity).");
 						}
 						else if (networkIdentity2.gameObject.activeSelf)
 						{
-							QLog.LogDebug(
+							QLog.Debug(
 								$"Sending spawn message for current server objects name='{networkIdentity2.gameObject.name}' netId={networkIdentity2.NetId}");
 							var flag2 = networkIdentity2.OnCheckObserver(conn);
 							if (flag2)
@@ -981,7 +981,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				QLog.LogError(
+				QLog.Error(
 					$"Received remove player message but could not find the player ID: {s_RemovePlayerMessage.PlayerControllerId}");
 			}
 		}
@@ -993,14 +993,14 @@ namespace QuantumUNET
 			var gameObject = FindLocalObject(networkInstanceId);
 			if (gameObject == null)
 			{
-				QLog.LogWarning($"Instance not found when handling Command message [netId={networkInstanceId}]");
+				QLog.Warning($"Instance not found when handling Command message [netId={networkInstanceId}]");
 			}
 			else
 			{
 				var component = gameObject.GetComponent<QNetworkIdentity>();
 				if (component == null)
 				{
-					QLog.LogWarning(
+					QLog.Warning(
 						$"NetworkIdentity deleted when handling Command message [netId={networkInstanceId}]");
 				}
 				else
@@ -1018,7 +1018,7 @@ namespace QuantumUNET
 					{
 						if (component.ClientAuthorityOwner != netMsg.Connection)
 						{
-							QLog.LogWarning($"Command for object without authority [netId={networkInstanceId}]");
+							QLog.Warning($"Command for object without authority [netId={networkInstanceId}]");
 							return;
 						}
 					}
@@ -1032,12 +1032,12 @@ namespace QuantumUNET
 		{
 			if (!active)
 			{
-				QLog.LogError(
+				QLog.Error(
 					$"SpawnObject for {obj}, NetworkServer is not active. Cannot spawn objects without an active server.");
 			}
 			else if (!GetNetworkIdentity(obj, out var networkIdentity))
 			{
-				QLog.LogError($"SpawnObject {obj} has no QSBNetworkIdentity. Please add a NetworkIdentity to {obj}");
+				QLog.Error($"SpawnObject {obj} has no QSBNetworkIdentity. Please add a NetworkIdentity to {obj}");
 			}
 			else
 			{
@@ -1105,7 +1105,7 @@ namespace QuantumUNET
 		{
 			if (conn.PlayerControllers.Count == 0)
 			{
-				QLog.LogWarning("Empty player list given to NetworkServer.Destroy(), nothing to do.");
+				QLog.Warning("Empty player list given to NetworkServer.Destroy(), nothing to do.");
 			}
 			else
 			{
@@ -1202,7 +1202,7 @@ namespace QuantumUNET
 			bool result;
 			if (CheckForPrefab(obj))
 			{
-				QLog.LogError($"GameObject {obj.name} is a prefab, it can't be spawned. This will cause errors in builds.");
+				QLog.Error($"GameObject {obj.name} is a prefab, it can't be spawned. This will cause errors in builds.");
 				result = false;
 			}
 			else
@@ -1218,12 +1218,12 @@ namespace QuantumUNET
 			bool result;
 			if (component == null)
 			{
-				QLog.LogError("SpawnWithClientAuthority player object has no NetworkIdentity");
+				QLog.Error("SpawnWithClientAuthority player object has no NetworkIdentity");
 				result = false;
 			}
 			else if (component.ConnectionToClient == null)
 			{
-				QLog.LogError("SpawnWithClientAuthority player object is not a player.");
+				QLog.Error("SpawnWithClientAuthority player object is not a player.");
 				result = false;
 			}
 			else
@@ -1238,7 +1238,7 @@ namespace QuantumUNET
 			bool result;
 			if (!conn.isReady)
 			{
-				QLog.LogError("SpawnWithClientAuthority NetworkConnection is not ready!");
+				QLog.Error("SpawnWithClientAuthority NetworkConnection is not ready!");
 				result = false;
 			}
 			else
@@ -1304,7 +1304,7 @@ namespace QuantumUNET
 			}
 			else
 			{
-				QLog.LogError($"Local invoke: Failed to find local connection to invoke handler on [connectionId={conn.connectionId}] for MsgId:{msgType}");
+				QLog.Error($"Local invoke: Failed to find local connection to invoke handler on [connectionId={conn.connectionId}] for MsgId:{msgType}");
 				result = false;
 			}
 			return result;

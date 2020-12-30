@@ -105,7 +105,7 @@ namespace QuantumUNET.Components
 				{
 					if (singleton != null)
 					{
-						QLog.LogWarning("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.");
+						QLog.Warning("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.");
 						Destroy(gameObject);
 						return;
 					}
@@ -175,13 +175,13 @@ namespace QuantumUNET.Components
 			{
 				if (!QNetworkServer.Listen(serverBindAddress, networkPort))
 				{
-					QLog.LogFatalError($"StartServer listen on {serverBindAddress} failed.");
+					QLog.FatalError($"StartServer listen on {serverBindAddress} failed.");
 					return false;
 				}
 			}
 			else if (!QNetworkServer.Listen(networkPort))
 			{
-				QLog.LogFatalError("StartServer listen failed.");
+				QLog.FatalError("StartServer listen failed.");
 				return false;
 			}
 			RegisterServerMessages();
@@ -286,7 +286,7 @@ namespace QuantumUNET.Components
 			RegisterClientMessages(client);
 			if (string.IsNullOrEmpty(networkAddress))
 			{
-				QLog.LogError("Must set the Network Address field in the manager");
+				QLog.Error("Must set the Network Address field in the manager");
 				return null;
 			}
 			if (useSimulator)
@@ -396,7 +396,7 @@ namespace QuantumUNET.Components
 		{
 			if (string.IsNullOrEmpty(newSceneName))
 			{
-				QLog.LogError("ServerChangeScene empty scene name");
+				QLog.Error("ServerChangeScene empty scene name");
 			}
 			else
 			{
@@ -421,7 +421,7 @@ namespace QuantumUNET.Components
 		{
 			if (string.IsNullOrEmpty(newSceneName))
 			{
-				QLog.LogError("ClientChangeScene empty scene name");
+				QLog.Error("ClientChangeScene empty scene name");
 			}
 			else
 			{
@@ -452,7 +452,7 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				QLog.LogError("FinishLoadScene client is null");
+				QLog.Error("FinishLoadScene client is null");
 			}
 			if (QNetworkServer.active)
 			{
@@ -623,7 +623,7 @@ namespace QuantumUNET.Components
 			QNetworkServer.DestroyPlayersForConnection(conn);
 			if (conn.LastError != NetworkError.Ok)
 			{
-				QLog.LogError($"ServerDisconnected due to error: {conn.LastError}");
+				QLog.Error($"ServerDisconnected due to error: {conn.LastError}");
 			}
 		}
 
@@ -631,7 +631,7 @@ namespace QuantumUNET.Components
 		{
 			if (conn.PlayerControllers.Count == 0)
 			{
-				QLog.LogWarning("Ready with no player object");
+				QLog.Warning("Ready with no player object");
 			}
 			QNetworkServer.SetClientReady(conn);
 		}
@@ -644,15 +644,15 @@ namespace QuantumUNET.Components
 		{
 			if (playerPrefab == null)
 			{
-				QLog.LogFatalError("The PlayerPrefab is empty on the QSBNetworkManager. Please setup a PlayerPrefab object.");
+				QLog.FatalError("The PlayerPrefab is empty on the QSBNetworkManager. Please setup a PlayerPrefab object.");
 			}
 			else if (playerPrefab.GetComponent<QNetworkIdentity>() == null)
 			{
-				QLog.LogFatalError("The PlayerPrefab does not have a QSBNetworkIdentity. Please add a QSBNetworkIdentity to the player prefab.");
+				QLog.FatalError("The PlayerPrefab does not have a QSBNetworkIdentity. Please add a QSBNetworkIdentity to the player prefab.");
 			}
 			else if (playerControllerId < conn.PlayerControllers.Count && conn.PlayerControllers[playerControllerId].IsValid && conn.PlayerControllers[playerControllerId].Gameobject != null)
 			{
-				QLog.LogWarning("There is already a player at that playerControllerId for this connections.");
+				QLog.Warning("There is already a player at that playerControllerId for this connections.");
 			}
 			else
 			{
@@ -694,7 +694,7 @@ namespace QuantumUNET.Components
 			StopClient();
 			if (conn.LastError != NetworkError.Ok)
 			{
-				QLog.LogError($"ClientDisconnected due to error: {conn.LastError}");
+				QLog.Error($"ClientDisconnected due to error: {conn.LastError}");
 			}
 		}
 

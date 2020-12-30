@@ -196,22 +196,22 @@ namespace QuantumUNET.Components
 			var gameObject = QNetworkServer.FindLocalObject(networkInstanceId);
 			if (gameObject == null)
 			{
-				QLog.LogWarning("Received NetworkTransform data for GameObject that doesn't exist");
+				QLog.Warning("Received NetworkTransform data for GameObject that doesn't exist");
 			}
 			else
 			{
 				var component = gameObject.GetComponent<QNetworkTransform>();
 				if (component == null)
 				{
-					QLog.LogWarning("HandleTransform null target");
+					QLog.Warning("HandleTransform null target");
 				}
 				else if (!component.LocalPlayerAuthority)
 				{
-					QLog.LogWarning("HandleTransform no localPlayerAuthority");
+					QLog.Warning("HandleTransform no localPlayerAuthority");
 				}
 				else if (netMsg.Connection.ClientOwnedObjects == null)
 				{
-					QLog.LogWarning("HandleTransform object not owned by connection");
+					QLog.Warning("HandleTransform object not owned by connection");
 				}
 				else if (netMsg.Connection.ClientOwnedObjects.Contains(networkInstanceId))
 				{
@@ -220,7 +220,7 @@ namespace QuantumUNET.Components
 				}
 				else
 				{
-					QLog.LogWarning(
+					QLog.Warning(
 						$"HandleTransform netId:{networkInstanceId} is not for a valid player");
 				}
 			}

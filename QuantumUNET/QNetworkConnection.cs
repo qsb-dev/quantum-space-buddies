@@ -196,7 +196,7 @@ namespace QuantumUNET
 					return;
 				}
 			}
-			QLog.LogError($"RemovePlayer player at playerControllerId {playerControllerId} not found");
+			QLog.Error($"RemovePlayer player at playerControllerId {playerControllerId} not found");
 		}
 
 		internal bool GetPlayerController(short playerControllerId, out QPlayerController playerController)
@@ -284,12 +284,12 @@ namespace QuantumUNET
 			bool result;
 			if (m_Channels == null)
 			{
-				QLog.LogWarning($"Channels not initialized sending on id '{channelId}");
+				QLog.Warning($"Channels not initialized sending on id '{channelId}");
 				result = false;
 			}
 			else if (channelId < 0 || channelId >= m_Channels.Length)
 			{
-				QLog.LogError(
+				QLog.Error(
 					$"Invalid channel when sending buffered data, '{channelId}'. Current channel count is {m_Channels.Length}");
 				result = false;
 			}
@@ -325,7 +325,7 @@ namespace QuantumUNET
 				}
 				if (networkMessageDelegate == null)
 				{
-					QLog.LogError($"Unknown message ID {num2} connId:{connectionId}");
+					QLog.Error($"Unknown message ID {num2} connId:{connectionId}");
 					break;
 				}
 				m_NetMsg.MsgType = num2;
