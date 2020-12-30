@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
 
-namespace QSB.SpiralSync.Patches
+namespace QSB.TranslationSync.Patches
 {
 	internal class SpiralPatches : QSBPatch
 	{

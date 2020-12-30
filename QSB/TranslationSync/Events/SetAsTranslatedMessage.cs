@@ -1,7 +1,7 @@
 ﻿using QSB.WorldSync.Events;
 using QuantumUNET.Transport;
 
-namespace QSB.SpiralSync.Events
+namespace QSB.TranslationSync.Events
 {
 	public class SetAsTranslatedMessage : WorldObjectMessage
 	{

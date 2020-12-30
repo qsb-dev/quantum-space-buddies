@@ -2,8 +2,8 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.SectorSync.WorldObjects;
-using QSB.SpiralSync;
-using QSB.SpiralSync.WorldObjects;
+using QSB.TranslationSync;
+using QSB.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;

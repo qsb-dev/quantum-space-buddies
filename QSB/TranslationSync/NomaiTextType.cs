@@ -1,4 +1,4 @@
-﻿namespace QSB.SpiralSync
+﻿namespace QSB.TranslationSync
 {
 	public enum NomaiTextType
 	{

@@ -2,7 +2,7 @@
 using QSB.WorldSync;
 using System.Collections.Generic;
 
-namespace QSB.SpiralSync.WorldObjects
+namespace QSB.TranslationSync.WorldObjects
 {
 	internal class QSBWallText : WorldObject<NomaiWallText>
 	{

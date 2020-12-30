@@ -1,9 +1,9 @@
-﻿using QSB.SpiralSync.WorldObjects;
+﻿using QSB.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace QSB.SpiralSync
+namespace QSB.TranslationSync
 {
 	internal class SpiralManager : MonoBehaviour
 	{
