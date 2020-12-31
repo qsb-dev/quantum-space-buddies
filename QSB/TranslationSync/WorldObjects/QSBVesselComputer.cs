@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace QSB.TranslationSync.WorldObjects
 {
-	internal class QSBWallText : WorldObject<NomaiWallText>
+	internal class QSBVesselComputer : WorldObject<NomaiVesselComputer>
 	{
-		public override void Init(NomaiWallText wallText, int id)
+		public override void Init(NomaiVesselComputer computer, int id)
 		{
 			ObjectId = id;
-			AttachedObject = wallText;
+			AttachedObject = computer;
 		}
 
 		public void HandleSetAsTranslated(int id)
@@ -23,12 +23,12 @@ namespace QSB.TranslationSync.WorldObjects
 
 		public IEnumerable<int> GetTranslatedIds()
 		{
-			var dict = AttachedObject.GetValue<Dictionary<int, OWTreeNode<NomaiTextLine>>>("_idToNodeDict");
-			foreach (var key in dict.Keys)
+			var rings = AttachedObject.GetValue<NomaiVesselComputerRing[]>("_computerRings");
+			foreach (var ring in rings)
 			{
-				if (AttachedObject.IsTranslated(key))
+				if (AttachedObject.IsTranslated(ring.GetEntryID()))
 				{
-					yield return key;
+					yield return ring.GetEntryID();
 				}
 			}
 		}

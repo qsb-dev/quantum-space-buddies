@@ -57,6 +57,22 @@ namespace QSB.Player.Events
 					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id);
 				}
 			}
+
+			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				foreach (var id in computer.GetTranslatedIds())
+				{
+					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id);
+				}
+			}
+
+			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				foreach (var id in vesselComputer.GetTranslatedIds())
+				{
+					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id);
+				}
+			}
 		}
 	}
 }

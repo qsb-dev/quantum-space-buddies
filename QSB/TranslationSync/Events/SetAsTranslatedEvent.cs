@@ -32,6 +32,16 @@ namespace QSB.TranslationSync.Events
 				var obj = QSBWorldSync.GetWorldObject<QSBWallText>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
+			else if (message.TextType == NomaiTextType.Computer)
+			{
+				var obj = QSBWorldSync.GetWorldObject<QSBComputer>(message.ObjectId);
+				obj.HandleSetAsTranslated(message.TextId);
+			}
+			else if (message.TextType == NomaiTextType.VesselComputer)
+			{
+				var obj = QSBWorldSync.GetWorldObject<QSBVesselComputer>(message.ObjectId);
+				obj.HandleSetAsTranslated(message.TextId);
+			}
 			else
 			{
 				throw new System.NotImplementedException($"TextType <{message.TextType}> not implemented.");
