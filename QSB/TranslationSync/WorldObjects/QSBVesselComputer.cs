@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.TranslationSync.WorldObjects
 {
@@ -24,13 +25,9 @@ namespace QSB.TranslationSync.WorldObjects
 		public IEnumerable<int> GetTranslatedIds()
 		{
 			var rings = AttachedObject.GetValue<NomaiVesselComputerRing[]>("_computerRings");
-			foreach (var ring in rings)
-			{
-				if (AttachedObject.IsTranslated(ring.GetEntryID()))
-				{
-					yield return ring.GetEntryID();
-				}
-			}
+			return rings
+				.Where(ring => AttachedObject.IsTranslated(ring.GetEntryID()))
+				.Select(ring => ring.GetEntryID());
 		}
 	}
 }

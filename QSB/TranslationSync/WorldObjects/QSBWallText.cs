@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.TranslationSync.WorldObjects
 {
@@ -24,13 +25,7 @@ namespace QSB.TranslationSync.WorldObjects
 		public IEnumerable<int> GetTranslatedIds()
 		{
 			var dict = AttachedObject.GetValue<Dictionary<int, OWTreeNode<NomaiTextLine>>>("_idToNodeDict");
-			foreach (var key in dict.Keys)
-			{
-				if (AttachedObject.IsTranslated(key))
-				{
-					yield return key;
-				}
-			}
+			return dict.Keys.Where(key => AttachedObject.IsTranslated(key));
 		}
 	}
 }

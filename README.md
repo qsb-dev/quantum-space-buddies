@@ -44,6 +44,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - Latest version of Outer Wilds. (Epic version preferred, as Steam version is untestable.)
 - Fast and stable internet connection, upload and download.
 - Should be able to run on minimum Outer Wilds system requirements.
+- Ability to port forward.
 
 ### What is currently synced?
 QSB does not operate on a strict server-client relationship. Each player's game is left as a completely seperate game, and individual elemets are synced or patched so they can be controlled though network messages. Right now, the list of synced objects are :
@@ -62,6 +63,7 @@ QSB does not operate on a strict server-client relationship. Each player's game 
 QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
 - Adding dialogue boxes above NPC and player heads, so other players can "listen in" on conversations.
 - Quantum objects check observations from all players and all player probes.
+- When dying from any cause other than the supernova, the ATP black hole, or the end of the game, the player respawns instantly at Timber Hearth.
 
 ### Why can't I connect to a server?
 #### For the host :
