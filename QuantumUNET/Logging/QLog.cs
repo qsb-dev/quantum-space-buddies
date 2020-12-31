@@ -1,67 +1,66 @@
-﻿using UnityEngine;
-
-namespace QuantumUNET.Logging
+﻿namespace QuantumUNET.Logging
 {
 	public static class QLog
 	{
-		private static QLogType LogType = QLogType.Warning | QLogType.Error | QLogType.FatalError;
+		public const int DebugType = 0;
+		public const int LogType = 1;
+		public const int WarningType = 2;
+		public const int ErrorType = 3;
+		public const int FatalErrorType = 4;
 
-		public static void SetLogType(QLogType flags)
-			=> LogType = flags;
+		private static int _currentLog;
+		private static bool _logDebug => _currentLog <= 0;
+		private static bool _logLog => _currentLog <= 1;
+		private static bool _logWarning => _currentLog <= 2;
+		private static bool _logError => _currentLog <= 3;
+		private static bool _logFatal => _currentLog <= 4;
 
-		public static void SetSpecifcLogType(QLogType flag, bool state)
+		public static void SetLogType(int level)
+			=> _currentLog = level;
+
+		public static void Debug(string message)
 		{
-			if (state)
+			if (_logDebug)
 			{
-				FlagsHelper.Set(ref LogType, flag);
 				return;
 			}
-			FlagsHelper.Unset(ref LogType, flag);
-		}
-
-		public static void LogDebug(string message)
-		{
-			if (!FlagsHelper.IsSet(LogType, QLogType.Debug))
-			{
-				return;
-			}
-			Debug.Log($"DEBUG : {message}");
+			UnityEngine.Debug.Log($"DEBUG : {message}");
 		}
 
 		public static void Log(string message)
 		{
-			if (!FlagsHelper.IsSet(LogType, QLogType.Log))
+			if (_logLog)
 			{
 				return;
 			}
-			Debug.Log($"LOG : {message}");
+			UnityEngine.Debug.Log($"LOG : {message}");
 		}
 
-		public static void LogWarning(string message)
+		public static void Warning(string message)
 		{
-			if (!FlagsHelper.IsSet(LogType, QLogType.Warning))
+			if (_logWarning)
 			{
 				return;
 			}
-			Debug.LogWarning($"WARN : {message}");
+			UnityEngine.Debug.LogWarning($"WARN : {message}");
 		}
 
-		public static void LogError(string message)
+		public static void Error(string message)
 		{
-			if (!FlagsHelper.IsSet(LogType, QLogType.Error))
+			if (_logError)
 			{
 				return;
 			}
-			Debug.LogError($"ERROR : {message}");
+			UnityEngine.Debug.LogError($"ERROR : {message}");
 		}
 
-		public static void LogFatalError(string message)
+		public static void FatalError(string message)
 		{
-			if (!FlagsHelper.IsSet(LogType, QLogType.FatalError))
+			if (_logFatal)
 			{
 				return;
 			}
-			Debug.LogError($"FATAL : {message}");
+			UnityEngine.Debug.LogError($"FATAL : {message}");
 		}
 	}
 }

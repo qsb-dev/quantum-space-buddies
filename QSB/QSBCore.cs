@@ -9,6 +9,7 @@ using QSB.Patches;
 using QSB.QuantumSync;
 using QSB.SectorSync;
 using QSB.TimeSync;
+using QSB.TranslationSync;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
@@ -79,6 +80,7 @@ namespace QSB
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<QuantumManager>();
+			gameObject.AddComponent<SpiralManager>();
 
 			DebugBoxManager.Init();
 

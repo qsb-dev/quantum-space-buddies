@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <!-- TOC -->
 
 - [FAQs](#frequently-asked-questions)
+  - [Requirements](#requirements)
   - [What is synced?](#what-is-currently-synced)
   - [Why can't I connect?](#why-cant-i-connect-to-a-server)
 - [Installation](#installation)
@@ -37,6 +38,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Frequently Asked Questions
 
+### Requirements
+- Latest version of OWML.
+- Latest version of Mod Manager. (If using)
+- Latest version of Outer Wilds. (Epic version preferred, as Steam version is untestable.)
+- Fast and stable internet connection, upload and download.
+- Should be able to run on minimum Outer Wilds system requirements.
+- Ability to port forward.
+
 ### What is currently synced?
 QSB does not operate on a strict server-client relationship. Each player's game is left as a completely seperate game, and individual elemets are synced or patched so they can be controlled though network messages. Right now, the list of synced objects are :
 - Geysers
@@ -47,6 +56,14 @@ QSB does not operate on a strict server-client relationship. Each player's game 
 - Player ships
 - Player probes
 - NPC heads in conversations
+- Ship log
+- Discovering frequencies / signals
+- Nomai text (Spirals + Computers)
+
+QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
+- Adding dialogue boxes above NPC and player heads, so other players can "listen in" on conversations.
+- Quantum objects check observations from all players and all player probes.
+- When dying from any cause other than the supernova, the ATP black hole, or the end of the game, the player respawns instantly at Timber Hearth.
 
 ### Why can't I connect to a server?
 #### For the host :

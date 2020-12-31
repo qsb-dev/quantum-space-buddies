@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
 
-namespace QSB.FrequencySync
+namespace QSB.FrequencySync.Patches
 {
 	public class FrequencyPatches : QSBPatch
 	{

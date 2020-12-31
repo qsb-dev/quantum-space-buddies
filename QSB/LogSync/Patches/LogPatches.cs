@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
 
-namespace QSB.LogSync
+namespace QSB.LogSync.Patches
 {
 	public class LogPatches : QSBPatch
 	{

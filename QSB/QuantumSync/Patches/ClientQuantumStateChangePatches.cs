@@ -1,6 +1,6 @@
 ﻿using QSB.Patches;
 
-namespace QSB.QuantumSync
+namespace QSB.QuantumSync.Patches
 {
 	public class ClientQuantumStateChangePatches : QSBPatch
 	{

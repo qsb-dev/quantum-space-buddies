@@ -3,7 +3,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine.UI;
 
-namespace QSB.QuantumSync
+namespace QSB.QuantumSync.WorldObjects
 {
 	public class QSBMultiStateQuantumObject : WorldObject<MultiStateQuantumObject>
 	{

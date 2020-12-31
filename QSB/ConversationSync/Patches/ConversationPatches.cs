@@ -6,7 +6,7 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace QSB.ConversationSync
+namespace QSB.ConversationSync.Patches
 {
 	public class ConversationPatches : QSBPatch
 	{

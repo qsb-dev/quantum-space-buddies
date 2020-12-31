@@ -29,6 +29,7 @@
 		SocketStateChange,
 		MultiStateChange,
 		IdentifyFrequency,
-		IdentifySignal
+		IdentifySignal,
+		TextTranslated
 	}
 }

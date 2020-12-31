@@ -36,7 +36,7 @@ namespace QuantumUNET
 					m_MyView = GetComponent<QNetworkIdentity>();
 					if (m_MyView == null)
 					{
-						QLog.LogFatalError($"There is no QNetworkIdentity on this object (name={name}). Please add one.");
+						QLog.FatalError($"There is no QNetworkIdentity on this object (name={name}). Please add one.");
 					}
 					myView = m_MyView;
 				}
@@ -52,11 +52,11 @@ namespace QuantumUNET
 		{
 			if (!IsLocalPlayer && !HasAuthority)
 			{
-				QLog.LogWarning("Trying to send command for object without authority.");
+				QLog.Warning("Trying to send command for object without authority.");
 			}
 			else if (QClientScene.readyConnection == null)
 			{
-				QLog.LogError($"Send command attempted with no client running [client={ConnectionToServer}].");
+				QLog.Error($"Send command attempted with no client running [client={ConnectionToServer}].");
 			}
 			else
 			{
@@ -71,7 +71,7 @@ namespace QuantumUNET
 		{
 			if (!IsServer)
 			{
-				QLog.LogWarning("ClientRpc call on un-spawned object");
+				QLog.Warning("ClientRpc call on un-spawned object");
 				return;
 			}
 			writer.FinishMessage();
@@ -82,7 +82,7 @@ namespace QuantumUNET
 		{
 			if (!IsServer)
 			{
-				QLog.LogWarning("TargetRpc call on un-spawned object");
+				QLog.Warning("TargetRpc call on un-spawned object");
 				return;
 			}
 			writer.FinishMessage();
@@ -95,7 +95,7 @@ namespace QuantumUNET
 		{
 			if (!QNetworkServer.active)
 			{
-				QLog.LogError($"Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.");
+				QLog.Error($"Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.");
 				return;
 			}
 			writer.FinishMessage();
@@ -194,21 +194,21 @@ namespace QuantumUNET
 			bool result;
 			if (!s_CmdHandlerDelegates.TryGetValue(cmdHash, out var invoker))
 			{
-				QLog.LogError($"GetInvokerForHash hash:{cmdHash} not found");
+				QLog.Error($"GetInvokerForHash hash:{cmdHash} not found");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
 			}
 			else if (invoker == null)
 			{
-				QLog.LogError($"GetInvokerForHash hash:{cmdHash} invoker null");
+				QLog.Error($"GetInvokerForHash hash:{cmdHash} invoker null");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
 			}
 			else if (invoker.invokeType != invokeType)
 			{
-				QLog.LogError($"GetInvokerForHash hash:{cmdHash} mismatched invokeType");
+				QLog.Error($"GetInvokerForHash hash:{cmdHash} mismatched invokeType");
 				invokeClass = null;
 				invokeFunction = null;
 				result = false;
@@ -405,7 +405,7 @@ namespace QuantumUNET
 						networkInstanceId = component.NetId;
 						if (networkInstanceId.IsEmpty())
 						{
-							QLog.LogWarning(
+							QLog.Warning(
 								$"SetSyncVarGameObject GameObject {newGameObject} has a zero netId. Maybe it is not spawned yet?");
 						}
 					}

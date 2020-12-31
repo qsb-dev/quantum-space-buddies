@@ -2,7 +2,7 @@
 using QSB.WorldSync;
 using QuantumUNET;
 
-namespace QSB.GeyserSync
+namespace QSB.GeyserSync.WorldObjects
 {
 	public class QSBGeyser : WorldObject<GeyserController>
 	{

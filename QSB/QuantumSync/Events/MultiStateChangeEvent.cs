@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Events;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events

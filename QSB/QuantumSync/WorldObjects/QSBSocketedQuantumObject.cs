@@ -1,6 +1,6 @@
 ﻿using QSB.WorldSync;
 
-namespace QSB.QuantumSync
+namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBSocketedQuantumObject : WorldObject<SocketedQuantumObject>
 	{

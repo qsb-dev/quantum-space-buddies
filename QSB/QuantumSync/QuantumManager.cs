@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.QuantumSync.WorldObjects;
+using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
 

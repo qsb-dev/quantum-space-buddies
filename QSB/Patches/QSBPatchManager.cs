@@ -1,12 +1,13 @@
 ﻿using OWML.Common;
-using QSB.ConversationSync;
-using QSB.DeathSync;
-using QSB.ElevatorSync;
-using QSB.FrequencySync;
-using QSB.LogSync;
-using QSB.OrbSync;
-using QSB.QuantumSync;
-using QSB.TimeSync;
+using QSB.ConversationSync.Patches;
+using QSB.DeathSync.Patches;
+using QSB.ElevatorSync.Patches;
+using QSB.FrequencySync.Patches;
+using QSB.LogSync.Patches;
+using QSB.OrbSync.Patches;
+using QSB.QuantumSync.Patches;
+using QSB.TimeSync.Patches;
+using QSB.TranslationSync.Patches;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,8 @@ namespace QSB.Patches
 				new QuantumVisibilityPatches(),
 				new ServerQuantumStateChangePatches(),
 				new ClientQuantumStateChangePatches(),
-				new FrequencyPatches()
+				new FrequencyPatches(),
+				new SpiralPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

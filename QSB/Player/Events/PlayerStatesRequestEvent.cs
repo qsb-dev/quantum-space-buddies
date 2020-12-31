@@ -1,6 +1,9 @@
-﻿using QSB.Events;
+﻿using OWML.Utils;
+using QSB.Events;
 using QSB.Messaging;
-using QSB.SectorSync;
+using QSB.SectorSync.WorldObjects;
+using QSB.TranslationSync;
+using QSB.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -45,6 +48,30 @@ namespace QSB.Player.Events
 			foreach (var fact in QSBWorldSync.ShipLogFacts)
 			{
 				GlobalMessenger<string, bool, bool>.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false);
+			}
+
+			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				foreach (var id in wallText.GetTranslatedIds())
+				{
+					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id);
+				}
+			}
+
+			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				foreach (var id in computer.GetTranslatedIds())
+				{
+					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id);
+				}
+			}
+
+			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				foreach (var id in vesselComputer.GetTranslatedIds())
+				{
+					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id);
+				}
 			}
 		}
 	}

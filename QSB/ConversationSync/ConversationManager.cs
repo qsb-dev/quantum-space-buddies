@@ -118,7 +118,7 @@ namespace QSB.ConversationSync
 		{
 			var newBox = Instantiate(_boxPrefab);
 			newBox.SetActive(false);
-			newBox.transform.parent = parent;
+			newBox.transform.SetParent(parent);
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
 			newBox.transform.rotation = parent.rotation;
 			var lookAt = newBox.AddComponent<FaceActiveCamera>();
