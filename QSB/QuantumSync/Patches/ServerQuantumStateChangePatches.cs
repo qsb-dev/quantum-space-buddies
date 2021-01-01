@@ -34,6 +34,10 @@ namespace QSB.QuantumSync.Patches
 
 		public static void QuantumState_SetVisible(QuantumState __instance, bool visible)
 		{
+			if (!visible)
+			{
+				return;
+			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
 			GlobalMessenger<int, int>
