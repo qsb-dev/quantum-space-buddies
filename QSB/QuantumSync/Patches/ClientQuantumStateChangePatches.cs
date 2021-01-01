@@ -10,6 +10,7 @@ namespace QSB.QuantumSync.Patches
 		{
 			QSBCore.Helper.HarmonyHelper.AddPrefix<SocketedQuantumObject>("ChangeQuantumState", typeof(ClientQuantumStateChangePatches), nameof(ReturnFalsePatch));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("ChangeQuantumState", typeof(ClientQuantumStateChangePatches), nameof(ReturnFalsePatch));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(ClientQuantumStateChangePatches), nameof(ReturnFalsePatch));
 		}
 
 		public static bool ReturnFalsePatch() => false;

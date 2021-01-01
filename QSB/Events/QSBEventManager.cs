@@ -51,6 +51,7 @@ namespace QSB.Events
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
 				new SetAsTranslatedEvent(),
+				new QuantumShuffleEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

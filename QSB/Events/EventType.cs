@@ -28,6 +28,7 @@
 		RevealFact,
 		SocketStateChange,
 		MultiStateChange,
+		QuantumShuffle,
 		IdentifyFrequency,
 		IdentifySignal,
 		TextTranslated

@@ -12,6 +12,7 @@ namespace QSB.QuantumSync
 		private List<SocketedQuantumObject> _socketedQuantumObjects;
 		private List<MultiStateQuantumObject> _multiStateQuantumObjects;
 		private List<QuantumSocket> _quantumSockets;
+		private List<QuantumShuffleObject> _quantumShuffleObjects;
 
 		public void Awake()
 		{
@@ -26,10 +27,12 @@ namespace QSB.QuantumSync
 			_socketedQuantumObjects = QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
+			_quantumShuffleObjects = QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 		}
 
 		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);
 		public int GetId(MultiStateQuantumObject obj) => _multiStateQuantumObjects.IndexOf(obj);
 		public int GetId(QuantumSocket obj) => _quantumSockets.IndexOf(obj);
+		public int GetId(QuantumShuffleObject obj) => _quantumShuffleObjects.IndexOf(obj);
 	}
 }
