@@ -97,9 +97,9 @@ namespace QSB
 
 		private void SetupNetworkTransform(GameObject go)
 		{
-			var trans = go.AddComponent<QuantumUNET.Components.QNetworkTransform>();
-			trans.SyncRotationAxis = QuantumUNET.Components.QNetworkTransform.AxisSyncMode.AxisXYZ;
-			Destroy(go.GetComponent<UnityEngine.Networking.NetworkTransform>());
+			var trans = go.AddComponent<QNetworkTransform>();
+			trans.SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
+			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
 		}
 
