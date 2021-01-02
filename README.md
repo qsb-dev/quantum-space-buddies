@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 - [FAQs](#frequently-asked-questions)
   - [Requirements](#requirements)
+  - [Compatibility with other mods](#compatibility-with-other-mods)
   - [What is synced?](#what-is-currently-synced)
   - [Why can't I connect?](#why-cant-i-connect-to-a-server)
 - [Installation](#installation)
@@ -45,6 +46,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - Fast and stable internet connection, upload and download.
 - Should be able to run on minimum Outer Wilds system requirements.
 - Ability to port forward.
+
+### Compatibility with other mods
+TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
+
+QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll to sync objects, so any mod that changes the hierarchy at all risks breaking QSB. Also, QSB relies on certain game events being called when things happen in-game. Any mod that makes these things happen without calling the correct events will break QSB. Some mods will work fine and have been tested, like CrouchMod. Others may only work partly, like EnableDebugMode and TAICheat.
+**NomaiVR compatibility is currently not planned and likely will never happen, due to extensive changes needed to both mods for it to work.**
 
 ### What is currently synced?
 QSB does not operate on a strict server-client relationship. Each player's game is left as a completely seperate game, and individual elemets are synced or patched so they can be controlled though network messages. Right now, the list of synced objects are :
