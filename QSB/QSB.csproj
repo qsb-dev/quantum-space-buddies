@@ -241,6 +241,15 @@
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\GOExtensions.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Constants.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Drawers\CubeDrawer.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Drawer.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Element.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Gizmos.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\GizmosInstance.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Drawers\LineDrawer.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Drawers\PolygonDrawer.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Drawers\SquareDrawer.cs" />
     <Compile Include="Utility\UnetExtensions.cs" />
     <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />
     <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />

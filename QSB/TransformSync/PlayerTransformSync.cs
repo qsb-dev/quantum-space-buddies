@@ -52,6 +52,16 @@ namespace QSB.TransformSync
 			return body;
 		}
 
+		private void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
+			Popcron.Gizmos.Sphere(Player.Body.transform.position, 1f);
+			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
+		}
+
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)

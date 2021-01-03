@@ -1,6 +1,8 @@
 ﻿using QSB.Events;
 using QSB.Patches;
+using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -148,7 +150,7 @@ namespace QSB.QuantumSync.Patches
 					{
 						Physics.SyncTransforms();
 					}
-					if (skipInstantVisibilityCheck || __instance.IsPlayerEntangled() || !(bool)__instance.GetType().GetMethod("CheckVisibilityInstantly", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null))
+					if (__instance.IsPlayerEntangled() || !IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck))
 					{
 						____moonBody.transform.position = position;
 						if (!Physics.autoSyncTransforms)
@@ -207,6 +209,25 @@ namespace QSB.QuantumSync.Patches
 			}
 			__result = false;
 			return false;
+		}
+
+		private static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
+		{
+			DebugLog.DebugWrite($"Skip vis check? {skipVisibilityCheck}");
+			foreach (var camera in QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck))
+			{
+				var visible = (bool)tracker.GetType()
+						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
+						.Invoke(tracker, new object[] { camera.GetFrustumPlanes() });
+				DebugLog.DebugWrite($"{camera.name}, Visible : {visible}");
+			}
+			var returnValue = tracker.gameObject.activeInHierarchy
+				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
+					.Any(x => (bool)tracker.GetType()
+						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
+						.Invoke(tracker, new object[] { x.GetFrustumPlanes() }));
+			DebugLog.DebugWrite($"Is Moon Visible? {returnValue}");
+			return returnValue;
 		}
 	}
 }
