@@ -29,6 +29,7 @@
 		SocketStateChange,
 		MultiStateChange,
 		QuantumShuffle,
+		MoonStateChange,
 		IdentifyFrequency,
 		IdentifySignal,
 		TextTranslated

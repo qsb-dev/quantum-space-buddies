@@ -1,8 +1,6 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Patches;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -166,7 +164,8 @@ namespace QSB.QuantumSync.Patches
 							velocity = (initialMotion == null) ? Vector3.zero : initialMotion.GetInitVelocity();
 							____useInitialMotion = false;
 						}
-						____moonBody.SetVelocity(OWPhysics.CalculateOrbitVelocity(owRigidbody, ____moonBody, UnityEngine.Random.Range(0, 360)) + velocity);
+						var orbitAngle = UnityEngine.Random.Range(0, 360);
+						____moonBody.SetVelocity(OWPhysics.CalculateOrbitVelocity(owRigidbody, ____moonBody, orbitAngle) + velocity);
 						____lastStateIndex = ____stateIndex;
 						____stateIndex = stateIndex;
 						____collapseToIndex = -1;
@@ -175,6 +174,7 @@ namespace QSB.QuantumSync.Patches
 						{
 							____stateSkipCounts[k] = (k != ____stateIndex) ? (____stateSkipCounts[k] + 1) : 0;
 						}
+						GlobalMessenger<int, Vector3, int>.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
 						break;
 					}
 					____visibilityTracker.transform.localPosition = Vector3.zero;
@@ -192,7 +192,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				else
 				{
-					__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
+					__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
 					____quantumSignal.SetSignalActivation(____stateIndex != 5, 2f);
 				}
 				____referenceFrameVolume.gameObject.SetActive(____stateIndex != 5);

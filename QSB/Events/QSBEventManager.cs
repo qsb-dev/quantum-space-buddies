@@ -52,6 +52,7 @@ namespace QSB.Events
 				new MultiStateChangeEvent(),
 				new SetAsTranslatedEvent(),
 				new QuantumShuffleEvent(),
+				new MoonStateChangeEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

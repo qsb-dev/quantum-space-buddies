@@ -78,7 +78,7 @@ namespace QSB.Player
 		public static List<OWCamera> GetPlayerCameras()
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null).Select(x => x.Camera).ToList();
-			cameraList.Add(Locator.GetPlayerCamera());
+			cameraList.Add(Locator.GetActiveCamera());
 			return cameraList;
 		}
 	}

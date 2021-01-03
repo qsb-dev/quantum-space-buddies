@@ -7,7 +7,7 @@ namespace QSB.QuantumSync.Events
 {
 	public class MultiStateChangeEvent : QSBEvent<MultiStateChangeMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.MultiStateChange;
+		public override EventType Type => EventType.MultiStateChange;
 
 		public override void SetupListener() => GlobalMessenger<int, int>.AddListener(EventNames.QSBMultiStateChange, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int>.RemoveListener(EventNames.QSBMultiStateChange, Handler);
