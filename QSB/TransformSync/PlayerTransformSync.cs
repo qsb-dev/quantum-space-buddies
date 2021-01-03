@@ -54,7 +54,7 @@ namespace QSB.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.HasWokenUp || !Player.IsReady)
 			{
 				return;
 			}

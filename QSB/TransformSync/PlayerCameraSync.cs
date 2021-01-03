@@ -38,6 +38,15 @@ namespace QSB.TransformSync
 			return body.transform;
 		}
 
+		private void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp || !Player.IsReady)
+			{
+				return;
+			}
+			Popcron.Gizmos.Cone(Player.CameraBody.transform.position, Player.CameraBody.transform.rotation, 10f, 45f);
+		}
+
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)

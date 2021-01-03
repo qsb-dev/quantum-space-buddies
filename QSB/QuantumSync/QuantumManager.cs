@@ -1,4 +1,5 @@
-﻿using QSB.QuantumSync.WorldObjects;
+﻿using OWML.Utils;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,25 @@ namespace QSB.QuantumSync
 			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
 			_quantumShuffleObjects = QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
+		}
+
+		private void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
+			foreach (var item in _socketedQuantumObjects)
+			{
+				if (!item.gameObject.activeInHierarchy)
+				{
+					continue;
+				}
+				Popcron.Gizmos.Sphere(item.transform.position, 5f, item.IsVisible() ? Color.green : Color.red);
+			}
+			Popcron.Gizmos.Sphere(Locator.GetQuantumMoon().transform.position, 120f, Color.cyan, true);
+			var visTracker = Locator.GetQuantumMoon().GetValue<VisibilityTracker>("_visibilityTracker");
+			Popcron.Gizmos.Sphere(visTracker.transform.position, 130f, visTracker.IsVisibleUsingCameraFrustum() ? Color.green : Color.red);
 		}
 
 		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);
