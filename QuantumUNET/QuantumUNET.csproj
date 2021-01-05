@@ -107,6 +107,14 @@
     <Compile Include="QULocalConnectionToClient.cs" />
     <Compile Include="QULocalConnectionToServer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Json.Net.Unity3D">
+      <Version>9.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Lib.Harmony">
+      <Version>1.2.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
