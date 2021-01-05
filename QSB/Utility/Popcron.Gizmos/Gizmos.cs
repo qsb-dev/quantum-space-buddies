@@ -372,5 +372,10 @@ namespace Popcron
 			float offset = 0f;
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, rotation);
 		}
+
+		public static void Frustum(OWCamera camera, Color? color = null, bool dashed = false)
+		{
+			Draw<FrustumDrawer>(color, dashed, camera);
+		}
 	}
 }

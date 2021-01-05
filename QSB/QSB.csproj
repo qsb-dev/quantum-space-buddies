@@ -244,6 +244,7 @@
     <Compile Include="Utility\Popcron.Gizmos\Constants.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\CubeDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawer.cs" />
+    <Compile Include="Utility\Popcron.Gizmos\Drawers\FrustumDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Element.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Gizmos.cs" />
     <Compile Include="Utility\Popcron.Gizmos\GizmosInstance.cs" />

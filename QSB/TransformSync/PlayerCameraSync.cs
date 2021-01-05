@@ -12,6 +12,7 @@ namespace QSB.TransformSync
 		{
 			var body = Locator.GetPlayerCamera().gameObject.transform;
 
+			Player.Camera = Locator.GetPlayerCamera();
 			Player.CameraBody = body.gameObject;
 
 			Player.IsReady = true;
@@ -32,6 +33,8 @@ namespace QSB.TransformSync
 			camera.enabled = false;
 			var owcamera = body.AddComponent<OWCamera>();
 			owcamera.fieldOfView = 70;
+			owcamera.nearClipPlane = 0.1f;
+			owcamera.farClipPlane = 50000f;
 			Player.Camera = owcamera;
 			Player.CameraBody = body;
 
@@ -44,7 +47,7 @@ namespace QSB.TransformSync
 			{
 				return;
 			}
-			Popcron.Gizmos.Cone(Player.CameraBody.transform.position, Player.CameraBody.transform.rotation, 10f, 45f);
+			Popcron.Gizmos.Frustum(Player.Camera);
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

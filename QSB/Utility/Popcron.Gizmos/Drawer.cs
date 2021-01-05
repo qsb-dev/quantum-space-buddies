@@ -28,6 +28,7 @@ namespace Popcron
 				typeToDrawer.Add(typeof(LineDrawer), new LineDrawer());
 				typeToDrawer.Add(typeof(PolygonDrawer), new PolygonDrawer());
 				typeToDrawer.Add(typeof(SquareDrawer), new SquareDrawer());
+				typeToDrawer.Add(typeof(FrustumDrawer), new FrustumDrawer());
 
 				//find extras
 				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();

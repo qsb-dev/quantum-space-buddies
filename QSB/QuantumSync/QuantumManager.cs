@@ -1,7 +1,10 @@
 ﻿using OWML.Utils;
+using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync
@@ -31,23 +34,20 @@ namespace QSB.QuantumSync
 			_quantumShuffleObjects = QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 		}
 
-		private void OnRenderObject()
+		private void OnGUI()
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
 			{
 				return;
 			}
-			foreach (var item in _socketedQuantumObjects)
+			GUI.Label(new Rect(220, 10, 200f, 20f), $"QM Visible:{Locator.GetQuantumMoon().IsVisible()}");
+			var offset = 40f;
+			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
+			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
 			{
-				if (!item.gameObject.activeInHierarchy)
-				{
-					continue;
-				}
-				Popcron.Gizmos.Sphere(item.transform.position, 5f, item.IsVisible() ? Color.green : Color.red);
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"{camera.name} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { camera.GetFrustumPlanes() })}");
+				offset += 30f;
 			}
-			Popcron.Gizmos.Sphere(Locator.GetQuantumMoon().transform.position, 120f, Color.cyan, true);
-			var visTracker = Locator.GetQuantumMoon().GetValue<VisibilityTracker>("_visibilityTracker");
-			Popcron.Gizmos.Sphere(visTracker.transform.position, 130f, visTracker.IsVisibleUsingCameraFrustum() ? Color.green : Color.red);
 		}
 
 		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);

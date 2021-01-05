@@ -122,12 +122,12 @@ namespace Popcron
 				}
 
 #if UNITY_EDITOR
-                //mark scene as dirty
-                if (markDirty && !Application.isPlaying)
-                {
-                    Scene scene = SceneManager.GetActiveScene();
-                    EditorSceneManager.MarkSceneDirty(scene);
-                }
+				//mark scene as dirty
+				if (markDirty && !Application.isPlaying)
+				{
+					Scene scene = SceneManager.GetActiveScene();
+					EditorSceneManager.MarkSceneDirty(scene);
+				}
 #endif
 
 				hotReloaded = false;
@@ -148,7 +148,7 @@ namespace Popcron
 				else
 				{
 #if UNITY_EDITOR
-                    time = (float)EditorApplication.timeSinceStartup;
+					time = (float)EditorApplication.timeSinceStartup;
 #endif
 				}
 
@@ -233,16 +233,16 @@ namespace Popcron
 			//allow the scene and main camera always
 			bool isSceneCamera = false;
 #if UNITY_EDITOR
-            SceneView sceneView = SceneView.currentDrawingSceneView;
-            if (sceneView == null)
-            {
-                sceneView = SceneView.lastActiveSceneView;
-            }
+			SceneView sceneView = SceneView.currentDrawingSceneView;
+			if (sceneView == null)
+			{
+				sceneView = SceneView.lastActiveSceneView;
+			}
 
-            if (sceneView != null && sceneView.camera == camera)
-            {
-                isSceneCamera = true;
-            }
+			if (sceneView != null && sceneView.camera == camera)
+			{
+				isSceneCamera = true;
+			}
 #endif
 			if (isSceneCamera || camera.CompareTag("MainCamera"))
 			{
