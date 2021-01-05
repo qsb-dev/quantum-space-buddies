@@ -221,7 +221,7 @@ namespace QSB.QuantumSync.Patches
 
 		private static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
 		{
-			return returnValue = tracker.gameObject.activeInHierarchy
+			return tracker.gameObject.activeInHierarchy
 				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
 					.Any(x => (bool)tracker.GetType()
 						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
