@@ -11,21 +11,21 @@ namespace Popcron
 
 		public override int Draw(ref Vector3[] buffer, params object[] values)
 		{
-			Vector3 position = (Vector3)values[0];
-			Quaternion rotation = (Quaternion)values[1];
-			Vector3 size = (Vector3)values[2];
+			var position = (Vector3)values[0];
+			var rotation = (Quaternion)values[1];
+			var size = (Vector3)values[2];
 
 			size *= 0.5f;
 
-			Vector3 point1 = new Vector3(position.x - size.x, position.y - size.y, position.z - size.z);
-			Vector3 point2 = new Vector3(position.x + size.x, position.y - size.y, position.z - size.z);
-			Vector3 point3 = new Vector3(position.x + size.x, position.y + size.y, position.z - size.z);
-			Vector3 point4 = new Vector3(position.x - size.x, position.y + size.y, position.z - size.z);
+			var point1 = new Vector3(position.x - size.x, position.y - size.y, position.z - size.z);
+			var point2 = new Vector3(position.x + size.x, position.y - size.y, position.z - size.z);
+			var point3 = new Vector3(position.x + size.x, position.y + size.y, position.z - size.z);
+			var point4 = new Vector3(position.x - size.x, position.y + size.y, position.z - size.z);
 
-			Vector3 point5 = new Vector3(position.x - size.x, position.y - size.y, position.z + size.z);
-			Vector3 point6 = new Vector3(position.x + size.x, position.y - size.y, position.z + size.z);
-			Vector3 point7 = new Vector3(position.x + size.x, position.y + size.y, position.z + size.z);
-			Vector3 point8 = new Vector3(position.x - size.x, position.y + size.y, position.z + size.z);
+			var point5 = new Vector3(position.x - size.x, position.y - size.y, position.z + size.z);
+			var point6 = new Vector3(position.x + size.x, position.y - size.y, position.z + size.z);
+			var point7 = new Vector3(position.x + size.x, position.y + size.y, position.z + size.z);
+			var point8 = new Vector3(position.x - size.x, position.y + size.y, position.z + size.z);
 
 			point1 = rotation * (point1 - position);
 			point1 += position;

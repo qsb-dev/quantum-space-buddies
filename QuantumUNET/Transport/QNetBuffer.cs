@@ -109,7 +109,7 @@ namespace QuantumUNET.Transport
 			{
 				for (var i = 0; i < count; i++)
 				{
-					m_Buffer[(int)checked((IntPtr)unchecked(Position + (ulong)i))] = buffer[i];
+					m_Buffer[(int)checked(unchecked(Position + (ulong)i))] = buffer[i];
 				}
 			}
 			Position += count;

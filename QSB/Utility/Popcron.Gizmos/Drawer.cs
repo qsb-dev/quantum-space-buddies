@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 namespace Popcron
@@ -21,21 +20,23 @@ namespace Popcron
 			//find all drawers
 			if (typeToDrawer == null)
 			{
-				typeToDrawer = new Dictionary<Type, Drawer>();
+				typeToDrawer = new Dictionary<Type, Drawer>
+				{
 
-				//add defaults
-				typeToDrawer.Add(typeof(CubeDrawer), new CubeDrawer());
-				typeToDrawer.Add(typeof(LineDrawer), new LineDrawer());
-				typeToDrawer.Add(typeof(PolygonDrawer), new PolygonDrawer());
-				typeToDrawer.Add(typeof(SquareDrawer), new SquareDrawer());
-				typeToDrawer.Add(typeof(FrustumDrawer), new FrustumDrawer());
+					//add defaults
+					{ typeof(CubeDrawer), new CubeDrawer() },
+					{ typeof(LineDrawer), new LineDrawer() },
+					{ typeof(PolygonDrawer), new PolygonDrawer() },
+					{ typeof(SquareDrawer), new SquareDrawer() },
+					{ typeof(FrustumDrawer), new FrustumDrawer() }
+				};
 
 				//find extras
-				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (Assembly assembly in assemblies)
+				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (var assembly in assemblies)
 				{
-					Type[] types = assembly.GetTypes();
-					foreach (Type type in types)
+					var types = assembly.GetTypes();
+					foreach (var type in types)
 					{
 						if (type.IsAbstract)
 						{
@@ -46,7 +47,7 @@ namespace Popcron
 						{
 							try
 							{
-								Drawer value = (Drawer)Activator.CreateInstance(type);
+								var value = (Drawer)Activator.CreateInstance(type);
 								typeToDrawer[type] = value;
 							}
 							catch (Exception e)
@@ -58,7 +59,7 @@ namespace Popcron
 				}
 			}
 
-			if (typeToDrawer.TryGetValue(typeof(T), out Drawer drawer))
+			if (typeToDrawer.TryGetValue(typeof(T), out var drawer))
 			{
 				return drawer;
 			}

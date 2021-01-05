@@ -21,7 +21,7 @@ namespace Popcron
 				position = p3;
 			}
 
-			Quaternion rotation = (Quaternion)values[1];
+			var rotation = (Quaternion)values[1];
 
 			Vector2 size = default;
 			if (values[2] is Vector2 s2)

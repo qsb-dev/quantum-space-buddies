@@ -2,7 +2,6 @@
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;

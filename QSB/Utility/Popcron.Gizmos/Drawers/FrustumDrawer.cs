@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Popcron
 {
-	class FrustumDrawer : Drawer
+	internal class FrustumDrawer : Drawer
 	{
 		public FrustumDrawer()
 		{

@@ -115,14 +115,8 @@ namespace Popcron
 		[Obsolete("This property is obsolete. Use FrustumCulling instead.", false)]
 		public static bool Cull
 		{
-			get
-			{
-				return FrustumCulling;
-			}
-			set
-			{
-				FrustumCulling = value;
-			}
+			get => FrustumCulling;
+			set => FrustumCulling = value;
 		}
 
 		[Obsolete("This property is obsolete. Subscribe to CameraFilter predicate instead and return true for your custom camera.", false)]
@@ -202,12 +196,12 @@ namespace Popcron
 				const string Delim = ",";
 				if (_offset == null)
 				{
-					string data = PlayerPrefs.GetString($"{PrefsKey}.Offset", 0 + Delim + 0 + Delim + 0);
-					int indexOf = data.IndexOf(Delim);
-					int lastIndexOf = data.LastIndexOf(Delim);
+					var data = PlayerPrefs.GetString($"{PrefsKey}.Offset", 0 + Delim + 0 + Delim + 0);
+					var indexOf = data.IndexOf(Delim);
+					var lastIndexOf = data.LastIndexOf(Delim);
 					if (indexOf + lastIndexOf > 0)
 					{
-						string[] arr = data.Split(Delim[0]);
+						var arr = data.Split(Delim[0]);
 						_offset = new Vector3(float.Parse(arr[0]), float.Parse(arr[1]), float.Parse(arr[2]));
 					}
 					else
@@ -239,13 +233,13 @@ namespace Popcron
 				return;
 			}
 
-			Drawer drawer = Drawer.Get<T>();
+			var drawer = Drawer.Get<T>();
 			if (drawer != null)
 			{
-				int points = drawer.Draw(ref buffer, args);
+				var points = drawer.Draw(ref buffer, args);
 
 				//copy from buffer and add to the queue
-				Vector3[] array = new Vector3[points];
+				var array = new Vector3[points];
 				Array.Copy(buffer, array, points);
 				GizmosInstance.Submit(array, color, dashed);
 			}
@@ -267,42 +261,27 @@ namespace Popcron
 		/// <summary>
 		/// Draw line in world space.
 		/// </summary>
-		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false)
-		{
-			Draw<LineDrawer>(color, dashed, a, b);
-		}
+		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false) => Draw<LineDrawer>(color, dashed, a, b);
 
 		/// <summary>
 		/// Draw square in world space.
 		/// </summary>
-		public static void Square(Vector2 position, Vector2 size, Color? color = null, bool dashed = false)
-		{
-			Square(position, Quaternion.identity, size, color, dashed);
-		}
+		public static void Square(Vector2 position, Vector2 size, Color? color = null, bool dashed = false) => Square(position, Quaternion.identity, size, color, dashed);
 
 		/// <summary>
 		/// Draw square in world space with float diameter parameter.
 		/// </summary>
-		public static void Square(Vector2 position, float diameter, Color? color = null, bool dashed = false)
-		{
-			Square(position, Quaternion.identity, Vector2.one * diameter, color, dashed);
-		}
+		public static void Square(Vector2 position, float diameter, Color? color = null, bool dashed = false) => Square(position, Quaternion.identity, Vector2.one * diameter, color, dashed);
 
 		/// <summary>
 		/// Draw square in world space with a rotation parameter.
 		/// </summary>
-		public static void Square(Vector2 position, Quaternion rotation, Vector2 size, Color? color = null, bool dashed = false)
-		{
-			Draw<SquareDrawer>(color, dashed, position, rotation, size);
-		}
+		public static void Square(Vector2 position, Quaternion rotation, Vector2 size, Color? color = null, bool dashed = false) => Draw<SquareDrawer>(color, dashed, position, rotation, size);
 
 		/// <summary>
 		/// Draws a cube in world space.
 		/// </summary>
-		public static void Cube(Vector3 position, Quaternion rotation, Vector3 size, Color? color = null, bool dashed = false)
-		{
-			Draw<CubeDrawer>(color, dashed, position, rotation, size);
-		}
+		public static void Cube(Vector3 position, Quaternion rotation, Vector3 size, Color? color = null, bool dashed = false) => Draw<CubeDrawer>(color, dashed, position, rotation, size);
 
 		/// <summary>
 		/// Draws a rectangle in screen space.
@@ -317,10 +296,7 @@ namespace Popcron
 		/// <summary>
 		/// Draws a representation of a bounding box.
 		/// </summary>
-		public static void Bounds(Bounds bounds, Color? color = null, bool dashed = false)
-		{
-			Draw<CubeDrawer>(color, dashed, bounds.center, Quaternion.identity, bounds.size);
-		}
+		public static void Bounds(Bounds bounds, Color? color = null, bool dashed = false) => Draw<CubeDrawer>(color, dashed, bounds.center, Quaternion.identity, bounds.size);
 
 		/// <summary>
 		/// Draws a cone similar to the one that spot lights draw.
@@ -328,17 +304,17 @@ namespace Popcron
 		public static void Cone(Vector3 position, Quaternion rotation, float length, float angle, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
 			//draw the end of the cone
-			float endAngle = Mathf.Tan(angle * 0.5f * Mathf.Deg2Rad) * length;
-			Vector3 forward = rotation * Vector3.forward;
-			Vector3 endPosition = position + forward * length;
-			float offset = 0f;
+			var endAngle = Mathf.Tan(angle * 0.5f * Mathf.Deg2Rad) * length;
+			var forward = rotation * Vector3.forward;
+			var endPosition = position + forward * length;
+			var offset = 0f;
 			Draw<PolygonDrawer>(color, dashed, endPosition, pointsCount, endAngle, offset, rotation);
 
 			//draw the 4 lines
-			for (int i = 0; i < 4; i++)
+			for (var i = 0; i < 4; i++)
 			{
-				float a = i * 90f * Mathf.Deg2Rad;
-				Vector3 point = rotation * new Vector3(Mathf.Cos(a), Mathf.Sin(a)) * endAngle;
+				var a = i * 90f * Mathf.Deg2Rad;
+				var point = rotation * new Vector3(Mathf.Cos(a), Mathf.Sin(a)) * endAngle;
 				Line(position, position + point + forward * length, color, dashed);
 			}
 		}
@@ -348,7 +324,7 @@ namespace Popcron
 		/// </summary>
 		public static void Sphere(Vector3 position, float radius, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
-			float offset = 0f;
+			var offset = 0f;
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, Quaternion.Euler(0f, 0f, 0f));
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, Quaternion.Euler(90f, 0f, 0f));
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, Quaternion.Euler(0f, 90f, 90f));
@@ -359,8 +335,8 @@ namespace Popcron
 		/// </summary>
 		public static void Circle(Vector3 position, float radius, Camera camera, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
-			float offset = 0f;
-			Quaternion rotation = Quaternion.LookRotation(position - camera.transform.position);
+			var offset = 0f;
+			var rotation = Quaternion.LookRotation(position - camera.transform.position);
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, rotation);
 		}
 
@@ -369,13 +345,10 @@ namespace Popcron
 		/// </summary>
 		public static void Circle(Vector3 position, float radius, Quaternion rotation, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
-			float offset = 0f;
+			var offset = 0f;
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, rotation);
 		}
 
-		public static void Frustum(OWCamera camera, Color? color = null, bool dashed = false)
-		{
-			Draw<FrustumDrawer>(color, dashed, camera);
-		}
+		public static void Frustum(OWCamera camera, Color? color = null, bool dashed = false) => Draw<FrustumDrawer>(color, dashed, camera);
 	}
 }

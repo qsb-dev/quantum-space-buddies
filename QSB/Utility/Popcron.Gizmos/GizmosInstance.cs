@@ -44,7 +44,7 @@ namespace Popcron
 		{
 			get
 			{
-				GizmosInstance inst = GetOrCreate();
+				var inst = GetOrCreate();
 				if (inst.overrideMaterial)
 				{
 					return inst.overrideMaterial;
@@ -54,7 +54,7 @@ namespace Popcron
 			}
 			set
 			{
-				GizmosInstance inst = GetOrCreate();
+				var inst = GetOrCreate();
 				inst.overrideMaterial = value;
 			}
 		}
@@ -70,7 +70,7 @@ namespace Popcron
 				{
 					// Unity has a built-in shader that is useful for drawing
 					// simple colored things.
-					Shader shader = Shader.Find("Hidden/Internal-Colored");
+					var shader = Shader.Find("Hidden/Internal-Colored");
 					defaultMaterial = new Material(shader)
 					{
 						hideFlags = HideFlags.HideAndDontSave
@@ -91,9 +91,9 @@ namespace Popcron
 		{
 			if (hotReloaded || !instance)
 			{
-				bool markDirty = false;
-				GizmosInstance[] gizmosInstances = FindObjectsOfType<GizmosInstance>();
-				for (int i = 0; i < gizmosInstances.Length; i++)
+				var markDirty = false;
+				var gizmosInstances = FindObjectsOfType<GizmosInstance>();
+				for (var i = 0; i < gizmosInstances.Length; i++)
 				{
 					instance = gizmosInstances[i];
 
@@ -140,7 +140,7 @@ namespace Popcron
 		{
 			get
 			{
-				float time = 0f;
+				var time = 0f;
 				if (Application.isPlaying)
 				{
 					time = Time.time;
@@ -161,7 +161,7 @@ namespace Popcron
 		/// </summary>
 		internal static void Submit(Vector3[] points, Color? color, bool dashed)
 		{
-			GizmosInstance inst = GetOrCreate();
+			var inst = GetOrCreate();
 
 			//if new frame, reset index
 			if (inst.lastFrame != Time.frameCount)
@@ -173,8 +173,8 @@ namespace Popcron
 			//excedeed the length, so make it even bigger
 			if (inst.queueIndex >= inst.queue.Length)
 			{
-				Element[] bigger = new Element[inst.queue.Length + DefaultQueueSize];
-				for (int i = inst.queue.Length; i < bigger.Length; i++)
+				var bigger = new Element[inst.queue.Length + DefaultQueueSize];
+				for (var i = inst.queue.Length; i < bigger.Length; i++)
 				{
 					bigger[i] = new Element();
 				}
@@ -194,7 +194,7 @@ namespace Popcron
 		{
 			//populate queue with empty elements
 			queue = new Element[DefaultQueueSize];
-			for (int i = 0; i < DefaultQueueSize; i++)
+			for (var i = 0; i < DefaultQueueSize; i++)
 			{
 				queue[i] = new Element();
 			}
@@ -231,7 +231,7 @@ namespace Popcron
 			}
 
 			//allow the scene and main camera always
-			bool isSceneCamera = false;
+			var isSceneCamera = false;
 #if UNITY_EDITOR
 			SceneView sceneView = SceneView.currentDrawingSceneView;
 			if (sceneView == null)
@@ -266,9 +266,9 @@ namespace Popcron
 			}
 
 			//essentially check if at least 1 point is visible by the camera
-			for (int i = 0; i < points.points.Length; i++)
+			for (var i = 0; i < points.points.Length; i++)
 			{
-				Vector3 vp = camera.WorldToViewportPoint(points.points[i]);
+				var vp = camera.WorldToViewportPoint(points.points[i]);
 				if (vp.x >= 0 && vp.x <= 1 && vp.y >= 0 && vp.y <= 1)
 				{
 					return true;
@@ -307,19 +307,19 @@ namespace Popcron
 				return;
 			}
 
-			Vector3 offset = Gizmos.Offset;
+			var offset = Gizmos.Offset;
 
 			GL.PushMatrix();
 			GL.MultMatrix(Matrix4x4.identity);
 			GL.Begin(GL.LINES);
 
-			bool alt = CurrentTime % 1 > 0.5f;
-			float dashGap = Mathf.Clamp(Gizmos.DashGap, 0.01f, 32f);
-			bool frustumCull = Gizmos.FrustumCulling;
-			List<Vector3> points = new List<Vector3>();
+			var alt = CurrentTime % 1 > 0.5f;
+			var dashGap = Mathf.Clamp(Gizmos.DashGap, 0.01f, 32f);
+			var frustumCull = Gizmos.FrustumCulling;
+			var points = new List<Vector3>();
 
 			//draw le elements
-			for (int e = 0; e < queueIndex; e++)
+			for (var e = 0; e < queueIndex; e++)
 			{
 				//just in case
 				if (queue.Length <= e)
@@ -327,7 +327,7 @@ namespace Popcron
 					break;
 				}
 
-				Element element = queue[e];
+				var element = queue[e];
 
 				//dont render this thingy if its not inside the frustum
 				if (frustumCull)
@@ -342,25 +342,25 @@ namespace Popcron
 				if (element.dashed)
 				{
 					//subdivide
-					for (int i = 0; i < element.points.Length - 1; i++)
+					for (var i = 0; i < element.points.Length - 1; i++)
 					{
-						Vector3 pointA = element.points[i];
-						Vector3 pointB = element.points[i + 1];
-						Vector3 direction = pointB - pointA;
+						var pointA = element.points[i];
+						var pointB = element.points[i + 1];
+						var direction = pointB - pointA;
 						if (direction.sqrMagnitude > dashGap * dashGap * 2f)
 						{
-							float magnitude = direction.magnitude;
-							int amount = Mathf.RoundToInt(magnitude / dashGap);
+							var magnitude = direction.magnitude;
+							var amount = Mathf.RoundToInt(magnitude / dashGap);
 							direction /= magnitude;
 
-							for (int p = 0; p < amount - 1; p++)
+							for (var p = 0; p < amount - 1; p++)
 							{
 								if (p % 2 == (alt ? 1 : 0))
 								{
-									float startLerp = p / (amount - 1f);
-									float endLerp = (p + 1) / (amount - 1f);
-									Vector3 start = Vector3.Lerp(pointA, pointB, startLerp);
-									Vector3 end = Vector3.Lerp(pointA, pointB, endLerp);
+									var startLerp = p / (amount - 1f);
+									var endLerp = (p + 1) / (amount - 1f);
+									var start = Vector3.Lerp(pointA, pointB, startLerp);
+									var end = Vector3.Lerp(pointA, pointB, endLerp);
 									points.Add(start);
 									points.Add(end);
 								}
@@ -379,7 +379,7 @@ namespace Popcron
 				}
 
 				GL.Color(element.color);
-				for (int i = 0; i < points.Count; i++)
+				for (var i = 0; i < points.Count; i++)
 				{
 					GL.Vertex(points[i] + offset);
 				}
