@@ -1,36 +1,17 @@
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.SceneManagement;
-#endif
-
-#if !UNITY_2019_1_OR_NEWER
-
-public struct ScriptableRenderContext { }
-
-public static class RenderPipelineManager
-{
-	public static event Action<ScriptableRenderContext, Camera> endCameraRendering;
-}
-
-#endif
-
 namespace Popcron
 {
-	[ExecuteInEditMode]
-	[AddComponentMenu("")]
 	public class GizmosInstance : MonoBehaviour
 	{
 		private const int DefaultQueueSize = 4096;
 
 		private static GizmosInstance instance;
-		private static bool hotReloaded = true;
 		private static Material defaultMaterial;
-		private static Plane[] cameraPlanes = new Plane[6];
 
 		private Material overrideMaterial;
 		private int queueIndex = 0;
@@ -70,17 +51,14 @@ namespace Popcron
 				{
 					// Unity has a built-in shader that is useful for drawing
 					// simple colored things.
-					var shader = Shader.Find("Hidden/Internal-Colored");
+					var shader = Shader.Find("UI/Default");
 					defaultMaterial = new Material(shader)
 					{
 						hideFlags = HideFlags.HideAndDontSave
 					};
 
 					// Turn on alpha blending
-					defaultMaterial.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
-					defaultMaterial.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
-					defaultMaterial.SetInt("_Cull", (int)CullMode.Off);
-					defaultMaterial.SetInt("_ZWrite", 0);
+					defaultMaterial.SetInt("unity_GUIZTestMode", (int)CompareFunction.Always);
 				}
 
 				return defaultMaterial;
@@ -89,9 +67,8 @@ namespace Popcron
 
 		internal static GizmosInstance GetOrCreate()
 		{
-			if (hotReloaded || !instance)
+			if (!instance)
 			{
-				var markDirty = false;
 				var gizmosInstances = FindObjectsOfType<GizmosInstance>();
 				for (var i = 0; i < gizmosInstances.Length; i++)
 				{
@@ -100,15 +77,7 @@ namespace Popcron
 					//destroy any extra gizmo instances
 					if (i > 0)
 					{
-						if (Application.isPlaying)
-						{
-							Destroy(gizmosInstances[i]);
-						}
-						else
-						{
-							DestroyImmediate(gizmosInstances[i]);
-							markDirty = true;
-						}
+						Destroy(gizmosInstances[i]);
 					}
 				}
 
@@ -117,44 +86,13 @@ namespace Popcron
 				{
 					instance = new GameObject(typeof(GizmosInstance).FullName).AddComponent<GizmosInstance>();
 					instance.gameObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
-
-					markDirty = true;
 				}
-
-#if UNITY_EDITOR
-				//mark scene as dirty
-				if (markDirty && !Application.isPlaying)
-				{
-					Scene scene = SceneManager.GetActiveScene();
-					EditorSceneManager.MarkSceneDirty(scene);
-				}
-#endif
-
-				hotReloaded = false;
 			}
 
 			return instance;
 		}
 
-		private float CurrentTime
-		{
-			get
-			{
-				var time = 0f;
-				if (Application.isPlaying)
-				{
-					time = Time.time;
-				}
-				else
-				{
-#if UNITY_EDITOR
-					time = (float)EditorApplication.timeSinceStartup;
-#endif
-				}
-
-				return time;
-			}
-		}
+		private float CurrentTime => Time.time;
 
 		/// <summary>
 		/// Submits an array of points to draw into the queue.
@@ -199,83 +137,12 @@ namespace Popcron
 				queue[i] = new Element();
 			}
 
-			if (GraphicsSettings.renderPipelineAsset == null)
-			{
-				Camera.onPostRender += OnRendered;
-			}
-			else
-			{
-				RenderPipelineManager.endCameraRendering += OnRendered;
-			}
+			Camera.onPostRender += OnRendered;
 		}
 
 		private void OnDisable()
 		{
-			if (GraphicsSettings.renderPipelineAsset == null)
-			{
-				Camera.onPostRender -= OnRendered;
-			}
-			else
-			{
-				RenderPipelineManager.endCameraRendering -= OnRendered;
-			}
-		}
-
-		private void OnRendered(ScriptableRenderContext context, Camera camera) => OnRendered(camera);
-
-		private bool ShouldRenderCamera(Camera camera)
-		{
-			if (!camera)
-			{
-				return false;
-			}
-
-			//allow the scene and main camera always
-			var isSceneCamera = false;
-#if UNITY_EDITOR
-			SceneView sceneView = SceneView.currentDrawingSceneView;
-			if (sceneView == null)
-			{
-				sceneView = SceneView.lastActiveSceneView;
-			}
-
-			if (sceneView != null && sceneView.camera == camera)
-			{
-				isSceneCamera = true;
-			}
-#endif
-			if (isSceneCamera || camera.CompareTag("MainCamera"))
-			{
-				return true;
-			}
-
-			//it passed through the filter
-			if (Gizmos.CameraFilter?.Invoke(camera) == true)
-			{
-				return true;
-			}
-
-			return false;
-		}
-
-		private bool IsVisibleByCamera(Element points, Camera camera)
-		{
-			if (!camera)
-			{
-				return false;
-			}
-
-			//essentially check if at least 1 point is visible by the camera
-			for (var i = 0; i < points.points.Length; i++)
-			{
-				var vp = camera.WorldToViewportPoint(points.points[i]);
-				if (vp.x >= 0 && vp.x <= 1 && vp.y >= 0 && vp.y <= 1)
-				{
-					return true;
-				}
-			}
-
-			return false;
+			Camera.onPostRender -= OnRendered;
 		}
 
 		private void Update()
@@ -286,26 +153,7 @@ namespace Popcron
 
 		private void OnRendered(Camera camera)
 		{
-			Material.SetPass(Gizmos.Pass);
-
-			//shouldnt be rendering
-			if (!Gizmos.Enabled)
-			{
-				queueIndex = 0;
-			}
-
-			//check if this camera is ok to render with
-			if (!ShouldRenderCamera(camera))
-			{
-				GL.PushMatrix();
-				GL.Begin(GL.LINES);
-
-				//bla bla bla
-
-				GL.End();
-				GL.PopMatrix();
-				return;
-			}
+			Material.SetPass(0);
 
 			var offset = Gizmos.Offset;
 
@@ -315,7 +163,6 @@ namespace Popcron
 
 			var alt = CurrentTime % 1 > 0.5f;
 			var dashGap = Mathf.Clamp(Gizmos.DashGap, 0.01f, 32f);
-			var frustumCull = Gizmos.FrustumCulling;
 			var points = new List<Vector3>();
 
 			//draw le elements
@@ -328,15 +175,6 @@ namespace Popcron
 				}
 
 				var element = queue[e];
-
-				//dont render this thingy if its not inside the frustum
-				if (frustumCull)
-				{
-					if (!IsVisibleByCamera(element, camera))
-					{
-						continue;
-					}
-				}
 
 				points.Clear();
 				if (element.dashed)

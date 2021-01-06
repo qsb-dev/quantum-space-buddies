@@ -16,16 +16,16 @@ namespace Popcron
 
 			//bottom left
 			buffer[0] = camera.ScreenToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
-			buffer[1] = camera.ScreenToWorldPoint(new Vector3(0, 0, camera.farClipPlane));
+			buffer[1] = camera.ScreenToWorldPoint(new Vector3(0, 0, camera.farClipPlane/2));
 			//bottom right
 			buffer[2] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, 0, camera.nearClipPlane));
-			buffer[3] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, 0, camera.farClipPlane));
+			buffer[3] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, 0, camera.farClipPlane/2));
 			//top left
 			buffer[4] = camera.ScreenToWorldPoint(new Vector3(0, camera.pixelHeight, camera.nearClipPlane));
-			buffer[5] = camera.ScreenToWorldPoint(new Vector3(0, camera.pixelHeight, camera.farClipPlane));
+			buffer[5] = camera.ScreenToWorldPoint(new Vector3(0, camera.pixelHeight, camera.farClipPlane/2));
 			//top right
 			buffer[6] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, camera.pixelHeight, camera.nearClipPlane));
-			buffer[7] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, camera.pixelHeight, camera.farClipPlane));
+			buffer[7] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, camera.pixelHeight, camera.farClipPlane/2));
 			//bottom left to bottom right
 			buffer[8] = camera.ScreenToWorldPoint(new Vector3(0, 0, camera.farClipPlane / 2));
 			buffer[9] = camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth, 0, camera.farClipPlane / 2));

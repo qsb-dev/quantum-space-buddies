@@ -15,12 +15,6 @@ namespace Popcron
 
 		private static Vector3[] buffer = new Vector3[BufferSize];
 
-		/// <summary>
-		/// By default, it will always render to scene view camera and the main camera.
-		/// Subscribing to this allows you to whitelist your custom cameras.
-		/// </summary>
-		public static Func<Camera, bool> CameraFilter = cam => false;
-
 		private static string PrefsKey
 		{
 			get
@@ -64,30 +58,6 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Toggles wether the gizmos could be drawn or not.
-		/// </summary>
-		public static bool Enabled
-		{
-			get
-			{
-				if (_enabled == null)
-				{
-					_enabled = PlayerPrefs.GetInt($"{PrefsKey}.Enabled", 1) == 1;
-				}
-
-				return _enabled.Value;
-			}
-			set
-			{
-				if (_enabled != value)
-				{
-					_enabled = value;
-					PlayerPrefs.SetInt($"{PrefsKey}.Enabled", value ? 1 : 0);
-				}
-			}
-		}
-
-		/// <summary>
 		/// The size of the gap when drawing dashed elements.
 		/// Default gap size is 0.1
 		/// </summary>
@@ -112,47 +82,6 @@ namespace Popcron
 			}
 		}
 
-		[Obsolete("This property is obsolete. Use FrustumCulling instead.", false)]
-		public static bool Cull
-		{
-			get => FrustumCulling;
-			set => FrustumCulling = value;
-		}
-
-		[Obsolete("This property is obsolete. Subscribe to CameraFilter predicate instead and return true for your custom camera.", false)]
-		public static Camera Camera
-		{
-			get => null;
-			set
-			{
-
-			}
-		}
-
-		/// <summary>
-		/// Should the camera not draw elements that are not visible?
-		/// </summary>
-		public static bool FrustumCulling
-		{
-			get
-			{
-				if (_cull == null)
-				{
-					_cull = PlayerPrefs.GetInt($"{PrefsKey}.FrustumCulling", 1) == 1;
-				}
-
-				return _cull.Value;
-			}
-			set
-			{
-				if (_cull != value)
-				{
-					_cull = value;
-					PlayerPrefs.SetInt($"{PrefsKey}.FrustumCulling", value ? 1 : 0);
-				}
-			}
-		}
-
 		/// <summary>
 		/// The material being used to render.
 		/// </summary>
@@ -160,30 +89,6 @@ namespace Popcron
 		{
 			get => GizmosInstance.Material;
 			set => GizmosInstance.Material = value;
-		}
-
-		/// <summary>
-		/// Rendering pass to activate.
-		/// </summary>
-		public static int Pass
-		{
-			get
-			{
-				if (_pass == null)
-				{
-					_pass = PlayerPrefs.GetInt($"{PrefsKey}.Pass", 0);
-				}
-
-				return _pass.Value;
-			}
-			set
-			{
-				if (_pass != value)
-				{
-					_pass = value;
-					PlayerPrefs.SetInt($"{PrefsKey}.Pass", value);
-				}
-			}
 		}
 
 		/// <summary>
@@ -228,11 +133,6 @@ namespace Popcron
 		/// </summary>
 		public static void Draw<T>(Color? color, bool dashed, params object[] args) where T : Drawer
 		{
-			if (!Enabled)
-			{
-				return;
-			}
-
 			var drawer = Drawer.Get<T>();
 			if (drawer != null)
 			{
@@ -250,11 +150,6 @@ namespace Popcron
 		/// </summary>
 		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false)
 		{
-			if (!Enabled)
-			{
-				return;
-			}
-
 			GizmosInstance.Submit(lines, color, dashed);
 		}
 

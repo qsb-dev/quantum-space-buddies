@@ -30,33 +30,6 @@ namespace Popcron
 					{ typeof(SquareDrawer), new SquareDrawer() },
 					{ typeof(FrustumDrawer), new FrustumDrawer() }
 				};
-
-				//find extras
-				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (var assembly in assemblies)
-				{
-					var types = assembly.GetTypes();
-					foreach (var type in types)
-					{
-						if (type.IsAbstract)
-						{
-							continue;
-						}
-
-						if (type.IsSubclassOf(typeof(Drawer)) && !typeToDrawer.ContainsKey(type))
-						{
-							try
-							{
-								var value = (Drawer)Activator.CreateInstance(type);
-								typeToDrawer[type] = value;
-							}
-							catch (Exception e)
-							{
-								Debug.LogError($"couldnt register drawer of type {type} because {e.Message}");
-							}
-						}
-					}
-				}
 			}
 
 			if (typeToDrawer.TryGetValue(typeof(T), out var drawer))
