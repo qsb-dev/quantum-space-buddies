@@ -45,5 +45,6 @@
 		public static string QSBIdentifyFrequency = "QSBIdentifyFrequency";
 		public static string QSBIdentifySignal = "QSBIdentifySignal";
 		public static string QSBTextTranslated = "QSBTextTranslated";
+		public static string QSBShrineRotation = "QSBShrineRotation";
 	}
 }

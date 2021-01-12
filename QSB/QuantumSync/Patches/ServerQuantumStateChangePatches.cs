@@ -2,6 +2,7 @@
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(ServerQuantumStateChangePatches), nameof(Shuffle_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumStateChangePatches), nameof(Moon_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(ServerQuantumStateChangePatches), nameof(Moon_CheckPlayerFogProximity));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("ChangeQuantumState", typeof(ServerQuantumStateChangePatches), nameof(Shrine_ChangeQuantumState));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<ShapeManager>("AddToRetryQueue", typeof(ServerQuantumStateChangePatches), nameof(Shape_AddToRetryQueue));
 		}
 
 		public static void Socketed_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
@@ -286,7 +289,7 @@ namespace QSB.QuantumSync.Patches
 					else
 					{
 						var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
-						Locator.GetPlayerBody().SetVelocity(____moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - vector.normalized * 5f);
+						Locator.GetPlayerBody().SetVelocity(____moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - (vector.normalized * 5f));
 						var d = (!____hasSunCollapsed) ? (____fogRadius - 1f) : 80f;
 						Locator.GetPlayerBody().SetPosition(__instance.transform.position + (____vortexReturnPivot.up * d));
 						if (!Physics.autoSyncTransforms)
@@ -305,6 +308,45 @@ namespace QSB.QuantumSync.Patches
 			____playerFogBubble.SetFogAlpha(fogAlpha);
 			____shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
 			return false;
+		}
+
+		public static bool Shrine_ChangeQuantumState(QuantumShrine __instance, ref bool __result, bool skipInstantVisibilityCheck)
+		{
+			DebugLog.DebugWrite("Shrine changequantumstate");
+			var baseObject = __instance as SocketedQuantumObject;
+			if (baseObject == null)
+			{
+				DebugLog.DebugWrite("baseobject null");
+			}
+			var method = typeof(SocketedQuantumObject).GetMethod("ChangeQuantumState", BindingFlags.NonPublic | BindingFlags.Instance);
+			if (method == null)
+			{
+				DebugLog.DebugWrite("method null");
+			}
+			var pointer = method.MethodHandle.GetFunctionPointer();
+			if (pointer == null)
+			{
+				DebugLog.DebugWrite("pointer null");
+			}
+			var function = (Func<bool, bool>)Activator.CreateInstance(typeof(Func<bool, bool>), __instance, pointer);
+			var flag = function(skipInstantVisibilityCheck);
+			if (flag)
+			{
+				var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
+				var to = Vector3.ProjectOnPlane(vector, __instance.transform.up);
+				var num = OWMath.Angle(__instance.transform.forward, to, __instance.transform.up);
+				num = OWMath.RoundToNearestMultiple(num, 120f);
+				__instance.transform.rotation = Quaternion.AngleAxis(num, __instance.transform.up) * __instance.transform.rotation;
+				GlobalMessenger<Quaternion>.FireEvent(EventNames.QSBShrineRotation, __instance.transform.rotation);
+			}
+			__result = flag;
+			return false;
+		}
+
+		public static bool Shape_AddToRetryQueue(QuantumObject obj)
+		{
+			DebugLog.DebugWrite($"adding {obj.name} to retry queue");
+			return true;
 		}
 	}
 }
