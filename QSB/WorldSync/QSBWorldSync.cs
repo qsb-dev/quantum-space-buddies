@@ -101,7 +101,7 @@ namespace QSB.WorldSync
 			}
 			if (ShipLogFacts.Any(x => x.Id == id))
 			{
-				DebugLog.ToConsole($"Warning - Fact with id {id} already exists in list!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Fact id {id} already in list!", MessageType.Warning);
 				return;
 			}
 			ShipLogFacts.Add(new FactReveal

@@ -32,6 +32,7 @@
 		MoonStateChange,
 		IdentifyFrequency,
 		IdentifySignal,
-		TextTranslated
+		TextTranslated,
+		EnterLeave
 	}
 }

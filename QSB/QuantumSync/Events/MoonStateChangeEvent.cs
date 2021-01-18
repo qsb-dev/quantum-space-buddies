@@ -2,6 +2,7 @@
 using QSB.Events;
 using QSB.Utility;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Events
@@ -29,8 +30,11 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
+			
 			DebugLog.DebugWrite($"MOON TO INDEX {message.StateIndex}, ANGLE {message.OrbitAngle}, POINT {message.OnUnitSphere}");
 			var moon = Locator.GetQuantumMoon();
+			var wasPlayerEntangled = moon.IsPlayerEntangled();
+			var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), moon.transform);
 			var moonBody = moon.GetValue<OWRigidbody>("_moonBody");
 			var constantFoceDetector = (ConstantForceDetector)moonBody.GetAttachedForceDetector();
 			var orbits = moon.GetValue<QuantumOrbit[]>("_orbits");
@@ -46,6 +50,13 @@ namespace QSB.QuantumSync.Events
 			constantFoceDetector.AddConstantVolume(owRigidbody.GetAttachedGravityVolume(), true, true);
 			moonBody.SetVelocity(OWPhysics.CalculateOrbitVelocity(owRigidbody, moonBody, message.OrbitAngle) + owRigidbody.GetVelocity());
 			moon.SetValue("_stateIndex", message.StateIndex);
+
+			moon.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(moon, new object[] { message.StateIndex });
+
+			if (wasPlayerEntangled)
+			{
+				Locator.GetPlayerTransform().GetComponent<OWRigidbody>().MoveToRelativeLocation(location, moon.transform);
+			}
 		}
 	}
 }
