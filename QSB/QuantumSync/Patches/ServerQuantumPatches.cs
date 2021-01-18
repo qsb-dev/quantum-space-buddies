@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
@@ -6,25 +7,25 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
 {
-	public class ServerQuantumStateChangePatches : QSBPatch
+	public class ServerQuantumPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPostfix<SocketedQuantumObject>("MoveToSocket", typeof(ServerQuantumStateChangePatches), nameof(Socketed_MoveToSocket));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<QuantumState>("SetVisible", typeof(ServerQuantumStateChangePatches), nameof(QuantumState_SetVisible));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(ServerQuantumStateChangePatches), nameof(Shuffle_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumStateChangePatches), nameof(Moon_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(ServerQuantumStateChangePatches), nameof(Moon_CheckPlayerFogProximity));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("ChangeQuantumState", typeof(ServerQuantumStateChangePatches), nameof(Shrine_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<ShapeManager>("AddToRetryQueue", typeof(ServerQuantumStateChangePatches), nameof(Shape_AddToRetryQueue));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<SocketedQuantumObject>("MoveToSocket", typeof(ServerQuantumPatches), nameof(Socketed_MoveToSocket));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<QuantumState>("SetVisible", typeof(ServerQuantumPatches), nameof(QuantumState_SetVisible));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Shuffle_ChangeQuantumState));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Moon_ChangeQuantumState));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(ServerQuantumPatches), nameof(Moon_CheckPlayerFogProximity));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("IsPlayerInDarkness", typeof(ServerQuantumPatches), nameof(Shrine_IsPlayerInDarkness));
 		}
 
 		public static void Socketed_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
@@ -105,13 +106,15 @@ namespace QSB.QuantumSync.Patches
 			GameObject[] ____deactivateAtEye
 			)
 		{
-			if (skipInstantVisibilityCheck)
+			if (IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck) && !QuantumManager.Instance.Shrine.IsPlayerInDarkness())
 			{
-				if (IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
+				if (!skipInstantVisibilityCheck)
 				{
-					__result = false;
-					return false;
+					var method = new StackTrace().GetFrame(3).GetMethod();
+					DebugLog.DebugWrite($"Warning - Tried to change moon state while still observed. Called by {method.DeclaringType}.{method.Name}", MessageType.Warning);
 				}
+				__result = false;
+				return false;
 			}
 			var flag = false;
 			if (____isPlayerInside && ____hasSunCollapsed)
@@ -143,7 +146,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				if (orbitIndex == -1)
 				{
-					Debug.LogError("QUANTUM MOON FAILED TO FIND ORBIT FOR STATE " + stateIndex);
+					UnityEngine.Debug.LogError("QUANTUM MOON FAILED TO FIND ORBIT FOR STATE " + stateIndex);
 				}
 				var orbitRadius = (orbitIndex == -1) ? 10000f : ____orbits[orbitIndex].GetOrbitRadius();
 				var owRigidbody = (orbitIndex == -1) ? Locator.GetAstroObject(AstroObject.Name.Sun).GetOWRigidbody() : ____orbits[orbitIndex].GetAttachedOWRigidbody();
@@ -194,7 +197,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				else
 				{
-					Debug.LogError("Quantum moon orbit position occupied! Aborting collapse.");
+					UnityEngine.Debug.LogError("Quantum moon orbit position occupied! Aborting collapse.");
 				}
 			}
 			if (flag)
@@ -300,7 +303,7 @@ namespace QSB.QuantumSync.Patches
 						component.SetDegreesY(component.GetMinDegreesY());
 						____vortexAudio.SetLocalVolume(0f);
 						____collapseToIndex = 1;
-						// TODO : Handle players exiting eye state when other players are still one eye state, etc...
+						// TODO : Handle players exiting eye state when other players are still on eye state, etc...
 						__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
 					}
 				}
@@ -310,43 +313,30 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
-		public static bool Shrine_ChangeQuantumState(QuantumShrine __instance, ref bool __result, bool skipInstantVisibilityCheck)
+		public static bool Shrine_IsPlayerInDarkness(ref bool __result, Light[] ____lamps, float ____fadeFraction, bool ____isProbeInside, NomaiGateway ____gate)
 		{
-			DebugLog.DebugWrite("Shrine changequantumstate");
-			var baseObject = __instance as SocketedQuantumObject;
-			if (baseObject == null)
+			foreach (var lamp in ____lamps)
 			{
-				DebugLog.DebugWrite("baseobject null");
+				if (lamp.intensity > 0f)
+				{
+					__result = false;
+					return false;
+				}
 			}
-			var method = typeof(SocketedQuantumObject).GetMethod("ChangeQuantumState", BindingFlags.NonPublic | BindingFlags.Instance);
-			if (method == null)
-			{
-				DebugLog.DebugWrite("method null");
-			}
-			var pointer = method.MethodHandle.GetFunctionPointer();
-			if (pointer == null)
-			{
-				DebugLog.DebugWrite("pointer null");
-			}
-			var function = (Func<bool, bool>)Activator.CreateInstance(typeof(Func<bool, bool>), __instance, pointer);
-			var flag = function(skipInstantVisibilityCheck);
-			if (flag)
-			{
-				var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
-				var to = Vector3.ProjectOnPlane(vector, __instance.transform.up);
-				var num = OWMath.Angle(__instance.transform.forward, to, __instance.transform.up);
-				num = OWMath.RoundToNearestMultiple(num, 120f);
-				__instance.transform.rotation = Quaternion.AngleAxis(num, __instance.transform.up) * __instance.transform.rotation;
-				GlobalMessenger<Quaternion>.FireEvent(EventNames.QSBShrineRotation, __instance.transform.rotation);
-			}
-			__result = flag;
-			return false;
-		}
 
-		public static bool Shape_AddToRetryQueue(QuantumObject obj)
-		{
-			DebugLog.DebugWrite($"adding {obj.name} to retry queue");
-			return true;
+			var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
+			if (playersInMoon.Any(x => !x.IsInShrine)
+				|| playersInMoon.Any(x => x.FlashLight != null && x.FlashLight.FlashlightOn)
+				|| (QSBPlayerManager.LocalPlayer.IsInShrine && PlayerState.IsFlashlightOn()))
+			{
+				__result = false;
+				return false;
+			}
+			// TODO : make this *really* check for all players - check other probes and other jetpacks!
+			__result = ____gate.GetOpenFraction() == 0f 
+				&& !____isProbeInside 
+				&& Locator.GetThrusterLightTracker().GetLightRange() <= 0f;
+			return false;
 		}
 	}
 }

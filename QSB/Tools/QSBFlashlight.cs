@@ -9,10 +9,10 @@ namespace QSB.Tools
 		private Transform _root;
 		private Transform _basePivot;
 		private Transform _wobblePivot;
-
-		private bool _flashlightOn;
 		private Vector3 _baseForward;
 		private Quaternion _baseRotation;
+
+		public bool FlashlightOn;
 
 		public void Start()
 		{
@@ -33,7 +33,7 @@ namespace QSB.Tools
 				light.GetLight().enabled = false;
 				light.GetLight().shadows = LightShadows.Soft;
 			}
-			_flashlightOn = false;
+			FlashlightOn = false;
 		}
 
 		public void UpdateState(bool value)
@@ -50,7 +50,7 @@ namespace QSB.Tools
 
 		private void TurnOn()
 		{
-			if (_flashlightOn)
+			if (FlashlightOn)
 			{
 				return;
 			}
@@ -58,7 +58,7 @@ namespace QSB.Tools
 			{
 				light.GetLight().enabled = true;
 			}
-			_flashlightOn = true;
+			FlashlightOn = true;
 			var rotation = _root.rotation;
 			_basePivot.rotation = rotation;
 			_baseRotation = rotation;
@@ -67,7 +67,7 @@ namespace QSB.Tools
 
 		private void TurnOff()
 		{
-			if (!_flashlightOn)
+			if (!FlashlightOn)
 			{
 				return;
 			}
@@ -75,7 +75,7 @@ namespace QSB.Tools
 			{
 				light.GetLight().enabled = false;
 			}
-			_flashlightOn = false;
+			FlashlightOn = false;
 		}
 
 		public void FixedUpdate()

@@ -148,10 +148,7 @@ namespace Popcron
 		/// <summary>
 		/// Draws an array of lines. Useful for things like paths.
 		/// </summary>
-		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false)
-		{
-			GizmosInstance.Submit(lines, color, dashed);
-		}
+		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false) => GizmosInstance.Submit(lines, color, dashed);
 
 		/// <summary>
 		/// Draw line in world space.

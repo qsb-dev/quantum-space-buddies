@@ -33,6 +33,6 @@
 		IdentifyFrequency,
 		IdentifySignal,
 		TextTranslated,
-		ShrineRotation
+		EnterLeave
 	}
 }

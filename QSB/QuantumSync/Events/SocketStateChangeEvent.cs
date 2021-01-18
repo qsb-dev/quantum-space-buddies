@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using System.Reflection;
@@ -32,7 +33,18 @@ namespace QSB.QuantumSync.Events
 			var obj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(message.ObjectId).AttachedObject;
 			var socket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId).AttachedObject;
 			obj.GetType().GetMethod("MoveToSocket", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(obj, new object[] { socket });
-			obj.transform.localRotation = message.LocalRotation;
+			if ((QuantumManager.Instance.Shrine as SocketedQuantumObject) != obj)
+			{
+				obj.transform.localRotation = message.LocalRotation;
+			}
+			else
+			{
+				var playerToShrine = QSBPlayerManager.GetPlayer(message.FromId).Body.transform.position - obj.transform.position;
+				var projectOnPlace = Vector3.ProjectOnPlane(playerToShrine, obj.transform.up);
+				var angle = OWMath.Angle(obj.transform.forward, projectOnPlace, obj.transform.up);
+				angle = OWMath.RoundToNearestMultiple(angle, 120f);
+				obj.transform.rotation = Quaternion.AngleAxis(angle, obj.transform.up) * obj.transform.rotation;
+			}
 		}
 	}
 }

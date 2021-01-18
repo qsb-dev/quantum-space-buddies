@@ -19,6 +19,8 @@
 		public static string RestartTimeLoop = "RestartTimeLoop";
 		public static string WakeUp = "WakeUp";
 		public static string DialogueCondition = "DialogueConditionChanged";
+		public static string EnterQuantumMoon = "PlayerEnterQuantumMoon";
+		public static string ExitQuantumMoon = "PlayerExitQuantumMoon";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and setuplistener) reference the same thing.
@@ -45,6 +47,7 @@
 		public static string QSBIdentifyFrequency = "QSBIdentifyFrequency";
 		public static string QSBIdentifySignal = "QSBIdentifySignal";
 		public static string QSBTextTranslated = "QSBTextTranslated";
-		public static string QSBShrineRotation = "QSBShrineRotation";
+		public static string QSBEnterShrine = "QSBEnterShrine";
+		public static string QSBExitShrine = "QSBExitShrine";
 	}
 }

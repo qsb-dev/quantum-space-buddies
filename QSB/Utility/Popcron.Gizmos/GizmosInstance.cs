@@ -1,4 +1,3 @@
-using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -140,10 +139,7 @@ namespace Popcron
 			Camera.onPostRender += OnRendered;
 		}
 
-		private void OnDisable()
-		{
-			Camera.onPostRender -= OnRendered;
-		}
+		private void OnDisable() => Camera.onPostRender -= OnRendered;
 
 		private void Update()
 		{

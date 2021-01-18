@@ -34,10 +34,11 @@ namespace QSB.Patches
 				new WakeUpPatches(),
 				new LogPatches(),
 				new QuantumVisibilityPatches(),
-				new ServerQuantumStateChangePatches(),
-				new ClientQuantumStateChangePatches(),
+				new ServerQuantumPatches(),
+				new ClientQuantumPatches(),
 				new FrequencyPatches(),
-				new SpiralPatches()
+				new SpiralPatches(),
+				new QuantumPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

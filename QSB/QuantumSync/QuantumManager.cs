@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace QSB.QuantumSync
 		private List<MultiStateQuantumObject> _multiStateQuantumObjects;
 		private List<QuantumSocket> _quantumSockets;
 		private List<QuantumShuffleObject> _quantumShuffleObjects;
+		public QuantumShrine Shrine;
 
 		public void Awake()
 		{
@@ -31,20 +33,53 @@ namespace QSB.QuantumSync
 			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
 			_quantumShuffleObjects = QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
+			Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
 		}
 
-		private void OnGUI()
+		public void OnGUI()
 		{
 			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
 			{
 				return;
 			}
-			GUI.Label(new Rect(220, 10, 200f, 20f), $"QM Visible:{Locator.GetQuantumMoon().IsVisible()}");
+
+			Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta, true);
+
+			GUI.Label(new Rect(220, 10, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
 			var offset = 40f;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
 			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"{camera.name} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { camera.GetFrustumPlanes() })}");
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- {camera.name} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { camera.GetFrustumPlanes() })}");
+				offset += 30f;
+			}
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Entangled with QM : {Locator.GetQuantumMoon().IsPlayerEntangled()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Inside QM : {Locator.GetQuantumMoon().IsPlayerInside()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM locked : {Locator.GetQuantumMoon().IsLocked()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Entangled with Shrine : {Shrine.IsPlayerEntangled()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player in darkness : {Shrine.IsPlayerInDarkness()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine fade fraction : {Shrine.GetValue<float>("_fadeFraction")}");
+
+			offset = 10f;
+			GUI.Label(new Rect(440, offset, 200f, 20f), $"Players in QM :");
+			offset += 30f;
+			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.IsInMoon))
+			{
+				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {player.PlayerId}");
+				offset += 30f;
+			}
+			GUI.Label(new Rect(440, offset, 200f, 20f), $"Players in Shrine :");
+			offset += 30f;
+			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.IsInShrine))
+			{
+				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {player.PlayerId}");
 				offset += 30f;
 			}
 		}

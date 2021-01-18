@@ -36,6 +36,10 @@ namespace QSB.Player
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
 
+		// Misc
+		public bool IsInMoon;
+		public bool IsInShrine;
+
 		public PlayerInfo(uint id)
 		{
 			PlayerId = id;
