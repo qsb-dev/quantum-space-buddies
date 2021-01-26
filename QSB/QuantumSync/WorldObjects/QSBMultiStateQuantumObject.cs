@@ -18,7 +18,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, AttachedObject.GetValue<int>("_stateIndex").ToString()).GetComponent<Text>();
 			}
-			base.Init(quantumObject, id);
+			base.Init(attachedObject, id);
 		}
 
 		public void ChangeState(int stateIndex)

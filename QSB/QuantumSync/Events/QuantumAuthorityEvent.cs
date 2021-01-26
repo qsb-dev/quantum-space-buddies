@@ -1,4 +1,7 @@
 ﻿using QSB.Events;
+using QSB.Utility;
+using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.QuantumSync.Events
 {
@@ -20,12 +23,18 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
 		{
-
+			DebugLog.DebugWrite($"Local set {message.ObjectId} to owner {message.AuthorityOwner}");
+			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
+			var obj = objects.First(x => (x as IWorldObject).ObjectId == message.ObjectId);
+			obj.ControllingPlayer = message.AuthorityOwner;
 		}
 
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
 		{
-
+			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
+			var obj = objects.First(x => (x as IWorldObject).ObjectId == message.ObjectId);
+			obj.ControllingPlayer = message.AuthorityOwner;
+			DebugLog.DebugWrite($"Set {message.ObjectId} to owner {message.AuthorityOwner}");
 		}
 	}
 }
