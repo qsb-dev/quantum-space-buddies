@@ -23,18 +23,18 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
 		{
-			DebugLog.DebugWrite($"Local set {message.ObjectId} to owner {message.AuthorityOwner}");
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
-			var obj = objects.First(x => (x as IWorldObject).ObjectId == message.ObjectId);
+			var obj = objects.ToList()[message.ObjectId];
 			obj.ControllingPlayer = message.AuthorityOwner;
+			DebugLog.DebugWrite($"Local set (message:{message.ObjectId}) (obj:{(obj as IWorldObject).ObjectId}) to (message:{message.AuthorityOwner}) (obj:{obj.ControllingPlayer})");
 		}
 
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
 		{
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
-			var obj = objects.First(x => (x as IWorldObject).ObjectId == message.ObjectId);
+			var obj = objects.ToList()[message.ObjectId];
 			obj.ControllingPlayer = message.AuthorityOwner;
-			DebugLog.DebugWrite($"Set {message.ObjectId} to owner {message.AuthorityOwner}");
+			DebugLog.DebugWrite($"Set (message:{message.ObjectId}) (obj:{(obj as IWorldObject).ObjectId}) to (message:{message.AuthorityOwner}) (obj:{obj.ControllingPlayer})");
 		}
 	}
 }

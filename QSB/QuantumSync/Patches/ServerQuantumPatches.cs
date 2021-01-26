@@ -2,11 +2,7 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
-using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -20,69 +16,8 @@ namespace QSB.QuantumSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPostfix<SocketedQuantumObject>("MoveToSocket", typeof(ServerQuantumPatches), nameof(Socketed_MoveToSocket));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<QuantumState>("SetVisible", typeof(ServerQuantumPatches), nameof(QuantumState_SetVisible));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Shuffle_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Moon_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(ServerQuantumPatches), nameof(Moon_CheckPlayerFogProximity));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("IsPlayerInDarkness", typeof(ServerQuantumPatches), nameof(Shrine_IsPlayerInDarkness));
-		}
-
-		public static void Socketed_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
-		{
-			var objId = QuantumManager.Instance.GetId(__instance);
-			var socketId = QuantumManager.Instance.GetId(socket);
-			GlobalMessenger<int, int, Quaternion>
-				.FireEvent(
-					EventNames.QSBSocketStateChange,
-					objId,
-					socketId,
-					__instance.transform.localRotation);
-		}
-
-		public static void QuantumState_SetVisible(QuantumState __instance, bool visible)
-		{
-			if (!visible)
-			{
-				return;
-			}
-			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
-			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
-			DebugLog.DebugWrite($"{owner.AttachedObject.name} to state {Array.IndexOf(owner.QuantumStates, __instance)}");
-			GlobalMessenger<int, int>
-				.FireEvent(
-					EventNames.QSBMultiStateChange,
-					QuantumManager.Instance.GetId(owner.AttachedObject),
-					Array.IndexOf(owner.QuantumStates, __instance));
-		}
-
-		public static bool Shuffle_ChangeQuantumState(
-			QuantumShuffleObject __instance,
-			ref List<int> ____indexList,
-			ref Vector3[] ____localPositions,
-			ref Transform[] ____shuffledObjects,
-			ref bool __result)
-		{
-			____indexList.Clear();
-			____indexList = Enumerable.Range(0, ____localPositions.Length).ToList();
-			for (var i = 0; i < ____indexList.Count; ++i)
-			{
-				var random = UnityEngine.Random.Range(i, ____indexList.Count);
-				var temp = ____indexList[i];
-				____indexList[i] = ____indexList[random];
-				____indexList[random] = temp;
-			}
-			for (var j = 0; j < ____shuffledObjects.Length; j++)
-			{
-				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
-			}
-			GlobalMessenger<int, int[]>
-				.FireEvent(
-					EventNames.QSBQuantumShuffle,
-					QuantumManager.Instance.GetId(__instance),
-					____indexList.ToArray());
-			__result = true;
-			return false;
 		}
 
 		public static bool Moon_ChangeQuantumState(
@@ -311,32 +246,6 @@ namespace QSB.QuantumSync.Patches
 			}
 			____playerFogBubble.SetFogAlpha(fogAlpha);
 			____shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
-			return false;
-		}
-
-		public static bool Shrine_IsPlayerInDarkness(ref bool __result, Light[] ____lamps, float ____fadeFraction, bool ____isProbeInside, NomaiGateway ____gate)
-		{
-			foreach (var lamp in ____lamps)
-			{
-				if (lamp.intensity > 0f)
-				{
-					__result = false;
-					return false;
-				}
-			}
-
-			var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
-			if (playersInMoon.Any(x => !x.IsInShrine)
-				|| playersInMoon.Any(x => x.FlashLight != null && x.FlashLight.FlashlightOn)
-				|| (QSBPlayerManager.LocalPlayer.IsInShrine && PlayerState.IsFlashlightOn()))
-			{
-				__result = false;
-				return false;
-			}
-			// TODO : make this *really* check for all players - check other probes and other jetpacks!
-			__result = ____gate.GetOpenFraction() == 0f
-				&& !____isProbeInside
-				&& Locator.GetThrusterLightTracker().GetLightRange() <= 0f;
 			return false;
 		}
 	}

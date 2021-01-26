@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
@@ -20,13 +21,15 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnEnable()
 		{
-			if (ControllingPlayer != 0 && !QSBCore.IsServer)
+			if (ControllingPlayer != 0)
 			{
-				// controlled by another player, dont care that we activate it (unless we're the server!)
+				// controlled by another player, dont care that we activate it
 				return;
 			}
-			// no one is controlling this object right now (or we're the server, and we want to take ownership), request authority
-			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, ObjectId, QSBPlayerManager.LocalPlayerId);
+			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
+			DebugLog.DebugWrite($"ON ENABLE {(this as WorldObject<T>).AttachedObject.name} ({id})");
+			// no one is controlling this object right now, request authority
+			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
 
 		private void OnDisable()
@@ -36,8 +39,10 @@ namespace QSB.QuantumSync.WorldObjects
 				// not being controlled by us, don't care if we leave area
 				return;
 			}
+			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
+			DebugLog.DebugWrite($"ON DISABLE {(this as WorldObject<T>).AttachedObject.name} ({id})");
 			// send event to other players that we're releasing authority
-			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, ObjectId, 0);
+			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, id, 0);
 		}
 	}
 }

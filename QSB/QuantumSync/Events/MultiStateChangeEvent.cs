@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events
@@ -37,6 +38,7 @@ namespace QSB.QuantumSync.Events
 				return;
 			}
 			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
+			DebugLog.DebugWrite($"{qsbObj.AttachedObject.name} to state {message.StateIndex}");
 			qsbObj.ChangeState(message.StateIndex);
 		}
 	}
