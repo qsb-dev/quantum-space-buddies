@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using QSB.TransformSync;
+using QuantumUNET;
+using UnityEngine;
 
 namespace QSB.Utility
 {
-	public static class GOExtensions
+	public static class Extensions
 	{
+		// GAMEOBJECT
 		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
 
 		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
@@ -27,5 +31,13 @@ namespace QSB.Utility
 
 		public static Transform InstantiateInactive(this Transform original) =>
 			original.gameObject.InstantiateInactive().transform;
+
+		// QNET
+		public static PlayerInfo GetPlayer(this QNetworkConnection connection)
+		{
+			var go = connection.PlayerControllers[0].Gameobject;
+			var controller = go.GetComponent<PlayerTransformSync>();
+			return QSBPlayerManager.GetPlayer(controller.NetId.Value);
+		}
 	}
 }

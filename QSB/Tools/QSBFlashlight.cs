@@ -88,5 +88,18 @@ namespace QSB.Tools
 			_baseForward = _basePivot.forward;
 			_wobblePivot.localRotation = OWUtilities.GetWobbleRotation(0.3f, 0.15f) * Quaternion.identity;
 		}
+
+		private void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
+			var light = _lights[0].GetLight();
+			if (light.enabled)
+			{
+				Popcron.Gizmos.Cone(light.transform.position, light.transform.rotation, light.range, light.spotAngle, Color.yellow);
+			}
+		}
 	}
 }

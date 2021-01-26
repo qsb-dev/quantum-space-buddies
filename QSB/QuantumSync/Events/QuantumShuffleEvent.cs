@@ -1,8 +1,6 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.QuantumSync.Events
 {
@@ -28,13 +26,8 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var obj = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject>(message.ObjectId).AttachedObject;
-			var shuffledObjects = obj.GetValue<Transform[]>("_shuffledObjects");
-			var localPositions = obj.GetValue<Vector3[]>("_localPositions");
-			for (var i = 0; i < shuffledObjects.Length; i++)
-			{
-				shuffledObjects[i].localPosition = localPositions[message.IndexArray[i]];
-			}
+			var obj = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject>(message.ObjectId);
+			obj.ShuffleObjects(message.IndexArray);
 		}
 	}
 }

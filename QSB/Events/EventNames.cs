@@ -43,6 +43,7 @@
 		public static string QSBSocketStateChange = "QSBSocketStateChange";
 		public static string QSBMultiStateChange = "QSBMultiStateChange";
 		public static string QSBQuantumShuffle = "QSBQuantumShuffle";
+		public static string QSBQuantumAuthority = "QSBQuantumAuthority";
 		public static string QSBMoonStateChange = "QSBMoonStateChange";
 		public static string QSBIdentifyFrequency = "QSBIdentifyFrequency";
 		public static string QSBIdentifySignal = "QSBIdentifySignal";

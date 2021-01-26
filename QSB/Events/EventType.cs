@@ -29,6 +29,7 @@
 		SocketStateChange,
 		MultiStateChange,
 		QuantumShuffle,
+		QuantumAuthority,
 		MoonStateChange,
 		IdentifyFrequency,
 		IdentifySignal,

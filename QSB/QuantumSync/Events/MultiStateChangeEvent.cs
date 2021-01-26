@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 
@@ -38,18 +37,7 @@ namespace QSB.QuantumSync.Events
 				return;
 			}
 			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
-			var unityObj = qsbObj.AttachedObject;
-			var currentStateIndex = unityObj.GetValue<int>("_stateIndex");
-			if (currentStateIndex != -1)
-			{
-				qsbObj.QuantumStates[currentStateIndex].SetVisible(false);
-			}
-			qsbObj.QuantumStates[message.StateIndex].SetVisible(true);
-			unityObj.SetValue("_stateIndex", message.StateIndex);
-			if (QSBCore.DebugMode)
-			{
-				qsbObj.DebugBoxText.text = message.StateIndex.ToString();
-			}
+			qsbObj.ChangeState(message.StateIndex);
 		}
 	}
 }

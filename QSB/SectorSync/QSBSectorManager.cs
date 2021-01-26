@@ -22,10 +22,17 @@ namespace QSB.SectorSync
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
+			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerSectorDetector() != null, StartThing);
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
 		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
+
+		private void StartThing()
+		{
+			Locator.GetPlayerSectorDetector().OnEnterSector += (Sector sector) => DebugLog.DebugWrite($"Player enter sector {sector.name}", MessageType.Success);
+			Locator.GetPlayerSectorDetector().OnExitSector += (Sector sector) => DebugLog.DebugWrite($"Player exit sector {sector.name}", MessageType.Warning);
+		}
 
 		public void RebuildSectors()
 		{
@@ -37,6 +44,11 @@ namespace QSB.SectorSync
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
+			if (QSBWorldSync.GetWorldObjects<QSBSector>().Count() == 0)
+			{
+				DebugLog.DebugWrite($"Error - Can't get closest sector, as there are no QSBSectors!", MessageType.Error);
+				return null;
+			}
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
 				.Where(sector => sector.AttachedObject != null
 					&& !_sectorBlacklist.Contains(sector.Type)

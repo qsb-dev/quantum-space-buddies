@@ -60,6 +60,7 @@ namespace QSB.TransformSync
 			}
 			Popcron.Gizmos.Sphere(Player.Body.transform.position, 1f);
 			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
+			Popcron.Gizmos.Sphere(ReferenceSector.Position, 5f, Color.cyan);
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

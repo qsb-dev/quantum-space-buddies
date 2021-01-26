@@ -54,6 +54,7 @@ namespace QSB.Events
 				new QuantumShuffleEvent(),
 				new MoonStateChangeEvent(),
 				new EnterLeaveEvent(),
+				new QuantumAuthorityEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

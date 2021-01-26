@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +30,54 @@ namespace QSB.QuantumSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
+			DebugLog.DebugWrite($"INIT QUANTUM OBJECTS");
 			_socketedQuantumObjects = QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
 			_quantumShuffleObjects = QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
-			Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
+			if (scene == OWScene.SolarSystem)
+			{
+				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
+			}
+
+			foreach (var item in Resources.FindObjectsOfTypeAll<QuantumObject>())
+			{
+				item.gameObject.AddComponent<OnEnableDisableTracker>();
+			}
+		}
+
+		public void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
+			{
+				return;
+			}
+
+			if (Shrine != null)
+			{
+				Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta);
+			}
+
+			foreach (var item in _socketedQuantumObjects)
+			{
+				if (item.gameObject.activeInHierarchy)
+				{
+					Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.cyan);
+				}
+			}
+
+			foreach (var item in _multiStateQuantumObjects)
+			{
+				if (item.gameObject.activeInHierarchy)
+				{
+					Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.magenta);
+				}
+			}
+
+			foreach (var item in _quantumSockets)
+			{
+				Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one / 2, Color.yellow);
+			}
 		}
 
 		public void OnGUI()
@@ -42,8 +86,6 @@ namespace QSB.QuantumSync
 			{
 				return;
 			}
-
-			Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta, true);
 
 			GUI.Label(new Rect(220, 10, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
 			var offset = 40f;

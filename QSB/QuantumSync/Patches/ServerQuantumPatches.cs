@@ -48,6 +48,7 @@ namespace QSB.QuantumSync.Patches
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
+			DebugLog.DebugWrite($"{owner.AttachedObject.name} to state {Array.IndexOf(owner.QuantumStates, __instance)}");
 			GlobalMessenger<int, int>
 				.FireEvent(
 					EventNames.QSBMultiStateChange,
@@ -333,8 +334,8 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 			// TODO : make this *really* check for all players - check other probes and other jetpacks!
-			__result = ____gate.GetOpenFraction() == 0f 
-				&& !____isProbeInside 
+			__result = ____gate.GetOpenFraction() == 0f
+				&& !____isProbeInside
 				&& Locator.GetThrusterLightTracker().GetLightRange() <= 0f;
 			return false;
 		}

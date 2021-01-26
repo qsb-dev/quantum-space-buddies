@@ -30,7 +30,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			
+
 			DebugLog.DebugWrite($"MOON TO INDEX {message.StateIndex}, ANGLE {message.OrbitAngle}, POINT {message.OnUnitSphere}");
 			var moon = Locator.GetQuantumMoon();
 			var wasPlayerEntangled = moon.IsPlayerEntangled();
