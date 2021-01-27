@@ -21,14 +21,6 @@ namespace QSB.QuantumSync.Events
 			AuthorityOwner = authorityOwner
 		};
 
-		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
-		{
-			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
-			var obj = objects.ToList()[message.ObjectId];
-			obj.ControllingPlayer = message.AuthorityOwner;
-			DebugLog.DebugWrite($"Local set (message:{message.ObjectId}) (obj:{(obj as IWorldObject).ObjectId}) to (message:{message.AuthorityOwner}) (obj:{obj.ControllingPlayer})");
-		}
-
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
 		{
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();

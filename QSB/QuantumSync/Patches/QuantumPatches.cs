@@ -50,7 +50,7 @@ namespace QSB.QuantumSync.Patches
 
 			var objId = QuantumManager.Instance.GetId(__instance);
 			var socketId = QuantumManager.Instance.GetId(socket);
-			DebugLog.DebugWrite($"{__instance.name} to socket {socketId}");
+			//DebugLog.DebugWrite($"{__instance.name} to socket {socketId}");
 			GlobalMessenger<int, int, Quaternion>
 				.FireEvent(
 					EventNames.QSBSocketStateChange,
@@ -84,7 +84,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
 			}
-			DebugLog.DebugWrite($"{__instance.name} shuffled.");
+			//DebugLog.DebugWrite($"{__instance.name} shuffled.");
 			GlobalMessenger<int, int[]>
 				.FireEvent(
 					EventNames.QSBQuantumShuffle,
@@ -98,7 +98,7 @@ namespace QSB.QuantumSync.Patches
 		{
 			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(QuantumManager.Instance.GetId(__instance));
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
-			DebugLog.DebugWrite($"Multistate (instance:{__instance.name}) (obj:{qsbObj.AttachedObject.name}) change state - in control:{isInControl} ({qsbObj.ControllingPlayer} vs {QSBPlayerManager.LocalPlayerId})");
+			//DebugLog.DebugWrite($"Multistate (instance:{__instance.name}) (obj:{qsbObj.AttachedObject.name}) change state - in control:{isInControl} ({qsbObj.ControllingPlayer} vs {QSBPlayerManager.LocalPlayerId})");
 			return isInControl;
 		}
 
@@ -110,12 +110,12 @@ namespace QSB.QuantumSync.Patches
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
-			DebugLog.DebugWrite($"{owner.AttachedObject.name} controller is {owner.ControllingPlayer}");
+			//DebugLog.DebugWrite($"{owner.AttachedObject.name} controller is {owner.ControllingPlayer}");
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;
 			}
-			DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
+			//DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
 			GlobalMessenger<int, int>
 				.FireEvent(
 					EventNames.QSBMultiStateChange,

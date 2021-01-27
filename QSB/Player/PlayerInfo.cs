@@ -12,7 +12,7 @@ namespace QSB.Player
 		public string Name { get; set; }
 		public bool IsReady { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
-		public State State { get; set; }
+		public State State { get; set; } // TODO : decide if this is worth it (instead of having seperate variables for each thing)
 
 		// Body Objects
 		public OWCamera Camera { get; set; }
