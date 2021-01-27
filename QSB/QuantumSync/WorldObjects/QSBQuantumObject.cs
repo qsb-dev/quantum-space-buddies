@@ -16,7 +16,7 @@ namespace QSB.QuantumSync.WorldObjects
 			var tracker = (AttachedObject as Component).gameObject.AddComponent<OnEnableDisableTracker>();
 			tracker.OnEnableEvent += OnEnable;
 			tracker.OnDisableEvent += OnDisable;
-			ControllingPlayer = 0;
+			ControllingPlayer = QSBCore.IsServer ? 1u : 0u;
 		}
 
 		private void OnEnable()
