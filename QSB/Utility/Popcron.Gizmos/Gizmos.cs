@@ -28,10 +28,6 @@ namespace Popcron
 			}
 		}
 
-		/// <summary>
-		/// The size of the total gizmos buffer.
-		/// Default is 4096.
-		/// </summary>
 		public static int BufferSize
 		{
 			get
@@ -57,10 +53,6 @@ namespace Popcron
 			}
 		}
 
-		/// <summary>
-		/// The size of the gap when drawing dashed elements.
-		/// Default gap size is 0.1
-		/// </summary>
 		public static float DashGap
 		{
 			get
@@ -82,18 +74,12 @@ namespace Popcron
 			}
 		}
 
-		/// <summary>
-		/// The material being used to render.
-		/// </summary>
 		public static Material Material
 		{
 			get => GizmosInstance.Material;
 			set => GizmosInstance.Material = value;
 		}
 
-		/// <summary>
-		/// Global offset for all points. Default is (0, 0, 0).
-		/// </summary>
 		public static Vector3 Offset
 		{
 			get
@@ -128,9 +114,6 @@ namespace Popcron
 			}
 		}
 
-		/// <summary>
-		/// Draws an element onto the screen.
-		/// </summary>
 		public static void Draw<T>(Color? color, bool dashed, params object[] args) where T : Drawer
 		{
 			var drawer = Drawer.Get<T>();
@@ -145,39 +128,18 @@ namespace Popcron
 			}
 		}
 
-		/// <summary>
-		/// Draws an array of lines. Useful for things like paths.
-		/// </summary>
 		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false) => GizmosInstance.Submit(lines, color, dashed);
 
-		/// <summary>
-		/// Draw line in world space.
-		/// </summary>
 		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false) => Draw<LineDrawer>(color, dashed, a, b);
 
-		/// <summary>
-		/// Draw square in world space.
-		/// </summary>
 		public static void Square(Vector2 position, Vector2 size, Color? color = null, bool dashed = false) => Square(position, Quaternion.identity, size, color, dashed);
 
-		/// <summary>
-		/// Draw square in world space with float diameter parameter.
-		/// </summary>
 		public static void Square(Vector2 position, float diameter, Color? color = null, bool dashed = false) => Square(position, Quaternion.identity, Vector2.one * diameter, color, dashed);
 
-		/// <summary>
-		/// Draw square in world space with a rotation parameter.
-		/// </summary>
 		public static void Square(Vector2 position, Quaternion rotation, Vector2 size, Color? color = null, bool dashed = false) => Draw<SquareDrawer>(color, dashed, position, rotation, size);
 
-		/// <summary>
-		/// Draws a cube in world space.
-		/// </summary>
 		public static void Cube(Vector3 position, Quaternion rotation, Vector3 size, Color? color = null, bool dashed = false) => Draw<CubeDrawer>(color, dashed, position, rotation, size);
 
-		/// <summary>
-		/// Draws a rectangle in screen space.
-		/// </summary>
 		public static void Rect(Rect rect, Camera camera, Color? color = null, bool dashed = false)
 		{
 			rect.y = Screen.height - rect.y;
@@ -185,14 +147,8 @@ namespace Popcron
 			Draw<SquareDrawer>(color, dashed, corner + rect.size * 0.5f, Quaternion.identity, rect.size);
 		}
 
-		/// <summary>
-		/// Draws a representation of a bounding box.
-		/// </summary>
 		public static void Bounds(Bounds bounds, Color? color = null, bool dashed = false) => Draw<CubeDrawer>(color, dashed, bounds.center, Quaternion.identity, bounds.size);
 
-		/// <summary>
-		/// Draws a cone similar to the one that spot lights draw.
-		/// </summary>
 		public static void Cone(Vector3 position, Quaternion rotation, float length, float angle, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
 			//draw the end of the cone
@@ -211,9 +167,6 @@ namespace Popcron
 			}
 		}
 
-		/// <summary>
-		/// Draws a sphere at position with specified radius.
-		/// </summary>
 		public static void Sphere(Vector3 position, float radius, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
 			var offset = 0f;
@@ -222,9 +175,6 @@ namespace Popcron
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, Quaternion.Euler(0f, 90f, 90f));
 		}
 
-		/// <summary>
-		/// Draws a circle in world space and billboards towards the camera.
-		/// </summary>
 		public static void Circle(Vector3 position, float radius, Camera camera, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
 			var offset = 0f;
@@ -232,9 +182,6 @@ namespace Popcron
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, rotation);
 		}
 
-		/// <summary>
-		/// Draws a circle in world space with a specified rotation.
-		/// </summary>
 		public static void Circle(Vector3 position, float radius, Quaternion rotation, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
 			var offset = 0f;
