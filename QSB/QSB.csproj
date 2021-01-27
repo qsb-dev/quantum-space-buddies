@@ -160,7 +160,7 @@
     <Compile Include="QuantumSync\Events\QuantumAuthorityMessage.cs" />
     <Compile Include="QuantumSync\Events\QuantumShuffleEvent.cs" />
     <Compile Include="QuantumSync\Events\QuantumShuffleMessage.cs" />
-    <Compile Include="QuantumSync\IQSBQuantumObject.cs" />
+    <Compile Include="QuantumSync\WorldObjects\IQSBQuantumObject.cs" />
     <Compile Include="QuantumSync\Patches\ClientQuantumPatches.cs" />
     <Compile Include="QuantumSync\Events\MultiStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\MultiStateChangeMessage.cs" />
