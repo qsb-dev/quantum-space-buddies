@@ -42,6 +42,7 @@ namespace QSB.QuantumSync
 
 			foreach (var item in Resources.FindObjectsOfTypeAll<QuantumObject>())
 			{
+				DebugLog.DebugWrite($"adding tracker to {item.gameObject.name}");
 				item.gameObject.AddComponent<OnEnableDisableTracker>();
 			}
 		}
