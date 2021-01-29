@@ -1,7 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;

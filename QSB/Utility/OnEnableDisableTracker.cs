@@ -35,7 +35,7 @@ namespace QSB.Utility
 		}
 	}
 
-	enum ComponentState
+	internal enum ComponentState
 	{
 		NotChecked = 0,
 		Enabled = 1,

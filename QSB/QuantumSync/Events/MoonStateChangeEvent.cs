@@ -1,6 +1,5 @@
 ﻿using OWML.Utils;
 using QSB.Events;
-using QSB.Utility;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
-	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject 
+	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		where T : MonoBehaviour
 	{
 		public uint ControllingPlayer { get; set; }
