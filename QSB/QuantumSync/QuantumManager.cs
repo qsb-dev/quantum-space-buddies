@@ -30,7 +30,6 @@ namespace QSB.QuantumSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			DebugLog.DebugWrite($"INIT QUANTUM OBJECTS");
 			_socketedQuantumObjects = QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
@@ -38,12 +37,6 @@ namespace QSB.QuantumSync
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
-			}
-
-			foreach (var item in Resources.FindObjectsOfTypeAll<QuantumObject>())
-			{
-				DebugLog.DebugWrite($"adding tracker to {item.gameObject.name}");
-				item.gameObject.AddComponent<OnEnableDisableTracker>();
 			}
 		}
 
@@ -57,27 +50,6 @@ namespace QSB.QuantumSync
 			if (Shrine != null)
 			{
 				Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta);
-			}
-
-			foreach (var item in _socketedQuantumObjects)
-			{
-				if (item.gameObject.activeInHierarchy)
-				{
-					Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.cyan);
-				}
-			}
-
-			foreach (var item in _multiStateQuantumObjects)
-			{
-				if (item.gameObject.activeInHierarchy)
-				{
-					Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.magenta);
-				}
-			}
-
-			foreach (var item in _quantumSockets)
-			{
-				Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one / 2, Color.yellow);
 			}
 		}
 
@@ -96,19 +68,6 @@ namespace QSB.QuantumSync
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"- {camera.name} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { camera.GetFrustumPlanes() })}");
 				offset += 30f;
 			}
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Entangled with QM : {Locator.GetQuantumMoon().IsPlayerEntangled()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Inside QM : {Locator.GetQuantumMoon().IsPlayerInside()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM locked : {Locator.GetQuantumMoon().IsLocked()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Entangled with Shrine : {Shrine.IsPlayerEntangled()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player in darkness : {Shrine.IsPlayerInDarkness()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine fade fraction : {Shrine.GetValue<float>("_fadeFraction")}");
 
 			offset = 10f;
 			GUI.Label(new Rect(440, offset, 200f, 20f), $"Players in QM :");

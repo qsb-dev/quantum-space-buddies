@@ -7,13 +7,15 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
-	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject where T : UnityEngine.Object
+	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject 
+		where T : MonoBehaviour
 	{
 		public uint ControllingPlayer { get; set; }
 
 		public override void Init(T attachedObject, int id)
 		{
-			var tracker = (AttachedObject as Component).gameObject.AddComponent<OnEnableDisableTracker>();
+			var tracker = (AttachedObject as Behaviour).gameObject.AddComponent<OnEnableDisableTracker>();
+			tracker.AttachedComponent = AttachedObject.gameObject.GetComponent<T>();
 			tracker.OnEnableEvent += OnEnable;
 			tracker.OnDisableEvent += OnDisable;
 			ControllingPlayer = QSBCore.IsServer ? 1u : 0u;
@@ -27,7 +29,6 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
-			DebugLog.DebugWrite($"ON ENABLE {(this as WorldObject<T>).AttachedObject.name} ({id})");
 			// no one is controlling this object right now, request authority
 			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 			ControllingPlayer = QSBPlayerManager.LocalPlayerId;
@@ -41,7 +42,6 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
-			DebugLog.DebugWrite($"ON DISABLE {(this as WorldObject<T>).AttachedObject.name} ({id})");
 			// send event to other players that we're releasing authority
 			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, id, 0);
 			ControllingPlayer = 0;

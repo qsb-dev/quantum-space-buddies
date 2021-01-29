@@ -95,7 +95,7 @@ namespace QSB.Tools
 			{
 				return;
 			}
-			var light = _lights[0].GetLight();
+			var light = _lights[1].GetLight();
 			if (light.enabled)
 			{
 				Popcron.Gizmos.Cone(light.transform.position, light.transform.rotation, light.range, light.spotAngle, Color.yellow);

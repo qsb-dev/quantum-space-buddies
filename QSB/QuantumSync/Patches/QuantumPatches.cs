@@ -152,7 +152,6 @@ namespace QSB.QuantumSync.Patches
 		public static bool Shrine_ChangeQuantumState(QuantumShrine __instance)
 		{
 			var isInControl = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(QuantumManager.Instance.GetId(__instance)).ControllingPlayer == QSBPlayerManager.LocalPlayerId;
-			DebugLog.DebugWrite($"Shrine change state - in control? {isInControl}");
 			return isInControl;
 		}
 

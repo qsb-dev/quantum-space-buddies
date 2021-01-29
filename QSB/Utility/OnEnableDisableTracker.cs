@@ -9,19 +9,36 @@ namespace QSB.Utility
 		public event EnableDisableEvent OnEnableEvent;
 		public event EnableDisableEvent OnDisableEvent;
 
-		public OnEnableDisableTracker()
+		public MonoBehaviour AttachedComponent;
+
+		private ComponentState _wasEnabled = ComponentState.NotChecked;
+
+		private void Update()
 		{
-			if (gameObject.activeInHierarchy)
+			if (AttachedComponent == null)
 			{
-				OnEnableEvent?.Invoke();
+				return;
 			}
-			else
+			var state = AttachedComponent.isActiveAndEnabled ? ComponentState.Enabled : ComponentState.Disabled;
+			if (_wasEnabled != state)
 			{
-				OnDisableEvent?.Invoke();
+				_wasEnabled = state;
+				if (state == ComponentState.Enabled)
+				{
+					OnEnableEvent?.Invoke();
+				}
+				else
+				{
+					OnDisableEvent?.Invoke();
+				}
 			}
 		}
+	}
 
-		private void OnEnable() => OnEnableEvent?.Invoke();
-		private void OnDisable() => OnDisableEvent?.Invoke();
+	enum ComponentState
+	{
+		NotChecked = 0,
+		Enabled = 1,
+		Disabled = 2
 	}
 }

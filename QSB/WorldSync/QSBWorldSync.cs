@@ -33,7 +33,7 @@ namespace QSB.WorldSync
 
 		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : UnityEngine.Object
+			where TUnityObject : MonoBehaviour
 		{
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			for (var id = 0; id < list.Count; id++)

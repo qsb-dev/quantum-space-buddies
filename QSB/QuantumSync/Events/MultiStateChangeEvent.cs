@@ -38,7 +38,6 @@ namespace QSB.QuantumSync.Events
 				return;
 			}
 			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
-			DebugLog.DebugWrite($"{qsbObj.AttachedObject.name} to state {message.StateIndex}");
 			qsbObj.ChangeState(message.StateIndex);
 		}
 	}

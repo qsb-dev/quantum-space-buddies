@@ -1,5 +1,7 @@
-﻿using QSB.Player;
+﻿using OWML.Common;
+using QSB.Player;
 using QSB.QuantumSync.Events;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Reflection;
 using UnityEngine;
@@ -17,7 +19,18 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public void MoveToSocket(SocketStateChangeMessage message)
 		{
-			var socket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId).AttachedObject;
+			var qsbSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId);
+			if (qsbSocket == null)
+			{
+				DebugLog.DebugWrite($"Couldn't find socket id {message.SocketId}", MessageType.Error);
+				return;
+			}
+			var socket = qsbSocket.AttachedObject;
+			if (socket == null)
+			{
+				DebugLog.DebugWrite($"QSBSocket id {message.SocketId} has no attached socket.", MessageType.Error);
+				return;
+			}
 			AttachedObject.GetType().GetMethod("MoveToSocket", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(AttachedObject, new object[] { socket });
 			if ((QuantumManager.Instance.Shrine as SocketedQuantumObject) != AttachedObject)
 			{

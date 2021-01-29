@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -25,8 +26,12 @@ namespace QSB.QuantumSync.Events
 		{
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var obj = objects.ToList()[message.ObjectId];
+			if (obj.ControllingPlayer != 0 && message.AuthorityOwner != 0)
+			{
+				DebugLog.DebugWrite($"Warning - object {message.ObjectId} already has owner {obj.ControllingPlayer}, but trying to be replaced by {message.AuthorityOwner}!", MessageType.Warning);
+			}
 			obj.ControllingPlayer = message.AuthorityOwner;
-			DebugLog.DebugWrite($"Set (message:{message.ObjectId}) (obj:{(obj as IWorldObject).ObjectId}) to (message:{message.AuthorityOwner}) (obj:{obj.ControllingPlayer})");
+			DebugLog.DebugWrite($"Set {message.ObjectId} to owner {message.AuthorityOwner} - From {message.FromId}");
 		}
 	}
 }
