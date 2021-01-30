@@ -36,6 +36,12 @@ namespace QSB.Events
 				() => _eventHandler.SendToServer(message));
 		}
 
+		/// <summary>
+		/// Checks whether the message should be processed by the executing client/server.
+		/// </summary>
+		/// <returns>True if the message should be processed.</returns>
+		public virtual bool CheckMessage(bool isServer, T message) => true;
+
 		private void OnReceive(bool isServer, T message)
 		{
 			/* Explanation :
@@ -45,6 +51,12 @@ namespace QSB.Events
 			 * onto all clients. This way, the server *server* just acts as the ditribution
 			 * hub for all events.
 			 */
+
+			if (!CheckMessage(isServer, message))
+			{
+				return;
+			}
+
 			if (isServer)
 			{
 				_eventHandler.SendToAll(message);

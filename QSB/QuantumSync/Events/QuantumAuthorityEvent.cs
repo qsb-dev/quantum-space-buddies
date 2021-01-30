@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Events;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -22,6 +23,22 @@ namespace QSB.QuantumSync.Events
 			AuthorityOwner = authorityOwner
 		};
 
+		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
+		{
+			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
+			var obj = objects.ToList()[message.ObjectId];
+
+			return obj.ControllingPlayer == 0 || message.AuthorityOwner == 0;
+		}
+
+		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
+		{
+			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
+			var obj = objects.ToList()[message.ObjectId];
+			obj.ControllingPlayer = message.AuthorityOwner;
+			DebugLog.DebugWrite($"Set {message.ObjectId} to owner {message.AuthorityOwner} - From local");
+		}
+
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
 		{
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
@@ -32,6 +49,11 @@ namespace QSB.QuantumSync.Events
 			}
 			obj.ControllingPlayer = message.AuthorityOwner;
 			DebugLog.DebugWrite($"Set {message.ObjectId} to owner {message.AuthorityOwner} - From {message.FromId}");
+			if (obj.ControllingPlayer == 0 && obj.IsEnabled)
+			{
+				// object has no owner, but is still active for this player. request ownership
+				GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, message.ObjectId, QSBPlayerManager.LocalPlayerId);
+			}
 		}
 	}
 }

@@ -11,6 +11,7 @@ namespace QSB.QuantumSync.WorldObjects
 		where T : MonoBehaviour
 	{
 		public uint ControllingPlayer { get; set; }
+		public bool IsEnabled { get; set; }
 
 		public override void Init(T attachedObject, int id)
 		{
@@ -18,11 +19,12 @@ namespace QSB.QuantumSync.WorldObjects
 			tracker.AttachedComponent = AttachedObject.gameObject.GetComponent<T>();
 			tracker.OnEnableEvent += OnEnable;
 			tracker.OnDisableEvent += OnDisable;
-			ControllingPlayer = QSBCore.IsServer ? 1u : 0u;
+			ControllingPlayer = 0u;
 		}
 
 		private void OnEnable()
 		{
+			IsEnabled = true;
 			if (ControllingPlayer != 0)
 			{
 				// controlled by another player, dont care that we activate it
@@ -31,11 +33,11 @@ namespace QSB.QuantumSync.WorldObjects
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
 			// no one is controlling this object right now, request authority
 			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
-			ControllingPlayer = QSBPlayerManager.LocalPlayerId;
 		}
 
 		private void OnDisable()
 		{
+			IsEnabled = false;
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				// not being controlled by us, don't care if we leave area
@@ -44,7 +46,6 @@ namespace QSB.QuantumSync.WorldObjects
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
 			// send event to other players that we're releasing authority
 			GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, id, 0);
-			ControllingPlayer = 0;
 		}
 	}
 }
