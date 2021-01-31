@@ -43,6 +43,7 @@ namespace QSB.QuantumSync.Patches
 				DebugLog.DebugWrite($"Worldobject is null for id {id}!");
 				return;
 			}
+
 			if (worldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;

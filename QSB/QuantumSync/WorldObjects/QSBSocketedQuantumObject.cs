@@ -1,13 +1,10 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Player;
 using QSB.QuantumSync.Events;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -22,6 +19,14 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public void MoveToSocket(SocketStateChangeMessage message)
 		{
+			/*
+			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
+			var visible = visibilityTrackers.Where(x => x is ShapeVisibilityTracker).Any(x => QuantumManager.IsVisibleUsingCameraFrustum(x as ShapeVisibilityTracker, false));
+			if (visible)
+			{
+				DebugLog.DebugWrite($"Error - trying to move {AttachedObject.name} while still visible!", MessageType.Error);
+			}
+			*/
 			var qsbSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId);
 			if (qsbSocket == null)
 			{

@@ -78,6 +78,10 @@ namespace QSB.Tools
 			FlashlightOn = false;
 		}
 
+		public bool CheckIlluminationAtPoint(Vector3 point, float buffer = 0f, float maxDistance = float.PositiveInfinity)
+			=> FlashlightOn
+				&& _lights[1].CheckIlluminationAtPoint(point, buffer, maxDistance);
+
 		public void FixedUpdate()
 		{
 			// This really isn't needed... but it makes it look that extra bit nicer. ^_^

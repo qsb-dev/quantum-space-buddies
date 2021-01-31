@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player.Events;
+using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -84,5 +85,8 @@ namespace QSB.Player
 			}
 			return cameraList;
 		}
+
+		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
+			=> new Tuple<Flashlight, IEnumerable<QSBFlashlight>>(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 	}
 }

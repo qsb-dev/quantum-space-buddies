@@ -68,6 +68,36 @@ namespace QSB.QuantumSync
 				offset += 30f;
 			}
 
+			// Used for diagnosing specific socketed objects. Just set <index> to be the correct index.
+			/*
+			var index = 110;
+			var socketedObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(index);
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Controller : {socketedObject.ControllingPlayer}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Visible : {socketedObject.AttachedObject.IsVisible()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Locked : {socketedObject.AttachedObject.IsLocked()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Illuminated : {socketedObject.AttachedObject.IsIlluminated()}");
+			offset += 30f;
+			var socketedTrackers = socketedObject.AttachedObject.GetComponentsInChildren<ShapeVisibilityTracker>();
+			if (socketedTrackers == null || socketedTrackers.Length == 0)
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- List is null or empty.");
+				return;
+			}
+			if (socketedTrackers.Any(x => x is null))
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- Uses a null.");
+				return;
+			}
+			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- {camera.name} : {socketedTrackers.Any(x => (bool)x.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(x, new object[] { camera.GetFrustumPlanes() }))}");
+				offset += 30f;
+			}
+			*/
+
 			offset = 10f;
 			GUI.Label(new Rect(440, offset, 200f, 20f), $"Players in QM :");
 			offset += 30f;
@@ -83,6 +113,23 @@ namespace QSB.QuantumSync
 				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {player.PlayerId}");
 				offset += 30f;
 			}
+		}
+
+		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
+		{
+			return tracker.gameObject.activeInHierarchy
+				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
+					.Any(x => (bool)tracker.GetType()
+						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
+						.Invoke(tracker, new object[] { x.GetFrustumPlanes() }));
+		}
+
+		public static bool IsVisible(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
+		{
+			return tracker.gameObject.activeInHierarchy
+				&& IsVisibleUsingCameraFrustum(tracker, skipVisibilityCheck)
+				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
+					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.mainCamera.transform.position));
 		}
 
 		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);

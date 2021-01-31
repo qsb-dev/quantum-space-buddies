@@ -22,17 +22,10 @@ namespace QSB.SectorSync
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
-			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerSectorDetector() != null, StartThing);
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
 		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
-
-		private void StartThing()
-		{
-			Locator.GetPlayerSectorDetector().OnEnterSector += (Sector sector) => DebugLog.DebugWrite($"Player enter sector {sector.name}", MessageType.Success);
-			Locator.GetPlayerSectorDetector().OnExitSector += (Sector sector) => DebugLog.DebugWrite($"Player exit sector {sector.name}", MessageType.Warning);
-		}
 
 		public void RebuildSectors()
 		{

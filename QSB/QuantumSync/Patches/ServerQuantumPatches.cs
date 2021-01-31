@@ -1,10 +1,8 @@
 ﻿using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
-using QSB.Player;
 using QSB.Utility;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -42,7 +40,7 @@ namespace QSB.QuantumSync.Patches
 			GameObject[] ____deactivateAtEye
 			)
 		{
-			if (IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck) && !QuantumManager.Instance.Shrine.IsPlayerInDarkness())
+			if (QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck) && !QuantumManager.Instance.Shrine.IsPlayerInDarkness())
 			{
 				if (!skipInstantVisibilityCheck)
 				{
@@ -100,7 +98,7 @@ namespace QSB.QuantumSync.Patches
 					{
 						Physics.SyncTransforms();
 					}
-					if (__instance.IsPlayerEntangled() || !IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck))
+					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck))
 					{
 						____moonBody.transform.position = position;
 						if (!Physics.autoSyncTransforms)
@@ -161,14 +159,7 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
-		private static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
-		{
-			return tracker.gameObject.activeInHierarchy
-				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
-					.Any(x => (bool)tracker.GetType()
-						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
-						.Invoke(tracker, new object[] { x.GetFrustumPlanes() }));
-		}
+
 
 		public static bool Moon_CheckPlayerFogProximity(
 			QuantumMoon __instance,
@@ -197,7 +188,7 @@ namespace QSB.QuantumSync.Patches
 				fogAlpha = Mathf.InverseLerp(____fogThickness + ____fogRolloffDistance, ____fogThickness, distanceFromFog);
 				if (distanceFromFog < 0f)
 				{
-					if ((bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) || IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
+					if ((bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) || QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
 					{
 						____isPlayerInside = true;
 						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
@@ -218,7 +209,7 @@ namespace QSB.QuantumSync.Patches
 					if (____stateIndex != 5)
 					{
 						____isPlayerInside = false;
-						if (!(bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) && !IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
+						if (!(bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) && !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
 						{
 							__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
 						}
