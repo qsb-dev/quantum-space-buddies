@@ -8,7 +8,7 @@ namespace QSB.SectorSync
 {
 	public class SectorSync : MonoBehaviour
 	{
-		private const float CheckInterval = 0.2f;
+		private const float CheckInterval = 0.5f;
 		private float _checkTimer = CheckInterval;
 
 		public void Update()
