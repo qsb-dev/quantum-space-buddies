@@ -1,6 +1,8 @@
-﻿using OWML.Utils;
+﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +24,14 @@ namespace QSB.QuantumSync
 		public void Awake()
 		{
 			Instance = this;
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			QSBSceneManager.OnUniverseSceneLoaded += RebuildQuantumObjects;
 		}
 
-		public void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= RebuildQuantumObjects;
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		public void RebuildQuantumObjects(OWScene scene)
 		{
+			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
 			_socketedQuantumObjects = QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			_multiStateQuantumObjects = QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			_quantumSockets = QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
@@ -41,7 +44,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -54,7 +57,12 @@ namespace QSB.QuantumSync
 
 		public void OnGUI()
 		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
 			{
 				return;
 			}

@@ -95,7 +95,7 @@ namespace QSB.Tools
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

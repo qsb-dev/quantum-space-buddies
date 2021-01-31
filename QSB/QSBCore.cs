@@ -42,6 +42,7 @@ namespace QSB
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
 		public static bool DebugMode { get; private set; }
+		public static bool ShowLinesInDebug { get; private set; }
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -104,6 +105,7 @@ namespace QSB
 			{
 				FindObjectsOfType<DebugZOverride>().ToList().ForEach(x => Destroy(x.gameObject));
 			}
+			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 		}
 	}
 }

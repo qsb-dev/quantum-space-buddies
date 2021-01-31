@@ -36,7 +36,7 @@ namespace QSB.OrbSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

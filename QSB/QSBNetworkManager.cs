@@ -10,6 +10,7 @@ using QSB.OrbSync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
 using QSB.Player;
+using QSB.QuantumSync;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.TimeSync;
@@ -175,6 +176,7 @@ namespace QSB
 			{
 				QSBSectorManager.Instance.RebuildSectors();
 				OrbManager.Instance.QueueBuildSlots();
+				QuantumManager.Instance.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
