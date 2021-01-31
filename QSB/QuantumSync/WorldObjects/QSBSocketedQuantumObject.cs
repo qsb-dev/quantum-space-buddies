@@ -39,7 +39,18 @@ namespace QSB.QuantumSync.WorldObjects
 				DebugLog.DebugWrite($"QSBSocket id {message.SocketId} has no attached socket.", MessageType.Error);
 				return;
 			}
+
+			var wasEntangled = AttachedObject.IsPlayerEntangled();
+			var component = Locator.GetPlayerTransform().GetComponent<OWRigidbody>();
+			var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), AttachedObject.transform);
+
 			AttachedObject.GetType().GetMethod("MoveToSocket", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(AttachedObject, new object[] { socket });
+
+			if (wasEntangled)
+			{
+				component.MoveToRelativeLocation(location, AttachedObject.transform);
+			}
+
 			if ((QuantumManager.Instance.Shrine as SocketedQuantumObject) != AttachedObject)
 			{
 				AttachedObject.transform.localRotation = message.LocalRotation;
