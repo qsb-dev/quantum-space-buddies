@@ -99,7 +99,6 @@ namespace QSB.QuantumSync.Patches
 		{
 			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(QuantumManager.Instance.GetId(__instance));
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
-			DebugLog.DebugWrite($"Multistate {qsbObj.AttachedObject.name} change state - in control:{isInControl} ({qsbObj.ControllingPlayer} vs {QSBPlayerManager.LocalPlayerId})");
 			return isInControl;
 		}
 
@@ -111,7 +110,6 @@ namespace QSB.QuantumSync.Patches
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
-			DebugLog.DebugWrite($"QuantumState set visible state:{__instance.name}, visible:{visible}, owner:{owner.AttachedObject.name}, inControl:{owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId}");
 			//DebugLog.DebugWrite($"{owner.AttachedObject.name} controller is {owner.ControllingPlayer}");
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
