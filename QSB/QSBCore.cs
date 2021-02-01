@@ -17,7 +17,7 @@ using System.Linq;
 using UnityEngine;
 
 /*
-	Copyright (C) 2020 
+	Copyright (C) 2020 - 2021
 			Henry Pointer (_nebula / misternebula), 
 			Aleksander Waage (AmazingAlek), 
 			Ricardo Lopes (Raicuparta)
