@@ -4,5 +4,6 @@
 	{
 		uint ControllingPlayer { get; set; }
 		bool IsEnabled { get; set; }
+		string Name { get; }
 	}
 }

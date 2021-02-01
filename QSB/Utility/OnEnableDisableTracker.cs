@@ -13,10 +13,17 @@ namespace QSB.Utility
 
 		private ComponentState _wasEnabled = ComponentState.NotChecked;
 
-		private void Update()
+		public OnEnableDisableTracker()
+		{
+			var hook = QSBCore.GameObjectInstance.AddComponent<UpdateDisabledHook>();
+			hook.Component = this;
+		}
+
+		public void DoUpdate()
 		{
 			if (AttachedComponent == null)
 			{
+				DebugLog.DebugWrite($"Attached component is null! Attached to {gameObject.name}", OWML.Common.MessageType.Error);
 				return;
 			}
 			var state = AttachedComponent.isActiveAndEnabled ? ComponentState.Enabled : ComponentState.Disabled;

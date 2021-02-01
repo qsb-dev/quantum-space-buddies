@@ -44,7 +44,7 @@ namespace QSB.QuantumSync.Events
 			var obj = objects.ToList()[message.ObjectId];
 			if (obj.ControllingPlayer != 0 && message.AuthorityOwner != 0)
 			{
-				DebugLog.DebugWrite($"Warning - object {message.ObjectId} already has owner {obj.ControllingPlayer}, but trying to be replaced by {message.AuthorityOwner}!", MessageType.Warning);
+				DebugLog.DebugWrite($"Warning - object {obj.Name} already has owner {obj.ControllingPlayer}, but trying to be replaced by {message.AuthorityOwner}!", MessageType.Warning);
 			}
 			obj.ControllingPlayer = message.AuthorityOwner;
 			if (obj.ControllingPlayer == 0 && obj.IsEnabled)

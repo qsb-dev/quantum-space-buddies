@@ -48,10 +48,15 @@ namespace QSB
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
 		public static bool IsServer => QNetworkServer.active;
+		public static GameObject GameObjectInstance => _thisInstance.gameObject;
+
+		private static QSBCore _thisInstance;
 
 		public void Awake()
 		{
 			Application.runInBackground = true;
+
+			_thisInstance = this;
 
 			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
 			instance.theUITable[(int)UITextType.PleaseUseController] =
