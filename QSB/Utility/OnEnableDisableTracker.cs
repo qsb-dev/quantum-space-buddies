@@ -13,13 +13,7 @@ namespace QSB.Utility
 
 		private ComponentState _wasEnabled = ComponentState.NotChecked;
 
-		public OnEnableDisableTracker()
-		{
-			var hook = QSBCore.GameObjectInstance.AddComponent<UpdateDisabledHook>();
-			hook.Component = this;
-		}
-
-		public void DoUpdate()
+		private void Update()
 		{
 			if (AttachedComponent == null)
 			{

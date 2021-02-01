@@ -16,12 +16,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void Init(T attachedObject, int id)
 		{
-			var tracker = (AttachedObject as Behaviour).gameObject.AddComponent<OnEnableDisableTracker>();
-			var sector = (AttachedObject as SectoredMonoBehaviour).GetSector();
-			if (sector == null)
-			{
-				DebugLog.DebugWrite($"{AttachedObject.name} has a null sector!", OWML.Common.MessageType.Error);
-			}
+			var tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
 			tracker.AttachedComponent = AttachedObject;
 			tracker.OnEnableEvent += OnEnable;
 			tracker.OnDisableEvent += OnDisable;
