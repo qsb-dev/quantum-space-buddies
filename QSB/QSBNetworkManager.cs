@@ -185,7 +185,7 @@ namespace QSB
 
 			_lobby.CanEditName = false;
 
-			OnNetworkManagerReady?.Invoke();
+			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
 			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,

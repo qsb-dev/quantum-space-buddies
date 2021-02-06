@@ -51,6 +51,7 @@ namespace QSB.TimeSync
 			if (QNetworkServer.active)
 			{
 				QSBCore.HasWokenUp = true;
+				RespawnOnDeath.Instance.Init();
 			}
 		}
 
@@ -84,7 +85,6 @@ namespace QSB.TimeSync
 			if (IsServer)
 			{
 				SendServerTime();
-				RespawnOnDeath.Instance.Init();
 			}
 			else
 			{

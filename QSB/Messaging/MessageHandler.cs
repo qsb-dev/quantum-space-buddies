@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
@@ -59,13 +60,13 @@ namespace QSB.Messaging
 		private void OnClientReceiveMessageHandler(QNetworkMessage netMsg)
 		{
 			var message = netMsg.ReadMessage<T>();
-			OnClientReceiveMessage?.Invoke(message);
+			OnClientReceiveMessage?.SafeInvoke(message);
 		}
 
 		private void OnServerReceiveMessageHandler(QNetworkMessage netMsg)
 		{
 			var message = netMsg.ReadMessage<T>();
-			OnServerReceiveMessage?.Invoke(message);
+			OnServerReceiveMessage?.SafeInvoke(message);
 		}
 	}
 }

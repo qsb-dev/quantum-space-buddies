@@ -1,6 +1,8 @@
-﻿using QSB.Player;
+﻿using OWML.Common;
+using QSB.Player;
 using QSB.TransformSync;
 using QuantumUNET;
+using System;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -24,7 +26,7 @@ namespace QSB.Utility
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
 			original.SetActive(false);
-			var copy = Object.Instantiate(original);
+			var copy = UnityEngine.Object.Instantiate(original);
 			original.SetActive(true);
 			return copy;
 		}
@@ -38,6 +40,22 @@ namespace QSB.Utility
 			var go = connection.PlayerControllers[0].Gameobject;
 			var controller = go.GetComponent<PlayerTransformSync>();
 			return QSBPlayerManager.GetPlayer(controller.NetId.Value);
+		}
+
+		// C#
+		public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
+		{
+			foreach (var del in multicast.GetInvocationList())
+			{
+				try
+				{
+					del.DynamicInvoke(args);
+				}
+				catch
+				{
+					DebugLog.DebugWrite($"Error while invoking delegate {del.Method.DeclaringType.Name}.{del.Method.Name}", MessageType.Error);
+				}
+			}
 		}
 	}
 }

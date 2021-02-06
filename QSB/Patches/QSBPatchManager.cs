@@ -15,11 +15,9 @@ using System.Linq;
 
 namespace QSB.Patches
 {
-	public delegate void PatchEvent(QSBPatchTypes type);
-
 	public static class QSBPatchManager
 	{
-		public static event PatchEvent OnPatchType;
+		public static event Action<QSBPatchTypes> OnPatchType;
 
 		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
@@ -46,7 +44,7 @@ namespace QSB.Patches
 
 		public static void DoPatchType(QSBPatchTypes type)
 		{
-			OnPatchType?.Invoke(type);
+			OnPatchType?.SafeInvoke(type);
 			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{

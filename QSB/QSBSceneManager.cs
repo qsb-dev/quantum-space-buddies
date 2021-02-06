@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Utility;
 using System;
+using System.Linq;
 
 namespace QSB
 {
@@ -11,7 +12,6 @@ namespace QSB
 		public static bool IsInUniverse => InUniverse(CurrentScene);
 
 		public static event Action<OWScene, bool> OnSceneLoaded;
-
 		public static event Action<OWScene> OnUniverseSceneLoaded;
 
 		static QSBSceneManager()
@@ -24,10 +24,10 @@ namespace QSB
 		{
 			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
 			var universe = InUniverse(newScene);
-			OnSceneLoaded?.Invoke(newScene, universe);
+			OnSceneLoaded?.SafeInvoke(newScene, universe);
 			if (universe)
 			{
-				OnUniverseSceneLoaded?.Invoke(newScene);
+				OnUniverseSceneLoaded?.SafeInvoke(newScene, universe);
 			}
 		}
 

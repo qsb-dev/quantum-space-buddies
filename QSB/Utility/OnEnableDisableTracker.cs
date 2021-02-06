@@ -26,11 +26,11 @@ namespace QSB.Utility
 				_wasEnabled = state;
 				if (state == ComponentState.Enabled)
 				{
-					OnEnableEvent?.Invoke();
+					OnEnableEvent?.SafeInvoke();
 				}
 				else
 				{
-					OnDisableEvent?.Invoke();
+					OnDisableEvent?.SafeInvoke();
 				}
 			}
 		}
