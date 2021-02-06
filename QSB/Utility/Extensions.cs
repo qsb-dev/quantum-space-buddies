@@ -51,9 +51,9 @@ namespace QSB.Utility
 				{
 					del.DynamicInvoke(args);
 				}
-				catch
+				catch (Exception ex)
 				{
-					DebugLog.DebugWrite($"Error while invoking delegate {del.Method.DeclaringType.Name}.{del.Method.Name}", MessageType.Error);
+					DebugLog.DebugWrite($"Error invoking delegate! {ex.Message} Stack Trace : {ex.StackTrace}", MessageType.Error);
 				}
 			}
 		}

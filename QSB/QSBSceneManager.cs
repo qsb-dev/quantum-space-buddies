@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Utility;
 using System;
-using System.Linq;
 
 namespace QSB
 {
@@ -27,7 +26,7 @@ namespace QSB
 			OnSceneLoaded?.SafeInvoke(newScene, universe);
 			if (universe)
 			{
-				OnUniverseSceneLoaded?.SafeInvoke(newScene, universe);
+				OnUniverseSceneLoaded?.SafeInvoke(newScene);
 			}
 		}
 
