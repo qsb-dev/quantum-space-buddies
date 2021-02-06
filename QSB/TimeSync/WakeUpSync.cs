@@ -84,6 +84,7 @@ namespace QSB.TimeSync
 			if (IsServer)
 			{
 				SendServerTime();
+				RespawnOnDeath.Instance.Init();
 			}
 			else
 			{

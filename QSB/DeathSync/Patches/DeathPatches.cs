@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Patches;
+using QSB.Utility;
 using System.Linq;
 
 namespace QSB.DeathSync.Patches
@@ -17,14 +18,14 @@ namespace QSB.DeathSync.Patches
 
 			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
 			{
-				// Allow real death
+				DebugLog.DebugWrite($"Allowing death of {deathType}");
 				return true;
 			}
 
+			DebugLog.DebugWrite($"Not allowing death of {deathType}");
+
 			RespawnOnDeath.Instance.ResetShip();
 			RespawnOnDeath.Instance.ResetPlayer();
-
-			// Prevent original death method from running.
 			return false;
 		}
 

@@ -15,7 +15,6 @@
 		public static string RemoveSuit = "RemoveSuit";
 		public static string EquipTranslator = "EquipTranslator";
 		public static string UnequipTranslator = "UnequipTranslator";
-		public static string ExitShip = "ExitShip";
 		public static string RestartTimeLoop = "RestartTimeLoop";
 		public static string WakeUp = "WakeUp";
 		public static string DialogueCondition = "DialogueConditionChanged";
