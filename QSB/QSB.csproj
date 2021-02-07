@@ -239,7 +239,6 @@
     <Compile Include="Events\EventType.cs" />
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="Player\State.cs" />
-    <Compile Include="DeathSync\PreventShipDestruction.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
     <Compile Include="Player\QSBPlayerManager.cs" />
     <Compile Include="TransformSync\PlayerCameraSync.cs" />
