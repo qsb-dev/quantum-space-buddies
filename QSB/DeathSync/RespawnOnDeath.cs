@@ -36,7 +36,6 @@ namespace QSB.DeathSync
 
 		public void Init()
 		{
-			DebugLog.DebugWrite($"init");
 			var playerTransform = Locator.GetPlayerTransform();
 			_playerResources = playerTransform.GetComponent<PlayerResources>();
 			_spaceSuit = Locator.GetPlayerSuit();
@@ -78,7 +77,7 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
 				Init();
 			}
-			DebugLog.DebugWrite($"reset player");
+
 			// Cant use _playerSpawner.DebugWarp because that will warp the ship if the player is in it
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
@@ -105,7 +104,6 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole($"Warning - Tried to reset ship, but the ship is null!", MessageType.Warning);
 				return;
 			}
-			DebugLog.DebugWrite($"reset ship");
 
 			_shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
 			_shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
