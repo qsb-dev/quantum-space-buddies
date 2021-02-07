@@ -53,7 +53,7 @@ namespace QSB.Utility
 				}
 				catch (Exception ex)
 				{
-					DebugLog.DebugWrite($"Error invoking delegate! Message : {ex.Message} Stack Trace : {Environment.NewLine}{ex.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.Message} Stack Trace : {Environment.NewLine}{ex.StackTrace}", MessageType.Error);
 				}
 			}
 		}

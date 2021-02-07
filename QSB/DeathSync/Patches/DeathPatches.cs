@@ -20,6 +20,7 @@ namespace QSB.DeathSync.Patches
 			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(DeathPatches), nameof(ReturnNull));
 			QSBCore.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
 			QSBCore.Helper.HarmonyHelper.AddPostfix<ShipDamageController>("Awake", typeof(DeathPatches), nameof(DamageController_Exploded));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<DestructionVolume>("VanishShip", typeof(DeathPatches), nameof(DestructionVolume_VanishShip));
 		}
 
 		public static bool PreFinishDeathSequence(DeathType deathType)
@@ -57,6 +58,16 @@ namespace QSB.DeathSync.Patches
 				new CodeInstruction(OpCodes.Ldnull),
 				new CodeInstruction(OpCodes.Ret)
 			};
+		}
+
+		public static bool DestructionVolume_VanishShip(DeathType ____deathType)
+		{
+			// Don't want to vanish the ship - that disables the ship completely
+			if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
+			{
+				Locator.GetDeathManager().KillPlayer(____deathType);
+			}
+			return false;
 		}
 	}
 }

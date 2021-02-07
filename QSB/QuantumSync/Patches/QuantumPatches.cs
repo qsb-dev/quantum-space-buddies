@@ -40,7 +40,7 @@ namespace QSB.QuantumSync.Patches
 			var worldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(id);
 			if (worldObject == null)
 			{
-				DebugLog.DebugWrite($"Worldobject is null for id {id}!");
+				DebugLog.ToConsole($"Worldobject is null for id {id}!");
 				return;
 			}
 
