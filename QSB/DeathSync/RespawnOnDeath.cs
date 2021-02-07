@@ -30,6 +30,7 @@ namespace QSB.DeathSync
 		private HatchController _hatchController;
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
+		private ShipTractorBeamSwitch _shipTractorBeam;
 
 		public void Awake() => Instance = this;
 
@@ -40,6 +41,7 @@ namespace QSB.DeathSync
 			_playerResources = playerTransform.GetComponent<PlayerResources>();
 			_spaceSuit = Locator.GetPlayerSuit();
 			_playerSpawner = FindObjectOfType<PlayerSpawner>();
+			_shipTractorBeam = FindObjectOfType<ShipTractorBeamSwitch>();
 			_fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 
 			_playerSpawnPoint = GetSpawnPoint();
@@ -122,6 +124,7 @@ namespace QSB.DeathSync
 			_cockpitController.Invoke("CompleteExitFlightConsole");
 			_hatchController.SetValue("_isPlayerInShip", false);
 			_hatchController.Invoke("OpenHatch");
+			_shipTractorBeam.ActivateTractorBeam();
 		}
 
 		private SpawnPoint GetSpawnPoint(bool isShip = false) 
