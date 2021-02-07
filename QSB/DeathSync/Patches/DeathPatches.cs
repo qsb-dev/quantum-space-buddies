@@ -32,11 +32,8 @@ namespace QSB.DeathSync.Patches
 
 			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
 			{
-				DebugLog.DebugWrite($"Allowing death of {deathType}");
 				return true;
 			}
-
-			DebugLog.DebugWrite($"Not allowing death of {deathType}");
 
 			RespawnOnDeath.Instance.ResetShip();
 			RespawnOnDeath.Instance.ResetPlayer();
@@ -62,11 +59,17 @@ namespace QSB.DeathSync.Patches
 
 		public static bool DestructionVolume_VanishShip(DeathType ____deathType)
 		{
-			// Don't want to vanish the ship - that disables the ship completely
+			if (RespawnOnDeath.Instance == null)
+			{
+				return true;
+			}
+
 			if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
 			{
 				Locator.GetDeathManager().KillPlayer(____deathType);
 			}
+			// Ship is being destroyed, but player isn't in it.
+			RespawnOnDeath.Instance.ResetShip();
 			return false;
 		}
 	}
