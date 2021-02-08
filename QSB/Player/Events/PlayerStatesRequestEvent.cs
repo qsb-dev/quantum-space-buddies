@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.QuantumSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.TranslationSync;
 using QSB.TranslationSync.WorldObjects;
@@ -40,6 +41,8 @@ namespace QSB.Player.Events
 				return;
 			}
 
+			// TODO : CLEAN. THIS. SHIT.
+
 			foreach (var condition in QSBWorldSync.DialogueConditions)
 			{
 				GlobalMessenger<string, bool>.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value);
@@ -72,6 +75,12 @@ namespace QSB.Player.Events
 				{
 					GlobalMessenger<NomaiTextType, int, int>.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id);
 				}
+			}
+
+			var list = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
+			for (var i = 0; i < list.Count; i++)
+			{
+				GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
 			}
 		}
 	}

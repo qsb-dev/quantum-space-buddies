@@ -57,7 +57,7 @@ namespace QSB.QuantumSync
 
 		public void OnGUI()
 		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
 			{
 				return;
 			}

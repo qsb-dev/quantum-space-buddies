@@ -3,5 +3,6 @@
 	public interface IWorldObject
 	{
 		int ObjectId { get; }
+		string Name { get; }
 	}
 }

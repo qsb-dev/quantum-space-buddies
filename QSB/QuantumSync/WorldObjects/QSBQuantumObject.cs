@@ -12,7 +12,6 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public uint ControllingPlayer { get; set; }
 		public bool IsEnabled { get; set; }
-		public string Name => AttachedObject.name;
 
 		public override void Init(T attachedObject, int id)
 		{
