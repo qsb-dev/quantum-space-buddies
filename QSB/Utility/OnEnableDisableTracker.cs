@@ -17,7 +17,7 @@ namespace QSB.Utility
 		{
 			if (AttachedComponent == null)
 			{
-				DebugLog.DebugWrite($"Attached component is null! Attached to {gameObject.name}", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Attached component is null! Attached to {gameObject.name}", OWML.Common.MessageType.Error);
 				return;
 			}
 			var state = AttachedComponent.isActiveAndEnabled ? ComponentState.Enabled : ComponentState.Disabled;
@@ -26,11 +26,11 @@ namespace QSB.Utility
 				_wasEnabled = state;
 				if (state == ComponentState.Enabled)
 				{
-					OnEnableEvent?.Invoke();
+					OnEnableEvent?.SafeInvoke();
 				}
 				else
 				{
-					OnDisableEvent?.Invoke();
+					OnDisableEvent?.SafeInvoke();
 				}
 			}
 		}

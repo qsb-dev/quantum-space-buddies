@@ -170,7 +170,6 @@ namespace QSB
 
 			gameObject.AddComponent<SectorSync.SectorSync>();
 			gameObject.AddComponent<RespawnOnDeath>();
-			gameObject.AddComponent<PreventShipDestruction>();
 
 			if (QSBSceneManager.IsInUniverse)
 			{
@@ -185,7 +184,7 @@ namespace QSB
 
 			_lobby.CanEditName = false;
 
-			OnNetworkManagerReady?.Invoke();
+			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
 			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
@@ -204,7 +203,6 @@ namespace QSB
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
 			Destroy(GetComponent<SectorSync.SectorSync>());
 			Destroy(GetComponent<RespawnOnDeath>());
-			Destroy(GetComponent<PreventShipDestruction>());
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
@@ -240,7 +238,6 @@ namespace QSB
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
 			Destroy(GetComponent<SectorSync.SectorSync>());
 			Destroy(GetComponent<RespawnOnDeath>());
-			Destroy(GetComponent<PreventShipDestruction>());
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());

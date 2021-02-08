@@ -45,7 +45,7 @@ namespace QSB.QuantumSync.Patches
 				if (!skipInstantVisibilityCheck)
 				{
 					var method = new StackTrace().GetFrame(3).GetMethod();
-					DebugLog.DebugWrite($"Warning - Tried to change moon state while still observed. Called by {method.DeclaringType}.{method.Name}", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Tried to change moon state while still observed. Called by {method.DeclaringType}.{method.Name}", MessageType.Warning);
 				}
 				__result = false;
 				return false;

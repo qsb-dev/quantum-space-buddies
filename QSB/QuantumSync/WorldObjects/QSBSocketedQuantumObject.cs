@@ -30,13 +30,13 @@ namespace QSB.QuantumSync.WorldObjects
 			var qsbSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId);
 			if (qsbSocket == null)
 			{
-				DebugLog.DebugWrite($"Couldn't find socket id {message.SocketId}", MessageType.Error);
+				DebugLog.ToConsole($"Couldn't find socket id {message.SocketId}", MessageType.Error);
 				return;
 			}
 			var socket = qsbSocket.AttachedObject;
 			if (socket == null)
 			{
-				DebugLog.DebugWrite($"QSBSocket id {message.SocketId} has no attached socket.", MessageType.Error);
+				DebugLog.ToConsole($"QSBSocket id {message.SocketId} has no attached socket.", MessageType.Error);
 				return;
 			}
 

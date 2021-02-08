@@ -46,7 +46,7 @@ namespace QSB.SectorSync
 		{
 			if (QSBWorldSync.GetWorldObjects<QSBSector>().Count() == 0)
 			{
-				DebugLog.DebugWrite($"Error - Can't get closest sector, as there are no QSBSectors!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Can't get closest sector, as there are no QSBSectors!", MessageType.Error);
 				return null;
 			}
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
