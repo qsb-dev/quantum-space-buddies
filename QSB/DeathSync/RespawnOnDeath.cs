@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Events;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -125,11 +124,11 @@ namespace QSB.DeathSync
 			_shipTractorBeam.ActivateTractorBeam();
 		}
 
-		private SpawnPoint GetSpawnPoint(bool isShip = false) 
+		private SpawnPoint GetSpawnPoint(bool isShip = false)
 			=> _playerSpawner
 				.GetValue<SpawnPoint[]>("_spawnList")
 				.FirstOrDefault(spawnPoint =>
-					spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth 
+					spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth
 					&& spawnPoint.IsShipSpawn() == isShip);
 	}
 }

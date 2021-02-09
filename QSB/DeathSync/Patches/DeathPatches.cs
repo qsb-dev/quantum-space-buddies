@@ -1,7 +1,6 @@
 ﻿using Harmony;
 using QSB.Events;
 using QSB.Patches;
-using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -40,13 +39,11 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
-		public static void BroadcastDeath(DeathType deathType) 
+		public static void BroadcastDeath(DeathType deathType)
 			=> GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
 
-		public static void DamageController_Exploded(ref bool ____exploded)
-		{
-			____exploded = true;
-		}
+		public static void DamageController_Exploded(ref bool ____exploded) 
+			=> ____exploded = true;
 
 		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions)
 		{
