@@ -1,13 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace QSB.Utility
 {
-	public delegate void EnableDisableEvent();
-
 	public class OnEnableDisableTracker : MonoBehaviour
 	{
-		public event EnableDisableEvent OnEnableEvent;
-		public event EnableDisableEvent OnDisableEvent;
+		public event Action OnEnableEvent;
+		public event Action OnDisableEvent;
 
 		public MonoBehaviour AttachedComponent;
 
