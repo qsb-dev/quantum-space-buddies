@@ -206,12 +206,7 @@ namespace QSB
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			QSBPlayerManager.RemoveAllPlayers();
-
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
-			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
-			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
-			QSBWorldSync.RemoveWorldObjects<QSBSector>();
+			RemoveWorldObjects();
 			QSBWorldSync.OrbSyncList.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
@@ -248,12 +243,18 @@ namespace QSB
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
+			RemoveWorldObjects();
+
+			base.OnStopServer();
+		}
+		private void RemoveWorldObjects()
+		{
 			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
 			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
 			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
 			QSBWorldSync.RemoveWorldObjects<QSBSector>();
-
-			base.OnStopServer();
+			QSBWorldSync.RemoveWorldObjects<IQSBQuantumObject>();
 		}
+
 	}
 }

@@ -50,12 +50,6 @@ namespace QSB.Player
 			PlayerList.Remove(GetPlayer(id));
 		}
 
-		public static void RemoveAllPlayers()
-		{
-			DebugLog.DebugWrite($"Remove All Players", MessageType.Info);
-			PlayerList.Clear();
-		}
-
 		public static bool PlayerExists(uint id) =>
 			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 

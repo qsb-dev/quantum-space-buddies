@@ -10,5 +10,6 @@ namespace QSB.WorldSync
 		public string Name => AttachedObject.name;
 
 		public abstract void Init(T attachedObject, int id);
+		public virtual void OnRemoval() { }
 	}
 }

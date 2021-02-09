@@ -13,12 +13,21 @@ namespace QSB.QuantumSync.WorldObjects
 		public uint ControllingPlayer { get; set; }
 		public bool IsEnabled { get; set; }
 
+		private OnEnableDisableTracker _tracker;
+
+		public override void OnRemoval()
+		{
+			_tracker.OnEnableEvent -= OnEnable;
+			_tracker.OnDisableEvent -= OnDisable;
+			Object.Destroy(_tracker);
+		}
+
 		public override void Init(T attachedObject, int id)
 		{
-			var tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
-			tracker.AttachedComponent = AttachedObject;
-			tracker.OnEnableEvent += OnEnable;
-			tracker.OnDisableEvent += OnDisable;
+			_tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
+			_tracker.AttachedComponent = AttachedObject;
+			_tracker.OnEnableEvent += OnEnable;
+			_tracker.OnDisableEvent += OnDisable;
 			ControllingPlayer = 1u;
 		}
 

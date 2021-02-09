@@ -4,5 +4,7 @@
 	{
 		int ObjectId { get; }
 		string Name { get; }
+
+		void OnRemoval();
 	}
 }

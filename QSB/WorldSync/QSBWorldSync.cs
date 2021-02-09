@@ -28,8 +28,14 @@ namespace QSB.WorldSync
 			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
 
 		public static void RemoveWorldObjects<TWorldObject>()
-			where TWorldObject : IWorldObject
-			=> WorldObjects.RemoveAll(x => x.GetType() == typeof(TWorldObject));
+		{
+			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
+			foreach (var item in itemsToRemove)
+			{
+				item.OnRemoval();
+			}
+			WorldObjects.RemoveAll(x => x is TWorldObject);
+		}
 
 		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
