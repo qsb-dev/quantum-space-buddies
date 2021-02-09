@@ -13,11 +13,17 @@ namespace QSB.Utility
 
 		private ComponentState _wasEnabled = ComponentState.NotChecked;
 
+		public OnEnableDisableTracker() 
+			=> QSBSceneManager.OnSceneLoaded += (OWScene scene, bool inUniverse) => Destroy(this);
+
+		private void OnDestroy() 
+			=> QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool inUniverse) => Destroy(this);
+
 		private void Update()
 		{
 			if (AttachedComponent == null)
 			{
-				DebugLog.ToConsole($"Attached component is null! Attached to {gameObject.name}", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Attached component is null!", OWML.Common.MessageType.Error);
 				return;
 			}
 			var state = AttachedComponent.isActiveAndEnabled ? ComponentState.Enabled : ComponentState.Disabled;

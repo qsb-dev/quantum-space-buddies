@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.TransformSync;
 using QuantumUNET;
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -51,9 +52,9 @@ namespace QSB.Utility
 				{
 					del.DynamicInvoke(args);
 				}
-				catch (Exception ex)
+				catch (TargetInvocationException ex)
 				{
-					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.Message} Stack Trace : {Environment.NewLine}{ex.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 		}

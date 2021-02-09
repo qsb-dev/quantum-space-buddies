@@ -25,6 +25,11 @@ namespace QSB.QuantumSync.Events
 
 		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
 		{
+			if (!QSBCore.HasWokenUp)
+			{
+				return false;
+			}
+
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var obj = objects.ToList()[message.ObjectId];
 
