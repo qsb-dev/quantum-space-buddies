@@ -25,7 +25,7 @@ namespace QSB.QuantumSync.Events
 
 		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QuantumManager.Instance.IsReady)
 			{
 				return false;
 			}

@@ -20,6 +20,7 @@ namespace QSB.QuantumSync
 		private List<QuantumSocket> _quantumSockets;
 		private List<QuantumShuffleObject> _quantumShuffleObjects;
 		public QuantumShrine Shrine;
+		public bool IsReady;
 
 		public void Awake()
 		{
@@ -40,6 +41,7 @@ namespace QSB.QuantumSync
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
 			}
+			IsReady = true;
 		}
 
 		public void OnRenderObject()
