@@ -14,6 +14,13 @@ namespace QSB.TranslationSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiVesselComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(VesselComputer_SetAsTranslated));
 		}
 
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiWallText>("SetAsTranslated");
+			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiComputer>("SetAsTranslated");
+			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiVesselComputer>("SetAsTranslated");
+		}
+
 		public static bool Wall_SetAsTranslated(NomaiWallText __instance, int id)
 		{
 			if (__instance.IsTranslated(id))

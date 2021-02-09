@@ -215,7 +215,13 @@ namespace QSB
 			QSBWorldSync.OrbSyncList.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
+			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+			QSBPatchManager.DoUnpatchType(specificType);
+			QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
+
 			_lobby.CanEditName = true;
+
+			IsReady = false;
 		}
 
 		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects

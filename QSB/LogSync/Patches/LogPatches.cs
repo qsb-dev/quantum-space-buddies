@@ -17,5 +17,7 @@ namespace QSB.LogSync.Patches
 		}
 
 		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPostfix<ShipLogManager>("RevealFact", typeof(LogPatches), nameof(RevealFact));
+
+		public override void DoUnpatches() => QSBCore.Helper.HarmonyHelper.Unpatch<ShipLogManager>("RevealFact");
 	}
 }

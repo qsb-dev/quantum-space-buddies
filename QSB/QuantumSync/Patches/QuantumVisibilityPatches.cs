@@ -18,6 +18,14 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<VisibilityObject>("CheckIllumination", typeof(QuantumVisibilityPatches), nameof(CheckIllumination));
 		}
 
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum");
+			QSBCore.Helper.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisible");
+			QSBCore.Helper.HarmonyHelper.Unpatch<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum");
+			QSBCore.Helper.HarmonyHelper.Unpatch<VisibilityObject>("CheckIllumination");
+		}
+
 		// ShapeVisibilityTracker patches
 
 		public static bool ShapeIsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)

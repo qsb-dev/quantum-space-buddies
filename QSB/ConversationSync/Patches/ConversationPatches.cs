@@ -102,5 +102,15 @@ namespace QSB.ConversationSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(OnAnimatorIK));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(OnZoneExit));
 		}
+
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<DialogueNode>("GetNextPage");
+			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterDialogueTree>("InputDialogueOption");
+			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
+			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
+			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterAnimController>("OnAnimatorIK");
+			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneExit");
+		}
 	}
 }

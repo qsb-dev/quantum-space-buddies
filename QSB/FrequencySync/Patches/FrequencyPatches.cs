@@ -13,6 +13,12 @@ namespace QSB.FrequencySync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPostfix<AudioSignal>("IdentifySignal", typeof(FrequencyPatches), nameof(IdentifySignal));
 		}
 
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<AudioSignal>("IdentifyFrequency");
+			QSBCore.Helper.HarmonyHelper.Unpatch<AudioSignal>("IdentifySignal");
+		}
+
 		public static void IdentifyFrequency(SignalFrequency ____frequency)
 			=> GlobalMessenger<SignalFrequency>.FireEvent(EventNames.QSBIdentifyFrequency, ____frequency);
 

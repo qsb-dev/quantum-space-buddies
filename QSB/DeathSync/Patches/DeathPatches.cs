@@ -22,6 +22,16 @@ namespace QSB.DeathSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<DestructionVolume>("VanishShip", typeof(DeathPatches), nameof(DestructionVolume_VanishShip));
 		}
 
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<DeathManager>("KillPlayer");
+			QSBCore.Helper.HarmonyHelper.Unpatch<ShipDetachableLeg>("Detach");
+			QSBCore.Helper.HarmonyHelper.Unpatch<ShipDetachableModule>("Detach");
+			QSBCore.Helper.HarmonyHelper.Unpatch<ShipEjectionSystem>("OnPressInteract");
+			QSBCore.Helper.HarmonyHelper.Unpatch<ShipDamageController>("Awake");
+			QSBCore.Helper.HarmonyHelper.Unpatch<DestructionVolume>("VanishShip");
+		}
+
 		public static bool PreFinishDeathSequence(DeathType deathType)
 		{
 			if (RespawnOnDeath.Instance == null)

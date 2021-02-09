@@ -353,8 +353,8 @@ namespace QuantumUNET.Components
 		public void StopHost()
 		{
 			OnStopHost();
-			StopServer();
 			StopClient();
+			StopServer();
 		}
 
 		public void StopServer()

@@ -18,6 +18,12 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(ServerQuantumPatches), nameof(Moon_CheckPlayerFogProximity));
 		}
 
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("ChangeQuantumState");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
+		}
+
 		public static bool Moon_ChangeQuantumState(
 			QuantumMoon __instance,
 			ref bool __result,

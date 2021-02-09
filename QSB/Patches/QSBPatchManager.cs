@@ -18,6 +18,7 @@ namespace QSB.Patches
 	public static class QSBPatchManager
 	{
 		public static event Action<QSBPatchTypes> OnPatchType;
+		public static event Action<QSBPatchTypes> OnUnpatchType;
 
 		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
@@ -50,6 +51,17 @@ namespace QSB.Patches
 			{
 				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
 				patch.DoPatches();
+			}
+		}
+
+		public static void DoUnpatchType(QSBPatchTypes type)
+		{
+			OnUnpatchType?.SafeInvoke(type);
+			DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			foreach (var patch in _patchList.Where(x => x.Type == type))
+			{
+				DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
+				patch.DoUnpatches();
 			}
 		}
 	}

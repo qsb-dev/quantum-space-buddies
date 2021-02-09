@@ -3,7 +3,9 @@ using QSB.Player.Events;
 using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace QSB.Player
@@ -18,6 +20,13 @@ namespace QSB.Player
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
+			if (!QSBNetworkManager.Instance.IsReady)
+			{
+				var method = new StackTrace().GetFrame(1).GetMethod();
+				DebugLog.DebugWrite($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
+					$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name}", MessageType.Warning);
+			}
+
 			if (id == uint.MaxValue || id == 0U)
 			{
 				return default;
@@ -27,7 +36,8 @@ namespace QSB.Player
 			{
 				return player;
 			}
-			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
+			var trace = new StackTrace().GetFrame(1).GetMethod();
+			DebugLog.DebugWrite($"Create Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			return player;
@@ -35,7 +45,8 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
+			var trace = new StackTrace().GetFrame(1).GetMethod();
+			DebugLog.DebugWrite($"Remove Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
 			PlayerList.Remove(GetPlayer(id));
 		}
 

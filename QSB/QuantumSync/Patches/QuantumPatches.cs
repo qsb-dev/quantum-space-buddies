@@ -19,16 +19,26 @@ namespace QSB.QuantumSync.Patches
 		{
 			QSBCore.Helper.HarmonyHelper.AddPrefix<SocketedQuantumObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(Socketed_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPostfix<SocketedQuantumObject>("MoveToSocket", typeof(QuantumPatches), nameof(Socketed_MoveToSocket));
-
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(Shuffle_ChangeQuantumState));
-
 			QSBCore.Helper.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(MultiState_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPostfix<QuantumState>("SetVisible", typeof(QuantumPatches), nameof(QuantumState_SetVisible));
-
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("IsPlayerInDarkness", typeof(QuantumPatches), nameof(Shrine_IsPlayerInDarkness));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("ChangeQuantumState", typeof(QuantumPatches), nameof(Shrine_ChangeQuantumState));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnEntry", typeof(QuantumPatches), nameof(Shrine_OnEntry));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
+		}
+
+		public override void DoUnpatches()
+		{
+			QSBCore.Helper.HarmonyHelper.Unpatch<SocketedQuantumObject>("ChangeQuantumState");
+			QSBCore.Helper.HarmonyHelper.Unpatch<SocketedQuantumObject>("MoveToSocket");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShuffleObject>("ChangeQuantumState");
+			QSBCore.Helper.HarmonyHelper.Unpatch<MultiStateQuantumObject>("ChangeQuantumState");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumState>("SetVisible");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("IsPlayerInDarkness");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("ChangeQuantumState");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnEntry");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnExit");
 		}
 
 		public static bool Socketed_ChangeQuantumState(SocketedQuantumObject __instance)
