@@ -28,6 +28,15 @@ namespace QSB.QuantumSync.Events
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var obj = objects.ToList()[message.ObjectId];
 
+			// Deciding if to change the object's owner
+			//		  Message
+			//	   | = 0 | > 0 |
+			// = 0 | Yes*| Yes |
+			// > 0 | Yes | No  |
+			// Obj
+			// *Doesn't change anything,
+			// so can be yes or no
+
 			return obj.ControllingPlayer == 0 || message.AuthorityOwner == 0;
 		}
 
