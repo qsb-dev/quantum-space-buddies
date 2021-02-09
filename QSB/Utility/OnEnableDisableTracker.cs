@@ -13,10 +13,10 @@ namespace QSB.Utility
 
 		private ComponentState _wasEnabled = ComponentState.NotChecked;
 
-		public OnEnableDisableTracker() 
+		public OnEnableDisableTracker()
 			=> QSBSceneManager.OnSceneLoaded += (OWScene scene, bool inUniverse) => Destroy(this);
 
-		private void OnDestroy() 
+		private void OnDestroy()
 			=> QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool inUniverse) => Destroy(this);
 
 		private void Update()

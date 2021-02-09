@@ -42,7 +42,7 @@ namespace QSB.DeathSync.Patches
 		public static void BroadcastDeath(DeathType deathType)
 			=> GlobalMessenger<DeathType>.FireEvent(EventNames.QSBPlayerDeath, deathType);
 
-		public static void DamageController_Exploded(ref bool ____exploded) 
+		public static void DamageController_Exploded(ref bool ____exploded)
 			=> ____exploded = true;
 
 		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions)
