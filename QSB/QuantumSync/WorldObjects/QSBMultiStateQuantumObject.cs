@@ -9,6 +9,12 @@ namespace QSB.QuantumSync.WorldObjects
 		public QuantumState[] QuantumStates { get; private set; }
 		public Text DebugBoxText;
 
+		public override void OnRemoval()
+		{
+			base.OnRemoval();
+			UnityEngine.Object.Destroy(DebugBoxText.gameObject);
+		}
+
 		public override void Init(MultiStateQuantumObject attachedObject, int id)
 		{
 			ObjectId = id;

@@ -34,6 +34,7 @@ namespace QSB.WorldSync
 			{
 				item.OnRemoval();
 			}
+			DebugLog.DebugWrite($"Removing types {typeof(TWorldObject).Name}.");
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 

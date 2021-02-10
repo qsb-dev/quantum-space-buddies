@@ -13,6 +13,9 @@ namespace QSB.OrbSync.WorldObjects
 		private bool _initialized;
 		private Text _debugBoxText;
 
+		public override void OnRemoval() 
+			=> UnityEngine.Object.Destroy(_debugBoxText.gameObject);
+
 		public override void Init(NomaiInterfaceSlot slot, int id)
 		{
 			ObjectId = id;
