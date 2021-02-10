@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.QuantumSync;
-using QSB.SectorSync.WorldObjects;
 using QSB.TranslationSync;
 using QSB.TranslationSync.WorldObjects;
 using QSB.Utility;
