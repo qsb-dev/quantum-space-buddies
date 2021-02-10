@@ -29,7 +29,7 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool server, PlayerMessage message)
 		{
 			DebugLog.DebugWrite($"Get state request from {message.FromId} - isServer?{server}");
-			GlobalMessenger.FireEvent(EventNames.QSBServerSendPlayerStates);
+			QSBEventManager.FireEvent(EventNames.QSBServerSendPlayerStates);
 			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
 				.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
 			{

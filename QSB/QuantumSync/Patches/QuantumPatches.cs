@@ -174,7 +174,7 @@ namespace QSB.QuantumSync.Patches
 				____isPlayerInside = true;
 				____fading = true;
 				____exteriorLightController.FadeTo(0f, 1f);
-				GlobalMessenger.FireEvent(EventNames.QSBEnterShrine);
+				QSBEventManager.FireEvent(EventNames.QSBEnterShrine);
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
@@ -195,7 +195,7 @@ namespace QSB.QuantumSync.Patches
 				____isPlayerInside = false;
 				____fading = true;
 				____exteriorLightController.FadeTo(1f, 1f);
-				GlobalMessenger.FireEvent(EventNames.QSBExitShrine);
+				QSBEventManager.FireEvent(EventNames.QSBExitShrine);
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{

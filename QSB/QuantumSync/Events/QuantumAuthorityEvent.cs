@@ -64,7 +64,7 @@ namespace QSB.QuantumSync.Events
 			if (obj.ControllingPlayer == 0 && obj.IsEnabled)
 			{
 				// object has no owner, but is still active for this player. request ownership
-				GlobalMessenger<int, uint>.FireEvent(EventNames.QSBQuantumAuthority, message.ObjectId, QSBPlayerManager.LocalPlayerId);
+				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, message.ObjectId, QSBPlayerManager.LocalPlayerId);
 			}
 		}
 	}

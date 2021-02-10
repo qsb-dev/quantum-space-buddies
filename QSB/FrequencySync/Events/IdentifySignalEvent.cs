@@ -22,7 +22,7 @@ namespace QSB.FrequencySync.Events
 		public override void OnReceiveRemote(bool server, EnumMessage<SignalName> message)
 		{
 			PlayerData.LearnSignal(message.Value);
-			GlobalMessenger.FireEvent("IdentifySignal");
+			QSBEventManager.FireEvent("IdentifySignal");
 			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationSignalIdentified)} <color=orange>{AudioSignal.SignalNameToString(message.Value)}</color>";
 			var data = new NotificationData(NotificationTarget.All, displayMsg, 10f, true);
 			NotificationManager.SharedInstance.PostNotification(data, false);

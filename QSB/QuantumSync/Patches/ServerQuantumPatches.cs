@@ -199,7 +199,7 @@ namespace QSB.QuantumSync.Patches
 						____isPlayerInside = true;
 						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
 						Locator.GetShipLogManager().RevealFact(____revealFactID, true, true);
-						GlobalMessenger.FireEvent("PlayerEnterQuantumMoon");
+						QSBEventManager.FireEvent("PlayerEnterQuantumMoon");
 					}
 					else
 					{
@@ -220,7 +220,7 @@ namespace QSB.QuantumSync.Patches
 							__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
 						}
 						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
-						GlobalMessenger.FireEvent("PlayerExitQuantumMoon");
+						QSBEventManager.FireEvent("PlayerExitQuantumMoon");
 					}
 					else
 					{
