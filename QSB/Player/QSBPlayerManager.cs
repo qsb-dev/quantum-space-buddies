@@ -12,7 +12,7 @@ namespace QSB.Player
 {
 	public static class QSBPlayerManager
 	{
-		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.NetIdentity?.NetId.Value ?? uint.MaxValue;
+		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance?.NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
