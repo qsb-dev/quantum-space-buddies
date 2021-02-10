@@ -20,9 +20,9 @@ namespace QSB.FrequencySync.Patches
 		}
 
 		public static void IdentifyFrequency(SignalFrequency ____frequency)
-			=> GlobalMessenger<SignalFrequency>.FireEvent(EventNames.QSBIdentifyFrequency, ____frequency);
+			=> QSBEventManager.FireEvent(EventNames.QSBIdentifyFrequency, ____frequency);
 
 		public static void IdentifySignal(SignalName ____name)
-			=> GlobalMessenger<SignalName>.FireEvent(EventNames.QSBIdentifySignal, ____name);
+			=> QSBEventManager.FireEvent(EventNames.QSBIdentifySignal, ____name);
 	}
 }

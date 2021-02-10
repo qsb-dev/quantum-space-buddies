@@ -42,6 +42,7 @@ namespace QSB.WorldSync
 			where TUnityObject : MonoBehaviour
 		{
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
+			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
 				var obj = GetWorldObject<TWorldObject>(id) ?? CreateWorldObject<TWorldObject>();

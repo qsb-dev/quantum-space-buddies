@@ -12,7 +12,7 @@ namespace QSB.ElevatorSync.Patches
 		{
 			var isGoingUp = __instance.GetValue<bool>("_goingToTheEnd");
 			var id = ElevatorManager.Instance.GetId(__instance);
-			GlobalMessenger<int, bool>.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
+			QSBEventManager.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
 		}
 
 		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPostfix<Elevator>("StartLift", typeof(ElevatorPatches), nameof(StartLift));

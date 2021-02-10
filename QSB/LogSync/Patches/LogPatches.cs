@@ -13,7 +13,7 @@ namespace QSB.LogSync.Patches
 			{
 				return;
 			}
-			GlobalMessenger<string, bool, bool>.FireEvent(EventNames.QSBRevealFact, id, saveGame, showNotification);
+			QSBEventManager.FireEvent(EventNames.QSBRevealFact, id, saveGame, showNotification);
 		}
 
 		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPostfix<ShipLogManager>("RevealFact", typeof(LogPatches), nameof(RevealFact));

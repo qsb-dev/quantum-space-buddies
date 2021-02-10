@@ -48,6 +48,7 @@ namespace QSB
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
 		public static bool IsServer => QNetworkServer.active;
+		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static GameObject GameObjectInstance => _thisInstance.gameObject;
 
 		private static QSBCore _thisInstance;

@@ -1,6 +1,8 @@
-﻿using QSB.DeathSync;
+﻿using OWML.Common;
+using QSB.DeathSync;
 using QSB.Events;
 using QSB.TimeSync.Events;
+using QSB.Utility;
 using QuantumUNET;
 using UnityEngine;
 
@@ -48,6 +50,7 @@ namespace QSB.TimeSync
 
 		private void OnWakeUp()
 		{
+			DebugLog.DebugWrite($"OnWakeUp", OWML.Common.MessageType.Info);
 			if (QNetworkServer.active)
 			{
 				QSBCore.HasWokenUp = true;
@@ -79,7 +82,7 @@ namespace QSB.TimeSync
 
 		private void Init()
 		{
-			GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			_state = State.Loaded;
 			gameObject.AddComponent<PreserveTimeScale>();
 			if (IsServer)
@@ -92,7 +95,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => GlobalMessenger<float, int>.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
+		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
@@ -130,6 +133,7 @@ namespace QSB.TimeSync
 				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
+			DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			_timeScale = MaxFastForwardSpeed;
 			_state = State.FastForwarding;
 			TimeSyncUI.TargetTime = _serverTime;
@@ -142,6 +146,7 @@ namespace QSB.TimeSync
 			{
 				return;
 			}
+			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			_timeScale = 0f;
 			_state = State.Pausing;
 			SpinnerUI.Show();
@@ -157,12 +162,13 @@ namespace QSB.TimeSync
 			{
 				EnableInput();
 			}
+			DebugLog.DebugWrite($"RESET TIMESCALE", MessageType.Info);
 			_isFirstFastForward = false;
 			QSBCore.HasWokenUp = true;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
-			GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			RespawnOnDeath.Instance.Init();
 		}
 

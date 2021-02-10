@@ -130,7 +130,7 @@ namespace QSB.QuantumSync.Patches
 						{
 							____stateSkipCounts[k] = (k != ____stateIndex) ? (____stateSkipCounts[k] + 1) : 0;
 						}
-						GlobalMessenger<int, Vector3, int>.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+						QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
 						break;
 					}
 					____visibilityTracker.transform.localPosition = Vector3.zero;
@@ -157,7 +157,7 @@ namespace QSB.QuantumSync.Patches
 				{
 					____deactivateAtEye[l].SetActive(____stateIndex != 5);
 				}
-				GlobalMessenger<OWRigidbody>.FireEvent("QuantumMoonChangeState", ____moonBody);
+				QSBEventManager.FireEvent("QuantumMoonChangeState", ____moonBody);
 				__result = true;
 				return false;
 			}

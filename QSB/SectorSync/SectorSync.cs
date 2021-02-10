@@ -44,6 +44,6 @@ namespace QSB.SectorSync
 		}
 
 		private void SendSector(uint id, QSBSector sector) =>
-			GlobalMessenger<uint, QSBSector>.FireEvent(EventNames.QSBSectorChange, id, sector);
+			QSBEventManager.FireEvent(EventNames.QSBSectorChange, id, sector);
 	}
 }

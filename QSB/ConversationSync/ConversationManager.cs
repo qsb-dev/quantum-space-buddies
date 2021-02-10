@@ -42,8 +42,7 @@ namespace QSB.ConversationSync
 		}
 
 		public void SendPlayerOption(string text) =>
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -52,17 +51,14 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
 				return;
 			}
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
 		}
 
 		public void CloseBoxPlayer() =>
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
 
 		public void CloseBoxCharacter(int id) =>
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
 
 		public void SendConvState(int charId, bool state)
 		{
@@ -71,8 +67,7 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
-			GlobalMessenger<int, uint, bool>
-				.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
+			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)

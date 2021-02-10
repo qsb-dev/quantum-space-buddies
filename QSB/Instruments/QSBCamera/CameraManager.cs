@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Events;
 using QSB.Utility;
 using UnityEngine;
 using UnityEngine.PostProcessing;
@@ -81,7 +82,7 @@ namespace QSB.Instruments.QSBCamera
 				return;
 			}
 			OWInput.ChangeInputMode(InputMode.None);
-			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", _owCamera);
+			QSBEventManager.FireEvent("SwitchActiveCamera", _owCamera);
 			Locator.GetPlayerCamera().mainCamera.enabled = false;
 			if (_cameraObj.GetComponent<PostProcessingBehaviour>() == null)
 			{
@@ -107,7 +108,7 @@ namespace QSB.Instruments.QSBCamera
 				return;
 			}
 			OWInput.ChangeInputMode(InputMode.Character);
-			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", Locator.GetPlayerCamera());
+			QSBEventManager.FireEvent("SwitchActiveCamera", Locator.GetPlayerCamera());
 			Locator.GetActiveCamera().mainCamera.enabled = true;
 			_camera.enabled = false;
 			Mode = CameraMode.FirstPerson;
