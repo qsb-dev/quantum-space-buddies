@@ -17,6 +17,10 @@ namespace QSB.Events
 
 		protected QSBEvent()
 		{
+			if (UnitTestDetector.IsInUnitTest)
+			{
+				return;
+			}
 			_eventHandler = new MessageHandler<T>(Type);
 			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);

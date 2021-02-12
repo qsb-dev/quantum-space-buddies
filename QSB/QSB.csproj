@@ -222,6 +222,7 @@
     <Compile Include="Utility\Popcron.Gizmos\Drawers\PolygonDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\SquareDrawer.cs" />
     <Compile Include="Utility\Tuple.cs" />
+    <Compile Include="Utility\UnitTestDetector.cs" />
     <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />
     <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
