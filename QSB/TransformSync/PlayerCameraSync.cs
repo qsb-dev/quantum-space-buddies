@@ -12,12 +12,13 @@ namespace QSB.TransformSync
 		{
 			var body = Locator.GetPlayerCamera().gameObject.transform;
 
-			Player.Camera = body.gameObject;
+			Player.Camera = Locator.GetPlayerCamera();
+			Player.CameraBody = body.gameObject;
 
 			Player.IsReady = true;
-			GlobalMessenger<bool>.FireEvent(EventNames.QSBPlayerReady, true);
+			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
-			GlobalMessenger.FireEvent(EventNames.QSBPlayerStatesRequest);
+			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
 			return body;
 		}
@@ -28,9 +29,25 @@ namespace QSB.TransformSync
 
 			PlayerToolsManager.Init(body.transform);
 
-			Player.Camera = body;
+			var camera = body.AddComponent<Camera>();
+			camera.enabled = false;
+			var owcamera = body.AddComponent<OWCamera>();
+			owcamera.fieldOfView = 70;
+			owcamera.nearClipPlane = 0.1f;
+			owcamera.farClipPlane = 50000f;
+			Player.Camera = owcamera;
+			Player.CameraBody = body;
 
 			return body.transform;
+		}
+
+		private void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp || !Player.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+			Popcron.Gizmos.Frustum(Player.Camera);
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

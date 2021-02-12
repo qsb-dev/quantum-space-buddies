@@ -12,16 +12,17 @@ namespace QSB.Player
 		public string Name { get; set; }
 		public bool IsReady { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
-		public State State { get; set; }
+		public State State { get; set; } // TODO : decide if this is worth it (instead of having seperate variables for each thing)
 
 		// Body Objects
-		public GameObject Camera { get; set; }
+		public OWCamera Camera { get; set; }
+		public GameObject CameraBody { get; set; }
 		public GameObject Body { get; set; }
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight => Camera?.GetComponentInChildren<QSBFlashlight>();
+		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
@@ -34,6 +35,10 @@ namespace QSB.Player
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
+
+		// Misc
+		public bool IsInMoon;
+		public bool IsInShrine;
 
 		public PlayerInfo(uint id)
 		{
@@ -74,7 +79,7 @@ namespace QSB.Player
 
 		private QSBTool GetToolByType(ToolType type)
 		{
-			return Camera?.GetComponentsInChildren<QSBTool>()
+			return CameraBody?.GetComponentsInChildren<QSBTool>()
 				.FirstOrDefault(x => x.Type == type);
 		}
 	}

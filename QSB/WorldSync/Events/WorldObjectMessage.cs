@@ -7,13 +7,13 @@ namespace QSB.WorldSync.Events
 	{
 		public int ObjectId { get; set; }
 
-		public override void Deserialize(QSBNetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			ObjectId = reader.ReadInt32();
 		}
 
-		public override void Serialize(QSBNetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);

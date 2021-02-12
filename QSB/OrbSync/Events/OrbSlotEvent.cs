@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.OrbSync.WorldObjects;
 using QSB.WorldSync;
 
 namespace QSB.OrbSync.Events

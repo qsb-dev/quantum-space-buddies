@@ -14,7 +14,6 @@ namespace QSB.ConversationSync
 	public class ConversationManager : MonoBehaviour
 	{
 		public static ConversationManager Instance { get; private set; }
-		public AssetBundle ConversationAssetBundle { get; private set; }
 		public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();
 
 		private GameObject _boxPrefab;
@@ -23,9 +22,7 @@ namespace QSB.ConversationSync
 		{
 			Instance = this;
 
-			ConversationAssetBundle = QSBCore.Helper.Assets.LoadBundle("assets/conversation");
-
-			_boxPrefab = ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
+			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
 			// TODO : make dynamic so it can be different sizes!
 			var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
 			if (font == null)
@@ -45,8 +42,7 @@ namespace QSB.ConversationSync
 		}
 
 		public void SendPlayerOption(string text) =>
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -55,17 +51,14 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
 				return;
 			}
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
 		}
 
 		public void CloseBoxPlayer() =>
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
 
 		public void CloseBoxCharacter(int id) =>
-			GlobalMessenger<uint, string, ConversationType>
-				.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
 
 		public void SendConvState(int charId, bool state)
 		{
@@ -74,8 +67,7 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
-			GlobalMessenger<int, uint, bool>
-				.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
+			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)
@@ -121,7 +113,7 @@ namespace QSB.ConversationSync
 		{
 			var newBox = Instantiate(_boxPrefab);
 			newBox.SetActive(false);
-			newBox.transform.parent = parent;
+			newBox.transform.SetParent(parent);
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
 			newBox.transform.rotation = parent.rotation;
 			var lookAt = newBox.AddComponent<FaceActiveCamera>();

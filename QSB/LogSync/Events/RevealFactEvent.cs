@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.LogSync.Events
@@ -23,7 +22,6 @@ namespace QSB.LogSync.Events
 
 		public override void OnReceiveLocal(bool server, RevealFactMessage message)
 		{
-			DebugLog.DebugWrite($"GOT LOCAL FACT MESSAGE - {message.FactId} - isServer:{server}");
 			if (server)
 			{
 				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
@@ -32,7 +30,6 @@ namespace QSB.LogSync.Events
 
 		public override void OnReceiveRemote(bool server, RevealFactMessage message)
 		{
-			DebugLog.DebugWrite($"GOT REMOTE FACT MESSAGE - {message.FactId} - isServer:{server}");
 			if (server)
 			{
 				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);

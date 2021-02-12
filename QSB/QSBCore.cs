@@ -6,15 +6,18 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
+using QSB.QuantumSync;
 using QSB.SectorSync;
 using QSB.TimeSync;
+using QSB.TranslationSync;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System.Linq;
 using UnityEngine;
 
 /*
-	Copyright (C) 2020 
+	Copyright (C) 2020 - 2021
 			Henry Pointer (_nebula / misternebula), 
 			Aleksander Waage (AmazingAlek), 
 			Ricardo Lopes (Raicuparta)
@@ -39,14 +42,22 @@ namespace QSB
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
 		public static bool DebugMode { get; private set; }
+		public static bool ShowLinesInDebug { get; private set; }
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
+		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static bool HasWokenUp { get; set; }
-		public static bool IsServer => QSBNetworkServer.active;
+		public static bool IsServer => QNetworkServer.active;
+		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
+		public static GameObject GameObjectInstance => _thisInstance.gameObject;
+
+		private static QSBCore _thisInstance;
 
 		public void Awake()
 		{
 			Application.runInBackground = true;
+
+			_thisInstance = this;
 
 			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
 			instance.theUITable[(int)UITextType.PleaseUseController] =
@@ -60,12 +71,13 @@ namespace QSB
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
+			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
 
 			QSBPatchManager.Init();
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<QSBNetworkManagerHUD>();
+			gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
 			gameObject.AddComponent<ElevatorManager>();
 			gameObject.AddComponent<GeyserManager>();
@@ -74,13 +86,17 @@ namespace QSB
 			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
+			gameObject.AddComponent<QuantumManager>();
+			gameObject.AddComponent<SpiralManager>();
+
+			DebugBoxManager.Init();
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 		}
 
 		public void Update() =>
-			QSBNetworkIdentity.UNetStaticUpdate();
+			QNetworkIdentity.UNetStaticUpdate();
 
 		public override void Configure(IModConfig config)
 		{
@@ -91,6 +107,11 @@ namespace QSB
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
+			if (!DebugMode)
+			{
+				FindObjectsOfType<DebugZOverride>().ToList().ForEach(x => Destroy(x.gameObject));
+			}
+			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 		}
 	}
 }

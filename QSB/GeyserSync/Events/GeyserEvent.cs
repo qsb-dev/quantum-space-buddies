@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.GeyserSync.WorldObjects;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 

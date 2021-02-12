@@ -1,15 +1,18 @@
 ﻿using OWML.Common;
 using QSB.Player.Events;
+using QSB.Tools;
 using QSB.TransformSync;
 using QSB.Utility;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace QSB.Player
 {
 	public static class QSBPlayerManager
 	{
-		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance.NetIdentity?.NetId.Value ?? uint.MaxValue;
+		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance?.NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
@@ -17,6 +20,13 @@ namespace QSB.Player
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
+			if (!QSBNetworkManager.Instance.IsReady)
+			{
+				var method = new StackTrace().GetFrame(1).GetMethod();
+				DebugLog.DebugWrite($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
+					$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name}", MessageType.Warning);
+			}
+
 			if (id == uint.MaxValue || id == 0U)
 			{
 				return default;
@@ -26,7 +36,8 @@ namespace QSB.Player
 			{
 				return player;
 			}
-			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
+			var trace = new StackTrace().GetFrame(1).GetMethod();
+			DebugLog.DebugWrite($"Create Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			return player;
@@ -34,14 +45,9 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
+			var trace = new StackTrace().GetFrame(1).GetMethod();
+			DebugLog.DebugWrite($"Remove Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
 			PlayerList.Remove(GetPlayer(id));
-		}
-
-		public static void RemoveAllPlayers()
-		{
-			DebugLog.DebugWrite($"Remove All Players", MessageType.Info);
-			PlayerList.Clear();
 		}
 
 		public static bool PlayerExists(uint id) =>
@@ -74,5 +80,18 @@ namespace QSB.Player
 			return id == LocalPlayerId ||
 				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
 		}
+
+		public static List<OWCamera> GetPlayerCameras(bool includeLocalCamera = true)
+		{
+			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).Select(x => x.Camera).ToList();
+			if (includeLocalCamera)
+			{
+				cameraList.Add(Locator.GetActiveCamera());
+			}
+			return cameraList;
+		}
+
+		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
+			=> new Tuple<Flashlight, IEnumerable<QSBFlashlight>>(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 	}
 }
