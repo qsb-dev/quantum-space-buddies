@@ -64,6 +64,11 @@ namespace QSB.Events
 				new IdentifySignalEvent()
 			};
 
+			if (UnitTestDetector.IsInUnitTest)
+			{
+				return;
+			}
+
 			_eventList.ForEach(ev => ev.SetupListener());
 
 			Ready = true;
