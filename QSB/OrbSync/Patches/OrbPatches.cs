@@ -13,7 +13,7 @@ namespace QSB.OrbSync.Patches
 		{
 			if (__result)
 			{
-				QSBEventManager.FireEvent<int>(EventNames.QSBOrbUser, QSBWorldSync.OldOrbList.FindIndex(x => x == __instance));
+				QSBEventManager.FireEvent(EventNames.QSBOrbUser, QSBWorldSync.OldOrbList.FindIndex(x => x == __instance));
 			}
 		}
 

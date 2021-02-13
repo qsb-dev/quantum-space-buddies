@@ -50,7 +50,7 @@ namespace QSB.DeathSync.Patches
 		}
 
 		public static void BroadcastDeath(DeathType deathType)
-			=> QSBEventManager.FireEvent<DeathType>(EventNames.QSBPlayerDeath, deathType);
+			=> QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
 
 		public static void DamageController_Exploded(ref bool ____exploded)
 			=> ____exploded = true;

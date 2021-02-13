@@ -41,7 +41,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
 			// no one is controlling this object right now, request authority
-			QSBEventManager.FireEvent<int, uint>(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
+			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
 
 		private void OnDisable()
@@ -54,7 +54,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
 			// send event to other players that we're releasing authority
-			QSBEventManager.FireEvent<int, uint>(EventNames.QSBQuantumAuthority, id, 0);
+			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0);
 		}
 	}
 }

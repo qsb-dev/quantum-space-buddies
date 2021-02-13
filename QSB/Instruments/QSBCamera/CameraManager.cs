@@ -82,7 +82,7 @@ namespace QSB.Instruments.QSBCamera
 				return;
 			}
 			OWInput.ChangeInputMode(InputMode.None);
-			QSBEventManager.FireEvent<OWCamera>("SwitchActiveCamera", _owCamera);
+			QSBEventManager.FireEvent("SwitchActiveCamera", _owCamera);
 			Locator.GetPlayerCamera().mainCamera.enabled = false;
 			if (_cameraObj.GetComponent<PostProcessingBehaviour>() == null)
 			{
@@ -108,7 +108,7 @@ namespace QSB.Instruments.QSBCamera
 				return;
 			}
 			OWInput.ChangeInputMode(InputMode.Character);
-			QSBEventManager.FireEvent<OWCamera>("SwitchActiveCamera", Locator.GetPlayerCamera());
+			QSBEventManager.FireEvent("SwitchActiveCamera", Locator.GetPlayerCamera());
 			Locator.GetActiveCamera().mainCamera.enabled = true;
 			_camera.enabled = false;
 			Mode = CameraMode.FirstPerson;

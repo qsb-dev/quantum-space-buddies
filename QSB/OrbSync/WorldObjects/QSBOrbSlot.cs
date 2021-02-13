@@ -33,7 +33,7 @@ namespace QSB.OrbSync.WorldObjects
 			{
 				return;
 			}
-			QSBEventManager.FireEvent<int, int, bool>(EventNames.QSBOrbSlot, ObjectId, orbId, state);
+			QSBEventManager.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
 			if (QSBCore.DebugMode)
 			{
 				_debugBoxText.text = state.ToString();

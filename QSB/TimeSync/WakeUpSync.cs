@@ -95,7 +95,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => QSBEventManager.FireEvent<float, int>(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
+		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
