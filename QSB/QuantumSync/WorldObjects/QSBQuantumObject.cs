@@ -33,6 +33,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnEnable()
 		{
+			DebugLog.DebugWrite($"OnEnable of {AttachedObject.name}, ControllingPlayer:{ControllingPlayer}");
 			IsEnabled = true;
 			if (ControllingPlayer != 0)
 			{
@@ -41,11 +42,12 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
 			// no one is controlling this object right now, request authority
-			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
+			QSBEventManager.FireEvent<int, uint>(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
 
 		private void OnDisable()
 		{
+			DebugLog.DebugWrite($"OnDisable of {AttachedObject.name}, ControllingPlayer:{ControllingPlayer}");
 			IsEnabled = false;
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
@@ -54,7 +56,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
 			// send event to other players that we're releasing authority
-			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0);
+			QSBEventManager.FireEvent<int, uint>(EventNames.QSBQuantumAuthority, id, 0);
 		}
 	}
 }

@@ -62,7 +62,7 @@ namespace QSB.QuantumSync.Patches
 			var objId = QuantumManager.Instance.GetId(__instance);
 			var socketId = QuantumManager.Instance.GetId(socket);
 			//DebugLog.DebugWrite($"{__instance.name} to socket {socketId}");
-			QSBEventManager.FireEvent(
+			QSBEventManager.FireEvent<int, int, Quaternion>(
 					EventNames.QSBSocketStateChange,
 					objId,
 					socketId,
@@ -95,7 +95,7 @@ namespace QSB.QuantumSync.Patches
 				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
 			}
 			//DebugLog.DebugWrite($"{__instance.name} shuffled.");
-			QSBEventManager.FireEvent(
+			QSBEventManager.FireEvent<int, int[]>(
 					EventNames.QSBQuantumShuffle,
 					QuantumManager.Instance.GetId(__instance),
 					____indexList.ToArray());
@@ -124,7 +124,7 @@ namespace QSB.QuantumSync.Patches
 				return;
 			}
 			//DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
-			QSBEventManager.FireEvent(
+			QSBEventManager.FireEvent<int, int>(
 					EventNames.QSBMultiStateChange,
 					QuantumManager.Instance.GetId(owner.AttachedObject),
 					Array.IndexOf(owner.QuantumStates, __instance));

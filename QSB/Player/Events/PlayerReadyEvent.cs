@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using System.Linq;
 
@@ -53,7 +54,7 @@ namespace QSB.Player.Events
 			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
 				.Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
+				QSBEventManager.FireEvent<uint, QSBSector>(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
 			}
 		}
 	}

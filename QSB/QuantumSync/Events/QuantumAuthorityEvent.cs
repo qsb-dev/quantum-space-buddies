@@ -50,6 +50,7 @@ namespace QSB.QuantumSync.Events
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var obj = objects.ToList()[message.ObjectId];
 			obj.ControllingPlayer = message.AuthorityOwner;
+			DebugLog.DebugWrite($"LOCAL {(obj as IWorldObject).Name} to owner {message.AuthorityOwner}");
 		}
 
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
@@ -61,10 +62,11 @@ namespace QSB.QuantumSync.Events
 				DebugLog.ToConsole($"Warning - object {(obj as IWorldObject).Name} already has owner {obj.ControllingPlayer}, but trying to be replaced by {message.AuthorityOwner}!", MessageType.Warning);
 			}
 			obj.ControllingPlayer = message.AuthorityOwner;
+			DebugLog.DebugWrite($"{(obj as IWorldObject).Name} to owner {message.AuthorityOwner}");
 			if (obj.ControllingPlayer == 0 && obj.IsEnabled)
 			{
 				// object has no owner, but is still active for this player. request ownership
-				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, message.ObjectId, QSBPlayerManager.LocalPlayerId);
+				QSBEventManager.FireEvent<int, uint>(EventNames.QSBQuantumAuthority, message.ObjectId, QSBPlayerManager.LocalPlayerId);
 			}
 		}
 	}

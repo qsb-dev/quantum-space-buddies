@@ -16,7 +16,7 @@ namespace QSB.TransformSync
 			Player.CameraBody = body.gameObject;
 
 			Player.IsReady = true;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			QSBEventManager.FireEvent<bool>(EventNames.QSBPlayerReady, true);
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
