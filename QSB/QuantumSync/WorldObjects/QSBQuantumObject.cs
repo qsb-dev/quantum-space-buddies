@@ -33,7 +33,6 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnEnable()
 		{
-			DebugLog.DebugWrite($"OnEnable of {AttachedObject.name}, ControllingPlayer:{ControllingPlayer}");
 			IsEnabled = true;
 			if (ControllingPlayer != 0)
 			{
@@ -47,7 +46,6 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable()
 		{
-			DebugLog.DebugWrite($"OnDisable of {AttachedObject.name}, ControllingPlayer:{ControllingPlayer}");
 			IsEnabled = false;
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
