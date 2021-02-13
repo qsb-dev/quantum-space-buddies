@@ -109,18 +109,11 @@ namespace QSB.QuantumSync
 			*/
 
 			offset = 10f;
-			GUI.Label(new Rect(440, offset, 200f, 20f), $"Players in QM :");
+			GUI.Label(new Rect(440, offset, 200f, 20f), $"Owned Objects :");
 			offset += 30f;
-			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.IsInMoon))
+			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
 			{
-				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {player.PlayerId}");
-				offset += 30f;
-			}
-			GUI.Label(new Rect(440, offset, 200f, 20f), $"Players in Shrine :");
-			offset += 30f;
-			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.IsInShrine))
-			{
-				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {player.PlayerId}");
+				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {(obj as IWorldObject).Name}");
 				offset += 30f;
 			}
 		}

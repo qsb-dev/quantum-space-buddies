@@ -36,13 +36,13 @@ namespace QSB.QuantumSync.Events
 			// Deciding if to change the object's owner
 			//		  Message
 			//	   | = 0 | > 0 |
-			// = 0 | Yes*| Yes |
+			// = 0 | No  | Yes |
 			// > 0 | Yes | No  |
+			// if Obj==Message then No
 			// Obj
-			// *Doesn't change anything,
-			// so can be yes or no
 
-			return obj.ControllingPlayer == 0 || message.AuthorityOwner == 0;
+			return (obj.ControllingPlayer == 0 || message.AuthorityOwner == 0) 
+				&& (obj.ControllingPlayer != message.AuthorityOwner);
 		}
 
 		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
@@ -56,10 +56,6 @@ namespace QSB.QuantumSync.Events
 		{
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var obj = objects.ToList()[message.ObjectId];
-			if (obj.ControllingPlayer != 0 && message.AuthorityOwner != 0)
-			{
-				DebugLog.ToConsole($"Warning - object {(obj as IWorldObject).Name} already has owner {obj.ControllingPlayer}, but trying to be replaced by {message.AuthorityOwner}!", MessageType.Warning);
-			}
 			obj.ControllingPlayer = message.AuthorityOwner;
 			if (obj.ControllingPlayer == 0 && obj.IsEnabled)
 			{
