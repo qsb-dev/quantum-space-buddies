@@ -49,7 +49,6 @@ namespace QSB.QuantumSync.Events
 		{
 			var objects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var obj = objects.ToList()[message.ObjectId];
-			DebugLog.DebugWrite($"LOCAL {(obj as IWorldObject).Name} to owner {message.AuthorityOwner}");
 			obj.ControllingPlayer = message.AuthorityOwner;
 		}
 
