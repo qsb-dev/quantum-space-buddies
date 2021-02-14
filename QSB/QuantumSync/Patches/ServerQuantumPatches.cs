@@ -157,7 +157,7 @@ namespace QSB.QuantumSync.Patches
 				{
 					____deactivateAtEye[l].SetActive(____stateIndex != 5);
 				}
-				QSBEventManager.FireEvent("QuantumMoonChangeState", ____moonBody);
+				GlobalMessenger<OWRigidbody>.FireEvent("QuantumMoonChangeState", ____moonBody);
 				__result = true;
 				return false;
 			}
