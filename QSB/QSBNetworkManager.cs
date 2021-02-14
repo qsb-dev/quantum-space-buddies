@@ -237,7 +237,13 @@ namespace QSB
 					identity.RemoveClientAuthority(connection);
 				}
 			}
+
+			// Server takes some time to process removal of player/deletion of networkidentity
+			Invoke(nameof(LateFinalizeDisconnect), 1f);
 		}
+
+		private void LateFinalizeDisconnect() 
+			=> QuantumManager.Instance.CheckExistingPlayers();
 
 		public override void OnStopServer()
 		{

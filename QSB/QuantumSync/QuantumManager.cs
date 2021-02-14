@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Events;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
@@ -42,6 +43,21 @@ namespace QSB.QuantumSync
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
 			}
 			IsReady = true;
+		}
+
+		public void CheckExistingPlayers()
+		{
+			DebugLog.DebugWrite("Checking quantum objects for non-existent players...", MessageType.Info);
+			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
+			for (var i = 0; i < quantumObjects.Count; i++)
+			{
+				var obj = quantumObjects[i];
+				if (!QSBPlayerManager.PlayerExists(obj.ControllingPlayer))
+				{
+					var idToSend = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u;
+					QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, idToSend);
+				}
+			}
 		}
 
 		public void OnRenderObject()
