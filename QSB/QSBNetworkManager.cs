@@ -141,6 +141,11 @@ namespace QSB
 			{
 				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 			}
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				QSBCore.HasWokenUp = true;
+			}
 		}
 
 		public override void OnServerAddPlayer(QNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -247,6 +252,7 @@ namespace QSB
 
 			base.OnStopServer();
 		}
+
 		private void RemoveWorldObjects()
 		{
 			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
@@ -255,6 +261,5 @@ namespace QSB
 			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 			QSBWorldSync.RemoveWorldObjects<IQSBQuantumObject>();
 		}
-
 	}
 }

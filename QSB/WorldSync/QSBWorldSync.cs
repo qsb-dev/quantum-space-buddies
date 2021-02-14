@@ -34,7 +34,7 @@ namespace QSB.WorldSync
 			{
 				item.OnRemoval();
 			}
-			DebugLog.DebugWrite($"Removing types {typeof(TWorldObject).Name}.");
+			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
@@ -42,6 +42,7 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
+			RemoveWorldObjects<TWorldObject>();
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)

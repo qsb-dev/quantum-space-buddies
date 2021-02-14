@@ -24,16 +24,22 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void Init(T attachedObject, int id)
 		{
+			DebugLog.DebugWrite($"Init of {attachedObject.name}");
 			_tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
 			_tracker.AttachedComponent = AttachedObject;
 			_tracker.OnEnableEvent += OnEnable;
 			_tracker.OnDisableEvent += OnDisable;
-			ControllingPlayer = 1u;
+			ControllingPlayer = 0u;
 		}
 
 		private void OnEnable()
 		{
+			DebugLog.DebugWrite($"Enable {AttachedObject.name}, current owner {ControllingPlayer}");
 			IsEnabled = true;
+			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
+			{
+				return;
+			}
 			if (ControllingPlayer != 0)
 			{
 				// controlled by another player, dont care that we activate it
@@ -46,7 +52,12 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable()
 		{
+			DebugLog.DebugWrite($"Disable {AttachedObject.name}, current owner {ControllingPlayer}");
 			IsEnabled = false;
+			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
+			{
+				return;
+			}
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				// not being controlled by us, don't care if we leave area
