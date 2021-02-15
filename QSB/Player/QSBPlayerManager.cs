@@ -12,7 +12,25 @@ namespace QSB.Player
 {
 	public static class QSBPlayerManager
 	{
-		public static uint LocalPlayerId => PlayerTransformSync.LocalInstance?.NetIdentity?.NetId.Value ?? uint.MaxValue;
+		public static uint LocalPlayerId
+		{
+			get
+			{
+				var localInstance = PlayerTransformSync.LocalInstance;
+				if (localInstance == null)
+				{
+					DebugLog.DebugWrite($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null.", MessageType.Error);
+					return uint.MaxValue;
+				}
+				if (localInstance.NetIdentity == null)
+				{
+					DebugLog.DebugWrite($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
+					return uint.MaxValue;
+				}
+				return localInstance.NetIdentity.NetId.Value;
+			}
+		}
+
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 

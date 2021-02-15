@@ -220,6 +220,7 @@ namespace QSB
 			QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 
 			_lobby.CanEditName = true;
+			QSBCore.HasWokenUp = false;
 
 			IsReady = false;
 		}
@@ -255,6 +256,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
+			QSBCore.HasWokenUp = false;
 
 			base.OnStopServer();
 		}

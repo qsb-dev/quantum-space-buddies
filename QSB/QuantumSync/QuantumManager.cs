@@ -75,6 +75,8 @@ namespace QSB.QuantumSync
 
 		public void OnGUI()
 		{
+			GUI.Label(new Rect(220, 10, 200f, 20f), $"HasWokenUp : {QSBCore.HasWokenUp}");
+
 			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
 			{
 				return;
@@ -85,8 +87,8 @@ namespace QSB.QuantumSync
 				return;
 			}
 
-			GUI.Label(new Rect(220, 10, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
-			var offset = 40f;
+			GUI.Label(new Rect(220, 40, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
+			var offset = 70f;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
 			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
 			{

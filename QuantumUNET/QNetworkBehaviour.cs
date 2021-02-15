@@ -31,6 +31,11 @@ namespace QuantumUNET
 			get
 			{
 				QNetworkIdentity myView;
+				if (gameObject == null)
+				{
+					QLog.FatalError($"Trying to get QNetworkIdentity of a null gameobject?");
+					return null;
+				}
 				if (m_MyView == null)
 				{
 					m_MyView = GetComponent<QNetworkIdentity>();

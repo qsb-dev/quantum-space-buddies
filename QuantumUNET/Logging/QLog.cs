@@ -8,7 +8,7 @@
 		public const int ErrorType = 3;
 		public const int FatalErrorType = 4;
 
-		private static int _currentLog;
+		private static int _currentLog = 2;
 		private static bool _logDebug => _currentLog <= 0;
 		private static bool _logLog => _currentLog <= 1;
 		private static bool _logWarning => _currentLog <= 2;
