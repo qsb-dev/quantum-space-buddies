@@ -86,7 +86,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				if (orbitIndex == -1)
 				{
-					UnityEngine.Debug.LogError("QUANTUM MOON FAILED TO FIND ORBIT FOR STATE " + stateIndex);
+					DebugLog.ToConsole($"Error - QM failed to find orbit for state {stateIndex}", MessageType.Error);
 				}
 				var orbitRadius = (orbitIndex == -1) ? 10000f : ____orbits[orbitIndex].GetOrbitRadius();
 				var owRigidbody = (orbitIndex == -1) ? Locator.GetAstroObject(AstroObject.Name.Sun).GetOWRigidbody() : ____orbits[orbitIndex].GetAttachedOWRigidbody();
@@ -137,7 +137,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				else
 				{
-					UnityEngine.Debug.LogError("Quantum moon orbit position occupied! Aborting collapse.");
+					DebugLog.DebugWrite("Warning - Quantum moon orbit position occupied! Aborting collapse.", MessageType.Warning);
 				}
 			}
 			if (flag)

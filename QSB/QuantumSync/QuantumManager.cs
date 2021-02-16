@@ -87,8 +87,17 @@ namespace QSB.QuantumSync
 				return;
 			}
 
-			GUI.Label(new Rect(220, 40, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
-			var offset = 70f;
+			var offset = 40f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Locked : {Locator.GetQuantumMoon().IsLocked()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player dark? : {Shrine.IsPlayerInDarkness()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player inside? : {Shrine.IsPlayerInside()}");
+			offset += 30f;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
 			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
 			{
@@ -136,20 +145,20 @@ namespace QSB.QuantumSync
 			}
 		}
 
-		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
+		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
 			return tracker.gameObject.activeInHierarchy
-				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
+				&& QSBPlayerManager.GetPlayerCameras(!ignoreLocalCamera)
 					.Any(x => (bool)tracker.GetType()
 						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
 						.Invoke(tracker, new object[] { x.GetFrustumPlanes() }));
 		}
 
-		public static bool IsVisible(ShapeVisibilityTracker tracker, bool skipVisibilityCheck)
+		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
 			return tracker.gameObject.activeInHierarchy
-				&& IsVisibleUsingCameraFrustum(tracker, skipVisibilityCheck)
-				&& QSBPlayerManager.GetPlayerCameras(!skipVisibilityCheck)
+				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera)
+				&& QSBPlayerManager.GetPlayerCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.mainCamera.transform.position));
 		}
 

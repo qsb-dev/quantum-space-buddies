@@ -144,7 +144,8 @@ namespace QSB.QuantumSync.Patches
 			var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
 			if (playersInMoon.Any(x => !x.IsInShrine)
 				|| playersInMoon.Any(x => x.FlashLight != null && x.FlashLight.FlashlightOn)
-				|| (QSBPlayerManager.LocalPlayer.IsInShrine && PlayerState.IsFlashlightOn()))
+				|| (QSBPlayerManager.LocalPlayer.IsInShrine && PlayerState.IsFlashlightOn())
+				|| playersInMoon.Count() == 0);
 			{
 				__result = false;
 				return false;
