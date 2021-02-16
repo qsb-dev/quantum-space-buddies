@@ -12,17 +12,11 @@ namespace QSB.QuantumSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
-		public override void DoPatches()
-		{
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Moon_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(ServerQuantumPatches), nameof(Moon_CheckPlayerFogProximity));
-		}
+		public override void DoPatches() 
+			=> QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Moon_ChangeQuantumState));
 
-		public override void DoUnpatches()
-		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("ChangeQuantumState");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
-		}
+		public override void DoUnpatches() 
+			=> QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("ChangeQuantumState");
 
 		public static bool Moon_ChangeQuantumState(
 			QuantumMoon __instance,
@@ -162,87 +156,6 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 			__result = false;
-			return false;
-		}
-
-
-
-		public static bool Moon_CheckPlayerFogProximity(
-			QuantumMoon __instance,
-			int ____stateIndex,
-			float ____eyeStateFogOffset,
-			ref bool ____isPlayerInside,
-			float ____fogRadius,
-			float ____fogThickness,
-			float ____fogRolloffDistance,
-			string ____revealFactID,
-			OWRigidbody ____moonBody,
-			bool ____hasSunCollapsed,
-			Transform ____vortexReturnPivot,
-			OWAudioSource ____vortexAudio,
-			ref int ____collapseToIndex,
-			VisibilityTracker ____visibilityTracker,
-			QuantumFogEffectBubbleController ____playerFogBubble,
-			QuantumFogEffectBubbleController ____shipLandingCamFogBubble)
-		{
-			var playerDistance = Vector3.Distance(__instance.transform.position, Locator.GetPlayerCamera().transform.position);
-			var fogOffset = (____stateIndex != 5) ? 0f : ____eyeStateFogOffset;
-			var distanceFromFog = playerDistance - (____fogRadius + fogOffset);
-			var fogAlpha = 0f;
-			if (!____isPlayerInside)
-			{
-				fogAlpha = Mathf.InverseLerp(____fogThickness + ____fogRolloffDistance, ____fogThickness, distanceFromFog);
-				if (distanceFromFog < 0f)
-				{
-					if ((bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) || QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
-					{
-						____isPlayerInside = true;
-						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
-						Locator.GetShipLogManager().RevealFact(____revealFactID, true, true);
-						QSBEventManager.FireEvent("PlayerEnterQuantumMoon");
-					}
-					else
-					{
-						__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
-					}
-				}
-			}
-			else if (____isPlayerInside)
-			{
-				fogAlpha = Mathf.InverseLerp(-____fogThickness - ____fogRolloffDistance, -____fogThickness, distanceFromFog);
-				if (distanceFromFog >= 0f)
-				{
-					if (____stateIndex != 5)
-					{
-						____isPlayerInside = false;
-						if (!(bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) && !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true))
-						{
-							__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
-						}
-						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
-						QSBEventManager.FireEvent("PlayerExitQuantumMoon");
-					}
-					else
-					{
-						var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
-						Locator.GetPlayerBody().SetVelocity(____moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - (vector.normalized * 5f));
-						var d = (!____hasSunCollapsed) ? (____fogRadius - 1f) : 80f;
-						Locator.GetPlayerBody().SetPosition(__instance.transform.position + (____vortexReturnPivot.up * d));
-						if (!Physics.autoSyncTransforms)
-						{
-							Physics.SyncTransforms();
-						}
-						var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
-						component.SetDegreesY(component.GetMinDegreesY());
-						____vortexAudio.SetLocalVolume(0f);
-						____collapseToIndex = 1;
-						// TODO : Handle players exiting eye state when other players are still on eye state, etc...
-						__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
-					}
-				}
-			}
-			____playerFogBubble.SetFogAlpha(fogAlpha);
-			____shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
 			return false;
 		}
 	}
