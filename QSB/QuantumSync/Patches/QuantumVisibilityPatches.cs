@@ -40,7 +40,7 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
-		// RendererVisibilityTracker patches
+		// RendererVisibilityTracker patches - probably not needed as i don't think RendererVisibilityTracker is ever used?
 
 		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{

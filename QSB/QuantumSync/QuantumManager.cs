@@ -94,9 +94,7 @@ namespace QSB.QuantumSync
 			offset += 30f;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
 			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player dark? : {Shrine.IsPlayerInDarkness()}");
-			offset += 30f;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player inside? : {Shrine.IsPlayerInside()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {Shrine.IsPlayerInDarkness()}");
 			offset += 30f;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
 			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
