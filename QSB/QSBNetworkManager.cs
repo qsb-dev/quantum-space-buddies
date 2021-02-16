@@ -243,7 +243,7 @@ namespace QSB
 			Invoke(nameof(LateFinalizeDisconnect), 1f);
 		}
 
-		private void LateFinalizeDisconnect() 
+		private void LateFinalizeDisconnect()
 			=> QuantumManager.Instance.CheckExistingPlayers();
 
 		public override void OnStopServer()

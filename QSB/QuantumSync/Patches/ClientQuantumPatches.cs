@@ -19,7 +19,7 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("Start");
 		}
 
-		public static void Moon_CollapseOnStart(QuantumMoon __instance) 
+		public static void Moon_CollapseOnStart(QuantumMoon __instance)
 			=> __instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
 
 		public static bool ReturnFalsePatch() => false;

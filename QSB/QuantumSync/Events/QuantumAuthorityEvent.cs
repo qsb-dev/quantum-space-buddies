@@ -1,7 +1,5 @@
-﻿using OWML.Common;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 
@@ -41,7 +39,7 @@ namespace QSB.QuantumSync.Events
 			// if Obj==Message then No
 			// Obj
 
-			return (obj.ControllingPlayer == 0 || message.AuthorityOwner == 0) 
+			return (obj.ControllingPlayer == 0 || message.AuthorityOwner == 0)
 				&& (obj.ControllingPlayer != message.AuthorityOwner);
 		}
 
