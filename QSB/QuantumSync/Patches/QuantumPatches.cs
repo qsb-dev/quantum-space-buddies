@@ -28,6 +28,8 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnEntry", typeof(QuantumPatches), nameof(Shrine_OnEntry));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<Shape>("OnEnable", typeof(QuantumPatches), nameof(Shape_OnEnable));
+			QSBCore.Helper.HarmonyHelper.AddPostfix<Shape>("OnDisable", typeof(QuantumPatches), nameof(Shape_OnDisable));
 		}
 
 		public override void DoUnpatches()
@@ -42,6 +44,60 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnEntry");
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnExit");
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
+			QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnEnable");
+			QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnDisable");
+		}
+
+		private static IQSBQuantumObject GetWorldObjectFromShape(Shape shape)
+		{
+			var obj = QuantumManager.Instance._shapesToTrackers.FirstOrDefault(x => x.Key.Contains(shape));
+			if (obj.Equals(default(KeyValuePair<Shape[], VisibilityTracker>)))
+			{
+				return null;
+			}
+			var quantumObject = QuantumManager.Instance._objectToTrackers.FirstOrDefault(x => x.Value.Contains(obj.Value));
+			if (quantumObject.Equals(default(KeyValuePair<VisibilityObject, List<VisibilityTracker>>)))
+			{
+				return null;
+			}
+			IQSBQuantumObject worldObject = null;
+			if (quantumObject.Key.GetType() == typeof(SocketedQuantumObject))
+			{
+				worldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(quantumObject.Key.GetComponent<SocketedQuantumObject>());
+			}
+			if (quantumObject.Key.GetType() == typeof(MultiStateQuantumObject))
+			{
+				worldObject = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>(quantumObject.Key.GetComponent<MultiStateQuantumObject>());
+			}
+			if (quantumObject.Key.GetType() == typeof(QuantumShuffleObject))
+			{
+				worldObject = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject, QuantumShuffleObject>(quantumObject.Key.GetComponent<QuantumShuffleObject>());
+			}
+			if (quantumObject.Key.GetType() == typeof(QuantumSocket))
+			{
+				return null;
+			}
+			return worldObject;
+		}
+
+		public static void Shape_OnEnable(Shape __instance)
+		{
+			var worldObject = GetWorldObjectFromShape(__instance);
+			if (worldObject == null)
+			{
+				return;
+			}
+			worldObject.Enable();
+		}
+
+		public static void Shape_OnDisable(Shape __instance)
+		{
+			var worldObject = GetWorldObjectFromShape(__instance);
+			if (worldObject == null)
+			{
+				return;
+			}
+			worldObject.Disable();
 		}
 
 		public static bool Socketed_ChangeQuantumState(SocketedQuantumObject __instance)

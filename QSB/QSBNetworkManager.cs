@@ -178,9 +178,9 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBSectorManager.Instance.RebuildSectors();
-				OrbManager.Instance.QueueBuildSlots();
-				QuantumManager.Instance.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
+				QSBSectorManager.Instance?.RebuildSectors();
+				OrbManager.Instance?.QueueBuildSlots();
+				QuantumManager.Instance?.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
