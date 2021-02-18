@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Utils;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -31,6 +32,7 @@ namespace QSB.QuantumSync.WorldObjects
 			ControllingPlayer = 0u;
 		}
 
+
 		private void OnEnable()
 		{
 			IsEnabled = true;
@@ -43,7 +45,7 @@ namespace QSB.QuantumSync.WorldObjects
 				// controlled by another player, dont care that we activate it
 				return;
 			}
-			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
+			var id = QuantumManager.Instance.GetId(this);
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
@@ -60,7 +62,7 @@ namespace QSB.QuantumSync.WorldObjects
 				// not being controlled by us, don't care if we leave area
 				return;
 			}
-			var id = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList().IndexOf(this);
+			var id = QuantumManager.Instance.GetId(this);
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
 		}

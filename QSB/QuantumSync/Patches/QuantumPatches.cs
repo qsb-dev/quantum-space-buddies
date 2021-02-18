@@ -45,30 +45,27 @@ namespace QSB.QuantumSync.Patches
 		}
 
 		public static bool Socketed_ChangeQuantumState(SocketedQuantumObject __instance)
-			=> QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(QuantumManager.Instance.GetId(__instance)).ControllingPlayer == QSBPlayerManager.LocalPlayerId;
+			=> QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance).ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 
 		public static void Socketed_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
 		{
-			var id = QuantumManager.Instance.GetId(__instance);
-			var worldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(id);
-			if (worldObject == null)
+			var objectWorldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+			var socketWorldObject = QSBWorldSync.GetWorldObject<QSBQuantumSocket, QuantumSocket>(socket);
+			if (objectWorldObject == null)
 			{
-				DebugLog.ToConsole($"Worldobject is null for id {id}!");
+				DebugLog.ToConsole($"Worldobject is null for {__instance.name}!");
 				return;
 			}
 
-			if (worldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			if (objectWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;
 			}
 
-			var objId = QuantumManager.Instance.GetId(__instance);
-			var socketId = QuantumManager.Instance.GetId(socket);
-			//DebugLog.DebugWrite($"{__instance.name} to socket {socketId}");
 			QSBEventManager.FireEvent(
 					EventNames.QSBSocketStateChange,
-					objId,
-					socketId,
+					objectWorldObject.ObjectId,
+					socketWorldObject.ObjectId,
 					__instance.transform.localRotation);
 		}
 
@@ -79,7 +76,8 @@ namespace QSB.QuantumSync.Patches
 			ref Transform[] ____shuffledObjects,
 			ref bool __result)
 		{
-			if (QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject>(QuantumManager.Instance.GetId(__instance)).ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			var shuffleWorldObject = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject, QuantumShuffleObject>(__instance);
+			if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return false;
 			}
@@ -100,7 +98,7 @@ namespace QSB.QuantumSync.Patches
 			//DebugLog.DebugWrite($"{__instance.name} shuffled.");
 			QSBEventManager.FireEvent(
 					EventNames.QSBQuantumShuffle,
-					QuantumManager.Instance.GetId(__instance),
+					shuffleWorldObject.ObjectId,
 					____indexList.ToArray());
 			__result = true;
 			return false;
@@ -108,7 +106,7 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool MultiState_ChangeQuantumState(MultiStateQuantumObject __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(QuantumManager.Instance.GetId(__instance));
+			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}
@@ -129,7 +127,7 @@ namespace QSB.QuantumSync.Patches
 			//DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
 			QSBEventManager.FireEvent(
 					EventNames.QSBMultiStateChange,
-					QuantumManager.Instance.GetId(owner.AttachedObject),
+					owner.ObjectId,
 					Array.IndexOf(owner.QuantumStates, __instance));
 		}
 
@@ -162,7 +160,8 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool Shrine_ChangeQuantumState(QuantumShrine __instance)
 		{
-			var isInControl = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(QuantumManager.Instance.GetId(__instance)).ControllingPlayer == QSBPlayerManager.LocalPlayerId;
+			var shrineWorldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+			var isInControl = shrineWorldObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}
 

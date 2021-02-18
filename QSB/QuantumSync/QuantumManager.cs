@@ -160,9 +160,15 @@ namespace QSB.QuantumSync
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.mainCamera.transform.position));
 		}
 
-		public int GetId(SocketedQuantumObject obj) => _socketedQuantumObjects.IndexOf(obj);
-		public int GetId(MultiStateQuantumObject obj) => _multiStateQuantumObjects.IndexOf(obj);
-		public int GetId(QuantumSocket obj) => _quantumSockets.IndexOf(obj);
-		public int GetId(QuantumShuffleObject obj) => _quantumShuffleObjects.IndexOf(obj);
+		public int GetId(IQSBQuantumObject obj)
+			=> QSBWorldSync
+				.GetWorldObjects<IQSBQuantumObject>()
+				.ToList()
+				.IndexOf(obj);
+
+		public IQSBQuantumObject GetObject(int id)
+			=> QSBWorldSync
+				.GetWorldObjects<IQSBQuantumObject>()
+				.ToList()[id];
 	}
 }

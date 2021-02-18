@@ -27,6 +27,15 @@ namespace QSB.WorldSync
 			where TWorldObject : IWorldObject
 			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
 
+		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(TUnityObject unityObject)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+		{
+			var allWorldObjects = GetWorldObjects<TWorldObject>();
+			var correctWorldObject = allWorldObjects.First(x => x.AttachedObject == unityObject);
+			return correctWorldObject;
+		}
+
 		public static void RemoveWorldObjects<TWorldObject>()
 		{
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
