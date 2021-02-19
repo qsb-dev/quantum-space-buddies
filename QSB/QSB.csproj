@@ -210,6 +210,7 @@
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\IRepeating.cs" />
     <Compile Include="Utility\OnEnableDisableTracker.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Constants.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\CubeDrawer.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Utility\Popcron.Gizmos\Drawers\LineDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\PolygonDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\SquareDrawer.cs" />
+    <Compile Include="Utility\RepeatingManager.cs" />
     <Compile Include="Utility\Tuple.cs" />
     <Compile Include="Utility\UnitTestDetector.cs" />
     <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />

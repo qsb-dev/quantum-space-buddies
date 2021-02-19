@@ -91,6 +91,7 @@ namespace QSB
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<QuantumManager>();
 			gameObject.AddComponent<SpiralManager>();
+			gameObject.AddComponent<RepeatingManager>();
 
 			DebugBoxManager.Init();
 
