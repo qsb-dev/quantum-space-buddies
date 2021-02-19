@@ -19,10 +19,12 @@ namespace QSB.TransformSync
 		public QSBSector ReferenceSector { get; set; }
 
 		private const float SmoothTime = 0.1f;
+		private const float DistanceLeeway = 5f;
 		private bool _isInitialized;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 		private bool _isVisible;
+		private float _previousDistance;
 
 		protected override void Start()
 		{
@@ -107,8 +109,21 @@ namespace QSB.TransformSync
 				Show();
 			}
 
-			SyncedTransform.localPosition = Vector3.SmoothDamp(SyncedTransform.localPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+			SyncedTransform.localPosition = SmartSmoothDamp(SyncedTransform.localPosition, transform.position);
 			SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+		}
+
+		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		{
+			var distance = Vector3.Distance(currentPosition, targetPosition);
+			if (distance > _previousDistance + DistanceLeeway)
+			{
+				// moved too far! assume sector sync warp / actual warp
+				_previousDistance = distance;
+				return targetPosition;
+			}
+			_previousDistance = distance;
+			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
 		public void SetReferenceSector(QSBSector sector)
