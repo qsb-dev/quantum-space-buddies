@@ -15,9 +15,6 @@ namespace QSB.QuantumSync
 	internal class QuantumManager : MonoBehaviour
 	{
 		public static QuantumManager Instance { get; private set; }
-
-		//public Dictionary<Shape[], VisibilityTracker> _shapesToTrackers = new Dictionary<Shape[], VisibilityTracker>();
-		//public Dictionary<VisibilityObject, List<VisibilityTracker>> _objectToTrackers = new Dictionary<VisibilityObject, List<VisibilityTracker>>();
 		public QuantumShrine Shrine;
 		public bool IsReady;
 
@@ -40,47 +37,6 @@ namespace QSB.QuantumSync
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
 			}
-			/*
-			var visibilityObjects = Resources.FindObjectsOfTypeAll<VisibilityObject>().Where(
-				x => x != null
-				&& x.GetValue<VisibilityTracker[]>("_visibilityTrackers") != null
-				&& x.GetValue<VisibilityTracker[]>("_visibilityTrackers")?.Length != 0);
-			var trackers = Resources.FindObjectsOfTypeAll<VisibilityTracker>();
-
-			foreach (var tracker in trackers)
-			{
-				if (tracker.GetType() != typeof(ShapeVisibilityTracker))
-				{
-					continue;
-				}
-				var shapes = tracker.GetValue<Shape[]>("_shapes");
-				if (shapes == null)
-				{
-					continue;
-				}
-				_shapesToTrackers.Add(shapes, tracker);
-
-				var visibilityObject = visibilityObjects.FirstOrDefault(x => x.GetValue<VisibilityTracker[]>("_visibilityTrackers").Contains(tracker));
-				if (visibilityObject == null)
-				{
-					continue;
-				}
-				if (_objectToTrackers.ContainsKey(visibilityObject))
-				{
-					_objectToTrackers[visibilityObject].Add(tracker);
-				}
-				else
-				{
-					_objectToTrackers.Add(
-						visibilityObject,
-						new List<VisibilityTracker>()
-						{
-							tracker
-						});
-				}
-			}
-			*/
-
 			IsReady = true;
 		}
 
