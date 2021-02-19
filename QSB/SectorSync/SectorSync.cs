@@ -9,6 +9,9 @@ namespace QSB.SectorSync
 {
 	public class SectorSync : MonoBehaviour, IRepeating
 	{
+		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
+		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
+
 		public void Invoke()
 		{
 			if (!QSBSectorManager.Instance.IsReady)
