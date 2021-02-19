@@ -16,8 +16,8 @@ namespace QSB.QuantumSync
 	{
 		public static QuantumManager Instance { get; private set; }
 
-		public Dictionary<Shape[], VisibilityTracker> _shapesToTrackers = new Dictionary<Shape[], VisibilityTracker>();
-		public Dictionary<VisibilityObject, List<VisibilityTracker>> _objectToTrackers = new Dictionary<VisibilityObject, List<VisibilityTracker>>();
+		//public Dictionary<Shape[], VisibilityTracker> _shapesToTrackers = new Dictionary<Shape[], VisibilityTracker>();
+		//public Dictionary<VisibilityObject, List<VisibilityTracker>> _objectToTrackers = new Dictionary<VisibilityObject, List<VisibilityTracker>>();
 		public QuantumShrine Shrine;
 		public bool IsReady;
 
@@ -40,7 +40,7 @@ namespace QSB.QuantumSync
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
 			}
-
+			/*
 			var visibilityObjects = Resources.FindObjectsOfTypeAll<VisibilityObject>().Where(
 				x => x != null
 				&& x.GetValue<VisibilityTracker[]>("_visibilityTrackers") != null
@@ -79,6 +79,7 @@ namespace QSB.QuantumSync
 						});
 				}
 			}
+			*/
 
 			IsReady = true;
 		}

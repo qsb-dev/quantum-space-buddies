@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -11,9 +12,25 @@ namespace QSB.QuantumSync.WorldObjects
 		public uint ControllingPlayer { get; set; }
 		public bool IsEnabled { get; set; }
 
-		public override void Init(T attachedObject, int id) => ControllingPlayer = 0u;
+		private OnEnableDisableTracker _tracker;
 
-		public void Enable()
+		public override void OnRemoval()
+		{
+			_tracker.OnEnableEvent -= OnEnable;
+			_tracker.OnDisableEvent -= OnDisable;
+			Object.Destroy(_tracker);
+		}
+
+		public override void Init(T attachedObject, int id)
+		{
+			_tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
+			_tracker.AttachedComponent = AttachedObject;
+			_tracker.OnEnableEvent += OnEnable;
+			_tracker.OnDisableEvent += OnDisable;
+			ControllingPlayer = 0u;
+		}
+
+		private void OnEnable()
 		{
 			IsEnabled = true;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
@@ -30,7 +47,7 @@ namespace QSB.QuantumSync.WorldObjects
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
 
-		public void Disable()
+		private void OnDisable()
 		{
 			IsEnabled = false;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)

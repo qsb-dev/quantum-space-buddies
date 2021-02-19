@@ -28,8 +28,8 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnEntry", typeof(QuantumPatches), nameof(Shrine_OnEntry));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<Shape>("OnEnable", typeof(QuantumPatches), nameof(Shape_OnEnable));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<Shape>("OnDisable", typeof(QuantumPatches), nameof(Shape_OnDisable));
+			//QSBCore.Helper.HarmonyHelper.AddPostfix<Shape>("OnEnable", typeof(QuantumPatches), nameof(Shape_OnEnable));
+			//QSBCore.Helper.HarmonyHelper.AddPostfix<Shape>("OnDisable", typeof(QuantumPatches), nameof(Shape_OnDisable));
 		}
 
 		public override void DoUnpatches()
@@ -44,10 +44,11 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnEntry");
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnExit");
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
-			QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnEnable");
-			QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnDisable");
+			//QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnEnable");
+			//QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnDisable");
 		}
 
+		/*
 		private static IQSBQuantumObject GetWorldObjectFromShape(Shape shape)
 		{
 			var obj = QuantumManager.Instance._shapesToTrackers.FirstOrDefault(x => x.Key.Contains(shape));
@@ -99,6 +100,7 @@ namespace QSB.QuantumSync.Patches
 			}
 			worldObject.Disable();
 		}
+		*/
 
 		public static bool Socketed_ChangeQuantumState(SocketedQuantumObject __instance)
 			=> QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance).ControllingPlayer == QSBPlayerManager.LocalPlayerId;

@@ -210,6 +210,7 @@
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\OnEnableDisableTracker.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Constants.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\CubeDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawer.cs" />
