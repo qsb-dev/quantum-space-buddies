@@ -110,7 +110,7 @@ namespace QSB.TransformSync
 			}
 
 			SyncedTransform.localPosition = SmartSmoothDamp(SyncedTransform.localPosition, transform.position);
-			SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, Time.deltaTime);
+			SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
