@@ -1,30 +1,22 @@
 ﻿using QSB.Events;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.SectorSync
 {
-	public class SectorSync : MonoBehaviour
+	public class SectorSync : MonoBehaviour, IRepeating
 	{
-		private const float CheckInterval = 0.5f;
-		private float _checkTimer = CheckInterval;
-
-		public void Update()
+		public void Invoke()
 		{
 			if (!QSBSectorManager.Instance.IsReady)
 			{
 				return;
 			}
-			_checkTimer += Time.unscaledDeltaTime;
-			if (_checkTimer < CheckInterval)
-			{
-				return;
-			}
 			QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
 				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
-			_checkTimer = 0;
 		}
 
 		private void CheckTransformSyncSector(TransformSync.TransformSync transformSync)

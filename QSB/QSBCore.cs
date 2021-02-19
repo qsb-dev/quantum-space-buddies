@@ -107,7 +107,7 @@ namespace QSB
 			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			GUI.Label(new Rect(220, 40, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
 
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
+			if (!HasWokenUp || !DebugMode)
 			{
 				return;
 			}
@@ -124,8 +124,8 @@ namespace QSB
 			offset += 30f;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
 			offset += 30f;
-			//GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {QuantumManager.Instance.Shrine.IsPlayerInDarkness()}");
-			//offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {QuantumManager.Instance.Shrine.IsPlayerInDarkness()}");
+			offset += 30f;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
 			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
 			{
@@ -133,7 +133,7 @@ namespace QSB
 				offset += 30f;
 			}
 
-			// Used for diagnosing specific socketed objects. Just set <index> to be the correct index.
+			// Used for diagnosing specific socketed objects. Set <index> to be the correct index.
 			/*
 			var index = 110;
 			var socketedObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(index);
