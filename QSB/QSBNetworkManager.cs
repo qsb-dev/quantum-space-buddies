@@ -43,6 +43,7 @@ namespace QSB
 		private GameObject _shipPrefab;
 		private GameObject _cameraPrefab;
 		private GameObject _probePrefab;
+		private bool _everConnected;
 
 		public void Awake()
 		{
@@ -200,6 +201,8 @@ namespace QSB
 				QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
+
+			_everConnected = true;
 		}
 
 		public override void OnStopClient() // Called on the client when closing connection
@@ -215,14 +218,18 @@ namespace QSB
 			QSBWorldSync.OrbSyncList.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
-			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
-			QSBPatchManager.DoUnpatchType(specificType);
-			QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
+			if (_everConnected)
+			{
+				var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+				QSBPatchManager.DoUnpatchType(specificType);
+				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
+			}
 
 			_lobby.CanEditName = true;
 			QSBCore.HasWokenUp = false;
 
 			IsReady = false;
+			_everConnected = false;
 		}
 
 		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects

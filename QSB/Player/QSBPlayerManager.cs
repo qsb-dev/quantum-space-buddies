@@ -19,12 +19,12 @@ namespace QSB.Player
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					DebugLog.DebugWrite($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null.", MessageType.Error);
+					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null.", MessageType.Error);
 					return uint.MaxValue;
 				}
 				if (localInstance.NetIdentity == null)
 				{
-					DebugLog.DebugWrite($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
+					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
 					return uint.MaxValue;
 				}
 				return localInstance.NetIdentity.NetId.Value;
@@ -41,7 +41,7 @@ namespace QSB.Player
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
 				var method = new StackTrace().GetFrame(1).GetMethod();
-				DebugLog.DebugWrite($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
+				DebugLog.ToConsole($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
 					$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name}", MessageType.Warning);
 			}
 

@@ -46,7 +46,14 @@ namespace QSB.WorldSync
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
 			foreach (var item in itemsToRemove)
 			{
-				item.OnRemoval();
+				try
+				{
+					item.OnRemoval();
+				}
+				catch (Exception e)
+				{
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+				}
 			}
 			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
 			WorldObjects.RemoveAll(x => x is TWorldObject);
@@ -97,7 +104,12 @@ namespace QSB.WorldSync
 			{
 				return;
 			}
-			var qsbSlot = slotList.First(x => x.AttachedObject == slot);
+			var qsbSlot = slotList.FirstOrDefault(x => x.AttachedObject == slot);
+			if (qsbSlot == null)
+			{
+				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
+				return;
+			}
 			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
 			if (orbSync.HasAuthority)
 			{

@@ -12,7 +12,10 @@ namespace QSB.QuantumSync.WorldObjects
 		public override void OnRemoval()
 		{
 			base.OnRemoval();
-			UnityEngine.Object.Destroy(DebugBoxText.gameObject);
+			if (DebugBoxText != null)
+			{
+				UnityEngine.Object.Destroy(DebugBoxText.gameObject);
+			}
 		}
 
 		public override void Init(MultiStateQuantumObject attachedObject, int id)
