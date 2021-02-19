@@ -37,7 +37,7 @@ namespace QSB.Utility
 			QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool inUniverse) => Destroy(this);
 		}
 
-		private bool GetAnyVisibilityTrackersActive() 
+		private bool GetAnyVisibilityTrackersActive()
 			=> _visibilityTrackers.All(x => x.GetValue<Shape[]>("_shapes").All(y => y.enabled));
 
 		public void Invoke()

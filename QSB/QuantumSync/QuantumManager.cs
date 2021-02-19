@@ -1,11 +1,9 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
