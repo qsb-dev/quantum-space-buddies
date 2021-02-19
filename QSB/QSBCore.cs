@@ -104,8 +104,8 @@ namespace QSB
 
 		public void OnGUI()
 		{
-			GUI.Label(new Rect(220, 10, 200f, 20f), $"Rough FPS : {1f / Time.smoothDeltaTime}");
-			GUI.Label(new Rect(220, 40, 200f, 20f), $"HasWokenUp : {QSBCore.HasWokenUp}");
+			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
+			GUI.Label(new Rect(220, 40, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
 
 			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
 			{
