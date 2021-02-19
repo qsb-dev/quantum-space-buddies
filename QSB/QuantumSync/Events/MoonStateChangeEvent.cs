@@ -29,7 +29,6 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-
 			var moon = Locator.GetQuantumMoon();
 			var wasPlayerEntangled = moon.IsPlayerEntangled();
 			var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), moon.transform);
@@ -49,7 +48,22 @@ namespace QSB.QuantumSync.Events
 			moonBody.SetVelocity(OWPhysics.CalculateOrbitVelocity(owRigidbody, moonBody, message.OrbitAngle) + owRigidbody.GetVelocity());
 			moon.SetValue("_stateIndex", message.StateIndex);
 
-			moon.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(moon, new object[] { message.StateIndex });
+			if (moon.IsPlayerInside())
+			{
+				moon.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(moon, new object[] { message.StateIndex });
+			}
+			else
+			{
+				moon.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(moon, new object[] { -1 });
+				moon.GetValue<AudioSignal>("_quantumSignal").SetSignalActivation(message.StateIndex != 5, 2f);
+			}
+			moon.GetValue<ReferenceFrameVolume>("_referenceFrameVolume").gameObject.SetActive(message.StateIndex != 5);
+			moonBody.SetIsTargetable(message.StateIndex != 5);
+			foreach (var obj in moon.GetValue<GameObject[]>("_deactivateAtEye"))
+			{
+				obj.SetActive(message.StateIndex != 5);
+			}
+			GlobalMessenger<OWRigidbody>.FireEvent("QuantumMoonChangeState", moonBody);
 
 			if (wasPlayerEntangled)
 			{

@@ -50,7 +50,7 @@ namespace QSB.TimeSync
 
 		private void OnWakeUp()
 		{
-			DebugLog.DebugWrite($"OnWakeUp", OWML.Common.MessageType.Info);
+			DebugLog.DebugWrite($"OnWakeUp", MessageType.Info);
 			if (QNetworkServer.active)
 			{
 				QSBCore.HasWokenUp = true;

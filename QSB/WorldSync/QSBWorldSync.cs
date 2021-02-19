@@ -27,6 +27,20 @@ namespace QSB.WorldSync
 			where TWorldObject : IWorldObject
 			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
 
+		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(TUnityObject unityObject)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+		{
+			var allWorldObjects = GetWorldObjects<TWorldObject>();
+			if (allWorldObjects.Count() == 0)
+			{
+				DebugLog.ToConsole($"Error - No worldobjects exist of type {typeof(TWorldObject).Name}!", MessageType.Error);
+				return null;
+			}
+			var correctWorldObject = allWorldObjects.First(x => x.AttachedObject == unityObject);
+			return correctWorldObject;
+		}
+
 		public static void RemoveWorldObjects<TWorldObject>()
 		{
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
@@ -34,7 +48,7 @@ namespace QSB.WorldSync
 			{
 				item.OnRemoval();
 			}
-			DebugLog.DebugWrite($"Removing types {typeof(TWorldObject).Name}.");
+			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
@@ -42,6 +56,7 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
+			RemoveWorldObjects<TWorldObject>();
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
 			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)

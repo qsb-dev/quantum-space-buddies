@@ -6,14 +6,17 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.OrbSync;
 using QSB.Patches;
+using QSB.Player;
 using QSB.QuantumSync;
 using QSB.SectorSync;
 using QSB.TimeSync;
 using QSB.TranslationSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 /*
@@ -88,6 +91,7 @@ namespace QSB
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<QuantumManager>();
 			gameObject.AddComponent<SpiralManager>();
+			gameObject.AddComponent<RepeatingManager>();
 
 			DebugBoxManager.Init();
 
@@ -97,6 +101,77 @@ namespace QSB
 
 		public void Update() =>
 			QNetworkIdentity.UNetStaticUpdate();
+
+		public void OnGUI()
+		{
+			GUI.Label(new Rect(220, 10, 200f, 20f), $"Rough FPS : {1f / Time.smoothDeltaTime}");
+			GUI.Label(new Rect(220, 40, 200f, 20f), $"HasWokenUp : {QSBCore.HasWokenUp}");
+
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode)
+			{
+				return;
+			}
+
+			if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+			{
+				return;
+			}
+
+			var offset = 70f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible : {Locator.GetQuantumMoon().IsVisible()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Locked : {Locator.GetQuantumMoon().IsLocked()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			offset += 30f;
+			//GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {QuantumManager.Instance.Shrine.IsPlayerInDarkness()}");
+			//offset += 30f;
+			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
+			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- {camera.name} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { camera.GetFrustumPlanes() })}");
+				offset += 30f;
+			}
+
+			// Used for diagnosing specific socketed objects. Just set <index> to be the correct index.
+			/*
+			var index = 110;
+			var socketedObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(index);
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Controller : {socketedObject.ControllingPlayer}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Visible : {socketedObject.AttachedObject.IsVisible()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Locked : {socketedObject.AttachedObject.IsLocked()}");
+			offset += 30f;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"{index} Illuminated : {socketedObject.AttachedObject.IsIlluminated()}");
+			offset += 30f;
+			var socketedTrackers = socketedObject.AttachedObject.GetComponentsInChildren<ShapeVisibilityTracker>();
+			if (socketedTrackers == null || socketedTrackers.Length == 0)
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- List is null or empty.");
+				return;
+			}
+			if (socketedTrackers.Any(x => x is null))
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- Uses a null.");
+				return;
+			}
+			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"- {camera.name} : {socketedTrackers.Any(x => (bool)x.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(x, new object[] { camera.GetFrustumPlanes() }))}");
+				offset += 30f;
+			}
+			*/
+
+			offset = 10f;
+			GUI.Label(new Rect(440, offset, 200f, 20f), $"Owned Objects :");
+			offset += 30f;
+			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
+			{
+				GUI.Label(new Rect(440, offset, 200f, 20f), $"- {(obj as IWorldObject).Name}");
+				offset += 30f;
+			}
+		}
 
 		public override void Configure(IModConfig config)
 		{

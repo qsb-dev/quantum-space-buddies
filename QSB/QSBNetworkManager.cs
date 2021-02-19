@@ -141,6 +141,11 @@ namespace QSB
 			{
 				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 			}
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				QSBCore.HasWokenUp = true;
+			}
 		}
 
 		public override void OnServerAddPlayer(QNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -173,9 +178,9 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBSectorManager.Instance.RebuildSectors();
-				OrbManager.Instance.QueueBuildSlots();
-				QuantumManager.Instance.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
+				QSBSectorManager.Instance?.RebuildSectors();
+				OrbManager.Instance?.QueueBuildSlots();
+				QuantumManager.Instance?.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -215,6 +220,7 @@ namespace QSB
 			QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 
 			_lobby.CanEditName = true;
+			QSBCore.HasWokenUp = false;
 
 			IsReady = false;
 		}
@@ -232,7 +238,13 @@ namespace QSB
 					identity.RemoveClientAuthority(connection);
 				}
 			}
+
+			// Server takes some time to process removal of player/deletion of networkidentity
+			Invoke(nameof(LateFinalizeDisconnect), 1f);
 		}
+
+		private void LateFinalizeDisconnect()
+			=> QuantumManager.Instance.CheckExistingPlayers();
 
 		public override void OnStopServer()
 		{
@@ -244,9 +256,11 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
+			QSBCore.HasWokenUp = false;
 
 			base.OnStopServer();
 		}
+
 		private void RemoveWorldObjects()
 		{
 			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
@@ -255,6 +269,5 @@ namespace QSB
 			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 			QSBWorldSync.RemoveWorldObjects<IQSBQuantumObject>();
 		}
-
 	}
 }

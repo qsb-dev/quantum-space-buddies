@@ -7,7 +7,7 @@ namespace QSBTests
 	public class UtilityTests
 	{
 		[TestMethod]
-		public void IsInUnitTest() 
+		public void IsInUnitTest()
 			=> Assert.IsTrue(UnitTestDetector.IsInUnitTest, "UnitTestDetector is not working.");
 	}
 }

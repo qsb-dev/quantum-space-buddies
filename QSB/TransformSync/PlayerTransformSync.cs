@@ -11,7 +11,8 @@ namespace QSB.TransformSync
 
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 
-		public override void OnStartLocalPlayer() => LocalInstance = this;
+		public override void OnStartLocalPlayer()
+			=> LocalInstance = this;
 
 		protected override void OnDestroy()
 		{
