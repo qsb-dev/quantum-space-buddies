@@ -7,7 +7,7 @@ namespace QSB.Utility
 	{
 		public static List<IRepeating> Repeatings = new List<IRepeating>();
 
-		private const float TimeInterval = 0.1f;
+		private const float TimeInterval = 0.2f;
 		private float _checkTimer = TimeInterval;
 
 		void Update()
