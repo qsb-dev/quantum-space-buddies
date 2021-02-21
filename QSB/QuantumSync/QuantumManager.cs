@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -83,13 +84,31 @@ namespace QSB.QuantumSync
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.mainCamera.transform.position));
 		}
 
-		public int GetId(IQSBQuantumObject obj)
+		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
+		{
+			IQSBQuantumObject worldObj = null;
+			if (obj.GetType() == typeof(SocketedQuantumObject))
+			{
+				worldObj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)obj);
+			}
+			else if (obj.GetType() == typeof(MultiStateQuantumObject))
+			{
+				worldObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)obj);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - Get players entangled to Shuffle object?!?! Object:{obj.name}", MessageType.Warning);
+			}
+			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
+		}
+
+		public static int GetId(IQSBQuantumObject obj)
 			=> QSBWorldSync
 				.GetWorldObjects<IQSBQuantumObject>()
 				.ToList()
 				.IndexOf(obj);
 
-		public IQSBQuantumObject GetObject(int id)
+		public static IQSBQuantumObject GetObject(int id)
 			=> QSBWorldSync
 				.GetWorldObjects<IQSBQuantumObject>()
 				.ToList()[id];

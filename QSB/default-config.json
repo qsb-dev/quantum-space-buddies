@@ -4,6 +4,7 @@
 		"defaultServerIP": "localhost",
 		"port": 7777,
 		"debugMode": true,
-		"showLinesInDebug": false
+		"showLinesInDebug": false,
+		"socketedObjToDebug": 110
 	}
 }

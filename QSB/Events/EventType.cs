@@ -2,7 +2,6 @@
 {
 	public enum EventType
 	{
-		Sector,
 		ServerTime,
 		AnimTrigger,
 		PlayerState,
@@ -34,6 +33,7 @@
 		IdentifyFrequency,
 		IdentifySignal,
 		TextTranslated,
-		EnterLeave
+		EnterLeave,
+		PlayerEntangle
 	}
 }

@@ -22,7 +22,7 @@
 		public static string ExitQuantumMoon = "PlayerExitQuantumMoon";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
-		// sides of the GlobalMessenger (fireevent and setuplistener) reference the same thing.
+		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";
 		public static string QSBPlayerReady = "QSBPlayerReady";
@@ -49,5 +49,6 @@
 		public static string QSBTextTranslated = "QSBTextTranslated";
 		public static string QSBEnterShrine = "QSBEnterShrine";
 		public static string QSBExitShrine = "QSBExitShrine";
+		public static string QSBPlayerEntangle = "QSBPlayerEntangle";
 	}
 }
