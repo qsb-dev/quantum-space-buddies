@@ -86,31 +86,76 @@ namespace QSB.QuantumSync
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
-			IQSBQuantumObject worldObj = null;
-			if (obj.GetType() == typeof(SocketedQuantumObject))
-			{
-				worldObj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)obj);
-			}
-			else if (obj.GetType() == typeof(MultiStateQuantumObject))
-			{
-				worldObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)obj);
-			}
-			else
-			{
-				DebugLog.ToConsole($"Warning - Get players entangled to Shuffle object?!?! Object:{obj.name}", MessageType.Warning);
-			}
+			var worldObj = GetObject(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
 
-		public static int GetId(IQSBQuantumObject obj)
-			=> QSBWorldSync
-				.GetWorldObjects<IQSBQuantumObject>()
-				.ToList()
-				.IndexOf(obj);
+		public static IQSBQuantumObject GetObject(QuantumObject unityObject)
+		{
+			IQSBQuantumObject worldObj = null;
+			if (unityObject.GetType() == typeof(SocketedQuantumObject) || unityObject.GetType() == typeof(QuantumShrine))
+			{
+				worldObj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(MultiStateQuantumObject))
+			{
+				worldObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(QuantumShuffleObject))
+			{
+				worldObj = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - couldn't work out type of QuantumObject {unityObject.name}.", MessageType.Warning);
+			}
+			return worldObj;
+		}
 
 		public static IQSBQuantumObject GetObject(int id)
-			=> QSBWorldSync
+		{
+			var objects = QSBWorldSync
 				.GetWorldObjects<IQSBQuantumObject>()
-				.ToList()[id];
+				.ToList();
+			if (objects.Count == 0)
+			{
+				DebugLog.ToConsole($"Error - tried to get IQSBQuantumObject, but there are none!", MessageType.Error);
+				return null;
+			}
+			if (objects.Count <= id)
+			{
+				DebugLog.ToConsole($"Error - Index {id} does not exist in list of IQSBObjects! (Count:{objects.Count})", MessageType.Error);
+				return null;
+			}
+			if (id < 0)
+			{
+				DebugLog.ToConsole($"Error - tried to get IQSBQuantumObject with index less than zero...", MessageType.Error);
+				return null;
+			}
+			return objects[id];
+		}
+
+		public static int GetId(IQSBQuantumObject obj)
+		{
+			var objects = QSBWorldSync
+				.GetWorldObjects<IQSBQuantumObject>()
+				.ToList();
+			if (obj == null)
+			{
+				DebugLog.ToConsole($"Error - tried to get id of null IQSBQuantumObject!", MessageType.Error);
+				return -1;
+			}
+			if (objects.Count == 0)
+			{
+				DebugLog.ToConsole($"Error - tried to get id of IQSBQuantumObject, but there are none!", MessageType.Error);
+				return -1;
+			}
+			if (!objects.Contains(obj))
+			{
+				DebugLog.ToConsole($"Error - tried to get id of IQSBQuantumObject that doesn't exist in WorldObject list?!", MessageType.Error);
+				return -1;
+			}
+			return objects.IndexOf(obj);
+		}
 	}
 }

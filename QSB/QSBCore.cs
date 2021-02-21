@@ -96,6 +96,7 @@ namespace QSB
 			gameObject.AddComponent<QuantumManager>();
 			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<RepeatingManager>();
+			gameObject.AddComponent<PlayerEntanglementWatcher>();
 
 			DebugBoxManager.Init();
 

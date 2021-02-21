@@ -19,10 +19,27 @@ namespace QSB.Player.Events
 			ObjectId = id
 		};
 
+		public override void OnReceiveLocal(bool server, WorldObjectMessage message)
+		{
+			var player = QSBPlayerManager.LocalPlayer;
+			if (message.ObjectId == -1)
+			{
+				player.EntangledObject = null;
+				return;
+			}
+			var quantumObject = QuantumManager.GetObject(message.ObjectId);
+			player.EntangledObject = quantumObject;
+		}
+
 		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
-			var quantumObject = QuantumManager.GetObject(message.ObjectId);
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			if (message.ObjectId == -1)
+			{
+				player.EntangledObject = null;
+				return;
+			}
+			var quantumObject = QuantumManager.GetObject(message.ObjectId);
 			player.EntangledObject = quantumObject;
 		}
 	}
