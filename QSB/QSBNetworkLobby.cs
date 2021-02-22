@@ -62,7 +62,7 @@ namespace QSB
 			}
 			else
 			{
-				GUI.Label(new Rect(60, 10, 145, 20f), PlayerName);
+				GUI.Label(new Rect(60, 1-0, 145, 20f), PlayerName);
 			}
 		}
 	}

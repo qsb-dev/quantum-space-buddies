@@ -29,7 +29,6 @@ namespace QSB.TransformSync
 
 		protected override void Start()
 		{
-			DebugLog.DebugWrite("start of " + GetType().Name);
 			base.Start();
 			var lowestBound = PlayerManager.GetSyncObjects<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();

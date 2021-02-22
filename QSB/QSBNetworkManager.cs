@@ -45,7 +45,7 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
-		public void Awake()
+		public new void Awake()
 		{
 			base.Awake();
 			Instance = this;
@@ -192,12 +192,12 @@ namespace QSB
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => EventManager.Ready && PlayerTransformSync.LocalInstance != null,
+			QSBCore.Helper.Events.Unity.RunWhen(() => EventManager.Ready && PlayerManager.LocalPlayerReady,
 				() => EventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
 			if (!QSBCore.IsServer)
 			{
-				QSBCore.Helper.Events.Unity.RunWhen(() => EventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				QSBCore.Helper.Events.Unity.RunWhen(() => EventManager.Ready && PlayerManager.LocalPlayerReady,
 				() => EventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
 

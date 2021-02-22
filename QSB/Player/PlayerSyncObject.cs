@@ -10,10 +10,6 @@ namespace QSB.Player
 		public PlayerInfo Player => PlayerManager.GetPlayer(PlayerId);
 
 		protected virtual void Start() => PlayerManager.AddSyncObject(this);
-		protected virtual void OnDestroy()
-		{
-			DebugLog.DebugWrite($"OnDestroy of {GetType().Name} for {PlayerId}");
-			PlayerManager.RemoveSyncObject(this);
-		}
+		protected virtual void OnDestroy() => PlayerManager.RemoveSyncObject(this);
 	}
 }
