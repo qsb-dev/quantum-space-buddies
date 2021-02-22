@@ -14,36 +14,20 @@ namespace QuantumUNET
 {
 	public class QNetworkServer
 	{
-		private QNetworkServer()
-		{
-			NetworkTransport.Init();
-			m_RemoveList = new HashSet<NetworkInstanceId>();
-			m_ExternalConnections = new HashSet<int>();
-			m_NetworkScene = new QNetworkScene();
-			m_SimpleServerSimple = new ServerSimpleWrapper(this);
-		}
+		
 
 		public static List<QNetworkConnection> localConnections => instance.m_LocalConnectionsFakeList;
-
 		public static int listenPort => instance.m_SimpleServerSimple.listenPort;
-
 		public static int serverHostId => instance.m_SimpleServerSimple.serverHostId;
-
 		public static ReadOnlyCollection<QNetworkConnection> connections => instance.m_SimpleServerSimple.connections;
-
 		public static Dictionary<short, QNetworkMessageDelegate> handlers => instance.m_SimpleServerSimple.handlers;
-
 		public static HostTopology hostTopology => instance.m_SimpleServerSimple.hostTopology;
-
 		public static Dictionary<NetworkInstanceId, QNetworkIdentity> objects => instance.m_NetworkScene.localObjects;
-
 		public static bool dontListen { get; set; }
-
-		public static bool useWebSockets
-		{
-			get => instance.m_SimpleServerSimple.useWebSockets;
-			set => instance.m_SimpleServerSimple.useWebSockets = value;
-		}
+		public static Type networkConnectionClass => instance.m_SimpleServerSimple.networkConnectionClass;
+		public static bool active { get; private set; }
+		public static bool localClientActive => instance.m_LocalClientActive;
+		public static int numChannels => instance.m_SimpleServerSimple.hostTopology.DefaultConfig.ChannelCount;
 
 		internal static QNetworkServer instance
 		{
@@ -64,25 +48,29 @@ namespace QuantumUNET
 			}
 		}
 
-		public static bool active { get; private set; }
-
-		public static bool localClientActive => instance.m_LocalClientActive;
-
-		public static int numChannels => instance.m_SimpleServerSimple.hostTopology.DefaultConfig.ChannelCount;
-
 		public static float maxDelay
 		{
 			get => instance.m_MaxDelay;
 			set => instance.InternalSetMaxDelay(value);
 		}
 
-		public static Type networkConnectionClass => instance.m_SimpleServerSimple.networkConnectionClass;
+		private QNetworkServer()
+		{
+			NetworkTransport.Init();
+			m_RemoveList = new HashSet<NetworkInstanceId>();
+			m_ExternalConnections = new HashSet<int>();
+			m_NetworkScene = new QNetworkScene();
+			m_SimpleServerSimple = new ServerSimpleWrapper(this);
+		}
 
-		public static void SetNetworkConnectionClass<T>() where T : QNetworkConnection => instance.m_SimpleServerSimple.SetNetworkConnectionClass<T>();
+		public static void SetNetworkConnectionClass<T>() 
+			where T : QNetworkConnection 
+			=> instance.m_SimpleServerSimple.SetNetworkConnectionClass<T>();
 
-		public static bool Configure(ConnectionConfig config, int maxConnections) => instance.m_SimpleServerSimple.Configure(config, maxConnections);
-
-		public static bool Configure(HostTopology topology) => instance.m_SimpleServerSimple.Configure(topology);
+		public static bool Configure(ConnectionConfig config, int maxConnections) 
+			=> instance.m_SimpleServerSimple.Configure(config, maxConnections);
+		public static bool Configure(HostTopology topology) 
+			=> instance.m_SimpleServerSimple.Configure(topology);
 
 		public static void Reset()
 		{
@@ -120,18 +108,11 @@ namespace QuantumUNET
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 		}
 
-		public static void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId) => instance.InternalListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
+		public static bool Listen(int serverPort) 
+			=> instance.InternalListen(null, serverPort);
 
-		private void InternalListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
-		{
-			m_SimpleServerSimple.ListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
-			active = true;
-			RegisterMessageHandlers();
-		}
-
-		public static bool Listen(int serverPort) => instance.InternalListen(null, serverPort);
-
-		public static bool Listen(string ipAddress, int serverPort) => instance.InternalListen(ipAddress, serverPort);
+		public static bool Listen(string ipAddress, int serverPort) 
+			=> instance.InternalListen(ipAddress, serverPort);
 
 		internal bool InternalListen(string ipAddress, int serverPort)
 		{
@@ -606,42 +587,6 @@ namespace QuantumUNET
 		public static void UnregisterHandler(short msgType) => instance.m_SimpleServerSimple.UnregisterHandler(msgType);
 
 		public static void ClearHandlers() => instance.m_SimpleServerSimple.ClearHandlers();
-
-		public static void ClearSpawners() => QNetworkScene.ClearSpawners();
-
-		public static void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			foreach (var networkConnection in connections)
-			{
-				if (networkConnection != null)
-				{
-					networkConnection.GetStatsOut(out var num, out var num2, out var num3, out var num4);
-					numMsgs += num;
-					numBufferedMsgs += num2;
-					numBytes += num3;
-					lastBufferedPerSecond += num4;
-				}
-			}
-		}
-
-		public static void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			foreach (var networkConnection in connections)
-			{
-				if (networkConnection != null)
-				{
-					networkConnection.GetStatsIn(out var num, out var num2);
-					numMsgs += num;
-					numBytes += num2;
-				}
-			}
-		}
 
 		public static void SendToClientOfPlayer(GameObject player, short msgType, QMessageBase msg)
 		{
@@ -1370,50 +1315,45 @@ namespace QuantumUNET
 		}
 
 		private static volatile QNetworkServer s_Instance;
-
 		private static readonly object s_Sync = new UnityEngine.Object();
+		internal static ushort maxPacketSize;
+		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new QRemovePlayerMessage();
 
 		private bool m_LocalClientActive;
-
 		private readonly List<QNetworkConnection> m_LocalConnectionsFakeList = new List<QNetworkConnection>();
-
 		private QULocalConnectionToClient m_LocalConnection;
-
 		private readonly QNetworkScene m_NetworkScene;
-
 		private readonly HashSet<int> m_ExternalConnections;
-
 		private readonly ServerSimpleWrapper m_SimpleServerSimple;
-
 		private float m_MaxDelay = 0.1f;
-
 		private readonly HashSet<NetworkInstanceId> m_RemoveList;
-
 		private int m_RemoveListCount;
-
 		private const int k_RemoveListInterval = 100;
-
-		internal static ushort maxPacketSize;
-
-		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new QRemovePlayerMessage();
 
 		private class ServerSimpleWrapper : QNetworkServerSimple
 		{
-			public ServerSimpleWrapper(QNetworkServer server) => m_Server = server;
-
-			public override void OnConnectError(int connectionId, byte error) => m_Server.GenerateConnectError(error);
-
-			public override void OnDataError(QNetworkConnection conn, byte error) => m_Server.GenerateDataError(conn, error);
-
-			public override void OnDisconnectError(QNetworkConnection conn, byte error) => m_Server.GenerateDisconnectError(conn, error);
-
-			public override void OnConnected(QNetworkConnection conn) => m_Server.OnConnected(conn);
-
-			public override void OnDisconnected(QNetworkConnection conn) => m_Server.OnDisconnected(conn);
-
-			public override void OnData(QNetworkConnection conn, int receivedSize, int channelId) => m_Server.OnData(conn, receivedSize, channelId);
-
 			private readonly QNetworkServer m_Server;
+
+			public ServerSimpleWrapper(QNetworkServer server) 
+				=> m_Server = server;
+
+			public override void OnConnectError(int connectionId, byte error) 
+				=> m_Server.GenerateConnectError(error);
+
+			public override void OnDataError(QNetworkConnection conn, byte error)
+				=> m_Server.GenerateDataError(conn, error);
+
+			public override void OnDisconnectError(QNetworkConnection conn, byte error) 
+				=> m_Server.GenerateDisconnectError(conn, error);
+
+			public override void OnConnected(QNetworkConnection conn) 
+				=> m_Server.OnConnected(conn);
+
+			public override void OnDisconnected(QNetworkConnection conn) 
+				=> m_Server.OnDisconnected(conn);
+
+			public override void OnData(QNetworkConnection conn, int receivedSize, int channelId) 
+				=> m_Server.OnData(conn, receivedSize, channelId);
 		}
 	}
 }

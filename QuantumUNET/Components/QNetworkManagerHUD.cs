@@ -51,12 +51,7 @@ namespace QuantumUNET.Components
 				{
 					if (QNetworkServer.active)
 					{
-						var text = $"Hosting on port {Manager.networkPort}";
-						if (Manager.useWebSockets)
-						{
-							text += " (using WebSockets)";
-						}
-						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), text);
+						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), $"Hosting on port {Manager.networkPort}");
 						yOffset += 20;
 					}
 					if (Manager.IsClientConnected())
@@ -64,18 +59,6 @@ namespace QuantumUNET.Components
 						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), $"Connected to {Manager.networkAddress}, port {Manager.networkPort}");
 						yOffset += 20;
 					}
-				}
-				if (Manager.IsClientConnected() && !QClientScene.ready)
-				{
-					if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Client Ready"))
-					{
-						QClientScene.Ready(Manager.client.connection);
-						if (QClientScene.localPlayers.Count == 0)
-						{
-							QClientScene.AddPlayer(0);
-						}
-					}
-					yOffset += 20;
 				}
 				if (QNetworkServer.active || Manager.IsClientConnected())
 				{

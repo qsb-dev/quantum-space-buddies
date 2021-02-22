@@ -26,22 +26,8 @@ namespace QuantumUNET
 			set => singleton.m_ScriptCRCCheck = value;
 		}
 
-		public static void ReinitializeScriptCRCs(Assembly callingAssembly)
-		{
-			singleton.scripts.Clear();
-			foreach (var type in callingAssembly.GetTypes())
-			{
-				if (type.GetBaseType() == typeof(QNetworkBehaviour))
-				{
-					var method = type.GetMethod(".cctor", BindingFlags.Static);
-					method?.Invoke(null, new object[0]);
-				}
-			}
-		}
-
-		public static void RegisterBehaviour(string name, int channel) => singleton.scripts[name] = channel;
-
-		internal static bool Validate(QCRCMessageEntry[] scripts, int numChannels) => singleton.ValidateInternal(scripts, numChannels);
+		internal static bool Validate(QCRCMessageEntry[] scripts, int numChannels) 
+			=> singleton.ValidateInternal(scripts, numChannels);
 
 		private bool ValidateInternal(QCRCMessageEntry[] remoteScripts, int numChannels)
 		{

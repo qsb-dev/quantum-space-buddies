@@ -12,17 +12,11 @@ namespace QuantumUNET
 		internal static void SetNotReady() => ready = false;
 
 		public static List<QPlayerController> localPlayers { get; private set; } = new List<QPlayerController>();
-
 		public static bool ready { get; private set; }
-
 		public static QNetworkConnection readyConnection { get; private set; }
-
 		public static int reconnectId { get; private set; } = -1;
-
 		public static Dictionary<NetworkInstanceId, QNetworkIdentity> Objects => s_NetworkScene.localObjects;
-
 		public static Dictionary<NetworkHash128, GameObject> Prefabs => QNetworkScene.guidToPrefab;
-
 		public static Dictionary<NetworkSceneId, QNetworkIdentity> SpawnableObjects { get; private set; }
 
 		internal static void Shutdown()
@@ -83,9 +77,11 @@ namespace QuantumUNET
 			readyConnection.SetPlayerController(playerController);
 		}
 
-		public static bool AddPlayer(short playerControllerId) => AddPlayer(null, playerControllerId);
+		public static bool AddPlayer(short playerControllerId) 
+			=> AddPlayer(null, playerControllerId);
 
-		public static bool AddPlayer(QNetworkConnection readyConn, short playerControllerId) => AddPlayer(readyConn, playerControllerId, null);
+		public static bool AddPlayer(QNetworkConnection readyConn, short playerControllerId) 
+			=> AddPlayer(readyConn, playerControllerId, null);
 
 		public static bool AddPlayer(QNetworkConnection readyConn, short playerControllerId, QMessageBase extraMessage)
 		{

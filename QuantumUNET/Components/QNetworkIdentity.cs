@@ -11,6 +11,24 @@ namespace QuantumUNET.Components
 {
 	public sealed class QNetworkIdentity : MonoBehaviour
 	{
+		[SerializeField]
+		private NetworkSceneId m_SceneId;
+		[SerializeField]
+		private NetworkHash128 m_AssetId;
+		[SerializeField]
+		private bool m_ServerOnly;
+		[SerializeField]
+		private bool m_LocalPlayerAuthority;
+		private bool m_IsServer;
+		private QNetworkBehaviour[] m_NetworkBehaviours;
+		private HashSet<int> m_ObserverConnections;
+		private List<QNetworkConnection> m_Observers;
+		private bool m_Reset;
+		private static uint s_NextNetworkId = 1U;
+		private static readonly QNetworkWriter s_UpdateWriter = new QNetworkWriter();
+		public static ClientAuthorityCallback clientAuthorityCallback;
+		public delegate void ClientAuthorityCallback(QNetworkConnection conn, QNetworkIdentity uv, bool authorityState);
+
 		public bool IsClient { get; private set; }
 		public bool IsServer => m_IsServer && QNetworkServer.active && m_IsServer;
 		public bool HasAuthority { get; private set; }
@@ -75,7 +93,8 @@ namespace QuantumUNET.Components
 			ClientAuthorityOwner.AddOwnedObject(this);
 		}
 
-		internal void ClearClientOwner() => ClientAuthorityOwner = null;
+		internal void ClearClientOwner() 
+			=> ClientAuthorityOwner = null;
 
 		internal void ForceAuthority(bool authority)
 		{
@@ -142,7 +161,8 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public void ForceSceneId(int newSceneId) => m_SceneId = new NetworkSceneId((uint)newSceneId);
+		public void ForceSceneId(int newSceneId) 
+			=> m_SceneId = new NetworkSceneId((uint)newSceneId);
 
 		internal void UpdateClientServer(bool isClientFlag, bool isServerFlag)
 		{
@@ -764,7 +784,8 @@ namespace QuantumUNET.Components
 			return true;
 		}
 
-		internal void MarkForReset() => m_Reset = true;
+		internal void MarkForReset() 
+			=> m_Reset = true;
 
 		internal void Reset()
 		{
@@ -785,41 +806,10 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public static void UNetStaticUpdate()
+		public static void QNetStaticUpdate()
 		{
 			QNetworkServer.Update();
 			QNetworkClient.UpdateClients();
-			QNetworkManager.UpdateScene();
 		}
-
-		[SerializeField]
-		private NetworkSceneId m_SceneId;
-
-		[SerializeField]
-		private NetworkHash128 m_AssetId;
-
-		[SerializeField]
-		private bool m_ServerOnly;
-
-		[SerializeField]
-		private bool m_LocalPlayerAuthority;
-
-		private bool m_IsServer;
-
-		private QNetworkBehaviour[] m_NetworkBehaviours;
-
-		private HashSet<int> m_ObserverConnections;
-
-		private List<QNetworkConnection> m_Observers;
-
-		private bool m_Reset;
-
-		private static uint s_NextNetworkId = 1U;
-
-		private static readonly QNetworkWriter s_UpdateWriter = new QNetworkWriter();
-
-		public static ClientAuthorityCallback clientAuthorityCallback;
-
-		public delegate void ClientAuthorityCallback(QNetworkConnection conn, QNetworkIdentity uv, bool authorityState);
 	}
 }

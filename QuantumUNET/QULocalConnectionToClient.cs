@@ -5,13 +5,13 @@ namespace QuantumUNET
 {
 	internal class QULocalConnectionToClient : QNetworkConnection
 	{
+		public QLocalClient LocalClient { get; }
+
 		public QULocalConnectionToClient(QLocalClient localClient)
 		{
 			address = "localClient";
 			LocalClient = localClient;
 		}
-
-		public QLocalClient LocalClient { get; }
 
 		public override bool Send(short msgType, QMessageBase msg)
 		{
@@ -41,20 +41,6 @@ namespace QuantumUNET
 		{
 			LocalClient.InvokeBytesOnClient(writer.AsArray(), channelId);
 			return true;
-		}
-
-		public override void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-		}
-
-		public override void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
 		}
 	}
 }

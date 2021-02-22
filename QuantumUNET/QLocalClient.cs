@@ -7,6 +7,15 @@ namespace QuantumUNET
 {
 	internal class QLocalClient : QNetworkClient
 	{
+		private const int k_InitialFreeMessagePoolSize = 64;
+
+		private List<InternalMsg> m_InternalMsgs = new List<InternalMsg>();
+		private readonly List<InternalMsg> m_InternalMsgs2 = new List<InternalMsg>();
+		private Stack<InternalMsg> m_FreeMessages;
+		private QNetworkServer m_LocalServer;
+		private bool m_Connected;
+		private readonly QNetworkMessage s_InternalMessage = new QNetworkMessage();
+
 		public override void Disconnect()
 		{
 			QClientScene.HandleClientDisconnect(m_Connection);
@@ -44,7 +53,8 @@ namespace QuantumUNET
 			m_Connected = true;
 		}
 
-		internal override void Update() => ProcessInternalMessages();
+		internal override void Update() 
+			=> ProcessInternalMessages();
 
 		internal void AddLocalPlayer(QPlayerController localPlayer)
 		{
@@ -119,21 +129,8 @@ namespace QuantumUNET
 			InvokeBytesOnClient(networkWriter.AsArray(), channelId);
 		}
 
-		internal void InvokeBytesOnClient(byte[] buffer, int channelId) => PostInternalMessage(buffer, channelId);
-
-		private const int k_InitialFreeMessagePoolSize = 64;
-
-		private List<InternalMsg> m_InternalMsgs = new List<InternalMsg>();
-
-		private readonly List<InternalMsg> m_InternalMsgs2 = new List<InternalMsg>();
-
-		private Stack<InternalMsg> m_FreeMessages;
-
-		private QNetworkServer m_LocalServer;
-
-		private bool m_Connected;
-
-		private readonly QNetworkMessage s_InternalMessage = new QNetworkMessage();
+		internal void InvokeBytesOnClient(byte[] buffer, int channelId)
+			=> PostInternalMessage(buffer, channelId);
 
 		private struct InternalMsg
 		{

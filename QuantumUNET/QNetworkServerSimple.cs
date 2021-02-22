@@ -12,27 +12,27 @@ namespace QuantumUNET
 {
 	public class QNetworkServerSimple
 	{
-		public QNetworkServerSimple() => connections = new ReadOnlyCollection<QNetworkConnection>(m_Connections);
-
+		
 		public int listenPort { get; set; }
-
 		public int serverHostId { get; set; } = -1;
-
 		public HostTopology hostTopology { get; private set; }
-
-		public bool useWebSockets { get; set; }
-
 		public ReadOnlyCollection<QNetworkConnection> connections { get; }
-
 		public Dictionary<short, QNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
-
 		public byte[] messageBuffer { get; private set; }
-
 		public NetworkReader messageReader { get; private set; }
-
 		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
 
-		public void SetNetworkConnectionClass<T>() where T : QNetworkConnection => networkConnectionClass = typeof(T);
+		private bool m_Initialized;
+		private int m_RelaySlotId = -1;
+		private readonly List<QNetworkConnection> m_Connections = new List<QNetworkConnection>();
+		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
+
+		public QNetworkServerSimple() 
+			=> connections = new ReadOnlyCollection<QNetworkConnection>(m_Connections);
+
+		public void SetNetworkConnectionClass<T>() 
+			where T : QNetworkConnection 
+			=> networkConnectionClass = typeof(T);
 
 		public virtual void Initialize()
 		{
@@ -69,9 +69,7 @@ namespace QuantumUNET
 		{
 			Initialize();
 			listenPort = serverListenPort;
-			serverHostId = useWebSockets
-				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort, ipAddress)
-				: NetworkTransport.AddHost(hostTopology, serverListenPort, ipAddress);
+			serverHostId = NetworkTransport.AddHost(hostTopology, serverListenPort, ipAddress);
 			bool result;
 			if (serverHostId == -1)
 			{
@@ -85,16 +83,15 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool Listen(int serverListenPort) => Listen(serverListenPort, hostTopology);
+		public bool Listen(int serverListenPort) 
+			=> Listen(serverListenPort, hostTopology);
 
 		public bool Listen(int serverListenPort, HostTopology topology)
 		{
 			hostTopology = topology;
 			Initialize();
 			listenPort = serverListenPort;
-			serverHostId = useWebSockets
-				? NetworkTransport.AddWebsocketHost(hostTopology, serverListenPort)
-				: NetworkTransport.AddHost(hostTopology, serverListenPort);
+			serverHostId = NetworkTransport.AddHost(hostTopology, serverListenPort);
 			bool result;
 			if (serverHostId == -1)
 			{
@@ -108,17 +105,6 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
-		{
-			Initialize();
-			serverHostId = NetworkTransport.AddHost(hostTopology, listenPort);
-			Debug.Log($"Server Host Slot Id: {serverHostId}");
-			Update();
-			NetworkTransport.ConnectAsNetworkHost(serverHostId, relayIp, relayPort, netGuid, sourceId, nodeId, out var b);
-			m_RelaySlotId = 0;
-			Debug.Log($"Relay Slot Id: {m_RelaySlotId}");
-		}
-
 		public void Stop()
 		{
 			Debug.Log("NetworkServerSimple stop ");
@@ -126,13 +112,17 @@ namespace QuantumUNET
 			serverHostId = -1;
 		}
 
-		internal void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
+		internal void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) 
+			=> m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 
-		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandler(msgType, handler);
+		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) 
+			=> m_MessageHandlers.RegisterHandler(msgType, handler);
 
-		public void UnregisterHandler(short msgType) => m_MessageHandlers.UnregisterHandler(msgType);
+		public void UnregisterHandler(short msgType) 
+			=> m_MessageHandlers.UnregisterHandler(msgType);
 
-		public void ClearHandlers() => m_MessageHandlers.ClearMessageHandlers();
+		public void ClearHandlers()
+			=> m_MessageHandlers.ClearMessageHandlers();
 
 		public void UpdateConnections()
 		{
@@ -347,24 +337,22 @@ namespace QuantumUNET
 			}
 		}
 
-		public virtual void OnConnectError(int connectionId, byte error) => Debug.LogError(
-			$"OnConnectError error:{error}");
+		public virtual void OnConnectError(int connectionId, byte error) 
+			=> Debug.LogError($"OnConnectError error:{error}");
 
-		public virtual void OnDataError(QNetworkConnection conn, byte error) => Debug.LogError(
-			$"OnDataError error:{error}");
+		public virtual void OnDataError(QNetworkConnection conn, byte error) 
+			=> Debug.LogError($"OnDataError error:{error}");
 
-		public virtual void OnDisconnectError(QNetworkConnection conn, byte error) => Debug.LogError(
-			$"OnDisconnectError error:{error}");
+		public virtual void OnDisconnectError(QNetworkConnection conn, byte error) 
+			=> Debug.LogError($"OnDisconnectError error:{error}");
 
-		public virtual void OnConnected(QNetworkConnection conn) => conn.InvokeHandlerNoData(32);
+		public virtual void OnConnected(QNetworkConnection conn) 
+			=> conn.InvokeHandlerNoData(32);
 
-		public virtual void OnDisconnected(QNetworkConnection conn) => conn.InvokeHandlerNoData(33);
+		public virtual void OnDisconnected(QNetworkConnection conn) 
+			=> conn.InvokeHandlerNoData(33);
 
-		public virtual void OnData(QNetworkConnection conn, int receivedSize, int channelId) => conn.TransportReceive(messageBuffer, receivedSize, channelId);
-
-		private bool m_Initialized;
-		private int m_RelaySlotId = -1;
-		private readonly List<QNetworkConnection> m_Connections = new List<QNetworkConnection>();
-		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
+		public virtual void OnData(QNetworkConnection conn, int receivedSize, int channelId) 
+			=> conn.TransportReceive(messageBuffer, receivedSize, channelId);
 	}
 }

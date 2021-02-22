@@ -105,7 +105,7 @@ namespace QSB
 		}
 
 		public void Update() =>
-			QNetworkIdentity.UNetStaticUpdate();
+			QNetworkIdentity.QNetStaticUpdate();
 
 		public void OnGUI()
 		{
