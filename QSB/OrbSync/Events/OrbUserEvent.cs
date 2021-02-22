@@ -51,7 +51,7 @@ namespace QSB.OrbSync.Events
 		private static void HandleServer(WorldObjectMessage message)
 		{
 			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
-			if (QSBWorldSync.OrbSyncList.Count == 0)
+			if (WorldObjectManager.OrbSyncList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OrbSyncList is empty. (ID {message.ObjectId})", MessageType.Error);
 				return;
@@ -60,8 +60,8 @@ namespace QSB.OrbSync.Events
 			{
 				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
-			var orbSync = QSBWorldSync.OrbSyncList
-				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+			var orbSync = WorldObjectManager.OrbSyncList
+				.First(x => x.AttachedOrb == WorldObjectManager.OldOrbList[message.ObjectId]);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
@@ -83,20 +83,20 @@ namespace QSB.OrbSync.Events
 
 		private static void HandleClient(WorldObjectMessage message)
 		{
-			if (QSBWorldSync.OrbSyncList.Count < message.ObjectId)
+			if (WorldObjectManager.OrbSyncList.Count < message.ObjectId)
 			{
 				DebugLog.ToConsole(
-					$"Error - Orb id {message.ObjectId} out of range of orb sync list {QSBWorldSync.OrbSyncList.Count}.",
+					$"Error - Orb id {message.ObjectId} out of range of orb sync list {WorldObjectManager.OrbSyncList.Count}.",
 					MessageType.Error);
 				return;
 			}
-			if (!QSBWorldSync.OrbSyncList.Any(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]))
+			if (!WorldObjectManager.OrbSyncList.Any(x => x.AttachedOrb == WorldObjectManager.OldOrbList[message.ObjectId]))
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
-			var orb = QSBWorldSync.OrbSyncList
-				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+			var orb = WorldObjectManager.OrbSyncList
+				.First(x => x.AttachedOrb == WorldObjectManager.OldOrbList[message.ObjectId]);
 			orb.enabled = true;
 		}
 	}

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.WorldSync
 {
-	public static class QSBWorldSync
+	public static class WorldObjectManager
 	{
 		public static List<NomaiOrbTransformSync> OrbSyncList { get; } = new List<NomaiOrbTransformSync>();
 		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new List<NomaiInterfaceOrb>();

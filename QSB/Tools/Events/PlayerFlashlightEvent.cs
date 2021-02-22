@@ -31,12 +31,12 @@ namespace QSB.Tools.Events
 
 		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
-			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			var player = PlayerManager.GetPlayer(message.AboutId);
 			player.UpdateState(State.Flashlight, message.ToggleValue);
 			player.FlashLight?.UpdateState(message.ToggleValue);
 		}
 
 		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
-			QSBPlayerManager.LocalPlayer.UpdateState(State.Flashlight, message.ToggleValue);
+			PlayerManager.LocalPlayer.UpdateState(State.Flashlight, message.ToggleValue);
 	}
 }

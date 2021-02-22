@@ -39,7 +39,7 @@ namespace QSB.ConversationSync.Events
 				return;
 			}
 
-			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.CharacterId];
+			var dialogueTree = WorldObjectManager.OldDialogueTrees[message.CharacterId];
 			var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
 
 			if (animController == default(CharacterAnimController))
@@ -63,7 +63,7 @@ namespace QSB.ConversationSync.Events
 			CharacterAnimController controller,
 			CharacterDialogueTree tree)
 		{
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = characterId;
+			PlayerManager.GetPlayer(playerId).CurrentDialogueID = characterId;
 			controller.SetValue("_inConversation", true);
 			controller.SetValue("_playerInHeadZone", true);
 			if (controller.GetValue<bool>("_hasTalkAnimation"))
@@ -78,7 +78,7 @@ namespace QSB.ConversationSync.Events
 			CharacterAnimController controller,
 			CharacterDialogueTree tree)
 		{
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = -1;
+			PlayerManager.GetPlayer(playerId).CurrentDialogueID = -1;
 			controller.SetValue("_inConversation", false);
 			controller.SetValue("_playerInHeadZone", false);
 			if (controller.GetValue<bool>("_hasTalkAnimation"))

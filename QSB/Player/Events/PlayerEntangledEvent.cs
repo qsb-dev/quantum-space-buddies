@@ -21,7 +21,7 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveLocal(bool server, WorldObjectMessage message)
 		{
-			var player = QSBPlayerManager.LocalPlayer;
+			var player = PlayerManager.LocalPlayer;
 			if (message.ObjectId == -1)
 			{
 				player.EntangledObject = null;
@@ -33,7 +33,7 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
-			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			var player = PlayerManager.GetPlayer(message.AboutId);
 			if (message.ObjectId == -1)
 			{
 				player.EntangledObject = null;

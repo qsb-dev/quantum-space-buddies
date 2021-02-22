@@ -10,21 +10,21 @@ namespace QSB.GeyserSync
 		public void Awake()
 		{
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			QSBPatchManager.OnPatchType += OnPatchType;
+			PatchManager.OnPatchType += OnPatchType;
 		}
 
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			QSBPatchManager.OnPatchType -= OnPatchType;
+			PatchManager.OnPatchType -= OnPatchType;
 		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
-			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
+			=> WorldObjectManager.Init<QSBGeyser, GeyserController>();
 
-		public void OnPatchType(QSBPatchTypes type)
+		public void OnPatchType(PatchType type)
 		{
-			if (type != QSBPatchTypes.OnNonServerClientConnect)
+			if (type != PatchType.OnNonServerClientConnect)
 			{
 				return;
 			}

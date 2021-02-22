@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace QSB.Player
 {
-	public static class QSBPlayerManager
+	public static class PlayerManager
 	{
 		public static uint LocalPlayerId
 		{

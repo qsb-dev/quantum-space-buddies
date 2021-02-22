@@ -5,7 +5,7 @@ namespace QSB.FrequencySync.Patches
 {
 	public class FrequencyPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+		public override PatchType Type => PatchType.OnClientConnect;
 
 		public override void DoPatches()
 		{
@@ -20,9 +20,9 @@ namespace QSB.FrequencySync.Patches
 		}
 
 		public static void IdentifyFrequency(SignalFrequency ____frequency)
-			=> QSBEventManager.FireEvent(EventNames.QSBIdentifyFrequency, ____frequency);
+			=> EventManager.FireEvent(EventNames.QSBIdentifyFrequency, ____frequency);
 
 		public static void IdentifySignal(SignalName ____name)
-			=> QSBEventManager.FireEvent(EventNames.QSBIdentifySignal, ____name);
+			=> EventManager.FireEvent(EventNames.QSBIdentifySignal, ____name);
 	}
 }

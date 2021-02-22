@@ -24,7 +24,7 @@ namespace QSB.LogSync.Events
 		{
 			if (server)
 			{
-				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
+				WorldObjectManager.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
 			}
 		}
 
@@ -32,7 +32,7 @@ namespace QSB.LogSync.Events
 		{
 			if (server)
 			{
-				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
+				WorldObjectManager.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
 			}
 			if (!QSBCore.HasWokenUp)
 			{

@@ -16,9 +16,9 @@ namespace QSB.TransformSync
 			Player.CameraBody = body.gameObject;
 
 			Player.IsReady = true;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			EventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
-			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
+			EventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
 			return body;
 		}
@@ -52,7 +52,7 @@ namespace QSB.TransformSync
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
-			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& PlayerManager.PlayerExists(Player.PlayerId)
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
 	}

@@ -150,7 +150,7 @@ namespace QuantumUNET.Transport
 			Position = 0U;
 		}
 
-		public override string ToString() 
+		public override string ToString()
 			=> $"NetBuf sz:{m_Buffer.Length} pos:{Position}";
 
 		private byte[] m_Buffer;

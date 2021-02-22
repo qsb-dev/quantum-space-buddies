@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace QSB.Events
 {
-	public static class QSBEventManager
+	public static class EventManager
 	{
 		public static bool Ready { get; private set; }
 

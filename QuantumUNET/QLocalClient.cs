@@ -53,7 +53,7 @@ namespace QuantumUNET
 			m_Connected = true;
 		}
 
-		internal override void Update() 
+		internal override void Update()
 			=> ProcessInternalMessages();
 
 		internal void AddLocalPlayer(QPlayerController localPlayer)

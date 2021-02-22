@@ -255,7 +255,8 @@ namespace QuantumUNET.Components
 			m_Animator.Play(stateNameHash, 0, normalizedTime);
 		}
 
-		public void SetTrigger(string triggerName) => SetTrigger(Animator.StringToHash(triggerName));
+		public void SetTrigger(string triggerName)
+			=> SetTrigger(Animator.StringToHash(triggerName));
 
 		public void SetTrigger(int hash)
 		{

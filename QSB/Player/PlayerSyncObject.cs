@@ -7,13 +7,13 @@ namespace QSB.Player
 	{
 		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
+		public PlayerInfo Player => PlayerManager.GetPlayer(PlayerId);
 
-		protected virtual void Start() => QSBPlayerManager.AddSyncObject(this);
+		protected virtual void Start() => PlayerManager.AddSyncObject(this);
 		protected virtual void OnDestroy()
 		{
 			DebugLog.DebugWrite($"OnDestroy of {GetType().Name} for {PlayerId}");
-			QSBPlayerManager.RemoveSyncObject(this);
+			PlayerManager.RemoveSyncObject(this);
 		}
 	}
 }

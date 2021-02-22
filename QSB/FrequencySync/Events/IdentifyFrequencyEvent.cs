@@ -15,7 +15,7 @@ namespace QSB.FrequencySync.Events
 
 		private EnumMessage<SignalFrequency> CreateMessage(SignalFrequency frequency) => new EnumMessage<SignalFrequency>
 		{
-			AboutId = QSBPlayerManager.LocalPlayerId,
+			AboutId = PlayerManager.LocalPlayerId,
 			Value = frequency
 		};
 

@@ -10,16 +10,16 @@ namespace QSB.ConversationSync.Patches
 {
 	public class ConversationPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+		public override QSB.Patches.PatchType Type => QSB.Patches.PatchType.OnClientConnect;
 
 		public static void StartConversation(CharacterDialogueTree __instance)
 		{
-			var index = QSBWorldSync.OldDialogueTrees.FindIndex(x => x == __instance);
+			var index = WorldObjectManager.OldDialogueTrees.FindIndex(x => x == __instance);
 			if (index == -1)
 			{
 				DebugLog.ToConsole($"Warning - Index for tree {__instance.name} was -1.", MessageType.Warning);
 			}
-			QSBPlayerManager.LocalPlayer.CurrentDialogueID = index;
+			PlayerManager.LocalPlayer.CurrentDialogueID = index;
 			ConversationManager.Instance.SendConvState(index, true);
 		}
 
@@ -29,14 +29,14 @@ namespace QSB.ConversationSync.Patches
 			{
 				return false;
 			}
-			if (QSBPlayerManager.LocalPlayer.CurrentDialogueID == -1)
+			if (PlayerManager.LocalPlayer.CurrentDialogueID == -1)
 			{
 				DebugLog.ToConsole($"Warning - Ending conversation with CurrentDialogueId of -1! Called from {__instance.name}", MessageType.Warning);
 				return true;
 			}
-			ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentDialogueID, false);
-			ConversationManager.Instance.CloseBoxCharacter(QSBPlayerManager.LocalPlayer.CurrentDialogueID);
-			QSBPlayerManager.LocalPlayer.CurrentDialogueID = -1;
+			ConversationManager.Instance.SendConvState(PlayerManager.LocalPlayer.CurrentDialogueID, false);
+			ConversationManager.Instance.CloseBoxCharacter(PlayerManager.LocalPlayer.CurrentDialogueID);
+			PlayerManager.LocalPlayer.CurrentDialogueID = -1;
 			ConversationManager.Instance.CloseBoxPlayer();
 			return true;
 		}
@@ -59,8 +59,8 @@ namespace QSB.ConversationSync.Patches
 		{
 			var key = ____name + ____listPagesToDisplay[____currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
-				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentDialogueID, key));
+			QSBCore.Helper.Events.Unity.RunWhen(() => PlayerManager.LocalPlayer.CurrentDialogueID != -1,
+				() => ConversationManager.Instance.SendCharacterDialogue(PlayerManager.LocalPlayer.CurrentDialogueID, key));
 		}
 
 		public static bool OnAnimatorIK(float ___headTrackingWeight,
@@ -76,7 +76,7 @@ namespace QSB.ConversationSync.Patches
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var position = playerId == uint.MaxValue
 				? Locator.GetActiveCamera().transform.position
-				: QSBPlayerManager.GetPlayer(playerId).CameraBody.transform.position;
+				: PlayerManager.GetPlayer(playerId).CameraBody.transform.position;
 			var b = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking
 						? !____playerInHeadZone ? 0 : 1
 						: !____inConversation || !____playerInHeadZone ? 0 : 1);

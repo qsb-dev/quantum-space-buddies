@@ -8,11 +8,25 @@ namespace QuantumUNET.Components
 {
 	public class QNetworkTransform : QNetworkBehaviour
 	{
+		private float m_LastClientSendTime;
+		private Vector3 m_PrevPosition;
+		private Quaternion m_PrevRotation;
+		private QNetworkWriter m_LocalTransformWriter;
+		public delegate bool ClientMoveCallback3D(ref Vector3 position, ref Vector3 velocity, ref Quaternion rotation);
+
 		public float SendInterval { get; set; } = 0.1f;
-		public AxisSyncMode SyncRotationAxis { get; set; } = AxisSyncMode.AxisXYZ;
-		public CompressionSyncMode RotationSyncCompression { get; set; } = CompressionSyncMode.None;
+		public bool SyncRotation { get; set; } = true;
 		public ClientMoveCallback3D clientMoveCallback3D { get; set; }
 		public float LastSyncTime { get; private set; }
+
+		public override int GetNetworkChannel()
+			=> 1;
+
+		public override float GetNetworkSendInterval()
+			=> SendInterval;
+
+		public override void OnStartAuthority()
+			=> LastSyncTime = 0f;
 
 		public void Awake()
 		{
@@ -24,7 +38,8 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public override void OnStartServer() => LastSyncTime = 0f;
+		public override void OnStartServer()
+			=> LastSyncTime = 0f;
 
 		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
 		{
@@ -44,9 +59,9 @@ namespace QuantumUNET.Components
 		private void SerializeModeTransform(QNetworkWriter writer)
 		{
 			writer.Write(transform.position);
-			if (SyncRotationAxis != AxisSyncMode.None)
+			if (SyncRotation)
 			{
-				SerializeRotation3D(writer, transform.rotation, SyncRotationAxis, RotationSyncCompression);
+				SerializeRotation3D(writer, transform.rotation);
 			}
 			m_PrevPosition = transform.position;
 			m_PrevRotation = transform.rotation;
@@ -73,9 +88,9 @@ namespace QuantumUNET.Components
 			if (HasAuthority)
 			{
 				reader.ReadVector3();
-				if (SyncRotationAxis != AxisSyncMode.None)
+				if (SyncRotation)
 				{
-					UnserializeRotation3D(reader, SyncRotationAxis, RotationSyncCompression);
+					UnserializeRotation3D(reader);
 				}
 			}
 			else if (IsServer && clientMoveCallback3D != null)
@@ -83,14 +98,14 @@ namespace QuantumUNET.Components
 				var position = reader.ReadVector3();
 				var zero = Vector3.zero;
 				var rotation = Quaternion.identity;
-				if (SyncRotationAxis != AxisSyncMode.None)
+				if (SyncRotation)
 				{
-					rotation = UnserializeRotation3D(reader, SyncRotationAxis, RotationSyncCompression);
+					rotation = UnserializeRotation3D(reader);
 				}
 				if (clientMoveCallback3D(ref position, ref zero, ref rotation))
 				{
 					transform.position = position;
-					if (SyncRotationAxis != AxisSyncMode.None)
+					if (SyncRotation)
 					{
 						transform.rotation = rotation;
 					}
@@ -99,9 +114,9 @@ namespace QuantumUNET.Components
 			else
 			{
 				transform.position = reader.ReadVector3();
-				if (SyncRotationAxis != AxisSyncMode.None)
+				if (SyncRotation)
 				{
-					transform.rotation = UnserializeRotation3D(reader, SyncRotationAxis, RotationSyncCompression);
+					transform.rotation = UnserializeRotation3D(reader);
 				}
 			}
 		}
@@ -226,252 +241,26 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		private static void WriteAngle(QNetworkWriter writer, float angle, CompressionSyncMode compression)
+		private static void WriteAngle(QNetworkWriter writer, float angle)
+			=> writer.Write(angle);
+
+		private static float ReadAngle(QNetworkReader reader)
+			=> reader.ReadSingle();
+
+		public static void SerializeRotation3D(QNetworkWriter writer, Quaternion rot)
 		{
-			if (compression != CompressionSyncMode.None)
-			{
-				if (compression != CompressionSyncMode.Low)
-				{
-					if (compression == CompressionSyncMode.High)
-					{
-						writer.Write((short)angle);
-					}
-				}
-				else
-				{
-					writer.Write((short)angle);
-				}
-			}
-			else
-			{
-				writer.Write(angle);
-			}
+			WriteAngle(writer, rot.eulerAngles.x);
+			WriteAngle(writer, rot.eulerAngles.y);
+			WriteAngle(writer, rot.eulerAngles.z);
 		}
 
-		private static float ReadAngle(QNetworkReader reader, CompressionSyncMode compression)
-		{
-			float result;
-			if (compression != CompressionSyncMode.None)
-			{
-				if (compression != CompressionSyncMode.Low)
-				{
-					if (compression != CompressionSyncMode.High)
-					{
-						result = 0f;
-					}
-					else
-					{
-						result = reader.ReadInt16();
-					}
-				}
-				else
-				{
-					result = reader.ReadInt16();
-				}
-			}
-			else
-			{
-				result = reader.ReadSingle();
-			}
-			return result;
-		}
-
-		public static void SerializeVelocity3D(QNetworkWriter writer, Vector3 velocity, CompressionSyncMode compression) =>
-			writer.Write(velocity);
-
-		public static void SerializeRotation3D(QNetworkWriter writer, Quaternion rot, AxisSyncMode mode, CompressionSyncMode compression)
-		{
-			switch (mode)
-			{
-				case AxisSyncMode.AxisX:
-					WriteAngle(writer, rot.eulerAngles.x, compression);
-					break;
-
-				case AxisSyncMode.AxisY:
-					WriteAngle(writer, rot.eulerAngles.y, compression);
-					break;
-
-				case AxisSyncMode.AxisZ:
-					WriteAngle(writer, rot.eulerAngles.z, compression);
-					break;
-
-				case AxisSyncMode.AxisXY:
-					WriteAngle(writer, rot.eulerAngles.x, compression);
-					WriteAngle(writer, rot.eulerAngles.y, compression);
-					break;
-
-				case AxisSyncMode.AxisXZ:
-					WriteAngle(writer, rot.eulerAngles.x, compression);
-					WriteAngle(writer, rot.eulerAngles.z, compression);
-					break;
-
-				case AxisSyncMode.AxisYZ:
-					WriteAngle(writer, rot.eulerAngles.y, compression);
-					WriteAngle(writer, rot.eulerAngles.z, compression);
-					break;
-
-				case AxisSyncMode.AxisXYZ:
-					WriteAngle(writer, rot.eulerAngles.x, compression);
-					WriteAngle(writer, rot.eulerAngles.y, compression);
-					WriteAngle(writer, rot.eulerAngles.z, compression);
-					break;
-			}
-		}
-
-		public static void SerializeSpin3D(QNetworkWriter writer, Vector3 angularVelocity, AxisSyncMode mode, CompressionSyncMode compression)
-		{
-			switch (mode)
-			{
-				case AxisSyncMode.AxisX:
-					WriteAngle(writer, angularVelocity.x, compression);
-					break;
-
-				case AxisSyncMode.AxisY:
-					WriteAngle(writer, angularVelocity.y, compression);
-					break;
-
-				case AxisSyncMode.AxisZ:
-					WriteAngle(writer, angularVelocity.z, compression);
-					break;
-
-				case AxisSyncMode.AxisXY:
-					WriteAngle(writer, angularVelocity.x, compression);
-					WriteAngle(writer, angularVelocity.y, compression);
-					break;
-
-				case AxisSyncMode.AxisXZ:
-					WriteAngle(writer, angularVelocity.x, compression);
-					WriteAngle(writer, angularVelocity.z, compression);
-					break;
-
-				case AxisSyncMode.AxisYZ:
-					WriteAngle(writer, angularVelocity.y, compression);
-					WriteAngle(writer, angularVelocity.z, compression);
-					break;
-
-				case AxisSyncMode.AxisXYZ:
-					WriteAngle(writer, angularVelocity.x, compression);
-					WriteAngle(writer, angularVelocity.y, compression);
-					WriteAngle(writer, angularVelocity.z, compression);
-					break;
-			}
-		}
-
-		public static Vector3 UnserializeVelocity3D(QNetworkReader reader, CompressionSyncMode compression) => reader.ReadVector3();
-
-		public static Quaternion UnserializeRotation3D(QNetworkReader reader, AxisSyncMode mode, CompressionSyncMode compression)
+		public static Quaternion UnserializeRotation3D(QNetworkReader reader)
 		{
 			var identity = Quaternion.identity;
 			var zero = Vector3.zero;
-			switch (mode)
-			{
-				case AxisSyncMode.AxisX:
-					zero.Set(ReadAngle(reader, compression), 0f, 0f);
-					identity.eulerAngles = zero;
-					break;
-
-				case AxisSyncMode.AxisY:
-					zero.Set(0f, ReadAngle(reader, compression), 0f);
-					identity.eulerAngles = zero;
-					break;
-
-				case AxisSyncMode.AxisZ:
-					zero.Set(0f, 0f, ReadAngle(reader, compression));
-					identity.eulerAngles = zero;
-					break;
-
-				case AxisSyncMode.AxisXY:
-					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), 0f);
-					identity.eulerAngles = zero;
-					break;
-
-				case AxisSyncMode.AxisXZ:
-					zero.Set(ReadAngle(reader, compression), 0f, ReadAngle(reader, compression));
-					identity.eulerAngles = zero;
-					break;
-
-				case AxisSyncMode.AxisYZ:
-					zero.Set(0f, ReadAngle(reader, compression), ReadAngle(reader, compression));
-					identity.eulerAngles = zero;
-					break;
-
-				case AxisSyncMode.AxisXYZ:
-					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), ReadAngle(reader, compression));
-					identity.eulerAngles = zero;
-					break;
-			}
+			zero.Set(ReadAngle(reader), ReadAngle(reader), ReadAngle(reader));
+			identity.eulerAngles = zero;
 			return identity;
 		}
-
-		public static Vector3 UnserializeSpin3D(QNetworkReader reader, AxisSyncMode mode, CompressionSyncMode compression)
-		{
-			var zero = Vector3.zero;
-			switch (mode)
-			{
-				case AxisSyncMode.AxisX:
-					zero.Set(ReadAngle(reader, compression), 0f, 0f);
-					break;
-
-				case AxisSyncMode.AxisY:
-					zero.Set(0f, ReadAngle(reader, compression), 0f);
-					break;
-
-				case AxisSyncMode.AxisZ:
-					zero.Set(0f, 0f, ReadAngle(reader, compression));
-					break;
-
-				case AxisSyncMode.AxisXY:
-					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), 0f);
-					break;
-
-				case AxisSyncMode.AxisXZ:
-					zero.Set(ReadAngle(reader, compression), 0f, ReadAngle(reader, compression));
-					break;
-
-				case AxisSyncMode.AxisYZ:
-					zero.Set(0f, ReadAngle(reader, compression), ReadAngle(reader, compression));
-					break;
-
-				case AxisSyncMode.AxisXYZ:
-					zero.Set(ReadAngle(reader, compression), ReadAngle(reader, compression), ReadAngle(reader, compression));
-					break;
-			}
-			return zero;
-		}
-
-		public override int GetNetworkChannel() => 1;
-
-		public override float GetNetworkSendInterval() => SendInterval;
-
-		public override void OnStartAuthority() => LastSyncTime = 0f;
-
-		private float m_LastClientSendTime;
-
-		private Vector3 m_PrevPosition;
-
-		private Quaternion m_PrevRotation;
-
-		private QNetworkWriter m_LocalTransformWriter;
-
-		public enum AxisSyncMode
-		{
-			None,
-			AxisX,
-			AxisY,
-			AxisZ,
-			AxisXY,
-			AxisXZ,
-			AxisYZ,
-			AxisXYZ
-		}
-
-		public enum CompressionSyncMode
-		{
-			None,
-			Low,
-			High
-		}
-
-		public delegate bool ClientMoveCallback3D(ref Vector3 position, ref Vector3 velocity, ref Quaternion rotation);
 	}
 }

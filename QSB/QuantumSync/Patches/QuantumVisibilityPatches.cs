@@ -8,7 +8,7 @@ namespace QSB.QuantumSync.Patches
 {
 	public class QuantumVisibilityPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+		public override PatchType Type => PatchType.OnClientConnect;
 
 		public override void DoPatches()
 		{
@@ -44,9 +44,9 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{
-			__result = QSBPlayerManager.GetPlayersWithCameras()
+			__result = PlayerManager.GetPlayersWithCameras()
 					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), ____renderer.bounds))
-				&& (!____checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
+				&& (!____checkFrustumOcclusion || PlayerManager.GetPlayersWithCameras()
 					.Any(x => !(bool)__instance.GetType()
 					.GetMethod("IsOccludedFromPosition", BindingFlags.NonPublic | BindingFlags.Instance)
 					.Invoke(__instance, new object[] { x.Camera.transform.position })));
@@ -63,7 +63,7 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 			var point = __instance.transform.TransformPoint(____localIlluminationOffset);
-			var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
+			var tupleFlashlights = PlayerManager.GetPlayerFlashlights();
 			var localFlashlight = tupleFlashlights.First;
 			var playerFlashlights = tupleFlashlights.Second;
 

@@ -77,10 +77,10 @@ namespace QuantumUNET
 			readyConnection.SetPlayerController(playerController);
 		}
 
-		public static bool AddPlayer(short playerControllerId) 
+		public static bool AddPlayer(short playerControllerId)
 			=> AddPlayer(null, playerControllerId);
 
-		public static bool AddPlayer(QNetworkConnection readyConn, short playerControllerId) 
+		public static bool AddPlayer(QNetworkConnection readyConn, short playerControllerId)
 			=> AddPlayer(readyConn, playerControllerId, null);
 
 		public static bool AddPlayer(QNetworkConnection readyConn, short playerControllerId, QMessageBase extraMessage)

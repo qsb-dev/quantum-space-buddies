@@ -15,14 +15,14 @@ namespace QSB.FrequencySync.Events
 
 		private EnumMessage<SignalName> CreateMessage(SignalName name) => new EnumMessage<SignalName>
 		{
-			AboutId = QSBPlayerManager.LocalPlayerId,
+			AboutId = PlayerManager.LocalPlayerId,
 			Value = name
 		};
 
 		public override void OnReceiveRemote(bool server, EnumMessage<SignalName> message)
 		{
 			PlayerData.LearnSignal(message.Value);
-			QSBEventManager.FireEvent("IdentifySignal");
+			EventManager.FireEvent("IdentifySignal");
 			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationSignalIdentified)} <color=orange>{AudioSignal.SignalNameToString(message.Value)}</color>";
 			var data = new NotificationData(NotificationTarget.All, displayMsg, 10f, true);
 			NotificationManager.SharedInstance.PostNotification(data, false);

@@ -22,12 +22,12 @@ namespace QSB.Animation.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
-			if (!QSBCore.HasWokenUp || !QSBPlayerManager.GetPlayer(message.AboutId).IsReady)
+			if (!QSBCore.HasWokenUp || !PlayerManager.GetPlayer(message.AboutId).IsReady)
 			{
 				return;
 			}
-			QSBPlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.Value);
-			QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.Value);
+			PlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.Value);
+			PlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.Value);
 		}
 	}
 }

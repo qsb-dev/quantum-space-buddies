@@ -33,7 +33,7 @@ namespace QSB.Player
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
-		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
+		public AnimationSync AnimationSync => PlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
 
@@ -72,8 +72,8 @@ namespace QSB.Player
 			Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
 			ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
 			Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
-				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
+			QSBCore.Helper.Events.Unity.RunWhen(() => PlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
+				() => PlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
 		}
 
 		public bool GetState(State state)

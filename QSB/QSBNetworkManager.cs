@@ -99,8 +99,7 @@ namespace QSB
 
 		private void SetupNetworkTransform(GameObject go)
 		{
-			var trans = go.AddComponent<QNetworkTransform>();
-			trans.SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
+			go.AddComponent<QNetworkTransform>();
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
 		}
@@ -112,8 +111,8 @@ namespace QSB
 		{
 			OrbManager.Instance.BuildOrbs();
 			OrbManager.Instance.QueueBuildSlots();
-			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+			WorldObjectManager.OldDialogueTrees.Clear();
+			WorldObjectManager.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
 
 		private void ConfigureNetworkManager()
@@ -134,13 +133,13 @@ namespace QSB
 		public override void OnStartServer()
 		{
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (QSBWorldSync.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
+			if (WorldObjectManager.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
 				OrbManager.Instance.QueueBuildOrbs();
 			}
-			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
+			if (WorldObjectManager.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+				WorldObjectManager.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 			}
 
 			if (QSBSceneManager.IsInUniverse)
@@ -172,7 +171,7 @@ namespace QSB
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
 			base.OnClientConnect(connection);
 
-			QSBEventManager.Init();
+			EventManager.Init();
 
 			gameObject.AddComponent<SectorSync.SectorSync>();
 			gameObject.AddComponent<RespawnOnDeath>();
@@ -184,22 +183,22 @@ namespace QSB
 				QuantumManager.Instance?.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
 			}
 
-			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
-			QSBPatchManager.DoPatchType(specificType);
-			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
+			var specificType = QNetworkServer.active ? Patches.PatchType.OnServerClientConnect : Patches.PatchType.OnNonServerClientConnect;
+			PatchManager.DoPatchType(specificType);
+			PatchManager.DoPatchType(Patches.PatchType.OnClientConnect);
 
 			_lobby.CanEditName = false;
 
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+			QSBCore.Helper.Events.Unity.RunWhen(() => EventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				() => EventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
 			if (!QSBCore.IsServer)
 			{
-				QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
+				QSBCore.Helper.Events.Unity.RunWhen(() => EventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				() => EventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
 
 			_everConnected = true;
@@ -211,18 +210,18 @@ namespace QSB
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
 			Destroy(GetComponent<SectorSync.SectorSync>());
 			Destroy(GetComponent<RespawnOnDeath>());
-			QSBEventManager.Reset();
-			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
+			EventManager.Reset();
+			PlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.OrbSyncList.Clear();
-			QSBWorldSync.OldDialogueTrees.Clear();
+			WorldObjectManager.OrbSyncList.Clear();
+			WorldObjectManager.OldDialogueTrees.Clear();
 
 			if (_everConnected)
 			{
-				var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
-				QSBPatchManager.DoUnpatchType(specificType);
-				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
+				var specificType = QNetworkServer.active ? Patches.PatchType.OnServerClientConnect : Patches.PatchType.OnNonServerClientConnect;
+				PatchManager.DoUnpatchType(specificType);
+				PatchManager.DoUnpatchType(Patches.PatchType.OnClientConnect);
 			}
 
 			_lobby.CanEditName = true;
@@ -237,7 +236,7 @@ namespace QSB
 			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			foreach (var item in QSBWorldSync.OrbSyncList)
+			foreach (var item in WorldObjectManager.OrbSyncList)
 			{
 				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)
@@ -258,9 +257,9 @@ namespace QSB
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
 			Destroy(GetComponent<SectorSync.SectorSync>());
 			Destroy(GetComponent<RespawnOnDeath>());
-			QSBEventManager.Reset();
+			EventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
-			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
+			PlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
 			QSBCore.HasWokenUp = false;
@@ -270,11 +269,11 @@ namespace QSB
 
 		private void RemoveWorldObjects()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
-			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
-			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
-			QSBWorldSync.RemoveWorldObjects<QSBSector>();
-			QSBWorldSync.RemoveWorldObjects<IQSBQuantumObject>();
+			WorldObjectManager.RemoveWorldObjects<QSBOrbSlot>();
+			WorldObjectManager.RemoveWorldObjects<QSBElevator>();
+			WorldObjectManager.RemoveWorldObjects<QSBGeyser>();
+			WorldObjectManager.RemoveWorldObjects<QSBSector>();
+			WorldObjectManager.RemoveWorldObjects<IQSBQuantumObject>();
 		}
 	}
 }

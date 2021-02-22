@@ -40,7 +40,7 @@ namespace QSB.TransformSync
 
 		public override bool IsReady => GetShipModel() != null
 			&& Player != null
-			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& PlayerManager.PlayerExists(Player.PlayerId)
 			&& Player.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;

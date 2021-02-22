@@ -36,14 +36,14 @@ namespace QSB.ConversationSync
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 		{
-			var treeIndex = QSBWorldSync.OldDialogueTrees.IndexOf(tree);
-			return QSBPlayerManager.PlayerList.All(x => x.CurrentDialogueID != treeIndex)
+			var treeIndex = WorldObjectManager.OldDialogueTrees.IndexOf(tree);
+			return PlayerManager.PlayerList.All(x => x.CurrentDialogueID != treeIndex)
 				? uint.MaxValue
-				: QSBPlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
+				: PlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
 		}
 
 		public void SendPlayerOption(string text) =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
+			EventManager.FireEvent(EventNames.QSBConversation, PlayerManager.LocalPlayerId, text, ConversationType.Player);
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -52,14 +52,14 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
 				return;
 			}
-			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
+			EventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
 		}
 
 		public void CloseBoxPlayer() =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
+			EventManager.FireEvent(EventNames.QSBConversation, PlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
 
 		public void CloseBoxCharacter(int id) =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+			EventManager.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
 
 		public void SendConvState(int charId, bool state)
 		{
@@ -68,18 +68,18 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
-			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
+			EventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, PlayerManager.LocalPlayerId, state);
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)
 		{
-			if (playerId == QSBPlayerManager.LocalPlayerId)
+			if (playerId == PlayerManager.LocalPlayerId)
 			{
 				DebugLog.ToConsole("Error - Cannot display conversation box for local player!", MessageType.Error);
 				return;
 			}
 
-			var player = QSBPlayerManager.GetPlayer(playerId);
+			var player = PlayerManager.GetPlayer(playerId);
 
 			// Destroy old box if it exists
 			var playerBox = player.CurrentDialogueBox;
@@ -88,19 +88,19 @@ namespace QSB.ConversationSync
 				Destroy(playerBox);
 			}
 
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
+			PlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
 		}
 
 		public void DisplayCharacterConversationBox(int index, string text)
 		{
-			if (QSBWorldSync.OldDialogueTrees.ElementAtOrDefault(index) == null)
+			if (WorldObjectManager.OldDialogueTrees.ElementAtOrDefault(index) == null)
 			{
 				DebugLog.ToConsole($"Error - Tried to display character conversation box for id {index}! (Doesn't exist!)", MessageType.Error);
 				return;
 			}
 
 			// Remove old box if it exists
-			var oldDialogueTree = QSBWorldSync.OldDialogueTrees[index];
+			var oldDialogueTree = WorldObjectManager.OldDialogueTrees[index];
 			if (BoxMappings.ContainsKey(oldDialogueTree))
 			{
 				Destroy(BoxMappings[oldDialogueTree]);

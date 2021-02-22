@@ -18,7 +18,7 @@ namespace QSB.TransformSync
 		{
 			base.OnDestroy();
 			Player.HudMarker?.Remove();
-			QSBPlayerManager.RemovePlayer(PlayerId);
+			PlayerManager.RemovePlayer(PlayerId);
 		}
 
 		private Transform GetPlayerModel() =>
@@ -66,7 +66,7 @@ namespace QSB.TransformSync
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
-			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& PlayerManager.PlayerExists(Player.PlayerId)
 			&& Player.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;

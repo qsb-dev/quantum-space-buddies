@@ -8,14 +8,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Types;
 
 namespace QuantumUNET
 {
 	public class QNetworkServer
 	{
-		
-
 		public static List<QNetworkConnection> localConnections => instance.m_LocalConnectionsFakeList;
 		public static int listenPort => instance.m_SimpleServerSimple.listenPort;
 		public static int serverHostId => instance.m_SimpleServerSimple.serverHostId;
@@ -63,13 +60,13 @@ namespace QuantumUNET
 			m_SimpleServerSimple = new ServerSimpleWrapper(this);
 		}
 
-		public static void SetNetworkConnectionClass<T>() 
-			where T : QNetworkConnection 
+		public static void SetNetworkConnectionClass<T>()
+			where T : QNetworkConnection
 			=> instance.m_SimpleServerSimple.SetNetworkConnectionClass<T>();
 
-		public static bool Configure(ConnectionConfig config, int maxConnections) 
+		public static bool Configure(ConnectionConfig config, int maxConnections)
 			=> instance.m_SimpleServerSimple.Configure(config, maxConnections);
-		public static bool Configure(HostTopology topology) 
+		public static bool Configure(HostTopology topology)
 			=> instance.m_SimpleServerSimple.Configure(topology);
 
 		public static void Reset()
@@ -108,10 +105,10 @@ namespace QuantumUNET
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 		}
 
-		public static bool Listen(int serverPort) 
+		public static bool Listen(int serverPort)
 			=> instance.InternalListen(null, serverPort);
 
-		public static bool Listen(string ipAddress, int serverPort) 
+		public static bool Listen(string ipAddress, int serverPort)
 			=> instance.InternalListen(ipAddress, serverPort);
 
 		internal bool InternalListen(string ipAddress, int serverPort)
@@ -471,7 +468,8 @@ namespace QuantumUNET
 			m_LocalClientActive = false;
 		}
 
-		internal static void Update() => s_Instance?.InternalUpdate();
+		internal static void Update()
+			=> s_Instance?.InternalUpdate();
 
 		private void UpdateServerObjects()
 		{
@@ -687,9 +685,9 @@ namespace QuantumUNET
 				QLog.Error($"AddPlayer: playerControllerId of {playerControllerId} is negative");
 				result = false;
 			}
-			else if (playerControllerId > 32)
+			else if (playerControllerId > PlayerController.MaxPlayersPerClient)
 			{
-				QLog.Log($"AddPlayer: playerControllerId of {playerControllerId} is too high. max is {32}");
+				QLog.Log($"AddPlayer: playerControllerId of {playerControllerId} is too high. max is {PlayerController.MaxPlayersPerClient}");
 				result = false;
 			}
 			else
@@ -1334,25 +1332,25 @@ namespace QuantumUNET
 		{
 			private readonly QNetworkServer m_Server;
 
-			public ServerSimpleWrapper(QNetworkServer server) 
+			public ServerSimpleWrapper(QNetworkServer server)
 				=> m_Server = server;
 
-			public override void OnConnectError(int connectionId, byte error) 
+			public override void OnConnectError(int connectionId, byte error)
 				=> m_Server.GenerateConnectError(error);
 
 			public override void OnDataError(QNetworkConnection conn, byte error)
 				=> m_Server.GenerateDataError(conn, error);
 
-			public override void OnDisconnectError(QNetworkConnection conn, byte error) 
+			public override void OnDisconnectError(QNetworkConnection conn, byte error)
 				=> m_Server.GenerateDisconnectError(conn, error);
 
-			public override void OnConnected(QNetworkConnection conn) 
+			public override void OnConnected(QNetworkConnection conn)
 				=> m_Server.OnConnected(conn);
 
-			public override void OnDisconnected(QNetworkConnection conn) 
+			public override void OnDisconnected(QNetworkConnection conn)
 				=> m_Server.OnDisconnected(conn);
 
-			public override void OnData(QNetworkConnection conn, int receivedSize, int channelId) 
+			public override void OnData(QNetworkConnection conn, int receivedSize, int channelId)
 				=> m_Server.OnData(conn, receivedSize, channelId);
 		}
 	}

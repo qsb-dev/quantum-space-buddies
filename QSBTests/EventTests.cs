@@ -18,10 +18,10 @@ namespace QSBTests
 				.GetTypes()
 				.Where(x => typeof(IQSBEvent).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
 
-			QSBEventManager.Init();
-			var eventInstances = (List<IQSBEvent>)typeof(QSBEventManager)
+			EventManager.Init();
+			var eventInstances = (List<IQSBEvent>)typeof(EventManager)
 				.GetField("_eventList", BindingFlags.NonPublic | BindingFlags.Static)
-				.GetValue(typeof(QSBEventManager));
+				.GetValue(typeof(EventManager));
 
 			var failedTypes = new List<Type>();
 			foreach (var type in allEventTypes)

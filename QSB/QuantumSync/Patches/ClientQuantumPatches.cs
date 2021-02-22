@@ -5,7 +5,7 @@ namespace QSB.QuantumSync.Patches
 {
 	public class ClientQuantumPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
+		public override PatchType Type => PatchType.OnNonServerClientConnect;
 
 		public override void DoPatches()
 		{

@@ -23,7 +23,7 @@ namespace QSB.Player
 					? QuantumManager.GetId(QuantumManager.GetObject(collidingQuantumObject))
 					: -1;
 
-				QSBEventManager.FireEvent(
+				EventManager.FireEvent(
 					EventNames.QSBPlayerEntangle,
 					objectIndex);
 				_previousCollidingQuantumObject = collidingQuantumObject;

@@ -28,7 +28,6 @@ namespace QuantumUNET.Transport
 		private bool _allowFragmentation;
 		private bool _isBroken;
 		private int _maxPendingPacketCount;
-		private const int _maxFreePacketCount = 512;
 		private readonly Queue<QChannelPacket> _pendingPackets;
 		private static List<QChannelPacket> _freePackets;
 		internal static int _pendingPacketCount;
@@ -43,10 +42,10 @@ namespace QuantumUNET.Transport
 		public QChannelBuffer(QNetworkConnection conn, int bufferSize, byte cid, bool isReliable, bool isSequenced)
 		{
 			_connection = conn;
-			_maxPacketSize = bufferSize - 100;
+			_maxPacketSize = bufferSize - _packetHeaderReserveSize;
 			_currentPacket = new QChannelPacket(_maxPacketSize, isReliable);
 			_channelId = cid;
-			_maxPendingPacketCount = 16;
+			_maxPendingPacketCount = MaxPendingPacketCount;
 			_isReliable = isReliable;
 			_allowFragmentation = isReliable && isSequenced;
 			if (isReliable)
@@ -75,7 +74,7 @@ namespace QuantumUNET.Transport
 					{
 						_pendingPacketCount--;
 						var item = _pendingPackets.Dequeue();
-						if (_freePackets.Count < 512)
+						if (_freePackets.Count < MaxBufferedPackets)
 						{
 							_freePackets.Add(item);
 						}
@@ -130,10 +129,10 @@ namespace QuantumUNET.Transport
 			{
 				result = false;
 			}
-			else if (value < 0 || value >= 512)
+			else if (value < 0 || value >= MaxBufferedPackets)
 			{
 				Debug.LogError(
-					$"Invalid MaxPendingBuffers for channel {_channelId}. Must be greater than zero and less than {512}");
+					$"Invalid MaxPendingBuffers for channel {_channelId}. Must be greater than zero and less than {MaxBufferedPackets}");
 				result = false;
 			}
 			else

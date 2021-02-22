@@ -6,13 +6,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Types;
 
 namespace QuantumUNET
 {
 	public class QNetworkServerSimple
 	{
-		
 		public int listenPort { get; set; }
 		public int serverHostId { get; set; } = -1;
 		public HostTopology hostTopology { get; private set; }
@@ -27,11 +25,11 @@ namespace QuantumUNET
 		private readonly List<QNetworkConnection> m_Connections = new List<QNetworkConnection>();
 		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
 
-		public QNetworkServerSimple() 
+		public QNetworkServerSimple()
 			=> connections = new ReadOnlyCollection<QNetworkConnection>(m_Connections);
 
-		public void SetNetworkConnectionClass<T>() 
-			where T : QNetworkConnection 
+		public void SetNetworkConnectionClass<T>()
+			where T : QNetworkConnection
 			=> networkConnectionClass = typeof(T);
 
 		public virtual void Initialize()
@@ -83,7 +81,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool Listen(int serverListenPort) 
+		public bool Listen(int serverListenPort)
 			=> Listen(serverListenPort, hostTopology);
 
 		public bool Listen(int serverListenPort, HostTopology topology)
@@ -112,13 +110,13 @@ namespace QuantumUNET
 			serverHostId = -1;
 		}
 
-		internal void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) 
+		internal void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler)
 			=> m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 
-		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) 
+		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler)
 			=> m_MessageHandlers.RegisterHandler(msgType, handler);
 
-		public void UnregisterHandler(short msgType) 
+		public void UnregisterHandler(short msgType)
 			=> m_MessageHandlers.UnregisterHandler(msgType);
 
 		public void ClearHandlers()
@@ -337,22 +335,22 @@ namespace QuantumUNET
 			}
 		}
 
-		public virtual void OnConnectError(int connectionId, byte error) 
+		public virtual void OnConnectError(int connectionId, byte error)
 			=> Debug.LogError($"OnConnectError error:{error}");
 
-		public virtual void OnDataError(QNetworkConnection conn, byte error) 
+		public virtual void OnDataError(QNetworkConnection conn, byte error)
 			=> Debug.LogError($"OnDataError error:{error}");
 
-		public virtual void OnDisconnectError(QNetworkConnection conn, byte error) 
+		public virtual void OnDisconnectError(QNetworkConnection conn, byte error)
 			=> Debug.LogError($"OnDisconnectError error:{error}");
 
-		public virtual void OnConnected(QNetworkConnection conn) 
+		public virtual void OnConnected(QNetworkConnection conn)
 			=> conn.InvokeHandlerNoData(32);
 
-		public virtual void OnDisconnected(QNetworkConnection conn) 
+		public virtual void OnDisconnected(QNetworkConnection conn)
 			=> conn.InvokeHandlerNoData(33);
 
-		public virtual void OnData(QNetworkConnection conn, int receivedSize, int channelId) 
+		public virtual void OnData(QNetworkConnection conn, int receivedSize, int channelId)
 			=> conn.TransportReceive(messageBuffer, receivedSize, channelId);
 	}
 }

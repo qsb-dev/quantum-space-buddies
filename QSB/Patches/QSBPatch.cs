@@ -2,7 +2,7 @@
 {
 	public abstract class QSBPatch
 	{
-		public abstract QSBPatchTypes Type { get; }
+		public abstract PatchType Type { get; }
 		public abstract void DoPatches();
 		public abstract void DoUnpatches();
 	}

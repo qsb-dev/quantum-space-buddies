@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 namespace QuantumUNET
@@ -26,7 +25,7 @@ namespace QuantumUNET
 			set => singleton.m_ScriptCRCCheck = value;
 		}
 
-		internal static bool Validate(QCRCMessageEntry[] scripts, int numChannels) 
+		internal static bool Validate(QCRCMessageEntry[] scripts, int numChannels)
 			=> singleton.ValidateInternal(scripts, numChannels);
 
 		private bool ValidateInternal(QCRCMessageEntry[] remoteScripts, int numChannels)

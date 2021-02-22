@@ -145,19 +145,19 @@ namespace QSB.Animation
 
 		private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
 
-		public void SendCrouch(float value = 0) => QSBEventManager.FireEvent(EventNames.QSBCrouch, value);
+		public void SendCrouch(float value = 0) => EventManager.FireEvent(EventNames.QSBCrouch, value);
 
 		public void HandleCrouch(float value) => _crouchSync.CrouchParam.Target = value;
 
 		private void SuitUp()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerSuited);
+			EventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerSuited);
 			SetAnimationType(AnimationType.PlayerSuited);
 		}
 
 		private void SuitDown()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerUnsuited);
+			EventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerUnsuited);
 			SetAnimationType(AnimationType.PlayerUnsuited);
 		}
 

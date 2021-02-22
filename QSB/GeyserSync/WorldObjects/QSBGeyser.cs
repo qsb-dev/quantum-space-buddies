@@ -18,7 +18,7 @@ namespace QSB.GeyserSync.WorldObjects
 		{
 			if (QNetworkServer.active)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBGeyserState, ObjectId, state);
+				EventManager.FireEvent(EventNames.QSBGeyserState, ObjectId, state);
 			}
 		}
 

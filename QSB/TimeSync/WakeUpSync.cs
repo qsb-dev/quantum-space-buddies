@@ -82,7 +82,7 @@ namespace QSB.TimeSync
 
 		private void Init()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
+			EventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			_state = State.Loaded;
 			gameObject.AddComponent<PreserveTimeScale>();
 			if (IsServer)
@@ -95,7 +95,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
+		private void SendServerTime() => EventManager.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
@@ -168,7 +168,7 @@ namespace QSB.TimeSync
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
-			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
+			EventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			RespawnOnDeath.Instance.Init();
 		}
 

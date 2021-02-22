@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QuantumUNET.Components
 {
@@ -29,7 +28,6 @@ namespace QuantumUNET.Components
 		public bool isNetworkActive;
 		public string serverBindAddress { get; set; } = "";
 		public string networkAddress { get; set; } = "localhost";
-		public float packetLossPercentage { get; set; }
 		public float maxDelay { get; set; } = 0.01f;
 		public GameObject playerPrefab { get; set; }
 		public List<GameObject> spawnPrefabs { get; } = new List<GameObject>();
@@ -84,7 +82,8 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public void Awake() => InitializeSingleton();
+		public void Awake()
+			=> InitializeSingleton();
 
 		private void InitializeSingleton()
 		{
@@ -131,7 +130,8 @@ namespace QuantumUNET.Components
 			QNetworkServer.RegisterHandler(QMsgType.Error, OnServerErrorInternal);
 		}
 
-		public bool StartServer() => StartServer(null, -1);
+		public bool StartServer()
+			=> StartServer(null, -1);
 
 		private bool StartServer(ConnectionConfig config, int maxConnections)
 		{
@@ -258,27 +258,8 @@ namespace QuantumUNET.Components
 			return client;
 		}
 
-		public QNetworkClient StartClient() => StartClient(null);
-
-		public QNetworkClient StartClient(ConnectionConfig config) => StartClient(config, 0);
-
-		public virtual QNetworkClient StartHost(ConnectionConfig config, int maxConnections)
-		{
-			OnStartHost();
-			QNetworkClient result;
-			if (StartServer(config, maxConnections))
-			{
-				var networkClient = ConnectLocalClient();
-				OnServerConnect(networkClient.connection);
-				OnStartClient(networkClient);
-				result = networkClient;
-			}
-			else
-			{
-				result = null;
-			}
-			return result;
-		}
+		public QNetworkClient StartClient()
+			=> StartClient(null, 0);
 
 		public virtual QNetworkClient StartHost()
 		{
@@ -348,7 +329,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public bool IsClientConnected() 
+		public bool IsClientConnected()
 			=> client != null && client.isConnected;
 
 		public static void Shutdown()

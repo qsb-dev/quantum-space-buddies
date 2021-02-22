@@ -19,7 +19,7 @@ namespace QSB.ElevatorSync
 
 		public void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse) => _elevators = QSBWorldSync.Init<QSBElevator, Elevator>();
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) => _elevators = WorldObjectManager.Init<QSBElevator, Elevator>();
 
 		public int GetId(Elevator elevator) => _elevators.IndexOf(elevator);
 	}

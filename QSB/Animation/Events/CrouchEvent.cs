@@ -25,7 +25,7 @@ namespace QSB.Animation.Events
 			{
 				return;
 			}
-			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AboutId);
+			var animationSync = PlayerManager.GetSyncObject<AnimationSync>(message.AboutId);
 			animationSync?.HandleCrouch(message.Value);
 		}
 	}

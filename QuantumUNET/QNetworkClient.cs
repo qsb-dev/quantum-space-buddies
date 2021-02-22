@@ -63,7 +63,7 @@ namespace QuantumUNET
 			RegisterSystemHandlers(false);
 		}
 
-		public void SetNetworkConnectionClass<T>() 
+		public void SetNetworkConnectionClass<T>()
 			where T : QNetworkConnection
 			=> networkConnectionClass = typeof(T);
 
@@ -539,19 +539,19 @@ namespace QuantumUNET
 			QNetworkCRC.Validate(s_CRCMessage.scripts, numChannels);
 		}
 
-		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) 
+		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler)
 			=> m_MessageHandlers.RegisterHandler(msgType, handler);
 
-		public void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) 
+		public void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler)
 			=> m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 
-		public void UnregisterHandler(short msgType) 
+		public void UnregisterHandler(short msgType)
 			=> m_MessageHandlers.UnregisterHandler(msgType);
 
-		internal static void AddClient(QNetworkClient client) 
+		internal static void AddClient(QNetworkClient client)
 			=> allClients.Add(client);
 
-		internal static bool RemoveClient(QNetworkClient client) 
+		internal static bool RemoveClient(QNetworkClient client)
 			=> allClients.Remove(client);
 
 		internal static void UpdateClients()

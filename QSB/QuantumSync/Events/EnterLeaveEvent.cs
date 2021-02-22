@@ -38,7 +38,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<EnterLeaveType> message)
 		{
-			var player = QSBPlayerManager.GetPlayer(message.FromId);
+			var player = PlayerManager.GetPlayer(message.FromId);
 			switch (message.Value)
 			{
 				case EnterLeaveType.EnterMoon:

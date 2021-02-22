@@ -35,7 +35,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public void MoveToSocket(SocketStateChangeMessage message)
 		{
-			var qsbSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId);
+			var qsbSocket = WorldObjectManager.GetWorldObject<QSBQuantumSocket>(message.SocketId);
 			if (qsbSocket == null)
 			{
 				DebugLog.ToConsole($"Couldn't find socket id {message.SocketId}", MessageType.Error);
@@ -65,7 +65,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 			else
 			{
-				var playerToShrine = QSBPlayerManager.GetPlayer(message.FromId).Body.transform.position - AttachedObject.transform.position;
+				var playerToShrine = PlayerManager.GetPlayer(message.FromId).Body.transform.position - AttachedObject.transform.position;
 				var projectOnPlace = Vector3.ProjectOnPlane(playerToShrine, AttachedObject.transform.up);
 				var angle = OWMath.Angle(AttachedObject.transform.forward, projectOnPlace, AttachedObject.transform.up);
 				angle = OWMath.RoundToNearestMultiple(angle, 120f);

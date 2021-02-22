@@ -143,7 +143,7 @@
     <Compile Include="OrbSync\Patches\OrbPatches.cs" />
     <Compile Include="OrbSync\Events\OrbUserEvent.cs" />
     <Compile Include="OrbSync\WorldObjects\QSBOrbSlot.cs" />
-    <Compile Include="Patches\QSBPatchManager.cs" />
+    <Compile Include="Patches\PatchManager.cs" />
     <Compile Include="Player\Events\PlayerEntangledEvent.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
     <Compile Include="Player\PlayerEntanglementWatcher.cs" />
@@ -152,7 +152,7 @@
     <Compile Include="QSBInputManager.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
-    <Compile Include="Patches\QSBPatchTypes.cs" />
+    <Compile Include="Patches\PatchType.cs" />
     <Compile Include="QSBSceneManager.cs" />
     <Compile Include="QuantumSync\EnterLeaveType.cs" />
     <Compile Include="QuantumSync\Events\EnterLeaveEvent.cs" />
@@ -235,7 +235,7 @@
     <Compile Include="Tools\ToolType.cs" />
     <Compile Include="TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
-    <Compile Include="Events\QSBEventManager.cs" />
+    <Compile Include="Events\EventManager.cs" />
     <Compile Include="Player\Events\PlayerStateMessage.cs" />
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
@@ -245,7 +245,7 @@
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="Player\State.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
-    <Compile Include="Player\QSBPlayerManager.cs" />
+    <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Utility\FlagsHelper.cs" />
     <Compile Include="Player\PlayerHUDMarker.cs" />
@@ -262,7 +262,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldSync\FactReveal.cs" />
     <Compile Include="WorldSync\IWorldObject.cs" />
-    <Compile Include="WorldSync\QSBWorldSync.cs" />
+    <Compile Include="WorldSync\WorldObjectManager.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
   </ItemGroup>
   <ItemGroup>

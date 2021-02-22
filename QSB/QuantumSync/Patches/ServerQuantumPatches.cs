@@ -10,7 +10,7 @@ namespace QSB.QuantumSync.Patches
 {
 	public class ServerQuantumPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
+		public override QSB.Patches.PatchType Type => QSB.Patches.PatchType.OnServerClientConnect;
 
 		public override void DoPatches()
 			=> QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Moon_ChangeQuantumState));
@@ -124,7 +124,7 @@ namespace QSB.QuantumSync.Patches
 						{
 							____stateSkipCounts[k] = (k != ____stateIndex) ? (____stateSkipCounts[k] + 1) : 0;
 						}
-						QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+						EventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
 						break;
 					}
 					____visibilityTracker.transform.localPosition = Vector3.zero;

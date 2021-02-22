@@ -5,13 +5,12 @@ namespace QuantumUNET
 {
 	public class QPlayerController
 	{
+		public const int MaxPlayersPerClient = 32;
+
 		public short PlayerControllerId = -1;
 		public QNetworkIdentity UnetView;
 		public GameObject Gameobject;
-		public const int MaxPlayersPerClient = 32;
 		public bool IsValid => PlayerControllerId != -1;
-
-		internal const short kMaxLocalPlayers = 8;
 
 		public QPlayerController()
 		{

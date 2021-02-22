@@ -17,10 +17,10 @@ namespace QuantumUNET.Transport
 			m_IsReliable = isReliable;
 		}
 
-		public void Reset() 
+		public void Reset()
 			=> m_Position = 0;
 
-		public bool IsEmpty() 
+		public bool IsEmpty()
 			=> m_Position == 0;
 
 		public void Write(byte[] bytes, int numBytes)
@@ -29,7 +29,7 @@ namespace QuantumUNET.Transport
 			m_Position += numBytes;
 		}
 
-		public bool HasSpace(int numBytes) 
+		public bool HasSpace(int numBytes)
 			=> m_Position + numBytes <= m_Buffer.Length;
 
 		public bool SendToTransport(QNetworkConnection conn, int channelId)

@@ -5,7 +5,7 @@ namespace QSB.TimeSync.Patches
 {
 	public class WakeUpPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
+		public override PatchType Type => PatchType.OnNonServerClientConnect;
 
 		public static bool OnStartOfTimeLoopPrefix(ref PlayerCameraEffectController __instance)
 		{

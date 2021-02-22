@@ -30,19 +30,19 @@ namespace QSB.SectorSync
 		public void RebuildSectors()
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
-			QSBWorldSync.RemoveWorldObjects<QSBSector>();
-			QSBWorldSync.Init<QSBSector, Sector>();
-			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+			WorldObjectManager.RemoveWorldObjects<QSBSector>();
+			WorldObjectManager.Init<QSBSector, Sector>();
+			IsReady = WorldObjectManager.GetWorldObjects<QSBSector>().Any();
 		}
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			if (QSBWorldSync.GetWorldObjects<QSBSector>().Count() == 0)
+			if (WorldObjectManager.GetWorldObjects<QSBSector>().Count() == 0)
 			{
 				DebugLog.ToConsole($"Error - Can't get closest sector, as there are no QSBSectors!", MessageType.Error);
 				return null;
 			}
-			return QSBWorldSync.GetWorldObjects<QSBSector>()
+			return WorldObjectManager.GetWorldObjects<QSBSector>()
 				.Where(sector => sector.AttachedObject != null
 					&& !_sectorBlacklist.Contains(sector.Type)
 					&& sector.Transform.gameObject.activeInHierarchy)

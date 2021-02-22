@@ -23,7 +23,7 @@ namespace QSB.OrbSync.WorldObjects
 			{
 				return;
 			}
-			QSBEventManager.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
+			EventManager.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
 		}
 
 		public void SetState(bool state, int orbId)
@@ -32,10 +32,10 @@ namespace QSB.OrbSync.WorldObjects
 			{
 				return;
 			}
-			var occOrb = state ? QSBWorldSync.OldOrbList[orbId] : null;
+			var occOrb = state ? WorldObjectManager.OldOrbList[orbId] : null;
 			AttachedObject.SetValue("_occupyingOrb", occOrb);
 			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
-			QSBWorldSync.RaiseEvent(AttachedObject, ev);
+			WorldObjectManager.RaiseEvent(AttachedObject, ev);
 			Activated = state;
 		}
 	}

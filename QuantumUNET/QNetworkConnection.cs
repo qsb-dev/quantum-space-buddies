@@ -173,9 +173,11 @@ namespace QuantumUNET
 			}
 		}
 
-		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandler(msgType, handler);
+		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler)
+			=> m_MessageHandlers.RegisterHandler(msgType, handler);
 
-		public void UnregisterHandler(short msgType) => m_MessageHandlers.UnregisterHandler(msgType);
+		public void UnregisterHandler(short msgType)
+			=> m_MessageHandlers.UnregisterHandler(msgType);
 
 		internal void SetPlayerController(QPlayerController player)
 		{

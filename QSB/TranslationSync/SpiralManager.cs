@@ -23,9 +23,9 @@ namespace QSB.TranslationSync
 
 		private void OnSceneLoaded(OWScene scene)
 		{
-			_nomaiWallTexts = QSBWorldSync.Init<QSBWallText, NomaiWallText>();
-			_nomaiComputers = QSBWorldSync.Init<QSBComputer, NomaiComputer>();
-			_nomaiVesselComputers = QSBWorldSync.Init<QSBVesselComputer, NomaiVesselComputer>();
+			_nomaiWallTexts = WorldObjectManager.Init<QSBWallText, NomaiWallText>();
+			_nomaiComputers = WorldObjectManager.Init<QSBComputer, NomaiComputer>();
+			_nomaiVesselComputers = WorldObjectManager.Init<QSBVesselComputer, NomaiVesselComputer>();
 		}
 
 		public int GetId(NomaiWallText obj) => _nomaiWallTexts.IndexOf(obj);

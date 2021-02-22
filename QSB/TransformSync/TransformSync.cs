@@ -30,7 +30,7 @@ namespace QSB.TransformSync
 		{
 			DebugLog.DebugWrite("start of " + GetType().Name);
 			base.Start();
-			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>()
+			var lowestBound = PlayerManager.GetSyncObjects<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 

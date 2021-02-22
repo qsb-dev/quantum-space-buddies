@@ -26,7 +26,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
+			var qsbObj = WorldObjectManager.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
 			qsbObj.DebugBoxText.text = message.StateIndex.ToString();
 		}
 
@@ -36,7 +36,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
+			var qsbObj = WorldObjectManager.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
 			qsbObj.ChangeState(message.StateIndex);
 		}
 	}

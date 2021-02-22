@@ -13,7 +13,7 @@ namespace QSB.Player.Events
 
 		private void Handler()
 		{
-			foreach (var player in QSBPlayerManager.PlayerList)
+			foreach (var player in PlayerManager.PlayerList)
 			{
 				DebugLog.DebugWrite($" - Sending playerstate of player ID {player.PlayerId}", MessageType.Info);
 				SendEvent(CreateMessage(player));
@@ -32,8 +32,8 @@ namespace QSB.Player.Events
 		{
 			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
 			QSBCore.Helper.Events.Unity.RunWhen(
-				() => QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
-				() => QSBPlayerManager.HandleFullStateMessage(message));
+				() => PlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
+				() => PlayerManager.HandleFullStateMessage(message));
 		}
 	}
 }

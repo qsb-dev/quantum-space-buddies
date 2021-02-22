@@ -50,14 +50,14 @@ namespace QuantumUNET
 			_msgHandlers.Remove(msgType);
 
 		internal QNetworkMessageDelegate GetHandler(short msgType)
-			=>_msgHandlers.ContainsKey(msgType) 
-				? _msgHandlers[msgType] 
+			=> _msgHandlers.ContainsKey(msgType)
+				? _msgHandlers[msgType]
 				: null;
 
-		internal Dictionary<short, QNetworkMessageDelegate> GetHandlers() 
+		internal Dictionary<short, QNetworkMessageDelegate> GetHandlers()
 			=> _msgHandlers;
 
-		internal void ClearMessageHandlers() 
+		internal void ClearMessageHandlers()
 			=> _msgHandlers.Clear();
 	}
 }

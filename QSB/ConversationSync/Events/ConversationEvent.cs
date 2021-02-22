@@ -43,12 +43,12 @@ namespace QSB.ConversationSync.Events
 					{
 						break;
 					}
-					var tree = QSBWorldSync.OldDialogueTrees[message.ObjectId];
+					var tree = WorldObjectManager.OldDialogueTrees[message.ObjectId];
 					UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;
 
 				case ConversationType.ClosePlayer:
-					UnityEngine.Object.Destroy(QSBPlayerManager.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
+					UnityEngine.Object.Destroy(PlayerManager.GetPlayer((uint)message.ObjectId).CurrentDialogueBox);
 					break;
 			}
 		}

@@ -80,8 +80,8 @@ namespace QSB
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
 
-			QSBPatchManager.Init();
-			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+			PatchManager.Init();
+			PatchManager.DoPatchType(Patches.PatchType.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QNetworkManagerHUD>();
@@ -132,7 +132,7 @@ namespace QSB
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
 			offset += _debugLineSpacing;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			foreach (var player in PlayerManager.GetPlayersWithCameras())
 			{
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
 				offset += _debugLineSpacing;
@@ -141,7 +141,7 @@ namespace QSB
 			var offset2 = 10f;
 			GUI.Label(new Rect(440, offset2, 200f, 20f), $"Owned Objects :");
 			offset2 += _debugLineSpacing;
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
+			foreach (var obj in WorldObjectManager.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == PlayerManager.LocalPlayerId))
 			{
 				GUI.Label(new Rect(440, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}");
 				offset2 += _debugLineSpacing;
@@ -155,7 +155,7 @@ namespace QSB
 			// Used for diagnosing specific socketed objects.
 			// 110 = Cave Twin entanglement shard
 			// 342 = Timber Hearth museum shard
-			var socketedObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(SocketedObjToDebug);
+			var socketedObject = WorldObjectManager.GetWorldObject<QSBSocketedQuantumObject>(SocketedObjToDebug);
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Controller : {socketedObject.ControllingPlayer}");
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Illuminated : {socketedObject.AttachedObject.IsIlluminated()}");
@@ -173,7 +173,7 @@ namespace QSB
 			}
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"Visible by :");
 			offset += _debugLineSpacing;
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			foreach (var player in PlayerManager.GetPlayersWithCameras())
 			{
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {socketedTrackers.Any(x => (bool)x.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(x, new object[] { player.Camera.GetFrustumPlanes() }))}");
 				offset += _debugLineSpacing;

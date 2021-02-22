@@ -15,10 +15,10 @@ using System.Linq;
 
 namespace QSB.Patches
 {
-	public static class QSBPatchManager
+	public static class PatchManager
 	{
-		public static event Action<QSBPatchTypes> OnPatchType;
-		public static event Action<QSBPatchTypes> OnUnpatchType;
+		public static event Action<PatchType> OnPatchType;
+		public static event Action<PatchType> OnUnpatchType;
 
 		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
@@ -43,10 +43,10 @@ namespace QSB.Patches
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
 		}
 
-		public static void DoPatchType(QSBPatchTypes type)
+		public static void DoPatchType(PatchType type)
 		{
 			OnPatchType?.SafeInvoke(type);
-			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(PatchType), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
 				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
@@ -54,10 +54,10 @@ namespace QSB.Patches
 			}
 		}
 
-		public static void DoUnpatchType(QSBPatchTypes type)
+		public static void DoUnpatchType(PatchType type)
 		{
 			OnUnpatchType?.SafeInvoke(type);
-			DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(PatchType), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
 				DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);

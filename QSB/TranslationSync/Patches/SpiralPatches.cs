@@ -5,7 +5,7 @@ namespace QSB.TranslationSync.Patches
 {
 	internal class SpiralPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+		public override PatchType Type => PatchType.OnClientConnect;
 
 		public override void DoPatches()
 		{
@@ -27,7 +27,7 @@ namespace QSB.TranslationSync.Patches
 			{
 				return true;
 			}
-			QSBEventManager.FireEvent(
+			EventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.WallText,
 					SpiralManager.Instance.GetId(__instance),
@@ -41,7 +41,7 @@ namespace QSB.TranslationSync.Patches
 			{
 				return true;
 			}
-			QSBEventManager.FireEvent(
+			EventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.Computer,
 					SpiralManager.Instance.GetId(__instance),
@@ -55,7 +55,7 @@ namespace QSB.TranslationSync.Patches
 			{
 				return true;
 			}
-			QSBEventManager.FireEvent(
+			EventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.VesselComputer,
 					SpiralManager.Instance.GetId(__instance),

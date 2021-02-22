@@ -17,21 +17,21 @@ namespace QSB.OrbSync
 
 		private void BuildOrbSlots()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
-			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
+			WorldObjectManager.RemoveWorldObjects<QSBOrbSlot>();
+			WorldObjectManager.Init<QSBOrbSlot, NomaiInterfaceSlot>();
 		}
 
 		public void BuildOrbs()
 		{
-			QSBWorldSync.OldOrbList.Clear();
-			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
+			WorldObjectManager.OldOrbList.Clear();
+			WorldObjectManager.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QNetworkServer.active)
 			{
-				QSBWorldSync.OrbSyncList.ForEach(x => QNetworkServer.Destroy(x.gameObject));
-				QSBWorldSync.OrbSyncList.Clear();
-				QSBWorldSync.OldOrbList.ForEach(x => QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
+				WorldObjectManager.OrbSyncList.ForEach(x => QNetworkServer.Destroy(x.gameObject));
+				WorldObjectManager.OrbSyncList.Clear();
+				WorldObjectManager.OldOrbList.ForEach(x => QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
 			}
-			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
+			DebugLog.DebugWrite($"Finished orb build with {WorldObjectManager.OldOrbList.Count} orbs.", MessageType.Success);
 		}
 
 		public void OnRenderObject()
@@ -41,7 +41,7 @@ namespace QSB.OrbSync
 				return;
 			}
 
-			foreach (var orb in QSBWorldSync.OldOrbList)
+			foreach (var orb in WorldObjectManager.OldOrbList)
 			{
 				Popcron.Gizmos.Cube(orb.transform.position, orb.transform.rotation, Vector3.one / 3);
 

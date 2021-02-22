@@ -28,10 +28,10 @@ namespace QSB.QuantumSync
 		public void RebuildQuantumObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
-			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
-			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
-			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
-			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
+			WorldObjectManager.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
+			WorldObjectManager.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
+			WorldObjectManager.Init<QSBQuantumSocket, QuantumSocket>();
+			WorldObjectManager.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
@@ -42,14 +42,14 @@ namespace QSB.QuantumSync
 		public void CheckExistingPlayers()
 		{
 			DebugLog.DebugWrite("Checking quantum objects for non-existent players...", MessageType.Info);
-			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
+			var quantumObjects = WorldObjectManager.GetWorldObjects<IQSBQuantumObject>().ToList();
 			for (var i = 0; i < quantumObjects.Count; i++)
 			{
 				var obj = quantumObjects[i];
-				if (!QSBPlayerManager.PlayerExists(obj.ControllingPlayer))
+				if (!PlayerManager.PlayerExists(obj.ControllingPlayer))
 				{
-					var idToSend = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u;
-					QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, idToSend);
+					var idToSend = obj.IsEnabled ? PlayerManager.LocalPlayerId : 0u;
+					EventManager.FireEvent(EventNames.QSBQuantumAuthority, i, idToSend);
 				}
 			}
 		}
@@ -70,7 +70,7 @@ namespace QSB.QuantumSync
 		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
 			return tracker.gameObject.activeInHierarchy
-				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
+				&& PlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => (bool)tracker.GetType()
 						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
 						.Invoke(tracker, new object[] { x.Camera.GetFrustumPlanes() }));
@@ -80,14 +80,14 @@ namespace QSB.QuantumSync
 		{
 			return tracker.gameObject.activeInHierarchy
 				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera)
-				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
+				&& PlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 		}
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
 			var worldObj = GetObject(obj);
-			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
+			return PlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
 
 		public static IQSBQuantumObject GetObject(QuantumObject unityObject)
@@ -95,15 +95,15 @@ namespace QSB.QuantumSync
 			IQSBQuantumObject worldObj = null;
 			if (unityObject.GetType() == typeof(SocketedQuantumObject) || unityObject.GetType() == typeof(QuantumShrine))
 			{
-				worldObj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)unityObject);
+				worldObj = WorldObjectManager.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)unityObject);
 			}
 			else if (unityObject.GetType() == typeof(MultiStateQuantumObject))
 			{
-				worldObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
+				worldObj = WorldObjectManager.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
 			}
 			else if (unityObject.GetType() == typeof(QuantumShuffleObject))
 			{
-				worldObj = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
+				worldObj = WorldObjectManager.GetWorldObject<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
 			}
 			else
 			{
@@ -114,7 +114,7 @@ namespace QSB.QuantumSync
 
 		public static IQSBQuantumObject GetObject(int id)
 		{
-			var objects = QSBWorldSync
+			var objects = WorldObjectManager
 				.GetWorldObjects<IQSBQuantumObject>()
 				.ToList();
 			if (objects.Count == 0)
@@ -137,7 +137,7 @@ namespace QSB.QuantumSync
 
 		public static int GetId(IQSBQuantumObject obj)
 		{
-			var objects = QSBWorldSync
+			var objects = WorldObjectManager
 				.GetWorldObjects<IQSBQuantumObject>()
 				.ToList();
 			if (obj == null)

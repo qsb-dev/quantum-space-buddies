@@ -23,7 +23,7 @@ namespace QSB.ConversationSync.Events
 		{
 			if (server)
 			{
-				QSBWorldSync.SetDialogueCondition(message.ConditionName, message.ConditionState);
+				WorldObjectManager.SetDialogueCondition(message.ConditionName, message.ConditionState);
 			}
 		}
 
@@ -31,7 +31,7 @@ namespace QSB.ConversationSync.Events
 		{
 			if (server)
 			{
-				QSBWorldSync.SetDialogueCondition(message.ConditionName, message.ConditionState);
+				WorldObjectManager.SetDialogueCondition(message.ConditionName, message.ConditionState);
 			}
 			DialogueConditionManager.SharedInstance.SetConditionState(message.ConditionName, message.ConditionState);
 		}

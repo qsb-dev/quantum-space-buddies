@@ -7,13 +7,13 @@ namespace QSB.OrbSync.Patches
 {
 	public class OrbPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+		public override PatchType Type => PatchType.OnClientConnect;
 
 		public static void StartDragCallEvent(bool __result, NomaiInterfaceOrb __instance)
 		{
 			if (__result)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBOrbUser, QSBWorldSync.OldOrbList.FindIndex(x => x == __instance));
+				EventManager.FireEvent(EventNames.QSBOrbUser, WorldObjectManager.OldOrbList.FindIndex(x => x == __instance));
 			}
 		}
 
@@ -32,8 +32,8 @@ namespace QSB.OrbSync.Patches
 				____occupyingOrb = orb;
 				if (Time.timeSinceLevelLoad > 1f)
 				{
-					QSBWorldSync.HandleSlotStateChange(__instance, orb, true);
-					QSBWorldSync.RaiseEvent(__instance, "OnSlotActivated");
+					WorldObjectManager.HandleSlotStateChange(__instance, orb, true);
+					WorldObjectManager.RaiseEvent(__instance, "OnSlotActivated");
 				}
 				__result = true;
 				return false;
@@ -45,9 +45,9 @@ namespace QSB.OrbSync.Patches
 			}
 			if (orbDistance > triggerRadius)
 			{
-				QSBWorldSync.HandleSlotStateChange(__instance, orb, false);
+				WorldObjectManager.HandleSlotStateChange(__instance, orb, false);
 				____occupyingOrb = null;
-				QSBWorldSync.RaiseEvent(__instance, "OnSlotDeactivated");
+				WorldObjectManager.RaiseEvent(__instance, "OnSlotDeactivated");
 				__result = false;
 				return false;
 			}

@@ -28,11 +28,11 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool server, PlayerMessage message)
 		{
 			DebugLog.DebugWrite($"Get state request from {message.FromId} - isServer?{server}");
-			QSBEventManager.FireEvent(EventNames.QSBServerSendPlayerStates);
-			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
+			EventManager.FireEvent(EventNames.QSBServerSendPlayerStates);
+			foreach (var item in PlayerManager.GetSyncObjects<TransformSync.TransformSync>()
 				.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
+				EventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
 			}
 
 			if (!server)
@@ -42,44 +42,44 @@ namespace QSB.Player.Events
 
 			// TODO : CLEAN. THIS. SHIT.
 
-			foreach (var condition in QSBWorldSync.DialogueConditions)
+			foreach (var condition in WorldObjectManager.DialogueConditions)
 			{
-				QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value);
+				EventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value);
 			}
 
-			foreach (var fact in QSBWorldSync.ShipLogFacts)
+			foreach (var fact in WorldObjectManager.ShipLogFacts)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false);
+				EventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false);
 			}
 
-			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			foreach (var wallText in WorldObjectManager.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				foreach (var id in wallText.GetTranslatedIds())
 				{
-					QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id);
+					EventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id);
 				}
 			}
 
-			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			foreach (var computer in WorldObjectManager.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				foreach (var id in computer.GetTranslatedIds())
 				{
-					QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id);
+					EventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id);
 				}
 			}
 
-			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			foreach (var vesselComputer in WorldObjectManager.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				foreach (var id in vesselComputer.GetTranslatedIds())
 				{
-					QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id);
+					EventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id);
 				}
 			}
 
-			var list = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
+			var list = WorldObjectManager.GetWorldObjects<IQSBQuantumObject>().ToList();
 			for (var i = 0; i < list.Count; i++)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
+				EventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
 			}
 		}
 	}

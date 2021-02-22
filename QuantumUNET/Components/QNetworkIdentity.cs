@@ -93,7 +93,7 @@ namespace QuantumUNET.Components
 			ClientAuthorityOwner.AddOwnedObject(this);
 		}
 
-		internal void ClearClientOwner() 
+		internal void ClearClientOwner()
 			=> ClientAuthorityOwner = null;
 
 		internal void ForceAuthority(bool authority)
@@ -161,7 +161,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public void ForceSceneId(int newSceneId) 
+		public void ForceSceneId(int newSceneId)
 			=> m_SceneId = new NetworkSceneId((uint)newSceneId);
 
 		internal void UpdateClientServer(bool isClientFlag, bool isServerFlag)
@@ -562,7 +562,8 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		internal void SetConnectionToServer(QNetworkConnection conn) => ConnectionToServer = conn;
+		internal void SetConnectionToServer(QNetworkConnection conn)
+			=> ConnectionToServer = conn;
 
 		internal void SetConnectionToClient(QNetworkConnection conn, short newPlayerControllerId)
 		{
@@ -784,7 +785,7 @@ namespace QuantumUNET.Components
 			return true;
 		}
 
-		internal void MarkForReset() 
+		internal void MarkForReset()
 			=> m_Reset = true;
 
 		internal void Reset()
