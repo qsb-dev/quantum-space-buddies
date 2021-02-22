@@ -4,47 +4,46 @@ namespace QuantumUNET.Components
 {
 	public class QNetworkManagerHUD : MonoBehaviour
 	{
-		public QNetworkManager manager;
-		public bool showGUI = true;
-		public int offsetX;
-		public int offsetY;
+		public QNetworkManager Manager;
+		public bool ShowGUI = true;
 
-		private void Awake() => manager = GetComponent<QNetworkManager>();
+		private void Awake()
+			=> Manager = GetComponent<QNetworkManager>();
 
 		private void OnGUI()
 		{
-			if (showGUI)
+			if (ShowGUI)
 			{
-				var num = 10 + offsetX;
-				var num2 = 40 + offsetY;
-				var flag = manager.client == null || manager.client.connection == null || manager.client.connection.connectionId == -1;
-				if (!manager.IsClientConnected() && !QNetworkServer.active)
+				var xOffset = 10;
+				var yOffset = 30;
+				var flag = Manager.client == null || Manager.client.connection == null || Manager.client.connection.connectionId == -1;
+				if (!Manager.IsClientConnected() && !QNetworkServer.active)
 				{
 					if (flag)
 					{
 						if (Application.platform != RuntimePlatform.WebGLPlayer)
 						{
-							if (GUI.Button(new Rect(num, num2, 200f, 20f), "Host"))
+							if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Host"))
 							{
-								manager.StartHost();
+								Manager.StartHost();
 							}
-							num2 += 24;
+							yOffset += 20;
 						}
-						if (GUI.Button(new Rect(num, num2, 105f, 20f), "Connect"))
+						if (GUI.Button(new Rect(xOffset, yOffset, 105f, 20f), "Connect"))
 						{
-							manager.StartClient();
+							Manager.StartClient();
 						}
-						manager.networkAddress = GUI.TextField(new Rect(num + 100, num2, 95f, 20f), manager.networkAddress);
-						num2 += 24;
+						Manager.networkAddress = GUI.TextField(new Rect(xOffset + 100, yOffset, 95f, 20f), Manager.networkAddress);
+						yOffset += 20;
 					}
 					else
 					{
-						GUI.Label(new Rect(num, num2, 200f, 20f),
-							$"Connecting to {manager.networkAddress}:{manager.networkPort}..");
-						num2 += 24;
-						if (GUI.Button(new Rect(num, num2, 200f, 20f), "Cancel Connection Attempt"))
+						GUI.Label(new Rect(xOffset, yOffset, 200f, 20f),
+							$"Connecting to {Manager.networkAddress}:{Manager.networkPort}..");
+						yOffset += 24;
+						if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Cancel Connection Attempt"))
 						{
-							manager.StopClient();
+							Manager.StopClient();
 						}
 					}
 				}
@@ -52,39 +51,39 @@ namespace QuantumUNET.Components
 				{
 					if (QNetworkServer.active)
 					{
-						var text = $"Hosting on port {manager.networkPort}";
-						if (manager.useWebSockets)
+						var text = $"Hosting on port {Manager.networkPort}";
+						if (Manager.useWebSockets)
 						{
 							text += " (using WebSockets)";
 						}
-						GUI.Label(new Rect(num, num2, 300f, 20f), text);
-						num2 += 24;
+						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), text);
+						yOffset += 20;
 					}
-					if (manager.IsClientConnected())
+					if (Manager.IsClientConnected())
 					{
-						GUI.Label(new Rect(num, num2, 300f, 20f), $"Connected to {manager.networkAddress}, port {manager.networkPort}");
-						num2 += 24;
+						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), $"Connected to {Manager.networkAddress}, port {Manager.networkPort}");
+						yOffset += 20;
 					}
 				}
-				if (manager.IsClientConnected() && !QClientScene.ready)
+				if (Manager.IsClientConnected() && !QClientScene.ready)
 				{
-					if (GUI.Button(new Rect(num, num2, 200f, 20f), "Client Ready"))
+					if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Client Ready"))
 					{
-						QClientScene.Ready(manager.client.connection);
+						QClientScene.Ready(Manager.client.connection);
 						if (QClientScene.localPlayers.Count == 0)
 						{
 							QClientScene.AddPlayer(0);
 						}
 					}
-					num2 += 24;
+					yOffset += 20;
 				}
-				if (QNetworkServer.active || manager.IsClientConnected())
+				if (QNetworkServer.active || Manager.IsClientConnected())
 				{
-					if (GUI.Button(new Rect(num, num2, 200f, 20f), "Stop"))
+					if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Stop"))
 					{
-						manager.StopHost();
+						Manager.StopHost();
 					}
-					num2 += 24;
+					yOffset += 20;
 				}
 			}
 		}

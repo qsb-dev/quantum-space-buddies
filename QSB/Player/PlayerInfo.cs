@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.QuantumSync;
 using QSB.Tools;
 using QSB.Utility;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace QSB.Player
 		// Misc
 		public bool IsInMoon;
 		public bool IsInShrine;
+		public IQSBQuantumObject EntangledObject;
 
 		public PlayerInfo(uint id)
 		{

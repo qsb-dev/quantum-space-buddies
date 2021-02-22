@@ -5,28 +5,36 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
+		public Text DebugBoxText;
+
 		public override void Init(SocketedQuantumObject quantumObject, int id)
 		{
 			ObjectId = id;
 			AttachedObject = quantumObject;
 			base.Init(quantumObject, id);
+			if (QSBCore.DebugMode)
+			{
+				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, ObjectId.ToString()).GetComponent<Text>();
+			}
+		}
+
+		public override void OnRemoval()
+		{
+			base.OnRemoval();
+			if (DebugBoxText != null)
+			{
+				Object.Destroy(DebugBoxText.gameObject);
+			}
 		}
 
 		public void MoveToSocket(SocketStateChangeMessage message)
 		{
-			/*
-			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
-			var visible = visibilityTrackers.Where(x => x is ShapeVisibilityTracker).Any(x => QuantumManager.IsVisibleUsingCameraFrustum(x as ShapeVisibilityTracker, false));
-			if (visible)
-			{
-				DebugLog.DebugWrite($"Error - trying to move {AttachedObject.name} while still visible!", MessageType.Error);
-			}
-			*/
 			var qsbSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId);
 			if (qsbSocket == null)
 			{

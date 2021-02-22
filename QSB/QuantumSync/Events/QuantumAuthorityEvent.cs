@@ -26,7 +26,7 @@ namespace QSB.QuantumSync.Events
 				return false;
 			}
 
-			var obj = QuantumManager.Instance.GetObject(message.ObjectId);
+			var obj = QuantumManager.GetObject(message.ObjectId);
 
 			// Deciding if to change the object's owner
 			//		  Message
@@ -42,13 +42,13 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
 		{
-			var obj = QuantumManager.Instance.GetObject(message.ObjectId);
+			var obj = QuantumManager.GetObject(message.ObjectId);
 			obj.ControllingPlayer = message.AuthorityOwner;
 		}
 
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
 		{
-			var obj = QuantumManager.Instance.GetObject(message.ObjectId);
+			var obj = QuantumManager.GetObject(message.ObjectId);
 			obj.ControllingPlayer = message.AuthorityOwner;
 			if (obj.ControllingPlayer == 0 && obj.IsEnabled)
 			{

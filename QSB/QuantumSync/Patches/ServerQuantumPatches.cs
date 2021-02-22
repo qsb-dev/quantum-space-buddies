@@ -131,7 +131,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				else
 				{
-					DebugLog.DebugWrite("Warning - Quantum moon orbit position occupied! Aborting collapse.", MessageType.Warning);
+					DebugLog.ToConsole("Warning - Quantum moon orbit position occupied! Aborting collapse.", MessageType.Warning);
 				}
 			}
 			if (flag)

@@ -44,12 +44,12 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{
-			__result = QSBPlayerManager.GetPlayerCameras()
-					.Any(x => GeometryUtility.TestPlanesAABB(x.GetFrustumPlanes(), ____renderer.bounds))
-				&& (!____checkFrustumOcclusion || QSBPlayerManager.GetPlayerCameras()
+			__result = QSBPlayerManager.GetPlayersWithCameras()
+					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), ____renderer.bounds))
+				&& (!____checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
 					.Any(x => !(bool)__instance.GetType()
 					.GetMethod("IsOccludedFromPosition", BindingFlags.NonPublic | BindingFlags.Instance)
-					.Invoke(__instance, new object[] { x.transform.position })));
+					.Invoke(__instance, new object[] { x.Camera.transform.position })));
 			return false;
 		}
 

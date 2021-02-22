@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
@@ -44,8 +45,109 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
 		}
 
-		public static bool Socketed_ChangeQuantumState(SocketedQuantumObject __instance)
-			=> QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance).ControllingPlayer == QSBPlayerManager.LocalPlayerId;
+		public static bool Socketed_ChangeQuantumState(
+			SocketedQuantumObject __instance,
+			ref bool __result,
+			bool skipInstantVisibilityCheck,
+			List<QuantumSocket> ____childSockets,
+			List<QuantumSocket> ____socketList,
+			ref QuantumSocket ____recentlyObscuredSocket,
+			QuantumSocket ____occupiedSocket)
+		{
+			var socketedWorldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+			if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			{
+				return false;
+			}
+
+			foreach (var socket in ____childSockets)
+			{
+				if (socket.IsOccupied())
+				{
+					__result = false;
+					return false;
+				}
+			}
+
+			if (____socketList.Count <= 1)
+			{
+				DebugLog.ToConsole($"Error - Not enough quantum sockets in list for {__instance.name}!", MessageType.Error);
+				__result = false;
+				return false;
+			}
+
+			var list = new List<QuantumSocket>();
+			foreach (var socket in ____socketList)
+			{
+				if (!socket.IsOccupied() && socket.IsActive())
+				{
+					list.Add(socket);
+				}
+			}
+
+			if (list.Count == 0)
+			{
+				__result = false;
+				return false;
+			}
+
+			if (____recentlyObscuredSocket != null)
+			{
+				__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____recentlyObscuredSocket });
+				____recentlyObscuredSocket = null;
+				__result = true;
+				return false;
+			}
+
+			var occupiedSocket = ____occupiedSocket;
+			for (var i = 0; i < 20; i++)
+			{
+				var index = UnityEngine.Random.Range(0, list.Count);
+				__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { list[index] });
+				if (skipInstantVisibilityCheck)
+				{
+					__result = true;
+					return false;
+				}
+				bool socketNotSuitable;
+				var isSocketIlluminated = (bool)__instance.GetType().GetMethod("CheckIllumination", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+
+				var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
+				if (playersEntangled.Count() != 0)
+				{
+					// socket not suitable if illuminated
+					socketNotSuitable = isSocketIlluminated;
+				}
+				else
+				{
+					var checkVisInstant = (bool)__instance.GetType().GetMethod("CheckVisibilityInstantly", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+					if (isSocketIlluminated)
+					{
+						// socket not suitable if object is visible
+						socketNotSuitable = checkVisInstant;
+					}
+					else
+					{
+						// socket not suitable if player is inside object
+						socketNotSuitable = playersEntangled.Any(x => __instance.CheckPointInside(x.CameraBody.transform.position));
+					}
+				}
+
+				if (!socketNotSuitable)
+				{
+					__result = true;
+					return false;
+				}
+				list.RemoveAt(index);
+				if (list.Count == 0)
+				{
+					break;
+				}
+			}
+			__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { occupiedSocket });
+			__result = false;
+			return false;
+		}
 
 		public static void Socketed_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
 		{
