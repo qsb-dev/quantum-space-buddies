@@ -1,12 +1,11 @@
 ﻿using OWML.Common;
 using QSB.Animation;
 using QSB.Events;
-using QSB.Instruments.QSBCamera;
-using QSB.Player;
+using QSB.Player.Instruments.QSBCamera;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Instruments
+namespace QSB.Player.Instruments
 {
 	public class InstrumentsManager : PlayerSyncObject
 	{

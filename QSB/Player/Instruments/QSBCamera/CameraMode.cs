@@ -1,4 +1,4 @@
-﻿namespace QSB.Instruments.QSBCamera
+﻿namespace QSB.Player.Instruments.QSBCamera
 {
 	public enum CameraMode
 	{

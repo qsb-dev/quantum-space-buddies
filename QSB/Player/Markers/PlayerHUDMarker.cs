@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB.Player
+namespace QSB.Player.Markers
 {
 	public class PlayerHUDMarker : HUDDistanceMarker
 	{

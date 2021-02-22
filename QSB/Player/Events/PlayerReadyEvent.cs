@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 
@@ -50,7 +51,7 @@ namespace QSB.Player.Events
 					MessageType.Error);
 				return;
 			}
-			foreach (var item in PlayerManager.GetSyncObjects<TransformSync.TransformSync>()
+			foreach (var item in PlayerManager.GetSyncObjects<SyncedTransform>()
 				.Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
 			{
 				EventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);

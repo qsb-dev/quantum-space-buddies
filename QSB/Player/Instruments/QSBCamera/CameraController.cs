@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB.Instruments.QSBCamera
+namespace QSB.Player.Instruments.QSBCamera
 {
 	internal class CameraController : MonoBehaviour
 	{

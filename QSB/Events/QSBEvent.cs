@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.TransformSync;
+using QSB.Player.TransformSyncs;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;

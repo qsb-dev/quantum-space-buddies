@@ -1,12 +1,12 @@
 ﻿using OWML.Common;
-using QSB.Player;
 using QSB.Player.Tools;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Player.TransformSyncs
 {
-	public class PlayerProbeSync : TransformSync
+	public class PlayerProbeSync : SyncedTransform
 	{
 		private Transform _disabledSocket;
 
@@ -72,11 +72,11 @@ namespace QSB.TransformSync
 				transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
 				return;
 			}
-			if (SyncedTransform.position == Vector3.zero)
+			if (TransformToSync.position == Vector3.zero)
 			{
 				return;
 			}
-			SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
+			TransformToSync.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null

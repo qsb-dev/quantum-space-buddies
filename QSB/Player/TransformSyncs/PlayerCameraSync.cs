@@ -1,12 +1,12 @@
 ﻿using QSB.Events;
-using QSB.Player;
 using QSB.Player.Tools;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Player.TransformSyncs
 {
-	public class PlayerCameraSync : TransformSync
+	public class PlayerCameraSync : SyncedTransform
 	{
 		protected override Transform InitLocalTransform()
 		{

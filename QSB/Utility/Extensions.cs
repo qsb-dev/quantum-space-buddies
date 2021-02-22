@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
-using QSB.TransformSync;
+using QSB.Player.TransformSyncs;
 using QuantumUNET;
 using System;
 using System.Reflection;

@@ -1,9 +1,9 @@
-﻿using QSB.Player;
+﻿using QSB.TransformSync;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Player.TransformSyncs
 {
-	public class ShipTransformSync : TransformSync
+	public class ShipTransformSync : SyncedTransform
 	{
 		private Transform GetShipModel() => Locator.GetShipTransform();
 

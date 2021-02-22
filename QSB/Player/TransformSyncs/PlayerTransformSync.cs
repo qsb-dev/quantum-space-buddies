@@ -1,11 +1,12 @@
 ﻿using QSB.Animation;
-using QSB.Instruments;
-using QSB.Player;
+using QSB.Player.Instruments;
+using QSB.Player.Markers;
+using QSB.TransformSync;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Player.TransformSyncs
 {
-	public class PlayerTransformSync : TransformSync
+	public class PlayerTransformSync : SyncedTransform
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

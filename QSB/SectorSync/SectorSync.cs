@@ -1,6 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
+using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -18,13 +19,13 @@ namespace QSB.SectorSync
 			{
 				return;
 			}
-			PlayerManager.GetSyncObjects<TransformSync.TransformSync>()
+			PlayerManager.GetSyncObjects<SyncedTransform>()
 				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
 		}
 
-		private void CheckTransformSyncSector(TransformSync.TransformSync transformSync)
+		private void CheckTransformSyncSector(SyncedTransform transformSync)
 		{
-			var syncedTransform = transformSync.SyncedTransform;
+			var syncedTransform = transformSync.TransformToSync;
 			if (syncedTransform == null || syncedTransform.position == Vector3.zero)
 			{
 				return;

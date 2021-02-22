@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Player.Events;
 using QSB.Player.Tools;
-using QSB.TransformSync;
+using QSB.Player.TransformSyncs;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;

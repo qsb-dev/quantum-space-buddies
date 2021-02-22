@@ -4,7 +4,7 @@ using QSB.Utility;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 
-namespace QSB.Instruments.QSBCamera
+namespace QSB.Player.Instruments.QSBCamera
 {
 	public class CameraManager : MonoBehaviour
 	{

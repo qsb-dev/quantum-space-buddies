@@ -2,6 +2,7 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.QuantumSync;
+using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.TranslationSync.WorldObjects;
 using QSB.Utility;
@@ -29,7 +30,7 @@ namespace QSB.Player.Events
 		{
 			DebugLog.DebugWrite($"Get state request from {message.FromId} - isServer?{server}");
 			EventManager.FireEvent(EventNames.QSBServerSendPlayerStates);
-			foreach (var item in PlayerManager.GetSyncObjects<TransformSync.TransformSync>()
+			foreach (var item in PlayerManager.GetSyncObjects<SyncedTransform>()
 				.Where(x => x != null && x.IsReady && x.ReferenceSector != null))
 			{
 				EventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
