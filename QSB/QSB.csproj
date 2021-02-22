@@ -284,9 +284,7 @@
       <Version>1.1.7</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tools\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"
