@@ -3,8 +3,8 @@
 	"settings": {
 		"defaultServerIP": "localhost",
 		"port": 7777,
-		"debugMode": true,
+		"debugMode": false,
 		"showLinesInDebug": false,
-		"socketedObjToDebug": 110
+		"socketedObjToDebug": -1
 	}
 }
