@@ -2,7 +2,7 @@
 using QuantumUNET;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.OrbSync
 {
 	public class NomaiOrbTransformSync : QNetworkBehaviour
 	{

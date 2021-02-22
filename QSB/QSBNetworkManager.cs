@@ -15,7 +15,6 @@ using QSB.QuantumSync;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.TimeSync;
-using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;

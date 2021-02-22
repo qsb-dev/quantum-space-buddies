@@ -192,7 +192,7 @@
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
     <Compile Include="Player\Tools\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
-    <Compile Include="TransformSync\NomaiOrbTransformSync.cs" />
+    <Compile Include="OrbSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Events\PlayerSectorEvent.cs" />
     <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Animation\Events\PlayerSuitEvent.cs" />
