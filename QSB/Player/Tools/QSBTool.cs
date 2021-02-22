@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB.Tools
+namespace QSB.Player.Tools
 {
 	public class QSBTool : PlayerTool
 	{

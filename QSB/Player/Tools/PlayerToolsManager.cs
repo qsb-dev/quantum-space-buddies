@@ -4,7 +4,7 @@ using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Tools
+namespace QSB.Player.Tools
 {
 	public class PlayerToolsManager
 	{

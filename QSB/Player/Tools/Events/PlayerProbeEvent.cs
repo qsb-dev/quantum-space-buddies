@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Tools.Events
+namespace QSB.Player.Tools.Events
 {
 	public class PlayerProbeEvent : QSBEvent<ToggleMessage>
 	{

@@ -1,6 +1,6 @@
 ﻿using QSB.Animation;
+using QSB.Player.Tools;
 using QSB.QuantumSync;
-using QSB.Tools;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;

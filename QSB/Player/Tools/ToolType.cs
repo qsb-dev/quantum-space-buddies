@@ -1,4 +1,4 @@
-﻿namespace QSB.Tools
+﻿namespace QSB.Player.Tools
 {
 	public enum ToolType
 	{

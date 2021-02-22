@@ -1,6 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Player;
-using QSB.Tools;
+using QSB.Player.Tools;
 using QSB.Utility;
 using UnityEngine;
 
