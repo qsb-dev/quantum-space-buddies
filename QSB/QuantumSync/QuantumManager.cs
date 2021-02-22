@@ -70,18 +70,18 @@ namespace QSB.QuantumSync
 		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
 			return tracker.gameObject.activeInHierarchy
-				&& QSBPlayerManager.GetPlayerCameras(!ignoreLocalCamera)
+				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => (bool)tracker.GetType()
 						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
-						.Invoke(tracker, new object[] { x.GetFrustumPlanes() }));
+						.Invoke(tracker, new object[] { x.Camera.GetFrustumPlanes() }));
 		}
 
 		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
 			return tracker.gameObject.activeInHierarchy
 				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera)
-				&& QSBPlayerManager.GetPlayerCameras(!ignoreLocalCamera)
-					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.mainCamera.transform.position));
+				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
+					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 		}
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)

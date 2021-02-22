@@ -132,9 +132,9 @@ namespace QSB
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
 			offset += _debugLineSpacing;
 			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
-			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
+			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {camera.name} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { camera.GetFrustumPlanes() })}");
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
 				offset += _debugLineSpacing;
 			}
 
@@ -173,9 +173,16 @@ namespace QSB
 			}
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"Visible by :");
 			offset += _debugLineSpacing;
-			foreach (var camera in QSBPlayerManager.GetPlayerCameras())
+			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {camera.name} : {socketedTrackers.Any(x => (bool)x.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(x, new object[] { camera.GetFrustumPlanes() }))}");
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {socketedTrackers.Any(x => (bool)x.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(x, new object[] { player.Camera.GetFrustumPlanes() }))}");
+				offset += _debugLineSpacing;
+			}
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Entangled Players :");
+			offset += _debugLineSpacing;
+			foreach (var player in QuantumManager.GetEntangledPlayers(socketedObject.AttachedObject))
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId}");
 				offset += _debugLineSpacing;
 			}
 			var sockets = socketedObject.AttachedObject.GetValue<List<QuantumSocket>>("_socketList");
