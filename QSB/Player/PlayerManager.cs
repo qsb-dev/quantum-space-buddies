@@ -19,7 +19,6 @@ namespace QSB.Player
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null.", MessageType.Error);
 					return uint.MaxValue;
 				}
 				if (localInstance.NetIdentity == null)
@@ -32,6 +31,7 @@ namespace QSB.Player
 		}
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
+		public static bool LocalPlayerReady => LocalPlayerId != uint.MaxValue && LocalPlayerId != 0u;
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
 		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new List<PlayerSyncObject>();

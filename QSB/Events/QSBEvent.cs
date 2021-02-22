@@ -1,10 +1,8 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Player.TransformSyncs;
 using QSB.Utility;
 using QuantumUNET;
-using QuantumUNET.Components;
 
 namespace QSB.Events
 {
@@ -36,7 +34,7 @@ namespace QSB.Events
 		{
 			message.FromId = PlayerManager.LocalPlayerId;
 			QSBCore.Helper.Events.Unity.RunWhen(
-				() => PlayerTransformSync.LocalInstance != null,
+				() => PlayerManager.LocalPlayerReady,
 				() => _eventHandler.SendToServer(message));
 		}
 
@@ -72,7 +70,7 @@ namespace QSB.Events
 				return;
 			}
 
-			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QNetworkIdentity>() == null)
+			if (!PlayerManager.LocalPlayerReady)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message of type <{message.GetType().Name}> before localplayer was established.", MessageType.Warning);
 				return;
