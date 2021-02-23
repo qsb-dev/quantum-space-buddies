@@ -4,6 +4,7 @@ using OWML.Utils;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.ItemSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
@@ -97,6 +98,7 @@ namespace QSB
 			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
+			gameObject.AddComponent<ItemManager>();
 
 			DebugBoxManager.Init();
 

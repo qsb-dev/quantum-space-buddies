@@ -132,6 +132,16 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="ItemSync\Events\SocketItemEvent.cs" />
+    <Compile Include="ItemSync\ItemManager.cs" />
+    <Compile Include="ItemSync\Patches\ItemPatches.cs" />
+    <Compile Include="ItemSync\SocketEventType.cs" />
+    <Compile Include="ItemSync\WorldObjects\IQSBOWItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\IQSBOWItemSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBOWItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBOWItemSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBScrollItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBScrollSocket.cs" />
     <Compile Include="LogSync\Events\RevealFactEvent.cs" />
     <Compile Include="LogSync\Events\RevealFactMessage.cs" />
     <Compile Include="LogSync\Patches\LogPatches.cs" />
@@ -284,6 +294,7 @@
       <Version>1.1.7</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"
