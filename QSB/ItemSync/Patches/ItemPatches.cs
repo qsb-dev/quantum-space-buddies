@@ -1,15 +1,11 @@
 ﻿using QSB.Patches;
 using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.ItemSync.Patches
 {
-	class ItemPatches : QSBPatch
+	internal class ItemPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
@@ -63,8 +59,8 @@ namespace QSB.ItemSync.Patches
 			{
 				sector = sectorGroup.GetSector();
 			}
-			var parent = (detachableFragment != null) 
-				? detachableFragment.transform 
+			var parent = (detachableFragment != null)
+				? detachableFragment.transform
 				: targetRigidbody.transform;
 			____heldItem.DropItem(hit.point, hit.normal, parent, sector, detachableFragment);
 			____heldItem = null;

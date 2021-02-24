@@ -2,8 +2,7 @@
 {
 	public enum SocketEventType
 	{
-		StartUnsocket,
-		CompleteUnsocket,
+		Unsocket,
 		Socket
 	}
 }

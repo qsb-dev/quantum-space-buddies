@@ -157,7 +157,7 @@ namespace QSB
 			// Used for diagnosing specific socketed objects.
 			// 110 = Cave Twin entanglement shard
 			// 342 = Timber Hearth museum shard
-			var socketedObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(SocketedObjToDebug);
+			var socketedObject = QSBWorldSync.GetWorldFromId<QSBSocketedQuantumObject>(SocketedObjToDebug);
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Controller : {socketedObject.ControllingPlayer}");
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Illuminated : {socketedObject.AttachedObject.IsIlluminated()}");

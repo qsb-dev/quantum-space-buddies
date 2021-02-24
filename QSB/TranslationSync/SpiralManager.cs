@@ -1,6 +1,5 @@
 ﻿using QSB.TranslationSync.WorldObjects;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.TranslationSync
@@ -8,10 +7,6 @@ namespace QSB.TranslationSync
 	internal class SpiralManager : MonoBehaviour
 	{
 		public static SpiralManager Instance { get; private set; }
-
-		private List<NomaiWallText> _nomaiWallTexts;
-		private List<NomaiComputer> _nomaiComputers;
-		private List<NomaiVesselComputer> _nomaiVesselComputers;
 
 		public void Awake()
 		{
@@ -23,13 +18,9 @@ namespace QSB.TranslationSync
 
 		private void OnSceneLoaded(OWScene scene)
 		{
-			_nomaiWallTexts = QSBWorldSync.Init<QSBWallText, NomaiWallText>();
-			_nomaiComputers = QSBWorldSync.Init<QSBComputer, NomaiComputer>();
-			_nomaiVesselComputers = QSBWorldSync.Init<QSBVesselComputer, NomaiVesselComputer>();
+			QSBWorldSync.Init<QSBWallText, NomaiWallText>();
+			QSBWorldSync.Init<QSBComputer, NomaiComputer>();
+			QSBWorldSync.Init<QSBVesselComputer, NomaiVesselComputer>();
 		}
-
-		public int GetId(NomaiWallText obj) => _nomaiWallTexts.IndexOf(obj);
-		public int GetId(NomaiComputer obj) => _nomaiComputers.IndexOf(obj);
-		public int GetId(NomaiVesselComputer obj) => _nomaiVesselComputers.IndexOf(obj);
 	}
 }

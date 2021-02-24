@@ -1,6 +1,8 @@
-﻿namespace QSB.ItemSync.WorldObjects
+﻿using QSB.WorldSync;
+
+namespace QSB.ItemSync.WorldObjects
 {
-	public interface IQSBOWItem
+	public interface IQSBOWItem : IWorldObjectTypeSubset
 	{
 		uint HoldingPlayer { get; set; }
 	}

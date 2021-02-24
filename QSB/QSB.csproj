@@ -132,6 +132,8 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="ItemSync\Events\DropItemEvent.cs" />
+    <Compile Include="ItemSync\Events\DropItemMessage.cs" />
     <Compile Include="ItemSync\Events\SocketItemEvent.cs" />
     <Compile Include="ItemSync\ItemManager.cs" />
     <Compile Include="ItemSync\Patches\ItemPatches.cs" />
@@ -219,9 +221,11 @@
     <Compile Include="SectorSync\WorldObjects\QSBSector.cs" />
     <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
+    <Compile Include="Utility\Callback6Args.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\GlobalMessenger6Args.cs" />
     <Compile Include="Utility\IRepeating.cs" />
     <Compile Include="Utility\OnEnableDisableTracker.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Constants.cs" />
@@ -272,6 +276,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldSync\FactReveal.cs" />
     <Compile Include="WorldSync\IWorldObject.cs" />
+    <Compile Include="WorldSync\IWorldObjectTypeSubset.cs" />
     <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
   </ItemGroup>

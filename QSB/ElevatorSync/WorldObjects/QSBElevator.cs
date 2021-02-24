@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace QSB.ElevatorSync.WorldObjects
 
 		public override void Init(Elevator elevator, int id)
 		{
+			DebugLog.DebugWrite($"init with id {id}");
 			AttachedObject = elevator;
 			ObjectId = id;
 			QSBCore.Helper.Events.Unity.RunWhen(() => AttachedObject.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);

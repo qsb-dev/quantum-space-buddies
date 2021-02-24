@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QSB.ItemSync.Events
+﻿namespace QSB.ItemSync.Events
 {
-	class SocketItemEvent
+	internal class SocketItemEvent
 	{
 	}
 }

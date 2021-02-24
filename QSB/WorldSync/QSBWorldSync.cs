@@ -23,11 +23,10 @@ namespace QSB.WorldSync
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();
 
-		public static TWorldObject GetWorldObject<TWorldObject>(int id)
-			where TWorldObject : IWorldObject
-			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
+		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
+			=> GetWorldObjects<TWorldObject>().ToList()[id];
 
-		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(TUnityObject unityObject)
+		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
@@ -40,6 +39,15 @@ namespace QSB.WorldSync
 			var correctWorldObject = allWorldObjects.First(x => x.AttachedObject == unityObject);
 			return correctWorldObject;
 		}
+
+		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+			=> GetWorldFromUnity<TWorldObject, TUnityObject>(unityObject).ObjectId;
+
+		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
+			where TTypeSubset : IWorldObjectTypeSubset
+			=> GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
 
 		public static void RemoveWorldObjects<TWorldObject>()
 		{
@@ -68,7 +76,7 @@ namespace QSB.WorldSync
 			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
-				var obj = GetWorldObject<TWorldObject>(id) ?? CreateWorldObject<TWorldObject>();
+				var obj = CreateWorldObject<TWorldObject>();
 				obj.Init(list[id], id);
 			}
 			return list;

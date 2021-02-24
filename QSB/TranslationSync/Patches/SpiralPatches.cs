@@ -1,5 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
+using QSB.TranslationSync.WorldObjects;
+using QSB.WorldSync;
 
 namespace QSB.TranslationSync.Patches
 {
@@ -30,7 +32,7 @@ namespace QSB.TranslationSync.Patches
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.WallText,
-					SpiralManager.Instance.GetId(__instance),
+					QSBWorldSync.GetIdFromUnity<QSBWallText, NomaiWallText>(__instance),
 					id);
 			return true;
 		}
@@ -44,7 +46,7 @@ namespace QSB.TranslationSync.Patches
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.Computer,
-					SpiralManager.Instance.GetId(__instance),
+					QSBWorldSync.GetIdFromUnity<QSBComputer, NomaiComputer>(__instance),
 					id);
 			return true;
 		}
@@ -58,7 +60,7 @@ namespace QSB.TranslationSync.Patches
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.VesselComputer,
-					SpiralManager.Instance.GetId(__instance),
+					QSBWorldSync.GetIdFromUnity<QSBVesselComputer, NomaiVesselComputer>(__instance),
 					id);
 			return true;
 		}

@@ -50,5 +50,6 @@
 		public static string QSBEnterShrine = "QSBEnterShrine";
 		public static string QSBExitShrine = "QSBExitShrine";
 		public static string QSBPlayerEntangle = "QSBPlayerEntangle";
+		public static string QSBDropItem = "QSBDropItem";
 	}
 }

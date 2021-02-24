@@ -34,6 +34,7 @@
 		IdentifySignal,
 		TextTranslated,
 		EnterLeave,
-		PlayerEntangle
+		PlayerEntangle,
+		DropItem
 	}
 }

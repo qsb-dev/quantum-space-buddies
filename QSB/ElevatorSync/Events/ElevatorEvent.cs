@@ -22,7 +22,7 @@ namespace QSB.ElevatorSync.Events
 
 		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
-			var elevator = QSBWorldSync.GetWorldObject<QSBElevator>(message.ObjectId);
+			var elevator = QSBWorldSync.GetWorldFromId<QSBElevator>(message.ObjectId);
 			elevator?.RemoteCall(message.State);
 		}
 	}

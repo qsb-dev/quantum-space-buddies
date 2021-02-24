@@ -2,15 +2,11 @@
 using QSB.ItemSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.ItemSync
 {
-	class ItemManager : MonoBehaviour
+	internal class ItemManager : MonoBehaviour
 	{
 		public static ItemManager Instance { get; private set; }
 
