@@ -12,7 +12,7 @@ namespace QSB.ItemSync.WorldObjects
 		public ItemType GetItemType()
 			=> AttachedObject.GetItemType();
 
-		public void SetColliderActivation(bool active) 
+		public void SetColliderActivation(bool active)
 			=> AttachedObject.SetColliderActivation(active);
 
 		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
@@ -28,7 +28,7 @@ namespace QSB.ItemSync.WorldObjects
 			AttachedObject.SetColliderActivation(true);
 		}
 
-		public virtual void SocketItem(Transform socketTransform, Sector sector) 
+		public virtual void SocketItem(Transform socketTransform, Sector sector)
 			=> AttachedObject.SocketItem(socketTransform, sector);
 
 		public virtual void PlaySocketAnimation() { }

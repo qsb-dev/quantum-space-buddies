@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.ItemSync.WorldObjects;
 using QSB.OrbSync.WorldObjects;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -55,7 +54,7 @@ namespace QSB.WorldSync
 
 		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
 		{
-			var index =GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
+			var index = GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
 			if (index == -1)
 			{
 				DebugLog.ToConsole($"Warning - {(typeSubset as IWorldObject).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);

@@ -1,8 +1,5 @@
 ﻿using QSB.Messaging;
-using QSB.SectorSync.WorldObjects;
-using QSB.WorldSync;
 using QuantumUNET.Transport;
-using UnityEngine;
 
 namespace QSB.ItemSync.Events
 {

@@ -7,7 +7,7 @@ using QSB.WorldSync.Events;
 
 namespace QSB.ItemSync.Events
 {
-	class MoveToCarryEvent : QSBEvent<WorldObjectMessage>
+	internal class MoveToCarryEvent : QSBEvent<WorldObjectMessage>
 	{
 		public override EventType Type => EventType.MoveToCarry;
 

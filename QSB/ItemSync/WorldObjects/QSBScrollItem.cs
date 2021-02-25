@@ -1,7 +1,4 @@
-﻿using OWML.Utils;
-using UnityEngine;
-
-namespace QSB.ItemSync.WorldObjects
+﻿namespace QSB.ItemSync.WorldObjects
 {
 	internal class QSBScrollItem : QSBOWItem<ScrollItem>
 	{
@@ -12,13 +9,13 @@ namespace QSB.ItemSync.WorldObjects
 			base.Init(attachedObject, id);
 		}
 
-		public override void PlaySocketAnimation() 
+		public override void PlaySocketAnimation()
 			=> AttachedObject.PlaySocketAnimation();
 
-		public override void PlayUnsocketAnimation() 
+		public override void PlayUnsocketAnimation()
 			=> AttachedObject.PlayUnsocketAnimation();
 
-		public void HideNomaiText() 
+		public void HideNomaiText()
 			=> AttachedObject.HideNomaiText();
 
 		public void ShowNomaiText()
