@@ -13,7 +13,7 @@
 		{
 			var scrollItem = (QSBScrollItem)_socketedItem;
 			scrollItem.HideNomaiText();
-			return RemoveFromSocket();
+			return base.RemoveFromSocket();
 		}
 	}
 }

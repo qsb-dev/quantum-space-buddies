@@ -51,5 +51,7 @@
 		public static string QSBExitShrine = "QSBExitShrine";
 		public static string QSBPlayerEntangle = "QSBPlayerEntangle";
 		public static string QSBDropItem = "QSBDropItem";
+		public static string QSBSocketItem = "QSBSocketItem";
+		public static string QSBMoveToCarry = "QSBMoveToCarry";
 	}
 }

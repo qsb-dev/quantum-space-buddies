@@ -36,6 +36,7 @@
 		EnterLeave,
 		PlayerEntangle,
 		DropItem,
-		SocketItem
+		SocketItem,
+		MoveToCarry
 	}
 }

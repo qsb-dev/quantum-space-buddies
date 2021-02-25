@@ -13,6 +13,7 @@ namespace QSB.ItemSync.Patches
 
 		public override void DoPatches()
 		{
+			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("MoveItemToCarrySocket", typeof(ItemPatches), nameof(ItemTool_MoveItemToCarrySocket));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("SocketItem", typeof(ItemPatches), nameof(ItemTool_SocketItem));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("StartUnsocketItem", typeof(ItemPatches), nameof(ItemTool_StartUnsocketItem));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("DropItem", typeof(ItemPatches), nameof(ItemTool_DropItem));
@@ -23,25 +24,26 @@ namespace QSB.ItemSync.Patches
 
 		}
 
-		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
+		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
 		{
-			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
+			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(item));
+			QSBEventManager.FireEvent(EventNames.QSBMoveToCarry, itemId);
 			return true;
 		}
 
-		public static bool ItemTool_StartUnsocketItem(ItemTool __instance, ref OWItem ____heldItem, ref bool ____waitForUnsocketAnimation, OWItemSocket socket)
+		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
 		{
-			var owitem = socket.RemoveFromSocket();
-			____heldItem = owitem;
-			if (____heldItem.IsAnimationPlaying())
-			{
-				____waitForUnsocketAnimation = true;
-			}
-			else
-			{
-				__instance.GetType().GetMethod("CompleteUnsocketItem", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
-			}
-			return false;
+			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
+			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
+			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, itemId, true);
+			return true;
+		}
+
+		public static bool ItemTool_StartUnsocketItem(OWItemSocket socket)
+		{
+			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
+			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, 0, false);
+			return true;
 		}
 
 		public static bool ItemTool_DropItem(RaycastHit hit, OWRigidbody targetRigidbody, DetachableFragment detachableFragment, ref OWItem ____heldItem)

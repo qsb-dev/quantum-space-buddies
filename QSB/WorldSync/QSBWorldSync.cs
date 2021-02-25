@@ -25,7 +25,14 @@ namespace QSB.WorldSync
 			=> WorldObjects.OfType<TWorldObject>();
 
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
-			=> GetWorldObjects<TWorldObject>().ToList()[id];
+		{
+			if (id < 0 || id >= GetWorldObjects<TWorldObject>().Count())
+			{
+				DebugLog.DebugWrite($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {GetWorldObjects<TWorldObject>().Count()}.", MessageType.Warning);
+				return default;
+			}
+			return GetWorldObjects<TWorldObject>().ToList()[id];
+		}
 
 		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
@@ -47,8 +54,14 @@ namespace QSB.WorldSync
 			=> GetWorldFromUnity<TWorldObject, TUnityObject>(unityObject).ObjectId;
 
 		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
-			where TTypeSubset : IWorldObjectTypeSubset
-			=> GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
+		{
+			var index =GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
+			if (index == -1)
+			{
+				DebugLog.ToConsole($"Warning - {(typeSubset as IWorldObject).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
+			}
+			return index;
+		}
 
 		public static void RemoveWorldObjects<TWorldObject>()
 		{

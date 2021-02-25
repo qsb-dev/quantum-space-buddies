@@ -42,7 +42,7 @@ namespace QSB.ItemSync.WorldObjects
 
 		public virtual bool PlaceIntoSocket(IQSBOWItem item)
 		{
-			if (!AcceptsItem(item) || _socketedItem != null)
+			if (!AcceptsItem(item) || _socketedItem != default)
 			{
 				return false;
 			}
@@ -56,7 +56,7 @@ namespace QSB.ItemSync.WorldObjects
 		public virtual IQSBOWItem RemoveFromSocket()
 		{
 			_removedItem = _socketedItem;
-			_socketedItem = null;
+			_socketedItem = default;
 			_removedItem.PlayUnsocketAnimation();
 			_removedItem.SetColliderActivation(true);
 			AttachedObject.enabled = true;

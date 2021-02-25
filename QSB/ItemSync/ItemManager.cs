@@ -30,40 +30,36 @@ namespace QSB.ItemSync
 
 		public static IQSBOWItem GetObject(OWItem unityObject)
 		{
+			if (unityObject == null)
+			{
+				return default;
+			}
 			IQSBOWItem worldObj = null;
 			if (unityObject.GetType() == typeof(ScrollItem))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBScrollItem, ScrollItem>((ScrollItem)unityObject);
 			}
-			else if (unityObject.GetType() == typeof(NomaiConversationStone))
-			{
-				//worldObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
-			}
-			else if (unityObject.GetType() == typeof(SharedStone))
-			{
-				//worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
-			}
-			else if (unityObject.GetType() == typeof(WarpCoreItem))
-			{
-				//worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
-			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - couldn't work out type of OWITem {unityObject.name}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - couldn't work out type of OWItem {unityObject.name}.", MessageType.Warning);
 			}
 			return worldObj;
 		}
 
 		public static IQSBOWItemSocket GetObject(OWItemSocket unityObject)
 		{
+			if (unityObject == null)
+			{
+				return default;
+			}
 			IQSBOWItemSocket worldObj = null;
-			if (unityObject.GetType() == typeof(ScrollItem))
+			if (unityObject.GetType() == typeof(ScrollSocket))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBScrollSocket, ScrollSocket>((ScrollSocket)unityObject);
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - couldn't work out type of OWITemSocket {unityObject.name}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - couldn't work out type of OWItemSocket {unityObject.name}.", MessageType.Warning);
 			}
 			return worldObj;
 		}

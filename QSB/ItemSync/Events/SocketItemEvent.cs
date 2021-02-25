@@ -8,13 +8,13 @@ namespace QSB.ItemSync.Events
 {
 	internal class SocketItemEvent : QSBEvent<SocketItemMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.SocketItem;
+		public override EventType Type => EventType.SocketItem;
 
 		public override void SetupListener()
-			=> GlobalMessenger<int, int, bool>.AddListener(EventNames.QSBDropItem, Handler);
+			=> GlobalMessenger<int, int, bool>.AddListener(EventNames.QSBSocketItem, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<int, int, bool>.RemoveListener(EventNames.QSBDropItem, Handler);
+			=> GlobalMessenger<int, int, bool>.RemoveListener(EventNames.QSBSocketItem, Handler);
 
 		private void Handler(int socketId, int itemId, bool inserting)
 			=> SendEvent(CreateMessage(socketId, itemId, inserting));
@@ -31,7 +31,12 @@ namespace QSB.ItemSync.Events
 		{
 			var socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
 			var itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
-			socketWorldObject.PlaceIntoSocket(itemWorldObject);
+			if (message.Inserting)
+			{
+				socketWorldObject.PlaceIntoSocket(itemWorldObject);
+				return;
+			}
+			socketWorldObject.RemoveFromSocket();
 		}
 	}
 }

@@ -134,6 +134,7 @@
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
     <Compile Include="ItemSync\Events\DropItemMessage.cs" />
+    <Compile Include="ItemSync\Events\MoveToCarryEvent.cs" />
     <Compile Include="ItemSync\Events\SocketItemEvent.cs" />
     <Compile Include="ItemSync\Events\SocketItemMessage.cs" />
     <Compile Include="ItemSync\ItemManager.cs" />
