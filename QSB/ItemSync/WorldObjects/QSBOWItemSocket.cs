@@ -7,10 +7,16 @@ namespace QSB.ItemSync.WorldObjects
 	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
 		where T : MonoBehaviour
 	{
-		private IQSBOWItem _socketedItem
+		protected IQSBOWItem _socketedItem
 		{
 			get => ItemManager.GetObject(AttachedObject.GetValue<OWItem>("_socketedItem"));
-			set => AttachedObject.SetValue("_socketedItem", (value as IWorldObject).ReturnObject());
+			set => AttachedObject.SetValue("_socketedItem", (value as IWorldObject)?.ReturnObject());
+		}
+
+		private IQSBOWItem _removedItem
+		{
+			get => ItemManager.GetObject(AttachedObject.GetValue<OWItem>("_removedItem"));
+			set => AttachedObject.SetValue("_removedItem", (value as IWorldObject).ReturnObject());
 		}
 
 		private Transform _socketTransform
@@ -45,6 +51,16 @@ namespace QSB.ItemSync.WorldObjects
 			_socketedItem.PlaySocketAnimation();
 			AttachedObject.enabled = true;
 			return true;
+		}
+
+		public virtual IQSBOWItem RemoveFromSocket()
+		{
+			_removedItem = _socketedItem;
+			_socketedItem = null;
+			_removedItem.PlayUnsocketAnimation();
+			_removedItem.SetColliderActivation(true);
+			AttachedObject.enabled = true;
+			return _removedItem;
 		}
 	}
 }

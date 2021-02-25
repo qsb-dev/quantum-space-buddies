@@ -25,7 +25,6 @@ namespace QSB.ItemSync.Patches
 
 		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
 		{
-			DebugLog.DebugWrite($"Socket item {____heldItem.name} into socket {socket.name}.");
 			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
 			return true;
 		}
@@ -34,7 +33,6 @@ namespace QSB.ItemSync.Patches
 		{
 			var owitem = socket.RemoveFromSocket();
 			____heldItem = owitem;
-			DebugLog.DebugWrite($"Start unsocket item {____heldItem.name} from socket {socket.name}.");
 			if (____heldItem.IsAnimationPlaying())
 			{
 				____waitForUnsocketAnimation = true;
@@ -76,6 +74,7 @@ namespace QSB.ItemSync.Patches
 				QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPos, hit.normal, parentSector);
 				return false;
 			}
+			DebugLog.ToConsole($"Warning - no sector found for rigidbody {targetRigidbody.name}.", OWML.Common.MessageType.Warning);
 			var localPosition = sector.transform.InverseTransformPoint(hit.point);
 			QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPosition, hit.normal, sector);
 			return false;

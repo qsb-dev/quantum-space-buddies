@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using OWML.Utils;
+using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects
 {
@@ -10,5 +11,17 @@ namespace QSB.ItemSync.WorldObjects
 			AttachedObject = attachedObject;
 			base.Init(attachedObject, id);
 		}
+
+		public override void PlaySocketAnimation() 
+			=> AttachedObject.PlaySocketAnimation();
+
+		public override void PlayUnsocketAnimation() 
+			=> AttachedObject.PlayUnsocketAnimation();
+
+		public void HideNomaiText() 
+			=> AttachedObject.HideNomaiText();
+
+		public void ShowNomaiText()
+			=> AttachedObject.ShowNomaiText();
 	}
 }

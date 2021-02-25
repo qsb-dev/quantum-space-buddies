@@ -135,6 +135,7 @@
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
     <Compile Include="ItemSync\Events\DropItemMessage.cs" />
     <Compile Include="ItemSync\Events\SocketItemEvent.cs" />
+    <Compile Include="ItemSync\Events\SocketItemMessage.cs" />
     <Compile Include="ItemSync\ItemManager.cs" />
     <Compile Include="ItemSync\Patches\ItemPatches.cs" />
     <Compile Include="ItemSync\SocketEventType.cs" />

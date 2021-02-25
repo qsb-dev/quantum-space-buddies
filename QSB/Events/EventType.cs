@@ -35,6 +35,7 @@
 		TextTranslated,
 		EnterLeave,
 		PlayerEntangle,
-		DropItem
+		DropItem,
+		SocketItem
 	}
 }

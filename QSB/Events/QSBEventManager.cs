@@ -58,6 +58,7 @@ namespace QSB.Events
 				new EnterLeaveEvent(),
 				new QuantumAuthorityEvent(),
 				new DropItemEvent(),
+				new SocketItemEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

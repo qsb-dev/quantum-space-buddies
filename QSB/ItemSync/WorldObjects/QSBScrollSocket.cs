@@ -8,5 +8,12 @@
 			AttachedObject = attachedObject;
 			base.Init(attachedObject, id);
 		}
+
+		public override IQSBOWItem RemoveFromSocket()
+		{
+			var scrollItem = (QSBScrollItem)_socketedItem;
+			scrollItem.HideNomaiText();
+			return RemoveFromSocket();
+		}
 	}
 }
