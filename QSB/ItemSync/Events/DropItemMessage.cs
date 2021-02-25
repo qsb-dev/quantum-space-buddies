@@ -11,9 +11,7 @@ namespace QSB.ItemSync.Events
 		public int ObjectId { get; set; }
 		public Vector3 Position { get; set; }
 		public Vector3 Normal { get; set; }
-		public Transform Parent { get; set; }
 		public Sector Sector { get; set; }
-		public DetachableFragment DetachableFragment { get; set; }
 
 		public override void Deserialize(QNetworkReader reader)
 		{

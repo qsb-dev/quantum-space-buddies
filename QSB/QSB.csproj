@@ -221,10 +221,12 @@
     <Compile Include="SectorSync\WorldObjects\QSBSector.cs" />
     <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
-    <Compile Include="Utility\Callback6Args.cs" />
+    <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\GlobalMessenger4Args.cs" />
+    <Compile Include="Utility\GlobalMessenger5Args.cs" />
     <Compile Include="Utility\GlobalMessenger6Args.cs" />
     <Compile Include="Utility\IRepeating.cs" />
     <Compile Include="Utility\OnEnableDisableTracker.cs" />

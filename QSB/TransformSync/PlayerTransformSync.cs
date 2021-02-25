@@ -59,7 +59,6 @@ namespace QSB.TransformSync
 			{
 				return;
 			}
-			Popcron.Gizmos.Cube(Player.Body.transform.position, Player.Body.transform.rotation, new Vector3(1, 2, 1));
 			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
 			Popcron.Gizmos.Sphere(ReferenceSector.Position, 5f, Color.cyan);
 		}

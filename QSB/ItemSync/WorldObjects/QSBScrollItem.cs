@@ -1,4 +1,6 @@
-﻿namespace QSB.ItemSync.WorldObjects
+﻿using UnityEngine;
+
+namespace QSB.ItemSync.WorldObjects
 {
 	internal class QSBScrollItem : QSBOWItem<ScrollItem>
 	{

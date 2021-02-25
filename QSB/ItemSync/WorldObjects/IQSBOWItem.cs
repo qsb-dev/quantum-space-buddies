@@ -1,9 +1,10 @@
 ﻿using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects
 {
 	public interface IQSBOWItem : IWorldObjectTypeSubset
 	{
-		uint HoldingPlayer { get; set; }
+		void DropItem(Vector3 position, Vector3 normal, Sector sector);
 	}
 }

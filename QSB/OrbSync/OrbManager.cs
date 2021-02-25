@@ -43,8 +43,6 @@ namespace QSB.OrbSync
 
 			foreach (var orb in QSBWorldSync.OldOrbList)
 			{
-				Popcron.Gizmos.Cube(orb.transform.position, orb.transform.rotation, Vector3.one / 3);
-
 				var rails = orb.GetValue<OWRail[]>("_safetyRails");
 				if (rails.Length > 0)
 				{

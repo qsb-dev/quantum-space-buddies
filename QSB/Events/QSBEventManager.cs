@@ -5,6 +5,7 @@ using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.FrequencySync.Events;
 using QSB.GeyserSync.Events;
+using QSB.ItemSync.Events;
 using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
@@ -56,6 +57,7 @@ namespace QSB.Events
 				new MoonStateChangeEvent(),
 				new EnterLeaveEvent(),
 				new QuantumAuthorityEvent(),
+				new DropItemEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
@@ -121,6 +123,36 @@ namespace QSB.Events
 				return;
 			}
 			GlobalMessenger<T, U, V>.FireEvent(eventName, arg1, arg2, arg3);
+		}
+
+		public static void FireEvent<T, U, V, W>(string eventName, T arg1, U arg2, V arg3, W arg4)
+		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
+				return;
+			}
+			GlobalMessenger<T, U, V, W>.FireEvent(eventName, arg1, arg2, arg3, arg4);
+		}
+
+		public static void FireEvent<T, U, V, W, X>(string eventName, T arg1, U arg2, V arg3, W arg4, X arg5)
+		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
+				return;
+			}
+			GlobalMessenger<T, U, V, W, X>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5);
+		}
+
+		public static void FireEvent<T, U, V, W, X, Y>(string eventName, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6)
+		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
+				return;
+			}
+			GlobalMessenger<T, U, V, W, X, Y>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6);
 		}
 	}
 }

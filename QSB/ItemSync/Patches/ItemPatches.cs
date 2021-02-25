@@ -1,5 +1,7 @@
-﻿using QSB.Patches;
+﻿using QSB.Events;
+using QSB.Patches;
 using QSB.Utility;
+using QSB.WorldSync;
 using System.Reflection;
 using UnityEngine;
 
@@ -24,6 +26,7 @@ namespace QSB.ItemSync.Patches
 		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
 		{
 			DebugLog.DebugWrite($"Socket item {____heldItem.name} into socket {socket.name}.");
+			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
 			return true;
 		}
 
@@ -62,10 +65,19 @@ namespace QSB.ItemSync.Patches
 			var parent = (detachableFragment != null)
 				? detachableFragment.transform
 				: targetRigidbody.transform;
+			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
 			____heldItem.DropItem(hit.point, hit.normal, parent, sector, detachableFragment);
 			____heldItem = null;
 			Locator.GetToolModeSwapper().UnequipTool();
-			DebugLog.DebugWrite($"Drop item at point:{hit.point}, normal:{hit.normal}, parent:{parent.name}, sector:{sector.name}, fragment:{detachableFragment?.name}.");
+			var parentSector = parent.GetComponentInChildren<Sector>();
+			if (parentSector != null)
+			{
+				var localPos = parentSector.transform.InverseTransformPoint(hit.point);
+				QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPos, hit.normal, parentSector);
+				return false;
+			}
+			var localPosition = sector.transform.InverseTransformPoint(hit.point);
+			QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPosition, hit.normal, sector);
 			return false;
 		}
 	}
