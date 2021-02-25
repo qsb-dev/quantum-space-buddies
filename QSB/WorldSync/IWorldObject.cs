@@ -6,5 +6,6 @@
 		string Name { get; }
 
 		void OnRemoval();
+		object ReturnObject();
 	}
 }

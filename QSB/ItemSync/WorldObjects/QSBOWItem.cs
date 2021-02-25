@@ -7,7 +7,16 @@ namespace QSB.ItemSync.WorldObjects
 	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
 		where T : OWItem
 	{
+		private ItemType _type
+		{
+			get => AttachedObject.GetValue<ItemType>("_type");
+			set => AttachedObject.SetValue("_type", value);
+		}
+
 		public override void Init(T attachedObject, int id) { }
+
+		public ItemType GetItemType()
+			=> _type;
 
 		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
 		{
@@ -21,5 +30,10 @@ namespace QSB.ItemSync.WorldObjects
 			AttachedObject.SetSector(sector);
 			AttachedObject.SetColliderActivation(true);
 		}
+
+		public virtual void SocketItem(Transform socketTransform, Sector sector) 
+			=> AttachedObject.SocketItem(socketTransform, sector);
+
+		public virtual void PlaySocketAnimation() { }
 	}
 }
