@@ -38,7 +38,7 @@ namespace QSB.ItemSync
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBScrollItem, ScrollItem>((ScrollItem)unityObject);
 			}
-			if (unityObject.GetType() == typeof(SharedStone))
+			else if (unityObject.GetType() == typeof(SharedStone))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSharedStone, SharedStone>((SharedStone)unityObject);
 			}
@@ -60,7 +60,7 @@ namespace QSB.ItemSync
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBScrollSocket, ScrollSocket>((ScrollSocket)unityObject);
 			}
-			if (unityObject.GetType() == typeof(SharedStoneSocket))
+			else if (unityObject.GetType() == typeof(SharedStoneSocket))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSharedStoneSocket, SharedStoneSocket>((SharedStoneSocket)unityObject);
 			}
