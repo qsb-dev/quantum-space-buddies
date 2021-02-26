@@ -1,7 +1,6 @@
 ﻿using QSB.Events;
 using QSB.ItemSync.WorldObjects;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ItemSync.Events
@@ -31,7 +30,6 @@ namespace QSB.ItemSync.Events
 		{
 			var socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
 			var itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
-			DebugLog.DebugWrite($"Socket {(itemWorldObject as IWorldObject).Name} to socket {(socketWorldObject as IWorldObject).Name}. Inserting:{message.Inserting}");
 			if (message.Inserting)
 			{
 				socketWorldObject.PlaceIntoSocket(itemWorldObject);
