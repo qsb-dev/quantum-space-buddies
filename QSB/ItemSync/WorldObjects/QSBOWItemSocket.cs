@@ -1,4 +1,6 @@
-﻿using OWML.Utils;
+﻿using OWML.Common;
+using OWML.Utils;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -21,8 +23,8 @@ namespace QSB.ItemSync.WorldObjects
 
 		private Transform _socketTransform
 		{
-			get => AttachedObject.GetValue<Transform>("_socketedTransform");
-			set => AttachedObject.SetValue("_socketedTransform", value);
+			get => AttachedObject.GetValue<Transform>("_socketTransform");
+			set => AttachedObject.SetValue("_socketTransform", value);
 		}
 
 		private Sector _sector
@@ -44,6 +46,7 @@ namespace QSB.ItemSync.WorldObjects
 		{
 			if (!AcceptsItem(item) || _socketedItem != default)
 			{
+				DebugLog.ToConsole($"Error - Trying to place item in non-accepting socket, or already occupied socket! Item:{(item as IWorldObject).Name}, socket:{AttachedObject.name}.", MessageType.Error);
 				return false;
 			}
 			_socketedItem = item;

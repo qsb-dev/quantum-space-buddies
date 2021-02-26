@@ -24,7 +24,7 @@ namespace QSB.ItemSync.Events
 			ObjectId = objectId,
 			Position = position,
 			Normal = normal,
-			Sector = sector,
+			Sector = sector
 		};
 
 		public override void OnReceiveRemote(bool server, DropItemMessage message)
