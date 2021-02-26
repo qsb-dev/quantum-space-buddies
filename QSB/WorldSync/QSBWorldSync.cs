@@ -32,9 +32,14 @@ namespace QSB.WorldSync
 			where TUnityObject : MonoBehaviour
 		{
 			var allWorldObjects = GetWorldObjects<TWorldObject>();
-			if (allWorldObjects.Count() == 0)
+			if (allWorldObjects.Count() == 0 || allWorldObjects == null)
 			{
 				DebugLog.ToConsole($"Error - No worldobjects exist of type {typeof(TWorldObject).Name}!", MessageType.Error);
+				return null;
+			}
+			if (unityObject == null)
+			{
+				DebugLog.ToConsole($"Error - Can't get world object from a null unity object! Type:{typeof(TUnityObject).Name}", MessageType.Error);
 				return null;
 			}
 			var correctWorldObject = allWorldObjects.First(x => x.AttachedObject == unityObject);
