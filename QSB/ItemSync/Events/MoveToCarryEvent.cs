@@ -4,12 +4,13 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
+using UnityEngine;
 
 namespace QSB.ItemSync.Events
 {
 	internal class MoveToCarryEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override EventType Type => EventType.MoveToCarry;
+		public override QSB.Events.EventType Type => QSB.Events.EventType.MoveToCarry;
 
 		public override void SetupListener()
 			=> GlobalMessenger<int>.AddListener(EventNames.QSBMoveToCarry, Handler);
@@ -28,8 +29,26 @@ namespace QSB.ItemSync.Events
 
 		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
+			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			var itemObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ObjectId);
-			DebugLog.DebugWrite($"Pretend we pick up item {(itemObject as IWorldObject).Name} for player {message.FromId}");
+			var itemType = itemObject.GetItemType();
+			Transform itemSocket = null;
+			switch (itemType)
+			{
+				case ItemType.Scroll:
+					itemSocket = player.ScrollSocket;
+					break;
+				case ItemType.WarpCore:
+					break;
+				case ItemType.SharedStone:
+					itemSocket = player.SharedStoneSocket;
+					break;
+				default:
+					itemSocket = player.ItemSocket;
+					break;
+
+			}
+			itemObject.PickUpItem(itemSocket);
 		}
 	}
 }
