@@ -3,7 +3,7 @@ using QuantumUNET;
 
 namespace QSB.TimeSync
 {
-	public class PreserveTimeScale : QSBNetworkBehaviour
+	public class PreserveTimeScale : QNetworkBehaviour
 	{
 		public void Start()
 		{

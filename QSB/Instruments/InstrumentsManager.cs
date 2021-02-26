@@ -115,7 +115,7 @@ namespace QSB.Instruments
 
 		public void SwitchToType(AnimationType type)
 		{
-			GlobalMessenger<uint, AnimationType>.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
+			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
 			QSBPlayerManager.LocalPlayer.AnimationSync.SetAnimationType(type);
 			CheckInstrumentProps(type);
 		}

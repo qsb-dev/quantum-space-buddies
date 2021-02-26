@@ -1,7 +1,15 @@
-﻿namespace QSB.WorldSync
+﻿using UnityEngine;
+
+namespace QSB.WorldSync
 {
-	public class WorldObject
+	public abstract class WorldObject<T> : IWorldObject
+		where T : MonoBehaviour
 	{
 		public int ObjectId { get; protected set; }
+		public T AttachedObject { get; protected set; }
+		public string Name => AttachedObject == null ? "<NullObject!>" : AttachedObject.name;
+
+		public abstract void Init(T attachedObject, int id);
+		public virtual void OnRemoval() { }
 	}
 }

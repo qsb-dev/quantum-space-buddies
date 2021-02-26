@@ -2,7 +2,6 @@
 {
 	public enum EventType
 	{
-		Sector,
 		ServerTime,
 		AnimTrigger,
 		PlayerState,
@@ -25,6 +24,16 @@
 		ConversationStartEnd,
 		PlayInstrument,
 		DialogueCondition,
-		RevealFact
+		RevealFact,
+		SocketStateChange,
+		MultiStateChange,
+		QuantumShuffle,
+		QuantumAuthority,
+		MoonStateChange,
+		IdentifyFrequency,
+		IdentifySignal,
+		TextTranslated,
+		EnterLeave,
+		PlayerEntangle
 	}
 }

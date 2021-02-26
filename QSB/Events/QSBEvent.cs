@@ -17,6 +17,10 @@ namespace QSB.Events
 
 		protected QSBEvent()
 		{
+			if (UnitTestDetector.IsInUnitTest)
+			{
+				return;
+			}
 			_eventHandler = new MessageHandler<T>(Type);
 			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
@@ -36,6 +40,12 @@ namespace QSB.Events
 				() => _eventHandler.SendToServer(message));
 		}
 
+		/// <summary>
+		/// Checks whether the message should be processed by the executing client/server.
+		/// </summary>
+		/// <returns>True if the message should be processed.</returns>
+		public virtual bool CheckMessage(bool isServer, T message) => true;
+
 		private void OnReceive(bool isServer, T message)
 		{
 			/* Explanation :
@@ -45,18 +55,24 @@ namespace QSB.Events
 			 * onto all clients. This way, the server *server* just acts as the ditribution
 			 * hub for all events.
 			 */
+
+			if (!CheckMessage(isServer, message))
+			{
+				return;
+			}
+
 			if (isServer)
 			{
 				_eventHandler.SendToAll(message);
 				return;
 			}
 
-			if (message.OnlySendToServer && !QSBNetworkServer.active)
+			if (message.OnlySendToServer && !QNetworkServer.active)
 			{
 				return;
 			}
 
-			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QSBNetworkIdentity>() == null)
+			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QNetworkIdentity>() == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message of type <{message.GetType().Name}> before localplayer was established.", MessageType.Warning);
 				return;
@@ -65,11 +81,11 @@ namespace QSB.Events
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
 			{
-				OnReceiveLocal(QSBNetworkServer.active, message);
+				OnReceiveLocal(QNetworkServer.active, message);
 				return;
 			}
 
-			OnReceiveRemote(QSBNetworkServer.active, message);
+			OnReceiveRemote(QNetworkServer.active, message);
 		}
 	}
 }

@@ -8,14 +8,14 @@ namespace QSB.TimeSync.Events
 		public float ServerTime { get; set; }
 		public int LoopCount { get; set; }
 
-		public override void Deserialize(QSBNetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			ServerTime = reader.ReadSingle();
 			LoopCount = reader.ReadInt16();
 		}
 
-		public override void Serialize(QSBNetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ServerTime);

@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -30,20 +31,19 @@ namespace QSB.SectorSync
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
 			QSBWorldSync.RemoveWorldObjects<QSBSector>();
-			var sectors = Resources.FindObjectsOfTypeAll<Sector>().ToList();
-			for (var id = 0; id < sectors.Count; id++)
-			{
-				var qsbSector = QSBWorldSync.GetWorldObject<QSBSector>(id) ?? new QSBSector();
-				qsbSector.Init(sectors[id], id);
-				QSBWorldSync.AddWorldObject(qsbSector);
-			}
+			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
+			if (QSBWorldSync.GetWorldObjects<QSBSector>().Count() == 0)
+			{
+				DebugLog.ToConsole($"Error - Can't get closest sector, as there are no QSBSectors!", MessageType.Error);
+				return null;
+			}
 			return QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(sector => sector.Sector != null
+				.Where(sector => sector.AttachedObject != null
 					&& !_sectorBlacklist.Contains(sector.Type)
 					&& sector.Transform.gameObject.activeInHierarchy)
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
