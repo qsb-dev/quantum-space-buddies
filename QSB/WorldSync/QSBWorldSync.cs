@@ -27,7 +27,7 @@ namespace QSB.WorldSync
 		{
 			if (id < 0 || id >= GetWorldObjects<TWorldObject>().Count())
 			{
-				DebugLog.DebugWrite($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {GetWorldObjects<TWorldObject>().Count()}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {GetWorldObjects<TWorldObject>().Count()}.", MessageType.Warning);
 				return default;
 			}
 			return GetWorldObjects<TWorldObject>().ToList()[id];
