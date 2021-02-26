@@ -15,7 +15,7 @@ namespace QSB.ItemSync.WorldObjects
 		public void SetColliderActivation(bool active)
 			=> AttachedObject.SetColliderActivation(active);
 
-		public virtual void PickUpItem(Transform holdTransform) 
+		public virtual void PickUpItem(Transform holdTransform)
 			=> AttachedObject.PickUpItem(holdTransform);
 
 		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)

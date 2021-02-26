@@ -1,7 +1,6 @@
 ﻿using QSB.Events;
 using QSB.ItemSync.WorldObjects;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 using UnityEngine;
