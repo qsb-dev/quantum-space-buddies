@@ -1,38 +1,11 @@
-﻿using OWML.Common;
-using OWML.Utils;
-using QSB.Utility;
+﻿using OWML.Utils;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects
 {
 	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
-		where T : MonoBehaviour
+		where T : OWItemSocket
 	{
-		protected IQSBOWItem _socketedItem
-		{
-			get => ItemManager.GetObject(AttachedObject.GetValue<OWItem>("_socketedItem"));
-			set => AttachedObject.SetValue("_socketedItem", (value as IWorldObject)?.ReturnObject());
-		}
-
-		private IQSBOWItem _removedItem
-		{
-			get => ItemManager.GetObject(AttachedObject.GetValue<OWItem>("_removedItem"));
-			set => AttachedObject.SetValue("_removedItem", (value as IWorldObject).ReturnObject());
-		}
-
-		private Transform _socketTransform
-		{
-			get => AttachedObject.GetValue<Transform>("_socketTransform");
-			set => AttachedObject.SetValue("_socketTransform", value);
-		}
-
-		private Sector _sector
-		{
-			get => AttachedObject.GetValue<Sector>("_sector");
-			set => AttachedObject.SetValue("_sector", value);
-		}
-
 		public override void Init(T attachedObject, int id) { }
 
 		public virtual bool AcceptsItem(IQSBOWItem item)
@@ -43,27 +16,9 @@ namespace QSB.ItemSync.WorldObjects
 		}
 
 		public virtual bool PlaceIntoSocket(IQSBOWItem item)
-		{
-			if (!AcceptsItem(item) || _socketedItem != default)
-			{
-				DebugLog.ToConsole($"Error - Trying to place item in non-accepting socket, or already occupied socket! Item:{(item as IWorldObject).Name}, socket:{AttachedObject.name}.", MessageType.Error);
-				return false;
-			}
-			_socketedItem = item;
-			_socketedItem.SocketItem(_socketTransform, _sector);
-			_socketedItem.PlaySocketAnimation();
-			AttachedObject.enabled = true;
-			return true;
-		}
+			=> AttachedObject.PlaceIntoSocket((OWItem)(item as IWorldObject).ReturnObject());
 
 		public virtual IQSBOWItem RemoveFromSocket()
-		{
-			_removedItem = _socketedItem;
-			_socketedItem = default;
-			_removedItem.PlayUnsocketAnimation();
-			_removedItem.SetColliderActivation(true);
-			AttachedObject.enabled = true;
-			return _removedItem;
-		}
+			=> ItemManager.GetObject(AttachedObject.RemoveFromSocket());
 	}
 }

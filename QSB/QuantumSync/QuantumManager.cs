@@ -108,7 +108,7 @@ namespace QSB.QuantumSync
 			}
 			else if (unityObject.GetType() == typeof(QuantumMoon))
 			{
-				worldObj = QSBWorldSync.GetWorldObject<QSBQuantumMoon, QuantumMoon>((QuantumMoon)unityObject);
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumMoon, QuantumMoon>((QuantumMoon)unityObject);
 			}
 			else
 			{

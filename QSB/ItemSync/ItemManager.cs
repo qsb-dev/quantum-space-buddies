@@ -24,6 +24,8 @@ namespace QSB.ItemSync
 			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Warning);
 			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
+			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
+			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
 		}
 
 		public static IQSBOWItem GetObject(OWItem unityObject)
@@ -36,6 +38,10 @@ namespace QSB.ItemSync
 			if (unityObject.GetType() == typeof(ScrollItem))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBScrollItem, ScrollItem>((ScrollItem)unityObject);
+			}
+			if (unityObject.GetType() == typeof(SharedStone))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSharedStone, SharedStone>((SharedStone)unityObject);
 			}
 			else
 			{
@@ -54,6 +60,10 @@ namespace QSB.ItemSync
 			if (unityObject.GetType() == typeof(ScrollSocket))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBScrollSocket, ScrollSocket>((ScrollSocket)unityObject);
+			}
+			if (unityObject.GetType() == typeof(SharedStoneSocket))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSharedStoneSocket, SharedStoneSocket>((SharedStoneSocket)unityObject);
 			}
 			else
 			{
