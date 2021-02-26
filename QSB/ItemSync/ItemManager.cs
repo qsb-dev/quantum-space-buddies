@@ -2,7 +2,6 @@
 using QSB.ItemSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.ItemSync

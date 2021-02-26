@@ -1,6 +1,6 @@
 ﻿namespace QSB.ItemSync.WorldObjects
 {
-	class QSBSharedStoneSocket : QSBOWItemSocket<SharedStoneSocket>
+	internal class QSBSharedStoneSocket : QSBOWItemSocket<SharedStoneSocket>
 	{
 		public override void Init(SharedStoneSocket attachedObject, int id)
 		{

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QSB.ItemSync.WorldObjects
+﻿namespace QSB.ItemSync.WorldObjects
 {
-	class QSBSharedStone : QSBOWItem<SharedStone>
+	internal class QSBSharedStone : QSBOWItem<SharedStone>
 	{
 		public override void Init(SharedStone attachedObject, int id)
 		{
@@ -14,13 +9,13 @@ namespace QSB.ItemSync.WorldObjects
 			base.Init(attachedObject, id);
 		}
 
-		public override void PlaySocketAnimation() 
+		public override void PlaySocketAnimation()
 			=> AttachedObject.PlaySocketAnimation();
 
-		public override void PlayUnsocketAnimation() 
+		public override void PlayUnsocketAnimation()
 			=> AttachedObject.PlayUnsocketAnimation();
 
-		public override void OnCompleteUnsocket() 
+		public override void OnCompleteUnsocket()
 			=> AttachedObject.OnCompleteUnsocket();
 	}
 }

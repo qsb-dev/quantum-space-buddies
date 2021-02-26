@@ -9,7 +9,7 @@
 			base.Init(attachedObject, id);
 		}
 
-		public override IQSBOWItem RemoveFromSocket() 
+		public override IQSBOWItem RemoveFromSocket()
 			=> ItemManager.GetObject(AttachedObject.RemoveFromSocket());
 	}
 }
