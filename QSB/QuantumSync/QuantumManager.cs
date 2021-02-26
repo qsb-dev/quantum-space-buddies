@@ -32,6 +32,7 @@ namespace QSB.QuantumSync
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
 			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
+			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
@@ -104,6 +105,10 @@ namespace QSB.QuantumSync
 			else if (unityObject.GetType() == typeof(QuantumShuffleObject))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(QuantumMoon))
+			{
+				worldObj = QSBWorldSync.GetWorldObject<QSBQuantumMoon, QuantumMoon>((QuantumMoon)unityObject);
 			}
 			else
 			{

@@ -111,13 +111,18 @@ namespace QSB
 
 		public void OnGUI()
 		{
+			if (!DebugMode)
+			{
+				return;
+			}
+
 			var offset = 10f;
 			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
 			offset += _debugLineSpacing;
 
-			if (!HasWokenUp || !DebugMode)
+			if (!HasWokenUp)
 			{
 				return;
 			}
