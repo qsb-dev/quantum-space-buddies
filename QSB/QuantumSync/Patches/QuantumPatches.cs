@@ -29,6 +29,7 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnEntry", typeof(QuantumPatches), nameof(Shrine_OnEntry));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumObject>("IsLockedByPlayerContact", typeof(QuantumPatches), nameof(Object_IsLockedByPlayerContact));
 		}
 
 		public override void DoUnpatches()
@@ -43,6 +44,14 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnEntry");
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnExit");
 			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
+			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumObject>("IsLockedByPlayerContact");
+		}
+
+		public static bool Object_IsLockedByPlayerContact(ref bool __result, QuantumObject __instance)
+		{
+			var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
+			__result = playersEntangled.Count() != 0 && __instance.IsIlluminated();
+			return false;
 		}
 
 		public static bool Socketed_ChangeQuantumState(
