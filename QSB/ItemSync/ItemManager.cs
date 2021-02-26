@@ -11,8 +11,6 @@ namespace QSB.ItemSync
 	{
 		public static ItemManager Instance { get; private set; }
 
-		private List<ScrollItem> _oldScrollList = new List<ScrollItem>();
-
 		public void Awake()
 		{
 			Instance = this;
@@ -24,21 +22,8 @@ namespace QSB.ItemSync
 		public void RebuildItems(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Warning);
-			_oldScrollList = QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
+			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
-		}
-
-		public void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-
-			foreach (var item in _oldScrollList)
-			{
-				Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.blue);
-			}
 		}
 
 		public static IQSBOWItem GetObject(OWItem unityObject)
