@@ -28,6 +28,19 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
 		}
 
+		public void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			foreach (var item in _oldScrollList)
+			{
+				Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.blue);
+			}
+		}
+
 		public static IQSBOWItem GetObject(OWItem unityObject)
 		{
 			if (unityObject == null)
@@ -62,19 +75,6 @@ namespace QSB.ItemSync
 				DebugLog.ToConsole($"Warning - couldn't work out type of OWItemSocket {unityObject.name}.", MessageType.Warning);
 			}
 			return worldObj;
-		}
-
-		public void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-
-			foreach (var item in _oldScrollList)
-			{
-				Popcron.Gizmos.Cube(item.transform.position, item.transform.rotation, Vector3.one, Color.blue);
-			}
 		}
 	}
 }
