@@ -15,6 +15,7 @@ namespace QSB.ItemSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("MoveItemToCarrySocket", typeof(ItemPatches), nameof(ItemTool_MoveItemToCarrySocket));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("SocketItem", typeof(ItemPatches), nameof(ItemTool_SocketItem));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("StartUnsocketItem", typeof(ItemPatches), nameof(ItemTool_StartUnsocketItem));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("OnCompleteUnsocket", typeof(ItemPatches), nameof(ItemTool_OnCompleteUnsocket));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("DropItem", typeof(ItemPatches), nameof(ItemTool_DropItem));
 		}
 
@@ -34,14 +35,21 @@ namespace QSB.ItemSync.Patches
 		{
 			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
 			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
-			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, itemId, true);
+			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, itemId, SocketEventType.Socket);
 			return true;
 		}
 
 		public static bool ItemTool_StartUnsocketItem(OWItemSocket socket)
 		{
 			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
-			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, 0, false);
+			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, 0, SocketEventType.StartUnsocket);
+			return true;
+		}
+
+		public static bool ItemTool_OnCompleteUnsocket(OWItem ____heldItem)
+		{
+			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
+			QSBEventManager.FireEvent(EventNames.QSBSocketItem, 0, itemId, SocketEventType.CompleteUnsocket);
 			return true;
 		}
 

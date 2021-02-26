@@ -15,6 +15,9 @@
 		public override void PlayUnsocketAnimation()
 			=> AttachedObject.PlayUnsocketAnimation();
 
+		public override void OnCompleteUnsocket()
+			=> AttachedObject.OnCompleteUnsocket();
+
 		public void HideNomaiText()
 			=> AttachedObject.HideNomaiText();
 

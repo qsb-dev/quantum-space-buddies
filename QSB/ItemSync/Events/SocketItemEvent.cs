@@ -10,32 +10,38 @@ namespace QSB.ItemSync.Events
 		public override EventType Type => EventType.SocketItem;
 
 		public override void SetupListener()
-			=> GlobalMessenger<int, int, bool>.AddListener(EventNames.QSBSocketItem, Handler);
+			=> GlobalMessenger<int, int, SocketEventType>.AddListener(EventNames.QSBSocketItem, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<int, int, bool>.RemoveListener(EventNames.QSBSocketItem, Handler);
+			=> GlobalMessenger<int, int, SocketEventType>.RemoveListener(EventNames.QSBSocketItem, Handler);
 
-		private void Handler(int socketId, int itemId, bool inserting)
-			=> SendEvent(CreateMessage(socketId, itemId, inserting));
+		private void Handler(int socketId, int itemId, SocketEventType type)
+			=> SendEvent(CreateMessage(socketId, itemId, type));
 
-		private SocketItemMessage CreateMessage(int socketId, int itemId, bool inserting) => new SocketItemMessage
+		private SocketItemMessage CreateMessage(int socketId, int itemId, SocketEventType type) => new SocketItemMessage
 		{
 			AboutId = QSBPlayerManager.LocalPlayerId,
 			SocketId = socketId,
 			ItemId = itemId,
-			Inserting = inserting
+			SocketType = type
 		};
 
 		public override void OnReceiveRemote(bool server, SocketItemMessage message)
 		{
 			var socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
 			var itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
-			if (message.Inserting)
+			switch (message.SocketType)
 			{
-				socketWorldObject.PlaceIntoSocket(itemWorldObject);
-				return;
+				case SocketEventType.Socket:
+					socketWorldObject.PlaceIntoSocket(itemWorldObject);
+					return;
+				case SocketEventType.StartUnsocket:
+					socketWorldObject.RemoveFromSocket();
+					return;
+				case SocketEventType.CompleteUnsocket:
+					itemWorldObject.OnCompleteUnsocket();
+					return;
 			}
-			socketWorldObject.RemoveFromSocket();
 		}
 	}
 }
