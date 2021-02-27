@@ -87,14 +87,15 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			return SectorList.Count != 0
-				? SectorList.Last()
-				: QSBWorldSync.GetWorldObjects<QSBSector>()
-					.Where(sector => sector.AttachedObject != null
-						&& !_sectorBlacklist.Contains(sector.Type)
-						&& sector.Transform.gameObject.activeInHierarchy)
-					.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-					.First();
+			var listToCheck = SectorList.Count == 0 
+				? QSBWorldSync.GetWorldObjects<QSBSector>() 
+				: SectorList;
+			return listToCheck
+				.Where(sector => sector.AttachedObject != null
+					&& !_sectorBlacklist.Contains(sector.Type)
+					&& sector.Transform.gameObject.activeInHierarchy)
+				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
+				.First();
 		}
 	}
 }
