@@ -85,7 +85,8 @@ namespace QSB.SectorSync
 				: _sectorList;
 			return listToSearch
 				.Where(sector => sector.AttachedObject != null
-					&& !_sectorBlacklist.Contains(sector.Type))
+					&& !_sectorBlacklist.Contains(sector.Type)
+					&& sector.AttachedObject.isActiveAndEnabled)
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
 				.First();
 		}
