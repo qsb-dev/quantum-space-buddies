@@ -1,37 +1,71 @@
-﻿using QSB.Events;
+﻿using OWML.Utils;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
-		where T : MonoBehaviour
+		where T : QuantumObject
 	{
 		public uint ControllingPlayer { get; set; }
 		public bool IsEnabled { get; set; }
 
-		private OnEnableDisableTracker _tracker;
-
 		public override void OnRemoval()
 		{
-			_tracker.OnEnableEvent -= OnEnable;
-			_tracker.OnDisableEvent -= OnDisable;
-			Object.Destroy(_tracker);
+			foreach (var shape in GetAttachedShapes())
+			{
+				shape.OnShapeActivated -= (Shape s) => OnEnable();
+				shape.OnShapeDeactivated -= (Shape s) => OnDisable();
+			}
 		}
 
 		public override void Init(T attachedObject, int id)
 		{
-			_tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
-			_tracker.AttachedComponent = AttachedObject;
-			_tracker.OnEnableEvent += OnEnable;
-			_tracker.OnDisableEvent += OnDisable;
+			foreach (var shape in GetAttachedShapes())
+			{
+				if (shape == null)
+				{
+					break;
+				}
+				shape.OnShapeActivated += (Shape s) => OnEnable();
+				shape.OnShapeDeactivated += (Shape s) => OnDisable();
+			}
 			ControllingPlayer = 0u;
+		}
+
+		private List<Shape> GetAttachedShapes()
+		{
+			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
+			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
+			{
+				DebugLog.DebugWrite($"Error - {AttachedObject.name} has null visibility trackers!");
+				return new List<Shape>();
+			}
+			if (visibilityTrackers.Any(x => x.GetType() == typeof(RendererVisibilityTracker)))
+			{
+				DebugLog.DebugWrite($"Error - {AttachedObject.name} has a renderervisibilitytracker!");
+				return new List<Shape>();
+			}
+			var totalShapes = new List<Shape>();
+			foreach (var tracker in visibilityTrackers)
+			{
+				var shapes = tracker.GetValue<Shape[]>("_shapes");
+				totalShapes.AddRange(shapes);
+			}
+			return totalShapes;
 		}
 
 		private void OnEnable()
 		{
+			if (IsEnabled)
+			{
+				return;
+			}
 			IsEnabled = true;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
 			{
@@ -49,6 +83,10 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable()
 		{
+			if (!IsEnabled)
+			{
+				return;
+			}
 			IsEnabled = false;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
 			{
