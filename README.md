@@ -34,7 +34,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - [Playing as a client](#playing-as-a-client)
 - [Playing as a host](#playing-as-a-host)
 - [Development Setup](#development-setup)
-- [Authors](#authors)
+- [Authors and Special Thanks](#authors-and-special-thanks)
 - [Help / Discuss development / Whatever](#help--discuss-development--whatever)
 
 <!-- /TOC -->
@@ -138,11 +138,13 @@ If for some reason none of this is working, you might have to set everything man
 - To fix the references, right*click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 - If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
 
-## Authors
+## Authors and Special Thanks
 
 - [\_nebula](https://github.com/misternebula) - Developer of v0.3 onwards
-- [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidyer
+- [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidy-er
 - [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1 - v0.2
+- Thanks to Logan Ver Hoef for help with the game code.
+- Thanks to all the people in the Outer Wilds Discord for helping in public tests.
 
 ## Help / Discuss development / Whatever
 

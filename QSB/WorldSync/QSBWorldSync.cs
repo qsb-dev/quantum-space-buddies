@@ -19,6 +19,11 @@ namespace QSB.WorldSync
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
 		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
+		private const BindingFlags Flags = BindingFlags.Instance
+			| BindingFlags.Static
+			| BindingFlags.Public
+			| BindingFlags.NonPublic
+			| BindingFlags.DeclaredOnly;
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();
@@ -108,10 +113,10 @@ namespace QSB.WorldSync
 			return worldObject;
 		}
 
-		public static void RaiseEvent(object instance, string eventName)
+		public static void RaiseEvent<T>(T instance, string eventName, params object[] args)
 		{
-			if (!(instance.GetType()
-				.GetField(eventName, BindingFlags.Instance | BindingFlags.NonPublic)?
+			if (!(typeof(T)
+				.GetField(eventName, Flags)?
 				.GetValue(instance) is MulticastDelegate multiDelegate))
 			{
 				return;
@@ -119,7 +124,7 @@ namespace QSB.WorldSync
 			var delegateList = multiDelegate.GetInvocationList().ToList();
 			foreach (var del in delegateList)
 			{
-				del.DynamicInvoke(instance);
+				del.DynamicInvoke(args);
 			}
 		}
 
