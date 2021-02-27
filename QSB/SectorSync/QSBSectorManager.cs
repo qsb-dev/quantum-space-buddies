@@ -31,8 +31,8 @@ namespace QSB.SectorSync
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
-			Locator.GetPlayerSectorDetector().OnEnterSector -= AddSector;
-			Locator.GetPlayerSectorDetector().OnExitSector -= RemoveSector;
+			FindObjectOfType<PlayerSectorDetector>().OnEnterSector -= AddSector;
+			FindObjectOfType<PlayerSectorDetector>().OnExitSector -= RemoveSector;
 		}
 
 		public void RebuildSectors()
@@ -43,8 +43,8 @@ namespace QSB.SectorSync
 			_sectorList.Clear();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 
-			Locator.GetPlayerSectorDetector().OnEnterSector += AddSector;
-			Locator.GetPlayerSectorDetector().OnExitSector += RemoveSector;
+			FindObjectOfType<PlayerSectorDetector>().OnEnterSector += AddSector;
+			FindObjectOfType<PlayerSectorDetector>().OnExitSector += RemoveSector;
 		}
 
 		private void AddSector(Sector sector)
@@ -80,14 +80,12 @@ namespace QSB.SectorSync
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			// default to sync to the sun sector if the player isn't in any sector right now
-			return _sectorList.Count == 0
-				? QSBWorldSync.GetWorldObjects<QSBSector>().First(x => x.AttachedObject.GetName() == Sector.Name.Sun)
-				: _sectorList
-					.Where(sector => sector.AttachedObject != null
-						&& !_sectorBlacklist.Contains(sector.Type))
-					.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-					.First();
+			var listToSearch = _sectorList.Count == 0 ? QSBWorldSync.GetWorldObjects<QSBSector>() : _sectorList;
+			return listToSearch
+				.Where(sector => sector.AttachedObject != null
+					&& !_sectorBlacklist.Contains(sector.Type))
+				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
+				.First();
 		}
 	}
 }
