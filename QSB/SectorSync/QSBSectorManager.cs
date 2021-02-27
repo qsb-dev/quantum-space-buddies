@@ -80,7 +80,9 @@ namespace QSB.SectorSync
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			var listToSearch = _sectorList.Count == 0 ? QSBWorldSync.GetWorldObjects<QSBSector>() : _sectorList;
+			var listToSearch = _sectorList.Count == 0 
+				? QSBWorldSync.GetWorldObjects<QSBSector>() 
+				: _sectorList;
 			return listToSearch
 				.Where(sector => sector.AttachedObject != null
 					&& !_sectorBlacklist.Contains(sector.Type))
