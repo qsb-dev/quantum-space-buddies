@@ -2,6 +2,7 @@
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace QSB.SectorSync
 			Sector.Name.Ship
 		};
 
+		private List<QSBSector> _sectorList = new List<QSBSector>();
+
 		public void Awake()
 		{
 			Instance = this;
@@ -25,29 +28,66 @@ namespace QSB.SectorSync
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
+		public void OnDestroy()
+		{
+			QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
+			Locator.GetPlayerSectorDetector().OnEnterSector -= AddSector;
+			Locator.GetPlayerSectorDetector().OnExitSector -= RemoveSector;
+		}
 
 		public void RebuildSectors()
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
 			QSBWorldSync.RemoveWorldObjects<QSBSector>();
 			QSBWorldSync.Init<QSBSector, Sector>();
+			_sectorList.Clear();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+
+			Locator.GetPlayerSectorDetector().OnEnterSector += AddSector;
+			Locator.GetPlayerSectorDetector().OnExitSector += RemoveSector;
+		}
+
+		private void AddSector(Sector sector)
+		{
+			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
+			if (worldObject == null)
+			{
+				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
+			}
+			if (_sectorList.Contains(worldObject))
+			{
+				DebugLog.ToConsole($"Warning - Trying to add {sector.name}, but is already in list", MessageType.Warning);
+				return;
+			}
+			_sectorList.Add(worldObject);
+		}
+
+		private void RemoveSector(Sector sector)
+		{
+			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
+			if (worldObject == null)
+			{
+				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
+				return;
+			}
+			if (!_sectorList.Contains(worldObject))
+			{
+				DebugLog.ToConsole($"Warning - Trying to remove {sector.name}, but is not in list!", MessageType.Warning);
+				return;
+			}
+			_sectorList.Remove(worldObject);
 		}
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			if (QSBWorldSync.GetWorldObjects<QSBSector>().Count() == 0)
-			{
-				DebugLog.ToConsole($"Error - Can't get closest sector, as there are no QSBSectors!", MessageType.Error);
-				return null;
-			}
-			return QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(sector => sector.AttachedObject != null
-					&& !_sectorBlacklist.Contains(sector.Type)
-					&& sector.Transform.gameObject.activeInHierarchy)
-				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-				.First();
+			// default to sync to the sun sector if the player isn't in any sector right now
+			return _sectorList.Count == 0
+				? QSBWorldSync.GetWorldObjects<QSBSector>().First(x => x.AttachedObject.GetName() == Sector.Name.Sun)
+				: _sectorList
+					.Where(sector => sector.AttachedObject != null
+						&& !_sectorBlacklist.Contains(sector.Type))
+					.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
+					.First();
 		}
 	}
 }
