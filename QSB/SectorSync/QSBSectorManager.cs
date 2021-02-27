@@ -49,6 +49,7 @@ namespace QSB.SectorSync
 
 		private void AddSector(Sector sector)
 		{
+			DebugLog.DebugWrite($"Add sector {sector.name}.");
 			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
 			if (worldObject == null)
 			{
@@ -64,6 +65,7 @@ namespace QSB.SectorSync
 
 		private void RemoveSector(Sector sector)
 		{
+			DebugLog.DebugWrite($"Remove sector {sector.name}.");
 			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
 			if (worldObject == null)
 			{
@@ -86,7 +88,7 @@ namespace QSB.SectorSync
 			return listToSearch
 				.Where(sector => sector.AttachedObject != null
 					&& !_sectorBlacklist.Contains(sector.Type)
-					&& sector.AttachedObject.isActiveAndEnabled)
+					&& sector.Transform.gameObject.activeInHierarchy)
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
 				.First();
 		}
