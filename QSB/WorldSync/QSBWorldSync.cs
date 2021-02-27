@@ -19,10 +19,10 @@ namespace QSB.WorldSync
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
 		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
-		private const BindingFlags Flags = BindingFlags.Instance 
-			| BindingFlags.Static 
-			| BindingFlags.Public 
-			| BindingFlags.NonPublic 
+		private const BindingFlags Flags = BindingFlags.Instance
+			| BindingFlags.Static
+			| BindingFlags.Public
+			| BindingFlags.NonPublic
 			| BindingFlags.DeclaredOnly;
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()

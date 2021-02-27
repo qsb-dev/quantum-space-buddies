@@ -87,8 +87,8 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count == 0 
-				? QSBWorldSync.GetWorldObjects<QSBSector>() 
+			var listToCheck = SectorList.Count == 0
+				? QSBWorldSync.GetWorldObjects<QSBSector>()
 				: SectorList;
 			return listToCheck
 				.Where(sector => sector.AttachedObject != null

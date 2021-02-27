@@ -1,6 +1,5 @@
 ﻿using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using System.Reflection;
@@ -32,15 +31,11 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnDisable");
 		}
 
-		public static void Shape_OnEnable(Shape __instance)
-		{
-			QSBWorldSync.RaiseEvent(__instance, "OnShapeActivated", __instance);
-		}
+		public static void Shape_OnEnable(Shape __instance) 
+			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeActivated", __instance);
 
-		public static void Shape_OnDisable(Shape __instance)
-		{
-			QSBWorldSync.RaiseEvent(__instance, "OnShapeDeactivated", __instance);
-		}
+		public static void Shape_OnDisable(Shape __instance) 
+			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeDeactivated", __instance);
 
 		// ShapeVisibilityTracker patches
 

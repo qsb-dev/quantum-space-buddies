@@ -5,7 +5,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
