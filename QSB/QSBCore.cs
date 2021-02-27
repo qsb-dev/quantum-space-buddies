@@ -150,7 +150,7 @@ namespace QSB
 			offset3 += _debugLineSpacing;
 			foreach (var obj in QSBSectorManager.Instance.SectorList)
 			{
-				GUI.Label(new Rect(660, offset3, 200f, 20f), $"- {obj.AttachedObject.name}");
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"- {obj.AttachedObject.name}");
 				offset3 += _debugLineSpacing;
 			}
 
@@ -159,7 +159,7 @@ namespace QSB
 			offset2 += _debugLineSpacing;
 			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
 			{
-				GUI.Label(new Rect(440, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}");
+				GUI.Label(new Rect(620, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}");
 				offset2 += _debugLineSpacing;
 			}
 
