@@ -69,6 +69,24 @@ namespace QSB.Tools
 			scroll.transform.localPosition = new Vector3(0.148f, -0.0522f, 0.2465f);
 			scroll.transform.localRotation = Quaternion.Euler(236.054f, 56.46799f, -152.472f);
 			scroll.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var sharedStone = new GameObject("SharedStoneSocket");
+			sharedStone.transform.parent = cameraBody;
+			sharedStone.transform.localPosition = new Vector3(0.1375f, -0.119f, 0.2236f);
+			sharedStone.transform.localRotation = Quaternion.Euler(-23.053f, -0.263f, 6.704f);
+			sharedStone.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var warpCore = new GameObject("WarpCoreSocket");
+			warpCore.transform.parent = cameraBody;
+			warpCore.transform.localPosition = new Vector3(0.161f, -0.107f, 0.223f);
+			warpCore.transform.localRotation = Quaternion.Euler(179.949f, 82.59f, 163.697f);
+			warpCore.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var vesselCore = new GameObject("VesselCoreSocket");
+			vesselCore.transform.parent = cameraBody;
+			vesselCore.transform.localPosition = new Vector3(0.177f, -0.106f, 0.2f);
+			vesselCore.transform.localRotation = Quaternion.Euler(3.142f, 14.827f, 12.094f);
+			vesselCore.transform.localScale = new Vector3(0.27f, 0.27f, 0.27f);
 		}
 
 		private static void CreateFlashlight(Transform cameraBody)
