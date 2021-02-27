@@ -142,12 +142,16 @@
     <Compile Include="ItemSync\SocketEventType.cs" />
     <Compile Include="ItemSync\WorldObjects\IQSBOWItem.cs" />
     <Compile Include="ItemSync\WorldObjects\IQSBOWItemSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStone.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStoneSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBOWItem.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBOWItemSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBScrollItem.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBScrollSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBSharedStone.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBSharedStoneSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBWarpCoreItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBWarpCoreSocket.cs" />
     <Compile Include="LogSync\Events\RevealFactEvent.cs" />
     <Compile Include="LogSync\Events\RevealFactMessage.cs" />
     <Compile Include="LogSync\Patches\LogPatches.cs" />

@@ -25,6 +25,10 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
 			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
 			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
+			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
+			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
+			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
+			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
 		}
 
 		public static IQSBOWItem GetObject(OWItem unityObject)
@@ -41,6 +45,14 @@ namespace QSB.ItemSync
 			else if (unityObject.GetType() == typeof(SharedStone))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSharedStone, SharedStone>((SharedStone)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(WarpCoreItem))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBWarpCoreItem, WarpCoreItem>((WarpCoreItem)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(NomaiConversationStone))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBNomaiConversationStone, NomaiConversationStone>((NomaiConversationStone)unityObject);
 			}
 			else
 			{
@@ -63,6 +75,14 @@ namespace QSB.ItemSync
 			else if (unityObject.GetType() == typeof(SharedStoneSocket))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSharedStoneSocket, SharedStoneSocket>((SharedStoneSocket)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(WarpCoreSocket))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBWarpCoreSocket, WarpCoreSocket>((WarpCoreSocket)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(NomaiConversationStone))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>((NomaiConversationStoneSocket)unityObject);
 			}
 			else
 			{

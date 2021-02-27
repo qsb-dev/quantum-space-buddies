@@ -1,0 +1,12 @@
+﻿namespace QSB.ItemSync.WorldObjects
+{
+	internal class QSBWarpCoreItem : QSBOWItem<WarpCoreItem>
+	{
+		public override void Init(WarpCoreItem attachedObject, int id)
+		{
+			ObjectId = id;
+			AttachedObject = attachedObject;
+			base.Init(attachedObject, id);
+		}
+	}
+}
