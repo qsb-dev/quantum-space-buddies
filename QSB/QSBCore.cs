@@ -145,8 +145,17 @@ namespace QSB
 				offset += _debugLineSpacing;
 			}
 
+			var offset3 = 10f;
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current sectors :");
+			offset3 += _debugLineSpacing;
+			foreach (var obj in QSBSectorManager.Instance.SectorList)
+			{
+				GUI.Label(new Rect(660, offset3, 200f, 20f), $"- {obj.AttachedObject.name}");
+				offset3 += _debugLineSpacing;
+			}
+
 			var offset2 = 10f;
-			GUI.Label(new Rect(440, offset2, 200f, 20f), $"Owned Objects :");
+			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
 			offset2 += _debugLineSpacing;
 			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
 			{
