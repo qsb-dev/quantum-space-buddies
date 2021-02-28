@@ -1,18 +1,17 @@
 ﻿using QSB.Player;
-using QSB.Utility;
 using System.Collections;
 using UnityEngine;
 
 namespace QSB.StatueSync
 {
-	class StatueManager : MonoBehaviour
+	internal class StatueManager : MonoBehaviour
 	{
 		public static StatueManager Instance { get; private set; }
 
-		private void Awake() 
+		private void Awake()
 			=> Instance = this;
 
-		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees) 
+		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 			=> StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
 
 		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)

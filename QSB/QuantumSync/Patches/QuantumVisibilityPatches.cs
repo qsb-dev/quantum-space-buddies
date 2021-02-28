@@ -31,10 +31,10 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.Helper.HarmonyHelper.Unpatch<Shape>("OnDisable");
 		}
 
-		public static void Shape_OnEnable(Shape __instance) 
+		public static void Shape_OnEnable(Shape __instance)
 			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeActivated", __instance);
 
-		public static void Shape_OnDisable(Shape __instance) 
+		public static void Shape_OnDisable(Shape __instance)
 			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeDeactivated", __instance);
 
 		// ShapeVisibilityTracker patches

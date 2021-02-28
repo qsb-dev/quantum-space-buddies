@@ -15,7 +15,7 @@ namespace QSB.StatueSync.Events
 			base.Deserialize(reader);
 			PlayerPosition = reader.ReadVector3();
 			PlayerRotation = reader.ReadQuaternion();
-			CameraDegrees = reader.ReadSingle();		
+			CameraDegrees = reader.ReadSingle();
 		}
 
 		public override void Serialize(QNetworkWriter writer)

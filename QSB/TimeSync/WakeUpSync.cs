@@ -195,8 +195,8 @@ namespace QSB.TimeSync
 			DebugLog.DebugWrite($"enable input - stored:{_storedMode}");
 			_isInputEnabled = true;
 			OWInput.ChangeInputMode(
-				_storedMode != InputMode.None 
-					? _storedMode 
+				_storedMode != InputMode.None
+					? _storedMode
 					: InputMode.Character);
 		}
 

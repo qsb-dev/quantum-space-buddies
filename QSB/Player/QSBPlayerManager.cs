@@ -116,7 +116,7 @@ namespace QSB.Player
 		public static void ShowAllPlayers()
 			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, true));
 
-		public static void HideAllPlayers() 
+		public static void HideAllPlayers()
 			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, false));
 
 		public static void ChangePlayerVisibility(uint playerId, bool visible)
