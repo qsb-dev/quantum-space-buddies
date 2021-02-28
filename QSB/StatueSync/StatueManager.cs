@@ -9,7 +9,13 @@ namespace QSB.StatueSync
 		public static StatueManager Instance { get; private set; }
 
 		private void Awake()
-			=> Instance = this;
+		{ 
+			Instance = this;
+			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => QSBPlayerManager.ShowAllPlayers();
+		} 
+
+		private void OnDestroy() 
+			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => QSBPlayerManager.ShowAllPlayers();
 
 		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 			=> StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
