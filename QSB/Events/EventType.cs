@@ -37,6 +37,7 @@
 		PlayerEntangle,
 		DropItem,
 		SocketItem,
-		MoveToCarry
+		MoveToCarry,
+		StartStatue
 	}
 }

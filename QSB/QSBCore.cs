@@ -11,6 +11,7 @@ using QSB.Player;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
+using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.TranslationSync;
 using QSB.Utility;
@@ -99,6 +100,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<ItemManager>();
+			gameObject.AddComponent<StatueManager>();
 
 			DebugBoxManager.Init();
 

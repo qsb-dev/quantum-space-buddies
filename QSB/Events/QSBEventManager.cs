@@ -10,6 +10,7 @@ using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
 using QSB.QuantumSync.Events;
+using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.TranslationSync.Events;
@@ -60,6 +61,7 @@ namespace QSB.Events
 				new DropItemEvent(),
 				new SocketItemEvent(),
 				new MoveToCarryEvent(),
+				new StartStatueEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

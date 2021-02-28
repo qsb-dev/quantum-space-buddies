@@ -53,5 +53,6 @@
 		public static string QSBDropItem = "QSBDropItem";
 		public static string QSBSocketItem = "QSBSocketItem";
 		public static string QSBMoveToCarry = "QSBMoveToCarry";
+		public static string QSBStartStatue = "QSBStartStatue";
 	}
 }

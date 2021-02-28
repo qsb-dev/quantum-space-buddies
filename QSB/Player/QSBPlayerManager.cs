@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 
 namespace QSB.Player
 {
@@ -111,5 +112,20 @@ namespace QSB.Player
 
 		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
 			=> new Tuple<Flashlight, IEnumerable<QSBFlashlight>>(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+
+		public static void ShowAllPlayers()
+			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, true));
+
+		public static void HideAllPlayers() 
+			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, false));
+
+		public static void ChangePlayerVisibility(uint playerId, bool visible)
+		{
+			var player = GetPlayer(playerId);
+			foreach (var renderer in player.Body.GetComponents<Renderer>())
+			{
+				renderer.enabled = visible;
+			}
+		}
 	}
 }
