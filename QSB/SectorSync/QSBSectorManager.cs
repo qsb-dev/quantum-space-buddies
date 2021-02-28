@@ -95,7 +95,7 @@ namespace QSB.SectorSync
 					&& !_sectorBlacklist.Contains(sector.Type)
 					&& sector.Transform.gameObject.activeInHierarchy)
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-				.First();
+				.FirstOrDefault();
 		}
 	}
 }

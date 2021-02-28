@@ -128,7 +128,7 @@ namespace QSB.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			if (sector == ReferenceSector || sector == null)
+			if (sector == ReferenceSector || sector == default(QSBSector))
 			{
 				return;
 			}
