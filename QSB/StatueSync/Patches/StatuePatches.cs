@@ -7,7 +7,7 @@ namespace QSB.StatueSync.Patches
 {
 	internal class StatuePatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		public override void DoPatches()
 			=> QSBCore.Helper.HarmonyHelper.AddPrefix<MemoryUplinkTrigger>("Update", typeof(StatuePatches), nameof(Statue_Update));
@@ -21,7 +21,6 @@ namespace QSB.StatueSync.Patches
 			{
 				return true;
 			}
-			DebugLog.DebugWrite("statue_beginuplinksequence");
 			var playerBody = Locator.GetPlayerBody().transform;
 			var timberHearth = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 			QSBEventManager.FireEvent(

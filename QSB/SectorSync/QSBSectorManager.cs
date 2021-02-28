@@ -47,7 +47,6 @@ namespace QSB.SectorSync
 
 		private void AddSector(Sector sector)
 		{
-			DebugLog.DebugWrite($"Add sector {sector.name}.");
 			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
 			if (worldObject == null)
 			{
@@ -63,7 +62,6 @@ namespace QSB.SectorSync
 
 		private void RemoveSector(Sector sector)
 		{
-			DebugLog.DebugWrite($"Remove sector {sector.name}.");
 			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
 			if (worldObject == null)
 			{
