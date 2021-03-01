@@ -7,6 +7,7 @@ namespace QSB.StatueSync
 	internal class StatueManager : MonoBehaviour
 	{
 		public static StatueManager Instance { get; private set; }
+		public bool HasStartedStatueLocally;
 
 		private void Awake()
 		{ 
@@ -22,6 +23,7 @@ namespace QSB.StatueSync
 
 		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 		{
+			HasStartedStatueLocally = true;
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
 			cameraEffectController.CloseEyes(0.5f);
 			OWInput.ChangeInputMode(InputMode.None);

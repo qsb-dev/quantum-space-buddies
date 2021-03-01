@@ -1,6 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Patches;
-using QSB.Utility;
+using QSB.Player;
 using UnityEngine;
 
 namespace QSB.StatueSync.Patches
@@ -17,6 +17,10 @@ namespace QSB.StatueSync.Patches
 
 		public static bool Statue_Update(bool ____waitForPlayerGrounded)
 		{
+			if (StatueManager.Instance.HasStartedStatueLocally)
+			{
+				return true;
+			}
 			if (!____waitForPlayerGrounded || !Locator.GetPlayerController().IsGrounded())
 			{
 				return true;
@@ -28,6 +32,7 @@ namespace QSB.StatueSync.Patches
 				timberHearth.InverseTransformPoint(playerBody.position),
 				Quaternion.Inverse(timberHearth.rotation) * playerBody.rotation,
 				Locator.GetPlayerCamera().GetComponent<PlayerCameraController>().GetDegreesY());
+			QSBPlayerManager.HideAllPlayers();
 			return true;
 		}
 	}

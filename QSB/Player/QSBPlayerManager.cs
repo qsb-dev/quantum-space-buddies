@@ -122,7 +122,12 @@ namespace QSB.Player
 		public static void ChangePlayerVisibility(uint playerId, bool visible)
 		{
 			var player = GetPlayer(playerId);
-			foreach (var renderer in player.Body.GetComponents<Renderer>())
+			if (player.Body == null)
+			{
+				DebugLog.ToConsole($"Warning - Player {playerId} has a null body!", MessageType.Warning);
+				return;
+			}
+			foreach (var renderer in player.Body.GetComponentsInChildren<Renderer>())
 			{
 				renderer.enabled = visible;
 			}
