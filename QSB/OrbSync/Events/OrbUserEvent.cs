@@ -61,7 +61,7 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
 			var orbSync = QSBWorldSync.OrbSyncList
-				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+				.FirstOrDefault(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);

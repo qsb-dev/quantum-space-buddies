@@ -17,8 +17,8 @@ namespace QSB.OrbSync
 
 		private void BuildOrbSlots()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
 			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
+			DebugLog.DebugWrite($"Finished slot build with {QSBWorldSync.GetWorldObjects<QSBOrbSlot>().Count()} slots.", MessageType.Success);
 		}
 
 		public void BuildOrbs()

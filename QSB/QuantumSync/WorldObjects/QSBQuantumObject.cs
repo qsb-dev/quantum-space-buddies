@@ -1,4 +1,5 @@
-﻿using OWML.Utils;
+﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -39,15 +40,19 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private List<Shape> GetAttachedShapes()
 		{
+			if (AttachedObject == null)
+			{
+				return new List<Shape>();
+			}
 			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
 			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
 			{
-				DebugLog.DebugWrite($"Error - {AttachedObject.name} has null visibility trackers!");
+				DebugLog.ToConsole($"Warning - {AttachedObject.name} has null visibility trackers!", MessageType.Warning);
 				return new List<Shape>();
 			}
 			if (visibilityTrackers.Any(x => x.GetType() == typeof(RendererVisibilityTracker)))
 			{
-				DebugLog.DebugWrite($"Error - {AttachedObject.name} has a renderervisibilitytracker!");
+				DebugLog.ToConsole($"Warning - {AttachedObject.name} has a RendererVisibilityTracker!", MessageType.Warning);
 				return new List<Shape>();
 			}
 			var totalShapes = new List<Shape>();

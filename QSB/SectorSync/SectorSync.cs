@@ -30,6 +30,10 @@ namespace QSB.SectorSync
 				return;
 			}
 			var closestSector = QSBSectorManager.Instance.GetClosestSector(syncedTransform);
+			if (closestSector == default(QSBSector))
+			{
+				return;
+			}
 			if (closestSector == transformSync.ReferenceSector)
 			{
 				return;

@@ -28,7 +28,6 @@ namespace QSB.TransformSync
 
 		protected override void Start()
 		{
-			DebugLog.DebugWrite("start of " + GetType().Name);
 			base.Start();
 			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
@@ -128,7 +127,7 @@ namespace QSB.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			if (sector == ReferenceSector || sector == null)
+			if (sector == ReferenceSector || sector == default(QSBSector))
 			{
 				return;
 			}
