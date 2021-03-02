@@ -24,6 +24,7 @@ namespace QSB.WorldSync
 			| BindingFlags.Public
 			| BindingFlags.NonPublic
 			| BindingFlags.DeclaredOnly;
+		private static Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();
@@ -40,22 +41,8 @@ namespace QSB.WorldSync
 
 		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : MonoBehaviour
-		{
-			var allWorldObjects = GetWorldObjects<TWorldObject>();
-			if (allWorldObjects == null || allWorldObjects.Count() == 0)
-			{
-				DebugLog.ToConsole($"Error - No worldobjects exist of type {typeof(TWorldObject).Name}!", MessageType.Error);
-				return null;
-			}
-			if (unityObject == null)
-			{
-				DebugLog.ToConsole($"Error - Can't get world object from a null unity object! Type:{typeof(TUnityObject).Name}", MessageType.Error);
-				return null;
-			}
-			var correctWorldObject = allWorldObjects.First(x => x.AttachedObject == unityObject);
-			return correctWorldObject;
-		}
+			where TUnityObject : MonoBehaviour 
+			=> WorldObjectsToUnityObjects[unityObject] as TWorldObject;
 
 		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
@@ -101,6 +88,7 @@ namespace QSB.WorldSync
 			{
 				var obj = CreateWorldObject<TWorldObject>();
 				obj.Init(list[id], id);
+				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
 			return list;
 		}
