@@ -139,11 +139,13 @@
     <Compile Include="ItemSync\Events\SocketItemMessage.cs" />
     <Compile Include="ItemSync\ItemManager.cs" />
     <Compile Include="ItemSync\Patches\ItemPatches.cs" />
+    <Compile Include="ItemSync\Patches\RemoteCameraPlatformPatches.cs" />
     <Compile Include="ItemSync\SocketEventType.cs" />
     <Compile Include="ItemSync\WorldObjects\IQSBOWItem.cs" />
     <Compile Include="ItemSync\WorldObjects\IQSBOWItemSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStone.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStoneSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBNomaiRemoteCameraPlatform.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBOWItem.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBOWItemSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBScrollItem.cs" />
