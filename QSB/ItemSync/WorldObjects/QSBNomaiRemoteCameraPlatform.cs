@@ -180,9 +180,11 @@ namespace QSB.ItemSync.WorldObjects
 				.GetMethod("SwitchToPlayerCamera", BindingFlags.NonPublic | BindingFlags.Instance)
 				.Invoke(AttachedObject, null);
 
+		private bool wasInLocally;
 
 		public void CustomUpdate()
 		{
+			bool dontDisable = false;
 			if (_active)
 			{
 				if (_slavePlatform != null && !_slavePlatform.AttachedObject.gameObject.activeInHierarchy)
@@ -204,6 +206,27 @@ namespace QSB.ItemSync.WorldObjects
 					DebugLog.DebugWrite($"{AttachedObject.name} OnLeaveBounds");
 					OnLeaveBounds();
 				}
+				else if (!_connectionBounds.PointInside(_playerCamera.transform.position) && wasInLocally)
+				{
+					// we have left the platform, but other people are still on it - just exit without disconnecting the two platforms!
+					DebugLog.DebugWrite($"{AttachedObject.name} Local leave");
+					SwitchToPlayerCamera();
+					_hologramGroup.SetActive(false);
+					wasInLocally = false;
+				}
+				else if (_connectionBounds.PointInside(_playerCamera.transform.position) 
+					&& (_platformState == NomaiRemoteCameraPlatform.State.Connected 
+						|| _platformState == NomaiRemoteCameraPlatform.State.Connecting_FadeIn  
+						|| _platformState == NomaiRemoteCameraPlatform.State.Connecting_FadeOut)
+					&& !wasInLocally)
+				{
+					// local player entered platform while someone else was still on it - just enter!
+					DebugLog.DebugWrite($"{AttachedObject.name} Local enter");
+					SwitchToRemoteCamera();
+					_hologramGroup.SetActive(true);
+					wasInLocally = true;
+				}
+				dontDisable = QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position));
 			}
 			_poolT = _active
 				? Mathf.MoveTowards(_poolT, 1f, Time.deltaTime / _poolFillLength)
@@ -212,6 +235,7 @@ namespace QSB.ItemSync.WorldObjects
 			switch (_platformState)
 			{
 				case NomaiRemoteCameraPlatform.State.Connecting_FadeIn:
+					// Fade out props on the current platform?
 					_transitionFade = Mathf.MoveTowards(_transitionFade, 1f, Time.deltaTime / _fadeInLength);
 					UpdateRendererFade();
 					if (_transitionFade == 1f)
@@ -234,6 +258,7 @@ namespace QSB.ItemSync.WorldObjects
 					}
 					break;
 				case NomaiRemoteCameraPlatform.State.Connecting_FadeOut:
+					// Fade in props on the target platform?
 					_slavePlatform._transitionFade = Mathf.MoveTowards(_slavePlatform._transitionFade, 0f, Time.deltaTime / _fadeInLength);
 					_slavePlatform.UpdateRendererFade();
 					UpdateHologramTransforms();
@@ -246,12 +271,14 @@ namespace QSB.ItemSync.WorldObjects
 					}
 					break;
 				case NomaiRemoteCameraPlatform.State.Connected:
+					// When connection is established
 					VerifySectorOccupancy();
 					UpdateHologramTransforms();
 					_slavePlatform._poolT = _poolT;
 					_slavePlatform.UpdatePoolRenderer();
 					break;
 				case NomaiRemoteCameraPlatform.State.Disconnecting_FadeIn:
+					// Fade out props on the target platform?
 					_slavePlatform._transitionFade = Mathf.MoveTowards(_slavePlatform._transitionFade, 1f, Time.deltaTime / _fadeOutLength);
 					_slavePlatform.UpdateRendererFade();
 					UpdateHologramTransforms();
@@ -274,8 +301,14 @@ namespace QSB.ItemSync.WorldObjects
 					}
 					break;
 				case NomaiRemoteCameraPlatform.State.Disconnecting_FadeOut:
+					// Fade in props on the current platform?
 					_transitionFade = Mathf.MoveTowards(_transitionFade, 0f, Time.deltaTime / _fadeOutLength);
 					UpdateRendererFade();
+					if (dontDisable)
+					{
+						DebugLog.DebugWrite($"{AttachedObject.name} DONT DISABLE!");
+						break;
+					}
 					if (_transitionFade == 0f)
 					{
 						if (_sharedStone == null)

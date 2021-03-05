@@ -29,7 +29,11 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
 			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
-			QSBWorldSync.Init<QSBNomaiRemoteCameraPlatform, NomaiRemoteCameraPlatform>();
+			foreach (var platform in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraPlatform>())
+			{
+				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
+				platform.enabled = false;
+			}
 		}
 
 		public static IQSBOWItem GetObject(OWItem unityObject)

@@ -132,6 +132,7 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="ItemSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
     <Compile Include="ItemSync\Events\DropItemMessage.cs" />
     <Compile Include="ItemSync\Events\MoveToCarryEvent.cs" />
