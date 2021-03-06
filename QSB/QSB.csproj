@@ -133,6 +133,7 @@
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="ItemSync\CustomNomaiRemoteCameraPlatform.cs" />
+    <Compile Include="ItemSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
     <Compile Include="ItemSync\Events\DropItemMessage.cs" />
     <Compile Include="ItemSync\Events\MoveToCarryEvent.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="ItemSync\ItemManager.cs" />
     <Compile Include="ItemSync\Patches\ItemPatches.cs" />
     <Compile Include="ItemSync\SocketEventType.cs" />
+    <Compile Include="ItemSync\CustomNomaiRemoteCamera.cs" />
     <Compile Include="ItemSync\WorldObjects\IQSBOWItem.cs" />
     <Compile Include="ItemSync\WorldObjects\IQSBOWItemSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStone.cs" />

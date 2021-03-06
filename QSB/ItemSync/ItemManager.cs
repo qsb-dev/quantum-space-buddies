@@ -29,10 +29,23 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
 			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
+			foreach (var streaming in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraStreaming>())
+			{
+				streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();
+				streaming.enabled = false;
+				DebugLog.DebugWrite($"Adding custom streaming to {streaming.name}");
+			}
+			foreach (var camera in Resources.FindObjectsOfTypeAll<NomaiRemoteCamera>())
+			{
+				camera.gameObject.AddComponent<CustomNomaiRemoteCamera>();
+				camera.enabled = false;
+				DebugLog.DebugWrite($"Adding custom camera to {camera.name}");
+			}
 			foreach (var platform in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraPlatform>())
 			{
 				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
 				platform.enabled = false;
+				DebugLog.DebugWrite($"Adding custom platform to {platform.name}");
 			}
 		}
 

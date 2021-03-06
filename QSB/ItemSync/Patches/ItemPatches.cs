@@ -17,11 +17,25 @@ namespace QSB.ItemSync.Patches
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("StartUnsocketItem", typeof(ItemPatches), nameof(ItemTool_StartUnsocketItem));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("CompleteUnsocketItem", typeof(ItemPatches), nameof(ItemTool_CompleteUnsocketItem));
 			QSBCore.Helper.HarmonyHelper.AddPrefix<ItemTool>("DropItem", typeof(ItemPatches), nameof(ItemTool_DropItem));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("Update", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnSocketableRemoved", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnSocketableDonePlacing", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnPedestalContact", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("FixedUpdate", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnSectorOccupantAdded", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnSectorOccupantRemoved", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnEntry", typeof(ItemPatches), nameof(Platform_ReturnFalse));
+			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnExit", typeof(ItemPatches), nameof(Platform_ReturnFalse));
 		}
 
 		public override void DoUnpatches()
 		{
 
+		}
+
+		public static bool Platform_ReturnFalse()
+		{
+			return false;
 		}
 
 		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
