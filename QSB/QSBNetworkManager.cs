@@ -45,7 +45,7 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
-		public void Awake()
+		public new void Awake()
 		{
 			base.Awake();
 			Instance = this;
