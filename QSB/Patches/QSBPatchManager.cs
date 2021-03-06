@@ -41,8 +41,7 @@ namespace QSB.Patches
 				new SpiralPatches(),
 				new QuantumPatches(),
 				new ItemPatches(),
-				new StatuePatches(),
-				new RemoteCameraPlatformPatches()
+				new StatuePatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
