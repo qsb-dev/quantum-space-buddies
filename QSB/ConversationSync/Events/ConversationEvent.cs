@@ -1,6 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Player;
 using QSB.WorldSync;
+using System.Text.RegularExpressions;
 
 namespace QSB.ConversationSync.Events
 {
@@ -31,6 +32,7 @@ namespace QSB.ConversationSync.Events
 			{
 				case ConversationType.Character:
 					var translated = TextTranslation.Translate(message.Message).Trim();
+					translated = Regex.Replace(translated, @"<Pause=?\d*\.?\d*\/>", "");
 					ConversationManager.Instance.DisplayCharacterConversationBox(message.ObjectId, translated);
 					break;
 

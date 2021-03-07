@@ -70,7 +70,7 @@ namespace QSB.ConversationSync.Events
 			{
 				controller.GetValue<Animator>("_animator").SetTrigger("Talking");
 			}
-			tree.GetComponent<InteractVolume>().DisableInteraction();
+			tree.GetInteractVolume().DisableInteraction();
 		}
 
 		private void EndConversation(
@@ -85,7 +85,7 @@ namespace QSB.ConversationSync.Events
 			{
 				controller.GetValue<Animator>("_animator").SetTrigger("Idle");
 			}
-			tree.GetComponent<InteractVolume>().EnableInteraction();
+			tree.GetInteractVolume().EnableInteraction();
 		}
 	}
 }
