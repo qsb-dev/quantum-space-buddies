@@ -446,11 +446,12 @@ namespace QSB.ItemSync
 			_sharedStone = null;
 			DebugLog.DebugWrite($"{_oldPlatform.name} - active = false");
 			_platformActive = false;
+			_wasInBounds = false;
 		}
 
 		private void OnSocketableDonePlacing(OWItem socketable)
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} socketable done placing");
+			DebugLog.DebugWrite($"{_oldPlatform.name} socketable done placing - camera state is {_cameraState}, _wasInBounds is {_wasInBounds}");
 			DebugLog.DebugWrite($"{_oldPlatform.name} - active = true");
 			_platformActive = true;
 			_sharedStone = socketable as SharedStone;
@@ -615,7 +616,7 @@ namespace QSB.ItemSync
 
 		private void OnEnterBounds()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} OnEnterBounds");
+			DebugLog.DebugWrite($"{_oldPlatform.name} OnEnterBounds, camera state is {_cameraState}, _wasInBounds is {_wasInBounds}");
 			if (!_platformActive)
 			{
 				DebugLog.DebugWrite($"{_oldPlatform.name}  - entered while platform is not active, ignore");
