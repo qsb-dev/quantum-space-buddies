@@ -30,7 +30,7 @@ namespace QSB.ItemSync.Patches
 
 		public override void DoUnpatches()
 		{
-
+			// TODO : add this
 		}
 
 		public static bool Platform_ReturnFalse() => false;

@@ -17,5 +17,8 @@
 
 		public override void OnCompleteUnsocket()
 			=> AttachedObject.OnCompleteUnsocket();
+
+		public NomaiRemoteCameraPlatform.ID GetRemoteCameraID()
+			=> AttachedObject.GetRemoteCameraID();
 	}
 }
