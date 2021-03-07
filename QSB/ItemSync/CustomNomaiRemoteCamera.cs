@@ -23,7 +23,6 @@ namespace QSB.ItemSync
 
 		private void OnEnable()
 		{
-			DebugLog.DebugWrite($"OnEnable {gameObject.name}");
 			_camera.enabled = true;
 			_audioListener.enabled = true;
 			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", _camera);
@@ -31,7 +30,6 @@ namespace QSB.ItemSync
 
 		private void OnDisable()
 		{
-			DebugLog.DebugWrite($"OnDisable {gameObject.name}");
 			_camera.enabled = false;
 			_audioListener.enabled = false;
 		}
@@ -57,7 +55,6 @@ namespace QSB.ItemSync
 
 		public void Activate(CustomNomaiRemoteCameraPlatform controllingPlatform, OWCamera viewer)
 		{
-			DebugLog.DebugWrite($"Activate {gameObject.name}");
 			_controllingPlatform = controllingPlatform;
 			_controllingCamera = viewer;
 			enabled = true;
@@ -65,7 +62,6 @@ namespace QSB.ItemSync
 
 		public void Deactivate()
 		{
-			DebugLog.DebugWrite($"Deactivate {gameObject.name}");
 			_controllingPlatform = null;
 			enabled = false;
 		}
