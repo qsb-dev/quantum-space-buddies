@@ -1,5 +1,4 @@
 ﻿using OWML.Utils;
-using QSB.Utility;
 
 namespace QSB.ItemSync
 {
@@ -21,7 +20,7 @@ namespace QSB.ItemSync
 			SetSector(_oldStreaming.GetSector());
 		}
 
-		private void Start() 
+		private void Start()
 			=> enabled = false;
 
 		private void FixedUpdate()
