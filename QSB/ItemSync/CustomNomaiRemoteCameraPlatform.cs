@@ -134,8 +134,8 @@ namespace QSB.ItemSync
 		private CustomNomaiRemoteCameraPlatform _slavePlatform;
 		private List<Sector> _alreadyOccupiedSectors;
 		private NomaiRemoteCameraPlatform _oldPlatform;
-		private bool _peopleStillOnPlatform;
-		private bool _wasInBounds;
+		private bool _anyoneStillOnPlatform;
+		private bool _wasLocalInBounds;
 		private CameraState _cameraState;
 
 		private void Awake()
@@ -212,17 +212,21 @@ namespace QSB.ItemSync
 		{
 			if (_platformActive)
 			{
-				var inBounds = _connectionBounds.PointInside(_playerCamera.transform.position);
-				_peopleStillOnPlatform = QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position));
-				if (!inBounds && _wasInBounds)
+				var localInBounds = _connectionBounds.PointInside(_playerCamera.transform.position);
+				_anyoneStillOnPlatform = QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position));
+				if (!localInBounds && _wasLocalInBounds)
 				{
 					OnLeaveBounds();
-					_wasInBounds = false;
+					_wasLocalInBounds = false;
 				}
-				else if (inBounds && !_wasInBounds)
+				else if (localInBounds && !_wasLocalInBounds)
 				{
 					OnEnterBounds();
-					_wasInBounds = true;
+					_wasLocalInBounds = true;
+				}
+				else if (!_anyoneStillOnPlatform && !_wasLocalInBounds)
+				{
+					OnLeaveBounds();
 				}
 			}
 			if (_platformActive)
@@ -436,7 +440,7 @@ namespace QSB.ItemSync
 			}
 			_sharedStone = null;
 			_platformActive = false;
-			_wasInBounds = false;
+			_wasLocalInBounds = false;
 		}
 
 		private void OnSocketableDonePlacing(OWItem socketable)
@@ -552,6 +556,10 @@ namespace QSB.ItemSync
 
 		private void ConnectCamera()
 		{
+			if (_cameraState == CameraState.Connected)
+			{
+				return;
+			}
 			var cameraState = _cameraState;
 			if (cameraState != CameraState.Disconnected && cameraState != CameraState.Disconnecting_FadeOut)
 			{
@@ -570,6 +578,10 @@ namespace QSB.ItemSync
 
 		private void DisconnectCamera()
 		{
+			if (_cameraState == CameraState.Disconnected)
+			{
+				return;
+			}
 			var cameraState = _cameraState;
 			if (cameraState != CameraState.Connected && cameraState != CameraState.Connecting_FadeOut)
 			{
@@ -606,7 +618,7 @@ namespace QSB.ItemSync
 		private void OnLeaveBounds()
 		{
 			DisconnectCamera();
-			if (_peopleStillOnPlatform)
+			if (_anyoneStillOnPlatform)
 			{
 				return;
 			}
