@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync
 {
-	class CustomNomaiRemoteCameraPlatform : NomaiShared
+	internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 	{
 		private static List<CustomNomaiRemoteCameraPlatform> s_platforms;
 		private static MaterialPropertyBlock s_matPropBlock;
@@ -594,7 +594,7 @@ namespace QSB.ItemSync
 		private void DisconnectCamera()
 		{
 			DebugLog.DebugWrite($"{_oldPlatform.name} DisconnectCamera");
-			var cameraState = this._cameraState;
+			var cameraState = _cameraState;
 			if (cameraState != CameraState.Connected && cameraState != CameraState.Connecting_FadeOut)
 			{
 				if (cameraState == CameraState.Connecting_FadeIn)
@@ -692,15 +692,9 @@ namespace QSB.ItemSync
 			return null;
 		}
 
-		public SharedStone GetSocketedStone()
-		{
-			return _sharedStone;
-		}
+		public SharedStone GetSocketedStone() => _sharedStone;
 
-		public bool IsPlatformActive()
-		{
-			return _platformActive;
-		}
+		public bool IsPlatformActive() => _platformActive;
 
 		public enum CameraState
 		{

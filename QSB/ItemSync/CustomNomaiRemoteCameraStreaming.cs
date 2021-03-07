@@ -1,10 +1,9 @@
 ﻿using OWML.Utils;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.ItemSync
 {
-	class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
+	internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 	{
 		private OWTriggerVolume _owTriggerVolume;
 		public CustomNomaiRemoteCameraPlatform _remoteCameraPlatform

@@ -24,7 +24,7 @@ namespace QSB.WorldSync
 			| BindingFlags.Public
 			| BindingFlags.NonPublic
 			| BindingFlags.DeclaredOnly;
-		private static Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
+		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();
@@ -41,7 +41,7 @@ namespace QSB.WorldSync
 
 		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : MonoBehaviour 
+			where TUnityObject : MonoBehaviour
 			=> WorldObjectsToUnityObjects[unityObject] as TWorldObject;
 
 		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)

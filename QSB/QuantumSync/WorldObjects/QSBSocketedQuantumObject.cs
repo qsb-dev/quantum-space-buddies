@@ -59,7 +59,7 @@ namespace QSB.QuantumSync.WorldObjects
 				component.MoveToRelativeLocation(location, AttachedObject.transform);
 			}
 
-			if ((QuantumManager.Instance.Shrine as SocketedQuantumObject) != AttachedObject)
+			if (QuantumManager.Instance.Shrine != AttachedObject)
 			{
 				AttachedObject.transform.localRotation = message.LocalRotation;
 			}

@@ -33,10 +33,7 @@ namespace QSB.ItemSync.Patches
 
 		}
 
-		public static bool Platform_ReturnFalse()
-		{
-			return false;
-		}
+		public static bool Platform_ReturnFalse() => false;
 
 		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
 		{

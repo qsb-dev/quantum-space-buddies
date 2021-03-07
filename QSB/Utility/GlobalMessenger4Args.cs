@@ -67,7 +67,7 @@ namespace QSB.Utility
 			}
 		}
 
-		private static IDictionary<string, EventData> _eventTable = new Dictionary<string, EventData>(ComparerLibrary.stringEqComparer);
+		private static readonly IDictionary<string, EventData> _eventTable = new Dictionary<string, EventData>(ComparerLibrary.stringEqComparer);
 
 		private class EventData
 		{

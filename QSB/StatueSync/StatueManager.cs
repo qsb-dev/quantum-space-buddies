@@ -10,12 +10,12 @@ namespace QSB.StatueSync
 		public bool HasStartedStatueLocally;
 
 		private void Awake()
-		{ 
+		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => QSBPlayerManager.ShowAllPlayers();
-		} 
+		}
 
-		private void OnDestroy() 
+		private void OnDestroy()
 			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => QSBPlayerManager.ShowAllPlayers();
 
 		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)

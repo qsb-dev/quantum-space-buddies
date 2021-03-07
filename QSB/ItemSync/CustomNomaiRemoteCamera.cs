@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync
 {
-	class CustomNomaiRemoteCamera : MonoBehaviour
+	internal class CustomNomaiRemoteCamera : MonoBehaviour
 	{
 		private OWCamera _camera;
 		private AudioListener _audioListener;
@@ -70,7 +70,7 @@ namespace QSB.ItemSync
 			enabled = false;
 		}
 
-		public bool IsActive() 
+		public bool IsActive()
 			=> enabled;
 
 		public void SetImageEffectFade(float fade)
