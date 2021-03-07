@@ -88,7 +88,7 @@ QSB also changes some mechanics of the base game, to better fit a multiplayer ex
 
 If nothing here works, many people have got QSB working through programs such as Hamachi. Also make sure you are not running through a VPN while trying to connect.
 
-Note - _nebula has no idea how Hamachi works and has never used it, so don't ask them for help setting it up! As said before, we are tech support for the mod. If you cannot connect to someone, or someone cannot connect to you, **that is not the QSB's fault.**
+Note - _nebula has no idea how Hamachi works and has never used it, so don't ask them for help setting it up! As said before, we are tech support for the mod. If you cannot connect to someone, or someone cannot connect to you, **that is not QSB's fault.**
 
 ## Installation
 
@@ -149,7 +149,7 @@ If for some reason none of this is working, you might have to set everything man
 - [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1 - v0.2
 - Thanks to Logan Ver Hoef for help with the game code.
 - Thanks to all the people in the Outer Wilds Discord for helping in public tests.
-- Special thanks to all the people in the #modding channel, which I (_nebula) have been using as a virtual [rubber duck.](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
+- Special thanks (and apologies) to all the people in the #modding channel, which I (_nebula) have been using as a virtual [rubber duck.](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
 
 ## Help / Discuss development / Whatever
 
