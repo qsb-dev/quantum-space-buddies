@@ -145,9 +145,7 @@ namespace QSB.ItemSync
 			_sharedStone = _oldPlatform.GetValue<SharedStone>("_sharedStone");
 			_ownedCamera = GetComponentInChildren<CustomNomaiRemoteCamera>();
 			_alreadyOccupiedSectors = new List<Sector>(16);
-			DebugLog.DebugWrite($"{_oldPlatform.name} state to DISCONNECTED");
 			_cameraState = CameraState.Disconnected;
-			DebugLog.DebugWrite($"{_oldPlatform.name} - active = false");
 			_platformActive = false;
 			_poolT = 0f;
 			_showPlayerRipples = false;
@@ -262,7 +260,6 @@ namespace QSB.ItemSync
 						UpdateHologramTransforms();
 						_ambientAudioSource.FadeIn(3f, true, false, 1f);
 						Locator.GetAudioMixer().MixRemoteCameraPlatform(_fadeInLength);
-						DebugLog.DebugWrite($"{_oldPlatform.name} state to CONNECTING_FADEOUT");
 						_cameraState = CameraState.Connecting_FadeOut;
 					}
 					break;
@@ -274,7 +271,6 @@ namespace QSB.ItemSync
 					_slavePlatform.UpdatePoolRenderer();
 					if (_slavePlatform._transitionFade == 0f)
 					{
-						DebugLog.DebugWrite($"{_oldPlatform.name} state to CONNECTED");
 						_cameraState = CameraState.Connected;
 					}
 					break;
@@ -302,7 +298,6 @@ namespace QSB.ItemSync
 						UpdateRendererFade();
 						SwitchToPlayerCamera();
 						_hologramGroup.SetActive(false);
-						DebugLog.DebugWrite($"{_oldPlatform.name} state to DISCONNECTING_FADEOUT");
 						_cameraState = CameraState.Disconnecting_FadeOut;
 					}
 					break;
@@ -311,7 +306,6 @@ namespace QSB.ItemSync
 					UpdateRendererFade();
 					if (_transitionFade == 0f)
 					{
-						DebugLog.DebugWrite($"{_oldPlatform.name} state to DISCONNECTED");
 						_cameraState = CameraState.Disconnected;
 					}
 					break;
@@ -329,7 +323,6 @@ namespace QSB.ItemSync
 			{
 				if (_slavePlatform != null && target == 0f)
 				{
-					DebugLog.DebugWrite($"_poolT reached target 0, setting slave platform to null.");
 					_slavePlatform = null;
 				}
 				return;
@@ -357,7 +350,6 @@ namespace QSB.ItemSync
 			}
 			if (_slavePlatform._visualSector2 != null && !_slavePlatform._visualSector2.ContainsOccupant(DynamicOccupant.Player))
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} re-add player occupant to {_slavePlatform._visualSector2.name}");
 				_slavePlatform._visualSector2.AddOccupant(Locator.GetPlayerSectorDetector());
 			}
 		}
@@ -422,7 +414,6 @@ namespace QSB.ItemSync
 
 		private void OnSocketableRemoved(OWItem socketable)
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name}  socketable removed");
 			if (_slavePlatform == null)
 			{
 				return;
@@ -444,15 +435,12 @@ namespace QSB.ItemSync
 				_slavePlatform._transitionPedestalAnimator.PlayOpen();
 			}
 			_sharedStone = null;
-			DebugLog.DebugWrite($"{_oldPlatform.name} - active = false");
 			_platformActive = false;
 			_wasInBounds = false;
 		}
 
 		private void OnSocketableDonePlacing(OWItem socketable)
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} socketable done placing - camera state is {_cameraState}, _wasInBounds is {_wasInBounds}");
-			DebugLog.DebugWrite($"{_oldPlatform.name} - active = true");
 			_platformActive = true;
 			_sharedStone = socketable as SharedStone;
 			if (_sharedStone == null)
@@ -466,7 +454,6 @@ namespace QSB.ItemSync
 			}
 			if (_slavePlatform == this || !_slavePlatform.gameObject.activeInHierarchy)
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} slavePlatform error!");
 				_sharedStone = null;
 				_slavePlatform = null;
 				return;
@@ -491,7 +478,6 @@ namespace QSB.ItemSync
 
 		private void SwitchToRemoteCamera()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} SwitchToRemoteCamera");
 			GlobalMessenger.FireEvent("EnterNomaiRemoteCamera");
 			_slavePlatform.RevealFactID();
 			_slavePlatform._ownedCamera.Activate(this, _playerCamera);
@@ -501,39 +487,32 @@ namespace QSB.ItemSync
 			{
 				if (_visualSector.ContainsOccupant(DynamicOccupant.Player))
 				{
-					DebugLog.DebugWrite($"{_oldPlatform.name} {_visualSector.name} is already occupied.");
 					_alreadyOccupiedSectors.Add(_visualSector);
 				}
-				DebugLog.DebugWrite($"{_oldPlatform.name} Add player occupant to {_slavePlatform._visualSector.name}");
 				_slavePlatform._visualSector.AddOccupant(Locator.GetPlayerSectorDetector());
 				var parentSector = _slavePlatform._visualSector.GetParentSector();
 				while (parentSector != null)
 				{
 					if (parentSector.ContainsOccupant(DynamicOccupant.Player))
 					{
-						DebugLog.DebugWrite($"{_oldPlatform.name} Parent {parentSector} is already occupied.");
 						_alreadyOccupiedSectors.Add(parentSector);
 					}
-					DebugLog.DebugWrite($"{_oldPlatform.name} Add player occupant to parent {parentSector.name}");
 					parentSector.AddOccupant(Locator.GetPlayerSectorDetector());
 					parentSector = parentSector.GetParentSector();
 				}
 			}
 			if (_slavePlatform._visualSector2 != null)
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} Add player occupant to {_slavePlatform._visualSector2.name}");
 				_slavePlatform._visualSector2.AddOccupant(Locator.GetPlayerSectorDetector());
 			}
 			if (_slavePlatform._darkZone != null)
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} Add player to darkzone {_slavePlatform._darkZone}");
 				_slavePlatform._darkZone.AddPlayerToZone(true);
 			}
 		}
 
 		private void SwitchToPlayerCamera()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} SwitchToPlayerCamera");
 			if (_slavePlatform._visualSector != null)
 			{
 				if (!_alreadyOccupiedSectors.Contains(_slavePlatform._visualSector))
@@ -573,19 +552,16 @@ namespace QSB.ItemSync
 
 		private void ConnectCamera()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} ConnectCamera");
 			var cameraState = _cameraState;
 			if (cameraState != CameraState.Disconnected && cameraState != CameraState.Disconnecting_FadeOut)
 			{
 				if (cameraState == CameraState.Disconnecting_FadeIn)
 				{
-					DebugLog.DebugWrite($"{_oldPlatform.name} state to CONNECTING_FADEOUT");
 					_cameraState = CameraState.Connecting_FadeOut;
 				}
 			}
 			else
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} state to CONNECTING_FADEIN");
 				_cameraState = CameraState.Connecting_FadeIn;
 			}
 			_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraEntry, 1f);
@@ -594,19 +570,16 @@ namespace QSB.ItemSync
 
 		private void DisconnectCamera()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} DisconnectCamera");
 			var cameraState = _cameraState;
 			if (cameraState != CameraState.Connected && cameraState != CameraState.Connecting_FadeOut)
 			{
 				if (cameraState == CameraState.Connecting_FadeIn)
 				{
-					DebugLog.DebugWrite($"{_oldPlatform.name} state to DISCONNECTING_FADEOUT");
 					_cameraState = CameraState.Disconnecting_FadeOut;
 				}
 			}
 			else
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} state to DISCONNECTING_FADEIN");
 				_cameraState = CameraState.Disconnecting_FadeIn;
 				_ambientAudioSource.FadeOut(0.5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
 				_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraExit, 1f);
@@ -616,10 +589,8 @@ namespace QSB.ItemSync
 
 		private void OnEnterBounds()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} OnEnterBounds, camera state is {_cameraState}, _wasInBounds is {_wasInBounds}");
 			if (!_platformActive)
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name}  - entered while platform is not active, ignore");
 				return;
 			}
 			if (_pedestalAnimator.HasMadeContact())
@@ -628,22 +599,17 @@ namespace QSB.ItemSync
 			}
 			else if (_cameraState == CameraState.Disconnected)
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} state to WAITINGFORPEDASTALCONTACT");
 				_cameraState = CameraState.WaitingForPedestalContact;
 			}
 		}
 
 		private void OnLeaveBounds()
 		{
-			DebugLog.DebugWrite($"{_oldPlatform.name} OnLeaveBounds");
 			DisconnectCamera();
 			if (_peopleStillOnPlatform)
 			{
-				DebugLog.DebugWrite($"{_oldPlatform.name} - people still on platform!");
 				return;
 			}
-			DebugLog.DebugWrite($"{_oldPlatform.name}  - no one left on platform");
-			DebugLog.DebugWrite($"{_oldPlatform.name} - active = false");
 			_platformActive = false;
 			if (_pedestalAnimator != null)
 			{
