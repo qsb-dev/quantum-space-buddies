@@ -28,7 +28,6 @@ namespace QSB.TimeSync
 		private bool _isFirstFastForward = true;
 		private int _localLoopCount;
 		private int _serverLoopCount;
-		private InputMode _storedMode;
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
@@ -134,14 +133,14 @@ namespace QSB.TimeSync
 				return;
 			}
 			DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
-			if (Locator.GetPlayerCamera() != null)
+			if (Locator.GetActiveCamera() != null)
 			{
-				Locator.GetPlayerCamera().enabled = false;
+				Locator.GetActiveCamera().enabled = false;
 			}
 			_timeScale = MaxFastForwardSpeed;
 			_state = State.FastForwarding;
 			OWTime.SetMaxDeltaTime(0.033333335f);
-			OWTime.SetFixedTimestep(0.04f);
+			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
 			DisableInput();
@@ -154,7 +153,7 @@ namespace QSB.TimeSync
 				return;
 			}
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
-			Locator.GetPlayerCamera().enabled = false;
+			Locator.GetActiveCamera().enabled = false;
 			_timeScale = 0f;
 			_state = State.Pausing;
 			SpinnerUI.Show();
@@ -167,7 +166,7 @@ namespace QSB.TimeSync
 			_timeScale = 1f;
 			OWTime.SetMaxDeltaTime(0.06666667f);
 			OWTime.SetFixedTimestep(0.01666667f);
-			Locator.GetPlayerCamera().enabled = true;
+			Locator.GetActiveCamera().enabled = true;
 			_state = State.Loaded;
 
 			if (!_isInputEnabled)
@@ -186,20 +185,22 @@ namespace QSB.TimeSync
 
 		private void DisableInput()
 		{
-			DebugLog.DebugWrite($"disable input - current:{OWInput.GetInputMode()}");
-			_isInputEnabled = false;
-			_storedMode = OWInput.GetInputMode();
-			OWInput.ChangeInputMode(InputMode.None);
+			if (OWInput.GetInputMode() != InputMode.None && _isInputEnabled)
+			{
+				OWInput.ChangeInputMode(InputMode.None);
+				_isInputEnabled = false;
+			}
 		}
 
 		private void EnableInput()
 		{
-			DebugLog.DebugWrite($"enable input - stored:{_storedMode}");
 			_isInputEnabled = true;
-			OWInput.ChangeInputMode(
-				_storedMode != InputMode.None
-					? _storedMode
-					: InputMode.Character);
+			if (OWInput.GetInputMode() != InputMode.None)
+			{
+				DebugLog.ToConsole($"Warning - InputMode was changed to {OWInput.GetInputMode()} while pausing/fastforwarding!", MessageType.Warning);
+				return;
+			}
+			OWInput.RestorePreviousInputs();
 		}
 
 		public void Update()
