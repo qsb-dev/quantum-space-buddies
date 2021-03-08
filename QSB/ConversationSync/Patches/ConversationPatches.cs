@@ -97,12 +97,13 @@ namespace QSB.ConversationSync.Patches
 			var position = playerId == uint.MaxValue
 				? Locator.GetActiveCamera().transform.position
 				: QSBPlayerManager.GetPlayer(playerId).CameraBody.transform.position;
-			var b = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking
+			var localPosition = ____animator.transform.InverseTransformPoint(position);
+			var targetWeight = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking
 						? !____playerInHeadZone ? 0 : 1
 						: !____inConversation || !____playerInHeadZone ? 0 : 1);
-			____currentLookWeight = Mathf.Lerp(____currentLookWeight, b, Time.deltaTime * 2f);
-			____currentLookTarget = ___lookSpring.Update(____currentLookTarget, position, Time.deltaTime);
-			____animator.SetLookAtPosition(____currentLookTarget);
+			____currentLookWeight = Mathf.Lerp(____currentLookWeight, targetWeight, Time.deltaTime * 2f);
+			____currentLookTarget = ___lookSpring.Update(____currentLookTarget, localPosition, Time.deltaTime);
+			____animator.SetLookAtPosition(____animator.transform.TransformPoint(____currentLookTarget));
 			____animator.SetLookAtWeight(____currentLookWeight);
 			return false;
 		}
