@@ -141,6 +141,7 @@ namespace QSB.TimeSync
 			_timeScale = MaxFastForwardSpeed;
 			_state = State.FastForwarding;
 			OWTime.SetMaxDeltaTime(0.033333335f);
+			OWTime.SetFixedTimestep(0.04f);
 			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
 			DisableInput();
@@ -165,6 +166,7 @@ namespace QSB.TimeSync
 		{
 			_timeScale = 1f;
 			OWTime.SetMaxDeltaTime(0.06666667f);
+			OWTime.SetFixedTimestep(0.01666667f);
 			Locator.GetPlayerCamera().enabled = true;
 			_state = State.Loaded;
 
