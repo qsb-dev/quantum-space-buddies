@@ -10,6 +10,7 @@ namespace QSB.TransformSync
 	{
 		protected override Transform InitLocalTransform()
 		{
+			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = Locator.GetPlayerCamera().gameObject.transform;
 
 			Player.Camera = Locator.GetPlayerCamera();

@@ -174,7 +174,7 @@ namespace QSB
 
 			QSBEventManager.Init();
 
-			gameObject.AddComponent<SectorSync.SectorSync>();
+			gameObject.AddComponent<QSBSectorManager>();
 			gameObject.AddComponent<RespawnOnDeath>();
 
 			if (QSBSceneManager.IsInUniverse)
@@ -209,7 +209,7 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnStopClient", MessageType.Info);
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
-			Destroy(GetComponent<SectorSync.SectorSync>());
+			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
@@ -256,7 +256,7 @@ namespace QSB
 		public override void OnStopServer()
 		{
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
-			Destroy(GetComponent<SectorSync.SectorSync>());
+			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);

@@ -29,6 +29,7 @@ namespace QSB.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
+			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = GetPlayerModel();
 
 			GetComponent<AnimationSync>().InitLocal(body);

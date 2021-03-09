@@ -15,6 +15,7 @@ namespace QSB.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
+			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
 			SetSocket(Player.CameraBody.transform);

@@ -12,6 +12,10 @@ namespace QSB.Player
 
 		private void Update()
 		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				return;
+			}
 			var controller = Locator.GetPlayerController();
 			if (controller == null)
 			{

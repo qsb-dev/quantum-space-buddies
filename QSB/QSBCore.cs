@@ -13,6 +13,7 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
+using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -151,9 +152,9 @@ namespace QSB
 			var offset3 = 10f;
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current sectors :");
 			offset3 += _debugLineSpacing;
-			foreach (var obj in QSBSectorManager.Instance.SectorList)
+			foreach (var obj in PlayerTransformSync.LocalInstance?.SectorSync.SectorList)
 			{
-				GUI.Label(new Rect(420, offset3, 200f, 20f), $"- {obj.AttachedObject.name}");
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"- {obj.AttachedObject.name} : {Vector3.Distance(obj.Position, Locator.GetPlayerTransform().position)}");
 				offset3 += _debugLineSpacing;
 			}
 
