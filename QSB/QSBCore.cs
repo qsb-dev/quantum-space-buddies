@@ -154,7 +154,7 @@ namespace QSB
 			offset3 += _debugLineSpacing;
 			foreach (var obj in PlayerTransformSync.LocalInstance?.SectorSync.SectorList)
 			{
-				GUI.Label(new Rect(420, offset3, 200f, 20f), $"- {obj.AttachedObject.name} : {Vector3.Distance(obj.Position, Locator.GetPlayerTransform().position)}");
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {obj.AttachedObject.name} : {Vector3.Distance(obj.Position, Locator.GetPlayerTransform().position)}");
 				offset3 += _debugLineSpacing;
 			}
 

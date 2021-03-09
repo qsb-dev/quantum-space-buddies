@@ -69,13 +69,32 @@ namespace QSB.SectorSync
 			var listToCheck = SectorList.Count == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>()
 				: SectorList;
-			// TODO : maybe improve this by more carefully picking sectors that are in the same place? maybe by last entered or closest to edge?
-			return listToCheck
-				.Where(sector => sector.AttachedObject != null
-					&& !_sectorBlacklist.Contains(sector.Type)
-					&& sector.Transform.gameObject.activeInHierarchy)
+
+			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
+				&& !_sectorBlacklist.Contains(sector.Type)
+				&& sector.Transform.gameObject.activeInHierarchy);
+			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-				.FirstOrDefault();
+			    .ThenBy(sector => GetRadius(sector));
+			return ordered.FirstOrDefault();
+		}
+
+		private float GetRadius(QSBSector sector)
+		{
+			if (sector == null)
+			{
+				return 0f;
+			}
+			// TODO : make this work for other stuff, not just shaped triggervolumes
+			var trigger = sector.AttachedObject.GetTriggerVolume();
+			if (trigger != null)
+			{
+				if (trigger.GetShape() != null)
+				{
+					return trigger.GetShape().CalcWorldBounds().radius;
+				}
+			}
+			return 0f;
 		}
 	}
 }
