@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace QSB.Player.Events
 {
-	class PlayerKickEvent : QSBEvent<EnumMessage<KickReason>>
+	internal class PlayerKickEvent : QSBEvent<EnumMessage<KickReason>>
 	{
 		public override EventType Type => EventType.PlayerKick;
 
@@ -30,7 +30,7 @@ namespace QSB.Player.Events
 			QSBCore.Helper.Events.Unity.FireInNUpdates(() => KickPlayer(message.AboutId), 10);
 		}
 
-		private void KickPlayer(uint id) 
+		private void KickPlayer(uint id)
 			=> QNetworkServer.connections.First(x => x.GetPlayerId() == id).Disconnect();
 
 		public override void OnReceiveRemote(bool server, EnumMessage<KickReason> message)
