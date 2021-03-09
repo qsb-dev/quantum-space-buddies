@@ -13,7 +13,7 @@ namespace QSB.StatueSync.Patches
 			=> QSBCore.Helper.HarmonyHelper.AddPrefix<MemoryUplinkTrigger>("Update", typeof(StatuePatches), nameof(Statue_Update));
 
 		public override void DoUnpatches()
-			=> QSBCore.Helper.HarmonyHelper.Unpatch<MemoryUplinkTrigger>("BeginUplinkSequence");
+			=> QSBCore.Helper.HarmonyHelper.Unpatch<MemoryUplinkTrigger>("Update");
 
 		public static bool Statue_Update(bool ____waitForPlayerGrounded)
 		{

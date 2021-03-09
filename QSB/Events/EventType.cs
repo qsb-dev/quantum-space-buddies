@@ -38,6 +38,7 @@
 		DropItem,
 		SocketItem,
 		MoveToCarry,
-		StartStatue
+		StartStatue,
+		PlayerKick
 	}
 }

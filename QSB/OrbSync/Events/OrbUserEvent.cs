@@ -50,7 +50,7 @@ namespace QSB.OrbSync.Events
 
 		private static void HandleServer(WorldObjectMessage message)
 		{
-			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayer().PlayerId == message.FromId);
+			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayerId() == message.FromId);
 			if (QSBWorldSync.OrbSyncList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OrbSyncList is empty. (ID {message.ObjectId})", MessageType.Error);

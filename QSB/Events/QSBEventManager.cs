@@ -46,6 +46,7 @@ namespace QSB.Events
 				new CrouchEvent(),
 				new ServerTimeEvent(),
 				new PlayerEntangledEvent(),
+				new PlayerKickEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

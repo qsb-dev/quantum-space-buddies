@@ -66,7 +66,7 @@ namespace QSB.Player
 		{
 			var trace = new StackTrace().GetFrame(1).GetMethod();
 			DebugLog.DebugWrite($"Remove Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
-			PlayerList.Remove(GetPlayer(id));
+			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
 		public static bool PlayerExists(uint id) =>

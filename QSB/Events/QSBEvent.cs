@@ -79,7 +79,7 @@ namespace QSB.Events
 			}
 
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
-				QSBPlayerManager.IsBelongingToLocalPlayer(message.AboutId))
+				QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
 			{
 				OnReceiveLocal(QNetworkServer.active, message);
 				return;
