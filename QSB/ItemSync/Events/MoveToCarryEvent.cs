@@ -41,8 +41,8 @@ namespace QSB.ItemSync.Events
 					itemSocket = player.SharedStoneSocket;
 					break;
 				case ItemType.WarpCore:
-					itemSocket = ((QSBWarpCoreItem)itemObject).IsVesselCoreType() 
-						? player.VesselCoreSocket 
+					itemSocket = ((QSBWarpCoreItem)itemObject).IsVesselCoreType()
+						? player.VesselCoreSocket
 						: player.WarpCoreSocket;
 					break;
 				default:

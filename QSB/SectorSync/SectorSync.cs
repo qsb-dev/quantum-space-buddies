@@ -75,7 +75,7 @@ namespace QSB.SectorSync
 				&& sector.Transform.gameObject.activeInHierarchy);
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-			    .ThenBy(sector => GetRadius(sector));
+				.ThenBy(sector => GetRadius(sector));
 			return ordered.FirstOrDefault();
 		}
 
