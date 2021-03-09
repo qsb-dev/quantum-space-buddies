@@ -8,5 +8,8 @@
 			AttachedObject = attachedObject;
 			base.Init(attachedObject, id);
 		}
+
+		public bool IsVesselCoreType()
+			=> AttachedObject.IsVesselCoreType();
 	}
 }

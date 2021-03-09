@@ -37,10 +37,13 @@ namespace QSB.ItemSync.Events
 				case ItemType.Scroll:
 					itemSocket = player.ScrollSocket;
 					break;
-				case ItemType.WarpCore:
-					break;
 				case ItemType.SharedStone:
 					itemSocket = player.SharedStoneSocket;
+					break;
+				case ItemType.WarpCore:
+					itemSocket = ((QSBWarpCoreItem)itemObject).IsVesselCoreType() 
+						? player.VesselCoreSocket 
+						: player.WarpCoreSocket;
 					break;
 				default:
 					itemSocket = player.ItemSocket;
