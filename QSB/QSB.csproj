@@ -169,7 +169,9 @@
     <Compile Include="OrbSync\WorldObjects\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
     <Compile Include="Player\Events\PlayerEntangledEvent.cs" />
+    <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
+    <Compile Include="Player\KickReason.cs" />
     <Compile Include="Player\PlayerEntanglementWatcher.cs" />
     <Compile Include="Player\PlayerMapMarker.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />

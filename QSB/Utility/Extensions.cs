@@ -36,11 +36,11 @@ namespace QSB.Utility
 			original.gameObject.InstantiateInactive().transform;
 
 		// QNET
-		public static PlayerInfo GetPlayer(this QNetworkConnection connection)
+		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
 			var go = connection.PlayerControllers[0].Gameobject;
 			var controller = go.GetComponent<PlayerTransformSync>();
-			return QSBPlayerManager.GetPlayer(controller.NetId.Value);
+			return controller.NetId.Value;
 		}
 
 		// C#

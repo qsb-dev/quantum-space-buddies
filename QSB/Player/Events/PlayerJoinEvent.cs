@@ -16,11 +16,18 @@ namespace QSB.Player.Events
 		private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage
 		{
 			AboutId = LocalPlayerId,
-			PlayerName = name
+			PlayerName = name,
+			QSBVersion = QSBCore.QSBVersion
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerJoinMessage message)
 		{
+			if (server && (message.QSBVersion != QSBCore.QSBVersion))
+			{
+				DebugLog.DebugWrite($"Error - Client {message.PlayerName} connecting with wrong version. (Client:{message.QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
+				QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.VersionNotMatching);
+				return;
+			}
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);

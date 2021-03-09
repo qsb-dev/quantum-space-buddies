@@ -17,8 +17,11 @@ namespace QSB.TransformSync
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			Player.HudMarker?.Remove();
-			QSBPlayerManager.RemovePlayer(PlayerId);
+			if (QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				Player.HudMarker?.Remove();
+				QSBPlayerManager.RemovePlayer(PlayerId);
+			}
 		}
 
 		private Transform GetPlayerModel() =>
