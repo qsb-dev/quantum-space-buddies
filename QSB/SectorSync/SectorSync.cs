@@ -86,6 +86,16 @@ namespace QSB.SectorSync
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
 				.ThenBy(sector => GetRadius(sector));
+
+			if (
+				QSBSectorManager.Instance.FakeSectors.Any(
+					x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f) 
+				&& activeNotNullNotBlacklisted.Any(
+					y => y.AttachedObject == (x.AttachedObject as FakeSector).AttachedSector)))
+			{
+				return QSBSectorManager.Instance.FakeSectors.First(x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f));
+			}
+				
 			return ordered.FirstOrDefault();
 		}
 

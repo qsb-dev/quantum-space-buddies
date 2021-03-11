@@ -50,11 +50,6 @@ namespace QSB.Player.Events
 					MessageType.Error);
 				return;
 			}
-			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
-				.Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
-			{
-				QSBEventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
-			}
 		}
 	}
 }
