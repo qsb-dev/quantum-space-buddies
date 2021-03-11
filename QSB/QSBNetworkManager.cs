@@ -174,7 +174,6 @@ namespace QSB
 
 			QSBEventManager.Init();
 
-			gameObject.AddComponent<QSBSectorManager>();
 			gameObject.AddComponent<RespawnOnDeath>();
 
 			if (QSBSceneManager.IsInUniverse)
