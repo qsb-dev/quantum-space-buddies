@@ -13,7 +13,6 @@ namespace QSB.SectorSync
 		public List<QSBSector> SectorList = new List<QSBSector>();
 
 		private SectorDetector _sectorDetector;
-		private readonly Sector.Name[] _sectorBlacklist = { Sector.Name.Ship };
 
 		public void SetSectorDetector(SectorDetector detector)
 		{
@@ -36,7 +35,7 @@ namespace QSB.SectorSync
 			}
 			if (SectorList.Contains(worldObject))
 			{
-				DebugLog.ToConsole($"Warning - Trying to add {sector.name}, but is already in list", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
 				return;
 			}
 			SectorList.Add(worldObject);
@@ -52,7 +51,7 @@ namespace QSB.SectorSync
 			}
 			if (!SectorList.Contains(worldObject))
 			{
-				DebugLog.ToConsole($"Warning - Trying to remove {sector.name}, but is not in list!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
 				return;
 			}
 			SectorList.Remove(worldObject);
@@ -66,7 +65,7 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count == 0
+			var listToCheck = SectorList.Count(x => x.ShouldSyncTo()) == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>()
 				: SectorList;
 
@@ -81,8 +80,14 @@ namespace QSB.SectorSync
 			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& !_sectorBlacklist.Contains(sector.Type)
+				&& sector.ShouldSyncTo()
 				&& sector.Transform.gameObject.activeInHierarchy);
+			if (activeNotNullNotBlacklisted.Count() == 0)
+			{
+				DebugLog.ToConsole(
+					$"Error - Zero available sectors for {trans.name} to sync to! Current QSBSector count : {QSBWorldSync.GetWorldObjects<QSBSector>().Count()}",
+					MessageType.Error);
+			}
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
 				.ThenBy(sector => GetRadius(sector));

@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -94,9 +95,7 @@ namespace QSB.ItemSync.Patches
 				QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPos, hit.normal, parentSector);
 				return false;
 			}
-			DebugLog.ToConsole($"Warning - no sector found for rigidbody {targetRigidbody.name}.", OWML.Common.MessageType.Warning);
-			var localPosition = sector.transform.InverseTransformPoint(hit.point);
-			QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPosition, hit.normal, sector);
+			DebugLog.ToConsole($"Error - No sector found for rigidbody {targetRigidbody.name}!.", MessageType.Error);
 			return false;
 		}
 	}

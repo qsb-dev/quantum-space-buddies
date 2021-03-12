@@ -27,5 +27,19 @@ namespace QSB.SectorSync.WorldObjects
 				QSBSectorManager.Instance.FakeSectors.Remove(this);
 			}
 		}
+
+		public bool ShouldSyncTo()
+		{
+			if (Type == Sector.Name.Ship)
+			{
+				return false;
+			}
+			if ((AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior") 
+				&& !AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>().IsPlayerInside())
+			{
+				return false;
+			}
+			return true;
+		}
 	}
 }
