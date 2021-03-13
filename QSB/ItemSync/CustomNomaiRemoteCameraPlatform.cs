@@ -710,6 +710,8 @@ namespace QSB.ItemSync
 			hologramCopy.parent = _playerHologram.parent;
 			Destroy(hologramCopy.GetChild(0).GetComponent<PlayerAnimController>());
 			var mirror = hologramCopy.gameObject.AddComponent<AnimatorMirror>();
+			hologramCopy.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
+			hologramCopy.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 			if (player.AnimationSync.VisibleAnimator == null)
 			{
 				DebugLog.ToConsole($"Warning - {playerId}'s VisibleAnimator is null!", MessageType.Error);
