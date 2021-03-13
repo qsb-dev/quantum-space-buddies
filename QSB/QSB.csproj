@@ -196,6 +196,7 @@
     <Compile Include="QuantumSync\Events\SocketStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\SocketStateChangeMessage.cs" />
     <Compile Include="QuantumSync\Patches\QuantumPatches.cs" />
+    <Compile Include="QuantumSync\WorldObjects\QSBEyeProxyQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBMultiStateQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumObject.cs" />

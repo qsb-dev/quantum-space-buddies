@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using OWML.Utils;
+using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.SectorSync.WorldObjects
@@ -34,10 +36,22 @@ namespace QSB.SectorSync.WorldObjects
 			{
 				return false;
 			}
-			if ((AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
-				&& !AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>().IsPlayerInside())
+			if (AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
 			{
-				return false;
+				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+				{
+					if (!AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>().IsPlayerInside())
+					{
+						return false;
+					}
+				}
+				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+				{
+					if (!AttachedObject.gameObject.GetComponentInParent<EyeShuttleController>().GetValue<bool>("_isPlayerInside"))
+					{
+						return false;
+					}
+				}
 			}
 			return true;
 		}
