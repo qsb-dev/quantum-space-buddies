@@ -192,12 +192,12 @@ namespace QSB
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
 			if (!QSBCore.IsServer)
 			{
-				QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
 

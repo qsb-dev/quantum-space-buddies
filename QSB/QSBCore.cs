@@ -47,6 +47,8 @@ namespace QSB
 	public class QSBCore : ModBehaviour
 	{
 		public static IModHelper Helper { get; private set; }
+		public static IHarmonyHelper HarmonyHelper => Helper.HarmonyHelper;
+		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
 		public static bool DebugMode { get; private set; }

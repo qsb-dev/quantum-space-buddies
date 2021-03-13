@@ -16,8 +16,8 @@ namespace QSB.LogSync.Patches
 			QSBEventManager.FireEvent(EventNames.QSBRevealFact, id, saveGame, showNotification);
 		}
 
-		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPostfix<ShipLogManager>("RevealFact", typeof(LogPatches), nameof(RevealFact));
+		public override void DoPatches() => QSBCore.HarmonyHelper.AddPostfix<ShipLogManager>("RevealFact", typeof(LogPatches), nameof(RevealFact));
 
-		public override void DoUnpatches() => QSBCore.Helper.HarmonyHelper.Unpatch<ShipLogManager>("RevealFact");
+		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<ShipLogManager>("RevealFact");
 	}
 }

@@ -61,7 +61,7 @@ namespace QSB.OrbSync
 			}
 		}
 
-		public void QueueBuildSlots() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
-		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QNetworkServer.active, BuildOrbs);
+		public void QueueBuildSlots() => QSBCore.UnityEvents.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
+		public void QueueBuildOrbs() => QSBCore.UnityEvents.RunWhen(() => QNetworkServer.active, BuildOrbs);
 	}
 }

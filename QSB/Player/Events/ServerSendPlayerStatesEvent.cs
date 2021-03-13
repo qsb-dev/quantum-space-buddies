@@ -31,7 +31,7 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool server, PlayerStateMessage message)
 		{
 			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
-			QSBCore.Helper.Events.Unity.RunWhen(
+			QSBCore.UnityEvents.RunWhen(
 				() => QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
 				() => QSBPlayerManager.HandleFullStateMessage(message));
 		}
