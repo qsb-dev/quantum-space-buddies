@@ -14,22 +14,22 @@ namespace QSB.ConversationSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(Node_GetNextPage));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(Tree_InputDialogueOption));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(Tree_StartConversation));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(Tree_EndConversation));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(AnimController_OnAnimatorIK));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(AnimController_OnZoneExit));
+			QSBCore.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(Node_GetNextPage));
+			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(Tree_InputDialogueOption));
+			QSBCore.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(Tree_StartConversation));
+			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(Tree_EndConversation));
+			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(AnimController_OnAnimatorIK));
+			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(AnimController_OnZoneExit));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<DialogueNode>("GetNextPage");
-			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterDialogueTree>("InputDialogueOption");
-			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
-			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
-			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterAnimController>("OnAnimatorIK");
-			QSBCore.Helper.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneExit");
+			QSBCore.HarmonyHelper.Unpatch<DialogueNode>("GetNextPage");
+			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("InputDialogueOption");
+			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
+			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
+			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnAnimatorIK");
+			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneExit");
 		}
 
 		public static void Tree_StartConversation(CharacterDialogueTree __instance)
@@ -79,7 +79,7 @@ namespace QSB.ConversationSync.Patches
 		{
 			var key = ____name + ____listPagesToDisplay[____currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentDialogueID, key));
 		}
 

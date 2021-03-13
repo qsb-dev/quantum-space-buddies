@@ -27,7 +27,7 @@ namespace QSB.Player.Events
 			{
 				return;
 			}
-			QSBCore.Helper.Events.Unity.FireInNUpdates(() => KickPlayer(message.AboutId), 10);
+			QSBCore.UnityEvents.FireInNUpdates(() => KickPlayer(message.AboutId), 10);
 		}
 
 		private void KickPlayer(uint id)

@@ -11,16 +11,16 @@ namespace QSB.TranslationSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiWallText>("SetAsTranslated", typeof(SpiralPatches), nameof(Wall_SetAsTranslated));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(Computer_SetAsTranslated));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiVesselComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(VesselComputer_SetAsTranslated));
+			QSBCore.HarmonyHelper.AddPrefix<NomaiWallText>("SetAsTranslated", typeof(SpiralPatches), nameof(Wall_SetAsTranslated));
+			QSBCore.HarmonyHelper.AddPrefix<NomaiComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(Computer_SetAsTranslated));
+			QSBCore.HarmonyHelper.AddPrefix<NomaiVesselComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(VesselComputer_SetAsTranslated));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiWallText>("SetAsTranslated");
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiComputer>("SetAsTranslated");
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiVesselComputer>("SetAsTranslated");
+			QSBCore.HarmonyHelper.Unpatch<NomaiWallText>("SetAsTranslated");
+			QSBCore.HarmonyHelper.Unpatch<NomaiComputer>("SetAsTranslated");
+			QSBCore.HarmonyHelper.Unpatch<NomaiVesselComputer>("SetAsTranslated");
 		}
 
 		public static bool Wall_SetAsTranslated(NomaiWallText __instance, int id)

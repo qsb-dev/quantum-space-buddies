@@ -19,7 +19,7 @@ namespace QSB.ElevatorSync.WorldObjects
 			DebugLog.DebugWrite($"init with id {id}");
 			AttachedObject = elevator;
 			ObjectId = id;
-			QSBCore.Helper.Events.Unity.RunWhen(() => AttachedObject.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
+			QSBCore.UnityEvents.RunWhen(() => AttachedObject.GetValue<SingleInteractionVolume>("_interactVolume") != null, InitValues);
 		}
 
 		private void InitValues()

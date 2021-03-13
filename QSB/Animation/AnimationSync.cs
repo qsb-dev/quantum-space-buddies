@@ -130,7 +130,7 @@ namespace QSB.Animation
 			InitCrouchSync();
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
-			QSBCore.Helper.Events.Unity.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
+			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
 		}
 
 		private void InitCrouchSync()

@@ -9,14 +9,14 @@ namespace QSB.QuantumSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ClientQuantumPatches), nameof(ReturnFalsePatch));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<QuantumMoon>("Start", typeof(ClientQuantumPatches), nameof(Moon_CollapseOnStart));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ClientQuantumPatches), nameof(ReturnFalsePatch));
+			QSBCore.HarmonyHelper.AddPostfix<QuantumMoon>("Start", typeof(ClientQuantumPatches), nameof(Moon_CollapseOnStart));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("ChangeQuantumState");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("Start");
+			QSBCore.HarmonyHelper.Unpatch<QuantumMoon>("ChangeQuantumState");
+			QSBCore.HarmonyHelper.Unpatch<QuantumMoon>("Start");
 		}
 
 		public static void Moon_CollapseOnStart(QuantumMoon __instance)

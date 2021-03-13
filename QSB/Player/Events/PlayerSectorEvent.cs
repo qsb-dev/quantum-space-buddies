@@ -38,7 +38,7 @@ namespace QSB.Player.Events
 
 			var transformSync = QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId);
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => transformSync?.SyncedTransform != null,
+			QSBCore.UnityEvents.RunWhen(() => transformSync?.SyncedTransform != null,
 				() => transformSync?.SetReferenceSector(sector));
 		}
 	}

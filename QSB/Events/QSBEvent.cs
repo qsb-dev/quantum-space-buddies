@@ -35,7 +35,7 @@ namespace QSB.Events
 		public void SendEvent(T message)
 		{
 			message.FromId = QSBPlayerManager.LocalPlayerId;
-			QSBCore.Helper.Events.Unity.RunWhen(
+			QSBCore.UnityEvents.RunWhen(
 				() => PlayerTransformSync.LocalInstance != null,
 				() => _eventHandler.SendToServer(message));
 		}

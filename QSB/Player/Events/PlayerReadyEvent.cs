@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
-using System.Linq;
 
 namespace QSB.Player.Events
 {

@@ -57,14 +57,14 @@ namespace QSB.OrbSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));
+			QSBCore.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
+			QSBCore.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiInterfaceOrb>("StartDragFromPosition");
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiInterfaceSlot>("CheckOrbCollision");
+			QSBCore.HarmonyHelper.Unpatch<NomaiInterfaceOrb>("StartDragFromPosition");
+			QSBCore.HarmonyHelper.Unpatch<NomaiInterfaceSlot>("CheckOrbCollision");
 		}
 	}
 }
