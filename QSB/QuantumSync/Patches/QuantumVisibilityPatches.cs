@@ -1,5 +1,6 @@
 ﻿using QSB.Patches;
 using QSB.Player;
+using QSB.WorldSync;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -12,19 +13,29 @@ namespace QSB.QuantumSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisibleUsingCameraFrustum));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisible", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisible));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(RenderIsVisibleUsingCameraFrustum));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<VisibilityObject>("CheckIllumination", typeof(QuantumVisibilityPatches), nameof(CheckIllumination));
+			QSBCore.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisibleUsingCameraFrustum));
+			QSBCore.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisible", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisible));
+			QSBCore.HarmonyHelper.AddPrefix<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(RenderIsVisibleUsingCameraFrustum));
+			QSBCore.HarmonyHelper.AddPrefix<VisibilityObject>("CheckIllumination", typeof(QuantumVisibilityPatches), nameof(CheckIllumination));
+			QSBCore.HarmonyHelper.AddPostfix<Shape>("OnEnable", typeof(QuantumVisibilityPatches), nameof(Shape_OnEnable));
+			QSBCore.HarmonyHelper.AddPostfix<Shape>("OnDisable", typeof(QuantumVisibilityPatches), nameof(Shape_OnDisable));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum");
-			QSBCore.Helper.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisible");
-			QSBCore.Helper.HarmonyHelper.Unpatch<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum");
-			QSBCore.Helper.HarmonyHelper.Unpatch<VisibilityObject>("CheckIllumination");
+			QSBCore.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum");
+			QSBCore.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisible");
+			QSBCore.HarmonyHelper.Unpatch<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum");
+			QSBCore.HarmonyHelper.Unpatch<VisibilityObject>("CheckIllumination");
+			QSBCore.HarmonyHelper.Unpatch<Shape>("OnEnable");
+			QSBCore.HarmonyHelper.Unpatch<Shape>("OnDisable");
 		}
+
+		public static void Shape_OnEnable(Shape __instance)
+			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeActivated", __instance);
+
+		public static void Shape_OnDisable(Shape __instance)
+			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeDeactivated", __instance);
 
 		// ShapeVisibilityTracker patches
 

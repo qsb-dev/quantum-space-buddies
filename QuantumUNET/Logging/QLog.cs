@@ -20,7 +20,7 @@
 
 		public static void Debug(string message)
 		{
-			if (_logDebug)
+			if (!_logDebug)
 			{
 				return;
 			}
@@ -29,7 +29,7 @@
 
 		public static void Log(string message)
 		{
-			if (_logLog)
+			if (!_logLog)
 			{
 				return;
 			}
@@ -38,7 +38,7 @@
 
 		public static void Warning(string message)
 		{
-			if (_logWarning)
+			if (!_logWarning)
 			{
 				return;
 			}
@@ -47,7 +47,7 @@
 
 		public static void Error(string message)
 		{
-			if (_logError)
+			if (!_logError)
 			{
 				return;
 			}
@@ -56,7 +56,7 @@
 
 		public static void FatalError(string message)
 		{
-			if (_logFatal)
+			if (!_logFatal)
 			{
 				return;
 			}

@@ -1,37 +1,75 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using OWML.Utils;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
-		where T : MonoBehaviour
+		where T : QuantumObject
 	{
 		public uint ControllingPlayer { get; set; }
 		public bool IsEnabled { get; set; }
 
-		private OnEnableDisableTracker _tracker;
-
 		public override void OnRemoval()
 		{
-			_tracker.OnEnableEvent -= OnEnable;
-			_tracker.OnDisableEvent -= OnDisable;
-			Object.Destroy(_tracker);
+			foreach (var shape in GetAttachedShapes())
+			{
+				shape.OnShapeActivated -= (Shape s) => OnEnable();
+				shape.OnShapeDeactivated -= (Shape s) => OnDisable();
+			}
 		}
 
 		public override void Init(T attachedObject, int id)
 		{
-			_tracker = QSBCore.GameObjectInstance.AddComponent<OnEnableDisableTracker>();
-			_tracker.AttachedComponent = AttachedObject;
-			_tracker.OnEnableEvent += OnEnable;
-			_tracker.OnDisableEvent += OnDisable;
+			foreach (var shape in GetAttachedShapes())
+			{
+				if (shape == null)
+				{
+					break;
+				}
+				shape.OnShapeActivated += (Shape s) => OnEnable();
+				shape.OnShapeDeactivated += (Shape s) => OnDisable();
+			}
 			ControllingPlayer = 0u;
+		}
+
+		private List<Shape> GetAttachedShapes()
+		{
+			if (AttachedObject == null)
+			{
+				return new List<Shape>();
+			}
+			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
+			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
+			{
+				DebugLog.ToConsole($"Warning - {AttachedObject.name} has null visibility trackers!", MessageType.Warning);
+				return new List<Shape>();
+			}
+			if (visibilityTrackers.Any(x => x.GetType() == typeof(RendererVisibilityTracker)))
+			{
+				DebugLog.ToConsole($"Warning - {AttachedObject.name} has a RendererVisibilityTracker!", MessageType.Warning);
+				return new List<Shape>();
+			}
+			var totalShapes = new List<Shape>();
+			foreach (var tracker in visibilityTrackers)
+			{
+				var shapes = tracker.GetValue<Shape[]>("_shapes");
+				totalShapes.AddRange(shapes);
+			}
+			return totalShapes;
 		}
 
 		private void OnEnable()
 		{
+			if (IsEnabled)
+			{
+				return;
+			}
 			IsEnabled = true;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
 			{
@@ -42,13 +80,17 @@ namespace QSB.QuantumSync.WorldObjects
 				// controlled by another player, dont care that we activate it
 				return;
 			}
-			var id = QuantumManager.GetId(this);
+			var id = QSBWorldSync.GetIdFromTypeSubset(this);
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
 
 		private void OnDisable()
 		{
+			if (!IsEnabled)
+			{
+				return;
+			}
 			IsEnabled = false;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
 			{
@@ -59,7 +101,7 @@ namespace QSB.QuantumSync.WorldObjects
 				// not being controlled by us, don't care if we leave area
 				return;
 			}
-			var id = QuantumManager.GetId(this);
+			var id = QSBWorldSync.GetIdFromTypeSubset(this);
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
 		}

@@ -17,8 +17,8 @@ namespace QSB.OrbSync
 
 		private void BuildOrbSlots()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
 			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
+			DebugLog.DebugWrite($"Finished slot build with {QSBWorldSync.GetWorldObjects<QSBOrbSlot>().Count()} slots.", MessageType.Success);
 		}
 
 		public void BuildOrbs()
@@ -43,8 +43,6 @@ namespace QSB.OrbSync
 
 			foreach (var orb in QSBWorldSync.OldOrbList)
 			{
-				Popcron.Gizmos.Cube(orb.transform.position, orb.transform.rotation, Vector3.one / 3);
-
 				var rails = orb.GetValue<OWRail[]>("_safetyRails");
 				if (rails.Length > 0)
 				{
@@ -63,7 +61,7 @@ namespace QSB.OrbSync
 			}
 		}
 
-		public void QueueBuildSlots() => QSBCore.Helper.Events.Unity.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
-		public void QueueBuildOrbs() => QSBCore.Helper.Events.Unity.RunWhen(() => QNetworkServer.active, BuildOrbs);
+		public void QueueBuildSlots() => QSBCore.UnityEvents.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
+		public void QueueBuildOrbs() => QSBCore.UnityEvents.RunWhen(() => QNetworkServer.active, BuildOrbs);
 	}
 }

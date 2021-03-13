@@ -28,7 +28,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var obj = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(message.ObjectId);
+			var obj = QSBWorldSync.GetWorldFromId<QSBSocketedQuantumObject>(message.ObjectId);
 			obj.MoveToSocket(message);
 		}
 	}

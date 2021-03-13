@@ -23,13 +23,14 @@ namespace QSB.Animation
 		private CrouchSync _crouchSync;
 
 		private RuntimeAnimatorController _chertController;
-		private readonly RuntimeAnimatorController _eskerController;
-		private readonly RuntimeAnimatorController _feldsparController;
-		private readonly RuntimeAnimatorController _gabbroController;
+		//private readonly RuntimeAnimatorController _eskerController;
+		//private readonly RuntimeAnimatorController _feldsparController;
+		//private readonly RuntimeAnimatorController _gabbroController;
 		private RuntimeAnimatorController _riebeckController;
 
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType { get; set; }
+		public Animator VisibleAnimator => _bodyAnim;
 
 		protected void Awake()
 		{
@@ -130,7 +131,7 @@ namespace QSB.Animation
 			InitCrouchSync();
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
-			QSBCore.Helper.Events.Unity.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
+			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
 		}
 
 		private void InitCrouchSync()
@@ -210,15 +211,15 @@ namespace QSB.Animation
 					break;
 
 				case AnimationType.Esker:
-					controller = _eskerController;
+					//controller = _eskerController;
 					break;
 
 				case AnimationType.Feldspar:
-					controller = _feldsparController;
+					//controller = _feldsparController;
 					break;
 
 				case AnimationType.Gabbro:
-					controller = _gabbroController;
+					//controller = _gabbroController;
 					break;
 
 				case AnimationType.Riebeck:

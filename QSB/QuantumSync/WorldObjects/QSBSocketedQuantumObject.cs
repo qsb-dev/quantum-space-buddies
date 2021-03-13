@@ -35,7 +35,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public void MoveToSocket(SocketStateChangeMessage message)
 		{
-			var qsbSocket = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(message.SocketId);
+			var qsbSocket = QSBWorldSync.GetWorldFromId<QSBQuantumSocket>(message.SocketId);
 			if (qsbSocket == null)
 			{
 				DebugLog.ToConsole($"Couldn't find socket id {message.SocketId}", MessageType.Error);
@@ -59,7 +59,7 @@ namespace QSB.QuantumSync.WorldObjects
 				component.MoveToRelativeLocation(location, AttachedObject.transform);
 			}
 
-			if ((QuantumManager.Instance.Shrine as SocketedQuantumObject) != AttachedObject)
+			if (QuantumManager.Instance.Shrine != AttachedObject)
 			{
 				AttachedObject.transform.localRotation = message.LocalRotation;
 			}

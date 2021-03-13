@@ -15,6 +15,7 @@ namespace QSB.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
+			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
 			SetSocket(Player.CameraBody.transform);
@@ -40,7 +41,7 @@ namespace QSB.TransformSync
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
-			QSBCore.Helper.Events.Unity.RunWhen(
+			QSBCore.UnityEvents.RunWhen(
 				() => Player.ProbeLauncher != null,
 				() => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
 			Player.ProbeBody = body.gameObject;

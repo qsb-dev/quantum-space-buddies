@@ -23,7 +23,11 @@ namespace QSB.GeyserSync.Events
 
 		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
-			var geyser = QSBWorldSync.GetWorldObject<QSBGeyser>(message.ObjectId);
+			if (!QSBCore.HasWokenUp)
+			{
+				return;
+			}
+			var geyser = QSBWorldSync.GetWorldFromId<QSBGeyser>(message.ObjectId);
 			geyser?.SetState(message.State);
 		}
 	}

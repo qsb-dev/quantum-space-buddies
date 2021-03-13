@@ -28,7 +28,7 @@ namespace QSB.GeyserSync
 			{
 				return;
 			}
-			QSBCore.Helper.HarmonyHelper.EmptyMethod<GeyserController>("Update");
+			QSBCore.HarmonyHelper.EmptyMethod<GeyserController>("Update");
 		}
 	}
 }

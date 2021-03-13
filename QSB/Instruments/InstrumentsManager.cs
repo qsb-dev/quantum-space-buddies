@@ -19,20 +19,20 @@ namespace QSB.Instruments
 			_rootObj = root;
 			gameObject.AddComponent<CameraManager>();
 
-			QSBInputManager.ChertTaunt += OnChertTaunt;
-			QSBInputManager.EskerTaunt += OnEskerTaunt;
-			QSBInputManager.FeldsparTaunt += OnFeldsparTaunt;
-			QSBInputManager.GabbroTaunt += OnGabbroTaunt;
-			QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
-			QSBInputManager.ExitTaunt += ReturnToPlayer;
+			//QSBInputManager.ChertTaunt += OnChertTaunt;
+			//QSBInputManager.EskerTaunt += OnEskerTaunt;
+			//QSBInputManager.FeldsparTaunt += OnFeldsparTaunt;
+			//QSBInputManager.GabbroTaunt += OnGabbroTaunt;
+			//QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
+			//QSBInputManager.ExitTaunt += ReturnToPlayer;
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		public void InitRemote(Transform root)
 		{
 			_rootObj = root;
-			QSBCore.Helper.Events.Unity.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		protected override void OnDestroy()
@@ -42,12 +42,12 @@ namespace QSB.Instruments
 			{
 				return;
 			}
-			QSBInputManager.ChertTaunt -= OnChertTaunt;
-			QSBInputManager.EskerTaunt -= OnEskerTaunt;
-			QSBInputManager.FeldsparTaunt -= OnFeldsparTaunt;
-			QSBInputManager.GabbroTaunt -= OnGabbroTaunt;
-			QSBInputManager.RiebeckTaunt -= OnRiebeckTaunt;
-			QSBInputManager.ExitTaunt -= ReturnToPlayer;
+			//QSBInputManager.ChertTaunt -= OnChertTaunt;
+			//QSBInputManager.EskerTaunt -= OnEskerTaunt;
+			//QSBInputManager.FeldsparTaunt -= OnFeldsparTaunt;
+			//QSBInputManager.GabbroTaunt -= OnGabbroTaunt;
+			//QSBInputManager.RiebeckTaunt -= OnRiebeckTaunt;
+			//QSBInputManager.ExitTaunt -= ReturnToPlayer;
 		}
 
 		private void OnChertTaunt() => StartInstrument(AnimationType.Chert);

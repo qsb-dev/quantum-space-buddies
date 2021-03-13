@@ -34,6 +34,11 @@
 		IdentifySignal,
 		TextTranslated,
 		EnterLeave,
-		PlayerEntangle
+		PlayerEntangle,
+		DropItem,
+		SocketItem,
+		MoveToCarry,
+		StartStatue,
+		PlayerKick
 	}
 }

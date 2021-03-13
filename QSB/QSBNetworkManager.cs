@@ -45,7 +45,7 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
-		public void Awake()
+		public new void Awake()
 		{
 			base.Awake();
 			Instance = this;
@@ -174,7 +174,6 @@ namespace QSB
 
 			QSBEventManager.Init();
 
-			gameObject.AddComponent<SectorSync.SectorSync>();
 			gameObject.AddComponent<RespawnOnDeath>();
 
 			if (QSBSceneManager.IsInUniverse)
@@ -193,12 +192,12 @@ namespace QSB
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
 			if (!QSBCore.IsServer)
 			{
-				QSBCore.Helper.Events.Unity.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
 			}
 
@@ -209,7 +208,7 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnStopClient", MessageType.Info);
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
-			Destroy(GetComponent<SectorSync.SectorSync>());
+			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
@@ -256,7 +255,7 @@ namespace QSB
 		public override void OnStopServer()
 		{
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
-			Destroy(GetComponent<SectorSync.SectorSync>());
+			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);

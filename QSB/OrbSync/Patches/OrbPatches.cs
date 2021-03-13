@@ -33,7 +33,7 @@ namespace QSB.OrbSync.Patches
 				if (Time.timeSinceLevelLoad > 1f)
 				{
 					QSBWorldSync.HandleSlotStateChange(__instance, orb, true);
-					QSBWorldSync.RaiseEvent(__instance, "OnSlotActivated");
+					QSBWorldSync.RaiseEvent(__instance, "OnSlotActivated", __instance);
 				}
 				__result = true;
 				return false;
@@ -47,7 +47,7 @@ namespace QSB.OrbSync.Patches
 			{
 				QSBWorldSync.HandleSlotStateChange(__instance, orb, false);
 				____occupyingOrb = null;
-				QSBWorldSync.RaiseEvent(__instance, "OnSlotDeactivated");
+				QSBWorldSync.RaiseEvent(__instance, "OnSlotDeactivated", __instance);
 				__result = false;
 				return false;
 			}
@@ -57,14 +57,14 @@ namespace QSB.OrbSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));
+			QSBCore.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
+			QSBCore.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiInterfaceOrb>("StartDragFromPosition");
-			QSBCore.Helper.HarmonyHelper.Unpatch<NomaiInterfaceSlot>("CheckOrbCollision");
+			QSBCore.HarmonyHelper.Unpatch<NomaiInterfaceOrb>("StartDragFromPosition");
+			QSBCore.HarmonyHelper.Unpatch<NomaiInterfaceSlot>("CheckOrbCollision");
 		}
 	}
 }

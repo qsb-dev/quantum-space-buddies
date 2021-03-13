@@ -7,10 +7,7 @@ namespace Popcron
 	{
 		private static string _prefsKey = null;
 		private static int? _bufferSize = null;
-		private static bool? _enabled = null;
 		private static float? _dashGap = null;
-		private static bool? _cull = null;
-		private static int? _pass = null;
 		private static Vector3? _offset = null;
 
 		private static Vector3[] buffer = new Vector3[BufferSize];

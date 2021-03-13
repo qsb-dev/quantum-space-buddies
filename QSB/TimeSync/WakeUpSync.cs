@@ -67,7 +67,6 @@ namespace QSB.TimeSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			QSBCore.HasWokenUp = (scene == OWScene.EyeOfTheUniverse);
 			if (isInUniverse)
 			{
 				Init();
@@ -134,10 +133,17 @@ namespace QSB.TimeSync
 				return;
 			}
 			DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
+			if (Locator.GetActiveCamera() != null)
+			{
+				Locator.GetActiveCamera().enabled = false;
+			}
 			_timeScale = MaxFastForwardSpeed;
 			_state = State.FastForwarding;
+			OWTime.SetMaxDeltaTime(0.033333335f);
+			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
+			DisableInput();
 		}
 
 		private void StartPausing()
@@ -147,15 +153,20 @@ namespace QSB.TimeSync
 				return;
 			}
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
+			Locator.GetActiveCamera().enabled = false;
 			_timeScale = 0f;
 			_state = State.Pausing;
 			SpinnerUI.Show();
 			TimeSyncUI.Start(TimeSyncType.Pausing);
+			DisableInput();
 		}
 
 		private void ResetTimeScale()
 		{
 			_timeScale = 1f;
+			OWTime.SetMaxDeltaTime(0.06666667f);
+			OWTime.SetFixedTimestep(0.01666667f);
+			Locator.GetActiveCamera().enabled = true;
 			_state = State.Loaded;
 
 			if (!_isInputEnabled)
@@ -174,14 +185,22 @@ namespace QSB.TimeSync
 
 		private void DisableInput()
 		{
-			_isInputEnabled = false;
-			OWInput.ChangeInputMode(InputMode.None);
+			if (OWInput.GetInputMode() != InputMode.None && _isInputEnabled)
+			{
+				OWInput.ChangeInputMode(InputMode.None);
+				_isInputEnabled = false;
+			}
 		}
 
 		private void EnableInput()
 		{
 			_isInputEnabled = true;
-			OWInput.ChangeInputMode(InputMode.Character);
+			if (OWInput.GetInputMode() != InputMode.None)
+			{
+				DebugLog.ToConsole($"Warning - InputMode was changed to {OWInput.GetInputMode()} while pausing/fastforwarding!", MessageType.Warning);
+				return;
+			}
+			OWInput.RestorePreviousInputs();
 		}
 
 		public void Update()
@@ -215,6 +234,11 @@ namespace QSB.TimeSync
 		{
 			_serverTime += Time.unscaledDeltaTime;
 
+			if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
+			{
+				DisableInput();
+			}
+
 			if (_state == State.NotLoaded)
 			{
 				return;
@@ -222,8 +246,12 @@ namespace QSB.TimeSync
 
 			if (_state == State.FastForwarding)
 			{
+				if (Locator.GetPlayerCamera() != null && !Locator.GetPlayerCamera().enabled)
+				{
+					Locator.GetPlayerCamera().enabled = false;
+				}
 				var diff = _serverTime - Time.timeSinceLevelLoad;
-				Time.timeScale = Mathf.Lerp(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+				Time.timeScale = Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
 
 				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
 				{
@@ -244,11 +272,6 @@ namespace QSB.TimeSync
 			if (isDoneFastForwarding || isDonePausing)
 			{
 				ResetTimeScale();
-			}
-
-			if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
-			{
-				DisableInput();
 			}
 		}
 	}
