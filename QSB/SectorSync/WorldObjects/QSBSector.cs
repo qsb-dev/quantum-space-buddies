@@ -34,7 +34,7 @@ namespace QSB.SectorSync.WorldObjects
 			{
 				return false;
 			}
-			if ((AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior") 
+			if ((AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
 				&& !AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>().IsPlayerInside())
 			{
 				return false;

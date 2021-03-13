@@ -95,13 +95,13 @@ namespace QSB.SectorSync
 			if (
 				// if any fake sectors are *roughly* in the same place as other sectors - we want fake sectors to override other sectors
 				QSBSectorManager.Instance.FakeSectors.Any(
-					x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f) 
+					x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f)
 				&& activeNotNullNotBlacklisted.Any(
 					y => y.AttachedObject == (x.AttachedObject as FakeSector).AttachedSector)))
 			{
 				return QSBSectorManager.Instance.FakeSectors.First(x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f));
 			}
-				
+
 			return ordered.FirstOrDefault();
 		}
 
