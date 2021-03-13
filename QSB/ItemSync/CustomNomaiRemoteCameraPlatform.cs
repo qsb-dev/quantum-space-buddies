@@ -712,11 +712,12 @@ namespace QSB.ItemSync
 
 			var mirror = hologramCopy.gameObject.AddComponent<AnimatorMirror>();
 
-			hologramCopy.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-			hologramCopy.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+			hologramCopy.GetChild(0).Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
+			hologramCopy.GetChild(0).Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
-			var ikSync = hologramCopy.GetChild(0).gameObject.AddComponent<PlayerHeadRotationSync>();
-			ikSync.Init(player.CameraBody.transform);
+			// TODO : Look at this again... probably need to sync head rotation to something else
+			//var ikSync = hologramCopy.GetChild(0).gameObject.AddComponent<PlayerHeadRotationSync>();
+			//ikSync.Init(player.CameraBody.transform);
 
 			if (player.AnimationSync.VisibleAnimator == null)
 			{
