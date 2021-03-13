@@ -709,15 +709,23 @@ namespace QSB.ItemSync
 			var hologramCopy = Instantiate(_playerHologram);
 			hologramCopy.parent = _playerHologram.parent;
 			Destroy(hologramCopy.GetChild(0).GetComponent<PlayerAnimController>());
+
 			var mirror = hologramCopy.gameObject.AddComponent<AnimatorMirror>();
+
 			hologramCopy.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
 			hologramCopy.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+
+			var ikSync = hologramCopy.GetChild(0).gameObject.AddComponent<PlayerHeadRotationSync>();
+			ikSync.Init(player.CameraBody.transform);
+
 			if (player.AnimationSync.VisibleAnimator == null)
 			{
 				DebugLog.ToConsole($"Warning - {playerId}'s VisibleAnimator is null!", MessageType.Error);
 			}
 			mirror.Init(player.AnimationSync.VisibleAnimator, hologramCopy.GetChild(0).gameObject.GetComponent<Animator>());
+
 			_playerToHologram.Add(player, hologramCopy.gameObject);
+
 			_hologramGroup.SetActive(true);
 			hologramCopy.gameObject.SetActive(true);
 		}
