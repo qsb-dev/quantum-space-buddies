@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.SectorSync.WorldObjects
@@ -47,7 +48,7 @@ namespace QSB.SectorSync.WorldObjects
 				}
 				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 				{
-					if (!AttachedObject.gameObject.GetComponentInParent<EyeShuttleController>().GetValue<bool>("_isPlayerInside"))
+					if (!Resources.FindObjectsOfTypeAll<EyeShuttleController>().First().GetValue<bool>("_isPlayerInside"))
 					{
 						return false;
 					}
