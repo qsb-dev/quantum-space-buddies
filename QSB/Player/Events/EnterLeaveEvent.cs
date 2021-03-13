@@ -1,7 +1,5 @@
 ﻿using QSB.Events;
 using QSB.ItemSync;
-using QSB.Messaging;
-using QSB.Player;
 using QSB.Utility;
 
 namespace QSB.Player.Events

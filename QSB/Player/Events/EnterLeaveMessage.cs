@@ -3,7 +3,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.Player.Events
 {
-	class EnterLeaveMessage : WorldObjectMessage
+	internal class EnterLeaveMessage : WorldObjectMessage
 	{
 		public EnterLeaveType Type { get; set; }
 

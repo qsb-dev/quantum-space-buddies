@@ -139,7 +139,7 @@ namespace QSB.ItemSync
 		private bool _anyoneStillOnPlatform;
 		private bool _wasLocalInBounds;
 		private CameraState _cameraState;
-		private Dictionary<PlayerInfo, GameObject> _playerToHologram = new Dictionary<PlayerInfo, GameObject>();
+		private readonly Dictionary<PlayerInfo, GameObject> _playerToHologram = new Dictionary<PlayerInfo, GameObject>();
 
 		private void Awake()
 		{
