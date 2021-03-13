@@ -55,5 +55,7 @@
 		public static string QSBMoveToCarry = "QSBMoveToCarry";
 		public static string QSBStartStatue = "QSBStartStatue";
 		public static string QSBPlayerKick = "QSBPlayerKick";
+		public static string QSBEnterPlatform = "QSBEnterPlatform";
+		public static string QSBExitPlatform = "QSBExitPlatform";
 	}
 }

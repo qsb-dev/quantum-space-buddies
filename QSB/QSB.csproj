@@ -168,6 +168,7 @@
     <Compile Include="OrbSync\Events\OrbUserEvent.cs" />
     <Compile Include="OrbSync\WorldObjects\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
+    <Compile Include="Player\Events\EnterLeaveMessage.cs" />
     <Compile Include="Player\Events\PlayerEntangledEvent.cs" />
     <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
@@ -180,8 +181,8 @@
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
     <Compile Include="QSBSceneManager.cs" />
-    <Compile Include="QuantumSync\EnterLeaveType.cs" />
-    <Compile Include="QuantumSync\Events\EnterLeaveEvent.cs" />
+    <Compile Include="Player\EnterLeaveType.cs" />
+    <Compile Include="Player\Events\EnterLeaveEvent.cs" />
     <Compile Include="QuantumSync\Events\MoonStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\MoonStateChangeMessage.cs" />
     <Compile Include="QuantumSync\Events\QuantumAuthorityEvent.cs" />

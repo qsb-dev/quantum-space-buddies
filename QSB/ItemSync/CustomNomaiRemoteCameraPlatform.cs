@@ -1,5 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ namespace QSB.ItemSync
 {
 	internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 	{
-		private static List<CustomNomaiRemoteCameraPlatform> s_platforms;
+		public static List<CustomNomaiRemoteCameraPlatform> CustomPlatformList;
 		private static MaterialPropertyBlock s_matPropBlock;
 		private static int s_propID_Fade;
 		private static int s_propID_HeightMaskScale;
@@ -137,6 +139,7 @@ namespace QSB.ItemSync
 		private bool _anyoneStillOnPlatform;
 		private bool _wasLocalInBounds;
 		private CameraState _cameraState;
+		private Dictionary<PlayerInfo, GameObject> _playerToHologram = new Dictionary<PlayerInfo, GameObject>();
 
 		private void Awake()
 		{
@@ -177,11 +180,11 @@ namespace QSB.ItemSync
 
 		private void Start()
 		{
-			if (s_platforms == null)
+			if (CustomPlatformList == null)
 			{
-				s_platforms = new List<CustomNomaiRemoteCameraPlatform>(32);
+				CustomPlatformList = new List<CustomNomaiRemoteCameraPlatform>(32);
 			}
-			s_platforms.Add(this);
+			CustomPlatformList.Add(this);
 			_playerCamera = Locator.GetPlayerCamera();
 			if (_socket != null)
 			{
@@ -202,9 +205,9 @@ namespace QSB.ItemSync
 				var socket2 = _socket;
 				socket2.OnSocketableDonePlacing -= OnSocketableDonePlacing;
 			}
-			if (s_platforms != null)
+			if (CustomPlatformList != null)
 			{
-				s_platforms.Remove(this);
+				CustomPlatformList.Remove(this);
 			}
 		}
 
@@ -227,6 +230,11 @@ namespace QSB.ItemSync
 				else if (!_anyoneStillOnPlatform && !_wasLocalInBounds)
 				{
 					OnLeaveBounds();
+				}
+
+				if (_anyoneStillOnPlatform)
+				{
+					UpdateHologramTransforms();
 				}
 			}
 			if (_platformActive)
@@ -261,7 +269,6 @@ namespace QSB.ItemSync
 						_slavePlatform.UpdateRendererFade();
 						SwitchToRemoteCamera();
 						_hologramGroup.SetActive(true);
-						UpdateHologramTransforms();
 						_ambientAudioSource.FadeIn(3f, true, false, 1f);
 						Locator.GetAudioMixer().MixRemoteCameraPlatform(_fadeInLength);
 						_cameraState = CameraState.Connecting_FadeOut;
@@ -270,7 +277,6 @@ namespace QSB.ItemSync
 				case CameraState.Connecting_FadeOut:
 					_slavePlatform._transitionFade = Mathf.MoveTowards(_slavePlatform._transitionFade, 0f, Time.deltaTime / _fadeInLength);
 					_slavePlatform.UpdateRendererFade();
-					UpdateHologramTransforms();
 					_slavePlatform._poolT = _poolT;
 					_slavePlatform.UpdatePoolRenderer();
 					if (_slavePlatform._transitionFade == 0f)
@@ -280,7 +286,6 @@ namespace QSB.ItemSync
 					break;
 				case CameraState.Connected:
 					VerifySectorOccupancy();
-					UpdateHologramTransforms();
 					_slavePlatform._poolT = _poolT;
 					_slavePlatform.UpdatePoolRenderer();
 					break;
@@ -404,6 +409,18 @@ namespace QSB.ItemSync
 			var playerTransform = Locator.GetPlayerTransform();
 			_playerHologram.position = TransformPoint(playerTransform.position, this, _slavePlatform);
 			_playerHologram.rotation = TransformRotation(playerTransform.rotation, this, _slavePlatform);
+
+			foreach (var item in _playerToHologram)
+			{
+				if (!item.Value.activeInHierarchy)
+				{
+					continue;
+				}
+				var hologram = item.Value.transform.GetChild(0);
+				hologram.position = TransformPoint(item.Key.Body.transform.position, this, _slavePlatform);
+				hologram.rotation = TransformRotation(item.Key.Body.transform.rotation, this, _slavePlatform);
+			}
+
 			if (_sharedStone != null)
 			{
 				var transform = _sharedStone.transform;
@@ -482,6 +499,7 @@ namespace QSB.ItemSync
 
 		private void SwitchToRemoteCamera()
 		{
+			QSBEventManager.FireEvent(EventNames.QSBEnterPlatform, CustomPlatformList.IndexOf(this));
 			GlobalMessenger.FireEvent("EnterNomaiRemoteCamera");
 			_slavePlatform.RevealFactID();
 			_slavePlatform._ownedCamera.Activate(this, _playerCamera);
@@ -541,6 +559,7 @@ namespace QSB.ItemSync
 			{
 				_slavePlatform._darkZone.RemovePlayerFromZone(true);
 			}
+			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
 			GlobalMessenger.FireEvent("ExitNomaiRemoteCamera");
 			_slavePlatform._ownedCamera.Deactivate();
 			_slavePlatform._ownedCamera.SetImageEffectFade(0f);
@@ -658,13 +677,13 @@ namespace QSB.ItemSync
 
 		public static CustomNomaiRemoteCameraPlatform GetPlatform(NomaiRemoteCameraPlatform.ID platformID)
 		{
-			if (s_platforms != null)
+			if (CustomPlatformList != null)
 			{
-				for (var i = 0; i < s_platforms.Count; i++)
+				for (var i = 0; i < CustomPlatformList.Count; i++)
 				{
-					if (s_platforms[i]._id == platformID)
+					if (CustomPlatformList[i]._id == platformID)
 					{
-						return s_platforms[i];
+						return CustomPlatformList[i];
 					}
 				}
 			}
@@ -674,6 +693,41 @@ namespace QSB.ItemSync
 		public SharedStone GetSocketedStone() => _sharedStone;
 
 		public bool IsPlatformActive() => _platformActive;
+
+		public void OnRemotePlayerEnter(uint playerId)
+		{
+			if (playerId == QSBPlayerManager.LocalPlayerId)
+			{
+				return;
+			}
+			var player = QSBPlayerManager.GetPlayer(playerId);
+			if (_playerToHologram.ContainsKey(player))
+			{
+				_playerToHologram[player].SetActive(true);
+				return;
+			}
+			var hologramCopy = Instantiate(_playerHologram);
+			hologramCopy.parent = _playerHologram.parent;
+			Destroy(hologramCopy.GetChild(0).GetComponent<PlayerAnimController>());
+			var mirror = hologramCopy.gameObject.AddComponent<AnimatorMirror>();
+			if (player.AnimationSync.VisibleAnimator == null)
+			{
+				DebugLog.ToConsole($"Warning - {playerId}'s VisibleAnimator is null!", MessageType.Error);
+			}
+			mirror.Init(player.AnimationSync.VisibleAnimator, hologramCopy.GetChild(0).gameObject.GetComponent<Animator>());
+			_playerToHologram.Add(player, hologramCopy.gameObject);
+			_hologramGroup.SetActive(true);
+			hologramCopy.gameObject.SetActive(true);
+		}
+
+		public void OnRemotePlayerExit(uint playerId)
+		{
+			if (playerId == QSBPlayerManager.LocalPlayerId)
+			{
+				return;
+			}
+			_playerToHologram[QSBPlayerManager.GetPlayer(playerId)].SetActive(false);
+		}
 
 		public enum CameraState
 		{

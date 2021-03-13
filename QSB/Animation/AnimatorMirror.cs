@@ -17,6 +17,18 @@ namespace QSB.Animation
 
 		public void Init(Animator from, Animator to)
 		{
+			if (from == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"from\".", MessageType.Error);
+			}
+			if (to == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"to\".", MessageType.Error);
+			}
+			if (to == null || from == null)
+			{
+				return;
+			}
 			_from = from;
 			_to = to;
 			if (_from.runtimeAnimatorController == null)

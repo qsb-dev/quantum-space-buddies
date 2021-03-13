@@ -30,6 +30,7 @@ namespace QSB.Animation
 
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType { get; set; }
+		public Animator VisibleAnimator => _bodyAnim;
 
 		protected void Awake()
 		{
