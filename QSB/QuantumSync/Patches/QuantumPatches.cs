@@ -224,6 +224,10 @@ namespace QSB.QuantumSync.Patches
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
+			if (!isInControl && qsbObj.CurrentState == -1)
+			{
+				return true;
+			}
 			return isInControl;
 		}
 
@@ -235,16 +239,16 @@ namespace QSB.QuantumSync.Patches
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
-			//DebugLog.DebugWrite($"{owner.AttachedObject.name} controller is {owner.ControllingPlayer}");
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;
 			}
-			//DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
+			var stateIndex = Array.IndexOf(owner.QuantumStates, __instance);
+			DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {stateIndex}");
 			QSBEventManager.FireEvent(
 					EventNames.QSBMultiStateChange,
 					owner.ObjectId,
-					Array.IndexOf(owner.QuantumStates, __instance));
+					stateIndex);
 		}
 
 		public static bool Shrine_IsPlayerInDarkness(ref bool __result, Light[] ____lamps, float ____fadeFraction, bool ____isProbeInside, NomaiGateway ____gate)

@@ -8,6 +8,7 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public QuantumState[] QuantumStates { get; private set; }
 		public Text DebugBoxText;
+		public int CurrentState => AttachedObject.GetValue<int>("_stateIndex");
 
 		public override void OnRemoval()
 		{
@@ -25,23 +26,22 @@ namespace QSB.QuantumSync.WorldObjects
 			QuantumStates = AttachedObject.GetValue<QuantumState[]>("_states");
 			if (QSBCore.DebugMode)
 			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, AttachedObject.GetValue<int>("_stateIndex").ToString()).GetComponent<Text>();
+				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, CurrentState.ToString()).GetComponent<Text>();
 			}
 			base.Init(attachedObject, id);
 		}
 
-		public void ChangeState(int stateIndex)
+		public void ChangeState(int newStateIndex)
 		{
-			var currentStateIndex = AttachedObject.GetValue<int>("_stateIndex");
-			if (currentStateIndex != -1)
+			if (CurrentState != -1)
 			{
-				QuantumStates[currentStateIndex].SetVisible(false);
+				QuantumStates[CurrentState].SetVisible(false);
 			}
-			QuantumStates[stateIndex].SetVisible(true);
-			AttachedObject.SetValue("_stateIndex", stateIndex);
+			QuantumStates[newStateIndex].SetVisible(true);
+			AttachedObject.SetValue("_stateIndex", newStateIndex);
 			if (QSBCore.DebugMode)
 			{
-				DebugBoxText.text = stateIndex.ToString();
+				DebugBoxText.text = newStateIndex.ToString();
 			}
 		}
 	}

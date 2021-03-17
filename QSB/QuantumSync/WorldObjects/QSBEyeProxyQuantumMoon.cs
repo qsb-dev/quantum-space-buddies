@@ -7,6 +7,7 @@
 			ObjectId = id;
 			AttachedObject = moonObject;
 			ControllingPlayer = 1u;
+			base.Init(moonObject, id);
 		}
 	}
 }

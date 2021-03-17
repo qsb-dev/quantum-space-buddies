@@ -24,7 +24,7 @@ namespace QSB.Player.Events
 		{
 			if (server && (message.QSBVersion != QSBCore.QSBVersion))
 			{
-				DebugLog.DebugWrite($"Error - Client {message.PlayerName} connecting with wrong version. (Client:{message.QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
+				DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong version. (Client:{message.QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
 				QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.VersionNotMatching);
 				return;
 			}
