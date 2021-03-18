@@ -1,12 +1,15 @@
 ﻿using OWML.Utils;
 using QSB.Utility;
+using QSB.WorldSync;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObject>
 	{
-		public QuantumState[] QuantumStates { get; private set; }
+		public List<QSBQuantumState> QuantumStates { get; private set; }
 		public Text DebugBoxText;
 		public int CurrentState => AttachedObject.GetValue<int>("_stateIndex");
 
@@ -23,7 +26,7 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
-			QuantumStates = AttachedObject.GetValue<QuantumState[]>("_states");
+			QuantumStates = AttachedObject.GetValue<QuantumState[]>("_states").ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(x)).ToList();
 			if (QSBCore.DebugMode)
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, CurrentState.ToString()).GetComponent<Text>();

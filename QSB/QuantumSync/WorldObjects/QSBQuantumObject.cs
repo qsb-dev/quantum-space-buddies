@@ -112,12 +112,6 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				return;
 			}
-			if (ControllingPlayer == 0)
-			{
-				// not controlled by anyone, but was just disabled...?
-				DebugLog.ToConsole($"Warning - {AttachedObject.name} was just disabled, but previously had no controller.", MessageType.Warning);
-				return;
-			}
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				// not being controlled by us, don't care if we leave area

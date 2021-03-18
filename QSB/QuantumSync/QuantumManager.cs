@@ -28,6 +28,7 @@ namespace QSB.QuantumSync
 		public void RebuildQuantumObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
+			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
 			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();

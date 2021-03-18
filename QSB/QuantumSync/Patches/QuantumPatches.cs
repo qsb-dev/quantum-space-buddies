@@ -30,6 +30,7 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
 			QSBCore.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
 			QSBCore.HarmonyHelper.AddPrefix<QuantumObject>("IsLockedByPlayerContact", typeof(QuantumPatches), nameof(Object_IsLockedByPlayerContact));
+			QSBCore.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("Start", typeof(QuantumPatches), nameof(MultiState_Start));
 		}
 
 		public override void DoUnpatches()
@@ -220,14 +221,42 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
-		public static bool MultiState_ChangeQuantumState(MultiStateQuantumObject __instance)
+		public static bool MultiState_Start(MultiStateQuantumObject __instance, Sector ____sector, bool ____collapseOnStart)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
-			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
-			if (!isInControl && qsbObj.CurrentState == -1)
+			if (qsbObj.ControllingPlayer == 0)
 			{
 				return true;
 			}
+
+			foreach (var state in qsbObj.QuantumStates)
+			{
+				if (!state.IsMeantToBeEnabled)
+				{
+					state.SetVisible(false);
+				}
+			}
+
+			if (____sector == null)
+			{
+				__instance.GetType().GetMethod("CheckEnabled", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+			}
+			if (____collapseOnStart)
+			{
+				__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+			}
+
+			return false;
+		}
+
+		public static bool MultiState_ChangeQuantumState(MultiStateQuantumObject __instance)
+		{
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
+			if (qsbObj.ControllingPlayer == 0 && qsbObj.CurrentState == -1)
+			{
+				return true;
+			}
+			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}
 
@@ -238,13 +267,13 @@ namespace QSB.QuantumSync.Patches
 				return;
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
-			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
+			var stateObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(__instance);
+			var owner = allMultiStates.First(x => x.QuantumStates.Contains(stateObject));
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;
 			}
-			var stateIndex = Array.IndexOf(owner.QuantumStates, __instance);
-			DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {stateIndex}");
+			var stateIndex = owner.QuantumStates.IndexOf(stateObject);
 			QSBEventManager.FireEvent(
 					EventNames.QSBMultiStateChange,
 					owner.ObjectId,

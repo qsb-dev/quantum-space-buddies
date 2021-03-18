@@ -201,6 +201,7 @@
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumShuffleObject.cs" />
+    <Compile Include="QuantumSync\WorldObjects\QSBQuantumState.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBSocketedQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumSocket.cs" />
     <Compile Include="QuantumSync\QuantumManager.cs" />
