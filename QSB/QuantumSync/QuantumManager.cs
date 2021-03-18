@@ -28,12 +28,12 @@ namespace QSB.QuantumSync
 		public void RebuildQuantumObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
-			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
-			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
+			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
+			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
 			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
-			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
+			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();

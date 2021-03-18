@@ -19,10 +19,10 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			foreach (var shape in GetAttachedShapes())
 			{
-				shape.OnShapeActivated -= (Shape s) 
+				shape.OnShapeActivated -= (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnEnable(s));
 
-				shape.OnShapeDeactivated -= (Shape s) 
+				shape.OnShapeDeactivated -= (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 			}
 		}
@@ -37,10 +37,10 @@ namespace QSB.QuantumSync.WorldObjects
 				}
 				// Firing next update to give time for shapes to actually be disabled
 
-				shape.OnShapeActivated += (Shape s) 
+				shape.OnShapeActivated += (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnEnable(s));
 
-				shape.OnShapeDeactivated += (Shape s) 
+				shape.OnShapeDeactivated += (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 			}
 			if (GetAttachedShapes().Any(x => !x.enabled || !x.active))
