@@ -2,7 +2,7 @@
 
 namespace QSB.QuantumSync.WorldObjects
 {
-	class QSBQuantumState : WorldObject<QuantumState>
+	internal class QSBQuantumState : WorldObject<QuantumState>
 	{
 		public bool IsMeantToBeEnabled;
 

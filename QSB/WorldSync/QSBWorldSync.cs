@@ -42,7 +42,14 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
-			=> WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+		{
+			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
+			{
+				DebugLog.DebugWrite($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
+				return default;
+			}
+			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+		}
 
 		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
@@ -71,7 +78,7 @@ namespace QSB.WorldSync
 				}
 				catch (Exception e)
 				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
