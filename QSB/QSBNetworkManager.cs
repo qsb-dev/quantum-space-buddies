@@ -6,6 +6,8 @@ using QSB.ElevatorSync.WorldObjects;
 using QSB.Events;
 using QSB.GeyserSync.WorldObjects;
 using QSB.Instruments;
+using QSB.ItemSync;
+using QSB.ItemSync.WorldObjects;
 using QSB.OrbSync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
@@ -110,8 +112,6 @@ namespace QSB
 
 		private void OnSceneLoaded(OWScene scene)
 		{
-			OrbManager.Instance.BuildOrbs();
-			OrbManager.Instance.QueueBuildSlots();
 			QSBWorldSync.OldDialogueTrees.Clear();
 			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
@@ -134,10 +134,6 @@ namespace QSB
 		public override void OnStartServer()
 		{
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (QSBWorldSync.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
-			{
-				OrbManager.Instance.QueueBuildOrbs();
-			}
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
 				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
@@ -178,9 +174,7 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBSectorManager.Instance?.RebuildSectors();
-				OrbManager.Instance?.QueueBuildSlots();
-				QuantumManager.Instance?.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
+				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -244,13 +238,7 @@ namespace QSB
 					identity.RemoveClientAuthority(connection);
 				}
 			}
-
-			// Server takes some time to process removal of player/deletion of networkidentity
-			Invoke(nameof(LateFinalizeDisconnect), 1f);
 		}
-
-		private void LateFinalizeDisconnect()
-			=> QuantumManager.Instance.CheckExistingPlayers();
 
 		public override void OnStopServer()
 		{
@@ -269,11 +257,23 @@ namespace QSB
 
 		private void RemoveWorldObjects()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
-			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
-			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
-			QSBWorldSync.RemoveWorldObjects<QSBSector>();
-			QSBWorldSync.RemoveWorldObjects<IQSBQuantumObject>();
+			QSBWorldSync.RemoveWorldObjects<IWorldObjectTypeSubset>();
+			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
+			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
+			{
+				streaming.GetComponent<NomaiRemoteCameraStreaming>().enabled = true;
+				Destroy(streaming);
+			}
+			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
+			{
+				camera.GetComponent<NomaiRemoteCamera>().enabled = true;
+				Destroy(camera);
+			}
+			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
+			{
+				platform.GetComponent<NomaiRemoteCameraPlatform>().enabled = true;
+				Destroy(platform);
+			}
 		}
 	}
 }

@@ -198,6 +198,7 @@ namespace QSB.Tools
 			tool.Type = ToolType.ProbeLauncher;
 			tool.ToolGameObject = model;
 
+			// TODO : investigate why probe is wack
 			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = _playerToolsMaterial;
 			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = _lightbulbMaterial;
 			GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;

@@ -9,23 +9,20 @@ using UnityEngine;
 
 namespace QSB.OrbSync
 {
-	public class OrbManager : MonoBehaviour
+	public class OrbManager : WorldObjectManager
 	{
-		public static OrbManager Instance { get; private set; }
-
-		private void Awake() => Instance = this;
-
-		private void BuildOrbSlots()
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
 			DebugLog.DebugWrite($"Finished slot build with {QSBWorldSync.GetWorldObjects<QSBOrbSlot>().Count()} slots.", MessageType.Success);
+			BuildOrbs();
 		}
 
-		public void BuildOrbs()
+		private void BuildOrbs()
 		{
 			QSBWorldSync.OldOrbList.Clear();
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-			if (QNetworkServer.active)
+			if (QSBCore.IsServer)
 			{
 				QSBWorldSync.OrbSyncList.ForEach(x => QNetworkServer.Destroy(x.gameObject));
 				QSBWorldSync.OrbSyncList.Clear();
@@ -33,35 +30,5 @@ namespace QSB.OrbSync
 			}
 			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
 		}
-
-		public void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-
-			foreach (var orb in QSBWorldSync.OldOrbList)
-			{
-				var rails = orb.GetValue<OWRail[]>("_safetyRails");
-				if (rails.Length > 0)
-				{
-					foreach (var rail in rails)
-					{
-						var points = rail.GetValue<Vector3[]>("_railPoints");
-						for (var i = 0; i < points.Length; i++)
-						{
-							if (i > 0)
-							{
-								Popcron.Gizmos.Line(rail.transform.TransformPoint(points[i - 1]), rail.transform.TransformPoint(points[i]), Color.white);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		public void QueueBuildSlots() => QSBCore.UnityEvents.RunWhen(() => QSBCore.HasWokenUp, BuildOrbSlots);
-		public void QueueBuildOrbs() => QSBCore.UnityEvents.RunWhen(() => QNetworkServer.active, BuildOrbs);
 	}
 }

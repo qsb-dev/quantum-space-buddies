@@ -32,7 +32,7 @@ namespace QSB.ConversationSync.Events
 			{
 				case ConversationType.Character:
 					var translated = TextTranslation.Translate(message.Message).Trim();
-					translated = Regex.Replace(translated, @"<Pause=?\d*\.?\d*\s\/>", "");
+					translated = Regex.Replace(translated, @"<[Pp]ause=?\d*\.?\d*\s?\/?>", "");
 					ConversationManager.Instance.DisplayCharacterConversationBox(message.ObjectId, translated);
 					break;
 

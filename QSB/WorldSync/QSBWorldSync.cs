@@ -137,7 +137,12 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
 				return;
 			}
-			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
+			var orbSync = OrbSyncList.FirstOrDefault(x => x.AttachedOrb == affectingOrb);
+			if (orbSync == null)
+			{
+				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
+				return;
+			}
 			if (orbSync.HasAuthority)
 			{
 				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));

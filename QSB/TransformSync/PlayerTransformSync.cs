@@ -16,6 +16,7 @@ namespace QSB.TransformSync
 
 		protected override void OnDestroy()
 		{
+			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
 			base.OnDestroy();
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{

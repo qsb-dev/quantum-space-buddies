@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.SectorSync
 {
-	public class QSBSectorManager : MonoBehaviour, IRepeating
+	public class QSBSectorManager : WorldObjectManager, IRepeating
 	{
 		public static QSBSectorManager Instance { get; private set; }
 		public bool IsReady { get; private set; }
@@ -25,24 +25,14 @@ namespace QSB.SectorSync
 				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
 		}
 
-		public void Awake()
+		public override void Awake()
 		{
-			if (Instance != null)
-			{
-				DebugLog.ToConsole("Error - Cannot have multiple QSBSectorManagers!", MessageType.Error);
-				Destroy(this);
-				return;
-			}
+			base.Awake();
 			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => RebuildSectors();
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		public void OnDestroy()
-			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => RebuildSectors();
-
-
-		public void RebuildSectors()
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)

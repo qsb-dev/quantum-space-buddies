@@ -187,6 +187,7 @@ namespace QSB.TimeSync
 		{
 			if (OWInput.GetInputMode() != InputMode.None && _isInputEnabled)
 			{
+				DebugLog.DebugWrite($"Change input to none - was {OWInput.GetInputMode()}");
 				OWInput.ChangeInputMode(InputMode.None);
 				_isInputEnabled = false;
 			}
@@ -197,10 +198,12 @@ namespace QSB.TimeSync
 			_isInputEnabled = true;
 			if (OWInput.GetInputMode() != InputMode.None)
 			{
-				DebugLog.ToConsole($"Warning - InputMode was changed to {OWInput.GetInputMode()} while pausing/fastforwarding!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - InputMode was changed to {OWInput.GetInputMode()} while pausing/fastforwarding, and wasn't accounted for!", MessageType.Warning);
 				return;
 			}
+			DebugLog.DebugWrite($"Enable Input - Restore previous inputs!");
 			OWInput.RestorePreviousInputs();
+			DebugLog.DebugWrite($"input now {OWInput.GetInputMode()}");
 		}
 
 		public void Update()

@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET;
 using UnityEngine;
 
@@ -25,6 +26,11 @@ namespace QSB.TransformSync
 
 		private void OnReady()
 		{
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count < Index)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {Index}.", OWML.Common.MessageType.Error);
+				return;
+			}
 			AttachedOrb = QSBWorldSync.OldOrbList[Index];
 			_isReady = true;
 		}

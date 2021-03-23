@@ -6,29 +6,19 @@ using UnityEngine;
 
 namespace QSB.ItemSync
 {
-	internal class ItemManager : MonoBehaviour
+	internal class ItemManager : WorldObjectManager
 	{
-		public static ItemManager Instance { get; private set; }
-
-		public void Awake()
-		{
-			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += RebuildItems;
-		}
-
-		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= RebuildItems;
-
-		public void RebuildItems(OWScene scene)
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Warning);
-			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
-			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
+			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
-			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
+			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
 			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
-			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
+			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
 			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
+			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			foreach (var streaming in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraStreaming>())
 			{
 				streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();

@@ -303,6 +303,7 @@
     <Compile Include="WorldSync\IWorldObjectTypeSubset.cs" />
     <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
+    <Compile Include="WorldSync\WorldObjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json">

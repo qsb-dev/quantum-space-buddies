@@ -11,21 +11,26 @@ using UnityEngine;
 
 namespace QSB.QuantumSync
 {
-	internal class QuantumManager : MonoBehaviour
+	internal class QuantumManager : WorldObjectManager
 	{
 		public static QuantumManager Instance { get; private set; }
 		public QuantumShrine Shrine;
 		public bool IsReady;
 
-		public void Awake()
+		public override void Awake()
 		{
+			base.Awake();
 			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += RebuildQuantumObjects;
+			QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 		}
 
-		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= RebuildQuantumObjects;
+		public override void OnDestroy()
+		{
+			base.OnDestroy();
+			QSBPlayerManager.OnRemovePlayer -= PlayerLeave;
+		}
 
-		public void RebuildQuantumObjects(OWScene scene)
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
@@ -42,14 +47,17 @@ namespace QSB.QuantumSync
 			IsReady = true;
 		}
 
-		public void CheckExistingPlayers()
+		public void PlayerLeave(uint playerId)
 		{
-			DebugLog.DebugWrite("Checking quantum objects for non-existent players...", MessageType.Info);
+			if (!QSBCore.IsServer)
+			{
+				return;
+			}
 			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
 			for (var i = 0; i < quantumObjects.Count; i++)
 			{
 				var obj = quantumObjects[i];
-				if (!QSBPlayerManager.PlayerExists(obj.ControllingPlayer))
+				if (obj.ControllingPlayer == playerId)
 				{
 					var idToSend = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u;
 					QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, idToSend);

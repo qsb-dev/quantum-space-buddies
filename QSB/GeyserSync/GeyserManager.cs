@@ -5,21 +5,21 @@ using UnityEngine;
 
 namespace QSB.GeyserSync
 {
-	public class GeyserManager : MonoBehaviour
+	public class GeyserManager : WorldObjectManager
 	{
-		public void Awake()
+		public override void Awake()
 		{
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			base.Awake();
 			QSBPatchManager.OnPatchType += OnPatchType;
 		}
 
-		public void OnDestroy()
+		public override void OnDestroy()
 		{
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			base.OnDestroy();
 			QSBPatchManager.OnPatchType -= OnPatchType;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		protected override void RebuildWorldObjects(OWScene scene)
 			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
 
 		public void OnPatchType(QSBPatchTypes type)

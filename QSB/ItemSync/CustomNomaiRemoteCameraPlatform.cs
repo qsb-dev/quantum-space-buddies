@@ -216,7 +216,9 @@ namespace QSB.ItemSync
 			if (_platformActive)
 			{
 				var localInBounds = _connectionBounds.PointInside(_playerCamera.transform.position);
-				_anyoneStillOnPlatform = QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position));
+				_anyoneStillOnPlatform = QSBCore.IsInMultiplayer
+					? QSBPlayerManager.PlayerList.Any(x => _connectionBounds.PointInside(x.Camera.transform.position))
+					: localInBounds;
 				if (!localInBounds && _wasLocalInBounds)
 				{
 					OnLeaveBounds();
