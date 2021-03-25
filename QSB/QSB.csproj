@@ -129,6 +129,7 @@
     <Compile Include="FrequencySync\Events\IdentifyFrequencyEvent.cs" />
     <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
     <Compile Include="FrequencySync\Patches\FrequencyPatches.cs" />
+    <Compile Include="GeyserSync\Patches\GeyserPatches.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />

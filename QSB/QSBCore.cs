@@ -87,7 +87,6 @@ namespace QSB
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
 
 			QSBPatchManager.Init();
-			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QNetworkManagerHUD>();

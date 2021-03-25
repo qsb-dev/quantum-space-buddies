@@ -3,6 +3,7 @@ using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
 using QSB.FrequencySync.Patches;
+using QSB.GeyserSync.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
@@ -41,7 +42,8 @@ namespace QSB.Patches
 				new SpiralPatches(),
 				new QuantumPatches(),
 				new ItemPatches(),
-				new StatuePatches()
+				new StatuePatches(),
+				new GeyserPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
