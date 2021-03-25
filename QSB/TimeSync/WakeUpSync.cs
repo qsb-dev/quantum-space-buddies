@@ -12,7 +12,10 @@ namespace QSB.TimeSync
 	{
 		public static WakeUpSync LocalInstance { get; private set; }
 
-		private const float TimeThreshold = 0.5f;
+		private const float PauseOrFastForwardThreshold = 0.5f;
+		private const float ChangeTimescaleThreshold = 0.1f;
+		private const float TimescaleBounds = 0.3f;
+
 		private const float MaxFastForwardSpeed = 60f;
 		private const float MaxFastForwardDiff = 20f;
 		private const float MinFastForwardSpeed = 2f;
@@ -46,6 +49,12 @@ namespace QSB.TimeSync
 
 			GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+		}
+
+		public float GetTimeDifference()
+		{
+			var myTime = Time.timeSinceLevelLoad;
+			return myTime - _serverTime;
 		}
 
 		private void OnWakeUp()
@@ -94,13 +103,12 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, Time.timeSinceLevelLoad, _localLoopCount);
+		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, _localLoopCount);
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
 			_serverTime = message.ServerTime;
 			_serverLoopCount = message.LoopCount;
-			WakeUpOrSleep();
 		}
 
 		private void WakeUpOrSleep()
@@ -113,13 +121,13 @@ namespace QSB.TimeSync
 			var myTime = Time.timeSinceLevelLoad;
 			var diff = myTime - _serverTime;
 
-			if (diff > TimeThreshold)
+			if (diff > PauseOrFastForwardThreshold)
 			{
 				StartPausing();
 				return;
 			}
 
-			if (diff < -TimeThreshold)
+			if (diff < -PauseOrFastForwardThreshold)
 			{
 				StartFastForwarding();
 			}
@@ -191,6 +199,7 @@ namespace QSB.TimeSync
 
 		private void UpdateServer()
 		{
+			_serverTime = Time.timeSinceLevelLoad;
 			if (_state != State.Loaded)
 			{
 				return;
@@ -242,6 +251,29 @@ namespace QSB.TimeSync
 			{
 				ResetTimeScale();
 			}
+
+			if (_state == State.Loaded)
+			{
+				CheckTimeDifference();
+			}
+		}
+
+		private void CheckTimeDifference()
+		{
+			var diff = GetTimeDifference();
+
+			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
+			{
+				WakeUpOrSleep();
+			}
+
+			if (diff < ChangeTimescaleThreshold && diff > -ChangeTimescaleThreshold)
+			{
+				return;
+			}
+
+			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
+			OWTime.SetTimeScale(mappedTimescale);
 		}
 	}
 }
