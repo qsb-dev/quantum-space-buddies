@@ -24,7 +24,6 @@ namespace QSB.TimeSync
 		private float _sendTimer;
 		private float _serverTime;
 		private float _timeScale;
-		private bool _isInputEnabled = true;
 		private bool _isFirstFastForward = true;
 		private int _localLoopCount;
 		private int _serverLoopCount;
@@ -40,6 +39,7 @@ namespace QSB.TimeSync
 
 			if (QSBSceneManager.IsInUniverse)
 			{
+				_isFirstFastForward = false;
 				Init();
 			}
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -143,7 +143,6 @@ namespace QSB.TimeSync
 			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
-			DisableInput();
 		}
 
 		private void StartPausing()
@@ -158,7 +157,6 @@ namespace QSB.TimeSync
 			_state = State.Pausing;
 			SpinnerUI.Show();
 			TimeSyncUI.Start(TimeSyncType.Pausing);
-			DisableInput();
 		}
 
 		private void ResetTimeScale()
@@ -169,10 +167,6 @@ namespace QSB.TimeSync
 			Locator.GetActiveCamera().enabled = true;
 			_state = State.Loaded;
 
-			if (!_isInputEnabled)
-			{
-				EnableInput();
-			}
 			DebugLog.DebugWrite($"RESET TIMESCALE", MessageType.Info);
 			_isFirstFastForward = false;
 			QSBCore.HasWokenUp = true;
@@ -181,29 +175,6 @@ namespace QSB.TimeSync
 			TimeSyncUI.Stop();
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			RespawnOnDeath.Instance.Init();
-		}
-
-		private void DisableInput()
-		{
-			if (OWInput.GetInputMode() != InputMode.None && _isInputEnabled)
-			{
-				DebugLog.DebugWrite($"Change input to none - was {OWInput.GetInputMode()}");
-				OWInput.ChangeInputMode(InputMode.None);
-				_isInputEnabled = false;
-			}
-		}
-
-		private void EnableInput()
-		{
-			_isInputEnabled = true;
-			if (OWInput.GetInputMode() != InputMode.None)
-			{
-				DebugLog.ToConsole($"Warning - InputMode was changed to {OWInput.GetInputMode()} while pausing/fastforwarding, and wasn't accounted for!", MessageType.Warning);
-				return;
-			}
-			DebugLog.DebugWrite($"Enable Input - Restore previous inputs!");
-			OWInput.RestorePreviousInputs();
-			DebugLog.DebugWrite($"input now {OWInput.GetInputMode()}");
 		}
 
 		public void Update()
@@ -236,11 +207,6 @@ namespace QSB.TimeSync
 		private void UpdateLocal()
 		{
 			_serverTime += Time.unscaledDeltaTime;
-
-			if (!_isInputEnabled && OWInput.GetInputMode() != InputMode.None)
-			{
-				DisableInput();
-			}
 
 			if (_state == State.NotLoaded)
 			{

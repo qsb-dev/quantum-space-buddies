@@ -202,7 +202,6 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnStopClient", MessageType.Info);
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
-			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
@@ -243,7 +242,6 @@ namespace QSB
 		public override void OnStopServer()
 		{
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
-			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
@@ -261,17 +259,14 @@ namespace QSB
 			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
 			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
 			{
-				streaming.GetComponent<NomaiRemoteCameraStreaming>().enabled = true;
 				Destroy(streaming);
 			}
 			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
 			{
-				camera.GetComponent<NomaiRemoteCamera>().enabled = true;
 				Destroy(camera);
 			}
 			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
 			{
-				platform.GetComponent<NomaiRemoteCameraPlatform>().enabled = true;
 				Destroy(platform);
 			}
 		}

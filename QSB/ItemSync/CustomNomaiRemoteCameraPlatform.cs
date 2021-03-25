@@ -209,6 +209,11 @@ namespace QSB.ItemSync
 			{
 				CustomPlatformList.Remove(this);
 			}
+			if (_cameraState == CameraState.Connected || _cameraState == CameraState.Connecting_FadeIn || _cameraState == CameraState.Connecting_FadeOut)
+			{
+				DisconnectCamera();
+				SwitchToPlayerCamera();
+			}
 		}
 
 		private void Update()

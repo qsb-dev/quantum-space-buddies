@@ -80,11 +80,31 @@ namespace QSB.QuantumSync
 
 		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
-			return tracker.gameObject.activeInHierarchy
-				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
-					.Any(x => (bool)tracker.GetType()
-						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
-						.Invoke(tracker, new object[] { x.Camera.GetFrustumPlanes() }));
+			var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
+			if (playersWithCameras.Count == 0)
+			{
+				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
+				return false;
+			}
+			if (!tracker.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+			var frustumMethod = tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance);
+			foreach (var player in playersWithCameras)
+			{
+				if (player.Camera == null)
+				{
+					DebugLog.ToConsole($"Warning - Camera is null for id:{player.PlayerId}!", MessageType.Warning);
+					continue;
+				}
+				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
+				if (isInFrustum)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)

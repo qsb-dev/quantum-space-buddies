@@ -94,9 +94,18 @@ namespace QSB.ConversationSync.Patches
 			CharacterDialogueTree ____dialogueTree)
 		{
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-			var position = playerId == uint.MaxValue
-				? Locator.GetActiveCamera().transform.position
-				: QSBPlayerManager.GetPlayer(playerId).CameraBody.transform.position;
+			Vector3 position;
+			if (playerId == uint.MaxValue)
+			{
+				position = Locator.GetActiveCamera().transform.position;
+			}
+			else
+			{
+				var player = QSBPlayerManager.GetPlayer(playerId);
+				position = player.CameraBody == null 
+					? Locator.GetActiveCamera().transform.position 
+					: player.CameraBody.transform.position;
+			}
 			var localPosition = ____animator.transform.InverseTransformPoint(position);
 			var targetWeight = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking
 						? !____playerInHeadZone ? 0 : 1

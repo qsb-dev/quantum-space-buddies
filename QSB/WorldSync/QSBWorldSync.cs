@@ -43,6 +43,16 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
+			if (unityObject == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);
+				return default;
+			}
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.DebugWrite($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
+				return default;
+			}
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
 				DebugLog.DebugWrite($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);

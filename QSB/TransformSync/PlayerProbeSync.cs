@@ -49,7 +49,12 @@ namespace QSB.TransformSync
 			return body;
 		}
 
-		private void SetSocket(Transform socket) => _disabledSocket = socket;
+		private void SetSocket(Transform socket)
+		{
+			DebugLog.DebugWrite($"Set DisabledSocket of id:{PlayerId}.");
+			_disabledSocket = socket;
+		}
+
 
 		protected override void UpdateTransform()
 		{
@@ -61,7 +66,7 @@ namespace QSB.TransformSync
 			}
 			if (_disabledSocket == null)
 			{
-				DebugLog.ToConsole($"DisabledSocket is null for {AttachedNetId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
+				DebugLog.ToConsole($"DisabledSocket is null for {PlayerId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
 				return;
 			}
 			if (Player.GetState(State.ProbeActive) || ReferenceSector?.AttachedObject == null)

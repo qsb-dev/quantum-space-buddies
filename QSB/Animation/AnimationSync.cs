@@ -49,6 +49,8 @@ namespace QSB.Animation
 			{
 				return;
 			}
+			Destroy(_anim);
+			Destroy(_netAnim);
 			_playerController.OnJump -= OnJump;
 			_playerController.OnBecomeGrounded -= OnBecomeGrounded;
 			_playerController.OnBecomeUngrounded -= OnBecomeUngrounded;

@@ -40,6 +40,7 @@ namespace QSB.ItemSync
 		{
 			if (unityObject == null)
 			{
+				DebugLog.ToConsole($"Error - Trying to run GetObject (Item) with null unity object!", MessageType.Error);
 				return default;
 			}
 			IQSBOWItem worldObj = null;
@@ -70,6 +71,7 @@ namespace QSB.ItemSync
 		{
 			if (unityObject == null)
 			{
+				DebugLog.ToConsole($"Error - Trying to run GetObject (Socket) with null unity object!", MessageType.Error);
 				return default;
 			}
 			IQSBOWItemSocket worldObj = null;

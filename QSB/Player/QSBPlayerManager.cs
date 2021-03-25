@@ -105,7 +105,9 @@ namespace QSB.Player
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
-			if (includeLocalCamera)
+			if (includeLocalCamera 
+				&& LocalPlayer != default
+				&& LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
 			}
