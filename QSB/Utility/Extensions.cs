@@ -58,7 +58,7 @@ namespace QSB.Utility
 			}
 		}
 
-		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo) 
+		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
 			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
 	}
 }
