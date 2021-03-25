@@ -1,14 +1,13 @@
-﻿using QSB.Utility;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.WorldSync
 {
 	public abstract class WorldObjectManager : MonoBehaviour
 	{
-		private static List<WorldObjectManager> _managers = new List<WorldObjectManager>();
+		private static readonly List<WorldObjectManager> _managers = new List<WorldObjectManager>();
 
-		public virtual void Awake() 
+		public virtual void Awake()
 			=> _managers.Add(this);
 
 		public virtual void OnDestroy()

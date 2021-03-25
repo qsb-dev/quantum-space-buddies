@@ -2,7 +2,7 @@
 
 namespace QSB.GeyserSync.Patches
 {
-	class GeyserPatches : QSBPatch
+	internal class GeyserPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

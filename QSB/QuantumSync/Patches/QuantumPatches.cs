@@ -310,8 +310,8 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 
-			if (QSBPlayerManager.LocalPlayer != null 
-				&& QSBPlayerManager.LocalPlayer.IsInShrine 
+			if (QSBPlayerManager.LocalPlayer != null
+				&& QSBPlayerManager.LocalPlayer.IsInShrine
 				&& PlayerState.IsFlashlightOn())
 			{
 				__result = false;

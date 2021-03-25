@@ -102,8 +102,8 @@ namespace QSB.ConversationSync.Patches
 			else
 			{
 				var player = QSBPlayerManager.GetPlayer(playerId);
-				position = player.CameraBody == null 
-					? Locator.GetActiveCamera().transform.position 
+				position = player.CameraBody == null
+					? Locator.GetActiveCamera().transform.position
 					: player.CameraBody.transform.position;
 			}
 			var localPosition = ____animator.transform.InverseTransformPoint(position);
