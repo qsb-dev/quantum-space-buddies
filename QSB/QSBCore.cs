@@ -130,6 +130,8 @@ namespace QSB
 			{
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
 				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}");
+				offset += _debugLineSpacing;
 			}
 
 			if (!HasWokenUp)

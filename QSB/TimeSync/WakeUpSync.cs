@@ -13,7 +13,6 @@ namespace QSB.TimeSync
 		public static WakeUpSync LocalInstance { get; private set; }
 
 		private const float PauseOrFastForwardThreshold = 0.5f;
-		private const float ChangeTimescaleThreshold = 0.1f;
 		private const float TimescaleBounds = 0.3f;
 
 		private const float MaxFastForwardSpeed = 60f;
@@ -265,11 +264,6 @@ namespace QSB.TimeSync
 			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
 			{
 				WakeUpOrSleep();
-			}
-
-			if (diff < ChangeTimescaleThreshold && diff > -ChangeTimescaleThreshold)
-			{
-				return;
 			}
 
 			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
