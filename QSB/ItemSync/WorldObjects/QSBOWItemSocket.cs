@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects
@@ -14,6 +15,9 @@ namespace QSB.ItemSync.WorldObjects
 			var acceptableType = AttachedObject.GetValue<ItemType>("_acceptableType");
 			return (itemType & acceptableType) == itemType;
 		}
+
+		public virtual bool IsSocketOccupied()
+			=> AttachedObject.IsSocketOccupied();
 
 		public virtual bool PlaceIntoSocket(IQSBOWItem item)
 			=> AttachedObject.PlaceIntoSocket((OWItem)(item as IWorldObject).ReturnObject());
