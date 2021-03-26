@@ -12,7 +12,7 @@ namespace QSB.TimeSync
 	{
 		public static WakeUpSync LocalInstance { get; private set; }
 
-		private const float PauseOrFastForwardThreshold = 0.5f;
+		private const float PauseOrFastForwardThreshold = 1.0f;
 		private const float TimescaleBounds = 0.3f;
 
 		private const float MaxFastForwardSpeed = 60f;
@@ -25,7 +25,6 @@ namespace QSB.TimeSync
 
 		private float _sendTimer;
 		private float _serverTime;
-		private float _timeScale;
 		private bool _isFirstFastForward = true;
 		private int _localLoopCount;
 		private int _serverLoopCount;
@@ -144,7 +143,6 @@ namespace QSB.TimeSync
 			{
 				Locator.GetActiveCamera().enabled = false;
 			}
-			_timeScale = MaxFastForwardSpeed;
 			_state = State.FastForwarding;
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
@@ -160,7 +158,7 @@ namespace QSB.TimeSync
 			}
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			Locator.GetActiveCamera().enabled = false;
-			_timeScale = 0f;
+			OWTime.SetTimeScale(0f);
 			_state = State.Pausing;
 			SpinnerUI.Show();
 			TimeSyncUI.Start(TimeSyncType.Pausing);
@@ -168,7 +166,7 @@ namespace QSB.TimeSync
 
 		private void ResetTimeScale()
 		{
-			_timeScale = 1f;
+			OWTime.SetTimeScale(1f);
 			OWTime.SetMaxDeltaTime(0.06666667f);
 			OWTime.SetFixedTimestep(0.01666667f);
 			Locator.GetActiveCamera().enabled = true;
@@ -228,7 +226,7 @@ namespace QSB.TimeSync
 					Locator.GetPlayerCamera().enabled = false;
 				}
 				var diff = _serverTime - Time.timeSinceLevelLoad;
-				Time.timeScale = Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff);
+				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
 				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
 				{
@@ -237,10 +235,6 @@ namespace QSB.TimeSync
 					Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
 					Physics.SyncTransforms();
 				}
-			}
-			else
-			{
-				Time.timeScale = _timeScale;
 			}
 
 			var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
