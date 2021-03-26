@@ -32,7 +32,20 @@ namespace QSB.ItemSync.Patches
 
 		public override void DoUnpatches()
 		{
-			// TODO : add this
+			QSBCore.HarmonyHelper.Unpatch<ItemTool>("MoveItemToCarrySocket");
+			QSBCore.HarmonyHelper.Unpatch<ItemTool>("SocketItem");
+			QSBCore.HarmonyHelper.Unpatch<ItemTool>("StartUnsocketItem");
+			QSBCore.HarmonyHelper.Unpatch<ItemTool>("CompleteUnsocketItem");
+			QSBCore.HarmonyHelper.Unpatch<ItemTool>("DropItem");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("Update");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnSocketableRemoved");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnSocketableDonePlacing");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnPedestalContact");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("FixedUpdate");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnSectorOccupantAdded");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnSectorOccupantRemoved");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnEntry");
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnExit");
 		}
 
 		public static bool ReturnFalse() => false;
