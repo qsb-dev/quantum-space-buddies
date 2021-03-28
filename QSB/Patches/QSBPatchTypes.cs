@@ -2,9 +2,8 @@
 {
 	public enum QSBPatchTypes
 	{
-		OnModStart = 0,
-		OnClientConnect = 1,
-		OnNonServerClientConnect = 2,
-		OnServerClientConnect = 3
+		OnClientConnect = 0,
+		OnNonServerClientConnect = 1,
+		OnServerClientConnect = 2
 	}
 }

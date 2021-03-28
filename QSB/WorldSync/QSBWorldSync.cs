@@ -42,7 +42,24 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
-			=> WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+		{
+			if (unityObject == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);
+				return default;
+			}
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
+				return default;
+			}
+			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
+			{
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
+				return default;
+			}
+			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+		}
 
 		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
@@ -71,7 +88,7 @@ namespace QSB.WorldSync
 				}
 				catch (Exception e)
 				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
@@ -130,7 +147,12 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
 				return;
 			}
-			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
+			var orbSync = OrbSyncList.FirstOrDefault(x => x.AttachedOrb == affectingOrb);
+			if (orbSync == null)
+			{
+				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
+				return;
+			}
 			if (orbSync.HasAuthority)
 			{
 				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));

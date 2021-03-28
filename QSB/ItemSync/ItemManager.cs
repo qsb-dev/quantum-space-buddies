@@ -6,43 +6,30 @@ using UnityEngine;
 
 namespace QSB.ItemSync
 {
-	internal class ItemManager : MonoBehaviour
+	internal class ItemManager : WorldObjectManager
 	{
-		public static ItemManager Instance { get; private set; }
-
-		public void Awake()
-		{
-			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += RebuildItems;
-		}
-
-		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= RebuildItems;
-
-		public void RebuildItems(OWScene scene)
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Warning);
-			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
-			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
+			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
-			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
+			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
 			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
-			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
+			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
 			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
+			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			foreach (var streaming in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraStreaming>())
 			{
 				streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();
-				streaming.enabled = false;
 			}
 			foreach (var camera in Resources.FindObjectsOfTypeAll<NomaiRemoteCamera>())
 			{
 				camera.gameObject.AddComponent<CustomNomaiRemoteCamera>();
-				camera.enabled = false;
 			}
 			foreach (var platform in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraPlatform>())
 			{
 				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
-				platform.enabled = false;
 			}
 		}
 
@@ -50,6 +37,7 @@ namespace QSB.ItemSync
 		{
 			if (unityObject == null)
 			{
+				DebugLog.ToConsole($"Error - Trying to run GetObject (Item) with null unity object!", MessageType.Error);
 				return default;
 			}
 			IQSBOWItem worldObj = null;
@@ -80,6 +68,7 @@ namespace QSB.ItemSync
 		{
 			if (unityObject == null)
 			{
+				DebugLog.ToConsole($"Error - Trying to run GetObject (Socket) with null unity object!", MessageType.Error);
 				return default;
 			}
 			IQSBOWItemSocket worldObj = null;

@@ -8,8 +8,5 @@
 			AttachedObject = attachedObject;
 			base.Init(attachedObject, id);
 		}
-
-		public override IQSBOWItem RemoveFromSocket()
-			=> ItemManager.GetObject(AttachedObject.RemoveFromSocket());
 	}
 }

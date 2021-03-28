@@ -129,6 +129,7 @@
     <Compile Include="FrequencySync\Events\IdentifyFrequencyEvent.cs" />
     <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
     <Compile Include="FrequencySync\Patches\FrequencyPatches.cs" />
+    <Compile Include="GeyserSync\Patches\GeyserPatches.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
@@ -196,10 +197,12 @@
     <Compile Include="QuantumSync\Events\SocketStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\SocketStateChangeMessage.cs" />
     <Compile Include="QuantumSync\Patches\QuantumPatches.cs" />
+    <Compile Include="QuantumSync\WorldObjects\QSBEyeProxyQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBMultiStateQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumShuffleObject.cs" />
+    <Compile Include="QuantumSync\WorldObjects\QSBQuantumState.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBSocketedQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumSocket.cs" />
     <Compile Include="QuantumSync\QuantumManager.cs" />
@@ -301,6 +304,7 @@
     <Compile Include="WorldSync\IWorldObjectTypeSubset.cs" />
     <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
+    <Compile Include="WorldSync\WorldObjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json">

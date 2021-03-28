@@ -1,22 +1,11 @@
 ﻿using QSB.TranslationSync.WorldObjects;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.TranslationSync
 {
-	internal class SpiralManager : MonoBehaviour
+	internal class SpiralManager : WorldObjectManager
 	{
-		public static SpiralManager Instance { get; private set; }
-
-		public void Awake()
-		{
-			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
-		}
-
-		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
-
-		private void OnSceneLoaded(OWScene scene)
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBWallText, NomaiWallText>();
 			QSBWorldSync.Init<QSBComputer, NomaiComputer>();

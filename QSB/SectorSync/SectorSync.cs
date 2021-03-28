@@ -14,6 +14,15 @@ namespace QSB.SectorSync
 
 		private SectorDetector _sectorDetector;
 
+		private void OnDestroy()
+		{
+			if (_sectorDetector != null)
+			{
+				_sectorDetector.OnEnterSector -= AddSector;
+				_sectorDetector.OnExitSector -= RemoveSector;
+			}
+		}
+
 		public void SetSectorDetector(SectorDetector detector)
 		{
 			if (_sectorDetector != null)

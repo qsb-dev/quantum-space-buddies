@@ -8,7 +8,7 @@ namespace QSB.ItemSync.WorldObjects
 		ItemType GetItemType();
 		void SetColliderActivation(bool active);
 		void SocketItem(Transform socketTransform, Sector sector);
-		void PickUpItem(Transform holdTransform);
+		void PickUpItem(Transform holdTransform, uint playerId);
 		void DropItem(Vector3 position, Vector3 normal, Sector sector);
 		void PlaySocketAnimation();
 		void PlayUnsocketAnimation();

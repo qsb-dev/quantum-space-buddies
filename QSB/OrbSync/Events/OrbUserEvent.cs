@@ -51,9 +51,14 @@ namespace QSB.OrbSync.Events
 		private static void HandleServer(WorldObjectMessage message)
 		{
 			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayerId() == message.FromId);
-			if (QSBWorldSync.OrbSyncList.Count == 0)
+			if (QSBWorldSync.OrbSyncList == null || QSBWorldSync.OrbSyncList.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - OrbSyncList is empty. (ID {message.ObjectId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - OrbSyncList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				return;
+			}
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 			if (fromPlayer == null)
@@ -83,11 +88,14 @@ namespace QSB.OrbSync.Events
 
 		private static void HandleClient(WorldObjectMessage message)
 		{
-			if (QSBWorldSync.OrbSyncList.Count < message.ObjectId)
+			if (QSBWorldSync.OrbSyncList == null || QSBWorldSync.OrbSyncList.Count == 0)
 			{
-				DebugLog.ToConsole(
-					$"Error - Orb id {message.ObjectId} out of range of orb sync list {QSBWorldSync.OrbSyncList.Count}.",
-					MessageType.Error);
+				DebugLog.ToConsole($"Error - OrbSyncList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				return;
+			}
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 			if (!QSBWorldSync.OrbSyncList.Any(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]))

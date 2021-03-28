@@ -11,28 +11,35 @@ using UnityEngine;
 
 namespace QSB.QuantumSync
 {
-	internal class QuantumManager : MonoBehaviour
+	internal class QuantumManager : WorldObjectManager
 	{
 		public static QuantumManager Instance { get; private set; }
 		public QuantumShrine Shrine;
 		public bool IsReady;
 
-		public void Awake()
+		public override void Awake()
 		{
+			base.Awake();
 			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += RebuildQuantumObjects;
+			QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 		}
 
-		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= RebuildQuantumObjects;
+		public override void OnDestroy()
+		{
+			base.OnDestroy();
+			QSBPlayerManager.OnRemovePlayer -= PlayerLeave;
+		}
 
-		public void RebuildQuantumObjects(OWScene scene)
+		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
+			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
 			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
 			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
 			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
+			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
@@ -40,14 +47,17 @@ namespace QSB.QuantumSync
 			IsReady = true;
 		}
 
-		public void CheckExistingPlayers()
+		public void PlayerLeave(uint playerId)
 		{
-			DebugLog.DebugWrite("Checking quantum objects for non-existent players...", MessageType.Info);
+			if (!QSBCore.IsServer)
+			{
+				return;
+			}
 			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
 			for (var i = 0; i < quantumObjects.Count; i++)
 			{
 				var obj = quantumObjects[i];
-				if (!QSBPlayerManager.PlayerExists(obj.ControllingPlayer))
+				if (obj.ControllingPlayer == playerId)
 				{
 					var idToSend = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u;
 					QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, idToSend);
@@ -70,11 +80,31 @@ namespace QSB.QuantumSync
 
 		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
-			return tracker.gameObject.activeInHierarchy
-				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
-					.Any(x => (bool)tracker.GetType()
-						.GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance)
-						.Invoke(tracker, new object[] { x.Camera.GetFrustumPlanes() }));
+			var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
+			if (playersWithCameras.Count == 0)
+			{
+				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
+				return false;
+			}
+			if (!tracker.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+			var frustumMethod = tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance);
+			foreach (var player in playersWithCameras)
+			{
+				if (player.Camera == null)
+				{
+					DebugLog.ToConsole($"Warning - Camera is null for id:{player.PlayerId}!", MessageType.Warning);
+					continue;
+				}
+				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
+				if (isInFrustum)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
@@ -109,6 +139,10 @@ namespace QSB.QuantumSync
 			else if (unityObject.GetType() == typeof(QuantumMoon))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumMoon, QuantumMoon>((QuantumMoon)unityObject);
+			}
+			else if (unityObject.GetType() == typeof(EyeProxyQuantumMoon))
+			{
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>((EyeProxyQuantumMoon)unityObject);
 			}
 			else
 			{

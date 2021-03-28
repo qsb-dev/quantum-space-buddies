@@ -87,7 +87,6 @@ namespace QSB
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
 
 			QSBPatchManager.Init();
-			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QNetworkManagerHUD>();
@@ -127,10 +126,33 @@ namespace QSB
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
 			offset += _debugLineSpacing;
+			if (WakeUpSync.LocalInstance != null)
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}");
+				offset += _debugLineSpacing;
+			}
 
 			if (!HasWokenUp)
 			{
 				return;
+			}
+
+			var offset3 = 10f;
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current closest sector :");
+			offset3 += _debugLineSpacing;
+			var sector = PlayerTransformSync.LocalInstance.SectorSync.GetClosestSector(Locator.GetPlayerTransform());
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.AttachedObject.name} : {sector.IsFakeSector}");
+			offset3 += _debugLineSpacing;
+
+			var offset2 = 10f;
+			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
+			offset2 += _debugLineSpacing;
+			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
+			{
+				GUI.Label(new Rect(620, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}, {obj.ControllingPlayer}, {obj.IsEnabled}");
+				offset2 += _debugLineSpacing;
 			}
 
 			if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
@@ -149,22 +171,6 @@ namespace QSB
 			{
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
 				offset += _debugLineSpacing;
-			}
-
-			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current closest sector :");
-			offset3 += _debugLineSpacing;
-			var sector = PlayerTransformSync.LocalInstance.SectorSync.GetClosestSector(Locator.GetPlayerTransform());
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.AttachedObject.name} : {sector.IsFakeSector}");
-			offset3 += _debugLineSpacing;
-
-			var offset2 = 10f;
-			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
-			offset2 += _debugLineSpacing;
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
-			{
-				GUI.Label(new Rect(620, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}");
-				offset2 += _debugLineSpacing;
 			}
 
 			if (SocketedObjToDebug == -1)

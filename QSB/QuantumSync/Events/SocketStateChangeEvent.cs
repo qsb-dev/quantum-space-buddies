@@ -1,5 +1,7 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -29,6 +31,11 @@ namespace QSB.QuantumSync.Events
 				return;
 			}
 			var obj = QSBWorldSync.GetWorldFromId<QSBSocketedQuantumObject>(message.ObjectId);
+			if (obj.ControllingPlayer != message.FromId)
+			{
+				DebugLog.ToConsole($"Error - Got SocketStateChangeEvent for {obj.Name} from {message.FromId}, but it's currently controlled by {obj.ControllingPlayer}!", MessageType.Error);
+				return;
+			}
 			obj.MoveToSocket(message);
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿using QSB.Events;
 using QSB.ItemSync.WorldObjects;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ItemSync.Events
@@ -36,6 +37,11 @@ namespace QSB.ItemSync.Events
 					socketWorldObject.PlaceIntoSocket(itemWorldObject);
 					return;
 				case SocketEventType.StartUnsocket:
+					if (!socketWorldObject.IsSocketOccupied())
+					{
+						DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{(socketWorldObject as IWorldObject).Name}");
+						return;
+					}
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketEventType.CompleteUnsocket:

@@ -47,6 +47,10 @@ namespace QSB.TransformSync
 				Destroy(SyncedTransform.gameObject);
 			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			if (SectorSync != null)
+			{
+				Destroy(SectorSync);
+			}
 		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>

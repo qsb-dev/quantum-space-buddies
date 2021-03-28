@@ -5,7 +5,6 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -30,6 +29,7 @@ namespace QSB.QuantumSync.Patches
 			QSBCore.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
 			QSBCore.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
 			QSBCore.HarmonyHelper.AddPrefix<QuantumObject>("IsLockedByPlayerContact", typeof(QuantumPatches), nameof(Object_IsLockedByPlayerContact));
+			QSBCore.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("Start", typeof(QuantumPatches), nameof(MultiState_Start));
 		}
 
 		public override void DoUnpatches()
@@ -220,9 +220,41 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
+		public static bool MultiState_Start(MultiStateQuantumObject __instance, Sector ____sector, bool ____collapseOnStart)
+		{
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
+			if (qsbObj.ControllingPlayer == 0)
+			{
+				return true;
+			}
+
+			foreach (var state in qsbObj.QuantumStates)
+			{
+				if (!state.IsMeantToBeEnabled)
+				{
+					state.SetVisible(false);
+				}
+			}
+
+			if (____sector == null)
+			{
+				__instance.GetType().GetMethod("CheckEnabled", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+			}
+			if (____collapseOnStart)
+			{
+				__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+			}
+
+			return false;
+		}
+
 		public static bool MultiState_ChangeQuantumState(MultiStateQuantumObject __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
+			if (qsbObj.ControllingPlayer == 0 && qsbObj.CurrentState == -1)
+			{
+				return true;
+			}
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}
@@ -234,17 +266,17 @@ namespace QSB.QuantumSync.Patches
 				return;
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
-			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
-			//DebugLog.DebugWrite($"{owner.AttachedObject.name} controller is {owner.ControllingPlayer}");
+			var stateObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(__instance);
+			var owner = allMultiStates.First(x => x.QuantumStates.Contains(stateObject));
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;
 			}
-			//DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
+			var stateIndex = owner.QuantumStates.IndexOf(stateObject);
 			QSBEventManager.FireEvent(
 					EventNames.QSBMultiStateChange,
 					owner.ObjectId,
-					Array.IndexOf(owner.QuantumStates, __instance));
+					stateIndex);
 		}
 
 		public static bool Shrine_IsPlayerInDarkness(ref bool __result, Light[] ____lamps, float ____fadeFraction, bool ____isProbeInside, NomaiGateway ____gate)
@@ -259,14 +291,33 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
-			if (playersInMoon.Any(x => !x.IsInShrine)
-				|| playersInMoon.Any(x => x.FlashLight != null && x.FlashLight.FlashlightOn)
-				|| (QSBPlayerManager.LocalPlayer.IsInShrine && PlayerState.IsFlashlightOn())
-				|| playersInMoon.Count() == 0)
+
+			if (playersInMoon.Any(player => !player.IsInShrine))
 			{
 				__result = false;
 				return false;
 			}
+
+			if (playersInMoon.Any(player => player.FlashLight != null && player.FlashLight.FlashlightOn))
+			{
+				__result = false;
+				return false;
+			}
+
+			if (playersInMoon.Count() == 0)
+			{
+				__result = false;
+				return false;
+			}
+
+			if (QSBPlayerManager.LocalPlayer != null
+				&& QSBPlayerManager.LocalPlayer.IsInShrine
+				&& PlayerState.IsFlashlightOn())
+			{
+				__result = false;
+				return false;
+			}
+
 			// TODO : make this *really* check for all players - check other probes and other jetpacks!
 			__result = ____gate.GetOpenFraction() == 0f
 				&& !____isProbeInside

@@ -1,8 +1,8 @@
 ﻿namespace QSB.QuantumSync.WorldObjects
 {
-	internal class QSBQuantumMoon : QSBQuantumObject<QuantumMoon>
+	internal class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
 	{
-		public override void Init(QuantumMoon moonObject, int id)
+		public override void Init(EyeProxyQuantumMoon moonObject, int id)
 		{
 			ObjectId = id;
 			AttachedObject = moonObject;

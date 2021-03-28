@@ -1,4 +1,7 @@
 ﻿using OWML.Utils;
+using QSB.Player;
+using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -7,7 +10,47 @@ namespace QSB.ItemSync.WorldObjects
 	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
 		where T : OWItem
 	{
-		public override void Init(T attachedObject, int id) { }
+		public IQSBOWItemSocket InitialSocket { get; private set; }
+		public Transform InitialParent { get; private set; }
+		public Vector3 InitialPosition { get; private set; }
+		public Quaternion InitialRotation { get; private set; }
+		public QSBSector InitialSector { get; private set; }
+		public uint HoldingPlayer { get; private set; }
+
+		public override void Init(T attachedObject, int id)
+		{
+			InitialParent = attachedObject.transform.parent;
+			InitialPosition = attachedObject.transform.localPosition;
+			InitialRotation = attachedObject.transform.localRotation;
+			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(attachedObject.GetSector());
+			if (InitialParent.GetComponent<OWItemSocket>() != null)
+			{
+				var qsbObj = ItemManager.GetObject(InitialParent.GetComponent<OWItemSocket>());
+				InitialSocket = qsbObj;
+			}
+			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+		}
+
+		public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
+
+		private void OnPlayerLeave(uint player)
+		{
+			if (HoldingPlayer != player)
+			{
+				return;
+			}
+			if (InitialSocket != null)
+			{
+				InitialSocket.PlaceIntoSocket(this);
+				return;
+			}
+			AttachedObject.transform.parent = InitialParent;
+			AttachedObject.transform.localPosition = InitialPosition;
+			AttachedObject.transform.localRotation = InitialRotation;
+			AttachedObject.transform.localScale = Vector3.one;
+			AttachedObject.SetSector(InitialSector.AttachedObject);
+			AttachedObject.SetColliderActivation(true);
+		}
 
 		public ItemType GetItemType()
 			=> AttachedObject.GetItemType();
@@ -16,10 +59,17 @@ namespace QSB.ItemSync.WorldObjects
 			=> AttachedObject.SetColliderActivation(active);
 
 		public virtual void SocketItem(Transform socketTransform, Sector sector)
-			=> AttachedObject.SocketItem(socketTransform, sector);
+		{
+			AttachedObject.SocketItem(socketTransform, sector);
+			HoldingPlayer = 0;
+		}
 
-		public virtual void PickUpItem(Transform holdTransform)
-			=> AttachedObject.PickUpItem(holdTransform);
+
+		public virtual void PickUpItem(Transform holdTransform, uint playerId)
+		{
+			AttachedObject.PickUpItem(holdTransform);
+			HoldingPlayer = playerId;
+		}
 
 		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
 		{
@@ -32,6 +82,7 @@ namespace QSB.ItemSync.WorldObjects
 			AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
 			AttachedObject.SetSector(sector);
 			AttachedObject.SetColliderActivation(true);
+			HoldingPlayer = 0;
 		}
 
 		public virtual void PlaySocketAnimation() { }

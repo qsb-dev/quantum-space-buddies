@@ -2,17 +2,11 @@
 using OWML.Utils;
 using QSB.Animation;
 using QSB.DeathSync;
-using QSB.ElevatorSync.WorldObjects;
 using QSB.Events;
-using QSB.GeyserSync.WorldObjects;
 using QSB.Instruments;
-using QSB.OrbSync;
-using QSB.OrbSync.WorldObjects;
+using QSB.ItemSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.QuantumSync;
-using QSB.SectorSync;
-using QSB.SectorSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;
@@ -110,8 +104,6 @@ namespace QSB
 
 		private void OnSceneLoaded(OWScene scene)
 		{
-			OrbManager.Instance.BuildOrbs();
-			OrbManager.Instance.QueueBuildSlots();
 			QSBWorldSync.OldDialogueTrees.Clear();
 			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
@@ -134,10 +126,6 @@ namespace QSB
 		public override void OnStartServer()
 		{
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (QSBWorldSync.OrbSyncList.Count == 0 && QSBSceneManager.IsInUniverse)
-			{
-				OrbManager.Instance.QueueBuildOrbs();
-			}
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
 				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
@@ -178,9 +166,7 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBSectorManager.Instance?.RebuildSectors();
-				OrbManager.Instance?.QueueBuildSlots();
-				QuantumManager.Instance?.RebuildQuantumObjects(QSBSceneManager.CurrentScene);
+				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -208,7 +194,6 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnStopClient", MessageType.Info);
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
-			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
@@ -244,24 +229,16 @@ namespace QSB
 					identity.RemoveClientAuthority(connection);
 				}
 			}
-
-			// Server takes some time to process removal of player/deletion of networkidentity
-			Invoke(nameof(LateFinalizeDisconnect), 1f);
 		}
-
-		private void LateFinalizeDisconnect()
-			=> QuantumManager.Instance.CheckExistingPlayers();
 
 		public override void OnStopServer()
 		{
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
-			Destroy(GetComponent<SectorSync.QSBSectorManager>());
 			Destroy(GetComponent<RespawnOnDeath>());
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			RemoveWorldObjects();
 			QSBCore.HasWokenUp = false;
 
 			base.OnStopServer();
@@ -269,11 +246,20 @@ namespace QSB
 
 		private void RemoveWorldObjects()
 		{
-			QSBWorldSync.RemoveWorldObjects<QSBOrbSlot>();
-			QSBWorldSync.RemoveWorldObjects<QSBElevator>();
-			QSBWorldSync.RemoveWorldObjects<QSBGeyser>();
-			QSBWorldSync.RemoveWorldObjects<QSBSector>();
-			QSBWorldSync.RemoveWorldObjects<IQSBQuantumObject>();
+			QSBWorldSync.RemoveWorldObjects<IWorldObjectTypeSubset>();
+			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
+			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
+			{
+				Destroy(platform);
+			}
+			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
+			{
+				Destroy(camera);
+			}
+			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
+			{
+				Destroy(streaming);
+			}
 		}
 	}
 }

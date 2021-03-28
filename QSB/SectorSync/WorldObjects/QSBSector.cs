@@ -1,4 +1,8 @@
-﻿using QSB.WorldSync;
+﻿using OWML.Common;
+using OWML.Utils;
+using QSB.Utility;
+using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.SectorSync.WorldObjects
@@ -30,14 +34,43 @@ namespace QSB.SectorSync.WorldObjects
 
 		public bool ShouldSyncTo()
 		{
+			if (AttachedObject == null)
+			{
+				DebugLog.ToConsole($"Warning - AttachedObject for sector id:{ObjectId} is null!", MessageType.Warning);
+				return false;
+			}
 			if (Type == Sector.Name.Ship)
 			{
 				return false;
 			}
-			if ((AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
-				&& !AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>().IsPlayerInside())
+			if (AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
 			{
-				return false;
+				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+				{
+					var shuttleController = AttachedObject.gameObject.GetComponentInParent<NomaiShuttleController>();
+					if (shuttleController == null)
+					{
+						DebugLog.ToConsole($"Warning - Expected to find a NomaiShuttleController for {AttachedObject.name}!", MessageType.Warning);
+						return false;
+					}
+					if (!shuttleController.IsPlayerInside())
+					{
+						return false;
+					}
+				}
+				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+				{
+					var shuttleController = Resources.FindObjectsOfTypeAll<EyeShuttleController>().First();
+					if (shuttleController == null)
+					{
+						DebugLog.ToConsole($"Warning - Expected to find a EyeShuttleController for {AttachedObject.name}!", MessageType.Warning);
+						return false;
+					}
+					if (!shuttleController.GetValue<bool>("_isPlayerInside"))
+					{
+						return false;
+					}
+				}
 			}
 			return true;
 		}

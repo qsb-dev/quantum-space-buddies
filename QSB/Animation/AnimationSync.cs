@@ -45,6 +45,9 @@ namespace QSB.Animation
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
+			Destroy(_anim);
+			Destroy(_netAnim);
+			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 			if (_playerController == null)
 			{
 				return;
@@ -52,8 +55,6 @@ namespace QSB.Animation
 			_playerController.OnJump -= OnJump;
 			_playerController.OnBecomeGrounded -= OnBecomeGrounded;
 			_playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
-
-			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 		}
 
 		private void OnUniverseSceneLoaded(OWScene obj) => LoadControllers();

@@ -15,6 +15,9 @@ namespace QSB.ItemSync.WorldObjects
 			return (itemType & acceptableType) == itemType;
 		}
 
+		public virtual bool IsSocketOccupied()
+			=> AttachedObject.IsSocketOccupied();
+
 		public virtual bool PlaceIntoSocket(IQSBOWItem item)
 			=> AttachedObject.PlaceIntoSocket((OWItem)(item as IWorldObject).ReturnObject());
 

@@ -19,8 +19,11 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			foreach (var shape in GetAttachedShapes())
 			{
-				shape.OnShapeActivated -= (Shape s) => OnEnable();
-				shape.OnShapeDeactivated -= (Shape s) => OnDisable();
+				shape.OnShapeActivated -= (Shape s)
+					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnEnable(s));
+
+				shape.OnShapeDeactivated -= (Shape s)
+					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 			}
 		}
 
@@ -32,10 +35,23 @@ namespace QSB.QuantumSync.WorldObjects
 				{
 					break;
 				}
-				shape.OnShapeActivated += (Shape s) => OnEnable();
-				shape.OnShapeDeactivated += (Shape s) => OnDisable();
+				// Firing next update to give time for shapes to actually be disabled
+
+				shape.OnShapeActivated += (Shape s)
+					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnEnable(s));
+
+				shape.OnShapeDeactivated += (Shape s)
+					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 			}
-			ControllingPlayer = 0u;
+			if (GetAttachedShapes().Any(x => !x.enabled || !x.active))
+			{
+				ControllingPlayer = 0u;
+				IsEnabled = false;
+			}
+			else
+			{
+				IsEnabled = true;
+			}
 		}
 
 		private List<Shape> GetAttachedShapes()
@@ -64,12 +80,8 @@ namespace QSB.QuantumSync.WorldObjects
 			return totalShapes;
 		}
 
-		private void OnEnable()
+		private void OnEnable(Shape s)
 		{
-			if (IsEnabled)
-			{
-				return;
-			}
 			IsEnabled = true;
 			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
 			{
@@ -80,14 +92,18 @@ namespace QSB.QuantumSync.WorldObjects
 				// controlled by another player, dont care that we activate it
 				return;
 			}
-			var id = QSBWorldSync.GetIdFromTypeSubset(this);
+			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
 
-		private void OnDisable()
+		private void OnDisable(Shape s)
 		{
 			if (!IsEnabled)
+			{
+				return;
+			}
+			if (GetAttachedShapes().Any(x => x.gameObject.activeInHierarchy))
 			{
 				return;
 			}
@@ -101,7 +117,7 @@ namespace QSB.QuantumSync.WorldObjects
 				// not being controlled by us, don't care if we leave area
 				return;
 			}
-			var id = QSBWorldSync.GetIdFromTypeSubset(this);
+			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
 		}

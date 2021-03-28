@@ -8,7 +8,7 @@ namespace QSB.ElevatorSync.Patches
 {
 	public class ElevatorPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		public static void StartLift(Elevator __instance)
 		{
