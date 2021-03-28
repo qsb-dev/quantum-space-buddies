@@ -8,6 +8,7 @@ namespace QSB.PoolSync.Patches
 
 		public override void DoPatches()
 		{
+			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("Awake", typeof(PoolPatches), nameof(ReturnFalse));
 			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("Update", typeof(PoolPatches), nameof(ReturnFalse));
 			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnSocketableRemoved", typeof(PoolPatches), nameof(ReturnFalse));
 			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnSocketableDonePlacing", typeof(PoolPatches), nameof(ReturnFalse));
@@ -21,6 +22,7 @@ namespace QSB.PoolSync.Patches
 
 		public override void DoUnpatches()
 		{
+			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("Awake");
 			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("Update");
 			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnSocketableRemoved");
 			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnSocketableDonePlacing");

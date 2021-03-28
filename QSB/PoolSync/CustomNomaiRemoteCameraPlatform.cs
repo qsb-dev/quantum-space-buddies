@@ -358,6 +358,10 @@ namespace QSB.PoolSync
 
 		private void OnSocketableRemoved(OWItem socketable)
 		{
+			if (_wasLocalInBounds)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+			}
 			if (_slavePlatform == null)
 			{
 				return;
@@ -560,6 +564,7 @@ namespace QSB.PoolSync
 		private void OnLeaveBounds()
 		{
 			DisconnectCamera();
+			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
 			if (_anyoneStillOnPlatform)
 			{
 				return;
@@ -642,6 +647,9 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
+			_hologramGroup.SetActive(true);
+
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			if (_playerToHologram.ContainsKey(player))
 			{
@@ -669,7 +677,6 @@ namespace QSB.PoolSync
 
 			_playerToHologram.Add(player, hologramCopy.gameObject);
 
-			_hologramGroup.SetActive(true);
 			hologramCopy.gameObject.SetActive(true);
 		}
 
@@ -682,12 +689,11 @@ namespace QSB.PoolSync
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			if (!_playerToHologram.ContainsKey(player))
 			{
-				DebugLog.ToConsole($"Error - Trying to remove remote player {playerId} that isn't in _playerToHologram!", MessageType.Error);
 				return;
 			}
 			_playerToHologram[player].SetActive(false);
 
-			if (!_anyoneStillOnPlatform)
+			if (!_platformActive)
 			{
 				_hologramGroup.SetActive(false);
 			}
