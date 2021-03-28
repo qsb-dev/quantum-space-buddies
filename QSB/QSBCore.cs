@@ -8,6 +8,7 @@ using QSB.ItemSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
+using QSB.PoolSync;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
@@ -104,6 +105,7 @@ namespace QSB
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<ItemManager>();
 			gameObject.AddComponent<StatueManager>();
+			gameObject.AddComponent<PoolManager>();
 
 			DebugBoxManager.Init();
 

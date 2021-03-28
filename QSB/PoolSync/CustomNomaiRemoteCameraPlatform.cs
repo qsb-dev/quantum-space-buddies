@@ -92,6 +92,7 @@ namespace QSB.PoolSync
 			_hologramGroup.SetActive(false);
 			UpdateRendererFade();
 			_transitionStone.SetActive(false);
+			_hologramGroup.transform.SetParent(null);
 		}
 
 		private void Start()
@@ -258,7 +259,7 @@ namespace QSB.PoolSync
 				return;
 			}
 			UpdatePoolRenderer();
-			_slavePlatform._poolT = target;
+			_slavePlatform._poolT = _poolT;
 			_slavePlatform.UpdatePoolRenderer();
 		}
 
@@ -338,11 +339,6 @@ namespace QSB.PoolSync
 					DebugLog.ToConsole($"Error - Gameobject for {item.Key.PlayerId} in _playerToHologram is null!", MessageType.Error);
 					continue;
 				}
-				if (!item.Value.activeInHierarchy)
-				{
-					DebugLog.ToConsole($"Error - Gameobject for {item.Key.PlayerId} is inactive!", MessageType.Error);
-					continue;
-				}
 				var hologram = item.Value.transform.GetChild(0);
 				hologram.position = TransformPoint(item.Key.Body.transform.position, this, _slavePlatform);
 				hologram.rotation = TransformRotation(item.Key.Body.transform.rotation, this, _slavePlatform);
@@ -400,7 +396,7 @@ namespace QSB.PoolSync
 			{
 				Debug.LogError("Shared stone with Remote Camera ID: " + _sharedStone.GetRemoteCameraID() + " has no registered camera platform!");
 			}
-			if (_slavePlatform == this || !_slavePlatform.gameObject.activeInHierarchy)
+			if (_slavePlatform == this || !_slavePlatform.gameObject.activeSelf)
 			{
 				_sharedStone = null;
 				_slavePlatform = null;
@@ -633,7 +629,7 @@ namespace QSB.PoolSync
 				return;
 			}
 			var hologram = _playerToHologram.First(x => x.Key == player).Value;
-			if (hologram.activeInHierarchy)
+			if (hologram.activeSelf)
 			{
 				OnRemotePlayerExit(id);
 			}
@@ -690,6 +686,11 @@ namespace QSB.PoolSync
 				return;
 			}
 			_playerToHologram[player].SetActive(false);
+
+			if (!_anyoneStillOnPlatform)
+			{
+				_hologramGroup.SetActive(false);
+			}
 		}
 
 		public enum CameraState
