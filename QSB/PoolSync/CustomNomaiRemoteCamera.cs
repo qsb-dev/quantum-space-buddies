@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QSB.ItemSync
+namespace QSB.PoolSync
 {
 	internal class CustomNomaiRemoteCamera : MonoBehaviour
 	{

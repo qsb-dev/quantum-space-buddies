@@ -7,6 +7,7 @@ using QSB.Instruments;
 using QSB.ItemSync;
 using QSB.Patches;
 using QSB.Player;
+using QSB.PoolSync;
 using QSB.TimeSync;
 using QSB.TransformSync;
 using QSB.Utility;

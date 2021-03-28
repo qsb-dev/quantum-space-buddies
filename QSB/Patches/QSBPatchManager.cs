@@ -7,6 +7,7 @@ using QSB.GeyserSync.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
+using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
@@ -43,7 +44,8 @@ namespace QSB.Patches
 				new QuantumPatches(),
 				new ItemPatches(),
 				new StatuePatches(),
-				new GeyserPatches()
+				new GeyserPatches(),
+				new PoolPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

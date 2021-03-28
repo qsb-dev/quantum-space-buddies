@@ -1,6 +1,6 @@
 ﻿using OWML.Utils;
 
-namespace QSB.ItemSync
+namespace QSB.PoolSync
 {
 	internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 	{
