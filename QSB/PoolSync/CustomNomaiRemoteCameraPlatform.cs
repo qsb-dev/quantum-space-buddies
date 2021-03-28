@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.ItemSync
+namespace QSB.PoolSync
 {
 	internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 	{
@@ -92,6 +92,7 @@ namespace QSB.ItemSync
 			_hologramGroup.SetActive(false);
 			UpdateRendererFade();
 			_transitionStone.SetActive(false);
+			_hologramGroup.transform.SetParent(null);
 		}
 
 		private void Start()
@@ -258,7 +259,7 @@ namespace QSB.ItemSync
 				return;
 			}
 			UpdatePoolRenderer();
-			_slavePlatform._poolT = target;
+			_slavePlatform._poolT = _poolT;
 			_slavePlatform.UpdatePoolRenderer();
 		}
 
@@ -338,11 +339,6 @@ namespace QSB.ItemSync
 					DebugLog.ToConsole($"Error - Gameobject for {item.Key.PlayerId} in _playerToHologram is null!", MessageType.Error);
 					continue;
 				}
-				if (!item.Value.activeInHierarchy)
-				{
-					DebugLog.ToConsole($"Error - Gameobject for {item.Key.PlayerId} is inactive!", MessageType.Error);
-					continue;
-				}
 				var hologram = item.Value.transform.GetChild(0);
 				hologram.position = TransformPoint(item.Key.Body.transform.position, this, _slavePlatform);
 				hologram.rotation = TransformRotation(item.Key.Body.transform.rotation, this, _slavePlatform);
@@ -362,6 +358,10 @@ namespace QSB.ItemSync
 
 		private void OnSocketableRemoved(OWItem socketable)
 		{
+			if (_wasLocalInBounds)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+			}
 			if (_slavePlatform == null)
 			{
 				return;
@@ -400,7 +400,7 @@ namespace QSB.ItemSync
 			{
 				Debug.LogError("Shared stone with Remote Camera ID: " + _sharedStone.GetRemoteCameraID() + " has no registered camera platform!");
 			}
-			if (_slavePlatform == this || !_slavePlatform.gameObject.activeInHierarchy)
+			if (_slavePlatform == this || !_slavePlatform.gameObject.activeSelf)
 			{
 				_sharedStone = null;
 				_slavePlatform = null;
@@ -564,6 +564,7 @@ namespace QSB.ItemSync
 		private void OnLeaveBounds()
 		{
 			DisconnectCamera();
+			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
 			if (_anyoneStillOnPlatform)
 			{
 				return;
@@ -633,7 +634,7 @@ namespace QSB.ItemSync
 				return;
 			}
 			var hologram = _playerToHologram.First(x => x.Key == player).Value;
-			if (hologram.activeInHierarchy)
+			if (hologram.activeSelf)
 			{
 				OnRemotePlayerExit(id);
 			}
@@ -646,6 +647,9 @@ namespace QSB.ItemSync
 			{
 				return;
 			}
+
+			_hologramGroup.SetActive(true);
+
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			if (_playerToHologram.ContainsKey(player))
 			{
@@ -673,7 +677,6 @@ namespace QSB.ItemSync
 
 			_playerToHologram.Add(player, hologramCopy.gameObject);
 
-			_hologramGroup.SetActive(true);
 			hologramCopy.gameObject.SetActive(true);
 		}
 
@@ -686,10 +689,14 @@ namespace QSB.ItemSync
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			if (!_playerToHologram.ContainsKey(player))
 			{
-				DebugLog.ToConsole($"Error - Trying to remove remote player {playerId} that isn't in _playerToHologram!", MessageType.Error);
 				return;
 			}
 			_playerToHologram[player].SetActive(false);
+
+			if (!_platformActive)
+			{
+				_hologramGroup.SetActive(false);
+			}
 		}
 
 		public enum CameraState
