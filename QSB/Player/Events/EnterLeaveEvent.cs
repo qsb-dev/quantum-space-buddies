@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.ItemSync;
+using QSB.PoolSync;
 using QSB.Utility;
 
 namespace QSB.Player.Events
