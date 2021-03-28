@@ -5,7 +5,6 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,32 +18,33 @@ namespace QSB.QuantumSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPrefix<SocketedQuantumObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(Socketed_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<SocketedQuantumObject>("MoveToSocket", typeof(QuantumPatches), nameof(Socketed_MoveToSocket));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(Shuffle_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(MultiState_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<QuantumState>("SetVisible", typeof(QuantumPatches), nameof(QuantumState_SetVisible));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("IsPlayerInDarkness", typeof(QuantumPatches), nameof(Shrine_IsPlayerInDarkness));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("ChangeQuantumState", typeof(QuantumPatches), nameof(Shrine_ChangeQuantumState));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnEntry", typeof(QuantumPatches), nameof(Shrine_OnEntry));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<QuantumObject>("IsLockedByPlayerContact", typeof(QuantumPatches), nameof(Object_IsLockedByPlayerContact));
+			QSBCore.HarmonyHelper.AddPrefix<SocketedQuantumObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(Socketed_ChangeQuantumState));
+			QSBCore.HarmonyHelper.AddPostfix<SocketedQuantumObject>("MoveToSocket", typeof(QuantumPatches), nameof(Socketed_MoveToSocket));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumShuffleObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(Shuffle_ChangeQuantumState));
+			QSBCore.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("ChangeQuantumState", typeof(QuantumPatches), nameof(MultiState_ChangeQuantumState));
+			QSBCore.HarmonyHelper.AddPostfix<QuantumState>("SetVisible", typeof(QuantumPatches), nameof(QuantumState_SetVisible));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumShrine>("IsPlayerInDarkness", typeof(QuantumPatches), nameof(Shrine_IsPlayerInDarkness));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumShrine>("ChangeQuantumState", typeof(QuantumPatches), nameof(Shrine_ChangeQuantumState));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumShrine>("OnEntry", typeof(QuantumPatches), nameof(Shrine_OnEntry));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumShrine>("OnExit", typeof(QuantumPatches), nameof(Shrine_OnExit));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumMoon>("CheckPlayerFogProximity", typeof(QuantumPatches), nameof(Moon_CheckPlayerFogProximity));
+			QSBCore.HarmonyHelper.AddPrefix<QuantumObject>("IsLockedByPlayerContact", typeof(QuantumPatches), nameof(Object_IsLockedByPlayerContact));
+			QSBCore.HarmonyHelper.AddPrefix<MultiStateQuantumObject>("Start", typeof(QuantumPatches), nameof(MultiState_Start));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<SocketedQuantumObject>("ChangeQuantumState");
-			QSBCore.Helper.HarmonyHelper.Unpatch<SocketedQuantumObject>("MoveToSocket");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShuffleObject>("ChangeQuantumState");
-			QSBCore.Helper.HarmonyHelper.Unpatch<MultiStateQuantumObject>("ChangeQuantumState");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumState>("SetVisible");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("IsPlayerInDarkness");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("ChangeQuantumState");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnEntry");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumShrine>("OnExit");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
-			QSBCore.Helper.HarmonyHelper.Unpatch<QuantumObject>("IsLockedByPlayerContact");
+			QSBCore.HarmonyHelper.Unpatch<SocketedQuantumObject>("ChangeQuantumState");
+			QSBCore.HarmonyHelper.Unpatch<SocketedQuantumObject>("MoveToSocket");
+			QSBCore.HarmonyHelper.Unpatch<QuantumShuffleObject>("ChangeQuantumState");
+			QSBCore.HarmonyHelper.Unpatch<MultiStateQuantumObject>("ChangeQuantumState");
+			QSBCore.HarmonyHelper.Unpatch<QuantumState>("SetVisible");
+			QSBCore.HarmonyHelper.Unpatch<QuantumShrine>("IsPlayerInDarkness");
+			QSBCore.HarmonyHelper.Unpatch<QuantumShrine>("ChangeQuantumState");
+			QSBCore.HarmonyHelper.Unpatch<QuantumShrine>("OnEntry");
+			QSBCore.HarmonyHelper.Unpatch<QuantumShrine>("OnExit");
+			QSBCore.HarmonyHelper.Unpatch<QuantumMoon>("CheckPlayerFogProximity");
+			QSBCore.HarmonyHelper.Unpatch<QuantumObject>("IsLockedByPlayerContact");
 		}
 
 		public static bool Object_IsLockedByPlayerContact(ref bool __result, QuantumObject __instance)
@@ -63,7 +63,7 @@ namespace QSB.QuantumSync.Patches
 			ref QuantumSocket ____recentlyObscuredSocket,
 			QuantumSocket ____occupiedSocket)
 		{
-			var socketedWorldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+			var socketedWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
 			if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return false;
@@ -165,8 +165,9 @@ namespace QSB.QuantumSync.Patches
 				DebugLog.ToConsole($"Error - Trying to move {__instance.name} to a null socket!", MessageType.Error);
 				return;
 			}
-			var objectWorldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
-			var socketWorldObject = QSBWorldSync.GetWorldObject<QSBQuantumSocket, QuantumSocket>(socket);
+			var objectWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+			var socketWorldObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumSocket, QuantumSocket>(socket);
+
 			if (objectWorldObject == null)
 			{
 				DebugLog.ToConsole($"Worldobject is null for {__instance.name}!");
@@ -192,7 +193,7 @@ namespace QSB.QuantumSync.Patches
 			ref Transform[] ____shuffledObjects,
 			ref bool __result)
 		{
-			var shuffleWorldObject = QSBWorldSync.GetWorldObject<QSBQuantumShuffleObject, QuantumShuffleObject>(__instance);
+			var shuffleWorldObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>(__instance);
 			if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return false;
@@ -211,7 +212,6 @@ namespace QSB.QuantumSync.Patches
 			{
 				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
 			}
-			//DebugLog.DebugWrite($"{__instance.name} shuffled.");
 			QSBEventManager.FireEvent(
 					EventNames.QSBQuantumShuffle,
 					shuffleWorldObject.ObjectId,
@@ -220,9 +220,41 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
+		public static bool MultiState_Start(MultiStateQuantumObject __instance, Sector ____sector, bool ____collapseOnStart)
+		{
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
+			if (qsbObj.ControllingPlayer == 0)
+			{
+				return true;
+			}
+
+			foreach (var state in qsbObj.QuantumStates)
+			{
+				if (!state.IsMeantToBeEnabled)
+				{
+					state.SetVisible(false);
+				}
+			}
+
+			if (____sector == null)
+			{
+				__instance.GetType().GetMethod("CheckEnabled", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+			}
+			if (____collapseOnStart)
+			{
+				__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+			}
+
+			return false;
+		}
+
 		public static bool MultiState_ChangeQuantumState(MultiStateQuantumObject __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
+			if (qsbObj.ControllingPlayer == 0 && qsbObj.CurrentState == -1)
+			{
+				return true;
+			}
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}
@@ -234,17 +266,17 @@ namespace QSB.QuantumSync.Patches
 				return;
 			}
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
-			var owner = allMultiStates.First(x => x.QuantumStates.Contains(__instance));
-			//DebugLog.DebugWrite($"{owner.AttachedObject.name} controller is {owner.ControllingPlayer}");
+			var stateObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(__instance);
+			var owner = allMultiStates.First(x => x.QuantumStates.Contains(stateObject));
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;
 			}
-			//DebugLog.DebugWrite($"{owner.AttachedObject.name} to quantum state {Array.IndexOf(owner.QuantumStates, __instance)}");
+			var stateIndex = owner.QuantumStates.IndexOf(stateObject);
 			QSBEventManager.FireEvent(
 					EventNames.QSBMultiStateChange,
 					owner.ObjectId,
-					Array.IndexOf(owner.QuantumStates, __instance));
+					stateIndex);
 		}
 
 		public static bool Shrine_IsPlayerInDarkness(ref bool __result, Light[] ____lamps, float ____fadeFraction, bool ____isProbeInside, NomaiGateway ____gate)
@@ -259,14 +291,33 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
-			if (playersInMoon.Any(x => !x.IsInShrine)
-				|| playersInMoon.Any(x => x.FlashLight != null && x.FlashLight.FlashlightOn)
-				|| (QSBPlayerManager.LocalPlayer.IsInShrine && PlayerState.IsFlashlightOn())
-				|| playersInMoon.Count() == 0)
+
+			if (playersInMoon.Any(player => !player.IsInShrine))
 			{
 				__result = false;
 				return false;
 			}
+
+			if (playersInMoon.Any(player => player.FlashLight != null && player.FlashLight.FlashlightOn))
+			{
+				__result = false;
+				return false;
+			}
+
+			if (playersInMoon.Count() == 0)
+			{
+				__result = false;
+				return false;
+			}
+
+			if (QSBPlayerManager.LocalPlayer != null
+				&& QSBPlayerManager.LocalPlayer.IsInShrine
+				&& PlayerState.IsFlashlightOn())
+			{
+				__result = false;
+				return false;
+			}
+
 			// TODO : make this *really* check for all players - check other probes and other jetpacks!
 			__result = ____gate.GetOpenFraction() == 0f
 				&& !____isProbeInside
@@ -276,7 +327,7 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool Shrine_ChangeQuantumState(QuantumShrine __instance)
 		{
-			var shrineWorldObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+			var shrineWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
 			var isInControl = shrineWorldObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}

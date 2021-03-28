@@ -9,27 +9,27 @@ namespace QSB.DeathSync.Patches
 {
 	public class DeathPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		public override void DoPatches()
 		{
-			QSBCore.Helper.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
-			QSBCore.Helper.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
-			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(DeathPatches), nameof(ReturnNull));
-			QSBCore.Helper.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(DeathPatches), nameof(ReturnNull));
-			QSBCore.Helper.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
-			QSBCore.Helper.HarmonyHelper.AddPostfix<ShipDamageController>("Awake", typeof(DeathPatches), nameof(DamageController_Exploded));
-			QSBCore.Helper.HarmonyHelper.AddPrefix<DestructionVolume>("VanishShip", typeof(DeathPatches), nameof(DestructionVolume_VanishShip));
+			QSBCore.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
+			QSBCore.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
+			QSBCore.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(DeathPatches), nameof(ReturnNull));
+			QSBCore.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(DeathPatches), nameof(ReturnNull));
+			QSBCore.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
+			QSBCore.HarmonyHelper.AddPostfix<ShipDamageController>("Awake", typeof(DeathPatches), nameof(DamageController_Exploded));
+			QSBCore.HarmonyHelper.AddPrefix<DestructionVolume>("VanishShip", typeof(DeathPatches), nameof(DestructionVolume_VanishShip));
 		}
 
 		public override void DoUnpatches()
 		{
-			QSBCore.Helper.HarmonyHelper.Unpatch<DeathManager>("KillPlayer");
-			QSBCore.Helper.HarmonyHelper.Unpatch<ShipDetachableLeg>("Detach");
-			QSBCore.Helper.HarmonyHelper.Unpatch<ShipDetachableModule>("Detach");
-			QSBCore.Helper.HarmonyHelper.Unpatch<ShipEjectionSystem>("OnPressInteract");
-			QSBCore.Helper.HarmonyHelper.Unpatch<ShipDamageController>("Awake");
-			QSBCore.Helper.HarmonyHelper.Unpatch<DestructionVolume>("VanishShip");
+			QSBCore.HarmonyHelper.Unpatch<DeathManager>("KillPlayer");
+			QSBCore.HarmonyHelper.Unpatch<ShipDetachableLeg>("Detach");
+			QSBCore.HarmonyHelper.Unpatch<ShipDetachableModule>("Detach");
+			QSBCore.HarmonyHelper.Unpatch<ShipEjectionSystem>("OnPressInteract");
+			QSBCore.HarmonyHelper.Unpatch<ShipDamageController>("Awake");
+			QSBCore.HarmonyHelper.Unpatch<DestructionVolume>("VanishShip");
 		}
 
 		public static bool PreFinishDeathSequence(DeathType deathType)

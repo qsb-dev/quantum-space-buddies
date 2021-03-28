@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
 using QSB.QuantumSync;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Player
@@ -11,6 +12,10 @@ namespace QSB.Player
 
 		private void Update()
 		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				return;
+			}
 			var controller = Locator.GetPlayerController();
 			if (controller == null)
 			{
@@ -20,7 +25,7 @@ namespace QSB.Player
 			if (_previousCollidingQuantumObject != collidingQuantumObject)
 			{
 				var objectIndex = (collidingQuantumObject != null)
-					? QuantumManager.GetId(QuantumManager.GetObject(collidingQuantumObject))
+					? QSBWorldSync.GetIdFromTypeSubset(QuantumManager.GetObject(collidingQuantumObject))
 					: -1;
 
 				QSBEventManager.FireEvent(

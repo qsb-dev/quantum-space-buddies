@@ -1,11 +1,10 @@
 ﻿using QSB.Events;
-using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 
 namespace QSB.DeathSync.Events
 {
-	public class PlayerDeathEvent : QSBEvent<EnumMessage<DeathType>>
+	public class PlayerDeathEvent : QSBEvent<PlayerDeathMessage>
 	{
 		public override EventType Type => EventType.PlayerDeath;
 
@@ -14,17 +13,17 @@ namespace QSB.DeathSync.Events
 
 		private void Handler(DeathType type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<DeathType> CreateMessage(DeathType type) => new EnumMessage<DeathType>
+		private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
 		{
 			AboutId = LocalPlayerId,
-			Value = type
+			DeathType = type,
+			NecronomiconIndex = Necronomicon.GetRandomIndex(type)
 		};
 
-		public override void OnReceiveRemote(bool server, EnumMessage<DeathType> message)
+		public override void OnReceiveRemote(bool server, PlayerDeathMessage message)
 		{
 			var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
-			// TODO : this is random per client! change this event so it sends the message index and the deathtype?
-			var deathMessage = Necronomicon.GetPhrase(message.Value);
+			var deathMessage = Necronomicon.GetPhrase(message.DeathType, message.NecronomiconIndex);
 			DebugLog.ToAll(string.Format(deathMessage, playerName));
 		}
 	}

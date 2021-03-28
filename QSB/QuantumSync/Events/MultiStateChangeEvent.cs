@@ -1,5 +1,7 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events
@@ -26,7 +28,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
+			var qsbObj = QSBWorldSync.GetWorldFromId<QSBMultiStateQuantumObject>(message.ObjectId);
 			qsbObj.DebugBoxText.text = message.StateIndex.ToString();
 		}
 
@@ -36,7 +38,12 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
-			var qsbObj = QSBWorldSync.GetWorldObject<QSBMultiStateQuantumObject>(message.ObjectId);
+			var qsbObj = QSBWorldSync.GetWorldFromId<QSBMultiStateQuantumObject>(message.ObjectId);
+			if (qsbObj.ControllingPlayer != message.FromId)
+			{
+				DebugLog.ToConsole($"Error - Got MultiStateChangeEvent for {qsbObj.Name} from {message.FromId}, but it's currently controlled by {qsbObj.ControllingPlayer}!", MessageType.Error);
+				return;
+			}
 			qsbObj.ChangeState(message.StateIndex);
 		}
 	}

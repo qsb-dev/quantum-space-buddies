@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Player;
+using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events
 {
@@ -26,7 +27,7 @@ namespace QSB.QuantumSync.Events
 				return false;
 			}
 
-			var obj = QuantumManager.GetObject(message.ObjectId);
+			var obj = QSBWorldSync.GetWorldFromId<IQSBQuantumObject>(message.ObjectId);
 
 			// Deciding if to change the object's owner
 			//		  Message
@@ -42,13 +43,13 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveLocal(bool server, QuantumAuthorityMessage message)
 		{
-			var obj = QuantumManager.GetObject(message.ObjectId);
+			var obj = QSBWorldSync.GetWorldFromId<IQSBQuantumObject>(message.ObjectId);
 			obj.ControllingPlayer = message.AuthorityOwner;
 		}
 
 		public override void OnReceiveRemote(bool server, QuantumAuthorityMessage message)
 		{
-			var obj = QuantumManager.GetObject(message.ObjectId);
+			var obj = QSBWorldSync.GetWorldFromId<IQSBQuantumObject>(message.ObjectId);
 			obj.ControllingPlayer = message.AuthorityOwner;
 			if (obj.ControllingPlayer == 0 && obj.IsEnabled)
 			{

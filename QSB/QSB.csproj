@@ -116,6 +116,7 @@
     <Compile Include="ConversationSync\Events\ConversationStartEndMessage.cs" />
     <Compile Include="ConversationSync\ConversationType.cs" />
     <Compile Include="ConversationSync\ConversationManager.cs" />
+    <Compile Include="DeathSync\Events\PlayerDeathMessage.cs" />
     <Compile Include="DeathSync\Patches\DeathPatches.cs" />
     <Compile Include="ElevatorSync\WorldObjects\QSBElevator.cs" />
     <Compile Include="ElevatorSync\Events\ElevatorEvent.cs" />
@@ -128,10 +129,34 @@
     <Compile Include="FrequencySync\Events\IdentifyFrequencyEvent.cs" />
     <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
     <Compile Include="FrequencySync\Patches\FrequencyPatches.cs" />
+    <Compile Include="GeyserSync\Patches\GeyserPatches.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="ItemSync\CustomNomaiRemoteCameraPlatform.cs" />
+    <Compile Include="ItemSync\CustomNomaiRemoteCameraStreaming.cs" />
+    <Compile Include="ItemSync\Events\DropItemEvent.cs" />
+    <Compile Include="ItemSync\Events\DropItemMessage.cs" />
+    <Compile Include="ItemSync\Events\MoveToCarryEvent.cs" />
+    <Compile Include="ItemSync\Events\SocketItemEvent.cs" />
+    <Compile Include="ItemSync\Events\SocketItemMessage.cs" />
+    <Compile Include="ItemSync\ItemManager.cs" />
+    <Compile Include="ItemSync\Patches\ItemPatches.cs" />
+    <Compile Include="ItemSync\SocketEventType.cs" />
+    <Compile Include="ItemSync\CustomNomaiRemoteCamera.cs" />
+    <Compile Include="ItemSync\WorldObjects\IQSBOWItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\IQSBOWItemSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStone.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBNomaiConversationStoneSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBOWItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBOWItemSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBScrollItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBScrollSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBSharedStone.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBSharedStoneSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBWarpCoreItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\QSBWarpCoreSocket.cs" />
     <Compile Include="LogSync\Events\RevealFactEvent.cs" />
     <Compile Include="LogSync\Events\RevealFactMessage.cs" />
     <Compile Include="LogSync\Patches\LogPatches.cs" />
@@ -144,8 +169,11 @@
     <Compile Include="OrbSync\Events\OrbUserEvent.cs" />
     <Compile Include="OrbSync\WorldObjects\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
+    <Compile Include="Player\Events\EnterLeaveMessage.cs" />
     <Compile Include="Player\Events\PlayerEntangledEvent.cs" />
+    <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
+    <Compile Include="Player\KickReason.cs" />
     <Compile Include="Player\PlayerEntanglementWatcher.cs" />
     <Compile Include="Player\PlayerMapMarker.cs" />
     <Compile Include="Player\PlayerSyncObject.cs" />
@@ -154,8 +182,8 @@
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
     <Compile Include="QSBSceneManager.cs" />
-    <Compile Include="QuantumSync\EnterLeaveType.cs" />
-    <Compile Include="QuantumSync\Events\EnterLeaveEvent.cs" />
+    <Compile Include="Player\EnterLeaveType.cs" />
+    <Compile Include="Player\Events\EnterLeaveEvent.cs" />
     <Compile Include="QuantumSync\Events\MoonStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\MoonStateChangeMessage.cs" />
     <Compile Include="QuantumSync\Events\QuantumAuthorityEvent.cs" />
@@ -169,15 +197,22 @@
     <Compile Include="QuantumSync\Events\SocketStateChangeEvent.cs" />
     <Compile Include="QuantumSync\Events\SocketStateChangeMessage.cs" />
     <Compile Include="QuantumSync\Patches\QuantumPatches.cs" />
+    <Compile Include="QuantumSync\WorldObjects\QSBEyeProxyQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBMultiStateQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumMoon.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumShuffleObject.cs" />
+    <Compile Include="QuantumSync\WorldObjects\QSBQuantumState.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBSocketedQuantumObject.cs" />
     <Compile Include="QuantumSync\WorldObjects\QSBQuantumSocket.cs" />
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
+    <Compile Include="SectorSync\FakeSector.cs" />
+    <Compile Include="StatueSync\Events\StartStatueEvent.cs" />
+    <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
+    <Compile Include="StatueSync\Patches\StatuePatches.cs" />
+    <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
@@ -208,13 +243,16 @@
     <Compile Include="Player\Events\PlayerJoinMessage.cs" />
     <Compile Include="Messaging\ToggleMessage.cs" />
     <Compile Include="SectorSync\WorldObjects\QSBSector.cs" />
-    <Compile Include="SectorSync\QSBSectorManager.cs" />
+    <Compile Include="SectorSync\SectorSync.cs" />
     <Compile Include="TransformSync\TransformSync.cs" />
+    <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\GlobalMessenger4Args.cs" />
+    <Compile Include="Utility\GlobalMessenger5Args.cs" />
+    <Compile Include="Utility\GlobalMessenger6Args.cs" />
     <Compile Include="Utility\IRepeating.cs" />
-    <Compile Include="Utility\OnEnableDisableTracker.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Constants.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawers\CubeDrawer.cs" />
     <Compile Include="Utility\Popcron.Gizmos\Drawer.cs" />
@@ -254,7 +292,7 @@
     <Compile Include="Utility\QuaternionHelper.cs" />
     <Compile Include="TimeSync\PreserveTimeScale.cs" />
     <Compile Include="TransformSync\ShipTransformSync.cs" />
-    <Compile Include="SectorSync\SectorSync.cs" />
+    <Compile Include="SectorSync\QSBSectorManager.cs" />
     <Compile Include="TimeSync\Events\ServerTimeMessage.cs" />
     <Compile Include="TimeSync\WakeUpSync.cs" />
     <Compile Include="QSBNetworkManager.cs" />
@@ -263,8 +301,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldSync\FactReveal.cs" />
     <Compile Include="WorldSync\IWorldObject.cs" />
+    <Compile Include="WorldSync\IWorldObjectTypeSubset.cs" />
     <Compile Include="WorldSync\QSBWorldSync.cs" />
     <Compile Include="WorldSync\WorldObject.cs" />
+    <Compile Include="WorldSync\WorldObjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json">
@@ -282,9 +322,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OWML">
-      <Version>1.1.7</Version>
+      <Version>1.1.8</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"

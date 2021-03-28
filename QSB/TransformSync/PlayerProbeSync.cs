@@ -15,6 +15,7 @@ namespace QSB.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
+			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
 			SetSocket(Player.CameraBody.transform);
@@ -40,7 +41,7 @@ namespace QSB.TransformSync
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
-			QSBCore.Helper.Events.Unity.RunWhen(
+			QSBCore.UnityEvents.RunWhen(
 				() => Player.ProbeLauncher != null,
 				() => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
 			Player.ProbeBody = body.gameObject;
@@ -48,7 +49,12 @@ namespace QSB.TransformSync
 			return body;
 		}
 
-		private void SetSocket(Transform socket) => _disabledSocket = socket;
+		private void SetSocket(Transform socket)
+		{
+			DebugLog.DebugWrite($"Set DisabledSocket of id:{PlayerId}.");
+			_disabledSocket = socket;
+		}
+
 
 		protected override void UpdateTransform()
 		{
@@ -60,7 +66,7 @@ namespace QSB.TransformSync
 			}
 			if (_disabledSocket == null)
 			{
-				DebugLog.ToConsole($"DisabledSocket is null for {AttachedNetId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
+				DebugLog.ToConsole($"DisabledSocket is null for {PlayerId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
 				return;
 			}
 			if (Player.GetState(State.ProbeActive) || ReferenceSector?.AttachedObject == null)

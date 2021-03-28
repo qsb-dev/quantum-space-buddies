@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Player;
-using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using System.Linq;
@@ -17,6 +16,7 @@ namespace QSB.TransformSync
 
 		public Transform SyncedTransform { get; private set; }
 		public QSBSector ReferenceSector { get; set; }
+		public SectorSync.SectorSync SectorSync { get; private set; }
 
 		private const float SmoothTime = 0.1f;
 		private const float DistanceLeeway = 5f;
@@ -28,11 +28,12 @@ namespace QSB.TransformSync
 
 		protected override void Start()
 		{
-			DebugLog.DebugWrite("start of " + GetType().Name);
 			base.Start();
 			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+
+			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
 
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -46,6 +47,10 @@ namespace QSB.TransformSync
 				Destroy(SyncedTransform.gameObject);
 			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			if (SectorSync != null)
+			{
+				Destroy(SectorSync);
+			}
 		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
@@ -54,7 +59,7 @@ namespace QSB.TransformSync
 		protected void Init()
 		{
 			SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
-			SetReferenceSector(QSBSectorManager.Instance.GetClosestSector(SyncedTransform));
+			SetReferenceSector(SectorSync.GetClosestSector(SyncedTransform));
 			_isInitialized = true;
 			_isVisible = true;
 		}
@@ -128,7 +133,7 @@ namespace QSB.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			if (sector == ReferenceSector || sector == null)
+			if (sector == ReferenceSector || sector == default(QSBSector))
 			{
 				return;
 			}

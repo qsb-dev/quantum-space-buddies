@@ -4,13 +4,16 @@ using OWML.Utils;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.ItemSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
+using QSB.StatueSync;
 using QSB.TimeSync;
+using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -44,6 +47,8 @@ namespace QSB
 	public class QSBCore : ModBehaviour
 	{
 		public static IModHelper Helper { get; private set; }
+		public static IHarmonyHelper HarmonyHelper => Helper.HarmonyHelper;
+		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
 		public static bool DebugMode { get; private set; }
@@ -55,6 +60,7 @@ namespace QSB
 		public static bool HasWokenUp { get; set; }
 		public static bool IsServer => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
+		public static string QSBVersion => Helper.Manifest.Version;
 		public static GameObject GameObjectInstance => _thisInstance.gameObject;
 
 		private static QSBCore _thisInstance;
@@ -81,7 +87,6 @@ namespace QSB
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
 
 			QSBPatchManager.Init();
-			QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QNetworkManagerHUD>();
@@ -97,6 +102,8 @@ namespace QSB
 			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
+			gameObject.AddComponent<ItemManager>();
+			gameObject.AddComponent<StatueManager>();
 
 			DebugBoxManager.Init();
 
@@ -119,10 +126,33 @@ namespace QSB
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
 			offset += _debugLineSpacing;
+			if (WakeUpSync.LocalInstance != null)
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}");
+				offset += _debugLineSpacing;
+			}
 
 			if (!HasWokenUp)
 			{
 				return;
+			}
+
+			var offset3 = 10f;
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current closest sector :");
+			offset3 += _debugLineSpacing;
+			var sector = PlayerTransformSync.LocalInstance.SectorSync.GetClosestSector(Locator.GetPlayerTransform());
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.AttachedObject.name} : {sector.IsFakeSector}");
+			offset3 += _debugLineSpacing;
+
+			var offset2 = 10f;
+			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
+			offset2 += _debugLineSpacing;
+			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
+			{
+				GUI.Label(new Rect(620, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}, {obj.ControllingPlayer}, {obj.IsEnabled}");
+				offset2 += _debugLineSpacing;
 			}
 
 			if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
@@ -143,15 +173,6 @@ namespace QSB
 				offset += _debugLineSpacing;
 			}
 
-			var offset2 = 10f;
-			GUI.Label(new Rect(440, offset2, 200f, 20f), $"Owned Objects :");
-			offset2 += _debugLineSpacing;
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().Where(x => x.ControllingPlayer == QSBPlayerManager.LocalPlayerId))
-			{
-				GUI.Label(new Rect(440, offset2, 200f, 20f), $"- {(obj as IWorldObject).Name}");
-				offset2 += _debugLineSpacing;
-			}
-
 			if (SocketedObjToDebug == -1)
 			{
 				return;
@@ -160,7 +181,7 @@ namespace QSB
 			// Used for diagnosing specific socketed objects.
 			// 110 = Cave Twin entanglement shard
 			// 342 = Timber Hearth museum shard
-			var socketedObject = QSBWorldSync.GetWorldObject<QSBSocketedQuantumObject>(SocketedObjToDebug);
+			var socketedObject = QSBWorldSync.GetWorldFromId<QSBSocketedQuantumObject>(SocketedObjToDebug);
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Controller : {socketedObject.ControllingPlayer}");
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Illuminated : {socketedObject.AttachedObject.IsIlluminated()}");

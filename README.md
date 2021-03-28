@@ -34,7 +34,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - [Playing as a client](#playing-as-a-client)
 - [Playing as a host](#playing-as-a-host)
 - [Development Setup](#development-setup)
-- [Authors](#authors)
+- [Authors and Special Thanks](#authors-and-special-thanks)
 - [Help / Discuss development / Whatever](#help--discuss-development--whatever)
 
 <!-- /TOC -->
@@ -44,10 +44,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ### Requirements
 - Latest version of OWML.
 - Latest version of Mod Manager. (If using)
-- Latest version of Outer Wilds. (Epic version preferred, as Steam version is untestable.)
+- Latest version of Outer Wilds. (Epic version preferred, as Steam version is untestable. **We cannot guarantee QSB, or OWML, will work on cracked/pirated versions of Outer Wilds. Do not come asking us for help when using pirated versions.**)
 - Fast and stable internet connection, upload and download.
-- Should be able to run on minimum Outer Wilds system requirements.
-- Ability to port forward.
+- Above minimum Outer Wilds system requirements.
+- Knowledge on port forwarding and router/network configuration. We can be tech support for the mod, not your router or computer.
 
 ### Compatibility with other mods
 TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
@@ -68,11 +68,13 @@ QSB does not operate on a strict server-client relationship. Each player's game 
 - Ship log
 - Discovering frequencies / signals
 - Nomai text (Spirals + Computers)
+- Picking up/dropping/socketing items
 
 QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
 - Adding dialogue boxes above NPC and player heads, so other players can "listen in" on conversations.
 - Quantum objects check observations from all players and all player probes.
 - When dying from any cause other than the supernova, the ATP black hole, or the end of the game, the player respawns instantly at Timber Hearth.
+- While at least one player is in them, players can walk into and out of projection pools at will, and everything will work as expected.
 
 ### Why can't I connect to a server?
 #### For the host :
@@ -85,6 +87,8 @@ QSB also changes some mechanics of the base game, to better fit a multiplayer ex
 - Make sure you are putting the right address into the address box.
 
 If nothing here works, many people have got QSB working through programs such as Hamachi. Also make sure you are not running through a VPN while trying to connect.
+
+Note - _nebula has no idea how Hamachi works and has never used it, so don't ask them for help setting it up! As said before, we are tech support for the mod. If you cannot connect to someone, or someone cannot connect to you, **that is not QSB's fault.**
 
 ## Installation
 
@@ -103,20 +107,20 @@ If nothing here works, many people have got QSB working through programs such as
 
 ## Playing as a client
 
-- Run the game;
-- You'll see some new buttons on the top left;
-- Replace `localhost` with the server's public IP address;
-- Press "Connect". You can join servers in the menu or in-game, but it is recommended to join in the main menu.";
+- Run the game.
+- You'll see some new buttons on the top left.
+- Replace `localhost` with the server's public IP address.
+- Press "Connect". You can join servers in the menu or in-game, but it is recommended to join in the main menu.
 - If you see "Stop", you are connected.
 - If it stops at "Connecting to..." then you or the host has issues with their firewall/router/other.
 
 ## Playing as a host
 
-- Open port `7777` on your router.;
-- Run the game.;
-- You'll see some new buttons on the top left.;
-- Press "Host". This can be done in-game or in the menu, but it is recommened to start servers in the menu.;
-- If you now see the "Stop" button, you are hosting.;
+- Open port `7777` on your router.
+- Run the game.
+- You'll see some new buttons on the top left.
+- Press "Host". This can be done in-game or in the menu, but it is recommened to start servers in the menu.
+- If you now see the "Stop" button, you are hosting.
 - Give your external IPv4 address to your clients ([like what you see here](http://whatismyip.host/)).
 
 ## Development Setup
@@ -138,11 +142,14 @@ If for some reason none of this is working, you might have to set everything man
 - To fix the references, right*click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 - If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
 
-## Authors
+## Authors and Special Thanks
 
 - [\_nebula](https://github.com/misternebula) - Developer of v0.3 onwards
-- [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidyer
+- [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidy-er
 - [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1 - v0.2
+- Thanks to Logan Ver Hoef for help with the game code.
+- Thanks to all the people in the Outer Wilds Discord for helping in public tests.
+- Special thanks (and apologies) to all the people in the #modding channel, which I (_nebula) have been using as a virtual [rubber duck.](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
 
 ## Help / Discuss development / Whatever
 

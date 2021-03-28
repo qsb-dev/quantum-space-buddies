@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace QSB.DeathSync
 {
 	public static class Necronomicon
 	{
-		private static readonly Dictionary<DeathType, string[]> DeathDictionary = new Dictionary<DeathType, string[]>
+		private static readonly Dictionary<DeathType, string[]> Darkhold = new Dictionary<DeathType, string[]>
 		{
 			{ DeathType.Default, new[]
 			{
@@ -95,7 +94,10 @@ namespace QSB.DeathSync
 			} }
 		};
 
-		public static string GetPhrase(DeathType deathType) =>
-			DeathDictionary[deathType].OrderBy(x => Guid.NewGuid()).First();
+		public static string GetPhrase(DeathType deathType, int index) =>
+			Darkhold[deathType][index];
+
+		public static int GetRandomIndex(DeathType deathType)
+			=> new Random().Next(0, Darkhold[deathType].Length);
 	}
 }

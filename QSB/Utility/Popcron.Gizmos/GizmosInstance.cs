@@ -141,11 +141,9 @@ namespace Popcron
 
 		private void OnDisable() => Camera.onPostRender -= OnRendered;
 
-		private void Update()
-		{
+		private void Update() =>
 			//always render something
 			Gizmos.Line(default, default);
-		}
 
 		private void OnRendered(Camera camera)
 		{

@@ -57,6 +57,36 @@ namespace QSB.Tools
 			hold.transform.parent = cameraBody;
 			hold.transform.localPosition = Vector3.zero;
 			hold.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+
+			var item = new GameObject("ItemSocket");
+			item.transform.parent = cameraBody;
+			item.transform.localPosition = new Vector3(0.125f, -0.12f, 0.2f);
+			item.transform.localRotation = Quaternion.Euler(0, 0, 15);
+			item.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var scroll = new GameObject("ScrollSocket");
+			scroll.transform.parent = cameraBody;
+			scroll.transform.localPosition = new Vector3(0.148f, -0.0522f, 0.2465f);
+			scroll.transform.localRotation = Quaternion.Euler(236.054f, 56.46799f, -152.472f);
+			scroll.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var sharedStone = new GameObject("SharedStoneSocket");
+			sharedStone.transform.parent = cameraBody;
+			sharedStone.transform.localPosition = new Vector3(0.1375f, -0.119f, 0.2236f);
+			sharedStone.transform.localRotation = Quaternion.Euler(-23.053f, -0.263f, 6.704f);
+			sharedStone.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var warpCore = new GameObject("WarpCoreSocket");
+			warpCore.transform.parent = cameraBody;
+			warpCore.transform.localPosition = new Vector3(0.161f, -0.107f, 0.223f);
+			warpCore.transform.localRotation = Quaternion.Euler(179.949f, 82.59f, 163.697f);
+			warpCore.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var vesselCore = new GameObject("VesselCoreSocket");
+			vesselCore.transform.parent = cameraBody;
+			vesselCore.transform.localPosition = new Vector3(0.177f, -0.106f, 0.2f);
+			vesselCore.transform.localRotation = Quaternion.Euler(3.142f, 14.827f, 12.094f);
+			vesselCore.transform.localScale = new Vector3(0.27f, 0.27f, 0.27f);
 		}
 
 		private static void CreateFlashlight(Transform cameraBody)
@@ -137,7 +167,7 @@ namespace QSB.Tools
 			translatorRoot.transform.parent = cameraBody;
 			translatorRoot.transform.localPosition = Vector3.zero;
 			translatorRoot.transform.localScale = TranslatorScale;
-			QSBCore.Helper.Events.Unity.FireOnNextUpdate(() => translatorRoot.SetActive(true));
+			QSBCore.UnityEvents.FireOnNextUpdate(() => translatorRoot.SetActive(true));
 		}
 
 		private static void CreateProbeLauncher(Transform cameraBody)
@@ -168,6 +198,7 @@ namespace QSB.Tools
 			tool.Type = ToolType.ProbeLauncher;
 			tool.ToolGameObject = model;
 
+			// TODO : investigate why probe is wack
 			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = _playerToolsMaterial;
 			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = _lightbulbMaterial;
 			GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;

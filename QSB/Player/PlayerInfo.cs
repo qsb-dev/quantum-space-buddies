@@ -27,6 +27,11 @@ namespace QSB.Player
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
+		public Transform ItemSocket => CameraBody.transform.Find("ItemSocket");
+		public Transform ScrollSocket => CameraBody.transform.Find("ScrollSocket");
+		public Transform SharedStoneSocket => CameraBody.transform.Find("SharedStoneSocket");
+		public Transform WarpCoreSocket => CameraBody.transform.Find("WarpCoreSocket");
+		public Transform VesselCoreSocket => CameraBody.transform.Find("VesselCoreSocket");
 
 		// Conversation
 		public int CurrentDialogueID { get; set; }
@@ -72,7 +77,7 @@ namespace QSB.Player
 			Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
 			ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
 			Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
-			QSBCore.Helper.Events.Unity.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
 				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
 		}
 

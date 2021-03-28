@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 
 namespace QSB
@@ -22,6 +23,10 @@ namespace QSB
 		private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
 		{
 			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
+			if (QSBCore.IsInMultiplayer)
+			{
+				WorldObjectManager.Rebuild(newScene);
+			}
 			var universe = InUniverse(newScene);
 			OnSceneLoaded?.SafeInvoke(newScene, universe);
 			if (universe)

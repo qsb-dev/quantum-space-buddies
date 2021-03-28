@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using QuantumUNET;
+﻿using QuantumUNET;
 
 namespace QSB.Player
 {
@@ -10,10 +9,6 @@ namespace QSB.Player
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		protected virtual void Start() => QSBPlayerManager.AddSyncObject(this);
-		protected virtual void OnDestroy()
-		{
-			DebugLog.DebugWrite($"OnDestroy of {GetType().Name} for {PlayerId}");
-			QSBPlayerManager.RemoveSyncObject(this);
-		}
+		protected virtual void OnDestroy() => QSBPlayerManager.RemoveSyncObject(this);
 	}
 }

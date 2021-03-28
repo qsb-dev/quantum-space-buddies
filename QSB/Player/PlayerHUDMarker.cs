@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Player
 {
@@ -47,11 +48,14 @@ namespace QSB.Player
 		public void Remove()
 		{
 			// do N O T destroy the parent - it completely breaks the ENTIRE GAME
-			if (_canvasMarker?.gameObject != null)
+			if (_canvasMarker != null)
 			{
 				_canvasMarker.DestroyMarker();
 			}
-			Destroy(_markerTarget.gameObject);
+			if (_markerTarget != null)
+			{
+				Destroy(_markerTarget.gameObject);
+			}
 			Destroy(this);
 		}
 	}

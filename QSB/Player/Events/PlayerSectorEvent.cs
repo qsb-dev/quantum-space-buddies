@@ -28,7 +28,7 @@ namespace QSB.Player.Events
 			{
 				return;
 			}
-			var sector = QSBWorldSync.GetWorldObject<QSBSector>(message.ObjectId);
+			var sector = QSBWorldSync.GetWorldFromId<QSBSector>(message.ObjectId);
 
 			if (sector == null)
 			{
@@ -38,7 +38,7 @@ namespace QSB.Player.Events
 
 			var transformSync = QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId);
 
-			QSBCore.Helper.Events.Unity.RunWhen(() => transformSync?.SyncedTransform != null,
+			QSBCore.UnityEvents.RunWhen(() => transformSync?.SyncedTransform != null,
 				() => transformSync?.SetReferenceSector(sector));
 		}
 	}

@@ -1,10 +1,11 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB
 {
 	public class QSBInputManager : MonoBehaviour
 	{
+		// TODO : finish instruments - disabled for 0.7.0 release
+		/*
 		public static event Action ChertTaunt;
 		public static event Action EskerTaunt;
 		public static event Action RiebeckTaunt;
@@ -12,8 +13,6 @@ namespace QSB
 		public static event Action FeldsparTaunt;
 		public static event Action ExitTaunt;
 
-		// TODO : finish instruments - disabled for 0.7.0 release
-		/*
 		public void Update()
 		{
 			if (Input.GetKey(KeyCode.T))

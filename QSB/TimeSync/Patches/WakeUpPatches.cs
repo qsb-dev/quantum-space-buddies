@@ -16,8 +16,8 @@ namespace QSB.TimeSync.Patches
 			return false;
 		}
 
-		public override void DoPatches() => QSBCore.Helper.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
+		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
 
-		public override void DoUnpatches() => QSBCore.Helper.HarmonyHelper.Unpatch<PlayerCameraEffectController>("OnStartOfTimeLoop");
+		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<PlayerCameraEffectController>("OnStartOfTimeLoop");
 	}
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 
 namespace QSB.Player
 {
@@ -30,6 +31,8 @@ namespace QSB.Player
 				return localInstance.NetIdentity.NetId.Value;
 			}
 		}
+
+		public static Action<uint> OnRemovePlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
@@ -65,7 +68,7 @@ namespace QSB.Player
 		{
 			var trace = new StackTrace().GetFrame(1).GetMethod();
 			DebugLog.DebugWrite($"Remove Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
-			PlayerList.Remove(GetPlayer(id));
+			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
 		public static bool PlayerExists(uint id) =>
@@ -102,7 +105,9 @@ namespace QSB.Player
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
-			if (includeLocalCamera)
+			if (includeLocalCamera
+				&& LocalPlayer != default
+				&& LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
 			}
@@ -111,5 +116,25 @@ namespace QSB.Player
 
 		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
 			=> new Tuple<Flashlight, IEnumerable<QSBFlashlight>>(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+
+		public static void ShowAllPlayers()
+			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, true));
+
+		public static void HideAllPlayers()
+			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, false));
+
+		public static void ChangePlayerVisibility(uint playerId, bool visible)
+		{
+			var player = GetPlayer(playerId);
+			if (player.Body == null)
+			{
+				DebugLog.ToConsole($"Warning - Player {playerId} has a null body!", MessageType.Warning);
+				return;
+			}
+			foreach (var renderer in player.Body.GetComponentsInChildren<Renderer>())
+			{
+				renderer.enabled = visible;
+			}
+		}
 	}
 }

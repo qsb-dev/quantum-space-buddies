@@ -19,31 +19,61 @@ namespace QSB.WorldSync
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
 		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
+		private const BindingFlags Flags = BindingFlags.Instance
+			| BindingFlags.Static
+			| BindingFlags.Public
+			| BindingFlags.NonPublic
+			| BindingFlags.DeclaredOnly;
+		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();
 
-		public static TWorldObject GetWorldObject<TWorldObject>(int id)
-			where TWorldObject : IWorldObject
-			=> GetWorldObjects<TWorldObject>().FirstOrDefault(x => x.ObjectId == id);
+		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
+		{
+			if (id < 0 || id >= GetWorldObjects<TWorldObject>().Count())
+			{
+				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {GetWorldObjects<TWorldObject>().Count()}.", MessageType.Warning);
+				return default;
+			}
+			return GetWorldObjects<TWorldObject>().ToList()[id];
+		}
 
-		public static TWorldObject GetWorldObject<TWorldObject, TUnityObject>(TUnityObject unityObject)
+		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
-			var allWorldObjects = GetWorldObjects<TWorldObject>();
-			if (allWorldObjects.Count() == 0 || allWorldObjects == null)
-			{
-				DebugLog.ToConsole($"Error - No worldobjects exist of type {typeof(TWorldObject).Name}!", MessageType.Error);
-				return null;
-			}
 			if (unityObject == null)
 			{
-				DebugLog.ToConsole($"Error - Can't get world object from a null unity object! Type:{typeof(TUnityObject).Name}", MessageType.Error);
-				return null;
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);
+				return default;
 			}
-			var correctWorldObject = allWorldObjects.First(x => x.AttachedObject == unityObject);
-			return correctWorldObject;
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
+				return default;
+			}
+			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
+			{
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
+				return default;
+			}
+			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+		}
+
+		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+			=> GetWorldFromUnity<TWorldObject, TUnityObject>(unityObject).ObjectId;
+
+		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
+		{
+			var index = GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
+			if (index == -1)
+			{
+				DebugLog.ToConsole($"Warning - {(typeSubset as IWorldObject).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
+			}
+			return index;
 		}
 
 		public static void RemoveWorldObjects<TWorldObject>()
@@ -51,13 +81,14 @@ namespace QSB.WorldSync
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
 			foreach (var item in itemsToRemove)
 			{
+				WorldObjectsToUnityObjects.Remove(item.ReturnObject() as MonoBehaviour);
 				try
 				{
 					item.OnRemoval();
 				}
 				catch (Exception e)
 				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
@@ -73,8 +104,9 @@ namespace QSB.WorldSync
 			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
-				var obj = GetWorldObject<TWorldObject>(id) ?? CreateWorldObject<TWorldObject>();
+				var obj = CreateWorldObject<TWorldObject>();
 				obj.Init(list[id], id);
+				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
 			return list;
 		}
@@ -87,10 +119,10 @@ namespace QSB.WorldSync
 			return worldObject;
 		}
 
-		public static void RaiseEvent(object instance, string eventName)
+		public static void RaiseEvent<T>(T instance, string eventName, params object[] args)
 		{
-			if (!(instance.GetType()
-				.GetField(eventName, BindingFlags.Instance | BindingFlags.NonPublic)?
+			if (!(typeof(T)
+				.GetField(eventName, Flags)?
 				.GetValue(instance) is MulticastDelegate multiDelegate))
 			{
 				return;
@@ -98,7 +130,7 @@ namespace QSB.WorldSync
 			var delegateList = multiDelegate.GetInvocationList().ToList();
 			foreach (var del in delegateList)
 			{
-				del.DynamicInvoke(instance);
+				del.DynamicInvoke(args);
 			}
 		}
 
@@ -115,7 +147,12 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
 				return;
 			}
-			var orbSync = OrbSyncList.First(x => x.AttachedOrb == affectingOrb);
+			var orbSync = OrbSyncList.FirstOrDefault(x => x.AttachedOrb == affectingOrb);
+			if (orbSync == null)
+			{
+				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
+				return;
+			}
 			if (orbSync.HasAuthority)
 			{
 				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
@@ -141,7 +178,6 @@ namespace QSB.WorldSync
 			}
 			if (ShipLogFacts.Any(x => x.Id == id))
 			{
-				DebugLog.ToConsole($"Warning - Fact id {id} already in list!", MessageType.Warning);
 				return;
 			}
 			ShipLogFacts.Add(new FactReveal

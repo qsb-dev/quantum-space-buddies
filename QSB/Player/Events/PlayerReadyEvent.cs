@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
-using System.Linq;
 
 namespace QSB.Player.Events
 {
@@ -49,11 +48,6 @@ namespace QSB.Player.Events
 					"Error - Got ready event for non-existent player! Did we not send a PlayerStatesRequestEvent? Or was it not handled?",
 					MessageType.Error);
 				return;
-			}
-			foreach (var item in QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
-				.Where(x => x != null && x.IsReady && x.ReferenceSector != null && x.PlayerId == LocalPlayerId))
-			{
-				QSBEventManager.FireEvent(EventNames.QSBSectorChange, item.NetId.Value, item.ReferenceSector);
 			}
 		}
 	}

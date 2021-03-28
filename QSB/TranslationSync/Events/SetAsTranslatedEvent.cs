@@ -29,17 +29,17 @@ namespace QSB.TranslationSync.Events
 			}
 			if (message.TextType == NomaiTextType.WallText)
 			{
-				var obj = QSBWorldSync.GetWorldObject<QSBWallText>(message.ObjectId);
+				var obj = QSBWorldSync.GetWorldFromId<QSBWallText>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
 			else if (message.TextType == NomaiTextType.Computer)
 			{
-				var obj = QSBWorldSync.GetWorldObject<QSBComputer>(message.ObjectId);
+				var obj = QSBWorldSync.GetWorldFromId<QSBComputer>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
 			else if (message.TextType == NomaiTextType.VesselComputer)
 			{
-				var obj = QSBWorldSync.GetWorldObject<QSBVesselComputer>(message.ObjectId);
+				var obj = QSBWorldSync.GetWorldFromId<QSBVesselComputer>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
 			else
