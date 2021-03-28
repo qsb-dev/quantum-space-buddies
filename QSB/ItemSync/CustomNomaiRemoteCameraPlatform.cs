@@ -637,7 +637,6 @@ namespace QSB.ItemSync
 			{
 				OnRemotePlayerExit(id);
 			}
-			DebugLog.DebugWrite($"Removing {id} from _playerToHologram");
 			_playerToHologram.Remove(player);
 		}
 
@@ -647,7 +646,6 @@ namespace QSB.ItemSync
 			{
 				return;
 			}
-			DebugLog.DebugWrite($"Remote player enter {playerId}");
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			if (_playerToHologram.ContainsKey(player))
 			{
@@ -691,7 +689,6 @@ namespace QSB.ItemSync
 				DebugLog.ToConsole($"Error - Trying to remove remote player {playerId} that isn't in _playerToHologram!", MessageType.Error);
 				return;
 			}
-			DebugLog.DebugWrite($"Remote player exit {playerId}");
 			_playerToHologram[player].SetActive(false);
 		}
 

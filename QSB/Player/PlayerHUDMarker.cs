@@ -47,16 +47,13 @@ namespace QSB.Player
 
 		public void Remove()
 		{
-			DebugLog.DebugWrite($"Remove HUD marker of {_player.PlayerId}");
 			// do N O T destroy the parent - it completely breaks the ENTIRE GAME
 			if (_canvasMarker != null)
 			{
-				DebugLog.DebugWrite($" - destroy canvas marker");
 				_canvasMarker.DestroyMarker();
 			}
 			if (_markerTarget != null)
 			{
-				DebugLog.DebugWrite($" - destroy marker target");
 				Destroy(_markerTarget.gameObject);
 			}
 			Destroy(this);

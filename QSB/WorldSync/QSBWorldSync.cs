@@ -50,12 +50,12 @@ namespace QSB.WorldSync
 			}
 			if (!QSBCore.IsInMultiplayer)
 			{
-				DebugLog.DebugWrite($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
 				return default;
 			}
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
-				DebugLog.DebugWrite($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
 				return default;
 			}
 			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;

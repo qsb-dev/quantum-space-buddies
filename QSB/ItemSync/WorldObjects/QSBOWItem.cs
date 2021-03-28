@@ -44,7 +44,6 @@ namespace QSB.ItemSync.WorldObjects
 				InitialSocket.PlaceIntoSocket(this);
 				return;
 			}
-			DebugLog.DebugWrite($"OnPlayerLeave {player} for item {AttachedObject.name}");
 			AttachedObject.transform.parent = InitialParent;
 			AttachedObject.transform.localPosition = InitialPosition;
 			AttachedObject.transform.localRotation = InitialRotation;
@@ -62,7 +61,6 @@ namespace QSB.ItemSync.WorldObjects
 		public virtual void SocketItem(Transform socketTransform, Sector sector)
 		{
 			AttachedObject.SocketItem(socketTransform, sector);
-			DebugLog.DebugWrite($"{AttachedObject.name} set holding to 0");
 			HoldingPlayer = 0;
 		}
 
@@ -70,7 +68,6 @@ namespace QSB.ItemSync.WorldObjects
 		public virtual void PickUpItem(Transform holdTransform, uint playerId)
 		{
 			AttachedObject.PickUpItem(holdTransform);
-			DebugLog.DebugWrite($"{AttachedObject.name} set holding to {playerId}");
 			HoldingPlayer = playerId;
 		}
 
@@ -85,7 +82,6 @@ namespace QSB.ItemSync.WorldObjects
 			AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
 			AttachedObject.SetSector(sector);
 			AttachedObject.SetColliderActivation(true);
-			DebugLog.DebugWrite($"{AttachedObject.name} set holding to 0");
 			HoldingPlayer = 0;
 		}
 
