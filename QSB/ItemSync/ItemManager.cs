@@ -22,17 +22,14 @@ namespace QSB.ItemSync
 			foreach (var streaming in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraStreaming>())
 			{
 				streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();
-				streaming.enabled = false;
 			}
 			foreach (var camera in Resources.FindObjectsOfTypeAll<NomaiRemoteCamera>())
 			{
 				camera.gameObject.AddComponent<CustomNomaiRemoteCamera>();
-				camera.enabled = false;
 			}
 			foreach (var platform in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraPlatform>())
 			{
 				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
-				platform.enabled = false;
 			}
 		}
 

@@ -239,7 +239,6 @@ namespace QSB
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			RemoveWorldObjects();
 			QSBCore.HasWokenUp = false;
 
 			base.OnStopServer();
@@ -249,17 +248,17 @@ namespace QSB
 		{
 			QSBWorldSync.RemoveWorldObjects<IWorldObjectTypeSubset>();
 			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
-			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
+			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
 			{
-				Destroy(streaming);
+				Destroy(platform);
 			}
 			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
 			{
 				Destroy(camera);
 			}
-			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
+			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
 			{
-				Destroy(platform);
+				Destroy(streaming);
 			}
 		}
 	}
