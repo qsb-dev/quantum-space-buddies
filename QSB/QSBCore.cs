@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.Utils;
+using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
@@ -92,20 +93,23 @@ namespace QSB
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
+			gameObject.AddComponent<ConversationManager>();
+			gameObject.AddComponent<QSBInputManager>();
+			gameObject.AddComponent<TimeSyncUI>();
+			gameObject.AddComponent<RepeatingManager>();
+			gameObject.AddComponent<PlayerEntanglementWatcher>();
+
+			// WorldObject managers
+			gameObject.AddComponent<QuantumManager>();
+			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<ElevatorManager>();
 			gameObject.AddComponent<GeyserManager>();
 			gameObject.AddComponent<OrbManager>();
 			gameObject.AddComponent<QSBSectorManager>();
-			gameObject.AddComponent<ConversationManager>();
-			gameObject.AddComponent<QSBInputManager>();
-			gameObject.AddComponent<TimeSyncUI>();
-			gameObject.AddComponent<QuantumManager>();
-			gameObject.AddComponent<SpiralManager>();
-			gameObject.AddComponent<RepeatingManager>();
-			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<ItemManager>();
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
+			gameObject.AddComponent<CampfireManager>();
 
 			DebugBoxManager.Init();
 

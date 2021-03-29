@@ -16,14 +16,14 @@ namespace QSB.DeathSync.Events
 		private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
 		{
 			AboutId = LocalPlayerId,
-			DeathType = type,
+			EnumValue = type,
 			NecronomiconIndex = Necronomicon.GetRandomIndex(type)
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerDeathMessage message)
 		{
 			var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
-			var deathMessage = Necronomicon.GetPhrase(message.DeathType, message.NecronomiconIndex);
+			var deathMessage = Necronomicon.GetPhrase(message.EnumValue, message.NecronomiconIndex);
 			DebugLog.ToAll(string.Format(deathMessage, playerName));
 		}
 	}

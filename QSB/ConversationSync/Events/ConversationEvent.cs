@@ -18,7 +18,7 @@ namespace QSB.ConversationSync.Events
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = (int)id,
-			Type = type,
+			EnumValue = type,
 			Message = message
 		};
 
@@ -28,7 +28,7 @@ namespace QSB.ConversationSync.Events
 			{
 				return;
 			}
-			switch (message.Type)
+			switch (message.EnumValue)
 			{
 				case ConversationType.Character:
 					var translated = TextTranslation.Translate(message.Message).Trim();
