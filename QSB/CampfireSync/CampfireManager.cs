@@ -3,9 +3,9 @@ using QSB.WorldSync;
 
 namespace QSB.CampfireSync
 {
-	class CampfireManager : WorldObjectManager
+	internal class CampfireManager : WorldObjectManager
 	{
-		protected override void RebuildWorldObjects(OWScene scene) 
+		protected override void RebuildWorldObjects(OWScene scene)
 			=> QSBWorldSync.Init<QSBCampfire, Campfire>();
 	}
 }

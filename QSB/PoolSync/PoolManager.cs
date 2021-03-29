@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.PoolSync
 {
-	class PoolManager : WorldObjectManager
+	internal class PoolManager : WorldObjectManager
 	{
 		protected override void RebuildWorldObjects(OWScene scene)
 		{

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace QSB.CampfireSync.WorldObjects
 {
-	class QSBCampfire : WorldObject<Campfire>
+	internal class QSBCampfire : WorldObject<Campfire>
 	{
 		public override void Init(Campfire campfire, int id)
 		{
@@ -11,13 +11,13 @@ namespace QSB.CampfireSync.WorldObjects
 			AttachedObject = campfire;
 		}
 
-		public void StartRoasting() 
+		public void StartRoasting()
 			=> AttachedObject
 				.GetType()
 				.GetMethod("StartRoasting", BindingFlags.NonPublic | BindingFlags.Instance)
 				.Invoke(AttachedObject, null);
 
-		public void SetState(Campfire.State newState) 
+		public void SetState(Campfire.State newState)
 			=> AttachedObject.SetState(newState);
 	}
 }

@@ -2,11 +2,10 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.WorldSync;
-using System;
 
 namespace QSB.CampfireSync.Patches
 {
-	class CampfirePatches : QSBPatch
+	internal class CampfirePatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

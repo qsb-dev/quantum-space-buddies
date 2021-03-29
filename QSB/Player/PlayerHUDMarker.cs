@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.Player
 {

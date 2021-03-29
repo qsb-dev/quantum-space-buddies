@@ -5,7 +5,7 @@ using QSB.WorldSync.Events;
 
 namespace QSB.CampfireSync.Events
 {
-	class CampfireStateEvent : QSBEvent<EnumWorldObjectMessage<Campfire.State>>
+	internal class CampfireStateEvent : QSBEvent<EnumWorldObjectMessage<Campfire.State>>
 	{
 		public override EventType Type => EventType.CampfireState;
 
