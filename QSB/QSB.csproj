@@ -108,7 +108,8 @@
     <Compile Include="Animation\CrouchSync.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
     <Compile Include="CampfireSync\CampfireManager.cs" />
-    <Compile Include="CampfireSync\Events\CampfireStateMessage.cs" />
+    <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />
+    <Compile Include="CampfireSync\Patches\CampfirePatches.cs" />
     <Compile Include="CampfireSync\WorldObjects\QSBCampfire.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionEvent.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionMessage.cs" />

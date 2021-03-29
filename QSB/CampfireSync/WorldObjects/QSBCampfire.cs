@@ -1,4 +1,5 @@
 ﻿using QSB.WorldSync;
+using System.Reflection;
 
 namespace QSB.CampfireSync.WorldObjects
 {
@@ -9,6 +10,12 @@ namespace QSB.CampfireSync.WorldObjects
 			ObjectId = id;
 			AttachedObject = campfire;
 		}
+
+		public void StartRoasting() 
+			=> AttachedObject
+				.GetType()
+				.GetMethod("StartRoasting", BindingFlags.NonPublic | BindingFlags.Instance)
+				.Invoke(AttachedObject, null);
 
 		public void SetState(Campfire.State newState) 
 			=> AttachedObject.SetState(newState);

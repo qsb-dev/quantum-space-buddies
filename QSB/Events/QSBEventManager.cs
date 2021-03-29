@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Animation.Events;
+using QSB.CampfireSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
@@ -63,6 +64,7 @@ namespace QSB.Events
 				new SocketItemEvent(),
 				new MoveToCarryEvent(),
 				new StartStatueEvent(),
+				new CampfireStateEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
