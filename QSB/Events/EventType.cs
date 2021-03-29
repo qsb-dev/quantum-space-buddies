@@ -39,6 +39,13 @@
 		SocketItem,
 		MoveToCarry,
 		StartStatue,
-		PlayerKick
+		PlayerKick,
+		CampfireState,
+		Roasting,
+		MarshmallowToss,
+		MarshmallowBurn,
+		MarshmallowRemove,
+		MarshmallowShrivel,
+		MarshmallowSpawn
 	}
 }

@@ -1,8 +1,8 @@
 ﻿using QuantumUNET.Transport;
 
-namespace QSB.Messaging
+namespace QSB.WorldSync.Events
 {
-	public class EnumMessage<T> : PlayerMessage
+	public class EnumWorldObjectMessage<T> : WorldObjectMessage
 	{
 		public T EnumValue;
 

@@ -18,7 +18,7 @@ namespace QSB.TranslationSync.Events
 			AboutId = LocalPlayerId,
 			ObjectId = objId,
 			TextId = textId,
-			TextType = type
+			EnumValue = type
 		};
 
 		public override void OnReceiveRemote(bool server, SetAsTranslatedMessage message)
@@ -27,24 +27,24 @@ namespace QSB.TranslationSync.Events
 			{
 				return;
 			}
-			if (message.TextType == NomaiTextType.WallText)
+			if (message.EnumValue == NomaiTextType.WallText)
 			{
 				var obj = QSBWorldSync.GetWorldFromId<QSBWallText>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
-			else if (message.TextType == NomaiTextType.Computer)
+			else if (message.EnumValue == NomaiTextType.Computer)
 			{
 				var obj = QSBWorldSync.GetWorldFromId<QSBComputer>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
-			else if (message.TextType == NomaiTextType.VesselComputer)
+			else if (message.EnumValue == NomaiTextType.VesselComputer)
 			{
 				var obj = QSBWorldSync.GetWorldFromId<QSBVesselComputer>(message.ObjectId);
 				obj.HandleSetAsTranslated(message.TextId);
 			}
 			else
 			{
-				throw new System.NotImplementedException($"TextType <{message.TextType}> not implemented.");
+				throw new System.NotImplementedException($"TextType <{message.EnumValue}> not implemented.");
 			}
 		}
 	}

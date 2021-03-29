@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.CampfireSync.Patches;
 using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
@@ -45,7 +46,8 @@ namespace QSB.Patches
 				new ItemPatches(),
 				new StatuePatches(),
 				new GeyserPatches(),
-				new PoolPatches()
+				new PoolPatches(),
+				new CampfirePatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

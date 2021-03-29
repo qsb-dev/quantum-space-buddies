@@ -57,5 +57,6 @@
 		public static string QSBPlayerKick = "QSBPlayerKick";
 		public static string QSBEnterPlatform = "QSBEnterPlatform";
 		public static string QSBExitPlatform = "QSBExitPlatform";
+		public static string QSBCampfireState = "QSBCampfireState";
 	}
 }

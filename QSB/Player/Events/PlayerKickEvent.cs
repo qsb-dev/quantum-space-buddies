@@ -18,7 +18,7 @@ namespace QSB.Player.Events
 		private EnumMessage<KickReason> CreateMessage(uint player, KickReason reason) => new EnumMessage<KickReason>
 		{
 			AboutId = player,
-			Value = reason
+			EnumValue = reason
 		};
 
 		public override void OnReceiveLocal(bool server, EnumMessage<KickReason> message)
@@ -45,7 +45,7 @@ namespace QSB.Player.Events
 				DebugLog.ToAll($"Player id:{message.AboutId} was kicked.");
 				return;
 			}
-			DebugLog.ToAll($"Kicked from server. Reason : {message.Value}");
+			DebugLog.ToAll($"Kicked from server. Reason : {message.EnumValue}");
 		}
 	}
 }

@@ -4,7 +4,6 @@ using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
-using QSB.ItemSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.PoolSync;
