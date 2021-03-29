@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.QuantumSync;
@@ -80,6 +81,11 @@ namespace QSB.Player.Events
 			for (var i = 0; i < list.Count; i++)
 			{
 				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
+			}
+
+			foreach (var campfire in QSBWorldSync.GetWorldObjects<QSBCampfire>())
+			{
+				QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState());
 			}
 		}
 	}

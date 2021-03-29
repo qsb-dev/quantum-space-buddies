@@ -17,6 +17,9 @@ namespace QSB.CampfireSync.WorldObjects
 				.GetMethod("StartRoasting", BindingFlags.NonPublic | BindingFlags.Instance)
 				.Invoke(AttachedObject, null);
 
+		public Campfire.State GetState()
+			=> AttachedObject.GetState();
+
 		public void SetState(Campfire.State newState)
 			=> AttachedObject.SetState(newState);
 	}
