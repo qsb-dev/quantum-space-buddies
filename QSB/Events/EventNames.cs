@@ -20,6 +20,8 @@
 		public static string DialogueCondition = "DialogueConditionChanged";
 		public static string EnterQuantumMoon = "PlayerEnterQuantumMoon";
 		public static string ExitQuantumMoon = "PlayerExitQuantumMoon";
+		public static string EnterRoastingMode = "EnterRoastingMode";
+		public static string ExitRoastingMode = "ExitRoastingMode";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
@@ -58,5 +60,6 @@
 		public static string QSBEnterPlatform = "QSBEnterPlatform";
 		public static string QSBExitPlatform = "QSBExitPlatform";
 		public static string QSBCampfireState = "QSBCampfireState";
+		public static string QSBMarshmallowEvent = "QSBMarshmallowEvent";
 	}
 }

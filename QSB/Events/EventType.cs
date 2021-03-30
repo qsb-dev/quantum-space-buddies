@@ -42,10 +42,6 @@
 		PlayerKick,
 		CampfireState,
 		Roasting,
-		MarshmallowToss,
-		MarshmallowBurn,
-		MarshmallowRemove,
-		MarshmallowShrivel,
-		MarshmallowSpawn
+		MarshmallowEvent
 	}
 }
