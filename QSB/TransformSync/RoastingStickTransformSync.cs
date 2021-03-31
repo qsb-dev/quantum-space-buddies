@@ -11,6 +11,9 @@ namespace QSB.TransformSync
 	{
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
+		private const float SmoothTime = 0.1f;
+		private Vector3 _positionSmoothVelocity;
+		private Quaternion _rotationSmoothVelocity;
 
 		private Transform GetPivot() 
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
@@ -64,8 +67,8 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			_stickTip.localPosition = _networkStickTip.localPosition;
-			_stickTip.localRotation = _networkStickTip.localRotation;
+			_stickTip.localPosition = Vector3.SmoothDamp(_stickTip.localPosition, _networkStickTip.localPosition, ref _positionSmoothVelocity, SmoothTime);
+			_stickTip.localRotation = QuaternionHelper.SmoothDamp(_stickTip.localRotation, _networkStickTip.localRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
