@@ -1,14 +1,9 @@
 ﻿using QSB.Player;
-using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.RoastingSync
 {
-	class CustomRelativisticParticleSystem : MonoBehaviour
+	internal class CustomRelativisticParticleSystem : MonoBehaviour
 	{
 		private ParticleSystem _particleSystem;
 		private Transform _simulationSpace;
@@ -53,8 +48,8 @@ namespace QSB.RoastingSync
 			}
 			_simulationSpace.rotation = _rotation;
 
-			if (!_velocityOverLifetimeModule.enabled 
-				&& (!_limitVelocityOverLifetimeModule.enabled || !_limitVelocityOverLifetimeModule.separateAxes) 
+			if (!_velocityOverLifetimeModule.enabled
+				&& (!_limitVelocityOverLifetimeModule.enabled || !_limitVelocityOverLifetimeModule.separateAxes)
 				&& !_forceOverLifetimeModule.enabled)
 			{
 				return;

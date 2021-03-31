@@ -15,7 +15,7 @@ namespace QSB.TransformSync
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 
-		private Transform GetPivot() 
+		private Transform GetPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
 		protected override Transform InitLocalTransform()
