@@ -89,8 +89,7 @@ namespace QSB.SectorSync
 			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& sector.ShouldSyncTo()
-				&& sector.Transform.gameObject.activeInHierarchy);
+				&& sector.ShouldSyncTo());
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
 				DebugLog.ToConsole(
