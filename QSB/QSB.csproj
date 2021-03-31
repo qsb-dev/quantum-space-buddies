@@ -217,6 +217,7 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
+    <Compile Include="RoastingSync\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
     <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />
     <Compile Include="RoastingSync\Events\MarshmallowEventEvent.cs" />

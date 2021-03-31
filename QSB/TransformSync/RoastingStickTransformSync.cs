@@ -36,6 +36,13 @@ namespace QSB.TransformSync
 			var mallowRoot = newPivot.Find("Stick_Tip/Mallow_Root");
 			mallowRoot.gameObject.SetActive(false);
 			var oldMarshmallow = mallowRoot.GetComponent<Marshmallow>();
+
+			// Recreate particle system
+			Destroy(mallowRoot.Find("MallowSmoke").GetComponent<RelativisticParticleSystem>());
+			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.AddComponent<CustomRelativisticParticleSystem>();
+			newSystem.Init(Player);
+
+			// Create new marshmallow
 			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
 			newMarshmallow._fireRenderer = oldMarshmallow.GetValue<MeshRenderer>("_fireRenderer");
 			newMarshmallow._smokeParticles = oldMarshmallow.GetValue<ParticleSystem>("_smokeParticles");
@@ -44,6 +51,7 @@ namespace QSB.TransformSync
 			newMarshmallow._toastedColor = oldMarshmallow.GetValue<Color>("_toastedColor");
 			newMarshmallow._burntColor = oldMarshmallow.GetValue<Color>("_burntColor");
 			Destroy(oldMarshmallow);
+
 			Player.RoastingStick = newPivot.gameObject;
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
