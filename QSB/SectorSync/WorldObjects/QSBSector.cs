@@ -34,16 +34,17 @@ namespace QSB.SectorSync.WorldObjects
 
 		public bool ShouldSyncTo()
 		{
-			if (!AttachedObject.gameObject.activeInHierarchy)
-			{
-				return false;
-			}
-
 			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject for sector id:{ObjectId} is null!", MessageType.Warning);
 				return false;
 			}
+
+			if (!AttachedObject.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+
 			if (Type == Sector.Name.Ship)
 			{
 				return false;
