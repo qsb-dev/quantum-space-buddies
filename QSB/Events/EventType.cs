@@ -39,6 +39,9 @@
 		SocketItem,
 		MoveToCarry,
 		StartStatue,
-		PlayerKick
+		PlayerKick,
+		CampfireState,
+		Roasting,
+		MarshmallowEvent
 	}
 }

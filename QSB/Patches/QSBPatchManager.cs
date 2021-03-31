@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.CampfireSync.Patches;
 using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
@@ -9,6 +10,7 @@ using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
 using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
+using QSB.RoastingSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
 using QSB.TranslationSync.Patches;
@@ -45,7 +47,9 @@ namespace QSB.Patches
 				new ItemPatches(),
 				new StatuePatches(),
 				new GeyserPatches(),
-				new PoolPatches()
+				new PoolPatches(),
+				new CampfirePatches(),
+				new RoastingPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

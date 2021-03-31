@@ -73,6 +73,9 @@
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
@@ -107,6 +110,10 @@
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
+    <Compile Include="CampfireSync\CampfireManager.cs" />
+    <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />
+    <Compile Include="CampfireSync\Patches\CampfirePatches.cs" />
+    <Compile Include="CampfireSync\WorldObjects\QSBCampfire.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionEvent.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionMessage.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
@@ -134,6 +141,7 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="Messaging\BoolMessage.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
@@ -169,7 +177,6 @@
     <Compile Include="OrbSync\Events\OrbUserEvent.cs" />
     <Compile Include="OrbSync\WorldObjects\QSBOrbSlot.cs" />
     <Compile Include="Patches\QSBPatchManager.cs" />
-    <Compile Include="Player\Events\EnterLeaveMessage.cs" />
     <Compile Include="Player\Events\PlayerEntangledEvent.cs" />
     <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
@@ -210,11 +217,18 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
+    <Compile Include="RoastingSync\CustomRelativisticParticleSystem.cs" />
+    <Compile Include="RoastingSync\QSBMarshmallow.cs" />
+    <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />
+    <Compile Include="RoastingSync\Events\MarshmallowEventEvent.cs" />
+    <Compile Include="RoastingSync\MarshmallowEventType.cs" />
+    <Compile Include="RoastingSync\Patches\RoastingPatches.cs" />
     <Compile Include="SectorSync\FakeSector.cs" />
     <Compile Include="StatueSync\Events\StartStatueEvent.cs" />
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
+    <Compile Include="TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
@@ -269,6 +283,7 @@
     <Compile Include="Utility\Tuple.cs" />
     <Compile Include="Utility\UnitTestDetector.cs" />
     <Compile Include="WorldSync\Events\BoolWorldObjectMessage.cs" />
+    <Compile Include="WorldSync\Events\EnumWorldObjectMessage.cs" />
     <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
     <Compile Include="Tools\QSBProbe.cs" />

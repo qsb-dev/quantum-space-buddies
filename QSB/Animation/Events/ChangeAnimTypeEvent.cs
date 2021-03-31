@@ -17,7 +17,7 @@ namespace QSB.Animation.Events
 		private EnumMessage<AnimationType> CreateMessage(uint player, AnimationType type) => new EnumMessage<AnimationType>
 		{
 			AboutId = player,
-			Value = type
+			EnumValue = type
 		};
 
 		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
@@ -26,8 +26,8 @@ namespace QSB.Animation.Events
 			{
 				return;
 			}
-			QSBPlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.Value);
-			QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.Value);
+			QSBPlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.EnumValue);
+			QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.EnumValue);
 		}
 	}
 }

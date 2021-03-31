@@ -1,11 +1,11 @@
 ﻿using QSB.Events;
-using QSB.ItemSync;
 using QSB.PoolSync;
 using QSB.Utility;
+using QSB.WorldSync.Events;
 
 namespace QSB.Player.Events
 {
-	internal class EnterLeaveEvent : QSBEvent<EnterLeaveMessage>
+	internal class EnterLeaveEvent : QSBEvent<EnumWorldObjectMessage<EnterLeaveType>>
 	{
 		public override EventType Type => EventType.EnterLeave;
 
@@ -29,20 +29,20 @@ namespace QSB.Player.Events
 
 		private void Handler(EnterLeaveType type, int objectId = -1) => SendEvent(CreateMessage(type, objectId));
 
-		private EnterLeaveMessage CreateMessage(EnterLeaveType type, int objectId) => new EnterLeaveMessage
+		private EnumWorldObjectMessage<EnterLeaveType> CreateMessage(EnterLeaveType type, int objectId) => new EnumWorldObjectMessage<EnterLeaveType>
 		{
 			AboutId = LocalPlayerId,
-			Type = type,
+			EnumValue = type,
 			ObjectId = objectId
 		};
 
-		public override void OnReceiveLocal(bool server, EnterLeaveMessage message)
+		public override void OnReceiveLocal(bool server, EnumWorldObjectMessage<EnterLeaveType> message)
 			=> OnReceiveRemote(server, message);
 
-		public override void OnReceiveRemote(bool server, EnterLeaveMessage message)
+		public override void OnReceiveRemote(bool server, EnumWorldObjectMessage<EnterLeaveType> message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.FromId);
-			switch (message.Type)
+			switch (message.EnumValue)
 			{
 				case EnterLeaveType.EnterMoon:
 					player.IsInMoon = true;
@@ -65,7 +65,7 @@ namespace QSB.Player.Events
 						.OnRemotePlayerExit(message.AboutId);
 					break;
 				default:
-					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {message.Type}", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {message.EnumValue}", OWML.Common.MessageType.Warning);
 					break;
 			}
 		}

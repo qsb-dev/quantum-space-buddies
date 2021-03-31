@@ -16,13 +16,13 @@ namespace QSB.FrequencySync.Events
 		private EnumMessage<SignalFrequency> CreateMessage(SignalFrequency frequency) => new EnumMessage<SignalFrequency>
 		{
 			AboutId = QSBPlayerManager.LocalPlayerId,
-			Value = frequency
+			EnumValue = frequency
 		};
 
 		public override void OnReceiveRemote(bool server, EnumMessage<SignalFrequency> message)
 		{
-			PlayerData.LearnFrequency(message.Value);
-			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationNewFreq)} <color=orange>{AudioSignal.FrequencyToString(message.Value, false)}</color>";
+			PlayerData.LearnFrequency(message.EnumValue);
+			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationNewFreq)} <color=orange>{AudioSignal.FrequencyToString(message.EnumValue, false)}</color>";
 			var data = new NotificationData(NotificationTarget.All, displayMsg, 10f, true);
 			NotificationManager.SharedInstance.PostNotification(data, false);
 		}

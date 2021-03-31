@@ -2,20 +2,20 @@
 
 namespace QSB.Messaging
 {
-	public class EnumMessage<T> : PlayerMessage
+	public class BoolMessage : PlayerMessage
 	{
-		public T EnumValue;
+		public bool Value;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			EnumValue = (T)(object)reader.ReadInt32();
+			Value = reader.ReadBoolean();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write((int)(object)EnumValue);
+			writer.Write(Value);
 		}
 	}
 }

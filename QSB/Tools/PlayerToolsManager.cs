@@ -92,6 +92,7 @@ namespace QSB.Tools
 		private static void CreateFlashlight(Transform cameraBody)
 		{
 			var flashlightRoot = Object.Instantiate(GameObject.Find("FlashlightRoot"));
+			flashlightRoot.name += "-RemotePlayer";
 			flashlightRoot.SetActive(false);
 			var oldComponent = flashlightRoot.GetComponent<Flashlight>();
 			var component = flashlightRoot.AddComponent<QSBFlashlight>();

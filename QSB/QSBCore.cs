@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.Utils;
+using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
@@ -92,20 +93,23 @@ namespace QSB
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
+			gameObject.AddComponent<ConversationManager>();
+			gameObject.AddComponent<QSBInputManager>();
+			gameObject.AddComponent<TimeSyncUI>();
+			gameObject.AddComponent<RepeatingManager>();
+			gameObject.AddComponent<PlayerEntanglementWatcher>();
+
+			// WorldObject managers
+			gameObject.AddComponent<QuantumManager>();
+			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<ElevatorManager>();
 			gameObject.AddComponent<GeyserManager>();
 			gameObject.AddComponent<OrbManager>();
 			gameObject.AddComponent<QSBSectorManager>();
-			gameObject.AddComponent<ConversationManager>();
-			gameObject.AddComponent<QSBInputManager>();
-			gameObject.AddComponent<TimeSyncUI>();
-			gameObject.AddComponent<QuantumManager>();
-			gameObject.AddComponent<SpiralManager>();
-			gameObject.AddComponent<RepeatingManager>();
-			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<ItemManager>();
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
+			gameObject.AddComponent<CampfireManager>();
 
 			DebugBoxManager.Init();
 
@@ -142,10 +146,13 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current closest sector :");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current synced sector :");
 			offset3 += _debugLineSpacing;
-			var sector = PlayerTransformSync.LocalInstance.SectorSync.GetClosestSector(Locator.GetPlayerTransform());
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.AttachedObject.name} : {sector.IsFakeSector}");
+			var sector = PlayerTransformSync.LocalInstance.ReferenceSector;
+			var text = sector == null
+				? "NULL SECTOR"
+				: $"{sector.AttachedObject.name} : {sector.IsFakeSector}";
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
 			offset3 += _debugLineSpacing;
 
 			var offset2 = 10f;

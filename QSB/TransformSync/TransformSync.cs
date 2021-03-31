@@ -64,6 +64,20 @@ namespace QSB.TransformSync
 			_isVisible = true;
 		}
 
+		public void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Cube(SyncedTransform.position, SyncedTransform.rotation, Vector3.one / 2, Color.green);
+			Popcron.Gizmos.Cube(transform.position, transform.rotation, Vector3.one / 2, Color.red);
+			Popcron.Gizmos.Line(SyncedTransform.position, transform.position, Color.magenta);
+			Popcron.Gizmos.Cube(ReferenceSector.Position, ReferenceSector.Transform.rotation, Vector3.one, Color.cyan);
+			Popcron.Gizmos.Line(SyncedTransform.position, ReferenceSector.Position, Color.blue);
+		}
+
 		public void Update()
 		{
 			if (!_isInitialized && IsReady)

@@ -1,5 +1,7 @@
 ﻿using QSB.Animation;
+using QSB.CampfireSync.WorldObjects;
 using QSB.QuantumSync;
+using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Utility;
 using System.Linq;
@@ -19,6 +21,7 @@ namespace QSB.Player
 		public OWCamera Camera { get; set; }
 		public GameObject CameraBody { get; set; }
 		public GameObject Body { get; set; }
+		public GameObject RoastingStick { get; set; }
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
@@ -32,6 +35,8 @@ namespace QSB.Player
 		public Transform SharedStoneSocket => CameraBody.transform.Find("SharedStoneSocket");
 		public Transform WarpCoreSocket => CameraBody.transform.Find("WarpCoreSocket");
 		public Transform VesselCoreSocket => CameraBody.transform.Find("VesselCoreSocket");
+		public QSBMarshmallow Marshmallow { get; set; }
+		public QSBCampfire Campfire { get; set; }
 
 		// Conversation
 		public int CurrentDialogueID { get; set; }

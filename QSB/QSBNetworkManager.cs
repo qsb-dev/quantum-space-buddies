@@ -4,7 +4,6 @@ using QSB.Animation;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
-using QSB.ItemSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.PoolSync;
@@ -38,6 +37,7 @@ namespace QSB
 		private GameObject _shipPrefab;
 		private GameObject _cameraPrefab;
 		private GameObject _probePrefab;
+		private GameObject _stickPrefab;
 		private bool _everConnected;
 
 		public new void Awake()
@@ -80,6 +80,12 @@ namespace QSB
 			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
 			spawnPrefabs.Add(OrbPrefab);
 
+			_stickPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkstickpivot.prefab");
+			SetupNetworkId(_stickPrefab);
+			SetupNetworkTransform(_stickPrefab);
+			_stickPrefab.AddComponent<RoastingStickTransformSync>();
+			spawnPrefabs.Add(_stickPrefab);
+
 			ConfigureNetworkManager();
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
 		}
@@ -96,6 +102,12 @@ namespace QSB
 		{
 			var trans = go.AddComponent<QNetworkTransform>();
 			trans.SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
+			foreach (var item in go.GetComponents<NetworkTransformChild>())
+			{
+				var child = go.AddComponent<QNetworkTransformChild>();
+				child.Target = item.target;
+				Destroy(item);
+			}
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
 		}
@@ -146,6 +158,7 @@ namespace QSB
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
+			QNetworkServer.SpawnWithClientAuthority(Instantiate(_stickPrefab), connection);
 		}
 
 		public override void OnStartClient(QNetworkClient _)

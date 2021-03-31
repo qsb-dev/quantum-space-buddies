@@ -39,6 +39,12 @@ namespace QSB.SectorSync.WorldObjects
 				DebugLog.ToConsole($"Warning - AttachedObject for sector id:{ObjectId} is null!", MessageType.Warning);
 				return false;
 			}
+
+			if (!AttachedObject.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+
 			if (Type == Sector.Name.Ship)
 			{
 				return false;
