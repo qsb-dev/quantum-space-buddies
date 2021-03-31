@@ -23,6 +23,11 @@ namespace QSB.CampfireSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumWorldObjectMessage<Campfire.State> message)
 		{
+			if (!QSBSceneManager.IsInUniverse)
+			{
+				return;
+			}
+
 			var campfireObj = QSBWorldSync.GetWorldFromId<QSBCampfire>(message.ObjectId);
 			campfireObj.SetState(message.EnumValue);
 		}

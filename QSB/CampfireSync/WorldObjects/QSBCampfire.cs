@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace QSB.CampfireSync.WorldObjects
 {
-	internal class QSBCampfire : WorldObject<Campfire>
+	public class QSBCampfire : WorldObject<Campfire>
 	{
 		public override void Init(Campfire campfire, int id)
 		{

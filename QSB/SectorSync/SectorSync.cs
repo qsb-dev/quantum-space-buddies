@@ -89,13 +89,10 @@ namespace QSB.SectorSync
 			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& sector.ShouldSyncTo()
-				&& sector.Transform.gameObject.activeInHierarchy);
+				&& sector.ShouldSyncTo());
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
-				DebugLog.ToConsole(
-					$"Error - Zero available sectors for {trans.name} to sync to! Current QSBSector count : {QSBWorldSync.GetWorldObjects<QSBSector>().Count()}",
-					MessageType.Error);
+				return default;
 			}
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))

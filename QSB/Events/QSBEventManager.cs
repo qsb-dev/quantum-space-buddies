@@ -11,6 +11,7 @@ using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
 using QSB.QuantumSync.Events;
+using QSB.RoastingSync.Events;
 using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
@@ -48,6 +49,8 @@ namespace QSB.Events
 				new ServerTimeEvent(),
 				new PlayerEntangledEvent(),
 				new PlayerKickEvent(),
+				new EnterExitRoastingEvent(),
+				new MarshmallowEventEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

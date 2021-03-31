@@ -146,10 +146,13 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current closest sector :");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current synced sector :");
 			offset3 += _debugLineSpacing;
-			var sector = PlayerTransformSync.LocalInstance.SectorSync.GetClosestSector(Locator.GetPlayerTransform());
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.AttachedObject.name} : {sector.IsFakeSector}");
+			var sector = PlayerTransformSync.LocalInstance.ReferenceSector;
+			var text = sector == null
+				? "NULL SECTOR"
+				: $"{sector.AttachedObject.name} : {sector.IsFakeSector}";
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
 			offset3 += _debugLineSpacing;
 
 			var offset2 = 10f;
