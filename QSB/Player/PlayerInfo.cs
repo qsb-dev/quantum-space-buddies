@@ -1,4 +1,5 @@
 ﻿using QSB.Animation;
+using QSB.CampfireSync.WorldObjects;
 using QSB.QuantumSync;
 using QSB.RoastingSync;
 using QSB.Tools;
@@ -35,6 +36,7 @@ namespace QSB.Player
 		public Transform WarpCoreSocket => CameraBody.transform.Find("WarpCoreSocket");
 		public Transform VesselCoreSocket => CameraBody.transform.Find("VesselCoreSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
+		public QSBCampfire Campfire { get; set; }
 
 		// Conversation
 		public int CurrentDialogueID { get; set; }

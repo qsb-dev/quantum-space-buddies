@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.RoastingSync.Patches
 {
-	class RoastingPatches : QSBPatch
+	internal class RoastingPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
@@ -89,7 +89,7 @@ namespace QSB.RoastingSync.Patches
 		{
 			var changePromptText = false;
 			var showRemovePrompt = false;
-			string text = string.Empty;
+			var text = string.Empty;
 			if (____extendFraction == 0f)
 			{
 				if (____marshmallow.IsEdible())

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using QSB.Player;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.RoastingSync
@@ -25,20 +23,21 @@ namespace QSB.RoastingSync
 		private float _toastedFraction;
 		private float _initBurnTime;
 		private float _initShrivelTime;
-		private SunController _sunController;
+		private PlayerInfo _attachedPlayer;
 
 		private void Awake()
 		{
 			_smokeParticlesSettings = _smokeParticles.main;
 			_fireRenderer.enabled = false;
 			_smokeParticles.Stop();
+			_attachedPlayer = QSBPlayerManager.PlayerList.First(x => x.Marshmallow == this);
 		}
 
-		private void Start()
+		private void Update()
 		{
-			if (Locator.GetSunTransform() != null)
+			if (_attachedPlayer.Campfire != null)
 			{
-				_sunController = Locator.GetSunTransform().GetComponent<SunController>();
+				UpdateRoast(_attachedPlayer.Campfire.AttachedObject);
 			}
 		}
 
@@ -77,23 +76,12 @@ namespace QSB.RoastingSync
 			transform.localPosition = Vector3.MoveTowards(transform.localPosition, Vector3.zero, Time.deltaTime);
 			if (_mallowState != Marshmallow.MallowState.Default)
 			{
-				if (_mallowState == Marshmallow.MallowState.Burning)
-				{
-					if (Time.time > _initBurnTime + BURN_DURATION)
-					{
-						Shrivel();
-					}
-				}
-				else if (_mallowState == Marshmallow.MallowState.Shriveling)
+				if (_mallowState == Marshmallow.MallowState.Shriveling)
 				{
 					var shrivelFraction = Mathf.Clamp01((Time.time - _initShrivelTime) / 2f);
 					if (shrivelFraction >= 0.5 && _fireRenderer.enabled)
 					{
 						_fireRenderer.enabled = false;
-					}
-					if (shrivelFraction >= 1f)
-					{
-						RemoveMallow();
 					}
 					transform.localScale = Vector3.one * (1f - shrivelFraction);
 				}
@@ -103,22 +91,9 @@ namespace QSB.RoastingSync
 
 		private void UpdateHeatExposure(Campfire campfire)
 		{
-			if (_sunController != null)
-			{
-				var distanceToSupernova = Vector3.Distance(transform.position, _sunController.transform.position) - _sunController.GetSupernovaRadius();
-				if (distanceToSupernova < 2000f)
-				{
-					Burn();
-					return;
-				}
-			}
 			_heatPerSecond = campfire.GetHeatAtPosition(transform.position);
 			_toastedFraction += _heatPerSecond * Time.deltaTime / HEAT_CAPACITY;
 			_toastedFraction = Mathf.Clamp01(_toastedFraction);
-			if (_heatPerSecond > BURN_THRESHOLD)
-			{
-				Burn();
-			}
 		}
 
 		private void UpdateVisuals()
@@ -152,7 +127,7 @@ namespace QSB.RoastingSync
 			_smokeParticles.transform.forward = Locator.GetPlayerTransform().up;
 		}
 
-		private void Burn()
+		public void Burn()
 		{
 			if (_mallowState == Marshmallow.MallowState.Default)
 			{
@@ -163,7 +138,7 @@ namespace QSB.RoastingSync
 			}
 		}
 
-		private void Shrivel()
+		public void Shrivel()
 		{
 			if (_mallowState == Marshmallow.MallowState.Burning)
 			{
@@ -172,7 +147,7 @@ namespace QSB.RoastingSync
 			}
 		}
 
-		private void RemoveMallow()
+		public void RemoveMallow()
 		{
 			_smokeParticles.Stop();
 			_fireRenderer.enabled = false;

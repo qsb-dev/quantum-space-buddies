@@ -111,8 +111,8 @@ namespace QuantumUNET
 		{
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Ready, OnClientReadyMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Command, OnCommandMessage);
-			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalPlayerTransform, Components.QNetworkTransform.HandleTransform);
-			//m_SimpleServerSimple.RegisterHandlerSafe((short)16, new QSBNetworkMessageDelegate(NetworkTransformChild.HandleChildTransform));
+			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalPlayerTransform, QNetworkTransform.HandleTransform);
+			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalChildTransform, QNetworkTransformChild.HandleChildTransform);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.RemovePlayer, OnRemovePlayerMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Animation, QNetworkAnimator.OnAnimationServerMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.AnimationParameters, QNetworkAnimator.OnAnimationParametersServerMessage);

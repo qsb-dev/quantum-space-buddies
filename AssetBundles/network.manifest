@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3416116897
+CRC: 3669040473
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f304be71f6b3202b0c75695ffc81dd4e
+    Hash: 102cbe12b50dffef59e4f393401b86ab
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 47ee499ae8022a6b96ca6a5fd541f154
+    Hash: 8b6abf066340f652e25eed06e6b72102
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -16,18 +16,16 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
 - Class: 114
-  Script: {fileID: -822479833, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-- Class: 114
-  Script: {fileID: 227461547, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-- Class: 114
   Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+- Class: 114
+  Script: {fileID: -1267208747, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 Assets:
+- Assets/NetworkStickPivot.prefab
 - Assets/NetworkPlayer.prefab
 - Assets/NetworkCameraRoot.prefab
 - Assets/NetworkProbe.prefab
 - Assets/NetworkOrb.prefab
-- Assets/NetworkManager.prefab
 - Assets/NetworkShip.prefab
 Dependencies: []

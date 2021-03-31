@@ -1,10 +1,11 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
+using QSB.Player;
 using QSB.Utility;
 
 namespace QSB.RoastingSync.Events
 {
-	class MarshmallowEventEvent : QSBEvent<EnumMessage<MarshmallowEventType>>
+	internal class MarshmallowEventEvent : QSBEvent<EnumMessage<MarshmallowEventType>>
 	{
 		public override EventType Type => EventType.MarshmallowEvent;
 
@@ -21,7 +22,33 @@ namespace QSB.RoastingSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<MarshmallowEventType> message)
 		{
-			DebugLog.DebugWrite($"Get marshmallow event {message.EnumValue} from {message.AboutId}");
+			var marshmallow = QSBPlayerManager.GetPlayer(message.AboutId).Marshmallow;
+			if (marshmallow == null)
+			{
+				DebugLog.ToConsole($"Warning - Marshmallow is null for player {message.AboutId}.", OWML.Common.MessageType.Warning);
+				return;
+			}
+			switch (message.EnumValue)
+			{
+				case MarshmallowEventType.Burn:
+					marshmallow.Burn();
+					break;
+				case MarshmallowEventType.Extinguish:
+					marshmallow.Extinguish();
+					break;
+				case MarshmallowEventType.Remove:
+					marshmallow.RemoveMallow();
+					break;
+				case MarshmallowEventType.Replace:
+					marshmallow.SpawnMallow();
+					break;
+				case MarshmallowEventType.Shrivel:
+					marshmallow.Shrivel();
+					break;
+				case MarshmallowEventType.Toss:
+					//TODO : implement
+					break;
+			}
 		}
 	}
 }
