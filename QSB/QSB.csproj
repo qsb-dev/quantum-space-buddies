@@ -229,6 +229,7 @@
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
+    <Compile Include="TransformSync\Rigidbody\RigidbodyTransformSync.cs" />
     <Compile Include="TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
