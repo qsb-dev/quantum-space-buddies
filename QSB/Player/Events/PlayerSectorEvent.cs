@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Events;
 using QSB.SectorSync.WorldObjects;
-using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
@@ -37,7 +36,7 @@ namespace QSB.Player.Events
 				return;
 			}
 
-			var transformSync = QSBPlayerManager.GetSyncObject<PlayerObjectTransformSync>(message.AboutId);
+			var transformSync = QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId);
 
 			QSBCore.UnityEvents.RunWhen(() => transformSync?.SyncedTransform != null,
 				() => transformSync?.SetReferenceSector(sector));

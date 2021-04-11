@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Events;
-using QSB.TransformSync;
 using QSB.Utility;
 
 namespace QSB.Player.Events
@@ -33,7 +32,7 @@ namespace QSB.Player.Events
 		{
 			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
 			QSBCore.UnityEvents.RunWhen(
-				() => QSBPlayerManager.GetSyncObject<PlayerObjectTransformSync>(message.AboutId) != null,
+				() => QSBPlayerManager.GetSyncObject<TransformSync.TransformSync>(message.AboutId) != null,
 				() => QSBPlayerManager.HandleFullStateMessage(message));
 		}
 	}

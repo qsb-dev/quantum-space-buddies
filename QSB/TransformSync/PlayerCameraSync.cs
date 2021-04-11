@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	public class PlayerCameraSync : PlayerObjectTransformSync
+	public class PlayerCameraSync : TransformSync
 	{
 		protected override Transform InitLocalTransform()
 		{

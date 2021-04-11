@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
-using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
-			QSBPlayerManager.GetSyncObjects<PlayerObjectTransformSync>()
+			QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
 				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
 		}
 
@@ -55,7 +54,7 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(PlayerObjectTransformSync transformSync)
+		private void CheckTransformSyncSector(TransformSync.TransformSync transformSync)
 		{
 			var syncedTransform = transformSync.SyncedTransform;
 			if (syncedTransform == null || syncedTransform.position == Vector3.zero)

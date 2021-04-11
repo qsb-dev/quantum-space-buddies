@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	public class ShipTransformSync : PlayerObjectTransformSync
+	public class ShipTransformSync : TransformSync
 	{
 		private Transform GetShipModel() => Locator.GetShipTransform();
 

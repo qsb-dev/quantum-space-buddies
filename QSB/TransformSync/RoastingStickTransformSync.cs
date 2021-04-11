@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	internal class RoastingStickTransformSync : PlayerObjectTransformSync
+	internal class RoastingStickTransformSync : TransformSync
 	{
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);

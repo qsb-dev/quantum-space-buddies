@@ -142,7 +142,6 @@
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
-    <Compile Include="ModelShipSync\ModelShipManager.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
@@ -229,7 +228,6 @@
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
-    <Compile Include="TransformSync\Rigidbody\RigidbodyTransformSync.cs" />
     <Compile Include="TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
@@ -262,7 +260,7 @@
     <Compile Include="Messaging\ToggleMessage.cs" />
     <Compile Include="SectorSync\WorldObjects\QSBSector.cs" />
     <Compile Include="SectorSync\SectorSync.cs" />
-    <Compile Include="TransformSync\PlayerObjectTransformSync.cs" />
+    <Compile Include="TransformSync\TransformSync.cs" />
     <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />
@@ -344,9 +342,7 @@
       <Version>1.1.8</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ModelShipSync\Patches\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"
