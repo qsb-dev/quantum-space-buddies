@@ -21,7 +21,7 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
-			QSBPlayerManager.GetSyncObjects<TransformSync.TransformSync>()
+			QSBPlayerManager.GetSyncObjects<TransformSync.SyncObjectTransformSync>()
 				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
 		}
 
@@ -54,7 +54,7 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(TransformSync.TransformSync transformSync)
+		private void CheckTransformSyncSector(TransformSync.SyncObjectTransformSync transformSync)
 		{
 			var syncedTransform = transformSync.SyncedTransform;
 			if (syncedTransform == null || syncedTransform.position == Vector3.zero)

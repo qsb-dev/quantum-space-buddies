@@ -9,6 +9,7 @@ using QSB.ItemSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;

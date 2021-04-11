@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.TransformSync;
 using System.Linq;
 using UnityEngine;
