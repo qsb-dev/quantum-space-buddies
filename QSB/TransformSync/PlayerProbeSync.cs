@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	public class PlayerProbeSync : TransformSync
+	public class PlayerProbeSync : PlayerObjectTransformSync
 	{
 		private Transform _disabledSocket;
 

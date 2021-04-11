@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	public abstract class TransformSync : PlayerSyncObject
+	public abstract class PlayerObjectTransformSync : PlayerSyncObject
 	{
 		public abstract bool IsReady { get; }
 
