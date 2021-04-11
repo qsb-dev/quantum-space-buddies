@@ -1,5 +1,6 @@
 ﻿using QSB.Animation;
 using QSB.CampfireSync.WorldObjects;
+using QSB.ProbeSync;
 using QSB.QuantumSync;
 using QSB.RoastingSync;
 using QSB.Tools;

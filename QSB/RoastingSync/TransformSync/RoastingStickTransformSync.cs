@@ -1,6 +1,5 @@
 ﻿using OWML.Utils;
 using QSB.Player;
-using QSB.RoastingSync;
 using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;

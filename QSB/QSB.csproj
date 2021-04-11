@@ -242,7 +242,7 @@
     <Compile Include="TimeSync\Patches\WakeUpPatches.cs" />
     <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
-    <Compile Include="Tools\Events\PlayerProbeEvent.cs" />
+    <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
     <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Events\PlayerSectorEvent.cs" />
@@ -252,7 +252,7 @@
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\WorldObjects\QSBGeyser.cs" />
-    <Compile Include="Tools\Events\PlayerProbeLauncherEvent.cs" />
+    <Compile Include="ProbeSync\Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
@@ -286,7 +286,7 @@
     <Compile Include="WorldSync\Events\EnumWorldObjectMessage.cs" />
     <Compile Include="WorldSync\Events\WorldObjectMessage.cs" />
     <Compile Include="Tools\QSBFlashlight.cs" />
-    <Compile Include="Tools\QSBProbe.cs" />
+    <Compile Include="ProbeSync\QSBProbe.cs" />
     <Compile Include="Tools\QSBTool.cs" />
     <Compile Include="Tools\ToolType.cs" />
     <Compile Include="ProbeSync\TransformSync\PlayerProbeSync.cs" />

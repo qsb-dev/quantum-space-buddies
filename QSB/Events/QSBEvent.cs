@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
-using QSB.TransformSync;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
