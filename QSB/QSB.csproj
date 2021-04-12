@@ -225,7 +225,8 @@
     <Compile Include="RoastingSync\Patches\RoastingPatches.cs" />
     <Compile Include="SectorSync\FakeSector.cs" />
     <Compile Include="ShipSync\Events\FlyShipEvent.cs" />
-    <Compile Include="ShipSync\Events\HatchEvent.cs" />
+    <Compile Include="ShipSync\Events\OpenHatchEvent.cs" />
+    <Compile Include="ShipSync\Patches\ShipPatches.cs" />
     <Compile Include="ShipSync\ShipManager.cs" />
     <Compile Include="StatueSync\Events\StartStatueEvent.cs" />
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />

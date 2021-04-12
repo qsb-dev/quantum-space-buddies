@@ -43,6 +43,7 @@
 		CampfireState,
 		Roasting,
 		MarshmallowEvent,
-		FlyShip
+		FlyShip,
+		OpenHatch
 	}
 }

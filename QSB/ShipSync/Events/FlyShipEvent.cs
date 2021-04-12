@@ -39,7 +39,7 @@ namespace QSB.ShipSync.Events
 		{
 			SetCurrentFlyer(message.Value, message.AboutId);
 			var shipCockpitController = GameObject.Find("ShipCockpitController").GetComponent<ShipCockpitController>();
-			var interactVolume = shipCockpitController.GetValue<SingleInteractionVolume>("_interactVolumes");
+			var interactVolume = shipCockpitController.GetValue<SingleInteractionVolume>("_interactVolume");
 			if (message.Value)
 			{
 				interactVolume.DisableInteraction();
