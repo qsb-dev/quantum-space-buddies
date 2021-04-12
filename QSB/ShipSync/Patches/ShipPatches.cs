@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Patches;
+using UnityEngine;
 
 namespace QSB.ShipSync.Patches
 {
@@ -25,7 +26,7 @@ namespace QSB.ShipSync.Patches
 			return true;
 		}
 
-		public static bool HatchController_OnEntry(GameObjectActivationTrigger hitObj)
+		public static bool HatchController_OnEntry(GameObject hitObj)
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{

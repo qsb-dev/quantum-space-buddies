@@ -79,7 +79,7 @@ namespace QSB.Events
 				new IdentifySignalEvent(),
 				// Ship
 				new FlyShipEvent(),
-				new OpenHatchEvent()
+				new HatchEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)

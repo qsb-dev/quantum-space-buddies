@@ -63,6 +63,6 @@
 		public static string QSBExitPlatform = "QSBExitPlatform";
 		public static string QSBCampfireState = "QSBCampfireState";
 		public static string QSBMarshmallowEvent = "QSBMarshmallowEvent";
-		public static string QSBHatchState = "QSBOpenHatch";
+		public static string QSBHatchState = "QSBHatchState";
 	}
 }
