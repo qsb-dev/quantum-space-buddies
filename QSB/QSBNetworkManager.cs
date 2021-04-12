@@ -38,7 +38,7 @@ namespace QSB
 
 		private QSBNetworkLobby _lobby;
 		private AssetBundle _assetBundle;
-		private GameObject _shipPrefab;
+		//private GameObject _shipPrefab;
 		private GameObject _cameraPrefab;
 		private GameObject _probePrefab;
 		private GameObject _stickPrefab;
@@ -59,12 +59,6 @@ namespace QSB
 			playerPrefab.AddComponent<AnimationSync>();
 			playerPrefab.AddComponent<WakeUpSync>();
 			playerPrefab.AddComponent<InstrumentsManager>();
-
-			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-			SetupNetworkId(_shipPrefab);
-			SetupNetworkTransform(_shipPrefab);
-			_shipPrefab.AddComponent<ShipTransformSync>();
-			spawnPrefabs.Add(_shipPrefab);
 
 			_cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
 			SetupNetworkId(_cameraPrefab);
@@ -159,7 +153,6 @@ namespace QSB
 			DebugLog.DebugWrite($"OnServerAddPlayer {playerControllerId}", MessageType.Info);
 			base.OnServerAddPlayer(connection, playerControllerId);
 
-			QNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_stickPrefab), connection);

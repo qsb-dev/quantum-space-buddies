@@ -14,6 +14,7 @@ using QSB.PoolSync;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
+using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.TranslationSync;
@@ -98,6 +99,7 @@ namespace QSB
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
+			gameObject.AddComponent<ShipManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();

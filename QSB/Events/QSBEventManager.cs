@@ -13,6 +13,7 @@ using QSB.Player.Events;
 using QSB.ProbeSync.Events;
 using QSB.QuantumSync.Events;
 using QSB.RoastingSync.Events;
+using QSB.ShipSync.Events;
 using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
@@ -75,7 +76,9 @@ namespace QSB.Events
 				new DialogueConditionEvent(),
 				new RevealFactEvent(),
 				new IdentifyFrequencyEvent(),
-				new IdentifySignalEvent()
+				new IdentifySignalEvent(),
+				// Ship
+				new FlyShipEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)

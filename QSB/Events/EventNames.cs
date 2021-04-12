@@ -22,6 +22,8 @@
 		public static string ExitQuantumMoon = "PlayerExitQuantumMoon";
 		public static string EnterRoastingMode = "EnterRoastingMode";
 		public static string ExitRoastingMode = "ExitRoastingMode";
+		public static string EnterFlightConsole = "EnterFlightConsole";
+		public static string ExitFlightConsole = "ExitFlightConsole";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.

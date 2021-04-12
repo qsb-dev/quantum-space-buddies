@@ -42,6 +42,7 @@
 		PlayerKick,
 		CampfireState,
 		Roasting,
-		MarshmallowEvent
+		MarshmallowEvent,
+		FlyShip
 	}
 }
