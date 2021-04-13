@@ -60,5 +60,14 @@ namespace QSB.Utility
 
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
 			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+
+		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
+			where ThisType : BaseType
+		{
+			var method = typeof(BaseType).GetMethod(methodName);
+			var functionPointer = method.MethodHandle.GetFunctionPointer();
+			var methodAction = (Action)Activator.CreateInstance(typeof(Action), obj, functionPointer);
+			methodAction();
+		}
 	}
 }

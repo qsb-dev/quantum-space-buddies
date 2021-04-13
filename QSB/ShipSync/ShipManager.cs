@@ -36,11 +36,6 @@ namespace QSB.ShipSync
 		{
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
 			Instance = this;
-
-			var shipTransform = Locator.GetShipTransform();
-			HatchController = shipTransform.GetComponentInChildren<HatchController>();
-			HatchInteractZone = HatchController.GetComponent<InteractZone>();
-			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
 		}
 
 		private void OnSceneLoaded(OWScene scene)
@@ -49,7 +44,11 @@ namespace QSB.ShipSync
 			{
 				return;
 			}
-			HatchInteractZone.SetValue("_viewingWindow", 90f);
+
+			var shipTransform = GameObject.Find("Ship_Body");
+			HatchController = shipTransform.GetComponentInChildren<HatchController>();
+			HatchInteractZone = HatchController.GetComponent<InteractZone>();
+			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
 
 			var sphereShape = HatchController.GetComponent<SphereShape>();
 			sphereShape.radius = 2.5f;

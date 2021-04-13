@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
 using QSB.Patches;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace QSB.ShipSync.Patches
 			QSBCore.HarmonyHelper.AddPrefix<HatchController>("OnPressInteract", typeof(ShipPatches), nameof(HatchController_OnPressInteract));
 			QSBCore.HarmonyHelper.AddPrefix<HatchController>("OnEntry", typeof(ShipPatches), nameof(HatchController_OnEntry));
 			QSBCore.HarmonyHelper.AddPrefix<ShipTractorBeamSwitch>("OnTriggerExit", typeof(ShipPatches), nameof(ShipTractorBeamSwitch_OnTriggerExit));
+			QSBCore.HarmonyHelper.AddPrefix<InteractZone>("UpdateInteractVolume", typeof(ShipPatches), nameof(InteractZone_UpdateInteractVolume));
 		}
 
 		public override void DoUnpatches()
@@ -22,6 +24,7 @@ namespace QSB.ShipSync.Patches
 			QSBCore.HarmonyHelper.Unpatch<HatchController>("OnPressInteract");
 			QSBCore.HarmonyHelper.Unpatch<HatchController>("OnEntry");
 			QSBCore.HarmonyHelper.Unpatch<ShipTractorBeamSwitch>("OnTriggerExit");
+			QSBCore.HarmonyHelper.Unpatch<InteractZone>("UpdateInteractVolume");
 		}
 
 		public static bool HatchController_OnPressInteract()
@@ -51,6 +54,36 @@ namespace QSB.ShipSync.Patches
 				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
 				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
 			}
+			return false;
+		}
+
+		public static bool InteractZone_UpdateInteractVolume(InteractZone __instance, OWCamera ____playerCam, ref bool ____focused)
+		{
+			/* Angle for interaction with the ship hatch
+			 *  
+			 *  \  80°  / - If in ship
+			 *   \     /
+			 *    \   /
+			 *   [=====]  - Hatch
+			 *    /   \
+			 *   /     \
+			 *  / 280°  \ - If not in ship
+			 *  
+			 */
+
+			if (!QSBCore.HasWokenUp || __instance != ShipManager.Instance.HatchInteractZone)
+			{
+				return true;
+			}
+
+			var angle = 2f * Vector3.Angle(____playerCam.transform.forward, __instance.transform.forward);
+
+			____focused = PlayerState.IsInsideShip() 
+				? angle <= 80 
+				: angle >= 280;
+
+			__instance.CallBase<InteractZone, SingleInteractionVolume>("UpdateInteractVolume");
+
 			return false;
 		}
 	}
