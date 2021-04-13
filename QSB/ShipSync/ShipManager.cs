@@ -14,6 +14,10 @@ namespace QSB.ShipSync
 	{
 		public static ShipManager Instance;
 
+		public InteractZone HatchInteractZone;
+		public HatchController HatchController;
+		public ShipTractorBeamSwitch ShipTractorBeam;
+
 		private uint _currentFlyer = uint.MaxValue;
 		public uint CurrentFlyer
 		{
@@ -32,6 +36,11 @@ namespace QSB.ShipSync
 		{
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
 			Instance = this;
+
+			var shipTransform = Locator.GetShipTransform();
+			HatchController = shipTransform.GetComponentInChildren<HatchController>();
+			HatchInteractZone = HatchController.GetComponent<InteractZone>();
+			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
 		}
 
 		private void OnSceneLoaded(OWScene scene)
@@ -40,11 +49,9 @@ namespace QSB.ShipSync
 			{
 				return;
 			}
-			var shipHatchControls = GameObject.Find("Hatch/HatchControls");
-			var interactZone = shipHatchControls.GetComponent<InteractZone>();
-			interactZone.SetValue("_viewingWindow", 360f);
+			HatchInteractZone.SetValue("_viewingWindow", 90f);
 
-			var sphereShape = shipHatchControls.GetComponent<SphereShape>();
+			var sphereShape = HatchController.GetComponent<SphereShape>();
 			sphereShape.radius = 2.5f;
 			sphereShape.center = new Vector3(0, 0, 1);
 		}

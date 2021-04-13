@@ -156,6 +156,11 @@ namespace QSB
 				: $"{sector.AttachedObject.name} : {sector.IsFakeSector}";
 			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
 			offset3 += _debugLineSpacing;
+			var shipTransform = Locator.GetShipTransform();
+			var hatchController = shipTransform.GetComponentInChildren<HatchController>();
+			var interactZone = hatchController.GetComponent<InteractZone>();
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Hatch angle : {2 * Vector3.Angle(Locator.GetPlayerCamera().transform.forward, interactZone.transform.forward)}");
+			offset3 += _debugLineSpacing;
 
 			var offset2 = 10f;
 			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");

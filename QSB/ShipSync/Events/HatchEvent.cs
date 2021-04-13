@@ -26,16 +26,14 @@ namespace QSB.ShipSync.Events
 
 		public override void OnReceiveRemote(bool server, BoolMessage message)
 		{
-			var shipTransform = Locator.GetShipTransform();
-			var hatchController = shipTransform.GetComponentInChildren<HatchController>();
 			if (message.Value)
 			{
-				hatchController.Invoke("OpenHatch");
+				ShipManager.Instance.HatchController.Invoke("OpenHatch");
 			}
 			else
 			{
-				Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First().DeactivateTractorBeam();
-				hatchController.Invoke("CloseHatch");
+				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
+				ShipManager.Instance.HatchController.Invoke("CloseHatch");
 			}
 		}
 	}

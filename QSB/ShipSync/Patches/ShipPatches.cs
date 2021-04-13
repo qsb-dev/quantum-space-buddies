@@ -28,7 +28,7 @@ namespace QSB.ShipSync.Patches
 		{
 			if (!PlayerState.IsInsideShip())
 			{
-				Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First().ActivateTractorBeam();
+				ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
 			}
 			QSBEventManager.FireEvent(EventNames.QSBHatchState, true);
 			return true;
@@ -45,11 +45,10 @@ namespace QSB.ShipSync.Patches
 
 		public static bool ShipTractorBeamSwitch_OnTriggerExit(Collider hitCollider, bool ____isPlayerInShip, bool ____functional)
 		{
-			var shipTransform = Locator.GetShipTransform();
-			var hatchController = shipTransform.GetComponentInChildren<HatchController>();
-			if (!____isPlayerInShip && ____functional && hitCollider.CompareTag("PlayerDetector") && !hatchController.GetValue<GameObject>("_hatchObject").activeSelf)
+			if (!____isPlayerInShip && ____functional && hitCollider.CompareTag("PlayerDetector") && !ShipManager.Instance.HatchController.GetValue<GameObject>("_hatchObject").activeSelf)
 			{
-				hatchController.Invoke("CloseHatch");
+				ShipManager.Instance.HatchController.Invoke("CloseHatch");
+				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
 				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
 			}
 			return false;
