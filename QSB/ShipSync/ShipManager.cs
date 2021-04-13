@@ -1,8 +1,10 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 
@@ -11,9 +13,6 @@ namespace QSB.ShipSync
 	class ShipManager : MonoBehaviour
 	{
 		public static ShipManager Instance;
-
-		private void Awake() 
-			=> Instance = this;
 
 		private uint _currentFlyer = uint.MaxValue;
 		public uint CurrentFlyer
@@ -27,6 +26,27 @@ namespace QSB.ShipSync
 				}
 				_currentFlyer = value;
 			}
+		}
+
+		private void Awake()
+		{
+			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
+			Instance = this;
+		}
+
+		private void OnSceneLoaded(OWScene scene)
+		{
+			if (scene == OWScene.EyeOfTheUniverse)
+			{
+				return;
+			}
+			var shipHatchControls = GameObject.Find("Hatch/HatchControls");
+			var interactZone = shipHatchControls.GetComponent<InteractZone>();
+			interactZone.SetValue("_viewingWindow", 360f);
+
+			var sphereShape = shipHatchControls.GetComponent<SphereShape>();
+			sphereShape.radius = 2.5f;
+			sphereShape.center = new Vector3(0, 0, 1);
 		}
 	}
 }
