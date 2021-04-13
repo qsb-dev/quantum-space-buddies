@@ -100,6 +100,7 @@ namespace QSB
 		{
 			var trans = go.AddComponent<QNetworkTransform>();
 			trans.SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
+			trans.SendInterval = go.GetComponent<NetworkTransform>().sendInterval;
 			foreach (var item in go.GetComponents<NetworkTransformChild>())
 			{
 				var child = go.AddComponent<QNetworkTransformChild>();
