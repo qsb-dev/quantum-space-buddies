@@ -31,14 +31,14 @@ namespace QSB
 		public event Action OnNetworkManagerReady;
 
 		public bool IsReady { get; private set; }
-		public GameObject OrbPrefab { get; set; }
+		public GameObject OrbPrefab { get; private set; }
+		public GameObject ShipPrefab { get; private set; }
 
 		private const int MaxConnections = 128;
 		private const int MaxBufferedPackets = 64;
 
 		private QSBNetworkLobby _lobby;
 		private AssetBundle _assetBundle;
-		//private GameObject _shipPrefab;
 		private GameObject _cameraPrefab;
 		private GameObject _probePrefab;
 		private GameObject _stickPrefab;
@@ -65,6 +65,12 @@ namespace QSB
 			SetupNetworkTransform(_cameraPrefab);
 			_cameraPrefab.AddComponent<PlayerCameraSync>();
 			spawnPrefabs.Add(_cameraPrefab);
+
+			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
+			SetupNetworkId(ShipPrefab);
+			SetupNetworkTransform(_cameraPrefab);
+			ShipPrefab.AddComponent<ShipTransformSync>();
+			spawnPrefabs.Add(ShipPrefab);
 
 			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
 			SetupNetworkId(_probePrefab);
