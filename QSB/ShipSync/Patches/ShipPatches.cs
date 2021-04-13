@@ -45,10 +45,10 @@ namespace QSB.ShipSync.Patches
 
 		public static bool ShipTractorBeamSwitch_OnTriggerExit(Collider hitCollider, bool ____isPlayerInShip, bool ____functional)
 		{
-			if (!____isPlayerInShip && ____functional && hitCollider.CompareTag("PlayerDetector"))
+			var shipTransform = Locator.GetShipTransform();
+			var hatchController = shipTransform.GetComponentInChildren<HatchController>();
+			if (!____isPlayerInShip && ____functional && hitCollider.CompareTag("PlayerDetector") && !hatchController.GetValue<GameObject>("_hatchObject").activeSelf)
 			{
-				var shipTransform = Locator.GetShipTransform();
-				var hatchController = shipTransform.GetComponentInChildren<HatchController>();
 				hatchController.Invoke("CloseHatch");
 				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
 			}
