@@ -9,6 +9,8 @@ namespace QSB.ProbeSync.TransformSync
 {
 	public class PlayerProbeSync : SyncObjectTransformSync
 	{
+		public override SyncType SyncType => SyncType.PlayerSyncObject;
+
 		private Transform _disabledSocket;
 
 		private Transform GetProbe() =>

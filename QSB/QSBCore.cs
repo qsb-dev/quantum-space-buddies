@@ -15,6 +15,7 @@ using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.ShipSync;
+using QSB.ShipSync.WorldObjects;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.TranslationSync;
@@ -112,6 +113,7 @@ namespace QSB
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
+			gameObject.AddComponent<ShipWorldObjectManager>();
 
 			DebugBoxManager.Init();
 
@@ -161,6 +163,15 @@ namespace QSB
 			var interactZone = hatchController.GetComponent<InteractZone>();
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Hatch angle : {2 * Vector3.Angle(Locator.GetPlayerCamera().transform.forward, interactZone.transform.forward)}");
 			offset3 += _debugLineSpacing;
+
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
+			offset3 += _debugLineSpacing;
+			var ship = QSBWorldSync.GetWorldFromId<QSBShip>(0);
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.TransformSync.HasAuthority}");
+			offset3 += _debugLineSpacing;
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {ship.TransformSync.ReferenceSector.Name}");
+			offset3 += _debugLineSpacing;
+
 
 			var offset2 = 10f;
 			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");

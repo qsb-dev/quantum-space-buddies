@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
+using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace QSB.SectorSync
 		public List<QSBSector> SectorList = new List<QSBSector>();
 
 		private SectorDetector _sectorDetector;
+		private ITransformSync _owner;
 
 		private void OnDestroy()
 		{
@@ -34,6 +36,21 @@ namespace QSB.SectorSync
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
 		}
+
+		public void SetOwner(ITransformSync owner)
+		{
+			if (owner == null)
+			{
+				DebugLog.ToConsole($"Warning - Trying to set owner of a SectorSync to a null value.", MessageType.Warning);
+			}
+			if (_owner != null)
+			{
+				DebugLog.ToConsole($"Warning - Trying to set owner of a SectorSync that already has an owner.", MessageType.Warning);
+			}
+			_owner = owner;
+		}
+
+		public ITransformSync GetOwner() => _owner;
 
 		private void AddSector(Sector sector)
 		{
@@ -74,7 +91,7 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count(x => x.ShouldSyncTo()) == 0
+			var listToCheck = SectorList.Count(x => x.ShouldSyncTo(_owner)) == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>()
 				: SectorList;
 
@@ -89,7 +106,7 @@ namespace QSB.SectorSync
 			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& sector.ShouldSyncTo());
+				&& sector.ShouldSyncTo(_owner));
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
 				return default;

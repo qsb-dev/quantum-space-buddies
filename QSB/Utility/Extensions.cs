@@ -9,7 +9,7 @@ namespace QSB.Utility
 {
 	public static class Extensions
 	{
-		// GAMEOBJECT
+		// UNITY
 		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
 
 		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
@@ -30,6 +30,9 @@ namespace QSB.Utility
 			original.SetActive(true);
 			return copy;
 		}
+
+		public static Quaternion TransformRotation(this Transform transform, Quaternion localRotation) 
+			=> transform.rotation * localRotation;
 
 		public static Transform InstantiateInactive(this Transform original) =>
 			original.gameObject.InstantiateInactive().transform;

@@ -1,21 +1,19 @@
 ﻿using OWML.Common;
-using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
-using System.Linq;
+using QSB.WorldSync;
+using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	public abstract class SyncObjectTransformSync : PlayerSyncObject, ITransformSync
+	public abstract class WorldObjectTransformSync : QNetworkBehaviour, ITransformSync
 	{
 		public abstract bool IsReady { get; }
 
-		protected abstract Transform InitLocalTransform();
-		protected abstract Transform InitRemoteTransform();
+		protected abstract IWorldObject GetWorldObject();
 
-		public Transform SyncedTransform { get; private set; }
+		public IWorldObject SyncedWorldObject { get; private set; }
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 		public abstract SyncType SyncType { get; }
@@ -28,13 +26,9 @@ namespace QSB.TransformSync
 		private bool _isVisible;
 		private float _previousDistance;
 
-		protected override void Start()
+		protected void Start()
 		{
-			base.Start();
-			var lowestBound = QSBPlayerManager.GetSyncObjects<PlayerTransformSync>()
-				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
-			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
-
+			DebugLog.DebugWrite($"Start of WorldObjectTransformSync");
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
 			SectorSync.SetOwner(this);
 
@@ -42,13 +36,8 @@ namespace QSB.TransformSync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected override void OnDestroy()
+		protected void OnDestroy()
 		{
-			base.OnDestroy();
-			if (!HasAuthority && SyncedTransform != null)
-			{
-				Destroy(SyncedTransform.gameObject);
-			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (SectorSync != null)
 			{
@@ -61,8 +50,10 @@ namespace QSB.TransformSync
 
 		protected void Init()
 		{
-			SyncedTransform = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
-			SetReferenceSector(SectorSync.GetClosestSector(SyncedTransform));
+			SyncedWorldObject = GetWorldObject();
+			SyncedWorldObject.TransformSync = this;
+			DebugLog.DebugWrite($"Got SyncedWorldObject as {SyncedWorldObject.Name}");
+			SetReferenceSector(SectorSync.GetClosestSector(SyncedWorldObject.ReturnObject().transform));
 			_isInitialized = true;
 			_isVisible = true;
 		}
@@ -74,7 +65,7 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			Popcron.Gizmos.Cube(SyncedTransform.position, SyncedTransform.rotation, Vector3.one / 2, Color.green); // Local object
+			Popcron.Gizmos.Cube(SyncedWorldObject.ReturnObject().transform.position, SyncedWorldObject.ReturnObject().transform.rotation, Vector3.one / 2, Color.green); // Local object
 			var targetPosition = ReferenceSector.Transform.TransformPoint(transform.position);
 			var targetRotation = ReferenceSector.Transform.TransformRotation(transform.rotation);
 			Popcron.Gizmos.Cube(targetPosition, targetRotation, Vector3.one / 2, Color.red); // Local object
@@ -97,9 +88,9 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			if (SyncedTransform == null)
+			if (SyncedWorldObject == null)
 			{
-				DebugLog.ToConsole($"Warning - SyncedTransform {Player.PlayerId}.{GetType().Name} is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - SyncedTransform for {GetType().Name} is null.", MessageType.Warning);
 				return;
 			}
 
@@ -112,16 +103,16 @@ namespace QSB.TransformSync
 			{
 				if (ReferenceSector == null || ReferenceSector.AttachedObject == null)
 				{
-					DebugLog.ToConsole($"Error - ReferenceSector has null value for {Player.PlayerId}.{GetType().Name}", MessageType.Error);
+					DebugLog.ToConsole($"Error - ReferenceSector has null value for {SyncedWorldObject.Name}", MessageType.Error);
 					return;
 				}
-				transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
-				transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+				transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedWorldObject.ReturnObject().transform.position);
+				transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedWorldObject.ReturnObject().transform.rotation);
 				return;
 			}
 
 			// If this script is attached to any other body, eg the representations of other players
-			if (SyncedTransform.position == Vector3.zero)
+			if (SyncedWorldObject.ReturnObject().transform.position == Vector3.zero)
 			{
 				Hide();
 			}
@@ -130,8 +121,10 @@ namespace QSB.TransformSync
 				Show();
 			}
 
-			SyncedTransform.localPosition = SmartSmoothDamp(SyncedTransform.localPosition, transform.position);
-			SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+			var syncedTransform = SyncedWorldObject.ReturnObject().transform;
+
+			syncedTransform.localPosition = SmartSmoothDamp(syncedTransform.localPosition, transform.position);
+			syncedTransform.localRotation = QuaternionHelper.SmoothDamp(syncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
@@ -149,6 +142,7 @@ namespace QSB.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
+			DebugLog.DebugWrite($"Setting reference sector of {SyncedWorldObject.Name} to {sector.Name}");
 			if (sector == ReferenceSector || sector == default(QSBSector))
 			{
 				return;
@@ -157,9 +151,9 @@ namespace QSB.TransformSync
 			ReferenceSector = sector;
 			if (!HasAuthority)
 			{
-				SyncedTransform.SetParent(sector.Transform, true);
-				transform.position = sector.Transform.InverseTransformPoint(SyncedTransform.position);
-				transform.rotation = sector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+				SyncedWorldObject.ReturnObject().transform.SetParent(sector.Transform, true);
+				transform.position = sector.Transform.InverseTransformPoint(SyncedWorldObject.ReturnObject().transform.position);
+				transform.rotation = sector.Transform.InverseTransformRotation(SyncedWorldObject.ReturnObject().transform.rotation);
 			}
 		}
 
@@ -167,7 +161,7 @@ namespace QSB.TransformSync
 		{
 			if (!_isVisible)
 			{
-				SyncedTransform.gameObject.Show();
+				SyncedWorldObject.ReturnObject().gameObject.Show();
 				_isVisible = true;
 			}
 		}
@@ -176,7 +170,7 @@ namespace QSB.TransformSync
 		{
 			if (_isVisible)
 			{
-				SyncedTransform.gameObject.Hide();
+				SyncedWorldObject.ReturnObject().gameObject.Hide();
 				_isVisible = false;
 			}
 		}

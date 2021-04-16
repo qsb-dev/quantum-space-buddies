@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 
-		public bool ShouldSyncTo()
+		public bool ShouldSyncTo(ITransformSync sync)
 		{
 			if (AttachedObject == null)
 			{
@@ -41,6 +42,11 @@ namespace QSB.SectorSync.WorldObjects
 			}
 
 			if (!AttachedObject.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+
+			if (sync.SyncType == SyncType.Ship && Type == Sector.Name.Ship)
 			{
 				return false;
 			}

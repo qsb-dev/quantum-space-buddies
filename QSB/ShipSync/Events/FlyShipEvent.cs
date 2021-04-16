@@ -2,6 +2,12 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.ShipSync.TransformSync;
+using QSB.ShipSync.WorldObjects;
+using QSB.Utility;
+using QSB.WorldSync;
+using QuantumUNET;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.ShipSync.Events
@@ -55,6 +61,43 @@ namespace QSB.ShipSync.Events
 			ShipManager.Instance.CurrentFlyer = isFlying 
 				? id 
 				: uint.MaxValue;
+
+			if (id == uint.MaxValue)
+			{
+				DebugLog.DebugWrite($"ShipDetector setactive {QSBCore.IsServer}");
+				Locator.GetShipDetector().SetActive(QSBCore.IsServer);
+			}
+			else if (id == LocalPlayerId)
+			{
+				DebugLog.DebugWrite($"Enable ship detector");
+				Locator.GetShipDetector().SetActive(true);
+			}
+			else
+			{
+				DebugLog.DebugWrite($"Disable ship detector");
+				Locator.GetShipDetector().SetActive(false);
+			}
+
+			if (QSBCore.IsServer)
+			{
+				DebugLog.DebugWrite($"Change ship auth to {id}");
+				var fromPlayer = ShipManager.Instance.CurrentFlyer == uint.MaxValue
+					? QNetworkServer.connections.First(x => x.GetPlayerId() == QSBPlayerManager.LocalPlayerId)
+					: QNetworkServer.connections.First(x => x.GetPlayerId() == id);
+				var ship = QSBWorldSync.GetWorldFromId<QSBShip>(0).TransformSync;
+				var networkIdentity = ship.NetIdentity;
+
+				if (networkIdentity.ClientAuthorityOwner == fromPlayer)
+				{
+					return;
+				}
+
+				if (networkIdentity.ClientAuthorityOwner != null && networkIdentity.ClientAuthorityOwner != fromPlayer)
+				{
+					networkIdentity.RemoveClientAuthority(networkIdentity.ClientAuthorityOwner);
+				}
+				networkIdentity.AssignClientAuthority(fromPlayer);
+			}
 		}
 	}
 }

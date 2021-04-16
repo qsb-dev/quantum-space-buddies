@@ -1,17 +1,19 @@
-﻿using QSB.Utility;
+﻿using QSB.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	public class NomaiOrbTransformSync : QNetworkBehaviour
+	public class NomaiOrbTransformSync : QNetworkBehaviour, ITransformSync
 	{
 		public NomaiInterfaceOrb AttachedOrb { get; private set; }
 		public Transform OrbTransform { get; private set; }
+		public SyncType SyncType => SyncType.WorldObject;
 
 		private int Index => QSBWorldSync.OrbSyncList.IndexOf(this);
-
 		private bool _isInitialized;
 		private bool _isReady;
 		private Transform _orbParent;

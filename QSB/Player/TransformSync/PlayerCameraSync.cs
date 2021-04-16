@@ -8,6 +8,8 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerCameraSync : SyncObjectTransformSync
 	{
+		public override SyncType SyncType => SyncType.PlayerSyncObject;
+
 		protected override Transform InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());

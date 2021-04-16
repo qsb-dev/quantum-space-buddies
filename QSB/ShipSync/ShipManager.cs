@@ -1,6 +1,9 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
+using QuantumUNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +56,12 @@ namespace QSB.ShipSync
 			var sphereShape = HatchController.GetComponent<SphereShape>();
 			sphereShape.radius = 2.5f;
 			sphereShape.center = new Vector3(0, 0, 1);
+
+			if (QSBCore.IsServer)
+			{
+				DebugLog.DebugWrite($"SPAWN SHIP");
+				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
+			}
 		}
 	}
 }

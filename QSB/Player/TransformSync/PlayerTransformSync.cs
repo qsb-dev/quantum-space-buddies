@@ -7,6 +7,8 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SyncObjectTransformSync
 	{
+		public override SyncType SyncType => SyncType.Player;
+
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
 		static PlayerTransformSync() => AnimControllerPatch.Init();

@@ -228,11 +228,16 @@
     <Compile Include="ShipSync\Events\HatchEvent.cs" />
     <Compile Include="ShipSync\Patches\ShipPatches.cs" />
     <Compile Include="ShipSync\ShipManager.cs" />
+    <Compile Include="ShipSync\ShipWorldObjectManager.cs" />
+    <Compile Include="ShipSync\WorldObjects\QSBShip.cs" />
     <Compile Include="StatueSync\Events\StartStatueEvent.cs" />
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
+    <Compile Include="TransformSync\ITransformSync.cs" />
+    <Compile Include="TransformSync\SyncType.cs" />
+    <Compile Include="TransformSync\WorldObjectTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
