@@ -1,12 +1,13 @@
 ﻿using OWML.Common;
 using QSB.Player;
 using QSB.Tools;
+using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.ProbeSync.TransformSync
 {
-	public class PlayerProbeSync : TransformSync
+	public class PlayerProbeSync : SyncObjectTransformSync
 	{
 		private Transform _disabledSocket;
 

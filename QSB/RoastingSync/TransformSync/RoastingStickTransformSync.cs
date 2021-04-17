@@ -1,13 +1,13 @@
 ﻿using OWML.Utils;
 using QSB.Player;
-using QSB.RoastingSync;
+using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.RoastingSync.TransformSync
 {
-	internal class RoastingStickTransformSync : TransformSync
+	internal class RoastingStickTransformSync : SyncObjectTransformSync
 	{
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);

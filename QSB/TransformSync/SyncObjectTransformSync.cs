@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using System.Linq;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	public abstract class TransformSync : PlayerSyncObject
+	public abstract class SyncObjectTransformSync : PlayerSyncObject
 	{
 		public abstract bool IsReady { get; }
 

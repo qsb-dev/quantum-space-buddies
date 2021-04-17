@@ -10,6 +10,7 @@ using QSB.ItemSync.Events;
 using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
 using QSB.Player.Events;
+using QSB.ProbeSync.Events;
 using QSB.QuantumSync.Events;
 using QSB.RoastingSync.Events;
 using QSB.StatueSync.Events;
