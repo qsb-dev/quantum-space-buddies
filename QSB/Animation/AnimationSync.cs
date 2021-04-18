@@ -165,7 +165,7 @@ namespace QSB.Animation
 
 		public void SetSuitState(bool state)
 		{
-			if (!Player.IsReady)
+			if (!Player.PlayerStates.IsReady)
 			{
 				return;
 			}
