@@ -143,6 +143,7 @@
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
+    <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
@@ -300,11 +301,9 @@
     <Compile Include="Messaging\MessageHandler.cs" />
     <Compile Include="Events\EventType.cs" />
     <Compile Include="Player\PlayerInfo.cs" />
-    <Compile Include="Player\State.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
     <Compile Include="Player\QSBPlayerManager.cs" />
     <Compile Include="Player\TransformSync\PlayerCameraSync.cs" />
-    <Compile Include="Utility\FlagsHelper.cs" />
     <Compile Include="Player\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />

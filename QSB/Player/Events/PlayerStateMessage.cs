@@ -7,14 +7,22 @@ namespace QSB.Player.Events
 	{
 		public string PlayerName { get; set; }
 		public bool PlayerReady { get; set; }
-		public State PlayerState { get; set; }
+		public PlayerState PlayerState { get; set; }
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerName = reader.ReadString();
 			PlayerReady = reader.ReadBoolean();
-			PlayerState = (State)reader.ReadInt32();
+			PlayerState = new PlayerState
+			{
+				FlashlightActive = reader.ReadBoolean(),
+				SuitedUp = reader.ReadBoolean(),
+				ProbeLauncherEquipped = reader.ReadBoolean(),
+				SignalscopeEquipped = reader.ReadBoolean(),
+				TranslatorEquipped = reader.ReadBoolean(),
+				ProbeActive = reader.ReadBoolean()
+			};
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -22,7 +30,12 @@ namespace QSB.Player.Events
 			base.Serialize(writer);
 			writer.Write(PlayerName);
 			writer.Write(PlayerReady);
-			writer.Write((int)PlayerState);
+			writer.Write(PlayerState.FlashlightActive);
+			writer.Write(PlayerState.SuitedUp);
+			writer.Write(PlayerState.ProbeLauncherEquipped);
+			writer.Write(PlayerState.SignalscopeEquipped);
+			writer.Write(PlayerState.TranslatorEquipped);
+			writer.Write(PlayerState.ProbeActive);
 		}
 	}
 }

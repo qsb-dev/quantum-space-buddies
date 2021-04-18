@@ -26,7 +26,7 @@ namespace QSB.Player.Events
 			AboutId = player.PlayerId,
 			PlayerName = player.Name,
 			PlayerReady = player.IsReady,
-			PlayerState = player.State
+			PlayerState = player.PlayerStates
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerStateMessage message)

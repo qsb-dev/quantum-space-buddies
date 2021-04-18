@@ -79,7 +79,7 @@ namespace QSB.Player
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			player.IsReady = message.PlayerReady;
-			player.State = message.PlayerState;
+			player.PlayerStates = message.PlayerState;
 			if (LocalPlayer.IsReady)
 			{
 				player.UpdateStateObjects();

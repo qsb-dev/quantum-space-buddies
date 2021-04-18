@@ -70,7 +70,7 @@ namespace QSB.ProbeSync.TransformSync
 				DebugLog.ToConsole($"DisabledSocket is null for {PlayerId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
 				return;
 			}
-			if (Player.GetState(State.ProbeActive) || ReferenceSector?.AttachedObject == null)
+			if (Player.PlayerStates.ProbeActive || ReferenceSector?.AttachedObject == null)
 			{
 				return;
 			}
