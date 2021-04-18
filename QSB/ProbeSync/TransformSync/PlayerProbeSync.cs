@@ -56,37 +56,6 @@ namespace QSB.ProbeSync.TransformSync
 			_disabledSocket = socket;
 		}
 
-		/*
-		protected override void UpdateTransform()
-		{
-			base.UpdateTransform();
-			if (Player == null)
-			{
-				DebugLog.ToConsole($"Player is null for {AttachedNetId}!", MessageType.Error);
-				return;
-			}
-			if (_disabledSocket == null)
-			{
-				DebugLog.ToConsole($"DisabledSocket is null for {PlayerId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
-				return;
-			}
-			if (Player.PlayerStates.ProbeActive || ReferenceSector?.AttachedObject == null)
-			{
-				return;
-			}
-			if (HasAuthority)
-			{
-				transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
-				return;
-			}
-			if (SyncedTransform.position == Vector3.zero)
-			{
-				return;
-			}
-			SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
-		}
-		*/
-
 		public override bool IsReady => Locator.GetProbe() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
