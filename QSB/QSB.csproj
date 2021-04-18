@@ -74,7 +74,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>D:\EpicGames\OuterWilds\OuterWilds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -142,6 +142,7 @@
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
+    <Compile Include="Player\Patches\PlayerPatches.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />
