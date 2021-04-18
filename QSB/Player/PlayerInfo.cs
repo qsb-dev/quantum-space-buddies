@@ -14,7 +14,6 @@ namespace QSB.Player
 	{
 		public uint PlayerId { get; }
 		public string Name { get; set; }
-		public bool IsReady { get; set; } // TODO : move into PlayerStates
 		public PlayerHUDMarker HudMarker { get; set; }
 		public PlayerState PlayerStates { get; set; }
 
@@ -49,8 +48,8 @@ namespace QSB.Player
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
 
 		// Misc
-		public bool IsInMoon; // TODO : move into PlayerStates
-		public bool IsInShrine; // TODO : move into PlayerStates
+		public bool IsInMoon; // TODO : move into PlayerStates?
+		public bool IsInShrine; // TODO : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
 
 		public PlayerInfo(uint id)

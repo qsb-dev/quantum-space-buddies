@@ -25,7 +25,6 @@ namespace QSB.Player.Events
 		{
 			AboutId = player.PlayerId,
 			PlayerName = player.Name,
-			PlayerReady = player.IsReady,
 			PlayerState = player.PlayerStates
 		};
 

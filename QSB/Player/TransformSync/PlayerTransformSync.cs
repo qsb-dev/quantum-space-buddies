@@ -60,7 +60,7 @@ namespace QSB.Player.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !Player.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			if (!QSBCore.HasWokenUp || !Player.PlayerStates.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -71,7 +71,7 @@ namespace QSB.Player.TransformSync
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.IsReady
+			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
 	}

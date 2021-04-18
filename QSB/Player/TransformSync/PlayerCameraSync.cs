@@ -16,7 +16,7 @@ namespace QSB.Player.TransformSync
 			Player.Camera = Locator.GetPlayerCamera();
 			Player.CameraBody = body.gameObject;
 
-			Player.IsReady = true;
+			Player.PlayerStates.IsReady = true;
 			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
@@ -44,7 +44,7 @@ namespace QSB.Player.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !Player.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			if (!QSBCore.HasWokenUp || !Player.PlayerStates.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

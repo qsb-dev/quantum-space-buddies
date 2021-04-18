@@ -2,6 +2,8 @@
 {
 	public class PlayerState
 	{
+		public bool IsReady { get; set; }
+
 		public bool FlashlightActive { get; set; }
 		public bool SuitedUp { get; set; }
 		public bool ProbeLauncherEquipped { get; set; }
