@@ -8,6 +8,7 @@ using QSB.GeyserSync.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
+using QSB.Player.Patches;
 using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
@@ -49,7 +50,8 @@ namespace QSB.Patches
 				new GeyserPatches(),
 				new PoolPatches(),
 				new CampfirePatches(),
-				new RoastingPatches()
+				new RoastingPatches(),
+				new PlayerPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
