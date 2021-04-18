@@ -56,7 +56,7 @@ namespace QSB.ProbeSync.TransformSync
 			_disabledSocket = socket;
 		}
 
-
+		/*
 		protected override void UpdateTransform()
 		{
 			base.UpdateTransform();
@@ -85,6 +85,7 @@ namespace QSB.ProbeSync.TransformSync
 			}
 			SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
 		}
+		*/
 
 		public override bool IsReady => Locator.GetProbe() != null
 			&& Player != null
