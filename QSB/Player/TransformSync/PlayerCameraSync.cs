@@ -8,6 +8,8 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerCameraSync : SyncObjectTransformSync
 	{
+		public override float DistanceLeeway => 5f;
+
 		protected override Transform InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());

@@ -9,6 +9,8 @@ namespace QSB.RoastingSync.TransformSync
 {
 	internal class RoastingStickTransformSync : SyncObjectTransformSync
 	{
+		public override float DistanceLeeway => 5f;
+
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
 		private const float SmoothTime = 0.1f;

@@ -9,6 +9,8 @@ namespace QSB.Player.TransformSync
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
+		public override float DistanceLeeway => 5f;
+
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 
 		public override void OnStartLocalPlayer()

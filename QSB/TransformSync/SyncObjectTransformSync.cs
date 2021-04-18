@@ -20,7 +20,7 @@ namespace QSB.TransformSync
 		public SectorSync.SectorSync SectorSync { get; private set; }
 
 		private const float SmoothTime = 0.1f;
-		private const float DistanceLeeway = 5f;
+		public abstract float DistanceLeeway { get; }
 		private bool _isInitialized;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;

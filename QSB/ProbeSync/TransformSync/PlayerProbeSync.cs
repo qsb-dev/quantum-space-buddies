@@ -9,7 +9,7 @@ namespace QSB.ProbeSync.TransformSync
 {
 	public class PlayerProbeSync : SyncObjectTransformSync
 	{
-		private Transform _disabledSocket;
+		public override float DistanceLeeway => 20f;
 
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
@@ -19,7 +19,6 @@ namespace QSB.ProbeSync.TransformSync
 			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
-			SetSocket(Player.CameraBody.transform);
 			Player.ProbeBody = body.gameObject;
 
 			return body;
@@ -42,18 +41,9 @@ namespace QSB.ProbeSync.TransformSync
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
-			QSBCore.UnityEvents.RunWhen(
-				() => Player.ProbeLauncher != null,
-				() => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
 			Player.ProbeBody = body.gameObject;
 
 			return body;
-		}
-
-		private void SetSocket(Transform socket)
-		{
-			DebugLog.DebugWrite($"Set DisabledSocket of id:{PlayerId}.");
-			_disabledSocket = socket;
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null
