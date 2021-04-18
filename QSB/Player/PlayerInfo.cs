@@ -14,7 +14,7 @@ namespace QSB.Player
 		public uint PlayerId { get; }
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
-		public PlayerState PlayerStates { get; set; }
+		public PlayerState PlayerStates { get; set; } = new PlayerState();
 
 		// Body Objects
 		public OWCamera Camera { get; set; }
