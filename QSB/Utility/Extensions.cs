@@ -23,6 +23,9 @@ namespace QSB.Utility
 			}
 		}
 
+		public static Quaternion TransformRotation(this Transform transform, Quaternion localRotation)
+			=> transform.rotation * localRotation;
+
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
 			original.SetActive(false);

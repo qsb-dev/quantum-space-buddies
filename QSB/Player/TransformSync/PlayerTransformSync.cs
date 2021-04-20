@@ -60,16 +60,6 @@ namespace QSB.Player.TransformSync
 			return body;
 		}
 
-		private void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !Player.PlayerStates.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
-			Popcron.Gizmos.Sphere(ReferenceSector.Position, 5f, Color.cyan);
-		}
-
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)

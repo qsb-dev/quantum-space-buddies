@@ -9,7 +9,12 @@ namespace QSB.ProbeSync.TransformSync
 {
 	public class PlayerProbeSync : SyncObjectTransformSync
 	{
+		public static PlayerProbeSync LocalInstance { get; private set; }
+
 		public override float DistanceLeeway => 20f;
+
+		public override void OnStartAuthority()
+			=> LocalInstance = this;
 
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");

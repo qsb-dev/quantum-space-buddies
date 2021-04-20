@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -20,12 +21,14 @@ namespace QSB.TransformSync
 		public SectorSync.SectorSync SectorSync { get; private set; }
 
 		private const float SmoothTime = 0.1f;
+		private const int DebugSavePosAmount = 75;
 		public abstract float DistanceLeeway { get; }
 		private bool _isInitialized;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 		private bool _isVisible;
 		private float _previousDistance;
+		private Queue<KeyValuePair<Vector3, Quaternion>> _previousPositionRotationData = new Queue<KeyValuePair<Vector3, Quaternion>>();
 
 		protected override void Start()
 		{
@@ -72,11 +75,31 @@ namespace QSB.TransformSync
 				return;
 			}
 
+			_previousPositionRotationData.Enqueue(new KeyValuePair<Vector3, Quaternion>(transform.position, transform.rotation));
+
+			if (_previousPositionRotationData.Count >= DebugSavePosAmount)
+			{
+				_previousPositionRotationData.Dequeue();
+			}
+
+			for (var i = 0; i < _previousPositionRotationData.Count; i++)
+			{
+				var item = _previousPositionRotationData.ElementAt(i); // TODO : warning - O(n) not O(1) - maybe use array for O(1)?
+
+				var targetPos = ReferenceSector.Transform.TransformPoint(item.Key);
+				var targetRot = ReferenceSector.Transform.TransformRotation(item.Value);
+
+				Popcron.Gizmos.Cube(targetPos, targetRot, Vector3.one / 2, new Color(1f, 0f, 0f, 1f - ((float)i).Map(0f, DebugSavePosAmount - 1, 1f, 0f)));
+
+				if (i > 0)
+				{
+					var prevItem = _previousPositionRotationData.ElementAt(i - 1);
+					var prevItemTargetPos = ReferenceSector.Transform.TransformPoint(prevItem.Key);
+					Popcron.Gizmos.Line(prevItemTargetPos, targetPos, Color.yellow);
+				}
+			}
+
 			Popcron.Gizmos.Cube(SyncedTransform.position, SyncedTransform.rotation, Vector3.one / 2, Color.green);
-			Popcron.Gizmos.Cube(transform.position, transform.rotation, Vector3.one / 2, Color.red);
-			Popcron.Gizmos.Line(SyncedTransform.position, transform.position, Color.magenta);
-			Popcron.Gizmos.Cube(ReferenceSector.Position, ReferenceSector.Transform.rotation, Vector3.one, Color.cyan);
-			Popcron.Gizmos.Line(SyncedTransform.position, ReferenceSector.Position, Color.blue);
 		}
 
 		public void Update()
@@ -107,22 +130,44 @@ namespace QSB.TransformSync
 
 		protected virtual void UpdateTransform()
 		{
+			var referenceSectorAtStart = ReferenceSector;
+
 			if (HasAuthority) // If this script is attached to the client's own body on the client's side.
 			{
+				var previousPosition = transform.position;
 				if (ReferenceSector == null || ReferenceSector.AttachedObject == null)
 				{
 					DebugLog.ToConsole($"Error - ReferenceSector has null value for {Player.PlayerId}.{GetType().Name}", MessageType.Error);
 					return;
 				}
 				transform.position = ReferenceSector.Transform.InverseTransformPoint(SyncedTransform.position);
+				if (transform.position == Vector3.zero)
+				{
+					DebugLog.ToConsole($"Error - {PlayerId}.{SyncedTransform.name} locally at (0, 0, 0)!", MessageType.Error);
+				}
 				transform.rotation = ReferenceSector.Transform.InverseTransformRotation(SyncedTransform.rotation);
+
+				var distance = Vector3.Distance(previousPosition, transform.position);
+				if (distance > _previousDistance + DistanceLeeway)
+				{
+					DebugLog.ToConsole($"Warning - {PlayerId}.{SyncedTransform.name} moved too far! Distance:{distance}, previous:{_previousDistance}, leeway:{DistanceLeeway}", MessageType.Warning);
+				}
+				_previousDistance = distance;
+
+				if (referenceSectorAtStart != ReferenceSector)
+				{
+					DebugLog.ToConsole($"Warning - Reference for {PlayerId}.{SyncedTransform.name} changed while running UpdateTransform()!", MessageType.Warning);
+				}
+
 				return;
 			}
 
 			// If this script is attached to any other body, eg the representations of other players
-			if (SyncedTransform.position == Vector3.zero)
+			if (SyncedTransform.position == Vector3.zero || SyncedTransform.localPosition == Vector3.zero)
 			{
+				DebugLog.ToConsole($"Error - {PlayerId}.{SyncedTransform.name} at (0, 0, 0)!", MessageType.Error);
 				Hide();
+				return;
 			}
 			else
 			{
@@ -131,6 +176,11 @@ namespace QSB.TransformSync
 
 			SyncedTransform.localPosition = SmartSmoothDamp(SyncedTransform.localPosition, transform.position);
 			SyncedTransform.localRotation = QuaternionHelper.SmoothDamp(SyncedTransform.localRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+
+			if (referenceSectorAtStart != ReferenceSector)
+			{
+				DebugLog.ToConsole($"Warning - Reference for {PlayerId}.{SyncedTransform.name} changed while running UpdateTransform()!", MessageType.Warning);
+			}
 		}
 
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
@@ -152,6 +202,7 @@ namespace QSB.TransformSync
 			{
 				return;
 			}
+			DebugLog.DebugWrite($"{PlayerId}.{SyncedTransform.name} from:{(ReferenceSector == null ? "NULL" : ReferenceSector.Name)} to:{sector.Name}");
 			_positionSmoothVelocity = Vector3.zero;
 			ReferenceSector = sector;
 			if (!HasAuthority)

@@ -44,13 +44,9 @@ namespace QSB.Player.TransformSync
 			return body.transform;
 		}
 
-		private void OnRenderObject()
+		private new void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !Player.PlayerStates.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-			Popcron.Gizmos.Frustum(Player.Camera);
+			// Stop base from running
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

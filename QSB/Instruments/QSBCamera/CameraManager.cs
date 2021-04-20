@@ -38,7 +38,7 @@ namespace QSB.Instruments.QSBCamera
 			_cameraObj.transform.localPosition = new Vector3(0, 0, -5f);
 			_cameraObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
 			_camera = _cameraObj.AddComponent<Camera>();
-			_camera.cullingMask = Locator.GetPlayerCamera().mainCamera.cullingMask & ~(1 << 27) | (1 << 22);
+			_camera.cullingMask = (Locator.GetPlayerCamera().mainCamera.cullingMask & ~(1 << 27)) | (1 << 22);
 			_camera.clearFlags = CameraClearFlags.Color;
 			_camera.backgroundColor = Color.black;
 			_camera.fieldOfView = 90f;

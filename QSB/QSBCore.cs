@@ -11,6 +11,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
+using QSB.ProbeSync.TransformSync;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
@@ -151,7 +152,7 @@ namespace QSB
 			var sector = PlayerTransformSync.LocalInstance.ReferenceSector;
 			var text = sector == null
 				? "NULL SECTOR"
-				: $"{sector.AttachedObject.name} : {sector.IsFakeSector}";
+				: $"name:{sector.AttachedObject.name} fake:{sector.IsFakeSector}";
 			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
 			offset3 += _debugLineSpacing;
 
@@ -181,6 +182,14 @@ namespace QSB
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
 				offset += _debugLineSpacing;
 			}
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe sector :");
+			offset += _debugLineSpacing;
+			sector = PlayerProbeSync.LocalInstance.ReferenceSector;
+			text = sector == null
+				? "NULL SECTOR"
+				: $"name:{sector.AttachedObject.name} fake:{sector.IsFakeSector}";
+			GUI.Label(new Rect(220, offset, 400f, 20f), $"- {text}");
+			offset += _debugLineSpacing;
 
 			if (SocketedObjToDebug == -1)
 			{
