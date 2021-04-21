@@ -28,7 +28,7 @@ namespace QSB.TransformSync
 
 		private bool _isInitialized;
 		private const float SmoothTime = 0.1f;
-		private const float DistanceLeeway = 5f;
+		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;

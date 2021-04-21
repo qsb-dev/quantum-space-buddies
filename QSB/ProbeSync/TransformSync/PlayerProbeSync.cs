@@ -10,6 +10,9 @@ namespace QSB.ProbeSync.TransformSync
 	public class PlayerProbeSync : QSBNetworkTransform
 	{
 		public static PlayerProbeSync LocalInstance { get; private set; }
+
+		protected override float DistanceLeeway => 10f;
+
 		public override void OnStartAuthority()
 			=> LocalInstance = this;
 
