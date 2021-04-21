@@ -162,12 +162,12 @@ namespace QSB.TransformSync
 			{
 				return;
 			}
-			DebugLog.DebugWrite($"set sector of {PlayerId}.{GetType().Name} to {sector.Name}");
 			ReferenceSector = sector;
 			transform.SetParent(sector.Transform, true);
 			if (!HasAuthority)
 			{
 				AttachedObject.transform.SetParent(sector.Transform, true);
+				AttachedObject.transform.localScale = Vector3.one; // stop black hole weirdness?
 			}
 		}
 
