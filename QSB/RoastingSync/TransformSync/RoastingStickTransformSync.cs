@@ -1,13 +1,12 @@
 ﻿using OWML.Utils;
 using QSB.Player;
 using QSB.TransformSync;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.RoastingSync.TransformSync
 {
-	internal class RoastingStickTransformSync : SyncObjectTransformSync
+	internal class RoastingStickTransformSync : QSBNetworkTransform
 	{
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
@@ -18,15 +17,15 @@ namespace QSB.RoastingSync.TransformSync
 		private Transform GetPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			var pivot = GetPivot();
 			Player.RoastingStick = pivot.gameObject;
 			_stickTip = pivot.Find("Stick_Tip");
-			return pivot;
+			return pivot.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var newPivot = Instantiate(GetPivot());
 			newPivot.parent = null;
@@ -56,9 +55,10 @@ namespace QSB.RoastingSync.TransformSync
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
 			_stickTip = newPivot.Find("Stick_Tip");
-			return newPivot;
+			return newPivot.gameObject;
 		}
 
+		/*
 		protected override void UpdateTransform()
 		{
 			base.UpdateTransform();
@@ -78,6 +78,7 @@ namespace QSB.RoastingSync.TransformSync
 			_stickTip.localPosition = Vector3.SmoothDamp(_stickTip.localPosition, _networkStickTip.localPosition, ref _positionSmoothVelocity, SmoothTime);
 			_stickTip.localRotation = QuaternionHelper.SmoothDamp(_stickTip.localRotation, _networkStickTip.localRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
+		*/
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null

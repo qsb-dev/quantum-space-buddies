@@ -7,25 +7,29 @@ using UnityEngine;
 
 namespace QSB.ProbeSync.TransformSync
 {
-	public class PlayerProbeSync : SyncObjectTransformSync
+	public class PlayerProbeSync : QSBNetworkTransform
 	{
-		private Transform _disabledSocket;
+		public static PlayerProbeSync LocalInstance { get; private set; }
+
+		protected override float DistanceLeeway => 10f;
+
+		public override void OnStartAuthority()
+			=> LocalInstance = this;
 
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
-			SetSocket(Player.CameraBody.transform);
 			Player.ProbeBody = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var probe = GetProbe();
 
@@ -42,50 +46,10 @@ namespace QSB.ProbeSync.TransformSync
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
-			QSBCore.UnityEvents.RunWhen(
-				() => Player.ProbeLauncher != null,
-				() => SetSocket(Player.ProbeLauncher.ToolGameObject.transform));
 			Player.ProbeBody = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
-
-		private void SetSocket(Transform socket)
-		{
-			DebugLog.DebugWrite($"Set DisabledSocket of id:{PlayerId}.");
-			_disabledSocket = socket;
-		}
-
-		/*
-		protected override void UpdateTransform()
-		{
-			base.UpdateTransform();
-			if (Player == null)
-			{
-				DebugLog.ToConsole($"Player is null for {AttachedNetId}!", MessageType.Error);
-				return;
-			}
-			if (_disabledSocket == null)
-			{
-				DebugLog.ToConsole($"DisabledSocket is null for {PlayerId}! (ProbeLauncher null? : {Player.ProbeLauncher == null})", MessageType.Error);
-				return;
-			}
-			if (Player.PlayerStates.ProbeActive || ReferenceSector?.AttachedObject == null)
-			{
-				return;
-			}
-			if (HasAuthority)
-			{
-				transform.position = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
-				return;
-			}
-			if (SyncedTransform.position == Vector3.zero)
-			{
-				return;
-			}
-			SyncedTransform.localPosition = ReferenceSector.Transform.InverseTransformPoint(_disabledSocket.position);
-		}
-		*/
 
 		public override bool IsReady => Locator.GetProbe() != null
 			&& Player != null

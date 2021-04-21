@@ -231,6 +231,7 @@
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
+    <Compile Include="TransformSync\QSBNetworkTransform.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
@@ -247,7 +248,6 @@
     <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
     <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
-    <Compile Include="Player\Events\PlayerSectorEvent.cs" />
     <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Animation\Events\PlayerSuitEvent.cs" />
     <Compile Include="TimeSync\Events\ServerTimeEvent.cs" />
@@ -262,7 +262,6 @@
     <Compile Include="Messaging\ToggleMessage.cs" />
     <Compile Include="SectorSync\WorldObjects\QSBSector.cs" />
     <Compile Include="SectorSync\SectorSync.cs" />
-    <Compile Include="TransformSync\SyncObjectTransformSync.cs" />
     <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugZOverride.cs" />

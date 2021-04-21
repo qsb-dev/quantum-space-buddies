@@ -28,7 +28,6 @@
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";
 		public static string QSBPlayerReady = "QSBPlayerReady";
-		public static string QSBSectorChange = "QSBSectorChange";
 		public static string QSBPlayerStatesRequest = "QSBPlayerStatesRequest";
 		public static string QSBServerTime = "QSBServerTime";
 		public static string QSBStartLift = "QSBStartLift";

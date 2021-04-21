@@ -104,8 +104,6 @@ namespace QSB
 
 		private void SetupNetworkTransform(GameObject go)
 		{
-			var trans = go.AddComponent<QNetworkTransform>();
-			trans.SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
 			foreach (var item in go.GetComponents<NetworkTransformChild>())
 			{
 				var child = go.AddComponent<QNetworkTransformChild>();

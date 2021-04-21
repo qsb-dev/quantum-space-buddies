@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerTransformSync : SyncObjectTransformSync
+	public class PlayerTransformSync : QSBNetworkTransform
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
@@ -14,10 +14,15 @@ namespace QSB.Player.TransformSync
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
 
-		protected override void OnDestroy()
+		public override void Start()
+		{
+			base.Start();
+			Player.TransformSync = this;
+		}
+
+		protected void OnDestroy()
 		{
 			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
-			base.OnDestroy();
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{
 				Player.HudMarker?.Remove();
@@ -28,7 +33,7 @@ namespace QSB.Player.TransformSync
 		private Transform GetPlayerModel() =>
 			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = GetPlayerModel();
@@ -38,10 +43,10 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var body = Instantiate(GetPlayerModel());
 
@@ -55,17 +60,7 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body;
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !Player.PlayerStates.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
-			Popcron.Gizmos.Sphere(ReferenceSector.Position, 5f, Color.cyan);
+			return body.gameObject;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

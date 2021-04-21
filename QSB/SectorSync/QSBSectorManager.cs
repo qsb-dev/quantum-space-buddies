@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
-using QSB.Events;
-using QSB.Player;
 using QSB.SectorSync.WorldObjects;
+using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -21,8 +20,17 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
-			QSBPlayerManager.GetSyncObjects<TransformSync.SyncObjectTransformSync>()
-				.Where(x => x.HasAuthority).ToList().ForEach(CheckTransformSyncSector);
+			foreach (var sync in Resources.FindObjectsOfTypeAll<QSBNetworkTransform>()) // todo : cache these!
+			{
+				if (sync.AttachedObject == null)
+				{
+					continue;
+				}
+				if (sync.HasAuthority && sync.AttachedObject.activeInHierarchy)
+				{
+					CheckTransformSyncSector(sync);
+				}
+			}
 		}
 
 		public override void Awake()
@@ -54,14 +62,14 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(TransformSync.SyncObjectTransformSync transformSync)
+		private void CheckTransformSyncSector(QSBNetworkTransform transformSync)
 		{
-			var syncedTransform = transformSync.SyncedTransform;
-			if (syncedTransform == null || syncedTransform.position == Vector3.zero)
+			var syncedTransform = transformSync.AttachedObject;
+			if (syncedTransform == null || syncedTransform.transform.position == Vector3.zero)
 			{
 				return;
 			}
-			var closestSector = transformSync.SectorSync.GetClosestSector(syncedTransform);
+			var closestSector = transformSync.SectorSync.GetClosestSector(syncedTransform.transform);
 			if (closestSector == default(QSBSector))
 			{
 				return;
@@ -71,10 +79,6 @@ namespace QSB.SectorSync
 				return;
 			}
 			transformSync.SetReferenceSector(closestSector);
-			SendSector(transformSync.NetId.Value, closestSector);
 		}
-
-		private void SendSector(uint id, QSBSector sector) =>
-			QSBEventManager.FireEvent(EventNames.QSBSectorChange, id, sector);
 	}
 }

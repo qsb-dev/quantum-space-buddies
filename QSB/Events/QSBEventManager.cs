@@ -41,7 +41,6 @@ namespace QSB.Events
 				new PlayerTranslatorEvent(),
 				new PlayerProbeLauncherEvent(),
 				new PlayerProbeEvent(),
-				new PlayerSectorEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
 				new ServerSendPlayerStatesEvent(),
