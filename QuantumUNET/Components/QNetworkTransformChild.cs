@@ -11,10 +11,7 @@ namespace QuantumUNET.Components
 		public Transform Target
 		{
 			get => m_Target;
-			set
-			{
-				m_Target = value;
-			}
+			set => m_Target = value;
 		}
 
 		public uint ChildIndex => m_ChildIndex;

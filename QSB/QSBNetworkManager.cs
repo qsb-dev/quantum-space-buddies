@@ -13,7 +13,6 @@ using QSB.ProbeSync.TransformSync;
 using QSB.RoastingSync.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
-using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;

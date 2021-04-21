@@ -3,7 +3,6 @@ using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.QuantumSync;
-using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.TranslationSync.WorldObjects;
 using QSB.Utility;

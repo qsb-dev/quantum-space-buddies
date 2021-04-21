@@ -6,6 +6,8 @@ namespace QSB.ShipSync.TransformSync
 {
 	public class ShipTransformSync : QSBNetworkTransform
 	{
+		protected override float DistanceLeeway => 20f;
+
 		private Transform GetShipModel() => Locator.GetShipTransform();
 
 		protected override GameObject InitLocalTransform()

@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Events;
-using QSB.TransformSync;
 using QSB.Utility;
 
 namespace QSB.Player.Events

@@ -17,7 +17,6 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
-using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -148,20 +147,10 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current sectors :");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current sector : {PlayerTransformSync.LocalInstance.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
-			foreach (var sec in PlayerTransformSync.LocalInstance.SectorSync.SectorList.OrderBy(s => SectorSync.SectorSync.CalculateSectorScore(s, Locator.GetPlayerTransform(), Locator.GetPlayerBody())))
-			{
-				GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {SectorSync.SectorSync.CalculateSectorScore(sec, Locator.GetPlayerTransform(), Locator.GetPlayerBody())} : {sec.Name}");
-				offset3 += _debugLineSpacing;
-			}
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Probe sectors :");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Probe sector : {PlayerProbeSync.LocalInstance.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
-			foreach (var sec in PlayerProbeSync.LocalInstance.SectorSync.SectorList.OrderBy(s => SectorSync.SectorSync.CalculateSectorScore(s, Locator.GetProbe().transform, Locator.GetProbe().GetOWRigidbody())))
-			{
-				GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {SectorSync.SectorSync.CalculateSectorScore(sec, Locator.GetProbe().transform, Locator.GetProbe().GetOWRigidbody())} : {sec.Name}");
-				offset3 += _debugLineSpacing;
-			}
 
 			var offset2 = 10f;
 			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
@@ -184,7 +173,7 @@ namespace QSB
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
 				var networkTransform = player.TransformSync;
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : world:{networkTransform.transform.position} local:{networkTransform.transform.localPosition}");
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {networkTransform.ReferenceSector.Name}");
 				offset += _debugLineSpacing;
 			}
 

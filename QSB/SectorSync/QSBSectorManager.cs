@@ -1,6 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Events;
-using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.TransformSync;
 using QSB.Utility;
