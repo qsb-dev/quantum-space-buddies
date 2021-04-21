@@ -27,6 +27,11 @@ namespace QSB.TransformSync
 		protected abstract GameObject InitRemoteTransform();
 
 		private bool _isInitialized;
+		private const float SmoothTime = 0.1f;
+		private const float DistanceLeeway = 5f;
+		private float _previousDistance;
+		private Vector3 _positionSmoothVelocity;
+		private Quaternion _rotationSmoothVelocity;
 
 		public virtual void Start()
 		{
@@ -139,9 +144,16 @@ namespace QSB.TransformSync
 			}
 			else
 			{
-				AttachedObject.transform.position = transform.position;
-				AttachedObject.transform.rotation = transform.rotation;
+				AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, transform.localPosition);
+				AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, transform.localRotation, ref _rotationSmoothVelocity, SmoothTime);
 			}
+		}
+
+		public override bool HasMoved()
+		{
+			var displacementMagnitude = (transform.localPosition - _prevPosition).magnitude;
+			return displacementMagnitude > 1E-05f
+				|| Quaternion.Angle(transform.localRotation, _prevRotation) > 1E-05f;
 		}
 
 		public void SetReferenceSector(QSBSector sector)
@@ -153,6 +165,23 @@ namespace QSB.TransformSync
 			DebugLog.DebugWrite($"set sector of {PlayerId}.{GetType().Name} to {sector.Name}");
 			ReferenceSector = sector;
 			transform.SetParent(sector.Transform, true);
+			if (!HasAuthority)
+			{
+				AttachedObject.transform.SetParent(sector.Transform, true);
+			}
+		}
+
+		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		{
+			var distance = Vector3.Distance(currentPosition, targetPosition);
+			if (distance > _previousDistance + DistanceLeeway)
+			{
+				// moved too far! assume sector sync warp / actual warp
+				_previousDistance = distance;
+				return targetPosition;
+			}
+			_previousDistance = distance;
+			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
 		private void OnRenderObject()

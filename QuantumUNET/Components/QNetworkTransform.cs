@@ -8,7 +8,7 @@ namespace QuantumUNET.Components
 {
 	public class QNetworkTransform : QNetworkBehaviour
 	{
-		public float SendInterval { get; set; } = 0.1f;
+		public float SendInterval { get; set; } = 0.05f;
 		public float LastSyncTime { get; private set; }
 
 		private float _lastClientSendTime;
@@ -122,7 +122,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		private bool HasMoved()
+		public virtual bool HasMoved()
 		{
 			var displacementMagnitude = (transform.position - _prevPosition).magnitude;
 			return displacementMagnitude > 1E-05f
