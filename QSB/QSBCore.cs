@@ -147,9 +147,9 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current sector : {PlayerTransformSync.LocalInstance.ReferenceSector.Name}");
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Current sector : {PlayerTransformSync.LocalInstance.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Probe sector : {PlayerProbeSync.LocalInstance.ReferenceSector.Name}");
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {PlayerProbeSync.LocalInstance.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
 
 			var offset2 = 10f;
@@ -170,7 +170,7 @@ namespace QSB
 			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player positions :");
 			offset += _debugLineSpacing;
-			foreach (var player in QSBPlayerManager.PlayerList)
+			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
 				var networkTransform = player.TransformSync;
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {networkTransform.ReferenceSector.Name}");

@@ -164,10 +164,12 @@ namespace QSB.TransformSync
 			}
 			ReferenceSector = sector;
 			transform.SetParent(sector.Transform, true);
-			if (!HasAuthority)
+			if (!HasAuthority && AttachedObject != null)
 			{
 				AttachedObject.transform.SetParent(sector.Transform, true);
-				AttachedObject.transform.localScale = Vector3.one; // stop black hole weirdness?
+				AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync) 
+					? Vector3.one / 10 
+					: Vector3.one;
 			}
 		}
 
