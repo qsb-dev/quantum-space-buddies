@@ -1,5 +1,6 @@
 ﻿using QSB.Animation;
 using QSB.CampfireSync.WorldObjects;
+using QSB.Player.TransformSync;
 using QSB.ProbeSync;
 using QSB.QuantumSync;
 using QSB.RoastingSync;
@@ -15,6 +16,7 @@ namespace QSB.Player
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
 		public PlayerState PlayerStates { get; set; } = new PlayerState();
+		public PlayerTransformSync TransformSync { get; set; }
 
 		// Body Objects
 		public OWCamera Camera { get; set; }

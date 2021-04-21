@@ -4,19 +4,17 @@ using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
-	public class ShipTransformSync : SyncObjectTransformSync
+	public class ShipTransformSync : QSBNetworkTransform
 	{
-		public override float DistanceLeeway => 20f;
-
 		private Transform GetShipModel() => Locator.GetShipTransform();
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetShipDetector().GetComponent<SectorDetector>());
-			return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior");
+			return GetShipModel().Find("Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior").gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var shipModel = GetShipModel();
 
@@ -41,7 +39,7 @@ namespace QSB.ShipSync.TransformSync
 				= landingGearRight.localPosition
 				+= Vector3.up * 3.762f;
 
-			return remoteTransform;
+			return remoteTransform.gameObject;
 		}
 
 		public override bool IsReady => GetShipModel() != null

@@ -7,29 +7,26 @@ using UnityEngine;
 
 namespace QSB.ProbeSync.TransformSync
 {
-	public class PlayerProbeSync : SyncObjectTransformSync
+	public class PlayerProbeSync : QSBNetworkTransform
 	{
 		public static PlayerProbeSync LocalInstance { get; private set; }
-
-		public override float DistanceLeeway => 20f;
-
 		public override void OnStartAuthority()
 			=> LocalInstance = this;
 
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
 			Player.ProbeBody = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var probe = GetProbe();
 
@@ -48,7 +45,7 @@ namespace QSB.ProbeSync.TransformSync
 
 			Player.ProbeBody = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null

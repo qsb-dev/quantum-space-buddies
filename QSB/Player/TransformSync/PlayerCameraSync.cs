@@ -6,11 +6,9 @@ using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerCameraSync : SyncObjectTransformSync
+	public class PlayerCameraSync : QSBNetworkTransform
 	{
-		public override float DistanceLeeway => 5f;
-
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = Locator.GetPlayerCamera().gameObject.transform;
@@ -23,10 +21,10 @@ namespace QSB.Player.TransformSync
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var body = new GameObject("RemotePlayerCamera");
 
@@ -41,12 +39,7 @@ namespace QSB.Player.TransformSync
 			Player.Camera = owcamera;
 			Player.CameraBody = body;
 
-			return body.transform;
-		}
-
-		private new void OnRenderObject()
-		{
-			// Stop base from running
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

@@ -45,11 +45,6 @@ namespace QSB.SectorSync.WorldObjects
 				return false;
 			}
 
-			if (Name == "Satellite_Body") // TODO : make a more rigourous system to not sync to fast-moving sectors
-			{
-				return false;
-			}
-
 			if (Type == Sector.Name.Ship)
 			{
 				return false;

@@ -13,6 +13,7 @@ using QSB.ProbeSync.TransformSync;
 using QSB.RoastingSync.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
+using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -104,8 +105,6 @@ namespace QSB
 
 		private void SetupNetworkTransform(GameObject go)
 		{
-			var trans = go.AddComponent<QNetworkTransform>();
-			trans.SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
 			foreach (var item in go.GetComponents<NetworkTransformChild>())
 			{
 				var child = go.AddComponent<QNetworkTransformChild>();

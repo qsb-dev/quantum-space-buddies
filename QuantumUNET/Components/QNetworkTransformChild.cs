@@ -14,7 +14,6 @@ namespace QuantumUNET.Components
 			set
 			{
 				m_Target = value;
-				OnValidate();
 			}
 		}
 
@@ -24,18 +23,6 @@ namespace QuantumUNET.Components
 		{
 			get => m_SendInterval;
 			set => m_SendInterval = value;
-		}
-
-		public QNetworkTransform.AxisSyncMode SyncRotationAxis
-		{
-			get => m_SyncRotationAxis;
-			set => m_SyncRotationAxis = value;
-		}
-
-		public QNetworkTransform.CompressionSyncMode RotationSyncCompression
-		{
-			get => m_RotationSyncCompression;
-			set => m_RotationSyncCompression = value;
 		}
 
 		public float MovementThreshold
@@ -56,88 +43,9 @@ namespace QuantumUNET.Components
 			set => m_InterpolateMovement = value;
 		}
 
-		public QNetworkTransform.ClientMoveCallback3D ClientMoveCallback3D
-		{
-			get => m_ClientMoveCallback3D;
-			set => m_ClientMoveCallback3D = value;
-		}
-
 		public float LastSyncTime { get; private set; }
 		public Vector3 TargetSyncPosition => m_TargetSyncPosition;
 		public Quaternion TargetSyncRotation3D => m_TargetSyncRotation3D;
-
-		private void OnValidate()
-		{
-			if (m_Target != null)
-			{
-				var parent = m_Target.parent;
-				if (parent == null)
-				{
-					Debug.LogError("NetworkTransformChild target cannot be the root transform.");
-					m_Target = null;
-					return;
-				}
-				while (parent.parent != null)
-				{
-					parent = parent.parent;
-				}
-				m_Root = parent.gameObject.GetComponent<QNetworkTransform>();
-				if (m_Root == null)
-				{
-					Debug.LogError("NetworkTransformChild root must have NetworkTransform");
-					m_Target = null;
-					return;
-				}
-			}
-			if (m_Root != null)
-			{
-				m_ChildIndex = uint.MaxValue;
-				var components = m_Root.GetComponents<QNetworkTransformChild>();
-				var num = 0U;
-				while (num < (ulong)components.Length)
-				{
-					if (components[(int)(UIntPtr)num] == this)
-					{
-						m_ChildIndex = num;
-						break;
-					}
-					num += 1U;
-				}
-				if (m_ChildIndex == 4294967295U)
-				{
-					Debug.LogError("QNetworkTransformChild component must be a child in the same hierarchy");
-					m_Target = null;
-				}
-			}
-			if (m_SendInterval < 0f)
-			{
-				m_SendInterval = 0f;
-			}
-			if (m_SyncRotationAxis < QNetworkTransform.AxisSyncMode.None || m_SyncRotationAxis > QNetworkTransform.AxisSyncMode.AxisXYZ)
-			{
-				m_SyncRotationAxis = QNetworkTransform.AxisSyncMode.None;
-			}
-			if (MovementThreshold < 0f)
-			{
-				MovementThreshold = 0f;
-			}
-			if (InterpolateRotation < 0f)
-			{
-				InterpolateRotation = 0.01f;
-			}
-			if (InterpolateRotation > 1f)
-			{
-				InterpolateRotation = 1f;
-			}
-			if (InterpolateMovement < 0f)
-			{
-				InterpolateMovement = 0.01f;
-			}
-			if (InterpolateMovement > 1f)
-			{
-				InterpolateMovement = 1f;
-			}
-		}
 
 		private void Awake()
 		{
@@ -167,10 +75,7 @@ namespace QuantumUNET.Components
 		private void SerializeModeTransform(QNetworkWriter writer)
 		{
 			writer.Write(m_Target.localPosition);
-			if (m_SyncRotationAxis != QNetworkTransform.AxisSyncMode.None)
-			{
-				QNetworkTransform.SerializeRotation3D(writer, m_Target.localRotation, SyncRotationAxis, RotationSyncCompression);
-			}
+			QNetworkTransform.SerializeRotation(writer, m_Target.localRotation);
 			m_PrevPosition = m_Target.localPosition;
 			m_PrevRotation = m_Target.localRotation;
 		}
@@ -197,36 +102,12 @@ namespace QuantumUNET.Components
 			if (HasAuthority)
 			{
 				reader.ReadVector3();
-				if (SyncRotationAxis != QNetworkTransform.AxisSyncMode.None)
-				{
-					QNetworkTransform.UnserializeRotation3D(reader, SyncRotationAxis, RotationSyncCompression);
-				}
-			}
-			else if (IsServer && m_ClientMoveCallback3D != null)
-			{
-				var targetSyncPosition = reader.ReadVector3();
-				var zero = Vector3.zero;
-				var targetSyncRotation3D = Quaternion.identity;
-				if (SyncRotationAxis != QNetworkTransform.AxisSyncMode.None)
-				{
-					targetSyncRotation3D = QNetworkTransform.UnserializeRotation3D(reader, SyncRotationAxis, RotationSyncCompression);
-				}
-				if (m_ClientMoveCallback3D(ref targetSyncPosition, ref zero, ref targetSyncRotation3D))
-				{
-					m_TargetSyncPosition = targetSyncPosition;
-					if (SyncRotationAxis != QNetworkTransform.AxisSyncMode.None)
-					{
-						m_TargetSyncRotation3D = targetSyncRotation3D;
-					}
-				}
+				QNetworkTransform.DeserializeRotation(reader);
 			}
 			else
 			{
 				m_TargetSyncPosition = reader.ReadVector3();
-				if (SyncRotationAxis != QNetworkTransform.AxisSyncMode.None)
-				{
-					m_TargetSyncRotation3D = QNetworkTransform.UnserializeRotation3D(reader, SyncRotationAxis, RotationSyncCompression);
-				}
+				m_TargetSyncRotation3D = QNetworkTransform.DeserializeRotation(reader);
 			}
 		}
 
@@ -404,12 +285,9 @@ namespace QuantumUNET.Components
 		public uint m_ChildIndex;
 		public QNetworkTransform m_Root;
 		public float m_SendInterval = 0.1f;
-		public QNetworkTransform.AxisSyncMode m_SyncRotationAxis = QNetworkTransform.AxisSyncMode.AxisXYZ;
-		public QNetworkTransform.CompressionSyncMode m_RotationSyncCompression = QNetworkTransform.CompressionSyncMode.None;
 		public float m_MovementThreshold = 0.001f;
 		public float m_InterpolateRotation = 0.5f;
 		public float m_InterpolateMovement = 0.5f;
-		public QNetworkTransform.ClientMoveCallback3D m_ClientMoveCallback3D;
 		private Vector3 m_TargetSyncPosition;
 		private Quaternion m_TargetSyncRotation3D;
 		private float m_LastClientSendTime;

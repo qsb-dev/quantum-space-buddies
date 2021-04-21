@@ -17,6 +17,7 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
+using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -147,14 +148,20 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current synced sector :");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current sectors :");
 			offset3 += _debugLineSpacing;
-			var sector = PlayerTransformSync.LocalInstance.ReferenceSector;
-			var text = sector == null
-				? "NULL SECTOR"
-				: $"name:{sector.AttachedObject.name} fake:{sector.IsFakeSector}";
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
+			foreach (var sec in PlayerTransformSync.LocalInstance.SectorSync.SectorList.OrderBy(s => SectorSync.SectorSync.CalculateSectorScore(s, Locator.GetPlayerTransform(), Locator.GetPlayerBody())))
+			{
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {SectorSync.SectorSync.CalculateSectorScore(sec, Locator.GetPlayerTransform(), Locator.GetPlayerBody())} : {sec.Name}");
+				offset3 += _debugLineSpacing;
+			}
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Probe sectors :");
 			offset3 += _debugLineSpacing;
+			foreach (var sec in PlayerProbeSync.LocalInstance.SectorSync.SectorList.OrderBy(s => SectorSync.SectorSync.CalculateSectorScore(s, Locator.GetProbe().transform, Locator.GetProbe().GetOWRigidbody())))
+			{
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {SectorSync.SectorSync.CalculateSectorScore(sec, Locator.GetProbe().transform, Locator.GetProbe().GetOWRigidbody())} : {sec.Name}");
+				offset3 += _debugLineSpacing;
+			}
 
 			var offset2 = 10f;
 			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
@@ -170,26 +177,16 @@ namespace QSB
 				return;
 			}
 
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe Active : {Locator.GetProbe().gameObject.activeInHierarchy}");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {QuantumManager.Instance.Shrine.IsPlayerInDarkness()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player positions :");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
-			offset += _debugLineSpacing;
-			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
+				var networkTransform = player.TransformSync;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : world:{networkTransform.transform.position} local:{networkTransform.transform.localPosition}");
 				offset += _debugLineSpacing;
 			}
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe sector :");
-			offset += _debugLineSpacing;
-			sector = PlayerProbeSync.LocalInstance.ReferenceSector;
-			text = sector == null
-				? "NULL SECTOR"
-				: $"name:{sector.AttachedObject.name} fake:{sector.IsFakeSector}";
-			GUI.Label(new Rect(220, offset, 400f, 20f), $"- {text}");
-			offset += _debugLineSpacing;
 
 			if (SocketedObjToDebug == -1)
 			{
