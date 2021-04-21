@@ -62,19 +62,36 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 **NomaiVR compatibility is currently not planned and likely will never happen, due to extensive changes needed to both mods for it to work.**
 
 ### What is currently synced?
-QSB does not operate on a strict server-client relationship. Each player's game is left as a completely seperate game, and individual elemets are synced or patched so they can be controlled though network messages. Right now, the list of synced objects are :
-- Geysers
-- Elevators
-- Nomai interface orbs
-- Player animations
-- Player tools
-- Player ships
-- Player probes
-- NPC heads in conversations
-- Ship log
-- Discovering frequencies / signals
-- Nomai text (Spirals + Computers)
-- Picking up/dropping/socketing items
+
+| System / Mechanic  | Synced? |
+| :---: | :---: |
+| Anglerfish  | No |
+| Brittle Hollow fragments  | No |
+| Campfires | Yes |
+| Conversations with NPCs | Yes |
+| Discovering signals/frequencies | Yes |
+| Eye of the Universe ancient glade | No |
+| Eye of the Universe instrument hunt | No |
+| Eye of the Universe jam session | No |
+| Eye of the Universe quantum lightning | No |
+| Geysers | Yes |
+| Items | Yes |
+| Jellyfish | No |
+| Marshmallow roasting | Yes |
+| Meteors | No |
+| Museum statue | Yes |
+| NPC animations | Kind of |
+| Nomai orbs | Yes |
+| Nomai shuttle | Kind of |
+| Orbital Probe Cannon (direction) | No |
+| Player animation | Kind of |
+| Player position | Yes |
+| Player tools | Yes |
+| Projection pools | Yes |
+| Quantum objects | Yes |
+| Ship log | Yes |
+| Timber Hearth satellite | No |
+| Tornadoes | No |
 
 QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
 - Adding dialogue boxes above NPC and player heads, so other players can "listen in" on conversations.
