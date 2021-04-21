@@ -1,6 +1,9 @@
 ![logo](unknown.png)
 
 ![GitHub](https://img.shields.io/github/license/misternebula/quantum-space-buddies)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/misternebula/quantum-space-buddies)
+![GitHub all releases](https://img.shields.io/github/downloads/misternebula/quantum-space-buddies/total)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/misternebula/quantum-space-buddies/dev)
 
 Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses the OWML mod loader and customized UNET code (internally referred to as QNet or QuantumUNET) for networking.
 
