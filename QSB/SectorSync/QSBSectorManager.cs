@@ -24,6 +24,7 @@ namespace QSB.SectorSync
 			{
 				if (sync.AttachedObject == null)
 				{
+					DebugLog.ToConsole($"Warning - AttachedObject for {sync.PlayerId}.{sync.name} is null.", MessageType.Warning);
 					continue;
 				}
 				if (sync.HasAuthority && sync.AttachedObject.activeInHierarchy)
@@ -64,12 +65,8 @@ namespace QSB.SectorSync
 
 		private void CheckTransformSyncSector(QSBNetworkTransform transformSync)
 		{
-			var syncedTransform = transformSync.AttachedObject;
-			if (syncedTransform == null || syncedTransform.transform.position == Vector3.zero)
-			{
-				return;
-			}
-			var closestSector = transformSync.SectorSync.GetClosestSector(syncedTransform.transform);
+			var attachedObject = transformSync.AttachedObject;
+			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
 			if (closestSector == default(QSBSector))
 			{
 				return;

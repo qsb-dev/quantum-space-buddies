@@ -42,7 +42,25 @@ namespace QSB.TransformSync
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
 
 			DontDestroyOnLoad(gameObject);
+			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
+
+		protected virtual void OnDestroy()
+		{
+			if (!HasAuthority && AttachedObject != null)
+			{
+				DebugLog.DebugWrite($"Destroying {AttachedObject.name}");
+				Destroy(AttachedObject);
+			}
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			if (SectorSync != null)
+			{
+				Destroy(SectorSync);
+			}
+		}
+
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
+			_isInitialized = false;
 
 		protected void Init()
 		{
@@ -109,12 +127,10 @@ namespace QSB.TransformSync
 		{
 			if (!_isInitialized && IsReady)
 			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} is not initialized and ready.", MessageType.Warning);
 				Init();
 			}
 			else if (_isInitialized && !IsReady)
 			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} is initialized and not ready.", MessageType.Warning);
 				_isInitialized = false;
 				return;
 			}

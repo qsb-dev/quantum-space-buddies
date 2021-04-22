@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using OWML.Common;
+using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Animation
 {
@@ -19,6 +21,16 @@ namespace QSB.Animation
 		{
 			if (!_isSetUp)
 			{
+				return;
+			}
+			if (_attachedAnimator == null)
+			{
+				DebugLog.ToConsole($"Error - _attachedAnimator is null!", MessageType.Error);
+				return;
+			}
+			if (_lookBase == null)
+			{
+				DebugLog.ToConsole($"Error - _lookBase is null!", MessageType.Error);
 				return;
 			}
 			var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);

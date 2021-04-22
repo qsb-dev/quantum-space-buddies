@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Player;
 using QSB.TransformSync;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -58,7 +59,6 @@ namespace QSB.RoastingSync.TransformSync
 			return newPivot.gameObject;
 		}
 
-		/*
 		protected override void UpdateTransform()
 		{
 			base.UpdateTransform();
@@ -78,7 +78,6 @@ namespace QSB.RoastingSync.TransformSync
 			_stickTip.localPosition = Vector3.SmoothDamp(_stickTip.localPosition, _networkStickTip.localPosition, ref _positionSmoothVelocity, SmoothTime);
 			_stickTip.localRotation = QuaternionHelper.SmoothDamp(_stickTip.localRotation, _networkStickTip.localRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
-		*/
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null

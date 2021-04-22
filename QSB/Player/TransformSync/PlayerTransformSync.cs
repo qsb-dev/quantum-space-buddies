@@ -20,9 +20,10 @@ namespace QSB.Player.TransformSync
 			Player.TransformSync = this;
 		}
 
-		protected void OnDestroy()
+		protected override void OnDestroy()
 		{
 			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
+			base.OnDestroy();
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{
 				Player.HudMarker?.Remove();
