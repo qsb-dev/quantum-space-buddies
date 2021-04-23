@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Player;
+using QSB.ProbeSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;

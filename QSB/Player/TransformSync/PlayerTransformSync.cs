@@ -1,11 +1,11 @@
 ﻿using QSB.Animation;
 using QSB.Instruments;
-using QSB.Player;
+using QSB.TransformSync;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Player.TransformSync
 {
-	public class PlayerTransformSync : TransformSync
+	public class PlayerTransformSync : QSBNetworkTransform
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
@@ -13,6 +13,12 @@ namespace QSB.TransformSync
 
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
+
+		public override void Start()
+		{
+			base.Start();
+			Player.TransformSync = this;
+		}
 
 		protected override void OnDestroy()
 		{
@@ -28,7 +34,7 @@ namespace QSB.TransformSync
 		private Transform GetPlayerModel() =>
 			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = GetPlayerModel();
@@ -38,10 +44,10 @@ namespace QSB.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var body = Instantiate(GetPlayerModel());
 
@@ -55,23 +61,13 @@ namespace QSB.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body;
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !Player.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
-			Popcron.Gizmos.Sphere(ReferenceSector.Position, 5f, Color.cyan);
+			return body.gameObject;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.IsReady
+			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
 	}

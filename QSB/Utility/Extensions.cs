@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.TransformSync;
+using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
 using System.Reflection;
@@ -22,6 +22,9 @@ namespace QSB.Utility
 				renderer.enabled = isVisible;
 			}
 		}
+
+		public static Quaternion TransformRotation(this Transform transform, Quaternion localRotation)
+			=> transform.rotation * localRotation;
 
 		public static GameObject InstantiateInactive(this GameObject original)
 		{

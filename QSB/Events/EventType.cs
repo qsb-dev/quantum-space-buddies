@@ -13,7 +13,6 @@
 		SuitActiveChange,
 		PlayerJoin,
 		PlayerDeath,
-		PlayerSectorChange,
 		PlayerReady,
 		ProbeActiveChange,
 		Elevator,

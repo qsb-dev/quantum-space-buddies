@@ -34,7 +34,7 @@ namespace QSB.Player
 
 		private void Update()
 		{
-			if (!_isReady || !_player.IsReady)
+			if (!_isReady || !_player.PlayerStates.IsReady)
 			{
 				return;
 			}

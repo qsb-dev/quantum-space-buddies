@@ -12,7 +12,6 @@ namespace QSB.Animation
 	public class AnimationSync : PlayerSyncObject
 	{
 		private Animator _anim;
-		private Animator _bodyAnim;
 		private QNetworkAnimator _netAnim;
 
 		private RuntimeAnimatorController _suitedAnimController;
@@ -30,7 +29,7 @@ namespace QSB.Animation
 
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType { get; set; }
-		public Animator VisibleAnimator => _bodyAnim;
+		public Animator VisibleAnimator { get; private set; }
 
 		protected void Awake()
 		{
@@ -73,15 +72,15 @@ namespace QSB.Animation
 				LoadControllers();
 			}
 			_netAnim.enabled = true;
-			_bodyAnim = body.GetComponent<Animator>();
+			VisibleAnimator = body.GetComponent<Animator>();
 			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
 			if (IsLocalPlayer)
 			{
-				Mirror.Init(_bodyAnim, _anim);
+				Mirror.Init(VisibleAnimator, _anim);
 			}
 			else
 			{
-				Mirror.Init(_anim, _bodyAnim);
+				Mirror.Init(_anim, VisibleAnimator);
 			}
 
 			for (var i = 0; i < _anim.parameterCount; i++)
@@ -138,7 +137,7 @@ namespace QSB.Animation
 		private void InitCrouchSync()
 		{
 			_crouchSync = gameObject.AddComponent<CrouchSync>();
-			_crouchSync.Init(this, _playerController, _bodyAnim);
+			_crouchSync.Init(this, _playerController, VisibleAnimator);
 		}
 
 		private void OnJump() => _netAnim.SetTrigger("Jump");
@@ -165,7 +164,7 @@ namespace QSB.Animation
 
 		public void SetSuitState(bool state)
 		{
-			if (!Player.IsReady)
+			if (!Player.PlayerStates.IsReady)
 			{
 				return;
 			}
@@ -228,16 +227,16 @@ namespace QSB.Animation
 					break;
 			}
 			_anim.runtimeAnimatorController = controller;
-			_bodyAnim.runtimeAnimatorController = controller;
+			VisibleAnimator.runtimeAnimatorController = controller;
 			if (type != AnimationType.PlayerSuited && type != AnimationType.PlayerUnsuited)
 			{
-				_bodyAnim.SetTrigger("Playing");
+				VisibleAnimator.SetTrigger("Playing");
 				_anim.SetTrigger("Playing");
 			}
 			else
 			{
 				// Avoids "jumping" when exiting instrument and putting on suit
-				_bodyAnim.SetTrigger("Grounded");
+				VisibleAnimator.SetTrigger("Grounded");
 				_anim.SetTrigger("Grounded");
 			}
 			_netAnim.animator = _anim; // Probably not needed.

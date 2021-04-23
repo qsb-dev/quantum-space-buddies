@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Player.Events;
+using QSB.Player.TransformSync;
 using QSB.Tools;
-using QSB.TransformSync;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -78,9 +78,8 @@ namespace QSB.Player
 		{
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
-			player.IsReady = message.PlayerReady;
-			player.State = message.PlayerState;
-			if (LocalPlayer.IsReady)
+			player.PlayerStates = message.PlayerState;
+			if (LocalPlayer.PlayerStates.IsReady)
 			{
 				player.UpdateStateObjects();
 			}

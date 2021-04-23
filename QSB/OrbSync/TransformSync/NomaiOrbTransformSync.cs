@@ -3,7 +3,7 @@ using QSB.WorldSync;
 using QuantumUNET;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.OrbSync.TransformSync
 {
 	public class NomaiOrbTransformSync : QNetworkBehaviour
 	{

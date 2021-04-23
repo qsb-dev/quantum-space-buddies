@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Tools.Events
+namespace QSB.ProbeSync.Events
 {
 	public class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
 	{
@@ -32,11 +32,11 @@ namespace QSB.Tools.Events
 		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
-			player.UpdateState(State.ProbeLauncher, message.ToggleValue);
+			player.PlayerStates.ProbeLauncherEquipped = message.ToggleValue;
 			player.ProbeLauncher?.ChangeEquipState(message.ToggleValue);
 		}
 
 		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
-			QSBPlayerManager.LocalPlayer.UpdateState(State.ProbeLauncher, message.ToggleValue);
+			QSBPlayerManager.LocalPlayer.PlayerStates.ProbeLauncherEquipped = message.ToggleValue;
 	}
 }

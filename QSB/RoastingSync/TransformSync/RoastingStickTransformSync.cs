@@ -1,13 +1,13 @@
 ﻿using OWML.Utils;
 using QSB.Player;
-using QSB.RoastingSync;
+using QSB.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.RoastingSync.TransformSync
 {
-	internal class RoastingStickTransformSync : TransformSync
+	internal class RoastingStickTransformSync : QSBNetworkTransform
 	{
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
@@ -18,15 +18,15 @@ namespace QSB.TransformSync
 		private Transform GetPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			var pivot = GetPivot();
 			Player.RoastingStick = pivot.gameObject;
 			_stickTip = pivot.Find("Stick_Tip");
-			return pivot;
+			return pivot.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var newPivot = Instantiate(GetPivot());
 			newPivot.parent = null;
@@ -56,7 +56,7 @@ namespace QSB.TransformSync
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
 			_stickTip = newPivot.Find("Stick_Tip");
-			return newPivot;
+			return newPivot.gameObject;
 		}
 
 		protected override void UpdateTransform()
@@ -82,7 +82,7 @@ namespace QSB.TransformSync
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.IsReady
+			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
 	}

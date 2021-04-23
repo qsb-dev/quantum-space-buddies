@@ -9,13 +9,14 @@ using QSB.ItemSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.PoolSync;
+using QSB.ProbeSync.TransformSync;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
-using QSB.TransformSync;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -146,13 +147,9 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current synced sector :");
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Current sector : {PlayerTransformSync.LocalInstance.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
-			var sector = PlayerTransformSync.LocalInstance.ReferenceSector;
-			var text = sector == null
-				? "NULL SECTOR"
-				: $"{sector.AttachedObject.name} : {sector.IsFakeSector}";
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {PlayerProbeSync.LocalInstance.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
 
 			var offset2 = 10f;
@@ -169,16 +166,14 @@ namespace QSB
 				return;
 			}
 
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe Active : {Locator.GetProbe().gameObject.activeInHierarchy}");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {QuantumManager.Instance.Shrine.IsPlayerInDarkness()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player positions :");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
-			offset += _debugLineSpacing;
-			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
+				var networkTransform = player.TransformSync;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {networkTransform.ReferenceSector.Name}");
 				offset += _debugLineSpacing;
 			}
 
