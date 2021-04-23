@@ -20,14 +20,15 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
-			foreach (var sync in Resources.FindObjectsOfTypeAll<QSBNetworkTransform>()) // todo : cache these!
+			foreach (var sync in QSBNetworkTransform.NetworkTransformList)
 			{
 				if (sync.AttachedObject == null)
 				{
-					DebugLog.ToConsole($"Warning - AttachedObject for {sync.PlayerId}.{sync.name} is null.", MessageType.Warning);
 					continue;
 				}
-				if (sync.HasAuthority && sync.AttachedObject.activeInHierarchy)
+				if (sync.HasAuthority 
+					&& sync.AttachedObject.activeInHierarchy 
+					&& sync.IsReady)
 				{
 					CheckTransformSyncSector(sync);
 				}
