@@ -104,11 +104,14 @@
   <ItemGroup>
     <Compile Include="Animation\AnimationSync.cs" />
     <Compile Include="Animation\AnimationType.cs" />
+    <Compile Include="Animation\Events\AnimationTriggerEvent.cs" />
+    <Compile Include="Animation\Events\AnimationTriggerMessage.cs" />
     <Compile Include="Animation\Events\CrouchEvent.cs" />
     <Compile Include="Animation\AnimatorMirror.cs" />
     <Compile Include="Animation\AnimControllerPatch.cs" />
     <Compile Include="Animation\AnimFloatParam.cs" />
     <Compile Include="Animation\CrouchSync.cs" />
+    <Compile Include="Animation\Patches\AnimationPatches.cs" />
     <Compile Include="Animation\PlayerHeadRotationSync.cs" />
     <Compile Include="CampfireSync\CampfireManager.cs" />
     <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />

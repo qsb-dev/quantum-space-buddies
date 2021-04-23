@@ -268,29 +268,29 @@ namespace QuantumUNET
 		{
 			if (localClient)
 			{
-				client.RegisterHandlerSafe(1, OnLocalClientObjectDestroy);
-				client.RegisterHandlerSafe(13, OnLocalClientObjectHide);
-				client.RegisterHandlerSafe(3, OnLocalClientObjectSpawn);
-				client.RegisterHandlerSafe(10, OnLocalClientObjectSpawnScene);
-				client.RegisterHandlerSafe(15, OnClientAuthority);
+				client.RegisterHandlerSafe(QMsgType.ObjectDestroy, OnLocalClientObjectDestroy);
+				client.RegisterHandlerSafe(QMsgType.ObjectSpawn, OnLocalClientObjectSpawn);
+				client.RegisterHandlerSafe(QMsgType.ObjectSpawnScene, OnLocalClientObjectSpawnScene);
+				client.RegisterHandlerSafe(QMsgType.ObjectHide, OnLocalClientObjectHide);
+				client.RegisterHandlerSafe(QMsgType.LocalClientAuthority, OnClientAuthority);
 			}
 			else
 			{
-				client.RegisterHandlerSafe(3, OnObjectSpawn);
-				client.RegisterHandlerSafe(10, OnObjectSpawnScene);
-				client.RegisterHandlerSafe(12, OnObjectSpawnFinished);
-				client.RegisterHandlerSafe(1, OnObjectDestroy);
-				client.RegisterHandlerSafe(13, OnObjectDestroy);
-				client.RegisterHandlerSafe(8, OnUpdateVarsMessage);
-				client.RegisterHandlerSafe(4, OnOwnerMessage);
-				client.RegisterHandlerSafe(9, OnSyncListMessage);
-				client.RegisterHandlerSafe(40, QNetworkAnimator.OnAnimationClientMessage);
-				client.RegisterHandlerSafe(41, QNetworkAnimator.OnAnimationParametersClientMessage);
-				client.RegisterHandlerSafe(15, OnClientAuthority);
+				client.RegisterHandlerSafe(QMsgType.ObjectDestroy, OnObjectDestroy);
+				client.RegisterHandlerSafe(QMsgType.ObjectSpawn, OnObjectSpawn);
+				client.RegisterHandlerSafe(QMsgType.Owner, OnOwnerMessage);
+				client.RegisterHandlerSafe(QMsgType.UpdateVars, OnUpdateVarsMessage);
+				client.RegisterHandlerSafe(QMsgType.SyncList, OnSyncListMessage);
+				client.RegisterHandlerSafe(QMsgType.ObjectSpawnScene, OnObjectSpawnScene);
+				client.RegisterHandlerSafe(QMsgType.SpawnFinished, OnObjectSpawnFinished);
+				client.RegisterHandlerSafe(QMsgType.ObjectHide, OnObjectDestroy);
+				client.RegisterHandlerSafe(QMsgType.LocalClientAuthority, OnClientAuthority);
+				client.RegisterHandlerSafe(QMsgType.Animation, QNetworkAnimator.OnAnimationClientMessage);
+				client.RegisterHandlerSafe(QMsgType.AnimationParameters, QNetworkAnimator.OnAnimationParametersClientMessage);
 			}
-			client.RegisterHandlerSafe(2, OnRPCMessage);
-			client.RegisterHandlerSafe(7, OnSyncEventMessage);
-			client.RegisterHandlerSafe(42, QNetworkAnimator.OnAnimationTriggerClientMessage);
+			client.RegisterHandlerSafe(QMsgType.Rpc, OnRPCMessage);
+			client.RegisterHandlerSafe(QMsgType.SyncEvent, OnSyncEventMessage);
+			client.RegisterHandlerSafe(QMsgType.AnimationTrigger, QNetworkAnimator.OnAnimationTriggerClientMessage);
 		}
 
 		internal static string GetStringForAssetId(NetworkHash128 assetId)

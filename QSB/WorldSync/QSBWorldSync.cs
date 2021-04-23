@@ -119,7 +119,7 @@ namespace QSB.WorldSync
 			return worldObject;
 		}
 
-		public static void RaiseEvent<T>(T instance, string eventName, params object[] args)
+		public static void RaiseEvent<T>(T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
 		{
 			if (!(typeof(T)
 				.GetField(eventName, Flags)?

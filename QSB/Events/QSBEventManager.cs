@@ -51,6 +51,7 @@ namespace QSB.Events
 				new PlayerKickEvent(),
 				new EnterExitRoastingEvent(),
 				new MarshmallowEventEvent(),
+				new AnimationTriggerEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

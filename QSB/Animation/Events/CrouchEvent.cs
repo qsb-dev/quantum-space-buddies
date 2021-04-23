@@ -6,7 +6,7 @@ namespace QSB.Animation.Events
 {
 	public class CrouchEvent : QSBEvent<FloatMessage>
 	{
-		public override EventType Type => EventType.AnimTrigger;
+		public override EventType Type => EventType.Crouch;
 
 		public override void SetupListener() => GlobalMessenger<float>.AddListener(EventNames.QSBCrouch, Handler);
 		public override void CloseListener() => GlobalMessenger<float>.RemoveListener(EventNames.QSBCrouch, Handler);
