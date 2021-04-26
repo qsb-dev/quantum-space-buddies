@@ -33,7 +33,7 @@ namespace QSB.Messaging
 			if (QNetworkServer.handlers.Keys.Contains(_eventType))
 			{
 				QNetworkServer.handlers.Remove(_eventType);
-				QNetworkManager.singleton.client.handlers.Remove(_eventType);
+				QNetworkManager.singleton.client.Handlers.Remove(_eventType);
 			}
 			QNetworkServer.RegisterHandler(_eventType, OnServerReceiveMessageHandler);
 			QNetworkManager.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
