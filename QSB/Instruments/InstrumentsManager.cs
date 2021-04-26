@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.Animation;
+using QSB.Animation.Player;
 using QSB.Events;
 using QSB.Instruments.QSBCamera;
 using QSB.Player;

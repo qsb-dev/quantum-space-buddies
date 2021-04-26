@@ -1,8 +1,9 @@
-﻿using QSB.Events;
+﻿using QSB.Animation.Player;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 
-namespace QSB.Animation.Events
+namespace QSB.Animation.Player.Events
 {
 	class AnimationTriggerEvent : QSBEvent<AnimationTriggerMessage>
 	{

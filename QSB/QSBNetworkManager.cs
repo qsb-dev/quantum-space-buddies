@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation;
+using QSB.Animation.Player;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;

@@ -38,6 +38,7 @@ namespace QSB.TransformSync
 
 		public virtual void Start()
 		{
+			DebugLog.DebugWrite($"Start {PlayerId}.{GetType().Name}");
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
@@ -51,6 +52,7 @@ namespace QSB.TransformSync
 
 		protected virtual void OnDestroy()
 		{
+			DebugLog.DebugWrite($"OnDestroy {PlayerId}.{GetType().Name}");
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject);
@@ -68,6 +70,7 @@ namespace QSB.TransformSync
 
 		protected void Init()
 		{
+			DebugLog.DebugWrite($"Init {PlayerId}.{GetType().Name}");
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			SetReferenceSector(SectorSync.GetClosestSector(AttachedObject.transform));
 			_isInitialized = true;
@@ -84,10 +87,10 @@ namespace QSB.TransformSync
 				writer.Write(-1);
 			}
 
-			writer.Write(transform.localPosition);
-			SerializeRotation(writer, transform.localRotation);
-			_prevPosition = transform.localPosition;
-			_prevRotation = transform.localRotation;
+			writer.Write(transform.position);
+			SerializeRotation(writer, transform.rotation);
+			_prevPosition = transform.position;
+			_prevRotation = transform.rotation;
 		}
 
 		public override void DeserializeTransform(QNetworkReader reader)
@@ -110,20 +113,20 @@ namespace QSB.TransformSync
 				SetReferenceSector(sector);
 			}
 
-			var localPosition = reader.ReadVector3();
-			var localRotation = DeserializeRotation(reader);
+			var pos = reader.ReadVector3();
+			var rot = DeserializeRotation(reader);
 
 			if (HasAuthority)
 			{
 				return;
 			}
 
-			transform.localPosition = localPosition;
-			transform.localRotation = localRotation;
+			transform.position = pos;
+			transform.rotation = rot;
 
 			if (transform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given localPosition was {localPosition} at sector {sector?.Name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given position was {pos} at sector {sector?.Name}", MessageType.Warning);
 			}
 		}
 
@@ -159,21 +162,23 @@ namespace QSB.TransformSync
 		{
 			if (HasAuthority)
 			{
-				transform.position = AttachedObject.transform.position;
-				transform.rotation = AttachedObject.transform.rotation;
+				transform.position = ReferenceSector.Transform.InverseTransformPoint(AttachedObject.transform.position);
+				transform.rotation = ReferenceSector.Transform.InverseTransformRotation(AttachedObject.transform.rotation);
 			}
 			else
 			{
-				AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, transform.localPosition);
-				AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, transform.localRotation, ref _rotationSmoothVelocity, SmoothTime);
+				var localToWorldPos = ReferenceSector.Transform.TransformPoint(transform.position);
+				var localToWorldRot = ReferenceSector.Transform.TransformRotation(transform.rotation);
+				AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, localToWorldPos);
+				AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, localToWorldRot, ref _rotationSmoothVelocity, SmoothTime);
 			}
 		}
 
 		public override bool HasMoved()
 		{
-			var displacementMagnitude = (transform.localPosition - _prevPosition).magnitude;
+			var displacementMagnitude = (transform.position - _prevPosition).magnitude;
 			return displacementMagnitude > 1E-03f
-				|| Quaternion.Angle(transform.localRotation, _prevRotation) > 1E-03f;
+				|| Quaternion.Angle(transform.rotation, _prevRotation) > 1E-03f;
 		}
 
 		public void SetReferenceSector(QSBSector sector)
@@ -183,7 +188,6 @@ namespace QSB.TransformSync
 				return;
 			}
 			ReferenceSector = sector;
-			transform.SetParent(sector.Transform, true);
 			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject was null for {PlayerId}.{GetType().Name} when trying to set reference sector to {sector.Name}. Waiting until not null...", MessageType.Warning);
@@ -200,6 +204,15 @@ namespace QSB.TransformSync
 
 		private void ReparentAttachedObject(Transform sectorTransform)
 		{
+			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
+			{
+				DebugLog.DebugWrite($" - ERROR - Trying to reparent attachedObject which wasnt attached to sector!", MessageType.Error);
+				return;
+			}
+			else
+			{
+				DebugLog.DebugWrite($"Reparent {AttachedObject.name} to {sectorTransform.name}");
+			}
 			AttachedObject.transform.SetParent(sectorTransform, true);
 			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
 				? Vector3.one / 10
@@ -211,7 +224,6 @@ namespace QSB.TransformSync
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
 			{
-				DebugLog.DebugWrite($"Warning - {PlayerId}.{GetType().Name} moved too fast!", MessageType.Warning);
 				_previousDistance = distance;
 				return targetPosition;
 			}

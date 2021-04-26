@@ -94,11 +94,11 @@ namespace QuantumUNET
 					}
 					s_InternalMessage.Reader.ReadInt16();
 					s_InternalMessage.ChannelId = msg.channelId;
-					s_InternalMessage.Connection = connection;
+					s_InternalMessage.Connection = Connection;
 					s_InternalMessage.MsgType = s_InternalMessage.Reader.ReadInt16();
 					m_Connection.InvokeHandler(s_InternalMessage);
 					m_FreeMessages.Push(msg);
-					connection.lastMessageTime = Time.time;
+					Connection.lastMessageTime = Time.time;
 				}
 				m_InternalMsgs = internalMsgs;
 				m_InternalMsgs.Clear();

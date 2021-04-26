@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using QuantumUNET.Transport;
 
-namespace QSB.Animation.Events
+namespace QSB.Animation.Player.Events
 {
 	public class AnimationTriggerMessage : PlayerMessage
 	{

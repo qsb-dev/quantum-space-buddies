@@ -16,7 +16,7 @@ namespace QuantumUNET.Components
 			{
 				var xOffset = 10;
 				var yOffset = 30;
-				var flag = Manager.client == null || Manager.client.connection == null || Manager.client.connection.connectionId == -1;
+				var flag = Manager.client == null || Manager.client.Connection == null || Manager.client.Connection.connectionId == -1;
 				if (!Manager.IsClientConnected() && !QNetworkServer.active)
 				{
 					if (flag)
@@ -69,7 +69,7 @@ namespace QuantumUNET.Components
 				{
 					if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Client Ready"))
 					{
-						QClientScene.Ready(Manager.client.connection);
+						QClientScene.Ready(Manager.client.Connection);
 						if (QClientScene.localPlayers.Count == 0)
 						{
 							QClientScene.AddPlayer(0);

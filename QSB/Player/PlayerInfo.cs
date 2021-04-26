@@ -1,4 +1,4 @@
-﻿using QSB.Animation;
+﻿using QSB.Animation.Player;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;

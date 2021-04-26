@@ -7,7 +7,7 @@ using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class AnimationSync : PlayerSyncObject
 	{
@@ -32,6 +32,7 @@ namespace QSB.Animation
 
 		protected void Awake()
 		{
+			DebugLog.DebugWrite($"Awake AnimationSync {PlayerId}");
 			InvisibleAnimator = gameObject.AddComponent<Animator>();
 			NetworkAnimator = gameObject.AddComponent<QNetworkAnimator>();
 			NetworkAnimator.enabled = false;
@@ -42,6 +43,7 @@ namespace QSB.Animation
 
 		protected override void OnDestroy()
 		{
+			DebugLog.DebugWrite($"OnDestroy AnimationSync {PlayerId}");
 			base.OnDestroy();
 			Destroy(InvisibleAnimator);
 			Destroy(NetworkAnimator);

@@ -22,7 +22,6 @@ namespace QuantumUNET.Components
 		public bool autoCreatePlayer { get; set; } = true;
 		public bool isNetworkActive;
 		public bool useWebSockets { get; set; }
-		public bool useSimulator { get; set; }
 		public bool clientLoadedScene { get; set; }
 		public string serverBindAddress { get; set; } = "";
 		public string networkAddress { get; set; } = "localhost";
@@ -236,7 +235,7 @@ namespace QuantumUNET.Components
 			{
 				OnStopClient();
 				QClientScene.DestroyAllClientObjects();
-				QClientScene.HandleClientDisconnect(client.connection);
+				QClientScene.HandleClientDisconnect(client.Connection);
 				client = null;
 				if (!string.IsNullOrEmpty(offlineScene))
 				{
@@ -289,14 +288,7 @@ namespace QuantumUNET.Components
 				QLog.Error("Must set the Network Address field in the manager");
 				return null;
 			}
-			if (useSimulator)
-			{
-				client.ConnectWithSimulator(networkAddress, networkPort, simulatedLatency, packetLossPercentage);
-			}
-			else
-			{
-				client.Connect(networkAddress, networkPort);
-			}
+			client.Connect(networkAddress, networkPort);
 			OnStartClient(client);
 			s_Address = networkAddress;
 			return client;
@@ -313,7 +305,7 @@ namespace QuantumUNET.Components
 			if (StartServer(config, maxConnections))
 			{
 				var networkClient = ConnectLocalClient();
-				OnServerConnect(networkClient.connection);
+				OnServerConnect(networkClient.Connection);
 				OnStartClient(networkClient);
 				result = networkClient;
 			}
@@ -462,7 +454,7 @@ namespace QuantumUNET.Components
 			if (IsClientConnected() && client != null)
 			{
 				RegisterClientMessages(client);
-				OnClientSceneChanged(client.connection);
+				OnClientSceneChanged(client.Connection);
 			}
 		}
 

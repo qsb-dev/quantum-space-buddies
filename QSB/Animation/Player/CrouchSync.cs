@@ -1,8 +1,9 @@
-﻿using QuantumUNET;
+﻿using QSB.Animation.Player;
+using QuantumUNET;
 using System;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class CrouchSync : QNetworkBehaviour
 	{

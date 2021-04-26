@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace QSB.Animation.Patches
 {
-	class AnimationPatches : QSBPatch
+	class PlayerAnimationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<PlayerAnimController>("LateUpdate", typeof(AnimationPatches), nameof(PlayerAnimController_LateUpdate));
+		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<PlayerAnimController>("LateUpdate", typeof(PlayerAnimationPatches), nameof(PlayerAnimController_LateUpdate));
 		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<PlayerAnimController>("LateUpdate");
 
 		public static bool PlayerAnimController_LateUpdate(

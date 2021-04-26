@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation.Character.WorldObjects;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -64,12 +65,8 @@ namespace QSB.ConversationSync.Events
 			CharacterDialogueTree tree)
 		{
 			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = characterId;
-			controller.SetValue("_inConversation", true);
-			controller.SetValue("_playerInHeadZone", true);
-			if (controller.GetValue<bool>("_hasTalkAnimation"))
-			{
-				controller.GetValue<Animator>("_animator").SetTrigger("Talking");
-			}
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(controller);
+			qsbObj.StartConversation();
 			tree.GetInteractVolume().DisableInteraction();
 		}
 
@@ -79,12 +76,8 @@ namespace QSB.ConversationSync.Events
 			CharacterDialogueTree tree)
 		{
 			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = -1;
-			controller.SetValue("_inConversation", false);
-			controller.SetValue("_playerInHeadZone", false);
-			if (controller.GetValue<bool>("_hasTalkAnimation"))
-			{
-				controller.GetValue<Animator>("_animator").SetTrigger("Idle");
-			}
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(controller);
+			qsbObj.EndConversation();
 			tree.GetInteractVolume().EnableInteraction();
 		}
 	}

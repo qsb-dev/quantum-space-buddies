@@ -35,10 +35,15 @@ namespace QSB.OrbSync.TransformSync
 			_isReady = true;
 		}
 
-		public void OnDestroy() => QSBWorldSync.OrbSyncList.Remove(this);
+		public void OnDestroy()
+		{
+			DebugLog.DebugWrite($"OnDestroy - parented to {gameObject.transform.parent.name}");
+			QSBWorldSync.OrbSyncList.Remove(this);
+		}
 
 		protected void Init()
 		{
+			DebugLog.DebugWrite($"Init");
 			OrbTransform = AttachedOrb.transform;
 			_orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
 			_isInitialized = true;

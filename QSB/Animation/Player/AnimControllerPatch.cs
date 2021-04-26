@@ -1,7 +1,7 @@
 ﻿using OWML.Utils;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public static class AnimControllerPatch
 	{

@@ -1,4 +1,4 @@
-﻿namespace QSB.Animation
+﻿namespace QSB.Animation.Player
 {
 	public enum AnimationType
 	{

@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.Utils;
+using QSB.Animation.Character;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
@@ -111,6 +112,7 @@ namespace QSB
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
+			gameObject.AddComponent<CharacterAnimManager>();
 
 			DebugBoxManager.Init();
 
