@@ -33,13 +33,23 @@ namespace QuantumUNET
 		}
 
 		public static List<QNetworkClient> allClients { get; private set; } = new List<QNetworkClient>();
+
 		public static bool active { get; private set; }
+
+		internal void SetHandlers(QNetworkConnection conn) => conn.SetHandlers(m_MessageHandlers);
+
 		public string serverIp { get; private set; } = "";
+
 		public int serverPort { get; private set; }
+
 		public QNetworkConnection connection => m_Connection;
+
 		internal int hostId { get; private set; } = -1;
+
 		public Dictionary<short, QNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
+
 		public int numChannels => hostTopology.DefaultConfig.ChannelCount;
+
 		public HostTopology hostTopology { get; private set; }
 
 		private const int k_MaxEventsPerFrame = 500;
@@ -72,10 +82,10 @@ namespace QuantumUNET
 		}
 
 		public bool isConnected => m_AsyncConnect == ConnectState.Connected;
-		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
-		public void SetNetworkConnectionClass<T>() where T : QNetworkConnection => networkConnectionClass = typeof(T);
 
-		internal void SetHandlers(QNetworkConnection conn) => conn.SetHandlers(m_MessageHandlers);
+		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
+
+		public void SetNetworkConnectionClass<T>() where T : QNetworkConnection => networkConnectionClass = typeof(T);
 
 		public bool Configure(ConnectionConfig config, int maxConnections)
 		{
