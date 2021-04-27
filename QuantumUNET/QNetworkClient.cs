@@ -17,26 +17,27 @@ namespace QuantumUNET
 		public static bool Active { get; private set; }
 		public string ServerIp { get; private set; } = "";
 		public int ServerPort { get; private set; }
-		public QNetworkConnection Connection { get; private set; }
-		internal int HostId { get; private set; } = -1;
-		public Dictionary<short, QNetworkMessageDelegate> Handlers => _messageHandlers.GetHandlers();
-		public int NumChannels => HostTopology.DefaultConfig.ChannelCount;
-		public HostTopology HostTopology { get; private set; }
+		public QNetworkConnection Connection => m_Connection;
+		internal int hostId { get; private set; } = -1;
+		public Dictionary<short, QNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
+		public int numChannels => hostTopology.DefaultConfig.ChannelCount;
+		public HostTopology hostTopology { get; private set; }
 
-		private const int MaxEventsPerFrame = 500;
-		private int _hostPort;
-		private int _clientConnectionId = -1;
-		private int _statResetTime;
-		private static readonly QCRCMessage _crcMessage = new QCRCMessage();
-		private readonly QNetworkMessageHandlers _messageHandlers = new QNetworkMessageHandlers();
-		private readonly byte[] _msgBuffer;
-		private readonly NetworkReader _msgReader;
-		protected ConnectState AsyncConnect = ConnectState.None;
-		private string _requestedServerHost = "";
+		private const int k_MaxEventsPerFrame = 500;
+		private int m_HostPort;
+		private int m_ClientConnectionId = -1;
+		private int m_StatResetTime;
+		private static readonly QCRCMessage s_CRCMessage = new QCRCMessage();
+		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
+		protected QNetworkConnection m_Connection;
+		private readonly byte[] m_MsgBuffer;
+		private readonly NetworkReader m_MsgReader;
+		protected ConnectState m_AsyncConnect = ConnectState.None;
+		private string m_RequestedServerHost = "";
 
-		public int HostPort
+		public int hostPort
 		{
-			get => _hostPort;
+			get => m_HostPort;
 			set
 			{
 				if (value < 0)
@@ -47,34 +48,34 @@ namespace QuantumUNET
 				{
 					throw new ArgumentException("Port must not be greater than 65535.");
 				}
-				_hostPort = value;
+				m_HostPort = value;
 			}
 		}
 
-		public bool IsConnected => AsyncConnect == ConnectState.Connected;
-		public Type NetworkConnectionClass { get; private set; } = typeof(QNetworkConnection);
-		public void SetNetworkConnectionClass<T>() where T : QNetworkConnection => NetworkConnectionClass = typeof(T);
+		public bool isConnected => m_AsyncConnect == ConnectState.Connected;
+		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
+		public void SetNetworkConnectionClass<T>() where T : QNetworkConnection => networkConnectionClass = typeof(T);
 
 		public QNetworkClient()
 		{
-			_msgBuffer = new byte[65535];
-			_msgReader = new NetworkReader(_msgBuffer);
+			m_MsgBuffer = new byte[65535];
+			m_MsgReader = new NetworkReader(m_MsgBuffer);
 			AddClient(this);
 		}
 
 		public QNetworkClient(QNetworkConnection conn)
 		{
-			_msgBuffer = new byte[65535];
-			_msgReader = new NetworkReader(_msgBuffer);
+			m_MsgBuffer = new byte[65535];
+			m_MsgReader = new NetworkReader(m_MsgBuffer);
 			AddClient(this);
 			SetActive(true);
-			Connection = conn;
-			AsyncConnect = ConnectState.Connected;
-			conn.SetHandlers(_messageHandlers);
+			m_Connection = conn;
+			m_AsyncConnect = ConnectState.Connected;
+			conn.SetHandlers(m_MessageHandlers);
 			RegisterSystemHandlers(false);
 		}
 
-		internal void SetHandlers(QNetworkConnection conn) => conn.SetHandlers(_messageHandlers);
+		internal void SetHandlers(QNetworkConnection conn) => conn.SetHandlers(m_MessageHandlers);
 
 		public bool Configure(ConnectionConfig config, int maxConnections)
 		{
@@ -84,7 +85,7 @@ namespace QuantumUNET
 
 		public bool Configure(HostTopology topology)
 		{
-			HostTopology = topology;
+			hostTopology = topology;
 			return true;
 		}
 
@@ -98,23 +99,23 @@ namespace QuantumUNET
 			if (Application.platform == RuntimePlatform.WebGLPlayer)
 			{
 				this.ServerIp = serverIp;
-				AsyncConnect = ConnectState.Resolved;
+				m_AsyncConnect = ConnectState.Resolved;
 			}
 			else if (serverIp.Equals("127.0.0.1") || serverIp.Equals("localhost"))
 			{
 				this.ServerIp = "127.0.0.1";
-				AsyncConnect = ConnectState.Resolved;
+				m_AsyncConnect = ConnectState.Resolved;
 			}
 			else if (serverIp.IndexOf(":") != -1 && IsValidIpV6(serverIp))
 			{
 				this.ServerIp = serverIp;
-				AsyncConnect = ConnectState.Resolved;
+				m_AsyncConnect = ConnectState.Resolved;
 			}
 			else
 			{
 				QLog.Log($"Async DNS START:{serverIp}");
-				_requestedServerHost = serverIp;
-				AsyncConnect = ConnectState.Resolving;
+				m_RequestedServerHost = serverIp;
+				m_AsyncConnect = ConnectState.Resolving;
 				Dns.BeginGetHostAddresses(serverIp, GetHostAddressesCallback, this);
 			}
 		}
@@ -123,15 +124,15 @@ namespace QuantumUNET
 		{
 			SetActive(true);
 			RegisterSystemHandlers(false);
-			if (HostTopology == null)
+			if (hostTopology == null)
 			{
 				var connectionConfig = new ConnectionConfig();
 				connectionConfig.AddChannel(QosType.ReliableSequenced);
 				connectionConfig.AddChannel(QosType.Unreliable);
 				connectionConfig.UsePlatformSpecificProtocols = false;
-				HostTopology = new HostTopology(connectionConfig, 8);
+				hostTopology = new HostTopology(connectionConfig, 8);
 			}
-			HostId = NetworkTransport.AddHost(HostTopology, _hostPort);
+			hostId = NetworkTransport.AddHost(hostTopology, m_HostPort);
 		}
 
 		internal static void GetHostAddressesCallback(IAsyncResult ar)
@@ -142,15 +143,15 @@ namespace QuantumUNET
 				var networkClient = (QNetworkClient)ar.AsyncState;
 				if (array.Length == 0)
 				{
-					QLog.Error($"DNS lookup failed for:{networkClient._requestedServerHost}");
-					networkClient.AsyncConnect = ConnectState.Failed;
+					QLog.Error($"DNS lookup failed for:{networkClient.m_RequestedServerHost}");
+					networkClient.m_AsyncConnect = ConnectState.Failed;
 				}
 				else
 				{
 					networkClient.ServerIp = array[0].ToString();
-					networkClient.AsyncConnect = ConnectState.Resolved;
+					networkClient.m_AsyncConnect = ConnectState.Resolved;
 					QLog.Log(
-						$"Async DNS Result:{networkClient.ServerIp} for {networkClient._requestedServerHost}: {networkClient.ServerIp}");
+						$"Async DNS Result:{networkClient.ServerIp} for {networkClient.m_RequestedServerHost}: {networkClient.ServerIp}");
 				}
 			}
 			catch (SocketException ex)
@@ -158,31 +159,31 @@ namespace QuantumUNET
 				var networkClient2 = (QNetworkClient)ar.AsyncState;
 				QLog.Error($"DNS resolution failed: {ex.GetErrorCode()}");
 				QLog.Error($"Exception:{ex}");
-				networkClient2.AsyncConnect = ConnectState.Failed;
+				networkClient2.m_AsyncConnect = ConnectState.Failed;
 			}
 		}
 
 		internal void ContinueConnect()
 		{
-			_clientConnectionId = NetworkTransport.Connect(HostId, ServerIp, ServerPort, 0, out var b);
-			Connection = (QNetworkConnection)Activator.CreateInstance(NetworkConnectionClass);
-			Connection.SetHandlers(_messageHandlers);
-			Connection.Initialize(ServerIp, HostId, _clientConnectionId, HostTopology);
+			m_ClientConnectionId = NetworkTransport.Connect(hostId, ServerIp, ServerPort, 0, out var b);
+			m_Connection = (QNetworkConnection)Activator.CreateInstance(networkConnectionClass);
+			m_Connection.SetHandlers(m_MessageHandlers);
+			m_Connection.Initialize(ServerIp, hostId, m_ClientConnectionId, hostTopology);
 		}
 
 		public virtual void Disconnect()
 		{
-			AsyncConnect = ConnectState.Disconnected;
-			QClientScene.HandleClientDisconnect(Connection);
-			if (Connection != null)
+			m_AsyncConnect = ConnectState.Disconnected;
+			QClientScene.HandleClientDisconnect(m_Connection);
+			if (m_Connection != null)
 			{
-				Connection.Disconnect();
-				Connection.Dispose();
-				Connection = null;
-				if (HostId != -1)
+				m_Connection.Disconnect();
+				m_Connection.Dispose();
+				m_Connection = null;
+				if (hostId != -1)
 				{
-					NetworkTransport.RemoveHost(HostId);
-					HostId = -1;
+					NetworkTransport.RemoveHost(hostId);
+					hostId = -1;
 				}
 			}
 		}
@@ -190,16 +191,16 @@ namespace QuantumUNET
 		public bool Send(short msgType, QMessageBase msg)
 		{
 			bool result;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				if (AsyncConnect != ConnectState.Connected)
+				if (m_AsyncConnect != ConnectState.Connected)
 				{
 					QLog.Error("NetworkClient Send when not connected to a server");
 					result = false;
 				}
 				else
 				{
-					result = Connection.Send(msgType, msg);
+					result = m_Connection.Send(msgType, msg);
 				}
 			}
 			else
@@ -213,16 +214,16 @@ namespace QuantumUNET
 		public bool SendWriter(QNetworkWriter writer, int channelId)
 		{
 			bool result;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				if (AsyncConnect != ConnectState.Connected)
+				if (m_AsyncConnect != ConnectState.Connected)
 				{
 					QLog.Error("NetworkClient SendWriter when not connected to a server");
 					result = false;
 				}
 				else
 				{
-					result = Connection.SendWriter(writer, channelId);
+					result = m_Connection.SendWriter(writer, channelId);
 				}
 			}
 			else
@@ -236,16 +237,16 @@ namespace QuantumUNET
 		public bool SendBytes(byte[] data, int numBytes, int channelId)
 		{
 			bool result;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				if (AsyncConnect != ConnectState.Connected)
+				if (m_AsyncConnect != ConnectState.Connected)
 				{
 					QLog.Error("NetworkClient SendBytes when not connected to a server");
 					result = false;
 				}
 				else
 				{
-					result = Connection.SendBytes(data, numBytes, channelId);
+					result = m_Connection.SendBytes(data, numBytes, channelId);
 				}
 			}
 			else
@@ -259,16 +260,16 @@ namespace QuantumUNET
 		public bool SendUnreliable(short msgType, QMessageBase msg)
 		{
 			bool result;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				if (AsyncConnect != ConnectState.Connected)
+				if (m_AsyncConnect != ConnectState.Connected)
 				{
 					QLog.Error("NetworkClient SendUnreliable when not connected to a server");
 					result = false;
 				}
 				else
 				{
-					result = Connection.SendUnreliable(msgType, msg);
+					result = m_Connection.SendUnreliable(msgType, msg);
 				}
 			}
 			else
@@ -282,16 +283,16 @@ namespace QuantumUNET
 		public bool SendByChannel(short msgType, QMessageBase msg, int channelId)
 		{
 			bool result;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				if (AsyncConnect != ConnectState.Connected)
+				if (m_AsyncConnect != ConnectState.Connected)
 				{
 					QLog.Error("NetworkClient SendByChannel when not connected to a server");
 					result = false;
 				}
 				else
 				{
-					result = Connection.SendByChannel(msgType, msg, channelId);
+					result = m_Connection.SendByChannel(msgType, msg, channelId);
 				}
 			}
 			else
@@ -304,23 +305,23 @@ namespace QuantumUNET
 
 		public void SetMaxDelay(float seconds)
 		{
-			if (Connection == null)
+			if (m_Connection == null)
 			{
 				QLog.Warning("SetMaxDelay failed, not connected.");
 			}
 			else
 			{
-				Connection.SetMaxDelay(seconds);
+				m_Connection.SetMaxDelay(seconds);
 			}
 		}
 
 		public void Shutdown()
 		{
-			QLog.Log($"Shutting down client {HostId}");
-			if (HostId != -1)
+			QLog.Log($"Shutting down client {hostId}");
+			if (hostId != -1)
 			{
-				NetworkTransport.RemoveHost(HostId);
-				HostId = -1;
+				NetworkTransport.RemoveHost(hostId);
+				hostId = -1;
 			}
 			RemoveClient(this);
 			if (AllClients.Count == 0)
@@ -331,39 +332,39 @@ namespace QuantumUNET
 
 		internal virtual void Update()
 		{
-			if (HostId != -1)
+			if (hostId != -1)
 			{
-				switch (AsyncConnect)
+				switch (m_AsyncConnect)
 				{
 					case ConnectState.None:
 					case ConnectState.Resolving:
 					case ConnectState.Disconnected:
 						return;
 					case ConnectState.Resolved:
-						AsyncConnect = ConnectState.Connecting;
+						m_AsyncConnect = ConnectState.Connecting;
 						ContinueConnect();
 						return;
 					case ConnectState.Failed:
 						GenerateConnectError(11);
-						AsyncConnect = ConnectState.Disconnected;
+						m_AsyncConnect = ConnectState.Disconnected;
 						return;
 				}
-				if (Connection != null)
+				if (m_Connection != null)
 				{
-					if ((int)Time.time != _statResetTime)
+					if ((int)Time.time != m_StatResetTime)
 					{
-						Connection.ResetStats();
-						_statResetTime = (int)Time.time;
+						m_Connection.ResetStats();
+						m_StatResetTime = (int)Time.time;
 					}
 				}
 				var num = 0;
 				byte b;
 				for (; ; )
 				{
-					var networkEventType = NetworkTransport.ReceiveFromHost(HostId, out var num2, out var channelId, _msgBuffer, (ushort)_msgBuffer.Length, out var numBytes, out b);
-					if (Connection != null)
+					var networkEventType = NetworkTransport.ReceiveFromHost(hostId, out var num2, out var channelId, m_MsgBuffer, (ushort)m_MsgBuffer.Length, out var numBytes, out b);
+					if (m_Connection != null)
 					{
-						Connection.LastError = (NetworkError)b;
+						m_Connection.LastError = (NetworkError)b;
 					}
 					switch (networkEventType)
 					{
@@ -372,8 +373,8 @@ namespace QuantumUNET
 							{
 								goto Block_11;
 							}
-							_msgReader.SeekZero();
-							Connection.TransportReceive(_msgBuffer, numBytes, channelId);
+							m_MsgReader.SeekZero();
+							m_Connection.TransportReceive(m_MsgBuffer, numBytes, channelId);
 							break;
 
 						case NetworkEventType.ConnectEvent:
@@ -382,13 +383,13 @@ namespace QuantumUNET
 							{
 								goto Block_10;
 							}
-							AsyncConnect = ConnectState.Connected;
-							Connection.InvokeHandlerNoData(32);
+							m_AsyncConnect = ConnectState.Connected;
+							m_Connection.InvokeHandlerNoData(32);
 							break;
 
 						case NetworkEventType.DisconnectEvent:
 							QLog.Log("Client disconnected");
-							AsyncConnect = ConnectState.Disconnected;
+							m_AsyncConnect = ConnectState.Disconnected;
 							if (b != 0)
 							{
 								if (b != 6)
@@ -396,8 +397,8 @@ namespace QuantumUNET
 									GenerateDisconnectError(b);
 								}
 							}
-							QClientScene.HandleClientDisconnect(Connection);
-							Connection?.InvokeHandlerNoData(33);
+							QClientScene.HandleClientDisconnect(m_Connection);
+							m_Connection?.InvokeHandlerNoData(33);
 							break;
 
 						case NetworkEventType.Nothing:
@@ -407,11 +408,11 @@ namespace QuantumUNET
 							QLog.Error($"Unknown network message type received: {networkEventType}");
 							break;
 					}
-					if (++num >= MaxEventsPerFrame)
+					if (++num >= 500)
 					{
 						goto Block_17;
 					}
-					if (HostId == -1)
+					if (hostId == -1)
 					{
 						goto Block_19;
 					}
@@ -427,12 +428,12 @@ namespace QuantumUNET
 				GenerateDataError(b);
 				return;
 				Block_17:
-				QLog.Log($"MaxEventsPerFrame hit ({MaxEventsPerFrame})");
+				QLog.Log($"MaxEventsPerFrame hit ({500})");
 				Block_19:
 				IL_2C6:
-				if (Connection != null && AsyncConnect == ConnectState.Connected)
+				if (m_Connection != null && m_AsyncConnect == ConnectState.Connected)
 				{
-					Connection.FlushChannels();
+					m_Connection.FlushChannels();
 				}
 			}
 		}
@@ -457,8 +458,8 @@ namespace QuantumUNET
 
 		private void GenerateError(int error)
 		{
-			var handler = _messageHandlers.GetHandler(34)
-						  ?? _messageHandlers.GetHandler(34);
+			var handler = m_MessageHandlers.GetHandler(34)
+						  ?? m_MessageHandlers.GetHandler(34);
 			if (handler != null)
 			{
 				var errorMessage = new QErrorMessage
@@ -473,7 +474,7 @@ namespace QuantumUNET
 				{
 					MsgType = 34,
 					Reader = reader,
-					Connection = Connection,
+					Connection = m_Connection,
 					ChannelId = 0
 				});
 			}
@@ -485,9 +486,9 @@ namespace QuantumUNET
 			numBufferedMsgs = 0;
 			numBytes = 0;
 			lastBufferedPerSecond = 0;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				Connection.GetStatsOut(out numMsgs, out numBufferedMsgs, out numBytes, out lastBufferedPerSecond);
+				m_Connection.GetStatsOut(out numMsgs, out numBufferedMsgs, out numBytes, out lastBufferedPerSecond);
 			}
 		}
 
@@ -495,19 +496,19 @@ namespace QuantumUNET
 		{
 			numMsgs = 0;
 			numBytes = 0;
-			if (Connection != null)
+			if (m_Connection != null)
 			{
-				Connection.GetStatsIn(out numMsgs, out numBytes);
+				m_Connection.GetStatsIn(out numMsgs, out numBytes);
 			}
 		}
 
 		public Dictionary<short, QNetworkConnection.PacketStat> GetConnectionStats() =>
-			Connection?.PacketStats;
+			m_Connection?.PacketStats;
 
-		public void ResetConnectionStats() => Connection?.ResetStats();
+		public void ResetConnectionStats() => m_Connection?.ResetStats();
 
 		public int GetRTT() =>
-			HostId == -1 ? 0 : NetworkTransport.GetCurrentRTT(HostId, _clientConnectionId, out var b);
+			hostId == -1 ? 0 : NetworkTransport.GetCurrentRTT(hostId, m_ClientConnectionId, out var b);
 
 		internal void RegisterSystemHandlers(bool localClient)
 		{
@@ -517,15 +518,15 @@ namespace QuantumUNET
 
 		private void OnCRC(QNetworkMessage netMsg)
 		{
-			netMsg.ReadMessage(_crcMessage);
-			QNetworkCRC.Validate(_crcMessage.scripts, NumChannels);
+			netMsg.ReadMessage(s_CRCMessage);
+			QNetworkCRC.Validate(s_CRCMessage.scripts, numChannels);
 		}
 
-		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => _messageHandlers.RegisterHandler(msgType, handler);
+		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandler(msgType, handler);
 
-		public void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) => _messageHandlers.RegisterHandlerSafe(msgType, handler);
+		public void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 
-		public void UnregisterHandler(short msgType) => _messageHandlers.UnregisterHandler(msgType);
+		public void UnregisterHandler(short msgType) => m_MessageHandlers.UnregisterHandler(msgType);
 
 		public static Dictionary<short, QNetworkConnection.PacketStat> GetTotalConnectionStats()
 		{

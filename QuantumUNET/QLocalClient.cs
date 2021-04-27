@@ -9,14 +9,14 @@ namespace QuantumUNET
 	{
 		public override void Disconnect()
 		{
-			QClientScene.HandleClientDisconnect(Connection);
+			QClientScene.HandleClientDisconnect(m_Connection);
 			if (m_Connected)
 			{
 				PostInternalMessage(33);
 				m_Connected = false;
 			}
-			AsyncConnect = ConnectState.Disconnected;
-			m_LocalServer.RemoveLocalClient(Connection);
+			m_AsyncConnect = ConnectState.Disconnected;
+			m_LocalServer.RemoveLocalClient(m_Connection);
 		}
 
 		internal void InternalConnectLocalServer(bool generateConnectMsg)
@@ -31,10 +31,10 @@ namespace QuantumUNET
 				}
 			}
 			m_LocalServer = QNetworkServer.instance;
-			Connection = new QULocalConnectionToServer(m_LocalServer);
-			SetHandlers(Connection);
-			Connection.connectionId = m_LocalServer.AddLocalClient(this);
-			AsyncConnect = ConnectState.Connected;
+			m_Connection = new QULocalConnectionToServer(m_LocalServer);
+			SetHandlers(m_Connection);
+			m_Connection.connectionId = m_LocalServer.AddLocalClient(this);
+			m_AsyncConnect = ConnectState.Connected;
 			SetActive(true);
 			RegisterSystemHandlers(true);
 			if (generateConnectMsg)
@@ -48,14 +48,14 @@ namespace QuantumUNET
 
 		internal void AddLocalPlayer(QPlayerController localPlayer)
 		{
-			Debug.Log($"Local client AddLocalPlayer {localPlayer.Gameobject.name} conn={Connection.connectionId}");
-			Connection.isReady = true;
-			Connection.SetPlayerController(localPlayer);
+			Debug.Log($"Local client AddLocalPlayer {localPlayer.Gameobject.name} conn={m_Connection.connectionId}");
+			m_Connection.isReady = true;
+			m_Connection.SetPlayerController(localPlayer);
 			var unetView = localPlayer.UnetView;
 			if (unetView != null)
 			{
 				QClientScene.SetLocalObject(unetView.NetId, localPlayer.Gameobject);
-				unetView.SetConnectionToServer(Connection);
+				unetView.SetConnectionToServer(m_Connection);
 			}
 			QClientScene.InternalAddPlayer(unetView, localPlayer.PlayerControllerId);
 		}
@@ -96,7 +96,7 @@ namespace QuantumUNET
 					s_InternalMessage.ChannelId = msg.channelId;
 					s_InternalMessage.Connection = Connection;
 					s_InternalMessage.MsgType = s_InternalMessage.Reader.ReadInt16();
-					Connection.InvokeHandler(s_InternalMessage);
+					m_Connection.InvokeHandler(s_InternalMessage);
 					m_FreeMessages.Push(msg);
 					Connection.lastMessageTime = Time.time;
 				}

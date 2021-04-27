@@ -259,7 +259,7 @@ namespace QuantumUNET.Components
 			}
 			client = new QNetworkClient
 			{
-				HostPort = hostPort
+				hostPort = hostPort
 			};
 			if (config != null)
 			{
@@ -475,7 +475,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public bool IsClientConnected() => client != null && client.IsConnected;
+		public bool IsClientConnected() => client != null && client.isConnected;
 
 		public static void Shutdown()
 		{
