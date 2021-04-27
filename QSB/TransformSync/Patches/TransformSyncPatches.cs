@@ -2,7 +2,7 @@
 
 namespace QSB.TransformSync.Patches
 {
-	class TransformSyncPatches : QSBPatch
+	internal class TransformSyncPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

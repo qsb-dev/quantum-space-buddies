@@ -1,13 +1,12 @@
 ﻿using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Animation.Patches
 {
-	class PlayerAnimationPatches : QSBPatch
+	internal class PlayerAnimationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

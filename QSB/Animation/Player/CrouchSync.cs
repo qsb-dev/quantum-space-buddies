@@ -1,5 +1,4 @@
-﻿using QSB.Animation.Player;
-using QuantumUNET;
+﻿using QuantumUNET;
 using System;
 using UnityEngine;
 

@@ -3,15 +3,12 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	class IntermediaryTransform
+	internal class IntermediaryTransform
 	{
 		private Transform _attachedTransform;
 		private QSBSector _referenceSector;
 
-		public IntermediaryTransform(Transform transform)
-		{
-			_attachedTransform = transform;
-		}
+		public IntermediaryTransform(Transform transform) => _attachedTransform = transform;
 		/// <summary>
 		/// Get the world position of this INVISIBLE transform.
 		/// </summary>

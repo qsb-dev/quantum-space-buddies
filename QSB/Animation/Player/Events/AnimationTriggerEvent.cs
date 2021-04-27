@@ -1,11 +1,9 @@
-﻿using QSB.Animation.Player;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.Animation.Player.Events
 {
-	class AnimationTriggerEvent : QSBEvent<AnimationTriggerMessage>
+	internal class AnimationTriggerEvent : QSBEvent<AnimationTriggerMessage>
 	{
 		public override EventType Type => EventType.AnimTrigger;
 

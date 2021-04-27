@@ -1,14 +1,11 @@
-﻿using OWML.Common;
-using OWML.Utils;
+﻿using OWML.Utils;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace QSB.Animation.Character.WorldObjects
 {
-	class QSBCharacterAnimController : WorldObject<CharacterAnimController>
+	internal class QSBCharacterAnimController : WorldObject<CharacterAnimController>
 	{
 		private readonly List<PlayerInfo> _playersInHeadZone = new List<PlayerInfo>();
 
