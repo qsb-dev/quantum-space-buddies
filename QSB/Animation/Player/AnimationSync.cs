@@ -32,7 +32,6 @@ namespace QSB.Animation.Player
 
 		protected void Awake()
 		{
-			DebugLog.DebugWrite($"Awake AnimationSync {PlayerId}");
 			InvisibleAnimator = gameObject.AddComponent<Animator>();
 			NetworkAnimator = gameObject.AddComponent<QNetworkAnimator>();
 			NetworkAnimator.enabled = false;
@@ -43,7 +42,6 @@ namespace QSB.Animation.Player
 
 		protected override void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy AnimationSync {PlayerId}");
 			base.OnDestroy();
 			Destroy(InvisibleAnimator);
 			Destroy(NetworkAnimator);

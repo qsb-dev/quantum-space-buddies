@@ -39,7 +39,6 @@ namespace QSB.TransformSync
 
 		public virtual void Start()
 		{
-			DebugLog.DebugWrite($"Start {PlayerId}.{GetType().Name}");
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
@@ -54,7 +53,6 @@ namespace QSB.TransformSync
 
 		protected virtual void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy {PlayerId}.{GetType().Name}");
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject);
@@ -72,7 +70,6 @@ namespace QSB.TransformSync
 
 		protected void Init()
 		{
-			DebugLog.DebugWrite($"Init {PlayerId}.{GetType().Name}");
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			SetReferenceSector(SectorSync.GetClosestSector(AttachedObject.transform));
 			_isInitialized = true;
@@ -215,12 +212,8 @@ namespace QSB.TransformSync
 		{
 			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
 			{
-				DebugLog.DebugWrite($" - ERROR - Trying to reparent attachedObject which wasnt attached to sector!", MessageType.Error);
+				DebugLog.ToConsole($" - ERROR - Trying to reparent attachedObject which wasnt attached to sector!", MessageType.Error);
 				return;
-			}
-			else
-			{
-				DebugLog.DebugWrite($"Reparent {AttachedObject.name} to {sectorTransform.name}");
 			}
 			AttachedObject.transform.SetParent(sectorTransform, true);
 			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
