@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	internal class IntermediaryTransform
+	public class IntermediaryTransform
 	{
 		private Transform _attachedTransform;
-		private QSBSector _referenceSector;
+		private Transform _referenceTransform;
 
 		public IntermediaryTransform(Transform transform) => _attachedTransform = transform;
 		/// <summary>
@@ -34,25 +34,25 @@ namespace QSB.TransformSync
 			=> _attachedTransform.rotation = worldRot;
 
 		/// <summary>
-		/// Sets the reference sector - what sector this transform is syncing to.
+		/// Sets the reference transform - what transform this transform is syncing to.
 		/// </summary>
 		/// <param name="sector">The new reference sector.</param>
-		public void SetReferenceSector(QSBSector sector) 
-			=> _referenceSector = sector;
+		public void SetReferenceTransform(Transform transform) 
+			=> _referenceTransform = transform;
 
 		/// <summary>
 		/// Sets the position of the INVISIBLE transform to be correct, according to the reference sector and the position of the VISIBLE transform.
 		/// </summary>
 		/// <param name="worldPosition">The world position of the VISIBLE transform.</param>
 		public void EncodePosition(Vector3 worldPosition) 
-			=> SetPosition(_referenceSector.Transform.InverseTransformPoint(worldPosition));
+			=> SetPosition(_referenceTransform.InverseTransformPoint(worldPosition));
 
 		/// <summary>
 		/// Sets the rotation of the INVISIBLE transform to be correct, according to the reference sector and the rotation of the VISIBLE transform.
 		/// </summary>
 		/// <param name="worldPosition">The world rotation of the VISIBLE transform.</param>
 		public void EncodeRotation(Quaternion worldRotation)
-			=> SetRotation(_referenceSector.Transform.InverseTransformRotation(worldRotation));
+			=> SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
 
 		/// <summary>
 		/// Gets what the VISIBLE transform's position should be, from the reference sector and the position of the INVISIBLE transform.

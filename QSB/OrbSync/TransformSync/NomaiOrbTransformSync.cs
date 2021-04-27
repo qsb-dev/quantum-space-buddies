@@ -43,7 +43,6 @@ namespace QSB.OrbSync.TransformSync
 
 		protected void Init()
 		{
-			DebugLog.DebugWrite($"Init");
 			OrbTransform = AttachedOrb.transform;
 			_orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
 			_isInitialized = true;
@@ -81,6 +80,17 @@ namespace QSB.OrbSync.TransformSync
 				OrbTransform.position = _orbParent.TransformPoint(transform.position);
 				OrbTransform.rotation = transform.rotation;
 			}
+		}
+
+		private void OnRenderObject()
+		{
+			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Cube(OrbTransform.position, OrbTransform.rotation, Vector3.one / 2, Color.blue);
+			Popcron.Gizmos.Cube(_orbParent.TransformPoint(transform.position), transform.rotation, Vector3.one / 2, Color.red);
 		}
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
-	public class ShipTransformSync : QSBNetworkTransform
+	public class ShipTransformSync : SectoredTransformSync
 	{
 		protected override float DistanceLeeway => 20f;
 

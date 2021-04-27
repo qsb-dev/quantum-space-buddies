@@ -1,29 +1,25 @@
 ﻿using OWML.Common;
 using QSB.Player;
 using QSB.Player.TransformSync;
-using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
-using QSB.WorldSync;
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace QSB.TransformSync
 {
-	/*
-	public abstract class QSBNetworkTransform : QNetworkTransform
+	public abstract class BaseTransformSync : QNetworkTransform
 	{
 		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
-		public static List<QSBNetworkTransform> NetworkTransformList = new List<QSBNetworkTransform>();
-
-		public QSBSector ReferenceSector { get; set; }
+		public Transform ReferenceTransform { get; set; }
 		public GameObject AttachedObject { get; set; }
-		public SectorSync.SectorSync SectorSync { get; private set; }
 
 		public abstract bool IsReady { get; }
 
@@ -36,7 +32,7 @@ namespace QSB.TransformSync
 		private float _previousDistance;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
-		private IntermediaryTransform _intermediaryTransform;
+		protected IntermediaryTransform _intermediaryTransform;
 
 		public virtual void Start()
 		{
@@ -44,9 +40,6 @@ namespace QSB.TransformSync
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 
-			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
-
-			NetworkTransformList.Add(this);
 			DontDestroyOnLoad(gameObject);
 			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -58,21 +51,15 @@ namespace QSB.TransformSync
 			{
 				Destroy(AttachedObject);
 			}
-			NetworkTransformList.Remove(this);
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			if (SectorSync != null)
-			{
-				Destroy(SectorSync);
-			}
 		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
 			_isInitialized = false;
 
-		protected void Init()
+		protected virtual void Init()
 		{
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
-			SetReferenceSector(SectorSync.GetClosestSector(AttachedObject.transform));
 			_isInitialized = true;
 		}
 
@@ -81,14 +68,6 @@ namespace QSB.TransformSync
 			if (_intermediaryTransform == null)
 			{
 				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
-			if (ReferenceSector != null)
-			{
-				writer.Write(ReferenceSector.ObjectId);
-			}
-			else
-			{
-				writer.Write(-1);
 			}
 
 			var worldPos = _intermediaryTransform.GetPosition();
@@ -103,20 +82,9 @@ namespace QSB.TransformSync
 		{
 			if (!QSBCore.HasWokenUp)
 			{
-				reader.ReadInt32();
 				reader.ReadVector3();
 				DeserializeRotation(reader);
 				return;
-			}
-
-			var sectorId = reader.ReadInt32();
-			var sector = sectorId == -1 
-				? null 
-				: QSBWorldSync.GetWorldFromId<QSBSector>(sectorId);
-
-			if (sector != ReferenceSector)
-			{
-				SetReferenceSector(sector);
 			}
 
 			var pos = reader.ReadVector3();
@@ -132,7 +100,7 @@ namespace QSB.TransformSync
 
 			if (_intermediaryTransform.GetPosition() == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given position was {pos} at sector {sector?.Name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
 		}
 
@@ -187,25 +155,25 @@ namespace QSB.TransformSync
 				|| Quaternion.Angle(_intermediaryTransform.GetRotation(), _prevRotation) > 1E-03f;
 		}
 
-		public void SetReferenceSector(QSBSector sector)
+		public void SetReferenceTransform(Transform transform)
 		{
-			if (ReferenceSector == sector)
+			if (ReferenceTransform == transform)
 			{
 				return;
 			}
-			ReferenceSector = sector;
-			_intermediaryTransform.SetReferenceSector(sector);
+			ReferenceTransform = transform;
+			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject was null for {PlayerId}.{GetType().Name} when trying to set reference sector to {sector.Name}. Waiting until not null...", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject was null for {PlayerId}.{GetType().Name} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(
 					() => AttachedObject != null,
-					() => ReparentAttachedObject(sector.Transform));
+					() => ReparentAttachedObject(transform));
 				return;
 			}
 			if (!HasAuthority)
 			{
-				ReparentAttachedObject(sector.Transform);
+				ReparentAttachedObject(transform);
 			}
 		}
 
@@ -244,8 +212,7 @@ namespace QSB.TransformSync
 			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition(), _intermediaryTransform.GetTargetRotation(), Vector3.one / 2, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceSector.Transform.position, Color.cyan);
+			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}
-	*/
 }

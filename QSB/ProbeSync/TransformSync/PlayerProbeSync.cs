@@ -7,14 +7,17 @@ using UnityEngine;
 
 namespace QSB.ProbeSync.TransformSync
 {
-	public class PlayerProbeSync : QSBNetworkTransform
+	public class PlayerProbeSync : SectoredTransformSync
 	{
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
 		protected override float DistanceLeeway => 10f;
 
 		public override void OnStartAuthority()
-			=> LocalInstance = this;
+		{
+			DebugLog.DebugWrite($"OnStartAuthority probe");
+			LocalInstance = this;
+		}
 
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");

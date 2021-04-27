@@ -78,6 +78,7 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+			DebugLog.DebugWrite($"Orb {message.ObjectId} to owner {message.FromId}");
 			if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
 			{
 				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
@@ -103,6 +104,7 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
+			DebugLog.DebugWrite($"Orb {message.ObjectId} to owner {message.FromId}");
 			var orb = QSBWorldSync.OrbSyncList
 				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
 			orb.enabled = true;

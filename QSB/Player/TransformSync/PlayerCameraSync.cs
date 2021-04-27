@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerCameraSync : QSBNetworkTransform
+	public class PlayerCameraSync : SectoredTransformSync
 	{
 		protected override GameObject InitLocalTransform()
 		{

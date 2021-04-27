@@ -237,9 +237,11 @@
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
+    <Compile Include="TransformSync\BaseTransformSync.cs" />
     <Compile Include="TransformSync\IntermediaryTransform.cs" />
     <Compile Include="TransformSync\Patches\TransformSyncPatches.cs" />
     <Compile Include="TransformSync\QSBNetworkTransform.cs" />
+    <Compile Include="TransformSync\SectoredTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
