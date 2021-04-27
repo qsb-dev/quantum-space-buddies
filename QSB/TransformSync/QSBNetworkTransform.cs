@@ -35,6 +35,7 @@ namespace QSB.TransformSync
 		private float _previousDistance;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
+		private IntermediaryTransform _intermediaryTransform;
 
 		public virtual void Start()
 		{
@@ -47,6 +48,7 @@ namespace QSB.TransformSync
 
 			NetworkTransformList.Add(this);
 			DontDestroyOnLoad(gameObject);
+			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
@@ -78,6 +80,10 @@ namespace QSB.TransformSync
 
 		public override void SerializeTransform(QNetworkWriter writer)
 		{
+			if (_intermediaryTransform == null)
+			{
+				_intermediaryTransform = new IntermediaryTransform(transform);
+			}
 			if (ReferenceSector != null)
 			{
 				writer.Write(ReferenceSector.ObjectId);
@@ -87,10 +93,12 @@ namespace QSB.TransformSync
 				writer.Write(-1);
 			}
 
-			writer.Write(transform.position);
-			SerializeRotation(writer, transform.rotation);
-			_prevPosition = transform.position;
-			_prevRotation = transform.rotation;
+			var worldPos = _intermediaryTransform.GetPosition();
+			var worldRot = _intermediaryTransform.GetRotation();
+			writer.Write(worldPos);
+			SerializeRotation(writer, worldRot);
+			_prevPosition = worldPos;
+			_prevRotation = worldRot;
 		}
 
 		public override void DeserializeTransform(QNetworkReader reader)
@@ -121,10 +129,10 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			transform.position = pos;
-			transform.rotation = rot;
+			_intermediaryTransform.SetPosition(pos);
+			_intermediaryTransform.SetRotation(rot);
 
-			if (transform.position == Vector3.zero)
+			if (_intermediaryTransform.GetPosition() == Vector3.zero)
 			{
 				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given position was {pos} at sector {sector?.Name}", MessageType.Warning);
 			}
@@ -162,23 +170,23 @@ namespace QSB.TransformSync
 		{
 			if (HasAuthority)
 			{
-				transform.position = ReferenceSector.Transform.InverseTransformPoint(AttachedObject.transform.position);
-				transform.rotation = ReferenceSector.Transform.InverseTransformRotation(AttachedObject.transform.rotation);
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 			}
 			else
 			{
-				var localToWorldPos = ReferenceSector.Transform.TransformPoint(transform.position);
-				var localToWorldRot = ReferenceSector.Transform.TransformRotation(transform.rotation);
-				AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, localToWorldPos);
-				AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, localToWorldRot, ref _rotationSmoothVelocity, SmoothTime);
+				var targetPos = _intermediaryTransform.GetTargetPosition();
+				var targetRot = _intermediaryTransform.GetTargetRotation();
+				AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
+				AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
 			}
 		}
 
 		public override bool HasMoved()
 		{
-			var displacementMagnitude = (transform.position - _prevPosition).magnitude;
+			var displacementMagnitude = (_intermediaryTransform.GetPosition() - _prevPosition).magnitude;
 			return displacementMagnitude > 1E-03f
-				|| Quaternion.Angle(transform.rotation, _prevRotation) > 1E-03f;
+				|| Quaternion.Angle(_intermediaryTransform.GetRotation(), _prevRotation) > 1E-03f;
 		}
 
 		public void SetReferenceSector(QSBSector sector)
@@ -188,6 +196,7 @@ namespace QSB.TransformSync
 				return;
 			}
 			ReferenceSector = sector;
+			_intermediaryTransform.SetReferenceSector(sector);
 			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject was null for {PlayerId}.{GetType().Name} when trying to set reference sector to {sector.Name}. Waiting until not null...", MessageType.Warning);
@@ -238,7 +247,7 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			Popcron.Gizmos.Cube(transform.position, transform.rotation, Vector3.one / 2, Color.red);
+			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition(), _intermediaryTransform.GetTargetRotation(), Vector3.one / 2, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceSector.Transform.position, Color.cyan);

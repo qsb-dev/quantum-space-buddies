@@ -237,6 +237,7 @@
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
+    <Compile Include="TransformSync\IntermediaryTransform.cs" />
     <Compile Include="TransformSync\Patches\TransformSyncPatches.cs" />
     <Compile Include="TransformSync\QSBNetworkTransform.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
