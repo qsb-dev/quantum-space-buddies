@@ -153,7 +153,7 @@ namespace QuantumUNET.Components
 		{
 			if (LastSyncTime != 0f)
 			{
-				if (QNetworkServer.active || QNetworkClient.Active)
+				if (QNetworkServer.active || QNetworkClient.active)
 				{
 					if (IsServer || IsClient)
 					{

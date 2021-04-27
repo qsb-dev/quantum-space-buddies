@@ -22,6 +22,7 @@ namespace QuantumUNET.Components
 		public bool autoCreatePlayer { get; set; } = true;
 		public bool isNetworkActive;
 		public bool useWebSockets { get; set; }
+		public bool useSimulator { get; set; }
 		public bool clientLoadedScene { get; set; }
 		public string serverBindAddress { get; set; } = "";
 		public string networkAddress { get; set; } = "localhost";
@@ -235,7 +236,7 @@ namespace QuantumUNET.Components
 			{
 				OnStopClient();
 				QClientScene.DestroyAllClientObjects();
-				QClientScene.HandleClientDisconnect(client.Connection);
+				QClientScene.HandleClientDisconnect(client.connection);
 				client = null;
 				if (!string.IsNullOrEmpty(offlineScene))
 				{
@@ -305,7 +306,7 @@ namespace QuantumUNET.Components
 			if (StartServer(config, maxConnections))
 			{
 				var networkClient = ConnectLocalClient();
-				OnServerConnect(networkClient.Connection);
+				OnServerConnect(networkClient.connection);
 				OnStartClient(networkClient);
 				result = networkClient;
 			}
@@ -454,7 +455,7 @@ namespace QuantumUNET.Components
 			if (IsClientConnected() && client != null)
 			{
 				RegisterClientMessages(client);
-				OnClientSceneChanged(client.Connection);
+				OnClientSceneChanged(client.connection);
 			}
 		}
 

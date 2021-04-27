@@ -1173,7 +1173,7 @@ namespace QuantumUNET
 			};
 			SendToObservers(uv.gameObject, 1, objectDestroyMessage);
 			uv.ClearObservers();
-			if (QNetworkClient.Active && instance.m_LocalClientActive)
+			if (QNetworkClient.active && instance.m_LocalClientActive)
 			{
 				uv.OnNetworkDestroy();
 				QClientScene.SetLocalObject(objectDestroyMessage.NetId, null);

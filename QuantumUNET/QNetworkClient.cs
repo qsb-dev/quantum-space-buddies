@@ -13,11 +13,30 @@ namespace QuantumUNET
 {
 	public class QNetworkClient
 	{
-		public static List<QNetworkClient> AllClients { get; private set; } = new List<QNetworkClient>();
-		public static bool Active { get; private set; }
-		public string ServerIp { get; private set; } = "";
-		public int ServerPort { get; private set; }
-		public QNetworkConnection Connection => m_Connection;
+		public QNetworkClient()
+		{
+			m_MsgBuffer = new byte[65535];
+			m_MsgReader = new NetworkReader(m_MsgBuffer);
+			AddClient(this);
+		}
+
+		public QNetworkClient(QNetworkConnection conn)
+		{
+			m_MsgBuffer = new byte[65535];
+			m_MsgReader = new NetworkReader(m_MsgBuffer);
+			AddClient(this);
+			SetActive(true);
+			m_Connection = conn;
+			m_AsyncConnect = ConnectState.Connected;
+			conn.SetHandlers(m_MessageHandlers);
+			RegisterSystemHandlers(false);
+		}
+
+		public static List<QNetworkClient> allClients { get; private set; } = new List<QNetworkClient>();
+		public static bool active { get; private set; }
+		public string serverIp { get; private set; } = "";
+		public int serverPort { get; private set; }
+		public QNetworkConnection connection => m_Connection;
 		internal int hostId { get; private set; } = -1;
 		public Dictionary<short, QNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
 		public int numChannels => hostTopology.DefaultConfig.ChannelCount;
@@ -56,25 +75,6 @@ namespace QuantumUNET
 		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
 		public void SetNetworkConnectionClass<T>() where T : QNetworkConnection => networkConnectionClass = typeof(T);
 
-		public QNetworkClient()
-		{
-			m_MsgBuffer = new byte[65535];
-			m_MsgReader = new NetworkReader(m_MsgBuffer);
-			AddClient(this);
-		}
-
-		public QNetworkClient(QNetworkConnection conn)
-		{
-			m_MsgBuffer = new byte[65535];
-			m_MsgReader = new NetworkReader(m_MsgBuffer);
-			AddClient(this);
-			SetActive(true);
-			m_Connection = conn;
-			m_AsyncConnect = ConnectState.Connected;
-			conn.SetHandlers(m_MessageHandlers);
-			RegisterSystemHandlers(false);
-		}
-
 		internal void SetHandlers(QNetworkConnection conn) => conn.SetHandlers(m_MessageHandlers);
 
 		public bool Configure(ConnectionConfig config, int maxConnections)
@@ -95,20 +95,20 @@ namespace QuantumUNET
 		public void Connect(string serverIp, int serverPort)
 		{
 			PrepareForConnect();
-			this.ServerPort = serverPort;
+			this.serverPort = serverPort;
 			if (Application.platform == RuntimePlatform.WebGLPlayer)
 			{
-				this.ServerIp = serverIp;
+				this.serverIp = serverIp;
 				m_AsyncConnect = ConnectState.Resolved;
 			}
 			else if (serverIp.Equals("127.0.0.1") || serverIp.Equals("localhost"))
 			{
-				this.ServerIp = "127.0.0.1";
+				this.serverIp = "127.0.0.1";
 				m_AsyncConnect = ConnectState.Resolved;
 			}
 			else if (serverIp.IndexOf(":") != -1 && IsValidIpV6(serverIp))
 			{
-				this.ServerIp = serverIp;
+				this.serverIp = serverIp;
 				m_AsyncConnect = ConnectState.Resolved;
 			}
 			else
@@ -148,10 +148,10 @@ namespace QuantumUNET
 				}
 				else
 				{
-					networkClient.ServerIp = array[0].ToString();
+					networkClient.serverIp = array[0].ToString();
 					networkClient.m_AsyncConnect = ConnectState.Resolved;
 					QLog.Log(
-						$"Async DNS Result:{networkClient.ServerIp} for {networkClient.m_RequestedServerHost}: {networkClient.ServerIp}");
+						$"Async DNS Result:{networkClient.serverIp} for {networkClient.m_RequestedServerHost}: {networkClient.serverIp}");
 				}
 			}
 			catch (SocketException ex)
@@ -165,10 +165,10 @@ namespace QuantumUNET
 
 		internal void ContinueConnect()
 		{
-			m_ClientConnectionId = NetworkTransport.Connect(hostId, ServerIp, ServerPort, 0, out var b);
+			m_ClientConnectionId = NetworkTransport.Connect(hostId, serverIp, serverPort, 0, out var b);
 			m_Connection = (QNetworkConnection)Activator.CreateInstance(networkConnectionClass);
 			m_Connection.SetHandlers(m_MessageHandlers);
-			m_Connection.Initialize(ServerIp, hostId, m_ClientConnectionId, hostTopology);
+			m_Connection.Initialize(serverIp, hostId, m_ClientConnectionId, hostTopology);
 		}
 
 		public virtual void Disconnect()
@@ -324,7 +324,7 @@ namespace QuantumUNET
 				hostId = -1;
 			}
 			RemoveClient(this);
-			if (AllClients.Count == 0)
+			if (allClients.Count == 0)
 			{
 				SetActive(false);
 			}
@@ -531,7 +531,7 @@ namespace QuantumUNET
 		public static Dictionary<short, QNetworkConnection.PacketStat> GetTotalConnectionStats()
 		{
 			var dictionary = new Dictionary<short, QNetworkConnection.PacketStat>();
-			foreach (var networkClient in AllClients)
+			foreach (var networkClient in allClients)
 			{
 				var connectionStats = networkClient.GetConnectionStats();
 				foreach (var key in connectionStats.Keys)
@@ -552,43 +552,43 @@ namespace QuantumUNET
 			return dictionary;
 		}
 
-		internal static void AddClient(QNetworkClient client) => AllClients.Add(client);
+		internal static void AddClient(QNetworkClient client) => allClients.Add(client);
 
-		internal static bool RemoveClient(QNetworkClient client) => AllClients.Remove(client);
+		internal static bool RemoveClient(QNetworkClient client) => allClients.Remove(client);
 
 		internal static void UpdateClients()
 		{
-			for (var i = 0; i < AllClients.Count; i++)
+			for (var i = 0; i < allClients.Count; i++)
 			{
-				if (AllClients[i] != null)
+				if (allClients[i] != null)
 				{
-					AllClients[i].Update();
+					allClients[i].Update();
 				}
 				else
 				{
-					AllClients.RemoveAt(i);
+					allClients.RemoveAt(i);
 				}
 			}
 		}
 
 		public static void ShutdownAll()
 		{
-			while (AllClients.Count != 0)
+			while (allClients.Count != 0)
 			{
-				AllClients[0].Shutdown();
+				allClients[0].Shutdown();
 			}
-			AllClients = new List<QNetworkClient>();
-			Active = false;
+			allClients = new List<QNetworkClient>();
+			active = false;
 			QClientScene.Shutdown();
 		}
 
 		internal static void SetActive(bool state)
 		{
-			if (!Active && state)
+			if (!active && state)
 			{
 				NetworkTransport.Init();
 			}
-			Active = state;
+			active = state;
 		}
 
 		protected enum ConnectState

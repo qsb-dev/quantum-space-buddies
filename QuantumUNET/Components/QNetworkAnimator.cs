@@ -266,7 +266,7 @@ namespace QuantumUNET.Components
 			};
 			if (HasAuthority && LocalPlayerAuthority)
 			{
-				if (QNetworkClient.AllClients.Count <= 0)
+				if (QNetworkClient.allClients.Count <= 0)
 				{
 					return;
 				}

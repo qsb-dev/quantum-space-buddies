@@ -213,7 +213,7 @@ namespace QuantumUNET.Components
 						QLog.FatalError($"Exception in OnStartServer:{ex.Message} {ex.StackTrace}");
 					}
 				}
-				if (QNetworkClient.Active && QNetworkServer.localClientActive)
+				if (QNetworkClient.active && QNetworkServer.localClientActive)
 				{
 					QClientScene.SetLocalObject(NetId, gameObject);
 					OnStartClient();
