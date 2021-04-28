@@ -1,4 +1,5 @@
 ﻿using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
@@ -8,7 +9,9 @@ namespace QSB.TransformSync
 		private Transform _attachedTransform;
 		private Transform _referenceTransform;
 
-		public IntermediaryTransform(Transform transform) => _attachedTransform = transform;
+		public IntermediaryTransform(Transform transform) 
+			=> _attachedTransform = transform;
+
 		/// <summary>
 		/// Get the world position of this INVISIBLE transform.
 		/// </summary>
@@ -55,15 +58,27 @@ namespace QSB.TransformSync
 			=> SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
 
 		/// <summary>
-		/// Gets what the VISIBLE transform's position should be, from the reference sector and the position of the INVISIBLE transform.
+		/// Returns the local position the VISIBLE transform should be set to, from the INVISIBLE transform.
 		/// </summary>
-		public Vector3 GetTargetPosition()
+		public Vector3 GetTargetPosition_ParentedToReference()
 			=> GetPosition();
 
 		/// <summary>
-		/// Gets what the VISIBLE transform's rotation should be, from the reference sector and the rotation of the INVISIBLE transform.
+		/// Returns the local rotation the VISIBLE transform should be set to, from the INVISIBLE transform.
 		/// </summary>
-		public Quaternion GetTargetRotation()
+		public Quaternion GetTargetRotation_ParentedToReference()
 			=> GetRotation();
+
+		/// <summary>
+		/// Returns the world position the VISIBLE transform should be set to, from the INVISIBLE transform.
+		/// </summary>
+		public Vector3 GetTargetPosition_Unparented() 
+			=> _referenceTransform.TransformPoint(GetPosition());
+
+		/// <summary>
+		/// Returns the world rotation the VISIBLE transform should be set to, from the INVISIBLE transform.
+		/// </summary>
+		public Quaternion GetTargetRotation_Unparented()
+			=> _referenceTransform.TransformRotation(GetRotation());
 	}
 }

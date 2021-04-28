@@ -8,6 +8,7 @@ namespace QSB.Player.TransformSync
 	public class PlayerTransformSync : SectoredTransformSync
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
+		public override bool UseInterpolation => true;
 
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 

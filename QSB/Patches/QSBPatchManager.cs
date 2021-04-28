@@ -15,7 +15,6 @@ using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
-using QSB.TransformSync.Patches;
 using QSB.TranslationSync.Patches;
 using QSB.Utility;
 using System;
@@ -55,8 +54,7 @@ namespace QSB.Patches
 				new RoastingPatches(),
 				new PlayerPatches(),
 				new PlayerAnimationPatches(),
-				new CharacterAnimationPatches(),
-				new TransformSyncPatches()
+				new CharacterAnimationPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

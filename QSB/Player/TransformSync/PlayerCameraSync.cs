@@ -47,5 +47,7 @@ namespace QSB.Player.TransformSync
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		public override bool UseInterpolation => true;
 	}
 }

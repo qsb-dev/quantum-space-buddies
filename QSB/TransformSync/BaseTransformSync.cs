@@ -12,6 +12,11 @@ using UnityEngine;
 
 namespace QSB.TransformSync
 {
+	/*
+	 * Rewrite number : 4
+	 * God has cursed me for my hubris, and my work is never finished.
+	 */
+
 	public abstract class BaseTransformSync : QNetworkTransform
 	{
 		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
@@ -22,6 +27,7 @@ namespace QSB.TransformSync
 		public GameObject AttachedObject { get; set; }
 
 		public abstract bool IsReady { get; }
+		public abstract bool UseInterpolation { get; }
 
 		protected abstract GameObject InitLocalTransform();
 		protected abstract GameObject InitRemoteTransform();
@@ -138,13 +144,22 @@ namespace QSB.TransformSync
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				return;
 			}
-			else
+			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
+			var targetRot = _intermediaryTransform.GetTargetRotation_ParentedToReference();
+			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
 			{
-				var targetPos = _intermediaryTransform.GetTargetPosition();
-				var targetRot = _intermediaryTransform.GetTargetRotation();
-				AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
-				AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				if (UseInterpolation)
+				{
+					AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
+					AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				}
+				else
+				{
+					AttachedObject.transform.localPosition = targetPos;
+					AttachedObject.transform.localRotation = targetRot;
+				}
 			}
 		}
 
@@ -181,8 +196,7 @@ namespace QSB.TransformSync
 		{
 			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
 			{
-				DebugLog.ToConsole($" - ERROR - Trying to reparent attachedObject which wasnt attached to sector!", MessageType.Error);
-				return;
+				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
 			}
 			AttachedObject.transform.SetParent(sectorTransform, true);
 			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
@@ -209,7 +223,7 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition(), _intermediaryTransform.GetTargetRotation(), Vector3.one / 2, Color.red);
+			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);

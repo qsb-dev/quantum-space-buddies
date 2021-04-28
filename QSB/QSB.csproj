@@ -148,6 +148,7 @@
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
+    <Compile Include="OrbSync\TransformSync\OrbNetworkTransform.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
     <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
@@ -239,9 +240,8 @@
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="TransformSync\BaseTransformSync.cs" />
     <Compile Include="TransformSync\IntermediaryTransform.cs" />
-    <Compile Include="TransformSync\Patches\TransformSyncPatches.cs" />
-    <Compile Include="TransformSync\QSBNetworkTransform.cs" />
     <Compile Include="TransformSync\SectoredTransformSync.cs" />
+    <Compile Include="TransformSync\UnparentedBaseTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
@@ -257,7 +257,6 @@
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
     <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
-    <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Animation\Player\Events\PlayerSuitEvent.cs" />
     <Compile Include="TimeSync\Events\ServerTimeEvent.cs" />

@@ -12,7 +12,6 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<NomaiOrbTransformSync> OrbSyncList { get; } = new List<NomaiOrbTransformSync>();
 		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new List<NomaiInterfaceOrb>();
 		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new List<CharacterDialogueTree>();
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
@@ -147,7 +146,7 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
 				return;
 			}
-			var orbSync = OrbSyncList.FirstOrDefault(x => x.AttachedOrb == affectingOrb);
+			var orbSync = OrbNetworkTransform.OrbTransformSyncs.FirstOrDefault(x => x.AttachedObject == affectingOrb.gameObject);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);

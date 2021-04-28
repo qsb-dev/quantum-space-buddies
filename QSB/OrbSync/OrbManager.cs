@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -23,8 +24,8 @@ namespace QSB.OrbSync
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QSBCore.IsServer)
 			{
-				QSBWorldSync.OrbSyncList.ForEach(x => QNetworkServer.Destroy(x.gameObject));
-				QSBWorldSync.OrbSyncList.Clear();
+				OrbNetworkTransform.OrbTransformSyncs.ForEach(x => QNetworkServer.Destroy(x.gameObject));
+				OrbNetworkTransform.OrbTransformSyncs.Clear();
 				QSBWorldSync.OldOrbList.ForEach(x => QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
 			}
 			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
