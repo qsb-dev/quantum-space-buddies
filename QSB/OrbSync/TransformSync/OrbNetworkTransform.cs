@@ -1,15 +1,12 @@
 ﻿using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	class OrbNetworkTransform : UnparentedBaseTransformSync
+	internal class OrbNetworkTransform : UnparentedBaseTransformSync
 	{
 		public static List<OrbNetworkTransform> OrbTransformSyncs = new List<OrbNetworkTransform>();
 

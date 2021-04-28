@@ -1,5 +1,4 @@
-﻿using QSB.SectorSync.WorldObjects;
-using QSB.Utility;
+﻿using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TransformSync
