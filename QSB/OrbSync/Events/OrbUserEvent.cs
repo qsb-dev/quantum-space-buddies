@@ -54,7 +54,7 @@ namespace QSB.OrbSync.Events
 			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayerId() == message.FromId);
 			if (OrbNetworkTransform.OrbTransformSyncs == null || OrbNetworkTransform.OrbTransformSyncs.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - OrbSyncList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
@@ -92,7 +92,7 @@ namespace QSB.OrbSync.Events
 		{
 			if (OrbNetworkTransform.OrbTransformSyncs == null || OrbNetworkTransform.OrbTransformSyncs.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - OrbSyncList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)

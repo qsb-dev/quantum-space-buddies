@@ -14,7 +14,6 @@ namespace QSB.TransformSync
 
 		public override void Start()
 		{
-			DebugLog.DebugWrite($"Start of {GetType().Name}");
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
 			SectoredNetworkTransformList.Add(this);
 			base.Start();
@@ -22,7 +21,6 @@ namespace QSB.TransformSync
 
 		protected override void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy of {GetType().Name}");
 			base.OnDestroy();
 			SectoredNetworkTransformList.Remove(this);
 			if (SectorSync != null)
@@ -33,7 +31,6 @@ namespace QSB.TransformSync
 
 		protected override void Init()
 		{
-			DebugLog.DebugWrite($"Init of {GetType().Name}");
 			base.Init();
 			SetReferenceTransform(SectorSync.GetClosestSector(AttachedObject.transform).Transform);
 		}

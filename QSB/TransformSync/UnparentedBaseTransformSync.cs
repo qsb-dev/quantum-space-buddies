@@ -93,6 +93,11 @@ namespace QSB.TransformSync
 				return;
 			}
 
+			if (_intermediaryTransform == null)
+			{
+				_intermediaryTransform = new IntermediaryTransform(transform);
+			}
+
 			_intermediaryTransform.SetPosition(pos);
 			_intermediaryTransform.SetRotation(rot);
 
