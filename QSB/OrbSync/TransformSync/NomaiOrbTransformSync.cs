@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	internal class OrbNetworkTransform : UnparentedBaseTransformSync
+	internal class NomaiOrbTransformSync : UnparentedBaseTransformSync
 	{
-		public static List<OrbNetworkTransform> OrbTransformSyncs = new List<OrbNetworkTransform>();
+		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
 
 		private int _index => OrbTransformSyncs.IndexOf(this);
 		private bool _isReady;

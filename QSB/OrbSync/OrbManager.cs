@@ -24,8 +24,8 @@ namespace QSB.OrbSync
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QSBCore.IsServer)
 			{
-				OrbNetworkTransform.OrbTransformSyncs.ForEach(x => QNetworkServer.Destroy(x.gameObject));
-				OrbNetworkTransform.OrbTransformSyncs.Clear();
+				NomaiOrbTransformSync.OrbTransformSyncs.ForEach(x => QNetworkServer.Destroy(x.gameObject));
+				NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 				QSBWorldSync.OldOrbList.ForEach(x => QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.OrbPrefab)));
 			}
 			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
