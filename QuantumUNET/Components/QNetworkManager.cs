@@ -289,14 +289,7 @@ namespace QuantumUNET.Components
 				QLog.Error("Must set the Network Address field in the manager");
 				return null;
 			}
-			if (useSimulator)
-			{
-				client.ConnectWithSimulator(networkAddress, networkPort, simulatedLatency, packetLossPercentage);
-			}
-			else
-			{
-				client.Connect(networkAddress, networkPort);
-			}
+			client.Connect(networkAddress, networkPort);
 			OnStartClient(client);
 			s_Address = networkAddress;
 			return client;

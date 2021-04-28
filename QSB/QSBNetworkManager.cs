@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation;
+using QSB.Animation.Player;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
@@ -215,7 +215,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.OrbSyncList.Clear();
+			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
 			if (_everConnected)
@@ -237,7 +237,7 @@ namespace QSB
 			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			foreach (var item in QSBWorldSync.OrbSyncList)
+			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
 			{
 				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)

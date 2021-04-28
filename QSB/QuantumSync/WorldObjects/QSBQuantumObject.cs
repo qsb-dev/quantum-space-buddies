@@ -103,7 +103,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				return;
 			}
-			if (GetAttachedShapes().Any(x => x.gameObject.activeInHierarchy))
+			if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
 			{
 				return;
 			}

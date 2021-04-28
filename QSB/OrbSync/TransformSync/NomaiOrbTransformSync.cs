@@ -1,81 +1,51 @@
-﻿using QSB.Utility;
+﻿using QSB.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	public class NomaiOrbTransformSync : QNetworkBehaviour
+	internal class NomaiOrbTransformSync : UnparentedBaseTransformSync
 	{
-		public NomaiInterfaceOrb AttachedOrb { get; private set; }
-		public Transform OrbTransform { get; private set; }
+		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
 
-		private int Index => QSBWorldSync.OrbSyncList.IndexOf(this);
-
-		private bool _isInitialized;
+		private int _index => OrbTransformSyncs.IndexOf(this);
 		private bool _isReady;
-		private Transform _orbParent;
 
 		public override void OnStartClient()
 		{
-			DontDestroyOnLoad(this);
-			QSBWorldSync.OrbSyncList.Add(this);
+			OrbTransformSyncs.Add(this);
 
 			QSBCore.UnityEvents.RunWhen(() => QSBCore.HasWokenUp, () => QSBCore.UnityEvents.FireOnNextUpdate(OnReady));
 		}
 
 		private void OnReady()
 		{
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count < Index)
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count < _index)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {Index}.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
 				return;
 			}
-			AttachedOrb = QSBWorldSync.OldOrbList[Index];
 			_isReady = true;
 		}
 
-		public void OnDestroy() => QSBWorldSync.OrbSyncList.Remove(this);
-
-		protected void Init()
+		protected override void OnDestroy()
 		{
-			OrbTransform = AttachedOrb.transform;
-			_orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
-			_isInitialized = true;
+			OrbTransformSyncs.Remove(this);
+			base.OnDestroy();
 		}
 
-		public void Update()
+		protected override void Init()
 		{
-			if (!_isInitialized && _isReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !_isReady)
-			{
-				_isInitialized = false;
-			}
-
-			if (OrbTransform == null || !_isInitialized)
-			{
-				return;
-			}
-
-			UpdateTransform();
+			base.Init();
+			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
 		}
 
-		private void UpdateTransform()
-		{
-			if (HasAuthority)
-			{
-				transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
-				transform.rotation = OrbTransform.rotation;
-				return;
-			}
-			if (transform.position != Vector3.zero)
-			{
-				OrbTransform.position = _orbParent.TransformPoint(transform.position);
-				OrbTransform.rotation = transform.rotation;
-			}
-		}
+		protected override GameObject InitLocalTransform() => QSBWorldSync.OldOrbList[_index].gameObject;
+		protected override GameObject InitRemoteTransform() => QSBWorldSync.OldOrbList[_index].gameObject;
+
+		public override bool IsReady => _isReady;
+		public override bool UseInterpolation => false;
 	}
 }

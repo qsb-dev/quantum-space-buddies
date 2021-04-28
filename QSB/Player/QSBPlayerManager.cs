@@ -135,5 +135,22 @@ namespace QSB.Player
 				renderer.enabled = visible;
 			}
 		}
+
+		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer)
+		{
+			return includeLocalPlayer
+				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
+				: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
+		}
+
+		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
+		{
+			if (playerList.Count == 0)
+			{
+				DebugLog.DebugWrite($"Error - Cannot get closest player from empty player list.", MessageType.Error);
+				return null;
+			}
+			return playerList.Where(x => x.PlayerStates.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+		}
 	}
 }

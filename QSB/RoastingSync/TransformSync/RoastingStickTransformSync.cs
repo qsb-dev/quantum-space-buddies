@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace QSB.RoastingSync.TransformSync
 {
-	internal class RoastingStickTransformSync : QSBNetworkTransform
+	internal class RoastingStickTransformSync : SectoredTransformSync
 	{
+		public override bool UseInterpolation => true;
+
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
 		private const float SmoothTime = 0.1f;

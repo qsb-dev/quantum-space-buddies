@@ -3,7 +3,7 @@
 	public enum EventType
 	{
 		ServerTime,
-		AnimTrigger,
+		Crouch,
 		PlayerState,
 		PlayerStatesRequest,
 		FlashlightActiveChange,
@@ -41,6 +41,7 @@
 		PlayerKick,
 		CampfireState,
 		Roasting,
-		MarshmallowEvent
+		MarshmallowEvent,
+		AnimTrigger
 	}
 }

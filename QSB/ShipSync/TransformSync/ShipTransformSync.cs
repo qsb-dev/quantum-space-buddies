@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
-	public class ShipTransformSync : QSBNetworkTransform
+	public class ShipTransformSync : SectoredTransformSync
 	{
 		protected override float DistanceLeeway => 20f;
+		public override bool UseInterpolation => true;
 
 		private Transform GetShipModel() => Locator.GetShipTransform();
 
