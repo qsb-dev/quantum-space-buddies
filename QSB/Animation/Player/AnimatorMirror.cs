@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class AnimatorMirror : MonoBehaviour
 	{

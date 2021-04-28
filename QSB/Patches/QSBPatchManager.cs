@@ -53,7 +53,8 @@ namespace QSB.Patches
 				new CampfirePatches(),
 				new RoastingPatches(),
 				new PlayerPatches(),
-				new AnimationPatches()
+				new PlayerAnimationPatches(),
+				new CharacterAnimationPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

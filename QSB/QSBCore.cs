@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.Utils;
+using QSB.Animation.Character;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
@@ -111,6 +112,7 @@ namespace QSB
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
+			gameObject.AddComponent<CharacterAnimManager>();
 
 			DebugBoxManager.Init();
 
@@ -147,9 +149,13 @@ namespace QSB
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Current sector : {PlayerTransformSync.LocalInstance.ReferenceSector.Name}");
+			var playerSector = PlayerTransformSync.LocalInstance.ReferenceSector;
+			var playerText = playerSector == null ? "NULL" : playerSector.Name;
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Current sector : {playerText}");
 			offset3 += _debugLineSpacing;
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {PlayerProbeSync.LocalInstance.ReferenceSector.Name}");
+			var probeSector = PlayerProbeSync.LocalInstance.ReferenceSector;
+			var probeText = probeSector == null ? "NULL" : probeSector.Name;
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {probeText}");
 			offset3 += _debugLineSpacing;
 
 			var offset2 = 10f;

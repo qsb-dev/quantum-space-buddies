@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Events;
+using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
@@ -51,9 +52,9 @@ namespace QSB.OrbSync.Events
 		private static void HandleServer(WorldObjectMessage message)
 		{
 			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayerId() == message.FromId);
-			if (QSBWorldSync.OrbSyncList == null || QSBWorldSync.OrbSyncList.Count == 0)
+			if (OrbNetworkTransform.OrbTransformSyncs == null || OrbNetworkTransform.OrbTransformSyncs.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - OrbSyncList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
@@ -65,8 +66,8 @@ namespace QSB.OrbSync.Events
 			{
 				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
-			var orbSync = QSBWorldSync.OrbSyncList
-				.FirstOrDefault(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+			var orbSync = OrbNetworkTransform.OrbTransformSyncs
+				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
@@ -78,6 +79,7 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+			DebugLog.DebugWrite($"Orb {message.ObjectId} to owner {message.FromId}");
 			if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
 			{
 				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
@@ -88,9 +90,9 @@ namespace QSB.OrbSync.Events
 
 		private static void HandleClient(WorldObjectMessage message)
 		{
-			if (QSBWorldSync.OrbSyncList == null || QSBWorldSync.OrbSyncList.Count == 0)
+			if (OrbNetworkTransform.OrbTransformSyncs == null || OrbNetworkTransform.OrbTransformSyncs.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - OrbSyncList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
@@ -98,13 +100,14 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
-			if (!QSBWorldSync.OrbSyncList.Any(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]))
+			if (!OrbNetworkTransform.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject))
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
-			var orb = QSBWorldSync.OrbSyncList
-				.First(x => x.AttachedOrb == QSBWorldSync.OldOrbList[message.ObjectId]);
+			DebugLog.DebugWrite($"Orb {message.ObjectId} to owner {message.FromId}");
+			var orb = OrbNetworkTransform.OrbTransformSyncs
+				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
 			orb.enabled = true;
 		}
 	}

@@ -4,7 +4,6 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace QSB.ConversationSync.Patches
 {
@@ -18,8 +17,6 @@ namespace QSB.ConversationSync.Patches
 			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(Tree_InputDialogueOption));
 			QSBCore.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(Tree_StartConversation));
 			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(Tree_EndConversation));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(ConversationPatches), nameof(AnimController_OnAnimatorIK));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(ConversationPatches), nameof(AnimController_OnZoneExit));
 		}
 
 		public override void DoUnpatches()
@@ -28,8 +25,6 @@ namespace QSB.ConversationSync.Patches
 			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("InputDialogueOption");
 			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
 			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnAnimatorIK");
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneExit");
 		}
 
 		public static void Tree_StartConversation(CharacterDialogueTree __instance)
@@ -81,46 +76,6 @@ namespace QSB.ConversationSync.Patches
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
 			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentDialogueID, key));
-		}
-
-		public static bool AnimController_OnAnimatorIK(float ___headTrackingWeight,
-			bool ___lookOnlyWhenTalking,
-			bool ____playerInHeadZone,
-			bool ____inConversation,
-			ref float ____currentLookWeight,
-			ref Vector3 ____currentLookTarget,
-			DampedSpring3D ___lookSpring,
-			Animator ____animator,
-			CharacterDialogueTree ____dialogueTree)
-		{
-			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-			Vector3 position;
-			if (playerId == uint.MaxValue)
-			{
-				position = Locator.GetActiveCamera().transform.position;
-			}
-			else
-			{
-				var player = QSBPlayerManager.GetPlayer(playerId);
-				position = player.CameraBody == null
-					? Locator.GetActiveCamera().transform.position
-					: player.CameraBody.transform.position;
-			}
-			var localPosition = ____animator.transform.InverseTransformPoint(position);
-			var targetWeight = ___headTrackingWeight * Mathf.Min(1, !___lookOnlyWhenTalking
-						? !____playerInHeadZone ? 0 : 1
-						: !____inConversation || !____playerInHeadZone ? 0 : 1);
-			____currentLookWeight = Mathf.Lerp(____currentLookWeight, targetWeight, Time.deltaTime * 2f);
-			____currentLookTarget = ___lookSpring.Update(____currentLookTarget, localPosition, Time.deltaTime);
-			____animator.SetLookAtPosition(____animator.transform.TransformPoint(____currentLookTarget));
-			____animator.SetLookAtWeight(____currentLookWeight);
-			return false;
-		}
-
-		public static bool AnimController_OnZoneExit(CharacterDialogueTree ____dialogueTree)
-		{
-			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-			return playerId == uint.MaxValue;
 		}
 	}
 }

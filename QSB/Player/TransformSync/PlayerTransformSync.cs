@@ -1,13 +1,14 @@
-﻿using QSB.Animation;
+﻿using QSB.Animation.Player;
 using QSB.Instruments;
 using QSB.TransformSync;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerTransformSync : QSBNetworkTransform
+	public class PlayerTransformSync : SectoredTransformSync
 	{
 		public static PlayerTransformSync LocalInstance { get; private set; }
+		public override bool UseInterpolation => true;
 
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 

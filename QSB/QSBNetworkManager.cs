@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation;
+using QSB.Animation.Player;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
@@ -81,7 +81,7 @@ namespace QSB
 			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
 			SetupNetworkId(OrbPrefab);
 			SetupNetworkTransform(OrbPrefab);
-			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
+			OrbPrefab.AddComponent<OrbNetworkTransform>();
 			spawnPrefabs.Add(OrbPrefab);
 
 			_stickPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkstickpivot.prefab");
@@ -215,7 +215,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.OrbSyncList.Clear();
+			OrbNetworkTransform.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
 			if (_everConnected)
@@ -237,7 +237,7 @@ namespace QSB
 			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			foreach (var item in QSBWorldSync.OrbSyncList)
+			foreach (var item in OrbNetworkTransform.OrbTransformSyncs)
 			{
 				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)

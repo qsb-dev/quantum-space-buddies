@@ -3,7 +3,7 @@ using QSB.Instruments;
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Animation.Events
+namespace QSB.Animation.Player.Events
 {
 	public class ChangeAnimTypeEvent : QSBEvent<EnumMessage<AnimationType>>
 	{

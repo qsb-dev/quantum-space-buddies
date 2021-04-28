@@ -61,5 +61,7 @@
 		public static string QSBCampfireState = "QSBCampfireState";
 		public static string QSBMarshmallowEvent = "QSBMarshmallowEvent";
 		public static string QSBAnimTrigger = "QSBAnimTrigger";
+		public static string QSBEnterHeadZone = "QSBEnterHeadZone";
+		public static string QSBExitHeadZone = "QSBExitHeadZone";
 	}
 }

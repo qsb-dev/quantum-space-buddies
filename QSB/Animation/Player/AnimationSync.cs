@@ -7,7 +7,7 @@ using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class AnimationSync : PlayerSyncObject
 	{

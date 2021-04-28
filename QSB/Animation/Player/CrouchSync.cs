@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class CrouchSync : QNetworkBehaviour
 	{

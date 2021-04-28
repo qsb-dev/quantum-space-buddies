@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.Animation.Events;
+using QSB.Animation.Player.Events;
 using QSB.CampfireSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
