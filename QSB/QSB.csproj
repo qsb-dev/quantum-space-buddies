@@ -102,9 +102,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animation\Character\CharacterAnimManager.cs" />
-    <Compile Include="Animation\Character\Patches\CharacterAnimationPatches.cs" />
-    <Compile Include="Animation\Character\WorldObjects\QSBCharacterAnimController.cs" />
+    <Compile Include="Animation\NPC\AnimationEvent.cs" />
+    <Compile Include="Animation\NPC\CharacterAnimManager.cs" />
+    <Compile Include="Animation\NPC\Events\NpcAnimationEvent.cs" />
+    <Compile Include="Animation\NPC\Events\NpcAnimationMessage.cs" />
+    <Compile Include="Animation\NPC\Patches\CharacterAnimationPatches.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\INpcAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\NpcAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\QSBCharacterAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\QSBTravelerController.cs" />
     <Compile Include="Animation\Player\AnimationSync.cs" />
     <Compile Include="Animation\Player\AnimationType.cs" />
     <Compile Include="Animation\Player\Events\AnimationTriggerEvent.cs" />

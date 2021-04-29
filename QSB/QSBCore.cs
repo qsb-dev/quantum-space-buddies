@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.Utils;
-using QSB.Animation.Character;
+using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;

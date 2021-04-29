@@ -42,6 +42,7 @@
 		CampfireState,
 		Roasting,
 		MarshmallowEvent,
-		AnimTrigger
+		AnimTrigger,
+		NpcAnimEvent
 	}
 }

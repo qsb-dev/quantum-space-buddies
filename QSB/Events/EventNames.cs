@@ -63,5 +63,6 @@
 		public static string QSBAnimTrigger = "QSBAnimTrigger";
 		public static string QSBEnterHeadZone = "QSBEnterHeadZone";
 		public static string QSBExitHeadZone = "QSBExitHeadZone";
+		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
 	}
 }

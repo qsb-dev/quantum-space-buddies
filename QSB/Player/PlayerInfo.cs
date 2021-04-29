@@ -40,7 +40,7 @@ namespace QSB.Player
 		public QSBCampfire Campfire { get; set; }
 
 		// Conversation
-		public int CurrentDialogueID { get; set; }
+		public int CurrentCharacterDialogueTreeId { get; set; }
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
@@ -56,7 +56,7 @@ namespace QSB.Player
 		public PlayerInfo(uint id)
 		{
 			PlayerId = id;
-			CurrentDialogueID = -1;
+			CurrentCharacterDialogueTreeId = -1;
 		}
 
 		public void UpdateStateObjects()

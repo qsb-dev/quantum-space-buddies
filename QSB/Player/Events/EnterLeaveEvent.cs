@@ -1,4 +1,4 @@
-﻿using QSB.Animation.Character.WorldObjects;
+﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.PoolSync;
 using QSB.Utility;
