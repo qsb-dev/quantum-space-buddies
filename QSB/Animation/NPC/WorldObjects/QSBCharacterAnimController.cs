@@ -1,9 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Player;
-using QSB.Utility;
-using QSB.WorldSync;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace QSB.Animation.NPC.WorldObjects
 {

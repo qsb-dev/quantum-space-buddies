@@ -3,7 +3,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.Animation.NPC.Events
 {
-	class NpcAnimationMessage : PlayerMessage
+	internal class NpcAnimationMessage : PlayerMessage
 	{
 		public AnimationEvent AnimationEvent { get; set; }
 		public int AnimControllerIndex { get; set; }

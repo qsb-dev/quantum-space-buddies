@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.Animation.NPC.Events
 {
-	class NpcAnimationEvent : QSBEvent<NpcAnimationMessage>
+	internal class NpcAnimationEvent : QSBEvent<NpcAnimationMessage>
 	{
 		public override EventType Type => EventType.NpcAnimEvent;
 

@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;

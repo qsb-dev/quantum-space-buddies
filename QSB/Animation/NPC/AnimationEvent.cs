@@ -1,6 +1,6 @@
 ﻿namespace QSB.Animation.NPC
 {
-	enum AnimationEvent
+	internal enum AnimationEvent
 	{
 		StartConversation,
 		EndConversation

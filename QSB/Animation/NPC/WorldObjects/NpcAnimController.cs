@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.Animation.NPC.WorldObjects
 {
-	abstract class NpcAnimController<T> : WorldObject<T>, INpcAnimController
+	internal abstract class NpcAnimController<T> : WorldObject<T>, INpcAnimController
 		where T : MonoBehaviour
 	{
 		public override void Init(T controller, int id)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QSB.Animation.NPC.WorldObjects
+﻿namespace QSB.Animation.NPC.WorldObjects
 {
 	public interface INpcAnimController
 	{
