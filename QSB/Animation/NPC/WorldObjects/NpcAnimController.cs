@@ -1,6 +1,4 @@
-﻿using QSB.Events;
-using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.WorldObjects
@@ -12,21 +10,16 @@ namespace QSB.Animation.NPC.WorldObjects
 		{
 			ObjectId = id;
 			AttachedObject = controller;
-			DebugLog.DebugWrite($"init : {AttachedObject.name}");
 		}
 
 		public abstract CharacterDialogueTree GetDialogueTree();
 
-		public virtual void StartConversation()
-		{
-			DebugLog.DebugWrite($"REMOTE start conversation : {AttachedObject.name}");
-			QSBWorldSync.RaiseEvent(GetDialogueTree(), "OnStartConversation");
-		}
+		public virtual void StartConversation() 
+			=> QSBWorldSync.RaiseEvent(GetDialogueTree(), "OnStartConversation");
 
-		public virtual void EndConversation()
-		{
-			DebugLog.DebugWrite($"REMOTE end conversation : {AttachedObject.name}");
-			QSBWorldSync.RaiseEvent(GetDialogueTree(), "OnEndConversation");
-		}
+		public virtual void EndConversation() 
+			=> QSBWorldSync.RaiseEvent(GetDialogueTree(), "OnEndConversation");
+
+		public abstract bool InConversation();
 	}
 }

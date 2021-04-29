@@ -24,6 +24,7 @@ namespace QSB.Animation.NPC.Patches
 			QSBCore.HarmonyHelper.AddPrefix<FacePlayerWhenTalking>("OnStartConversation", typeof(CharacterAnimationPatches), nameof(FacePlayerWhenTalking_OnStartConversation));
 			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("StartConversation", typeof(CharacterAnimationPatches), nameof(CharacterDialogueTree_StartConversation));
 			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(CharacterAnimationPatches), nameof(CharacterDialogueTree_EndConversation));
+			QSBCore.HarmonyHelper.AddPrefix<KidRockController>("Update", typeof(CharacterAnimationPatches), nameof(KidRockController_Update));
 		}
 
 		public override void DoUnpatches()
@@ -34,6 +35,7 @@ namespace QSB.Animation.NPC.Patches
 			QSBCore.HarmonyHelper.Unpatch<FacePlayerWhenTalking>("OnStartConversation");
 			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
 			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
+			QSBCore.HarmonyHelper.Unpatch<KidRockController>("Update");
 		}
 
 		public static bool AnimController_OnAnimatorIK(
@@ -50,47 +52,49 @@ namespace QSB.Animation.NPC.Patches
 		{
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-
+			var player = QSBPlayerManager.GetPlayer(playerId);
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // TODO : maybe cache this somewhere... or assess how slow this is
 
-			Vector3 position;
+			PlayerInfo playerToUse;
 			if (____inConversation)
 			{
 				if (playerId == uint.MaxValue)
 				{
 					DebugLog.DebugWrite($"Error - {__instance.name} is in conversation with a null player! Defaulting to active camera.", MessageType.Error);
-					position = Locator.GetActiveCamera().transform.position;
+					playerToUse = QSBPlayerManager.LocalPlayer;
 				}
 				else
 				{
-					var player = QSBPlayerManager.GetPlayer(playerId);
-					position = player.CameraBody == null
-						? Locator.GetActiveCamera().transform.position
-						: player.CameraBody.transform.position;
+					playerToUse = player.CameraBody == null
+						? QSBPlayerManager.LocalPlayer
+						: player;
 				}
 			}
 			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0)
 			{
-				position = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position).CameraBody.transform.position;
+				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
 			}
 			else
 			{
-				position = QSBPlayerManager.GetClosestPlayerToWorldPoint(__instance.transform.position, true).CameraBody.transform.position;
+				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(__instance.transform.position, true);
 			}
 
-			var localPosition = ____animator.transform.InverseTransformPoint(position);
+			var localPosition = ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position);
 
 			var targetWeight = ___headTrackingWeight;
 			if (___lookOnlyWhenTalking)
 			{
-				if (!____inConversation || qsbObj.GetPlayersInHeadZone().Count == 0)
+				if (!____inConversation 
+					|| qsbObj.GetPlayersInHeadZone().Count == 0 
+					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
 				{
 					targetWeight *= 0;
 				}
 			}
 			else
 			{
-				if (qsbObj.GetPlayersInHeadZone().Count == 0)
+				if (qsbObj.GetPlayersInHeadZone().Count == 0 
+					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
 				{
 					targetWeight *= 0;
 				}
@@ -164,6 +168,21 @@ namespace QSB.Animation.NPC.Patches
 			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
 			return true;
+		}
+
+		public static bool KidRockController_Update(
+			KidRockController __instance,
+			bool ____throwingRock,
+			CharacterDialogueTree ____dialogueTree,
+			float ____nextThrowTime)
+		{
+			var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == ____dialogueTree);
+
+			if (!____throwingRock && !qsbObj.InConversation() && Time.time > ____nextThrowTime)
+			{
+				__instance.GetType().GetMethod("StartRockThrow", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+			}
+			return false;
 		}
 	}
 }

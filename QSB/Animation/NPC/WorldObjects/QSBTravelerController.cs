@@ -13,5 +13,8 @@ namespace QSB.Animation.NPC.WorldObjects
 	{
 		public override CharacterDialogueTree GetDialogueTree()
 			=> AttachedObject.GetValue<CharacterDialogueTree>("_dialogueSystem");
+
+		public override bool InConversation()
+			=> AttachedObject.GetValue<bool>("_talking");
 	}
 }
