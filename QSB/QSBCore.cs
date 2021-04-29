@@ -179,7 +179,9 @@ namespace QSB
 			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
 				var networkTransform = player.TransformSync;
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {networkTransform.ReferenceSector.Name}");
+				var sector = networkTransform.ReferenceSector;
+
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {(sector == null ? "NULL" : sector.Name)}");
 				offset += _debugLineSpacing;
 			}
 

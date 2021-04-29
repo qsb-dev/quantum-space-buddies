@@ -70,7 +70,7 @@ namespace QSB.Animation.NPC.Patches
 						: player;
 				}
 			}
-			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0)
+			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // TODO : maybe this would be more fun if characters looked between players at random times? :P
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
 			}
