@@ -91,7 +91,6 @@ namespace QSB
 			spawnPrefabs.Add(_stickPrefab);
 
 			ConfigureNetworkManager();
-			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
 		}
 
 		private void SetupNetworkId(GameObject go)
@@ -112,15 +111,6 @@ namespace QSB
 			}
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
-		}
-
-		public void OnDestroy() =>
-			QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
-
-		private void OnSceneLoaded(OWScene scene)
-		{
-			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
 
 		private void ConfigureNetworkManager()

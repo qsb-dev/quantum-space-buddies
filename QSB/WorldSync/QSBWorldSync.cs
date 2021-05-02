@@ -4,6 +4,7 @@ using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -54,7 +55,7 @@ namespace QSB.WorldSync
 			}
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! Called from {new StackTrace().GetFrame(1).GetMethod().Name}", MessageType.Error);
 				return default;
 			}
 			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;

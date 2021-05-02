@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
 using QSB.CampfireSync.Events;
 using QSB.ConversationSync.Events;
@@ -75,7 +76,8 @@ namespace QSB.Events
 				new DialogueConditionEvent(),
 				new RevealFactEvent(),
 				new IdentifyFrequencyEvent(),
-				new IdentifySignalEvent()
+				new IdentifySignalEvent(),
+				new NpcAnimationEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)

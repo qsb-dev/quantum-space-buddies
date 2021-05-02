@@ -46,15 +46,30 @@ namespace QSB.TransformSync
 		/// Sets the position of the INVISIBLE transform to be correct, according to the reference sector and the position of the VISIBLE transform.
 		/// </summary>
 		/// <param name="worldPosition">The world position of the VISIBLE transform.</param>
-		public void EncodePosition(Vector3 worldPosition) 
-			=> SetPosition(_referenceTransform.InverseTransformPoint(worldPosition));
+		public void EncodePosition(Vector3 worldPosition)
+		{
+			if (_referenceTransform == null)
+			{
+				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", OWML.Common.MessageType.Error);
+				return;
+			}
+			
+			SetPosition(_referenceTransform.InverseTransformPoint(worldPosition));
+		}
 
 		/// <summary>
 		/// Sets the rotation of the INVISIBLE transform to be correct, according to the reference sector and the rotation of the VISIBLE transform.
 		/// </summary>
 		/// <param name="worldPosition">The world rotation of the VISIBLE transform.</param>
 		public void EncodeRotation(Quaternion worldRotation)
-			=> SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
+		{
+			if (_referenceTransform == null)
+			{
+				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", OWML.Common.MessageType.Error);
+				return;
+			}
+			SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
+		}
 
 		/// <summary>
 		/// Returns the local position the VISIBLE transform should be set to, from the INVISIBLE transform.

@@ -5,14 +5,14 @@ namespace QSB.ConversationSync.Events
 {
 	public class ConversationStartEndMessage : PlayerMessage
 	{
-		public int CharacterId { get; set; }
+		public int TreeId { get; set; }
 		public uint PlayerId { get; set; }
 		public bool State { get; set; }
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			CharacterId = reader.ReadInt32();
+			TreeId = reader.ReadInt32();
 			PlayerId = reader.ReadUInt32();
 			State = reader.ReadBoolean();
 		}
@@ -20,7 +20,7 @@ namespace QSB.ConversationSync.Events
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(CharacterId);
+			writer.Write(TreeId);
 			writer.Write(PlayerId);
 			writer.Write(State);
 		}

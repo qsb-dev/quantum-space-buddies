@@ -22,7 +22,7 @@ namespace QSB.OrbSync.TransformSync
 
 		private void OnReady()
 		{
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count < _index)
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
 				return;
@@ -33,7 +33,7 @@ namespace QSB.OrbSync.TransformSync
 		protected override void OnDestroy()
 		{
 			OrbTransformSyncs.Remove(this);
-			base.OnDestroy();
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
 		protected override void Init()

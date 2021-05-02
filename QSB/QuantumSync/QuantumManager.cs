@@ -13,9 +13,8 @@ namespace QSB.QuantumSync
 {
 	internal class QuantumManager : WorldObjectManager
 	{
+		public static QuantumShrine Shrine { get; private set; }
 		public static QuantumManager Instance { get; private set; }
-		public QuantumShrine Shrine;
-		public bool IsReady;
 
 		public override void Awake()
 		{
@@ -44,7 +43,6 @@ namespace QSB.QuantumSync
 			{
 				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
 			}
-			IsReady = true;
 		}
 
 		public void PlayerLeave(uint playerId)
@@ -117,6 +115,10 @@ namespace QSB.QuantumSync
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return Enumerable.Empty<PlayerInfo>();
+			}
 			var worldObj = GetObject(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}

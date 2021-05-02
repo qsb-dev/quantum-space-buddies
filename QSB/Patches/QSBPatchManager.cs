@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Animation.NPC.Patches;
 using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;
 using QSB.ConversationSync.Patches;

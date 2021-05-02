@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.Utils;
-using QSB.Animation.Character;
+using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
@@ -179,7 +179,9 @@ namespace QSB
 			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
 				var networkTransform = player.TransformSync;
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {networkTransform.ReferenceSector.Name}");
+				var sector = networkTransform.ReferenceSector;
+
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {(sector == null ? "NULL" : sector.Name)}");
 				offset += _debugLineSpacing;
 			}
 
@@ -244,10 +246,6 @@ namespace QSB
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
-			if (!DebugMode)
-			{
-				FindObjectsOfType<DebugZOverride>().ToList().ForEach(x => Destroy(x.gameObject));
-			}
 			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 			SocketedObjToDebug = config.GetSettingsValue<int>("socketedObjToDebug");
 		}

@@ -15,7 +15,7 @@ namespace QSB.ConversationSync.Patches
 		{
 			QSBCore.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(Node_GetNextPage));
 			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(Tree_InputDialogueOption));
-			QSBCore.HarmonyHelper.AddPostfix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(Tree_StartConversation));
+			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(Tree_StartConversation));
 			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(Tree_EndConversation));
 		}
 
@@ -34,7 +34,7 @@ namespace QSB.ConversationSync.Patches
 			{
 				DebugLog.ToConsole($"Warning - Index for tree {__instance.name} was -1.", MessageType.Warning);
 			}
-			QSBPlayerManager.LocalPlayer.CurrentDialogueID = index;
+			QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId = index;
 			ConversationManager.Instance.SendConvState(index, true);
 		}
 
@@ -44,14 +44,14 @@ namespace QSB.ConversationSync.Patches
 			{
 				return false;
 			}
-			if (QSBPlayerManager.LocalPlayer.CurrentDialogueID == -1)
+			if (QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId == -1)
 			{
 				DebugLog.ToConsole($"Warning - Ending conversation with CurrentDialogueId of -1! Called from {__instance.name}", MessageType.Warning);
 				return true;
 			}
-			ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentDialogueID, false);
-			ConversationManager.Instance.CloseBoxCharacter(QSBPlayerManager.LocalPlayer.CurrentDialogueID);
-			QSBPlayerManager.LocalPlayer.CurrentDialogueID = -1;
+			ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, false);
+			ConversationManager.Instance.CloseBoxCharacter(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId);
+			QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId = -1;
 			ConversationManager.Instance.CloseBoxPlayer();
 			return true;
 		}
@@ -74,8 +74,8 @@ namespace QSB.ConversationSync.Patches
 		{
 			var key = ____name + ____listPagesToDisplay[____currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
-			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentDialogueID != -1,
-				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentDialogueID, key));
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId != -1,
+				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, key));
 		}
 	}
 }
