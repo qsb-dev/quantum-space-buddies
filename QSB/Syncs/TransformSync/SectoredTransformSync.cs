@@ -3,7 +3,7 @@ using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
 
-namespace QSB.TransformSync
+namespace QSB.Syncs.TransformSync
 {
 	public abstract class SectoredTransformSync : BaseTransformSync
 	{

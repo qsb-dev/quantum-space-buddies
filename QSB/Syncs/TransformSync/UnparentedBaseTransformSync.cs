@@ -7,14 +7,9 @@ using QuantumUNET.Transport;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Syncs.TransformSync
 {
-	/*
-	 * Rewrite number : 4
-	 * God has cursed me for my hubris, and my work is never finished.
-	 */
-
-	public abstract class BaseTransformSync : QNetworkTransform
+	public abstract class UnparentedBaseTransformSync : QNetworkTransform
 	{
 		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
@@ -29,7 +24,7 @@ namespace QSB.TransformSync
 		protected abstract GameObject InitLocalTransform();
 		protected abstract GameObject InitRemoteTransform();
 
-		protected bool _isInitialized;
+		private bool _isInitialized;
 		private const float SmoothTime = 0.1f;
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
@@ -57,15 +52,11 @@ namespace QSB.TransformSync
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
+		protected void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
 			_isInitialized = false;
 
 		protected virtual void Init()
 		{
-			if (!HasAuthority && AttachedObject != null)
-			{
-				Destroy(AttachedObject);
-			}
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
 		}
@@ -152,19 +143,19 @@ namespace QSB.TransformSync
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 				return;
 			}
-			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
-			var targetRot = _intermediaryTransform.GetTargetRotation_ParentedToReference();
-			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
+			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
+			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
+			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_ParentedToReference() != Vector3.zero)
 			{
 				if (UseInterpolation)
 				{
-					AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
-					AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+					AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
+					AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
 				}
 				else
 				{
-					AttachedObject.transform.localPosition = targetPos;
-					AttachedObject.transform.localRotation = targetRot;
+					AttachedObject.transform.position = targetPos;
+					AttachedObject.transform.rotation = targetRot;
 				}
 			}
 		}
@@ -184,30 +175,6 @@ namespace QSB.TransformSync
 			}
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject was null for {PlayerId}.{GetType().Name} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
-				QSBCore.UnityEvents.RunWhen(
-					() => AttachedObject != null,
-					() => ReparentAttachedObject(transform));
-				return;
-			}
-			if (!HasAuthority)
-			{
-				ReparentAttachedObject(transform);
-			}
-		}
-
-		private void ReparentAttachedObject(Transform sectorTransform)
-		{
-			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
-			{
-				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
-			}
-			AttachedObject.transform.SetParent(sectorTransform, true);
-			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
-				? Vector3.one / 10
-				: Vector3.one;
 		}
 
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
@@ -229,7 +196,7 @@ namespace QSB.TransformSync
 				return;
 			}
 
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
+			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_ParentedToReference(), _intermediaryTransform.GetTargetRotation_ParentedToReference(), Vector3.one / 2, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);

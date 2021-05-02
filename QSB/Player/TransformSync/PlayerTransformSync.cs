@@ -1,6 +1,6 @@
 ﻿using QSB.Animation.Player;
 using QSB.Instruments;
-using QSB.TransformSync;
+using QSB.Syncs.TransformSync;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync

@@ -1,7 +1,7 @@
 ﻿using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.TransformSync
+namespace QSB.Syncs.TransformSync
 {
 	public class IntermediaryTransform
 	{

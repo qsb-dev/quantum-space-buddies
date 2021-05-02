@@ -244,10 +244,10 @@
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
-    <Compile Include="TransformSync\BaseTransformSync.cs" />
-    <Compile Include="TransformSync\IntermediaryTransform.cs" />
-    <Compile Include="TransformSync\SectoredTransformSync.cs" />
-    <Compile Include="TransformSync\UnparentedBaseTransformSync.cs" />
+    <Compile Include="Syncs\TransformSync\BaseTransformSync.cs" />
+    <Compile Include="Syncs\TransformSync\IntermediaryTransform.cs" />
+    <Compile Include="Syncs\TransformSync\SectoredTransformSync.cs" />
+    <Compile Include="Syncs\TransformSync\UnparentedBaseTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
@@ -356,7 +356,9 @@
       <Version>1.1.8</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Syncs\VariableSync\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"

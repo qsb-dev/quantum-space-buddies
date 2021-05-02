@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
-using QSB.TransformSync;
+using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
