@@ -62,7 +62,7 @@ namespace QSB.TransformSync
 
 		protected virtual void Init()
 		{
-			if (AttachedObject != null)
+			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject);
 			}

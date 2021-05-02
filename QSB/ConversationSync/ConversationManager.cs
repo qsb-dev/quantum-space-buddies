@@ -122,6 +122,7 @@ namespace QSB.ConversationSync
 			lookAt.SetValue("_localFacingVector", Vector3.back);
 			lookAt.SetValue("_localRotationAxis", Vector3.up);
 			newBox.GetComponent<Text>().text = text;
+			newBox.AddComponent<ZOverride>();
 			newBox.SetActive(true);
 			return newBox;
 		}

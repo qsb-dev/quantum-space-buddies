@@ -246,10 +246,6 @@ namespace QSB
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
-			if (!DebugMode)
-			{
-				FindObjectsOfType<DebugZOverride>().ToList().ForEach(x => Destroy(x.gameObject));
-			}
 			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 			SocketedObjToDebug = config.GetSettingsValue<int>("socketedObjToDebug");
 		}
