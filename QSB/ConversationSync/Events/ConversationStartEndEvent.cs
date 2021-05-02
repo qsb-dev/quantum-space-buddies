@@ -29,7 +29,6 @@ namespace QSB.ConversationSync.Events
 
 		public override void OnReceiveRemote(bool server, ConversationStartEndMessage message)
 		{
-			DebugLog.DebugWrite($"Get conversation event charId:{message.TreeId}, state:{message.State}");
 			if (message.TreeId == -1)
 			{
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
@@ -58,7 +57,6 @@ namespace QSB.ConversationSync.Events
 			int dialogueTreeId,
 			CharacterDialogueTree tree)
 		{
-			DebugLog.DebugWrite($"Set player {playerId} to treeId {dialogueTreeId}");
 			QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = dialogueTreeId;
 			tree.GetInteractVolume().DisableInteraction();
 		}
@@ -67,7 +65,6 @@ namespace QSB.ConversationSync.Events
 			uint playerId,
 			CharacterDialogueTree tree)
 		{
-			DebugLog.DebugWrite($"Set player {playerId} to treeId -1");
 			QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = -1;
 			tree.GetInteractVolume().EnableInteraction();
 		}
