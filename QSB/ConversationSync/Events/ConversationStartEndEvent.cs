@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -41,12 +42,6 @@ namespace QSB.ConversationSync.Events
 			}
 
 			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.TreeId];
-			var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
-
-			if (animController == default)
-			{
-				return;
-			}
 
 			if (message.State)
 			{
