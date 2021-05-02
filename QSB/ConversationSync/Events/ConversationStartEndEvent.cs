@@ -1,12 +1,8 @@
 ﻿using OWML.Common;
-using OWML.Utils;
-using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
-using UnityEngine;
 
 namespace QSB.ConversationSync.Events
 {
