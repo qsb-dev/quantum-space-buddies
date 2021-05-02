@@ -80,7 +80,7 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Marshmallow roasting | Yes |
 | Meteors | No |
 | Museum statue | Yes |
-| NPC animations | Kind of |
+| NPC animations | Yes |
 | Nomai orbs | Yes |
 | Nomai shuttle | Kind of |
 | Orbital Probe Cannon (direction) | No |
@@ -90,6 +90,7 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Projection pools | Yes |
 | Quantum objects | Yes |
 | Ship log | Yes |
+| Solanum | No |
 | Timber Hearth satellite | No |
 | Tornadoes | No |
 
