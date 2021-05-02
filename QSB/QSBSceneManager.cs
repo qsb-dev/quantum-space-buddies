@@ -25,7 +25,8 @@ namespace QSB
 			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
 			if (QSBCore.IsInMultiplayer)
 			{
-				WorldObjectManager.Rebuild(newScene);
+				// So objects have time to be deleted, made, whatever
+				QSBCore.UnityEvents.FireOnNextUpdate(() => WorldObjectManager.Rebuild(newScene));
 			}
 			var universe = InUniverse(newScene);
 			OnSceneLoaded?.SafeInvoke(newScene, universe);

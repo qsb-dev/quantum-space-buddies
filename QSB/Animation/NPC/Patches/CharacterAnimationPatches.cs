@@ -50,6 +50,10 @@ namespace QSB.Animation.NPC.Patches
 			Animator ____animator,
 			CharacterDialogueTree ____dialogueTree)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return false;
+			}
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
@@ -176,6 +180,10 @@ namespace QSB.Animation.NPC.Patches
 			CharacterDialogueTree ____dialogueTree,
 			float ____nextThrowTime)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return true;
+			}
 			var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == ____dialogueTree);
 
 			if (!____throwingRock && !qsbObj.InConversation() && Time.time > ____nextThrowTime)

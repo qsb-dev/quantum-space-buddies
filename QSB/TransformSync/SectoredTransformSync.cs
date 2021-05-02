@@ -31,7 +31,15 @@ namespace QSB.TransformSync
 		protected override void Init()
 		{
 			base.Init();
-			SetReferenceTransform(SectorSync.GetClosestSector(AttachedObject.transform).Transform);
+			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+			if (closestSector != null)
+			{
+				SetReferenceTransform(closestSector.Transform);
+			}
+			else
+			{
+				_isInitialized = false;
+			}
 		}
 
 		public override void SerializeTransform(QNetworkWriter writer)

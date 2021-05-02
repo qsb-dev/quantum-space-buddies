@@ -29,7 +29,7 @@ namespace QSB.TransformSync
 		protected abstract GameObject InitLocalTransform();
 		protected abstract GameObject InitRemoteTransform();
 
-		private bool _isInitialized;
+		protected bool _isInitialized;
 		private const float SmoothTime = 0.1f;
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
@@ -62,6 +62,10 @@ namespace QSB.TransformSync
 
 		protected virtual void Init()
 		{
+			if (AttachedObject != null)
+			{
+				Destroy(AttachedObject);
+			}
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
 		}
