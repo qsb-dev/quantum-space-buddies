@@ -204,7 +204,7 @@ namespace QNetWeaver
 					foreach (var methodDefinition5 in m_Cmds)
 					{
 						var field = Weaver.ResolveField(m_td, "kCmd" + methodDefinition5.Name);
-						var hashCode = NetworkBehaviourProcessor.GetHashCode(m_td.Name + ":Cmd:" + methodDefinition5.Name);
+						var hashCode = GetHashCode(m_td.Name + ":Cmd:" + methodDefinition5.Name);
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldc_I4, hashCode));
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Stsfld, field));
 						GenerateCommandDelegate(ilprocessor2, Weaver.registerCommandDelegateReference, m_CmdInvocationFuncs[num], field);
@@ -214,7 +214,7 @@ namespace QNetWeaver
 					foreach (var methodDefinition6 in m_Rpcs)
 					{
 						var field2 = Weaver.ResolveField(m_td, "kRpc" + methodDefinition6.Name);
-						var hashCode2 = NetworkBehaviourProcessor.GetHashCode(m_td.Name + ":Rpc:" + methodDefinition6.Name);
+						var hashCode2 = GetHashCode(m_td.Name + ":Rpc:" + methodDefinition6.Name);
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldc_I4, hashCode2));
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Stsfld, field2));
 						GenerateCommandDelegate(ilprocessor2, Weaver.registerRpcDelegateReference, m_RpcInvocationFuncs[num2], field2);
@@ -224,7 +224,7 @@ namespace QNetWeaver
 					foreach (var methodDefinition7 in m_TargetRpcs)
 					{
 						var field3 = Weaver.ResolveField(m_td, "kTargetRpc" + methodDefinition7.Name);
-						var hashCode3 = NetworkBehaviourProcessor.GetHashCode(m_td.Name + ":TargetRpc:" + methodDefinition7.Name);
+						var hashCode3 = GetHashCode(m_td.Name + ":TargetRpc:" + methodDefinition7.Name);
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldc_I4, hashCode3));
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Stsfld, field3));
 						GenerateCommandDelegate(ilprocessor2, Weaver.registerRpcDelegateReference, m_TargetRpcInvocationFuncs[num3], field3);
@@ -234,7 +234,7 @@ namespace QNetWeaver
 					foreach (var eventDefinition in m_Events)
 					{
 						var field4 = Weaver.ResolveField(m_td, "kEvent" + eventDefinition.Name);
-						var hashCode4 = NetworkBehaviourProcessor.GetHashCode(m_td.Name + ":Event:" + eventDefinition.Name);
+						var hashCode4 = GetHashCode(m_td.Name + ":Event:" + eventDefinition.Name);
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldc_I4, hashCode4));
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Stsfld, field4));
 						GenerateCommandDelegate(ilprocessor2, Weaver.registerEventDelegateReference, m_EventInvocationFuncs[num4], field4);
@@ -244,7 +244,7 @@ namespace QNetWeaver
 					foreach (var fieldDefinition in m_SyncLists)
 					{
 						var field5 = Weaver.ResolveField(m_td, "kList" + fieldDefinition.Name);
-						var hashCode5 = NetworkBehaviourProcessor.GetHashCode(m_td.Name + ":List:" + fieldDefinition.Name);
+						var hashCode5 = GetHashCode(m_td.Name + ":List:" + fieldDefinition.Name);
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldc_I4, hashCode5));
 						ilprocessor2.Append(ilprocessor2.Create(OpCodes.Stsfld, field5));
 						GenerateSyncListInstanceInitializer(ilprocessor, fieldDefinition);
@@ -475,7 +475,7 @@ namespace QNetWeaver
 					ilprocessor.Append(ilprocessor.Create(OpCodes.And));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Brfalse, instruction2));
 					Weaver.DLog(m_td, $"    writing dirtycheck", new object[0]);
-					NetworkBehaviourProcessor.WriteDirtyCheck(ilprocessor, true);
+					WriteDirtyCheck(ilprocessor, true);
 					Weaver.DLog(m_td, $"    done writing dirtycheck", new object[0]);
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
@@ -501,7 +501,7 @@ namespace QNetWeaver
 					num++;
 				}
 				Weaver.DLog(m_td, $"    Finish foreach 2", new object[0]);
-				NetworkBehaviourProcessor.WriteDirtyCheck(ilprocessor, false);
+				WriteDirtyCheck(ilprocessor, false);
 				if (Weaver.generateLogErrors)
 				{
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldstr, "Injected Serialize " + m_td.Name));
@@ -898,7 +898,7 @@ namespace QNetWeaver
 			var methodDefinition = new MethodDefinition("InvokeCmd" + md.Name, MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteServerActiveCheck(ilprocessor, md.Name, label, "Command");
+			WriteServerActiveCheck(ilprocessor, md.Name, label, "Command");
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Castclass, m_td));
 			MethodDefinition result;
@@ -910,7 +910,7 @@ namespace QNetWeaver
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, md));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-				NetworkBehaviourProcessor.AddInvokeParameters(methodDefinition.Parameters);
+				AddInvokeParameters(methodDefinition.Parameters);
 				result = methodDefinition;
 			}
 			return result;
@@ -931,13 +931,13 @@ namespace QNetWeaver
 			}
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteSetupLocals(ilprocessor);
+			WriteSetupLocals(ilprocessor);
 			if (Weaver.generateLogErrors)
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldstr, "Call Command function " + md.Name));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.logErrorReference));
 			}
-			NetworkBehaviourProcessor.WriteClientActiveCheck(ilprocessor, md.Name, label, "Command function");
+			WriteClientActiveCheck(ilprocessor, md.Name, label, "Command function");
 			var instruction = ilprocessor.Create(OpCodes.Nop);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.UBehaviourIsServer));
@@ -950,9 +950,9 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Call, md));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 			ilprocessor.Append(instruction);
-			NetworkBehaviourProcessor.WriteCreateWriter(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageSize(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageId(ilprocessor, 5);
+			WriteCreateWriter(ilprocessor);
+			WriteMessageSize(ilprocessor);
+			WriteMessageId(ilprocessor, 5);
 			var fieldDefinition = new FieldDefinition("kCmd" + md.Name, FieldAttributes.Private | FieldAttributes.Static, Weaver.int32Type);
 			m_td.Fields.Add(fieldDefinition);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
@@ -965,7 +965,7 @@ namespace QNetWeaver
 			var writeFunc = Weaver.GetWriteFunc(Weaver.NetworkInstanceIdType);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, writeFunc));
 			MethodDefinition result;
-			if (!NetworkBehaviourProcessor.WriteArguments(ilprocessor, md, "Command", false))
+			if (!WriteArguments(ilprocessor, md, "Command", false))
 			{
 				result = null;
 			}
@@ -1001,7 +1001,7 @@ namespace QNetWeaver
 			var methodDefinition = new MethodDefinition("InvokeRpc" + md.Name, MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteClientActiveCheck(ilprocessor, md.Name, label, "TargetRPC");
+			WriteClientActiveCheck(ilprocessor, md.Name, label, "TargetRPC");
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Castclass, m_td));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.ReadyConnectionReference));
@@ -1014,7 +1014,7 @@ namespace QNetWeaver
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, md));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-				NetworkBehaviourProcessor.AddInvokeParameters(methodDefinition.Parameters);
+				AddInvokeParameters(methodDefinition.Parameters);
 				result = methodDefinition;
 			}
 			return result;
@@ -1025,7 +1025,7 @@ namespace QNetWeaver
 			var methodDefinition = new MethodDefinition("InvokeRpc" + md.Name, MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteClientActiveCheck(ilprocessor, md.Name, label, "RPC");
+			WriteClientActiveCheck(ilprocessor, md.Name, label, "RPC");
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Castclass, m_td));
 			MethodDefinition result;
@@ -1037,7 +1037,7 @@ namespace QNetWeaver
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, md));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-				NetworkBehaviourProcessor.AddInvokeParameters(methodDefinition.Parameters);
+				AddInvokeParameters(methodDefinition.Parameters);
 				result = methodDefinition;
 			}
 			return result;
@@ -1052,8 +1052,8 @@ namespace QNetWeaver
 			}
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteSetupLocals(ilprocessor);
-			NetworkBehaviourProcessor.WriteServerActiveCheck(ilprocessor, md.Name, label, "TargetRPC Function");
+			WriteSetupLocals(ilprocessor);
+			WriteServerActiveCheck(ilprocessor, md.Name, label, "TargetRPC Function");
 			var instruction = ilprocessor.Create(OpCodes.Nop);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Isinst, Weaver.ULocalConnectionToServerType));
@@ -1062,9 +1062,9 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.logErrorReference));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 			ilprocessor.Append(instruction);
-			NetworkBehaviourProcessor.WriteCreateWriter(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageSize(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageId(ilprocessor, 2);
+			WriteCreateWriter(ilprocessor);
+			WriteMessageSize(ilprocessor);
+			WriteMessageId(ilprocessor, 2);
 			var fieldDefinition = new FieldDefinition("kTargetRpc" + md.Name, FieldAttributes.Private | FieldAttributes.Static, Weaver.int32Type);
 			m_td.Fields.Add(fieldDefinition);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
@@ -1076,7 +1076,7 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, Weaver.getUNetIdReference));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, Weaver.NetworkWriterWriteNetworkInstanceId));
 			MethodDefinition result;
-			if (!NetworkBehaviourProcessor.WriteArguments(ilprocessor, md, "TargetRPC", true))
+			if (!WriteArguments(ilprocessor, md, "TargetRPC", true))
 			{
 				result = null;
 			}
@@ -1117,11 +1117,11 @@ namespace QNetWeaver
 			}
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteSetupLocals(ilprocessor);
-			NetworkBehaviourProcessor.WriteServerActiveCheck(ilprocessor, md.Name, label, "RPC Function");
-			NetworkBehaviourProcessor.WriteCreateWriter(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageSize(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageId(ilprocessor, 2);
+			WriteSetupLocals(ilprocessor);
+			WriteServerActiveCheck(ilprocessor, md.Name, label, "RPC Function");
+			WriteCreateWriter(ilprocessor);
+			WriteMessageSize(ilprocessor);
+			WriteMessageId(ilprocessor, 2);
 			var fieldDefinition = new FieldDefinition("kRpc" + md.Name, FieldAttributes.Private | FieldAttributes.Static, Weaver.int32Type);
 			m_td.Fields.Add(fieldDefinition);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
@@ -1133,7 +1133,7 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, Weaver.getUNetIdReference));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, Weaver.NetworkWriterWriteNetworkInstanceId));
 			MethodDefinition result;
-			if (!NetworkBehaviourProcessor.WriteArguments(ilprocessor, md, "RPC", false))
+			if (!WriteArguments(ilprocessor, md, "RPC", false))
 			{
 				result = null;
 			}
@@ -1629,7 +1629,7 @@ namespace QNetWeaver
 				var ilprocessor = methodDefinition.Body.GetILProcessor();
 				var label = ilprocessor.Create(OpCodes.Nop);
 				var instruction = ilprocessor.Create(OpCodes.Nop);
-				NetworkBehaviourProcessor.WriteClientActiveCheck(ilprocessor, ed.Name, label, "Event");
+				WriteClientActiveCheck(ilprocessor, ed.Name, label, "Event");
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Castclass, m_td));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldfld, fieldDefinition));
@@ -1648,7 +1648,7 @@ namespace QNetWeaver
 				{
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, methodReference));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-					NetworkBehaviourProcessor.AddInvokeParameters(methodDefinition.Parameters);
+					AddInvokeParameters(methodDefinition.Parameters);
 					result = methodDefinition;
 				}
 			}
@@ -1665,11 +1665,11 @@ namespace QNetWeaver
 			}
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteSetupLocals(ilprocessor);
-			NetworkBehaviourProcessor.WriteServerActiveCheck(ilprocessor, ed.Name, label, "Event");
-			NetworkBehaviourProcessor.WriteCreateWriter(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageSize(ilprocessor);
-			NetworkBehaviourProcessor.WriteMessageId(ilprocessor, 7);
+			WriteSetupLocals(ilprocessor);
+			WriteServerActiveCheck(ilprocessor, ed.Name, label, "Event");
+			WriteCreateWriter(ilprocessor);
+			WriteMessageSize(ilprocessor);
+			WriteMessageId(ilprocessor, 7);
 			var fieldDefinition = new FieldDefinition("kEvent" + ed.Name, FieldAttributes.Private | FieldAttributes.Static, Weaver.int32Type);
 			m_td.Fields.Add(fieldDefinition);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
@@ -1681,7 +1681,7 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, Weaver.getUNetIdReference));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, Weaver.NetworkWriterWriteNetworkInstanceId));
 			MethodDefinition result;
-			if (!NetworkBehaviourProcessor.WriteArguments(ilprocessor, methodReference.Resolve(), "SyncEvent", false))
+			if (!WriteArguments(ilprocessor, methodReference.Resolve(), "SyncEvent", false))
 			{
 				result = null;
 			}
@@ -1832,7 +1832,7 @@ namespace QNetWeaver
 				m_SyncVarNetIds.Add(fieldDefinition);
 				Weaver.lists.netIdFields.Add(fieldDefinition);
 			}
-			var methodDefinition = NetworkBehaviourProcessor.ProcessSyncVarGet(fd, name);
+			var methodDefinition = ProcessSyncVarGet(fd, name);
 			var methodDefinition2 = ProcessSyncVarSet(fd, name, dirtyBit, fieldDefinition);
 			var item = new PropertyDefinition("Network" + name, PropertyAttributes.None, fd.FieldType)
 			{
@@ -1850,7 +1850,7 @@ namespace QNetWeaver
 			var methodDefinition = new MethodDefinition("InvokeSyncList" + fd.Name, MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
-			NetworkBehaviourProcessor.WriteClientActiveCheck(ilprocessor, fd.Name, label, "SyncList");
+			WriteClientActiveCheck(ilprocessor, fd.Name, label, "SyncList");
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Castclass, fd.DeclaringType));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldfld, fd));
@@ -1864,13 +1864,13 @@ namespace QNetWeaver
 			});
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, method));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-			NetworkBehaviourProcessor.AddInvokeParameters(methodDefinition.Parameters);
+			AddInvokeParameters(methodDefinition.Parameters);
 			return methodDefinition;
 		}
 
 		private FieldDefinition ProcessSyncList(FieldDefinition fd, int dirtyBit)
 		{
-			var methodDefinition = NetworkBehaviourProcessor.ProcessSyncListInvoke(fd);
+			var methodDefinition = ProcessSyncListInvoke(fd);
 			m_SyncListInvocationFuncs.Add(methodDefinition);
 			return new FieldDefinition("kList" + fd.Name, FieldAttributes.Private | FieldAttributes.Static, Weaver.int32Type);
 		}

@@ -20,12 +20,12 @@ namespace QNetWeaver
 			var unetDLL = args[2];
 			var outputDirectory = args[3];
 			var assembly = args[4];
-			
-			Program.CheckDLLPath(unityEngine);
-			Program.CheckDLLPath(qnetDLL);
-			Program.CheckDLLPath(unetDLL);
-			Program.CheckOutputDirectory(outputDirectory);
-			Program.CheckAssemblyPath(assembly);
+
+			CheckDLLPath(unityEngine);
+			CheckDLLPath(qnetDLL);
+			CheckDLLPath(unetDLL);
+			CheckOutputDirectory(outputDirectory);
+			CheckAssemblyPath(assembly);
 			Weaver.WeaveAssemblies(assembly, null, null, outputDirectory, unityEngine, qnetDLL, unetDLL);
 		}
 

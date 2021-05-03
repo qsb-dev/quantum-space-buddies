@@ -48,7 +48,7 @@ namespace QNetWeaver
 				{
 					return false;
 				}
-				foreach (var typeReference in Helpers.ResolveInheritanceHierarchy(typeRef))
+				foreach (var typeReference in ResolveInheritanceHierarchy(typeRef))
 				{
 					if (typeReference.IsGenericInstance)
 					{
@@ -112,7 +112,7 @@ namespace QNetWeaver
 				var text2 = "<";
 				var text3 = ", ";
 				IEnumerable<TypeReference> genericArguments = genericInstanceType.GenericArguments;
-				result = text + text2 + string.Join(text3, Enumerable.ToArray<string>(Enumerable.Select<TypeReference, string>(genericArguments, new Func<TypeReference, string>(Helpers.PrettyPrintType)))) + ">";
+				result = text + text2 + string.Join(text3, Enumerable.ToArray<string>(Enumerable.Select<TypeReference, string>(genericArguments, new Func<TypeReference, string>(PrettyPrintType)))) + ">";
 			}
 			else if (type.HasGenericParameters)
 			{
@@ -134,7 +134,7 @@ namespace QNetWeaver
 			}
 			var addSearchDirectoryHelper = new Helpers.AddSearchDirectoryHelper(assemblyResolver);
 			addSearchDirectoryHelper.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
-			addSearchDirectoryHelper.AddSearchDirectory(Helpers.UnityEngineDLLDirectoryName());
+			addSearchDirectoryHelper.AddSearchDirectory(UnityEngineDLLDirectoryName());
 			addSearchDirectoryHelper.AddSearchDirectory(Path.GetDirectoryName(unityEngineDLLPath));
 			addSearchDirectoryHelper.AddSearchDirectory(Path.GetDirectoryName(unityUNetDLLPath));
 			if (extraPaths != null)
@@ -145,7 +145,7 @@ namespace QNetWeaver
 				}
 			}
 			readerParameters.AssemblyResolver = assemblyResolver;
-			readerParameters.SymbolReaderProvider = Helpers.GetSymbolReaderProvider(assemblyPath);
+			readerParameters.SymbolReaderProvider = GetSymbolReaderProvider(assemblyPath);
 			return readerParameters;
 		}
 
@@ -179,7 +179,7 @@ namespace QNetWeaver
 
 		public static MethodReference MakeHostInstanceGeneric(MethodReference self, params TypeReference[] arguments)
 		{
-			var methodReference = new MethodReference(self.Name, self.ReturnType, Helpers.MakeGenericType(self.DeclaringType, arguments))
+			var methodReference = new MethodReference(self.Name, self.ReturnType, MakeGenericType(self.DeclaringType, arguments))
 			{
 				HasThis = self.HasThis,
 				ExplicitThis = self.ExplicitThis,

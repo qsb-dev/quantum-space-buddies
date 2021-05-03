@@ -12,7 +12,7 @@ namespace QNetWeaver
 {
 	internal class Weaver
 	{
-		public static void ResetRecursionCount() => Weaver.s_RecursionCount = 0;
+		public static void ResetRecursionCount() => s_RecursionCount = 0;
 
 		public static bool CanBeResolved(TypeReference parent)
 		{
@@ -49,7 +49,7 @@ namespace QNetWeaver
 
 		public static void DLog(TypeDefinition td, string fmt, params object[] args)
 		{
-			if (Weaver.m_DebugFlag)
+			if (m_DebugFlag)
 			{
 				Console.WriteLine("[" + td.Name + "] " + string.Format(fmt, args));
 			}
@@ -58,9 +58,9 @@ namespace QNetWeaver
 		public static int GetSyncVarStart(string className)
 		{
 			int result;
-			if (Weaver.lists.numSyncVars.ContainsKey(className))
+			if (lists.numSyncVars.ContainsKey(className))
 			{
-				var num = Weaver.lists.numSyncVars[className];
+				var num = lists.numSyncVars[className];
 				result = num;
 			}
 			else
@@ -70,22 +70,22 @@ namespace QNetWeaver
 			return result;
 		}
 
-		public static void SetNumSyncVars(string className, int num) => Weaver.lists.numSyncVars[className] = num;
+		public static void SetNumSyncVars(string className, int num) => lists.numSyncVars[className] = num;
 
 		public static MethodReference GetWriteFunc(TypeReference variable)
 		{
 			MethodReference result;
-			if (Weaver.s_RecursionCount++ > 128)
+			if (s_RecursionCount++ > 128)
 			{
 				Log.Error("GetWriteFunc recursion depth exceeded for " + variable.Name + ". Check for self-referencing member variables.");
-				Weaver.fail = true;
+				fail = true;
 				result = null;
 			}
 			else
 			{
-				if (Weaver.lists.writeFuncs.ContainsKey(variable.FullName))
+				if (lists.writeFuncs.ContainsKey(variable.FullName))
 				{
-					var methodReference = Weaver.lists.writeFuncs[variable.FullName];
+					var methodReference = lists.writeFuncs[variable.FullName];
 					if (methodReference.Parameters[0].ParameterType.IsArray == variable.IsArray)
 					{
 						return methodReference;
@@ -102,20 +102,20 @@ namespace QNetWeaver
 					if (variable.IsArray)
 					{
 						var elementType = variable.GetElementType();
-						var writeFunc = Weaver.GetWriteFunc(elementType);
+						var writeFunc = GetWriteFunc(elementType);
 						if (writeFunc == null)
 						{
 							return null;
 						}
-						methodDefinition = Weaver.GenerateArrayWriteFunc(variable, writeFunc);
+						methodDefinition = GenerateArrayWriteFunc(variable, writeFunc);
 					}
 					else
 					{
 						if (variable.Resolve().IsEnum)
 						{
-							return Weaver.NetworkWriterWriteInt32;
+							return NetworkWriterWriteInt32;
 						}
-						methodDefinition = Weaver.GenerateWriterFunction(variable);
+						methodDefinition = GenerateWriterFunction(variable);
 					}
 					if (methodDefinition == null)
 					{
@@ -123,7 +123,7 @@ namespace QNetWeaver
 					}
 					else
 					{
-						Weaver.RegisterWriteFunc(variable.FullName, methodDefinition);
+						RegisterWriteFunc(variable.FullName, methodDefinition);
 						result = methodDefinition;
 					}
 				}
@@ -133,18 +133,18 @@ namespace QNetWeaver
 
 		public static void RegisterWriteFunc(string name, MethodDefinition newWriterFunc)
 		{
-			Weaver.lists.writeFuncs[name] = newWriterFunc;
-			Weaver.lists.generatedWriteFunctions.Add(newWriterFunc);
-			Weaver.ConfirmGeneratedCodeClass(Weaver.scriptDef.MainModule);
-			Weaver.lists.generateContainerClass.Methods.Add(newWriterFunc);
+			lists.writeFuncs[name] = newWriterFunc;
+			lists.generatedWriteFunctions.Add(newWriterFunc);
+			ConfirmGeneratedCodeClass(scriptDef.MainModule);
+			lists.generateContainerClass.Methods.Add(newWriterFunc);
 		}
 
 		public static MethodReference GetReadByReferenceFunc(TypeReference variable)
 		{
 			MethodReference result;
-			if (Weaver.lists.readByReferenceFuncs.ContainsKey(variable.FullName))
+			if (lists.readByReferenceFuncs.ContainsKey(variable.FullName))
 			{
-				result = Weaver.lists.readByReferenceFuncs[variable.FullName];
+				result = lists.readByReferenceFuncs[variable.FullName];
 			}
 			else
 			{
@@ -155,9 +155,9 @@ namespace QNetWeaver
 
 		public static MethodReference GetReadFunc(TypeReference variable)
 		{
-			if (Weaver.lists.readFuncs.ContainsKey(variable.FullName))
+			if (lists.readFuncs.ContainsKey(variable.FullName))
 			{
-				var methodReference = Weaver.lists.readFuncs[variable.FullName];
+				var methodReference = lists.readFuncs[variable.FullName];
 				if (methodReference.ReturnType.IsArray == variable.IsArray)
 				{
 					return methodReference;
@@ -181,20 +181,20 @@ namespace QNetWeaver
 				if (variable.IsArray)
 				{
 					var elementType = variable.GetElementType();
-					var readFunc = Weaver.GetReadFunc(elementType);
+					var readFunc = GetReadFunc(elementType);
 					if (readFunc == null)
 					{
 						return null;
 					}
-					methodDefinition = Weaver.GenerateArrayReadFunc(variable, readFunc);
+					methodDefinition = GenerateArrayReadFunc(variable, readFunc);
 				}
 				else
 				{
 					if (typeDefinition.IsEnum)
 					{
-						return Weaver.NetworkReaderReadInt32;
+						return NetworkReaderReadInt32;
 					}
-					methodDefinition = Weaver.GenerateReadFunction(variable);
+					methodDefinition = GenerateReadFunction(variable);
 				}
 				if (methodDefinition == null)
 				{
@@ -203,7 +203,7 @@ namespace QNetWeaver
 				}
 				else
 				{
-					Weaver.RegisterReadFunc(variable.FullName, methodDefinition);
+					RegisterReadFunc(variable.FullName, methodDefinition);
 					result = methodDefinition;
 				}
 			}
@@ -212,24 +212,24 @@ namespace QNetWeaver
 
 		public static void RegisterReadByReferenceFunc(string name, MethodDefinition newReaderFunc)
 		{
-			Weaver.lists.readByReferenceFuncs[name] = newReaderFunc;
-			Weaver.lists.generatedReadFunctions.Add(newReaderFunc);
-			Weaver.ConfirmGeneratedCodeClass(Weaver.scriptDef.MainModule);
-			Weaver.lists.generateContainerClass.Methods.Add(newReaderFunc);
+			lists.readByReferenceFuncs[name] = newReaderFunc;
+			lists.generatedReadFunctions.Add(newReaderFunc);
+			ConfirmGeneratedCodeClass(scriptDef.MainModule);
+			lists.generateContainerClass.Methods.Add(newReaderFunc);
 		}
 
 		public static void RegisterReadFunc(string name, MethodDefinition newReaderFunc)
 		{
-			Weaver.lists.readFuncs[name] = newReaderFunc;
-			Weaver.lists.generatedReadFunctions.Add(newReaderFunc);
-			Weaver.ConfirmGeneratedCodeClass(Weaver.scriptDef.MainModule);
-			Weaver.lists.generateContainerClass.Methods.Add(newReaderFunc);
+			lists.readFuncs[name] = newReaderFunc;
+			lists.generatedReadFunctions.Add(newReaderFunc);
+			ConfirmGeneratedCodeClass(scriptDef.MainModule);
+			lists.generateContainerClass.Methods.Add(newReaderFunc);
 		}
 
 		private static MethodDefinition GenerateArrayReadFunc(TypeReference variable, MethodReference elementReadFunc)
 		{
 			MethodDefinition result;
-			if (!Weaver.IsArrayType(variable))
+			if (!IsArrayType(variable))
 			{
 				Log.Error(variable.FullName + " is an unsupported array type. Jagged and multidimensional arrays are not supported");
 				result = null;
@@ -246,14 +246,14 @@ namespace QNetWeaver
 					text += "None";
 				}
 				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, variable);
-				methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
-				methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.int32Type));
+				methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkReaderType)));
+				methodDefinition.Body.Variables.Add(new VariableDefinition(int32Type));
 				methodDefinition.Body.Variables.Add(new VariableDefinition(variable));
-				methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.int32Type));
+				methodDefinition.Body.Variables.Add(new VariableDefinition(int32Type));
 				methodDefinition.Body.InitLocals = true;
 				var ilprocessor = methodDefinition.Body.GetILProcessor();
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
-				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkReadUInt16));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, NetworkReadUInt16));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Stloc_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				var instruction = ilprocessor.Create(OpCodes.Nop);
@@ -295,7 +295,7 @@ namespace QNetWeaver
 		private static MethodDefinition GenerateArrayWriteFunc(TypeReference variable, MethodReference elementWriteFunc)
 		{
 			MethodDefinition result;
-			if (!Weaver.IsArrayType(variable))
+			if (!IsArrayType(variable))
 			{
 				Log.Error(variable.FullName + " is an unsupported array type. Jagged and multidimensional arrays are not supported");
 				result = null;
@@ -311,11 +311,11 @@ namespace QNetWeaver
 				{
 					text += "None";
 				}
-				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
-				methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
-				methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(variable)));
-				methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.uint16Type));
-				methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.uint16Type));
+				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, voidType);
+				methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkWriterType)));
+				methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, scriptDef.MainModule.ImportReference(variable)));
+				methodDefinition.Body.Variables.Add(new VariableDefinition(uint16Type));
+				methodDefinition.Body.Variables.Add(new VariableDefinition(uint16Type));
 				methodDefinition.Body.InitLocals = true;
 				var ilprocessor = methodDefinition.Body.GetILProcessor();
 				var instruction = ilprocessor.Create(OpCodes.Nop);
@@ -323,7 +323,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Brtrue, instruction));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4_0));
-				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkWriteUInt16));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, NetworkWriteUInt16));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				ilprocessor.Append(instruction);
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
@@ -333,7 +333,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Stloc_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
-				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkWriteUInt16));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, NetworkWriteUInt16));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Stloc_1));
 				var instruction2 = ilprocessor.Create(OpCodes.Nop);
@@ -366,7 +366,7 @@ namespace QNetWeaver
 		private static MethodDefinition GenerateWriterFunction(TypeReference variable)
 		{
 			MethodDefinition result;
-			if (!Weaver.IsValidTypeToGenerate(variable.Resolve()))
+			if (!IsValidTypeToGenerate(variable.Resolve()))
 			{
 				result = null;
 			}
@@ -381,9 +381,9 @@ namespace QNetWeaver
 				{
 					text += "None";
 				}
-				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
-				methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
-				methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(variable)));
+				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, voidType);
+				methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkWriterType)));
+				methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, scriptDef.MainModule.ImportReference(variable)));
 				var ilprocessor = methodDefinition.Body.GetILProcessor();
 				var num = 0U;
 				foreach (var fieldDefinition in variable.Resolve().Fields)
@@ -392,7 +392,7 @@ namespace QNetWeaver
 					{
 						if (fieldDefinition.FieldType.Resolve().HasGenericParameters)
 						{
-							Weaver.fail = true;
+							fail = true;
 							Log.Error(string.Concat(new object[]
 							{
 								"WriteReadFunc for ",
@@ -407,7 +407,7 @@ namespace QNetWeaver
 						}
 						if (fieldDefinition.FieldType.Resolve().IsInterface)
 						{
-							Weaver.fail = true;
+							fail = true;
 							Log.Error(string.Concat(new object[]
 							{
 								"WriteReadFunc for ",
@@ -420,7 +420,7 @@ namespace QNetWeaver
 							}));
 							return null;
 						}
-						var writeFunc = Weaver.GetWriteFunc(fieldDefinition.FieldType);
+						var writeFunc = GetWriteFunc(fieldDefinition.FieldType);
 						if (writeFunc == null)
 						{
 							Log.Error(string.Concat(new object[]
@@ -431,7 +431,7 @@ namespace QNetWeaver
 								fieldDefinition.FieldType,
 								" no supported"
 							}));
-							Weaver.fail = true;
+							fail = true;
 							return null;
 						}
 						num += 1U;
@@ -454,7 +454,7 @@ namespace QNetWeaver
 		private static MethodDefinition GenerateReadFunction(TypeReference variable)
 		{
 			MethodDefinition result;
-			if (!Weaver.IsValidTypeToGenerate(variable.Resolve()))
+			if (!IsValidTypeToGenerate(variable.Resolve()))
 			{
 				result = null;
 			}
@@ -472,7 +472,7 @@ namespace QNetWeaver
 				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, variable);
 				methodDefinition.Body.Variables.Add(new VariableDefinition(variable));
 				methodDefinition.Body.InitLocals = true;
-				methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
+				methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkReaderType)));
 				var ilprocessor = methodDefinition.Body.GetILProcessor();
 				if (variable.IsValueType)
 				{
@@ -481,7 +481,7 @@ namespace QNetWeaver
 				}
 				else
 				{
-					var methodDefinition2 = Weaver.ResolveDefaultPublicCtor(variable);
+					var methodDefinition2 = ResolveDefaultPublicCtor(variable);
 					if (methodDefinition2 == null)
 					{
 						Log.Error("The class " + variable.Name + " has no default constructor or it's private, aborting.");
@@ -503,7 +503,7 @@ namespace QNetWeaver
 						{
 							ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc, 0));
 						}
-						var readFunc = Weaver.GetReadFunc(fieldDefinition.FieldType);
+						var readFunc = GetReadFunc(fieldDefinition.FieldType);
 						if (readFunc == null)
 						{
 							Log.Error(string.Concat(new object[]
@@ -514,7 +514,7 @@ namespace QNetWeaver
 								fieldDefinition.FieldType,
 								" no supported"
 							}));
-							Weaver.fail = true;
+							fail = true;
 							return null;
 						}
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
@@ -544,7 +544,7 @@ namespace QNetWeaver
 				{
 					if (instruction.Operand == foundEventField)
 					{
-						Weaver.DLog(td, "    " + instruction.Operand, new object[0]);
+						DLog(td, "    " + instruction.Operand, new object[0]);
 						return instruction;
 					}
 				}
@@ -564,12 +564,12 @@ namespace QNetWeaver
 					if (instruction.OpCode == OpCodes.Ldfld)
 					{
 						var fieldReference = instruction.Operand as FieldReference;
-						for (var i = 0; i < Weaver.lists.replacedEvents.Count; i++)
+						for (var i = 0; i < lists.replacedEvents.Count; i++)
 						{
-							var eventDefinition = Weaver.lists.replacedEvents[i];
+							var eventDefinition = lists.replacedEvents[i];
 							if (eventDefinition.Name == fieldReference.Name)
 							{
-								instr.Operand = Weaver.lists.replacementEvents[i];
+								instr.Operand = lists.replacementEvents[i];
 								instruction.OpCode = OpCodes.Nop;
 								flag = true;
 								break;
@@ -578,14 +578,14 @@ namespace QNetWeaver
 					}
 				}
 			}
-			else if (Weaver.lists.replacementMethodNames.Contains(opMethodRef.FullName))
+			else if (lists.replacementMethodNames.Contains(opMethodRef.FullName))
 			{
-				for (var j = 0; j < Weaver.lists.replacedMethods.Count; j++)
+				for (var j = 0; j < lists.replacedMethods.Count; j++)
 				{
-					var methodDefinition = Weaver.lists.replacedMethods[j];
+					var methodDefinition = lists.replacedMethods[j];
 					if (opMethodRef.FullName == methodDefinition.FullName)
 					{
-						instr.Operand = Weaver.lists.replacementMethods[j];
+						instr.Operand = lists.replacementMethods[j];
 						break;
 					}
 				}
@@ -594,14 +594,14 @@ namespace QNetWeaver
 
 		private static void ConfirmGeneratedCodeClass(ModuleDefinition moduleDef)
 		{
-			if (Weaver.lists.generateContainerClass == null)
+			if (lists.generateContainerClass == null)
 			{
-				Weaver.lists.generateContainerClass = new TypeDefinition("Unity", "GeneratedNetworkCode", TypeAttributes.Public | TypeAttributes.AutoClass | TypeAttributes.BeforeFieldInit, Weaver.objectType);
-				var methodDefinition = new MethodDefinition(".ctor", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, Weaver.voidType);
+				lists.generateContainerClass = new TypeDefinition("Unity", "GeneratedNetworkCode", TypeAttributes.Public | TypeAttributes.AutoClass | TypeAttributes.BeforeFieldInit, objectType);
+				var methodDefinition = new MethodDefinition(".ctor", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, voidType);
 				methodDefinition.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
-				methodDefinition.Body.Instructions.Add(Instruction.Create(OpCodes.Call, Weaver.ResolveMethod(Weaver.objectType, ".ctor")));
+				methodDefinition.Body.Instructions.Add(Instruction.Create(OpCodes.Call, ResolveMethod(objectType, ".ctor")));
 				methodDefinition.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-				Weaver.lists.generateContainerClass.Methods.Add(methodDefinition);
+				lists.generateContainerClass.Methods.Add(methodDefinition);
 			}
 		}
 
@@ -609,13 +609,13 @@ namespace QNetWeaver
 		{
 			if (!(md.Name == ".ctor") && !(md.Name == "OnDeserialize"))
 			{
-				for (var j = 0; j < Weaver.lists.replacedFields.Count; j++)
+				for (var j = 0; j < lists.replacedFields.Count; j++)
 				{
-					var fieldDefinition = Weaver.lists.replacedFields[j];
+					var fieldDefinition = lists.replacedFields[j];
 					if (opField == fieldDefinition)
 					{
 						i.OpCode = OpCodes.Call;
-						i.Operand = Weaver.lists.replacementProperties[j];
+						i.Operand = lists.replacementProperties[j];
 						break;
 					}
 				}
@@ -629,7 +629,7 @@ namespace QNetWeaver
 				var methodReference = i.Operand as MethodReference;
 				if (methodReference != null)
 				{
-					Weaver.ProcessInstructionMethod(moduleDef, td, md, i, methodReference, iCount);
+					ProcessInstructionMethod(moduleDef, td, md, i, methodReference, iCount);
 				}
 			}
 			if (i.OpCode == OpCodes.Stfld)
@@ -637,7 +637,7 @@ namespace QNetWeaver
 				var fieldDefinition = i.Operand as FieldDefinition;
 				if (fieldDefinition != null)
 				{
-					Weaver.ProcessInstructionField(td, md, i, fieldDefinition);
+					ProcessInstructionField(td, md, i, fieldDefinition);
 				}
 			}
 		}
@@ -673,7 +673,7 @@ namespace QNetWeaver
 
 		private static void InjectGuardReturnValue(MethodDefinition md, ILProcessor worker, Instruction top)
 		{
-			if (md.ReturnType.FullName != Weaver.voidType.FullName)
+			if (md.ReturnType.FullName != voidType.FullName)
 			{
 				if (md.ReturnType.IsPrimitive)
 				{
@@ -692,7 +692,7 @@ namespace QNetWeaver
 
 		private static void InjectServerGuard(ModuleDefinition moduleDef, TypeDefinition td, MethodDefinition md, bool logWarning)
 		{
-			if (!Weaver.IsNetworkBehaviour(td))
+			if (!IsNetworkBehaviour(td))
 			{
 				Log.Error("[Server] guard on non-NetworkBehaviour script at [" + md.FullName + "]");
 			}
@@ -700,22 +700,22 @@ namespace QNetWeaver
 			{
 				var ilprocessor = md.Body.GetILProcessor();
 				var instruction = md.Body.Instructions[0];
-				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, Weaver.NetworkServerGetActive));
+				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, NetworkServerGetActive));
 				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Brtrue, instruction));
 				if (logWarning)
 				{
 					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ldstr, "[Server] function '" + md.FullName + "' called on client"));
-					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, Weaver.logWarningReference));
+					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, logWarningReference));
 				}
-				Weaver.InjectGuardParameters(md, ilprocessor, instruction);
-				Weaver.InjectGuardReturnValue(md, ilprocessor, instruction);
+				InjectGuardParameters(md, ilprocessor, instruction);
+				InjectGuardReturnValue(md, ilprocessor, instruction);
 				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ret));
 			}
 		}
 
 		private static void InjectClientGuard(ModuleDefinition moduleDef, TypeDefinition td, MethodDefinition md, bool logWarning)
 		{
-			if (!Weaver.IsNetworkBehaviour(td))
+			if (!IsNetworkBehaviour(td))
 			{
 				Log.Error("[Client] guard on non-NetworkBehaviour script at [" + md.FullName + "]");
 			}
@@ -723,15 +723,15 @@ namespace QNetWeaver
 			{
 				var ilprocessor = md.Body.GetILProcessor();
 				var instruction = md.Body.Instructions[0];
-				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, Weaver.NetworkClientGetActive));
+				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, NetworkClientGetActive));
 				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Brtrue, instruction));
 				if (logWarning)
 				{
 					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ldstr, "[Client] function '" + md.FullName + "' called on server"));
-					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, Weaver.logWarningReference));
+					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, logWarningReference));
 				}
-				Weaver.InjectGuardParameters(md, ilprocessor, instruction);
-				Weaver.InjectGuardReturnValue(md, ilprocessor, instruction);
+				InjectGuardParameters(md, ilprocessor, instruction);
+				InjectGuardReturnValue(md, ilprocessor, instruction);
 				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ret));
 			}
 		}
@@ -755,25 +755,25 @@ namespace QNetWeaver
 								{
 									if (customAttribute.Constructor.DeclaringType.ToString() == "UnityEngine.Networking.ServerAttribute")
 									{
-										Weaver.InjectServerGuard(moduleDef, td, md, true);
+										InjectServerGuard(moduleDef, td, md, true);
 									}
 									else if (customAttribute.Constructor.DeclaringType.ToString() == "UnityEngine.Networking.ServerCallbackAttribute")
 									{
-										Weaver.InjectServerGuard(moduleDef, td, md, false);
+										InjectServerGuard(moduleDef, td, md, false);
 									}
 									else if (customAttribute.Constructor.DeclaringType.ToString() == "UnityEngine.Networking.ClientAttribute")
 									{
-										Weaver.InjectClientGuard(moduleDef, td, md, true);
+										InjectClientGuard(moduleDef, td, md, true);
 									}
 									else if (customAttribute.Constructor.DeclaringType.ToString() == "UnityEngine.Networking.ClientCallbackAttribute")
 									{
-										Weaver.InjectClientGuard(moduleDef, td, md, false);
+										InjectClientGuard(moduleDef, td, md, false);
 									}
 								}
 								var num = 0;
 								foreach (var i in md.Body.Instructions)
 								{
-									Weaver.ProcessInstruction(moduleDef, td, md, i, num);
+									ProcessInstruction(moduleDef, td, md, i, num);
 									num++;
 								}
 							}
@@ -787,11 +787,11 @@ namespace QNetWeaver
 		{
 			foreach (var md in td.Methods)
 			{
-				Weaver.ProcessSiteMethod(moduleDef, td, md);
+				ProcessSiteMethod(moduleDef, td, md);
 			}
 			foreach (var td2 in td.NestedTypes)
 			{
-				Weaver.ProcessSiteClass(moduleDef, td2);
+				ProcessSiteClass(moduleDef, td2);
 			}
 		}
 
@@ -802,20 +802,20 @@ namespace QNetWeaver
 			{
 				if (typeDefinition.IsClass)
 				{
-					Weaver.ProcessSiteClass(moduleDef, typeDefinition);
+					ProcessSiteClass(moduleDef, typeDefinition);
 				}
 			}
-			if (Weaver.lists.generateContainerClass != null)
+			if (lists.generateContainerClass != null)
 			{
-				moduleDef.Types.Add(Weaver.lists.generateContainerClass);
-				Weaver.scriptDef.MainModule.ImportReference(Weaver.lists.generateContainerClass);
-				foreach (var method in Weaver.lists.generatedReadFunctions)
+				moduleDef.Types.Add(lists.generateContainerClass);
+				scriptDef.MainModule.ImportReference(lists.generateContainerClass);
+				foreach (var method in lists.generatedReadFunctions)
 				{
-					Weaver.scriptDef.MainModule.ImportReference(method);
+					scriptDef.MainModule.ImportReference(method);
 				}
-				foreach (var method2 in Weaver.lists.generatedWriteFunctions)
+				foreach (var method2 in lists.generatedWriteFunctions)
 				{
-					Weaver.scriptDef.MainModule.ImportReference(method2);
+					scriptDef.MainModule.ImportReference(method2);
 				}
 			}
 			Console.WriteLine(string.Concat(new object[]
@@ -827,7 +827,7 @@ namespace QNetWeaver
 			}));
 		}
 
-		private static void ProcessPropertySites() => Weaver.ProcessSitesModule(Weaver.scriptDef.MainModule);
+		private static void ProcessPropertySites() => ProcessSitesModule(scriptDef.MainModule);
 
 		private static bool ProcessMessageType(TypeDefinition td)
 		{
@@ -855,11 +855,11 @@ namespace QNetWeaver
 			{
 				if (methodDefinition.Name == "UNetVersion")
 				{
-					Weaver.DLog(td, " Already processed", new object[0]);
+					DLog(td, " Already processed", new object[0]);
 					return false;
 				}
 			}
-			Weaver.DLog(td, "Found NetworkBehaviour " + td.FullName, new object[0]);
+			DLog(td, "Found NetworkBehaviour " + td.FullName, new object[0]);
 			var networkBehaviourProcessor = new NetworkBehaviourProcessor(td);
 			networkBehaviourProcessor.Process();
 			return true;
@@ -871,7 +871,7 @@ namespace QNetWeaver
 			if (t == null)
 			{
 				Log.Error("Type missing for " + name);
-				Weaver.fail = true;
+				fail = true;
 				result = null;
 			}
 			else
@@ -880,7 +880,7 @@ namespace QNetWeaver
 				{
 					if (methodDefinition.Name == name)
 					{
-						return Weaver.scriptDef.MainModule.ImportReference(methodDefinition);
+						return scriptDef.MainModule.ImportReference(methodDefinition);
 					}
 				}
 				Log.Error($"ResolveMethod failed - Couldn't find {name} in {t.Name}");
@@ -888,7 +888,7 @@ namespace QNetWeaver
 				{
 					Log.Error("- has method " + methodDefinition2.Name);
 				}
-				Weaver.fail = true;
+				fail = true;
 				result = null;
 			}
 			return result;
@@ -904,7 +904,7 @@ namespace QNetWeaver
 					{
 						if (methodDefinition.Parameters[0].ParameterType.FullName == argType.FullName)
 						{
-							return Weaver.scriptDef.MainModule.ImportReference(methodDefinition);
+							return scriptDef.MainModule.ImportReference(methodDefinition);
 						}
 					}
 				}
@@ -918,7 +918,7 @@ namespace QNetWeaver
 				" ",
 				argType
 			}));
-			Weaver.fail = true;
+			fail = true;
 			return null;
 		}
 
@@ -944,7 +944,7 @@ namespace QNetWeaver
 					{
 						if (methodDefinition.GenericParameters.Count == 1)
 						{
-							var method = Weaver.scriptDef.MainModule.ImportReference(methodDefinition);
+							var method = scriptDef.MainModule.ImportReference(methodDefinition);
 							var genericInstanceMethod = new GenericInstanceMethod(method);
 							genericInstanceMethod.GenericArguments.Add(genericType);
 							if (genericInstanceMethod.GenericArguments[0].FullName == genericType.FullName)
@@ -964,7 +964,7 @@ namespace QNetWeaver
 				" ",
 				genericType
 			}));
-			Weaver.fail = true;
+			fail = true;
 			return null;
 		}
 
@@ -974,7 +974,7 @@ namespace QNetWeaver
 			{
 				if (fieldDefinition.Name == name)
 				{
-					return Weaver.scriptDef.MainModule.ImportReference(fieldDefinition);
+					return scriptDef.MainModule.ImportReference(fieldDefinition);
 				}
 			}
 			return null;
@@ -986,7 +986,7 @@ namespace QNetWeaver
 			{
 				if (propertyDefinition.Name == name)
 				{
-					return Weaver.scriptDef.MainModule.ImportReference(propertyDefinition.GetMethod);
+					return scriptDef.MainModule.ImportReference(propertyDefinition.GetMethod);
 				}
 			}
 			Log.Error($"ResolveProperty failed - Couldn't find {name} in {t.Name}");
@@ -995,49 +995,57 @@ namespace QNetWeaver
 
 		private static void SetupUnityTypes()
 		{
-			Weaver.vector2Type = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector2");
-			Weaver.vector3Type = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector3");
-			Weaver.vector4Type = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector4");
-			Weaver.colorType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Color");
-			Weaver.color32Type = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Color32");
-			Weaver.quaternionType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Quaternion");
-			Weaver.rectType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Rect");
-			Weaver.planeType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Plane");
-			Weaver.rayType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Ray");
-			Weaver.matrixType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Matrix4x4");
-			Weaver.gameObjectType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.GameObject");
-			Weaver.transformType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Transform");
-			Weaver.unityObjectType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Object");
+			vector2Type = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector2");
+			if (vector2Type == null)
+			{
+				Log.Error("Vector2Type is null!");
+			}
+			vector3Type = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector3");
+			vector4Type = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector4");
+			colorType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Color");
+			color32Type = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Color32");
+			quaternionType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Quaternion");
+			rectType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Rect");
+			planeType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Plane");
+			rayType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Ray");
+			matrixType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Matrix4x4");
+			gameObjectType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.GameObject");
+			if (gameObjectType == null)
+			{
+				Log.Error("GameObjectType is null!");
+			}
+			transformType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Transform");
+			unityObjectType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Object");
 
-			Weaver.hashType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkHash128");
+			hashType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkHash128");
 
-			Weaver.NetworkClientType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkClient");
-			Weaver.NetworkServerType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkServer");
-			Weaver.NetworkCRCType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkCRC");
+			NetworkClientType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkClient");
+			NetworkServerType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkServer");
+			NetworkCRCType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkCRC");
 
-			Weaver.SyncVarType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncVarAttribute");
+			SyncVarType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncVarAttribute");
 
-			Weaver.CommandType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.CommandAttribute");
+			CommandType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.CommandAttribute");
 
-			Weaver.ClientRpcType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.ClientRpcAttribute");
+			ClientRpcType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.ClientRpcAttribute");
 
-			Weaver.TargetRpcType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.TargetRpcAttribute");
+			TargetRpcType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.TargetRpcAttribute");
 
-			Weaver.SyncEventType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncEventAttribute");
+			SyncEventType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncEventAttribute");
 
-			Weaver.SyncListType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncList`1");
+			SyncListType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncList`1");
 
-			Weaver.NetworkSettingsType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkSettingsAttribute");
+			NetworkSettingsType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkSettingsAttribute");
 
-			Weaver.SyncListFloatType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListFloat");
+			SyncListFloatType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListFloat");
 
-			Weaver.SyncListIntType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListInt");
+			SyncListIntType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListInt");
 
-			Weaver.SyncListUIntType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListUInt");
+			SyncListUIntType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListUInt");
 
-			Weaver.SyncListBoolType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListBool");
+			SyncListBoolType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListBool");
 
-			Weaver.SyncListStringType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListString");
+			SyncListStringType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListString");
 
 		}
 
@@ -1046,247 +1054,253 @@ namespace QNetWeaver
 			var name = AssemblyNameReference.Parse("mscorlib");
 			var parameters = new ReaderParameters
 			{
-				AssemblyResolver = Weaver.scriptDef.MainModule.AssemblyResolver
+				AssemblyResolver = scriptDef.MainModule.AssemblyResolver
 			};
-			Weaver.corLib = Weaver.scriptDef.MainModule.AssemblyResolver.Resolve(name, parameters).MainModule;
+			corLib = scriptDef.MainModule.AssemblyResolver.Resolve(name, parameters).MainModule;
 		}
 
 		private static TypeReference ImportCorLibType(string fullName)
 		{
-			var type = Weaver.corLib.GetType(fullName) ?? Enumerable.First<ExportedType>(Weaver.corLib.ExportedTypes, (ExportedType t) => t.FullName == fullName).Resolve();
-			return Weaver.scriptDef.MainModule.ImportReference(type);
+			var type = corLib.GetType(fullName) ?? Enumerable.First<ExportedType>(corLib.ExportedTypes, (ExportedType t) => t.FullName == fullName).Resolve();
+			return scriptDef.MainModule.ImportReference(type);
 		}
 
 		private static void SetupTargetTypes()
 		{
-			Weaver.SetupCorLib();
-			Weaver.voidType = Weaver.ImportCorLibType("System.Void");
-			Weaver.singleType = Weaver.ImportCorLibType("System.Single");
-			Weaver.doubleType = Weaver.ImportCorLibType("System.Double");
-			Weaver.decimalType = Weaver.ImportCorLibType("System.Decimal");
-			Weaver.boolType = Weaver.ImportCorLibType("System.Boolean");
-			Weaver.stringType = Weaver.ImportCorLibType("System.String");
-			Weaver.int64Type = Weaver.ImportCorLibType("System.Int64");
-			Weaver.uint64Type = Weaver.ImportCorLibType("System.UInt64");
-			Weaver.int32Type = Weaver.ImportCorLibType("System.Int32");
-			Weaver.uint32Type = Weaver.ImportCorLibType("System.UInt32");
-			Weaver.int16Type = Weaver.ImportCorLibType("System.Int16");
-			Weaver.uint16Type = Weaver.ImportCorLibType("System.UInt16");
-			Weaver.byteType = Weaver.ImportCorLibType("System.Byte");
-			Weaver.sbyteType = Weaver.ImportCorLibType("System.SByte");
-			Weaver.charType = Weaver.ImportCorLibType("System.Char");
-			Weaver.objectType = Weaver.ImportCorLibType("System.Object");
-			Weaver.valueTypeType = Weaver.ImportCorLibType("System.ValueType");
-			Weaver.typeType = Weaver.ImportCorLibType("System.Type");
-			Weaver.IEnumeratorType = Weaver.ImportCorLibType("System.Collections.IEnumerator");
-			Weaver.MemoryStreamType = Weaver.ImportCorLibType("System.IO.MemoryStream");
+			SetupCorLib();
+			voidType = ImportCorLibType("System.Void");
+			singleType = ImportCorLibType("System.Single");
+			doubleType = ImportCorLibType("System.Double");
+			decimalType = ImportCorLibType("System.Decimal");
+			boolType = ImportCorLibType("System.Boolean");
+			stringType = ImportCorLibType("System.String");
+			int64Type = ImportCorLibType("System.Int64");
+			uint64Type = ImportCorLibType("System.UInt64");
+			int32Type = ImportCorLibType("System.Int32");
+			uint32Type = ImportCorLibType("System.UInt32");
+			int16Type = ImportCorLibType("System.Int16");
+			uint16Type = ImportCorLibType("System.UInt16");
+			byteType = ImportCorLibType("System.Byte");
+			sbyteType = ImportCorLibType("System.SByte");
+			charType = ImportCorLibType("System.Char");
+			objectType = ImportCorLibType("System.Object");
+			valueTypeType = ImportCorLibType("System.ValueType");
+			typeType = ImportCorLibType("System.Type");
+			IEnumeratorType = ImportCorLibType("System.Collections.IEnumerator");
+			MemoryStreamType = ImportCorLibType("System.IO.MemoryStream");
 
-			Weaver.NetworkReaderType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Transport.QNetworkReader");
+			NetworkReaderType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Transport.QNetworkReader");
 
-			Weaver.NetworkReaderDef = Weaver.NetworkReaderType.Resolve();
-			Weaver.NetworkReaderCtor = Weaver.ResolveMethod(Weaver.NetworkReaderDef, ".ctor");
+			NetworkReaderDef = NetworkReaderType.Resolve();
+			NetworkReaderCtor = ResolveMethod(NetworkReaderDef, ".ctor");
 
-			Weaver.NetworkWriterType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Transport.QNetworkWriter");
+			NetworkWriterType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Transport.QNetworkWriter");
 
-			Weaver.NetworkWriterDef = Weaver.NetworkWriterType.Resolve();
-			Weaver.NetworkWriterCtor = Weaver.ResolveMethod(Weaver.NetworkWriterDef, ".ctor");
-			Weaver.MemoryStreamCtor = Weaver.ResolveMethod(Weaver.MemoryStreamType, ".ctor");
+			NetworkWriterDef = NetworkWriterType.Resolve();
+			NetworkWriterCtor = ResolveMethod(NetworkWriterDef, ".ctor");
+			MemoryStreamCtor = ResolveMethod(MemoryStreamType, ".ctor");
 
-			Weaver.NetworkInstanceIdType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkInstanceId");
-			Weaver.NetworkSceneIdType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkSceneId");
-			Weaver.NetworkInstanceIdType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkInstanceId");
-			Weaver.NetworkSceneIdType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkSceneId");
+			NetworkInstanceIdType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkInstanceId");
+			NetworkSceneIdType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkSceneId");
+			NetworkInstanceIdType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkInstanceId");
+			NetworkSceneIdType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.NetworkSceneId");
 
-			Weaver.NetworkServerGetActive = Weaver.ResolveMethod(Weaver.NetworkServerType, "get_active");
-			Weaver.NetworkServerGetLocalClientActive = Weaver.ResolveMethod(Weaver.NetworkServerType, "get_localClientActive");
-			Weaver.NetworkClientGetActive = Weaver.ResolveMethod(Weaver.NetworkClientType, "get_active");
-			Weaver.NetworkReaderReadInt32 = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadInt32");
-			Weaver.NetworkWriterWriteInt32 = Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.int32Type);
-			Weaver.NetworkWriterWriteInt16 = Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.int16Type);
-			Weaver.NetworkReaderReadPacked32 = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadPackedUInt32");
-			Weaver.NetworkReaderReadPacked64 = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadPackedUInt64");
-			Weaver.NetworkReaderReadByte = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadByte");
-			Weaver.NetworkWriterWritePacked32 = Weaver.ResolveMethod(Weaver.NetworkWriterType, "WritePackedUInt32");
-			Weaver.NetworkWriterWritePacked64 = Weaver.ResolveMethod(Weaver.NetworkWriterType, "WritePackedUInt64");
-			Weaver.NetworkWriterWriteNetworkInstanceId = Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.NetworkInstanceIdType);
-			Weaver.NetworkWriterWriteNetworkSceneId = Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.NetworkSceneIdType);
-			Weaver.NetworkReaderReadNetworkInstanceId = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkId");
-			Weaver.NetworkReaderReadNetworkSceneId = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadSceneId");
-			Weaver.NetworkInstanceIsEmpty = Weaver.ResolveMethod(Weaver.NetworkInstanceIdType, "IsEmpty");
-			Weaver.NetworkReadUInt16 = Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadUInt16");
-			Weaver.NetworkWriteUInt16 = Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.uint16Type);
+			NetworkServerGetActive = ResolveMethod(NetworkServerType, "get_active");
+			NetworkServerGetLocalClientActive = ResolveMethod(NetworkServerType, "get_localClientActive");
+			NetworkClientGetActive = ResolveMethod(NetworkClientType, "get_active");
+			NetworkReaderReadInt32 = ResolveMethod(NetworkReaderType, "ReadInt32");
+			NetworkWriterWriteInt32 = ResolveMethodWithArg(NetworkWriterType, "Write", int32Type);
+			NetworkWriterWriteInt16 = ResolveMethodWithArg(NetworkWriterType, "Write", int16Type);
+			NetworkReaderReadPacked32 = ResolveMethod(NetworkReaderType, "ReadPackedUInt32");
+			NetworkReaderReadPacked64 = ResolveMethod(NetworkReaderType, "ReadPackedUInt64");
+			NetworkReaderReadByte = ResolveMethod(NetworkReaderType, "ReadByte");
+			NetworkWriterWritePacked32 = ResolveMethod(NetworkWriterType, "WritePackedUInt32");
+			NetworkWriterWritePacked64 = ResolveMethod(NetworkWriterType, "WritePackedUInt64");
+			NetworkWriterWriteNetworkInstanceId = ResolveMethodWithArg(NetworkWriterType, "Write", NetworkInstanceIdType);
+			NetworkWriterWriteNetworkSceneId = ResolveMethodWithArg(NetworkWriterType, "Write", NetworkSceneIdType);
+			NetworkReaderReadNetworkInstanceId = ResolveMethod(NetworkReaderType, "ReadNetworkId");
+			NetworkReaderReadNetworkSceneId = ResolveMethod(NetworkReaderType, "ReadSceneId");
+			NetworkInstanceIsEmpty = ResolveMethod(NetworkInstanceIdType, "IsEmpty");
+			NetworkReadUInt16 = ResolveMethod(NetworkReaderType, "ReadUInt16");
+			NetworkWriteUInt16 = ResolveMethodWithArg(NetworkWriterType, "Write", uint16Type);
 
-			Weaver.CmdDelegateReference = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkBehaviour/CmdDelegate");
+			CmdDelegateReference = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkBehaviour/CmdDelegate");
 
-			Weaver.CmdDelegateConstructor = Weaver.ResolveMethod(Weaver.CmdDelegateReference, ".ctor");
-			Weaver.scriptDef.MainModule.ImportReference(Weaver.gameObjectType);
-			Weaver.scriptDef.MainModule.ImportReference(Weaver.transformType);
+			CmdDelegateConstructor = ResolveMethod(CmdDelegateReference, ".ctor");
+			Console.WriteLine("gameobject");
+			scriptDef.MainModule.ImportReference(gameObjectType);
+			Console.WriteLine("transform");
+			scriptDef.MainModule.ImportReference(transformType);
 
-			TypeReference type = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Components.QNetworkIdentity");
+			TypeReference type = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Components.QNetworkIdentity");
 
-			Weaver.NetworkIdentityType = Weaver.scriptDef.MainModule.ImportReference(type);
-			Weaver.NetworkInstanceIdType = Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkInstanceIdType);
-			Weaver.SyncListFloatReadType = Weaver.ResolveMethod(Weaver.SyncListFloatType, "ReadReference");
-			Weaver.SyncListIntReadType = Weaver.ResolveMethod(Weaver.SyncListIntType, "ReadReference");
-			Weaver.SyncListUIntReadType = Weaver.ResolveMethod(Weaver.SyncListUIntType, "ReadReference");
-			Weaver.SyncListBoolReadType = Weaver.ResolveMethod(Weaver.SyncListBoolType, "ReadReference");
-			Weaver.SyncListStringReadType = Weaver.ResolveMethod(Weaver.SyncListStringType, "ReadReference");
-			Weaver.SyncListFloatWriteType = Weaver.ResolveMethod(Weaver.SyncListFloatType, "WriteInstance");
-			Weaver.SyncListIntWriteType = Weaver.ResolveMethod(Weaver.SyncListIntType, "WriteInstance");
-			Weaver.SyncListUIntWriteType = Weaver.ResolveMethod(Weaver.SyncListUIntType, "WriteInstance");
-			Weaver.SyncListBoolWriteType = Weaver.ResolveMethod(Weaver.SyncListBoolType, "WriteInstance");
-			Weaver.SyncListStringWriteType = Weaver.ResolveMethod(Weaver.SyncListStringType, "WriteInstance");
+			Console.WriteLine("type");
+			NetworkIdentityType = scriptDef.MainModule.ImportReference(type);
+			Console.WriteLine("networkinstanceidtype");
+			NetworkInstanceIdType = scriptDef.MainModule.ImportReference(NetworkInstanceIdType);
+			SyncListFloatReadType = ResolveMethod(SyncListFloatType, "ReadReference");
+			SyncListIntReadType = ResolveMethod(SyncListIntType, "ReadReference");
+			SyncListUIntReadType = ResolveMethod(SyncListUIntType, "ReadReference");
+			SyncListBoolReadType = ResolveMethod(SyncListBoolType, "ReadReference");
+			SyncListStringReadType = ResolveMethod(SyncListStringType, "ReadReference");
+			SyncListFloatWriteType = ResolveMethod(SyncListFloatType, "WriteInstance");
+			SyncListIntWriteType = ResolveMethod(SyncListIntType, "WriteInstance");
+			SyncListUIntWriteType = ResolveMethod(SyncListUIntType, "WriteInstance");
+			SyncListBoolWriteType = ResolveMethod(SyncListBoolType, "WriteInstance");
+			SyncListStringWriteType = ResolveMethod(SyncListStringType, "WriteInstance");
 
-			Weaver.NetworkBehaviourType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkBehaviour");
+			NetworkBehaviourType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkBehaviour");
 
-			Weaver.NetworkBehaviourType2 = Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkBehaviourType);
+			Console.WriteLine("networkbehaviourtype");
+			NetworkBehaviourType2 = scriptDef.MainModule.ImportReference(NetworkBehaviourType);
 
-			Weaver.NetworkConnectionType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkConnection");
+			NetworkConnectionType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkConnection");
 
-			Weaver.MonoBehaviourType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.MonoBehaviour");
-			Weaver.ScriptableObjectType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.ScriptableObject");
+			MonoBehaviourType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.MonoBehaviour");
+			ScriptableObjectType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.ScriptableObject");
 
-			Weaver.NetworkConnectionType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkConnection");
+			NetworkConnectionType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QNetworkConnection");
 
-			Weaver.NetworkConnectionType = Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkConnectionType);
+			NetworkConnectionType = scriptDef.MainModule.ImportReference(NetworkConnectionType);
 
-			Weaver.ULocalConnectionToServerType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QULocalConnectionToServer");
+			ULocalConnectionToServerType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QULocalConnectionToServer");
 
-			Weaver.ULocalConnectionToServerType = Weaver.scriptDef.MainModule.ImportReference(Weaver.ULocalConnectionToServerType);
+			ULocalConnectionToServerType = scriptDef.MainModule.ImportReference(ULocalConnectionToServerType);
 
-			Weaver.ULocalConnectionToClientType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QULocalConnectionToClient");
+			ULocalConnectionToClientType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QULocalConnectionToClient");
 
-			Weaver.ULocalConnectionToClientType = Weaver.scriptDef.MainModule.ImportReference(Weaver.ULocalConnectionToClientType);
+			ULocalConnectionToClientType = scriptDef.MainModule.ImportReference(ULocalConnectionToClientType);
 
-			Weaver.MessageBaseType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Messages.QMessageBase");
-			Weaver.SyncListStructType = Weaver.UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListStruct`1");
+			MessageBaseType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.Messages.QMessageBase");
+			SyncListStructType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListStruct`1");
 
-			Weaver.NetworkBehaviourDirtyBitsReference = Weaver.ResolveProperty(Weaver.NetworkBehaviourType, "SyncVarDirtyBits");
-			Weaver.ComponentType = Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Component");
+			NetworkBehaviourDirtyBitsReference = ResolveProperty(NetworkBehaviourType, "SyncVarDirtyBits");
+			ComponentType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Component");
 
-			Weaver.ClientSceneType = Weaver.QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QClientScene");
+			ClientSceneType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QClientScene");
 
-			Weaver.FindLocalObjectReference = Weaver.ResolveMethod(Weaver.ClientSceneType, "FindLocalObject");
-			Weaver.RegisterBehaviourReference = Weaver.ResolveMethod(Weaver.NetworkCRCType, "RegisterBehaviour");
-			Weaver.ReadyConnectionReference = Weaver.ResolveMethod(Weaver.ClientSceneType, "get_readyConnection");
-			Weaver.getComponentReference = Weaver.ResolveMethodGeneric(Weaver.ComponentType, "GetComponent", Weaver.NetworkIdentityType);
-			Weaver.getUNetIdReference = Weaver.ResolveMethod(type, "get_NetId");
-			Weaver.gameObjectInequality = Weaver.ResolveMethod(Weaver.unityObjectType, "op_Inequality");
-			Weaver.UBehaviourIsServer = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "get_IsServer");
-			Weaver.getPlayerIdReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "get_PlayerControllerId");
-			Weaver.setSyncVarReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "SetSyncVar");
-			Weaver.setSyncVarHookGuard = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "set_SyncVarHookGuard");
-			Weaver.getSyncVarHookGuard = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "get_SyncVarHookGuard");
-			Weaver.setSyncVarGameObjectReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "SetSyncVarGameObject");
-			Weaver.registerCommandDelegateReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "RegisterCommandDelegate");
-			Weaver.registerRpcDelegateReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "RegisterRpcDelegate");
-			Weaver.registerEventDelegateReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "RegisterEventDelegate");
-			Weaver.registerSyncListDelegateReference = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "RegisterSyncListDelegate");
-			Weaver.getTypeReference = Weaver.ResolveMethod(Weaver.objectType, "GetType");
-			Weaver.getTypeFromHandleReference = Weaver.ResolveMethod(Weaver.typeType, "GetTypeFromHandle");
-			Weaver.logErrorReference = Weaver.ResolveMethod(Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Debug"), "LogError");
-			Weaver.logWarningReference = Weaver.ResolveMethod(Weaver.UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Debug"), "LogWarning");
-			Weaver.sendCommandInternal = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "SendCommandInternal");
-			Weaver.sendRpcInternal = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "SendRPCInternal");
-			Weaver.sendTargetRpcInternal = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "SendTargetRPCInternal");
-			Weaver.sendEventInternal = Weaver.ResolveMethod(Weaver.NetworkBehaviourType, "SendEventInternal");
-			Weaver.SyncListType = Weaver.scriptDef.MainModule.ImportReference(Weaver.SyncListType);
-			Weaver.SyncListInitBehaviourReference = Weaver.ResolveMethod(Weaver.SyncListType, "InitializeBehaviour");
-			Weaver.SyncListInitHandleMsg = Weaver.ResolveMethod(Weaver.SyncListType, "HandleMsg");
-			Weaver.SyncListClear = Weaver.ResolveMethod(Weaver.SyncListType, "Clear");
+			FindLocalObjectReference = ResolveMethod(ClientSceneType, "FindLocalObject");
+			RegisterBehaviourReference = ResolveMethod(NetworkCRCType, "RegisterBehaviour");
+			ReadyConnectionReference = ResolveMethod(ClientSceneType, "get_readyConnection");
+			getComponentReference = ResolveMethodGeneric(ComponentType, "GetComponent", NetworkIdentityType);
+			getUNetIdReference = ResolveMethod(type, "get_NetId");
+			gameObjectInequality = ResolveMethod(unityObjectType, "op_Inequality");
+			UBehaviourIsServer = ResolveMethod(NetworkBehaviourType, "get_IsServer");
+			getPlayerIdReference = ResolveMethod(NetworkBehaviourType, "get_PlayerControllerId");
+			setSyncVarReference = ResolveMethod(NetworkBehaviourType, "SetSyncVar");
+			setSyncVarHookGuard = ResolveMethod(NetworkBehaviourType, "set_SyncVarHookGuard");
+			getSyncVarHookGuard = ResolveMethod(NetworkBehaviourType, "get_SyncVarHookGuard");
+			setSyncVarGameObjectReference = ResolveMethod(NetworkBehaviourType, "SetSyncVarGameObject");
+			registerCommandDelegateReference = ResolveMethod(NetworkBehaviourType, "RegisterCommandDelegate");
+			registerRpcDelegateReference = ResolveMethod(NetworkBehaviourType, "RegisterRpcDelegate");
+			registerEventDelegateReference = ResolveMethod(NetworkBehaviourType, "RegisterEventDelegate");
+			registerSyncListDelegateReference = ResolveMethod(NetworkBehaviourType, "RegisterSyncListDelegate");
+			getTypeReference = ResolveMethod(objectType, "GetType");
+			getTypeFromHandleReference = ResolveMethod(typeType, "GetTypeFromHandle");
+			logErrorReference = ResolveMethod(UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Debug"), "LogError");
+			logWarningReference = ResolveMethod(UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Debug"), "LogWarning");
+			sendCommandInternal = ResolveMethod(NetworkBehaviourType, "SendCommandInternal");
+			sendRpcInternal = ResolveMethod(NetworkBehaviourType, "SendRPCInternal");
+			sendTargetRpcInternal = ResolveMethod(NetworkBehaviourType, "SendTargetRPCInternal");
+			sendEventInternal = ResolveMethod(NetworkBehaviourType, "SendEventInternal");
+			Console.WriteLine("synclisttype");
+			SyncListType = scriptDef.MainModule.ImportReference(SyncListType);
+			SyncListInitBehaviourReference = ResolveMethod(SyncListType, "InitializeBehaviour");
+			SyncListInitHandleMsg = ResolveMethod(SyncListType, "HandleMsg");
+			SyncListClear = ResolveMethod(SyncListType, "Clear");
 		}
 
 		private static void SetupReadFunctions()
 		{
-			var weaverLists = Weaver.lists;
+			var weaverLists = lists;
 			var dictionary = new Dictionary<string, MethodReference>
 			{
-				{ Weaver.singleType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadSingle") },
-				{ Weaver.doubleType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadDouble") },
-				{ Weaver.boolType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadBoolean") },
-				{ Weaver.stringType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadString") },
-				{ Weaver.int64Type.FullName, Weaver.NetworkReaderReadPacked64 },
-				{ Weaver.uint64Type.FullName, Weaver.NetworkReaderReadPacked64 },
-				{ Weaver.int32Type.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.uint32Type.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.int16Type.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.uint16Type.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.byteType.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.sbyteType.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.charType.FullName, Weaver.NetworkReaderReadPacked32 },
-				{ Weaver.decimalType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadDecimal") },
-				{ Weaver.vector2Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector2") },
-				{ Weaver.vector3Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector3") },
-				{ Weaver.vector4Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector4") },
-				{ Weaver.colorType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadColor") },
-				{ Weaver.color32Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadColor32") },
-				{ Weaver.quaternionType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadQuaternion") },
-				{ Weaver.rectType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadRect") },
-				{ Weaver.planeType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadPlane") },
-				{ Weaver.rayType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadRay") },
-				{ Weaver.matrixType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadMatrix4x4") },
-				{ Weaver.hashType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkHash128") },
-				{ Weaver.gameObjectType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadGameObject") },
-				{ Weaver.NetworkIdentityType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkIdentity") },
-				{ Weaver.NetworkInstanceIdType.FullName, Weaver.NetworkReaderReadNetworkInstanceId },
-				{ Weaver.NetworkSceneIdType.FullName, Weaver.NetworkReaderReadNetworkSceneId },
-				{ Weaver.transformType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadTransform") },
-				{ "System.Byte[]", Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadBytesAndSize") }
+				{ singleType.FullName, ResolveMethod(NetworkReaderType, "ReadSingle") },
+				{ doubleType.FullName, ResolveMethod(NetworkReaderType, "ReadDouble") },
+				{ boolType.FullName, ResolveMethod(NetworkReaderType, "ReadBoolean") },
+				{ stringType.FullName, ResolveMethod(NetworkReaderType, "ReadString") },
+				{ int64Type.FullName, NetworkReaderReadPacked64 },
+				{ uint64Type.FullName, NetworkReaderReadPacked64 },
+				{ int32Type.FullName, NetworkReaderReadPacked32 },
+				{ uint32Type.FullName, NetworkReaderReadPacked32 },
+				{ int16Type.FullName, NetworkReaderReadPacked32 },
+				{ uint16Type.FullName, NetworkReaderReadPacked32 },
+				{ byteType.FullName, NetworkReaderReadPacked32 },
+				{ sbyteType.FullName, NetworkReaderReadPacked32 },
+				{ charType.FullName, NetworkReaderReadPacked32 },
+				{ decimalType.FullName, ResolveMethod(NetworkReaderType, "ReadDecimal") },
+				{ vector2Type.FullName, ResolveMethod(NetworkReaderType, "ReadVector2") },
+				{ vector3Type.FullName, ResolveMethod(NetworkReaderType, "ReadVector3") },
+				{ vector4Type.FullName, ResolveMethod(NetworkReaderType, "ReadVector4") },
+				{ colorType.FullName, ResolveMethod(NetworkReaderType, "ReadColor") },
+				{ color32Type.FullName, ResolveMethod(NetworkReaderType, "ReadColor32") },
+				{ quaternionType.FullName, ResolveMethod(NetworkReaderType, "ReadQuaternion") },
+				{ rectType.FullName, ResolveMethod(NetworkReaderType, "ReadRect") },
+				{ planeType.FullName, ResolveMethod(NetworkReaderType, "ReadPlane") },
+				{ rayType.FullName, ResolveMethod(NetworkReaderType, "ReadRay") },
+				{ matrixType.FullName, ResolveMethod(NetworkReaderType, "ReadMatrix4x4") },
+				{ hashType.FullName, ResolveMethod(NetworkReaderType, "ReadNetworkHash128") },
+				{ gameObjectType.FullName, ResolveMethod(NetworkReaderType, "ReadGameObject") },
+				{ NetworkIdentityType.FullName, ResolveMethod(NetworkReaderType, "ReadNetworkIdentity") },
+				{ NetworkInstanceIdType.FullName, NetworkReaderReadNetworkInstanceId },
+				{ NetworkSceneIdType.FullName, NetworkReaderReadNetworkSceneId },
+				{ transformType.FullName, ResolveMethod(NetworkReaderType, "ReadTransform") },
+				{ "System.Byte[]", ResolveMethod(NetworkReaderType, "ReadBytesAndSize") }
 			};
 			weaverLists.readFuncs = dictionary;
-			var weaverLists2 = Weaver.lists;
+			var weaverLists2 = lists;
 			dictionary = new Dictionary<string, MethodReference>
 			{
-				{ Weaver.SyncListFloatType.FullName, Weaver.SyncListFloatReadType },
-				{ Weaver.SyncListIntType.FullName, Weaver.SyncListIntReadType },
-				{ Weaver.SyncListUIntType.FullName, Weaver.SyncListUIntReadType },
-				{ Weaver.SyncListBoolType.FullName, Weaver.SyncListBoolReadType },
-				{ Weaver.SyncListStringType.FullName, Weaver.SyncListStringReadType }
+				{ SyncListFloatType.FullName, SyncListFloatReadType },
+				{ SyncListIntType.FullName, SyncListIntReadType },
+				{ SyncListUIntType.FullName, SyncListUIntReadType },
+				{ SyncListBoolType.FullName, SyncListBoolReadType },
+				{ SyncListStringType.FullName, SyncListStringReadType }
 			};
 			weaverLists2.readByReferenceFuncs = dictionary;
 		}
 
 		private static void SetupWriteFunctions()
 		{
-			var weaverLists = Weaver.lists;
+			var weaverLists = lists;
 			var dictionary = new Dictionary<string, MethodReference>
 			{
-				{ Weaver.singleType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.singleType) },
-				{ Weaver.doubleType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.doubleType) },
-				{ Weaver.boolType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.boolType) },
-				{ Weaver.stringType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.stringType) },
-				{ Weaver.int64Type.FullName, Weaver.NetworkWriterWritePacked64 },
-				{ Weaver.uint64Type.FullName, Weaver.NetworkWriterWritePacked64 },
-				{ Weaver.int32Type.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.uint32Type.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.int16Type.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.uint16Type.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.byteType.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.sbyteType.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.charType.FullName, Weaver.NetworkWriterWritePacked32 },
-				{ Weaver.decimalType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.decimalType) },
-				{ Weaver.vector2Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector2Type) },
-				{ Weaver.vector3Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector3Type) },
-				{ Weaver.vector4Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector4Type) },
-				{ Weaver.colorType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.colorType) },
-				{ Weaver.color32Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.color32Type) },
-				{ Weaver.quaternionType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.quaternionType) },
-				{ Weaver.rectType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.rectType) },
-				{ Weaver.planeType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.planeType) },
-				{ Weaver.rayType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.rayType) },
-				{ Weaver.matrixType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.matrixType) },
-				{ Weaver.hashType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.hashType) },
-				{ Weaver.gameObjectType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.gameObjectType) },
-				{ Weaver.NetworkIdentityType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.NetworkIdentityType) },
-				{ Weaver.NetworkInstanceIdType.FullName, Weaver.NetworkWriterWriteNetworkInstanceId },
-				{ Weaver.NetworkSceneIdType.FullName, Weaver.NetworkWriterWriteNetworkSceneId },
-				{ Weaver.transformType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.transformType) },
-				{ "System.Byte[]", Weaver.ResolveMethod(Weaver.NetworkWriterType, "WriteBytesFull") },
-				{ Weaver.SyncListFloatType.FullName, Weaver.SyncListFloatWriteType },
-				{ Weaver.SyncListIntType.FullName, Weaver.SyncListIntWriteType },
-				{ Weaver.SyncListUIntType.FullName, Weaver.SyncListUIntWriteType },
-				{ Weaver.SyncListBoolType.FullName, Weaver.SyncListBoolWriteType },
-				{ Weaver.SyncListStringType.FullName, Weaver.SyncListStringWriteType }
+				{ singleType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", singleType) },
+				{ doubleType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", doubleType) },
+				{ boolType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", boolType) },
+				{ stringType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", stringType) },
+				{ int64Type.FullName, NetworkWriterWritePacked64 },
+				{ uint64Type.FullName, NetworkWriterWritePacked64 },
+				{ int32Type.FullName, NetworkWriterWritePacked32 },
+				{ uint32Type.FullName, NetworkWriterWritePacked32 },
+				{ int16Type.FullName, NetworkWriterWritePacked32 },
+				{ uint16Type.FullName, NetworkWriterWritePacked32 },
+				{ byteType.FullName, NetworkWriterWritePacked32 },
+				{ sbyteType.FullName, NetworkWriterWritePacked32 },
+				{ charType.FullName, NetworkWriterWritePacked32 },
+				{ decimalType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", decimalType) },
+				{ vector2Type.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", vector2Type) },
+				{ vector3Type.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", vector3Type) },
+				{ vector4Type.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", vector4Type) },
+				{ colorType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", colorType) },
+				{ color32Type.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", color32Type) },
+				{ quaternionType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", quaternionType) },
+				{ rectType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", rectType) },
+				{ planeType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", planeType) },
+				{ rayType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", rayType) },
+				{ matrixType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", matrixType) },
+				{ hashType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", hashType) },
+				{ gameObjectType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", gameObjectType) },
+				{ NetworkIdentityType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", NetworkIdentityType) },
+				{ NetworkInstanceIdType.FullName, NetworkWriterWriteNetworkInstanceId },
+				{ NetworkSceneIdType.FullName, NetworkWriterWriteNetworkSceneId },
+				{ transformType.FullName, ResolveMethodWithArg(NetworkWriterType, "Write", transformType) },
+				{ "System.Byte[]", ResolveMethod(NetworkWriterType, "WriteBytesFull") },
+				{ SyncListFloatType.FullName, SyncListFloatWriteType },
+				{ SyncListIntType.FullName, SyncListIntWriteType },
+				{ SyncListUIntType.FullName, SyncListUIntWriteType },
+				{ SyncListBoolType.FullName, SyncListBoolWriteType },
+				{ SyncListStringType.FullName, SyncListStringWriteType }
 			};
 			weaverLists.writeFuncs = dictionary;
 		}
@@ -1303,7 +1317,7 @@ namespace QNetWeaver
 				var baseType = td.BaseType;
 				while (baseType != null)
 				{
-					if (baseType.FullName == Weaver.NetworkBehaviourType.FullName)
+					if (baseType.FullName == NetworkBehaviourType.FullName)
 					{
 						return true;
 					}
@@ -1359,7 +1373,7 @@ namespace QNetWeaver
 
 		public static bool IsValidTypeToGenerate(TypeDefinition variable)
 		{
-			var name = Weaver.scriptDef.MainModule.Name;
+			var name = scriptDef.MainModule.Name;
 			bool result;
 			if (variable.Module.Name != name)
 			{
@@ -1371,8 +1385,8 @@ namespace QNetWeaver
 					variable.FullName,
 					"] is not a valid type, please make sure to use a valid type."
 				}));
-				Weaver.fail = true;
-				Weaver.fail = true;
+				fail = true;
+				fail = true;
 				result = false;
 			}
 			else
@@ -1384,9 +1398,9 @@ namespace QNetWeaver
 
 		private static void CheckMonoBehaviour(TypeDefinition td)
 		{
-			if (Weaver.IsDerivedFrom(td, Weaver.MonoBehaviourType))
+			if (IsDerivedFrom(td, MonoBehaviourType))
 			{
-				Weaver.ProcessMonoBehaviourType(td);
+				ProcessMonoBehaviourType(td);
 			}
 		}
 
@@ -1397,9 +1411,9 @@ namespace QNetWeaver
 			{
 				result = false;
 			}
-			else if (!Weaver.IsNetworkBehaviour(td))
+			else if (!IsNetworkBehaviour(td))
 			{
-				Weaver.CheckMonoBehaviour(td);
+				CheckMonoBehaviour(td);
 				result = false;
 			}
 			else
@@ -1408,7 +1422,7 @@ namespace QNetWeaver
 				var typeDefinition = td;
 				while (typeDefinition != null)
 				{
-					if (typeDefinition.FullName == Weaver.NetworkBehaviourType.FullName)
+					if (typeDefinition.FullName == NetworkBehaviourType.FullName)
 					{
 						break;
 					}
@@ -1425,7 +1439,7 @@ namespace QNetWeaver
 				var flag = false;
 				foreach (var td2 in list)
 				{
-					flag |= Weaver.ProcessNetworkBehaviourType(td2);
+					flag |= ProcessNetworkBehaviourType(td2);
 				}
 				result = flag;
 			}
@@ -1445,9 +1459,9 @@ namespace QNetWeaver
 				var baseType = td.BaseType;
 				while (baseType != null)
 				{
-					if (baseType.FullName == Weaver.MessageBaseType.FullName)
+					if (baseType.FullName == MessageBaseType.FullName)
 					{
-						flag |= Weaver.ProcessMessageType(td);
+						flag |= ProcessMessageType(td);
 						break;
 					}
 					try
@@ -1461,7 +1475,7 @@ namespace QNetWeaver
 				}
 				foreach (var td2 in td.NestedTypes)
 				{
-					flag |= Weaver.CheckMessageBase(td2);
+					flag |= CheckMessageBase(td2);
 				}
 				result = flag;
 			}
@@ -1483,7 +1497,7 @@ namespace QNetWeaver
 				{
 					if (baseType.FullName.Contains("SyncListStruct"))
 					{
-						flag |= Weaver.ProcessSyncListStructType(td);
+						flag |= ProcessSyncListStructType(td);
 						break;
 					}
 					try
@@ -1497,7 +1511,7 @@ namespace QNetWeaver
 				}
 				foreach (var td2 in td.NestedTypes)
 				{
-					flag |= Weaver.CheckSyncListStruct(td2);
+					flag |= CheckSyncListStruct(td2);
 				}
 				result = flag;
 			}
@@ -1507,11 +1521,11 @@ namespace QNetWeaver
 		private static bool Weave(string assName, IEnumerable<string> dependencies, IAssemblyResolver assemblyResolver, string unityEngineDLLPath, string unityUNetDLLPath, string outputDir)
 		{
 			var readerParameters = Helpers.ReaderParameters(assName, dependencies, assemblyResolver, unityEngineDLLPath, unityUNetDLLPath);
-			Weaver.scriptDef = AssemblyDefinition.ReadAssembly(assName, readerParameters);
-			Weaver.SetupTargetTypes();
-			Weaver.SetupReadFunctions();
-			Weaver.SetupWriteFunctions();
-			var mainModule = Weaver.scriptDef.MainModule;
+			scriptDef = AssemblyDefinition.ReadAssembly(assName, readerParameters);
+			SetupTargetTypes();
+			SetupReadFunctions();
+			SetupWriteFunctions();
+			var mainModule = scriptDef.MainModule;
 			Console.WriteLine("Script Module: {0}", mainModule.Name);
 			var flag = false;
 			for (var i = 0; i < 2; i++)
@@ -1519,35 +1533,35 @@ namespace QNetWeaver
 				var stopwatch = Stopwatch.StartNew();
 				foreach (var typeDefinition in mainModule.Types)
 				{
-					if (typeDefinition.IsClass && Weaver.CanBeResolved(typeDefinition.BaseType))
+					if (typeDefinition.IsClass && CanBeResolved(typeDefinition.BaseType))
 					{
 						try
 						{
 							if (i == 0)
 							{
-								flag |= Weaver.CheckSyncListStruct(typeDefinition);
+								flag |= CheckSyncListStruct(typeDefinition);
 							}
 							else
 							{
-								flag |= Weaver.CheckNetworkBehaviour(typeDefinition);
-								flag |= Weaver.CheckMessageBase(typeDefinition);
+								flag |= CheckNetworkBehaviour(typeDefinition);
+								flag |= CheckMessageBase(typeDefinition);
 							}
 						}
 						catch (Exception ex)
 						{
-							if (Weaver.scriptDef.MainModule.SymbolReader != null)
+							if (scriptDef.MainModule.SymbolReader != null)
 							{
-								Weaver.scriptDef.MainModule.SymbolReader.Dispose();
+								scriptDef.MainModule.SymbolReader.Dispose();
 							}
-							Weaver.fail = true;
+							fail = true;
 							throw ex;
 						}
 					}
-					if (Weaver.fail)
+					if (fail)
 					{
-						if (Weaver.scriptDef.MainModule.SymbolReader != null)
+						if (scriptDef.MainModule.SymbolReader != null)
 						{
-							Weaver.scriptDef.MainModule.SymbolReader.Dispose();
+							scriptDef.MainModule.SymbolReader.Dispose();
 						}
 						return false;
 					}
@@ -1564,28 +1578,28 @@ namespace QNetWeaver
 			}
 			if (flag)
 			{
-				foreach (var methodDefinition in Weaver.lists.replacedMethods)
+				foreach (var methodDefinition in lists.replacedMethods)
 				{
-					Weaver.lists.replacementMethodNames.Add(methodDefinition.FullName);
+					lists.replacementMethodNames.Add(methodDefinition.FullName);
 				}
 				try
 				{
-					Weaver.ProcessPropertySites();
+					ProcessPropertySites();
 				}
 				catch (Exception ex2)
 				{
 					Log.Error("ProcessPropertySites exception: " + ex2);
-					if (Weaver.scriptDef.MainModule.SymbolReader != null)
+					if (scriptDef.MainModule.SymbolReader != null)
 					{
-						Weaver.scriptDef.MainModule.SymbolReader.Dispose();
+						scriptDef.MainModule.SymbolReader.Dispose();
 					}
 					return false;
 				}
-				if (Weaver.fail)
+				if (fail)
 				{
-					if (Weaver.scriptDef.MainModule.SymbolReader != null)
+					if (scriptDef.MainModule.SymbolReader != null)
 					{
-						Weaver.scriptDef.MainModule.SymbolReader.Dispose();
+						scriptDef.MainModule.SymbolReader.Dispose();
 					}
 					return false;
 				}
@@ -1597,26 +1611,29 @@ namespace QNetWeaver
 					var text = Path.ChangeExtension(assName, ".pdb");
 					File.Delete(text);
 				}
-				Weaver.scriptDef.Write(fileName, writerParameters);
+				scriptDef.Write(fileName, writerParameters);
 			}
-			if (Weaver.scriptDef.MainModule.SymbolReader != null)
+			if (scriptDef.MainModule.SymbolReader != null)
 			{
-				Weaver.scriptDef.MainModule.SymbolReader.Dispose();
+				scriptDef.MainModule.SymbolReader.Dispose();
 			}
 			return true;
 		}
 
 		public static bool WeaveAssemblies(string assembly, IEnumerable<string> dependencies, IAssemblyResolver assemblyResolver, string outputDir, string unityEngineDLLPath, string unityQNetDLLPath, string unityUNetDLLPath)
 		{
-			Weaver.fail = false;
-			Weaver.lists = new WeaverLists();
-			Weaver.UnityAssemblyDefinition = AssemblyDefinition.ReadAssembly(unityEngineDLLPath);
-			Weaver.QNetAssemblyDefinition = AssemblyDefinition.ReadAssembly(unityQNetDLLPath);
-			Weaver.UNetAssemblyDefinition = AssemblyDefinition.ReadAssembly(unityUNetDLLPath);
-			Weaver.SetupUnityTypes();
+			fail = false;
+			lists = new WeaverLists();
+			Console.WriteLine($"load unity engine from {unityEngineDLLPath}");
+			UnityAssemblyDefinition = AssemblyDefinition.ReadAssembly(unityEngineDLLPath);
+			Console.WriteLine($"load qnet from {unityQNetDLLPath}");
+			QNetAssemblyDefinition = AssemblyDefinition.ReadAssembly(unityQNetDLLPath);
+			Console.WriteLine($"load unet from {unityUNetDLLPath}");
+			UNetAssemblyDefinition = AssemblyDefinition.ReadAssembly(unityUNetDLLPath);
+			SetupUnityTypes();
 			try
 			{
-				if (!Weaver.Weave(assembly, dependencies, assemblyResolver, unityEngineDLLPath, unityQNetDLLPath, outputDir))
+				if (!Weave(assembly, dependencies, assemblyResolver, unityEngineDLLPath, unityQNetDLLPath, outputDir))
 				{
 					return false;
 				}
@@ -1626,7 +1643,7 @@ namespace QNetWeaver
 				Log.Error("Exception :" + ex);
 				return false;
 			}
-			Weaver.corLib = null;
+			corLib = null;
 			return true;
 		}
 
