@@ -118,7 +118,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>md "$(OwmlDir)\Mods\QSB"
+
+copy /y "$(TargetPath)" "$(OwmlDir)\Mods\QSB"</PostBuildEvent>
   </PropertyGroup>
 </Project>

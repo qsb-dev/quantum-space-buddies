@@ -121,6 +121,7 @@
     <Compile Include="Animation\Player\CrouchSync.cs" />
     <Compile Include="Animation\Player\Patches\PlayerAnimationPatches.cs" />
     <Compile Include="Animation\Player\PlayerHeadRotationSync.cs" />
+    <Compile Include="Animation\Player\Thrusters\FlamesAndBubbles\SetUpThrusterFlames.cs" />
     <Compile Include="CampfireSync\CampfireManager.cs" />
     <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />
     <Compile Include="CampfireSync\Patches\CampfirePatches.cs" />
@@ -358,8 +359,16 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"
+    <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"
+md "$(OwmlDir)\Mods\$(ProjectName)\assets"
+del "$(OwmlDir)\Mods\$(ProjectName)\config.json"
 
-xcopy /e /i /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"</PostBuildEvent>
+copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ProjectName)"
+copy /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets
+copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ProjectName)"
+
+"$(SolutionDir)\QNetWeaver\bin\Debug\QNetWeaver.exe" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.dll" "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll"  "$(SolutionDir)\WeavedFiles" "$(TargetPath)"
+
+copy /y "$(SolutionDir)\WeavedFiles\QSB.dll" "$(OwmlDir)\Mods\$(ProjectName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

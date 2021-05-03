@@ -8,7 +8,7 @@ namespace QNetWeaver
 	{
 		private static void Main(string[] args)
 		{
-			Console.WriteLine("Start!");
+			Console.WriteLine("Start weaving process.");
 
 			if (args.Length == 0)
 			{
@@ -23,6 +23,7 @@ namespace QNetWeaver
 			
 			Program.CheckDLLPath(unityEngine);
 			Program.CheckDLLPath(qnetDLL);
+			Program.CheckDLLPath(unetDLL);
 			Program.CheckOutputDirectory(outputDirectory);
 			Program.CheckAssemblyPath(assembly);
 			Weaver.WeaveAssemblies(assembly, null, null, outputDirectory, unityEngine, qnetDLL, unetDLL);
@@ -30,34 +31,32 @@ namespace QNetWeaver
 
 		private static void CheckDLLPath(string path)
 		{
+			Console.WriteLine($"Check dll {path} ...");
 			if (!File.Exists(path))
 			{
 				throw new Exception("dll could not be located at " + path + "!");
 			}
-		}
-
-		private static void CheckAssemblies(IEnumerable<string> assemblyPaths)
-		{
-			foreach (var assemblyPath in assemblyPaths)
-			{
-				Program.CheckAssemblyPath(assemblyPath);
-			}
+			Console.WriteLine($"Path OK!");
 		}
 
 		private static void CheckAssemblyPath(string assemblyPath)
 		{
+			Console.WriteLine($"Check assembly path {assemblyPath} ...");
 			if (!File.Exists(assemblyPath))
 			{
 				throw new Exception("Assembly " + assemblyPath + " does not exist!");
 			}
+			Console.WriteLine($"Assembly Path OK!");
 		}
 
 		private static void CheckOutputDirectory(string outputDir)
 		{
+			Console.WriteLine($"Check output path {outputDir} ...");
 			if (!Directory.Exists(outputDir))
 			{
 				Directory.CreateDirectory(outputDir);
 			}
+			Console.WriteLine($"Output Path OK!");
 		}
 	}
 }
