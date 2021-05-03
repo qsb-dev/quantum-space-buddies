@@ -57,6 +57,7 @@ namespace QSB
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();
 			playerPrefab.AddComponent<AnimationSync>();
+			playerPrefab.AddComponent<CrouchSync>();
 			playerPrefab.AddComponent<WakeUpSync>();
 			playerPrefab.AddComponent<InstrumentsManager>();
 

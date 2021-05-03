@@ -115,7 +115,6 @@
     <Compile Include="Animation\Player\AnimationType.cs" />
     <Compile Include="Animation\Player\Events\AnimationTriggerEvent.cs" />
     <Compile Include="Animation\Player\Events\AnimationTriggerMessage.cs" />
-    <Compile Include="Animation\Player\Events\CrouchEvent.cs" />
     <Compile Include="Animation\Player\AnimatorMirror.cs" />
     <Compile Include="Animation\Player\AnimControllerPatch.cs" />
     <Compile Include="Animation\Player\AnimFloatParam.cs" />
@@ -356,9 +355,7 @@
       <Version>1.1.8</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Syncs\VariableSync\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"

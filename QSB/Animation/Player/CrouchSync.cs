@@ -1,6 +1,10 @@
-﻿using QuantumUNET;
+﻿using QSB.Utility;
+using QuantumUNET;
+using QuantumUNET.Transport;
 using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB.Animation.Player
 {
@@ -8,21 +12,17 @@ namespace QSB.Animation.Player
 	{
 		public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
 
-		private const float CrouchSendInterval = 0.1f;
-		private const float CrouchChargeThreshold = 0.01f;
 		private const float CrouchSmoothTime = 0.05f;
 		private const int CrouchLayerIndex = 1;
 
-		private float _sendTimer;
-		private float _lastSentJumpChargeFraction;
-
-		private AnimationSync _animationSync;
 		private PlayerCharacterController _playerController;
 		private Animator _bodyAnim;
 
-		public void Init(AnimationSync animationSync, PlayerCharacterController playerController, Animator bodyAnim)
+		[SyncVar]
+		private float _crouchValue;
+
+		public void Init(PlayerCharacterController playerController, Animator bodyAnim)
 		{
-			_animationSync = animationSync;
 			_playerController = playerController;
 			_bodyAnim = bodyAnim;
 		}
@@ -43,19 +43,8 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
-			_sendTimer += Time.unscaledDeltaTime;
-			if (_sendTimer < CrouchSendInterval)
-			{
-				return;
-			}
 			var jumpChargeFraction = _playerController.GetJumpChargeFraction();
-			if (Math.Abs(jumpChargeFraction - _lastSentJumpChargeFraction) < CrouchChargeThreshold)
-			{
-				return;
-			}
-			_animationSync.SendCrouch(jumpChargeFraction);
-			_lastSentJumpChargeFraction = jumpChargeFraction;
-			_sendTimer = 0;
+			_crouchValue = jumpChargeFraction;
 		}
 
 		private void SyncRemoteCrouch()
@@ -64,6 +53,7 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
+			CrouchParam.Target = _crouchValue;
 			CrouchParam.Smooth(CrouchSmoothTime);
 			var jumpChargeFraction = CrouchParam.Current;
 			_bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);

@@ -125,13 +125,9 @@ namespace QSB.Animation.Player
 
 		private void InitCrouchSync()
 		{
-			_crouchSync = gameObject.AddComponent<CrouchSync>();
-			_crouchSync.Init(this, _playerController, VisibleAnimator);
+			_crouchSync = GetComponent<CrouchSync>();
+			_crouchSync.Init(_playerController, VisibleAnimator);
 		}
-
-		public void SendCrouch(float value = 0) => QSBEventManager.FireEvent(EventNames.QSBCrouch, value);
-
-		public void HandleCrouch(float value) => _crouchSync.CrouchParam.Target = value;
 
 		private void SuitUp()
 		{

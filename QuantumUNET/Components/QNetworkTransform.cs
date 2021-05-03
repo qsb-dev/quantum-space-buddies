@@ -9,7 +9,6 @@ namespace QuantumUNET.Components
 	public class QNetworkTransform : QNetworkBehaviour
 	{
 		public float SendInterval { get; set; } = 0.05f;
-		public float LastSyncTime { get; private set; }
 
 		private float _lastClientSendTime;
 		protected Vector3 _prevPosition;
@@ -25,9 +24,6 @@ namespace QuantumUNET.Components
 				_localTransformWriter = new QNetworkWriter();
 			}
 		}
-
-		public override void OnStartServer() 
-			=> LastSyncTime = 0f;
 
 		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
 		{
@@ -56,7 +52,6 @@ namespace QuantumUNET.Components
 					}
 				}
 				DeserializeTransform(reader);
-				LastSyncTime = Time.time;
 			}
 		}
 
@@ -177,7 +172,6 @@ namespace QuantumUNET.Components
 			if (netMsg.Connection.ClientOwnedObjects.Contains(networkInstanceId))
 			{
 				component.DeserializeTransform(netMsg.Reader);
-				component.LastSyncTime = Time.time;
 			}
 			else
 			{
@@ -207,8 +201,5 @@ namespace QuantumUNET.Components
 
 		public override float GetNetworkSendInterval() 
 			=> SendInterval;
-
-		public override void OnStartAuthority()
-			=> LastSyncTime = 0f;
 	}
 }
