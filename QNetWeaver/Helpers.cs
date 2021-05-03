@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace QNetWeaver
 {
@@ -209,13 +208,10 @@ namespace QNetWeaver
 				{
 					throw new Exception("Assembly resolver doesn't implement AddSearchDirectory method.");
 				}
-				this._addSearchDirectory = (Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate)Delegate.CreateDelegate(typeof(Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate), assemblyResolver, method);
+				_addSearchDirectory = (Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate)Delegate.CreateDelegate(typeof(Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate), assemblyResolver, method);
 			}
 
-			public void AddSearchDirectory(string directory)
-			{
-				this._addSearchDirectory(directory);
-			}
+			public void AddSearchDirectory(string directory) => _addSearchDirectory(directory);
 
 			private readonly Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate _addSearchDirectory;
 

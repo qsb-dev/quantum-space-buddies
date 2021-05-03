@@ -1,9 +1,5 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QNetWeaver
 {
@@ -12,12 +8,12 @@ namespace QNetWeaver
 		public SyncListStructProcessor(TypeDefinition typeDef)
 		{
 			Weaver.DLog(typeDef, "SyncListStructProcessor for " + typeDef.Name, new object[0]);
-			this.m_TypeDef = typeDef;
+			m_TypeDef = typeDef;
 		}
 
 		public void Process()
 		{
-			var genericInstanceType = (GenericInstanceType)this.m_TypeDef.BaseType;
+			var genericInstanceType = (GenericInstanceType)m_TypeDef.BaseType;
 			if (genericInstanceType.GenericArguments.Count == 0)
 			{
 				Weaver.fail = true;
@@ -25,18 +21,18 @@ namespace QNetWeaver
 			}
 			else
 			{
-				this.m_ItemType = Weaver.scriptDef.MainModule.ImportReference(genericInstanceType.GenericArguments[0]);
-				Weaver.DLog(this.m_TypeDef, "SyncListStructProcessor Start item:" + this.m_ItemType.FullName, new object[0]);
+				m_ItemType = Weaver.scriptDef.MainModule.ImportReference(genericInstanceType.GenericArguments[0]);
+				Weaver.DLog(m_TypeDef, "SyncListStructProcessor Start item:" + m_ItemType.FullName, new object[0]);
 				Weaver.ResetRecursionCount();
-				var methodReference = this.GenerateSerialization();
+				var methodReference = GenerateSerialization();
 				if (!Weaver.fail)
 				{
-					var methodReference2 = this.GenerateDeserialization();
+					var methodReference2 = GenerateDeserialization();
 					if (methodReference2 != null && methodReference != null)
 					{
-						this.GenerateReadFunc(methodReference2);
-						this.GenerateWriteFunc(methodReference);
-						Weaver.DLog(this.m_TypeDef, "SyncListStructProcessor Done", new object[0]);
+						GenerateReadFunc(methodReference2);
+						GenerateWriteFunc(methodReference);
+						Weaver.DLog(m_TypeDef, "SyncListStructProcessor Done", new object[0]);
 					}
 				}
 			}
@@ -44,10 +40,10 @@ namespace QNetWeaver
 
 		private void GenerateReadFunc(MethodReference readItemFunc)
 		{
-			var text = "_ReadStruct" + this.m_TypeDef.Name + "_";
-			if (this.m_TypeDef.DeclaringType != null)
+			var text = "_ReadStruct" + m_TypeDef.Name + "_";
+			if (m_TypeDef.DeclaringType != null)
 			{
-				text += this.m_TypeDef.DeclaringType.Name;
+				text += m_TypeDef.DeclaringType.Name;
 			}
 			else
 			{
@@ -55,7 +51,7 @@ namespace QNetWeaver
 			}
 			var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
-			methodDefinition.Parameters.Add(new ParameterDefinition("instance", ParameterAttributes.None, this.m_TypeDef));
+			methodDefinition.Parameters.Add(new ParameterDefinition("instance", ParameterAttributes.None, m_TypeDef));
 			methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.uint16Type));
 			methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.uint16Type));
 			methodDefinition.Body.InitLocals = true;
@@ -66,7 +62,7 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 			var method = Helpers.MakeHostInstanceGeneric(Weaver.SyncListClear, new TypeReference[]
 			{
-				this.m_ItemType
+				m_ItemType
 			});
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, method));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4_0));
@@ -82,7 +78,7 @@ namespace QNetWeaver
 			var self = Weaver.ResolveMethod(Weaver.SyncListStructType, "AddInternal");
 			var method2 = Helpers.MakeHostInstanceGeneric(self, new TypeReference[]
 			{
-				this.m_ItemType
+				m_ItemType
 			});
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, method2));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_1));
@@ -95,15 +91,15 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Blt, instruction2));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-			Weaver.RegisterReadByReferenceFunc(this.m_TypeDef.FullName, methodDefinition);
+			Weaver.RegisterReadByReferenceFunc(m_TypeDef.FullName, methodDefinition);
 		}
 
 		private void GenerateWriteFunc(MethodReference writeItemFunc)
 		{
-			var text = "_WriteStruct" + this.m_TypeDef.GetElementType().Name + "_";
-			if (this.m_TypeDef.DeclaringType != null)
+			var text = "_WriteStruct" + m_TypeDef.GetElementType().Name + "_";
+			if (m_TypeDef.DeclaringType != null)
 			{
-				text += this.m_TypeDef.DeclaringType.Name;
+				text += m_TypeDef.DeclaringType.Name;
 			}
 			else
 			{
@@ -111,7 +107,7 @@ namespace QNetWeaver
 			}
 			var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
-			methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(this.m_TypeDef)));
+			methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(m_TypeDef)));
 			methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.uint16Type));
 			methodDefinition.Body.Variables.Add(new VariableDefinition(Weaver.uint16Type));
 			methodDefinition.Body.InitLocals = true;
@@ -120,7 +116,7 @@ namespace QNetWeaver
 			var self = Weaver.ResolveMethod(Weaver.SyncListStructType, "get_Count");
 			var method = Helpers.MakeHostInstanceGeneric(self, new TypeReference[]
 			{
-				this.m_ItemType
+				m_ItemType
 			});
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, method));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Stloc_0));
@@ -140,7 +136,7 @@ namespace QNetWeaver
 			var self2 = Weaver.ResolveMethod(Weaver.SyncListStructType, "GetItem");
 			var method2 = Helpers.MakeHostInstanceGeneric(self2, new TypeReference[]
 			{
-				this.m_ItemType
+				m_ItemType
 			});
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, method2));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Callvirt, writeItemFunc));
@@ -154,34 +150,34 @@ namespace QNetWeaver
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Blt, instruction2));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-			Weaver.RegisterWriteFunc(this.m_TypeDef.FullName, methodDefinition);
+			Weaver.RegisterWriteFunc(m_TypeDef.FullName, methodDefinition);
 		}
 
 		private MethodReference GenerateSerialization()
 		{
-			Weaver.DLog(this.m_TypeDef, "  SyncListStruct GenerateSerialization", new object[0]);
-			foreach (var methodDefinition in this.m_TypeDef.Methods)
+			Weaver.DLog(m_TypeDef, "  SyncListStruct GenerateSerialization", new object[0]);
+			foreach (var methodDefinition in m_TypeDef.Methods)
 			{
 				if (methodDefinition.Name == "SerializeItem")
 				{
-					Weaver.DLog(this.m_TypeDef, "  Abort - is SerializeItem", new object[0]);
+					Weaver.DLog(m_TypeDef, "  Abort - is SerializeItem", new object[0]);
 					return methodDefinition;
 				}
 			}
 			var methodDefinition2 = new MethodDefinition("SerializeItem", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition2.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
-			methodDefinition2.Parameters.Add(new ParameterDefinition("item", ParameterAttributes.None, this.m_ItemType));
+			methodDefinition2.Parameters.Add(new ParameterDefinition("item", ParameterAttributes.None, m_ItemType));
 			var ilprocessor = methodDefinition2.Body.GetILProcessor();
 			MethodReference result;
-			if (this.m_ItemType.IsGenericInstance)
+			if (m_ItemType.IsGenericInstance)
 			{
 				Weaver.fail = true;
-				Log.Error("GenerateSerialization for " + Helpers.PrettyPrintType(this.m_ItemType) + " failed. Struct passed into SyncListStruct<T> can't have generic parameters");
+				Log.Error("GenerateSerialization for " + Helpers.PrettyPrintType(m_ItemType) + " failed. Struct passed into SyncListStruct<T> can't have generic parameters");
 				result = null;
 			}
 			else
 			{
-				foreach (var fieldDefinition in this.m_ItemType.Resolve().Fields)
+				foreach (var fieldDefinition in m_ItemType.Resolve().Fields)
 				{
 					if (!fieldDefinition.IsStatic && !fieldDefinition.IsPrivate && !fieldDefinition.IsSpecialName)
 					{
@@ -193,7 +189,7 @@ namespace QNetWeaver
 							Log.Error(string.Concat(new object[]
 							{
 								"GenerateSerialization for ",
-								this.m_TypeDef.Name,
+								m_TypeDef.Name,
 								" [",
 								typeDefinition,
 								"/",
@@ -208,7 +204,7 @@ namespace QNetWeaver
 							Log.Error(string.Concat(new object[]
 							{
 								"GenerateSerialization for ",
-								this.m_TypeDef.Name,
+								m_TypeDef.Name,
 								" [",
 								typeDefinition,
 								"/",
@@ -224,7 +220,7 @@ namespace QNetWeaver
 							Log.Error(string.Concat(new object[]
 							{
 								"GenerateSerialization for ",
-								this.m_TypeDef.Name,
+								m_TypeDef.Name,
 								" unknown type [",
 								typeDefinition,
 								"/",
@@ -240,7 +236,7 @@ namespace QNetWeaver
 					}
 				}
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-				this.m_TypeDef.Methods.Add(methodDefinition2);
+				m_TypeDef.Methods.Add(methodDefinition2);
 				result = methodDefinition2;
 			}
 			return result;
@@ -248,22 +244,22 @@ namespace QNetWeaver
 
 		private MethodReference GenerateDeserialization()
 		{
-			Weaver.DLog(this.m_TypeDef, "  GenerateDeserialization", new object[0]);
-			foreach (var methodDefinition in this.m_TypeDef.Methods)
+			Weaver.DLog(m_TypeDef, "  GenerateDeserialization", new object[0]);
+			foreach (var methodDefinition in m_TypeDef.Methods)
 			{
 				if (methodDefinition.Name == "DeserializeItem")
 				{
 					return methodDefinition;
 				}
 			}
-			var methodDefinition2 = new MethodDefinition("DeserializeItem", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, this.m_ItemType);
+			var methodDefinition2 = new MethodDefinition("DeserializeItem", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, m_ItemType);
 			methodDefinition2.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
 			var ilprocessor = methodDefinition2.Body.GetILProcessor();
 			ilprocessor.Body.InitLocals = true;
-			ilprocessor.Body.Variables.Add(new VariableDefinition(this.m_ItemType));
+			ilprocessor.Body.Variables.Add(new VariableDefinition(m_ItemType));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloca, 0));
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Initobj, this.m_ItemType));
-			foreach (var fieldDefinition in this.m_ItemType.Resolve().Fields)
+			ilprocessor.Append(ilprocessor.Create(OpCodes.Initobj, m_ItemType));
+			foreach (var fieldDefinition in m_ItemType.Resolve().Fields)
 			{
 				if (!fieldDefinition.IsStatic && !fieldDefinition.IsPrivate && !fieldDefinition.IsSpecialName)
 				{
@@ -276,7 +272,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new object[]
 						{
 							"GenerateDeserialization for ",
-							this.m_TypeDef.Name,
+							m_TypeDef.Name,
 							" unknown type [",
 							typeDefinition,
 							"]. UNet [SyncVar] member variables must be basic types."
@@ -291,7 +287,7 @@ namespace QNetWeaver
 			}
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-			this.m_TypeDef.Methods.Add(methodDefinition2);
+			m_TypeDef.Methods.Add(methodDefinition2);
 			return methodDefinition2;
 		}
 

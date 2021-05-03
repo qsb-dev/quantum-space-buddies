@@ -1,27 +1,20 @@
 ﻿using Mono.Cecil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QNetWeaver
 {
 	internal class MonoBehaviourProcessor
 	{
-		public MonoBehaviourProcessor(TypeDefinition td)
-		{
-			this.m_td = td;
-		}
+		public MonoBehaviourProcessor(TypeDefinition td) => m_td = td;
 
 		public void Process()
 		{
-			this.ProcessSyncVars();
-			this.ProcessMethods();
+			ProcessSyncVars();
+			ProcessMethods();
 		}
 
 		private void ProcessSyncVars()
 		{
-			foreach (var fieldDefinition in this.m_td.Fields)
+			foreach (var fieldDefinition in m_td.Fields)
 			{
 				foreach (var customAttribute in fieldDefinition.CustomAttributes)
 				{
@@ -30,7 +23,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses [SyncVar] ",
 							fieldDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -40,7 +33,7 @@ namespace QNetWeaver
 				}
 				if (Helpers.InheritsFromSyncList(fieldDefinition.FieldType))
 				{
-					Log.Error(string.Format("Script {0} defines field {1} with type {2}, but it's not a NetworkBehaviour", this.m_td.FullName, fieldDefinition.Name, Helpers.PrettyPrintType(fieldDefinition.FieldType)));
+					Log.Error(string.Format("Script {0} defines field {1} with type {2}, but it's not a NetworkBehaviour", m_td.FullName, fieldDefinition.Name, Helpers.PrettyPrintType(fieldDefinition.FieldType)));
 					Weaver.fail = true;
 				}
 			}
@@ -48,7 +41,7 @@ namespace QNetWeaver
 
 		private void ProcessMethods()
 		{
-			foreach (var methodDefinition in this.m_td.Methods)
+			foreach (var methodDefinition in m_td.Methods)
 			{
 				foreach (var customAttribute in methodDefinition.CustomAttributes)
 				{
@@ -57,7 +50,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses [Command] ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -69,7 +62,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses [ClientRpc] ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -81,7 +74,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses [TargetRpc] ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -94,7 +87,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses the attribute [Server] on the method ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -106,7 +99,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses the attribute [ServerCallback] on the method ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -118,7 +111,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses the attribute [Client] on the method ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."
@@ -130,7 +123,7 @@ namespace QNetWeaver
 						Log.Error(string.Concat(new string[]
 						{
 							"Script ",
-							this.m_td.FullName,
+							m_td.FullName,
 							" uses the attribute [ClientCallback] on the method ",
 							methodDefinition.Name,
 							" but is not a NetworkBehaviour."

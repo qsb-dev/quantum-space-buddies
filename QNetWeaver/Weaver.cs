@@ -7,16 +7,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace QNetWeaver
 {
 	internal class Weaver
 	{
-		public static void ResetRecursionCount()
-		{
-			Weaver.s_RecursionCount = 0;
-		}
+		public static void ResetRecursionCount() => Weaver.s_RecursionCount = 0;
 
 		public static bool CanBeResolved(TypeReference parent)
 		{
@@ -49,10 +45,7 @@ namespace QNetWeaver
 			return true;
 		}
 
-		public static bool IsArrayType(TypeReference variable)
-		{
-			return (!variable.IsArray || !((ArrayType)variable).ElementType.IsArray) && (!variable.IsArray || ((ArrayType)variable).Rank <= 1);
-		}
+		public static bool IsArrayType(TypeReference variable) => (!variable.IsArray || !((ArrayType)variable).ElementType.IsArray) && (!variable.IsArray || ((ArrayType)variable).Rank <= 1);
 
 		public static void DLog(TypeDefinition td, string fmt, params object[] args)
 		{
@@ -77,10 +70,7 @@ namespace QNetWeaver
 			return result;
 		}
 
-		public static void SetNumSyncVars(string className, int num)
-		{
-			Weaver.lists.numSyncVars[className] = num;
-		}
+		public static void SetNumSyncVars(string className, int num) => Weaver.lists.numSyncVars[className] = num;
 
 		public static MethodReference GetWriteFunc(TypeReference variable)
 		{
@@ -837,10 +827,7 @@ namespace QNetWeaver
 			}));
 		}
 
-		private static void ProcessPropertySites()
-		{
-			Weaver.ProcessSitesModule(Weaver.scriptDef.MainModule);
-		}
+		private static void ProcessPropertySites() => Weaver.ProcessSitesModule(Weaver.scriptDef.MainModule);
 
 		private static bool ProcessMessageType(TypeDefinition td)
 		{
@@ -1212,89 +1199,95 @@ namespace QNetWeaver
 		private static void SetupReadFunctions()
 		{
 			var weaverLists = Weaver.lists;
-			var dictionary = new Dictionary<string, MethodReference>();
-			dictionary.Add(Weaver.singleType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadSingle"));
-			dictionary.Add(Weaver.doubleType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadDouble"));
-			dictionary.Add(Weaver.boolType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadBoolean"));
-			dictionary.Add(Weaver.stringType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadString"));
-			dictionary.Add(Weaver.int64Type.FullName, Weaver.NetworkReaderReadPacked64);
-			dictionary.Add(Weaver.uint64Type.FullName, Weaver.NetworkReaderReadPacked64);
-			dictionary.Add(Weaver.int32Type.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.uint32Type.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.int16Type.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.uint16Type.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.byteType.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.sbyteType.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.charType.FullName, Weaver.NetworkReaderReadPacked32);
-			dictionary.Add(Weaver.decimalType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadDecimal"));
-			dictionary.Add(Weaver.vector2Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector2"));
-			dictionary.Add(Weaver.vector3Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector3"));
-			dictionary.Add(Weaver.vector4Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector4"));
-			dictionary.Add(Weaver.colorType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadColor"));
-			dictionary.Add(Weaver.color32Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadColor32"));
-			dictionary.Add(Weaver.quaternionType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadQuaternion"));
-			dictionary.Add(Weaver.rectType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadRect"));
-			dictionary.Add(Weaver.planeType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadPlane"));
-			dictionary.Add(Weaver.rayType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadRay"));
-			dictionary.Add(Weaver.matrixType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadMatrix4x4"));
-			dictionary.Add(Weaver.hashType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkHash128"));
-			dictionary.Add(Weaver.gameObjectType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadGameObject"));
-			dictionary.Add(Weaver.NetworkIdentityType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkIdentity"));
-			dictionary.Add(Weaver.NetworkInstanceIdType.FullName, Weaver.NetworkReaderReadNetworkInstanceId);
-			dictionary.Add(Weaver.NetworkSceneIdType.FullName, Weaver.NetworkReaderReadNetworkSceneId);
-			dictionary.Add(Weaver.transformType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadTransform"));
-			dictionary.Add("System.Byte[]", Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadBytesAndSize"));
+			var dictionary = new Dictionary<string, MethodReference>
+			{
+				{ Weaver.singleType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadSingle") },
+				{ Weaver.doubleType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadDouble") },
+				{ Weaver.boolType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadBoolean") },
+				{ Weaver.stringType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadString") },
+				{ Weaver.int64Type.FullName, Weaver.NetworkReaderReadPacked64 },
+				{ Weaver.uint64Type.FullName, Weaver.NetworkReaderReadPacked64 },
+				{ Weaver.int32Type.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.uint32Type.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.int16Type.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.uint16Type.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.byteType.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.sbyteType.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.charType.FullName, Weaver.NetworkReaderReadPacked32 },
+				{ Weaver.decimalType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadDecimal") },
+				{ Weaver.vector2Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector2") },
+				{ Weaver.vector3Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector3") },
+				{ Weaver.vector4Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadVector4") },
+				{ Weaver.colorType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadColor") },
+				{ Weaver.color32Type.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadColor32") },
+				{ Weaver.quaternionType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadQuaternion") },
+				{ Weaver.rectType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadRect") },
+				{ Weaver.planeType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadPlane") },
+				{ Weaver.rayType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadRay") },
+				{ Weaver.matrixType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadMatrix4x4") },
+				{ Weaver.hashType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkHash128") },
+				{ Weaver.gameObjectType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadGameObject") },
+				{ Weaver.NetworkIdentityType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadNetworkIdentity") },
+				{ Weaver.NetworkInstanceIdType.FullName, Weaver.NetworkReaderReadNetworkInstanceId },
+				{ Weaver.NetworkSceneIdType.FullName, Weaver.NetworkReaderReadNetworkSceneId },
+				{ Weaver.transformType.FullName, Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadTransform") },
+				{ "System.Byte[]", Weaver.ResolveMethod(Weaver.NetworkReaderType, "ReadBytesAndSize") }
+			};
 			weaverLists.readFuncs = dictionary;
 			var weaverLists2 = Weaver.lists;
-			dictionary = new Dictionary<string, MethodReference>();
-			dictionary.Add(Weaver.SyncListFloatType.FullName, Weaver.SyncListFloatReadType);
-			dictionary.Add(Weaver.SyncListIntType.FullName, Weaver.SyncListIntReadType);
-			dictionary.Add(Weaver.SyncListUIntType.FullName, Weaver.SyncListUIntReadType);
-			dictionary.Add(Weaver.SyncListBoolType.FullName, Weaver.SyncListBoolReadType);
-			dictionary.Add(Weaver.SyncListStringType.FullName, Weaver.SyncListStringReadType);
+			dictionary = new Dictionary<string, MethodReference>
+			{
+				{ Weaver.SyncListFloatType.FullName, Weaver.SyncListFloatReadType },
+				{ Weaver.SyncListIntType.FullName, Weaver.SyncListIntReadType },
+				{ Weaver.SyncListUIntType.FullName, Weaver.SyncListUIntReadType },
+				{ Weaver.SyncListBoolType.FullName, Weaver.SyncListBoolReadType },
+				{ Weaver.SyncListStringType.FullName, Weaver.SyncListStringReadType }
+			};
 			weaverLists2.readByReferenceFuncs = dictionary;
 		}
 
 		private static void SetupWriteFunctions()
 		{
 			var weaverLists = Weaver.lists;
-			var dictionary = new Dictionary<string, MethodReference>();
-			dictionary.Add(Weaver.singleType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.singleType));
-			dictionary.Add(Weaver.doubleType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.doubleType));
-			dictionary.Add(Weaver.boolType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.boolType));
-			dictionary.Add(Weaver.stringType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.stringType));
-			dictionary.Add(Weaver.int64Type.FullName, Weaver.NetworkWriterWritePacked64);
-			dictionary.Add(Weaver.uint64Type.FullName, Weaver.NetworkWriterWritePacked64);
-			dictionary.Add(Weaver.int32Type.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.uint32Type.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.int16Type.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.uint16Type.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.byteType.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.sbyteType.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.charType.FullName, Weaver.NetworkWriterWritePacked32);
-			dictionary.Add(Weaver.decimalType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.decimalType));
-			dictionary.Add(Weaver.vector2Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector2Type));
-			dictionary.Add(Weaver.vector3Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector3Type));
-			dictionary.Add(Weaver.vector4Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector4Type));
-			dictionary.Add(Weaver.colorType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.colorType));
-			dictionary.Add(Weaver.color32Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.color32Type));
-			dictionary.Add(Weaver.quaternionType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.quaternionType));
-			dictionary.Add(Weaver.rectType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.rectType));
-			dictionary.Add(Weaver.planeType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.planeType));
-			dictionary.Add(Weaver.rayType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.rayType));
-			dictionary.Add(Weaver.matrixType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.matrixType));
-			dictionary.Add(Weaver.hashType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.hashType));
-			dictionary.Add(Weaver.gameObjectType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.gameObjectType));
-			dictionary.Add(Weaver.NetworkIdentityType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.NetworkIdentityType));
-			dictionary.Add(Weaver.NetworkInstanceIdType.FullName, Weaver.NetworkWriterWriteNetworkInstanceId);
-			dictionary.Add(Weaver.NetworkSceneIdType.FullName, Weaver.NetworkWriterWriteNetworkSceneId);
-			dictionary.Add(Weaver.transformType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.transformType));
-			dictionary.Add("System.Byte[]", Weaver.ResolveMethod(Weaver.NetworkWriterType, "WriteBytesFull"));
-			dictionary.Add(Weaver.SyncListFloatType.FullName, Weaver.SyncListFloatWriteType);
-			dictionary.Add(Weaver.SyncListIntType.FullName, Weaver.SyncListIntWriteType);
-			dictionary.Add(Weaver.SyncListUIntType.FullName, Weaver.SyncListUIntWriteType);
-			dictionary.Add(Weaver.SyncListBoolType.FullName, Weaver.SyncListBoolWriteType);
-			dictionary.Add(Weaver.SyncListStringType.FullName, Weaver.SyncListStringWriteType);
+			var dictionary = new Dictionary<string, MethodReference>
+			{
+				{ Weaver.singleType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.singleType) },
+				{ Weaver.doubleType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.doubleType) },
+				{ Weaver.boolType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.boolType) },
+				{ Weaver.stringType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.stringType) },
+				{ Weaver.int64Type.FullName, Weaver.NetworkWriterWritePacked64 },
+				{ Weaver.uint64Type.FullName, Weaver.NetworkWriterWritePacked64 },
+				{ Weaver.int32Type.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.uint32Type.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.int16Type.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.uint16Type.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.byteType.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.sbyteType.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.charType.FullName, Weaver.NetworkWriterWritePacked32 },
+				{ Weaver.decimalType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.decimalType) },
+				{ Weaver.vector2Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector2Type) },
+				{ Weaver.vector3Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector3Type) },
+				{ Weaver.vector4Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.vector4Type) },
+				{ Weaver.colorType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.colorType) },
+				{ Weaver.color32Type.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.color32Type) },
+				{ Weaver.quaternionType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.quaternionType) },
+				{ Weaver.rectType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.rectType) },
+				{ Weaver.planeType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.planeType) },
+				{ Weaver.rayType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.rayType) },
+				{ Weaver.matrixType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.matrixType) },
+				{ Weaver.hashType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.hashType) },
+				{ Weaver.gameObjectType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.gameObjectType) },
+				{ Weaver.NetworkIdentityType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.NetworkIdentityType) },
+				{ Weaver.NetworkInstanceIdType.FullName, Weaver.NetworkWriterWriteNetworkInstanceId },
+				{ Weaver.NetworkSceneIdType.FullName, Weaver.NetworkWriterWriteNetworkSceneId },
+				{ Weaver.transformType.FullName, Weaver.ResolveMethodWithArg(Weaver.NetworkWriterType, "Write", Weaver.transformType) },
+				{ "System.Byte[]", Weaver.ResolveMethod(Weaver.NetworkWriterType, "WriteBytesFull") },
+				{ Weaver.SyncListFloatType.FullName, Weaver.SyncListFloatWriteType },
+				{ Weaver.SyncListIntType.FullName, Weaver.SyncListIntWriteType },
+				{ Weaver.SyncListUIntType.FullName, Weaver.SyncListUIntWriteType },
+				{ Weaver.SyncListBoolType.FullName, Weaver.SyncListBoolWriteType },
+				{ Weaver.SyncListStringType.FullName, Weaver.SyncListStringWriteType }
+			};
 			weaverLists.writeFuncs = dictionary;
 		}
 
