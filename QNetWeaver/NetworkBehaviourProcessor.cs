@@ -1793,11 +1793,6 @@ namespace QNetWeaver
 		{
 			var methodDefinition = new MethodDefinition("set_Network" + originalName, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.SpecialName, Weaver.voidType);
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldflda, fd));
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4, dirtyBit));
 
 			var noOperatorInstruction = ilprocessor.Create(OpCodes.Nop);
 			var returnInstruction = ilprocessor.Create(OpCodes.Ret);
@@ -1822,6 +1817,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.setSyncVarHookGuard));
 				ilprocessor.Append(noOperatorInstruction);
 			}
+
 			if (fd.FieldType.FullName == Weaver.gameObjectType.FullName)
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
@@ -1832,18 +1828,31 @@ namespace QNetWeaver
 			{
 				var genericInstanceMethod = new GenericInstanceMethod(Weaver.setSyncVarReference);
 				genericInstanceMethod.GenericArguments.Add(fd.FieldType);
-				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, genericInstanceMethod));
 
-				Weaver.DLog(m_td, "  Start custom IL code", new object[0]);
+				var index11 = ilprocessor.Create(OpCodes.Ldarg_0);
 
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.UBehaviourIsServer));
-				ilprocessor.Append(ilprocessor.Create(OpCodes.Brtrue_S, returnInstruction));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Brfalse_S, index11));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldflda, fd));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4, dirtyBit));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, genericInstanceMethod));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Pop));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
+				ilprocessor.Append(index11);
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldflda, fd));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4, dirtyBit));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, genericInstanceMethod));
+				ilprocessor.Append(ilprocessor.Create(OpCodes.Brfalse_S, returnInstruction));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkBehaviourClientSendUpdateVars));
-				ilprocessor.Append(returnInstruction);
 			}
-			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
+			ilprocessor.Append(returnInstruction);
 			methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.In, fd.FieldType));
 			methodDefinition.SemanticsAttributes = MethodSemanticsAttributes.Setter;
 			return methodDefinition;

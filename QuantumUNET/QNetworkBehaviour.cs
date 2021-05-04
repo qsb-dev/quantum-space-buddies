@@ -445,28 +445,30 @@ namespace QuantumUNET
 			}
 		}
 
-		protected void SetSyncVar<T>(T value, ref T fieldValue, uint dirtyBit)
+		protected bool SetSyncVar<T>(T value, ref T fieldValue, uint dirtyBit)
 		{
-			var flag = false;
+			var shouldSet = false;
 			if (value == null)
 			{
 				if (fieldValue != null)
 				{
-					flag = true;
+					shouldSet = true;
 				}
 			}
 			else
 			{
-				flag = !value.Equals(fieldValue);
+				shouldSet = !value.Equals(fieldValue);
 			}
 
-			if (flag)
+			if (shouldSet)
 			{
 				QLog.Log($"SetSyncVar {GetType().Name} bit [{dirtyBit}] {fieldValue}->{value}");
 
 				SetDirtyBit(dirtyBit);
 				fieldValue = value;
 			}
+
+			return shouldSet;
 		}
 
 		public void SetDirtyBit(uint dirtyBit) => SyncVarDirtyBits |= dirtyBit;
