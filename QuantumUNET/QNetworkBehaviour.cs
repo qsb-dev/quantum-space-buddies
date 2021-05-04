@@ -1,5 +1,6 @@
 ﻿using QuantumUNET.Components;
 using QuantumUNET.Logging;
+using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,19 @@ namespace QuantumUNET
 					myView = m_MyView;
 				}
 				return myView;
+			}
+		}
+
+		protected void ClientSendUpdateVars()
+		{
+			var writer = new QNetworkWriter();
+			writer.StartMessage(QMsgType.UpdateVars);
+			writer.Write(NetId);
+			if (OnSerialize(writer, false))
+			{
+				ClearAllDirtyBits();
+				writer.FinishMessage();
+				QClientScene.readyConnection.SendWriter(writer, GetNetworkChannel());
 			}
 		}
 

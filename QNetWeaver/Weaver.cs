@@ -1118,6 +1118,8 @@ namespace QNetWeaver
 			NetworkWriterWritePacked64 = ResolveMethod(NetworkWriterType, "WritePackedUInt64");
 			NetworkWriterWriteNetworkInstanceId = ResolveMethodWithArg(NetworkWriterType, "Write", NetworkInstanceIdType);
 			NetworkWriterWriteNetworkSceneId = ResolveMethodWithArg(NetworkWriterType, "Write", NetworkSceneIdType);
+			NetworkWriterStartMessage = ResolveMethod(NetworkWriterType, "StartMessage");
+			NetworkWriterFinishMessage = ResolveMethod(NetworkWriterType, "FinishMessage");
 			NetworkReaderReadNetworkInstanceId = ResolveMethod(NetworkReaderType, "ReadNetworkId");
 			NetworkReaderReadNetworkSceneId = ResolveMethod(NetworkReaderType, "ReadSceneId");
 			NetworkInstanceIsEmpty = ResolveMethod(NetworkInstanceIdType, "IsEmpty");
@@ -1175,6 +1177,11 @@ namespace QNetWeaver
 			SyncListStructType = UNetAssemblyDefinition.MainModule.GetType("UnityEngine.Networking.SyncListStruct`1");
 
 			NetworkBehaviourDirtyBitsReference = ResolveProperty(NetworkBehaviourType, "SyncVarDirtyBits");
+			NetworkBehaviourOnSerialize = ResolveMethod(NetworkBehaviourType, "OnSerialize");
+			NetworkBehaviourClearAllDirtyBits = ResolveMethod(NetworkBehaviourType, "ClearAllDirtyBits");
+			NetworkBehaviourGetNetworkChannel = ResolveMethod(NetworkBehaviourType, "GetNetworkChannel");
+			NetworkBehaviourClientSendUpdateVars = ResolveMethod(NetworkBehaviourType, "ClientSendUpdateVars");
+			NetworkConnectionSendWriter = ResolveMethod(NetworkConnectionType, "SendWriter");
 			ComponentType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Component");
 
 			ClientSceneType = QNetAssemblyDefinition.MainModule.GetType("QuantumUNET.QClientScene");
@@ -1667,6 +1674,16 @@ namespace QNetWeaver
 
 		public static MethodReference NetworkBehaviourDirtyBitsReference;
 
+		public static MethodReference NetworkBehaviourOnSerialize;
+
+		public static MethodReference NetworkBehaviourClearAllDirtyBits;
+
+		public static MethodReference NetworkBehaviourGetNetworkChannel;
+
+		public static MethodReference NetworkConnectionSendWriter;
+
+		public static MethodReference NetworkBehaviourClientSendUpdateVars;
+
 		public static TypeReference NetworkClientType;
 
 		public static TypeReference NetworkServerType;
@@ -1744,6 +1761,10 @@ namespace QNetWeaver
 		public static MethodReference NetworkWriterWriteNetworkInstanceId;
 
 		public static MethodReference NetworkWriterWriteNetworkSceneId;
+
+		public static MethodReference NetworkWriterStartMessage;
+
+		public static MethodReference NetworkWriterFinishMessage;
 
 		public static MethodReference NetworkReaderReadNetworkInstanceId;
 
