@@ -57,11 +57,9 @@ namespace QSB.Animation.Player.Thrusters
 			}
 		}
 
-		private static void CreatePlayerParticlesController(GameObject root)
-		{
+		private static void CreatePlayerParticlesController(GameObject root) =>
 			// TODO : Implement this. (Footsteps / Landing)
 			Object.Destroy(root.GetComponent<PlayerParticlesController>());
-		}
 
 		private static void CreateThrusterParticlesBehaviour(GameObject root, PlayerInfo player)
 		{
