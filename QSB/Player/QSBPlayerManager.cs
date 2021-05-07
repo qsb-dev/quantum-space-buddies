@@ -127,7 +127,7 @@ namespace QSB.Player
 			var player = GetPlayer(playerId);
 			if (player.Body == null)
 			{
-				DebugLog.ToConsole($"Warning - Player {playerId} has a null body!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Player {playerId} has a null player model!", MessageType.Warning);
 				return;
 			}
 			foreach (var renderer in player.Body.GetComponentsInChildren<Renderer>())

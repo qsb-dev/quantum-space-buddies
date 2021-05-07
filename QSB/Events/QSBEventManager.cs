@@ -46,7 +46,6 @@ namespace QSB.Events
 				new PlayerStatesRequestEvent(),
 				new ServerSendPlayerStatesEvent(),
 				new ChangeAnimTypeEvent(),
-				new CrouchEvent(),
 				new ServerTimeEvent(),
 				new PlayerEntangledEvent(),
 				new PlayerKickEvent(),

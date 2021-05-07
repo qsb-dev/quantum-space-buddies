@@ -3,7 +3,6 @@
 	public enum EventType
 	{
 		ServerTime,
-		Crouch,
 		PlayerState,
 		PlayerStatesRequest,
 		FlashlightActiveChange,

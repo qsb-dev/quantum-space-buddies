@@ -37,6 +37,9 @@ namespace QuantumUNET.Components
 			set => m_LocalPlayerAuthority = value;
 		}
 
+		public QNetworkBehaviour[] GetNetworkBehaviours() 
+			=> m_NetworkBehaviours;
+
 		public void SetRootIdentity(QNetworkIdentity newRoot)
 		{
 			if (RootIdentity != null)
@@ -474,7 +477,7 @@ namespace QuantumUNET.Components
 				{
 					if ((num & (1U << j)) != 0U)
 					{
-						s_UpdateWriter.StartMessage(8);
+						s_UpdateWriter.StartMessage(QMsgType.UpdateVars);
 						s_UpdateWriter.Write(NetId);
 						var flag = false;
 						foreach (var networkBehaviour in m_NetworkBehaviours)

@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation.Player.Thrusters;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -94,6 +95,7 @@ namespace QSB.Animation.Player
 			_playerController = body.parent.GetComponent<PlayerCharacterController>();
 
 			InitCrouchSync();
+			InitAccelerationSync();
 		}
 
 		public void InitRemote(Transform body)
@@ -118,20 +120,25 @@ namespace QSB.Animation.Player
 			SetAnimationType(AnimationType.PlayerUnsuited);
 
 			InitCrouchSync();
+			InitAccelerationSync();
+			ThrusterManager.CreateRemotePlayerVFX(Player);
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
 			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
 		}
 
-		private void InitCrouchSync()
+		private void InitAccelerationSync()
 		{
-			_crouchSync = gameObject.AddComponent<CrouchSync>();
-			_crouchSync.Init(this, _playerController, VisibleAnimator);
+			Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
+			var thrusterModel = HasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
+			Player.JetpackAcceleration.Init(thrusterModel);
 		}
 
-		public void SendCrouch(float value = 0) => QSBEventManager.FireEvent(EventNames.QSBCrouch, value);
-
-		public void HandleCrouch(float value) => _crouchSync.CrouchParam.Target = value;
+		private void InitCrouchSync()
+		{
+			_crouchSync = GetComponent<CrouchSync>();
+			_crouchSync.Init(_playerController, VisibleAnimator);
+		}
 
 		private void SuitUp()
 		{

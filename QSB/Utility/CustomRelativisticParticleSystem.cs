@@ -1,7 +1,7 @@
 ﻿using QSB.Player;
 using UnityEngine;
 
-namespace QSB.RoastingSync
+namespace QSB.Utility
 {
 	internal class CustomRelativisticParticleSystem : MonoBehaviour
 	{
@@ -19,7 +19,18 @@ namespace QSB.RoastingSync
 
 		private void Awake()
 		{
+			if (!_isReady)
+			{
+				DebugLog.ToConsole($"Warning - Awake() ran when _isReady is false!", OWML.Common.MessageType.Warning);
+				return;
+			}
 			_particleSystem = GetComponent<ParticleSystem>();
+			if (_particleSystem == null)
+			{
+				DebugLog.ToConsole($"Error - _particleSystem is null.", OWML.Common.MessageType.Error);
+				_isReady = false;
+				return;
+			}
 			_rotation = transform.rotation;
 			_mainModule = _particleSystem.main;
 			_mainModule.simulationSpace = ParticleSystemSimulationSpace.Custom;
@@ -35,6 +46,12 @@ namespace QSB.RoastingSync
 		public void Init(PlayerInfo playerInfo)
 		{
 			var space = new GameObject($"{name}_ReferenceFrame");
+			if (playerInfo.Body == null)
+			{
+				DebugLog.ToConsole($"Error - Player body is null! Did you create this too early?", OWML.Common.MessageType.Error);
+				return;
+			}
+
 			space.transform.parent = playerInfo.Body.transform;
 			_simulationSpace = space.transform;
 			_isReady = true;
@@ -46,6 +63,13 @@ namespace QSB.RoastingSync
 			{
 				return;
 			}
+
+			if (_simulationSpace == null)
+			{
+				DebugLog.ToConsole($"Error - _simulationSpace is null.", OWML.Common.MessageType.Error);
+				_isReady = false;
+			}
+
 			_simulationSpace.rotation = _rotation;
 
 			if (!_velocityOverLifetimeModule.enabled

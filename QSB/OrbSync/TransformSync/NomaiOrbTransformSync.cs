@@ -1,4 +1,4 @@
-﻿using QSB.TransformSync;
+﻿using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;

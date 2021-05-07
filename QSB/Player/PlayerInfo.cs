@@ -1,4 +1,5 @@
 ﻿using QSB.Animation.Player;
+using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;
@@ -47,6 +48,7 @@ namespace QSB.Player
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
+		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc
 		public bool IsInMoon; // TODO : move into PlayerStates?

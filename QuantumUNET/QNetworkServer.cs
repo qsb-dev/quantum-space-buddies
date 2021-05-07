@@ -109,6 +109,7 @@ namespace QuantumUNET
 
 		internal void RegisterMessageHandlers()
 		{
+			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.ClientUpdateVars, OnUpdateVarsMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Ready, OnClientReadyMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Command, OnCommandMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalPlayerTransform, QNetworkTransform.HandleTransform);
@@ -118,6 +119,22 @@ namespace QuantumUNET
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.AnimationParameters, QNetworkAnimator.OnAnimationParametersServerMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.AnimationTrigger, QNetworkAnimator.OnAnimationTriggerServerMessage);
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
+		}
+
+		private static void OnUpdateVarsMessage(QNetworkMessage netMsg)
+		{
+			var networkInstanceId = netMsg.Reader.ReadNetworkId();
+			var typeName = netMsg.Reader.ReadString();
+			if (instance.m_NetworkScene.GetNetworkIdentity(networkInstanceId, out var networkIdentity))
+			{
+				var allBehaviours = networkIdentity.GetNetworkBehaviours();
+				var target = allBehaviours.First(x => x.GetType().Name == typeName);
+				target.OnDeserialize(netMsg.Reader, false);
+			}
+			else
+			{
+				Debug.LogError($"Did not find target for sync message for {networkInstanceId}");
+			}
 		}
 
 		public static void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId) => instance.InternalListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);

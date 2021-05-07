@@ -1,6 +1,6 @@
 ﻿using QSB.Animation.Player;
 using QSB.Instruments;
-using QSB.TransformSync;
+using QSB.Syncs.TransformSync;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
@@ -51,6 +51,7 @@ namespace QSB.Player.TransformSync
 		protected override GameObject InitRemoteTransform()
 		{
 			var body = Instantiate(GetPlayerModel());
+			Player.Body = body.gameObject;
 
 			GetComponent<AnimationSync>().InitRemote(body);
 			GetComponent<InstrumentsManager>().InitRemote(body);
@@ -59,8 +60,6 @@ namespace QSB.Player.TransformSync
 			marker.Init(Player);
 
 			body.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-
-			Player.Body = body.gameObject;
 
 			return body.gameObject;
 		}

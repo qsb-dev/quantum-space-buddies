@@ -1,5 +1,5 @@
 ﻿using QSB.Player;
-using QSB.TransformSync;
+using QSB.Syncs.TransformSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
