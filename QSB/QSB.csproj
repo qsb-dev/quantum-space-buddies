@@ -124,7 +124,10 @@
     <Compile Include="Animation\Player\CrouchSync.cs" />
     <Compile Include="Animation\Player\Patches\PlayerAnimationPatches.cs" />
     <Compile Include="Animation\Player\PlayerHeadRotationSync.cs" />
-    <Compile Include="Animation\Player\Thrusters\FlamesAndBubbles\SetUpThrusterFlames.cs" />
+    <Compile Include="Animation\Player\Thrusters\JetpackAccelerationSync.cs" />
+    <Compile Include="Animation\Player\Thrusters\RemotePlayerParticlesController.cs" />
+    <Compile Include="Animation\Player\Thrusters\RemoteThrusterWashController.cs" />
+    <Compile Include="Animation\Player\Thrusters\ThrusterManager.cs" />
     <Compile Include="CampfireSync\CampfireManager.cs" />
     <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />
     <Compile Include="CampfireSync\Patches\CampfirePatches.cs" />

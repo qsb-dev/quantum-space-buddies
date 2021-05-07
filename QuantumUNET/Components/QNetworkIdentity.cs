@@ -37,6 +37,9 @@ namespace QuantumUNET.Components
 			set => m_LocalPlayerAuthority = value;
 		}
 
+		public QNetworkBehaviour[] GetNetworkBehaviours() 
+			=> m_NetworkBehaviours;
+
 		public void SetRootIdentity(QNetworkIdentity newRoot)
 		{
 			if (RootIdentity != null)

@@ -174,7 +174,7 @@ namespace QSB
 
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe Active : {Locator.GetProbe().gameObject.activeInHierarchy}");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player positions :");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player data :");
 			offset += _debugLineSpacing;
 			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
@@ -182,6 +182,8 @@ namespace QSB
 				var sector = networkTransform.ReferenceSector;
 
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {(sector == null ? "NULL" : sector.Name)}");
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- LocalAccel : {player.JetpackAcceleration?.LocalAcceleration}");
 				offset += _debugLineSpacing;
 			}
 

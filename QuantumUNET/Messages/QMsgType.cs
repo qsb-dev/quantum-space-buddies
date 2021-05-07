@@ -5,7 +5,7 @@
 		public static string MsgTypeToString(short value)
 		{
 			string result;
-			if (value < 0 || value > 47)
+			if (value < 0 || value > 48)
 			{
 				result = string.Empty;
 			}
@@ -61,7 +61,8 @@
 		public const short LobbyAddPlayerFailed = 45;
 		public const short LobbyReturnToLobby = 46;
 		public const short ReconnectPlayer = 47;
-		public const short Highest = 47;
+		public const short ClientUpdateVars = 48;
+		public const short Highest = 48;
 
 		internal static string[] msgLabels = {
 			"none",
@@ -111,7 +112,8 @@
 			"LobbySceneLoaded",
 			"LobbyAddPlayerFailed",
 			"LobbyReturnToLobby",
-			"ReconnectPlayer"
+			"ReconnectPlayer",
+			"ClientUpdateVars"
 		};
 	}
 }

@@ -1959,14 +1959,7 @@ namespace QNetWeaver
 						var name = typeDefinition.Module.Name;
 						if (name != Weaver.scriptDef.MainModule.Name && name != Weaver.UnityAssemblyDefinition.MainModule.Name && name != Weaver.QNetAssemblyDefinition.MainModule.Name && name != Weaver.corLib.Name && name != "System.Runtime.dll")
 						{
-							Log.Error(string.Concat(new string[]
-							{
-								"SyncVar [",
-								fieldDefinition.FullName,
-								"] from ",
-								typeDefinition.Module.ToString(),
-								" cannot be a different module."
-							}));
+							Log.Error($"SyncVar [{fieldDefinition.FullName}] is from an inaccessible module! : [{name}]");
 							Weaver.fail = true;
 							return;
 						}

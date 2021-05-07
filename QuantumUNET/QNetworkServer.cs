@@ -109,7 +109,7 @@ namespace QuantumUNET
 
 		internal void RegisterMessageHandlers()
 		{
-			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.UpdateVars, OnUpdateVarsMessage);
+			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.ClientUpdateVars, OnUpdateVarsMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Ready, OnClientReadyMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Command, OnCommandMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalPlayerTransform, QNetworkTransform.HandleTransform);
@@ -124,9 +124,12 @@ namespace QuantumUNET
 		private static void OnUpdateVarsMessage(QNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
+			var typeName = netMsg.Reader.ReadString();
 			if (instance.m_NetworkScene.GetNetworkIdentity(networkInstanceId, out var networkIdentity))
 			{
-				networkIdentity.OnUpdateVars(netMsg.Reader, false);
+				var allBehaviours = networkIdentity.GetNetworkBehaviours();
+				var target = allBehaviours.First(x => x.GetType().Name == typeName);
+				target.OnDeserialize(netMsg.Reader, false);
 			}
 			else
 			{

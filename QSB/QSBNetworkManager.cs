@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.Animation.Player;
+using QSB.Animation.Player.Thrusters;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
@@ -59,6 +60,7 @@ namespace QSB
 			playerPrefab.AddComponent<AnimationSync>();
 			playerPrefab.AddComponent<CrouchSync>();
 			playerPrefab.AddComponent<WakeUpSync>();
+			playerPrefab.AddComponent<JetpackAccelerationSync>();
 			playerPrefab.AddComponent<InstrumentsManager>();
 
 			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");

@@ -57,8 +57,9 @@ namespace QuantumUNET
 		protected void ClientSendUpdateVars()
 		{
 			var writer = new QNetworkWriter();
-			writer.StartMessage(QMsgType.UpdateVars);
+			writer.StartMessage(QMsgType.ClientUpdateVars);
 			writer.Write(NetId);
+			writer.Write(GetType().Name);
 			if (OnSerialize(writer, false))
 			{
 				ClearAllDirtyBits();

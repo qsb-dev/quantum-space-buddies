@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation.Player.Thrusters;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -94,6 +95,7 @@ namespace QSB.Animation.Player
 			_playerController = body.parent.GetComponent<PlayerCharacterController>();
 
 			InitCrouchSync();
+			InitThrusters();
 		}
 
 		public void InitRemote(Transform body)
@@ -118,9 +120,18 @@ namespace QSB.Animation.Player
 			SetAnimationType(AnimationType.PlayerUnsuited);
 
 			InitCrouchSync();
+			InitThrusters();
+			ThrusterManager.CreateRemotePlayerVFX(Player);
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
 			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
+		}
+
+		private void InitThrusters()
+		{
+			Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
+			var thrusterModel = HasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
+			Player.JetpackAcceleration.Init(thrusterModel);
 		}
 
 		private void InitCrouchSync()
