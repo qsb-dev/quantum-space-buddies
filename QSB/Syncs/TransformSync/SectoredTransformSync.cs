@@ -1,4 +1,5 @@
-﻿using QSB.SectorSync.WorldObjects;
+﻿using QSB.SectorSync;
+using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
@@ -35,10 +36,6 @@ namespace QSB.Syncs.TransformSync
 			if (closestSector != null)
 			{
 				SetReferenceTransform(closestSector.Transform);
-			}
-			else
-			{
-				_isInitialized = false;
 			}
 		}
 
@@ -80,6 +77,24 @@ namespace QSB.Syncs.TransformSync
 			}
 
 			base.DeserializeTransform(reader);
+		}
+
+		protected override void UpdateTransform()
+		{
+			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady)
+			{
+				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+				if (closestSector != null)
+				{
+					SetReferenceTransform(closestSector.Transform);
+				}
+				else
+				{
+					return;
+				}
+			}
+
+			base.UpdateTransform();
 		}
 
 		public void SetReferenceSector(QSBSector sector)
