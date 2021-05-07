@@ -125,7 +125,7 @@
     <Compile Include="Animation\Player\Patches\PlayerAnimationPatches.cs" />
     <Compile Include="Animation\Player\PlayerHeadRotationSync.cs" />
     <Compile Include="Animation\Player\Thrusters\JetpackAccelerationSync.cs" />
-    <Compile Include="Animation\Player\Thrusters\RemotePlayerParticlesController.cs" />
+    <Compile Include="Animation\Player\Thrusters\RemoteThrusterFlameController.cs" />
     <Compile Include="Animation\Player\Thrusters\RemoteThrusterWashController.cs" />
     <Compile Include="Animation\Player\Thrusters\ThrusterManager.cs" />
     <Compile Include="CampfireSync\CampfireManager.cs" />
@@ -238,7 +238,7 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
-    <Compile Include="RoastingSync\CustomRelativisticParticleSystem.cs" />
+    <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
     <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />
     <Compile Include="RoastingSync\Events\MarshmallowEventEvent.cs" />

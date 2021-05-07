@@ -1,14 +1,10 @@
 ﻿using QSB.Player;
 using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters
 {
-	class RemoteThrusterWashController : MonoBehaviour
+	internal class RemoteThrusterWashController : MonoBehaviour
 	{
 		private float _raycastDistance = 10f;
 		private AnimationCurve _emissionDistanceScale;
@@ -26,7 +22,6 @@ namespace QSB.Animation.Player.Thrusters
 
 		public void InitFromOld(AnimationCurve distanceScale, AnimationCurve thrusterScale, ParticleSystem defaultParticleSystem, PlayerInfo player)
 		{
-			DebugLog.DebugWrite($"InitFromOld for player {player.PlayerId}");
 			_emissionDistanceScale = distanceScale;
 			_emissionThrusterScale = thrusterScale;
 			_defaultParticleSystem = defaultParticleSystem;
@@ -36,19 +31,15 @@ namespace QSB.Animation.Player.Thrusters
 
 		private void Init()
 		{
-			DebugLog.DebugWrite($"Init for player {_attachedPlayer.PlayerId}");
 			if (_defaultParticleSystem == null)
 			{
 				DebugLog.ToConsole($"Error - DefaultParticleSystem is null!", OWML.Common.MessageType.Error);
 				return;
 			}
-			else
-			{
-				DebugLog.DebugWrite($"DefaultParticleSystem OK.");
-			}
 			_defaultMainModule = _defaultParticleSystem.main;
 			_defaultEmissionModule = _defaultParticleSystem.emission;
 			_baseDefaultEmissionRate = _defaultEmissionModule.rateOverTime.constant;
+
 			_initialised = true;
 		}
 
@@ -80,7 +71,6 @@ namespace QSB.Animation.Player.Thrusters
 				var rotation = Quaternion.LookRotation(hitInfo.normal);
 				if (!_defaultParticleSystem.isPlaying)
 				{
-					DebugLog.DebugWrite($"{_attachedPlayer.PlayerId} play");
 					_defaultParticleSystem.Play();
 				}
 				_defaultEmissionModule.rateOverTimeMultiplier = _baseDefaultEmissionRate * emissionThrusterScale;
@@ -95,7 +85,6 @@ namespace QSB.Animation.Player.Thrusters
 			{
 				if (_defaultParticleSystem.isPlaying)
 				{
-					DebugLog.DebugWrite($"{_attachedPlayer.PlayerId} stop");
 					_defaultParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
 				}
 			}

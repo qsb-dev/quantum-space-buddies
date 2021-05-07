@@ -185,6 +185,8 @@ namespace QSB
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- LocalAccel : {player.JetpackAcceleration?.LocalAcceleration}");
 				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- Thrusting : {player.JetpackAcceleration?.IsThrusting}");
+				offset += _debugLineSpacing;
 			}
 
 			if (SocketedObjToDebug == -1)
