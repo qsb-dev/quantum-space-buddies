@@ -12,6 +12,7 @@ namespace QSB.Animation.Player
 
 		public void Init(Transform lookBase)
 		{
+			DebugLog.DebugWrite($"Init - attached to {gameObject.name}");
 			_attachedAnimator = GetComponent<Animator>();
 			_lookBase = lookBase;
 			_isSetUp = true;
