@@ -40,6 +40,7 @@ namespace QSB.Animation.Player.Thrusters
 			_currentScale = 0f;
 			_thrusterRenderer.enabled = false;
 			_light.enabled = false;
+			_light.shadows = LightShadows.Soft;
 			_initialized = true;
 		}
 
