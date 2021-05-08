@@ -261,6 +261,16 @@ namespace QSB.TimeSync
 			}
 
 			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
+			if (mappedTimescale > 100f)
+			{
+				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned over 100 - should have switched into fast-forward!", MessageType.Warning);
+				mappedTimescale = 100f;
+			}
+			if (mappedTimescale < 0)
+			{
+				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned below 0 - should have switched into pausing!", MessageType.Warning);
+				mappedTimescale = 0f;
+			}
 			OWTime.SetTimeScale(mappedTimescale);
 		}
 	}
