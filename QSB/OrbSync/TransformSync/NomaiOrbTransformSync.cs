@@ -42,8 +42,18 @@ namespace QSB.OrbSync.TransformSync
 			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
 		}
 
-		protected override GameObject InitLocalTransform() => QSBWorldSync.OldOrbList[_index].gameObject;
-		protected override GameObject InitRemoteTransform() => QSBWorldSync.OldOrbList[_index].gameObject;
+		private GameObject GetTransform()
+		{
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
+				return null;
+			}
+			return QSBWorldSync.OldOrbList[_index].gameObject;
+		}
+
+		protected override GameObject InitLocalTransform() => GetTransform();
+		protected override GameObject InitRemoteTransform() => GetTransform();
 
 		public override bool IsReady => _isReady;
 		public override bool UseInterpolation => false;

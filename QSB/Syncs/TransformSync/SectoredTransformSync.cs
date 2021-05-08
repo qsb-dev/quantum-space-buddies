@@ -32,6 +32,10 @@ namespace QSB.Syncs.TransformSync
 		protected override void Init()
 		{
 			base.Init();
+			if (!QSBSectorManager.Instance.IsReady)
+			{
+				return;
+			}
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{

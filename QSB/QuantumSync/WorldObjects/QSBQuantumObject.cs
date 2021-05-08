@@ -63,7 +63,6 @@ namespace QSB.QuantumSync.WorldObjects
 			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
 			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
 			{
-				DebugLog.ToConsole($"Warning - {AttachedObject.name} has null visibility trackers!", MessageType.Warning);
 				return new List<Shape>();
 			}
 			if (visibilityTrackers.Any(x => x.GetType() == typeof(RendererVisibilityTracker)))
