@@ -60,7 +60,6 @@ namespace QSB.TimeSync
 			DebugLog.DebugWrite($"OnWakeUp", MessageType.Info);
 			if (QNetworkServer.active)
 			{
-				QSBCore.HasWokenUp = true;
 				RespawnOnDeath.Instance.Init();
 			}
 		}
@@ -74,6 +73,7 @@ namespace QSB.TimeSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
+			DebugLog.DebugWrite($"ONSCENELOADED");
 			if (isInUniverse)
 			{
 				Init();
@@ -90,7 +90,7 @@ namespace QSB.TimeSync
 		{
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			_state = State.Loaded;
-			gameObject.AddComponent<PreserveTimeScale>();
+			gameObject.GetAddComponent<PreserveTimeScale>();
 			if (IsServer)
 			{
 				SendServerTime();
@@ -174,7 +174,6 @@ namespace QSB.TimeSync
 
 			DebugLog.DebugWrite($"RESET TIMESCALE", MessageType.Info);
 			_isFirstFastForward = false;
-			QSBCore.HasWokenUp = true;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();

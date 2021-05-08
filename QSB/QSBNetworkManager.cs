@@ -138,11 +138,6 @@ namespace QSB
 			{
 				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 			}
-
-			if (QSBSceneManager.IsInUniverse)
-			{
-				QSBCore.HasWokenUp = true;
-			}
 		}
 
 		public override void OnServerAddPlayer(QNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
@@ -219,7 +214,6 @@ namespace QSB
 			}
 
 			_lobby.CanEditName = true;
-			QSBCore.HasWokenUp = false;
 
 			IsReady = false;
 			_everConnected = false;
@@ -247,8 +241,6 @@ namespace QSB
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
-
-			QSBCore.HasWokenUp = false;
 
 			base.OnStopServer();
 		}

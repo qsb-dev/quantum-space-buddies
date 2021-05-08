@@ -61,7 +61,7 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
-		public static bool HasWokenUp { get; set; }
+		public static bool WorldObjectsReady => WorldObjectManager.AllReady;
 		public static bool IsServer => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
@@ -133,7 +133,7 @@ namespace QSB
 			var offset = 10f;
 			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {WorldObjectsReady}");
 			offset += _debugLineSpacing;
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -143,7 +143,7 @@ namespace QSB
 				offset += _debugLineSpacing;
 			}
 
-			if (!HasWokenUp)
+			if (!WorldObjectsReady)
 			{
 				return;
 			}

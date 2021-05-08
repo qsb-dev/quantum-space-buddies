@@ -92,7 +92,7 @@ namespace QSB.Syncs.TransformSync
 
 		public override void DeserializeTransform(QNetworkReader reader)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);
@@ -234,7 +234,7 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
+			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
 			{
 				return;
 			}

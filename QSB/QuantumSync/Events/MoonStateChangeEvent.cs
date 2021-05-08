@@ -25,7 +25,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, MoonStateChangeMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

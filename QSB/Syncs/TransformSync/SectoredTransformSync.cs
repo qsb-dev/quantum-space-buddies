@@ -62,7 +62,7 @@ namespace QSB.Syncs.TransformSync
 
 		public override void DeserializeTransform(QNetworkReader reader)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				reader.ReadInt32();
 				reader.ReadVector3();

@@ -34,7 +34,7 @@ namespace QSB.Animation.Player.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.PlayerStates.SuitedUp = message.ToggleValue;
 
-			if (!QSBCore.HasWokenUp || !player.PlayerStates.IsReady)
+			if (!QSBCore.WorldObjectsReady || !player.PlayerStates.IsReady)
 			{
 				return;
 			}

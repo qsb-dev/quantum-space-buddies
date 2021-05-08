@@ -26,7 +26,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, SocketStateChangeMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

@@ -21,7 +21,7 @@ namespace QSB.Animation.Player.Events
 
 		public override void OnReceiveRemote(bool server, AnimationTriggerMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

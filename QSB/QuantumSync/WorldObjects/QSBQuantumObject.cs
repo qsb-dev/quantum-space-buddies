@@ -82,7 +82,7 @@ namespace QSB.QuantumSync.WorldObjects
 		private void OnEnable(Shape s)
 		{
 			IsEnabled = true;
-			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
+			if (!QSBCore.WorldObjectsReady && !QSBCore.IsServer)
 			{
 				return;
 			}
@@ -107,7 +107,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 			IsEnabled = false;
-			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
+			if (!QSBCore.WorldObjectsReady && !QSBCore.IsServer)
 			{
 				return;
 			}
