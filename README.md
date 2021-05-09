@@ -84,7 +84,7 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Nomai orbs | Yes |
 | Nomai shuttle | Kind of |
 | Orbital Probe Cannon (direction) | No |
-| Player animation | Kind of |
+| Player animation | Yes |
 | Player position | Yes |
 | Player tools | Yes |
 | Projection pools | Yes |
