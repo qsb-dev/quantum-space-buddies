@@ -35,6 +35,7 @@ namespace QSB.Syncs.TransformSync
 		private float _previousDistance;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
+		private string _logName => $"{PlayerId}.{GetType().Name}";
 		protected IntermediaryTransform _intermediaryTransform;
 
 		public virtual void Start()
@@ -57,11 +58,15 @@ namespace QSB.Syncs.TransformSync
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
-			_isInitialized = false;
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse) 
+			=> _isInitialized = false;
 
 		protected virtual void Init()
 		{
+			if (!QSBSceneManager.IsInUniverse)
+			{
+				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
+			}
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject);
@@ -87,7 +92,7 @@ namespace QSB.Syncs.TransformSync
 
 		public override void DeserializeTransform(QNetworkReader reader)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);
@@ -112,7 +117,7 @@ namespace QSB.Syncs.TransformSync
 
 			if (_intermediaryTransform.GetPosition() == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
 		}
 
@@ -135,7 +140,12 @@ namespace QSB.Syncs.TransformSync
 
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject {Player.PlayerId}.{GetType().Name} is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
+				return;
+			}
+
+			if (!AttachedObject.activeInHierarchy)
+			{
 				return;
 			}
 
@@ -186,7 +196,7 @@ namespace QSB.Syncs.TransformSync
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject was null for {PlayerId}.{GetType().Name} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(
 					() => AttachedObject != null,
 					() => ReparentAttachedObject(transform));
@@ -224,7 +234,7 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.HasWokenUp || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
+			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
 			{
 				return;
 			}

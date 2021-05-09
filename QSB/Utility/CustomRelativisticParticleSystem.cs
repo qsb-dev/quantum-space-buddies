@@ -59,7 +59,7 @@ namespace QSB.Utility
 
 		private void FixedUpdate()
 		{
-			if (!QSBCore.HasWokenUp || !_isReady)
+			if (!QSBCore.WorldObjectsReady || !_isReady)
 			{
 				return;
 			}

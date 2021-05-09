@@ -22,7 +22,7 @@ namespace QSB.Animation.Player.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
-			if (!QSBCore.HasWokenUp || !QSBPlayerManager.GetPlayer(message.AboutId).PlayerStates.IsReady)
+			if (!QSBCore.WorldObjectsReady || !QSBPlayerManager.GetPlayer(message.AboutId).PlayerStates.IsReady)
 			{
 				return;
 			}

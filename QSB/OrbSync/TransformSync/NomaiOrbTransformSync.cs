@@ -15,23 +15,13 @@ namespace QSB.OrbSync.TransformSync
 
 		public override void OnStartClient()
 		{
+			QSBSceneManager.OnSceneLoaded += (OWScene scene, bool inUniverse) => _isReady = false;
 			OrbTransformSyncs.Add(this);
-
-			QSBCore.UnityEvents.RunWhen(() => QSBCore.HasWokenUp, () => QSBCore.UnityEvents.FireOnNextUpdate(OnReady));
-		}
-
-		private void OnReady()
-		{
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
-			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
-				return;
-			}
-			_isReady = true;
 		}
 
 		protected override void OnDestroy()
 		{
+			QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool inUniverse) => _isReady = false;
 			OrbTransformSyncs.Remove(this);
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
@@ -42,10 +32,25 @@ namespace QSB.OrbSync.TransformSync
 			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
 		}
 
-		protected override GameObject InitLocalTransform() => QSBWorldSync.OldOrbList[_index].gameObject;
-		protected override GameObject InitRemoteTransform() => QSBWorldSync.OldOrbList[_index].gameObject;
+		private GameObject GetTransform()
+		{
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
+				return null;
+			}
+			if (QSBWorldSync.OldOrbList[_index] == null)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", OWML.Common.MessageType.Error);
+				return null;
+			}
+			return QSBWorldSync.OldOrbList[_index].gameObject;
+		}
 
-		public override bool IsReady => _isReady;
+		protected override GameObject InitLocalTransform() => GetTransform();
+		protected override GameObject InitRemoteTransform() => GetTransform();
+
+		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => false;
 	}
 }

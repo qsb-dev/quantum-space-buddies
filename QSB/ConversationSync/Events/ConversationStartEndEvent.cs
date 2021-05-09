@@ -31,7 +31,7 @@ namespace QSB.ConversationSync.Events
 				return;
 			}
 
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

@@ -91,7 +91,6 @@ namespace QSB.WorldSync
 					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
-			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 

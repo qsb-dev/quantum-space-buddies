@@ -21,7 +21,7 @@ namespace QSB.Animation.Player.Thrusters
 
 		// TODO : Make flames not appear underwater (Check original code!)
 
-		public void InitFromOld(Thruster thruster, Light light, AnimationCurve scaleByThrust, DampedSpring scaleSpring, float belowMaxThrustScalar, PlayerInfo player)
+		public void InitFromOld(Thruster thruster, Light light, AnimationCurve scaleByThrust, DampedSpring scaleSpring, float belowMaxThrustScalar, float baseLightRadius, PlayerInfo player)
 		{
 			_thruster = thruster;
 			_light = light;
@@ -29,6 +29,7 @@ namespace QSB.Animation.Player.Thrusters
 			_scaleSpring = scaleSpring;
 			_belowMaxThrustScalar = belowMaxThrustScalar;
 			_attachedPlayer = player;
+			_baseLightRadius = baseLightRadius;
 			_isReady = true;
 		}
 
@@ -36,10 +37,10 @@ namespace QSB.Animation.Player.Thrusters
 		{
 			_thrusterRenderer = GetComponent<MeshRenderer>();
 			_thrusterFilter = OWUtilities.GetShipThrusterFilter(_thruster);
-			_baseLightRadius = _light.range;
 			_currentScale = 0f;
 			_thrusterRenderer.enabled = false;
 			_light.enabled = false;
+			_light.shadows = LightShadows.Soft;
 			_initialized = true;
 		}
 

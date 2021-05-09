@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using OWML.Common;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
@@ -50,7 +51,7 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", OWML.Common.MessageType.Error);
+				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
 			
@@ -65,7 +66,7 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", OWML.Common.MessageType.Error);
+				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
 			SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
@@ -86,13 +87,27 @@ namespace QSB.Syncs.TransformSync
 		/// <summary>
 		/// Returns the world position the VISIBLE transform should be set to, from the INVISIBLE transform.
 		/// </summary>
-		public Vector3 GetTargetPosition_Unparented() 
-			=> _referenceTransform.TransformPoint(GetPosition());
+		public Vector3 GetTargetPosition_Unparented()
+		{
+			if (_referenceTransform == null)
+			{
+				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				return Vector3.zero;
+			}
+			return _referenceTransform.TransformPoint(GetPosition());
+		}
 
 		/// <summary>
 		/// Returns the world rotation the VISIBLE transform should be set to, from the INVISIBLE transform.
 		/// </summary>
 		public Quaternion GetTargetRotation_Unparented()
-			=> _referenceTransform.TransformRotation(GetRotation());
+		{
+			if (_referenceTransform == null)
+			{
+				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				return Quaternion.identity;
+			}
+			return _referenceTransform.TransformRotation(GetRotation());
+		}
 	}
 }
