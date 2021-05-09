@@ -1,5 +1,4 @@
 ﻿using QSB.Patches;
-using QSB.Utility;
 
 namespace QSB.Player.Patches
 {
@@ -27,9 +26,6 @@ namespace QSB.Player.Patches
 			return false;
 		}
 
-		public static void PauseMenuManager_OnExitToMainMenu()
-		{
-			QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
-		}
+		public static void PauseMenuManager_OnExitToMainMenu() => QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
 	}
 }
