@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -102,14 +105,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animation\AnimationSync.cs" />
-    <Compile Include="Animation\AnimationType.cs" />
-    <Compile Include="Animation\Events\CrouchEvent.cs" />
-    <Compile Include="Animation\AnimatorMirror.cs" />
-    <Compile Include="Animation\AnimControllerPatch.cs" />
-    <Compile Include="Animation\AnimFloatParam.cs" />
-    <Compile Include="Animation\CrouchSync.cs" />
-    <Compile Include="Animation\PlayerHeadRotationSync.cs" />
+    <Compile Include="Animation\NPC\AnimationEvent.cs" />
+    <Compile Include="Animation\NPC\CharacterAnimManager.cs" />
+    <Compile Include="Animation\NPC\Events\NpcAnimationEvent.cs" />
+    <Compile Include="Animation\NPC\Events\NpcAnimationMessage.cs" />
+    <Compile Include="Animation\NPC\Patches\CharacterAnimationPatches.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\INpcAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\NpcAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\QSBCharacterAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\QSBTravelerController.cs" />
+    <Compile Include="Animation\Player\AnimationSync.cs" />
+    <Compile Include="Animation\Player\AnimationType.cs" />
+    <Compile Include="Animation\Player\Events\AnimationTriggerEvent.cs" />
+    <Compile Include="Animation\Player\Events\AnimationTriggerMessage.cs" />
+    <Compile Include="Animation\Player\AnimatorMirror.cs" />
+    <Compile Include="Animation\Player\AnimControllerPatch.cs" />
+    <Compile Include="Animation\Player\AnimFloatParam.cs" />
+    <Compile Include="Animation\Player\CrouchSync.cs" />
+    <Compile Include="Animation\Player\Patches\PlayerAnimationPatches.cs" />
+    <Compile Include="Animation\Player\PlayerHeadRotationSync.cs" />
+    <Compile Include="Animation\Player\Thrusters\JetpackAccelerationSync.cs" />
+    <Compile Include="Animation\Player\Thrusters\RemoteThrusterFlameController.cs" />
+    <Compile Include="Animation\Player\Thrusters\RemoteThrusterWashController.cs" />
+    <Compile Include="Animation\Player\Thrusters\ThrusterManager.cs" />
     <Compile Include="CampfireSync\CampfireManager.cs" />
     <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />
     <Compile Include="CampfireSync\Patches\CampfirePatches.cs" />
@@ -132,7 +150,7 @@
     <Compile Include="Events\EventNames.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathEvent.cs" />
     <Compile Include="Events\IQSBEvent.cs" />
-    <Compile Include="Animation\Events\ChangeAnimTypeEvent.cs" />
+    <Compile Include="Animation\Player\Events\ChangeAnimTypeEvent.cs" />
     <Compile Include="FrequencySync\Events\IdentifyFrequencyEvent.cs" />
     <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
     <Compile Include="FrequencySync\Patches\FrequencyPatches.cs" />
@@ -142,6 +160,7 @@
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
+    <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
     <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
@@ -219,7 +238,7 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
-    <Compile Include="RoastingSync\CustomRelativisticParticleSystem.cs" />
+    <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
     <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />
     <Compile Include="RoastingSync\Events\MarshmallowEventEvent.cs" />
@@ -231,7 +250,10 @@
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
-    <Compile Include="TransformSync\QSBNetworkTransform.cs" />
+    <Compile Include="Syncs\TransformSync\BaseTransformSync.cs" />
+    <Compile Include="Syncs\TransformSync\IntermediaryTransform.cs" />
+    <Compile Include="Syncs\TransformSync\SectoredTransformSync.cs" />
+    <Compile Include="Syncs\TransformSync\UnparentedBaseTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />
@@ -247,9 +269,8 @@
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
     <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
-    <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
-    <Compile Include="Animation\Events\PlayerSuitEvent.cs" />
+    <Compile Include="Animation\Player\Events\PlayerSuitEvent.cs" />
     <Compile Include="TimeSync\Events\ServerTimeEvent.cs" />
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
@@ -264,7 +285,7 @@
     <Compile Include="SectorSync\SectorSync.cs" />
     <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
-    <Compile Include="Utility\DebugZOverride.cs" />
+    <Compile Include="Utility\ZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\GlobalMessenger4Args.cs" />
     <Compile Include="Utility\GlobalMessenger5Args.cs" />
@@ -344,8 +365,16 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /e /i /y "$(TargetDir)*" "$(OwmlDir)\Mods\$(ProjectName)"
+    <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"
+md "$(OwmlDir)\Mods\$(ProjectName)\assets"
+del "$(OwmlDir)\Mods\$(ProjectName)\config.json"
 
-xcopy /e /i /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"</PostBuildEvent>
+copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ProjectName)"
+copy /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets
+copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ProjectName)"
+
+"$(SolutionDir)\QNetWeaver\bin\Debug\QNetWeaver.exe" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll" "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll"  "$(SolutionDir)\WeavedFiles" "$(TargetPath)"
+
+copy /y "$(SolutionDir)\WeavedFiles\QSB.dll" "$(OwmlDir)\Mods\$(ProjectName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

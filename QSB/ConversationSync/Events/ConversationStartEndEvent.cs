@@ -1,11 +1,8 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
-using UnityEngine;
 
 namespace QSB.ConversationSync.Events
 {
@@ -16,75 +13,55 @@ namespace QSB.ConversationSync.Events
 		public override void SetupListener() => GlobalMessenger<int, uint, bool>.AddListener(EventNames.QSBConversationStartEnd, Handler);
 		public override void CloseListener() => GlobalMessenger<int, uint, bool>.RemoveListener(EventNames.QSBConversationStartEnd, Handler);
 
-		private void Handler(int charId, uint playerId, bool state) => SendEvent(CreateMessage(charId, playerId, state));
+		private void Handler(int objId, uint playerId, bool state) => SendEvent(CreateMessage(objId, playerId, state));
 
-		private ConversationStartEndMessage CreateMessage(int charId, uint playerId, bool state) => new ConversationStartEndMessage
+		private ConversationStartEndMessage CreateMessage(int objId, uint playerId, bool state) => new ConversationStartEndMessage
 		{
 			AboutId = LocalPlayerId,
-			CharacterId = charId,
+			TreeId = objId,
 			PlayerId = playerId,
 			State = state
 		};
 
 		public override void OnReceiveRemote(bool server, ConversationStartEndMessage message)
 		{
-			if (message.CharacterId == -1)
+			if (message.TreeId == -1)
 			{
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
 
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}
 
-			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.CharacterId];
-			var animController = Resources.FindObjectsOfTypeAll<CharacterAnimController>().FirstOrDefault(x => x.GetValue<CharacterDialogueTree>("_dialogueTree") == dialogueTree);
-
-			if (animController == default(CharacterAnimController))
-			{
-				return;
-			}
+			var dialogueTree = QSBWorldSync.OldDialogueTrees[message.TreeId];
 
 			if (message.State)
 			{
-				StartConversation(message.PlayerId, message.CharacterId, animController, dialogueTree);
+				StartConversation(message.PlayerId, message.TreeId, dialogueTree);
 			}
 			else
 			{
-				EndConversation(message.PlayerId, animController, dialogueTree);
+				EndConversation(message.PlayerId, dialogueTree);
 			}
 		}
 
 		private void StartConversation(
 			uint playerId,
-			int characterId,
-			CharacterAnimController controller,
+			int dialogueTreeId,
 			CharacterDialogueTree tree)
 		{
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = characterId;
-			controller.SetValue("_inConversation", true);
-			controller.SetValue("_playerInHeadZone", true);
-			if (controller.GetValue<bool>("_hasTalkAnimation"))
-			{
-				controller.GetValue<Animator>("_animator").SetTrigger("Talking");
-			}
+			QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = dialogueTreeId;
 			tree.GetInteractVolume().DisableInteraction();
 		}
 
 		private void EndConversation(
 			uint playerId,
-			CharacterAnimController controller,
 			CharacterDialogueTree tree)
 		{
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueID = -1;
-			controller.SetValue("_inConversation", false);
-			controller.SetValue("_playerInHeadZone", false);
-			if (controller.GetValue<bool>("_hasTalkAnimation"))
-			{
-				controller.GetValue<Animator>("_animator").SetTrigger("Idle");
-			}
+			QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = -1;
 			tree.GetInteractVolume().EnableInteraction();
 		}
 	}

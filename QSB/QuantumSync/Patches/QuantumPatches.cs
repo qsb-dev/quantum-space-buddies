@@ -63,10 +63,13 @@ namespace QSB.QuantumSync.Patches
 			ref QuantumSocket ____recentlyObscuredSocket,
 			QuantumSocket ____occupiedSocket)
 		{
-			var socketedWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
-			if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			if (WorldObjectManager.AllReady)
 			{
-				return false;
+				var socketedWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
+				if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+				{
+					return false;
+				}
 			}
 
 			foreach (var socket in ____childSockets)
@@ -160,6 +163,11 @@ namespace QSB.QuantumSync.Patches
 
 		public static void Socketed_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return;
+			}
+
 			if (socket == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to move {__instance.name} to a null socket!", MessageType.Error);
@@ -193,10 +201,14 @@ namespace QSB.QuantumSync.Patches
 			ref Transform[] ____shuffledObjects,
 			ref bool __result)
 		{
-			var shuffleWorldObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>(__instance);
-			if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			QSBQuantumShuffleObject shuffleWorldObject = default;
+			if (WorldObjectManager.AllReady)
 			{
-				return false;
+				shuffleWorldObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>(__instance);
+				if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+				{
+					return false;
+				}
 			}
 
 			____indexList.Clear();
@@ -208,20 +220,32 @@ namespace QSB.QuantumSync.Patches
 				____indexList[i] = ____indexList[random];
 				____indexList[random] = temp;
 			}
+
+
 			for (var j = 0; j < ____shuffledObjects.Length; j++)
 			{
 				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
 			}
-			QSBEventManager.FireEvent(
+
+			if (WorldObjectManager.AllReady)
+			{
+				QSBEventManager.FireEvent(
 					EventNames.QSBQuantumShuffle,
 					shuffleWorldObject.ObjectId,
 					____indexList.ToArray());
-			__result = true;
+				__result = true;
+			}
+
 			return false;
 		}
 
 		public static bool MultiState_Start(MultiStateQuantumObject __instance, Sector ____sector, bool ____collapseOnStart)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return true;
+			}
+
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
 			if (qsbObj.ControllingPlayer == 0)
 			{
@@ -250,6 +274,11 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool MultiState_ChangeQuantumState(MultiStateQuantumObject __instance)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return true;
+			}
+
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>(__instance);
 			if (qsbObj.ControllingPlayer == 0 && qsbObj.CurrentState == -1)
 			{
@@ -261,6 +290,11 @@ namespace QSB.QuantumSync.Patches
 
 		public static void QuantumState_SetVisible(QuantumState __instance, bool visible)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return;
+			}
+
 			if (!visible)
 			{
 				return;

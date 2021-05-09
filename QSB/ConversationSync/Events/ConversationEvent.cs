@@ -24,7 +24,7 @@ namespace QSB.ConversationSync.Events
 
 		public override void OnReceiveRemote(bool server, ConversationMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

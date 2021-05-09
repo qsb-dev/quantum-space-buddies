@@ -32,7 +32,6 @@
 		public static string QSBServerTime = "QSBServerTime";
 		public static string QSBStartLift = "QSBStartLift";
 		public static string QSBGeyserState = "QSBGeyserState";
-		public static string QSBCrouch = "QSBAnimTrigger";
 		public static string QSBOrbSlot = "QSBOrbSlot";
 		public static string QSBOrbUser = "QSBOrbUser";
 		public static string QSBConversation = "QSBConversation";
@@ -60,5 +59,9 @@
 		public static string QSBExitPlatform = "QSBExitPlatform";
 		public static string QSBCampfireState = "QSBCampfireState";
 		public static string QSBMarshmallowEvent = "QSBMarshmallowEvent";
+		public static string QSBAnimTrigger = "QSBAnimTrigger";
+		public static string QSBEnterHeadZone = "QSBEnterHeadZone";
+		public static string QSBExitHeadZone = "QSBExitHeadZone";
+		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
 	}
 }

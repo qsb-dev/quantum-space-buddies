@@ -3,7 +3,7 @@ using QSB.Instruments;
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Animation.Events
+namespace QSB.Animation.Player.Events
 {
 	public class ChangeAnimTypeEvent : QSBEvent<EnumMessage<AnimationType>>
 	{
@@ -22,7 +22,7 @@ namespace QSB.Animation.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
-			if (!QSBCore.HasWokenUp || !QSBPlayerManager.GetPlayer(message.AboutId).PlayerStates.IsReady)
+			if (!QSBCore.WorldObjectsReady || !QSBPlayerManager.GetPlayer(message.AboutId).PlayerStates.IsReady)
 			{
 				return;
 			}

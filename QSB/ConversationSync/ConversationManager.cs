@@ -37,9 +37,9 @@ namespace QSB.ConversationSync
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 		{
 			var treeIndex = QSBWorldSync.OldDialogueTrees.IndexOf(tree);
-			return QSBPlayerManager.PlayerList.All(x => x.CurrentDialogueID != treeIndex)
+			return QSBPlayerManager.PlayerList.All(x => x.CurrentCharacterDialogueTreeId != treeIndex)
 				? uint.MaxValue
-				: QSBPlayerManager.PlayerList.First(x => x.CurrentDialogueID == treeIndex).PlayerId;
+				: QSBPlayerManager.PlayerList.First(x => x.CurrentCharacterDialogueTreeId == treeIndex).PlayerId;
 		}
 
 		public void SendPlayerOption(string text) =>
@@ -122,6 +122,7 @@ namespace QSB.ConversationSync
 			lookAt.SetValue("_localFacingVector", Vector3.back);
 			lookAt.SetValue("_localRotationAxis", Vector3.up);
 			newBox.GetComponent<Text>().text = text;
+			newBox.AddComponent<ZOverride>();
 			newBox.SetActive(true);
 			return newBox;
 		}

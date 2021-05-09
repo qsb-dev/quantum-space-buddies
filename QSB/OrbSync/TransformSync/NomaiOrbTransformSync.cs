@@ -1,81 +1,56 @@
-﻿using QSB.Utility;
+﻿using QSB.Syncs.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	public class NomaiOrbTransformSync : QNetworkBehaviour
+	internal class NomaiOrbTransformSync : UnparentedBaseTransformSync
 	{
-		public NomaiInterfaceOrb AttachedOrb { get; private set; }
-		public Transform OrbTransform { get; private set; }
+		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
 
-		private int Index => QSBWorldSync.OrbSyncList.IndexOf(this);
-
-		private bool _isInitialized;
+		private int _index => OrbTransformSyncs.IndexOf(this);
 		private bool _isReady;
-		private Transform _orbParent;
 
 		public override void OnStartClient()
 		{
-			DontDestroyOnLoad(this);
-			QSBWorldSync.OrbSyncList.Add(this);
-
-			QSBCore.UnityEvents.RunWhen(() => QSBCore.HasWokenUp, () => QSBCore.UnityEvents.FireOnNextUpdate(OnReady));
+			QSBSceneManager.OnSceneLoaded += (OWScene scene, bool inUniverse) => _isReady = false;
+			OrbTransformSyncs.Add(this);
 		}
 
-		private void OnReady()
+		protected override void OnDestroy()
 		{
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count < Index)
-			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {Index}.", OWML.Common.MessageType.Error);
-				return;
-			}
-			AttachedOrb = QSBWorldSync.OldOrbList[Index];
-			_isReady = true;
+			QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool inUniverse) => _isReady = false;
+			OrbTransformSyncs.Remove(this);
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		public void OnDestroy() => QSBWorldSync.OrbSyncList.Remove(this);
-
-		protected void Init()
+		protected override void Init()
 		{
-			OrbTransform = AttachedOrb.transform;
-			_orbParent = AttachedOrb.GetAttachedOWRigidbody().GetOrigParent();
-			_isInitialized = true;
+			base.Init();
+			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
 		}
 
-		public void Update()
+		private GameObject GetTransform()
 		{
-			if (!_isInitialized && _isReady)
+			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
 			{
-				Init();
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
+				return null;
 			}
-			else if (_isInitialized && !_isReady)
+			if (QSBWorldSync.OldOrbList[_index] == null)
 			{
-				_isInitialized = false;
+				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", OWML.Common.MessageType.Error);
+				return null;
 			}
-
-			if (OrbTransform == null || !_isInitialized)
-			{
-				return;
-			}
-
-			UpdateTransform();
+			return QSBWorldSync.OldOrbList[_index].gameObject;
 		}
 
-		private void UpdateTransform()
-		{
-			if (HasAuthority)
-			{
-				transform.position = _orbParent.InverseTransformPoint(OrbTransform.position);
-				transform.rotation = OrbTransform.rotation;
-				return;
-			}
-			if (transform.position != Vector3.zero)
-			{
-				OrbTransform.position = _orbParent.TransformPoint(transform.position);
-				OrbTransform.rotation = transform.rotation;
-			}
-		}
+		protected override GameObject InitLocalTransform() => GetTransform();
+		protected override GameObject InitRemoteTransform() => GetTransform();
+
+		public override bool IsReady => QSBCore.WorldObjectsReady;
+		public override bool UseInterpolation => false;
 	}
 }

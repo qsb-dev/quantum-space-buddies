@@ -80,16 +80,17 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Marshmallow roasting | Yes |
 | Meteors | No |
 | Museum statue | Yes |
-| NPC animations | Kind of |
+| NPC animations | Yes |
 | Nomai orbs | Yes |
 | Nomai shuttle | Kind of |
 | Orbital Probe Cannon (direction) | No |
-| Player animation | Kind of |
+| Player animation | Yes |
 | Player position | Yes |
 | Player tools | Yes |
 | Projection pools | Yes |
 | Quantum objects | Yes |
 | Ship log | Yes |
+| Solanum | No |
 | Timber Hearth satellite | No |
 | Tornadoes | No |
 
@@ -148,22 +149,30 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 
 ## Development Setup
 
-- [Download the Outer Wilds Mod Manager](https://github.com/misternebula/ow*mod*manager) and install it anywhere you like;
-- Install OWML using the Mod Manager;
-- Clone QSB's source;
-- Open the file `QSB/QSB.csproj.user` in your favorite text editor;
-- Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed;
-- Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory);
-- Open the project solution file `QSB.sln` in Visual Studio;
-- If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references;
+- [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
+- Install OWML using the Mod Manager
+- Clone QSB's source
+- Open the file `QSB/QSB.csproj.user` in your favorite text editor
+- Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
+- Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
+- Do the same for QuantumUNET/QuantumUNET.csproj.user
+- Open the project solution file `QSB.sln` in Visual Studio
+- If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references
 - Run this to stop tracking QSB.csproj.user: ```git update-index --skip-worktree QSB/QSB.csproj.user```
 
-After doing this, the project references should be working. When you build the solution, the dll and json files will be copied to `[Mod Manager directory]/OWML/QSB`. If this process is successful, you should see the mod show up in the Mod Manager.
+After doing this, the project references should be working.
+
+When you build the solution, the QuantumUNET dll and all the mod files/assets are copied to `[Mod Manager directory]/OWML/QSB` from the dev folder.
+QSB.dll is first built to the dev folder as usual, then QNetWeaver is ran on it to weave in QNet/UNet serialisation code. This program outputs to the `WeavedFiles` folder, and then the weaved dll is also copied to `[Mod Manager directory]/OWML/QSB`.
 
 If for some reason none of this is working, you might have to set everything manually:
 
-- To fix the references, right*click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
+- To fix the references, right click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 - If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
+
+If QNetWeaver does not work and does not output anything to `WeavedFiles` :
+- Check what directories it's getting and make sure they point to the correct DLLs.
+- Contact _nebula on the Outer Wilds modding server. 
 
 ## Authors and Special Thanks
 

@@ -26,10 +26,6 @@ namespace QSB.Player.Patches
 			return false;
 		}
 
-		public static void PauseMenuManager_OnExitToMainMenu()
-		{
-			QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
-			QSBCore.HasWokenUp = false;
-		}
+		public static void PauseMenuManager_OnExitToMainMenu() => QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
 	}
 }

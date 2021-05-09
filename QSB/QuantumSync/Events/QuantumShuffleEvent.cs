@@ -22,7 +22,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, QuantumShuffleMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

@@ -1,12 +1,12 @@
 ﻿using QSB.Events;
+using QSB.Syncs.TransformSync;
 using QSB.Tools;
-using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerCameraSync : QSBNetworkTransform
+	public class PlayerCameraSync : SectoredTransformSync
 	{
 		protected override GameObject InitLocalTransform()
 		{
@@ -47,5 +47,7 @@ namespace QSB.Player.TransformSync
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		public override bool UseInterpolation => true;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation.Player.Thrusters;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -7,13 +8,10 @@ using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class AnimationSync : PlayerSyncObject
 	{
-		private Animator _anim;
-		private QNetworkAnimator _netAnim;
-
 		private RuntimeAnimatorController _suitedAnimController;
 		private AnimatorOverrideController _unsuitedAnimController;
 		private GameObject _suitedGraphics;
@@ -30,13 +28,15 @@ namespace QSB.Animation
 		public AnimatorMirror Mirror { get; private set; }
 		public AnimationType CurrentType { get; set; }
 		public Animator VisibleAnimator { get; private set; }
+		public Animator InvisibleAnimator { get; private set; }
+		public QNetworkAnimator NetworkAnimator { get; private set; }
 
 		protected void Awake()
 		{
-			_anim = gameObject.AddComponent<Animator>();
-			_netAnim = gameObject.AddComponent<QNetworkAnimator>();
-			_netAnim.enabled = false;
-			_netAnim.animator = _anim;
+			InvisibleAnimator = gameObject.AddComponent<Animator>();
+			NetworkAnimator = gameObject.AddComponent<QNetworkAnimator>();
+			NetworkAnimator.enabled = false;
+			NetworkAnimator.animator = InvisibleAnimator;
 
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
@@ -44,16 +44,9 @@ namespace QSB.Animation
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			Destroy(_anim);
-			Destroy(_netAnim);
+			Destroy(InvisibleAnimator);
+			Destroy(NetworkAnimator);
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
-			if (_playerController == null)
-			{
-				return;
-			}
-			_playerController.OnJump -= OnJump;
-			_playerController.OnBecomeGrounded -= OnBecomeGrounded;
-			_playerController.OnBecomeUngrounded -= OnBecomeUngrounded;
 		}
 
 		private void OnUniverseSceneLoaded(OWScene obj) => LoadControllers();
@@ -71,21 +64,21 @@ namespace QSB.Animation
 			{
 				LoadControllers();
 			}
-			_netAnim.enabled = true;
+			NetworkAnimator.enabled = true;
 			VisibleAnimator = body.GetComponent<Animator>();
 			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
 			if (IsLocalPlayer)
 			{
-				Mirror.Init(VisibleAnimator, _anim);
+				Mirror.Init(VisibleAnimator, InvisibleAnimator);
 			}
 			else
 			{
-				Mirror.Init(_anim, VisibleAnimator);
+				Mirror.Init(InvisibleAnimator, VisibleAnimator);
 			}
 
-			for (var i = 0; i < _anim.parameterCount; i++)
+			for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
 			{
-				_netAnim.SetParameterAutoSend(i, true);
+				NetworkAnimator.SetParameterAutoSend(i, true);
 			}
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
@@ -100,11 +93,9 @@ namespace QSB.Animation
 			InitCommon(body);
 
 			_playerController = body.parent.GetComponent<PlayerCharacterController>();
-			_playerController.OnJump += OnJump;
-			_playerController.OnBecomeGrounded += OnBecomeGrounded;
-			_playerController.OnBecomeUngrounded += OnBecomeUngrounded;
 
 			InitCrouchSync();
+			InitAccelerationSync();
 		}
 
 		public void InitRemote(Transform body)
@@ -129,26 +120,25 @@ namespace QSB.Animation
 			SetAnimationType(AnimationType.PlayerUnsuited);
 
 			InitCrouchSync();
+			InitAccelerationSync();
+			ThrusterManager.CreateRemotePlayerVFX(Player);
 
 			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
 			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
 		}
 
-		private void InitCrouchSync()
+		private void InitAccelerationSync()
 		{
-			_crouchSync = gameObject.AddComponent<CrouchSync>();
-			_crouchSync.Init(this, _playerController, VisibleAnimator);
+			Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
+			var thrusterModel = HasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
+			Player.JetpackAcceleration.Init(thrusterModel);
 		}
 
-		private void OnJump() => _netAnim.SetTrigger("Jump");
-
-		private void OnBecomeGrounded() => _netAnim.SetTrigger("Grounded");
-
-		private void OnBecomeUngrounded() => _netAnim.SetTrigger("Ungrounded");
-
-		public void SendCrouch(float value = 0) => QSBEventManager.FireEvent(EventNames.QSBCrouch, value);
-
-		public void HandleCrouch(float value) => _crouchSync.CrouchParam.Target = value;
+		private void InitCrouchSync()
+		{
+			_crouchSync = GetComponent<CrouchSync>();
+			_crouchSync.Init(_playerController, VisibleAnimator);
+		}
 
 		private void SuitUp()
 		{
@@ -226,24 +216,24 @@ namespace QSB.Animation
 					controller = _riebeckController;
 					break;
 			}
-			_anim.runtimeAnimatorController = controller;
+			InvisibleAnimator.runtimeAnimatorController = controller;
 			VisibleAnimator.runtimeAnimatorController = controller;
 			if (type != AnimationType.PlayerSuited && type != AnimationType.PlayerUnsuited)
 			{
 				VisibleAnimator.SetTrigger("Playing");
-				_anim.SetTrigger("Playing");
+				InvisibleAnimator.SetTrigger("Playing");
 			}
 			else
 			{
 				// Avoids "jumping" when exiting instrument and putting on suit
 				VisibleAnimator.SetTrigger("Grounded");
-				_anim.SetTrigger("Grounded");
+				InvisibleAnimator.SetTrigger("Grounded");
 			}
-			_netAnim.animator = _anim; // Probably not needed.
+			NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
 			Mirror.RebuildFloatParams();
-			for (var i = 0; i < _anim.parameterCount; i++)
+			for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
 			{
-				_netAnim.SetParameterAutoSend(i, true);
+				NetworkAnimator.SetParameterAutoSend(i, true);
 			}
 		}
 	}

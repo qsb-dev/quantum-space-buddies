@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class AnimatorMirror : MonoBehaviour
 	{
@@ -27,18 +27,17 @@ namespace QSB.Animation
 			}
 			if (to == null || from == null)
 			{
+				// Doing the return this way so you can see if one or both are null
 				return;
 			}
 			_from = from;
 			_to = to;
 			if (_from.runtimeAnimatorController == null)
 			{
-				DebugLog.ToConsole($"Warning - \"From\" ({from.name}) controller is null.", MessageType.Warning);
 				_from.runtimeAnimatorController = _to.runtimeAnimatorController;
 			}
 			else if (_to.runtimeAnimatorController == null)
 			{
-				DebugLog.ToConsole($"Warning - \"To\" ({to.name}) controller is null.", MessageType.Warning);
 				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
 			}
 			foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))

@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Animation.Events
+namespace QSB.Animation.Player.Events
 {
 	public class PlayerSuitEvent : QSBEvent<ToggleMessage>
 	{
@@ -34,7 +34,7 @@ namespace QSB.Animation.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.PlayerStates.SuitedUp = message.ToggleValue;
 
-			if (!QSBCore.HasWokenUp || !player.PlayerStates.IsReady)
+			if (!QSBCore.WorldObjectsReady || !player.PlayerStates.IsReady)
 			{
 				return;
 			}

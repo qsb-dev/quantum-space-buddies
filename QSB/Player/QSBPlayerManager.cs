@@ -127,13 +127,30 @@ namespace QSB.Player
 			var player = GetPlayer(playerId);
 			if (player.Body == null)
 			{
-				DebugLog.ToConsole($"Warning - Player {playerId} has a null body!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Player {playerId} has a null player model!", MessageType.Warning);
 				return;
 			}
 			foreach (var renderer in player.Body.GetComponentsInChildren<Renderer>())
 			{
 				renderer.enabled = visible;
 			}
+		}
+
+		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer)
+		{
+			return includeLocalPlayer
+				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
+				: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
+		}
+
+		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
+		{
+			if (playerList.Count == 0)
+			{
+				DebugLog.DebugWrite($"Error - Cannot get closest player from empty player list.", MessageType.Error);
+				return null;
+			}
+			return playerList.Where(x => x.PlayerStates.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
 	}
 }

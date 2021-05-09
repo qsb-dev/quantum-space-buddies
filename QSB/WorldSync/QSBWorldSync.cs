@@ -4,6 +4,7 @@ using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -12,7 +13,6 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<NomaiOrbTransformSync> OrbSyncList { get; } = new List<NomaiOrbTransformSync>();
 		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new List<NomaiInterfaceOrb>();
 		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new List<CharacterDialogueTree>();
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
@@ -55,7 +55,7 @@ namespace QSB.WorldSync
 			}
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"!", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! Called from {new StackTrace().GetFrame(1).GetMethod().Name}", MessageType.Error);
 				return default;
 			}
 			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;
@@ -91,7 +91,6 @@ namespace QSB.WorldSync
 					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
-			DebugLog.DebugWrite($"Removing {typeof(TWorldObject).Name} : {WorldObjects.Count(x => x is TWorldObject)} instances.");
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
@@ -119,7 +118,7 @@ namespace QSB.WorldSync
 			return worldObject;
 		}
 
-		public static void RaiseEvent<T>(T instance, string eventName, params object[] args)
+		public static void RaiseEvent<T>(T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
 		{
 			if (!(typeof(T)
 				.GetField(eventName, Flags)?
@@ -147,7 +146,7 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
 				return;
 			}
-			var orbSync = OrbSyncList.FirstOrDefault(x => x.AttachedOrb == affectingOrb);
+			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.FirstOrDefault(x => x.AttachedObject == affectingOrb.gameObject);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);

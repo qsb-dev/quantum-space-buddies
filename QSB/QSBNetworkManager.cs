@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation;
+using QSB.Animation.Player;
+using QSB.Animation.Player.Thrusters;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
@@ -57,7 +58,9 @@ namespace QSB
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();
 			playerPrefab.AddComponent<AnimationSync>();
+			playerPrefab.AddComponent<CrouchSync>();
 			playerPrefab.AddComponent<WakeUpSync>();
+			playerPrefab.AddComponent<JetpackAccelerationSync>();
 			playerPrefab.AddComponent<InstrumentsManager>();
 
 			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
@@ -91,7 +94,6 @@ namespace QSB
 			spawnPrefabs.Add(_stickPrefab);
 
 			ConfigureNetworkManager();
-			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
 		}
 
 		private void SetupNetworkId(GameObject go)
@@ -112,15 +114,6 @@ namespace QSB
 			}
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
-		}
-
-		public void OnDestroy() =>
-			QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
-
-		private void OnSceneLoaded(OWScene scene)
-		{
-			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
 
 		private void ConfigureNetworkManager()
@@ -144,11 +137,6 @@ namespace QSB
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
 				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
-			}
-
-			if (QSBSceneManager.IsInUniverse)
-			{
-				QSBCore.HasWokenUp = true;
 			}
 		}
 
@@ -215,7 +203,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.OrbSyncList.Clear();
+			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
 			if (_everConnected)
@@ -226,7 +214,6 @@ namespace QSB
 			}
 
 			_lobby.CanEditName = true;
-			QSBCore.HasWokenUp = false;
 
 			IsReady = false;
 			_everConnected = false;
@@ -237,7 +224,7 @@ namespace QSB
 			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			foreach (var item in QSBWorldSync.OrbSyncList)
+			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
 			{
 				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)
@@ -254,8 +241,6 @@ namespace QSB
 			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
-
-			QSBCore.HasWokenUp = false;
 
 			base.OnStopServer();
 		}

@@ -1,4 +1,6 @@
 ﻿using OWML.Common;
+using QSB.Animation.NPC.Patches;
+using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;
 using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
@@ -51,7 +53,9 @@ namespace QSB.Patches
 				new PoolPatches(),
 				new CampfirePatches(),
 				new RoastingPatches(),
-				new PlayerPatches()
+				new PlayerPatches(),
+				new PlayerAnimationPatches(),
+				new CharacterAnimationPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

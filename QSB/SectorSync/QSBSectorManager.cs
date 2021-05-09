@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
-using QSB.TransformSync;
+using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
-			foreach (var sync in QSBNetworkTransform.NetworkTransformList)
+			foreach (var sync in SectoredTransformSync.SectoredNetworkTransformList)
 			{
 				if (sync.AttachedObject == null)
 				{
@@ -64,7 +64,7 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(QSBNetworkTransform transformSync)
+		private void CheckTransformSyncSector(SectoredTransformSync transformSync)
 		{
 			var attachedObject = transformSync.AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);

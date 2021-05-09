@@ -2,7 +2,7 @@
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Animation
+namespace QSB.Animation.Player
 {
 	public class PlayerHeadRotationSync : MonoBehaviour
 	{

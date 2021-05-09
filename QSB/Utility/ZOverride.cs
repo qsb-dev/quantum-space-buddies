@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace QSB.Utility
 {
-	public class DebugZOverride : MonoBehaviour
+	public class ZOverride : MonoBehaviour
 	{
 		private const string shaderTestMode = "unity_GUIZTestMode";
 		private readonly UnityEngine.Rendering.CompareFunction desiredUIComparison = UnityEngine.Rendering.CompareFunction.Always;

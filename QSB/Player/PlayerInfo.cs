@@ -1,4 +1,5 @@
-﻿using QSB.Animation;
+﻿using QSB.Animation.Player;
+using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;
@@ -40,13 +41,14 @@ namespace QSB.Player
 		public QSBCampfire Campfire { get; set; }
 
 		// Conversation
-		public int CurrentDialogueID { get; set; }
+		public int CurrentCharacterDialogueTreeId { get; set; }
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
+		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc
 		public bool IsInMoon; // TODO : move into PlayerStates?
@@ -56,7 +58,7 @@ namespace QSB.Player
 		public PlayerInfo(uint id)
 		{
 			PlayerId = id;
-			CurrentDialogueID = -1;
+			CurrentCharacterDialogueTreeId = -1;
 		}
 
 		public void UpdateStateObjects()

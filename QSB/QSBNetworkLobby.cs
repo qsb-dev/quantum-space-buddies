@@ -1,12 +1,12 @@
 ﻿using OWML.Utils;
+using QuantumUNET;
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB
 {
-	public class QSBNetworkLobby : NetworkBehaviour
+	public class QSBNetworkLobby : QNetworkBehaviour
 	{
 		public bool CanEditName { get; set; }
 		public string PlayerName { get; private set; }
