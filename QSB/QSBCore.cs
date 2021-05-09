@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using OWML.ModHelper.Input;
 using OWML.Utils;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
@@ -115,6 +116,8 @@ namespace QSB
 			gameObject.AddComponent<CharacterAnimManager>();
 
 			DebugBoxManager.Init();
+
+			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
