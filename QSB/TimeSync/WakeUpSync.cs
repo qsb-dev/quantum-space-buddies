@@ -19,14 +19,13 @@ namespace QSB.TimeSync
 		private const float MaxFastForwardDiff = 20f;
 		private const float MinFastForwardSpeed = 2f;
 
-		private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
+		private enum State { NotLoaded, Loaded, FastForwarding, Pausing, WaitingForServerToDie }
 
 		private State _state = State.NotLoaded;
 
 		private float _sendTimer;
 		private float _serverTime;
 		private bool _isFirstFastForward = true;
-		private int _localLoopCount;
 		private int _serverLoopCount;
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
@@ -45,7 +44,6 @@ namespace QSB.TimeSync
 			}
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-			GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
 		}
 
@@ -67,7 +65,6 @@ namespace QSB.TimeSync
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
 		}
 
@@ -84,8 +81,6 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void OnLoopStart() => _localLoopCount++;
-
 		private void Init()
 		{
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
@@ -101,7 +96,8 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, _localLoopCount);
+		private void SendServerTime() 
+			=> QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, PlayerData.LoadLoopCount());
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
@@ -111,8 +107,15 @@ namespace QSB.TimeSync
 
 		private void WakeUpOrSleep()
 		{
-			if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
+			if (_state == State.NotLoaded)
 			{
+				return;
+			}
+
+			if (PlayerData.LoadLoopCount() != _serverLoopCount)
+			{
+				DebugLog.DebugWrite($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
+				StartWaitingForServerToDie();
 				return;
 			}
 
@@ -129,6 +132,18 @@ namespace QSB.TimeSync
 			{
 				StartFastForwarding();
 			}
+		}
+
+		private void StartWaitingForServerToDie()
+		{
+			if (_state == State.WaitingForServerToDie)
+			{
+				return;
+			}
+			DebugLog.DebugWrite($"START WAITING FOR SERVER LOOP", MessageType.Info);
+			OWTime.SetTimeScale(0f);
+			_state = State.WaitingForServerToDie;
+			TimeSyncUI.Start(TimeSyncType.WaitForServerLoop);
 		}
 
 		private void StartFastForwarding()
@@ -238,8 +253,9 @@ namespace QSB.TimeSync
 
 			var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
 			var isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+			var serverMatchesLoop = _state == State.WaitingForServerToDie && _serverLoopCount == PlayerData.LoadLoopCount();
 
-			if (isDoneFastForwarding || isDonePausing)
+			if (isDoneFastForwarding || isDonePausing || serverMatchesLoop)
 			{
 				ResetTimeScale();
 			}
@@ -257,6 +273,7 @@ namespace QSB.TimeSync
 			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
 			{
 				WakeUpOrSleep();
+				return;
 			}
 
 			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
