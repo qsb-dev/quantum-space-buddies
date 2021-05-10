@@ -1,5 +1,11 @@
 ![logo](unknown.png)
 
+![GitHub](https://img.shields.io/github/license/misternebula/quantum-space-buddies?style=flat-square)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/misternebula/quantum-space-buddies?style=flat-square)
+![GitHub Release Date](https://img.shields.io/github/release-date/misternebula/quantum-space-buddies?label=last%20release&style=flat-square)
+![GitHub all releases](https://img.shields.io/github/downloads/misternebula/quantum-space-buddies/total?style=flat-square)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/misternebula/quantum-space-buddies/dev?label=last%20commit%20to%20dev&style=flat-square)
+
 Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses the OWML mod loader and customized UNET code (internally referred to as QNet or QuantumUNET) for networking.
 
 ## License
@@ -56,19 +62,37 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 **NomaiVR compatibility is currently not planned and likely will never happen, due to extensive changes needed to both mods for it to work.**
 
 ### What is currently synced?
-QSB does not operate on a strict server-client relationship. Each player's game is left as a completely seperate game, and individual elemets are synced or patched so they can be controlled though network messages. Right now, the list of synced objects are :
-- Geysers
-- Elevators
-- Nomai interface orbs
-- Player animations
-- Player tools
-- Player ships
-- Player probes
-- NPC heads in conversations
-- Ship log
-- Discovering frequencies / signals
-- Nomai text (Spirals + Computers)
-- Picking up/dropping/socketing items
+
+| System / Mechanic  | Synced? |
+| :---: | :---: |
+| Anglerfish  | No |
+| Brittle Hollow fragments  | No |
+| Campfires | Yes |
+| Conversations with NPCs | Yes |
+| Discovering signals/frequencies | Yes |
+| Eye of the Universe ancient glade | No |
+| Eye of the Universe instrument hunt | No |
+| Eye of the Universe jam session | No |
+| Eye of the Universe quantum lightning | No |
+| Geysers | Yes |
+| Items | Yes |
+| Jellyfish | No |
+| Marshmallow roasting | Yes |
+| Meteors | No |
+| Museum statue | Yes |
+| NPC animations | Yes |
+| Nomai orbs | Yes |
+| Nomai shuttle | Kind of |
+| Orbital Probe Cannon (direction) | No |
+| Player animation | Yes |
+| Player position | Yes |
+| Player tools | Yes |
+| Projection pools | Yes |
+| Quantum objects | Yes |
+| Ship log | Yes |
+| Solanum | No |
+| Timber Hearth satellite | No |
+| Tornadoes | No |
 
 QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
 - Adding dialogue boxes above NPC and player heads, so other players can "listen in" on conversations.
@@ -125,22 +149,30 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 
 ## Development Setup
 
-- [Download the Outer Wilds Mod Manager](https://github.com/misternebula/ow*mod*manager) and install it anywhere you like;
-- Install OWML using the Mod Manager;
-- Clone QSB's source;
-- Open the file `QSB/QSB.csproj.user` in your favorite text editor;
-- Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed;
-- Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory);
-- Open the project solution file `QSB.sln` in Visual Studio;
-- If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references;
+- [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
+- Install OWML using the Mod Manager
+- Clone QSB's source
+- Open the file `QSB/QSB.csproj.user` in your favorite text editor
+- Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
+- Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
+- Do the same for QuantumUNET/QuantumUNET.csproj.user
+- Open the project solution file `QSB.sln` in Visual Studio
+- If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references
 - Run this to stop tracking QSB.csproj.user: ```git update-index --skip-worktree QSB/QSB.csproj.user```
 
-After doing this, the project references should be working. When you build the solution, the dll and json files will be copied to `[Mod Manager directory]/OWML/QSB`. If this process is successful, you should see the mod show up in the Mod Manager.
+After doing this, the project references should be working.
+
+When you build the solution, the QuantumUNET dll and all the mod files/assets are copied to `[Mod Manager directory]/OWML/QSB` from the dev folder.
+QSB.dll is first built to the dev folder as usual, then QNetWeaver is ran on it to weave in QNet/UNet serialisation code. This program outputs to the `WeavedFiles` folder, and then the weaved dll is also copied to `[Mod Manager directory]/OWML/QSB`.
 
 If for some reason none of this is working, you might have to set everything manually:
 
-- To fix the references, right*click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
+- To fix the references, right click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 - If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
+
+If QNetWeaver does not work and does not output anything to `WeavedFiles` :
+- Check what directories it's getting and make sure they point to the correct DLLs.
+- Contact _nebula on the Outer Wilds modding server. 
 
 ## Authors and Special Thanks
 

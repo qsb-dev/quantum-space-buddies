@@ -7,6 +7,8 @@
 		EnterShrine = 2,
 		ExitShrine = 3,
 		EnterPlatform = 4,
-		ExitPlatform = 5
+		ExitPlatform = 5,
+		EnterHeadZone = 6,
+		ExitHeadZone = 7
 	}
 }

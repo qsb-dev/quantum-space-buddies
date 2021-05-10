@@ -23,7 +23,7 @@ namespace QSB.TranslationSync.Events
 
 		public override void OnReceiveRemote(bool server, SetAsTranslatedMessage message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

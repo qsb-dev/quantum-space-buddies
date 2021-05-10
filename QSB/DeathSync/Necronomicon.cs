@@ -7,86 +7,100 @@ namespace QSB.DeathSync
 	{
 		private static readonly Dictionary<DeathType, string[]> Darkhold = new Dictionary<DeathType, string[]>
 		{
-			{ DeathType.Default, new[]
+			{ DeathType.Default, new[] // Running out of health
 			{
-				"{0} died"
+				"{0} died",
+				"{0} was killed"
 			} },
-			{ DeathType.Impact, new[]
+			{ DeathType.Impact, new[] // Hitting the ground/wall/object
 			{
 				"{0} forgot to use retro-rockets",
 				"{0} bonked into the ground too hard",
-				"{0} went splat"
+				"{0} hit the ground too hard",
+				"{0} went splat",
+				"{0} died",
+				"{0} was killed",
+				"{0} died due to impact",
+				"{0} impacted the ground too hard"
 			} },
-			{ DeathType.Asphyxiation, new[]
+			{ DeathType.Asphyxiation, new[] // Running out of oxygen
 			{
 				"{0} forgot to breathe",
+				"{0} asphyxiated",
+				"{0} died due to asphyxiation",
 				"{0} forgot how to breathe",
-				"{0} forgot to check their oxygen meter",
-				"{0} lacked oxygen",
+				"{0} forgot to check their oxygen",
+				"{0} ran out of air",
+				"{0} ran out of oxygen",
 				"{0} didn't need air anyway"
 			} },
-			{ DeathType.Energy, new[]
+			{ DeathType.Energy, new[] // Electricity, sun, etc.
 			{
 				"{0} was cooked",
-				"{0} failed the Hotshot achievement",
-				"{0} forgot to install an AC unit",
-				"{0} got too hot"
+				"{0} died",
+				"{0} was killed"
 			} },
-			{ DeathType.Supernova, new[]
+			{ DeathType.Supernova, new[] // Supernova
 			{
 				"{0} ran out of time",
+				"{0} burnt up",
 				"{0} got vaporized",
 				"{0} lost track of time",
 				"{0} got front row seats to the supernova",
-				"{0} heard the End of Times music",
+				"{0} heard the music",
 				"{0} watched the sun go kaboom",
 				"{0} became cosmic marshmallow",
-				"{0} photosynthesized too much"
+				"{0} photosynthesized too much",
+				"{0} died due to the supernova"
 			} },
-			{ DeathType.Digestion, new[]
+			{ DeathType.Digestion, new[] // Anglerfish
 			{
 				"{0} was eaten",
 				"{0} found a fish",
 				"{0} encountered an evil creature",
-				"{0} followed the light, then was followed by it",
-				"{0} messed with the wrong species of fish"
+				"{0} messed with the wrong fish",
+				"{0} was digested",
+				"{0} died due to digestion"
 			} },
-			{ DeathType.BigBang, new[]
+			{ DeathType.BigBang, new[] // End of the game
 			{
 				"{0} sacrificed themself for the universe",
 				"{0} knows the true meaning of sacrifice",
 				"{0} won at the cost of their life"
 			} },
-			{ DeathType.Crushed, new[]
+			{ DeathType.Crushed, new[] // Crushed in sand
 			{
 				"{0} went through the tunnel too slow",
 				"{0} didn't make it out in time",
 				"{0} was squished",
-				"{0} thought the Sunless City was safe",
-				"{0} was buried"
+				"{0} was crushed",
+				"{0} was buried",
+				"{0} went swimming in the sand",
+				"{0} underestimated the danger of sand",
+				"{0} died due to being crushed"
 			} },
-			{ DeathType.Meditation, new[]
+			{ DeathType.Meditation, new[] // Meditation
 			{
-				"{0} took a deep breath and died",
-				"{0} fell asleep",
-				"{0} got killed by Gabbro's advice"
+				"{0} broke QSB. this is a bug, you should never see this"
 			} },
-			{ DeathType.TimeLoop, new[]
+			{ DeathType.TimeLoop, new[] // Escaping the supernova
 			{
 				"{0} ran out of time",
-				"{0} was caught by a statue",
-				"{0}'s memories were pilfered",
-				"{0}'s memories fell into a black hole",
-				"{0}'s universe was eaten by Grobletombus"
+				"{0} lost track of time",
+				"{0} watched the sun go kaboom"
 			} },
-			{ DeathType.Lava, new[]
+			{ DeathType.Lava, new[] // Lava
 			{
+				"{0} died in lava",
+				"{0} was melted",
 				"{0} tried to swim in lava",
 				"{0} didn't know what the glowy orange liquid was",
-				"{0} slipped in lava",
-				"{0} became one with the glowing gooey rock"
+				"{0} fell into lava",
+				"{0} became one with the glowing gooey rock",
+				"{0} died due to lava",
+				"{0} got burnt in the lava"
 			} },
-			{ DeathType.BlackHole, new[]
+			{ DeathType.BlackHole, new[] // ATP core black hole
 			{
 				"{0} should visit the Ash Twin Project again",
 				"{0} waited inside the Ash Twin Project",

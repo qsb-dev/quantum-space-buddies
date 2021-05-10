@@ -1,5 +1,6 @@
 ﻿using QuantumUNET.Components;
 using QuantumUNET.Logging;
+using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,20 @@ namespace QuantumUNET
 					myView = m_MyView;
 				}
 				return myView;
+			}
+		}
+
+		protected void ClientSendUpdateVars()
+		{
+			var writer = new QNetworkWriter();
+			writer.StartMessage(QMsgType.ClientUpdateVars);
+			writer.Write(NetId);
+			writer.Write(GetType().Name);
+			if (OnSerialize(writer, false))
+			{
+				ClearAllDirtyBits();
+				writer.FinishMessage();
+				QClientScene.readyConnection.SendWriter(writer, GetNetworkChannel());
 			}
 		}
 
@@ -431,28 +446,30 @@ namespace QuantumUNET
 			}
 		}
 
-		protected void SetSyncVar<T>(T value, ref T fieldValue, uint dirtyBit)
+		protected bool SetSyncVar<T>(T value, ref T fieldValue, uint dirtyBit)
 		{
-			var flag = false;
+			var shouldSet = false;
 			if (value == null)
 			{
 				if (fieldValue != null)
 				{
-					flag = true;
+					shouldSet = true;
 				}
 			}
 			else
 			{
-				flag = !value.Equals(fieldValue);
+				shouldSet = !value.Equals(fieldValue);
 			}
 
-			if (flag)
+			if (shouldSet)
 			{
 				QLog.Log($"SetSyncVar {GetType().Name} bit [{dirtyBit}] {fieldValue}->{value}");
 
 				SetDirtyBit(dirtyBit);
 				fieldValue = value;
 			}
+
+			return shouldSet;
 		}
 
 		public void SetDirtyBit(uint dirtyBit) => SyncVarDirtyBits |= dirtyBit;

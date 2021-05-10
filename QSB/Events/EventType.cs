@@ -3,7 +3,6 @@
 	public enum EventType
 	{
 		ServerTime,
-		AnimTrigger,
 		PlayerState,
 		PlayerStatesRequest,
 		FlashlightActiveChange,
@@ -13,7 +12,6 @@
 		SuitActiveChange,
 		PlayerJoin,
 		PlayerDeath,
-		PlayerSectorChange,
 		PlayerReady,
 		ProbeActiveChange,
 		Elevator,
@@ -43,6 +41,8 @@
 		CampfireState,
 		Roasting,
 		MarshmallowEvent,
+		AnimTrigger,
+		NpcAnimEvent,
 		FlyShip,
 		OpenHatch
 	}

@@ -1,5 +1,4 @@
-﻿using QSB.TransformSync;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.WorldSync
 {
@@ -7,7 +6,6 @@ namespace QSB.WorldSync
 	{
 		int ObjectId { get; }
 		string Name { get; }
-		WorldObjectTransformSync TransformSync { get; set; }
 
 		void OnRemoval();
 		MonoBehaviour ReturnObject();

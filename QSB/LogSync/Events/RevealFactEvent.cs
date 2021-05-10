@@ -34,7 +34,7 @@ namespace QSB.LogSync.Events
 			{
 				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
 			}
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

@@ -25,7 +25,7 @@ namespace QSB.RoastingSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<MarshmallowEventType> message)
 		{
-			if (!QSBCore.HasWokenUp)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}

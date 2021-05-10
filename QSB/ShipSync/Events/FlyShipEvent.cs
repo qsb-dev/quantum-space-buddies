@@ -84,7 +84,7 @@ namespace QSB.ShipSync.Events
 				var fromPlayer = ShipManager.Instance.CurrentFlyer == uint.MaxValue
 					? QNetworkServer.connections.First(x => x.GetPlayerId() == QSBPlayerManager.LocalPlayerId)
 					: QNetworkServer.connections.First(x => x.GetPlayerId() == id);
-				var ship = QSBWorldSync.GetWorldFromId<QSBShip>(0).TransformSync;
+				var ship = ShipTransformSync.LocalInstance;
 				var networkIdentity = ship.NetIdentity;
 
 				if (networkIdentity.ClientAuthorityOwner == fromPlayer)

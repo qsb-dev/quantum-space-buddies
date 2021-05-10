@@ -7,11 +7,22 @@ namespace QSB.WorldSync
 	{
 		private static readonly List<WorldObjectManager> _managers = new List<WorldObjectManager>();
 
+		public static bool AllReady { get; private set; }
+
 		public virtual void Awake()
-			=> _managers.Add(this);
+		{
+			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			_managers.Add(this);
+		}
 
 		public virtual void OnDestroy()
-			=> _managers.Remove(this);
+		{
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			_managers.Remove(this);
+		}
+
+		private void OnSceneLoaded(OWScene scene, bool inUniverse) 
+			=> AllReady = false;
 
 		public static void Rebuild(OWScene scene)
 		{
@@ -19,6 +30,7 @@ namespace QSB.WorldSync
 			{
 				manager.RebuildWorldObjects(scene);
 			}
+			AllReady = true;
 		}
 
 		protected abstract void RebuildWorldObjects(OWScene scene);

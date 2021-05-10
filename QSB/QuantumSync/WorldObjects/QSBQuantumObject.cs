@@ -63,7 +63,6 @@ namespace QSB.QuantumSync.WorldObjects
 			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
 			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
 			{
-				DebugLog.ToConsole($"Warning - {AttachedObject.name} has null visibility trackers!", MessageType.Warning);
 				return new List<Shape>();
 			}
 			if (visibilityTrackers.Any(x => x.GetType() == typeof(RendererVisibilityTracker)))
@@ -83,7 +82,7 @@ namespace QSB.QuantumSync.WorldObjects
 		private void OnEnable(Shape s)
 		{
 			IsEnabled = true;
-			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
+			if (!QSBCore.WorldObjectsReady && !QSBCore.IsServer)
 			{
 				return;
 			}
@@ -103,12 +102,12 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				return;
 			}
-			if (GetAttachedShapes().Any(x => x.gameObject.activeInHierarchy))
+			if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
 			{
 				return;
 			}
 			IsEnabled = false;
-			if (!QSBCore.HasWokenUp && !QSBCore.IsServer)
+			if (!QSBCore.WorldObjectsReady && !QSBCore.IsServer)
 			{
 				return;
 			}

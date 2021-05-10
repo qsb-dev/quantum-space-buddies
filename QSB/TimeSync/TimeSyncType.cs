@@ -4,6 +4,7 @@
 	{
 		None = 0,
 		Pausing = 1,
-		Fastforwarding = 2
+		Fastforwarding = 2,
+		WaitForServerLoop = 3
 	}
 }

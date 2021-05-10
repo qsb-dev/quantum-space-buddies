@@ -1,10 +1,11 @@
-﻿using QSB.Animation;
+﻿using QSB.Animation.Player;
+using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
+using QSB.Player.TransformSync;
 using QSB.ProbeSync;
 using QSB.QuantumSync;
 using QSB.RoastingSync;
 using QSB.Tools;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -14,9 +15,9 @@ namespace QSB.Player
 	{
 		public uint PlayerId { get; }
 		public string Name { get; set; }
-		public bool IsReady { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
-		public State State { get; set; } // TODO : decide if this is worth it (instead of having seperate variables for each thing)
+		public PlayerState PlayerStates { get; set; } = new PlayerState();
+		public PlayerTransformSync TransformSync { get; set; }
 
 		// Body Objects
 		public OWCamera Camera { get; set; }
@@ -40,37 +41,24 @@ namespace QSB.Player
 		public QSBCampfire Campfire { get; set; }
 
 		// Conversation
-		public int CurrentDialogueID { get; set; }
+		public int CurrentCharacterDialogueTreeId { get; set; }
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
 			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
+		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc
-		public bool IsInMoon;
-		public bool IsInShrine;
+		public bool IsInMoon; // TODO : move into PlayerStates?
+		public bool IsInShrine; // TODO : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
 
 		public PlayerInfo(uint id)
 		{
 			PlayerId = id;
-			CurrentDialogueID = -1;
-		}
-
-		public void UpdateState(State state, bool value)
-		{
-			var states = State;
-			if (value)
-			{
-				FlagsHelper.Set(ref states, state);
-			}
-			else
-			{
-				FlagsHelper.Unset(ref states, state);
-			}
-			State = states;
+			CurrentCharacterDialogueTreeId = -1;
 		}
 
 		public void UpdateStateObjects()
@@ -79,16 +67,13 @@ namespace QSB.Player
 			{
 				return;
 			}
-			FlashLight?.UpdateState(FlagsHelper.IsSet(State, State.Flashlight));
-			Translator?.ChangeEquipState(FlagsHelper.IsSet(State, State.Translator));
-			ProbeLauncher?.ChangeEquipState(FlagsHelper.IsSet(State, State.ProbeLauncher));
-			Signalscope?.ChangeEquipState(FlagsHelper.IsSet(State, State.Signalscope));
+			FlashLight?.UpdateState(PlayerStates.FlashlightActive);
+			Translator?.ChangeEquipState(PlayerStates.TranslatorEquipped);
+			ProbeLauncher?.ChangeEquipState(PlayerStates.ProbeLauncherEquipped);
+			Signalscope?.ChangeEquipState(PlayerStates.SignalscopeEquipped);
 			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
-				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(FlagsHelper.IsSet(State, State.Suit)));
+				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(PlayerStates.SuitedUp));
 		}
-
-		public bool GetState(State state)
-			=> FlagsHelper.IsSet(State, state);
 
 		private QSBTool GetToolByType(ToolType type)
 		{

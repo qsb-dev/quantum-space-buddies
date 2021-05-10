@@ -35,7 +35,7 @@ namespace QSB.Player.Events
 		private static void HandleServer(ToggleMessage message)
 		{
 			DebugLog.DebugWrite($"Get ready event from {message.FromId}", MessageType.Success);
-			QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
+			QSBPlayerManager.GetPlayer(message.AboutId).PlayerStates.IsReady = message.ToggleValue;
 			QSBEventManager.FireEvent(EventNames.QSBServerSendPlayerStates);
 		}
 

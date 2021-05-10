@@ -1,16 +1,14 @@
 ﻿using QSB.Events;
+using QSB.Syncs.TransformSync;
 using QSB.Tools;
-using QSB.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerCameraSync : SyncObjectTransformSync
+	public class PlayerCameraSync : SectoredTransformSync
 	{
-		public override SyncType SyncType => SyncType.PlayerSyncObject;
-
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = Locator.GetPlayerCamera().gameObject.transform;
@@ -18,15 +16,15 @@ namespace QSB.Player.TransformSync
 			Player.Camera = Locator.GetPlayerCamera();
 			Player.CameraBody = body.gameObject;
 
-			Player.IsReady = true;
+			Player.PlayerStates.IsReady = true;
 			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var body = new GameObject("RemotePlayerCamera");
 
@@ -41,16 +39,7 @@ namespace QSB.Player.TransformSync
 			Player.Camera = owcamera;
 			Player.CameraBody = body;
 
-			return body.transform;
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !Player.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-			Popcron.Gizmos.Frustum(Player.Camera);
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
@@ -58,5 +47,7 @@ namespace QSB.Player.TransformSync
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		public override bool UseInterpolation => true;
 	}
 }

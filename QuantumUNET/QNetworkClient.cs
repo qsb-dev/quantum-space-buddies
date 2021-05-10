@@ -52,6 +52,18 @@ namespace QuantumUNET
 
 		public HostTopology hostTopology { get; private set; }
 
+		private const int k_MaxEventsPerFrame = 500;
+		private int m_HostPort;
+		private int m_ClientConnectionId = -1;
+		private int m_StatResetTime;
+		private static readonly QCRCMessage s_CRCMessage = new QCRCMessage();
+		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
+		protected QNetworkConnection m_Connection;
+		private readonly byte[] m_MsgBuffer;
+		private readonly NetworkReader m_MsgReader;
+		protected ConnectState m_AsyncConnect = ConnectState.None;
+		private string m_RequestedServerHost = "";
+
 		public int hostPort
 		{
 			get => m_HostPort;
@@ -87,139 +99,6 @@ namespace QuantumUNET
 			return true;
 		}
 
-		public bool ReconnectToNewHost(string serverIp, int serverPort)
-		{
-			bool result;
-			if (!active)
-			{
-				QLog.Error("Reconnect - NetworkClient must be active");
-				result = false;
-			}
-			else if (m_Connection == null)
-			{
-				QLog.Error("Reconnect - no old connection exists");
-				result = false;
-			}
-			else
-			{
-				QLog.Log($"NetworkClient Reconnect {serverIp}:{serverPort}");
-				QClientScene.HandleClientDisconnect(m_Connection);
-				QClientScene.ClearLocalPlayers();
-				m_Connection.Disconnect();
-				m_Connection = null;
-				hostId = NetworkTransport.AddHost(hostTopology, m_HostPort);
-				this.serverPort = serverPort;
-				if (Application.platform == RuntimePlatform.WebGLPlayer)
-				{
-					this.serverIp = serverIp;
-					m_AsyncConnect = ConnectState.Resolved;
-				}
-				else if (serverIp.Equals("127.0.0.1") || serverIp.Equals("localhost"))
-				{
-					this.serverIp = "127.0.0.1";
-					m_AsyncConnect = ConnectState.Resolved;
-				}
-				else
-				{
-					QLog.Log($"Async DNS START:{serverIp}");
-					m_AsyncConnect = ConnectState.Resolving;
-					Dns.BeginGetHostAddresses(serverIp, GetHostAddressesCallback, this);
-				}
-				result = true;
-			}
-			return result;
-		}
-
-		public bool ReconnectToNewHost(EndPoint secureTunnelEndPoint)
-		{
-			bool result;
-			if (!active)
-			{
-				QLog.Error("Reconnect - NetworkClient must be active");
-				result = false;
-			}
-			else if (m_Connection == null)
-			{
-				QLog.Error("Reconnect - no old connection exists");
-				result = false;
-			}
-			else
-			{
-				QLog.Log("NetworkClient Reconnect to remoteSockAddr");
-				QClientScene.HandleClientDisconnect(m_Connection);
-				QClientScene.ClearLocalPlayers();
-				m_Connection.Disconnect();
-				m_Connection = null;
-				hostId = NetworkTransport.AddHost(hostTopology, m_HostPort);
-				if (secureTunnelEndPoint == null)
-				{
-					QLog.Error("Reconnect failed: null endpoint passed in");
-					m_AsyncConnect = ConnectState.Failed;
-					result = false;
-				}
-				else if (secureTunnelEndPoint.AddressFamily != AddressFamily.InterNetwork && secureTunnelEndPoint.AddressFamily != AddressFamily.InterNetworkV6)
-				{
-					QLog.Error("Reconnect failed: Endpoint AddressFamily must be either InterNetwork or InterNetworkV6");
-					m_AsyncConnect = ConnectState.Failed;
-					result = false;
-				}
-				else
-				{
-					var fullName = secureTunnelEndPoint.GetType().FullName;
-					if (fullName == "System.Net.IPEndPoint")
-					{
-						var ipendPoint = (IPEndPoint)secureTunnelEndPoint;
-						Connect(ipendPoint.Address.ToString(), ipendPoint.Port);
-						result = m_AsyncConnect != ConnectState.Failed;
-					}
-					else if (fullName != "UnityEngine.XboxOne.XboxOneEndPoint" && fullName != "UnityEngine.PS4.SceEndPoint")
-					{
-						QLog.Error("Reconnect failed: invalid Endpoint (not IPEndPoint or XboxOneEndPoint or SceEndPoint)");
-						m_AsyncConnect = ConnectState.Failed;
-						result = false;
-					}
-					else
-					{
-						m_RemoteEndPoint = secureTunnelEndPoint;
-						m_AsyncConnect = ConnectState.Connecting;
-						byte b;
-						try
-						{
-							m_ClientConnectionId = NetworkTransport.ConnectEndPoint(hostId, m_RemoteEndPoint, 0, out b);
-						}
-						catch (Exception arg)
-						{
-							QLog.Error($"Reconnect failed: Exception when trying to connect to EndPoint: {arg}");
-							m_AsyncConnect = ConnectState.Failed;
-							return false;
-						}
-						if (m_ClientConnectionId == 0)
-						{
-							QLog.Error($"Reconnect failed: Unable to connect to EndPoint ({b})");
-							m_AsyncConnect = ConnectState.Failed;
-							result = false;
-						}
-						else
-						{
-							m_Connection = (QNetworkConnection)Activator.CreateInstance(networkConnectionClass);
-							m_Connection.SetHandlers(m_MessageHandlers);
-							m_Connection.Initialize(serverIp, hostId, m_ClientConnectionId, hostTopology);
-							result = true;
-						}
-					}
-				}
-			}
-			return result;
-		}
-
-		public void ConnectWithSimulator(string serverIp, int serverPort, int latency, float packetLoss)
-		{
-			m_UseSimulator = true;
-			m_SimulatedLatency = latency;
-			m_PacketLoss = packetLoss;
-			Connect(serverIp, serverPort);
-		}
-
 		private static bool IsValidIpV6(string address) =>
 			address.All(c => c == ':' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 
@@ -251,63 +130,6 @@ namespace QuantumUNET
 			}
 		}
 
-		public void Connect(EndPoint secureTunnelEndPoint)
-		{
-			PrepareForConnect();
-			QLog.Log("Client Connect to remoteSockAddr");
-			if (secureTunnelEndPoint == null)
-			{
-				QLog.Error("Connect failed: null endpoint passed in");
-				m_AsyncConnect = ConnectState.Failed;
-			}
-			else if (secureTunnelEndPoint.AddressFamily != AddressFamily.InterNetwork && secureTunnelEndPoint.AddressFamily != AddressFamily.InterNetworkV6)
-			{
-				QLog.Error("Connect failed: Endpoint AddressFamily must be either InterNetwork or InterNetworkV6");
-				m_AsyncConnect = ConnectState.Failed;
-			}
-			else
-			{
-				var fullName = secureTunnelEndPoint.GetType().FullName;
-				if (fullName == "System.Net.IPEndPoint")
-				{
-					var ipendPoint = (IPEndPoint)secureTunnelEndPoint;
-					Connect(ipendPoint.Address.ToString(), ipendPoint.Port);
-				}
-				else if (fullName != "UnityEngine.XboxOne.XboxOneEndPoint" && fullName != "UnityEngine.PS4.SceEndPoint" && fullName != "UnityEngine.PSVita.SceEndPoint")
-				{
-					QLog.Error("Connect failed: invalid Endpoint (not IPEndPoint or XboxOneEndPoint or SceEndPoint)");
-					m_AsyncConnect = ConnectState.Failed;
-				}
-				else
-				{
-					byte b = 0;
-					m_RemoteEndPoint = secureTunnelEndPoint;
-					m_AsyncConnect = ConnectState.Connecting;
-					try
-					{
-						m_ClientConnectionId = NetworkTransport.ConnectEndPoint(hostId, m_RemoteEndPoint, 0, out b);
-					}
-					catch (Exception arg)
-					{
-						QLog.Error($"Connect failed: Exception when trying to connect to EndPoint: {arg}");
-						m_AsyncConnect = ConnectState.Failed;
-						return;
-					}
-					if (m_ClientConnectionId == 0)
-					{
-						QLog.Error($"Connect failed: Unable to connect to EndPoint ({b})");
-						m_AsyncConnect = ConnectState.Failed;
-					}
-					else
-					{
-						m_Connection = (QNetworkConnection)Activator.CreateInstance(networkConnectionClass);
-						m_Connection.SetHandlers(m_MessageHandlers);
-						m_Connection.Initialize(serverIp, hostId, m_ClientConnectionId, hostTopology);
-					}
-				}
-			}
-		}
-
 		private void PrepareForConnect()
 		{
 			SetActive(true);
@@ -320,21 +142,7 @@ namespace QuantumUNET
 				connectionConfig.UsePlatformSpecificProtocols = false;
 				hostTopology = new HostTopology(connectionConfig, 8);
 			}
-			if (m_UseSimulator)
-			{
-				var num = m_SimulatedLatency / 3 - 1;
-				if (num < 1)
-				{
-					num = 1;
-				}
-				var num2 = m_SimulatedLatency * 3;
-				QLog.Log($"AddHost Using Simulator {num}/{num2}");
-				hostId = NetworkTransport.AddHostWithSimulator(hostTopology, num, num2, m_HostPort);
-			}
-			else
-			{
-				hostId = NetworkTransport.AddHost(hostTopology, m_HostPort);
-			}
+			hostId = NetworkTransport.AddHost(hostTopology, m_HostPort);
 		}
 
 		internal static void GetHostAddressesCallback(IAsyncResult ar)
@@ -367,22 +175,7 @@ namespace QuantumUNET
 
 		internal void ContinueConnect()
 		{
-			if (m_UseSimulator)
-			{
-				var num = m_SimulatedLatency / 3;
-				if (num < 1)
-				{
-					num = 1;
-				}
-				QLog.Log(
-					$"Connect Using Simulator {m_SimulatedLatency / 3}/{m_SimulatedLatency}");
-				var conf = new ConnectionSimulatorConfig(num, m_SimulatedLatency, num, m_SimulatedLatency, m_PacketLoss);
-				m_ClientConnectionId = NetworkTransport.ConnectWithSimulator(hostId, serverIp, serverPort, 0, out var b, conf);
-			}
-			else
-			{
-				m_ClientConnectionId = NetworkTransport.Connect(hostId, serverIp, serverPort, 0, out var b);
-			}
+			m_ClientConnectionId = NetworkTransport.Connect(hostId, serverIp, serverPort, 0, out var b);
 			m_Connection = (QNetworkConnection)Activator.CreateInstance(networkConnectionClass);
 			m_Connection.SetHandlers(m_MessageHandlers);
 			m_Connection.Initialize(serverIp, hostId, m_ClientConnectionId, hostTopology);
@@ -807,34 +600,6 @@ namespace QuantumUNET
 			}
 			active = state;
 		}
-
-		private const int k_MaxEventsPerFrame = 500;
-		private int m_HostPort;
-
-		private bool m_UseSimulator;
-
-		private int m_SimulatedLatency;
-
-		private float m_PacketLoss;
-		private int m_ClientConnectionId = -1;
-
-		private int m_StatResetTime;
-
-		private EndPoint m_RemoteEndPoint;
-
-		private static readonly QCRCMessage s_CRCMessage = new QCRCMessage();
-
-		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
-
-		protected QNetworkConnection m_Connection;
-
-		private readonly byte[] m_MsgBuffer;
-
-		private readonly NetworkReader m_MsgReader;
-
-		protected ConnectState m_AsyncConnect = ConnectState.None;
-
-		private string m_RequestedServerHost = "";
 
 		protected enum ConnectState
 		{

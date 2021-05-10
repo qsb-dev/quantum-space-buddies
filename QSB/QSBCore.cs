@@ -1,6 +1,8 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
+using OWML.ModHelper.Input;
 using OWML.Utils;
+using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
@@ -11,10 +13,12 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
+using QSB.ProbeSync.TransformSync;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.ShipSync;
+using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.StatueSync;
 using QSB.TimeSync;
@@ -61,7 +65,7 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
-		public static bool HasWokenUp { get; set; }
+		public static bool WorldObjectsReady => WorldObjectManager.AllReady;
 		public static bool IsServer => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
@@ -113,9 +117,12 @@ namespace QSB
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
+			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipWorldObjectManager>();
 
 			DebugBoxManager.Init();
+
+			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
@@ -134,7 +141,7 @@ namespace QSB
 			var offset = 10f;
 			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {HasWokenUp}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {WorldObjectsReady}");
 			offset += _debugLineSpacing;
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -144,19 +151,19 @@ namespace QSB
 				offset += _debugLineSpacing;
 			}
 
-			if (!HasWokenUp)
+			if (!WorldObjectsReady)
 			{
 				return;
 			}
 
 			var offset3 = 10f;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current synced sector :");
+			var playerSector = PlayerTransformSync.LocalInstance.ReferenceSector;
+			var playerText = playerSector == null ? "NULL" : playerSector.Name;
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Current sector : {playerText}");
 			offset3 += _debugLineSpacing;
-			var sector = PlayerTransformSync.LocalInstance.ReferenceSector;
-			var text = sector == null
-				? "NULL SECTOR"
-				: $"{sector.AttachedObject.name} : {sector.IsFakeSector}";
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {text}");
+			var probeSector = PlayerProbeSync.LocalInstance.ReferenceSector;
+			var probeText = probeSector == null ? "NULL" : probeSector.Name;
+			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {probeText}");
 			offset3 += _debugLineSpacing;
 			var shipTransform = Locator.GetShipTransform();
 			var hatchController = shipTransform.GetComponentInChildren<HatchController>();
@@ -166,10 +173,10 @@ namespace QSB
 
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
 			offset3 += _debugLineSpacing;
-			var ship = QSBWorldSync.GetWorldFromId<QSBShip>(0);
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.TransformSync.HasAuthority}");
+			var ship = ShipTransformSync.LocalInstance;
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.HasAuthority}");
 			offset3 += _debugLineSpacing;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {ship.TransformSync.ReferenceSector.Name}");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {ship.ReferenceSector.Name}");
 			offset3 += _debugLineSpacing;
 
 
@@ -187,16 +194,20 @@ namespace QSB
 				return;
 			}
 
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe Active : {Locator.GetProbe().gameObject.activeInHierarchy}");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Shrine player in dark? : {QuantumManager.Instance.Shrine.IsPlayerInDarkness()}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player data :");
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
-			offset += _debugLineSpacing;
-			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
+				var networkTransform = player.TransformSync;
+				var sector = networkTransform.ReferenceSector;
+
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {(sector == null ? "NULL" : sector.Name)}");
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- LocalAccel : {player.JetpackAcceleration?.LocalAcceleration}");
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- Thrusting : {player.JetpackAcceleration?.IsThrusting}");
 				offset += _debugLineSpacing;
 			}
 
@@ -261,10 +272,6 @@ namespace QSB
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
-			if (!DebugMode)
-			{
-				FindObjectsOfType<DebugZOverride>().ToList().ForEach(x => Destroy(x.gameObject));
-			}
 			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 			SocketedObjToDebug = config.GetSettingsValue<int>("socketedObjToDebug");
 		}

@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
-using QSB.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace QSB.SectorSync
 	{
 		public List<QSBSector> SectorList = new List<QSBSector>();
 
+		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
-		private ITransformSync _owner;
 
 		private void OnDestroy()
 		{
@@ -35,22 +35,13 @@ namespace QSB.SectorSync
 			_sectorDetector = detector;
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
-		}
 
-		public void SetOwner(ITransformSync owner)
-		{
-			if (owner == null)
+			_attachedOWRigidbody = _sectorDetector.GetValue<OWRigidbody>("_attachedRigidbody");
+			if (_attachedOWRigidbody == null)
 			{
-				DebugLog.ToConsole($"Warning - Trying to set owner of a SectorSync to a null value.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
-			if (_owner != null)
-			{
-				DebugLog.ToConsole($"Warning - Trying to set owner of a SectorSync that already has an owner.", MessageType.Warning);
-			}
-			_owner = owner;
 		}
-
-		public ITransformSync GetOwner() => _owner;
 
 		private void AddSector(Sector sector)
 		{
@@ -91,7 +82,7 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count(x => x.ShouldSyncTo(_owner)) == 0
+			var listToCheck = SectorList.Count(x => x.ShouldSyncTo()) == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>()
 				: SectorList;
 
@@ -106,14 +97,17 @@ namespace QSB.SectorSync
 			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& sector.ShouldSyncTo(_owner));
+				&& sector.ShouldSyncTo());
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
 				return default;
 			}
+			//var ordered = activeNotNullNotBlacklisted
+			//.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
+			//.ThenBy(sector => GetRelativeVelocity(sector, _attachedOWRigidbody))
+			//.ThenBy(sector => GetRadius(sector));
 			var ordered = activeNotNullNotBlacklisted
-				.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-				.ThenBy(sector => GetRadius(sector));
+				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
 			if (
 				// if any fake sectors are *roughly* in the same place as other sectors - we want fake sectors to override other sectors
@@ -128,7 +122,16 @@ namespace QSB.SectorSync
 			return ordered.FirstOrDefault();
 		}
 
-		private float GetRadius(QSBSector sector)
+		public static float CalculateSectorScore(QSBSector sector, Transform trans, OWRigidbody rigidbody)
+		{
+			var distance = Vector3.Distance(sector.Position, trans.position); // want to be small
+			var radius = GetRadius(sector); // want to be small
+			var velocity = GetRelativeVelocity(sector, rigidbody); // want to be small
+
+			return (distance * distance) + (radius * radius) + (velocity * velocity);
+		}
+
+		public static float GetRadius(QSBSector sector)
 		{
 			if (sector == null)
 			{
@@ -144,6 +147,18 @@ namespace QSB.SectorSync
 				}
 			}
 			return 0f;
+		}
+		
+		public static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
+		{
+			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
+			if (sectorRigidBody != null && rigidbody != null)
+			{
+				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
+				var relativeVelocityMagnitude = relativeVelocity.sqrMagnitude; // Remember this is squared for efficiency!
+				return relativeVelocityMagnitude;
+			}
+			return 0;
 		}
 	}
 }

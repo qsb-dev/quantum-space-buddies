@@ -22,7 +22,7 @@ namespace QSB.QuantumSync.Events
 
 		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
 		{
-			if (!QuantumManager.Instance.IsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return false;
 			}

@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
-using QSB.Animation.Events;
+using QSB.Animation.NPC.Events;
+using QSB.Animation.Player.Events;
 using QSB.CampfireSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
@@ -42,17 +43,16 @@ namespace QSB.Events
 				new PlayerTranslatorEvent(),
 				new PlayerProbeLauncherEvent(),
 				new PlayerProbeEvent(),
-				new PlayerSectorEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
 				new ServerSendPlayerStatesEvent(),
 				new ChangeAnimTypeEvent(),
-				new CrouchEvent(),
 				new ServerTimeEvent(),
 				new PlayerEntangledEvent(),
 				new PlayerKickEvent(),
 				new EnterExitRoastingEvent(),
 				new MarshmallowEventEvent(),
+				new AnimationTriggerEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
@@ -77,6 +77,7 @@ namespace QSB.Events
 				new RevealFactEvent(),
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
+				new NpcAnimationEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent()

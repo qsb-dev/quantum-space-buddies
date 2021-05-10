@@ -1,20 +1,25 @@
-﻿using QSB.Animation;
+﻿using QSB.Animation.Player;
 using QSB.Instruments;
-using QSB.TransformSync;
+using QSB.Syncs.TransformSync;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerTransformSync : SyncObjectTransformSync
+	public class PlayerTransformSync : SectoredTransformSync
 	{
-		public override SyncType SyncType => SyncType.Player;
-
 		public static PlayerTransformSync LocalInstance { get; private set; }
+		public override bool UseInterpolation => true;
 
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
+
+		public override void Start()
+		{
+			base.Start();
+			Player.TransformSync = this;
+		}
 
 		protected override void OnDestroy()
 		{
@@ -30,7 +35,7 @@ namespace QSB.Player.TransformSync
 		private Transform GetPlayerModel() =>
 			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
-		protected override Transform InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = GetPlayerModel();
@@ -40,12 +45,13 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body;
+			return body.gameObject;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			var body = Instantiate(GetPlayerModel());
+			Player.Body = body.gameObject;
 
 			GetComponent<AnimationSync>().InitRemote(body);
 			GetComponent<InstrumentsManager>().InitRemote(body);
@@ -55,25 +61,13 @@ namespace QSB.Player.TransformSync
 
 			body.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
-			Player.Body = body.gameObject;
-
-			return body;
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.HasWokenUp || !Player.IsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-			Popcron.Gizmos.Line(ReferenceSector.Position, Player.Body.transform.position, Color.blue, true);
-			Popcron.Gizmos.Sphere(ReferenceSector.Position, 5f, Color.cyan);
+			return body.gameObject;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.IsReady
+			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
 	}

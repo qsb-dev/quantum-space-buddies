@@ -1,22 +1,33 @@
-﻿using QSB.ShipSync.WorldObjects;
-using QSB.TransformSync;
-using QSB.Utility;
+using QSB.Player;
+using QSB.ShipSync.WorldObjects;
+using QSB.Syncs.TransformSync;
 using QSB.WorldSync;
 using System.Linq;
 
 namespace QSB.ShipSync.TransformSync
 {
-	public class ShipTransformSync : WorldObjectTransformSync
+	public class ShipTransformSync : UnparentedSectoredRigidbodySync
 	{
-		public override SyncType SyncType => SyncType.Ship;
+		public static ShipTransformSync LocalInstance { get; private set; }
 
-		protected override IWorldObject GetWorldObject()
-		{
-			SectorSync.SetSectorDetector(Locator.GetShipDetector().GetComponent<SectorDetector>());
-			return QSBWorldSync.GetWorldFromId<QSBShip>(0);
-		}
+		public override bool UseInterpolation => true;
 
 		public override bool IsReady 
 			=> QSBWorldSync.GetWorldObjects<QSBShip>().Count() != 0;
+
+		public override void OnStartLocalPlayer()
+			=> LocalInstance = this;
+
+		protected override OWRigidbody InitLocalTransform()
+		{
+			SectorSync.SetSectorDetector(Locator.GetShipDetector().GetComponent<SectorDetector>());
+			return QSBWorldSync.GetWorldFromId<QSBShip>(0).AttachedObject;
+		}
+
+		protected override OWRigidbody InitRemoteTransform()
+		{
+			SectorSync.SetSectorDetector(Locator.GetShipDetector().GetComponent<SectorDetector>());
+			return QSBWorldSync.GetWorldFromId<QSBShip>(0).AttachedObject;
+		}
 	}
 }

@@ -1,4 +1,6 @@
 ﻿using OWML.Common;
+using QSB.Animation.NPC.Patches;
+using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;
 using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
@@ -8,6 +10,7 @@ using QSB.GeyserSync.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
+using QSB.Player.Patches;
 using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
@@ -51,6 +54,9 @@ namespace QSB.Patches
 				new PoolPatches(),
 				new CampfirePatches(),
 				new RoastingPatches(),
+				new PlayerPatches(),
+				new PlayerAnimationPatches(),
+				new CharacterAnimationPatches(),
 				new ShipPatches()
 			};
 
