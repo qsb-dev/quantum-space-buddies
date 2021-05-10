@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
-using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;

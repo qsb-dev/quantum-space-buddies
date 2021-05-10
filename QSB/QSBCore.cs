@@ -19,7 +19,6 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
-using QSB.ShipSync.WorldObjects;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.TranslationSync;
@@ -118,7 +117,6 @@ namespace QSB
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
 			gameObject.AddComponent<CharacterAnimManager>();
-			gameObject.AddComponent<ShipWorldObjectManager>();
 
 			DebugBoxManager.Init();
 
