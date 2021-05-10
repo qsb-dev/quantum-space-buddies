@@ -1,11 +1,9 @@
-using QSB.Player;
 using QSB.Syncs.TransformSync;
-using QSB.WorldSync;
-using System.Linq;
+using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
-	public class ShipTransformSync : UnparentedSectoredRigidbodySync
+	public class ShipTransformSync : SectoredTransformSync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
 
@@ -17,16 +15,16 @@ namespace QSB.ShipSync.TransformSync
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
 
-		protected override OWRigidbody InitLocalTransform()
+		protected override GameObject InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetShipDetector().GetComponent<SectorDetector>());
-			return Locator.GetShipBody();
+			return Locator.GetShipBody().gameObject;
 		}
 
-		protected override OWRigidbody InitRemoteTransform()
+		protected override GameObject InitRemoteTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetShipDetector().GetComponent<SectorDetector>());
-			return Locator.GetShipBody();
+			return Locator.GetShipBody().gameObject;
 		}
 	}
 }
