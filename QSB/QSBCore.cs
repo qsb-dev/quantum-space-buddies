@@ -174,7 +174,7 @@ namespace QSB
 			var ship = ShipTransformSync.LocalInstance;
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.HasAuthority}");
 			offset3 += _debugLineSpacing;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {ship.ReferenceSector.Name}");
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
 			offset3 += _debugLineSpacing;
 
 
