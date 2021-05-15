@@ -1,12 +1,10 @@
 ﻿using OWML.Utils;
 using QSB.Events;
 using QSB.Messaging;
-using System.Linq;
-using UnityEngine;
 
 namespace QSB.ShipSync.Events
 {
-	class HatchEvent : QSBEvent<BoolMessage>
+	internal class HatchEvent : QSBEvent<BoolMessage>
 	{
 		public override QSB.Events.EventType Type => QSB.Events.EventType.OpenHatch;
 

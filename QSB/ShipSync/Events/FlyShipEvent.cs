@@ -4,14 +4,13 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
 using QSB.Utility;
-using QSB.WorldSync;
 using QuantumUNET;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.ShipSync.Events
 {
-	class FlyShipEvent : QSBEvent<BoolMessage>
+	internal class FlyShipEvent : QSBEvent<BoolMessage>
 	{
 		public override QSB.Events.EventType Type => QSB.Events.EventType.FlyShip;
 
@@ -35,10 +34,7 @@ namespace QSB.ShipSync.Events
 			Value = flying
 		};
 
-		public override void OnReceiveLocal(bool server, BoolMessage message)
-		{
-			SetCurrentFlyer(message.Value, message.AboutId);
-		}
+		public override void OnReceiveLocal(bool server, BoolMessage message) => SetCurrentFlyer(message.Value, message.AboutId);
 
 		public override void OnReceiveRemote(bool server, BoolMessage message)
 		{

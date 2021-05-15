@@ -1,19 +1,12 @@
 ﻿using OWML.Common;
-using OWML.Utils;
-using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QuantumUNET;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.ShipSync
 {
-	class ShipManager : MonoBehaviour
+	internal class ShipManager : MonoBehaviour
 	{
 		public static ShipManager Instance;
 

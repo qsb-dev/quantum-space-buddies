@@ -2,12 +2,11 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
 {
-	class ShipPatches : QSBPatch
+	internal class ShipPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

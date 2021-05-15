@@ -31,10 +31,7 @@ namespace QSB.Syncs.RigidbodySync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy()
-		{
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-		}
+		protected virtual void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;

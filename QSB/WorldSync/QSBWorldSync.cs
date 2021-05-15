@@ -81,7 +81,7 @@ namespace QSB.WorldSync
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
 			foreach (var item in itemsToRemove)
 			{
-				WorldObjectsToUnityObjects.Remove(item.ReturnObject() as MonoBehaviour);
+				WorldObjectsToUnityObjects.Remove(item.ReturnObject());
 				try
 				{
 					item.OnRemoval();

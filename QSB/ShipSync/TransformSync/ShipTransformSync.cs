@@ -1,9 +1,7 @@
 using QSB.Player;
 using QSB.SectorSync;
 using QSB.Syncs.RigidbodySync;
-using QSB.Syncs.TransformSync;
 using QSB.Utility;
-using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
