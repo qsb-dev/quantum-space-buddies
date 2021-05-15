@@ -20,15 +20,15 @@ namespace QSB.RoastingSync.TransformSync
 		private Transform GetPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			var pivot = GetPivot();
 			Player.RoastingStick = pivot.gameObject;
 			_stickTip = pivot.Find("Stick_Tip");
-			return pivot.gameObject;
+			return pivot;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var newPivot = Instantiate(GetPivot());
 			newPivot.parent = null;
@@ -58,7 +58,7 @@ namespace QSB.RoastingSync.TransformSync
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
 			_stickTip = newPivot.Find("Stick_Tip");
-			return newPivot.gameObject;
+			return newPivot;
 		}
 
 		protected override void UpdateTransform()

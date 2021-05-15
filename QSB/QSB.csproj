@@ -238,6 +238,10 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
+    <Compile Include="Syncs\ISectoredSync.cs" />
+    <Compile Include="Syncs\ISync.cs" />
+    <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />
+    <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
     <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
     <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />
@@ -255,7 +259,7 @@
     <Compile Include="StatueSync\StatueManager.cs" />
     <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="Syncs\TransformSync\BaseTransformSync.cs" />
-    <Compile Include="Syncs\TransformSync\IntermediaryTransform.cs" />
+    <Compile Include="Syncs\IntermediaryTransform.cs" />
     <Compile Include="Syncs\TransformSync\SectoredTransformSync.cs" />
     <Compile Include="Syncs\TransformSync\UnparentedBaseTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />

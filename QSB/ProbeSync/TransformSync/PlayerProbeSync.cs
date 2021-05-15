@@ -23,17 +23,17 @@ namespace QSB.ProbeSync.TransformSync
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
 			var body = GetProbe();
 
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var probe = GetProbe();
 
@@ -52,7 +52,7 @@ namespace QSB.ProbeSync.TransformSync
 
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null

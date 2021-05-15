@@ -35,7 +35,7 @@ namespace QSB.Player.TransformSync
 		private Transform GetPlayerModel() =>
 			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
 			var body = GetPlayerModel();
@@ -45,10 +45,10 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var body = Instantiate(GetPlayerModel());
 			Player.Body = body.gameObject;
@@ -61,7 +61,7 @@ namespace QSB.Player.TransformSync
 
 			body.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
-			return body.gameObject;
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null

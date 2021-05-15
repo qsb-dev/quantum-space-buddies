@@ -1,43 +1,34 @@
 ﻿using OWML.Common;
-using QSB.Player;
-using QSB.Player.TransformSync;
+using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
-namespace QSB.Syncs.TransformSync
+namespace QSB.Syncs.RigidbodySync
 {
-	public abstract class UnparentedBaseTransformSync : QNetworkTransform, ISync<GameObject>
+	public abstract class UnparentedBaseRigidbodySync : QNetworkTransform, ISync<OWRigidbody>
 	{
-		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
-		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
 		public Transform ReferenceTransform { get; set; }
-		public GameObject AttachedObject { get; set; }
+		public OWRigidbody AttachedObject { get; set; }
 
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 
-		protected abstract GameObject InitLocalTransform();
-		protected abstract GameObject InitRemoteTransform();
-
-		private bool _isInitialized;
-		private const float SmoothTime = 0.1f;
-		protected virtual float DistanceLeeway { get; } = 5f;
-		private float _previousDistance;
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
+		protected bool _isInitialized;
 		protected IntermediaryTransform _intermediaryTransform;
+		protected Vector3 _velocity;
+		protected Vector3 _angularVelocity;
+		private string _logName => $"{NetId}:{GetType().Name}";
+
+		protected abstract OWRigidbody GetRigidbody();
 
 		public virtual void Start()
 		{
-			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
-				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
-			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
-
 			DontDestroyOnLoad(gameObject);
 			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -45,19 +36,19 @@ namespace QSB.Syncs.TransformSync
 
 		protected virtual void OnDestroy()
 		{
-			if (!HasAuthority && AttachedObject != null)
-			{
-				Destroy(AttachedObject);
-			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		protected void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
-			_isInitialized = false;
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+			=> _isInitialized = false;
 
 		protected virtual void Init()
 		{
-			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
+			if (!QSBSceneManager.IsInUniverse)
+			{
+				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
+			}
+			AttachedObject = GetRigidbody();
 			_isInitialized = true;
 		}
 
@@ -68,10 +59,35 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
 
+			/* We need to send :
+			 * - Position
+			 * - Rotation
+			 * - Velocity
+			 * - Angular velocity
+			 * We can't store the last two on the IntermediaryTransform, so they come from fields.
+			 */
+
+			// Get world position from IT.
+			
+			// Get world rotation from IT.
+
+			// Get velocity from field.
+
+			// Get angular velocity from field.
+
+			// Send all.
+
+			// Set _prev fields.
+
 			var worldPos = _intermediaryTransform.GetPosition();
 			var worldRot = _intermediaryTransform.GetRotation();
+			var velocity = _velocity;
+			var angularVelocity = _angularVelocity;
+
 			writer.Write(worldPos);
 			SerializeRotation(writer, worldRot);
+			writer.Write(velocity);
+			writer.Write(angularVelocity);
 			_prevPosition = worldPos;
 			_prevRotation = worldRot;
 		}
@@ -82,11 +98,15 @@ namespace QSB.Syncs.TransformSync
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);
+				reader.ReadVector3();
+				reader.ReadVector3();
 				return;
 			}
 
 			var pos = reader.ReadVector3();
 			var rot = DeserializeRotation(reader);
+			var vel = reader.ReadVector3();
+			var angVel = reader.ReadVector3();
 
 			if (HasAuthority)
 			{
@@ -100,10 +120,12 @@ namespace QSB.Syncs.TransformSync
 
 			_intermediaryTransform.SetPosition(pos);
 			_intermediaryTransform.SetRotation(rot);
+			_velocity = vel;
+			_angularVelocity = angVel;
 
 			if (_intermediaryTransform.GetPosition() == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.{GetType().Name} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
 		}
 
@@ -126,7 +148,12 @@ namespace QSB.Syncs.TransformSync
 
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject {Player.PlayerId}.{GetType().Name} is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedRigidbody {_logName} is null.", MessageType.Warning);
+				return;
+			}
+
+			if (!AttachedObject.gameObject.activeInHierarchy)
+			{
 				return;
 			}
 
@@ -141,30 +168,23 @@ namespace QSB.Syncs.TransformSync
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				_velocity = AttachedObject.GetRelativeVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+				_angularVelocity = AttachedObject.GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
 				return;
 			}
+
 			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
 			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
-			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_ParentedToReference() != Vector3.zero)
-			{
-				if (UseInterpolation)
-				{
-					AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-					AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
-				}
-				else
-				{
-					AttachedObject.transform.position = targetPos;
-					AttachedObject.transform.rotation = targetRot;
-				}
-			}
-		}
 
-		public override bool HasMoved()
-		{
-			var displacementMagnitude = (_intermediaryTransform.GetPosition() - _prevPosition).magnitude;
-			return displacementMagnitude > 1E-03f
-				|| Quaternion.Angle(_intermediaryTransform.GetRotation(), _prevRotation) > 1E-03f;
+			if (targetPos == Vector3.zero || _intermediaryTransform.GetTargetPosition_ParentedToReference() == Vector3.zero)
+			{
+				return;
+			}
+
+			AttachedObject.SetPosition(targetPos);
+			AttachedObject.SetRotation(targetRot);
+			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetVelocity() + _velocity);
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _angularVelocity);
 		}
 
 		public void SetReferenceTransform(Transform transform)
@@ -175,18 +195,6 @@ namespace QSB.Syncs.TransformSync
 			}
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
-		}
-
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
-			{
-				_previousDistance = distance;
-				return targetPosition;
-			}
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
 		private void OnRenderObject()

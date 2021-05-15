@@ -1,5 +1,7 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
+using QSB.Syncs;
+using QSB.Syncs.RigidbodySync;
 using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -27,7 +29,21 @@ namespace QSB.SectorSync
 					continue;
 				}
 				if (sync.HasAuthority 
-					&& sync.AttachedObject.activeInHierarchy 
+					&& sync.AttachedObject.gameObject.activeInHierarchy 
+					&& sync.IsReady)
+				{
+					CheckTransformSyncSector(sync);
+				}
+			}
+
+			foreach (var sync in SectoredRigidbodySync.SectoredNetworkTransformList)
+			{
+				if (sync.AttachedObject == null)
+				{
+					continue;
+				}
+				if (sync.HasAuthority
+					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
 					CheckTransformSyncSector(sync);
@@ -64,7 +80,8 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(SectoredTransformSync transformSync)
+		private void CheckTransformSyncSector<T>(ISectoredSync<T> transformSync)
+			where T : Component
 		{
 			var attachedObject = transformSync.AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);

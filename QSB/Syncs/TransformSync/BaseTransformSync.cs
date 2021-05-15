@@ -10,24 +10,24 @@ using UnityEngine;
 namespace QSB.Syncs.TransformSync
 {
 	/*
-	 * Rewrite number : 4
+	 * Rewrite number : 5
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class BaseTransformSync : QNetworkTransform
+	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
 	{
 		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
 		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		public Transform ReferenceTransform { get; set; }
-		public GameObject AttachedObject { get; set; }
+		public Transform AttachedObject { get; set; }
 
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 
-		protected abstract GameObject InitLocalTransform();
-		protected abstract GameObject InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
 		protected bool _isInitialized;
 		private const float SmoothTime = 0.1f;
@@ -144,7 +144,7 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
-			if (!AttachedObject.activeInHierarchy)
+			if (!AttachedObject.gameObject.activeInHierarchy)
 			{
 				return;
 			}

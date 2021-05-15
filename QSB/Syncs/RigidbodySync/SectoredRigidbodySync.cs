@@ -1,17 +1,20 @@
 ﻿using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
+using QSB.Syncs.TransformSync;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System.Text;
 
-namespace QSB.Syncs.TransformSync
+namespace QSB.Syncs.RigidbodySync
 {
-	public abstract class SectoredTransformSync : BaseTransformSync, ISectoredSync<Transform>
+	public abstract class SectoredRigidbodySync : UnparentedBaseRigidbodySync, ISectoredSync<OWRigidbody>
 	{
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
-		public static List<SectoredTransformSync> SectoredNetworkTransformList = new List<SectoredTransformSync>();
+		public static List<SectoredRigidbodySync> SectoredNetworkTransformList = new List<SectoredRigidbodySync>();
 
 		public override void Start()
 		{

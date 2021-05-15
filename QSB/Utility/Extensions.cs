@@ -72,5 +72,10 @@ namespace QSB.Utility
 			var methodAction = (Action)Activator.CreateInstance(typeof(Action), obj, functionPointer);
 			methodAction();
 		}
+
+		// OW
+
+		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody) 
+			=> relativeBody.GetAngularVelocity() - baseBody.GetAngularVelocity();
 	}
 }
