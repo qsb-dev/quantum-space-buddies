@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Player;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using System.Linq;
@@ -9,8 +10,6 @@ namespace QSB.RoastingSync.TransformSync
 {
 	internal class RoastingStickTransformSync : SectoredTransformSync
 	{
-		public override bool UseInterpolation => true;
-
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
 		private const float SmoothTime = 0.1f;
@@ -87,5 +86,9 @@ namespace QSB.RoastingSync.TransformSync
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.RoastingStick;
 	}
 }

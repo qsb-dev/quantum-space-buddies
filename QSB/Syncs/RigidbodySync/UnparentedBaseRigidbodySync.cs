@@ -1,12 +1,7 @@
 ﻿using OWML.Common;
-using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.Syncs.RigidbodySync
@@ -23,6 +18,8 @@ namespace QSB.Syncs.RigidbodySync
 		protected IntermediaryTransform _intermediaryTransform;
 		protected Vector3 _velocity;
 		protected Vector3 _angularVelocity;
+		protected Vector3 _prevVelocity;
+		protected Vector3 _prevAngularVelocity;
 		private string _logName => $"{NetId}:{GetType().Name}";
 
 		protected abstract OWRigidbody GetRigidbody();
@@ -90,6 +87,8 @@ namespace QSB.Syncs.RigidbodySync
 			writer.Write(angularVelocity);
 			_prevPosition = worldPos;
 			_prevRotation = worldRot;
+			_prevVelocity = velocity;
+			_prevAngularVelocity = angularVelocity;
 		}
 
 		public override void DeserializeTransform(QNetworkReader reader)
@@ -195,6 +194,33 @@ namespace QSB.Syncs.RigidbodySync
 			}
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
+		}
+
+		public override bool HasMoved()
+		{
+			var displacementMagnitude = (_intermediaryTransform.GetPosition() - _prevPosition).magnitude;
+
+			if (displacementMagnitude > 1E-03f)
+			{
+				return true;
+			}
+			if (Quaternion.Angle(_intermediaryTransform.GetRotation(), _prevRotation) > 1E-03f)
+			{
+				return true;
+			}
+
+			var velocityChangeMagnitude = (_velocity - _prevVelocity).magnitude;
+			var angularVelocityChangeMagnitude = (_angularVelocity - _prevAngularVelocity).magnitude;
+			if (velocityChangeMagnitude > 1E-03f)
+			{
+				return true;
+			}
+			if (angularVelocityChangeMagnitude > 1E-03f)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private void OnRenderObject()

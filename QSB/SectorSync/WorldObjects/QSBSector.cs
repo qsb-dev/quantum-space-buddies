@@ -32,7 +32,7 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 
-		public bool ShouldSyncTo()
+		public bool ShouldSyncTo(TargetType targetType)
 		{
 			if (AttachedObject == null)
 			{
@@ -45,7 +45,7 @@ namespace QSB.SectorSync.WorldObjects
 				return false;
 			}
 
-			if (Type == Sector.Name.Ship)
+			if (targetType == TargetType.Ship && Type == Sector.Name.Ship)
 			{
 				return false;
 			}

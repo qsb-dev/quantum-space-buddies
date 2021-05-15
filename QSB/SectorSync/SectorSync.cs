@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
+using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace QSB.SectorSync
 
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
+		private TargetType _targetType;
 
 		private void OnDestroy()
 		{
@@ -25,7 +27,7 @@ namespace QSB.SectorSync
 			}
 		}
 
-		public void SetSectorDetector(SectorDetector detector)
+		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
 		{
 			if (_sectorDetector != null)
 			{
@@ -41,6 +43,8 @@ namespace QSB.SectorSync
 			{
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
+
+			_targetType = sectoredSync.Type;
 		}
 
 		private void AddSector(Sector sector)
@@ -82,7 +86,7 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count(x => x.ShouldSyncTo()) == 0
+			var listToCheck = SectorList.Count(x => x.ShouldSyncTo(_targetType)) == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>()
 				: SectorList;
 
@@ -97,7 +101,7 @@ namespace QSB.SectorSync
 			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& sector.ShouldSyncTo());
+				&& sector.ShouldSyncTo(_targetType));
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
 				return default;
@@ -128,7 +132,7 @@ namespace QSB.SectorSync
 			var radius = GetRadius(sector); // want to be small
 			var velocity = GetRelativeVelocity(sector, rigidbody); // want to be small
 
-			return (distance * distance) + (radius * radius) + (velocity * velocity);
+			return Mathf.Pow(distance, 2) + Mathf.Pow(radius, 2) + Mathf.Pow(velocity, 2);
 		}
 
 		public static float GetRadius(QSBSector sector)

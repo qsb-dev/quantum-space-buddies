@@ -1,4 +1,5 @@
-﻿using QSB.SectorSync.WorldObjects;
+﻿using QSB.SectorSync;
+using QSB.SectorSync.WorldObjects;
 
 namespace QSB.Syncs
 {
@@ -6,6 +7,7 @@ namespace QSB.Syncs
 	{
 		SectorSync.SectorSync SectorSync { get; }
 		QSBSector ReferenceSector { get; }
+		TargetType Type { get; }
 
 		void SetReferenceSector(QSBSector sector);
 	}

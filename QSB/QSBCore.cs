@@ -163,19 +163,25 @@ namespace QSB
 			var probeText = probeSector == null ? "NULL" : probeSector.Name;
 			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {probeText}");
 			offset3 += _debugLineSpacing;
-			var shipTransform = Locator.GetShipTransform();
-			var hatchController = shipTransform.GetComponentInChildren<HatchController>();
-			var interactZone = hatchController.GetComponent<InteractZone>();
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Hatch angle : {2 * Vector3.Angle(Locator.GetPlayerCamera().transform.forward, interactZone.transform.forward)}");
-			offset3 += _debugLineSpacing;
 
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
 			offset3 += _debugLineSpacing;
 			var ship = ShipTransformSync.LocalInstance;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.HasAuthority}");
-			offset3 += _debugLineSpacing;
-			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
-			offset3 += _debugLineSpacing;
+			if (ship == null)
+			{
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"SHIP INSTANCE NULL");
+				offset3 += _debugLineSpacing;
+			}
+			else
+			{
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.HasAuthority}");
+				offset3 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
+				offset3 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship relative velocity : {ship.AttachedObject.GetRelativeVelocity(ship.ReferenceTransform.GetAttachedOWRigidbody())}");
+				offset3 += _debugLineSpacing;
+			}
+			
 
 
 			var offset2 = 10f;

@@ -238,6 +238,7 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
+    <Compile Include="SectorSync\TargetType.cs" />
     <Compile Include="Syncs\ISectoredSync.cs" />
     <Compile Include="Syncs\ISync.cs" />
     <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />

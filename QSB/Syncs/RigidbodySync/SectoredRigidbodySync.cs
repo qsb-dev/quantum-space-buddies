@@ -15,6 +15,7 @@ namespace QSB.Syncs.RigidbodySync
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 		public static List<SectoredRigidbodySync> SectoredNetworkTransformList = new List<SectoredRigidbodySync>();
+		public abstract TargetType Type { get; }
 
 		public override void Start()
 		{

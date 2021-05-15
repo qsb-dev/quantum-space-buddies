@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
@@ -10,7 +11,7 @@ namespace QSB.Player.TransformSync
 	{
 		protected override Transform InitLocalTransform()
 		{
-			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
+			SectorSync.Init(Locator.GetPlayerSectorDetector(), this);
 			var body = Locator.GetPlayerCamera().gameObject.transform;
 
 			Player.Camera = Locator.GetPlayerCamera();
@@ -49,5 +50,7 @@ namespace QSB.Player.TransformSync
 			&& NetId.Value != 0U;
 
 		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.PlayerCamera;
 	}
 }

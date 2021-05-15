@@ -12,6 +12,7 @@ namespace QSB.Syncs.TransformSync
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 		public static List<SectoredTransformSync> SectoredNetworkTransformList = new List<SectoredTransformSync>();
+		public abstract TargetType Type { get; }
 
 		public override void Start()
 		{
