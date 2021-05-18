@@ -178,7 +178,10 @@ namespace QSB
 				offset3 += _debugLineSpacing;
 				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
 				offset3 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship relative velocity : {ship.AttachedObject.GetRelativeVelocity(ship.ReferenceTransform.GetAttachedOWRigidbody())}");
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.AttachedObject.GetRelativeVelocity(ship.ReferenceTransform.GetAttachedOWRigidbody())}");
+				offset3 += _debugLineSpacing;
+				offset3 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
 				offset3 += _debugLineSpacing;
 			}
 			

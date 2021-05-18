@@ -5,6 +5,7 @@ using QSB.Syncs.RigidbodySync;
 using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,30 +21,18 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
+		public List<ISectoredSync<Component>> SectoredSyncs = new List<ISectoredSync<Component>>();
+
 		public void Invoke()
 		{
-			foreach (var sync in SectoredTransformSync.SectoredNetworkTransformList)
+			foreach (var sync in SectoredSyncs)
 			{
 				if (sync.AttachedObject == null)
 				{
 					continue;
 				}
-				if (sync.HasAuthority 
+				if ((sync as QNetworkBehaviour).HasAuthority 
 					&& sync.AttachedObject.gameObject.activeInHierarchy 
-					&& sync.IsReady)
-				{
-					CheckTransformSyncSector(sync);
-				}
-			}
-
-			foreach (var sync in SectoredRigidbodySync.SectoredNetworkTransformList)
-			{
-				if (sync.AttachedObject == null)
-				{
-					continue;
-				}
-				if (sync.HasAuthority
-					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
 					CheckTransformSyncSector(sync);

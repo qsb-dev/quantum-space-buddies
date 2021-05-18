@@ -57,6 +57,7 @@ namespace QSB.ShipSync.Events
 				? id 
 				: uint.MaxValue;
 
+			/*
 			if (id == uint.MaxValue)
 			{
 				DebugLog.DebugWrite($"ShipDetector setactive {QSBCore.IsServer}");
@@ -72,6 +73,7 @@ namespace QSB.ShipSync.Events
 				DebugLog.DebugWrite($"Disable ship detector");
 				Locator.GetShipDetector().SetActive(false);
 			}
+			*/
 
 			if (QSBCore.IsServer)
 			{

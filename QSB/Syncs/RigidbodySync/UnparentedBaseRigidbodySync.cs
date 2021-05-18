@@ -177,8 +177,8 @@ namespace QSB.Syncs.RigidbodySync
 				return;
 			}
 
-			AttachedObject.SetPosition(targetPos);
-			AttachedObject.SetRotation(targetRot);
+			AttachedObject.transform.position = targetPos;
+			AttachedObject.transform.rotation = targetRot;
 			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetVelocity() + _velocity);
 			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _angularVelocity);
 		}
@@ -219,6 +219,9 @@ namespace QSB.Syncs.RigidbodySync
 
 			return false;
 		}
+
+		public float GetVelocityChangeMagnitude() 
+			=> (_velocity - _prevVelocity).magnitude;
 
 		private void OnRenderObject()
 		{

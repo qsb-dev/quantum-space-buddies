@@ -11,20 +11,19 @@ namespace QSB.Syncs.TransformSync
 	{
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
-		public static List<SectoredTransformSync> SectoredNetworkTransformList = new List<SectoredTransformSync>();
 		public abstract TargetType Type { get; }
 
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
-			SectoredNetworkTransformList.Add(this);
+			QSBSectorManager.Instance.SectoredSyncs.Add((ISectoredSync<UnityEngine.Component>)this);
 			base.Start();
 		}
 
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			SectoredNetworkTransformList.Remove(this);
+			QSBSectorManager.Instance.SectoredSyncs.Remove((ISectoredSync<UnityEngine.Component>)this);
 			if (SectorSync != null)
 			{
 				Destroy(SectorSync);
