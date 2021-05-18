@@ -11,17 +11,14 @@ namespace QSB.OrbSync.TransformSync
 		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
 
 		private int _index => OrbTransformSyncs.IndexOf(this);
-		private bool _isReady;
 
 		public override void OnStartClient()
 		{
-			QSBSceneManager.OnSceneLoaded += (OWScene scene, bool inUniverse) => _isReady = false;
 			OrbTransformSyncs.Add(this);
 		}
 
 		protected override void OnDestroy()
 		{
-			QSBSceneManager.OnSceneLoaded -= (OWScene scene, bool inUniverse) => _isReady = false;
 			OrbTransformSyncs.Remove(this);
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
@@ -34,6 +31,11 @@ namespace QSB.OrbSync.TransformSync
 
 		private GameObject GetTransform()
 		{
+			if (_index == -1)
+			{
+				DebugLog.ToConsole($"Error - Index cannot be found.", OWML.Common.MessageType.Error);
+				return null;
+			}
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
