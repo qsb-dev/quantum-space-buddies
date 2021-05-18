@@ -21,11 +21,12 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<ISectoredSync<Component>> SectoredSyncs = new List<ISectoredSync<Component>>();
+		public List<ISectoredSync<Transform>> SectoredTransformSyncs = new List<ISectoredSync<Transform>>();
+		public List<ISectoredSync<OWRigidbody>> SectoredRigidbodySyncs = new List<ISectoredSync<OWRigidbody>>();
 
 		public void Invoke()
 		{
-			foreach (var sync in SectoredSyncs)
+			foreach (var sync in SectoredTransformSyncs)
 			{
 				if (sync.AttachedObject == null)
 				{
@@ -33,6 +34,20 @@ namespace QSB.SectorSync
 				}
 				if ((sync as QNetworkBehaviour).HasAuthority 
 					&& sync.AttachedObject.gameObject.activeInHierarchy 
+					&& sync.IsReady)
+				{
+					CheckTransformSyncSector(sync);
+				}
+			}
+
+			foreach (var sync in SectoredRigidbodySyncs)
+			{
+				if (sync.AttachedObject == null)
+				{
+					continue;
+				}
+				if ((sync as QNetworkBehaviour).HasAuthority
+					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
 					CheckTransformSyncSector(sync);
