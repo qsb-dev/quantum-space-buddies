@@ -11,8 +11,36 @@ namespace QSB.Syncs.TransformSync
 {
 	public abstract class UnparentedBaseTransformSync : QNetworkTransform, ISync<GameObject>
 	{
-		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
-		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
+		public uint AttachedNetId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.NetId.Value;
+			}
+		}
+
+		public uint PlayerId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.RootIdentity != null
+					? NetIdentity.RootIdentity.NetId.Value
+					: AttachedNetId;
+			}
+		}
+
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		public Transform ReferenceTransform { get; set; }
