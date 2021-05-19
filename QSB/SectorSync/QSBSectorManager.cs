@@ -1,8 +1,6 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
 using QSB.Syncs;
-using QSB.Syncs.RigidbodySync;
-using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;

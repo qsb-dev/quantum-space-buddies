@@ -2,7 +2,6 @@
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Collections.Generic;
 
 namespace QSB.Syncs.RigidbodySync
 {

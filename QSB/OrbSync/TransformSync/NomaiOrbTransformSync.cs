@@ -12,10 +12,7 @@ namespace QSB.OrbSync.TransformSync
 
 		private int _index => OrbTransformSyncs.IndexOf(this);
 
-		public override void OnStartClient()
-		{
-			OrbTransformSyncs.Add(this);
-		}
+		public override void OnStartClient() => OrbTransformSyncs.Add(this);
 
 		protected override void OnDestroy()
 		{
