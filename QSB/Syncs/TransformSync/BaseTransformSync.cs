@@ -53,7 +53,7 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
@@ -69,7 +69,7 @@ namespace QSB.Syncs.TransformSync
 			}
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;

@@ -47,7 +47,7 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
