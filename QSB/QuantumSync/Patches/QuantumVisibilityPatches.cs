@@ -41,7 +41,7 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool ShapeIsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
 		{
-			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false);
+			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).First;
 			return false;
 		}
 

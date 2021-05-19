@@ -220,6 +220,16 @@ namespace QSB
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- Thrusting : {player.JetpackAcceleration?.IsThrusting}");
 				offset += _debugLineSpacing;
 			}
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			offset += _debugLineSpacing;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
+			offset += _debugLineSpacing;
+			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
+			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
+				offset += _debugLineSpacing;
+			}
 
 			if (SocketedObjToDebug == -1)
 			{
