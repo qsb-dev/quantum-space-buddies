@@ -130,6 +130,11 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			if (ReferenceTransform == null)
+			{
+				return;
+			}
+
 			UpdateTransform();
 
 			base.Update();
@@ -191,7 +196,11 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
+			if (!QSBCore.WorldObjectsReady 
+				|| !QSBCore.DebugMode 
+				|| !QSBCore.ShowLinesInDebug 
+				|| !IsReady 
+				|| ReferenceTransform == null)
 			{
 				return;
 			}
