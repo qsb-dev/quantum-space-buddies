@@ -229,7 +229,7 @@ namespace QSB.Syncs.TransformSync
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(
 					() => AttachedObject != null,
 					() => ReparentAttachedObject(transform));

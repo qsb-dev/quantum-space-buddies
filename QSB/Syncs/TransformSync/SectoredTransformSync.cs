@@ -104,7 +104,7 @@ namespace QSB.Syncs.TransformSync
 		public void SetReferenceSector(QSBSector sector)
 		{
 			ReferenceSector = sector;
-			SetReferenceTransform(sector.Transform);
+			SetReferenceTransform(sector?.Transform);
 		}
 	}
 }
