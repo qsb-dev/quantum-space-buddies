@@ -42,9 +42,9 @@ namespace QSB.DeathSync.Patches
 		{
 			if (PlayerState.IsInsideShip())
 			{
-				DebugLog.DebugWrite($"Ignore impact when inside ship.");
 				return false;
 			}
+
 			var speed = Mathf.Clamp01((impact.speed - __instance.GetMinImpactSpeed()) / (__instance.GetMaxImpactSpeed() - __instance.GetMinImpactSpeed()));
 			var tookDamage = __instance.ApplyInstantDamage(100f * speed, InstantDamageType.Impact);
 			if (tookDamage && ____currentHealth <= 0f && !PlayerState.IsDead())
