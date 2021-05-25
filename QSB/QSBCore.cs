@@ -180,14 +180,12 @@ namespace QSB
 				offset3 += _debugLineSpacing;
 				if (ship.ReferenceTransform != null)
 				{
-					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.AttachedObject.GetRelativeVelocity(ship.ReferenceTransform.GetAttachedOWRigidbody())}");
-					offset3 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.GetRelativeVelocity()}");
 					offset3 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
 					offset3 += _debugLineSpacing;
 				}
 			}
-			
 
 
 			var offset2 = 10f;

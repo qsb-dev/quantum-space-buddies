@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Utility;
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
@@ -169,7 +170,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				_velocity = AttachedObject.GetRelativeVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+				_velocity = GetRelativeVelocity();
 				_angularVelocity = AttachedObject.GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
 				return;
 			}
@@ -182,10 +183,33 @@ namespace QSB.Syncs.RigidbodySync
 				return;
 			}
 
-			AttachedObject.transform.position = targetPos;
-			AttachedObject.transform.rotation = targetRot;
-			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetVelocity() + _velocity);
+			AttachedObject.SetPosition(targetPos);
+			AttachedObject.SetRotation(targetRot);
+			//AttachedObject.transform.position = targetPos;
+			//AttachedObject.transform.rotation = targetRot;
+			//AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _velocity);
+			SetVelocity(AttachedObject, ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _velocity);
 			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _angularVelocity);
+		}
+
+		private void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
+		{
+			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
+			var currentVelocity = rigidbody.GetValue<Vector3>("_currentVelocity");
+
+			if (isRunningKinematic)
+			{
+				var kinematicRigidbody = rigidbody.GetValue<KinematicRigidbody>("_kinematicRigidbody");
+				kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+			}
+			else
+			{
+				var normalRigidbody = rigidbody.GetValue<Rigidbody>("_rigidbody");
+				normalRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+			}
+
+			rigidbody.SetValue("_lastVelocity", currentVelocity);
+			rigidbody.SetValue("_currentVelocity", newVelocity);
 		}
 
 		public void SetReferenceTransform(Transform transform)
@@ -198,6 +222,7 @@ namespace QSB.Syncs.RigidbodySync
 			_intermediaryTransform.SetReferenceTransform(transform);
 		}
 
+		// TODO : optimize by using sqrMagnitude
 		public override bool HasMoved()
 		{
 			var displacementMagnitude = (_intermediaryTransform.GetPosition() - _prevPosition).magnitude;
@@ -206,6 +231,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				return true;
 			}
+
 			if (Quaternion.Angle(_intermediaryTransform.GetRotation(), _prevRotation) > 1E-03f)
 			{
 				return true;
@@ -217,6 +243,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				return true;
 			}
+
 			if (angularVelocityChangeMagnitude > 1E-03f)
 			{
 				return true;
@@ -227,6 +254,9 @@ namespace QSB.Syncs.RigidbodySync
 
 		public float GetVelocityChangeMagnitude() 
 			=> (_velocity - _prevVelocity).magnitude;
+
+		public Vector3 GetRelativeVelocity() 
+			=> ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(AttachedObject.transform.position) - AttachedObject.GetVelocity();
 
 		private void OnRenderObject()
 		{
@@ -244,6 +274,8 @@ namespace QSB.Syncs.RigidbodySync
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
+
+			Popcron.Gizmos.Line(AttachedObject.transform.position, AttachedObject.transform.position + GetRelativeVelocity(), Color.blue);
 		}
 	}
 }
