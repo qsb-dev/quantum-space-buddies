@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.TimeSync.Events;
@@ -27,6 +28,7 @@ namespace QSB.TimeSync
 		private float _serverTime;
 		private bool _isFirstFastForward = true;
 		private int _serverLoopCount;
+		private bool _hasWokenUp;
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
@@ -60,6 +62,7 @@ namespace QSB.TimeSync
 			{
 				RespawnOnDeath.Instance.Init();
 			}
+			_hasWokenUp = true;
 		}
 
 		public void OnDestroy()
@@ -71,8 +74,13 @@ namespace QSB.TimeSync
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
 			DebugLog.DebugWrite($"ONSCENELOADED");
+			_hasWokenUp = false;
 			if (isInUniverse)
 			{
+				if (scene == OWScene.EyeOfTheUniverse)
+				{
+					_hasWokenUp = true;
+				}
 				Init();
 			}
 			else
@@ -158,6 +166,7 @@ namespace QSB.TimeSync
 			{
 				Locator.GetActiveCamera().enabled = false;
 			}
+			OWInput.ChangeInputMode(InputMode.None);
 			_state = State.FastForwarding;
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
@@ -173,6 +182,7 @@ namespace QSB.TimeSync
 			}
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			Locator.GetActiveCamera().enabled = false;
+			OWInput.ChangeInputMode(InputMode.None);
 			OWTime.SetTimeScale(0f);
 			_state = State.Pausing;
 			SpinnerUI.Show();
@@ -194,7 +204,21 @@ namespace QSB.TimeSync
 			TimeSyncUI.Stop();
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			RespawnOnDeath.Instance.Init();
+
+			if (OWInput.GetInputMode() == InputMode.None)
+			{
+				OWInput.RestorePreviousInputs();
+			}
+
+			if (!_hasWokenUp)
+			{
+				WakeUp();
+				OWInput.ChangeInputMode(InputMode.Character);
+			}
 		}
+
+		private void WakeUp() 
+			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().Invoke("WakeUp");
 
 		public void Update()
 		{
