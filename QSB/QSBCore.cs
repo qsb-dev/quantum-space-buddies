@@ -176,13 +176,20 @@ namespace QSB
 			{
 				GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.HasAuthority}");
 				offset3 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
 				offset3 += _debugLineSpacing;
 				if (ship.ReferenceTransform != null)
 				{
 					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.GetRelativeVelocity()}");
 					offset3 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
+					offset3 += _debugLineSpacing;
+				}
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sectors :");
+				offset3 += _debugLineSpacing;
+				foreach (var sector in ship.SectorSync.SectorList)
+				{
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.Name}");
 					offset3 += _debugLineSpacing;
 				}
 			}
