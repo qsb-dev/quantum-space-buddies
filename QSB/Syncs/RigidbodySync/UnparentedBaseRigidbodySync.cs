@@ -62,18 +62,6 @@ namespace QSB.Syncs.RigidbodySync
 			 * We can't store the last two on the IntermediaryTransform, so they come from fields.
 			 */
 
-			// Get world position from IT.
-			
-			// Get world rotation from IT.
-
-			// Get velocity from field.
-
-			// Get angular velocity from field.
-
-			// Send all.
-
-			// Set _prev fields.
-
 			var worldPos = _intermediaryTransform.GetPosition();
 			var worldRot = _intermediaryTransform.GetRotation();
 			var velocity = _velocity;
@@ -83,6 +71,7 @@ namespace QSB.Syncs.RigidbodySync
 			SerializeRotation(writer, worldRot);
 			writer.Write(velocity);
 			writer.Write(angularVelocity);
+
 			_prevPosition = worldPos;
 			_prevRotation = worldRot;
 			_prevVelocity = velocity;
