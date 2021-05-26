@@ -29,13 +29,11 @@ namespace QSB.ShipSync.TransformSync
 		{
 			if (HasAuthority && ShipManager.Instance.CurrentFlyer != QSBPlayerManager.LocalPlayerId)
 			{
-				DebugLog.DebugWrite($"Warning - Local player has ship authority, but is not the current flyer!", OWML.Common.MessageType.Warning);
 				return;
 			}
 
 			if (!HasAuthority && ShipManager.Instance.CurrentFlyer == QSBPlayerManager.LocalPlayerId)
 			{
-				DebugLog.DebugWrite($"Warning - Local player does not have ship authority, but is the current flyer!", OWML.Common.MessageType.Warning);
 				return;
 			}
 
@@ -45,5 +43,6 @@ namespace QSB.ShipSync.TransformSync
 		public override TargetType Type => TargetType.Ship;
 
 		public override bool UseInterpolation => true;
+		protected override float DistanceLeeway => 20f;
 	}
 }

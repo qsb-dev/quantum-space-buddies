@@ -20,7 +20,9 @@ namespace QSB.Player
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null.", MessageType.Error);
+					var method = new StackTrace().GetFrame(1).GetMethod();
+					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null." +
+						$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name} ", MessageType.Error);
 					return uint.MaxValue;
 				}
 				if (localInstance.NetIdentity == null)

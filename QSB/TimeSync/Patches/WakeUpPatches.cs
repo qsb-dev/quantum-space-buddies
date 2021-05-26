@@ -7,17 +7,10 @@ namespace QSB.TimeSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 
-		public static bool OnStartOfTimeLoopPrefix(ref PlayerCameraEffectController __instance)
-		{
-			if (__instance.gameObject.CompareTag("MainCamera") && QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse)
-			{
-				__instance.Invoke("WakeUp");
-			}
-			return false;
-		}
+		public override void DoPatches()
+			=> QSBCore.HarmonyHelper.EmptyMethod<OWInput>("OnStartOfTimeLoop");
 
-		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(WakeUpPatches), nameof(OnStartOfTimeLoopPrefix));
-
-		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<PlayerCameraEffectController>("OnStartOfTimeLoop");
+		public override void DoUnpatches()
+			=> QSBCore.HarmonyHelper.Unpatch<OWInput>("OnStartOfTimeLoop");
 	}
 }

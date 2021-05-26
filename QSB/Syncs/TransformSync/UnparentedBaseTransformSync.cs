@@ -11,8 +11,36 @@ namespace QSB.Syncs.TransformSync
 {
 	public abstract class UnparentedBaseTransformSync : QNetworkTransform, ISync<GameObject>
 	{
-		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
-		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
+		public uint AttachedNetId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.NetId.Value;
+			}
+		}
+
+		public uint PlayerId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.RootIdentity != null
+					? NetIdentity.RootIdentity.NetId.Value
+					: AttachedNetId;
+			}
+		}
+
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		public Transform ReferenceTransform { get; set; }
@@ -47,7 +75,7 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
@@ -130,6 +158,11 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			if (ReferenceTransform == null)
+			{
+				return;
+			}
+
 			UpdateTransform();
 
 			base.Update();
@@ -177,11 +210,13 @@ namespace QSB.Syncs.TransformSync
 			_intermediaryTransform.SetReferenceTransform(transform);
 		}
 
+		// TODO : remove .Distance
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
 		{
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
 			{
+				DebugLog.DebugWrite($"Warning - {AttachedObject.name} moved too far!", MessageType.Warning);
 				_previousDistance = distance;
 				return targetPosition;
 			}
@@ -191,7 +226,11 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
+			if (!QSBCore.WorldObjectsReady 
+				|| !QSBCore.DebugMode 
+				|| !QSBCore.ShowLinesInDebug 
+				|| !IsReady 
+				|| ReferenceTransform == null)
 			{
 				return;
 			}

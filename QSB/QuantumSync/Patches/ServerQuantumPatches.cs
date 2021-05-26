@@ -1,8 +1,9 @@
 ﻿using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Utility;
-using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -40,16 +41,36 @@ namespace QSB.QuantumSync.Patches
 			GameObject[] ____deactivateAtEye
 			)
 		{
-			if (QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck) && !QuantumManager.Shrine.IsPlayerInDarkness())
+			var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck);
+			//var moonVisible = isVisibleOutput.First;
+			var moonVisiblePlayers = isVisibleOutput.Second;
+			var inMoonPlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
+			var inShrinePlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInShrine);
+			//var outMoonPlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsInMoon);
+			var outShrinePlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsInShrine);
+			var shrineLit = QuantumManager.Shrine.IsPlayerInDarkness();
+
+			// If any of the players in the moon are not in the shrine
+			if (inMoonPlayers.Any(x => !x.IsInShrine))
 			{
-				if (!skipInstantVisibilityCheck)
-				{
-					var method = new StackTrace().GetFrame(3).GetMethod();
-					DebugLog.ToConsole($"Warning - Tried to change moon state while still observed. Called by {method.DeclaringType}.{method.Name}", MessageType.Warning);
-				}
 				__result = false;
 				return false;
 			}
+
+			// If any of the players outside the shrine can see the moon
+			if (outShrinePlayers.Any(moonVisiblePlayers.Contains))
+			{
+				__result = false;
+				return false;
+			}
+
+			// If there are players in the shrine and the shrine is not lit
+			if(inShrinePlayers.Count() != 0 && !shrineLit)
+			{
+				__result = false;
+				return false;
+			}
+
 			var flag = false;
 			if (____isPlayerInside && ____hasSunCollapsed)
 			{
@@ -98,7 +119,7 @@ namespace QSB.QuantumSync.Patches
 					{
 						Physics.SyncTransforms();
 					}
-					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck))
+					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck).First)
 					{
 						____moonBody.transform.position = position;
 						if (!Physics.autoSyncTransforms)

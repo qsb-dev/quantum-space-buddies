@@ -16,8 +16,36 @@ namespace QSB.Syncs.TransformSync
 
 	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
 	{
-		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
-		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
+		public uint AttachedNetId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.NetId.Value;
+			}
+		}
+
+		public uint PlayerId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.RootIdentity != null 
+					? NetIdentity.RootIdentity.NetId.Value 
+					: AttachedNetId;
+			}
+		}
+
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		public Transform ReferenceTransform { get; set; }
@@ -53,7 +81,7 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
@@ -69,7 +97,7 @@ namespace QSB.Syncs.TransformSync
 			}
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
@@ -149,6 +177,11 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			if (ReferenceTransform == null)
+			{
+				return;
+			}
+
 			UpdateTransform();
 
 			base.Update();
@@ -196,7 +229,7 @@ namespace QSB.Syncs.TransformSync
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(
 					() => AttachedObject != null,
 					() => ReparentAttachedObject(transform));
@@ -234,12 +267,11 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
-			{
-				return;
-			}
-
-			if (ReferenceTransform == null)
+			if (!QSBCore.WorldObjectsReady 
+				|| !QSBCore.DebugMode
+				|| !QSBCore.ShowLinesInDebug 
+				|| !IsReady
+				|| ReferenceTransform == null)
 			{
 				return;
 			}

@@ -2,7 +2,6 @@
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Collections.Generic;
 
 namespace QSB.Syncs.RigidbodySync
 {
@@ -15,14 +14,14 @@ namespace QSB.Syncs.RigidbodySync
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
-			QSBSectorManager.Instance.SectoredSyncs.Add((ISectoredSync<UnityEngine.Component>)this);
+			QSBSectorManager.Instance.SectoredRigidbodySyncs.Add(this);
 			base.Start();
 		}
 
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			QSBSectorManager.Instance.SectoredSyncs.Remove((ISectoredSync<UnityEngine.Component>)this);
+			QSBSectorManager.Instance.SectoredRigidbodySyncs.Remove(this);
 			if (SectorSync != null)
 			{
 				Destroy(SectorSync);
@@ -104,7 +103,7 @@ namespace QSB.Syncs.RigidbodySync
 		public void SetReferenceSector(QSBSector sector)
 		{
 			ReferenceSector = sector;
-			SetReferenceTransform(sector.Transform);
+			SetReferenceTransform(sector?.Transform);
 		}
 	}
 }

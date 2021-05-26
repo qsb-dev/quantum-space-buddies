@@ -64,7 +64,7 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
-		public static bool WorldObjectsReady => WorldObjectManager.AllReady;
+		public static bool WorldObjectsReady => WorldObjectManager.AllReady && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
 		public static bool IsServer => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
@@ -176,15 +176,23 @@ namespace QSB
 			{
 				GUI.Label(new Rect(420, offset3, 200f, 20f), $"In control of ship? : {ship.HasAuthority}");
 				offset3 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship sector : {(ship.ReferenceSector == null ? "NULL" : ship.ReferenceSector.Name)}");
 				offset3 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.AttachedObject.GetRelativeVelocity(ship.ReferenceTransform.GetAttachedOWRigidbody())}");
+				if (ship.ReferenceTransform != null)
+				{
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.GetRelativeVelocity()}");
+					offset3 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
+					offset3 += _debugLineSpacing;
+				}
+				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sectors :");
 				offset3 += _debugLineSpacing;
-				offset3 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
-				offset3 += _debugLineSpacing;
+				foreach (var sector in ship.SectorSync.SectorList)
+				{
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.Name}");
+					offset3 += _debugLineSpacing;
+				}
 			}
-			
 
 
 			var offset2 = 10f;
@@ -215,6 +223,16 @@ namespace QSB
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- LocalAccel : {player.JetpackAcceleration?.LocalAcceleration}");
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- Thrusting : {player.JetpackAcceleration?.IsThrusting}");
+				offset += _debugLineSpacing;
+			}
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
+			offset += _debugLineSpacing;
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
+			offset += _debugLineSpacing;
+			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
+			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
+			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
 				offset += _debugLineSpacing;
 			}
 

@@ -30,6 +30,7 @@ namespace QSB.DeathSync
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
 		private ShipTractorBeamSwitch _shipTractorBeam;
+		private SuitPickupVolume[] _suitPickupVolumes;
 
 		public void Awake() => Instance = this;
 
@@ -40,6 +41,8 @@ namespace QSB.DeathSync
 			_spaceSuit = Locator.GetPlayerSuit();
 			_playerSpawner = FindObjectOfType<PlayerSpawner>();
 			_shipTractorBeam = FindObjectOfType<ShipTractorBeamSwitch>();
+			_suitPickupVolumes = FindObjectsOfType<SuitPickupVolume>();
+
 			_fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 
 			_playerSpawnPoint = GetSpawnPoint();
@@ -88,6 +91,33 @@ namespace QSB.DeathSync
 			_playerResources.SetValue("_isSuffocating", false);
 			_playerResources.DebugRefillResources();
 			_spaceSuit.RemoveSuit(true);
+
+			foreach (var pickupVolume in _suitPickupVolumes)
+			{
+				var containsSuit = pickupVolume.GetValue<bool>("_containsSuit");
+				var allowReturn = pickupVolume.GetValue<bool>("_allowSuitReturn");
+
+				if (!containsSuit && allowReturn)
+				{
+
+					var interactVolume = pickupVolume.GetValue<MultipleInteractionVolume>("_interactVolume");
+					var pickupSuitIndex = pickupVolume.GetValue<int>("_pickupSuitCommandIndex");
+
+					pickupVolume.SetValue("_containsSuit", true);
+					interactVolume.ChangePrompt(UITextType.SuitUpPrompt, pickupSuitIndex);
+
+					var suitGeometry = pickupVolume.GetValue<GameObject>("_suitGeometry");
+					var suitCollider = pickupVolume.GetValue<OWCollider>("_suitOWCollider");
+					var toolGeometries = pickupVolume.GetValue<GameObject[]>("_toolGeometry");
+
+					suitGeometry.SetActive(true);
+					suitCollider.SetActivation(true);
+					foreach (var geo in toolGeometries)
+					{
+						geo.SetActive(true);
+					}
+				}
+			}
 		}
 
 		public void ResetShip()
