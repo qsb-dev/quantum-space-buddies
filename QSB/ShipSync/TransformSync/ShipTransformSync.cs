@@ -43,5 +43,6 @@ namespace QSB.ShipSync.TransformSync
 		public override TargetType Type => TargetType.Ship;
 
 		public override bool UseInterpolation => true;
+		protected override float DistanceLeeway => 20f;
 	}
 }
