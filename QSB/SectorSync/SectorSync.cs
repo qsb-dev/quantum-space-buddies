@@ -86,8 +86,10 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count(x => x.ShouldSyncTo(_targetType)) == 0
-				? QSBWorldSync.GetWorldObjects<QSBSector>()
+			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
+			
+			var listToCheck = numSectorsCurrentlyIn == 0
+				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector)
 				: SectorList;
 
 			/* Explanation of working out which sector to sync to :
@@ -113,7 +115,9 @@ namespace QSB.SectorSync
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
+			// TODO : clean up this shit???
 			if (
+				numSectorsCurrentlyIn != 0 &&
 				// if any fake sectors are *roughly* in the same place as other sectors - we want fake sectors to override other sectors
 				QSBSectorManager.Instance.FakeSectors.Any(
 					x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f)
