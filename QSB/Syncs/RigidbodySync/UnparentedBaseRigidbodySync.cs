@@ -15,6 +15,10 @@ namespace QSB.Syncs.RigidbodySync
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 
+		protected virtual float DistanceLeeway { get; } = 5f;
+		private float _previousDistance;
+		private const float SmoothTime = 0.1f;
+
 		protected bool _isInitialized;
 		protected IntermediaryTransform _intermediaryTransform;
 		protected Vector3 _velocity;
@@ -22,6 +26,8 @@ namespace QSB.Syncs.RigidbodySync
 		protected Vector3 _prevVelocity;
 		protected Vector3 _prevAngularVelocity;
 		private string _logName => $"{NetId}:{GetType().Name}";
+		private Vector3 _positionSmoothVelocity;
+		private Quaternion _rotationSmoothVelocity;
 
 		protected abstract OWRigidbody GetRigidbody();
 
@@ -172,11 +178,17 @@ namespace QSB.Syncs.RigidbodySync
 				return;
 			}
 
-			AttachedObject.SetPosition(targetPos);
-			AttachedObject.SetRotation(targetRot);
-			//AttachedObject.transform.position = targetPos;
-			//AttachedObject.transform.rotation = targetRot;
-			//AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _velocity);
+			if (UseInterpolation)
+			{
+				AttachedObject.SetPosition(SmartPositionSmoothDamp(AttachedObject.transform.position, targetPos));
+				AttachedObject.SetRotation(QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime));
+			}
+			else
+			{
+				AttachedObject.SetPosition(targetPos);
+				AttachedObject.SetRotation(targetRot);
+			}
+
 			SetVelocity(AttachedObject, ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _velocity);
 			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _angularVelocity);
 		}
@@ -209,6 +221,20 @@ namespace QSB.Syncs.RigidbodySync
 			}
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
+		}
+
+		// TODO : remove .Distance
+		private Vector3 SmartPositionSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		{
+			var distance = Vector3.Distance(currentPosition, targetPosition);
+			if (distance > _previousDistance + DistanceLeeway)
+			{
+				DebugLog.DebugWrite($"Warning - {AttachedObject.name} moved too far!", MessageType.Warning);
+				_previousDistance = distance;
+				return targetPosition;
+			}
+			_previousDistance = distance;
+			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
 		// TODO : optimize by using sqrMagnitude
