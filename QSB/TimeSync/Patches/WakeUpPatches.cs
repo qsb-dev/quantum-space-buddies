@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Patches;
+﻿using QSB.Patches;
 
 namespace QSB.TimeSync.Patches
 {
