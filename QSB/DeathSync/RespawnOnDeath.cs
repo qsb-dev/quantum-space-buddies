@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -122,6 +123,12 @@ namespace QSB.DeathSync
 
 		public void ResetShip()
 		{
+			if (!ShipTransformSync.LocalInstance.HasAuthority)
+			{
+				DebugLog.ToConsole($"Warning - Tried to reset ship when not in control!", MessageType.Warning);
+				return;
+			}
+
 			if (_shipSpawnPoint == null)
 			{
 				DebugLog.ToConsole("Warning - _shipSpawnPoint is null!", MessageType.Warning);
