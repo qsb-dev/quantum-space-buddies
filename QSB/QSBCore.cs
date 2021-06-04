@@ -8,6 +8,7 @@ using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.ItemSync;
+using QSB.Menus;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
@@ -69,6 +70,7 @@ namespace QSB
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static GameObject GameObjectInstance => _thisInstance.gameObject;
+		public static IMenuAPI MenuApi { get; private set; }
 
 		private static QSBCore _thisInstance;
 		private const float _debugLineSpacing = 11f;
@@ -89,6 +91,8 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
@@ -96,7 +100,7 @@ namespace QSB
 			QSBPatchManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<QNetworkManagerHUD>();
+			//gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
 			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
@@ -104,6 +108,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<ShipManager>();
+			gameObject.AddComponent<MenuManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();

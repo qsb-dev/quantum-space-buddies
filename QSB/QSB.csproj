@@ -159,6 +159,8 @@
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
+    <Compile Include="Menus\IMenuAPI.cs" />
+    <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
     <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
