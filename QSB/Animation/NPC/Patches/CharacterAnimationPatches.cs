@@ -56,12 +56,6 @@ namespace QSB.Animation.NPC.Patches
 			}
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
-			if (playerId == uint.MaxValue)
-			{
-				DebugLog.DebugWrite($"Warning - uint.MaxValue is talking to {____dialogueTree.name}", MessageType.Warning);
-				return false;
-			}
-
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // TODO : maybe cache this somewhere... or assess how slow this is
 
