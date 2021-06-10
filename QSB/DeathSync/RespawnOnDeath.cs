@@ -75,6 +75,7 @@ namespace QSB.DeathSync
 
 		public void ResetPlayer()
 		{
+			DebugLog.DebugWrite($"Trying to reset player.");
 			if (_playerSpawnPoint == null)
 			{
 				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
@@ -123,6 +124,7 @@ namespace QSB.DeathSync
 
 		public void ResetShip()
 		{
+			DebugLog.DebugWrite($"Trying to reset ship.");
 			if (!ShipTransformSync.LocalInstance.HasAuthority)
 			{
 				DebugLog.ToConsole($"Warning - Tried to reset ship when not in control!", MessageType.Warning);
@@ -154,6 +156,7 @@ namespace QSB.DeathSync
 
 		private void ExitShip()
 		{
+			DebugLog.DebugWrite($"Exit ship.");
 			_cockpitController.Invoke("ExitFlightConsole");
 			_cockpitController.Invoke("CompleteExitFlightConsole");
 			_hatchController.SetValue("_isPlayerInShip", false);
