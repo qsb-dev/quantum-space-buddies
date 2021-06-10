@@ -56,10 +56,16 @@ namespace QSB.Animation.NPC.Patches
 			}
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
+			if (playerId == uint.MaxValue)
+			{
+				DebugLog.DebugWrite($"Warning - uint.MaxValue is talking to {____dialogueTree.name}", MessageType.Warning);
+				return false;
+			}
+
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // TODO : maybe cache this somewhere... or assess how slow this is
 
-			PlayerInfo playerToUse;
+			PlayerInfo playerToUse = null;
 			if (____inConversation)
 			{
 				if (playerId == uint.MaxValue)
@@ -78,12 +84,14 @@ namespace QSB.Animation.NPC.Patches
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
 			}
-			else
+			else if (QSBPlayerManager.PlayerList.Count != 0)
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(__instance.transform.position, true);
 			}
 
-			var localPosition = ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position);
+			var localPosition = playerToUse != null 
+				? ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position) 
+				: Vector3.zero;
 
 			var targetWeight = ___headTrackingWeight;
 			if (___lookOnlyWhenTalking)
