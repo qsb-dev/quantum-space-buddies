@@ -45,9 +45,33 @@ namespace QSB.QuantumSync.Patches
 			//var moonVisible = isVisibleOutput.First;
 			var moonVisiblePlayers = isVisibleOutput.Second;
 			var inMoonPlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
+			if (inMoonPlayers == null)
+			{
+				DebugLog.ToConsole($"Warning - inMoonPlayers is null.", MessageType.Warning);
+				return false;
+			}
+
 			var inShrinePlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInShrine);
+			if (inShrinePlayers == null)
+			{
+				DebugLog.ToConsole($"Warning - inShrinePlayers is null.", MessageType.Warning);
+				return false;
+			}
+
 			//var outMoonPlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsInMoon);
+
 			var outShrinePlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsInShrine);
+			if (outShrinePlayers == null)
+			{
+				DebugLog.ToConsole($"Warning - outShrinePlayers is null.", MessageType.Warning);
+				return false;
+			}
+
+			if (QuantumManager.Shrine == null)
+			{
+				DebugLog.ToConsole($"Warning - QuantumManager.Shrine is null.", MessageType.Warning);
+				return false;
+			}
 			var shrineLit = QuantumManager.Shrine.IsPlayerInDarkness();
 
 			// If any of the players in the moon are not in the shrine
