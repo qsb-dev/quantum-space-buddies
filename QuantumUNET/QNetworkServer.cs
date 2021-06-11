@@ -814,49 +814,6 @@ namespace QuantumUNET
 			});
 		}
 
-		internal bool InternalReplacePlayerForConnection(QNetworkConnection conn, GameObject playerGameObject, short playerControllerId)
-		{
-			bool result;
-			if (!GetNetworkIdentity(playerGameObject, out var networkIdentity))
-			{
-				QLog.Error($"ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to {playerGameObject}");
-				result = false;
-			}
-			else if (!CheckPlayerControllerIdForConnection(conn, playerControllerId))
-			{
-				result = false;
-			}
-			else
-			{
-				QLog.Log("NetworkServer ReplacePlayer");
-				if (conn.GetPlayerController(playerControllerId, out var playerController))
-				{
-					playerController.UnetView.SetNotLocalPlayer();
-					playerController.UnetView.ClearClientOwner();
-				}
-				var playerController2 = new QPlayerController(playerGameObject, playerControllerId);
-				conn.SetPlayerController(playerController2);
-				networkIdentity.SetConnectionToClient(conn, playerController2.PlayerControllerId);
-				QLog.Log("NetworkServer ReplacePlayer setup local");
-				if (SetupLocalPlayerForConnection(conn, networkIdentity, playerController2))
-				{
-					result = true;
-				}
-				else
-				{
-					QLog.Log(
-						$"Replacing playerGameObject object netId: {playerGameObject.GetComponent<NetworkIdentity>().netId} asset ID {playerGameObject.GetComponent<NetworkIdentity>().assetId}");
-					FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
-					if (networkIdentity.LocalPlayerAuthority)
-					{
-						networkIdentity.SetClientOwner(conn);
-					}
-					result = true;
-				}
-			}
-			return result;
-		}
-
 		private static bool GetNetworkIdentity(GameObject go, out QNetworkIdentity view)
 		{
 			view = go.GetComponent<QNetworkIdentity>();
