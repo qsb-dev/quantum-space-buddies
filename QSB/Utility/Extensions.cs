@@ -40,8 +40,33 @@ namespace QSB.Utility
 		// QNET
 		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
-			var go = connection.PlayerControllers[0].Gameobject;
+			if (connection == null)
+			{
+				DebugLog.DebugWrite($"Error - Trying to get player id of null QNetworkConnection.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
+			var playerController = connection.PlayerControllers[0];
+			if (playerController == null)
+			{
+				DebugLog.DebugWrite($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
+			var go = playerController.Gameobject;
+			if (go == null)
+			{
+				DebugLog.DebugWrite($"Error - GameObject of {playerController.UnetView.NetId.Value} is null.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
 			var controller = go.GetComponent<PlayerTransformSync>();
+			if (controller == null)
+			{
+				DebugLog.DebugWrite($"Error - No PlayerTransformSync found on {go.name}", MessageType.Error);
+				return uint.MaxValue;
+			}
+
 			return controller.NetId.Value;
 		}
 
