@@ -61,7 +61,6 @@ namespace QSB
 		public static int Port { get; private set; }
 		public static bool DebugMode { get; private set; }
 		public static bool ShowLinesInDebug { get; private set; }
-		public static int SocketedObjToDebug { get; private set; }
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -195,7 +194,6 @@ namespace QSB
 				}
 			}
 
-
 			var offset2 = 10f;
 			GUI.Label(new Rect(620, offset2, 200f, 20f), $"Owned Objects :");
 			offset2 += _debugLineSpacing;
@@ -205,13 +203,6 @@ namespace QSB
 				offset2 += _debugLineSpacing;
 			}
 
-			if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
-			{
-				return;
-			}
-
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Probe Active : {Locator.GetProbe().gameObject.activeInHierarchy}");
-			offset += _debugLineSpacing;
 			GUI.Label(new Rect(220, offset, 200f, 20f), $"Player data :");
 			offset += _debugLineSpacing;
 			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
@@ -219,72 +210,11 @@ namespace QSB
 				var networkTransform = player.TransformSync;
 				var sector = networkTransform.ReferenceSector;
 
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} from {(sector == null ? "NULL" : sector.Name)}");
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} : {(sector == null ? "NULL" : sector.Name)}");
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- LocalAccel : {player.JetpackAcceleration?.LocalAcceleration}");
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 400f, 20f), $"- Thrusting : {player.JetpackAcceleration?.IsThrusting}");
-				offset += _debugLineSpacing;
-			}
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Illuminated : {Locator.GetQuantumMoon().IsIlluminated()}");
-			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"QM Visible by :");
-			offset += _debugLineSpacing;
-			var tracker = Locator.GetQuantumMoon().GetValue<ShapeVisibilityTracker>("_visibilityTracker");
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
-			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() })}");
-				offset += _debugLineSpacing;
-			}
-
-			if (SocketedObjToDebug == -1)
-			{
-				return;
-			}
-
-			// Used for diagnosing specific socketed objects.
-			// 110 = Cave Twin entanglement shard
-			// 342 = Timber Hearth museum shard
-			var socketedObject = QSBWorldSync.GetWorldFromId<QSBSocketedQuantumObject>(SocketedObjToDebug);
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Controller : {socketedObject.ControllingPlayer}");
-			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"{SocketedObjToDebug} Illuminated : {socketedObject.AttachedObject.IsIlluminated()}");
-			offset += _debugLineSpacing;
-			var socketedTrackers = socketedObject.AttachedObject.GetComponentsInChildren<ShapeVisibilityTracker>();
-			if (socketedTrackers == null || socketedTrackers.Length == 0)
-			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"- List is null or empty.");
-				return;
-			}
-			if (socketedTrackers.Any(x => x is null))
-			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"- Uses a null.");
-				return;
-			}
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Visible by :");
-			offset += _debugLineSpacing;
-			foreach (var player in QSBPlayerManager.GetPlayersWithCameras())
-			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId} : {socketedTrackers.Any(x => (bool)x.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(x, new object[] { player.Camera.GetFrustumPlanes() }))}");
-				offset += _debugLineSpacing;
-			}
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"Entangled Players :");
-			offset += _debugLineSpacing;
-			foreach (var player in QuantumManager.GetEntangledPlayers(socketedObject.AttachedObject))
-			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- {player.PlayerId}");
-				offset += _debugLineSpacing;
-			}
-			var sockets = socketedObject.AttachedObject.GetValue<List<QuantumSocket>>("_socketList");
-			foreach (var socket in sockets)
-			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"- {socket.name} :");
-				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- Visible:{socket.GetVisibilityObject().IsVisible()}");
-				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- Illuminated:{socket.GetVisibilityObject().IsIlluminated()}");
-				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"	- Occupied?:{socket.IsOccupied()}");
 				offset += _debugLineSpacing;
 			}
 		}
@@ -299,7 +229,6 @@ namespace QSB
 			}
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
 			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
-			SocketedObjToDebug = config.GetSettingsValue<int>("socketedObjToDebug");
 		}
 	}
 }
