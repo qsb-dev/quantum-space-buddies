@@ -155,6 +155,7 @@
     <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
     <Compile Include="FrequencySync\Patches\FrequencyPatches.cs" />
     <Compile Include="GeyserSync\Patches\GeyserPatches.cs" />
+    <Compile Include="Inputs\Patches\InputPatches.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
     <Compile Include="Instruments\QSBCamera\CameraManager.cs" />
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
@@ -207,7 +208,7 @@
     <Compile Include="Player\PlayerSyncObject.cs" />
     <Compile Include="PoolSync\Patches\PoolPatches.cs" />
     <Compile Include="PoolSync\PoolManager.cs" />
-    <Compile Include="QSBInputManager.cs" />
+    <Compile Include="Inputs\QSBInputManager.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />

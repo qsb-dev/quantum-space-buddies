@@ -7,6 +7,7 @@ using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
 using QSB.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
+using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
@@ -57,7 +58,8 @@ namespace QSB.Patches
 				new PlayerPatches(),
 				new PlayerAnimationPatches(),
 				new CharacterAnimationPatches(),
-				new ShipPatches()
+				new ShipPatches(),
+				new InputPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

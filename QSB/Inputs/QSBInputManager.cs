@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
-namespace QSB
+namespace QSB.Inputs
 {
 	public class QSBInputManager : MonoBehaviour
 	{
@@ -47,5 +48,18 @@ namespace QSB
 			}
 		}
 		*/
+
+		public static QSBInputManager Instance { get; private set; }
+
+		public void Start() 
+			=> Instance = this;
+
+		public bool InputsEnabled { get; private set; } = true;
+
+		public void SetInputsEnabled(bool enabled)
+		{
+			DebugLog.DebugWrite($"INPUTS ENABLED? : {enabled}");
+			InputsEnabled = enabled;
+		}
 	}
 }

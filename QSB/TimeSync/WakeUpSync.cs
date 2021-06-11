@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.DeathSync;
 using QSB.Events;
+using QSB.Inputs;
 using QSB.TimeSync.Events;
 using QSB.Utility;
 using QuantumUNET;
@@ -166,7 +167,10 @@ namespace QSB.TimeSync
 			{
 				Locator.GetActiveCamera().enabled = false;
 			}
-			OWInput.ChangeInputMode(InputMode.None);
+
+			//OWInput.ChangeInputMode(InputMode.None);
+			QSBInputManager.Instance.SetInputsEnabled(false);
+
 			_state = State.FastForwarding;
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
@@ -182,7 +186,10 @@ namespace QSB.TimeSync
 			}
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			Locator.GetActiveCamera().enabled = false;
-			OWInput.ChangeInputMode(InputMode.None);
+
+			//OWInput.ChangeInputMode(InputMode.None);
+			QSBInputManager.Instance.SetInputsEnabled(false);
+
 			OWTime.SetTimeScale(0f);
 			_state = State.Pausing;
 			SpinnerUI.Show();
@@ -205,15 +212,11 @@ namespace QSB.TimeSync
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			RespawnOnDeath.Instance.Init();
 
-			if (OWInput.GetInputMode() == InputMode.None)
-			{
-				OWInput.RestorePreviousInputs();
-			}
+			QSBInputManager.Instance.SetInputsEnabled(true);
 
 			if (!_hasWokenUp)
 			{
 				WakeUp();
-				OWInput.ChangeInputMode(InputMode.Character);
 			}
 		}
 
@@ -304,7 +307,7 @@ namespace QSB.TimeSync
 			if (mappedTimescale > 100f)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned over 100 - should have switched into fast-forward!", MessageType.Warning);
-				mappedTimescale = 100f;
+				mappedTimescale = 0f;
 			}
 			if (mappedTimescale < 0)
 			{

@@ -7,6 +7,7 @@ using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
+using QSB.Inputs;
 using QSB.ItemSync;
 using QSB.OrbSync;
 using QSB.Patches;
