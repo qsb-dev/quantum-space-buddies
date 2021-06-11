@@ -17,7 +17,6 @@ using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
 using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
-using QSB.TimeSync.Patches;
 using QSB.TranslationSync.Patches;
 using QSB.Utility;
 using System;
@@ -41,7 +40,6 @@ namespace QSB.Patches
 				new DeathPatches(),
 				new ElevatorPatches(),
 				new OrbPatches(),
-				new WakeUpPatches(),
 				new LogPatches(),
 				new QuantumVisibilityPatches(),
 				new ServerQuantumPatches(),

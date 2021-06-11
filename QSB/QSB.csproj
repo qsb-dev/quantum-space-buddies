@@ -274,7 +274,6 @@
     <Compile Include="TranslationSync\Patches\SpiralPatches.cs" />
     <Compile Include="TimeSync\TimeSyncType.cs" />
     <Compile Include="TimeSync\TimeSyncUI.cs" />
-    <Compile Include="TimeSync\Patches\WakeUpPatches.cs" />
     <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
     <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
