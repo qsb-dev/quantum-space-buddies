@@ -270,8 +270,27 @@ namespace QSB.Syncs.RigidbodySync
 		public float GetVelocityChangeMagnitude() 
 			=> (_velocity - _prevVelocity).magnitude;
 
-		public Vector3 GetRelativeVelocity() 
-			=> ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(AttachedObject.transform.position) - AttachedObject.GetVelocity();
+		public Vector3 GetRelativeVelocity()
+		{
+			if (AttachedObject == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to get relative velocity when AttachedObject is null.", MessageType.Error);
+				return Vector3.zero;
+			}
+			if (ReferenceTransform == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to get relative velocity when ReferenceTransform is null. ({AttachedObject.name})", MessageType.Error);
+				return Vector3.zero;
+			}
+			var attachedRigid = ReferenceTransform.GetAttachedOWRigidbody();
+			if (attachedRigid == null)
+			{
+				DebugLog.ToConsole($"Error - ReferenceTransform ({ReferenceTransform.name}) on {AttachedObject.name} has no attached OWRigidBody.", MessageType.Error);
+				return Vector3.zero;
+			}
+			var pointVelocity = attachedRigid.GetPointVelocity(AttachedObject.transform.position);
+			return pointVelocity - AttachedObject.GetVelocity();
+		}
 
 		private void OnRenderObject()
 		{
