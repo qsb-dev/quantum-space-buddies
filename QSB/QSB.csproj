@@ -244,6 +244,7 @@
     <Compile Include="Syncs\ISync.cs" />
     <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />
     <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
+    <Compile Include="TimeSync\Patches\TimePatches.cs" />
     <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
     <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />

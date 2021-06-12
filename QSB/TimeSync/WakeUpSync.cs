@@ -74,7 +74,6 @@ namespace QSB.TimeSync
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			DebugLog.DebugWrite($"ONSCENELOADED");
 			_hasWokenUp = false;
 			if (isInUniverse)
 			{

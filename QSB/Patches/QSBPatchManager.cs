@@ -17,6 +17,7 @@ using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
 using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
+using QSB.TimeSync.Patches;
 using QSB.TranslationSync.Patches;
 using QSB.Utility;
 using System;
@@ -57,7 +58,8 @@ namespace QSB.Patches
 				new PlayerAnimationPatches(),
 				new CharacterAnimationPatches(),
 				new ShipPatches(),
-				new InputPatches()
+				new InputPatches(),
+				new TimePatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
