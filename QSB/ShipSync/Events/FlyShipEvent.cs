@@ -77,23 +77,23 @@ namespace QSB.ShipSync.Events
 
 			if (QSBCore.IsServer)
 			{
-				DebugLog.DebugWrite($"Change ship auth to {id}");
-				var fromPlayer = ShipManager.Instance.CurrentFlyer == uint.MaxValue
+				var newAuthority = ShipManager.Instance.CurrentFlyer == uint.MaxValue
 					? QNetworkServer.connections.First(x => x.GetPlayerId() == QSBPlayerManager.LocalPlayerId)
 					: QNetworkServer.connections.First(x => x.GetPlayerId() == id);
-				var ship = ShipTransformSync.LocalInstance;
-				var networkIdentity = ship.NetIdentity;
 
-				if (networkIdentity.ClientAuthorityOwner == fromPlayer)
+				var ship = ShipTransformSync.LocalInstance;
+				var shipNetId = ship.NetIdentity;
+
+				if (shipNetId.ClientAuthorityOwner == newAuthority)
 				{
 					return;
 				}
 
-				if (networkIdentity.ClientAuthorityOwner != null && networkIdentity.ClientAuthorityOwner != fromPlayer)
+				if (shipNetId.ClientAuthorityOwner != null && shipNetId.ClientAuthorityOwner != newAuthority)
 				{
-					networkIdentity.RemoveClientAuthority(networkIdentity.ClientAuthorityOwner);
+					shipNetId.RemoveClientAuthority(shipNetId.ClientAuthorityOwner);
 				}
-				networkIdentity.AssignClientAuthority(fromPlayer);
+				shipNetId.AssignClientAuthority(newAuthority);
 			}
 		}
 	}
