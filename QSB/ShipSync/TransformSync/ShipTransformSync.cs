@@ -27,7 +27,7 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override void UpdateTransform()
 		{
-			if (HasAuthority && ShipManager.Instance.CurrentFlyer != QSBPlayerManager.LocalPlayerId)
+			if (HasAuthority && ShipManager.Instance.CurrentFlyer != QSBPlayerManager.LocalPlayerId && ShipManager.Instance.CurrentFlyer != uint.MaxValue)
 			{
 				return;
 			}
