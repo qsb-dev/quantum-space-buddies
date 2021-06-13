@@ -21,8 +21,8 @@ namespace QSB.Syncs.RigidbodySync
 
 		protected bool _isInitialized;
 		protected IntermediaryTransform _intermediaryTransform;
-		protected Vector3 _velocity;
-		protected Vector3 _angularVelocity;
+		protected Vector3 _relativeVelocity;
+		protected Vector3 _relativeAngularVelocity;
 		protected Vector3 _prevVelocity;
 		protected Vector3 _prevAngularVelocity;
 		private string _logName => $"{NetId}:{GetType().Name}";
@@ -70,18 +70,18 @@ namespace QSB.Syncs.RigidbodySync
 
 			var worldPos = _intermediaryTransform.GetPosition();
 			var worldRot = _intermediaryTransform.GetRotation();
-			var velocity = _velocity;
-			var angularVelocity = _angularVelocity;
+			var relativeVelocity = _relativeVelocity;
+			var relativeAngularVelocity = _relativeAngularVelocity;
 
 			writer.Write(worldPos);
 			SerializeRotation(writer, worldRot);
-			writer.Write(velocity);
-			writer.Write(angularVelocity);
+			writer.Write(relativeVelocity);
+			writer.Write(relativeAngularVelocity);
 
 			_prevPosition = worldPos;
 			_prevRotation = worldRot;
-			_prevVelocity = velocity;
-			_prevAngularVelocity = angularVelocity;
+			_prevVelocity = relativeVelocity;
+			_prevAngularVelocity = relativeAngularVelocity;
 		}
 
 		public override void DeserializeTransform(QNetworkReader reader)
@@ -97,8 +97,8 @@ namespace QSB.Syncs.RigidbodySync
 
 			var pos = reader.ReadVector3();
 			var rot = DeserializeRotation(reader);
-			var vel = reader.ReadVector3();
-			var angVel = reader.ReadVector3();
+			var relativeVelocity = reader.ReadVector3();
+			var relativeAngularVelocity = reader.ReadVector3();
 
 			if (HasAuthority)
 			{
@@ -112,8 +112,8 @@ namespace QSB.Syncs.RigidbodySync
 
 			_intermediaryTransform.SetPosition(pos);
 			_intermediaryTransform.SetRotation(rot);
-			_velocity = vel;
-			_angularVelocity = angVel;
+			_relativeVelocity = relativeVelocity;
+			_relativeAngularVelocity = relativeAngularVelocity;
 
 			if (_intermediaryTransform.GetPosition() == Vector3.zero)
 			{
@@ -165,8 +165,8 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				_velocity = GetRelativeVelocity();
-				_angularVelocity = AttachedObject.GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+				_relativeVelocity = GetRelativeVelocity();
+				_relativeAngularVelocity = AttachedObject.GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
 				return;
 			}
 
@@ -189,11 +189,15 @@ namespace QSB.Syncs.RigidbodySync
 				AttachedObject.SetRotation(targetRot);
 			}
 
-			SetVelocity(AttachedObject, ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _velocity);
-			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _angularVelocity);
+			var currentVelocity = GetRelativeVelocity();
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
+			var adjustedTarget = targetVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+
+			SetVelocity(AttachedObject, targetVelocity);
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity);
 		}
 
-		private void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
+		private void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
 		{
 			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
 			var currentVelocity = rigidbody.GetValue<Vector3>("_currentVelocity");
@@ -201,16 +205,16 @@ namespace QSB.Syncs.RigidbodySync
 			if (isRunningKinematic)
 			{
 				var kinematicRigidbody = rigidbody.GetValue<KinematicRigidbody>("_kinematicRigidbody");
-				kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+				kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
 			}
 			else
 			{
 				var normalRigidbody = rigidbody.GetValue<Rigidbody>("_rigidbody");
-				normalRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+				normalRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
 			}
 
 			rigidbody.SetValue("_lastVelocity", currentVelocity);
-			rigidbody.SetValue("_currentVelocity", newVelocity);
+			rigidbody.SetValue("_currentVelocity", relativeVelocity);
 		}
 
 		public void SetReferenceTransform(Transform transform)
@@ -252,8 +256,8 @@ namespace QSB.Syncs.RigidbodySync
 				return true;
 			}
 
-			var velocityChangeMagnitude = (_velocity - _prevVelocity).magnitude;
-			var angularVelocityChangeMagnitude = (_angularVelocity - _prevAngularVelocity).magnitude;
+			var velocityChangeMagnitude = (_relativeVelocity - _prevVelocity).magnitude;
+			var angularVelocityChangeMagnitude = (_relativeAngularVelocity - _prevAngularVelocity).magnitude;
 			if (velocityChangeMagnitude > 1E-03f)
 			{
 				return true;
@@ -268,7 +272,7 @@ namespace QSB.Syncs.RigidbodySync
 		}
 
 		public float GetVelocityChangeMagnitude() 
-			=> (_velocity - _prevVelocity).magnitude;
+			=> (_relativeVelocity - _prevVelocity).magnitude;
 
 		public Vector3 GetRelativeVelocity()
 		{
@@ -289,7 +293,7 @@ namespace QSB.Syncs.RigidbodySync
 				return Vector3.zero;
 			}
 			var pointVelocity = attachedRigid.GetPointVelocity(AttachedObject.transform.position);
-			return pointVelocity - AttachedObject.GetVelocity();
+			return AttachedObject.GetVelocity() - pointVelocity;
 		}
 
 		private void OnRenderObject()
