@@ -89,18 +89,8 @@ namespace QSB.SectorSync
 			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
 			
 			var listToCheck = numSectorsCurrentlyIn == 0
-				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector)
+				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed)
 				: SectorList;
-
-			/* Explanation of working out which sector to sync to :
-			 * A) Closer sectors are best
-			 * B) Smaller sub-sectors are preferred
-			 * So, get all non-null sectors that aren't blacklisted and are active
-			 * (They need to be active otherwise it'll sync to disabled sectors, like the eye shuttle - which makes the player invisible)
-			 * Then, sort that list also by the radius of the sector.
-			 * We want smaller subsectors (e.g. Starting_Camp) to be preferred over general sectors (e.g. Village)
-			 * TL;DR : Sync to the smallest, closest sector
-			 */
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
 				&& sector.ShouldSyncTo(_targetType));
@@ -108,10 +98,6 @@ namespace QSB.SectorSync
 			{
 				return default;
 			}
-			//var ordered = activeNotNullNotBlacklisted
-			//.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-			//.ThenBy(sector => GetRelativeVelocity(sector, _attachedOWRigidbody))
-			//.ThenBy(sector => GetRadius(sector));
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
