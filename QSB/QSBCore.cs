@@ -161,8 +161,15 @@ namespace QSB
 			offset3 += _debugLineSpacing;
 			var probeSector = PlayerProbeSync.LocalInstance.ReferenceSector;
 			var probeText = probeSector == null ? "NULL" : probeSector.Name;
-			GUI.Label(new Rect(420, offset3, 400f, 20f), $"Probe sector : {probeText}");
+
+			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Player sectors :");
 			offset3 += _debugLineSpacing;
+			foreach (var sector in PlayerTransformSync.LocalInstance.SectorSync.SectorList)
+			{
+				GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.Name} : {SectorSync.SectorSync.CalculateSectorScore(sector, Locator.GetPlayerTransform(), Locator.GetPlayerBody())}");
+				offset3 += _debugLineSpacing;
+			}
+
 
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
 			offset3 += _debugLineSpacing;
@@ -182,6 +189,12 @@ namespace QSB
 				{
 					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship relative velocity : {ship.GetRelativeVelocity()}");
 					offset3 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity : {ship.AttachedObject.GetVelocity()}");
+					offset3 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Static Frame velocity : {Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity()}");
+					offset3 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Reference point velocity : {ship.ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(ship.AttachedObject.transform.position)}");
+					offset3 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
 					offset3 += _debugLineSpacing;
 				}
@@ -189,7 +202,7 @@ namespace QSB
 				offset3 += _debugLineSpacing;
 				foreach (var sector in ship.SectorSync.SectorList)
 				{
-					GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.Name}");
+					GUI.Label(new Rect(420, offset3, 400f, 20f), $"- {sector.Name} : {SectorSync.SectorSync.CalculateSectorScore(sector, Locator.GetShipTransform(), Locator.GetShipBody())}");
 					offset3 += _debugLineSpacing;
 				}
 			}
@@ -210,11 +223,13 @@ namespace QSB
 				var networkTransform = player.TransformSync;
 				var sector = networkTransform.ReferenceSector;
 
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- {player.PlayerId} : {networkTransform.transform.localPosition} : {(sector == null ? "NULL" : sector.Name)}");
+				GUI.Label(new Rect(220, offset, 400f, 20f), $"{player.PlayerId} - L.Pos : {networkTransform.transform.localPosition}");
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- LocalAccel : {player.JetpackAcceleration?.LocalAcceleration}");
+				GUI.Label(new Rect(220, offset, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}");
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 400f, 20f), $"- Thrusting : {player.JetpackAcceleration?.IsThrusting}");
+				GUI.Label(new Rect(220, offset, 400f, 20f), $" - L.Accel : {player.JetpackAcceleration?.LocalAcceleration}");
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 400f, 20f), $" - Thrusting : {player.JetpackAcceleration?.IsThrusting}");
 				offset += _debugLineSpacing;
 			}
 		}
