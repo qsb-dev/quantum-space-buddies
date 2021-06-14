@@ -66,5 +66,6 @@
 		public static string QSBExitHeadZone = "QSBExitHeadZone";
 		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
 		public static string QSBHatchState = "QSBHatchState";
+		public static string QSBEnableFunnel = "QSBEnableFunnel";
 	}
 }

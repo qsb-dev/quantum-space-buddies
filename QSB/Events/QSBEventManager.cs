@@ -80,7 +80,8 @@ namespace QSB.Events
 				new NpcAnimationEvent(),
 				// Ship
 				new FlyShipEvent(),
-				new HatchEvent()
+				new HatchEvent(),
+				new FunnelEnableEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)

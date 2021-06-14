@@ -31,6 +31,7 @@ namespace QSB.ShipSync.Patches
 			if (!PlayerState.IsInsideShip())
 			{
 				ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
+				QSBEventManager.FireEvent(EventNames.QSBEnableFunnel);
 			}
 			QSBEventManager.FireEvent(EventNames.QSBHatchState, true);
 			return true;

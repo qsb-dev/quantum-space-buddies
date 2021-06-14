@@ -44,6 +44,7 @@
 		AnimTrigger,
 		NpcAnimEvent,
 		FlyShip,
-		OpenHatch
+		OpenHatch,
+		EnableFunnel
 	}
 }
