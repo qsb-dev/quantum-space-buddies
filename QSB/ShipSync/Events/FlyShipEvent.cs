@@ -57,24 +57,6 @@ namespace QSB.ShipSync.Events
 				? id 
 				: uint.MaxValue;
 
-			/*
-			if (id == uint.MaxValue)
-			{
-				DebugLog.DebugWrite($"ShipDetector setactive {QSBCore.IsServer}");
-				Locator.GetShipDetector().SetActive(QSBCore.IsServer);
-			}
-			else if (id == LocalPlayerId)
-			{
-				DebugLog.DebugWrite($"Enable ship detector");
-				Locator.GetShipDetector().SetActive(true);
-			}
-			else
-			{
-				DebugLog.DebugWrite($"Disable ship detector");
-				Locator.GetShipDetector().SetActive(false);
-			}
-			*/
-
 			if (QSBCore.IsServer)
 			{
 				var newAuthority = ShipManager.Instance.CurrentFlyer == uint.MaxValue
