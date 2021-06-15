@@ -1,20 +1,25 @@
 ﻿using OWML.Common;
+using QSB.Player;
+using QSB.Player.TransformSync;
+using QSB.ShipSync.TransformSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.ShipSync
 {
-	internal class ShipManager : MonoBehaviour
+	internal class ShipManager : WorldObjectManager
 	{
 		public static ShipManager Instance;
 
 		public InteractZone HatchInteractZone;
 		public HatchController HatchController;
 		public ShipTractorBeamSwitch ShipTractorBeam;
-
-		private uint _currentFlyer = uint.MaxValue;
+		public ShipCockpitController CockpitController;
+		public bool HasAuthority
+			=> ShipTransformSync.LocalInstance.HasAuthority;
 		public uint CurrentFlyer
 		{
 			get => _currentFlyer;
@@ -28,23 +33,18 @@ namespace QSB.ShipSync
 			}
 		}
 
-		private void Awake()
-		{
-			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
-			Instance = this;
-		}
+		private uint _currentFlyer = uint.MaxValue;
 
-		private void OnSceneLoaded(OWScene scene)
-		{
-			if (scene == OWScene.EyeOfTheUniverse)
-			{
-				return;
-			}
+		public void Start()
+			=> Instance = this;
 
+		protected override void RebuildWorldObjects(OWScene scene)
+		{
 			var shipTransform = GameObject.Find("Ship_Body");
 			HatchController = shipTransform.GetComponentInChildren<HatchController>();
 			HatchInteractZone = HatchController.GetComponent<InteractZone>();
 			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
+			CockpitController = Resources.FindObjectsOfTypeAll<ShipCockpitController>().First();
 
 			var sphereShape = HatchController.GetComponent<SphereShape>();
 			sphereShape.radius = 2.5f;
@@ -52,7 +52,10 @@ namespace QSB.ShipSync
 
 			if (QSBCore.IsServer)
 			{
-				DebugLog.DebugWrite($"SPAWN SHIP");
+				if (ShipTransformSync.LocalInstance != null)
+				{
+					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
+				}
 				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
 			}
 		}
