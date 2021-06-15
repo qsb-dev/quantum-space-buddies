@@ -1,6 +1,7 @@
 ﻿using Harmony;
 using QSB.Events;
 using QSB.Patches;
+using QSB.ShipSync;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -192,6 +193,12 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
+			if (!ShipManager.Instance.HasAuthority)
+			{
+				RespawnOnDeath.Instance.ResetPlayer();
+				return false;
+			}
+
 			RespawnOnDeath.Instance.ResetShip();
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
@@ -217,6 +224,11 @@ namespace QSB.DeathSync.Patches
 			if (RespawnOnDeath.Instance == null)
 			{
 				return true;
+			}
+
+			if (!ShipManager.Instance.HasAuthority)
+			{
+				return false;
 			}
 
 			if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
