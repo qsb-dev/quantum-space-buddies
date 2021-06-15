@@ -29,11 +29,13 @@ namespace QSB.ShipSync.TransformSync
 		{
 			if (HasAuthority && ShipManager.Instance.CurrentFlyer != QSBPlayerManager.LocalPlayerId && ShipManager.Instance.CurrentFlyer != uint.MaxValue)
 			{
+				DebugLog.ToConsole("Warning - Has authority, but is not current flyer!", OWML.Common.MessageType.Warning);
 				return;
 			}
 
 			if (!HasAuthority && ShipManager.Instance.CurrentFlyer == QSBPlayerManager.LocalPlayerId)
 			{
+				DebugLog.ToConsole($"Warning - Doesn't have authority, but is current flyer!", OWML.Common.MessageType.Warning);
 				return;
 			}
 
