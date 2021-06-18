@@ -16,8 +16,10 @@
 				{
 					text = $"[{value}]";
 				}
+
 				result = text;
 			}
+
 			return result;
 		}
 

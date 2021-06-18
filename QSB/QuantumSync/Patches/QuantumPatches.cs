@@ -106,6 +106,7 @@ namespace QSB.QuantumSync.Patches
 					__result = true;
 					return false;
 				}
+
 				bool socketNotSuitable;
 				var isSocketIlluminated = (bool)__instance.GetType().GetMethod("CheckIllumination", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
 
@@ -135,12 +136,14 @@ namespace QSB.QuantumSync.Patches
 					__result = true;
 					return false;
 				}
+
 				list.RemoveAt(index);
 				if (list.Count == 0)
 				{
 					break;
 				}
 			}
+
 			__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { occupiedSocket });
 			__result = false;
 			return false;
@@ -158,6 +161,7 @@ namespace QSB.QuantumSync.Patches
 				DebugLog.ToConsole($"Error - Trying to move {__instance.name} to a null socket!", MessageType.Error);
 				return;
 			}
+
 			var objectWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>(__instance);
 			var socketWorldObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumSocket, QuantumSocket>(socket);
 
@@ -206,7 +210,6 @@ namespace QSB.QuantumSync.Patches
 				____indexList[random] = temp;
 			}
 
-
 			for (var j = 0; j < ____shuffledObjects.Length; j++)
 			{
 				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
@@ -249,6 +252,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				__instance.GetType().GetMethod("CheckEnabled", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
 			}
+
 			if (____collapseOnStart)
 			{
 				__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
@@ -269,6 +273,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				return true;
 			}
+
 			var isInControl = qsbObj.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
 		}
@@ -284,6 +289,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				return;
 			}
+
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var stateObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(__instance);
 			var owner = allMultiStates.First(x => x.QuantumStates.Contains(stateObject));
@@ -291,6 +297,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				return;
 			}
+
 			var stateIndex = owner.QuantumStates.IndexOf(stateObject);
 			QSBEventManager.FireEvent(
 					EventNames.QSBMultiStateChange,
@@ -369,6 +376,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				____isProbeInside = true;
 			}
+
 			return false;
 		}
 
@@ -390,6 +398,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				____isProbeInside = false;
 			}
+
 			return false;
 		}
 
@@ -445,6 +454,7 @@ namespace QSB.QuantumSync.Patches
 						{
 							__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
 						}
+
 						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
 						QSBEventManager.FireEvent("PlayerExitQuantumMoon");
 					}
@@ -458,6 +468,7 @@ namespace QSB.QuantumSync.Patches
 						{
 							Physics.SyncTransforms();
 						}
+
 						var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
 						component.SetDegreesY(component.GetMinDegreesY());
 						____vortexAudio.SetLocalVolume(0f);
@@ -466,6 +477,7 @@ namespace QSB.QuantumSync.Patches
 					}
 				}
 			}
+
 			____playerFogBubble.SetFogAlpha(fogAlpha);
 			____shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
 			return false;

@@ -21,6 +21,7 @@ namespace QSB.Utility
 				{
 					continue;
 				}
+
 				Material materialCopy;
 				if (!materialMappings.ContainsKey(material))
 				{
@@ -31,6 +32,7 @@ namespace QSB.Utility
 				{
 					materialCopy = materialMappings[material];
 				}
+
 				materialCopy.SetInt(shaderTestMode, (int)desiredUIComparison);
 				graphic.material = materialCopy;
 			}

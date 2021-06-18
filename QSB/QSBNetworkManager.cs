@@ -112,6 +112,7 @@ namespace QSB
 				child.Target = item.target;
 				Destroy(item);
 			}
+
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
 		}
@@ -252,10 +253,12 @@ namespace QSB
 			{
 				Destroy(platform);
 			}
+
 			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
 			{
 				Destroy(camera);
 			}
+
 			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
 			{
 				Destroy(streaming);

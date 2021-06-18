@@ -109,6 +109,7 @@ namespace QSB.Events
 			{
 				return;
 			}
+
 			GlobalMessenger.FireEvent(eventName);
 		}
 
@@ -119,6 +120,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T>.FireEvent(eventName, arg);
 		}
 
@@ -129,6 +131,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U>.FireEvent(eventName, arg1, arg2);
 		}
 
@@ -139,6 +142,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V>.FireEvent(eventName, arg1, arg2, arg3);
 		}
 
@@ -149,6 +153,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V, W>.FireEvent(eventName, arg1, arg2, arg3, arg4);
 		}
 
@@ -159,6 +164,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V, W, X>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5);
 		}
 
@@ -169,6 +175,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V, W, X, Y>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6);
 		}
 	}

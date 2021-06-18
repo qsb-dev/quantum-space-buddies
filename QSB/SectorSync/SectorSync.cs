@@ -34,6 +34,7 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+
 			_sectorDetector = detector;
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
@@ -54,11 +55,13 @@ namespace QSB.SectorSync
 			{
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
 			}
+
 			if (SectorList.Contains(worldObject))
 			{
 				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
 				return;
 			}
+
 			SectorList.Add(worldObject);
 		}
 
@@ -70,11 +73,13 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
 				return;
 			}
+
 			if (!SectorList.Contains(worldObject))
 			{
 				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
 				return;
 			}
+
 			SectorList.Remove(worldObject);
 		}
 
@@ -98,6 +103,7 @@ namespace QSB.SectorSync
 			{
 				return default;
 			}
+
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
@@ -140,6 +146,7 @@ namespace QSB.SectorSync
 					return trigger.GetShape().CalcWorldBounds().radius;
 				}
 			}
+
 			return 0f;
 		}
 		
@@ -152,6 +159,7 @@ namespace QSB.SectorSync
 				var relativeVelocityMagnitude = relativeVelocity.sqrMagnitude; // Remember this is squared for efficiency!
 				return relativeVelocityMagnitude;
 			}
+
 			return 0;
 		}
 	}

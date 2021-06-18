@@ -30,6 +30,7 @@ namespace QSB.ConversationSync
 			{
 				DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
 			}
+
 			_boxPrefab.GetComponent<Text>().font = font;
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
@@ -52,6 +53,7 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
 		}
 
@@ -68,6 +70,7 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
 		}
 

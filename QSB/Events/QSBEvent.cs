@@ -21,6 +21,7 @@ namespace QSB.Events
 			{
 				return;
 			}
+
 			_eventHandler = new MessageHandler<T>(Type);
 			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);

@@ -18,6 +18,7 @@ namespace QSB.TranslationSync.WorldObjects
 			{
 				return;
 			}
+
 			AttachedObject.SetAsTranslated(id);
 		}
 
@@ -31,6 +32,7 @@ namespace QSB.TranslationSync.WorldObjects
 					yield return item.GetEntryID();
 				}
 			}
+
 			var inactiveList = AttachedObject.GetValue<List<NomaiComputerRing>>("_inactiveRingList");
 			foreach (var item in inactiveList)
 			{

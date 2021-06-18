@@ -27,6 +27,7 @@ namespace QSB.TranslationSync.Events
 			{
 				return;
 			}
+
 			if (message.EnumValue == NomaiTextType.WallText)
 			{
 				var obj = QSBWorldSync.GetWorldFromId<QSBWallText>(message.ObjectId);

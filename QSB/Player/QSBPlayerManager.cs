@@ -25,11 +25,13 @@ namespace QSB.Player
 						$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name} ", MessageType.Error);
 					return uint.MaxValue;
 				}
+
 				if (localInstance.NetIdentity == null)
 				{
 					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
 					return uint.MaxValue;
 				}
+
 				return localInstance.NetIdentity.NetId.Value;
 			}
 		}
@@ -54,11 +56,13 @@ namespace QSB.Player
 			{
 				return default;
 			}
+
 			var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
 			if (player != null)
 			{
 				return player;
 			}
+
 			var trace = new StackTrace().GetFrame(1).GetMethod();
 			DebugLog.DebugWrite($"Create Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
 			player = new PlayerInfo(id);
@@ -112,6 +116,7 @@ namespace QSB.Player
 			{
 				cameraList.Add(LocalPlayer);
 			}
+
 			return cameraList;
 		}
 
@@ -132,6 +137,7 @@ namespace QSB.Player
 				DebugLog.ToConsole($"Warning - Player {playerId} has a null player model!", MessageType.Warning);
 				return;
 			}
+
 			foreach (var renderer in player.Body.GetComponentsInChildren<Renderer>())
 			{
 				renderer.enabled = visible;
@@ -152,6 +158,7 @@ namespace QSB.Player
 				DebugLog.DebugWrite($"Error - Cannot get closest player from empty player list.", MessageType.Error);
 				return null;
 			}
+
 			return playerList.Where(x => x.PlayerStates.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
 	}

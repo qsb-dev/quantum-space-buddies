@@ -16,11 +16,13 @@ namespace QSB.Player
 			{
 				return;
 			}
+
 			var controller = Locator.GetPlayerController();
 			if (controller == null)
 			{
 				return;
 			}
+
 			var collidingQuantumObject = controller.GetValue<QuantumObject>("_collidingQuantumObject");
 			if (_previousCollidingQuantumObject != collidingQuantumObject)
 			{

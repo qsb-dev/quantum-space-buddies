@@ -169,7 +169,6 @@ namespace QSB
 				offset3 += _debugLineSpacing;
 			}
 
-
 			GUI.Label(new Rect(420, offset3, 200f, 20f), $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
 			offset3 += _debugLineSpacing;
 			var ship = ShipTransformSync.LocalInstance;
@@ -197,6 +196,7 @@ namespace QSB
 					GUI.Label(new Rect(420, offset3, 400f, 20f), $"Ship velocity mag. : {ship.GetVelocityChangeMagnitude()}");
 					offset3 += _debugLineSpacing;
 				}
+
 				GUI.Label(new Rect(420, offset3, 200f, 20f), $"Ship sectors :");
 				offset3 += _debugLineSpacing;
 				foreach (var sector in ship.SectorSync.SectorList)
@@ -241,6 +241,7 @@ namespace QSB
 			{
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
+
 			DebugMode = config.GetSettingsValue<bool>("debugMode");
 			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 		}

@@ -13,6 +13,7 @@ namespace QSB.LogSync.Patches
 			{
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBRevealFact, id, saveGame, showNotification);
 		}
 

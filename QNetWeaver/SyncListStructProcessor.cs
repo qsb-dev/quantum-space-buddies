@@ -49,6 +49,7 @@ namespace QNetWeaver
 			{
 				text += "None";
 			}
+
 			var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
 			methodDefinition.Parameters.Add(new ParameterDefinition("instance", ParameterAttributes.None, m_TypeDef));
@@ -105,6 +106,7 @@ namespace QNetWeaver
 			{
 				text += "None";
 			}
+
 			var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
 			methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(m_TypeDef)));
@@ -164,6 +166,7 @@ namespace QNetWeaver
 					return methodDefinition;
 				}
 			}
+
 			var methodDefinition2 = new MethodDefinition("SerializeItem", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition2.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
 			methodDefinition2.Parameters.Add(new ParameterDefinition("item", ParameterAttributes.None, m_ItemType));
@@ -198,6 +201,7 @@ namespace QNetWeaver
 							}));
 							return null;
 						}
+
 						if (typeDefinition.IsInterface)
 						{
 							Weaver.fail = true;
@@ -213,6 +217,7 @@ namespace QNetWeaver
 							}));
 							return null;
 						}
+
 						var writeFunc = Weaver.GetWriteFunc(fieldDefinition.FieldType);
 						if (writeFunc == null)
 						{
@@ -229,16 +234,19 @@ namespace QNetWeaver
 							}));
 							return null;
 						}
+
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_2));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldfld, fieldReference));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Call, writeFunc));
 					}
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				m_TypeDef.Methods.Add(methodDefinition2);
 				result = methodDefinition2;
 			}
+
 			return result;
 		}
 
@@ -252,6 +260,7 @@ namespace QNetWeaver
 					return methodDefinition;
 				}
 			}
+
 			var methodDefinition2 = new MethodDefinition("DeserializeItem", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, m_ItemType);
 			methodDefinition2.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
 			var ilprocessor = methodDefinition2.Body.GetILProcessor();
@@ -279,12 +288,14 @@ namespace QNetWeaver
 						}));
 						return null;
 					}
+
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloca, 0));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Call, readFunc));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Stfld, fieldReference));
 				}
 			}
+
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 			m_TypeDef.Methods.Add(methodDefinition2);

@@ -35,6 +35,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				return;
 			}
+
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -48,6 +49,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
+
 			if (ReferenceSector != null)
 			{
 				writer.Write(ReferenceSector.ObjectId);
@@ -56,6 +58,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				writer.Write(-1);
 			}
+
 			base.SerializeTransform(writer);
 		}
 

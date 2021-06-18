@@ -15,6 +15,7 @@ namespace QuantumUNET
 				PostInternalMessage(33);
 				m_Connected = false;
 			}
+
 			m_AsyncConnect = ConnectState.Disconnected;
 			m_LocalServer.RemoveLocalClient(m_Connection);
 		}
@@ -30,6 +31,7 @@ namespace QuantumUNET
 					m_FreeMessages.Push(t);
 				}
 			}
+
 			m_LocalServer = QNetworkServer.instance;
 			m_Connection = new QULocalConnectionToServer(m_LocalServer);
 			SetHandlers(m_Connection);
@@ -41,6 +43,7 @@ namespace QuantumUNET
 			{
 				PostInternalMessage(32);
 			}
+
 			m_Connected = true;
 		}
 
@@ -57,6 +60,7 @@ namespace QuantumUNET
 				QClientScene.SetLocalObject(unetView.NetId, localPlayer.Gameobject);
 				unetView.SetConnectionToServer(m_Connection);
 			}
+
 			QClientScene.InternalAddPlayer(unetView, localPlayer.PlayerControllerId);
 		}
 
@@ -92,6 +96,7 @@ namespace QuantumUNET
 					{
 						s_InternalMessage.Reader.Replace(msg.buffer);
 					}
+
 					s_InternalMessage.Reader.ReadInt16();
 					s_InternalMessage.ChannelId = msg.channelId;
 					s_InternalMessage.Connection = connection;
@@ -100,12 +105,14 @@ namespace QuantumUNET
 					m_FreeMessages.Push(msg);
 					connection.lastMessageTime = Time.time;
 				}
+
 				m_InternalMsgs = internalMsgs;
 				m_InternalMsgs.Clear();
 				foreach (var msg in m_InternalMsgs2)
 				{
 					m_InternalMsgs.Add(msg);
 				}
+
 				m_InternalMsgs2.Clear();
 			}
 		}

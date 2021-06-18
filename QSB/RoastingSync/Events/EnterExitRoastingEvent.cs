@@ -30,6 +30,7 @@ namespace QSB.RoastingSync.Events
 				SendEvent(CreateMessage(-1, roasting));
 				return;
 			}
+
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCampfire, Campfire>(campfire);
 			SendEvent(CreateMessage(qsbObj.ObjectId, roasting));
 		}
@@ -47,11 +48,13 @@ namespace QSB.RoastingSync.Events
 			{
 				return;
 			}
+
 			if (message.State && message.ObjectId == -1)
 			{
 				DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.RoastingStick.SetActive(message.State);
 			if (message.State)

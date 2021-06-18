@@ -22,6 +22,7 @@ namespace QSB.Patches
 				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
 				instance.Unpatch(item, HarmonyPatchType.All);
 			}
+
 			_patchedMethods.Clear();
 		}
 
@@ -54,6 +55,7 @@ namespace QSB.Patches
 				{
 					QSBCore.Helper.HarmonyHelper.AddPostfix(method, GetType(), patchName);
 				}
+
 				_patchedMethods.Add(method);
 			}
 
@@ -94,6 +96,7 @@ namespace QSB.Patches
 					return assemblyTypes[j];
 				}
 			}
+
 			return null;
 		}
 	}

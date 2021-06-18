@@ -83,9 +83,11 @@ namespace QSB.RoastingSync
 					{
 						_fireRenderer.enabled = false;
 					}
+
 					transform.localScale = Vector3.one * (1f - shrivelFraction);
 				}
 			}
+
 			_heatPerSecond = 0f;
 		}
 
@@ -105,6 +107,7 @@ namespace QSB.RoastingSync
 				{
 					_smokeParticles.Play();
 				}
+
 				var smokeColor = new Color(1f, 1f, 1f, num);
 				_smokeParticlesSettings.startColor = smokeColor;
 			}
@@ -112,6 +115,7 @@ namespace QSB.RoastingSync
 			{
 				_smokeParticles.Stop();
 			}
+
 			Color newColor;
 			if (_toastedFraction < PERFECT_TOASTED_FRACTION)
 			{
@@ -123,6 +127,7 @@ namespace QSB.RoastingSync
 				var fractionTowardsBurnt = (_toastedFraction - PERFECT_TOASTED_FRACTION) / 0.3f;
 				newColor = Color.Lerp(_toastedColor, _burntColor, fractionTowardsBurnt);
 			}
+
 			_mallowRenderer.material.color = Color.Lerp(_mallowRenderer.material.color, newColor, RAW_TOASTED_FRACTION);
 			_smokeParticles.transform.forward = Locator.GetPlayerTransform().up;
 		}

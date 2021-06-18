@@ -27,6 +27,7 @@ namespace QSB.Player.Events
 			{
 				return;
 			}
+
 			QSBCore.UnityEvents.FireInNUpdates(() => KickPlayer(message.AboutId), 10);
 		}
 
@@ -42,9 +43,11 @@ namespace QSB.Player.Events
 					DebugLog.ToAll($"{QSBPlayerManager.GetPlayer(message.AboutId).Name} was kicked.");
 					return;
 				}
+
 				DebugLog.ToAll($"Player id:{message.AboutId} was kicked.");
 				return;
 			}
+
 			DebugLog.ToAll($"Kicked from server. Reason : {message.EnumValue}");
 		}
 	}

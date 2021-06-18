@@ -51,6 +51,7 @@ namespace QSB.QuantumSync
 			{
 				return;
 			}
+
 			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
 			for (var i = 0; i < quantumObjects.Count; i++)
 			{
@@ -84,10 +85,12 @@ namespace QSB.QuantumSync
 				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
 				return new Tuple<bool, List<PlayerInfo>>(false, null);
 			}
+
 			if (!tracker.gameObject.activeInHierarchy)
 			{
 				return new Tuple<bool, List<PlayerInfo>>(false, null);
 			}
+
 			var frustumMethod = tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance);
 
 			var playersWhoCanSee = new List<PlayerInfo>();
@@ -99,6 +102,7 @@ namespace QSB.QuantumSync
 					DebugLog.ToConsole($"Warning - Camera is null for id:{player.PlayerId}!", MessageType.Warning);
 					continue;
 				}
+
 				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
 				if (isInFrustum)
 				{
@@ -124,6 +128,7 @@ namespace QSB.QuantumSync
 			{
 				return Enumerable.Empty<PlayerInfo>();
 			}
+
 			var worldObj = GetObject(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
@@ -155,6 +160,7 @@ namespace QSB.QuantumSync
 			{
 				DebugLog.ToConsole($"Warning - couldn't work out type of QuantumObject {unityObject.name}.", MessageType.Warning);
 			}
+
 			return worldObj;
 		}
 	}

@@ -29,6 +29,7 @@ namespace QSB.GeyserSync.WorldObjects
 				AttachedObject?.ActivateGeyser();
 				return;
 			}
+
 			AttachedObject?.DeactivateGeyser();
 		}
 	}

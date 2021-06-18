@@ -67,6 +67,7 @@ namespace QSB.Player
 			{
 				return;
 			}
+
 			FlashLight?.UpdateState(PlayerStates.FlashlightActive);
 			Translator?.ChangeEquipState(PlayerStates.TranslatorEquipped);
 			ProbeLauncher?.ChangeEquipState(PlayerStates.ProbeLauncherEquipped);

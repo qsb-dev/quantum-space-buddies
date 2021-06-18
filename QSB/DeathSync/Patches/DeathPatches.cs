@@ -60,6 +60,7 @@ namespace QSB.DeathSync.Patches
 				impact.otherCollider.attachedRigidbody.gameObject.name
 				}));
 			}
+
 			return false;
 		}
 
@@ -127,6 +128,7 @@ namespace QSB.DeathSync.Patches
 						}));
 					}
 				}
+
 				return false;
 			}
 
@@ -159,6 +161,7 @@ namespace QSB.DeathSync.Patches
 									{
 										____dieNextUpdate = true;
 									}
+
 									DebugLog.DebugWrite(string.Concat(new object[]
 									{
 									"HIGH SPEED IMPACT: ",

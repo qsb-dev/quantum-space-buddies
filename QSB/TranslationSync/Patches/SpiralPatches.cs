@@ -22,6 +22,7 @@ namespace QSB.TranslationSync.Patches
 			{
 				return true;
 			}
+
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.WallText,
@@ -36,6 +37,7 @@ namespace QSB.TranslationSync.Patches
 			{
 				return true;
 			}
+
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.Computer,
@@ -50,6 +52,7 @@ namespace QSB.TranslationSync.Patches
 			{
 				return true;
 			}
+
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.VesselComputer,

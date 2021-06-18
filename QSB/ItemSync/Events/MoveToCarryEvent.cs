@@ -50,6 +50,7 @@ namespace QSB.ItemSync.Events
 					break;
 
 			}
+
 			itemObject.PickUpItem(itemSocket, message.AboutId);
 		}
 	}

@@ -51,11 +51,13 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			CheckSendRate();
 			if (!CheckAnimStateChanged(out var stateHash, out var normalizedTime))
 			{
 				return;
 			}
+
 			var animationMessage = new QAnimationMessage
 			{
 				netId = NetId,
@@ -77,6 +79,7 @@ namespace QuantumUNET.Components
 				{
 					return;
 				}
+
 				QNetworkServer.SendToReady(gameObject, 40, animationMessage);
 			}
 		}
@@ -92,20 +95,24 @@ namespace QuantumUNET.Components
 				{
 					return false;
 				}
+
 				m_TransitionHash = animatorTransitionInfo.fullPathHash;
 				m_AnimationHash = 0;
 				return true;
 			}
+
 			var animatorStateInfo = m_Animator.GetCurrentAnimatorStateInfo(0);
 			if (animatorStateInfo.fullPathHash == m_AnimationHash)
 			{
 				return false;
 			}
+
 			if (m_AnimationHash != 0)
 			{
 				stateHash = animatorStateInfo.fullPathHash;
 				normalizedTime = animatorStateInfo.normalizedTime;
 			}
+
 			m_TransitionHash = 0;
 			m_AnimationHash = animatorStateInfo.fullPathHash;
 			return true;
@@ -117,6 +124,7 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			m_SendTimer = Time.time + GetNetworkSendInterval();
 			var parametersMessage = new QAnimationParametersMessage
 			{
@@ -146,10 +154,12 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			if (msg.stateHash != 0)
 			{
 				m_Animator.Play(msg.stateHash, 0, msg.normalizedTime);
 			}
+
 			ReadParameters(reader, false);
 		}
 
@@ -159,6 +169,7 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			ReadParameters(reader, true);
 		}
 
@@ -200,6 +211,7 @@ namespace QuantumUNET.Components
 					{
 						return;
 					}
+
 					switch (parameter.type)
 					{
 						case AnimatorControllerParameterType.Int:
@@ -227,6 +239,7 @@ namespace QuantumUNET.Components
 			{
 				return false;
 			}
+
 			if (m_Animator.IsInTransition(0))
 			{
 				var animatorStateInfo = m_Animator.GetNextAnimatorStateInfo(0);
@@ -239,6 +252,7 @@ namespace QuantumUNET.Components
 				writer.Write(animatorStateInfo.fullPathHash);
 				writer.Write(animatorStateInfo.normalizedTime);
 			}
+
 			WriteParameters(writer, false);
 			return true;
 		}
@@ -249,6 +263,7 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			var stateNameHash = reader.ReadInt32();
 			var normalizedTime = reader.ReadSingle();
 			ReadParameters(reader, false);
@@ -270,11 +285,13 @@ namespace QuantumUNET.Components
 				{
 					return;
 				}
+
 				var readyConnection = QClientScene.readyConnection;
 				if (readyConnection == null)
 				{
 					return;
 				}
+
 				readyConnection.Send(42, animationTriggerMessage);
 			}
 			else
@@ -283,6 +300,7 @@ namespace QuantumUNET.Components
 				{
 					return;
 				}
+
 				QNetworkServer.SendToReady(gameObject, 42, animationTriggerMessage);
 			}
 		}
@@ -295,6 +313,7 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			var component = localObject.GetComponent<QNetworkAnimator>();
 			var reader = new QNetworkReader(AnimationMessage.parameters);
 			component?.HandleAnimMsg(AnimationMessage, reader);
@@ -309,6 +328,7 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			var component = localObject.GetComponent<QNetworkAnimator>();
 			var reader = new QNetworkReader(ParametersMessage.parameters);
 			component?.HandleAnimParamsMsg(ParametersMessage, reader);
@@ -323,6 +343,7 @@ namespace QuantumUNET.Components
 			{
 				return;
 			}
+
 			var component = localObject.GetComponent<QNetworkAnimator>();
 			component?.HandleAnimTriggerMsg(TriggersMessage.hash);
 			QNetworkServer.SendToReady(localObject, 42, TriggersMessage);

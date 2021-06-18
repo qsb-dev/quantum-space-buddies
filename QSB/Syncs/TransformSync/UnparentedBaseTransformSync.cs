@@ -77,6 +77,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				Destroy(AttachedObject.gameObject);
 			}
+
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
@@ -176,6 +177,7 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 				return;
 			}
+
 			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
 			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
 			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_ParentedToReference() != Vector3.zero)
@@ -206,6 +208,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				return;
 			}
+
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 		}
@@ -220,6 +223,7 @@ namespace QSB.Syncs.TransformSync
 				_previousDistance = distance;
 				return targetPosition;
 			}
+
 			_previousDistance = distance;
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}

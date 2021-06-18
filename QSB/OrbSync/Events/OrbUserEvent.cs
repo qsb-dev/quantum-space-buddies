@@ -57,15 +57,18 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (fromPlayer == null)
 			{
 				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
+
 			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs
 				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
 			if (orbSync == null)
@@ -73,16 +76,19 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			var orbIdentity = orbSync.GetComponent<QNetworkIdentity>();
 			if (orbIdentity == null)
 			{
 				DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
 			{
 				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
 			}
+
 			orbIdentity.AssignClientAuthority(fromPlayer);
 			orbSync.enabled = true;
 		}
@@ -94,16 +100,19 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (!NomaiOrbTransformSync.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject))
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
+
 			var orb = NomaiOrbTransformSync.OrbTransformSyncs
 				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
 			orb.enabled = true;

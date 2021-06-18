@@ -27,6 +27,7 @@ namespace QSB.ItemSync.WorldObjects
 				var qsbObj = ItemManager.GetObject(InitialParent.GetComponent<OWItemSocket>());
 				InitialSocket = qsbObj;
 			}
+
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}
 
@@ -38,11 +39,13 @@ namespace QSB.ItemSync.WorldObjects
 			{
 				return;
 			}
+
 			if (InitialSocket != null)
 			{
 				InitialSocket.PlaceIntoSocket(this);
 				return;
 			}
+
 			AttachedObject.transform.parent = InitialParent;
 			AttachedObject.transform.localPosition = InitialPosition;
 			AttachedObject.transform.localRotation = InitialRotation;
@@ -62,7 +65,6 @@ namespace QSB.ItemSync.WorldObjects
 			AttachedObject.SocketItem(socketTransform, sector);
 			HoldingPlayer = 0;
 		}
-
 
 		public virtual void PickUpItem(Transform holdTransform, uint playerId)
 		{

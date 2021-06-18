@@ -34,8 +34,10 @@ namespace QuantumUNET.Components
 					writer.WritePackedUInt32(0U);
 					return false;
 				}
+
 				writer.WritePackedUInt32(1U);
 			}
+
 			SerializeTransform(writer);
 			return true;
 		}
@@ -51,6 +53,7 @@ namespace QuantumUNET.Components
 						return;
 					}
 				}
+
 				DeserializeTransform(reader);
 			}
 		}
@@ -71,6 +74,7 @@ namespace QuantumUNET.Components
 				DeserializeRotation(reader);
 				return;
 			}
+
 			transform.position = reader.ReadVector3();
 			transform.rotation = DeserializeRotation(reader);
 		}

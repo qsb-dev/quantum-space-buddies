@@ -80,9 +80,11 @@ namespace QuantumUNET.Transport
 							_freePackets.Add(item);
 						}
 					}
+
 					_pendingPackets.Clear();
 				}
 			}
+
 			_disposed = true;
 		}
 
@@ -141,6 +143,7 @@ namespace QuantumUNET.Transport
 				_maxPendingPacketCount = value;
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -151,6 +154,7 @@ namespace QuantumUNET.Transport
 				SendInternalBuffer();
 				_lastFlushTime = Time.realtimeSinceStartup;
 			}
+
 			if (Time.realtimeSinceStartup - _lastBufferedMessageCountTimer > 1f)
 			{
 				LastBufferedPerSecond = NumBufferedPerSecond;
@@ -184,6 +188,7 @@ namespace QuantumUNET.Transport
 					_fragmentBuffer.SeekZero();
 					_readingFragment = true;
 				}
+
 				var array = reader.ReadBytesAndSize();
 				_fragmentBuffer.WriteBytes(array, (ushort)array.Length);
 				result = false;
@@ -193,6 +198,7 @@ namespace QuantumUNET.Transport
 				_readingFragment = false;
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -212,6 +218,7 @@ namespace QuantumUNET.Transport
 				num += num2;
 				bytesToSend -= num2;
 			}
+
 			_fragmentWriter.StartMessage(17);
 			_fragmentWriter.Write(1);
 			_fragmentWriter.FinishMessage();
@@ -255,6 +262,7 @@ namespace QuantumUNET.Transport
 						{
 							QueuePacket();
 						}
+
 						_currentPacket.Write(bytes, bytesToSend);
 						result = true;
 					}
@@ -264,6 +272,7 @@ namespace QuantumUNET.Transport
 						{
 							Debug.LogError($"ChannelBuffer buffer limit of {_pendingPackets.Count} packets reached.");
 						}
+
 						_isBroken = true;
 						result = false;
 					}
@@ -290,6 +299,7 @@ namespace QuantumUNET.Transport
 				_currentPacket.Write(bytes, bytesToSend);
 				result = MaxDelay != 0f || SendInternalBuffer();
 			}
+
 			return result;
 		}
 
@@ -314,6 +324,7 @@ namespace QuantumUNET.Transport
 				channelPacket.Reset();
 				result = channelPacket;
 			}
+
 			return result;
 		}
 
@@ -338,6 +349,7 @@ namespace QuantumUNET.Transport
 						_pendingPackets.Enqueue(channelPacket);
 						break;
 					}
+
 					_pendingPacketCount--;
 					FreePacket(channelPacket);
 					if (_isBroken && _pendingPackets.Count < _maxPendingPacketCount / 2)
@@ -346,12 +358,14 @@ namespace QuantumUNET.Transport
 						_isBroken = false;
 					}
 				}
+
 				result = true;
 			}
 			else
 			{
 				result = _currentPacket.SendToTransport(_connection, _channelId);
 			}
+
 			return result;
 		}
 	}

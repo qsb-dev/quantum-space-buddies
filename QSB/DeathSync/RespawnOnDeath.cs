@@ -55,6 +55,7 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole($"Warning - Init() ran when ship was null?", MessageType.Warning);
 				return;
 			}
+
 			_shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
 			_hatchController = shipTransform.GetComponentInChildren<HatchController>();
 			_cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
@@ -172,6 +173,7 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole($"Warning - _spawnList was null for player spawner!", MessageType.Warning);
 				return null;
 			}
+
 			return spawnList.FirstOrDefault(spawnPoint =>
 					spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth
 					&& spawnPoint.IsShipSpawn() == isShip);

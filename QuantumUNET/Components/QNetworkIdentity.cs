@@ -46,6 +46,7 @@ namespace QuantumUNET.Components
 			{
 				RootIdentity.RemoveSubIdentity(this);
 			}
+
 			RootIdentity = newRoot;
 			RootIdentity.AddSubIndentity(this);
 		}
@@ -74,6 +75,7 @@ namespace QuantumUNET.Components
 			{
 				QLog.Error("SetClientOwner m_ClientAuthorityOwner already set!");
 			}
+
 			ClientAuthorityOwner = conn;
 			ClientAuthorityOwner.AddOwnedObject(this);
 		}
@@ -109,6 +111,7 @@ namespace QuantumUNET.Components
 				{
 					result = new ReadOnlyCollection<QNetworkConnection>(m_Observers);
 				}
+
 				return result;
 			}
 		}
@@ -192,6 +195,7 @@ namespace QuantumUNET.Components
 				{
 					HasAuthority = true;
 				}
+
 				m_Observers = new List<QNetworkConnection>();
 				m_ObserverConnections = new HashSet<int>();
 				CacheBehaviours();
@@ -204,6 +208,7 @@ namespace QuantumUNET.Components
 					QLog.Warning($"Object has non-zero netId {NetId} for {gameObject}");
 					return;
 				}
+
 				QNetworkServer.instance.SetLocalObjectOnServer(NetId, gameObject);
 				foreach (var networkBehaviour in m_NetworkBehaviours)
 				{
@@ -216,11 +221,13 @@ namespace QuantumUNET.Components
 						QLog.FatalError($"Exception in OnStartServer:{ex.Message} {ex.StackTrace}");
 					}
 				}
+
 				if (QNetworkClient.active && QNetworkServer.localClientActive)
 				{
 					QClientScene.SetLocalObject(NetId, gameObject);
 					OnStartClient();
 				}
+
 				if (HasAuthority)
 				{
 					OnStartAuthority();
@@ -234,6 +241,7 @@ namespace QuantumUNET.Components
 			{
 				IsClient = true;
 			}
+
 			CacheBehaviours();
 			QLog.Debug($"OnStartClient {gameObject} GUID:{NetId} localPlayerAuthority:{LocalPlayerAuthority}");
 			foreach (var networkBehaviour in m_NetworkBehaviours)
@@ -346,6 +354,7 @@ namespace QuantumUNET.Components
 					break;
 				}
 			}
+
 			bool result;
 			if (networkBehaviour == null)
 			{
@@ -360,6 +369,7 @@ namespace QuantumUNET.Components
 				invokeComponent = networkBehaviour;
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -470,6 +480,7 @@ namespace QuantumUNET.Components
 					num |= 1U << dirtyChannel;
 				}
 			}
+
 			if (num != 0U)
 			{
 				var j = 0;
@@ -494,6 +505,7 @@ namespace QuantumUNET.Components
 									networkBehaviour.ClearAllDirtyBits();
 									flag = true;
 								}
+
 								var maxPacketSize = QNetworkServer.maxPacketSize;
 								if (s_UpdateWriter.Position - position > maxPacketSize)
 								{
@@ -502,12 +514,14 @@ namespace QuantumUNET.Components
 								}
 							}
 						}
+
 						if (flag)
 						{
 							s_UpdateWriter.FinishMessage();
 							QNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter, j);
 						}
 					}
+
 					j++;
 				}
 			}
@@ -535,6 +549,7 @@ namespace QuantumUNET.Components
 			{
 				HasAuthority = true;
 			}
+
 			foreach (var networkBehaviour in m_NetworkBehaviours)
 			{
 				networkBehaviour.OnStartLocalPlayer();
@@ -562,6 +577,7 @@ namespace QuantumUNET.Components
 				networkBehaviour.OnNetworkDestroy();
 				num++;
 			}
+
 			m_IsServer = false;
 		}
 
@@ -575,6 +591,7 @@ namespace QuantumUNET.Components
 					var networkConnection = m_Observers[i];
 					networkConnection.RemoveFromVisList(this, true);
 				}
+
 				m_Observers.Clear();
 				m_ObserverConnections.Clear();
 			}
@@ -621,6 +638,7 @@ namespace QuantumUNET.Components
 				{
 					flag2 |= networkBehaviour.OnRebuildObservers(hashSet, initialize);
 				}
+
 				if (!flag2)
 				{
 					if (initialize)
@@ -666,6 +684,7 @@ namespace QuantumUNET.Components
 							}
 						}
 					}
+
 					foreach (var networkConnection4 in hashSet2)
 					{
 						if (!hashSet.Contains(networkConnection4))
@@ -675,6 +694,7 @@ namespace QuantumUNET.Components
 							flag = true;
 						}
 					}
+
 					if (initialize)
 					{
 						foreach (var connection in QNetworkServer.localConnections)
@@ -685,6 +705,7 @@ namespace QuantumUNET.Components
 							}
 						}
 					}
+
 					if (flag)
 					{
 						m_Observers = new List<QNetworkConnection>(hashSet);
@@ -720,6 +741,7 @@ namespace QuantumUNET.Components
 				QLog.Warning($"RemoveClientAuthority for {gameObject} has different owner.");
 				return false;
 			}
+
 			ClientAuthorityOwner.RemoveOwnedObject(this);
 			ClientAuthorityOwner = null;
 			ForceAuthority(true);
@@ -754,6 +776,7 @@ namespace QuantumUNET.Components
 				QLog.Warning($"AssignClientAuthority for {gameObject} owner cannot be null. Use RemoveClientAuthority() instead.");
 				return false;
 			}
+
 			ClientAuthorityOwner = conn;
 			ClientAuthorityOwner.AddOwnedObject(this);
 

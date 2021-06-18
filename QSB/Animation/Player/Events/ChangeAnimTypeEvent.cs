@@ -26,6 +26,7 @@ namespace QSB.Animation.Player.Events
 			{
 				return;
 			}
+
 			QSBPlayerManager.GetPlayer(message.AboutId).AnimationSync.SetAnimationType(message.EnumValue);
 			QSBPlayerManager.GetSyncObject<InstrumentsManager>(message.AboutId).CheckInstrumentProps(message.EnumValue);
 		}

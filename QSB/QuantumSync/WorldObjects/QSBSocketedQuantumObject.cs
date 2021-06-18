@@ -41,6 +41,7 @@ namespace QSB.QuantumSync.WorldObjects
 				DebugLog.ToConsole($"Couldn't find socket id {message.SocketId}", MessageType.Error);
 				return;
 			}
+
 			var socket = qsbSocket.AttachedObject;
 			if (socket == null)
 			{

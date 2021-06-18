@@ -127,6 +127,7 @@ namespace QSB.Animation.NPC.Patches
 				DebugLog.ToConsole($"Error - No player talking to {____dialogueTree.name}!", MessageType.Error);
 				return false;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(playerId);
 
 			var distance = player.Body.transform.position - __instance.transform.position;
@@ -147,6 +148,7 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return true;
 			}
+
 			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.StartConversation, id);
 			return true;
@@ -160,6 +162,7 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return true;
 			}
+
 			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
 			return true;
@@ -175,12 +178,14 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return true;
 			}
+
 			var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == ____dialogueTree);
 
 			if (!____throwingRock && !qsbObj.InConversation() && Time.time > ____nextThrowTime)
 			{
 				__instance.GetType().GetMethod("StartRockThrow", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
 			}
+
 			return false;
 		}
 	}
