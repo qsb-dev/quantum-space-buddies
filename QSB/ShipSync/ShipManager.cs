@@ -1,10 +1,9 @@
 ﻿using OWML.Common;
-using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -57,6 +56,35 @@ namespace QSB.ShipSync
 					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
 				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
+			}
+
+			var shipComponents = Resources.FindObjectsOfTypeAll<ShipComponent>();
+			var electricalComponents = Resources.FindObjectsOfTypeAll<ElectricalComponent>();
+			var electricalSystems = Resources.FindObjectsOfTypeAll<ElectricalSystem>();
+			var shipModules = Resources.FindObjectsOfTypeAll<ShipModule>();
+			var shipHulls = Resources.FindObjectsOfTypeAll<ShipHull>();
+
+			DebugLog.DebugWrite("ShipComponents : ");
+			PrintAll(shipComponents);
+
+			DebugLog.DebugWrite("Electrical Components : ");
+			PrintAll(electricalComponents);
+
+			DebugLog.DebugWrite("Electrical Systems : ");
+			PrintAll(electricalSystems);
+
+			DebugLog.DebugWrite("Ship Modules : ");
+			PrintAll(shipModules);
+
+			DebugLog.DebugWrite("Ship Hulls : ");
+			PrintAll(shipHulls);
+		}
+
+		private void PrintAll(Array array)
+		{
+			foreach(var item in array)
+			{
+				DebugLog.DebugWrite($" - {(item as MonoBehaviour).name}");
 			}
 		}
 	}
