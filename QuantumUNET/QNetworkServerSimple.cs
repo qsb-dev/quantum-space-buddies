@@ -49,6 +49,7 @@ namespace QuantumUNET
 					connectionConfig.AddChannel(QosType.Unreliable);
 					hostTopology = new HostTopology(connectionConfig, 8);
 				}
+
 				Debug.Log("NetworkServerSimple initialize.");
 			}
 		}
@@ -82,6 +83,7 @@ namespace QuantumUNET
 				Debug.Log($"NetworkServerSimple listen: {ipAddress}:{listenPort}");
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -105,6 +107,7 @@ namespace QuantumUNET
 				Debug.Log($"NetworkServerSimple listen {listenPort}");
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -154,15 +157,18 @@ namespace QuantumUNET
 					{
 						Debug.Log($"NetGroup event:{networkEventType}");
 					}
+
 					if (networkEventType == NetworkEventType.ConnectEvent)
 					{
 						Debug.Log("NetGroup server connected");
 					}
+
 					if (networkEventType == NetworkEventType.DisconnectEvent)
 					{
 						Debug.Log("NetGroup server disconnected");
 					}
 				}
+
 				do
 				{
 					networkEventType = NetworkTransport.ReceiveFromHost(serverHostId, out var connectionId, out var channelId, messageBuffer, messageBuffer.Length, out var receivedSize, out var b);
@@ -170,6 +176,7 @@ namespace QuantumUNET
 					{
 						Debug.Log($"Server event: host={serverHostId} event={networkEventType} error={b}");
 					}
+
 					switch (networkEventType)
 					{
 						case NetworkEventType.DataEvent:
@@ -208,6 +215,7 @@ namespace QuantumUNET
 			{
 				result = m_Connections[connectionId];
 			}
+
 			return result;
 		}
 
@@ -217,6 +225,7 @@ namespace QuantumUNET
 			{
 				m_Connections.Add(null);
 			}
+
 			bool result;
 			if (m_Connections[conn.connectionId] != null)
 			{
@@ -228,6 +237,7 @@ namespace QuantumUNET
 				conn.SetHandlers(m_MessageHandlers);
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -243,6 +253,7 @@ namespace QuantumUNET
 				m_Connections[connectionId] = null;
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -264,6 +275,7 @@ namespace QuantumUNET
 				{
 					m_Connections.Add(null);
 				}
+
 				m_Connections[connectionId] = networkConnection;
 				OnConnected(networkConnection);
 			}
@@ -287,6 +299,7 @@ namespace QuantumUNET
 						return;
 					}
 				}
+
 				networkConnection.Disconnect();
 				m_Connections[connectionId] = null;
 				Debug.Log($"Server lost client:{connectionId}");

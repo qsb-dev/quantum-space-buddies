@@ -33,6 +33,7 @@ namespace QuantumUNET
 			{
 				result = m_LocalServer.InvokeBytes(this, bytes, numBytes, channelId);
 			}
+
 			return result;
 		}
 
