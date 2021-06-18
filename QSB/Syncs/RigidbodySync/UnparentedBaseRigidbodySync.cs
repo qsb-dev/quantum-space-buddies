@@ -49,6 +49,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
 			}
+
 			AttachedObject = GetRigidbody();
 			_isInitialized = true;
 		}
@@ -223,6 +224,7 @@ namespace QSB.Syncs.RigidbodySync
 			{
 				return;
 			}
+
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 		}
@@ -237,6 +239,7 @@ namespace QSB.Syncs.RigidbodySync
 				_previousDistance = distance;
 				return targetPosition;
 			}
+
 			_previousDistance = distance;
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
@@ -281,17 +284,20 @@ namespace QSB.Syncs.RigidbodySync
 				DebugLog.ToConsole($"Error - Trying to get relative velocity when AttachedObject is null.", MessageType.Error);
 				return Vector3.zero;
 			}
+
 			if (ReferenceTransform == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to get relative velocity when ReferenceTransform is null. ({AttachedObject.name})", MessageType.Error);
 				return Vector3.zero;
 			}
+
 			var attachedRigid = ReferenceTransform.GetAttachedOWRigidbody();
 			if (attachedRigid == null)
 			{
 				DebugLog.ToConsole($"Error - ReferenceTransform ({ReferenceTransform.name}) on {AttachedObject.name} has no attached OWRigidBody.", MessageType.Error);
 				return Vector3.zero;
 			}
+
 			var pointVelocity = attachedRigid.GetPointVelocity(AttachedObject.transform.position);
 			return AttachedObject.GetVelocity() - pointVelocity;
 		}

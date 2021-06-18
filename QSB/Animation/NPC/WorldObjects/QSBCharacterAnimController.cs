@@ -17,6 +17,7 @@ namespace QSB.Animation.NPC.WorldObjects
 			{
 				return;
 			}
+
 			_playersInHeadZone.Add(player); 
 		}
 
@@ -26,6 +27,7 @@ namespace QSB.Animation.NPC.WorldObjects
 			{
 				return;
 			}
+
 			_playersInHeadZone.Remove(player);
 		}
 

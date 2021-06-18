@@ -38,6 +38,7 @@ namespace QSB.Player
 			{
 				return;
 			}
+
 			_markerLabel = _player.Name.ToUpper();
 			_isReady = false;
 
@@ -51,10 +52,12 @@ namespace QSB.Player
 			{
 				_canvasMarker.DestroyMarker();
 			}
+
 			if (_markerTarget != null)
 			{
 				Destroy(_markerTarget.gameObject);
 			}
+
 			Destroy(this);
 		}
 	}

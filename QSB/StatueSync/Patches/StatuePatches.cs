@@ -18,10 +18,12 @@ namespace QSB.StatueSync.Patches
 			{
 				return true;
 			}
+
 			if (!____waitForPlayerGrounded || !Locator.GetPlayerController().IsGrounded())
 			{
 				return true;
 			}
+
 			var playerBody = Locator.GetPlayerBody().transform;
 			var timberHearth = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
 			QSBEventManager.FireEvent(

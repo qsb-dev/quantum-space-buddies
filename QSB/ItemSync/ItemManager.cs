@@ -27,6 +27,7 @@ namespace QSB.ItemSync
 				DebugLog.ToConsole($"Error - Trying to run GetObject (Item) with null unity object!", MessageType.Error);
 				return default;
 			}
+
 			IQSBOWItem worldObj = null;
 			if (unityObject.GetType() == typeof(ScrollItem))
 			{
@@ -48,6 +49,7 @@ namespace QSB.ItemSync
 			{
 				DebugLog.ToConsole($"Warning - couldn't work out type of OWItem {unityObject.name}.", MessageType.Warning);
 			}
+
 			return worldObj;
 		}
 
@@ -58,6 +60,7 @@ namespace QSB.ItemSync
 				DebugLog.ToConsole($"Error - Trying to run GetObject (Socket) with null unity object!", MessageType.Error);
 				return default;
 			}
+
 			IQSBOWItemSocket worldObj = null;
 			if (unityObject.GetType() == typeof(ScrollSocket))
 			{
@@ -79,6 +82,7 @@ namespace QSB.ItemSync
 			{
 				DebugLog.ToConsole($"Warning - couldn't work out type of OWItemSocket {unityObject.name}.", MessageType.Warning);
 			}
+
 			return worldObj;
 		}
 	}

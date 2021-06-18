@@ -25,6 +25,7 @@ namespace QSB.ShipSync.Patches
 				ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
 				QSBEventManager.FireEvent(EventNames.QSBEnableFunnel);
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBHatchState, true);
 			return true;
 		}
@@ -35,6 +36,7 @@ namespace QSB.ShipSync.Patches
 			{
 				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
 			}
+
 			return true;
 		}
 
@@ -46,6 +48,7 @@ namespace QSB.ShipSync.Patches
 				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
 				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
 			}
+
 			return false;
 		}
 

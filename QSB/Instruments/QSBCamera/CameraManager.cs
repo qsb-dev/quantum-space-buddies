@@ -10,7 +10,6 @@ namespace QSB.Instruments.QSBCamera
 	{
 		public static CameraManager Instance;
 
-
 		public bool IsSetUp { get; private set; }
 		public CameraMode Mode { get; private set; }
 
@@ -71,16 +70,19 @@ namespace QSB.Instruments.QSBCamera
 				Mode = CameraMode.ThirdPerson;
 				return;
 			}
+
 			if (Mode == CameraMode.ThirdPerson)
 			{
 				DebugLog.ToConsole("Warning - Already in 3rd person!", MessageType.Warning);
 				return;
 			}
+
 			if (OWInput.GetInputMode() != InputMode.Character)
 			{
 				DebugLog.ToConsole("Warning - Cannot change to 3rd person while not in Character inputmode!", MessageType.Warning);
 				return;
 			}
+
 			OWInput.ChangeInputMode(InputMode.None);
 			QSBEventManager.FireEvent("SwitchActiveCamera", _owCamera);
 			Locator.GetPlayerCamera().mainCamera.enabled = false;
@@ -89,6 +91,7 @@ namespace QSB.Instruments.QSBCamera
 				var postProcessing = _cameraObj.AddComponent<PostProcessingBehaviour>();
 				postProcessing.profile = Locator.GetPlayerCamera().gameObject.GetComponent<PostProcessingBehaviour>().profile;
 			}
+
 			_camera.enabled = true;
 			Mode = CameraMode.ThirdPerson;
 		}
@@ -102,11 +105,13 @@ namespace QSB.Instruments.QSBCamera
 				Mode = CameraMode.FirstPerson;
 				return;
 			}
+
 			if (Mode == CameraMode.FirstPerson)
 			{
 				DebugLog.ToConsole("Warning - Already in 1st person!", MessageType.Warning);
 				return;
 			}
+
 			OWInput.ChangeInputMode(InputMode.Character);
 			QSBEventManager.FireEvent("SwitchActiveCamera", Locator.GetPlayerCamera());
 			Locator.GetActiveCamera().mainCamera.enabled = true;

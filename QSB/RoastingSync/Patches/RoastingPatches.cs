@@ -39,6 +39,7 @@ namespace QSB.RoastingSync.Patches
 				____audioController.PlayMarshmallowCatchFire();
 				QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Burn);
 			}
+
 			return false;
 		}
 
@@ -52,6 +53,7 @@ namespace QSB.RoastingSync.Patches
 				____mallowState = Marshmallow.MallowState.Shriveling;
 				QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Shrivel);
 			}
+
 			return false;
 		}
 
@@ -107,6 +109,7 @@ namespace QSB.RoastingSync.Patches
 							QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Toss);
 						}
 					}
+
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting) && ____marshmallow.IsEdible())
 					{
 						____marshmallow.Eat();

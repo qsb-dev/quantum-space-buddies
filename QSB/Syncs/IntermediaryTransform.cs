@@ -69,6 +69,7 @@ namespace QSB.Syncs
 				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
+
 			SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
 		}
 
@@ -94,6 +95,7 @@ namespace QSB.Syncs
 				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return Vector3.zero;
 			}
+
 			return _referenceTransform.TransformPoint(GetPosition());
 		}
 
@@ -107,6 +109,7 @@ namespace QSB.Syncs
 				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return Quaternion.identity;
 			}
+
 			return _referenceTransform.TransformRotation(GetRotation());
 		}
 	}

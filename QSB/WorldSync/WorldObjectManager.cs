@@ -30,6 +30,7 @@ namespace QSB.WorldSync
 			{
 				manager.RebuildWorldObjects(scene);
 			}
+
 			AllReady = true;
 		}
 

@@ -63,6 +63,7 @@ namespace QSB.QuantumSync.Patches
 				__result = true;
 				return false;
 			}
+
 			var point = __instance.transform.TransformPoint(____localIlluminationOffset);
 			var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
 			var localFlashlight = tupleFlashlights.First;
@@ -107,6 +108,7 @@ namespace QSB.QuantumSync.Patches
 					}
 				}
 			}
+
 			__result = false;
 			return false;
 		}

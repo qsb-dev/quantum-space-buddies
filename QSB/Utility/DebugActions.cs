@@ -30,14 +30,17 @@ namespace QSB.Utility
 			{
 				return;
 			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad7))
 			{
 				GoToVessel();
 			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad8))
 			{
 				InsertWarpCore();
 			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad9))
 			{
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);

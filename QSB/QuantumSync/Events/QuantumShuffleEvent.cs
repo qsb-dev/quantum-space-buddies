@@ -26,6 +26,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
+
 			var obj = QSBWorldSync.GetWorldFromId<QSBQuantumShuffleObject>(message.ObjectId);
 			obj.ShuffleObjects(message.IndexArray);
 		}

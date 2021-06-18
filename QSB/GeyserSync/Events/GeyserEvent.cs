@@ -27,6 +27,7 @@ namespace QSB.GeyserSync.Events
 			{
 				return;
 			}
+
 			var geyser = QSBWorldSync.GetWorldFromId<QSBGeyser>(message.ObjectId);
 			geyser?.SetState(message.State);
 		}

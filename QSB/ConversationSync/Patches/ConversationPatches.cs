@@ -26,6 +26,7 @@ namespace QSB.ConversationSync.Patches
 			{
 				DebugLog.ToConsole($"Warning - Index for tree {__instance.name} was -1.", MessageType.Warning);
 			}
+
 			QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId = index;
 			ConversationManager.Instance.SendConvState(index, true);
 		}
@@ -36,11 +37,13 @@ namespace QSB.ConversationSync.Patches
 			{
 				return false;
 			}
+
 			if (QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId == -1)
 			{
 				DebugLog.ToConsole($"Warning - Ending conversation with CurrentDialogueId of -1! Called from {__instance.name}", MessageType.Warning);
 				return true;
 			}
+
 			ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, false);
 			ConversationManager.Instance.CloseBoxCharacter(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId);
 			QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId = -1;

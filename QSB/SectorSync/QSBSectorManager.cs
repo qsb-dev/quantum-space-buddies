@@ -30,6 +30,7 @@ namespace QSB.SectorSync
 				{
 					continue;
 				}
+
 				if ((sync as QNetworkBehaviour).HasAuthority 
 					&& sync.AttachedObject.gameObject.activeInHierarchy 
 					&& sync.IsReady)
@@ -44,6 +45,7 @@ namespace QSB.SectorSync
 				{
 					continue;
 				}
+
 				if ((sync as QNetworkBehaviour).HasAuthority
 					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
@@ -78,6 +80,7 @@ namespace QSB.SectorSync
 					DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
 				}
 			}
+
 			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
@@ -91,10 +94,12 @@ namespace QSB.SectorSync
 			{
 				return;
 			}
+
 			if (closestSector == transformSync.ReferenceSector)
 			{
 				return;
 			}
+
 			transformSync.SetReferenceSector(closestSector);
 		}
 	}

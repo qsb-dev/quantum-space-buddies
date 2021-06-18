@@ -61,10 +61,12 @@ namespace QSB.ItemSync.Patches
 				gameObject2 = gameObject2.transform.parent.gameObject;
 				sectorGroup = gameObject2.GetComponent<ISectorGroup>();
 			}
+
 			if (sectorGroup != null)
 			{
 				sector = sectorGroup.GetSector();
 			}
+
 			var parent = (detachableFragment != null)
 				? detachableFragment.transform
 				: targetRigidbody.transform;
@@ -79,6 +81,7 @@ namespace QSB.ItemSync.Patches
 				QSBEventManager.FireEvent(EventNames.QSBDropItem, objectId, localPos, hit.normal, parentSector);
 				return false;
 			}
+
 			DebugLog.ToConsole($"Error - No sector found for rigidbody {targetRigidbody.name}!.", MessageType.Error);
 			return false;
 		}

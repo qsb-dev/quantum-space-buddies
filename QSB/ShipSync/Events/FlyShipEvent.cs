@@ -75,6 +75,7 @@ namespace QSB.ShipSync.Events
 				{
 					shipNetId.RemoveClientAuthority(shipNetId.ClientAuthorityOwner);
 				}
+
 				shipNetId.AssignClientAuthority(newAuthority);
 			}
 		}

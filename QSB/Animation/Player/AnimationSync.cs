@@ -64,6 +64,7 @@ namespace QSB.Animation.Player
 			{
 				LoadControllers();
 			}
+
 			NetworkAnimator.enabled = true;
 			VisibleAnimator = body.GetComponent<Animator>();
 			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
@@ -158,11 +159,13 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
+
 			if (state)
 			{
 				SuitUp();
 				return;
 			}
+
 			SuitDown();
 		}
 
@@ -172,15 +175,18 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
+
 			CurrentType = type;
 			if (_unsuitedAnimController == null)
 			{
 				DebugLog.ToConsole($"Error - Unsuited controller is null. ({PlayerId})", MessageType.Error);
 			}
+
 			if (_suitedAnimController == null)
 			{
 				DebugLog.ToConsole($"Error - Suited controller is null. ({PlayerId})", MessageType.Error);
 			}
+
 			RuntimeAnimatorController controller = default;
 			switch (type)
 			{
@@ -216,6 +222,7 @@ namespace QSB.Animation.Player
 					controller = _riebeckController;
 					break;
 			}
+
 			InvisibleAnimator.runtimeAnimatorController = controller;
 			VisibleAnimator.runtimeAnimatorController = controller;
 			if (type != AnimationType.PlayerSuited && type != AnimationType.PlayerUnsuited)
@@ -229,6 +236,7 @@ namespace QSB.Animation.Player
 				VisibleAnimator.SetTrigger("Grounded");
 				InvisibleAnimator.SetTrigger("Grounded");
 			}
+
 			NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
 			Mirror.RebuildFloatParams();
 			for (var i = 0; i < InvisibleAnimator.parameterCount; i++)

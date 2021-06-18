@@ -41,6 +41,7 @@ namespace QSB.Player
 			{
 				markerManager.RegisterMarker(_canvasMarker, transform);
 			}
+
 			_canvasMarker.SetLabel(PlayerName.ToUpper());
 			_canvasMarker.SetColor(Color.white);
 			_canvasMarker.SetVisibility(false);
@@ -56,6 +57,7 @@ namespace QSB.Player
 			{
 				InitMarker();
 			}
+
 			var a = Locator.GetActiveCamera().WorldToScreenPoint(transform.position);
 			var b = Locator.GetActiveCamera().WorldToScreenPoint(_playerTransform.position);
 			var vector = a - b;

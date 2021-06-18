@@ -33,6 +33,7 @@ namespace QSB.ConversationSync.Events
 			{
 				QSBWorldSync.SetDialogueCondition(message.ConditionName, message.ConditionState);
 			}
+
 			DialogueConditionManager.SharedInstance.SetConditionState(message.ConditionName, message.ConditionState);
 		}
 	}

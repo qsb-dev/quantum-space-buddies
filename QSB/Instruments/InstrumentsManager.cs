@@ -78,6 +78,7 @@ namespace QSB.Instruments
 				// TODO : fix for instrument release
 				mr.sharedMaterial = null;
 			}
+
 			drum.transform.parent = _rootObj;
 			drum.transform.rotation = _rootObj.rotation;
 			drum.transform.localPosition = Vector3.zero;
@@ -94,10 +95,12 @@ namespace QSB.Instruments
 				DebugLog.ToConsole("Error - Tried to start instrument on non-local player!", MessageType.Error);
 				return;
 			}
+
 			if (Player.PlayingInstrument || !Locator.GetPlayerController().IsGrounded())
 			{
 				return;
 			}
+
 			_savedType = Player.AnimationSync.CurrentType;
 			CameraManager.Instance.SwitchTo3rdPerson();
 			SwitchToType(type);
@@ -109,6 +112,7 @@ namespace QSB.Instruments
 			{
 				return;
 			}
+
 			CameraManager.Instance.SwitchTo1stPerson();
 			SwitchToType(_savedType);
 		}

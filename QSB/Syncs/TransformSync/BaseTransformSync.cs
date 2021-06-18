@@ -83,6 +83,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				Destroy(AttachedObject.gameObject);
 			}
+
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
@@ -95,10 +96,12 @@ namespace QSB.Syncs.TransformSync
 			{
 				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
 			}
+
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject.gameObject);
 			}
+
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
 		}
@@ -195,6 +198,7 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 				return;
 			}
+
 			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
 			var targetRot = _intermediaryTransform.GetTargetRotation_ParentedToReference();
 			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
@@ -225,6 +229,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				return;
 			}
+
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
@@ -235,6 +240,7 @@ namespace QSB.Syncs.TransformSync
 					() => ReparentAttachedObject(transform));
 				return;
 			}
+
 			if (!HasAuthority)
 			{
 				ReparentAttachedObject(transform);
@@ -247,6 +253,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
 			}
+
 			AttachedObject.transform.SetParent(sectorTransform, true);
 			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
 				? Vector3.one / 10
@@ -261,6 +268,7 @@ namespace QSB.Syncs.TransformSync
 				_previousDistance = distance;
 				return targetPosition;
 			}
+
 			_previousDistance = distance;
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}

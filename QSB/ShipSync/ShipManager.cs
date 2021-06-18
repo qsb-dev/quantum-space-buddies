@@ -28,6 +28,7 @@ namespace QSB.ShipSync
 				{
 					DebugLog.ToConsole($"Warning - Trying to set current flyer while someone is still flying? Current:{_currentFlyer}, New:{value}", MessageType.Warning);
 				}
+
 				_currentFlyer = value;
 			}
 		}
@@ -55,6 +56,7 @@ namespace QSB.ShipSync
 				{
 					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
+
 				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
 			}
 

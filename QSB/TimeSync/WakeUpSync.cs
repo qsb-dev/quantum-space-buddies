@@ -45,6 +45,7 @@ namespace QSB.TimeSync
 				_isFirstFastForward = false;
 				Init();
 			}
+
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
 			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
@@ -63,6 +64,7 @@ namespace QSB.TimeSync
 			{
 				RespawnOnDeath.Instance.Init();
 			}
+
 			_hasWokenUp = true;
 		}
 
@@ -81,6 +83,7 @@ namespace QSB.TimeSync
 				{
 					_hasWokenUp = true;
 				}
+
 				Init();
 			}
 			else
@@ -148,6 +151,7 @@ namespace QSB.TimeSync
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"START WAITING FOR SERVER LOOP", MessageType.Info);
 			OWTime.SetTimeScale(0f);
 			_state = State.WaitingForServerToDie;
@@ -161,6 +165,7 @@ namespace QSB.TimeSync
 				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
+
 			DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			if (Locator.GetActiveCamera() != null)
 			{
@@ -183,6 +188,7 @@ namespace QSB.TimeSync
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			Locator.GetActiveCamera().enabled = false;
 
@@ -265,6 +271,7 @@ namespace QSB.TimeSync
 				{
 					Locator.GetPlayerCamera().enabled = false;
 				}
+
 				var diff = _serverTime - Time.timeSinceLevelLoad;
 				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
@@ -308,11 +315,13 @@ namespace QSB.TimeSync
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned over 100 - should have switched into fast-forward!", MessageType.Warning);
 				mappedTimescale = 0f;
 			}
+
 			if (mappedTimescale < 0)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned below 0 - should have switched into pausing!", MessageType.Warning);
 				mappedTimescale = 0f;
 			}
+
 			OWTime.SetTimeScale(mappedTimescale);
 		}
 	}
