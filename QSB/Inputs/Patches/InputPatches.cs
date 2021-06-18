@@ -7,10 +7,7 @@ namespace QSB.Inputs.Patches
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		public override void DoPatches()
-			=> QSBCore.HarmonyHelper.AddPrefix<OWInput>("Update", typeof(InputPatches), nameof(OWInput_Update));
-
-		public override void DoUnpatches()
-			=> QSBCore.HarmonyHelper.Unpatch<OWInput>("Update");
+			=> Prefix(nameof(OWInput_Update));
 
 		public static bool OWInput_Update()
 			=> QSBInputManager.Instance.InputsEnabled;

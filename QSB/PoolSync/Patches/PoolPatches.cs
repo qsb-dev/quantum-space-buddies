@@ -8,32 +8,27 @@ namespace QSB.PoolSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("Awake", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("Update", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnSocketableRemoved", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnSocketableDonePlacing", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraPlatform>("OnPedestalContact", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("FixedUpdate", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnSectorOccupantAdded", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnSectorOccupantRemoved", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnEntry", typeof(PoolPatches), nameof(ReturnFalse));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiRemoteCameraStreaming>("OnExit", typeof(PoolPatches), nameof(ReturnFalse));
+			Prefix(nameof(NomaiRemoteCameraPlatform_Awake));
+			Prefix(nameof(NomaiRemoteCameraPlatform_Update));
+			Prefix(nameof(NomaiRemoteCameraPlatform_OnSocketableRemoved));
+			Prefix(nameof(NomaiRemoteCameraPlatform_OnSocketableDonePlacing));
+			Prefix(nameof(NomaiRemoteCameraPlatform_OnPedestalContact));
+			Prefix(nameof(NomaiRemoteCameraStreaming_FixedUpdate));
+			Prefix(nameof(NomaiRemoteCameraStreaming_OnSectorOccupantAdded));
+			Prefix(nameof(NomaiRemoteCameraStreaming_OnSectorOccupantRemoved));
+			Prefix(nameof(NomaiRemoteCameraStreaming_OnEntry));
+			Prefix(nameof(NomaiRemoteCameraStreaming_OnExit));
 		}
 
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("Awake");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("Update");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnSocketableRemoved");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnSocketableDonePlacing");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraPlatform>("OnPedestalContact");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("FixedUpdate");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnSectorOccupantAdded");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnSectorOccupantRemoved");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnEntry");
-			QSBCore.HarmonyHelper.Unpatch<NomaiRemoteCameraStreaming>("OnExit");
-		}
-
-		public static bool ReturnFalse() => false;
+		public static bool NomaiRemoteCameraPlatform_Awake() => false;
+		public static bool NomaiRemoteCameraPlatform_Update() => false;
+		public static bool NomaiRemoteCameraPlatform_OnSocketableRemoved() => false;
+		public static bool NomaiRemoteCameraPlatform_OnSocketableDonePlacing() => false;
+		public static bool NomaiRemoteCameraPlatform_OnPedestalContact() => false;
+		public static bool NomaiRemoteCameraStreaming_FixedUpdate() => false;
+		public static bool NomaiRemoteCameraStreaming_OnSectorOccupantAdded() => false;
+		public static bool NomaiRemoteCameraStreaming_OnSectorOccupantRemoved() => false;
+		public static bool NomaiRemoteCameraStreaming_OnEntry() => false;
+		public static bool NomaiRemoteCameraStreaming_OnExit() => false;
 	}
 }

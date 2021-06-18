@@ -13,20 +13,11 @@ namespace QSB.ItemSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<ItemTool>("MoveItemToCarrySocket", typeof(ItemPatches), nameof(ItemTool_MoveItemToCarrySocket));
-			QSBCore.HarmonyHelper.AddPrefix<ItemTool>("SocketItem", typeof(ItemPatches), nameof(ItemTool_SocketItem));
-			QSBCore.HarmonyHelper.AddPrefix<ItemTool>("StartUnsocketItem", typeof(ItemPatches), nameof(ItemTool_StartUnsocketItem));
-			QSBCore.HarmonyHelper.AddPrefix<ItemTool>("CompleteUnsocketItem", typeof(ItemPatches), nameof(ItemTool_CompleteUnsocketItem));
-			QSBCore.HarmonyHelper.AddPrefix<ItemTool>("DropItem", typeof(ItemPatches), nameof(ItemTool_DropItem));
-		}
-
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<ItemTool>("MoveItemToCarrySocket");
-			QSBCore.HarmonyHelper.Unpatch<ItemTool>("SocketItem");
-			QSBCore.HarmonyHelper.Unpatch<ItemTool>("StartUnsocketItem");
-			QSBCore.HarmonyHelper.Unpatch<ItemTool>("CompleteUnsocketItem");
-			QSBCore.HarmonyHelper.Unpatch<ItemTool>("DropItem");
+			Prefix(nameof(ItemTool_MoveItemToCarrySocket));
+			Prefix(nameof(ItemTool_SocketItem));
+			Prefix(nameof(ItemTool_StartUnsocketItem));
+			Prefix(nameof(ItemTool_CompleteUnsocketItem));
+			Prefix(nameof(ItemTool_DropItem));
 		}
 
 		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)

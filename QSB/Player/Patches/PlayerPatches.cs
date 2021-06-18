@@ -8,14 +8,8 @@ namespace QSB.Player.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<PlayerCrushedController>("CrushPlayer", typeof(PlayerPatches), nameof(PlayerCrushedController_CrushPlayer));
-			QSBCore.HarmonyHelper.AddPrefix<PauseMenuManager>("OnExitToMainMenu", typeof(PlayerPatches), nameof(PauseMenuManager_OnExitToMainMenu));
-		}
-
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<PlayerCrushedController>("CrushPlayer");
-			QSBCore.HarmonyHelper.Unpatch<PauseMenuManager>("OnExitToMainMenu");
+			Prefix(nameof(PlayerCrushedController_CrushPlayer));
+			Prefix(nameof(PauseMenuManager_OnExitToMainMenu));
 		}
 
 		public static bool PlayerCrushedController_CrushPlayer()

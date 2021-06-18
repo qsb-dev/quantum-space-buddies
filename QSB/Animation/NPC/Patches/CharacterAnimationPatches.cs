@@ -18,27 +18,16 @@ namespace QSB.Animation.NPC.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(CharacterAnimationPatches), nameof(AnimController_OnAnimatorIK));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneEntry", typeof(CharacterAnimationPatches), nameof(AnimController_OnZoneEntry));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(CharacterAnimationPatches), nameof(AnimController_OnZoneExit));
-			QSBCore.HarmonyHelper.AddPrefix<FacePlayerWhenTalking>("OnStartConversation", typeof(CharacterAnimationPatches), nameof(FacePlayerWhenTalking_OnStartConversation));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("StartConversation", typeof(CharacterAnimationPatches), nameof(CharacterDialogueTree_StartConversation));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(CharacterAnimationPatches), nameof(CharacterDialogueTree_EndConversation));
-			QSBCore.HarmonyHelper.AddPrefix<KidRockController>("Update", typeof(CharacterAnimationPatches), nameof(KidRockController_Update));
+			Prefix(nameof(CharacterAnimController_OnAnimatorIK));
+			Prefix(nameof(CharacterAnimController_OnZoneEntry));
+			Prefix(nameof(CharacterAnimController_OnZoneExit));
+			Prefix(nameof(FacePlayerWhenTalking_OnStartConversation));
+			Prefix(nameof(CharacterDialogueTree_StartConversation));
+			Prefix(nameof(CharacterDialogueTree_EndConversation));
+			Prefix(nameof(KidRockController_Update));
 		}
 
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnAnimatorIK");
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneEntry");
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneExit");
-			QSBCore.HarmonyHelper.Unpatch<FacePlayerWhenTalking>("OnStartConversation");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
-			QSBCore.HarmonyHelper.Unpatch<KidRockController>("Update");
-		}
-
-		public static bool AnimController_OnAnimatorIK(
+		public static bool CharacterAnimController_OnAnimatorIK(
 			CharacterAnimController __instance,
 			float ___headTrackingWeight,
 			bool ___lookOnlyWhenTalking,
@@ -114,14 +103,14 @@ namespace QSB.Animation.NPC.Patches
 
 		}
 
-		public static bool AnimController_OnZoneExit(CharacterAnimController __instance)
+		public static bool CharacterAnimController_OnZoneExit(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBExitHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
-		public static bool AnimController_OnZoneEntry(CharacterAnimController __instance)
+		public static bool CharacterAnimController_OnZoneEntry(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBEnterHeadZone, qsbObj.ObjectId);

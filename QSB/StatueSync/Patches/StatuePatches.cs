@@ -10,12 +10,9 @@ namespace QSB.StatueSync.Patches
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		public override void DoPatches()
-			=> QSBCore.HarmonyHelper.AddPrefix<MemoryUplinkTrigger>("Update", typeof(StatuePatches), nameof(Statue_Update));
+			=> Prefix(nameof(MemoryUplinkTrigger_Update));
 
-		public override void DoUnpatches()
-			=> QSBCore.HarmonyHelper.Unpatch<MemoryUplinkTrigger>("Update");
-
-		public static bool Statue_Update(bool ____waitForPlayerGrounded)
+		public static bool MemoryUplinkTrigger_Update(bool ____waitForPlayerGrounded)
 		{
 			if (StatueManager.Instance.HasStartedStatueLocally)
 			{

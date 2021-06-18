@@ -7,10 +7,7 @@ namespace QSB.TimeSync.Patches
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		public override void DoPatches() 
-			=> QSBCore.HarmonyHelper.AddPrefix<PlayerCameraEffectController>("OnStartOfTimeLoop", typeof(TimePatches), nameof(PlayerCameraEffectController_OnStartOfTimeLoop));
-
-		public override void DoUnpatches() 
-			=> QSBCore.HarmonyHelper.Unpatch<PlayerCameraEffectController>("OnStartOfTimeLoop");
+			=> Prefix(nameof(PlayerCameraEffectController_OnStartOfTimeLoop));
 
 		public static bool PlayerCameraEffectController_OnStartOfTimeLoop() 
 			=> false;

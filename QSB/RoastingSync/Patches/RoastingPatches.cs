@@ -10,16 +10,11 @@ namespace QSB.RoastingSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<RoastingStickController>("UpdateMarshmallowInput", typeof(RoastingPatches), nameof(RoastingStickController_UpdateMarshmallowInput));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("Burn", typeof(RoastingPatches), nameof(Marshmallow_Burn));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("Shrivel", typeof(RoastingPatches), nameof(Marshmallow_Shrivel));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("RemoveMallow", typeof(RoastingPatches), nameof(Marshmallow_RemoveMallow));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("SpawnMallow", typeof(RoastingPatches), nameof(Marshmallow_SpawnMallow));
-		}
-
-		public override void DoUnpatches()
-		{
-			// TODO : add unpatches
+			Prefix(nameof(RoastingStickController_UpdateMarshmallowInput));
+			Prefix(nameof(Marshmallow_Burn));
+			Prefix(nameof(Marshmallow_Shrivel));
+			Prefix(nameof(Marshmallow_RemoveMallow));
+			Prefix(nameof(Marshmallow_SpawnMallow));
 		}
 
 		public static bool Marshmallow_SpawnMallow()
