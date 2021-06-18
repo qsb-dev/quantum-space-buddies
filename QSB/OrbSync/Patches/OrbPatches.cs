@@ -9,7 +9,7 @@ namespace QSB.OrbSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public static void StartDragCallEvent(bool __result, NomaiInterfaceOrb __instance)
+		public static void NomaiInterfaceOrb_StartDragFromPosition(bool __result, NomaiInterfaceOrb __instance)
 		{
 			if (__result)
 			{
@@ -17,7 +17,7 @@ namespace QSB.OrbSync.Patches
 			}
 		}
 
-		public static bool CheckOrbCollision(ref bool __result, NomaiInterfaceSlot __instance, NomaiInterfaceOrb orb,
+		public static bool NomaiInterfaceSlot_CheckOrbCollision(ref bool __result, NomaiInterfaceSlot __instance, NomaiInterfaceOrb orb,
 			bool ____ignoreDraggedOrbs, float ____radius, float ____exitRadius, ref NomaiInterfaceOrb ____occupyingOrb)
 		{
 			if (____ignoreDraggedOrbs && orb.IsBeingDragged())
@@ -57,14 +57,8 @@ namespace QSB.OrbSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPostfix<NomaiInterfaceOrb>("StartDragFromPosition", typeof(OrbPatches), nameof(StartDragCallEvent));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiInterfaceSlot>("CheckOrbCollision", typeof(OrbPatches), nameof(CheckOrbCollision));
-		}
-
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<NomaiInterfaceOrb>("StartDragFromPosition");
-			QSBCore.HarmonyHelper.Unpatch<NomaiInterfaceSlot>("CheckOrbCollision");
+			Postfix(nameof(NomaiInterfaceOrb_StartDragFromPosition));
+			Prefix(nameof(NomaiInterfaceSlot_CheckOrbCollision));
 		}
 	}
 }

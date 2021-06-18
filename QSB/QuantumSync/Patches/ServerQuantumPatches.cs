@@ -14,12 +14,9 @@ namespace QSB.QuantumSync.Patches
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
 		public override void DoPatches()
-			=> QSBCore.HarmonyHelper.AddPrefix<QuantumMoon>("ChangeQuantumState", typeof(ServerQuantumPatches), nameof(Moon_ChangeQuantumState));
+			=> Prefix(nameof(QuantumMoon_ChangeQuantumState));
 
-		public override void DoUnpatches()
-			=> QSBCore.HarmonyHelper.Unpatch<QuantumMoon>("ChangeQuantumState");
-
-		public static bool Moon_ChangeQuantumState(
+		public static bool QuantumMoon_ChangeQuantumState(
 			QuantumMoon __instance,
 			ref bool __result,
 			bool skipInstantVisibilityCheck,

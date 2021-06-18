@@ -6,7 +6,6 @@ namespace QSB.GeyserSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 
-		public override void DoPatches() => QSBCore.HarmonyHelper.EmptyMethod<GeyserController>("Update");
-		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<GeyserController>("Update");
+		public override void DoPatches() => Empty("GeyserController_Update");
 	}
 }

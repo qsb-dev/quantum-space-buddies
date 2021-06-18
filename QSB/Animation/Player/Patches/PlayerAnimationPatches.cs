@@ -10,8 +10,8 @@ namespace QSB.Animation.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<PlayerAnimController>("LateUpdate", typeof(PlayerAnimationPatches), nameof(PlayerAnimController_LateUpdate));
-		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<PlayerAnimController>("LateUpdate");
+		public override void DoPatches()
+			=> Prefix(nameof(PlayerAnimController_LateUpdate));
 
 		public static bool PlayerAnimController_LateUpdate(
 			PlayerAnimController __instance,

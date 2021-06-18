@@ -13,21 +13,13 @@ namespace QSB.ConversationSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPostfix<DialogueNode>("GetNextPage", typeof(ConversationPatches), nameof(Node_GetNextPage));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("InputDialogueOption", typeof(ConversationPatches), nameof(Tree_InputDialogueOption));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("StartConversation", typeof(ConversationPatches), nameof(Tree_StartConversation));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(ConversationPatches), nameof(Tree_EndConversation));
+			Postfix(nameof(DialogueNode_GetNextPage));
+			Prefix(nameof(CharacterDialogueTree_InputDialogueOption));
+			Prefix(nameof(CharacterDialogueTree_StartConversation));
+			Prefix(nameof(CharacterDialogueTree_EndConversation));
 		}
 
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<DialogueNode>("GetNextPage");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("InputDialogueOption");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
-		}
-
-		public static void Tree_StartConversation(CharacterDialogueTree __instance)
+		public static void CharacterDialogueTree_StartConversation(CharacterDialogueTree __instance)
 		{
 			var index = QSBWorldSync.OldDialogueTrees.FindIndex(x => x == __instance);
 			if (index == -1)
@@ -38,7 +30,7 @@ namespace QSB.ConversationSync.Patches
 			ConversationManager.Instance.SendConvState(index, true);
 		}
 
-		public static bool Tree_EndConversation(CharacterDialogueTree __instance)
+		public static bool CharacterDialogueTree_EndConversation(CharacterDialogueTree __instance)
 		{
 			if (!__instance.enabled)
 			{
@@ -56,7 +48,7 @@ namespace QSB.ConversationSync.Patches
 			return true;
 		}
 
-		public static bool Tree_InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
+		public static bool CharacterDialogueTree_InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
 		{
 			if (optionIndex < 0)
 			{
@@ -70,7 +62,7 @@ namespace QSB.ConversationSync.Patches
 			return true;
 		}
 
-		public static void Node_GetNextPage(string ____name, List<string> ____listPagesToDisplay, int ____currentPage)
+		public static void DialogueNode_GetNextPage(string ____name, List<string> ____listPagesToDisplay, int ____currentPage)
 		{
 			var key = ____name + ____listPagesToDisplay[____currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
