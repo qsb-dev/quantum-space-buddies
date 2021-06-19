@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
@@ -92,7 +93,7 @@ namespace QSB.Utility
 		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
 			where ThisType : BaseType
 		{
-			var method = typeof(BaseType).GetMethod(methodName);
+			var method = typeof(BaseType).GetAnyMethod(methodName);
 			if (method == null)
 			{
 				DebugLog.DebugWrite($"Error - Couldn't find method {methodName} in {typeof(BaseType).FullName}!", MessageType.Error);
