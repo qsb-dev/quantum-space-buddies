@@ -4,6 +4,7 @@ using OWML.Utils;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace QSB.Patches
@@ -18,8 +19,8 @@ namespace QSB.Patches
 			var instance = QSBCore.Helper.HarmonyHelper.GetValue<HarmonyInstance>("_harmony");
 			foreach (var item in _patchedMethods)
 			{
-				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
-				instance.Unpatch(item, HarmonyPatchType.All);
+				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Debug);
+				Unpatch(item);
 			}
 
 			_patchedMethods.Clear();
@@ -29,7 +30,7 @@ namespace QSB.Patches
 
 		public void Empty(string patchName)
 		{
-			DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Info);
+			DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Debug);
 			var method = GetMethodInfo(patchName);
 			QSBCore.Helper.HarmonyHelper.EmptyMethod(method);
 		}
@@ -70,14 +71,14 @@ namespace QSB.Patches
 			var type = GetFirstTypeByName(typeName);
 			if (type == null)
 			{
-				DebugLog.DebugWrite($"Error - Couldn't find type for patch name {patchName}!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Couldn't find type for patch name {patchName}!", MessageType.Error);
 				return null;
 			}
 
 			var method = type.GetAnyMethod(methodName);
 			if (method == null)
 			{
-				DebugLog.DebugWrite($"Error - Couldn't find method for patch name {patchName}!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Couldn't find method for patch name {patchName}!", MessageType.Error);
 				return null;
 			}
 
@@ -88,7 +89,7 @@ namespace QSB.Patches
 		{
 			var a = typeof(OWRigidbody).Assembly;
 			var assemblyTypes = a.GetTypes();
-			for (int j = 0; j < assemblyTypes.Length; j++)
+			for (var j = 0; j < assemblyTypes.Length; j++)
 			{
 				if (assemblyTypes[j].Name == typeName)
 				{
@@ -97,6 +98,22 @@ namespace QSB.Patches
 			}
 
 			return null;
+		}
+
+		private void Unpatch(MethodInfo method)
+		{
+			var dictionary = typeof(HarmonySharedState).Invoke<Dictionary<MethodBase, byte[]>>("GetState", new object[0]);
+			var methodBase = dictionary.Keys.First(m =>
+				m.DeclaringType == method.DeclaringType 
+				&& m.Name == method.Name);
+
+			var patchInfo = PatchInfoSerialization.Deserialize(dictionary.GetValueSafe(methodBase));
+			patchInfo.RemovePostfix(QSBCore.Helper.Manifest.UniqueName);
+			patchInfo.RemovePrefix(QSBCore.Helper.Manifest.UniqueName);
+			patchInfo.RemoveTranspiler(QSBCore.Helper.Manifest.UniqueName);
+
+			PatchFunctions.UpdateWrapper(methodBase, patchInfo, QSBCore.Helper.Manifest.UniqueName);
+			dictionary[methodBase] = patchInfo.Serialize();
 		}
 	}
 }
