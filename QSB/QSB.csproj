@@ -296,6 +296,7 @@
     <Compile Include="SectorSync\SectorSync.cs" />
     <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
+    <Compile Include="Utility\DebugGUI.cs" />
     <Compile Include="Utility\ZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\GlobalMessenger4Args.cs" />
