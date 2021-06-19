@@ -16,6 +16,10 @@ namespace QSB.ShipSync.Patches
 			Prefix(nameof(HatchController_OnEntry));
 			Prefix(nameof(ShipTractorBeamSwitch_OnTriggerExit));
 			Prefix(nameof(InteractZone_UpdateInteractVolume));
+			Prefix(nameof(ShipElectricalComponent_OnEnterShip));
+			Prefix(nameof(ShipElectricalComponent_OnExitShip));
+			Prefix(nameof(ElectricalSystem_SetPowered));
+			Prefix(nameof(ElectricalComponent_SetPowered));
 		}
 
 		public static bool HatchController_OnPressInteract()
@@ -80,6 +84,42 @@ namespace QSB.ShipSync.Patches
 			__instance.CallBase<InteractZone, SingleInteractionVolume>("UpdateInteractVolume");
 
 			return false;
+		}
+
+		public static bool ShipElectricalComponent_OnEnterShip(ShipElectricalComponent __instance, bool ____damaged, ElectricalSystem ____electricalSystem)
+		{
+			__instance.CallBase<ShipElectricalComponent, ShipComponent>("OnEnterShip");
+			if (!____damaged)
+			{
+				DebugLog.DebugWrite($"ShipElectricalComponent - OnEnterShip");
+				____electricalSystem.SetPowered(true);
+			}
+
+			return false;
+		}
+
+		public static bool ShipElectricalComponent_OnExitShip(ShipElectricalComponent __instance, bool ____damaged, ElectricalSystem ____electricalSystem)
+		{
+			__instance.CallBase<ShipElectricalComponent, ShipComponent>("OnExitShip");
+			if (!____damaged)
+			{
+				DebugLog.DebugWrite($"ShipElectricalComponent - OnExitShip");
+				____electricalSystem.SetPowered(false);
+			}
+
+			return false;
+		}
+
+		public static bool ElectricalSystem_SetPowered(ElectricalSystem __instance, bool powered)
+		{
+			DebugLog.DebugWrite($"[SYSTEM] {__instance.name} set powered {powered}");
+			return true;
+		}
+
+		public static bool ElectricalComponent_SetPowered(ElectricalComponent __instance, bool powered)
+		{
+			DebugLog.DebugWrite($"[COMPONENT] {__instance.name} set powered {powered}");
+			return true;
 		}
 	}
 }
