@@ -82,7 +82,7 @@ namespace QSB
 		public void Start()
 		{
 			Helper = ModHelper;
-			DebugLog.ToConsole($"* Start of QSB version {Helper.Manifest.Version} - authored by {Helper.Manifest.Author}", MessageType.Info);
+			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
