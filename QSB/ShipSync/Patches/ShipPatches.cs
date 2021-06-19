@@ -20,6 +20,8 @@ namespace QSB.ShipSync.Patches
 			Prefix(nameof(ShipElectricalComponent_OnExitShip));
 			Prefix(nameof(ElectricalSystem_SetPowered));
 			Prefix(nameof(ElectricalComponent_SetPowered));
+			Prefix(nameof(ShipComponent_SetDamaged));
+			Postfix(nameof(ShipComponent_RepairTick));
 		}
 
 		public static bool HatchController_OnPressInteract()
@@ -102,14 +104,26 @@ namespace QSB.ShipSync.Patches
 
 		public static bool ElectricalSystem_SetPowered(ElectricalSystem __instance, bool powered)
 		{
-			DebugLog.DebugWrite($"[SYSTEM] {__instance.name} set powered {powered}");
+			DebugLog.DebugWrite($"[E SYSTEM] {__instance.name} set powered {powered}");
 			return true;
 		}
 
 		public static bool ElectricalComponent_SetPowered(ElectricalComponent __instance, bool powered)
 		{
-			DebugLog.DebugWrite($"[COMPONENT] {__instance.name} set powered {powered}");
+			DebugLog.DebugWrite($"[E COMPONENT] {__instance.name} set powered {powered}");
 			return true;
+		}
+
+		public static bool ShipComponent_SetDamaged(ShipComponent __instance, bool damaged)
+		{
+			DebugLog.DebugWrite($"[S COMPONENT] {__instance.name} set damaged {damaged}", OWML.Common.MessageType.Warning);
+			return true;
+		}
+
+		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
+		{
+			DebugLog.DebugWrite($"[S COMPONENT] {__instance.name} repair tick {____repairFraction}");
+			return;
 		}
 	}
 }
