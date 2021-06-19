@@ -93,7 +93,19 @@ namespace QSB.Utility
 			where ThisType : BaseType
 		{
 			var method = typeof(BaseType).GetMethod(methodName);
+			if (method == null)
+			{
+				DebugLog.DebugWrite($"Error - Couldn't find method {methodName} in {typeof(BaseType).FullName}!", MessageType.Error);
+				return;
+			}
+
 			var functionPointer = method.MethodHandle.GetFunctionPointer();
+			if (functionPointer == null)
+			{
+				DebugLog.DebugWrite($"Error - Function pointer for {methodName} in {typeof(BaseType).FullName} is null!", MessageType.Error);
+				return;
+			}
+
 			var methodAction = (Action)Activator.CreateInstance(typeof(Action), obj, functionPointer);
 			methodAction();
 		}
