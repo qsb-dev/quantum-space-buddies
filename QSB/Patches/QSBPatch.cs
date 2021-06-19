@@ -16,10 +16,9 @@ namespace QSB.Patches
 
 		public void DoUnpatches()
 		{
-			var instance = QSBCore.Helper.HarmonyHelper.GetValue<HarmonyInstance>("_harmony");
 			foreach (var item in _patchedMethods)
 			{
-				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Debug);
+				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
 				Unpatch(item);
 			}
 
