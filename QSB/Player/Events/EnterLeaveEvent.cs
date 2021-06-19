@@ -49,7 +49,7 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool server, EnumWorldObjectMessage<EnterLeaveType> message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.FromId);
-			DebugLog.DebugWrite($"{message.FromId} {message.EnumValue}", OWML.Common.MessageType.Debug);
+			DebugLog.DebugWrite($"{message.FromId} {message.EnumValue}", OWML.Common.MessageType.Info);
 			switch (message.EnumValue)
 			{
 				case EnterLeaveType.EnterMoon:

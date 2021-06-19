@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.ShipSync;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -24,11 +25,21 @@ namespace QSB.Utility
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
+		private void DamageShipElectricalSystem()
+		{
+			ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
+		}
+
 		public void Update()
 		{
 			if (!QSBCore.DebugMode)
 			{
 				return;
+			}
+
+			if (Input.GetKeyDown(KeyCode.Keypad4))
+			{
+				DamageShipElectricalSystem();
 			}
 
 			if (Input.GetKeyDown(KeyCode.Keypad7))

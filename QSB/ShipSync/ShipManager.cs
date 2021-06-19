@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
 using QSB.Utility;
@@ -19,6 +20,7 @@ namespace QSB.ShipSync
 		public HatchController HatchController;
 		public ShipTractorBeamSwitch ShipTractorBeam;
 		public ShipCockpitController CockpitController;
+		public ShipElectricalComponent ShipElectricalComponent;
 		public bool HasAuthority
 			=> ShipTransformSync.LocalInstance.HasAuthority;
 		public uint CurrentFlyer
@@ -49,6 +51,7 @@ namespace QSB.ShipSync
 			HatchInteractZone = HatchController.GetComponent<InteractZone>();
 			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
 			CockpitController = Resources.FindObjectsOfTypeAll<ShipCockpitController>().First();
+			ShipElectricalComponent = Resources.FindObjectsOfTypeAll<ShipElectricalComponent>().First();
 
 			var sphereShape = HatchController.GetComponent<SphereShape>();
 			sphereShape.radius = 2.5f;
@@ -88,12 +91,39 @@ namespace QSB.ShipSync
 
 		public void AddPlayerToShip(PlayerInfo player)
 		{
+			DebugLog.DebugWrite($"{player.PlayerId} enter ship.");
 			_playersInShip.Add(player);
+			UpdateElectricalComponent();
 		}
 
 		public void RemovePlayerFromShip(PlayerInfo player)
 		{
+			DebugLog.DebugWrite($"{player.PlayerId} leave ship.");
 			_playersInShip.Remove(player);
+			UpdateElectricalComponent();
+		}
+
+		private void UpdateElectricalComponent()
+		{
+			var electricalSystem = ShipElectricalComponent.GetValue<ElectricalSystem>("_electricalSystem");
+			var damaged = ShipElectricalComponent.GetValue<bool>("_damaged");
+
+			if (_playersInShip.Count == 0)
+			{
+				if (!damaged)
+				{
+					DebugLog.DebugWrite($"No players left in ship - turning off electricals.");
+					electricalSystem.SetPowered(false);
+				}
+			}
+			else
+			{
+				if (!damaged)
+				{
+					DebugLog.DebugWrite($"Player in ship - turning on electricals.");
+					electricalSystem.SetPowered(true);
+				}
+			}
 		}
 
 		private void PrintAll(Array array)

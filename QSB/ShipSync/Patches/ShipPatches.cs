@@ -89,11 +89,6 @@ namespace QSB.ShipSync.Patches
 		public static bool ShipElectricalComponent_OnEnterShip(ShipElectricalComponent __instance, bool ____damaged, ElectricalSystem ____electricalSystem)
 		{
 			__instance.CallBase<ShipElectricalComponent, ShipComponent>("OnEnterShip");
-			//if (!____damaged)
-			//{
-			//	DebugLog.DebugWrite($"ShipElectricalComponent - OnEnterShip");
-			//	____electricalSystem.SetPowered(true);
-			//}
 
 			return false;
 		}
@@ -101,11 +96,6 @@ namespace QSB.ShipSync.Patches
 		public static bool ShipElectricalComponent_OnExitShip(ShipElectricalComponent __instance, bool ____damaged, ElectricalSystem ____electricalSystem)
 		{
 			__instance.CallBase<ShipElectricalComponent, ShipComponent>("OnExitShip");
-			//if (!____damaged)
-			//{
-			//	DebugLog.DebugWrite($"ShipElectricalComponent - OnExitShip");
-			//	____electricalSystem.SetPowered(false);
-			//}
 
 			return false;
 		}
