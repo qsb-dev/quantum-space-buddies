@@ -67,16 +67,12 @@ namespace QSB
 		public static bool IsServer => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
-		public static GameObject GameObjectInstance => _thisInstance.gameObject;
 
-		private static QSBCore _thisInstance;
 		private const float _debugLineSpacing = 11f;
 
 		public void Awake()
 		{
 			Application.runInBackground = true;
-
-			_thisInstance = this;
 
 			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
 			instance.theUITable[(int)UITextType.PleaseUseController] =
