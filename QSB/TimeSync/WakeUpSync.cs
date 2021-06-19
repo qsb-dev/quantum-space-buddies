@@ -107,7 +107,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() 
+		private void SendServerTime()
 			=> QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, PlayerData.LoadLoopCount());
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
@@ -225,7 +225,7 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void WakeUp() 
+		private void WakeUp()
 			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().Invoke("WakeUp");
 
 		public void Update()

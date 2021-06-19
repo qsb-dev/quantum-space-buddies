@@ -53,8 +53,8 @@ namespace QSB.ShipSync.Events
 
 		private void SetCurrentFlyer(bool isFlying, uint id)
 		{
-			ShipManager.Instance.CurrentFlyer = isFlying 
-				? id 
+			ShipManager.Instance.CurrentFlyer = isFlying
+				? id
 				: uint.MaxValue;
 
 			if (QSBCore.IsServer)

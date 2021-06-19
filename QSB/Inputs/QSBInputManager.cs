@@ -51,7 +51,7 @@ namespace QSB.Inputs
 
 		public static QSBInputManager Instance { get; private set; }
 
-		public void Start() 
+		public void Start()
 			=> Instance = this;
 
 		public bool InputsEnabled { get; private set; } = true;

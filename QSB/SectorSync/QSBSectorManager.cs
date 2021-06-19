@@ -31,8 +31,8 @@ namespace QSB.SectorSync
 					continue;
 				}
 
-				if ((sync as QNetworkBehaviour).HasAuthority 
-					&& sync.AttachedObject.gameObject.activeInHierarchy 
+				if ((sync as QNetworkBehaviour).HasAuthority
+					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
 					CheckTransformSyncSector(sync);

@@ -14,12 +14,9 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
-using QSB.ProbeSync.TransformSync;
 using QSB.QuantumSync;
-using QSB.QuantumSync.WorldObjects;
 using QSB.SectorSync;
 using QSB.ShipSync;
-using QSB.ShipSync.TransformSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.TranslationSync;
@@ -27,9 +24,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 /*

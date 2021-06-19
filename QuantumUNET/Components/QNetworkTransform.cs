@@ -200,10 +200,10 @@ namespace QuantumUNET.Components
 			return rotation;
 		}
 
-		public override int GetNetworkChannel() 
+		public override int GetNetworkChannel()
 			=> 1;
 
-		public override float GetNetworkSendInterval() 
+		public override float GetNetworkSendInterval()
 			=> SendInterval;
 	}
 }

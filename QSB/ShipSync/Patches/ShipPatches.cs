@@ -73,8 +73,8 @@ namespace QSB.ShipSync.Patches
 
 			var angle = 2f * Vector3.Angle(____playerCam.transform.forward, __instance.transform.forward);
 
-			____focused = PlayerState.IsInsideShip() 
-				? angle <= 80 
+			____focused = PlayerState.IsInsideShip()
+				? angle <= 80
 				: angle >= 280;
 
 			__instance.CallBase<InteractZone, SingleInteractionVolume>("UpdateInteractVolume");

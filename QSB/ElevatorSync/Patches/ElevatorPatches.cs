@@ -17,7 +17,7 @@ namespace QSB.ElevatorSync.Patches
 			QSBEventManager.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
 		}
 
-		public override void DoPatches() 
+		public override void DoPatches()
 			=> Postfix(nameof(Elevator_StartLift));
 	}
 }

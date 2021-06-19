@@ -87,7 +87,7 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			// If there are players in the shrine and the shrine is not lit
-			if(inShrinePlayers.Count() != 0 && !shrineLit)
+			if (inShrinePlayers.Count() != 0 && !shrineLit)
 			{
 				__result = false;
 				return false;

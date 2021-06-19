@@ -16,7 +16,7 @@ namespace QSB.QuantumSync.Patches
 		public static void QuantumMoon_Start(QuantumMoon __instance)
 			=> __instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
 
-		public static bool QuantumMoon_ChangeQuantumState() 
+		public static bool QuantumMoon_ChangeQuantumState()
 			=> false;
 	}
 }

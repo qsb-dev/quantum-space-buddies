@@ -84,7 +84,7 @@ namespace QSB.ShipSync
 
 		private void PrintAll(Array array)
 		{
-			foreach(var item in array)
+			foreach (var item in array)
 			{
 				DebugLog.DebugWrite($" - {(item as MonoBehaviour).name}");
 			}

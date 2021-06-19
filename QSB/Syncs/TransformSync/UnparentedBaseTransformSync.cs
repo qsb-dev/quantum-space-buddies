@@ -230,10 +230,10 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady 
-				|| !QSBCore.DebugMode 
-				|| !QSBCore.ShowLinesInDebug 
-				|| !IsReady 
+			if (!QSBCore.WorldObjectsReady
+				|| !QSBCore.DebugMode
+				|| !QSBCore.ShowLinesInDebug
+				|| !IsReady
 				|| ReferenceTransform == null)
 			{
 				return;

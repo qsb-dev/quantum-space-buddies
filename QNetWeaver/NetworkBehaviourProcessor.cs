@@ -1898,7 +1898,7 @@ namespace QNetWeaver
 			CheckForHookFunction(fd, out var methodDefinition2);
 			if (methodDefinition2 != null)
 			{
-				
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkServerGetLocalClientActive));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Brfalse, noOperatorInstruction));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));

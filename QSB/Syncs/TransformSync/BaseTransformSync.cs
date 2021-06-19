@@ -40,8 +40,8 @@ namespace QSB.Syncs.TransformSync
 					return uint.MaxValue;
 				}
 
-				return NetIdentity.RootIdentity != null 
-					? NetIdentity.RootIdentity.NetId.Value 
+				return NetIdentity.RootIdentity != null
+					? NetIdentity.RootIdentity.NetId.Value
 					: AttachedNetId;
 			}
 		}
@@ -87,7 +87,7 @@ namespace QSB.Syncs.TransformSync
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse) 
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
 
 		protected virtual void Init()
@@ -275,9 +275,9 @@ namespace QSB.Syncs.TransformSync
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady 
+			if (!QSBCore.WorldObjectsReady
 				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug 
+				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null)
 			{

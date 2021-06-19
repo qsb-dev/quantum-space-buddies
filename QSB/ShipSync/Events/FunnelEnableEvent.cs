@@ -20,7 +20,7 @@ namespace QSB.ShipSync.Events
 			AboutId = LocalPlayerId
 		};
 
-		public override void OnReceiveRemote(bool server, PlayerMessage message) 
+		public override void OnReceiveRemote(bool server, PlayerMessage message)
 			=> ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
 	}
 }

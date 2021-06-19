@@ -450,16 +450,16 @@ namespace QuantumUNET
 					}
 				}
 
-				Block_10:
+			Block_10:
 				GenerateConnectError(b);
 				return;
-				Block_11:
+			Block_11:
 				GenerateDataError(b);
 				return;
-				Block_17:
+			Block_17:
 				QLog.Log($"MaxEventsPerFrame hit ({500})");
-				Block_19:
-				IL_2C6:
+			Block_19:
+			IL_2C6:
 				if (m_Connection != null && m_AsyncConnect == ConnectState.Connected)
 				{
 					m_Connection.FlushChannels();

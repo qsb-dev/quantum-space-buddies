@@ -72,15 +72,15 @@ namespace QSB.Animation.NPC.Patches
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(__instance.transform.position, true);
 			}
 
-			var localPosition = playerToUse != null 
-				? ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position) 
+			var localPosition = playerToUse != null
+				? ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position)
 				: Vector3.zero;
 
 			var targetWeight = ___headTrackingWeight;
 			if (___lookOnlyWhenTalking)
 			{
-				if (!____inConversation 
-					|| qsbObj.GetPlayersInHeadZone().Count == 0 
+				if (!____inConversation
+					|| qsbObj.GetPlayersInHeadZone().Count == 0
 					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
 				{
 					targetWeight *= 0;
@@ -88,7 +88,7 @@ namespace QSB.Animation.NPC.Patches
 			}
 			else
 			{
-				if (qsbObj.GetPlayersInHeadZone().Count == 0 
+				if (qsbObj.GetPlayersInHeadZone().Count == 0
 					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
 				{
 					targetWeight *= 0;

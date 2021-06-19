@@ -6,10 +6,10 @@ namespace QSB.TimeSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() 
+		public override void DoPatches()
 			=> Prefix(nameof(PlayerCameraEffectController_OnStartOfTimeLoop));
 
-		public static bool PlayerCameraEffectController_OnStartOfTimeLoop() 
+		public static bool PlayerCameraEffectController_OnStartOfTimeLoop()
 			=> false;
 	}
 }

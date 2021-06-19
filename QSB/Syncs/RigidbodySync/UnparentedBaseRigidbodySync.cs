@@ -274,7 +274,7 @@ namespace QSB.Syncs.RigidbodySync
 			return false;
 		}
 
-		public float GetVelocityChangeMagnitude() 
+		public float GetVelocityChangeMagnitude()
 			=> (_relativeVelocity - _prevVelocity).magnitude;
 
 		public Vector3 GetRelativeVelocity()
@@ -307,7 +307,7 @@ namespace QSB.Syncs.RigidbodySync
 			if (!QSBCore.WorldObjectsReady
 				|| !QSBCore.DebugMode
 				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady 
+				|| !IsReady
 				|| ReferenceTransform == null)
 			{
 				return;

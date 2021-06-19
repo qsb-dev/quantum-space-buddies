@@ -92,7 +92,7 @@ namespace QSB.SectorSync
 			}
 
 			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
-			
+
 			var listToCheck = numSectorsCurrentlyIn == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed)
 				: SectorList;
@@ -149,7 +149,7 @@ namespace QSB.SectorSync
 
 			return 0f;
 		}
-		
+
 		public static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
 		{
 			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
