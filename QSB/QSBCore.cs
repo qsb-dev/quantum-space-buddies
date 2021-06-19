@@ -97,7 +97,6 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
-			gameObject.AddComponent<ShipManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();
@@ -111,6 +110,7 @@ namespace QSB
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
 			gameObject.AddComponent<CharacterAnimManager>();
+			gameObject.AddComponent<ShipManager>();
 
 			DebugBoxManager.Init();
 
