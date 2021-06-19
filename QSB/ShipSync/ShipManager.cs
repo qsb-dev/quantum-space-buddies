@@ -1,9 +1,11 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -32,6 +34,8 @@ namespace QSB.ShipSync
 				_currentFlyer = value;
 			}
 		}
+
+		private List<PlayerInfo> _playersInShip = new List<PlayerInfo>();
 
 		private uint _currentFlyer = uint.MaxValue;
 
@@ -80,6 +84,16 @@ namespace QSB.ShipSync
 
 			DebugLog.DebugWrite("Ship Hulls : ");
 			PrintAll(shipHulls);
+		}
+
+		public void AddPlayerToShip(PlayerInfo player)
+		{
+			_playersInShip.Add(player);
+		}
+
+		public void RemovePlayerFromShip(PlayerInfo player)
+		{
+			_playersInShip.Remove(player);
 		}
 
 		private void PrintAll(Array array)

@@ -24,6 +24,8 @@
 		public static string ExitRoastingMode = "ExitRoastingMode";
 		public static string EnterFlightConsole = "EnterFlightConsole";
 		public static string ExitFlightConsole = "ExitFlightConsole";
+		public static string EnterShip = "EnterShip";
+		public static string ExitShip = "ExitShip";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.

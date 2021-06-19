@@ -21,6 +21,8 @@ namespace QSB.Player.Events
 			GlobalMessenger<int>.AddListener(EventNames.QSBExitPlatform, (int id) => Handler(EnterLeaveType.ExitPlatform, id));
 			GlobalMessenger<int>.AddListener(EventNames.QSBEnterHeadZone, (int id) => Handler(EnterLeaveType.EnterHeadZone, id));
 			GlobalMessenger<int>.AddListener(EventNames.QSBExitHeadZone, (int id) => Handler(EnterLeaveType.ExitHeadZone, id));
+			GlobalMessenger.AddListener(EventNames.EnterShip, () => Handler(EnterLeaveType.EnterShip));
+			GlobalMessenger.AddListener(EventNames.ExitShip, () => Handler(EnterLeaveType.ExitShip));
 		}
 
 		public override void CloseListener()
