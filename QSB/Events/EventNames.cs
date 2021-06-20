@@ -75,5 +75,6 @@
 		public static string QSBHullRepaired = "QSBHullRepaired";
 		public static string QSBComponentDamaged = "QSBComponentDamaged";
 		public static string QSBComponentRepaired = "QSBComponentRepaired";
+		public static string QSBComponentRepairTick = "QSBComponentRepairTick";
 	}
 }

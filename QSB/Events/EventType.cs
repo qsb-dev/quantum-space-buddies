@@ -51,6 +51,7 @@
 		HullChangeIntegrity,
 		HullRepaired,
 		ComponentDamaged,
-		ComponentRepaired
+		ComponentRepaired,
+		ComponentRepairTick
 	}
 }

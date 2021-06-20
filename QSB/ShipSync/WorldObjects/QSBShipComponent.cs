@@ -35,5 +35,12 @@ namespace QSB.ShipSync.WorldObjects
 			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
 			damageEffect.SetEffectBlend(0f);
 		}
+
+		public void RepairTick(float repairFraction)
+		{
+			AttachedObject.SetValue("_repairFraction", repairFraction);
+			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
+			damageEffect.SetEffectBlend(1f - repairFraction);
+		}
 	}
 }
