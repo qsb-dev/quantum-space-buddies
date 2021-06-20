@@ -11,24 +11,18 @@ namespace QSB.TranslationSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<NomaiWallText>("SetAsTranslated", typeof(SpiralPatches), nameof(Wall_SetAsTranslated));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(Computer_SetAsTranslated));
-			QSBCore.HarmonyHelper.AddPrefix<NomaiVesselComputer>("SetAsTranslated", typeof(SpiralPatches), nameof(VesselComputer_SetAsTranslated));
+			Prefix(nameof(NomaiWallText_SetAsTranslated));
+			Prefix(nameof(NomaiComputer_SetAsTranslated));
+			Prefix(nameof(NomaiVesselComputer_SetAsTranslated));
 		}
 
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<NomaiWallText>("SetAsTranslated");
-			QSBCore.HarmonyHelper.Unpatch<NomaiComputer>("SetAsTranslated");
-			QSBCore.HarmonyHelper.Unpatch<NomaiVesselComputer>("SetAsTranslated");
-		}
-
-		public static bool Wall_SetAsTranslated(NomaiWallText __instance, int id)
+		public static bool NomaiWallText_SetAsTranslated(NomaiWallText __instance, int id)
 		{
 			if (__instance.IsTranslated(id))
 			{
 				return true;
 			}
+
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.WallText,
@@ -37,12 +31,13 @@ namespace QSB.TranslationSync.Patches
 			return true;
 		}
 
-		public static bool Computer_SetAsTranslated(NomaiComputer __instance, int id)
+		public static bool NomaiComputer_SetAsTranslated(NomaiComputer __instance, int id)
 		{
 			if (__instance.IsTranslated(id))
 			{
 				return true;
 			}
+
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.Computer,
@@ -51,12 +46,13 @@ namespace QSB.TranslationSync.Patches
 			return true;
 		}
 
-		public static bool VesselComputer_SetAsTranslated(NomaiVesselComputer __instance, int id)
+		public static bool NomaiVesselComputer_SetAsTranslated(NomaiVesselComputer __instance, int id)
 		{
 			if (__instance.IsTranslated(id))
 			{
 				return true;
 			}
+
 			QSBEventManager.FireEvent(
 					EventNames.QSBTextTranslated,
 					NomaiTextType.VesselComputer,

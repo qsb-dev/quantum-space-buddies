@@ -16,6 +16,7 @@ namespace QSB.Utility
 					eventData = new EventData();
 					_eventTable.Add(eventType, eventData);
 				}
+
 				eventData.Callbacks.Add(handler);
 			}
 		}
@@ -48,6 +49,7 @@ namespace QSB.Utility
 					{
 						throw new InvalidOperationException("GlobalMessenger does not support recursive FireEvent calls to the same eventType.");
 					}
+
 					eventData.IsInvoking = true;
 					eventData.Temp.AddRange(eventData.Callbacks);
 					for (var i = 0; i < eventData.Temp.Count; i++)
@@ -61,6 +63,7 @@ namespace QSB.Utility
 							DebugLog.ToConsole($"Error - {exception.Message}", MessageType.Error);
 						}
 					}
+
 					eventData.Temp.Clear();
 					eventData.IsInvoking = false;
 				}

@@ -34,10 +34,12 @@ namespace QSB.LogSync.Events
 			{
 				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
 			}
+
 			if (!QSBCore.WorldObjectsReady)
 			{
 				return;
 			}
+
 			Locator.GetShipLogManager().RevealFact(message.FactId, message.SaveGame, message.ShowNotification);
 		}
 	}

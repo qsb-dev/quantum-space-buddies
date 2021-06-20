@@ -2,27 +2,27 @@
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
 {
-	public abstract class SectoredTransformSync : BaseTransformSync
+	public abstract class SectoredTransformSync : BaseTransformSync, ISectoredSync<Transform>
 	{
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
-		public static List<SectoredTransformSync> SectoredNetworkTransformList = new List<SectoredTransformSync>();
+		public abstract TargetType Type { get; }
 
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
-			SectoredNetworkTransformList.Add(this);
+			QSBSectorManager.Instance.SectoredTransformSyncs.Add(this);
 			base.Start();
 		}
 
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			SectoredNetworkTransformList.Remove(this);
+			QSBSectorManager.Instance.SectoredTransformSyncs.Remove(this);
 			if (SectorSync != null)
 			{
 				Destroy(SectorSync);
@@ -36,6 +36,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				return;
 			}
+
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -49,6 +50,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
+
 			if (ReferenceSector != null)
 			{
 				writer.Write(ReferenceSector.ObjectId);
@@ -57,6 +59,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				writer.Write(-1);
 			}
+
 			base.SerializeTransform(writer);
 		}
 
@@ -104,7 +107,7 @@ namespace QSB.Syncs.TransformSync
 		public void SetReferenceSector(QSBSector sector)
 		{
 			ReferenceSector = sector;
-			SetReferenceTransform(sector.Transform);
+			SetReferenceTransform(sector?.Transform);
 		}
 	}
 }

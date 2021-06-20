@@ -24,6 +24,7 @@ namespace QSB.Utility
 				DebugLog.ToConsole($"Warning - Awake() ran when _isReady is false!", OWML.Common.MessageType.Warning);
 				return;
 			}
+
 			_particleSystem = GetComponent<ParticleSystem>();
 			if (_particleSystem == null)
 			{
@@ -31,6 +32,7 @@ namespace QSB.Utility
 				_isReady = false;
 				return;
 			}
+
 			_rotation = transform.rotation;
 			_mainModule = _particleSystem.main;
 			_mainModule.simulationSpace = ParticleSystemSimulationSpace.Custom;

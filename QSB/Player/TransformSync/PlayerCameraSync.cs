@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
@@ -8,9 +9,9 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerCameraSync : SectoredTransformSync
 	{
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
-			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
+			SectorSync.Init(Locator.GetPlayerSectorDetector(), this);
 			var body = Locator.GetPlayerCamera().gameObject.transform;
 
 			Player.Camera = Locator.GetPlayerCamera();
@@ -21,10 +22,10 @@ namespace QSB.Player.TransformSync
 			DebugLog.DebugWrite("PlayerCameraSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
-			return body.gameObject;
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var body = new GameObject("RemotePlayerCamera");
 
@@ -39,7 +40,7 @@ namespace QSB.Player.TransformSync
 			Player.Camera = owcamera;
 			Player.CameraBody = body;
 
-			return body;
+			return body.transform;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
@@ -49,5 +50,7 @@ namespace QSB.Player.TransformSync
 			&& NetId.Value != 0U;
 
 		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.PlayerCamera;
 	}
 }

@@ -42,6 +42,17 @@
 		Roasting,
 		MarshmallowEvent,
 		AnimTrigger,
-		NpcAnimEvent
+		NpcAnimEvent,
+		FlyShip,
+		OpenHatch,
+		EnableFunnel,
+		HullImpact,
+		HullDamaged,
+		HullChangeIntegrity,
+		HullRepaired,
+		HullRepairTick,
+		ComponentDamaged,
+		ComponentRepaired,
+		ComponentRepairTick
 	}
 }

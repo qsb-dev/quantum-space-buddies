@@ -33,6 +33,7 @@ namespace QSB.Tools
 				light.GetLight().enabled = false;
 				light.GetLight().shadows = LightShadows.Soft;
 			}
+
 			FlashlightOn = false;
 		}
 
@@ -54,10 +55,12 @@ namespace QSB.Tools
 			{
 				return;
 			}
+
 			foreach (var light in _lights)
 			{
 				light.GetLight().enabled = true;
 			}
+
 			FlashlightOn = true;
 			var rotation = _root.rotation;
 			_basePivot.rotation = rotation;
@@ -71,10 +74,12 @@ namespace QSB.Tools
 			{
 				return;
 			}
+
 			foreach (var light in _lights)
 			{
 				light.GetLight().enabled = false;
 			}
+
 			FlashlightOn = false;
 		}
 
@@ -99,6 +104,7 @@ namespace QSB.Tools
 			{
 				return;
 			}
+
 			var light = _lights[1].GetLight();
 			if (light.enabled)
 			{

@@ -57,6 +57,7 @@ namespace QuantumUNET.Components
 				{
 					m_ConnectionConfig = new ConnectionConfig();
 				}
+
 				return m_ConnectionConfig;
 			}
 		}
@@ -69,6 +70,7 @@ namespace QuantumUNET.Components
 				{
 					m_GlobalConfig = new GlobalConfig();
 				}
+
 				return m_GlobalConfig;
 			}
 		}
@@ -91,6 +93,7 @@ namespace QuantumUNET.Components
 						}
 					}
 				}
+
 				return num;
 			}
 		}
@@ -109,6 +112,7 @@ namespace QuantumUNET.Components
 						Destroy(gameObject);
 						return;
 					}
+
 					QLog.Log("NetworkManager created singleton (DontDestroyOnLoad)");
 					singleton = this;
 					if (Application.isPlaying)
@@ -121,6 +125,7 @@ namespace QuantumUNET.Components
 					QLog.Log("NetworkManager created singleton (ForScene)");
 					singleton = this;
 				}
+
 				if (networkAddress != "")
 				{
 					s_Address = networkAddress;
@@ -152,12 +157,14 @@ namespace QuantumUNET.Components
 			{
 				Application.runInBackground = true;
 			}
+
 			QNetworkCRC.scriptCRCCheck = scriptCRCCheck;
 			QNetworkServer.useWebSockets = useWebSockets;
 			if (m_GlobalConfig != null)
 			{
 				NetworkTransport.Init(m_GlobalConfig);
 			}
+
 			if (customConfig && m_ConnectionConfig != null && config == null)
 			{
 				m_ConnectionConfig.Channels.Clear();
@@ -165,12 +172,15 @@ namespace QuantumUNET.Components
 				{
 					m_ConnectionConfig.AddChannel(channel);
 				}
+
 				QNetworkServer.Configure(m_ConnectionConfig, this.maxConnections);
 			}
+
 			if (config != null)
 			{
 				QNetworkServer.Configure(config, maxConnections);
 			}
+
 			if (serverBindToIP && !string.IsNullOrEmpty(serverBindAddress))
 			{
 				if (!QNetworkServer.Listen(serverBindAddress, networkPort))
@@ -184,6 +194,7 @@ namespace QuantumUNET.Components
 				QLog.FatalError("StartServer listen failed.");
 				return false;
 			}
+
 			RegisterServerMessages();
 			QLog.Log($"NetworkManager StartServer port:{networkPort}");
 			isNetworkActive = true;
@@ -196,6 +207,7 @@ namespace QuantumUNET.Components
 			{
 				QNetworkServer.SpawnObjects();
 			}
+
 			return true;
 		}
 
@@ -210,6 +222,7 @@ namespace QuantumUNET.Components
 			{
 				QClientScene.RegisterPrefab(playerPrefab);
 			}
+
 			foreach (var gameObject in spawnPrefabs)
 			{
 				if (gameObject != null)
@@ -225,6 +238,7 @@ namespace QuantumUNET.Components
 			{
 				Application.runInBackground = true;
 			}
+
 			if (externalClient != null)
 			{
 				client = externalClient;
@@ -243,6 +257,7 @@ namespace QuantumUNET.Components
 					ClientChangeScene(offlineScene, false);
 				}
 			}
+
 			s_Address = networkAddress;
 		}
 
@@ -253,11 +268,13 @@ namespace QuantumUNET.Components
 			{
 				Application.runInBackground = true;
 			}
+
 			isNetworkActive = true;
 			if (m_GlobalConfig != null)
 			{
 				NetworkTransport.Init(m_GlobalConfig);
 			}
+
 			client = new QNetworkClient
 			{
 				hostPort = hostPort
@@ -268,6 +285,7 @@ namespace QuantumUNET.Components
 				{
 					throw new ArgumentOutOfRangeException("Platform specific protocols are not supported on this platform");
 				}
+
 				client.Configure(config, 1);
 			}
 			else if (customConfig && m_ConnectionConfig != null)
@@ -277,18 +295,22 @@ namespace QuantumUNET.Components
 				{
 					m_ConnectionConfig.AddChannel(channel);
 				}
+
 				if (m_ConnectionConfig.UsePlatformSpecificProtocols && Application.platform != RuntimePlatform.PS4 && Application.platform != RuntimePlatform.PSP2)
 				{
 					throw new ArgumentOutOfRangeException("Platform specific protocols are not supported on this platform");
 				}
+
 				client.Configure(m_ConnectionConfig, maxConnections);
 			}
+
 			RegisterClientMessages(client);
 			if (string.IsNullOrEmpty(networkAddress))
 			{
 				QLog.Error("Must set the Network Address field in the manager");
 				return null;
 			}
+
 			client.Connect(networkAddress, networkPort);
 			OnStartClient(client);
 			s_Address = networkAddress;
@@ -314,6 +336,7 @@ namespace QuantumUNET.Components
 			{
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -331,6 +354,7 @@ namespace QuantumUNET.Components
 			{
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -362,6 +386,7 @@ namespace QuantumUNET.Components
 				{
 					ServerChangeScene(offlineScene);
 				}
+
 				CleanupNetworkIdentities();
 			}
 		}
@@ -377,11 +402,13 @@ namespace QuantumUNET.Components
 				client.Shutdown();
 				client = null;
 			}
+
 			QClientScene.DestroyAllClientObjects();
 			if (!string.IsNullOrEmpty(offlineScene))
 			{
 				ClientChangeScene(offlineScene, false);
 			}
+
 			CleanupNetworkIdentities();
 		}
 
@@ -427,6 +454,7 @@ namespace QuantumUNET.Components
 						return;
 					}
 				}
+
 				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
 				networkSceneName = newSceneName;
 			}
@@ -447,11 +475,13 @@ namespace QuantumUNET.Components
 			{
 				QLog.Error("FinishLoadScene client is null");
 			}
+
 			if (QNetworkServer.active)
 			{
 				QNetworkServer.SpawnObjects();
 				OnServerSceneChanged(networkSceneName);
 			}
+
 			if (IsClientConnected() && client != null)
 			{
 				RegisterClientMessages(client);
@@ -499,6 +529,7 @@ namespace QuantumUNET.Components
 					netMsg.Connection.SetChannelOption(i, ChannelOption.MaxPendingBuffers, m_MaxBufferedPackets);
 				}
 			}
+
 			if (!m_AllowFragmentation)
 			{
 				for (var j = 0; j < QNetworkServer.numChannels; j++)
@@ -506,11 +537,13 @@ namespace QuantumUNET.Components
 					netMsg.Connection.SetChannelOption(j, ChannelOption.AllowFragmentation, 0);
 				}
 			}
+
 			if (networkSceneName != "" && networkSceneName != offlineScene)
 			{
 				var msg = new QStringMessage(networkSceneName);
 				netMsg.Connection.Send(39, msg);
 			}
+
 			OnServerConnect(netMsg.Connection);
 		}
 
@@ -580,6 +613,7 @@ namespace QuantumUNET.Components
 			{
 				ClientChangeScene(offlineScene, false);
 			}
+
 			OnClientDisconnect(netMsg.Connection);
 		}
 
@@ -626,6 +660,7 @@ namespace QuantumUNET.Components
 			{
 				QLog.Warning("Ready with no player object");
 			}
+
 			QNetworkServer.SetClientReady(conn);
 		}
 
@@ -714,10 +749,12 @@ namespace QuantumUNET.Components
 						break;
 					}
 				}
+
 				if (!flag2)
 				{
 					flag = true;
 				}
+
 				if (flag)
 				{
 					QClientScene.AddPlayer(0);

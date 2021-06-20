@@ -42,6 +42,7 @@ namespace QSB.ItemSync.Events
 						DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{(socketWorldObject as IWorldObject).Name}");
 						return;
 					}
+
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketEventType.CompleteUnsocket:

@@ -35,6 +35,7 @@ namespace QNetWeaver
 			{
 				throw new Exception("dll could not be located at " + path + "!");
 			}
+
 			Console.WriteLine($"Path OK!");
 		}
 
@@ -45,6 +46,7 @@ namespace QNetWeaver
 			{
 				throw new Exception("Assembly " + assemblyPath + " does not exist!");
 			}
+
 			Console.WriteLine($"Assembly Path OK!");
 		}
 
@@ -55,6 +57,7 @@ namespace QNetWeaver
 			{
 				Directory.CreateDirectory(outputDir);
 			}
+
 			Console.WriteLine($"Output Path OK!");
 		}
 	}

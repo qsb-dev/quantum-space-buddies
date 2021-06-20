@@ -1,8 +1,9 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
-using QSB.Syncs.TransformSync;
+using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,16 +19,35 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
+		public List<ISectoredSync<Transform>> SectoredTransformSyncs = new List<ISectoredSync<Transform>>();
+		public List<ISectoredSync<OWRigidbody>> SectoredRigidbodySyncs = new List<ISectoredSync<OWRigidbody>>();
+
 		public void Invoke()
 		{
-			foreach (var sync in SectoredTransformSync.SectoredNetworkTransformList)
+			foreach (var sync in SectoredTransformSyncs)
 			{
 				if (sync.AttachedObject == null)
 				{
 					continue;
 				}
-				if (sync.HasAuthority 
-					&& sync.AttachedObject.activeInHierarchy 
+
+				if ((sync as QNetworkBehaviour).HasAuthority
+					&& sync.AttachedObject.gameObject.activeInHierarchy
+					&& sync.IsReady)
+				{
+					CheckTransformSyncSector(sync);
+				}
+			}
+
+			foreach (var sync in SectoredRigidbodySyncs)
+			{
+				if (sync.AttachedObject == null)
+				{
+					continue;
+				}
+
+				if ((sync as QNetworkBehaviour).HasAuthority
+					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
 					CheckTransformSyncSector(sync);
@@ -60,11 +80,13 @@ namespace QSB.SectorSync
 					DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
 				}
 			}
+
 			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(SectoredTransformSync transformSync)
+		private void CheckTransformSyncSector<T>(ISectoredSync<T> transformSync)
+			where T : Component
 		{
 			var attachedObject = transformSync.AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
@@ -72,10 +94,12 @@ namespace QSB.SectorSync
 			{
 				return;
 			}
+
 			if (closestSector == transformSync.ReferenceSector)
 			{
 				return;
 			}
+
 			transformSync.SetReferenceSector(closestSector);
 		}
 	}

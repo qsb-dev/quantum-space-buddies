@@ -10,24 +10,52 @@ using UnityEngine;
 namespace QSB.Syncs.TransformSync
 {
 	/*
-	 * Rewrite number : 4
+	 * Rewrite number : 5
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class BaseTransformSync : QNetworkTransform
+	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
 	{
-		public uint AttachedNetId => NetIdentity?.NetId.Value ?? uint.MaxValue;
-		public uint PlayerId => NetIdentity.RootIdentity?.NetId.Value ?? NetIdentity.NetId.Value;
+		public uint AttachedNetId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.NetId.Value;
+			}
+		}
+
+		public uint PlayerId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.RootIdentity != null
+					? NetIdentity.RootIdentity.NetId.Value
+					: AttachedNetId;
+			}
+		}
+
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		public Transform ReferenceTransform { get; set; }
-		public GameObject AttachedObject { get; set; }
+		public Transform AttachedObject { get; set; }
 
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 
-		protected abstract GameObject InitLocalTransform();
-		protected abstract GameObject InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
 		protected bool _isInitialized;
 		private const float SmoothTime = 0.1f;
@@ -53,12 +81,13 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
+
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse) 
+		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
 
 		protected virtual void Init()
@@ -67,10 +96,12 @@ namespace QSB.Syncs.TransformSync
 			{
 				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
 			}
+
 			if (!HasAuthority && AttachedObject != null)
 			{
-				Destroy(AttachedObject);
+				Destroy(AttachedObject.gameObject);
 			}
+
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
 		}
@@ -144,7 +175,12 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
-			if (!AttachedObject.activeInHierarchy)
+			if (!AttachedObject.gameObject.activeInHierarchy)
+			{
+				return;
+			}
+
+			if (ReferenceTransform == null)
 			{
 				return;
 			}
@@ -162,6 +198,7 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 				return;
 			}
+
 			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
 			var targetRot = _intermediaryTransform.GetTargetRotation_ParentedToReference();
 			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
@@ -192,16 +229,18 @@ namespace QSB.Syncs.TransformSync
 			{
 				return;
 			}
+
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform.name}. Waiting until not null...", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(
 					() => AttachedObject != null,
 					() => ReparentAttachedObject(transform));
 				return;
 			}
+
 			if (!HasAuthority)
 			{
 				ReparentAttachedObject(transform);
@@ -214,6 +253,7 @@ namespace QSB.Syncs.TransformSync
 			{
 				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
 			}
+
 			AttachedObject.transform.SetParent(sectorTransform, true);
 			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
 				? Vector3.one / 10
@@ -228,18 +268,24 @@ namespace QSB.Syncs.TransformSync
 				_previousDistance = distance;
 				return targetPosition;
 			}
+
 			_previousDistance = distance;
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug || !IsReady)
+			if (!QSBCore.WorldObjectsReady
+				|| !QSBCore.DebugMode
+				|| !QSBCore.ShowLinesInDebug
+				|| !IsReady
+				|| ReferenceTransform == null)
 			{
 				return;
 			}
 
 			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
+			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);

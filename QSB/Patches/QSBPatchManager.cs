@@ -7,6 +7,7 @@ using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
 using QSB.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
+using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
@@ -14,6 +15,7 @@ using QSB.Player.Patches;
 using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
+using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
 using QSB.TranslationSync.Patches;
@@ -39,7 +41,6 @@ namespace QSB.Patches
 				new DeathPatches(),
 				new ElevatorPatches(),
 				new OrbPatches(),
-				new WakeUpPatches(),
 				new LogPatches(),
 				new QuantumVisibilityPatches(),
 				new ServerQuantumPatches(),
@@ -55,7 +56,10 @@ namespace QSB.Patches
 				new RoastingPatches(),
 				new PlayerPatches(),
 				new PlayerAnimationPatches(),
-				new CharacterAnimationPatches()
+				new CharacterAnimationPatches(),
+				new ShipPatches(),
+				new InputPatches(),
+				new TimePatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

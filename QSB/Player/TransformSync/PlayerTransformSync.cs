@@ -1,5 +1,6 @@
 ﻿using QSB.Animation.Player;
 using QSB.Instruments;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using UnityEngine;
 
@@ -7,9 +8,6 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SectoredTransformSync
 	{
-		public static PlayerTransformSync LocalInstance { get; private set; }
-		public override bool UseInterpolation => true;
-
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 
 		public override void OnStartLocalPlayer()
@@ -35,9 +33,9 @@ namespace QSB.Player.TransformSync
 		private Transform GetPlayerModel() =>
 			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
 
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
-			SectorSync.SetSectorDetector(Locator.GetPlayerSectorDetector());
+			SectorSync.Init(Locator.GetPlayerSectorDetector(), this);
 			var body = GetPlayerModel();
 
 			GetComponent<AnimationSync>().InitLocal(body);
@@ -45,10 +43,10 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var body = Instantiate(GetPlayerModel());
 			Player.Body = body.gameObject;
@@ -61,7 +59,7 @@ namespace QSB.Player.TransformSync
 
 			body.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
-			return body.gameObject;
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
@@ -70,5 +68,11 @@ namespace QSB.Player.TransformSync
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		public static PlayerTransformSync LocalInstance { get; private set; }
+
+		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.Player;
 	}
 }

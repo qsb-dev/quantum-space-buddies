@@ -36,6 +36,7 @@ namespace QSB.Animation.Player.Thrusters
 				DebugLog.ToConsole($"Error - DefaultParticleSystem is null!", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			_defaultMainModule = _defaultParticleSystem.main;
 			_defaultEmissionModule = _defaultParticleSystem.emission;
 			_baseDefaultEmissionRate = _defaultEmissionModule.rateOverTime.constant;
@@ -73,6 +74,7 @@ namespace QSB.Animation.Player.Thrusters
 				{
 					_defaultParticleSystem.Play();
 				}
+
 				_defaultEmissionModule.rateOverTimeMultiplier = _baseDefaultEmissionRate * emissionThrusterScale;
 				_defaultParticleSystem.transform.SetPositionAndRotation(position, rotation);
 				if (_defaultMainModule.customSimulationSpace != hitInfo.transform)

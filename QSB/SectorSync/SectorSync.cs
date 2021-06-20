@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
+using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace QSB.SectorSync
 
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
+		private TargetType _targetType;
 
 		private void OnDestroy()
 		{
@@ -25,13 +27,14 @@ namespace QSB.SectorSync
 			}
 		}
 
-		public void SetSectorDetector(SectorDetector detector)
+		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
 		{
 			if (_sectorDetector != null)
 			{
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+
 			_sectorDetector = detector;
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
@@ -41,6 +44,8 @@ namespace QSB.SectorSync
 			{
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
+
+			_targetType = sectoredSync.Type;
 		}
 
 		private void AddSector(Sector sector)
@@ -50,11 +55,13 @@ namespace QSB.SectorSync
 			{
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
 			}
+
 			if (SectorList.Contains(worldObject))
 			{
 				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
 				return;
 			}
+
 			SectorList.Add(worldObject);
 		}
 
@@ -66,11 +73,13 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
 				return;
 			}
+
 			if (!SectorList.Contains(worldObject))
 			{
 				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
 				return;
 			}
+
 			SectorList.Remove(worldObject);
 		}
 
@@ -82,34 +91,25 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var listToCheck = SectorList.Count(x => x.ShouldSyncTo()) == 0
-				? QSBWorldSync.GetWorldObjects<QSBSector>()
+			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
+
+			var listToCheck = numSectorsCurrentlyIn == 0
+				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed)
 				: SectorList;
 
-			/* Explanation of working out which sector to sync to :
-			 * A) Closer sectors are best
-			 * B) Smaller sub-sectors are preferred
-			 * So, get all non-null sectors that aren't blacklisted and are active
-			 * (They need to be active otherwise it'll sync to disabled sectors, like the eye shuttle - which makes the player invisible)
-			 * Then, sort that list also by the radius of the sector.
-			 * We want smaller subsectors (e.g. Starting_Camp) to be preferred over general sectors (e.g. Village)
-			 * TL;DR : Sync to the smallest, closest sector
-			 */
-
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
-				&& sector.ShouldSyncTo());
+				&& sector.ShouldSyncTo(_targetType));
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
 				return default;
 			}
-			//var ordered = activeNotNullNotBlacklisted
-			//.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-			//.ThenBy(sector => GetRelativeVelocity(sector, _attachedOWRigidbody))
-			//.ThenBy(sector => GetRadius(sector));
+
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
+			// TODO : clean up this shit???
 			if (
+				numSectorsCurrentlyIn != 0 &&
 				// if any fake sectors are *roughly* in the same place as other sectors - we want fake sectors to override other sectors
 				QSBSectorManager.Instance.FakeSectors.Any(
 					x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f)
@@ -128,7 +128,7 @@ namespace QSB.SectorSync
 			var radius = GetRadius(sector); // want to be small
 			var velocity = GetRelativeVelocity(sector, rigidbody); // want to be small
 
-			return (distance * distance) + (radius * radius) + (velocity * velocity);
+			return Mathf.Pow(distance, 2) + Mathf.Pow(radius, 2) + Mathf.Pow(velocity, 2);
 		}
 
 		public static float GetRadius(QSBSector sector)
@@ -146,9 +146,10 @@ namespace QSB.SectorSync
 					return trigger.GetShape().CalcWorldBounds().radius;
 				}
 			}
+
 			return 0f;
 		}
-		
+
 		public static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
 		{
 			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
@@ -158,6 +159,7 @@ namespace QSB.SectorSync
 				var relativeVelocityMagnitude = relativeVelocity.sqrMagnitude; // Remember this is squared for efficiency!
 				return relativeVelocityMagnitude;
 			}
+
 			return 0;
 		}
 	}

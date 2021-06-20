@@ -17,6 +17,7 @@ namespace QSB.Utility
 			{
 				DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
 			}
+
 			_boxPrefab.GetComponent<Text>().font = font;
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}

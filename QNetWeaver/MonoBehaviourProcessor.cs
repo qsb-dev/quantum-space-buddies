@@ -31,6 +31,7 @@ namespace QNetWeaver
 						Weaver.fail = true;
 					}
 				}
+
 				if (Helpers.InheritsFromSyncList(fieldDefinition.FieldType))
 				{
 					Log.Error(string.Format("Script {0} defines field {1} with type {2}, but it's not a NetworkBehaviour", m_td.FullName, fieldDefinition.Name, Helpers.PrettyPrintType(fieldDefinition.FieldType)));
@@ -57,6 +58,7 @@ namespace QNetWeaver
 						}));
 						Weaver.fail = true;
 					}
+
 					if (customAttribute.AttributeType.FullName == Weaver.ClientRpcType.FullName)
 					{
 						Log.Error(string.Concat(new string[]
@@ -69,6 +71,7 @@ namespace QNetWeaver
 						}));
 						Weaver.fail = true;
 					}
+
 					if (customAttribute.AttributeType.FullName == Weaver.TargetRpcType.FullName)
 					{
 						Log.Error(string.Concat(new string[]
@@ -81,6 +84,7 @@ namespace QNetWeaver
 						}));
 						Weaver.fail = true;
 					}
+
 					var text = customAttribute.Constructor.DeclaringType.ToString();
 					if (text == "UnityEngine.Networking.ServerAttribute")
 					{

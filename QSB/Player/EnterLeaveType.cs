@@ -9,6 +9,8 @@
 		EnterPlatform = 4,
 		ExitPlatform = 5,
 		EnterHeadZone = 6,
-		ExitHeadZone = 7
+		ExitHeadZone = 7,
+		EnterShip = 8,
+		ExitShip = 9
 	}
 }

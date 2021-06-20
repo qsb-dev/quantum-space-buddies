@@ -63,8 +63,10 @@ namespace QuantumUNET.Components
 					writer.WritePackedUInt32(0U);
 					return false;
 				}
+
 				writer.WritePackedUInt32(1U);
 			}
+
 			SerializeModeTransform(writer);
 			return true;
 		}
@@ -88,6 +90,7 @@ namespace QuantumUNET.Components
 						return;
 					}
 				}
+
 				UnserializeModeTransform(reader, initialState);
 				LastSyncTime = Time.time;
 			}
@@ -115,6 +118,7 @@ namespace QuantumUNET.Components
 			{
 				FixedUpdateServer();
 			}
+
 			if (IsClient)
 			{
 				FixedUpdateClient();
@@ -141,6 +145,7 @@ namespace QuantumUNET.Components
 									return;
 								}
 							}
+
 							SetDirtyBit(1U);
 						}
 					}
@@ -208,6 +213,7 @@ namespace QuantumUNET.Components
 				num = Quaternion.Angle(m_Target.localRotation, m_PrevRotation);
 				result = num > 1E-05f;
 			}
+
 			return result;
 		}
 

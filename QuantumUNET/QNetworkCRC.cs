@@ -14,6 +14,7 @@ namespace QuantumUNET
 				{
 					s_Singleton = new QNetworkCRC();
 				}
+
 				return s_Singleton;
 			}
 		}
@@ -68,6 +69,7 @@ namespace QuantumUNET
 							return false;
 						}
 					}
+
 					if (crcmessageEntry.channel >= numChannels)
 					{
 						Debug.LogError(
@@ -76,8 +78,10 @@ namespace QuantumUNET
 						return false;
 					}
 				}
+
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -87,6 +91,7 @@ namespace QuantumUNET
 			{
 				Debug.Log($"CRC Local Dump {text} : {scripts[text]}");
 			}
+
 			foreach (var crcmessageEntry in remoteScripts)
 			{
 				Debug.Log($"CRC Remote Dump {crcmessageEntry.name} : {crcmessageEntry.channel}");

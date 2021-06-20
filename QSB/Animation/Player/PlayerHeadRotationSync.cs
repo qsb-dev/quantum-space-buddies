@@ -23,16 +23,19 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
+
 			if (_attachedAnimator == null)
 			{
 				DebugLog.ToConsole($"Error - _attachedAnimator is null!", MessageType.Error);
 				return;
 			}
+
 			if (_lookBase == null)
 			{
 				DebugLog.ToConsole($"Error - _lookBase is null!", MessageType.Error);
 				return;
 			}
+
 			var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);
 			// Get the camera's local rotation with respect to the player body
 			var lookLocalRotation = Quaternion.Inverse(_attachedAnimator.transform.rotation) * _lookBase.rotation;

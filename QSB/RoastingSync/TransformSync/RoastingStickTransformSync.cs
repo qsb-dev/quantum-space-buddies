@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Player;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Utility;
 using System.Linq;
@@ -9,8 +10,6 @@ namespace QSB.RoastingSync.TransformSync
 {
 	internal class RoastingStickTransformSync : SectoredTransformSync
 	{
-		public override bool UseInterpolation => true;
-
 		private Transform _stickTip;
 		private Transform _networkStickTip => gameObject.transform.GetChild(0);
 		private const float SmoothTime = 0.1f;
@@ -20,15 +19,15 @@ namespace QSB.RoastingSync.TransformSync
 		private Transform GetPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			var pivot = GetPivot();
 			Player.RoastingStick = pivot.gameObject;
 			_stickTip = pivot.Find("Stick_Tip");
-			return pivot.gameObject;
+			return pivot;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var newPivot = Instantiate(GetPivot());
 			newPivot.parent = null;
@@ -58,7 +57,7 @@ namespace QSB.RoastingSync.TransformSync
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
 			_stickTip = newPivot.Find("Stick_Tip");
-			return newPivot.gameObject;
+			return newPivot;
 		}
 
 		protected override void UpdateTransform()
@@ -87,5 +86,9 @@ namespace QSB.RoastingSync.TransformSync
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.RoastingStick;
 	}
 }

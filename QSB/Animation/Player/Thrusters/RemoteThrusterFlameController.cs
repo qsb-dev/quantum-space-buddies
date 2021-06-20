@@ -61,17 +61,20 @@ namespace QSB.Animation.Player.Thrusters
 			{
 				num *= _belowMaxThrustScalar;
 			}
+
 			_currentScale = _scaleSpring.Update(_currentScale, num, Time.deltaTime);
 			if (_currentScale < 0f)
 			{
 				_currentScale = 0f;
 				_scaleSpring.ResetVelocity();
 			}
+
 			if (_currentScale <= 0.001f)
 			{
 				_currentScale = 0f;
 				_scaleSpring.ResetVelocity();
 			}
+
 			transform.localScale = Vector3.one * _currentScale;
 			_light.range = _baseLightRadius * _currentScale;
 			_thrusterRenderer.enabled = _currentScale > 0f;

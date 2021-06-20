@@ -1,4 +1,6 @@
-﻿namespace QSB.WorldSync
+﻿using UnityEngine;
+
+namespace QSB.WorldSync
 {
 	public interface IWorldObject
 	{
@@ -6,6 +8,6 @@
 		string Name { get; }
 
 		void OnRemoval();
-		object ReturnObject();
+		MonoBehaviour ReturnObject();
 	}
 }

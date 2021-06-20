@@ -13,22 +13,12 @@ namespace QSB.QuantumSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisibleUsingCameraFrustum));
-			QSBCore.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisible", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisible));
-			QSBCore.HarmonyHelper.AddPrefix<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(RenderIsVisibleUsingCameraFrustum));
-			QSBCore.HarmonyHelper.AddPrefix<VisibilityObject>("CheckIllumination", typeof(QuantumVisibilityPatches), nameof(CheckIllumination));
-			QSBCore.HarmonyHelper.AddPostfix<Shape>("OnEnable", typeof(QuantumVisibilityPatches), nameof(Shape_OnEnable));
-			QSBCore.HarmonyHelper.AddPostfix<Shape>("OnDisable", typeof(QuantumVisibilityPatches), nameof(Shape_OnDisable));
-		}
-
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum");
-			QSBCore.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisible");
-			QSBCore.HarmonyHelper.Unpatch<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum");
-			QSBCore.HarmonyHelper.Unpatch<VisibilityObject>("CheckIllumination");
-			QSBCore.HarmonyHelper.Unpatch<Shape>("OnEnable");
-			QSBCore.HarmonyHelper.Unpatch<Shape>("OnDisable");
+			Prefix(nameof(ShapeVisibilityTracker_IsVisibleUsingCameraFrustum));
+			Prefix(nameof(ShapeVisibilityTracker_IsVisible));
+			Prefix(nameof(RendererVisibilityTracker_IsVisibleUsingCameraFrustum));
+			Prefix(nameof(VisibilityObject_CheckIllumination));
+			Postfix(nameof(Shape_OnEnable));
+			Postfix(nameof(Shape_OnDisable));
 		}
 
 		public static void Shape_OnEnable(Shape __instance)
@@ -39,13 +29,13 @@ namespace QSB.QuantumSync.Patches
 
 		// ShapeVisibilityTracker patches
 
-		public static bool ShapeIsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
+		public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
 		{
-			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false);
+			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).First;
 			return false;
 		}
 
-		public static bool ShapeIsVisible(ShapeVisibilityTracker __instance, ref bool __result)
+		public static bool ShapeVisibilityTracker_IsVisible(ShapeVisibilityTracker __instance, ref bool __result)
 		{
 			__result = QuantumManager.IsVisible(__instance, false);
 			return false;
@@ -53,7 +43,7 @@ namespace QSB.QuantumSync.Patches
 
 		// RendererVisibilityTracker patches - probably not needed as i don't think RendererVisibilityTracker is ever used?
 
-		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
+		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{
 			__result = QSBPlayerManager.GetPlayersWithCameras()
 					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), ____renderer.bounds))
@@ -66,13 +56,14 @@ namespace QSB.QuantumSync.Patches
 
 		// VisibilityObject
 
-		public static bool CheckIllumination(VisibilityObject __instance, ref bool __result, bool ____checkIllumination, Vector3 ____localIlluminationOffset, float ____illuminationRadius, Light[] ____lightSources)
+		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, ref bool __result, bool ____checkIllumination, Vector3 ____localIlluminationOffset, float ____illuminationRadius, Light[] ____lightSources)
 		{
 			if (!____checkIllumination)
 			{
 				__result = true;
 				return false;
 			}
+
 			var point = __instance.transform.TransformPoint(____localIlluminationOffset);
 			var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
 			var localFlashlight = tupleFlashlights.First;
@@ -117,6 +108,7 @@ namespace QSB.QuantumSync.Patches
 					}
 				}
 			}
+
 			__result = false;
 			return false;
 		}

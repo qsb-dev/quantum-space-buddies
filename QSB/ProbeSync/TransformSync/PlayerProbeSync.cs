@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
@@ -11,9 +12,6 @@ namespace QSB.ProbeSync.TransformSync
 	{
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
-		protected override float DistanceLeeway => 10f;
-		public override bool UseInterpolation => true;
-
 		public override void OnStartAuthority()
 		{
 			DebugLog.DebugWrite($"OnStartAuthority probe");
@@ -23,17 +21,17 @@ namespace QSB.ProbeSync.TransformSync
 		private Transform GetProbe() =>
 			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
 
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
-			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
+			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this);
 			var body = GetProbe();
 
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var probe = GetProbe();
 
@@ -52,7 +50,7 @@ namespace QSB.ProbeSync.TransformSync
 
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null
@@ -61,5 +59,11 @@ namespace QSB.ProbeSync.TransformSync
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		protected override float DistanceLeeway => 10f;
+
+		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.Probe;
 	}
 }

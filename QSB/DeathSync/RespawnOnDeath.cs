@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -30,6 +31,7 @@ namespace QSB.DeathSync
 		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
 		private ShipTractorBeamSwitch _shipTractorBeam;
+		private SuitPickupVolume[] _suitPickupVolumes;
 
 		public void Awake() => Instance = this;
 
@@ -40,6 +42,8 @@ namespace QSB.DeathSync
 			_spaceSuit = Locator.GetPlayerSuit();
 			_playerSpawner = FindObjectOfType<PlayerSpawner>();
 			_shipTractorBeam = FindObjectOfType<ShipTractorBeamSwitch>();
+			_suitPickupVolumes = FindObjectsOfType<SuitPickupVolume>();
+
 			_fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 
 			_playerSpawnPoint = GetSpawnPoint();
@@ -51,6 +55,7 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole($"Warning - Init() ran when ship was null?", MessageType.Warning);
 				return;
 			}
+
 			_shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
 			_hatchController = shipTransform.GetComponentInChildren<HatchController>();
 			_cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
@@ -71,6 +76,7 @@ namespace QSB.DeathSync
 
 		public void ResetPlayer()
 		{
+			DebugLog.DebugWrite($"Trying to reset player.");
 			if (_playerSpawnPoint == null)
 			{
 				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
@@ -88,10 +94,44 @@ namespace QSB.DeathSync
 			_playerResources.SetValue("_isSuffocating", false);
 			_playerResources.DebugRefillResources();
 			_spaceSuit.RemoveSuit(true);
+
+			foreach (var pickupVolume in _suitPickupVolumes)
+			{
+				var containsSuit = pickupVolume.GetValue<bool>("_containsSuit");
+				var allowReturn = pickupVolume.GetValue<bool>("_allowSuitReturn");
+
+				if (!containsSuit && allowReturn)
+				{
+
+					var interactVolume = pickupVolume.GetValue<MultipleInteractionVolume>("_interactVolume");
+					var pickupSuitIndex = pickupVolume.GetValue<int>("_pickupSuitCommandIndex");
+
+					pickupVolume.SetValue("_containsSuit", true);
+					interactVolume.ChangePrompt(UITextType.SuitUpPrompt, pickupSuitIndex);
+
+					var suitGeometry = pickupVolume.GetValue<GameObject>("_suitGeometry");
+					var suitCollider = pickupVolume.GetValue<OWCollider>("_suitOWCollider");
+					var toolGeometries = pickupVolume.GetValue<GameObject[]>("_toolGeometry");
+
+					suitGeometry.SetActive(true);
+					suitCollider.SetActivation(true);
+					foreach (var geo in toolGeometries)
+					{
+						geo.SetActive(true);
+					}
+				}
+			}
 		}
 
 		public void ResetShip()
 		{
+			DebugLog.DebugWrite($"Trying to reset ship.");
+			if (!ShipTransformSync.LocalInstance.HasAuthority)
+			{
+				DebugLog.ToConsole($"Warning - Tried to reset ship when not in control!", MessageType.Warning);
+				return;
+			}
+
 			if (_shipSpawnPoint == null)
 			{
 				DebugLog.ToConsole("Warning - _shipSpawnPoint is null!", MessageType.Warning);
@@ -117,6 +157,7 @@ namespace QSB.DeathSync
 
 		private void ExitShip()
 		{
+			DebugLog.DebugWrite($"Exit ship.");
 			_cockpitController.Invoke("ExitFlightConsole");
 			_cockpitController.Invoke("CompleteExitFlightConsole");
 			_hatchController.SetValue("_isPlayerInShip", false);
@@ -132,6 +173,7 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole($"Warning - _spawnList was null for player spawner!", MessageType.Warning);
 				return null;
 			}
+
 			return spawnList.FirstOrDefault(spawnPoint =>
 					spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth
 					&& spawnPoint.IsShipSpawn() == isShip);

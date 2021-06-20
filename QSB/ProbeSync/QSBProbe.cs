@@ -13,6 +13,7 @@ namespace QSB.ProbeSync
 				gameObject.Show();
 				return;
 			}
+
 			gameObject.Hide();
 		}
 	}

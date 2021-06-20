@@ -78,11 +78,13 @@ namespace QuantumUNET.Transport
 							{
 								throw new IndexOutOfRangeException($"ReadPackedUInt32() failure: {b}");
 							}
+
 							result = (uint)(b2 + (b3 << 8) + (b4 << 16) + (b5 << 24));
 						}
 					}
 				}
 			}
+
 			return result;
 		}
 
@@ -150,6 +152,7 @@ namespace QuantumUNET.Transport
 											{
 												throw new IndexOutOfRangeException($"ReadPackedUInt64() failure: {b}");
 											}
+
 											result = b2 + ((ulong)b3 << 8) + ((ulong)b4 << 16) + ((ulong)b5 << 24) + ((ulong)b6 << 32) + ((ulong)b7 << 40) + ((ulong)b8 << 48) + ((ulong)b9 << 56);
 										}
 									}
@@ -159,6 +162,7 @@ namespace QuantumUNET.Transport
 					}
 				}
 			}
+
 			return result;
 		}
 
@@ -275,14 +279,17 @@ namespace QuantumUNET.Transport
 				{
 					throw new IndexOutOfRangeException($"ReadString() too long: {num}");
 				}
+
 				while (num > s_StringReaderBuffer.Length)
 				{
 					s_StringReaderBuffer = new byte[s_StringReaderBuffer.Length * 2];
 				}
+
 				m_buf.ReadBytes(s_StringReaderBuffer, num);
 				var chars = s_Encoding.GetChars(s_StringReaderBuffer, 0, num);
 				result = new string(chars);
 			}
+
 			return result;
 		}
 
@@ -300,6 +307,7 @@ namespace QuantumUNET.Transport
 			{
 				throw new IndexOutOfRangeException($"NetworkReader ReadBytes {count}");
 			}
+
 			var array = new byte[count];
 			m_buf.ReadBytes(array, (uint)count);
 			return array;
@@ -395,6 +403,7 @@ namespace QuantumUNET.Transport
 					result = gameObject.transform;
 				}
 			}
+
 			return result;
 		}
 
@@ -415,8 +424,10 @@ namespace QuantumUNET.Transport
 				{
 					Debug.Log($"ReadGameObject netId:{networkInstanceId}go: null");
 				}
+
 				result = gameObject;
 			}
+
 			return result;
 		}
 
@@ -443,6 +454,7 @@ namespace QuantumUNET.Transport
 					result = gameObject.GetComponent<QNetworkIdentity>();
 				}
 			}
+
 			return result;
 		}
 

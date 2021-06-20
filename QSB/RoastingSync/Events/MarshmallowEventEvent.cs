@@ -29,12 +29,14 @@ namespace QSB.RoastingSync.Events
 			{
 				return;
 			}
+
 			var marshmallow = QSBPlayerManager.GetPlayer(message.AboutId).Marshmallow;
 			if (marshmallow == null)
 			{
 				DebugLog.ToConsole($"Warning - Marshmallow is null for player {message.AboutId}.", OWML.Common.MessageType.Warning);
 				return;
 			}
+
 			switch (message.EnumValue)
 			{
 				case MarshmallowEventType.Burn:
@@ -73,6 +75,7 @@ namespace QSB.RoastingSync.Events
 				DebugLog.DebugWrite($"Error - Campfire for {playerId} is null.", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			rigidbody.SetVelocity(player.Campfire.AttachedObject.GetAttachedOWRigidbody(false).GetPointVelocity(stickTip.position) + (stickTip.forward * 3f));
 			rigidbody.SetAngularVelocity(stickTip.right * 10f);
 			if (player.Marshmallow == null)
@@ -80,6 +83,7 @@ namespace QSB.RoastingSync.Events
 				DebugLog.DebugWrite($"Error - Marshmallow for {playerId} is null.", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			tossedMallow.GetComponentInChildren<MeshRenderer>().material.color = player.Marshmallow._burntColor;
 		}
 	}
