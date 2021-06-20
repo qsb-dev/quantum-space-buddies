@@ -19,8 +19,6 @@ namespace QSB.ShipSync.Patches
 			Prefix(nameof(InteractZone_UpdateInteractVolume));
 			Prefix(nameof(ShipElectricalComponent_OnEnterShip));
 			Prefix(nameof(ShipElectricalComponent_OnExitShip));
-			Prefix(nameof(ElectricalSystem_SetPowered));
-			Prefix(nameof(ElectricalComponent_SetPowered));
 			Prefix(nameof(ShipComponent_SetDamaged));
 			Prefix(nameof(ShipHull_FixedUpdate));
 			Prefix(nameof(ShipDamageController_OnImpact));
@@ -104,18 +102,6 @@ namespace QSB.ShipSync.Patches
 			return false;
 		}
 
-		public static bool ElectricalSystem_SetPowered(ElectricalSystem __instance, bool powered)
-		{
-			DebugLog.DebugWrite($"[E SYSTEM] {__instance.name} set powered {powered}");
-			return true;
-		}
-
-		public static bool ElectricalComponent_SetPowered(ElectricalComponent __instance, bool powered)
-		{
-			DebugLog.DebugWrite($"[E COMPONENT] {__instance.name} set powered {powered}");
-			return true;
-		}
-
 		public static bool ShipComponent_SetDamaged(ShipComponent __instance, bool damaged, ref bool ____damaged, ref float ____repairFraction, DamageEffect ____damageEffect)
 		{
 			if (____damaged == damaged)
@@ -137,6 +123,7 @@ namespace QSB.ShipSync.Patches
 				____repairFraction = 1f;
 				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
 				QSBWorldSync.RaiseEvent(__instance, "OnRepaired", __instance);
+				QSBEventManager.FireEvent(EventNames.QSBComponentRepaired, __instance);
 			}
 
 			__instance.GetType().GetAnyMethod("UpdateColliderState").Invoke(__instance, null);
