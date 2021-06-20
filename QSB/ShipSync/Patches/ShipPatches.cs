@@ -196,9 +196,9 @@ namespace QSB.ShipSync.Patches
 			return;
 		}
 
-		public static void ShipHull_RepairTick(ShipHull __instance, float ____repairFraction)
+		public static void ShipHull_RepairTick(ShipHull __instance, float ____integrity)
 		{
-			QSBEventManager.FireEvent(EventNames.QSBHullRepairTick, __instance, ____repairFraction);
+			QSBEventManager.FireEvent(EventNames.QSBHullRepairTick, __instance, ____integrity);
 			return;
 		}
 	}
