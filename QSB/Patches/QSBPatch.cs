@@ -29,7 +29,7 @@ namespace QSB.Patches
 
 		public void Empty(string patchName)
 		{
-			DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Info);
+			DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Success);
 			var method = GetMethodInfo(patchName);
 			QSBCore.Helper.HarmonyHelper.EmptyMethod(method);
 		}
