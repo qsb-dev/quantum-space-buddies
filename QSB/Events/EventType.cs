@@ -49,6 +49,7 @@
 		HullImpact,
 		HullDamaged,
 		HullChangeIntegrity,
+		HullRepaired,
 		ComponentDamaged,
 		ComponentRepaired
 	}

@@ -87,6 +87,7 @@ namespace QSB.Events
 				new HullImpactEvent(),
 				new HullDamagedEvent(),
 				new HullChangeIntegrityEvent(),
+				new HullRepairedEvent(),
 				new ComponentDamagedEvent(),
 				new ComponentRepairedEvent()
 			};

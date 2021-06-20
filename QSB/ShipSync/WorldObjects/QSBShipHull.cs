@@ -19,6 +19,15 @@ namespace QSB.ShipSync.WorldObjects
 			QSBWorldSync.RaiseEvent(AttachedObject, "OnDamaged", AttachedObject);
 		}
 
+		public void SetRepaired()
+		{
+			DebugLog.DebugWrite($"[HULL] {AttachedObject} Set repaired.");
+			AttachedObject.SetValue("_damaged", false);
+			QSBWorldSync.RaiseEvent(AttachedObject, "OnRepaired", AttachedObject);
+			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
+			damageEffect.SetEffectBlend(0f);
+		}
+
 		public void ChangeIntegrity(float newIntegrity)
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Change integrity to {newIntegrity}.");
