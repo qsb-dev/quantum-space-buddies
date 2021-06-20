@@ -15,6 +15,8 @@ using QSB.ProbeSync.Events;
 using QSB.QuantumSync.Events;
 using QSB.RoastingSync.Events;
 using QSB.ShipSync.Events;
+using QSB.ShipSync.Events.Component;
+using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
@@ -81,7 +83,11 @@ namespace QSB.Events
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),
-				new FunnelEnableEvent()
+				new FunnelEnableEvent(),
+				new HullImpactEvent(),
+				new HullDamagedEvent(),
+				new HullChangeIntegrityEvent(),
+				new ComponentDamagedEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)

@@ -45,6 +45,10 @@
 		NpcAnimEvent,
 		FlyShip,
 		OpenHatch,
-		EnableFunnel
+		EnableFunnel,
+		HullImpact,
+		HullDamaged,
+		HullChangeIntegrity,
+		ComponentDamaged
 	}
 }

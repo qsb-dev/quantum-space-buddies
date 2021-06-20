@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
+using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -67,26 +68,8 @@ namespace QSB.ShipSync
 				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
 			}
 
-			var shipComponents = Resources.FindObjectsOfTypeAll<ShipComponent>();
-			var electricalComponents = Resources.FindObjectsOfTypeAll<ElectricalComponent>();
-			var electricalSystems = Resources.FindObjectsOfTypeAll<ElectricalSystem>();
-			var shipModules = Resources.FindObjectsOfTypeAll<ShipModule>();
-			var shipHulls = Resources.FindObjectsOfTypeAll<ShipHull>();
-
-			DebugLog.DebugWrite("ShipComponents : ");
-			PrintAll(shipComponents);
-
-			DebugLog.DebugWrite("Electrical Components : ");
-			PrintAll(electricalComponents);
-
-			DebugLog.DebugWrite("Electrical Systems : ");
-			PrintAll(electricalSystems);
-
-			DebugLog.DebugWrite("Ship Modules : ");
-			PrintAll(shipModules);
-
-			DebugLog.DebugWrite("Ship Hulls : ");
-			PrintAll(shipHulls);
+			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();
+			QSBWorldSync.Init<QSBShipHull, ShipHull>();
 		}
 
 		public void AddPlayerToShip(PlayerInfo player)
@@ -123,14 +106,6 @@ namespace QSB.ShipSync
 					DebugLog.DebugWrite($"Player in ship - turning on electricals.");
 					electricalSystem.SetPowered(true);
 				}
-			}
-		}
-
-		private void PrintAll(Array array)
-		{
-			foreach (var item in array)
-			{
-				DebugLog.DebugWrite($" - {(item as MonoBehaviour).name}");
 			}
 		}
 	}

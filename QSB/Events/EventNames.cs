@@ -69,5 +69,9 @@
 		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
 		public static string QSBHatchState = "QSBHatchState";
 		public static string QSBEnableFunnel = "QSBEnableFunnel";
+		public static string QSBHullImpact = "QSBHullImpact";
+		public static string QSBHullDamaged = "QSBHullDamaged";
+		public static string QSBHullChangeIntegrity = "QSBHullChangeIntegrity";
+		public static string QSBComponentDamaged = "QSBComponentDamaged";
 	}
 }

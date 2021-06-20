@@ -2,6 +2,7 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
@@ -21,7 +22,8 @@ namespace QSB.ShipSync.Patches
 			Prefix(nameof(ElectricalSystem_SetPowered));
 			Prefix(nameof(ElectricalComponent_SetPowered));
 			Prefix(nameof(ShipComponent_SetDamaged));
-			Postfix(nameof(ShipComponent_RepairTick));
+			Prefix(nameof(ShipHull_FixedUpdate));
+			Prefix(nameof(ShipDamageController_OnImpact));
 		}
 
 		public static bool HatchController_OnPressInteract()
@@ -114,16 +116,89 @@ namespace QSB.ShipSync.Patches
 			return true;
 		}
 
-		public static bool ShipComponent_SetDamaged(ShipComponent __instance, bool damaged)
+		public static bool ShipComponent_SetDamaged(ShipComponent __instance, bool damaged, ref bool ____damaged, ref float ____repairFraction, DamageEffect ____damageEffect)
 		{
-			DebugLog.DebugWrite($"[S COMPONENT] {__instance.name} set damaged {damaged}", OWML.Common.MessageType.Warning);
-			return true;
+			if (____damaged == damaged)
+			{
+				return false;
+			}
+
+			if (damaged)
+			{
+				____damaged = true;
+				____repairFraction = 0f;
+				__instance.GetType().GetAnyMethod("OnComponentDamaged").Invoke(__instance, null);
+				QSBWorldSync.RaiseEvent(__instance, "OnDamaged", __instance);
+				QSBEventManager.FireEvent(EventNames.QSBComponentDamaged, __instance);
+			}
+			else
+			{
+				____damaged = false;
+				____repairFraction = 1f;
+				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
+				QSBWorldSync.RaiseEvent(__instance, "OnRepaired", __instance);
+			}
+
+			__instance.GetType().GetAnyMethod("UpdateColliderState").Invoke(__instance, null);
+			if (____damageEffect)
+			{
+				____damageEffect.SetEffectBlend(1f - ____repairFraction);
+			}
+
+			return false;
 		}
 
-		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
+		public static bool ShipHull_FixedUpdate(ShipHull __instance, ref ImpactData ____dominantImpact, ref float ____integrity, ref bool ____damaged, DamageEffect ____damageEffect, ShipComponent[] ____components)
 		{
-			DebugLog.DebugWrite($"[S COMPONENT] {__instance.name} repair tick {____repairFraction}");
-			return;
+			if (____dominantImpact != null)
+			{
+				var damage = Mathf.InverseLerp(30f, 200f, ____dominantImpact.speed);
+				if (damage > 0f)
+				{
+					var num2 = 0.15f;
+					if (damage < num2 && ____integrity > 1f - num2)
+					{
+						damage = num2;
+					}
+
+					____integrity = Mathf.Max(____integrity - damage, 0f);
+					if (!____damaged)
+					{
+						____damaged = true;
+						QSBWorldSync.RaiseEvent(__instance, "OnDamaged", __instance);
+						QSBEventManager.FireEvent(EventNames.QSBHullDamaged, __instance);
+					}
+
+					if (____damageEffect != null)
+					{
+						____damageEffect.SetEffectBlend(1f - ____integrity);
+					}
+
+					QSBEventManager.FireEvent(EventNames.QSBHullChangeIntegrity, __instance, ____integrity);
+				}
+
+				foreach (var component in ____components)
+				{
+					if (!(component == null) && !component.isDamaged)
+					{
+						if (component.ApplyImpact(____dominantImpact))
+						{
+							break;
+						}
+					}
+				}
+
+				QSBWorldSync.RaiseEvent(__instance, "OnImpact", ____dominantImpact, damage);
+				QSBEventManager.FireEvent(EventNames.QSBHullImpact, __instance, ____dominantImpact, damage);
+
+				____dominantImpact = null;
+			}
+
+			__instance.enabled = false;
+			return false;
 		}
+
+		public static bool ShipDamageController_OnImpact() 
+			=> ShipManager.Instance.HasAuthority;
 	}
 }
