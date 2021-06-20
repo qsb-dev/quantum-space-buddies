@@ -3,10 +3,6 @@ using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync.Events;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QSB.ShipSync.Events.Component
 {
