@@ -87,7 +87,8 @@ namespace QSB.Events
 				new HullImpactEvent(),
 				new HullDamagedEvent(),
 				new HullChangeIntegrityEvent(),
-				new ComponentDamagedEvent()
+				new ComponentDamagedEvent(),
+				new ComponentRepairedEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)

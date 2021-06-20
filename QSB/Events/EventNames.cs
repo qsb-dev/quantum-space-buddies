@@ -73,5 +73,6 @@
 		public static string QSBHullDamaged = "QSBHullDamaged";
 		public static string QSBHullChangeIntegrity = "QSBHullChangeIntegrity";
 		public static string QSBComponentDamaged = "QSBComponentDamaged";
+		public static string QSBComponentRepaired = "QSBComponentRepaired";
 	}
 }

@@ -23,5 +23,17 @@ namespace QSB.ShipSync.WorldObjects
 			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
 			damageEffect.SetEffectBlend(1f);
 		}
+
+		public void SetRepaired()
+		{
+			DebugLog.DebugWrite($"[S COMPONENT] {AttachedObject} Set repaired.");
+			AttachedObject.SetValue("_damaged", false);
+			AttachedObject.SetValue("_repairFraction", 1f);
+			AttachedObject.GetType().GetAnyMethod("OnComponentRepaired").Invoke(AttachedObject, null);
+			QSBWorldSync.RaiseEvent(AttachedObject, "OnRepaired", AttachedObject);
+			AttachedObject.GetType().GetAnyMethod("UpdateColliderState").Invoke(AttachedObject, null);
+			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
+			damageEffect.SetEffectBlend(0f);
+		}
 	}
 }
