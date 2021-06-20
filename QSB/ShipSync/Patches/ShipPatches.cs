@@ -189,10 +189,10 @@ namespace QSB.ShipSync.Patches
 		public static bool ShipDamageController_OnImpact() 
 			=> ShipManager.Instance.HasAuthority;
 
-		public static bool ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
+		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
 		{
 			QSBEventManager.FireEvent(EventNames.QSBComponentRepairTick, __instance, ____repairFraction);
-			return true;
+			return;
 		}
 	}
 }
