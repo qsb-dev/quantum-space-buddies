@@ -251,6 +251,7 @@
     <Compile Include="ShipSync\Events\Hull\HullImpactEvent.cs" />
     <Compile Include="ShipSync\Events\Hull\HullImpactMessage.cs" />
     <Compile Include="ShipSync\Events\Hull\HullRepairedEvent.cs" />
+    <Compile Include="ShipSync\Events\Hull\HullRepairTickEvent.cs" />
     <Compile Include="ShipSync\Events\ImpactDataMessage.cs" />
     <Compile Include="ShipSync\Events\RepairTickMessage.cs" />
     <Compile Include="ShipSync\WorldObjects\QSBShipComponent.cs" />

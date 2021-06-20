@@ -50,6 +50,7 @@
 		HullDamaged,
 		HullChangeIntegrity,
 		HullRepaired,
+		HullRepairTick,
 		ComponentDamaged,
 		ComponentRepaired,
 		ComponentRepairTick

@@ -88,6 +88,7 @@ namespace QSB.Events
 				new HullDamagedEvent(),
 				new HullChangeIntegrityEvent(),
 				new HullRepairedEvent(),
+				new HullRepairTickEvent(),
 				new ComponentDamagedEvent(),
 				new ComponentRepairedEvent(),
 				new ComponentRepairTickEvent()
