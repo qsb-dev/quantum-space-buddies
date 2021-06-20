@@ -202,7 +202,6 @@ namespace QSB.DeathSync.Patches
 				return false;
 			}
 
-			RespawnOnDeath.Instance.ResetShip();
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
 		}
@@ -238,9 +237,8 @@ namespace QSB.DeathSync.Patches
 			{
 				Locator.GetDeathManager().KillPlayer(____deathType);
 			}
-			// Ship is being destroyed, but player isn't in it.
-			RespawnOnDeath.Instance.ResetShip();
-			return false;
+
+			return true;
 		}
 	}
 }
