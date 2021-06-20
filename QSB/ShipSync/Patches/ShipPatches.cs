@@ -23,7 +23,7 @@ namespace QSB.ShipSync.Patches
 			Prefix(nameof(ShipHull_FixedUpdate));
 			Prefix(nameof(ShipDamageController_OnImpact));
 			Postfix(nameof(ShipComponent_RepairTick));
-			Postfix(nameof(ShipHull_RepairTick));
+			Prefix(nameof(ShipHull_RepairTick));
 		}
 
 		public static bool HatchController_OnPressInteract()
@@ -196,10 +196,29 @@ namespace QSB.ShipSync.Patches
 			return;
 		}
 
-		public static void ShipHull_RepairTick(ShipHull __instance, float ____integrity)
+		public static bool ShipHull_RepairTick(ShipHull __instance, ref float ____integrity, ref bool ____damaged, DamageEffect ____damageEffect, float ____repairTime)
 		{
+			if (!____damaged)
+			{
+				return false;
+			}
+
+			____integrity = Mathf.Min(____integrity + Time.deltaTime / ____repairTime, 1f);
 			QSBEventManager.FireEvent(EventNames.QSBHullRepairTick, __instance, ____integrity);
-			return;
+
+			if (____integrity >= 1f)
+			{
+				____damaged = false;
+				QSBWorldSync.RaiseEvent(__instance, "OnRepaired", __instance);
+				QSBEventManager.FireEvent(EventNames.QSBHullRepaired, __instance);
+			}
+
+			if (____damageEffect != null)
+			{
+				____damageEffect.SetEffectBlend(1f - ____integrity);
+			}
+
+			return false;
 		}
 	}
 }
