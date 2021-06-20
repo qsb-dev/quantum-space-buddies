@@ -22,6 +22,7 @@ namespace QSB.ShipSync.Patches
 			Prefix(nameof(ShipComponent_SetDamaged));
 			Prefix(nameof(ShipHull_FixedUpdate));
 			Prefix(nameof(ShipDamageController_OnImpact));
+			Postfix(nameof(ShipComponent_RepairTick));
 		}
 
 		public static bool HatchController_OnPressInteract()
@@ -187,5 +188,11 @@ namespace QSB.ShipSync.Patches
 
 		public static bool ShipDamageController_OnImpact() 
 			=> ShipManager.Instance.HasAuthority;
+
+		public static bool ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
+		{
+			QSBEventManager.FireEvent(EventNames.QSBComponentRepairTick, __instance, ____repairFraction);
+			return true;
+		}
 	}
 }
