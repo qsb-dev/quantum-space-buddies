@@ -29,11 +29,6 @@ namespace QSB.ShipSync.Events.Hull
 			};
 		}
 
-		public override void OnReceiveLocal(bool server, HullImpactMessage message)
-		{
-			DebugLog.DebugWrite($"[HULL] {message.ObjectId} OnImpact. speed:{message.Speed}, damage:{message.Damage}", OWML.Common.MessageType.Warning);
-		}
-
 		public override void OnReceiveRemote(bool server, HullImpactMessage message)
 		{
 			var worldObject = QSBWorldSync.GetWorldFromId<QSBShipHull>(message.ObjectId);

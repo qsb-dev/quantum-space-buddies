@@ -25,11 +25,6 @@ namespace QSB.ShipSync.Events.Component
 			};
 		}
 
-		public override void OnReceiveLocal(bool server, WorldObjectMessage message)
-		{
-			DebugLog.DebugWrite($"[S COMPONENT] {message.ObjectId} OnRepaired.", OWML.Common.MessageType.Warning);
-		}
-
 		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
 		{
 			var worldObject = QSBWorldSync.GetWorldFromId<QSBShipComponent>(message.ObjectId);

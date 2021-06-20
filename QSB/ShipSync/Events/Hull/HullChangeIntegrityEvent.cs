@@ -25,11 +25,6 @@ namespace QSB.ShipSync.Events.Hull
 			};
 		}
 
-		public override void OnReceiveLocal(bool server, HullChangeIntegrityMessage message)
-		{
-			DebugLog.DebugWrite($"[HULL] {message.ObjectId} Change integrity to {message.Integrity}.", OWML.Common.MessageType.Warning);
-		}
-
 		public override void OnReceiveRemote(bool server, HullChangeIntegrityMessage message)
 		{
 			var worldObject = QSBWorldSync.GetWorldFromId<QSBShipHull>(message.ObjectId);
