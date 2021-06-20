@@ -196,12 +196,6 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
-			if (!ShipManager.Instance.HasAuthority)
-			{
-				RespawnOnDeath.Instance.ResetPlayer();
-				return false;
-			}
-
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
 		}
