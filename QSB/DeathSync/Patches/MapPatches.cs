@@ -195,7 +195,7 @@ namespace QSB.DeathSync.Patches
 				}
 				else if (!____screenPromptsVisible && flag && !____isPaused)
 				{
-					____closePrompt.SetVisibility(true);
+					____closePrompt.SetVisibility(false);
 					____panPrompt.SetVisibility(true);
 					____rotatePrompt.SetVisibility(true);
 					____zoomPrompt.SetVisibility(true);
@@ -300,10 +300,6 @@ namespace QSB.DeathSync.Patches
 				____gridRenderer.transform.localScale = Vector3.one * d;
 				____gridRenderer.material.color = ____gridColor;
 				____gridRenderer.material.SetMatrix("_GridCenterMatrix", Matrix4x4.TRS(Locator.GetCenterOfTheUniverse().GetOffsetPosition(), Quaternion.identity, Vector3.one).inverse);
-				if (OWInput.IsInputMode(InputMode.Map) && (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.map, InputMode.All)))
-				{
-					__instance.GetType().GetAnyMethod("ExitMapView").Invoke(__instance, null);
-				}
 			}
 
 			return false;
