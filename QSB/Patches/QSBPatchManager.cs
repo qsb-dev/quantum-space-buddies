@@ -59,7 +59,8 @@ namespace QSB.Patches
 				new CharacterAnimationPatches(),
 				new ShipPatches(),
 				new InputPatches(),
-				new TimePatches()
+				new TimePatches(),
+				new MapPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

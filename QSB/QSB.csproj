@@ -141,6 +141,7 @@
     <Compile Include="ConversationSync\Events\ConversationStartEndMessage.cs" />
     <Compile Include="ConversationSync\ConversationType.cs" />
     <Compile Include="ConversationSync\ConversationManager.cs" />
+    <Compile Include="DeathSync\Patches\MapPatches.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathMessage.cs" />
     <Compile Include="DeathSync\Patches\DeathPatches.cs" />
     <Compile Include="ElevatorSync\WorldObjects\QSBElevator.cs" />
