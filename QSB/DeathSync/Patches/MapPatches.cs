@@ -36,7 +36,6 @@ namespace QSB.DeathSync.Patches
 			ref bool ____framingPlayer,
 			ref float ____lockTimer,
 			float ____defaultYawAngle,
-			float ____defaultPitchAngle,
 			float ____initialPitchAngle,
 			float ____initialZoomDist,
 			float ____defaultZoomDist,
@@ -51,14 +50,8 @@ namespace QSB.DeathSync.Patches
 			Transform ____playerTransform,
 			ReferenceFrame ____currentRFrame,
 			float ____gridLockOnLength,
-			float ____defaultRevealLength,
 			ref float ____revealTimer,
-			float ____observatoryRevealLength,
-			ScreenPrompt ____closePrompt,
-			ScreenPrompt ____panPrompt,
-			ScreenPrompt ____rotatePrompt,
-			ScreenPrompt ____zoomPrompt,
-			ref bool ____screenPromptsVisible
+			float ____observatoryRevealLength
 			)
 		{
 			if (____isMapMode)
@@ -86,7 +79,7 @@ namespace QSB.DeathSync.Patches
 			____mapCamera.enabled = true;
 			____gridRenderer.enabled = false;
 			____targetTransform = targetTransform;
-			____lockedToTargetTransform = (____targetTransform != null);
+			____lockedToTargetTransform = ____targetTransform != null;
 			____position = ____playerTransform.position - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
 			____position.y = 0f;
 			____yaw = ____defaultYawAngle;
@@ -95,8 +88,8 @@ namespace QSB.DeathSync.Patches
 			____targetZoom = ____defaultZoomDist;
 			if (____lockedToTargetTransform)
 			{
-				float num = Vector3.Distance(____playerTransform.position, ____targetTransform.position);
-				float value = num / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * ____playerFramingScale;
+				var num = Vector3.Distance(____playerTransform.position, ____targetTransform.position);
+				var value = num / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * ____playerFramingScale;
 				____targetZoom = Mathf.Clamp(value, ____minZoomDistance, ____maxZoomDistance);
 			}
 
@@ -107,9 +100,9 @@ namespace QSB.DeathSync.Patches
 			____interpZoom = true;
 			____framingPlayer = ____lockedToTargetTransform;
 			____lockTimer = ____lockOnMoveLength;
-			____gridOverrideSize = ((____currentRFrame == null) ? 0f : ____currentRFrame.GetAutopilotArrivalDistance());
-			____gridOverride = (____gridOverrideSize > 0f);
-			____gridTimer = ((!____gridOverride) ? 0f : ____gridLockOnLength);
+			____gridOverrideSize = (____currentRFrame == null) ? 0f : ____currentRFrame.GetAutopilotArrivalDistance();
+			____gridOverride = ____gridOverrideSize > 0f;
+			____gridTimer = (!____gridOverride) ? 0f : ____gridLockOnLength;
 			____revealLength = ____observatoryRevealLength;
 			____revealTimer = 0f;
 			____isMapMode = true;
@@ -122,8 +115,6 @@ namespace QSB.DeathSync.Patches
 			ref float ____observatoryRevealTwist,
 			ref float ____defaultPitchAngle,
 			ref float ____initialPitchAngle,
-			ref float ____defaultZoomDist,
-			ref float ____observatoryRevealLength,
 			OWCamera ____mapCamera,
 			ReferenceFrame ____currentRFrame,
 			ref float ____lockTimer,
@@ -164,7 +155,6 @@ namespace QSB.DeathSync.Patches
 			float ____maxZoomDistance,
 			float ____initialZoomDist,
 			float ____zoomSpeed,
-			AnimationCurve ____revealCurve,
 			float ____observatoryRevealDist,
 			float ____gridSize,
 			float ____gridOverrideSize,
@@ -225,11 +215,11 @@ namespace QSB.DeathSync.Patches
 					num2 *= -1f;
 				}
 
-				____lockedToTargetTransform &= (vector.sqrMagnitude < 0.01f);
-				____interpPosition &= (vector.sqrMagnitude < 0.01f);
-				____interpPitch &= (Mathf.Abs(vector2.y) < 0.1f);
-				____interpZoom &= (Mathf.Abs(num2) < 0.1f);
-				____framingPlayer &= (____lockedToTargetTransform && ____interpZoom);
+				____lockedToTargetTransform &= vector.sqrMagnitude < 0.01f;
+				____interpPosition &= vector.sqrMagnitude < 0.01f;
+				____interpPitch &= Mathf.Abs(vector2.y) < 0.1f;
+				____interpZoom &= Mathf.Abs(num2) < 0.1f;
+				____framingPlayer &= ____lockedToTargetTransform && ____interpZoom;
 				____gridOverride &= ____lockedToTargetTransform;
 				if (____interpPosition)
 				{
@@ -253,7 +243,7 @@ namespace QSB.DeathSync.Patches
 				else
 				{
 					var normalized = Vector3.Scale(__instance.transform.forward + __instance.transform.up, new Vector3(1f, 0f, 1f)).normalized;
-					var a2 = __instance.transform.right * vector.x + normalized * vector.y;
+					var a2 = (__instance.transform.right * vector.x) + (normalized * vector.y);
 					____position += a2 * ____panSpeed * ____zoom * Time.deltaTime;
 					____position.y = 0f;
 					if (____position.sqrMagnitude > ____maxPanDistance * ____maxPanDistance)
@@ -300,13 +290,13 @@ namespace QSB.DeathSync.Patches
 				a4 += ____playerTransform.up * num5 * ____observatoryRevealDist;
 				__instance.transform.rotation = Quaternion.Lerp(a3, quaternion, num5);
 				__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(____observatoryRevealTwist, 0f, num4), Vector3.forward);
-				var vector4 = ____position + -__instance.transform.forward * ____zoom + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+				var vector4 = ____position + (-__instance.transform.forward * ____zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
 				__instance.transform.position = Vector3.Lerp(a4, vector4, num5);
 
 				var a5 = ____zoom * (____gridSize / 1000f);
 				var d = Mathf.Lerp(a5, ____gridOverrideSize, t2);
 				____gridRenderer.transform.position = ____position + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
-				____gridRenderer.transform.rotation = ((____position.sqrMagnitude >= 0.001f) ? Quaternion.LookRotation(____position, Vector3.up) : Quaternion.identity);
+				____gridRenderer.transform.rotation = (____position.sqrMagnitude >= 0.001f) ? Quaternion.LookRotation(____position, Vector3.up) : Quaternion.identity;
 				____gridRenderer.transform.localScale = Vector3.one * d;
 				____gridRenderer.material.color = ____gridColor;
 				____gridRenderer.material.SetMatrix("_GridCenterMatrix", Matrix4x4.TRS(Locator.GetCenterOfTheUniverse().GetOffsetPosition(), Quaternion.identity, Vector3.one).inverse);
