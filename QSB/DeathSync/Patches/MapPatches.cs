@@ -20,7 +20,6 @@ namespace QSB.DeathSync.Patches
 		public static bool MapController_LateUpdate(
 			MapController __instance,
 			bool ____isMapMode,
-			bool ____isTrailerMap,
 			ref bool ____isObservatoryMap,
 			ref float ____observatoryRevealTwist,
 			ref float ____defaultPitchAngle,
@@ -84,16 +83,6 @@ namespace QSB.DeathSync.Patches
 					}
 					else
 					{
-						if (____isTrailerMap)
-						{
-							____isObservatoryMap = true;
-							____observatoryRevealTwist = 0f;
-							____defaultPitchAngle = 30f;
-							____initialPitchAngle = 0f;
-							____defaultZoomDist = 35000f;
-							____observatoryRevealLength = 20f;
-							____mapCamera.fieldOfView = 70f;
-						}
 						__instance.GetType().GetAnyMethod("EnterMapView").Invoke(__instance, new object[] { (____currentRFrame == null || !(____currentRFrame.GetOWRigidBody() != null)) ? null : ____currentRFrame.GetOWRigidBody().transform });
 					}
 				}
@@ -123,7 +112,7 @@ namespace QSB.DeathSync.Patches
 					____rotatePrompt.SetVisibility(true);
 					____zoomPrompt.SetVisibility(true);
 					____screenPromptsVisible = true;
-					____gridRenderer.enabled = !____isTrailerMap;
+					____gridRenderer.enabled = false;
 				}
 				var vector = Vector2.zero;
 				var vector2 = Vector2.zero;
@@ -202,11 +191,11 @@ namespace QSB.DeathSync.Patches
 				var vector4 = ____position + quaternion * Vector3.back * ____zoom + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
 				if (____isObservatoryMap)
 				{
-					var num4 = (!____isTrailerMap) ? (num * (2f - num)) : ____revealCurve.Evaluate(num);
-					var num5 = (!____isTrailerMap) ? Mathf.SmoothStep(0f, 1f, num4) : num4;
-					var a3 = (!____isTrailerMap) ? Quaternion.LookRotation(-____playerTransform.up, Vector3.up) : ____activeCam.transform.rotation;
+					var num4 = num * (2f - num);
+					var num5 = Mathf.SmoothStep(0f, 1f, num4);
+					var a3 = Quaternion.LookRotation(-____playerTransform.up, Vector3.up);
 					var a4 = ____activeCam.transform.position;
-					a4 += ((!____isTrailerMap) ? ____playerTransform.up : (-____activeCam.transform.forward)) * num5 * ____observatoryRevealDist;
+					a4 += ____playerTransform.up * num5 * ____observatoryRevealDist;
 					__instance.transform.rotation = Quaternion.Lerp(a3, quaternion, num5);
 					__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(____observatoryRevealTwist, 0f, num4), Vector3.forward);
 					vector4 = ____position + -__instance.transform.forward * ____zoom + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
