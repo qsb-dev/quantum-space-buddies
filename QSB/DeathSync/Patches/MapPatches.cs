@@ -49,8 +49,6 @@ namespace QSB.DeathSync.Patches
 			ref float ____gridTimer,
 			ref float ____revealLength,
 			Transform ____playerTransform,
-			bool ____isObservatoryMap,
-			bool ____isTrailerMap,
 			ReferenceFrame ____currentRFrame,
 			float ____gridLockOnLength,
 			float ____defaultRevealLength,
@@ -84,7 +82,7 @@ namespace QSB.DeathSync.Patches
 			Locator.GetAudioMixer().MixMap();
 			____activeCam.enabled = false;
 			____mapCamera.enabled = true;
-			____gridRenderer.enabled = (!____isTrailerMap && !____isObservatoryMap);
+			____gridRenderer.enabled = false;
 			____targetTransform = targetTransform;
 			____lockedToTargetTransform = (____targetTransform != null);
 			____position = ____playerTransform.position - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
@@ -99,16 +97,8 @@ namespace QSB.DeathSync.Patches
 				float value = num / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * ____playerFramingScale;
 				____targetZoom = Mathf.Clamp(value, ____minZoomDistance, ____maxZoomDistance);
 			}
-			if (____isObservatoryMap)
-			{
-				__instance.transform.rotation = ((!____isTrailerMap) ? Quaternion.LookRotation(-____playerTransform.up, ____playerTransform.forward) : ____activeCam.transform.rotation);
-				__instance.transform.position = ____activeCam.transform.position;
-			}
-			else
-			{
-				__instance.transform.eulerAngles = new Vector3(____pitch, ____yaw, 0f);
-				__instance.transform.position = ____position + -__instance.transform.forward * ____zoom + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
-			}
+			__instance.transform.rotation = Quaternion.LookRotation(-____playerTransform.up, ____playerTransform.forward);
+			__instance.transform.position = ____activeCam.transform.position;
 			____interpPosition = true;
 			____interpPitch = true;
 			____interpZoom = true;
@@ -117,16 +107,8 @@ namespace QSB.DeathSync.Patches
 			____gridOverrideSize = ((____currentRFrame == null) ? 0f : ____currentRFrame.GetAutopilotArrivalDistance());
 			____gridOverride = (____gridOverrideSize > 0f);
 			____gridTimer = ((!____gridOverride) ? 0f : ____gridLockOnLength);
-			____revealLength = ((!____isObservatoryMap) ? ____defaultRevealLength : ____observatoryRevealLength);
+			____revealLength = ____observatoryRevealLength;
 			____revealTimer = 0f;
-			if (!____isObservatoryMap)
-			{
-				____closePrompt.SetVisibility(true);
-				____panPrompt.SetVisibility(true);
-				____rotatePrompt.SetVisibility(true);
-				____zoomPrompt.SetVisibility(true);
-				____screenPromptsVisible = true;
-			}
 			____isMapMode = true;
 			return false;
 		}
