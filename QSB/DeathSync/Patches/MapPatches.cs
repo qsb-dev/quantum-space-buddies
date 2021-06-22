@@ -11,6 +11,124 @@ namespace QSB.DeathSync.Patches
 		public override void DoPatches()
 		{
 			Prefix(nameof(MapController_LateUpdate));
+			Prefix(nameof(MapController_EnterMapView));
+		}
+
+		public static bool MapController_EnterMapView(
+			MapController __instance,
+			Transform targetTransform,
+			ref bool ____isMapMode,
+			OWAudioSource ____audioSource,
+			MapMarkerManager ____mapMarkerManager,
+			OWCamera ____mapCamera,
+			OWCamera ____activeCam,
+			MeshRenderer ____gridRenderer,
+			ref Transform ____targetTransform,
+			ref bool ____lockedToTargetTransform,
+			ref Vector3 ____position,
+			ref float ____yaw,
+			ref float ____pitch,
+			ref float ____zoom,
+			ref float ____targetZoom,
+			ref bool ____interpPosition,
+			ref bool ____interpPitch,
+			ref bool ____interpZoom,
+			ref bool ____framingPlayer,
+			ref float ____lockTimer,
+			float ____defaultYawAngle,
+			float ____defaultPitchAngle,
+			float ____initialPitchAngle,
+			float ____initialZoomDist,
+			float ____defaultZoomDist,
+			float ____minZoomDistance,
+			float ____maxZoomDistance,
+			float ____playerFramingScale,
+			float ____lockOnMoveLength,
+			ref float ____gridOverrideSize,
+			ref bool ____gridOverride,
+			ref float ____gridTimer,
+			ref float ____revealLength,
+			Transform ____playerTransform,
+			bool ____isObservatoryMap,
+			bool ____isTrailerMap,
+			ReferenceFrame ____currentRFrame,
+			float ____gridLockOnLength,
+			float ____defaultRevealLength,
+			ref float ____revealTimer,
+			float ____observatoryRevealLength,
+			ScreenPrompt ____closePrompt,
+			ScreenPrompt ____panPrompt,
+			ScreenPrompt ____rotatePrompt,
+			ScreenPrompt ____zoomPrompt,
+			ref bool ____screenPromptsVisible
+			)
+		{
+			if (____isMapMode)
+			{
+				return false;
+			}
+			____mapMarkerManager.SetVisible(true);
+			GlobalMessenger.FireEvent("EnterMapView");
+			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", ____mapCamera);
+			if (____audioSource.isPlaying)
+			{
+				____audioSource.Stop();
+				____audioSource.SetLocalVolume(1f);
+				____audioSource.Play();
+			}
+			else
+			{
+				____audioSource.SetLocalVolume(1f);
+				____audioSource.Play();
+			}
+			Locator.GetAudioMixer().MixMap();
+			____activeCam.enabled = false;
+			____mapCamera.enabled = true;
+			____gridRenderer.enabled = (!____isTrailerMap && !____isObservatoryMap);
+			____targetTransform = targetTransform;
+			____lockedToTargetTransform = (____targetTransform != null);
+			____position = ____playerTransform.position - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+			____position.y = 0f;
+			____yaw = ____defaultYawAngle;
+			____pitch = ____initialPitchAngle;
+			____zoom = ____initialZoomDist;
+			____targetZoom = ____defaultZoomDist;
+			if (____lockedToTargetTransform)
+			{
+				float num = Vector3.Distance(____playerTransform.position, ____targetTransform.position);
+				float value = num / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * ____playerFramingScale;
+				____targetZoom = Mathf.Clamp(value, ____minZoomDistance, ____maxZoomDistance);
+			}
+			if (____isObservatoryMap)
+			{
+				__instance.transform.rotation = ((!____isTrailerMap) ? Quaternion.LookRotation(-____playerTransform.up, ____playerTransform.forward) : ____activeCam.transform.rotation);
+				__instance.transform.position = ____activeCam.transform.position;
+			}
+			else
+			{
+				__instance.transform.eulerAngles = new Vector3(____pitch, ____yaw, 0f);
+				__instance.transform.position = ____position + -__instance.transform.forward * ____zoom + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+			}
+			____interpPosition = true;
+			____interpPitch = true;
+			____interpZoom = true;
+			____framingPlayer = ____lockedToTargetTransform;
+			____lockTimer = ____lockOnMoveLength;
+			____gridOverrideSize = ((____currentRFrame == null) ? 0f : ____currentRFrame.GetAutopilotArrivalDistance());
+			____gridOverride = (____gridOverrideSize > 0f);
+			____gridTimer = ((!____gridOverride) ? 0f : ____gridLockOnLength);
+			____revealLength = ((!____isObservatoryMap) ? ____defaultRevealLength : ____observatoryRevealLength);
+			____revealTimer = 0f;
+			if (!____isObservatoryMap)
+			{
+				____closePrompt.SetVisibility(true);
+				____panPrompt.SetVisibility(true);
+				____rotatePrompt.SetVisibility(true);
+				____zoomPrompt.SetVisibility(true);
+				____screenPromptsVisible = true;
+			}
+			____isMapMode = true;
+			return false;
 		}
 
 		public static bool MapController_LateUpdate(
