@@ -114,6 +114,7 @@ namespace QSB.DeathSync.Patches
 					____screenPromptsVisible = true;
 					____gridRenderer.enabled = false;
 				}
+
 				var vector = Vector2.zero;
 				var vector2 = Vector2.zero;
 				var num2 = 0f;
@@ -125,6 +126,7 @@ namespace QSB.DeathSync.Patches
 					vector2.y *= -1f;
 					num2 *= -1f;
 				}
+
 				____lockedToTargetTransform &= (vector.sqrMagnitude < 0.01f);
 				____interpPosition &= (vector.sqrMagnitude < 0.01f);
 				____interpPitch &= (Mathf.Abs(vector2.y) < 0.1f);
@@ -140,6 +142,7 @@ namespace QSB.DeathSync.Patches
 						b = ____targetTransform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
 						b.y = 0f;
 					}
+
 					____position = Vector3.Lerp(a, b, t3);
 				}
 				else if (____lockedToTargetTransform && ____targetTransform != null)
@@ -160,6 +163,7 @@ namespace QSB.DeathSync.Patches
 						____position = ____position.normalized * ____maxPanDistance;
 					}
 				}
+
 				____yaw += vector2.x * ____yawSpeed * Time.deltaTime;
 				____yaw = OWMath.WrapAngle(____yaw);
 				if (____interpPitch)
@@ -171,6 +175,7 @@ namespace QSB.DeathSync.Patches
 					____pitch += vector2.y * ____pitchSpeed * Time.deltaTime;
 					____pitch = Mathf.Clamp(____pitch, ____minPitchAngle, ____maxPitchAngle);
 				}
+
 				if (____interpZoom)
 				{
 					if (____framingPlayer)
@@ -179,6 +184,7 @@ namespace QSB.DeathSync.Patches
 						var value = num3 / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * 1.33f;
 						____targetZoom = Mathf.Clamp(value, ____minZoomDistance, ____maxZoomDistance);
 					}
+
 					____zoom = Mathf.Lerp(____initialZoomDist, ____targetZoom, t3);
 				}
 				else
@@ -186,6 +192,7 @@ namespace QSB.DeathSync.Patches
 					____zoom += num2 * ____zoomSpeed * Time.deltaTime;
 					____zoom = Mathf.Clamp(____zoom, ____minZoomDistance, ____maxZoomDistance);
 				}
+
 				____mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, t3);
 				var quaternion = Quaternion.Euler(____pitch, ____yaw, 0f);
 				var vector4 = ____position + quaternion * Vector3.back * ____zoom + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
@@ -206,6 +213,7 @@ namespace QSB.DeathSync.Patches
 					__instance.transform.rotation = quaternion;
 					__instance.transform.position = vector4;
 				}
+
 				var a5 = ____zoom * (____gridSize / 1000f);
 				var d = Mathf.Lerp(a5, ____gridOverrideSize, t2);
 				____gridRenderer.transform.position = ____position + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
