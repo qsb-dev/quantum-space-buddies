@@ -65,6 +65,7 @@ namespace QSB.DeathSync.Patches
 			{
 				return false;
 			}
+
 			____mapMarkerManager.SetVisible(true);
 			GlobalMessenger.FireEvent("EnterMapView");
 			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", ____mapCamera);
@@ -79,6 +80,7 @@ namespace QSB.DeathSync.Patches
 				____audioSource.SetLocalVolume(1f);
 				____audioSource.Play();
 			}
+
 			Locator.GetAudioMixer().MixMap();
 			____activeCam.enabled = false;
 			____mapCamera.enabled = true;
@@ -97,6 +99,7 @@ namespace QSB.DeathSync.Patches
 				float value = num / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * ____playerFramingScale;
 				____targetZoom = Mathf.Clamp(value, ____minZoomDistance, ____maxZoomDistance);
 			}
+
 			__instance.transform.rotation = Quaternion.LookRotation(-____playerTransform.up, ____playerTransform.forward);
 			__instance.transform.position = ____activeCam.transform.position;
 			____interpPosition = true;
