@@ -244,11 +244,6 @@ namespace QSB.DeathSync.Patches
 			// Lerp to final position
 			__instance.transform.position = Vector3.Lerp(startingPosition, endPosition, num5);
 
-			if (OWInput.IsInputMode(InputMode.Map) && (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.map, InputMode.All)))
-			{
-				QSBEventManager.FireEvent(EventNames.QSBPlayerRespawn, QSBPlayerManager.LocalPlayerId);
-			}
-
 			return false;
 		}
 	}
