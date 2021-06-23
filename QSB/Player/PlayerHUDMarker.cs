@@ -7,6 +7,7 @@ namespace QSB.Player
 	{
 		private PlayerInfo _player;
 		private bool _needsInitializing;
+		private bool _isReady;
 
 		protected override void InitCanvasMarker()
 		{
@@ -26,8 +27,18 @@ namespace QSB.Player
 			_needsInitializing = true;
 		}
 
-		protected override void RefreshOwnVisibility()
+		private void Update()
 		{
+			if (_needsInitializing)
+			{
+				Initialize();
+			}
+
+			if (!_isReady || !_player.PlayerStates.IsReady)
+			{
+				return;
+			}
+
 			if (_canvasMarker != null)
 			{
 				var isVisible = _canvasMarker.IsVisible();
@@ -37,28 +48,24 @@ namespace QSB.Player
 					_canvasMarker.SetVisibility(_player.Visible);
 				}
 			}
-		}
-
-		private void Update()
-		{
-			if (!_needsInitializing || !_player.PlayerStates.IsReady)
+			else
 			{
-				return;
+				DebugLog.DebugWrite($"Warning - _canvasMarker for {_player.PlayerId} is null!", OWML.Common.MessageType.Warning);
 			}
-
-			Initialize();
 		}
 
 		private void Initialize()
 		{
 			_markerLabel = _player.Name.ToUpper();
 			_needsInitializing = false;
+			_isReady = true;
 
 			base.InitCanvasMarker();
 		}
 
 		public void Remove()
 		{
+			_isReady = false;
 			// do N O T destroy the parent - it completely breaks the ENTIRE GAME
 			if (_canvasMarker != null)
 			{
