@@ -1,8 +1,6 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches
@@ -46,11 +44,9 @@ namespace QSB.DeathSync.Patches
 			ref bool ____gridOverride,
 			ref float ____gridTimer,
 			ref float ____revealLength,
-			Transform ____playerTransform,
 			ReferenceFrame ____currentRFrame,
 			float ____gridLockOnLength,
-			ref float ____revealTimer,
-			float ____observatoryRevealLength
+			ref float ____revealTimer
 			)
 		{
 			if (____isMapMode)
@@ -79,14 +75,14 @@ namespace QSB.DeathSync.Patches
 			____gridRenderer.enabled = false;
 			____targetTransform = null;
 			____lockedToTargetTransform = false;
-			____position = ____playerTransform.position - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+			____position = RespawnOnDeath.Instance.DeathPositionWorld - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
 			____position.y = 0f;
 			____yaw = ____defaultYawAngle;
 			____pitch = ____initialPitchAngle;
 			____zoom = ____initialZoomDist;
 			____targetZoom = ____defaultZoomDist;
-			__instance.transform.rotation = Quaternion.LookRotation(-____playerTransform.up, ____playerTransform.forward);
-			__instance.transform.position = ____activeCam.transform.position;
+			__instance.transform.rotation = Quaternion.LookRotation(-RespawnOnDeath.Instance.DeathPlayerUpVector, RespawnOnDeath.Instance.DeathPlayerForwardVector);
+			__instance.transform.position = RespawnOnDeath.Instance.DeathPositionWorld;
 			____interpPosition = true;
 			____interpPitch = true;
 			____interpZoom = true;
@@ -95,7 +91,7 @@ namespace QSB.DeathSync.Patches
 			____gridOverrideSize = (____currentRFrame == null) ? 0f : ____currentRFrame.GetAutopilotArrivalDistance();
 			____gridOverride = ____gridOverrideSize > 0f;
 			____gridTimer = (!____gridOverride) ? 0f : ____gridLockOnLength;
-			____revealLength = ____observatoryRevealLength;
+			____revealLength = 20f;
 			____revealTimer = 0f;
 			____isMapMode = true;
 			return false;
@@ -111,7 +107,6 @@ namespace QSB.DeathSync.Patches
 			ref float ____revealTimer,
 			float ____lockOnMoveLength,
 			float ____revealLength,
-			float ____observatoryInteractDelay,
 			ref bool ____screenPromptsVisible,
 			bool ____isPaused,
 			ScreenPrompt ____closePrompt,
@@ -133,7 +128,6 @@ namespace QSB.DeathSync.Patches
 			ref float ____pitch,
 			float ____minPitchAngle,
 			float ____maxPitchAngle,
-			Transform ____playerTransform,
 			ref float ____targetZoom,
 			float ____minZoomDistance,
 			float ____maxZoomDistance,
@@ -148,7 +142,7 @@ namespace QSB.DeathSync.Patches
 			var revealFraction = Mathf.Clamp01(____revealTimer / ____revealLength);
 			var smoothedRevealFraction = Mathf.SmoothStep(0f, 1f, revealFraction);
 
-			var canInteractWith = ____revealTimer > ____observatoryInteractDelay;
+			var canInteractWith = ____revealTimer > 20f;
 
 			if (____screenPromptsVisible && ____isPaused)
 			{
@@ -233,11 +227,11 @@ namespace QSB.DeathSync.Patches
 			var num5 = Mathf.SmoothStep(0f, 1f, num4);
 
 			// Create rotation that's looking down at the player from above
-			var lookingDownAtPlayer = Quaternion.LookRotation(-____playerTransform.up, Vector3.up);
+			var lookingDownAtPlayer = Quaternion.LookRotation(-RespawnOnDeath.Instance.DeathPlayerUpVector, Vector3.up);
 
 			// Get starting position - distance above player
-			var startingPosition = ____activeCam.transform.position;
-			startingPosition += ____playerTransform.up * num5 * ____observatoryRevealDist;
+			var startingPosition = RespawnOnDeath.Instance.DeathPositionWorld;
+			startingPosition += RespawnOnDeath.Instance.DeathPlayerUpVector * num5 * ____observatoryRevealDist;
 
 			// Lerp to final rotation
 			__instance.transform.rotation = Quaternion.Lerp(lookingDownAtPlayer, finalRotation, num5);

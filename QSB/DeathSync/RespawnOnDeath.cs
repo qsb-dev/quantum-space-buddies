@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -22,6 +23,13 @@ namespace QSB.DeathSync
 		private PlayerResources _playerResources;
 		private PlayerSpacesuit _spaceSuit;
 		private SuitPickupVolume[] _suitPickupVolumes;
+		private Vector3 _deathPositionRelative;
+
+		public Transform DeathClosestAstroObject { get; private set; }
+		public Vector3 DeathPositionWorld
+			=> DeathClosestAstroObject.TransformPoint(_deathPositionRelative);
+		public Vector3 DeathPlayerUpVector { get; private set; }
+		public Vector3 DeathPlayerForwardVector { get; private set; }
 
 		public void Awake() => Instance = this;
 
@@ -47,7 +55,30 @@ namespace QSB.DeathSync
 
 			RespawnManager.Instance.TriggerRespawnMap();
 
-			//QSBCore.UnityEvents.FireInNUpdates(() => ResetPlayerPosition(), 5);
+			var inSpace = PlayerTransformSync.LocalInstance.SectorSync.SectorList.Count == 0;
+
+			if (inSpace)
+			{
+				DeathClosestAstroObject = Locator.GetAstroObject(AstroObject.Name.Sun).transform;
+			}
+			else
+			{
+				var allAstroobjects = Resources.FindObjectsOfTypeAll<AstroObject>().Where(x => x.GetAstroObjectName() != AstroObject.Name.None && x.GetAstroObjectType() != AstroObject.Type.Satellite);
+				var ordered = allAstroobjects.OrderBy(x => Vector3.SqrMagnitude(x.transform.position));
+				DeathClosestAstroObject = ordered.First().transform;
+			}
+
+			var deathPosition = Locator.GetPlayerTransform().position;
+			_deathPositionRelative = DeathClosestAstroObject.InverseTransformPoint(deathPosition);
+			DeathPlayerUpVector = Locator.GetPlayerTransform().up;
+			DeathPlayerForwardVector = Locator.GetPlayerTransform().forward;
+
+			var playerBody = Locator.GetPlayerBody();
+			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
+			playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
+			_playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
+			_playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
+			_playerSpawnPoint.OnSpawnPlayer();
 
 			_playerResources.SetValue("_isSuffocating", false);
 			_playerResources.DebugRefillResources();
@@ -79,17 +110,6 @@ namespace QSB.DeathSync
 					}
 				}
 			}
-		}
-
-		private void ResetPlayerPosition()
-		{
-			// Cant use _playerSpawner.DebugWarp because that will warp the ship if the player is in it
-			var playerBody = Locator.GetPlayerBody();
-			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
-			playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
-			_playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
-			_playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
-			_playerSpawnPoint.OnSpawnPlayer();
 		}
 
 		private SpawnPoint GetSpawnPoint()
