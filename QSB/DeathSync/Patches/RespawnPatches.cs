@@ -131,7 +131,7 @@ namespace QSB.DeathSync.Patches
 
 			if (canBeInteractedWith)
 			{
-				if (RespawnManager.Instance.RespawnNeeded)
+				if (RespawnManager.Instance.RespawnNeeded && !playerNeedsRefueling && !playerNeedsHealing)
 				{
 					RespawnManager.Instance.RespawnSomePlayer();
 					return false;

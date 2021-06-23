@@ -24,7 +24,7 @@ namespace QSB.Player
 		public GameObject CameraBody { get; set; }
 		public GameObject Body { get; set; }
 		public GameObject RoastingStick { get; set; }
-		public bool Visible { get; set; }
+		public bool Visible { get; set; } = true;
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
