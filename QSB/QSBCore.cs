@@ -5,6 +5,7 @@ using OWML.Utils;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
+using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
@@ -91,6 +92,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
+			gameObject.AddComponent<RespawnManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();

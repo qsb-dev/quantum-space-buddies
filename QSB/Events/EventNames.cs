@@ -77,5 +77,6 @@
 		public static string QSBComponentDamaged = "QSBComponentDamaged";
 		public static string QSBComponentRepaired = "QSBComponentRepaired";
 		public static string QSBComponentRepairTick = "QSBComponentRepairTick";
+		public static string QSBPlayerRespawn = "QSBPlayerRespawn";
 	}
 }

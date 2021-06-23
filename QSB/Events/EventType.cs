@@ -53,6 +53,7 @@
 		HullRepairTick,
 		ComponentDamaged,
 		ComponentRepaired,
-		ComponentRepairTick
+		ComponentRepairTick,
+		PlayerRespawn
 	}
 }

@@ -60,7 +60,8 @@ namespace QSB.Patches
 				new ShipPatches(),
 				new InputPatches(),
 				new TimePatches(),
-				new MapPatches()
+				new MapPatches(),
+				new RespawnPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);

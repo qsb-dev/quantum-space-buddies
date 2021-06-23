@@ -45,6 +45,8 @@ namespace QSB.DeathSync
 				Init();
 			}
 
+			RespawnManager.Instance.TriggerRespawnMap();
+
 			// Cant use _playerSpawner.DebugWarp because that will warp the ship if the player is in it
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);

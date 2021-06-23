@@ -20,11 +20,20 @@ namespace QSB.DeathSync.Events
 			NecronomiconIndex = Necronomicon.GetRandomIndex(type)
 		};
 
+		public override void OnReceiveLocal(bool server, PlayerDeathMessage message)
+		{
+			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			RespawnManager.Instance.OnPlayerDeath(player);
+		}
+
 		public override void OnReceiveRemote(bool server, PlayerDeathMessage message)
 		{
-			var playerName = QSBPlayerManager.GetPlayer(message.AboutId).Name;
+			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			var playerName = player.Name;
 			var deathMessage = Necronomicon.GetPhrase(message.EnumValue, message.NecronomiconIndex);
 			DebugLog.ToAll(string.Format(deathMessage, playerName));
+
+			RespawnManager.Instance.OnPlayerDeath(player);
 		}
 	}
 }

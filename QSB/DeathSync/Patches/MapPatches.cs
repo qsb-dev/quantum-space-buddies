@@ -1,12 +1,13 @@
 ﻿using OWML.Utils;
 using QSB.Patches;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches
 {
 	class MapPatches : QSBPatch
 	{
-		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+		public override QSBPatchTypes Type => QSBPatchTypes.RespawnTime;
 
 		public override void DoPatches()
 		{
@@ -100,12 +101,10 @@ namespace QSB.DeathSync.Patches
 
 		public static bool MapController_LateUpdate(
 			MapController __instance,
-			bool ____isMapMode,
 			ref float ____observatoryRevealTwist,
 			ref float ____defaultPitchAngle,
 			ref float ____initialPitchAngle,
 			OWCamera ____mapCamera,
-			ReferenceFrame ____currentRFrame,
 			ref float ____lockTimer,
 			ref float ____revealTimer,
 			float ____lockOnMoveLength,
@@ -121,9 +120,7 @@ namespace QSB.DeathSync.Patches
 			ref bool ____interpPosition,
 			ref bool ____interpPitch,
 			ref bool ____interpZoom,
-			ref bool ____framingPlayer,
 			OWCamera ____activeCam,
-			Transform ____targetTransform,
 			ref Vector3 ____position,
 			float ____panSpeed,
 			ref float ____zoom,
@@ -143,134 +140,96 @@ namespace QSB.DeathSync.Patches
 			float ____observatoryRevealDist
 			)
 		{
-			if (!____isMapMode)
+			____lockTimer = Mathf.Min(____lockTimer + Time.deltaTime, ____lockOnMoveLength);
+			____revealTimer = Mathf.Min(____revealTimer + Time.deltaTime, ____revealLength);
+			var num = Mathf.Clamp01(____revealTimer / ____revealLength);
+			var t3 = Mathf.SmoothStep(0f, 1f, num);
+			var flag = ____revealTimer > ____observatoryInteractDelay;
+			if (____screenPromptsVisible && ____isPaused)
 			{
-				if (OWInput.IsInputMode(InputMode.Character | InputMode.ShipCockpit) && OWInput.IsNewlyPressed(InputLibrary.map, InputMode.All))
-				{
-					if (PlayerState.InBrambleDimension() || PlayerState.OnQuantumMoon())
-					{
-						NotificationManager.SharedInstance.PostNotification(new NotificationData(UITextLibrary.GetString(UITextType.NotificationUnableToOpenMap)), false);
-					}
-					else
-					{
-						__instance.GetType().GetAnyMethod("EnterMapView").Invoke(__instance, new object[] { (____currentRFrame == null || !(____currentRFrame.GetOWRigidBody() != null)) ? null : ____currentRFrame.GetOWRigidBody().transform });
-					}
-				}
+				____closePrompt.SetVisibility(false);
+				____panPrompt.SetVisibility(false);
+				____rotatePrompt.SetVisibility(false);
+				____zoomPrompt.SetVisibility(false);
+				____screenPromptsVisible = false;
+			}
+			else if (!____screenPromptsVisible && flag && !____isPaused)
+			{
+				____closePrompt.SetVisibility(false);
+				____panPrompt.SetVisibility(true);
+				____rotatePrompt.SetVisibility(true);
+				____zoomPrompt.SetVisibility(true);
+				____screenPromptsVisible = true;
+			}
+
+			var vector = Vector2.zero;
+			var vector2 = Vector2.zero;
+			var num2 = 0f;
+			if (flag)
+			{
+				vector = OWInput.GetValue(InputLibrary.moveXZ, InputMode.All);
+				vector2 = InputLibrary.look.GetValue(false);
+				num2 = OWInput.GetValue(InputLibrary.mapZoom, InputMode.All);
+				vector2.y *= -1f;
+				num2 *= -1f;
+			}
+
+			____lockedToTargetTransform &= vector.sqrMagnitude < 0.01f;
+			____interpPosition &= vector.sqrMagnitude < 0.01f;
+			____interpPitch &= Mathf.Abs(vector2.y) < 0.1f;
+			____interpZoom &= Mathf.Abs(num2) < 0.1f;
+
+			if (____interpPosition)
+			{
+				var a = ____activeCam.transform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
+				var b = Vector3.zero;
+				____position = Vector3.Lerp(a, b, t3);
 			}
 			else
 			{
-				____lockTimer = Mathf.Min(____lockTimer + Time.deltaTime, ____lockOnMoveLength);
-				var t = Mathf.Clamp01(____lockTimer / ____lockOnMoveLength);
-				____revealTimer = Mathf.Min(____revealTimer + Time.deltaTime, ____revealLength);
-				var num = Mathf.Clamp01(____revealTimer / ____revealLength);
-				var t3 = Mathf.SmoothStep(0f, 1f, num);
-				var flag = ____revealTimer > ____observatoryInteractDelay;
-				if (____screenPromptsVisible && ____isPaused)
+				var normalized = Vector3.Scale(__instance.transform.forward + __instance.transform.up, new Vector3(1f, 0f, 1f)).normalized;
+				var a2 = (__instance.transform.right * vector.x) + (normalized * vector.y);
+				____position += a2 * ____panSpeed * ____zoom * Time.deltaTime;
+				____position.y = 0f;
+				if (____position.sqrMagnitude > ____maxPanDistance * ____maxPanDistance)
 				{
-					____closePrompt.SetVisibility(false);
-					____panPrompt.SetVisibility(false);
-					____rotatePrompt.SetVisibility(false);
-					____zoomPrompt.SetVisibility(false);
-					____screenPromptsVisible = false;
+					____position = ____position.normalized * ____maxPanDistance;
 				}
-				else if (!____screenPromptsVisible && flag && !____isPaused)
-				{
-					____closePrompt.SetVisibility(false);
-					____panPrompt.SetVisibility(true);
-					____rotatePrompt.SetVisibility(true);
-					____zoomPrompt.SetVisibility(true);
-					____screenPromptsVisible = true;
-				}
-
-				var vector = Vector2.zero;
-				var vector2 = Vector2.zero;
-				var num2 = 0f;
-				if (flag)
-				{
-					vector = OWInput.GetValue(InputLibrary.moveXZ, InputMode.All);
-					vector2 = InputLibrary.look.GetValue(false);
-					num2 = OWInput.GetValue(InputLibrary.mapZoom, InputMode.All);
-					vector2.y *= -1f;
-					num2 *= -1f;
-				}
-
-				____lockedToTargetTransform &= vector.sqrMagnitude < 0.01f;
-				____interpPosition &= vector.sqrMagnitude < 0.01f;
-				____interpPitch &= Mathf.Abs(vector2.y) < 0.1f;
-				____interpZoom &= Mathf.Abs(num2) < 0.1f;
-				____framingPlayer &= ____lockedToTargetTransform && ____interpZoom;
-				if (____interpPosition)
-				{
-					var a = ____activeCam.transform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
-					var b = Vector3.zero;
-					if (____lockedToTargetTransform && ____targetTransform != null)
-					{
-						b = ____targetTransform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
-						b.y = 0f;
-					}
-
-					____position = Vector3.Lerp(a, b, t3);
-				}
-				else if (____lockedToTargetTransform && ____targetTransform != null)
-				{
-					var vector3 = ____targetTransform.position;
-					vector3 -= Locator.GetCenterOfTheUniverse().GetOffsetPosition();
-					vector3.y = 0f;
-					____position = Vector3.Lerp(____position, vector3, t);
-				}
-				else
-				{
-					var normalized = Vector3.Scale(__instance.transform.forward + __instance.transform.up, new Vector3(1f, 0f, 1f)).normalized;
-					var a2 = (__instance.transform.right * vector.x) + (normalized * vector.y);
-					____position += a2 * ____panSpeed * ____zoom * Time.deltaTime;
-					____position.y = 0f;
-					if (____position.sqrMagnitude > ____maxPanDistance * ____maxPanDistance)
-					{
-						____position = ____position.normalized * ____maxPanDistance;
-					}
-				}
-
-				____yaw += vector2.x * ____yawSpeed * Time.deltaTime;
-				____yaw = OWMath.WrapAngle(____yaw);
-				if (____interpPitch)
-				{
-					____pitch = Mathf.Lerp(____initialPitchAngle, ____defaultPitchAngle, t3);
-				}
-				else
-				{
-					____pitch += vector2.y * ____pitchSpeed * Time.deltaTime;
-					____pitch = Mathf.Clamp(____pitch, ____minPitchAngle, ____maxPitchAngle);
-				}
-
-				if (____interpZoom)
-				{
-					if (____framingPlayer)
-					{
-						var num3 = Vector3.Distance(____playerTransform.position, ____targetTransform.position);
-						var value = num3 / Mathf.Tan(0.017453292f * ____mapCamera.fieldOfView * 0.5f) * 1.33f;
-						____targetZoom = Mathf.Clamp(value, ____minZoomDistance, ____maxZoomDistance);
-					}
-
-					____zoom = Mathf.Lerp(____initialZoomDist, ____targetZoom, t3);
-				}
-				else
-				{
-					____zoom += num2 * ____zoomSpeed * Time.deltaTime;
-					____zoom = Mathf.Clamp(____zoom, ____minZoomDistance, ____maxZoomDistance);
-				}
-
-				____mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, t3);
-				var quaternion = Quaternion.Euler(____pitch, ____yaw, 0f);
-				var num4 = num * (2f - num);
-				var num5 = Mathf.SmoothStep(0f, 1f, num4);
-				var a3 = Quaternion.LookRotation(-____playerTransform.up, Vector3.up);
-				var a4 = ____activeCam.transform.position;
-				a4 += ____playerTransform.up * num5 * ____observatoryRevealDist;
-				__instance.transform.rotation = Quaternion.Lerp(a3, quaternion, num5);
-				__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(____observatoryRevealTwist, 0f, num4), Vector3.forward);
-				var vector4 = ____position + (-__instance.transform.forward * ____zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
-				__instance.transform.position = Vector3.Lerp(a4, vector4, num5);
 			}
+
+			____yaw += vector2.x * ____yawSpeed * Time.deltaTime;
+			____yaw = OWMath.WrapAngle(____yaw);
+			if (____interpPitch)
+			{
+				____pitch = Mathf.Lerp(____initialPitchAngle, ____defaultPitchAngle, t3);
+			}
+			else
+			{
+				____pitch += vector2.y * ____pitchSpeed * Time.deltaTime;
+				____pitch = Mathf.Clamp(____pitch, ____minPitchAngle, ____maxPitchAngle);
+			}
+
+			if (____interpZoom)
+			{
+				____zoom = Mathf.Lerp(____initialZoomDist, ____targetZoom, t3);
+			}
+			else
+			{
+				____zoom += num2 * ____zoomSpeed * Time.deltaTime;
+				____zoom = Mathf.Clamp(____zoom, ____minZoomDistance, ____maxZoomDistance);
+			}
+
+			____mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, t3);
+			var quaternion = Quaternion.Euler(____pitch, ____yaw, 0f);
+			var num4 = num * (2f - num);
+			var num5 = Mathf.SmoothStep(0f, 1f, num4);
+			var a3 = Quaternion.LookRotation(-____playerTransform.up, Vector3.up);
+			var a4 = ____activeCam.transform.position;
+			a4 += ____playerTransform.up * num5 * ____observatoryRevealDist;
+			__instance.transform.rotation = Quaternion.Lerp(a3, quaternion, num5);
+			__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(____observatoryRevealTwist, 0f, num4), Vector3.forward);
+			var vector4 = ____position + (-__instance.transform.forward * ____zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+			__instance.transform.position = Vector3.Lerp(a4, vector4, num5);
 
 			return false;
 		}
