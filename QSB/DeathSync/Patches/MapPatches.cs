@@ -142,7 +142,7 @@ namespace QSB.DeathSync.Patches
 			var revealFraction = Mathf.Clamp01(____revealTimer / ____revealLength);
 			var smoothedRevealFraction = Mathf.SmoothStep(0f, 1f, revealFraction);
 
-			var canInteractWith = ____revealTimer > 20f;
+			var canInteractWith = ____revealTimer > 18f;
 
 			if (____screenPromptsVisible && ____isPaused)
 			{
