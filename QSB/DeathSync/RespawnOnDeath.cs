@@ -47,13 +47,7 @@ namespace QSB.DeathSync
 
 			RespawnManager.Instance.TriggerRespawnMap();
 
-			// Cant use _playerSpawner.DebugWarp because that will warp the ship if the player is in it
-			var playerBody = Locator.GetPlayerBody();
-			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
-			playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
-			_playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
-			_playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
-			_playerSpawnPoint.OnSpawnPlayer();
+			//QSBCore.UnityEvents.FireInNUpdates(() => ResetPlayerPosition(), 5);
 
 			_playerResources.SetValue("_isSuffocating", false);
 			_playerResources.DebugRefillResources();
@@ -85,6 +79,17 @@ namespace QSB.DeathSync
 					}
 				}
 			}
+		}
+
+		private void ResetPlayerPosition()
+		{
+			// Cant use _playerSpawner.DebugWarp because that will warp the ship if the player is in it
+			var playerBody = Locator.GetPlayerBody();
+			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
+			playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
+			_playerSpawnPoint.AddObjectToTriggerVolumes(Locator.GetPlayerDetector().gameObject);
+			_playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
+			_playerSpawnPoint.OnSpawnPlayer();
 		}
 
 		private SpawnPoint GetSpawnPoint()

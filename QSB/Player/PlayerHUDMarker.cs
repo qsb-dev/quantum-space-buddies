@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Player
 {
 	public class PlayerHUDMarker : HUDDistanceMarker
 	{
 		private PlayerInfo _player;
-		private bool _isReady;
+		private bool _needsInitializing;
 
 		protected override void InitCanvasMarker()
 		{
@@ -19,28 +20,39 @@ namespace QSB.Player
 
 		public void Init(PlayerInfo player)
 		{
+			DebugLog.DebugWrite($"Init {player.PlayerId} name:{player.Name}");
 			_player = player;
 			_player.HudMarker = this;
-			_isReady = true;
+			_needsInitializing = true;
 		}
 
 		protected override void RefreshOwnVisibility()
 		{
 			if (_canvasMarker != null)
 			{
-				_canvasMarker.SetVisibility(true);
+				var isVisible = _canvasMarker.IsVisible();
+
+				if (_player.Visible != isVisible)
+				{
+					_canvasMarker.SetVisibility(_player.Visible);
+				}
 			}
 		}
 
 		private void Update()
 		{
-			if (!_isReady || !_player.PlayerStates.IsReady)
+			if (!_needsInitializing || !_player.PlayerStates.IsReady)
 			{
 				return;
 			}
 
+			Initialize();
+		}
+
+		private void Initialize()
+		{
 			_markerLabel = _player.Name.ToUpper();
-			_isReady = false;
+			_needsInitializing = false;
 
 			base.InitCanvasMarker();
 		}

@@ -142,6 +142,8 @@ namespace QSB.Player
 			{
 				renderer.enabled = visible;
 			}
+
+			player.Visible = visible;
 		}
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer)

@@ -1,5 +1,7 @@
 ﻿using OWML.Utils;
+using QSB.Events;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Utility;
 using UnityEngine;
 
@@ -142,9 +144,12 @@ namespace QSB.DeathSync.Patches
 		{
 			____lockTimer = Mathf.Min(____lockTimer + Time.deltaTime, ____lockOnMoveLength);
 			____revealTimer = Mathf.Min(____revealTimer + Time.deltaTime, ____revealLength);
-			var num = Mathf.Clamp01(____revealTimer / ____revealLength);
-			var t3 = Mathf.SmoothStep(0f, 1f, num);
-			var flag = ____revealTimer > ____observatoryInteractDelay;
+
+			var revealFraction = Mathf.Clamp01(____revealTimer / ____revealLength);
+			var smoothedRevealFraction = Mathf.SmoothStep(0f, 1f, revealFraction);
+
+			var canInteractWith = ____revealTimer > ____observatoryInteractDelay;
+
 			if (____screenPromptsVisible && ____isPaused)
 			{
 				____closePrompt.SetVisibility(false);
@@ -153,7 +158,7 @@ namespace QSB.DeathSync.Patches
 				____zoomPrompt.SetVisibility(false);
 				____screenPromptsVisible = false;
 			}
-			else if (!____screenPromptsVisible && flag && !____isPaused)
+			else if (!____screenPromptsVisible && canInteractWith && !____isPaused)
 			{
 				____closePrompt.SetVisibility(false);
 				____panPrompt.SetVisibility(true);
@@ -162,33 +167,33 @@ namespace QSB.DeathSync.Patches
 				____screenPromptsVisible = true;
 			}
 
-			var vector = Vector2.zero;
-			var vector2 = Vector2.zero;
-			var num2 = 0f;
-			if (flag)
+			var XZinput = Vector2.zero;
+			var lookInput = Vector2.zero;
+			var zoomInput = 0f;
+			if (canInteractWith)
 			{
-				vector = OWInput.GetValue(InputLibrary.moveXZ, InputMode.All);
-				vector2 = InputLibrary.look.GetValue(false);
-				num2 = OWInput.GetValue(InputLibrary.mapZoom, InputMode.All);
-				vector2.y *= -1f;
-				num2 *= -1f;
+				XZinput = OWInput.GetValue(InputLibrary.moveXZ, InputMode.All);
+				lookInput = InputLibrary.look.GetValue(false);
+				zoomInput = OWInput.GetValue(InputLibrary.mapZoom, InputMode.All);
+				lookInput.y *= -1f;
+				zoomInput *= -1f;
 			}
 
-			____lockedToTargetTransform &= vector.sqrMagnitude < 0.01f;
-			____interpPosition &= vector.sqrMagnitude < 0.01f;
-			____interpPitch &= Mathf.Abs(vector2.y) < 0.1f;
-			____interpZoom &= Mathf.Abs(num2) < 0.1f;
+			____lockedToTargetTransform &= XZinput.sqrMagnitude < 0.01f;
+			____interpPosition &= XZinput.sqrMagnitude < 0.01f;
+			____interpPitch &= Mathf.Abs(lookInput.y) < 0.1f;
+			____interpZoom &= Mathf.Abs(zoomInput) < 0.1f;
 
 			if (____interpPosition)
 			{
 				var a = ____activeCam.transform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
 				var b = Vector3.zero;
-				____position = Vector3.Lerp(a, b, t3);
+				____position = Vector3.Lerp(a, b, smoothedRevealFraction);
 			}
 			else
 			{
 				var normalized = Vector3.Scale(__instance.transform.forward + __instance.transform.up, new Vector3(1f, 0f, 1f)).normalized;
-				var a2 = (__instance.transform.right * vector.x) + (normalized * vector.y);
+				var a2 = (__instance.transform.right * XZinput.x) + (normalized * XZinput.y);
 				____position += a2 * ____panSpeed * ____zoom * Time.deltaTime;
 				____position.y = 0f;
 				if (____position.sqrMagnitude > ____maxPanDistance * ____maxPanDistance)
@@ -197,39 +202,58 @@ namespace QSB.DeathSync.Patches
 				}
 			}
 
-			____yaw += vector2.x * ____yawSpeed * Time.deltaTime;
+			____yaw += lookInput.x * ____yawSpeed * Time.deltaTime;
 			____yaw = OWMath.WrapAngle(____yaw);
 			if (____interpPitch)
 			{
-				____pitch = Mathf.Lerp(____initialPitchAngle, ____defaultPitchAngle, t3);
+				____pitch = Mathf.Lerp(____initialPitchAngle, ____defaultPitchAngle, smoothedRevealFraction);
 			}
 			else
 			{
-				____pitch += vector2.y * ____pitchSpeed * Time.deltaTime;
+				____pitch += lookInput.y * ____pitchSpeed * Time.deltaTime;
 				____pitch = Mathf.Clamp(____pitch, ____minPitchAngle, ____maxPitchAngle);
 			}
 
 			if (____interpZoom)
 			{
-				____zoom = Mathf.Lerp(____initialZoomDist, ____targetZoom, t3);
+				____zoom = Mathf.Lerp(____initialZoomDist, ____targetZoom, smoothedRevealFraction);
 			}
 			else
 			{
-				____zoom += num2 * ____zoomSpeed * Time.deltaTime;
+				____zoom += zoomInput * ____zoomSpeed * Time.deltaTime;
 				____zoom = Mathf.Clamp(____zoom, ____minZoomDistance, ____maxZoomDistance);
 			}
 
-			____mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, t3);
-			var quaternion = Quaternion.Euler(____pitch, ____yaw, 0f);
-			var num4 = num * (2f - num);
+			____mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, smoothedRevealFraction);
+
+			var finalRotation = Quaternion.Euler(____pitch, ____yaw, 0f);
+
+			var num4 = revealFraction * (2f - revealFraction);
+
 			var num5 = Mathf.SmoothStep(0f, 1f, num4);
-			var a3 = Quaternion.LookRotation(-____playerTransform.up, Vector3.up);
-			var a4 = ____activeCam.transform.position;
-			a4 += ____playerTransform.up * num5 * ____observatoryRevealDist;
-			__instance.transform.rotation = Quaternion.Lerp(a3, quaternion, num5);
+
+			// Create rotation that's looking down at the player from above
+			var lookingDownAtPlayer = Quaternion.LookRotation(-____playerTransform.up, Vector3.up);
+
+			// Get starting position - distance above player
+			var startingPosition = ____activeCam.transform.position;
+			startingPosition += ____playerTransform.up * num5 * ____observatoryRevealDist;
+
+			// Lerp to final rotation
+			__instance.transform.rotation = Quaternion.Lerp(lookingDownAtPlayer, finalRotation, num5);
+
+			// Lerp reveal twist
 			__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(____observatoryRevealTwist, 0f, num4), Vector3.forward);
-			var vector4 = ____position + (-__instance.transform.forward * ____zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
-			__instance.transform.position = Vector3.Lerp(a4, vector4, num5);
+
+			var endPosition = ____position + (-__instance.transform.forward * ____zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+
+			// Lerp to final position
+			__instance.transform.position = Vector3.Lerp(startingPosition, endPosition, num5);
+
+			if (OWInput.IsInputMode(InputMode.Map) && (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.map, InputMode.All)))
+			{
+				QSBEventManager.FireEvent(EventNames.QSBPlayerRespawn, QSBPlayerManager.LocalPlayerId);
+			}
 
 			return false;
 		}
