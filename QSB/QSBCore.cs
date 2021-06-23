@@ -156,4 +156,5 @@ namespace QSB
  * Jake Chudnow
  * Murray Gold
  * Teleskärm
+ * Daft Punk
  */
