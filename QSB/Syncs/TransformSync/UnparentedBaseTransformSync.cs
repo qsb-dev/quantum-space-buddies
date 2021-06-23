@@ -219,7 +219,7 @@ namespace QSB.Syncs.TransformSync
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
 			{
-				DebugLog.DebugWrite($"Warning - {AttachedObject.name} moved too far!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {AttachedObject.name} moved too far!", MessageType.Warning);
 				_previousDistance = distance;
 				return targetPosition;
 			}

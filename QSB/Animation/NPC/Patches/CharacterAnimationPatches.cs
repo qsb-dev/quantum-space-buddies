@@ -53,7 +53,7 @@ namespace QSB.Animation.NPC.Patches
 			{
 				if (playerId == uint.MaxValue)
 				{
-					DebugLog.DebugWrite($"Error - {__instance.name} is in conversation with a null player! Defaulting to active camera.", MessageType.Error);
+					DebugLog.ToConsole($"Error - {__instance.name} is in conversation with a null player! Defaulting to active camera.", MessageType.Error);
 					playerToUse = QSBPlayerManager.LocalPlayer;
 				}
 				else

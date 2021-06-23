@@ -157,7 +157,7 @@ namespace QSB.Player
 		{
 			if (playerList.Count == 0)
 			{
-				DebugLog.DebugWrite($"Error - Cannot get closest player from empty player list.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Cannot get closest player from empty player list.", MessageType.Error);
 				return null;
 			}
 

@@ -72,7 +72,7 @@ namespace QSB.RoastingSync.Events
 			var rigidbody = tossedMallow.GetComponent<OWRigidbody>();
 			if (player.Campfire == null)
 			{
-				DebugLog.DebugWrite($"Error - Campfire for {playerId} is null.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Campfire for {playerId} is null.", OWML.Common.MessageType.Error);
 				return;
 			}
 
@@ -80,7 +80,7 @@ namespace QSB.RoastingSync.Events
 			rigidbody.SetAngularVelocity(stickTip.right * 10f);
 			if (player.Marshmallow == null)
 			{
-				DebugLog.DebugWrite($"Error - Marshmallow for {playerId} is null.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Marshmallow for {playerId} is null.", OWML.Common.MessageType.Error);
 				return;
 			}
 

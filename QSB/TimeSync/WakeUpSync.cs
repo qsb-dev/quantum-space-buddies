@@ -125,7 +125,7 @@ namespace QSB.TimeSync
 
 			if (PlayerData.LoadLoopCount() != _serverLoopCount)
 			{
-				DebugLog.DebugWrite($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
+				DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
 				StartWaitingForServerToDie();
 				return;
 			}
