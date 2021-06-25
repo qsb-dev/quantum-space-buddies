@@ -50,6 +50,8 @@ namespace QSB.DeathSync
 				return;
 			}
 
+			player.IsDead = true;
+
 			_playersPendingRespawn.Add(player);
 			UpdateRespawnNotification();
 
@@ -63,6 +65,8 @@ namespace QSB.DeathSync
 				DebugLog.ToConsole($"Warning - Received respawn message for player who is not in _playersPendingRespawn!", OWML.Common.MessageType.Warning);
 				return;
 			}
+
+			player.IsDead = false;
 
 			_playersPendingRespawn.Remove(player);
 			UpdateRespawnNotification();

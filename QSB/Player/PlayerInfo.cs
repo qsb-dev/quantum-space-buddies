@@ -55,6 +55,7 @@ namespace QSB.Player
 		public bool IsInMoon; // TODO : move into PlayerStates?
 		public bool IsInShrine; // TODO : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
+		public bool IsDead { get; set; }
 
 		public PlayerInfo(uint id)
 		{
