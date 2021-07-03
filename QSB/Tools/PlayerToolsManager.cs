@@ -4,6 +4,7 @@ using QSB.ProbeSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace QSB.Tools
 {
@@ -39,10 +40,55 @@ namespace QSB.Tools
 			CreateTranslator(camera);
 		}
 
-		public static void CreateProbe(Transform body, PlayerInfo player)
+		public static void CreateProbe(Transform newProbe, PlayerInfo player)
 		{
-			var newProbe = body.gameObject.AddComponent<QSBProbe>();
-			player.Probe = newProbe;
+			var qsbProbe = newProbe.gameObject.AddComponent<QSBProbe>();
+			player.Probe = qsbProbe;
+
+			// Probe_Body
+			Object.Destroy(newProbe.GetComponent<ProbeAnchor>());
+			Object.Destroy(newProbe.GetComponent<AlignWithFluid>());
+			Object.Destroy(newProbe.GetComponent<MapMarker>());
+			Object.Destroy(newProbe.GetComponent<SurveyorProbe>());
+			Object.Destroy(newProbe.GetComponent<ProbeHUDMarker>());
+			Object.Destroy(newProbe.GetComponent<ProbeSeeking>());
+			Object.Destroy(newProbe.GetComponent<LightFlickerController>());
+
+			// ProbeDetector
+			Object.Destroy(newProbe.Find("ProbeDetector"));
+
+			// CameraPivot
+			var cameraPivot = newProbe.Find("CameraPivot");
+			Object.Destroy(cameraPivot.GetComponent<ProbeHorizonTracker>());
+
+			// TODO : Sync probe animations
+
+			// CameraPivot/Geometry/Props_HEA_Probe_ANIM
+			var animRoot = cameraPivot.Find("Geometry").Find("Props_HEA_Probe_ANIM");
+			Object.Destroy(animRoot.GetComponent<Animator>());
+			Object.Destroy(animRoot.GetComponent<ProbeAnimatorController>());
+
+			// TODO : Set up QSB cameras for these two cameras - that's why im not just destroying the GOs here
+
+			// CameraPivot/ForwardCamera
+			var forwardCamera = cameraPivot.Find("ForwardCamera");
+			Object.Destroy(forwardCamera.GetComponent<Camera>());
+			Object.Destroy(forwardCamera.GetComponent<OWCamera>());
+			Object.Destroy(forwardCamera.GetComponent<ProbeCamera>());
+			Object.Destroy(forwardCamera.GetComponent<PlanetaryFogImageEffect>());
+			Object.Destroy(forwardCamera.GetComponent<PostProcessingBehaviour>());
+			Object.Destroy(forwardCamera.GetComponent<NoiseImageEffect>());
+
+			// CameraPivot/RotatingCameraPivot/RotatingCamera
+			var rotatingCamera = cameraPivot.Find("RotatingCameraPivot").Find("RotatingCamera");
+			Object.Destroy(rotatingCamera.GetComponent<Camera>());
+			Object.Destroy(rotatingCamera.GetComponent<OWCamera>());
+			Object.Destroy(rotatingCamera.GetComponent<ProbeCamera>());
+			Object.Destroy(rotatingCamera.GetComponent<PlanetaryFogImageEffect>());
+			Object.Destroy(rotatingCamera.GetComponent<PostProcessingBehaviour>());
+			Object.Destroy(rotatingCamera.GetComponent<NoiseImageEffect>());
+
+			Object.Destroy(newProbe.Find("PlaneOffsetMarker_Probe"));
 		}
 
 		private static void CreateStowTransforms(Transform cameraBody)

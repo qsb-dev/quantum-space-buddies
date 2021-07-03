@@ -18,13 +18,10 @@ namespace QSB.ProbeSync.TransformSync
 			LocalInstance = this;
 		}
 
-		private Transform GetProbe() =>
-			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-
 		protected override Transform InitLocalTransform()
 		{
 			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this);
-			var body = GetProbe();
+			var body = Locator.GetProbe().transform;
 
 			Player.ProbeBody = body.gameObject;
 
@@ -33,7 +30,7 @@ namespace QSB.ProbeSync.TransformSync
 
 		protected override Transform InitRemoteTransform()
 		{
-			var probe = GetProbe();
+			var probe = Locator.GetProbe().transform;
 
 			if (probe == null)
 			{
@@ -43,8 +40,6 @@ namespace QSB.ProbeSync.TransformSync
 
 			var body = probe.InstantiateInactive();
 			body.name = "RemoteProbeTransform";
-
-			Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
