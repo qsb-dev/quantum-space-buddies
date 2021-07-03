@@ -72,21 +72,21 @@ namespace QSB.Tools
 
 			// CameraPivot/ForwardCamera
 			var forwardCamera = cameraPivot.Find("ForwardCamera");
+			Object.Destroy(forwardCamera.GetComponent<PostProcessingBehaviour>());
+			Object.Destroy(forwardCamera.GetComponent<NoiseImageEffect>());
 			Object.Destroy(forwardCamera.GetComponent<PlanetaryFogImageEffect>());
 			Object.Destroy(forwardCamera.GetComponent<ProbeCamera>());
 			Object.Destroy(forwardCamera.GetComponent<OWCamera>());
 			Object.Destroy(forwardCamera.GetComponent<Camera>());
-			Object.Destroy(forwardCamera.GetComponent<PostProcessingBehaviour>());
-			Object.Destroy(forwardCamera.GetComponent<NoiseImageEffect>());
 
 			// CameraPivot/RotatingCameraPivot/RotatingCamera
 			var rotatingCamera = cameraPivot.Find("RotatingCameraPivot").Find("RotatingCamera");
+			Object.Destroy(rotatingCamera.GetComponent<PostProcessingBehaviour>());
+			Object.Destroy(rotatingCamera.GetComponent<NoiseImageEffect>());
 			Object.Destroy(rotatingCamera.GetComponent<PlanetaryFogImageEffect>());
 			Object.Destroy(rotatingCamera.GetComponent<ProbeCamera>());
 			Object.Destroy(rotatingCamera.GetComponent<OWCamera>());
 			Object.Destroy(rotatingCamera.GetComponent<Camera>());
-			Object.Destroy(rotatingCamera.GetComponent<PostProcessingBehaviour>());
-			Object.Destroy(rotatingCamera.GetComponent<NoiseImageEffect>());
 
 			Object.Destroy(newProbe.Find("PlaneOffsetMarker_Probe").gameObject);
 		}
