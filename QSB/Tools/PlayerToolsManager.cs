@@ -55,7 +55,7 @@ namespace QSB.Tools
 			Object.Destroy(newProbe.GetComponent<LightFlickerController>());
 
 			// ProbeDetector
-			Object.Destroy(newProbe.Find("ProbeDetector").gameObject);
+			//Object.Destroy(newProbe.Find("ProbeDetector").gameObject);
 
 			// CameraPivot
 			var cameraPivot = newProbe.Find("CameraPivot");
@@ -87,6 +87,26 @@ namespace QSB.Tools
 			Object.Destroy(rotatingCamera.GetComponent<ProbeCamera>());
 			Object.Destroy(rotatingCamera.GetComponent<OWCamera>());
 			Object.Destroy(rotatingCamera.GetComponent<Camera>());
+
+			// AmbientLight_Probe
+			var ambientLight = newProbe.Find("AmbientLight_Probe");
+			var oldAmbLantern = ambientLight.GetComponent<ProbeLantern>();
+			var newAmbLantern = ambientLight.gameObject.AddComponent<QSBProbeLantern>();
+			newAmbLantern._fadeInDuration = oldAmbLantern.GetValue<float>("_fadeInDuration");
+			newAmbLantern._fadeInCurve = oldAmbLantern.GetValue<AnimationCurve>("_fadeInCurve");
+			newAmbLantern._fadeOutCurve = oldAmbLantern.GetValue<AnimationCurve>("_fadeOutCurve");
+			newAmbLantern._emissiveRenderer = oldAmbLantern.GetValue<OWEmissiveRenderer>("_emissiveRenderer");
+			Object.Destroy(oldAmbLantern);
+
+			// Lantern
+			var lantern = newProbe.Find("Lantern");
+			var oldLantern = lantern.GetComponent<ProbeLantern>();
+			var newLantern = lantern.gameObject.AddComponent<QSBProbeLantern>();
+			newLantern._fadeInDuration = oldLantern.GetValue<float>("_fadeInDuration");
+			newLantern._fadeInCurve = oldLantern.GetValue<AnimationCurve>("_fadeInCurve");
+			newLantern._fadeOutCurve = oldLantern.GetValue<AnimationCurve>("_fadeOutCurve");
+			newLantern._emissiveRenderer = oldLantern.GetValue<OWEmissiveRenderer>("_emissiveRenderer");
+			Object.Destroy(oldLantern);
 
 			Object.Destroy(newProbe.Find("PlaneOffsetMarker_Probe").gameObject);
 		}

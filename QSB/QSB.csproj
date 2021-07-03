@@ -213,6 +213,8 @@
     <Compile Include="PoolSync\Patches\PoolPatches.cs" />
     <Compile Include="PoolSync\PoolManager.cs" />
     <Compile Include="Inputs\QSBInputManager.cs" />
+    <Compile Include="ProbeSync\QSBProbeLantern.cs" />
+    <Compile Include="ProbeSync\QSBProbeSpotlight.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
