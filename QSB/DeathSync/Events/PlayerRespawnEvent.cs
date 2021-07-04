@@ -21,7 +21,7 @@ namespace QSB.DeathSync.Events
 			AboutId = playerId
 		};
 
-		public override void OnReceiveLocal(bool server, PlayerMessage message) 
+		public override void OnReceiveLocal(bool server, PlayerMessage message)
 			=> OnReceiveRemote(server, message);
 
 		public override void OnReceiveRemote(bool server, PlayerMessage message)

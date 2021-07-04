@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
 using System.Linq;
-using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.ProbeSync
 {
@@ -47,16 +47,16 @@ namespace QSB.ProbeSync
 			//}
 			//else
 			//{
-				_anchorParticles.Play();
+			_anchorParticles.Play();
 			//}
 			_flightLoopAudio.FadeOut(0.5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
 			_anchorAudio.PlayOneShot(AudioType.ToolProbeAttach, 1f);
 		}
 
-		private void OnUnanchor() 
+		private void OnUnanchor()
 			=> _flightLoopAudio.FadeIn(0.5f, false, false, 1f);
 
-		private void OnStartRetrieve(float retrieveLength) 
+		private void OnStartRetrieve(float retrieveLength)
 			=> _flightLoopAudio.FadeOut(retrieveLength, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
 	}
 }

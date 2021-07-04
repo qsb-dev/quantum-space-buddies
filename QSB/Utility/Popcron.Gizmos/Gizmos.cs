@@ -125,22 +125,22 @@ namespace Popcron
 			}
 		}
 
-		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false) 
+		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false)
 			=> GizmosInstance.Submit(lines, color, dashed);
 
-		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false) 
+		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false)
 			=> Draw<LineDrawer>(color, dashed, a, b);
 
-		public static void Square(Vector2 position, Vector2 size, Color? color = null, bool dashed = false) 
+		public static void Square(Vector2 position, Vector2 size, Color? color = null, bool dashed = false)
 			=> Square(position, Quaternion.identity, size, color, dashed);
 
-		public static void Square(Vector2 position, float diameter, Color? color = null, bool dashed = false) 
+		public static void Square(Vector2 position, float diameter, Color? color = null, bool dashed = false)
 			=> Square(position, Quaternion.identity, Vector2.one * diameter, color, dashed);
 
-		public static void Square(Vector2 position, Quaternion rotation, Vector2 size, Color? color = null, bool dashed = false) 
+		public static void Square(Vector2 position, Quaternion rotation, Vector2 size, Color? color = null, bool dashed = false)
 			=> Draw<SquareDrawer>(color, dashed, position, rotation, size);
 
-		public static void Cube(Vector3 position, Quaternion rotation, Vector3 size, Color? color = null, bool dashed = false) 
+		public static void Cube(Vector3 position, Quaternion rotation, Vector3 size, Color? color = null, bool dashed = false)
 			=> Draw<CubeDrawer>(color, dashed, position, rotation, size);
 
 		public static void Rect(Rect rect, Camera camera, Color? color = null, bool dashed = false)
@@ -150,7 +150,7 @@ namespace Popcron
 			Draw<SquareDrawer>(color, dashed, corner + (rect.size * 0.5f), Quaternion.identity, rect.size);
 		}
 
-		public static void Bounds(Bounds bounds, Color? color = null, bool dashed = false) 
+		public static void Bounds(Bounds bounds, Color? color = null, bool dashed = false)
 			=> Draw<CubeDrawer>(color, dashed, bounds.center, Quaternion.identity, bounds.size);
 
 		public static void Cone(Vector3 position, Quaternion rotation, float length, float angle, Color? color = null, bool dashed = false, int pointsCount = 16)
@@ -192,7 +192,7 @@ namespace Popcron
 			Draw<PolygonDrawer>(color, dashed, position, pointsCount, radius, offset, rotation);
 		}
 
-		public static void Frustum(OWCamera camera, Color? color = null, bool dashed = false) 
+		public static void Frustum(OWCamera camera, Color? color = null, bool dashed = false)
 			=> Draw<FrustumDrawer>(color, dashed, camera);
 	}
 }

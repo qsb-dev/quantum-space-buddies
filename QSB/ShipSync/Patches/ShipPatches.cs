@@ -187,7 +187,7 @@ namespace QSB.ShipSync.Patches
 			return false;
 		}
 
-		public static bool ShipDamageController_OnImpact() 
+		public static bool ShipDamageController_OnImpact()
 			=> ShipManager.Instance.HasAuthority;
 
 		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)

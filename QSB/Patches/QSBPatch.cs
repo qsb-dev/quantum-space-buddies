@@ -103,7 +103,7 @@ namespace QSB.Patches
 		{
 			var dictionary = typeof(HarmonySharedState).Invoke<Dictionary<MethodBase, byte[]>>("GetState", new object[0]);
 			var methodBase = dictionary.Keys.First(m =>
-				m.DeclaringType == method.DeclaringType 
+				m.DeclaringType == method.DeclaringType
 				&& m.Name == method.Name);
 
 			var patchInfo = PatchInfoSerialization.Deserialize(dictionary.GetValueSafe(methodBase));

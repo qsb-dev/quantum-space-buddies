@@ -1,6 +1,4 @@
-﻿using QSB.Events;
-using QSB.Patches;
-using QSB.Player;
+﻿using QSB.Patches;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches

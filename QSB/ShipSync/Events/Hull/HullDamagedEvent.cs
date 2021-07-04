@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.ShipSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 

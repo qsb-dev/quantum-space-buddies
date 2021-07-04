@@ -6,7 +6,6 @@ using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

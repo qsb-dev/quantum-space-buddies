@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,7 +18,7 @@ namespace QSB.DeathSync
 		private List<PlayerInfo> _playersPendingRespawn = new List<PlayerInfo>();
 		private NotificationData _previousNotification;
 
-		private void Start() 
+		private void Start()
 			=> Instance = this;
 
 		public void TriggerRespawnMap()
