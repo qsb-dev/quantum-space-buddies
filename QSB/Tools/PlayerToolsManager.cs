@@ -78,6 +78,11 @@ namespace QSB.Tools
 			Object.Destroy(forwardCamera.GetComponent<ProbeCamera>());
 			Object.Destroy(forwardCamera.GetComponent<OWCamera>());
 			Object.Destroy(forwardCamera.GetComponent<Camera>());
+			var oldForwardSpotlight = forwardCamera.GetComponent<ProbeSpotlight>();
+			var newForwardSpotlight = forwardCamera.gameObject.AddComponent<QSBProbeSpotlight>();
+			newForwardSpotlight._id = oldForwardSpotlight.GetValue<ProbeCamera.ID>("_id");
+			newForwardSpotlight._fadeInLength = oldForwardSpotlight.GetValue<float>("_fadeInLength");
+			Object.Destroy(oldForwardSpotlight);
 
 			// CameraPivot/RotatingCameraPivot/RotatingCamera
 			var rotatingCamera = cameraPivot.Find("RotatingCameraPivot").Find("RotatingCamera");
@@ -107,6 +112,20 @@ namespace QSB.Tools
 			newLantern._fadeOutCurve = oldLantern.GetValue<AnimationCurve>("_fadeOutCurve");
 			newLantern._emissiveRenderer = oldLantern.GetValue<OWEmissiveRenderer>("_emissiveRenderer");
 			Object.Destroy(oldLantern);
+
+			// RearCamera
+			var rearCamera = newProbe.Find("RearCamera");
+			Object.Destroy(rearCamera.GetComponent<PostProcessingBehaviour>());
+			Object.Destroy(rearCamera.GetComponent<NoiseImageEffect>());
+			Object.Destroy(rearCamera.GetComponent<PlanetaryFogImageEffect>());
+			Object.Destroy(rearCamera.GetComponent<ProbeCamera>());
+			Object.Destroy(rearCamera.GetComponent<OWCamera>());
+			Object.Destroy(rearCamera.GetComponent<Camera>());
+			var oldRearSpotlight = rearCamera.GetComponent<ProbeSpotlight>();
+			var newRearSpotlight = rearCamera.gameObject.AddComponent<QSBProbeSpotlight>();
+			newRearSpotlight._id = oldRearSpotlight.GetValue<ProbeCamera.ID>("_id");
+			newRearSpotlight._fadeInLength = oldRearSpotlight.GetValue<float>("_fadeInLength");
+			Object.Destroy(oldRearSpotlight);
 
 			Object.Destroy(newProbe.Find("PlaneOffsetMarker_Probe").gameObject);
 		}

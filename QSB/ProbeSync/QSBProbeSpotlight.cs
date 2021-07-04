@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.ProbeSync
@@ -19,6 +16,7 @@ namespace QSB.ProbeSync
 
 		private void Awake()
 		{
+			DebugLog.DebugWrite("Awake");
 			_probe = this.GetRequiredComponentInChildren<QSBProbe>();
 			_light = GetComponent<OWLight2>();
 			_intensity = _light.GetLight().intensity;
@@ -31,10 +29,10 @@ namespace QSB.ProbeSync
 
 		private void OnDestroy()
 		{
+			DebugLog.DebugWrite("OnDestroy");
 			_probe.OnLaunchProbe -= OnLaunch;
 			_probe.OnAnchorProbe -= OnAnchorOrRetrieve;
 			_probe.OnRetrieveProbe -= OnAnchorOrRetrieve;
-			GlobalMessenger<ProbeCamera>.RemoveListener("ProbeSnapshot", new Callback<ProbeCamera>(OnTakeSnapshot));
 		}
 
 		private void Update()
@@ -47,6 +45,7 @@ namespace QSB.ProbeSync
 
 		private void StartFadeIn()
 		{
+			DebugLog.DebugWrite("StartFadeIn");
 			if (!enabled)
 			{
 				_light.GetLight().enabled = true;
@@ -58,6 +57,7 @@ namespace QSB.ProbeSync
 
 		private void OnLaunch()
 		{
+			DebugLog.DebugWrite("OnLaunch");
 			if (_id == ProbeCamera.ID.Forward)
 			{
 				StartFadeIn();
@@ -68,6 +68,7 @@ namespace QSB.ProbeSync
 
 		private void OnAnchorOrRetrieve()
 		{
+			DebugLog.DebugWrite("OnAnchorOrRetrieve");
 			_light.GetLight().enabled = false;
 			enabled = false;
 			_inFlight = false;
