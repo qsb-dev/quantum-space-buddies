@@ -8,15 +8,11 @@ namespace QSB.ProbeSync.Events
 	{
 		public override EventType Type => EventType.ProbeStartRetrieve;
 
-		public override void SetupListener()
-		{
-			GlobalMessenger<float>.AddListener(EventNames.QSBProbeStartRetrieve, Handler);
-		}
+		public override void SetupListener() 
+			=> GlobalMessenger<float>.AddListener(EventNames.QSBProbeStartRetrieve, Handler);
 
-		public override void CloseListener()
-		{
-			GlobalMessenger<float>.RemoveListener(EventNames.QSBProbeStartRetrieve, Handler);
-		}
+		public override void CloseListener() 
+			=> GlobalMessenger<float>.RemoveListener(EventNames.QSBProbeStartRetrieve, Handler);
 
 		private void Handler(float duration) => SendEvent(CreateMessage(duration));
 
