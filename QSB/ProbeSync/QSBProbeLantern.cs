@@ -1,4 +1,5 @@
 ﻿using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.ProbeSync
@@ -22,7 +23,12 @@ namespace QSB.ProbeSync
 		private void Awake()
 		{
 			DebugLog.DebugWrite($"Awake");
-			_probe = gameObject.GetRequiredComponentInChildren<QSBProbe>();
+			_probe = Resources.FindObjectsOfTypeAll<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
+			if (_probe == null)
+			{
+				DebugLog.ToConsole($"Error - Couldn't find QSBProbe!", OWML.Common.MessageType.Error);
+			}
+
 			_light = GetComponent<OWLight2>();
 			_probe.OnAnchorProbe += OnProbeAnchorToSurface;
 			_probe.OnStartRetrieveProbe += OnStartRetrieveProbe;

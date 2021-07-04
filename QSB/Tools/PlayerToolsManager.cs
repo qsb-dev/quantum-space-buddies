@@ -42,6 +42,7 @@ namespace QSB.Tools
 
 		public static void CreateProbe(Transform newProbe, PlayerInfo player)
 		{
+			DebugLog.DebugWrite($"Added QSBProbe");
 			var qsbProbe = newProbe.gameObject.AddComponent<QSBProbe>();
 			player.Probe = qsbProbe;
 
