@@ -22,7 +22,6 @@ namespace QSB.ProbeSync
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite($"Awake");
 			_probe = Resources.FindObjectsOfTypeAll<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 			if (_probe == null)
 			{
@@ -37,7 +36,6 @@ namespace QSB.ProbeSync
 
 		private void Start()
 		{
-			DebugLog.DebugWrite($"Start");
 			if (_emissiveRenderer != null)
 			{
 				_emissiveRenderer.SetEmissiveScale(0f);
@@ -50,7 +48,6 @@ namespace QSB.ProbeSync
 
 		private void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy");
 			_probe.OnAnchorProbe -= OnProbeAnchorToSurface;
 			_probe.OnStartRetrieveProbe -= OnStartRetrieveProbe;
 			_probe.OnRetrieveProbe -= OnFinishRetrieveProbe;
@@ -86,7 +83,6 @@ namespace QSB.ProbeSync
 
 		private void FadeTo(float fade, float duration)
 		{
-			DebugLog.DebugWrite($"Fade to {fade} in {duration}");
 			_startFadeTime = Time.time;
 			_fadeDuration = duration;
 			_startFade = _fadeFraction;
@@ -96,7 +92,7 @@ namespace QSB.ProbeSync
 
 		private void OnProbeAnchorToSurface()
 		{
-			DebugLog.DebugWrite($"OnProbeAnchorToSurface");
+			//TODO : look at this
 			//if (!_probe.IsRetrieving())
 			//{
 			_light.GetLight().enabled = true;
@@ -105,15 +101,11 @@ namespace QSB.ProbeSync
 			//}
 		}
 
-		private void OnStartRetrieveProbe(float retrieveLength)
-		{
-			DebugLog.DebugWrite($"OnStartRetrieveProbe");
-			FadeTo(0f, retrieveLength);
-		}
+		private void OnStartRetrieveProbe(float retrieveLength) 
+			=> FadeTo(0f, retrieveLength);
 
 		private void OnFinishRetrieveProbe()
 		{
-			DebugLog.DebugWrite($"OnFinishRetrieveProbe");
 			_light.GetLight().enabled = false;
 			_light.range = 0f;
 			_fadeFraction = 0f;

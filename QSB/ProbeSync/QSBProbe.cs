@@ -38,7 +38,6 @@ namespace QSB.ProbeSync
 						break;
 					}
 
-					DebugLog.DebugWrite($"OnLaunchProbe");
 					OnLaunchProbe();
 					break;
 				case ProbeEvent.Anchor:
@@ -48,7 +47,6 @@ namespace QSB.ProbeSync
 						break;
 					}
 
-					DebugLog.DebugWrite($"OnAnchorProbe");
 					OnAnchorProbe();
 					break;
 				case ProbeEvent.Unanchor:
@@ -62,11 +60,15 @@ namespace QSB.ProbeSync
 						break;
 					}
 
-					DebugLog.DebugWrite($"OnRetrieveProbe");
 					OnRetrieveProbe();
 					break;
 				case ProbeEvent.Destroy:
-					DebugLog.DebugWrite($"OnDestroyProbe");
+					if (OnProbeDestroyed == null)
+					{
+						DebugLog.ToConsole($"Warning - OnProbeDestroyed is null!", OWML.Common.MessageType.Warning);
+						break;
+					}
+
 					OnProbeDestroyed();
 					break;
 				case ProbeEvent.Invalid:

@@ -34,39 +34,24 @@ namespace QSB.ProbeSync
 			_attachedProbe.OnStartRetrieveProbe -= OnStartRetrieveProbe;
 		}
 
-		private void OnLaunchProbe()
-		{
-			DebugLog.DebugWrite($"LOCAL OnLaunchProbe");
-			QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Launch);
-		}
+		private void OnLaunchProbe() 
+			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Launch);
 
-		private void OnAnchorProbe()
-		{
-			DebugLog.DebugWrite($"LOCAL OnAnchorProbe");
-			QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Anchor);
-		}
+		private void OnAnchorProbe() 
+			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Anchor);
 
-		private void OnUnanchorProbe()
-		{
-			DebugLog.DebugWrite($"LOCAL OnUnanchorProbe");
-			QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Unanchor);
-		}
+		private void OnUnanchorProbe() 
+			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Unanchor);
 
-		private void OnRetrieveProbe()
-		{
-			DebugLog.DebugWrite($"LOCAL OnRetrieveProbe");
-			QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Retrieve);
-		}
+		private void OnRetrieveProbe() 
+			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Retrieve);
 
-		private void OnProbeDestroyed()
-		{
-			DebugLog.DebugWrite($"LOCAL OnProbeDestroyed");
-			QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Destroy);
-		}
+		private void OnProbeDestroyed() 
+			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Destroy);
 
 		private void OnStartRetrieveProbe(float length)
 		{
-			DebugLog.DebugWrite($"LOCAL OnStartRetrieveProbe length:{length}");
+
 		}
 	}
 }

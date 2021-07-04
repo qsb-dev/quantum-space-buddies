@@ -17,7 +17,6 @@ namespace QSB.ProbeSync
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite("Awake");
 			_probe = Resources.FindObjectsOfTypeAll<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 			if (_probe == null)
 			{
@@ -35,7 +34,6 @@ namespace QSB.ProbeSync
 
 		private void OnDestroy()
 		{
-			DebugLog.DebugWrite("OnDestroy");
 			_probe.OnLaunchProbe -= OnLaunch;
 			_probe.OnAnchorProbe -= OnAnchorOrRetrieve;
 			_probe.OnRetrieveProbe -= OnAnchorOrRetrieve;
@@ -51,7 +49,6 @@ namespace QSB.ProbeSync
 
 		private void StartFadeIn()
 		{
-			DebugLog.DebugWrite("StartFadeIn");
 			if (!enabled)
 			{
 				_light.GetLight().enabled = true;
@@ -63,7 +60,6 @@ namespace QSB.ProbeSync
 
 		private void OnLaunch()
 		{
-			DebugLog.DebugWrite("OnLaunch");
 			if (_id == ProbeCamera.ID.Forward)
 			{
 				StartFadeIn();
@@ -74,7 +70,6 @@ namespace QSB.ProbeSync
 
 		private void OnAnchorOrRetrieve()
 		{
-			DebugLog.DebugWrite("OnAnchorOrRetrieve");
 			_light.GetLight().enabled = false;
 			enabled = false;
 			_inFlight = false;

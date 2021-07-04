@@ -15,7 +15,6 @@ namespace QSB.ProbeSync
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite("Awake");
 			_probe = Resources.FindObjectsOfTypeAll<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 			if (_probe == null)
 			{
@@ -36,10 +35,7 @@ namespace QSB.ProbeSync
 			_probe.OnStartRetrieveProbe -= OnStartRetrieve;
 		}
 
-		private void OnLaunch()
-		{
-			_flightLoopAudio.FadeIn(0.1f, true, true, 1f);
-		}
+		private void OnLaunch() => _flightLoopAudio.FadeIn(0.1f, true, true, 1f);
 
 		private void OnAnchor()
 		{
@@ -57,14 +53,10 @@ namespace QSB.ProbeSync
 			_anchorAudio.PlayOneShot(AudioType.ToolProbeAttach, 1f);
 		}
 
-		private void OnUnanchor()
-		{
-			_flightLoopAudio.FadeIn(0.5f, false, false, 1f);
-		}
+		private void OnUnanchor() 
+			=> _flightLoopAudio.FadeIn(0.5f, false, false, 1f);
 
-		private void OnStartRetrieve(float retrieveLength)
-		{
-			_flightLoopAudio.FadeOut(retrieveLength, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
-		}
+		private void OnStartRetrieve(float retrieveLength) 
+			=> _flightLoopAudio.FadeOut(retrieveLength, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
 	}
 }
