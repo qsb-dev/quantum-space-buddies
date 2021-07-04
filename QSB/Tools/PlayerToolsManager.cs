@@ -148,7 +148,12 @@ namespace QSB.Tools
 			newRearSpotlight._fadeInLength = oldRearSpotlight.GetValue<float>("_fadeInLength");
 			Object.Destroy(oldRearSpotlight);
 
+			// PlaneOffsetMarker_Probe
 			Object.Destroy(newProbe.Find("PlaneOffsetMarker_Probe").gameObject);
+
+			newProbe.Find("RecallEffect").gameObject.GetComponent<SingularityController>().enabled = true;
+			newProbe.Find("RecallEffect").gameObject.GetComponent<SingularityWarpEffect>().enabled = true;
+			newProbe.Find("RecallEffect").name = "RemoteProbeRecallEffect";
 		}
 
 		private static void CreateStowTransforms(Transform cameraBody)

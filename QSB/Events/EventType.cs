@@ -54,6 +54,7 @@
 		ComponentDamaged,
 		ComponentRepaired,
 		ComponentRepairTick,
-		PlayerRespawn
+		PlayerRespawn,
+		ProbeStartRetrieve
 	}
 }

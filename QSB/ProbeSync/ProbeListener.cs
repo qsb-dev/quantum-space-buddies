@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.ProbeSync
@@ -34,24 +33,22 @@ namespace QSB.ProbeSync
 			_attachedProbe.OnStartRetrieveProbe -= OnStartRetrieveProbe;
 		}
 
-		private void OnLaunchProbe() 
+		private void OnLaunchProbe()
 			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Launch);
 
-		private void OnAnchorProbe() 
+		private void OnAnchorProbe()
 			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Anchor);
 
-		private void OnUnanchorProbe() 
+		private void OnUnanchorProbe()
 			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Unanchor);
 
-		private void OnRetrieveProbe() 
+		private void OnRetrieveProbe()
 			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Retrieve);
 
-		private void OnProbeDestroyed() 
+		private void OnProbeDestroyed()
 			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Destroy);
 
 		private void OnStartRetrieveProbe(float length)
-		{
-
-		}
+			=> QSBEventManager.FireEvent(EventNames.QSBProbeStartRetrieve, length);
 	}
 }

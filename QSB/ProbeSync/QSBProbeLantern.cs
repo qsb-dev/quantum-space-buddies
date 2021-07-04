@@ -55,8 +55,8 @@ namespace QSB.ProbeSync
 
 		private void Update()
 		{
-			var animationCurve = (_targetFade <= 0f) 
-				? _fadeOutCurve 
+			var animationCurve = (_targetFade <= 0f)
+				? _fadeOutCurve
 				: _fadeInCurve;
 
 			var fadeTime = Mathf.InverseLerp(_startFadeTime, _startFadeTime + _fadeDuration, Time.time);
@@ -64,8 +64,8 @@ namespace QSB.ProbeSync
 
 			var probeRuleSet = _probe.GetRulesetDetector().GetProbeRuleSet();
 
-			var lanternRange = (!(probeRuleSet != null) || !probeRuleSet.GetOverrideLanternRange()) 
-				? _originalRange 
+			var lanternRange = (!(probeRuleSet != null) || !probeRuleSet.GetOverrideLanternRange())
+				? _originalRange
 				: probeRuleSet.GetLanternRange();
 
 			_light.range = lanternRange * _fadeFraction;
@@ -92,16 +92,15 @@ namespace QSB.ProbeSync
 
 		private void OnProbeAnchorToSurface()
 		{
-			//TODO : look at this
-			//if (!_probe.IsRetrieving())
-			//{
-			_light.GetLight().enabled = true;
+			if (!_probe.IsRetrieving())
+			{
+				_light.GetLight().enabled = true;
 				_light.range = 0f;
 				FadeTo(1f, _fadeInDuration);
-			//}
+			}
 		}
 
-		private void OnStartRetrieveProbe(float retrieveLength) 
+		private void OnStartRetrieveProbe(float retrieveLength)
 			=> FadeTo(0f, retrieveLength);
 
 		private void OnFinishRetrieveProbe()

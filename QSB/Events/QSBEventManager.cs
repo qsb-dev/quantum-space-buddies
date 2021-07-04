@@ -56,6 +56,7 @@ namespace QSB.Events
 				new MarshmallowEventEvent(),
 				new AnimationTriggerEvent(),
 				new PlayerRespawnEvent(),
+				new ProbeStartRetrieveEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

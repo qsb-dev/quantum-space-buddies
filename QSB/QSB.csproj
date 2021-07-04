@@ -214,6 +214,7 @@
     <Compile Include="PoolSync\PoolManager.cs" />
     <Compile Include="Inputs\QSBInputManager.cs" />
     <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
+    <Compile Include="ProbeSync\Events\ProbeStartRetrieveEvent.cs" />
     <Compile Include="ProbeSync\ProbeEvent.cs" />
     <Compile Include="ProbeSync\ProbeListener.cs" />
     <Compile Include="ProbeSync\QSBProbeEffects.cs" />

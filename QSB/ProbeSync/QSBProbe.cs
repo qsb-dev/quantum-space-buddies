@@ -17,14 +17,42 @@ namespace QSB.ProbeSync
 
 		private GameObject _detectorObj;
 		private RulesetDetector _rulesetDetector;
+		private SingularityWarpEffect _warpEffect;
+		private bool _isRetrieving;
 
-		public RulesetDetector GetRulesetDetector() 
+		public RulesetDetector GetRulesetDetector()
 			=> _rulesetDetector;
 
 		private void Awake()
 		{
 			_detectorObj = GetComponentInChildren<RulesetDetector>().gameObject;
 			_rulesetDetector = _detectorObj.GetComponent<RulesetDetector>();
+			_warpEffect = GetComponentInChildren<SingularityWarpEffect>();
+			_warpEffect.OnWarpComplete += OnWarpComplete;
+			_isRetrieving = false;
+		}
+
+		private void OnDestroy()
+		{
+			_warpEffect.OnWarpComplete -= OnWarpComplete;
+		}
+
+		private void OnWarpComplete()
+		{
+			DebugLog.DebugWrite($"OnWarpComplete");
+			//gameObject.SetActive(false);
+			transform.localScale = Vector3.one;
+			_isRetrieving = false;
+		}
+
+		public bool IsRetrieving()
+		{
+			return IsLaunched() && _isRetrieving;
+		}
+
+		public bool IsLaunched()
+		{
+			return gameObject.activeSelf;
 		}
 
 		public void HandleEvent(ProbeEvent probeEvent)
@@ -75,6 +103,22 @@ namespace QSB.ProbeSync
 				default:
 					DebugLog.DebugWrite($"Warning - Unknown/Invalid probe event.", OWML.Common.MessageType.Warning);
 					break;
+			}
+		}
+
+		public void OnStartRetrieve(float duration)
+		{
+			DebugLog.DebugWrite($"OnStartRetrieving");
+			if (!_isRetrieving)
+			{
+				_isRetrieving = true;
+				DebugLog.DebugWrite($"start warp out");
+				_warpEffect.WarpObjectOut(duration);
+
+				if (_warpEffect.gameObject.activeInHierarchy == false)
+				{
+					DebugLog.DebugWrite($"warp effect GO is not active!");
+				}
 			}
 		}
 
