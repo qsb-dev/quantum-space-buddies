@@ -1,42 +1,59 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace QSB.ProbeSync.Events
 {
-	public class PlayerProbeEvent : QSBEvent<ToggleMessage>
+	class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{
-		public override EventType Type => EventType.ProbeActiveChange;
+		public override EventType Type => EventType.ProbeEvent;
 
 		public override void SetupListener()
 		{
-			GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, HandleLaunch);
-			GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, HandleRetrieve);
+			GlobalMessenger<ProbeEvent>.AddListener(EventNames.QSBProbeEvent, Handler);
 		}
 
 		public override void CloseListener()
 		{
-			GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.LaunchProbe, HandleLaunch);
-			GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.RetrieveProbe, HandleRetrieve);
+			GlobalMessenger<ProbeEvent>.RemoveListener(EventNames.QSBProbeEvent, Handler);
 		}
 
-		private void HandleLaunch(SurveyorProbe probe) => SendEvent(CreateMessage(true));
-		private void HandleRetrieve(SurveyorProbe probe) => SendEvent(CreateMessage(false));
+		private void Handler(ProbeEvent probeEvent) => SendEvent(CreateMessage(probeEvent));
 
-		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		private EnumMessage<ProbeEvent> CreateMessage(ProbeEvent probeEvent) => new EnumMessage<ProbeEvent>
 		{
 			AboutId = LocalPlayerId,
-			ToggleValue = value
+			EnumValue = probeEvent
 		};
 
-		public override void OnReceiveRemote(bool server, ToggleMessage message)
+		public override void OnReceiveRemote(bool server, EnumMessage<ProbeEvent> message)
 		{
-			var player = QSBPlayerManager.GetPlayer(message.AboutId);
-			player.PlayerStates.ProbeActive = message.ToggleValue;
-			player.Probe?.SetState(message.ToggleValue);
-		}
+			DebugLog.DebugWrite($"recieve probe event type:{message.EnumValue} from:{message.AboutId}");
 
-		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
-			QSBPlayerManager.LocalPlayer.PlayerStates.ProbeActive = message.ToggleValue;
+			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			var probe = player.Probe;
+
+			switch (message.EnumValue)
+			{
+				case ProbeEvent.Anchor:
+				case ProbeEvent.Unanchor:
+				case ProbeEvent.Launch:
+					player.PlayerStates.ProbeActive = true;
+					probe.SetState(true);
+					break;
+				case ProbeEvent.Destroy:
+				case ProbeEvent.Retrieve:
+					player.PlayerStates.ProbeActive = false;
+					probe.SetState(false);
+					break;
+			}
+
+			probe.HandleEvent(message.EnumValue);
+		}
 	}
 }

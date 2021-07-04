@@ -23,8 +23,57 @@ namespace QSB.ProbeSync
 
 		private void Awake()
 		{
-			_detectorObj = GetComponentInChildren<ForceDetector>().gameObject;
+			_detectorObj = GetComponentInChildren<RulesetDetector>().gameObject;
 			_rulesetDetector = _detectorObj.GetComponent<RulesetDetector>();
+		}
+
+		public void HandleEvent(ProbeEvent probeEvent)
+		{
+			switch (probeEvent)
+			{
+				case ProbeEvent.Launch:
+					if (OnLaunchProbe == null)
+					{
+						DebugLog.ToConsole($"Warning - OnLaunchProbe is null!", OWML.Common.MessageType.Warning);
+						break;
+					}
+
+					DebugLog.DebugWrite($"OnLaunchProbe");
+					OnLaunchProbe();
+					break;
+				case ProbeEvent.Anchor:
+					if (OnAnchorProbe == null)
+					{
+						DebugLog.ToConsole($"Warning - OnAnchorProbe is null!", OWML.Common.MessageType.Warning);
+						break;
+					}
+
+					DebugLog.DebugWrite($"OnAnchorProbe");
+					OnAnchorProbe();
+					break;
+				case ProbeEvent.Unanchor:
+					DebugLog.DebugWrite($"OnUnanchorProbe");
+					OnUnanchorProbe();
+					break;
+				case ProbeEvent.Retrieve:
+					if (OnRetrieveProbe == null)
+					{
+						DebugLog.ToConsole($"Warning - OnRetrieveProbe is null!", OWML.Common.MessageType.Warning);
+						break;
+					}
+
+					DebugLog.DebugWrite($"OnRetrieveProbe");
+					OnRetrieveProbe();
+					break;
+				case ProbeEvent.Destroy:
+					DebugLog.DebugWrite($"OnDestroyProbe");
+					OnProbeDestroyed();
+					break;
+				case ProbeEvent.Invalid:
+				default:
+					DebugLog.DebugWrite($"Warning - Unknown/Invalid probe event.", OWML.Common.MessageType.Warning);
+					break;
+			}
 		}
 
 		public void SetState(bool state)

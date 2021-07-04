@@ -13,7 +13,7 @@
 		PlayerJoin,
 		PlayerDeath,
 		PlayerReady,
-		ProbeActiveChange,
+		ProbeEvent,
 		Elevator,
 		Geyser,
 		OrbSlot,

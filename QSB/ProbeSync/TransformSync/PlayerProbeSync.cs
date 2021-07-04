@@ -21,9 +21,18 @@ namespace QSB.ProbeSync.TransformSync
 		protected override Transform InitLocalTransform()
 		{
 			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this);
-			var body = Locator.GetProbe().transform;
 
+			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
+
+			if (Player.Body == null)
+			{
+				DebugLog.ToConsole($"Warning - Player.Body is null!", MessageType.Warning);
+				return null;
+			}
+
+			var listener = Player.Body.AddComponent<ProbeListener>();
+			listener.Init(Locator.GetProbe());
 
 			return body;
 		}

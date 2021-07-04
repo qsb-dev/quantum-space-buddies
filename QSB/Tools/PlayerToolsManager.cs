@@ -53,9 +53,17 @@ namespace QSB.Tools
 			Object.Destroy(newProbe.GetComponent<SurveyorProbe>());
 			Object.Destroy(newProbe.GetComponent<ProbeHUDMarker>());
 			Object.Destroy(newProbe.GetComponent<LightFlickerController>());
+			Object.Destroy(newProbe.GetComponent<OWRigidbody>());
+			Object.Destroy(newProbe.GetComponent<Rigidbody>());
+			Object.Destroy(newProbe.GetComponent<CenterOfTheUniverseOffsetApplier>());
 
 			// ProbeDetector
 			//Object.Destroy(newProbe.Find("ProbeDetector").gameObject);
+			var probeDetector = newProbe.Find("ProbeDetector").gameObject;
+			Object.Destroy(probeDetector.GetComponent<ForceApplier>());
+			Object.Destroy(probeDetector.GetComponent<ProbeFluidDetector>());
+			Object.Destroy(probeDetector.GetComponent<AlignmentForceDetector>());
+
 
 			// CameraPivot
 			var cameraPivot = newProbe.Find("CameraPivot");
