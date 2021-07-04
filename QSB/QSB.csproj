@@ -216,6 +216,7 @@
     <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
     <Compile Include="ProbeSync\ProbeEvent.cs" />
     <Compile Include="ProbeSync\ProbeListener.cs" />
+    <Compile Include="ProbeSync\QSBProbeEffects.cs" />
     <Compile Include="ProbeSync\QSBProbeLantern.cs" />
     <Compile Include="ProbeSync\QSBProbeSpotlight.cs" />
     <Compile Include="QSBNetworkLobby.cs" />

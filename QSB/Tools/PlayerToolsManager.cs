@@ -102,6 +102,19 @@ namespace QSB.Tools
 			Object.Destroy(rotatingCamera.GetComponent<OWCamera>());
 			Object.Destroy(rotatingCamera.GetComponent<Camera>());
 
+			// ProbeEffects
+			var probeEffects = newProbe.Find("ProbeEffects");
+			var oldEffects = probeEffects.GetComponent<ProbeEffects>();
+			var newEffects = probeEffects.gameObject.AddComponent<QSBProbeEffects>();
+			newEffects._flightLoopAudio = oldEffects.GetValue<OWAudioSource>("_flightLoopAudio");
+			newEffects._anchorAudio = oldEffects.GetValue<OWAudioSource>("_anchorAudio");
+			newEffects._anchorParticles = oldEffects.GetValue<ParticleSystem>("_anchorParticles");
+			Object.Destroy(oldEffects);
+
+			Object.Destroy(probeEffects.Find("CloudsEffectBubble").gameObject);
+			Object.Destroy(probeEffects.Find("SandEffectBubble").gameObject);
+			Object.Destroy(probeEffects.Find("ProbeElectricityEffect").gameObject);
+
 			// AmbientLight_Probe
 			var ambientLight = newProbe.Find("AmbientLight_Probe");
 			var oldAmbLantern = ambientLight.GetComponent<ProbeLantern>();
