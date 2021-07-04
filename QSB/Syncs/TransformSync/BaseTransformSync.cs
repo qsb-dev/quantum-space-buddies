@@ -172,6 +172,7 @@ namespace QSB.Syncs.TransformSync
 			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
+				_isInitialized = false;
 				return;
 			}
 
