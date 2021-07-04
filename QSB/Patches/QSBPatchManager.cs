@@ -13,7 +13,6 @@ using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
 using QSB.Player.Patches;
 using QSB.PoolSync.Patches;
-using QSB.ProbeSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
 using QSB.ShipSync.Patches;
