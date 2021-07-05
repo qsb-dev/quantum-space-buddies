@@ -223,7 +223,7 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
-			if (AttachedObject.transform.parent != ReferenceTransform)
+			if (AttachedObject.transform.parent != ReferenceTransform && !HasAuthority)
 			{
 				DebugLog.ToConsole($"Warning - For {_logName}, AttachedObject's ({AttachedObject.name}) parent is not the same as ReferenceTransform! " +
 					$"({AttachedObject.transform.parent} v {ReferenceTransform.name})" +
