@@ -10,10 +10,10 @@ namespace QSB.ProbeSync
 		public AnimationCurve _fadeInCurve;
 		public AnimationCurve _fadeOutCurve;
 		public OWEmissiveRenderer _emissiveRenderer;
+		public float _originalRange;
 
 		private QSBProbe _probe;
 		private OWLight2 _light;
-		private float _originalRange;
 		private float _fadeFraction;
 		private float _targetFade;
 		private float _startFade;
@@ -42,7 +42,7 @@ namespace QSB.ProbeSync
 			}
 
 			_light.GetLight().enabled = false;
-			_originalRange = _light.range;
+			//_originalRange = _light.range;
 			enabled = false;
 		}
 

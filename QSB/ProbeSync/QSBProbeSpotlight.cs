@@ -8,11 +8,11 @@ namespace QSB.ProbeSync
 	{
 		public ProbeCamera.ID _id;
 		public float _fadeInLength = 1f;
+		public float _intensity;
 
 		private QSBProbe _probe;
 		private OWLight2 _light;
 		private bool _inFlight;
-		private float _intensity;
 		private float _timer;
 
 		private void Awake()
@@ -24,7 +24,7 @@ namespace QSB.ProbeSync
 			}
 
 			_light = GetComponent<OWLight2>();
-			_intensity = _light.GetLight().intensity;
+			//_intensity = _light.GetLight().intensity;
 			_light.GetLight().enabled = false;
 			enabled = false;
 			_probe.OnLaunchProbe += OnLaunch;
