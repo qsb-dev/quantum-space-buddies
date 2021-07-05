@@ -56,10 +56,7 @@ namespace QSB.ProbeSync
 
 		private void OnWarpComplete()
 		{
-			DebugLog.DebugWrite($"OnWarpComplete");
-			gameObject.SetActive(false);
-			transform.localScale = Vector3.one;
-			_isRetrieving = false;
+			Deactivate();
 		}
 
 		public bool IsRetrieving() 
@@ -85,8 +82,6 @@ namespace QSB.ProbeSync
 						break;
 					}
 
-					DebugLog.DebugWrite($"LAUNCH!");
-
 					gameObject.SetActive(true);
 					transform.position = _owner.ProbeLauncher.transform.position;
 					transform.rotation = _owner.ProbeLauncher.transform.rotation;
@@ -100,15 +95,9 @@ namespace QSB.ProbeSync
 						break;
 					}
 
-					DebugLog.DebugWrite($"ANCHOR!");
-
 					OnAnchorProbe();
 					break;
 				case ProbeEvent.Unanchor:
-					DebugLog.DebugWrite($"OnUnanchorProbe");
-
-					DebugLog.DebugWrite($"UNANCHOR!");
-
 					OnUnanchorProbe();
 					break;
 				case ProbeEvent.Retrieve:
@@ -117,8 +106,6 @@ namespace QSB.ProbeSync
 						DebugLog.ToConsole($"Warning - OnRetrieveProbe is null!", OWML.Common.MessageType.Warning);
 						break;
 					}
-
-					DebugLog.DebugWrite($"RETRIEVE!");
 
 					OnRetrieveProbe();
 					break;
@@ -138,13 +125,18 @@ namespace QSB.ProbeSync
 			}
 		}
 
+		private void Deactivate()
+		{
+			transform.localScale = Vector3.one;
+			gameObject.SetActive(false);
+			_isRetrieving = false;
+		}
+
 		public void OnStartRetrieve(float duration)
 		{
-			DebugLog.DebugWrite($"OnStartRetrieving");
 			if (!_isRetrieving)
 			{
 				_isRetrieving = true;
-				DebugLog.DebugWrite($"start warp out");
 				_warpEffect.WarpObjectOut(duration);
 
 				if (OnStartRetrieveProbe == null)

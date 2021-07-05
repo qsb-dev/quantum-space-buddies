@@ -90,7 +90,7 @@ namespace QSB.Tools
 			var newForwardSpotlight = forwardCamera.gameObject.AddComponent<QSBProbeSpotlight>();
 			newForwardSpotlight._id = oldForwardSpotlight.GetValue<ProbeCamera.ID>("_id");
 			newForwardSpotlight._fadeInLength = oldForwardSpotlight.GetValue<float>("_fadeInLength");
-			newForwardSpotlight._intensity = oldForwardSpotlight.GetValue<float>("_intensity");
+			newForwardSpotlight._intensity = 0.8f;
 			Object.Destroy(oldForwardSpotlight);
 
 			// CameraPivot/RotatingCameraPivot/RotatingCamera
@@ -123,7 +123,7 @@ namespace QSB.Tools
 			newAmbLantern._fadeInCurve = oldAmbLantern.GetValue<AnimationCurve>("_fadeInCurve");
 			newAmbLantern._fadeOutCurve = oldAmbLantern.GetValue<AnimationCurve>("_fadeOutCurve");
 			newAmbLantern._emissiveRenderer = oldAmbLantern.GetValue<OWEmissiveRenderer>("_emissiveRenderer");
-			newAmbLantern._originalRange = oldAmbLantern.GetValue<float>("_originalRange");
+			newAmbLantern._originalRange = 60f;
 			Object.Destroy(oldAmbLantern);
 
 			// Lantern
@@ -134,7 +134,7 @@ namespace QSB.Tools
 			newLantern._fadeInCurve = oldLantern.GetValue<AnimationCurve>("_fadeInCurve");
 			newLantern._fadeOutCurve = oldLantern.GetValue<AnimationCurve>("_fadeOutCurve");
 			newLantern._emissiveRenderer = oldLantern.GetValue<OWEmissiveRenderer>("_emissiveRenderer");
-			newLantern._originalRange = oldLantern.GetValue<float>("_originalRange");
+			newLantern._originalRange = 35f;
 			Object.Destroy(oldLantern);
 
 			// RearCamera
@@ -149,7 +149,7 @@ namespace QSB.Tools
 			var newRearSpotlight = rearCamera.gameObject.AddComponent<QSBProbeSpotlight>();
 			newRearSpotlight._id = oldRearSpotlight.GetValue<ProbeCamera.ID>("_id");
 			newRearSpotlight._fadeInLength = oldRearSpotlight.GetValue<float>("_fadeInLength");
-			newRearSpotlight._intensity = oldRearSpotlight.GetValue<float>("_intensity");
+			newRearSpotlight._intensity = 0.8f;
 			Object.Destroy(oldRearSpotlight);
 
 			// PlaneOffsetMarker_Probe
