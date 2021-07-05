@@ -44,6 +44,7 @@ namespace QSB.Tools
 		{
 			var qsbProbe = newProbe.gameObject.AddComponent<QSBProbe>();
 			player.Probe = qsbProbe;
+			qsbProbe.SetOwner(player);
 
 			// Probe_Body
 			Object.Destroy(newProbe.GetComponent<ProbeAnchor>());
@@ -154,6 +155,8 @@ namespace QSB.Tools
 			newProbe.Find("RecallEffect").gameObject.GetComponent<SingularityController>().enabled = true;
 			newProbe.Find("RecallEffect").gameObject.GetComponent<SingularityWarpEffect>().enabled = true;
 			newProbe.Find("RecallEffect").name = "RemoteProbeRecallEffect";
+
+			newProbe.gameObject.SetActive(true);
 		}
 
 		private static void CreateStowTransforms(Transform cameraBody)

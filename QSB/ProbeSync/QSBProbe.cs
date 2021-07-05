@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.ProbeSync
@@ -19,6 +20,7 @@ namespace QSB.ProbeSync
 		private RulesetDetector _rulesetDetector;
 		private SingularityWarpEffect _warpEffect;
 		private bool _isRetrieving;
+		private PlayerInfo _owner;
 
 		public RulesetDetector GetRulesetDetector()
 			=> _rulesetDetector;
@@ -32,31 +34,49 @@ namespace QSB.ProbeSync
 			_isRetrieving = false;
 		}
 
-		private void OnDestroy()
+		private void Start()
+		{
+			gameObject.SetActive(false);
+		}
+
+		protected void OnDestroy()
 		{
 			_warpEffect.OnWarpComplete -= OnWarpComplete;
+		}
+
+		public void SetOwner(PlayerInfo player)
+		{
+			if (_owner != null)
+			{
+				DebugLog.ToConsole($"Warning - Trying to set owner of probe that already has an owner!", OWML.Common.MessageType.Warning);
+			}
+
+			_owner = player;
 		}
 
 		private void OnWarpComplete()
 		{
 			DebugLog.DebugWrite($"OnWarpComplete");
-			//gameObject.SetActive(false);
+			gameObject.SetActive(false);
+			transform.parent = null;
 			transform.localScale = Vector3.one;
 			_isRetrieving = false;
 		}
 
-		public bool IsRetrieving()
-		{
-			return IsLaunched() && _isRetrieving;
-		}
+		public bool IsRetrieving() 
+			=> IsLaunched() && _isRetrieving;
 
-		public bool IsLaunched()
-		{
-			return gameObject.activeSelf;
-		}
+		public bool IsLaunched() 
+			=> gameObject.activeSelf;
 
 		public void HandleEvent(ProbeEvent probeEvent)
 		{
+			if (_owner == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to handle event on probe with no owner.", OWML.Common.MessageType.Error);
+				return;
+			}
+
 			switch (probeEvent)
 			{
 				case ProbeEvent.Launch:
@@ -65,6 +85,13 @@ namespace QSB.ProbeSync
 						DebugLog.ToConsole($"Warning - OnLaunchProbe is null!", OWML.Common.MessageType.Warning);
 						break;
 					}
+
+					DebugLog.DebugWrite($"LAUNCH!");
+
+					gameObject.SetActive(true);
+					transform.parent = null;
+					transform.position = _owner.ProbeLauncher.transform.position;
+					transform.rotation = _owner.ProbeLauncher.transform.rotation;
 
 					OnLaunchProbe();
 					break;
@@ -75,10 +102,15 @@ namespace QSB.ProbeSync
 						break;
 					}
 
+					DebugLog.DebugWrite($"ANCHOR!");
+
 					OnAnchorProbe();
 					break;
 				case ProbeEvent.Unanchor:
 					DebugLog.DebugWrite($"OnUnanchorProbe");
+
+					DebugLog.DebugWrite($"UNANCHOR!");
+
 					OnUnanchorProbe();
 					break;
 				case ProbeEvent.Retrieve:
@@ -87,6 +119,8 @@ namespace QSB.ProbeSync
 						DebugLog.ToConsole($"Warning - OnRetrieveProbe is null!", OWML.Common.MessageType.Warning);
 						break;
 					}
+
+					DebugLog.DebugWrite($"RETRIEVE!");
 
 					OnRetrieveProbe();
 					break;
@@ -115,23 +149,14 @@ namespace QSB.ProbeSync
 				DebugLog.DebugWrite($"start warp out");
 				_warpEffect.WarpObjectOut(duration);
 
-				if (_warpEffect.gameObject.activeInHierarchy == false)
+				if (OnStartRetrieveProbe == null)
 				{
-					DebugLog.DebugWrite($"warp effect GO is not active!");
+					DebugLog.ToConsole($"Warning - OnStartRetrieveProbe is null!", OWML.Common.MessageType.Warning);
+					return;
 				}
-			}
-		}
 
-		public void SetState(bool state)
-		{
-			if (state)
-			{
-				gameObject.SetActive(true);
-				gameObject.Show();
-				return;
+				OnStartRetrieveProbe(duration);
 			}
-
-			gameObject.Hide();
 		}
 	}
 }

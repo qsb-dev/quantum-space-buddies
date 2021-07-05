@@ -27,21 +27,6 @@ namespace QSB.ProbeSync.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			var probe = player.Probe;
 
-			switch (message.EnumValue)
-			{
-				case ProbeEvent.Anchor:
-				case ProbeEvent.Unanchor:
-				case ProbeEvent.Launch:
-					player.PlayerStates.ProbeActive = true;
-					probe.SetState(true);
-					break;
-				case ProbeEvent.Destroy:
-				case ProbeEvent.Retrieve:
-					player.PlayerStates.ProbeActive = false;
-					probe.SetState(false);
-					break;
-			}
-
 			probe.HandleEvent(message.EnumValue);
 		}
 	}
