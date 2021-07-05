@@ -58,7 +58,6 @@ namespace QSB.ProbeSync
 		{
 			DebugLog.DebugWrite($"OnWarpComplete");
 			gameObject.SetActive(false);
-			transform.parent = null;
 			transform.localScale = Vector3.one;
 			_isRetrieving = false;
 		}
@@ -89,7 +88,6 @@ namespace QSB.ProbeSync
 					DebugLog.DebugWrite($"LAUNCH!");
 
 					gameObject.SetActive(true);
-					transform.parent = null;
 					transform.position = _owner.ProbeLauncher.transform.position;
 					transform.rotation = _owner.ProbeLauncher.transform.rotation;
 

@@ -4,6 +4,8 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -16,6 +18,28 @@ namespace QSB.Syncs.TransformSync
 
 	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
 	{
+		private readonly static Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
+
+		public static T GetPlayers<T>(PlayerInfo player)
+			where T : BaseTransformSync 
+		{
+			var dictOfOwnedSyncs = _storedTransformSyncs[player];
+			var wantedSync = dictOfOwnedSyncs[typeof(T)];
+			if (wantedSync == default)
+			{
+				DebugLog.ToConsole($"Error -  _storedTransformSyncs does not contain type:{typeof(T)} under player {player.PlayerId}. Attempting to find manually...", MessageType.Error);
+				var allSyncs = Resources.FindObjectsOfTypeAll<T>();
+				wantedSync = allSyncs.First(x => x.Player == player);
+				if (wantedSync == default)
+				{
+					DebugLog.ToConsole($"Error -  Could not find type:{typeof(T)} for player {player.PlayerId} manually!", MessageType.Error);
+					return default;
+				}
+			}
+
+			return (T)wantedSync;
+		}
+
 		public uint AttachedNetId
 		{
 			get
@@ -75,6 +99,15 @@ namespace QSB.Syncs.TransformSync
 			DontDestroyOnLoad(gameObject);
 			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+
+			if (!_storedTransformSyncs.ContainsKey(Player))
+			{
+				_storedTransformSyncs.Add(Player, new Dictionary<Type, BaseTransformSync>());
+			}
+
+			var playerDict = _storedTransformSyncs[Player];
+			playerDict[GetType()] = this;
+			DebugLog.DebugWrite($"Added T:{GetType().Name} to dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		protected virtual void OnDestroy()
@@ -85,6 +118,10 @@ namespace QSB.Syncs.TransformSync
 			}
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+
+			var playerDict = _storedTransformSyncs[Player];
+			playerDict.Remove(GetType());
+			DebugLog.DebugWrite($"Removed T:{GetType().Name} from dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
@@ -284,6 +321,12 @@ namespace QSB.Syncs.TransformSync
 			{
 				return;
 			}
+
+			/* Red Cube = Where visible object should be
+			 * Green/Yellow Cube = Where visible object is
+			 * Red Line = Connection between Red Cube and Green/Yellow Cube
+			 * Cyan Line = Connection between Green/Yellow cube and reference transform
+			 */
 
 			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
 			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
