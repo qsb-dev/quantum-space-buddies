@@ -223,6 +223,14 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			if (AttachedObject.transform.parent != ReferenceTransform)
+			{
+				DebugLog.ToConsole($"Warning - For {_logName}, AttachedObject's ({AttachedObject.name}) parent is not the same as ReferenceTransform! " +
+					$"({AttachedObject.transform.parent} v {ReferenceTransform.name})" +
+					$"Did you try to manually reparent AttachedObject?", MessageType.Error);
+				ReparentAttachedObject(ReferenceTransform);
+			}
+
 			UpdateTransform();
 
 			base.Update();
@@ -285,14 +293,14 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		private void ReparentAttachedObject(Transform sectorTransform)
+		private void ReparentAttachedObject(Transform newParent)
 		{
 			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
 			{
 				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
 			}
 
-			AttachedObject.transform.SetParent(sectorTransform, true);
+			AttachedObject.transform.SetParent(newParent, true);
 			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
 				? Vector3.one / 10
 				: Vector3.one;
