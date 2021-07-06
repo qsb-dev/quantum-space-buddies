@@ -1,7 +1,10 @@
-﻿using QSB.SectorSync;
+﻿using OWML.Utils;
+using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
@@ -80,6 +83,7 @@ namespace QSB.Syncs.TransformSync
 
 			if (sector != ReferenceSector)
 			{
+				DebugLog.DebugWrite($"DESERAILIZE new sector ({ReferenceSector.Name} to {sector.Name})");
 				SetReferenceSector(sector);
 			}
 
@@ -106,8 +110,35 @@ namespace QSB.Syncs.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
+			DebugLog.DebugWrite($"{Player.PlayerId}.{GetType().Name} set reference sector to {sector.Name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
+		}
+
+		protected override void OnRenderObject()
+		{
+			if (!QSBCore.WorldObjectsReady
+				|| !QSBCore.DebugMode
+				|| !QSBCore.ShowLinesInDebug
+				|| !IsReady
+				|| ReferenceTransform == null)
+			{
+				return;
+			}
+
+			base.OnRenderObject();
+
+			var allSectorsCurrentlyIn = SectorSync.SectorList;
+			var allSectorScores = allSectorsCurrentlyIn.Select(x => QSB.SectorSync.SectorSync.CalculateSectorScore(x, AttachedObject.transform, SectorSync.GetValue<OWRigidbody>("_attachedOWRigidbody")));
+
+			foreach (var sector in allSectorsCurrentlyIn)
+			{
+				var sectorScore = QSB.SectorSync.SectorSync.CalculateSectorScore(sector, AttachedObject.transform, SectorSync.GetValue<OWRigidbody>("_attachedOWRigidbody"));
+
+				var mappedScore = sectorScore.Map(allSectorScores.Min(), allSectorScores.Max(), 0, 1);
+				Popcron.Gizmos.Line(AttachedObject.transform.position, sector.Transform.position, Color.Lerp(Color.green, Color.red, mappedScore));
+			}
+			
 		}
 	}
 }

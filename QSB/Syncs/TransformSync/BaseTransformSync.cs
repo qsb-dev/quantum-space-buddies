@@ -141,6 +141,11 @@ namespace QSB.Syncs.TransformSync
 
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
+
+			if (QSBCore.DebugMode)
+			{
+				DebugBoxManager.CreateBox(AttachedObject.transform, 0, _logName);
+			}
 		}
 
 		public override void SerializeTransform(QNetworkWriter writer)
@@ -319,7 +324,7 @@ namespace QSB.Syncs.TransformSync
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
-		private void OnRenderObject()
+		protected virtual void OnRenderObject()
 		{
 			if (!QSBCore.WorldObjectsReady
 				|| !QSBCore.DebugMode
@@ -340,7 +345,7 @@ namespace QSB.Syncs.TransformSync
 			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
+			//Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}
 }

@@ -100,6 +100,8 @@ namespace QSB.SectorSync
 				return;
 			}
 
+			DebugLog.DebugWrite($"LOCAL Change {transformSync.AttachedObject.name} to sector {closestSector.Name}");
+
 			transformSync.SetReferenceSector(closestSector);
 		}
 	}

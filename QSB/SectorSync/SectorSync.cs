@@ -122,6 +122,8 @@ namespace QSB.SectorSync
 			return ordered.FirstOrDefault();
 		}
 
+		internal static object CalculateSectorScore(QSBSector x, Transform transform, object getValue) => throw new System.NotImplementedException();
+
 		public static float CalculateSectorScore(QSBSector sector, Transform trans, OWRigidbody rigidbody)
 		{
 			var distance = Vector3.Distance(sector.Position, trans.position); // want to be small

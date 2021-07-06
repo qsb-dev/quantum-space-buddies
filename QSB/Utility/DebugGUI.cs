@@ -53,11 +53,14 @@ namespace QSB.Utility
 				offset2 += _debugLineSpacing;
 				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}");
 				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - W.Pos : {sector.Transform.InverseTransformPoint(networkTransform.AttachedObject.position)}");
-				offset2 += _debugLineSpacing;
 				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}");
 				offset2 += _debugLineSpacing;
 				var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
+				if (probeSync == default)
+				{
+					return;
+				}
+
 				var probeSector = probeSync.ReferenceSector;
 				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}");
 				offset2 += _debugLineSpacing;
