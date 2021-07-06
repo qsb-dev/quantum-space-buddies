@@ -63,5 +63,11 @@ namespace QSB.Utility
 
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
 			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+
+        public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> enumerable, Action<T> action)
+        {
+            foreach (var item in enumerable)
+                action(item);
+        }
 	}
 }
