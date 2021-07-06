@@ -2,6 +2,7 @@
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -69,5 +70,24 @@ namespace QSB.Utility
             foreach (var item in enumerable)
                 action(item);
         }
-	}
+
+
+        private const BindingFlags Flags = BindingFlags.Instance
+            | BindingFlags.Static
+            | BindingFlags.Public
+            | BindingFlags.NonPublic
+            | BindingFlags.DeclaredOnly;
+
+        public static void RaiseEvent<T>(this T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
+        {
+            if (!(typeof(T)
+                .GetField(eventName, Flags)?
+                .GetValue(instance) is MulticastDelegate multiDelegate))
+            {
+                return;
+            }
+
+            multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
+        }
+    }
 }
