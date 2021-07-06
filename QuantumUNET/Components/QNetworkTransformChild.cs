@@ -15,8 +15,6 @@ namespace QuantumUNET.Components
 		public QNetworkTransform m_Root;
 		public float m_SendInterval = 0.1f;
 		public float m_MovementThreshold = 0.001f;
-		public float m_InterpolateRotation = 0.5f;
-		public float m_InterpolateMovement = 0.5f;
 		public float LastSyncTime { get; private set; }
 		public Vector3 TargetSyncPosition => _targetSyncPosition;
 		public Quaternion TargetSyncRotation3D => _targetSyncRotation3D;
@@ -48,18 +46,6 @@ namespace QuantumUNET.Components
 		{
 			get => m_MovementThreshold;
 			set => m_MovementThreshold = value;
-		}
-
-		public float InterpolateRotation
-		{
-			get => m_InterpolateRotation;
-			set => m_InterpolateRotation = value;
-		}
-
-		public float InterpolateMovement
-		{
-			get => m_InterpolateMovement;
-			set => m_InterpolateMovement = value;
 		}
 
 		public void Awake()
@@ -122,47 +108,56 @@ namespace QuantumUNET.Components
 
 		private void FixedUpdateClient()
 		{
-			if (LastSyncTime != 0f)
+			if (LastSyncTime == 0f)
 			{
-				if (QNetworkServer.active || QNetworkClient.active)
-				{
-					if (IsServer || IsClient)
-					{
-						if (GetNetworkSendInterval() != 0f)
-						{
-							if (!HasAuthority)
-							{
-								if (LastSyncTime != 0f)
-								{
-									m_Target.localPosition = m_InterpolateMovement > 0f
-										? Vector3.Lerp(m_Target.localPosition, _targetSyncPosition, m_InterpolateMovement)
-										: _targetSyncPosition;
-									m_Target.localRotation = m_InterpolateRotation > 0f
-										? Quaternion.Slerp(m_Target.localRotation, _targetSyncRotation3D, m_InterpolateRotation)
-										: _targetSyncRotation3D;
-								}
-							}
-						}
-					}
-				}
+				return;
 			}
+
+			if (!QNetworkServer.active && !QNetworkClient.active)
+			{
+				return;
+			}
+
+			if (!IsServer && !IsClient)
+			{
+				return;
+			}
+
+			if (GetNetworkSendInterval() == 0f)
+			{
+				return;
+			}
+
+			if (HasAuthority)
+			{
+				return;
+			}
+
+			m_Target.localPosition = _targetSyncPosition;
+			m_Target.localRotation = _targetSyncRotation3D;
 		}
 
 		public void Update()
 		{
-			if (HasAuthority)
+			if (!HasAuthority)
 			{
-				if (LocalPlayerAuthority)
-				{
-					if (!QNetworkServer.active)
-					{
-						if (Time.time - _lastClientSendTime > GetNetworkSendInterval())
-						{
-							SendTransform();
-							_lastClientSendTime = Time.time;
-						}
-					}
-				}
+				return;
+			}
+
+			if (!LocalPlayerAuthority)
+			{
+				return;
+			}
+
+			if (QNetworkServer.active)
+			{
+				return;
+			}
+
+			if (Time.time - _lastClientSendTime > GetNetworkSendInterval())
+			{
+				SendTransform();
+				_lastClientSendTime = Time.time;
 			}
 		}
 
@@ -255,6 +250,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
+		// Called on the server
 		internal static void HandleChildTransform(QNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
