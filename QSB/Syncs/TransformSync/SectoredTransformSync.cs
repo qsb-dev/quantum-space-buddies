@@ -114,31 +114,5 @@ namespace QSB.Syncs.TransformSync
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}
-
-		protected override void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
-			{
-				return;
-			}
-
-			base.OnRenderObject();
-
-			var allSectorsCurrentlyIn = SectorSync.SectorList;
-			var allSectorScores = allSectorsCurrentlyIn.Select(x => QSB.SectorSync.SectorSync.CalculateSectorScore(x, AttachedObject.transform, SectorSync.GetValue<OWRigidbody>("_attachedOWRigidbody")));
-
-			foreach (var sector in allSectorsCurrentlyIn)
-			{
-				var sectorScore = QSB.SectorSync.SectorSync.CalculateSectorScore(sector, AttachedObject.transform, SectorSync.GetValue<OWRigidbody>("_attachedOWRigidbody"));
-
-				var mappedScore = sectorScore.Map(allSectorScores.Min(), allSectorScores.Max(), 0, 1);
-				Popcron.Gizmos.Line(AttachedObject.transform.position, sector.Transform.position, Color.Lerp(Color.green, Color.red, mappedScore));
-			}
-			
-		}
 	}
 }
