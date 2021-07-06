@@ -8,6 +8,28 @@ namespace QuantumUNET.Components
 {
 	public class QNetworkTransformChild : QNetworkBehaviour
 	{
+		public override int GetNetworkChannel() => 1;
+		public override float GetNetworkSendInterval() => m_SendInterval;
+		public Transform m_Target;
+		public uint m_ChildIndex;
+		public QNetworkTransform m_Root;
+		public float m_SendInterval = 0.1f;
+		public float m_MovementThreshold = 0.001f;
+		public float m_InterpolateRotation = 0.5f;
+		public float m_InterpolateMovement = 0.5f;
+		public float LastSyncTime { get; private set; }
+		public Vector3 TargetSyncPosition => _targetSyncPosition;
+		public Quaternion TargetSyncRotation3D => _targetSyncRotation3D;
+
+		private Vector3 _targetSyncPosition;
+		private Quaternion _targetSyncRotation3D;
+		private float _lastClientSendTime;
+		private Vector3 _prevPosition;
+		private Quaternion _prevRotation;
+		private const float LocalMovementThreshold = 1E-05f;
+		private const float LocalRotationThreshold = 1E-05f;
+		private QNetworkWriter _localTransformWriter;
+
 		public Transform Target
 		{
 			get => m_Target;
@@ -40,17 +62,107 @@ namespace QuantumUNET.Components
 			set => m_InterpolateMovement = value;
 		}
 
-		public float LastSyncTime { get; private set; }
-		public Vector3 TargetSyncPosition => m_TargetSyncPosition;
-		public Quaternion TargetSyncRotation3D => m_TargetSyncRotation3D;
-
-		private void Awake()
+		public void Awake()
 		{
-			m_PrevPosition = m_Target.localPosition;
-			m_PrevRotation = m_Target.localRotation;
+			_prevPosition = m_Target.localPosition;
+			_prevRotation = m_Target.localRotation;
 			if (LocalPlayerAuthority)
 			{
-				m_LocalTransformWriter = new QNetworkWriter();
+				_localTransformWriter = new QNetworkWriter();
+			}
+		}
+
+		public void FixedUpdate()
+		{
+			if (IsServer)
+			{
+				FixedUpdateServer();
+			}
+
+			if (IsClient)
+			{
+				FixedUpdateClient();
+			}
+		}
+
+		private void FixedUpdateServer()
+		{
+			if (SyncVarDirtyBits != 0U)
+			{
+				return;
+			}
+
+			if (!QNetworkServer.active)
+			{
+				return;
+			}
+
+			if (!IsServer)
+			{
+				return;
+			}
+
+			if (GetNetworkSendInterval() == 0f)
+			{
+				return;
+			}
+
+			var movementMagnitude = (m_Target.localPosition - _prevPosition).sqrMagnitude;
+			if (movementMagnitude < MovementThreshold)
+			{
+				var rotationAngle = Quaternion.Angle(_prevRotation, m_Target.localRotation);
+				if (rotationAngle < MovementThreshold)
+				{
+					return;
+				}
+			}
+
+			SetDirtyBit(1U);
+		}
+
+		private void FixedUpdateClient()
+		{
+			if (LastSyncTime != 0f)
+			{
+				if (QNetworkServer.active || QNetworkClient.active)
+				{
+					if (IsServer || IsClient)
+					{
+						if (GetNetworkSendInterval() != 0f)
+						{
+							if (!HasAuthority)
+							{
+								if (LastSyncTime != 0f)
+								{
+									m_Target.localPosition = m_InterpolateMovement > 0f
+										? Vector3.Lerp(m_Target.localPosition, _targetSyncPosition, m_InterpolateMovement)
+										: _targetSyncPosition;
+									m_Target.localRotation = m_InterpolateRotation > 0f
+										? Quaternion.Slerp(m_Target.localRotation, _targetSyncRotation3D, m_InterpolateRotation)
+										: _targetSyncRotation3D;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		public void Update()
+		{
+			if (HasAuthority)
+			{
+				if (LocalPlayerAuthority)
+				{
+					if (!QNetworkServer.active)
+					{
+						if (Time.time - _lastClientSendTime > GetNetworkSendInterval())
+						{
+							SendTransform();
+							_lastClientSendTime = Time.time;
+						}
+					}
+				}
 			}
 		}
 
@@ -75,8 +187,8 @@ namespace QuantumUNET.Components
 		{
 			writer.Write(m_Target.localPosition);
 			QNetworkTransform.SerializeRotation(writer, m_Target.localRotation);
-			m_PrevPosition = m_Target.localPosition;
-			m_PrevRotation = m_Target.localRotation;
+			_prevPosition = m_Target.localPosition;
+			_prevRotation = m_Target.localRotation;
 		}
 
 		public override void OnDeserialize(QNetworkReader reader, bool initialState)
@@ -105,109 +217,23 @@ namespace QuantumUNET.Components
 			}
 			else
 			{
-				m_TargetSyncPosition = reader.ReadVector3();
-				m_TargetSyncRotation3D = QNetworkTransform.DeserializeRotation(reader);
+				_targetSyncPosition = reader.ReadVector3();
+				_targetSyncRotation3D = QNetworkTransform.DeserializeRotation(reader);
 			}
-		}
-
-		private void FixedUpdate()
-		{
-			if (IsServer)
-			{
-				FixedUpdateServer();
-			}
-
-			if (IsClient)
-			{
-				FixedUpdateClient();
-			}
-		}
-
-		private void FixedUpdateServer()
-		{
-			if (SyncVarDirtyBits == 0U)
-			{
-				if (QNetworkServer.active)
-				{
-					if (IsServer)
-					{
-						if (GetNetworkSendInterval() != 0f)
-						{
-							var num = (m_Target.localPosition - m_PrevPosition).sqrMagnitude;
-							if (num < MovementThreshold)
-							{
-								num = Quaternion.Angle(m_PrevRotation, m_Target.localRotation);
-								if (num < MovementThreshold)
-								{
-									return;
-								}
-							}
-
-							SetDirtyBit(1U);
-						}
-					}
-				}
-			}
-		}
-
-		private void FixedUpdateClient()
-		{
-			if (LastSyncTime != 0f)
-			{
-				if (QNetworkServer.active || QNetworkClient.active)
-				{
-					if (IsServer || IsClient)
-					{
-						if (GetNetworkSendInterval() != 0f)
-						{
-							if (!HasAuthority)
-							{
-								if (LastSyncTime != 0f)
-								{
-									m_Target.localPosition = m_InterpolateMovement > 0f
-										? Vector3.Lerp(m_Target.localPosition, m_TargetSyncPosition, m_InterpolateMovement)
-										: m_TargetSyncPosition;
-									m_Target.localRotation = m_InterpolateRotation > 0f
-										? Quaternion.Slerp(m_Target.localRotation, m_TargetSyncRotation3D, m_InterpolateRotation)
-										: m_TargetSyncRotation3D;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		private void Update()
-		{
-			if (HasAuthority)
-			{
-				if (LocalPlayerAuthority)
-				{
-					if (!QNetworkServer.active)
-					{
-						if (Time.time - m_LastClientSendTime > GetNetworkSendInterval())
-						{
-							SendTransform();
-							m_LastClientSendTime = Time.time;
-						}
-					}
-				}
-			}
-		}
+		}	
 
 		private bool HasMoved()
 		{
-			var num = (m_Target.localPosition - m_PrevPosition).sqrMagnitude;
+			var num = (m_Target.localPosition - _prevPosition).sqrMagnitude;
 			bool result;
-			if (num > 1E-05f)
+			if (num > LocalMovementThreshold)
 			{
 				result = true;
 			}
 			else
 			{
-				num = Quaternion.Angle(m_Target.localRotation, m_PrevRotation);
-				result = num > 1E-05f;
+				num = Quaternion.Angle(m_Target.localRotation, _prevRotation);
+				result = num > LocalRotationThreshold;
 			}
 
 			return result;
@@ -218,14 +244,14 @@ namespace QuantumUNET.Components
 		{
 			if (HasMoved() && QClientScene.readyConnection != null)
 			{
-				m_LocalTransformWriter.StartMessage(16);
-				m_LocalTransformWriter.Write(NetId);
-				m_LocalTransformWriter.WritePackedUInt32(m_ChildIndex);
-				SerializeModeTransform(m_LocalTransformWriter);
-				m_PrevPosition = m_Target.localPosition;
-				m_PrevRotation = m_Target.localRotation;
-				m_LocalTransformWriter.FinishMessage();
-				QClientScene.readyConnection.SendWriter(m_LocalTransformWriter, GetNetworkChannel());
+				_localTransformWriter.StartMessage(16);
+				_localTransformWriter.Write(NetId);
+				_localTransformWriter.WritePackedUInt32(m_ChildIndex);
+				SerializeModeTransform(_localTransformWriter);
+				_prevPosition = m_Target.localPosition;
+				_prevRotation = m_Target.localRotation;
+				_localTransformWriter.FinishMessage();
+				QClientScene.readyConnection.SendWriter(_localTransformWriter, GetNetworkChannel());
 			}
 		}
 
@@ -270,30 +296,12 @@ namespace QuantumUNET.Components
 						networkTransformChild.LastSyncTime = Time.time;
 						if (!networkTransformChild.IsClient)
 						{
-							networkTransformChild.m_Target.localPosition = networkTransformChild.m_TargetSyncPosition;
-							networkTransformChild.m_Target.localRotation = networkTransformChild.m_TargetSyncRotation3D;
+							networkTransformChild.m_Target.localPosition = networkTransformChild._targetSyncPosition;
+							networkTransformChild.m_Target.localRotation = networkTransformChild._targetSyncRotation3D;
 						}
 					}
 				}
 			}
 		}
-
-		public override int GetNetworkChannel() => 1;
-		public override float GetNetworkSendInterval() => m_SendInterval;
-		public Transform m_Target;
-		public uint m_ChildIndex;
-		public QNetworkTransform m_Root;
-		public float m_SendInterval = 0.1f;
-		public float m_MovementThreshold = 0.001f;
-		public float m_InterpolateRotation = 0.5f;
-		public float m_InterpolateMovement = 0.5f;
-		private Vector3 m_TargetSyncPosition;
-		private Quaternion m_TargetSyncRotation3D;
-		private float m_LastClientSendTime;
-		private Vector3 m_PrevPosition;
-		private Quaternion m_PrevRotation;
-		private const float k_LocalMovementThreshold = 1E-05f;
-		private const float k_LocalRotationThreshold = 1E-05f;
-		private QNetworkWriter m_LocalTransformWriter;
 	}
 }
