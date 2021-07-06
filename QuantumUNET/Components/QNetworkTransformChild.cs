@@ -96,7 +96,6 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		// Token: 0x06000488 RID: 1160 RVA: 0x00019B44 File Offset: 0x00017D44
 		private void UnserializeModeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (HasAuthority)
@@ -111,7 +110,6 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		// Token: 0x06000489 RID: 1161 RVA: 0x00019C4B File Offset: 0x00017E4B
 		private void FixedUpdate()
 		{
 			if (IsServer)
@@ -125,7 +123,6 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		// Token: 0x0600048A RID: 1162 RVA: 0x00019C74 File Offset: 0x00017E74
 		private void FixedUpdateServer()
 		{
 			if (SyncVarDirtyBits == 0U)
@@ -153,7 +150,6 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		// Token: 0x0600048B RID: 1163 RVA: 0x00019D24 File Offset: 0x00017F24
 		private void FixedUpdateClient()
 		{
 			if (LastSyncTime != 0f)
