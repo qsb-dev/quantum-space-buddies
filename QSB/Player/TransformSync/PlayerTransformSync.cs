@@ -87,7 +87,6 @@ namespace QSB.Player.TransformSync
 			/*
 			 * CREATE PLAYER STRUCTURE
 			 */
-			DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
 			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
 			var REMOTE_Player_Body = new GameObject("REMOTE_Player_Body");
@@ -108,7 +107,6 @@ namespace QSB.Player.TransformSync
 			/*
 			 * SET UP PLAYER BODY
 			 */
-			DebugLog.DebugWrite($"SET UP PLAYER BODY");
 			var player = Locator.GetPlayerTransform();
 			var playerModel = player.Find("Traveller_HEA_Player_v2");
 
@@ -131,7 +129,6 @@ namespace QSB.Player.TransformSync
 			/*
 			 * SET UP PLAYER CAMERA
 			 */
-			DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
 			PlayerToolsManager.Init(REMOTE_PlayerCamera.transform);
 
 			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
@@ -147,30 +144,24 @@ namespace QSB.Player.TransformSync
 			/*
 			 * SET UP ROASTING STICK
 			 */
-			DebugLog.DebugWrite($"SET UP ROASTING STICK");
 
-			DebugLog.DebugWrite($"create remote stick pivot");
 			var REMOTE_Stick_Pivot = Instantiate(GetStickPivot());
 			REMOTE_Stick_Pivot.parent = REMOTE_Stick_Root.transform;
 			REMOTE_Stick_Pivot.gameObject.SetActive(false);
 
-			DebugLog.DebugWrite($"destroy arms");
 			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm").gameObject);
 			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit").gameObject);
 
-			DebugLog.DebugWrite($"get marshmallow");
 			var mallowRoot = REMOTE_Stick_Pivot.Find("Stick_Tip/Mallow_Root");
 			mallowRoot.gameObject.SetActive(false);
 			var oldMarshmallow = mallowRoot.GetComponent<Marshmallow>();
 
 			// Recreate particle system
-			DebugLog.DebugWrite($"recreate particle systems");
 			Destroy(mallowRoot.Find("MallowSmoke").GetComponent<RelativisticParticleSystem>());
 			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.AddComponent<CustomRelativisticParticleSystem>();
 			newSystem.Init(Player);
 
 			// Create new marshmallow
-			DebugLog.DebugWrite($"set up new marshmallow");
 			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
 			newMarshmallow._fireRenderer = oldMarshmallow.GetValue<MeshRenderer>("_fireRenderer");
 			newMarshmallow._smokeParticles = oldMarshmallow.GetValue<ParticleSystem>("_smokeParticles");
@@ -180,7 +171,6 @@ namespace QSB.Player.TransformSync
 			newMarshmallow._burntColor = oldMarshmallow.GetValue<Color>("_burntColor");
 			Destroy(oldMarshmallow);
 
-			DebugLog.DebugWrite($"finish up");
 			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
