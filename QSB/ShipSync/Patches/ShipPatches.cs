@@ -116,7 +116,7 @@ namespace QSB.ShipSync.Patches
 				____damaged = true;
 				____repairFraction = 0f;
 				__instance.GetType().GetAnyMethod("OnComponentDamaged").Invoke(__instance, null);
-				QSBWorldSync.RaiseEvent(__instance, "OnDamaged", __instance);
+				__instance.RaiseEvent("OnDamaged", __instance);
 				QSBEventManager.FireEvent(EventNames.QSBComponentDamaged, __instance);
 			}
 			else
@@ -124,7 +124,7 @@ namespace QSB.ShipSync.Patches
 				____damaged = false;
 				____repairFraction = 1f;
 				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
-				QSBWorldSync.RaiseEvent(__instance, "OnRepaired", __instance);
+				__instance.RaiseEvent("OnRepaired", __instance);
 				QSBEventManager.FireEvent(EventNames.QSBComponentRepaired, __instance);
 			}
 
@@ -154,7 +154,7 @@ namespace QSB.ShipSync.Patches
 					if (!____damaged)
 					{
 						____damaged = true;
-						QSBWorldSync.RaiseEvent(__instance, "OnDamaged", __instance);
+						__instance.RaiseEvent("OnDamaged", __instance);
 						QSBEventManager.FireEvent(EventNames.QSBHullDamaged, __instance);
 					}
 
@@ -177,7 +177,7 @@ namespace QSB.ShipSync.Patches
 					}
 				}
 
-				QSBWorldSync.RaiseEvent(__instance, "OnImpact", ____dominantImpact, damage);
+				__instance.RaiseEvent("OnImpact", ____dominantImpact, damage);
 				QSBEventManager.FireEvent(EventNames.QSBHullImpact, __instance, ____dominantImpact, damage);
 
 				____dominantImpact = null;
@@ -209,7 +209,7 @@ namespace QSB.ShipSync.Patches
 			if (____integrity >= 1f)
 			{
 				____damaged = false;
-				QSBWorldSync.RaiseEvent(__instance, "OnRepaired", __instance);
+				__instance.RaiseEvent("OnRepaired", __instance);
 				QSBEventManager.FireEvent(EventNames.QSBHullRepaired, __instance);
 			}
 
