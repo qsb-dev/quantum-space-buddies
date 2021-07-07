@@ -94,9 +94,10 @@ namespace QSB.Utility
 		public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> enumerable, Action<T> action)
 		{
 			foreach (var item in enumerable)
+			{
 				action(item);
+			}
 		}
-
 
 		private const BindingFlags Flags = BindingFlags.Instance
 			| BindingFlags.Static

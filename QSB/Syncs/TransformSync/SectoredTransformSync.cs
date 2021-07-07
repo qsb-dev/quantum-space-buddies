@@ -94,6 +94,7 @@ namespace QSB.Syncs.TransformSync
 					base.DeserializeTransform(reader);
 					return;
 				}
+
 				DebugLog.DebugWrite($"DESERAILIZE new sector ({(ReferenceSector == null ? "NULL" : ReferenceSector.Name)} to {sector.Name})");
 				SetReferenceSector(sector);
 			}

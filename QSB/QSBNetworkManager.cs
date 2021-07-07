@@ -60,7 +60,6 @@ namespace QSB
 			playerPrefab.AddComponent<JetpackAccelerationSync>();
 			playerPrefab.AddComponent<InstrumentsManager>();
 
-
 			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
 			SetupNetworkId(ShipPrefab);
 			SetupNetworkTransform(ShipPrefab);
