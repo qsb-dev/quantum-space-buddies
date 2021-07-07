@@ -26,8 +26,8 @@ namespace QuantumUNET.Messages
 			NetId = reader.ReadNetworkId();
 			assetId = reader.ReadNetworkHash128();
 			Position = reader.ReadVector3();
-			Payload = reader.ReadBytesAndSize();
-			if (reader.Length - reader.Position >= 16U)
+			Payload = reader.ReadByteArray();
+			if (reader.BaseStream.Length - reader.BaseStream.Position >= 16U)
 			{
 				Rotation = reader.ReadQuaternion();
 			}

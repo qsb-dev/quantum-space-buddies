@@ -207,7 +207,7 @@ namespace QuantumUNET.Components
 				if (!autoSend || GetParameterAutoSend(index))
 				{
 					var parameter = m_Animator.parameters[index];
-					if (reader.Length == reader.Position)
+					if (reader.BaseStream.Length == reader.BaseStream.Position)
 					{
 						return;
 					}

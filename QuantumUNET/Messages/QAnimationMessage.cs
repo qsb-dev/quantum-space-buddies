@@ -23,7 +23,7 @@ namespace QuantumUNET.Messages
 			netId = reader.ReadNetworkId();
 			stateHash = (int)reader.ReadPackedUInt32();
 			normalizedTime = reader.ReadSingle();
-			parameters = reader.ReadBytesAndSize();
+			parameters = reader.ReadByteArray();
 		}
 	}
 }

@@ -1,46 +1,20 @@
 ﻿using QuantumUNET.Components;
 using QuantumUNET.Messages;
 using System;
-using System.Text;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QuantumUNET.Transport
 {
-	public class QNetworkReader
+	public class QNetworkReader : BinaryReader
 	{
-		private readonly QNetBuffer m_buf;
-		private static byte[] s_StringReaderBuffer;
-		private static Encoding s_Encoding;
-
-		public QNetworkReader(QNetworkWriter writer)
-		{
-			m_buf = new QNetBuffer(writer.AsArray());
-			Initialize();
+        public QNetworkReader(QNetworkWriter writer) : base(new MemoryStream(writer.ToArray()))
+        {
 		}
-
-		public QNetworkReader(byte[] buffer)
-		{
-			m_buf = new QNetBuffer(buffer);
-			Initialize();
-		}
-
-		private static void Initialize()
-		{
-			if (s_Encoding == null)
-			{
-				s_StringReaderBuffer = new byte[1024];
-				s_Encoding = new UTF8Encoding();
-			}
-		}
-
-		public uint Position => m_buf.Position;
-
-		public int Length => m_buf.Length;
-
-		public void SeekZero() => m_buf.SeekZero();
-
-		internal void Replace(byte[] buffer) => m_buf.Replace(buffer);
+        public QNetworkReader(byte[] buffer) : base(new MemoryStream(buffer))
+        {
+        }        
 
 		public uint ReadPackedUInt32()
 		{
@@ -55,14 +29,14 @@ namespace QuantumUNET.Transport
 				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240U + 256U * (uint)(b - 241) + b2;
+					result = 240U + (uint)(b - 241)<<8 + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288U + 256U * b2 + b3;
+						result = 2288U + b2<<8 + b3;
 					}
 					else
 					{
@@ -101,14 +75,14 @@ namespace QuantumUNET.Transport
 				var b2 = ReadByte();
 				if (b >= 241 && b <= 248)
 				{
-					result = 240UL + 256UL * (b - 241UL) + b2;
+					result = 240UL + (b - 241UL)<<8 + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288UL + 256UL * b2 + b3;
+						result = 2288UL + b2<<8 + b3;
 					}
 					else
 					{
@@ -162,158 +136,14 @@ namespace QuantumUNET.Transport
 					}
 				}
 			}
-
 			return result;
 		}
 
 		public NetworkInstanceId ReadNetworkId() => new NetworkInstanceId(ReadPackedUInt32());
 
 		public NetworkSceneId ReadSceneId() => new NetworkSceneId(ReadPackedUInt32());
-
-		public byte ReadByte() => m_buf.ReadByte();
-
-		public sbyte ReadSByte() => (sbyte)m_buf.ReadByte();
-
-		public short ReadInt16()
-		{
-			ushort num = 0;
-			num |= m_buf.ReadByte();
-			num |= (ushort)(m_buf.ReadByte() << 8);
-			return (short)num;
-		}
-
-		public ushort ReadUInt16() => (ushort)((ushort)(0U | m_buf.ReadByte()) | (uint)(ushort)((uint)m_buf.ReadByte() << 8));
-
-		public int ReadInt32()
-		{
-			var num = 0U;
-			num |= m_buf.ReadByte();
-			num |= (uint)m_buf.ReadByte() << 8;
-			num |= (uint)m_buf.ReadByte() << 16;
-			return (int)(num | ((uint)m_buf.ReadByte() << 24));
-		}
-
-		public uint ReadUInt32()
-		{
-			var num = 0U;
-			num |= m_buf.ReadByte();
-			num |= (uint)m_buf.ReadByte() << 8;
-			num |= (uint)m_buf.ReadByte() << 16;
-			return num | ((uint)m_buf.ReadByte() << 24);
-		}
-
-		public long ReadInt64()
-		{
-			var num = 0UL;
-			var num2 = (ulong)m_buf.ReadByte();
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 8;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 16;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 24;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 32;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 40;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 48;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 56;
-			return (long)(num | num2);
-		}
-
-		public ulong ReadUInt64()
-		{
-			var num = 0UL;
-			var num2 = (ulong)m_buf.ReadByte();
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 8;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 16;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 24;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 32;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 40;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 48;
-			num |= num2;
-			num2 = (ulong)m_buf.ReadByte() << 56;
-			return num | num2;
-		}
-
-		public decimal ReadDecimal() =>
-			new decimal(new[]
-			{
-				ReadInt32(),
-				ReadInt32(),
-				ReadInt32(),
-				ReadInt32()
-			});
-
-		public float ReadSingle()
-		{
-			var bytes = ReadBytes(4);
-			return BitConverter.ToSingle(bytes, 0);
-		}
-
-		public double ReadDouble()
-		{
-			var bytes = ReadBytes(8);
-			return BitConverter.ToSingle(bytes, 0);
-		}
-
-		public string ReadString()
-		{
-			var num = ReadUInt16();
-			string result;
-			if (num == 0)
-			{
-				result = "";
-			}
-			else
-			{
-				if (num >= 32768)
-				{
-					throw new IndexOutOfRangeException($"ReadString() too long: {num}");
-				}
-
-				while (num > s_StringReaderBuffer.Length)
-				{
-					s_StringReaderBuffer = new byte[s_StringReaderBuffer.Length * 2];
-				}
-
-				m_buf.ReadBytes(s_StringReaderBuffer, num);
-				var chars = s_Encoding.GetChars(s_StringReaderBuffer, 0, num);
-				result = new string(chars);
-			}
-
-			return result;
-		}
-
-		public char ReadChar() => (char)m_buf.ReadByte();
-
-		public bool ReadBoolean()
-		{
-			var num = (int)m_buf.ReadByte();
-			return num == 1;
-		}
-
-		public byte[] ReadBytes(int count)
-		{
-			if (count < 0)
-			{
-				throw new IndexOutOfRangeException($"NetworkReader ReadBytes {count}");
-			}
-
-			var array = new byte[count];
-			m_buf.ReadBytes(array, (uint)count);
-			return array;
-		}
-
-		public byte[] ReadBytesAndSize()
+        
+		public byte[] ReadByteArray()
 		{
 			var num = ReadUInt16();
 			return num == 0 ? new byte[0] : ReadBytes(num);
@@ -457,8 +287,8 @@ namespace QuantumUNET.Transport
 
 			return result;
 		}
-
-		public override string ToString() => m_buf.ToString();
+        //Because we don't have access to the buffer this is the best that I could think of - ShoosGun (Locochoco)
+		public override string ToString() => BaseStream.ToString();
 
 		public TMsg ReadMessage<TMsg>() where TMsg : QMessageBase, new()
 		{

@@ -17,7 +17,7 @@ namespace QuantumUNET.Messages
 		public override void Deserialize(QNetworkReader reader)
 		{
 			playerControllerId = reader.ReadInt16();
-			msgData = reader.ReadBytesAndSize();
+			msgData = reader.ReadByteArray();
 			msgSize = msgData?.Length ?? 0;
 		}
 	}

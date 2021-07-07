@@ -189,7 +189,7 @@ namespace QuantumUNET.Transport
 					_readingFragment = true;
 				}
 
-				var array = reader.ReadBytesAndSize();
+				var array = reader.ReadByteArray();
 				_fragmentBuffer.WriteBytes(array, (ushort)array.Length);
 				result = false;
 			}

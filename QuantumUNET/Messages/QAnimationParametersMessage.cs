@@ -11,7 +11,7 @@ namespace QuantumUNET.Messages
 		public override void Deserialize(QNetworkReader reader)
 		{
 			netId = reader.ReadNetworkId();
-			parameters = reader.ReadBytesAndSize();
+			parameters = reader.ReadByteArray();
 		}
 
 		public override void Serialize(QNetworkWriter writer)

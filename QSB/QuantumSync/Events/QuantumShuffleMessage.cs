@@ -12,7 +12,7 @@ namespace QSB.QuantumSync.Events
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			IndexArray = Array.ConvertAll(reader.ReadBytesAndSize(), Convert.ToInt32);
+			IndexArray = Array.ConvertAll(reader.ReadByteArray(), Convert.ToInt32);
 		}
 
 		public override void Serialize(QNetworkWriter writer)

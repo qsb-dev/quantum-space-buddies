@@ -24,7 +24,7 @@ namespace QuantumUNET.Messages
 			NetId = reader.ReadNetworkId();
 			SceneId = reader.ReadSceneId();
 			Position = reader.ReadVector3();
-			Payload = reader.ReadBytesAndSize();
+			Payload = reader.ReadByteArray();
 		}
 	}
 }
