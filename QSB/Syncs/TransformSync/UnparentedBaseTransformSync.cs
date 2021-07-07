@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
 {
-	public abstract class UnparentedBaseTransformSync : SyncBase<Transform>
+	public abstract class UnparentedBaseTransformSync : SyncBase
 	{
 		public virtual void Start()
 		{

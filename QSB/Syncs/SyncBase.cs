@@ -6,8 +6,7 @@ using UnityEngine;
 
 namespace QSB.Syncs
 {
-	public abstract class SyncBase<T> : QNetworkTransform
-		where T : Component
+	public abstract class SyncBase : QNetworkTransform
 	{
 		public uint AttachedNetId
 		{
@@ -44,7 +43,7 @@ namespace QSB.Syncs
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 
-		public T AttachedObject { get; set; }
+		public Component AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
 		protected string _logName => $"{PlayerId}.{GetType().Name}";
@@ -56,8 +55,8 @@ namespace QSB.Syncs
 		protected IntermediaryTransform _intermediaryTransform;
 		protected bool _isInitialized;
 
-		protected abstract T InitLocalTransform();
-		protected abstract T InitRemoteTransform();
+		protected abstract Component InitLocalTransform();
+		protected abstract Component InitRemoteTransform();
 		protected abstract void UpdateTransform();
 		protected abstract void Init();
 

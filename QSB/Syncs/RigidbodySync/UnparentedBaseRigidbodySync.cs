@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.Syncs.RigidbodySync
 {
-	public abstract class UnparentedBaseRigidbodySync : SyncBase<OWRigidbody>
+	public abstract class UnparentedBaseRigidbodySync : SyncBase
 	{
 		protected Vector3 _relativeVelocity;
 		protected Vector3 _relativeAngularVelocity;
@@ -113,7 +113,7 @@ namespace QSB.Syncs.RigidbodySync
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 				_relativeVelocity = GetRelativeVelocity();
-				_relativeAngularVelocity = AttachedObject.GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+				_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
 				return;
 			}
 
@@ -127,21 +127,21 @@ namespace QSB.Syncs.RigidbodySync
 
 			if (UseInterpolation)
 			{
-				AttachedObject.SetPosition(SmartSmoothDamp(AttachedObject.transform.position, targetPos));
-				AttachedObject.SetRotation(QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime));
+				(AttachedObject as OWRigidbody).SetPosition(SmartSmoothDamp(AttachedObject.transform.position, targetPos));
+				(AttachedObject as OWRigidbody).SetRotation(QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime));
 			}
 			else
 			{
-				AttachedObject.SetPosition(targetPos);
-				AttachedObject.SetRotation(targetRot);
+				(AttachedObject as OWRigidbody).SetPosition(targetPos);
+				(AttachedObject as OWRigidbody).SetRotation(targetRot);
 			}
 
 			var currentVelocity = GetRelativeVelocity();
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
 			var adjustedTarget = targetVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
 
-			SetVelocity(AttachedObject, targetVelocity);
-			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity);
+			SetVelocity((AttachedObject as OWRigidbody), targetVelocity);
+			(AttachedObject as OWRigidbody).SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity);
 		}
 
 		private void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
@@ -231,7 +231,7 @@ namespace QSB.Syncs.RigidbodySync
 			}
 
 			var pointVelocity = attachedRigid.GetPointVelocity(AttachedObject.transform.position);
-			return AttachedObject.GetVelocity() - pointVelocity;
+			return (AttachedObject as OWRigidbody).GetVelocity() - pointVelocity;
 		}
 	}
 }

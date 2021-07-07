@@ -58,7 +58,7 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
-		protected override Transform InitLocalTransform()
+		protected override Component InitLocalTransform()
 		{
 			SectorSync.Init(Locator.GetPlayerSectorDetector(), this);
 
@@ -89,7 +89,7 @@ namespace QSB.Player.TransformSync
 			return player;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override Component InitRemoteTransform()
 		{
 			/*
 			 * CREATE PLAYER STRUCTURE

@@ -2,6 +2,7 @@ using QSB.Player;
 using QSB.SectorSync;
 using QSB.Syncs.RigidbodySync;
 using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
@@ -19,8 +20,8 @@ namespace QSB.ShipSync.TransformSync
 			LocalInstance = this;
 		}
 
-		protected override OWRigidbody InitLocalTransform() => throw new System.NotImplementedException();
-		protected override OWRigidbody InitRemoteTransform() => throw new System.NotImplementedException();
+		protected override Component InitLocalTransform() => throw new System.NotImplementedException();
+		protected override Component InitRemoteTransform() => throw new System.NotImplementedException();
 
 		protected override OWRigidbody GetRigidbody()
 		{

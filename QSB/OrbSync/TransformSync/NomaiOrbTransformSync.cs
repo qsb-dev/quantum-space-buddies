@@ -49,8 +49,8 @@ namespace QSB.OrbSync.TransformSync
 			return QSBWorldSync.OldOrbList[_index].transform;
 		}
 
-		protected override Transform InitLocalTransform() => GetTransform();
-		protected override Transform InitRemoteTransform() => GetTransform();
+		protected override Component InitLocalTransform() => GetTransform();
+		protected override Component InitRemoteTransform() => GetTransform();
 
 		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => false;

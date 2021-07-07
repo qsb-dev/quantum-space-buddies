@@ -15,7 +15,7 @@ namespace QSB.Syncs.TransformSync
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class BaseTransformSync : SyncBase<Transform>
+	public abstract class BaseTransformSync : SyncBase
 	{
 		private readonly static Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
 

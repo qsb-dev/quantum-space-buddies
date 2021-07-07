@@ -19,8 +19,8 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<SyncBase<Transform>> SectoredTransformSyncs = new List<SyncBase<Transform>>();
-		public List<SyncBase<OWRigidbody>> SectoredRigidbodySyncs = new List<SyncBase<OWRigidbody>>();
+		public List<SyncBase> SectoredTransformSyncs = new List<SyncBase>();
+		public List<SyncBase> SectoredRigidbodySyncs = new List<SyncBase>();
 
 		public void Invoke()
 		{
@@ -88,7 +88,7 @@ namespace QSB.SectorSync
 		private void CheckTransformSyncSector<T>(ISectoredSync<T> transformSync)
 			where T : Component
 		{
-			var attachedObject = (transformSync as SyncBase<T>).AttachedObject;
+			var attachedObject = (transformSync as SyncBase).AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
 			if (closestSector == default(QSBSector))
 			{
