@@ -1,5 +1,5 @@
-﻿using QSB.WorldSync;
-using QSB.Utility;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.WorldObjects
@@ -15,10 +15,10 @@ namespace QSB.Animation.NPC.WorldObjects
 
 		public abstract CharacterDialogueTree GetDialogueTree();
 
-    public virtual void StartConversation()
-      => GetDialogueTree().RaiseEvent("OnStartConversation");
+		public virtual void StartConversation()
+		  => GetDialogueTree().RaiseEvent("OnStartConversation");
 
-		public virtual void EndConversation() 
+		public virtual void EndConversation()
 			=> GetDialogueTree().RaiseEvent("OnEndConversation");
 
 		public abstract bool InConversation();

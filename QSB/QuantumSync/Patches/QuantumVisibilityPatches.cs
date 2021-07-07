@@ -21,8 +21,8 @@ namespace QSB.QuantumSync.Patches
 			Postfix(nameof(Shape_OnDisable));
 		}
 
-        public static void Shape_OnEnable(Shape __instance)
-            => __instance.RaiseEvent("OnShapeActivated", __instance);
+		public static void Shape_OnEnable(Shape __instance)
+			=> __instance.RaiseEvent("OnShapeActivated", __instance);
 
 		public static void Shape_OnDisable(Shape __instance)
 			=> __instance.RaiseEvent("OnShapeDeactivated", __instance);

@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -119,7 +118,7 @@ namespace QSB.WorldSync
 			WorldObjects.Add(worldObject);
 			return worldObject;
 		}
-    
+
 		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
 		{
 			var slotList = GetWorldObjects<QSBOrbSlot>().ToList();

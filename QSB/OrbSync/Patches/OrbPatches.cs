@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
-using QSB.WorldSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.OrbSync.Patches
@@ -52,7 +52,7 @@ namespace QSB.OrbSync.Patches
 			{
 				QSBWorldSync.HandleSlotStateChange(__instance, orb, false);
 				____occupyingOrb = null;
-                __instance.RaiseEvent("OnSlotDeactivated", __instance);
+				__instance.RaiseEvent("OnSlotDeactivated", __instance);
 				__result = false;
 				return false;
 			}

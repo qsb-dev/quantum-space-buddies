@@ -215,7 +215,7 @@ namespace QuantumUNET.Components
 				_targetSyncPosition = reader.ReadVector3();
 				_targetSyncRotation3D = QNetworkTransform.DeserializeRotation(reader);
 			}
-		}	
+		}
 
 		private bool HasMoved()
 		{

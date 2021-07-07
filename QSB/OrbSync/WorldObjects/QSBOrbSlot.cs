@@ -1,7 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
-using QSB.WorldSync;
 using QSB.Utility;
+using QSB.WorldSync;
 
 namespace QSB.OrbSync.WorldObjects
 {
@@ -38,7 +38,7 @@ namespace QSB.OrbSync.WorldObjects
 			var occOrb = state ? QSBWorldSync.OldOrbList[orbId] : null;
 			AttachedObject.SetValue("_occupyingOrb", occOrb);
 			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";
-            AttachedObject.RaiseEvent(ev, AttachedObject);
+			AttachedObject.RaiseEvent(ev, AttachedObject);
 			Activated = state;
 		}
 	}

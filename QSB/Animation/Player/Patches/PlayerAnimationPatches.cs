@@ -96,19 +96,19 @@ namespace QSB.Animation.Patches
 				else if (____leftFootGrounded && leftFootLift > 0.666f)
 				{
 					____leftFootGrounded = false;
-                    __instance.RaiseEvent("OnLeftFootLift");
+					__instance.RaiseEvent("OnLeftFootLift");
 				}
 
 				var rightFootLift = ____animator.GetFloat("RightFootLift");
 				if (!____rightFootGrounded && rightFootLift < 0.333f)
 				{
 					____rightFootGrounded = true;
-                    __instance.RaiseEvent("OnRightFootGrounded");
+					__instance.RaiseEvent("OnRightFootGrounded");
 				}
 				else if (____rightFootGrounded && rightFootLift > 0.666f)
 				{
 					____rightFootGrounded = false;
-                    __instance.RaiseEvent("OnRightFootLift");
+					__instance.RaiseEvent("OnRightFootLift");
 				}
 			}
 

@@ -91,31 +91,31 @@ namespace QSB.Utility
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
 			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
 
-        public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> enumerable, Action<T> action)
-        {
-            foreach (var item in enumerable)
-                action(item);
-        }
+		public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> enumerable, Action<T> action)
+		{
+			foreach (var item in enumerable)
+				action(item);
+		}
 
 
-        private const BindingFlags Flags = BindingFlags.Instance
-            | BindingFlags.Static
-            | BindingFlags.Public
-            | BindingFlags.NonPublic
-            | BindingFlags.DeclaredOnly;
+		private const BindingFlags Flags = BindingFlags.Instance
+			| BindingFlags.Static
+			| BindingFlags.Public
+			| BindingFlags.NonPublic
+			| BindingFlags.DeclaredOnly;
 
-        public static void RaiseEvent<T>(this T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
-        {
-            if (!(typeof(T)
-                .GetField(eventName, Flags)?
-                .GetValue(instance) is MulticastDelegate multiDelegate))
-            {
-                return;
-            }
+		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
+		{
+			if (!(typeof(T)
+				.GetField(eventName, Flags)?
+				.GetValue(instance) is MulticastDelegate multiDelegate))
+			{
+				return;
+			}
 
-            multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
-        }
-  
+			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
+		}
+
 		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
 			where ThisType : BaseType
 		{
