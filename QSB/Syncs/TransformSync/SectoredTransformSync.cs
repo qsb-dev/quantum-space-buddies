@@ -1,10 +1,8 @@
-﻿using OWML.Utils;
-using QSB.SectorSync;
+﻿using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
@@ -96,6 +94,7 @@ namespace QSB.Syncs.TransformSync
 					base.DeserializeTransform(reader);
 					return;
 				}
+
 				DebugLog.DebugWrite($"DESERAILIZE new sector ({(ReferenceSector == null ? "NULL" : ReferenceSector.Name)} to {sector.Name})");
 				SetReferenceSector(sector);
 			}

@@ -21,7 +21,7 @@ namespace QSB.Syncs.TransformSync
 		private readonly static Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
 
 		public static T GetPlayers<T>(PlayerInfo player)
-			where T : BaseTransformSync 
+			where T : BaseTransformSync
 		{
 			var dictOfOwnedSyncs = _storedTransformSyncs[player];
 			var wantedSync = dictOfOwnedSyncs[typeof(T)];
