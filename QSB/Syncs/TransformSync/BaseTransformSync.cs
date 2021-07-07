@@ -306,9 +306,7 @@ namespace QSB.Syncs.TransformSync
 			}
 
 			AttachedObject.transform.SetParent(newParent, true);
-			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
-				? Vector3.one / 10
-				: Vector3.one;
+			AttachedObject.transform.localScale = Vector3.one;
 		}
 
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
