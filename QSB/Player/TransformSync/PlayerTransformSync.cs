@@ -87,6 +87,7 @@ namespace QSB.Player.TransformSync
 			/*
 			 * CREATE PLAYER STRUCTURE
 			 */
+
 			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
 			var REMOTE_Player_Body = new GameObject("REMOTE_Player_Body");
@@ -107,6 +108,7 @@ namespace QSB.Player.TransformSync
 			/*
 			 * SET UP PLAYER BODY
 			 */
+
 			var player = Locator.GetPlayerTransform();
 			var playerModel = player.Find("Traveller_HEA_Player_v2");
 
@@ -129,6 +131,7 @@ namespace QSB.Player.TransformSync
 			/*
 			 * SET UP PLAYER CAMERA
 			 */
+
 			PlayerToolsManager.Init(REMOTE_PlayerCamera.transform);
 
 			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
