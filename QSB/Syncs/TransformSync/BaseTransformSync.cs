@@ -82,7 +82,7 @@ namespace QSB.Syncs.TransformSync
 		protected abstract Transform InitRemoteTransform();
 
 		protected bool _isInitialized;
-		private const float SmoothTime = 0.1f;
+		protected const float SmoothTime = 0.1f;
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		private Vector3 _positionSmoothVelocity;

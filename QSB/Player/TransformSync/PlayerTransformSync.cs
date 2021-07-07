@@ -28,6 +28,13 @@ namespace QSB.Player.TransformSync
 		private Transform _visibleStickTip;
 		private Transform _networkStickTip => _networkStickPivot.GetChild(0);
 
+		protected Vector3 _cameraPositionVelocity;
+		protected Quaternion _cameraRotationVelocity;
+		protected Vector3 _pivotPositionVelocity;
+		protected Quaternion _pivotRotationVelocity;
+		protected Vector3 _tipPositionVelocity;
+		protected Quaternion _tipRotationVelocity;
+
 		private Transform GetStickPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
@@ -187,12 +194,12 @@ namespace QSB.Player.TransformSync
 		{
 			base.UpdateTransform();
 
-			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot);
-			UpdateSpecificTransform(_visibleStickTip, _networkStickTip);
-			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot);
+			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
+			UpdateSpecificTransform(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
+			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
 		}
 
-		private void UpdateSpecificTransform(Transform visible, Transform network)
+		private void UpdateSpecificTransform(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
 		{
 			if (HasAuthority)
 			{
@@ -201,8 +208,8 @@ namespace QSB.Player.TransformSync
 				return;
 			}
 
-			visible.localPosition = network.localPosition;
-			visible.localRotation = network.localRotation;
+			visible.localPosition = Vector3.SmoothDamp(visible.localPosition, network.localPosition, ref positionVelocity, SmoothTime);
+			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
