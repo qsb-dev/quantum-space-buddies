@@ -115,7 +115,6 @@ namespace QSB.Utility
 
             multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
         }
-    }
   
 		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
 			where ThisType : BaseType
