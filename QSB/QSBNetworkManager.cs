@@ -50,7 +50,7 @@ namespace QSB
 			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
-			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkplayer.prefab");
+			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
 			SetupNetworkId(playerPrefab);
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();

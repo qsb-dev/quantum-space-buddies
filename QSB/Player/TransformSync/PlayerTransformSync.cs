@@ -19,8 +19,11 @@ namespace QSB.Player.TransformSync
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
 
+		private Transform _networkRoastingSystem => gameObject.transform.GetChild(1);
+		private Transform _networkStickRoot => _networkRoastingSystem.GetChild(0);
+
 		private Transform _visibleStickPivot;
-		private Transform _networkStickPivot => gameObject.transform.GetChild(1);
+		private Transform _networkStickPivot => _networkStickRoot.GetChild(0);
 
 		private Transform _visibleStickTip;
 		private Transform _networkStickTip => _networkStickPivot.GetChild(0);
@@ -48,18 +51,16 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
-		private Transform GetPlayerModel() =>
-			Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2");
-
 		protected override Transform InitLocalTransform()
 		{
 			SectorSync.Init(Locator.GetPlayerSectorDetector(), this);
 
 			// player body
-			var playerBody = GetPlayerModel();
-			GetComponent<AnimationSync>().InitLocal(playerBody);
-			GetComponent<InstrumentsManager>().InitLocal(playerBody);
-			Player.Body = playerBody.gameObject;
+			var player = Locator.GetPlayerTransform();
+			var playerModel = player.Find("Traveller_HEA_Player_v2");
+			GetComponent<AnimationSync>().InitLocal(playerModel);
+			GetComponent<InstrumentsManager>().InitLocal(player);
+			Player.Body = player.gameObject;
 
 			// camera
 			var cameraBody = Locator.GetPlayerCamera().gameObject.transform;
@@ -78,57 +79,98 @@ namespace QSB.Player.TransformSync
 			DebugLog.DebugWrite("PlayerTransformSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
-			return playerBody;
+			return player;
 		}
 
 		protected override Transform InitRemoteTransform()
 		{
-			// player body
-			var playerBody = Instantiate(GetPlayerModel());
-			Player.Body = playerBody.gameObject;
+			/*
+			 * CREATE PLAYER STRUCTURE
+			 */
+			DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
+			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
-			GetComponent<AnimationSync>().InitRemote(playerBody);
-			GetComponent<InstrumentsManager>().InitRemote(playerBody);
+			var REMOTE_Player_Body = new GameObject("REMOTE_Player_Body");
 
-			var marker = playerBody.gameObject.AddComponent<PlayerHUDMarker>();
+			var REMOTE_PlayerCamera = new GameObject("REMOTE_PlayerCamera");
+			REMOTE_PlayerCamera.transform.parent = REMOTE_Player_Body.transform;
+			REMOTE_PlayerCamera.transform.localPosition = new Vector3(0f, 0.8496093f, 0.1500003f);
+
+			var REMOTE_RoastingSystem = new GameObject("REMOTE_RoastingSystem");
+			REMOTE_RoastingSystem.transform.parent = REMOTE_Player_Body.transform;
+			REMOTE_RoastingSystem.transform.localPosition = new Vector3(0f, 0.4f, 0f);
+
+			var REMOTE_Stick_Root = new GameObject("REMOTE_Stick_Root");
+			REMOTE_Stick_Root.transform.parent = REMOTE_RoastingSystem.transform;
+			REMOTE_Stick_Root.transform.localPosition = new Vector3(0.25f, 0f, 0.08f);
+			REMOTE_Stick_Root.transform.localRotation = Quaternion.Euler(0f, -10f, 0f);
+
+			/*
+			 * SET UP PLAYER BODY
+			 */
+			DebugLog.DebugWrite($"SET UP PLAYER BODY");
+			var player = Locator.GetPlayerTransform();
+			var playerModel = player.Find("Traveller_HEA_Player_v2");
+
+			var REMOTE_Traveller_HEA_Player_v2 = Instantiate(playerModel);
+			REMOTE_Traveller_HEA_Player_v2.transform.parent = REMOTE_Player_Body.transform;
+			REMOTE_Traveller_HEA_Player_v2.transform.localPosition = new Vector3(0f, -1.03f, -0.2f);
+			REMOTE_Traveller_HEA_Player_v2.transform.localRotation = Quaternion.Euler(-1.500009f, 0f, 0f);
+			REMOTE_Traveller_HEA_Player_v2.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+			Player.Body = REMOTE_Player_Body;
+
+			GetComponent<AnimationSync>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
+			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Player_Body.transform);
+
+			var marker = REMOTE_Player_Body.AddComponent<PlayerHUDMarker>();
 			marker.Init(Player);
 
-			playerBody.gameObject.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
+			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
-			// camera
-			var cameraBody = new GameObject("RemotePlayerCamera");
-			cameraBody.transform.parent = playerBody;
+			/*
+			 * SET UP PLAYER CAMERA
+			 */
+			DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
+			PlayerToolsManager.Init(REMOTE_PlayerCamera.transform);
 
-			PlayerToolsManager.Init(cameraBody.transform);
-
-			var camera = cameraBody.AddComponent<Camera>();
+			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
 			camera.enabled = false;
-			var owcamera = cameraBody.AddComponent<OWCamera>();
+			var owcamera = REMOTE_PlayerCamera.AddComponent<OWCamera>();
 			owcamera.fieldOfView = 70;
 			owcamera.nearClipPlane = 0.1f;
 			owcamera.farClipPlane = 50000f;
 			Player.Camera = owcamera;
-			Player.CameraBody = cameraBody;
-			_visibleCameraRoot = cameraBody.transform;
+			Player.CameraBody = REMOTE_PlayerCamera;
+			_visibleCameraRoot = REMOTE_PlayerCamera.transform;
 
-			// stick
+			/*
+			 * SET UP ROASTING STICK
+			 */
+			DebugLog.DebugWrite($"SET UP ROASTING STICK");
 
-			var newPivot = Instantiate(GetStickPivot());
-			// TODO : this is meant to be the camera?
-			newPivot.parent = null;
-			newPivot.gameObject.SetActive(false);
-			Destroy(newPivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm").gameObject);
-			Destroy(newPivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit").gameObject);
-			var mallowRoot = newPivot.Find("Stick_Tip/Mallow_Root");
+			DebugLog.DebugWrite($"create remote stick pivot");
+			var REMOTE_Stick_Pivot = Instantiate(GetStickPivot());
+			REMOTE_Stick_Pivot.parent = REMOTE_Stick_Root.transform;
+			REMOTE_Stick_Pivot.gameObject.SetActive(false);
+
+			DebugLog.DebugWrite($"destroy arms");
+			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm").gameObject);
+			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit").gameObject);
+
+			DebugLog.DebugWrite($"get marshmallow");
+			var mallowRoot = REMOTE_Stick_Pivot.Find("Stick_Tip/Mallow_Root");
 			mallowRoot.gameObject.SetActive(false);
 			var oldMarshmallow = mallowRoot.GetComponent<Marshmallow>();
 
 			// Recreate particle system
+			DebugLog.DebugWrite($"recreate particle systems");
 			Destroy(mallowRoot.Find("MallowSmoke").GetComponent<RelativisticParticleSystem>());
 			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.AddComponent<CustomRelativisticParticleSystem>();
 			newSystem.Init(Player);
 
 			// Create new marshmallow
+			DebugLog.DebugWrite($"set up new marshmallow");
 			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
 			newMarshmallow._fireRenderer = oldMarshmallow.GetValue<MeshRenderer>("_fireRenderer");
 			newMarshmallow._smokeParticles = oldMarshmallow.GetValue<ParticleSystem>("_smokeParticles");
@@ -138,13 +180,14 @@ namespace QSB.Player.TransformSync
 			newMarshmallow._burntColor = oldMarshmallow.GetValue<Color>("_burntColor");
 			Destroy(oldMarshmallow);
 
-			Player.RoastingStick = newPivot.gameObject;
+			DebugLog.DebugWrite($"finish up");
+			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
-			_visibleStickPivot = newPivot;
-			_visibleStickTip = newPivot.Find("Stick_Tip");
+			_visibleStickPivot = REMOTE_Stick_Pivot;
+			_visibleStickTip = REMOTE_Stick_Pivot.Find("Stick_Tip");
 
-			return playerBody;
+			return REMOTE_Player_Body.transform;
 		}
 
 		protected override void UpdateTransform()
