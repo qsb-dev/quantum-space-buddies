@@ -41,7 +41,6 @@ namespace QSB.Syncs.TransformSync
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
-				DebugLog.DebugWrite($"INIT - Set {PlayerId}.{GetType().Name} to sector {closestSector.Name}");
 				// TODO : should this be set reference sector?
 				SetReferenceTransform(closestSector.Transform);
 			}
@@ -95,7 +94,6 @@ namespace QSB.Syncs.TransformSync
 					return;
 				}
 
-				DebugLog.DebugWrite($"DESERAILIZE new sector ({(ReferenceSector == null ? "NULL" : ReferenceSector.Name)} to {sector.Name})");
 				SetReferenceSector(sector);
 			}
 

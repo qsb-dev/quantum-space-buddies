@@ -19,6 +19,9 @@ namespace QSB.ShipSync.TransformSync
 			LocalInstance = this;
 		}
 
+		protected override OWRigidbody InitLocalTransform() => throw new System.NotImplementedException();
+		protected override OWRigidbody InitRemoteTransform() => throw new System.NotImplementedException();
+
 		protected override OWRigidbody GetRigidbody()
 		{
 			SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), this);

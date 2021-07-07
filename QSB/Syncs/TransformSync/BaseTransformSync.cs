@@ -12,11 +12,11 @@ using UnityEngine;
 namespace QSB.Syncs.TransformSync
 {
 	/*
-	 * Rewrite number : 5
+	 * Rewrite number : 6
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
+	public abstract class BaseTransformSync : SyncBase<Transform>
 	{
 		private readonly static Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
 
@@ -39,56 +39,6 @@ namespace QSB.Syncs.TransformSync
 
 			return (T)wantedSync;
 		}
-
-		public uint AttachedNetId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.NetId.Value;
-			}
-		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
-		public Transform ReferenceTransform { get; set; }
-		public Transform AttachedObject { get; set; }
-
-		public abstract bool IsReady { get; }
-		public abstract bool UseInterpolation { get; }
-
-		protected abstract Transform InitLocalTransform();
-		protected abstract Transform InitRemoteTransform();
-
-		protected bool _isInitialized;
-		protected const float SmoothTime = 0.1f;
-		protected virtual float DistanceLeeway { get; } = 5f;
-		private float _previousDistance;
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
-		private string _logName => $"{PlayerId}.{GetType().Name}";
-		protected IntermediaryTransform _intermediaryTransform;
 
 		public virtual void Start()
 		{
@@ -281,6 +231,7 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			DebugLog.DebugWrite($"{_logName} set reference transform to {transform.name}");
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
@@ -307,43 +258,6 @@ namespace QSB.Syncs.TransformSync
 
 			AttachedObject.transform.SetParent(newParent, true);
 			AttachedObject.transform.localScale = Vector3.one;
-		}
-
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
-			{
-				_previousDistance = distance;
-				return targetPosition;
-			}
-
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
-		}
-
-		protected virtual void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
-			{
-				return;
-			}
-
-			/* Red Cube = Where visible object should be
-			 * Green/Yellow Cube = Where visible object is
-			 * Red Line = Connection between Red Cube and Green/Yellow Cube
-			 * Cyan Line = Connection between Green/Yellow cube and reference transform
-			 */
-
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
-			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
-			var color = HasMoved() ? Color.green : Color.yellow;
-			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}
 }

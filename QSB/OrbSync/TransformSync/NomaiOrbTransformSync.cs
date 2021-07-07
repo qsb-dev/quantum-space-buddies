@@ -26,7 +26,7 @@ namespace QSB.OrbSync.TransformSync
 			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
 		}
 
-		private GameObject GetTransform()
+		private Transform GetTransform()
 		{
 			if (_index == -1)
 			{
@@ -46,11 +46,11 @@ namespace QSB.OrbSync.TransformSync
 				return null;
 			}
 
-			return QSBWorldSync.OldOrbList[_index].gameObject;
+			return QSBWorldSync.OldOrbList[_index].transform;
 		}
 
-		protected override GameObject InitLocalTransform() => GetTransform();
-		protected override GameObject InitRemoteTransform() => GetTransform();
+		protected override Transform InitLocalTransform() => GetTransform();
+		protected override Transform InitRemoteTransform() => GetTransform();
 
 		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => false;

@@ -7,27 +7,12 @@ using UnityEngine;
 
 namespace QSB.Syncs.RigidbodySync
 {
-	public abstract class UnparentedBaseRigidbodySync : QNetworkTransform, ISync<OWRigidbody>
+	public abstract class UnparentedBaseRigidbodySync : SyncBase<OWRigidbody>
 	{
-		public Transform ReferenceTransform { get; set; }
-		public OWRigidbody AttachedObject { get; set; }
-
-		public abstract bool IsReady { get; }
-		public abstract bool UseInterpolation { get; }
-
-		protected virtual float DistanceLeeway { get; } = 5f;
-		private float _previousDistance;
-		private const float SmoothTime = 0.1f;
-
-		protected bool _isInitialized;
-		protected IntermediaryTransform _intermediaryTransform;
 		protected Vector3 _relativeVelocity;
 		protected Vector3 _relativeAngularVelocity;
 		protected Vector3 _prevVelocity;
 		protected Vector3 _prevAngularVelocity;
-		private string _logName => $"{NetId}:{GetType().Name}";
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
 
 		protected abstract OWRigidbody GetRigidbody();
 
@@ -181,7 +166,7 @@ namespace QSB.Syncs.RigidbodySync
 
 			if (UseInterpolation)
 			{
-				AttachedObject.SetPosition(SmartPositionSmoothDamp(AttachedObject.transform.position, targetPos));
+				AttachedObject.SetPosition(SmartSmoothDamp(AttachedObject.transform.position, targetPos));
 				AttachedObject.SetRotation(QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime));
 			}
 			else
@@ -225,23 +210,9 @@ namespace QSB.Syncs.RigidbodySync
 				return;
 			}
 
+			DebugLog.DebugWrite($"{GetType().Name} set reference transform to {transform.name}");
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
-		}
-
-		// TODO : remove .Distance
-		private Vector3 SmartPositionSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
-			{
-				DebugLog.ToConsole($"Warning - {AttachedObject.name} moved too far!", MessageType.Warning);
-				_previousDistance = distance;
-				return targetPosition;
-			}
-
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
 		// TODO : optimize by using sqrMagnitude
@@ -300,26 +271,6 @@ namespace QSB.Syncs.RigidbodySync
 
 			var pointVelocity = attachedRigid.GetPointVelocity(AttachedObject.transform.position);
 			return AttachedObject.GetVelocity() - pointVelocity;
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
-			{
-				return;
-			}
-
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
-			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
-			var color = HasMoved() ? Color.green : Color.yellow;
-			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
-
-			Popcron.Gizmos.Line(AttachedObject.transform.position, AttachedObject.transform.position + GetRelativeVelocity(), Color.blue);
 		}
 	}
 }
