@@ -187,28 +187,22 @@ namespace QSB.Player.TransformSync
 		{
 			base.UpdateTransform();
 
+			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot);
+			UpdateSpecificTransform(_visibleStickTip, _networkStickTip);
+			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot);
+		}
+
+		private void UpdateSpecificTransform(Transform visible, Transform network)
+		{
 			if (HasAuthority)
 			{
-				_networkStickPivot.localPosition = _visibleStickPivot.localPosition;
-				_networkStickPivot.localRotation = _visibleStickPivot.localRotation;
-
-				_networkStickTip.localPosition = _visibleStickTip.localPosition;
-				_networkStickTip.localRotation = _visibleStickTip.localRotation;
-
-				_networkCameraRoot.localPosition = _visibleCameraRoot.localPosition;
-				_networkCameraRoot.localRotation = _visibleCameraRoot.localRotation;
-
+				network.localPosition = visible.localPosition;
+				network.localRotation = visible.localRotation;
 				return;
 			}
 
-			_visibleStickPivot.localPosition = _networkStickPivot.localPosition;
-			_visibleStickPivot.localRotation = _networkStickPivot.localRotation;
-
-			_visibleStickTip.localPosition = _networkStickTip.localPosition;
-			_visibleStickTip.localRotation = _networkStickTip.localRotation;
-
-			_visibleCameraRoot.localPosition = _networkCameraRoot.localPosition;
-			_visibleCameraRoot.localRotation = _networkCameraRoot.localRotation;
+			visible.localPosition = network.localPosition;
+			visible.localRotation = network.localRotation;
 		}
 
 		public override bool IsReady => Locator.GetPlayerTransform() != null
