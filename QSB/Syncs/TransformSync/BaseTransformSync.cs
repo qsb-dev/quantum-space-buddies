@@ -2,7 +2,6 @@
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using QuantumUNET.Components;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -77,7 +76,7 @@ namespace QSB.Syncs.TransformSync
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
 
-		protected virtual void Init()
+		protected override void Init()
 		{
 			if (!QSBSceneManager.IsInUniverse)
 			{
@@ -144,54 +143,7 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void Update()
-		{
-			if (!_isInitialized && IsReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
-			}
-
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
-				_isInitialized = false;
-				return;
-			}
-
-			if (!AttachedObject.gameObject.activeInHierarchy)
-			{
-				return;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				return;
-			}
-
-			if (AttachedObject.transform.parent != ReferenceTransform && !HasAuthority)
-			{
-				DebugLog.ToConsole($"Warning - For {_logName}, AttachedObject's ({AttachedObject.name}) parent is not the same as ReferenceTransform! " +
-					$"({AttachedObject.transform.parent} v {ReferenceTransform.name})" +
-					$"Did you try to manually reparent AttachedObject?", MessageType.Error);
-				ReparentAttachedObject(ReferenceTransform);
-			}
-
-			UpdateTransform();
-
-			base.Update();
-		}
-
-		protected virtual void UpdateTransform()
+		protected override void UpdateTransform()
 		{
 			if (HasAuthority)
 			{

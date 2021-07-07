@@ -58,6 +58,8 @@ namespace QSB.Syncs
 
 		protected abstract T InitLocalTransform();
 		protected abstract T InitRemoteTransform();
+		protected abstract void UpdateTransform();
+		protected abstract void Init();
 
 		protected Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
 		{
@@ -70,6 +72,53 @@ namespace QSB.Syncs
 
 			_previousDistance = distance;
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+		}
+
+		public override void Update()
+		{
+			if (!_isInitialized && IsReady)
+			{
+				Init();
+			}
+			else if (_isInitialized && !IsReady)
+			{
+				_isInitialized = false;
+				return;
+			}
+
+			if (!_isInitialized)
+			{
+				return;
+			}
+
+			if (AttachedObject == null)
+			{
+				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
+				_isInitialized = false;
+				return;
+			}
+
+			if (!AttachedObject.gameObject.activeInHierarchy)
+			{
+				return;
+			}
+
+			if (ReferenceTransform == null)
+			{
+				return;
+			}
+
+			if (AttachedObject.transform.parent != ReferenceTransform && !HasAuthority)
+			{
+				DebugLog.ToConsole($"Warning - For {_logName}, AttachedObject's ({AttachedObject.name}) parent is not the same as ReferenceTransform! " +
+					$"({AttachedObject.transform.parent} v {ReferenceTransform.name})" +
+					$"Did you try to manually reparent AttachedObject?", MessageType.Error);
+
+			}
+
+			UpdateTransform();
+
+			base.Update();
 		}
 
 		protected virtual void OnRenderObject()

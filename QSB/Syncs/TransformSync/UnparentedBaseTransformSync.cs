@@ -9,8 +9,6 @@ namespace QSB.Syncs.TransformSync
 {
 	public abstract class UnparentedBaseTransformSync : SyncBase<Transform>
 	{
-		
-
 		public virtual void Start()
 		{
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
@@ -35,7 +33,7 @@ namespace QSB.Syncs.TransformSync
 		protected void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
 			_isInitialized = false;
 
-		protected virtual void Init()
+		protected override void Init()
 		{
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
@@ -87,40 +85,7 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void Update()
-		{
-			if (!_isInitialized && IsReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
-			}
-
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject {Player.PlayerId}.{GetType().Name} is null.", MessageType.Warning);
-				return;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				return;
-			}
-
-			UpdateTransform();
-
-			base.Update();
-		}
-
-		protected virtual void UpdateTransform()
+		protected override void UpdateTransform()
 		{
 			if (HasAuthority)
 			{

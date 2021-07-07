@@ -36,27 +36,27 @@ namespace QSB.Player.Events
 				return;
 			}
 
-			QSBWorldSync.DialogueConditions.ForEach(condition 
+			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));
 
-			QSBWorldSync.ShipLogFacts.ForEach(fact 
+			QSBWorldSync.ShipLogFacts.ForEach(fact
 				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));
 
 			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
-				wallText.GetTranslatedIds().ForEach(id 
+				wallText.GetTranslatedIds().ForEach(id
 					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id));
 			}
 
 			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
-				computer.GetTranslatedIds().ForEach(id 
+				computer.GetTranslatedIds().ForEach(id
 					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id));
 			}
 
 			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
-				vesselComputer.GetTranslatedIds().ForEach(id 
+				vesselComputer.GetTranslatedIds().ForEach(id
 					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id));
 			}
 
@@ -66,7 +66,7 @@ namespace QSB.Player.Events
 				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
 			}
 
-			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire 
+			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
 		}
 	}

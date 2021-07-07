@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.Utility;
-using QuantumUNET.Components;
 using QuantumUNET.Transport;
 using UnityEngine;
 
@@ -28,7 +27,7 @@ namespace QSB.Syncs.RigidbodySync
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
 
-		protected virtual void Init()
+		protected override void Init()
 		{
 			if (!QSBSceneManager.IsInUniverse)
 			{
@@ -107,45 +106,7 @@ namespace QSB.Syncs.RigidbodySync
 			}
 		}
 
-		public override void Update()
-		{
-			if (!_isInitialized && IsReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
-			}
-
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedRigidbody {_logName} is null.", MessageType.Warning);
-				return;
-			}
-
-			if (!AttachedObject.gameObject.activeInHierarchy)
-			{
-				return;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				return;
-			}
-
-			UpdateTransform();
-
-			base.Update();
-		}
-
-		protected virtual void UpdateTransform()
+		protected override void UpdateTransform()
 		{
 			if (HasAuthority)
 			{
