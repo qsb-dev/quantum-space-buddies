@@ -23,6 +23,7 @@ namespace QSB.Instruments.QSBCamera
 			{
 				return;
 			}
+
 			UpdatePosition();
 			UpdateInput();
 			UpdateRotation();
@@ -43,6 +44,7 @@ namespace QSB.Instruments.QSBCamera
 				// Raycast didn't hit collider, get target from camera direction
 				localTargetPoint = RayLength * PercentToMove * localDirection;
 			}
+
 			var targetDistance = Vector3.Distance(origin, transform.TransformPoint(localTargetPoint));
 			var currentDistance = Vector3.Distance(origin, CameraObject.transform.position);
 			var movement = targetDistance < currentDistance

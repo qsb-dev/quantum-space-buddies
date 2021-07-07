@@ -18,6 +18,7 @@ namespace QuantumUNET.Transport
 			{
 				throw new IndexOutOfRangeException($"NetworkReader:ReadByte out of range:{ToString()}");
 			}
+
 			return m_Buffer[(int)(UIntPtr)Position++];
 		}
 
@@ -27,12 +28,14 @@ namespace QuantumUNET.Transport
 			{
 				throw new IndexOutOfRangeException($"NetworkReader:ReadBytes out of range: ({count}) {ToString()}");
 			}
+
 			ushort num = 0;
 			while (num < count)
 			{
 				buffer[num] = m_Buffer[(int)(UIntPtr)(Position + num)];
 				num += 1;
 			}
+
 			Position += count;
 		}
 
@@ -92,6 +95,7 @@ namespace QuantumUNET.Transport
 					m_Buffer[targetOffset + i] = buffer[i];
 				}
 			}
+
 			if (num > Position)
 			{
 				Position = num;
@@ -112,6 +116,7 @@ namespace QuantumUNET.Transport
 					m_Buffer[(int)checked(unchecked(Position + (ulong)i))] = buffer[i];
 				}
 			}
+
 			Position += count;
 		}
 
@@ -128,6 +133,7 @@ namespace QuantumUNET.Transport
 						Debug.LogWarning($"NetworkBuffer size is {num} bytes!");
 					}
 				}
+
 				var array = new byte[num];
 				m_Buffer.CopyTo(array, 0);
 				m_Buffer = array;

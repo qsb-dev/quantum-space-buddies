@@ -24,6 +24,7 @@ namespace QSB.OrbSync.WorldObjects
 			{
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
 		}
 
@@ -33,6 +34,7 @@ namespace QSB.OrbSync.WorldObjects
 			{
 				return;
 			}
+
 			var occOrb = state ? QSBWorldSync.OldOrbList[orbId] : null;
 			AttachedObject.SetValue("_occupyingOrb", occOrb);
 			var ev = state ? "OnSlotActivated" : "OnSlotDeactivated";

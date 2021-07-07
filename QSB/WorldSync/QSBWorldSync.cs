@@ -31,6 +31,7 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {GetWorldObjects<TWorldObject>().Count()}.", MessageType.Warning);
 				return default;
 			}
+
 			return GetWorldObjects<TWorldObject>().ToList()[id];
 		}
 
@@ -43,16 +44,19 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);
 				return default;
 			}
+
 			if (!QSBCore.IsInMultiplayer)
 			{
 				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
 				return default;
 			}
+
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! Called from {new StackTrace().GetFrame(1).GetMethod().Name}", MessageType.Error);
 				return default;
 			}
+
 			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;
 		}
 
@@ -68,6 +72,7 @@ namespace QSB.WorldSync
 			{
 				DebugLog.ToConsole($"Warning - {(typeSubset as IWorldObject).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
 			}
+
 			return index;
 		}
 
@@ -76,7 +81,7 @@ namespace QSB.WorldSync
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
 			foreach (var item in itemsToRemove)
 			{
-				WorldObjectsToUnityObjects.Remove(item.ReturnObject() as MonoBehaviour);
+				WorldObjectsToUnityObjects.Remove(item.ReturnObject());
 				try
 				{
 					item.OnRemoval();
@@ -86,6 +91,7 @@ namespace QSB.WorldSync
 					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
+
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
@@ -102,6 +108,7 @@ namespace QSB.WorldSync
 				obj.Init(list[id], id);
 				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
+
 			return list;
 		}
 
@@ -112,7 +119,7 @@ namespace QSB.WorldSync
 			WorldObjects.Add(worldObject);
 			return worldObject;
 		}
-        		
+    
 		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
 		{
 			var slotList = GetWorldObjects<QSBOrbSlot>().ToList();
@@ -120,18 +127,21 @@ namespace QSB.WorldSync
 			{
 				return;
 			}
+
 			var qsbSlot = slotList.FirstOrDefault(x => x.AttachedObject == slot);
 			if (qsbSlot == null)
 			{
 				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
 				return;
 			}
+
 			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.FirstOrDefault(x => x.AttachedObject == affectingOrb.gameObject);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
 				return;
 			}
+
 			if (orbSync.HasAuthority)
 			{
 				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
@@ -145,6 +155,7 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
 				return;
 			}
+
 			DialogueConditions[name] = state;
 		}
 
@@ -155,10 +166,12 @@ namespace QSB.WorldSync
 				DebugLog.ToConsole("Warning - Cannot write to fact list when not server!", MessageType.Warning);
 				return;
 			}
+
 			if (ShipLogFacts.Any(x => x.Id == id))
 			{
 				return;
 			}
+
 			ShipLogFacts.Add(new FactReveal
 			{
 				Id = id,

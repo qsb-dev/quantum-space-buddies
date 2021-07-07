@@ -11,6 +11,8 @@ namespace QSB
 		public bool CanEditName { get; set; }
 		public string PlayerName { get; private set; }
 
+		// TODO : Could delete a lot of this - shouldnt be possible to not have a profile and still play
+
 		private readonly string[] _defaultNames = {
 			"Arkose",
 			"Chert",

@@ -18,27 +18,16 @@ namespace QSB.Animation.NPC.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnAnimatorIK", typeof(CharacterAnimationPatches), nameof(AnimController_OnAnimatorIK));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneEntry", typeof(CharacterAnimationPatches), nameof(AnimController_OnZoneEntry));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterAnimController>("OnZoneExit", typeof(CharacterAnimationPatches), nameof(AnimController_OnZoneExit));
-			QSBCore.HarmonyHelper.AddPrefix<FacePlayerWhenTalking>("OnStartConversation", typeof(CharacterAnimationPatches), nameof(FacePlayerWhenTalking_OnStartConversation));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("StartConversation", typeof(CharacterAnimationPatches), nameof(CharacterDialogueTree_StartConversation));
-			QSBCore.HarmonyHelper.AddPrefix<CharacterDialogueTree>("EndConversation", typeof(CharacterAnimationPatches), nameof(CharacterDialogueTree_EndConversation));
-			QSBCore.HarmonyHelper.AddPrefix<KidRockController>("Update", typeof(CharacterAnimationPatches), nameof(KidRockController_Update));
+			Prefix(nameof(CharacterAnimController_OnAnimatorIK));
+			Prefix(nameof(CharacterAnimController_OnZoneEntry));
+			Prefix(nameof(CharacterAnimController_OnZoneExit));
+			Prefix(nameof(FacePlayerWhenTalking_OnStartConversation));
+			Prefix(nameof(CharacterDialogueTree_StartConversation));
+			Prefix(nameof(CharacterDialogueTree_EndConversation));
+			Prefix(nameof(KidRockController_Update));
 		}
 
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnAnimatorIK");
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneEntry");
-			QSBCore.HarmonyHelper.Unpatch<CharacterAnimController>("OnZoneExit");
-			QSBCore.HarmonyHelper.Unpatch<FacePlayerWhenTalking>("OnStartConversation");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("StartConversation");
-			QSBCore.HarmonyHelper.Unpatch<CharacterDialogueTree>("EndConversation");
-			QSBCore.HarmonyHelper.Unpatch<KidRockController>("Update");
-		}
-
-		public static bool AnimController_OnAnimatorIK(
+		public static bool CharacterAnimController_OnAnimatorIK(
 			CharacterAnimController __instance,
 			float ___headTrackingWeight,
 			bool ___lookOnlyWhenTalking,
@@ -59,12 +48,12 @@ namespace QSB.Animation.NPC.Patches
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // TODO : maybe cache this somewhere... or assess how slow this is
 
-			PlayerInfo playerToUse;
+			PlayerInfo playerToUse = null;
 			if (____inConversation)
 			{
 				if (playerId == uint.MaxValue)
 				{
-					DebugLog.DebugWrite($"Error - {__instance.name} is in conversation with a null player! Defaulting to active camera.", MessageType.Error);
+					DebugLog.ToConsole($"Error - {__instance.name} is in conversation with a null player! Defaulting to active camera.", MessageType.Error);
 					playerToUse = QSBPlayerManager.LocalPlayer;
 				}
 				else
@@ -78,18 +67,20 @@ namespace QSB.Animation.NPC.Patches
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
 			}
-			else
+			else if (QSBPlayerManager.PlayerList.Count != 0)
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(__instance.transform.position, true);
 			}
 
-			var localPosition = ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position);
+			var localPosition = playerToUse != null
+				? ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position)
+				: Vector3.zero;
 
 			var targetWeight = ___headTrackingWeight;
 			if (___lookOnlyWhenTalking)
 			{
-				if (!____inConversation 
-					|| qsbObj.GetPlayersInHeadZone().Count == 0 
+				if (!____inConversation
+					|| qsbObj.GetPlayersInHeadZone().Count == 0
 					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
 				{
 					targetWeight *= 0;
@@ -97,7 +88,7 @@ namespace QSB.Animation.NPC.Patches
 			}
 			else
 			{
-				if (qsbObj.GetPlayersInHeadZone().Count == 0 
+				if (qsbObj.GetPlayersInHeadZone().Count == 0
 					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
 				{
 					targetWeight *= 0;
@@ -112,14 +103,14 @@ namespace QSB.Animation.NPC.Patches
 
 		}
 
-		public static bool AnimController_OnZoneExit(CharacterAnimController __instance)
+		public static bool CharacterAnimController_OnZoneExit(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBExitHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
-		public static bool AnimController_OnZoneEntry(CharacterAnimController __instance)
+		public static bool CharacterAnimController_OnZoneEntry(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBEnterHeadZone, qsbObj.ObjectId);
@@ -136,6 +127,7 @@ namespace QSB.Animation.NPC.Patches
 				DebugLog.ToConsole($"Error - No player talking to {____dialogueTree.name}!", MessageType.Error);
 				return false;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(playerId);
 
 			var distance = player.Body.transform.position - __instance.transform.position;
@@ -156,6 +148,7 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return true;
 			}
+
 			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.StartConversation, id);
 			return true;
@@ -169,6 +162,7 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return true;
 			}
+
 			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
 			return true;
@@ -184,12 +178,14 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return true;
 			}
+
 			var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == ____dialogueTree);
 
 			if (!____throwingRock && !qsbObj.InConversation() && Time.time > ____nextThrowTime)
 			{
 				__instance.GetType().GetMethod("StartRockThrow", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
 			}
+
 			return false;
 		}
 	}

@@ -11,7 +11,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ProbeSync.TransformSync;
-using QSB.RoastingSync.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Utility;
@@ -32,17 +31,15 @@ namespace QSB
 		public event Action OnNetworkManagerReady;
 
 		public bool IsReady { get; private set; }
-		public GameObject OrbPrefab { get; set; }
+		public GameObject OrbPrefab { get; private set; }
+		public GameObject ShipPrefab { get; private set; }
 
 		private const int MaxConnections = 128;
 		private const int MaxBufferedPackets = 64;
 
 		private QSBNetworkLobby _lobby;
 		private AssetBundle _assetBundle;
-		private GameObject _shipPrefab;
-		private GameObject _cameraPrefab;
 		private GameObject _probePrefab;
-		private GameObject _stickPrefab;
 		private bool _everConnected;
 
 		public new void Awake()
@@ -63,17 +60,12 @@ namespace QSB
 			playerPrefab.AddComponent<JetpackAccelerationSync>();
 			playerPrefab.AddComponent<InstrumentsManager>();
 
-			_shipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-			SetupNetworkId(_shipPrefab);
-			SetupNetworkTransform(_shipPrefab);
-			_shipPrefab.AddComponent<ShipTransformSync>();
-			spawnPrefabs.Add(_shipPrefab);
 
-			_cameraPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkcameraroot.prefab");
-			SetupNetworkId(_cameraPrefab);
-			SetupNetworkTransform(_cameraPrefab);
-			_cameraPrefab.AddComponent<PlayerCameraSync>();
-			spawnPrefabs.Add(_cameraPrefab);
+			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
+			SetupNetworkId(ShipPrefab);
+			SetupNetworkTransform(ShipPrefab);
+			ShipPrefab.AddComponent<ShipTransformSync>();
+			spawnPrefabs.Add(ShipPrefab);
 
 			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
 			SetupNetworkId(_probePrefab);
@@ -86,12 +78,6 @@ namespace QSB
 			SetupNetworkTransform(OrbPrefab);
 			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
 			spawnPrefabs.Add(OrbPrefab);
-
-			_stickPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkstickpivot.prefab");
-			SetupNetworkId(_stickPrefab);
-			SetupNetworkTransform(_stickPrefab);
-			_stickPrefab.AddComponent<RoastingStickTransformSync>();
-			spawnPrefabs.Add(_stickPrefab);
 
 			ConfigureNetworkManager();
 		}
@@ -112,6 +98,7 @@ namespace QSB
 				child.Target = item.target;
 				Destroy(item);
 			}
+
 			Destroy(go.GetComponent<NetworkTransform>());
 			Destroy(go.GetComponent<NetworkIdentity>());
 		}
@@ -145,10 +132,7 @@ namespace QSB
 			DebugLog.DebugWrite($"OnServerAddPlayer {playerControllerId}", MessageType.Info);
 			base.OnServerAddPlayer(connection, playerControllerId);
 
-			QNetworkServer.SpawnWithClientAuthority(Instantiate(_shipPrefab), connection);
-			QNetworkServer.SpawnWithClientAuthority(Instantiate(_cameraPrefab), connection);
 			QNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
-			QNetworkServer.SpawnWithClientAuthority(Instantiate(_stickPrefab), connection);
 		}
 
 		public override void OnStartClient(QNetworkClient _)
@@ -253,10 +237,12 @@ namespace QSB
 			{
 				Destroy(platform);
 			}
+
 			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
 			{
 				Destroy(camera);
 			}
+
 			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
 			{
 				Destroy(streaming);

@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
@@ -10,7 +11,7 @@ namespace QSB.Utility
 {
 	public static class Extensions
 	{
-		// GAMEOBJECT
+		// UNITY
 		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
 
 		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
@@ -41,8 +42,33 @@ namespace QSB.Utility
 		// QNET
 		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
-			var go = connection.PlayerControllers[0].Gameobject;
+			if (connection == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
+			var playerController = connection.PlayerControllers[0];
+			if (playerController == null)
+			{
+				DebugLog.ToConsole($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
+			var go = playerController.Gameobject;
+			if (go == null)
+			{
+				DebugLog.ToConsole($"Error - GameObject of {playerController.UnetView.NetId.Value} is null.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
 			var controller = go.GetComponent<PlayerTransformSync>();
+			if (controller == null)
+			{
+				DebugLog.ToConsole($"Error - No PlayerTransformSync found on {go.name}", MessageType.Error);
+				return uint.MaxValue;
+			}
+
 			return controller.NetId.Value;
 		}
 
@@ -90,4 +116,31 @@ namespace QSB.Utility
             multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
         }
     }
+  
+		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
+			where ThisType : BaseType
+		{
+			var method = typeof(BaseType).GetAnyMethod(methodName);
+			if (method == null)
+			{
+				DebugLog.ToConsole($"Error - Couldn't find method {methodName} in {typeof(BaseType).FullName}!", MessageType.Error);
+				return;
+			}
+
+			var functionPointer = method.MethodHandle.GetFunctionPointer();
+			if (functionPointer == null)
+			{
+				DebugLog.ToConsole($"Error - Function pointer for {methodName} in {typeof(BaseType).FullName} is null!", MessageType.Error);
+				return;
+			}
+
+			var methodAction = (Action)Activator.CreateInstance(typeof(Action), obj, functionPointer);
+			methodAction();
+		}
+
+		// OW
+
+		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)
+			=> baseBody.GetAngularVelocity() - relativeBody.GetAngularVelocity();
+	}
 }

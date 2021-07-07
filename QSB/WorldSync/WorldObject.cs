@@ -11,6 +11,6 @@ namespace QSB.WorldSync
 
 		public abstract void Init(T attachedObject, int id);
 		public virtual void OnRemoval() { }
-		public object ReturnObject() => AttachedObject;
+		public MonoBehaviour ReturnObject() => AttachedObject;
 	}
 }

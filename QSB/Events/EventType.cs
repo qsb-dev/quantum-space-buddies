@@ -13,7 +13,7 @@
 		PlayerJoin,
 		PlayerDeath,
 		PlayerReady,
-		ProbeActiveChange,
+		ProbeEvent,
 		Elevator,
 		Geyser,
 		OrbSlot,
@@ -42,6 +42,19 @@
 		Roasting,
 		MarshmallowEvent,
 		AnimTrigger,
-		NpcAnimEvent
+		NpcAnimEvent,
+		FlyShip,
+		OpenHatch,
+		EnableFunnel,
+		HullImpact,
+		HullDamaged,
+		HullChangeIntegrity,
+		HullRepaired,
+		HullRepairTick,
+		ComponentDamaged,
+		ComponentRepaired,
+		ComponentRepairTick,
+		PlayerRespawn,
+		ProbeStartRetrieve
 	}
 }

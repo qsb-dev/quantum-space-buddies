@@ -89,6 +89,9 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Player tools | Yes |
 | Projection pools | Yes |
 | Quantum objects | Yes |
+| Repairing ship parts | Yes |
+| Repairing "satellite" parts | No |
+| Ship | Kinda of |
 | Ship log | Yes |
 | Solanum | No |
 | Timber Hearth satellite | No |
@@ -99,6 +102,8 @@ QSB also changes some mechanics of the base game, to better fit a multiplayer ex
 - Quantum objects check observations from all players and all player probes.
 - When dying from any cause other than the supernova, the ATP black hole, or the end of the game, the player respawns instantly at Timber Hearth.
 - While at least one player is in them, players can walk into and out of projection pools at will, and everything will work as expected.
+- The ship's electrical systems remain on if any player is in the ship.
+- The ship's hatch functions differently, allowing multiple players to enter/exit without much annoyance.
 
 ### Why can't I connect to a server?
 #### For the host :

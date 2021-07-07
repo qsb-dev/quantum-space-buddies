@@ -28,6 +28,7 @@ namespace QSB.Player.Events
 				QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.VersionNotMatching);
 				return;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);

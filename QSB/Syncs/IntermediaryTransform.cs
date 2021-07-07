@@ -2,45 +2,45 @@
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Syncs.TransformSync
+namespace QSB.Syncs
 {
 	public class IntermediaryTransform
 	{
 		private Transform _attachedTransform;
 		private Transform _referenceTransform;
 
-		public IntermediaryTransform(Transform transform) 
+		public IntermediaryTransform(Transform transform)
 			=> _attachedTransform = transform;
 
 		/// <summary>
 		/// Get the world position of this INVISIBLE transform.
 		/// </summary>
-		public Vector3 GetPosition() 
+		public Vector3 GetPosition()
 			=> _attachedTransform.position;
 
 		/// <summary>
 		/// Set the world position of this INVISIBLE transform.
 		/// </summary>
-		public void SetPosition(Vector3 worldPos) 
+		public void SetPosition(Vector3 worldPos)
 			=> _attachedTransform.position = worldPos;
 
 		/// <summary>
 		/// Get the world rotation of this INVISIBLE transform.
 		/// </summary>
-		public Quaternion GetRotation() 
+		public Quaternion GetRotation()
 			=> _attachedTransform.rotation;
 
 		/// <summary>
 		/// Set the world rotation of this INVISIBLE transform.
 		/// </summary>
-		public void SetRotation(Quaternion worldRot) 
+		public void SetRotation(Quaternion worldRot)
 			=> _attachedTransform.rotation = worldRot;
 
 		/// <summary>
 		/// Sets the reference transform - what transform this transform is syncing to.
 		/// </summary>
 		/// <param name="sector">The new reference sector.</param>
-		public void SetReferenceTransform(Transform transform) 
+		public void SetReferenceTransform(Transform transform)
 			=> _referenceTransform = transform;
 
 		/// <summary>
@@ -51,10 +51,10 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
-			
+
 			SetPosition(_referenceTransform.InverseTransformPoint(worldPosition));
 		}
 
@@ -66,9 +66,10 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
+
 			SetRotation(_referenceTransform.InverseTransformRotation(worldRotation));
 		}
 
@@ -91,9 +92,10 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return Vector3.zero;
 			}
+
 			return _referenceTransform.TransformPoint(GetPosition());
 		}
 
@@ -104,9 +106,10 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.DebugWrite($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return Quaternion.identity;
 			}
+
 			return _referenceTransform.TransformRotation(GetRotation());
 		}
 	}

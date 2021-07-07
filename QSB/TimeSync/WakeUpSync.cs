@@ -1,6 +1,8 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.DeathSync;
 using QSB.Events;
+using QSB.Inputs;
 using QSB.TimeSync.Events;
 using QSB.Utility;
 using QuantumUNET;
@@ -19,15 +21,15 @@ namespace QSB.TimeSync
 		private const float MaxFastForwardDiff = 20f;
 		private const float MinFastForwardSpeed = 2f;
 
-		private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
+		private enum State { NotLoaded, Loaded, FastForwarding, Pausing, WaitingForServerToDie }
 
 		private State _state = State.NotLoaded;
 
 		private float _sendTimer;
 		private float _serverTime;
 		private bool _isFirstFastForward = true;
-		private int _localLoopCount;
 		private int _serverLoopCount;
+		private bool _hasWokenUp;
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
@@ -43,9 +45,9 @@ namespace QSB.TimeSync
 				_isFirstFastForward = false;
 				Init();
 			}
+
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-			GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
 		}
 
@@ -62,20 +64,26 @@ namespace QSB.TimeSync
 			{
 				RespawnOnDeath.Instance.Init();
 			}
+
+			_hasWokenUp = true;
 		}
 
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
 		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
-			DebugLog.DebugWrite($"ONSCENELOADED");
+			_hasWokenUp = false;
 			if (isInUniverse)
 			{
+				if (scene == OWScene.EyeOfTheUniverse)
+				{
+					_hasWokenUp = true;
+				}
+
 				Init();
 			}
 			else
@@ -83,8 +91,6 @@ namespace QSB.TimeSync
 				_state = State.NotLoaded;
 			}
 		}
-
-		private void OnLoopStart() => _localLoopCount++;
 
 		private void Init()
 		{
@@ -101,7 +107,8 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, _localLoopCount);
+		private void SendServerTime()
+			=> QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, PlayerData.LoadLoopCount());
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
@@ -111,8 +118,15 @@ namespace QSB.TimeSync
 
 		private void WakeUpOrSleep()
 		{
-			if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
+			if (_state == State.NotLoaded)
 			{
+				return;
+			}
+
+			if (PlayerData.LoadLoopCount() != _serverLoopCount)
+			{
+				DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
+				StartWaitingForServerToDie();
 				return;
 			}
 
@@ -131,6 +145,19 @@ namespace QSB.TimeSync
 			}
 		}
 
+		private void StartWaitingForServerToDie()
+		{
+			if (_state == State.WaitingForServerToDie)
+			{
+				return;
+			}
+
+			DebugLog.DebugWrite($"START WAITING FOR SERVER LOOP", MessageType.Info);
+			OWTime.SetTimeScale(0f);
+			_state = State.WaitingForServerToDie;
+			TimeSyncUI.Start(TimeSyncType.WaitForServerLoop);
+		}
+
 		private void StartFastForwarding()
 		{
 			if (_state == State.FastForwarding)
@@ -138,11 +165,16 @@ namespace QSB.TimeSync
 				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
+
 			DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			if (Locator.GetActiveCamera() != null)
 			{
 				Locator.GetActiveCamera().enabled = false;
 			}
+
+			//OWInput.ChangeInputMode(InputMode.None);
+			QSBInputManager.Instance.SetInputsEnabled(false);
+
 			_state = State.FastForwarding;
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
@@ -156,8 +188,13 @@ namespace QSB.TimeSync
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			Locator.GetActiveCamera().enabled = false;
+
+			//OWInput.ChangeInputMode(InputMode.None);
+			QSBInputManager.Instance.SetInputsEnabled(false);
+
 			OWTime.SetTimeScale(0f);
 			_state = State.Pausing;
 			SpinnerUI.Show();
@@ -179,7 +216,17 @@ namespace QSB.TimeSync
 			TimeSyncUI.Stop();
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 			RespawnOnDeath.Instance.Init();
+
+			QSBInputManager.Instance.SetInputsEnabled(true);
+
+			if (!_hasWokenUp)
+			{
+				WakeUp();
+			}
 		}
+
+		private void WakeUp()
+			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().Invoke("WakeUp");
 
 		public void Update()
 		{
@@ -224,6 +271,7 @@ namespace QSB.TimeSync
 				{
 					Locator.GetPlayerCamera().enabled = false;
 				}
+
 				var diff = _serverTime - Time.timeSinceLevelLoad;
 				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
@@ -238,8 +286,9 @@ namespace QSB.TimeSync
 
 			var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
 			var isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
+			var serverMatchesLoop = _state == State.WaitingForServerToDie && _serverLoopCount == PlayerData.LoadLoopCount();
 
-			if (isDoneFastForwarding || isDonePausing)
+			if (isDoneFastForwarding || isDonePausing || serverMatchesLoop)
 			{
 				ResetTimeScale();
 			}
@@ -257,19 +306,22 @@ namespace QSB.TimeSync
 			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
 			{
 				WakeUpOrSleep();
+				return;
 			}
 
 			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
 			if (mappedTimescale > 100f)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned over 100 - should have switched into fast-forward!", MessageType.Warning);
-				mappedTimescale = 100f;
+				mappedTimescale = 0f;
 			}
+
 			if (mappedTimescale < 0)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned below 0 - should have switched into pausing!", MessageType.Warning);
 				mappedTimescale = 0f;
 			}
+
 			OWTime.SetTimeScale(mappedTimescale);
 		}
 	}

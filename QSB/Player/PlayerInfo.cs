@@ -24,6 +24,7 @@ namespace QSB.Player
 		public GameObject CameraBody { get; set; }
 		public GameObject Body { get; set; }
 		public GameObject RoastingStick { get; set; }
+		public bool Visible { get; set; } = true;
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
@@ -54,6 +55,7 @@ namespace QSB.Player
 		public bool IsInMoon; // TODO : move into PlayerStates?
 		public bool IsInShrine; // TODO : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
+		public bool IsDead { get; set; }
 
 		public PlayerInfo(uint id)
 		{
@@ -67,6 +69,7 @@ namespace QSB.Player
 			{
 				return;
 			}
+
 			FlashLight?.UpdateState(PlayerStates.FlashlightActive);
 			Translator?.ChangeEquipState(PlayerStates.TranslatorEquipped);
 			ProbeLauncher?.ChangeEquipState(PlayerStates.ProbeLauncherEquipped);

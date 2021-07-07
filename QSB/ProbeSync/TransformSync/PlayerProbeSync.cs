@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
@@ -11,31 +12,34 @@ namespace QSB.ProbeSync.TransformSync
 	{
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
-		protected override float DistanceLeeway => 10f;
-		public override bool UseInterpolation => true;
-
 		public override void OnStartAuthority()
 		{
 			DebugLog.DebugWrite($"OnStartAuthority probe");
 			LocalInstance = this;
 		}
 
-		private Transform GetProbe() =>
-			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-
-		protected override GameObject InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
-			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
-			var body = GetProbe();
+			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this);
 
+			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			if (Player.Body == null)
+			{
+				DebugLog.ToConsole($"Warning - Player.Body is null!", MessageType.Warning);
+				return null;
+			}
+
+			var listener = Player.Body.AddComponent<ProbeListener>();
+			listener.Init(Locator.GetProbe());
+
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
-			var probe = GetProbe();
+			var probe = Locator.GetProbe().transform;
 
 			if (probe == null)
 			{
@@ -46,13 +50,11 @@ namespace QSB.ProbeSync.TransformSync
 			var body = probe.InstantiateInactive();
 			body.name = "RemoteProbeTransform";
 
-			Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
-
 			PlayerToolsManager.CreateProbe(body, Player);
 
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null
@@ -61,5 +63,11 @@ namespace QSB.ProbeSync.TransformSync
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
+
+		protected override float DistanceLeeway => 10f;
+
+		public override bool UseInterpolation => true;
+
+		public override TargetType Type => TargetType.Probe;
 	}
 }

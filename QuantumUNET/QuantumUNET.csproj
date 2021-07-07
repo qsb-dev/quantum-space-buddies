@@ -55,6 +55,10 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Epic\Epic Games\OuterWilds\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>

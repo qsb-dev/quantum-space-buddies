@@ -17,10 +17,12 @@ namespace QSB.Utility
 			{
 				return;
 			}
+
 			foreach (var repeat in Repeatings)
 			{
 				repeat.Invoke();
 			}
+
 			_checkTimer = 0;
 		}
 	}

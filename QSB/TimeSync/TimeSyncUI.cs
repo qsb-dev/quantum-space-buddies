@@ -72,6 +72,7 @@ namespace QSB.TimeSync
 			{
 				return;
 			}
+
 			var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
 			var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 			var seconds = Mathf.FloorToInt(totalSeconds) % 60;
@@ -87,7 +88,12 @@ namespace QSB.TimeSync
 				case TimeSyncType.Pausing:
 					text = "Pausing to match server time...";
 					break;
+
+				case TimeSyncType.WaitForServerLoop:
+					text = "Waiting for server...";
+					break;
 			}
+
 			_text.text = text;
 		}
 	}

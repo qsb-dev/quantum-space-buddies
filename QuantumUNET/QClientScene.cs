@@ -58,6 +58,7 @@ namespace QuantumUNET
 				player = localPlayers[playerControllerId];
 				result = player.Gameobject != null;
 			}
+
 			return result;
 		}
 
@@ -73,6 +74,7 @@ namespace QuantumUNET
 					localPlayers.Add(new QPlayerController());
 				}
 			}
+
 			var playerController = new QPlayerController
 			{
 				Gameobject = view.gameObject,
@@ -106,10 +108,12 @@ namespace QuantumUNET
 				{
 					Debug.LogWarning($"ClientScene::AddPlayer: playerControllerId of {playerControllerId} is unusually high");
 				}
+
 				while (playerControllerId >= localPlayers.Count)
 				{
 					localPlayers.Add(new QPlayerController());
 				}
+
 				if (readyConn == null)
 				{
 					if (!ready)
@@ -123,6 +127,7 @@ namespace QuantumUNET
 					ready = true;
 					readyConnection = readyConn;
 				}
+
 				if (readyConnection.GetPlayerController(playerControllerId, out var playerController))
 				{
 					if (playerController.IsValid && playerController.Gameobject != null)
@@ -131,6 +136,7 @@ namespace QuantumUNET
 						return false;
 					}
 				}
+
 				Debug.Log($"ClientScene::AddPlayer() for ID {playerControllerId} called with connection [{readyConnection}]");
 				var addPlayerMessage = new QAddPlayerMessage
 				{
@@ -143,9 +149,11 @@ namespace QuantumUNET
 					addPlayerMessage.msgData = networkWriter.ToArray();
 					addPlayerMessage.msgSize = networkWriter.Position;
 				}
+
 				readyConnection.Send(37, addPlayerMessage);
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -170,6 +178,7 @@ namespace QuantumUNET
 				Debug.LogError($"Failed to find player ID {playerControllerId}");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -199,6 +208,7 @@ namespace QuantumUNET
 					result = false;
 				}
 			}
+
 			return result;
 		}
 
@@ -261,6 +271,7 @@ namespace QuantumUNET
 			{
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -288,6 +299,7 @@ namespace QuantumUNET
 				client.RegisterHandlerSafe(QMsgType.Animation, QNetworkAnimator.OnAnimationClientMessage);
 				client.RegisterHandlerSafe(QMsgType.AnimationParameters, QNetworkAnimator.OnAnimationParametersClientMessage);
 			}
+
 			client.RegisterHandlerSafe(QMsgType.Rpc, OnRPCMessage);
 			client.RegisterHandlerSafe(QMsgType.SyncEvent, OnSyncEventMessage);
 			client.RegisterHandlerSafe(QMsgType.AnimationTrigger, QNetworkAnimator.OnAnimationTriggerClientMessage);
@@ -331,12 +343,14 @@ namespace QuantumUNET
 			{
 				uv.gameObject.SetActive(true);
 			}
+
 			uv.transform.position = position;
 			if (payload != null && payload.Length > 0)
 			{
 				var reader = new QNetworkReader(payload);
 				uv.OnUpdateVars(reader, true);
 			}
+
 			if (newGameObject != null)
 			{
 				newGameObject.SetActive(true);
@@ -448,6 +462,7 @@ namespace QuantumUNET
 						CheckForOwner(networkIdentity);
 					}
 				}
+
 				s_IsSpawnFinished = true;
 			}
 		}
@@ -471,6 +486,7 @@ namespace QuantumUNET
 						SpawnableObjects[networkIdentity.SceneId] = networkIdentity;
 					}
 				}
+
 				s_NetworkScene.RemoveLocalObject(s_ObjectDestroyMessage.NetId);
 				networkIdentity.MarkForReset();
 			}
@@ -594,6 +610,7 @@ namespace QuantumUNET
 			{
 				playerController.UnetView.SetNotLocalPlayer();
 			}
+
 			if (s_NetworkScene.GetNetworkIdentity(s_OwnerMessage.NetId, out var networkIdentity))
 			{
 				networkIdentity.SetConnectionToServer(netMsg.Connection);
@@ -627,6 +644,7 @@ namespace QuantumUNET
 						Debug.LogError("Owner message received on a local client.");
 						break;
 					}
+
 					InternalAddPlayer(uv, pendingOwner.playerControllerId);
 					s_PendingOwnerIds.RemoveAt(i);
 					break;

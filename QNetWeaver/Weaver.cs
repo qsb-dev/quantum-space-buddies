@@ -35,13 +35,17 @@ namespace QNetWeaver
 						{
 							return false;
 						}
+
 						continue;
 					}
+
 					var typeDefinition = parent.Resolve();
 					result = (typeDefinition != null);
 				}
+
 				return result;
 			}
+
 			return true;
 		}
 
@@ -67,6 +71,7 @@ namespace QNetWeaver
 			{
 				result = 0;
 			}
+
 			return result;
 		}
 
@@ -91,6 +96,7 @@ namespace QNetWeaver
 						return methodReference;
 					}
 				}
+
 				if (variable.IsByReference)
 				{
 					Log.Error("GetWriteFunc variable.IsByReference error.");
@@ -107,6 +113,7 @@ namespace QNetWeaver
 						{
 							return null;
 						}
+
 						methodDefinition = GenerateArrayWriteFunc(variable, writeFunc);
 					}
 					else
@@ -115,8 +122,10 @@ namespace QNetWeaver
 						{
 							return NetworkWriterWriteInt32;
 						}
+
 						methodDefinition = GenerateWriterFunction(variable);
 					}
+
 					if (methodDefinition == null)
 					{
 						result = null;
@@ -128,6 +137,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			return result;
 		}
 
@@ -150,6 +160,7 @@ namespace QNetWeaver
 			{
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -163,6 +174,7 @@ namespace QNetWeaver
 					return methodReference;
 				}
 			}
+
 			var typeDefinition = variable.Resolve();
 			MethodReference result;
 			if (typeDefinition == null)
@@ -186,6 +198,7 @@ namespace QNetWeaver
 					{
 						return null;
 					}
+
 					methodDefinition = GenerateArrayReadFunc(variable, readFunc);
 				}
 				else
@@ -194,8 +207,10 @@ namespace QNetWeaver
 					{
 						return NetworkReaderReadInt32;
 					}
+
 					methodDefinition = GenerateReadFunction(variable);
 				}
+
 				if (methodDefinition == null)
 				{
 					Log.Error("GetReadFunc unable to generate function for:" + variable.FullName);
@@ -207,6 +222,7 @@ namespace QNetWeaver
 					result = methodDefinition;
 				}
 			}
+
 			return result;
 		}
 
@@ -245,6 +261,7 @@ namespace QNetWeaver
 				{
 					text += "None";
 				}
+
 				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, variable);
 				methodDefinition.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkReaderType)));
 				methodDefinition.Body.Variables.Add(new VariableDefinition(int32Type));
@@ -289,6 +306,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -311,6 +329,7 @@ namespace QNetWeaver
 				{
 					text += "None";
 				}
+
 				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, voidType);
 				methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkWriterType)));
 				methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, scriptDef.MainModule.ImportReference(variable)));
@@ -360,6 +379,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -381,6 +401,7 @@ namespace QNetWeaver
 				{
 					text += "None";
 				}
+
 				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, voidType);
 				methodDefinition.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, scriptDef.MainModule.ImportReference(NetworkWriterType)));
 				methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, scriptDef.MainModule.ImportReference(variable)));
@@ -405,6 +426,7 @@ namespace QNetWeaver
 							}));
 							return null;
 						}
+
 						if (fieldDefinition.FieldType.Resolve().IsInterface)
 						{
 							fail = true;
@@ -420,6 +442,7 @@ namespace QNetWeaver
 							}));
 							return null;
 						}
+
 						var writeFunc = GetWriteFunc(fieldDefinition.FieldType);
 						if (writeFunc == null)
 						{
@@ -434,6 +457,7 @@ namespace QNetWeaver
 							fail = true;
 							return null;
 						}
+
 						num += 1U;
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
@@ -441,13 +465,16 @@ namespace QNetWeaver
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Call, writeFunc));
 					}
 				}
+
 				if (num == 0U)
 				{
 					Log.Warning("The class / struct " + variable.Name + " has no public or non-static fields to serialize");
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -469,6 +496,7 @@ namespace QNetWeaver
 				{
 					text += "None";
 				}
+
 				var methodDefinition = new MethodDefinition(text, MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Static | MethodAttributes.HideBySig, variable);
 				methodDefinition.Body.Variables.Add(new VariableDefinition(variable));
 				methodDefinition.Body.InitLocals = true;
@@ -487,9 +515,11 @@ namespace QNetWeaver
 						Log.Error("The class " + variable.Name + " has no default constructor or it's private, aborting.");
 						return null;
 					}
+
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Newobj, methodDefinition2));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Stloc_0));
 				}
+
 				var num = 0U;
 				foreach (var fieldDefinition in variable.Resolve().Fields)
 				{
@@ -503,6 +533,7 @@ namespace QNetWeaver
 						{
 							ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc, 0));
 						}
+
 						var readFunc = GetReadFunc(fieldDefinition.FieldType);
 						if (readFunc == null)
 						{
@@ -517,20 +548,24 @@ namespace QNetWeaver
 							fail = true;
 							return null;
 						}
+
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Call, readFunc));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Stfld, fieldDefinition));
 						num += 1U;
 					}
 				}
+
 				if (num == 0U)
 				{
 					Log.Warning("The class / struct " + variable.Name + " has no public or non-static fields to serialize");
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -549,6 +584,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			return null;
 		}
 
@@ -632,6 +668,7 @@ namespace QNetWeaver
 					ProcessInstructionMethod(moduleDef, td, md, i, methodReference, iCount);
 				}
 			}
+
 			if (i.OpCode == OpCodes.Stfld)
 			{
 				var fieldDefinition = i.Operand as FieldDefinition;
@@ -707,6 +744,7 @@ namespace QNetWeaver
 					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ldstr, "[Server] function '" + md.FullName + "' called on client"));
 					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, logWarningReference));
 				}
+
 				InjectGuardParameters(md, ilprocessor, instruction);
 				InjectGuardReturnValue(md, ilprocessor, instruction);
 				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ret));
@@ -730,6 +768,7 @@ namespace QNetWeaver
 					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ldstr, "[Client] function '" + md.FullName + "' called on server"));
 					ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Call, logWarningReference));
 				}
+
 				InjectGuardParameters(md, ilprocessor, instruction);
 				InjectGuardReturnValue(md, ilprocessor, instruction);
 				ilprocessor.InsertBefore(instruction, ilprocessor.Create(OpCodes.Ret));
@@ -770,6 +809,7 @@ namespace QNetWeaver
 										InjectClientGuard(moduleDef, td, md, false);
 									}
 								}
+
 								var num = 0;
 								foreach (var i in md.Body.Instructions)
 								{
@@ -789,6 +829,7 @@ namespace QNetWeaver
 			{
 				ProcessSiteMethod(moduleDef, td, md);
 			}
+
 			foreach (var td2 in td.NestedTypes)
 			{
 				ProcessSiteClass(moduleDef, td2);
@@ -805,6 +846,7 @@ namespace QNetWeaver
 					ProcessSiteClass(moduleDef, typeDefinition);
 				}
 			}
+
 			if (lists.generateContainerClass != null)
 			{
 				moduleDef.Types.Add(lists.generateContainerClass);
@@ -813,11 +855,13 @@ namespace QNetWeaver
 				{
 					scriptDef.MainModule.ImportReference(method);
 				}
+
 				foreach (var method2 in lists.generatedWriteFunctions)
 				{
 					scriptDef.MainModule.ImportReference(method2);
 				}
 			}
+
 			Console.WriteLine(string.Concat(new object[]
 			{
 				"  ProcessSitesModule ",
@@ -859,6 +903,7 @@ namespace QNetWeaver
 					return false;
 				}
 			}
+
 			DLog(td, "Found NetworkBehaviour " + td.FullName, new object[0]);
 			var networkBehaviourProcessor = new NetworkBehaviourProcessor(td);
 			networkBehaviourProcessor.Process();
@@ -883,14 +928,17 @@ namespace QNetWeaver
 						return scriptDef.MainModule.ImportReference(methodDefinition);
 					}
 				}
+
 				Log.Error($"ResolveMethod failed - Couldn't find {name} in {t.Name}");
 				foreach (var methodDefinition2 in t.Resolve().Methods)
 				{
 					Log.Error("- has method " + methodDefinition2.Name);
 				}
+
 				fail = true;
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -909,6 +957,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			Log.Error(string.Concat(new object[]
 			{
 				"ResolveMethodWithArg failed ",
@@ -931,6 +980,7 @@ namespace QNetWeaver
 					return methodDefinition;
 				}
 			}
+
 			return null;
 		}
 
@@ -955,6 +1005,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			Log.Error(string.Concat(new object[]
 			{
 				"ResolveMethodGeneric failed ",
@@ -977,6 +1028,7 @@ namespace QNetWeaver
 					return scriptDef.MainModule.ImportReference(fieldDefinition);
 				}
 			}
+
 			return null;
 		}
 
@@ -989,6 +1041,7 @@ namespace QNetWeaver
 					return scriptDef.MainModule.ImportReference(propertyDefinition.GetMethod);
 				}
 			}
+
 			Log.Error($"ResolveProperty failed - Couldn't find {name} in {t.Name}");
 			return null;
 		}
@@ -1000,6 +1053,7 @@ namespace QNetWeaver
 			{
 				Log.Error("Vector2Type is null!");
 			}
+
 			vector3Type = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector3");
 			vector4Type = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Vector4");
 			colorType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Color");
@@ -1014,6 +1068,7 @@ namespace QNetWeaver
 			{
 				Log.Error("GameObjectType is null!");
 			}
+
 			transformType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Transform");
 			unityObjectType = UnityAssemblyDefinition.MainModule.GetType("UnityEngine.Object");
 
@@ -1328,6 +1383,7 @@ namespace QNetWeaver
 					{
 						return true;
 					}
+
 					try
 					{
 						baseType = baseType.Resolve().BaseType;
@@ -1337,8 +1393,10 @@ namespace QNetWeaver
 						break;
 					}
 				}
+
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -1360,10 +1418,12 @@ namespace QNetWeaver
 					{
 						text = text.Substring(0, num);
 					}
+
 					if (text == baseClass.FullName)
 					{
 						return true;
 					}
+
 					try
 					{
 						baseType = baseType.Resolve().BaseType;
@@ -1373,8 +1433,10 @@ namespace QNetWeaver
 						break;
 					}
 				}
+
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -1400,6 +1462,7 @@ namespace QNetWeaver
 			{
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -1433,6 +1496,7 @@ namespace QNetWeaver
 					{
 						break;
 					}
+
 					try
 					{
 						list.Insert(0, typeDefinition);
@@ -1443,13 +1507,16 @@ namespace QNetWeaver
 						break;
 					}
 				}
+
 				var flag = false;
 				foreach (var td2 in list)
 				{
 					flag |= ProcessNetworkBehaviourType(td2);
 				}
+
 				result = flag;
 			}
+
 			return result;
 		}
 
@@ -1471,6 +1538,7 @@ namespace QNetWeaver
 						flag |= ProcessMessageType(td);
 						break;
 					}
+
 					try
 					{
 						baseType = baseType.Resolve().BaseType;
@@ -1480,12 +1548,15 @@ namespace QNetWeaver
 						break;
 					}
 				}
+
 				foreach (var td2 in td.NestedTypes)
 				{
 					flag |= CheckMessageBase(td2);
 				}
+
 				result = flag;
 			}
+
 			return result;
 		}
 
@@ -1507,6 +1578,7 @@ namespace QNetWeaver
 						flag |= ProcessSyncListStructType(td);
 						break;
 					}
+
 					try
 					{
 						baseType = baseType.Resolve().BaseType;
@@ -1516,12 +1588,15 @@ namespace QNetWeaver
 						break;
 					}
 				}
+
 				foreach (var td2 in td.NestedTypes)
 				{
 					flag |= CheckSyncListStruct(td2);
 				}
+
 				result = flag;
 			}
+
 			return result;
 		}
 
@@ -1560,19 +1635,23 @@ namespace QNetWeaver
 							{
 								scriptDef.MainModule.SymbolReader.Dispose();
 							}
+
 							fail = true;
 							throw ex;
 						}
 					}
+
 					if (fail)
 					{
 						if (scriptDef.MainModule.SymbolReader != null)
 						{
 							scriptDef.MainModule.SymbolReader.Dispose();
 						}
+
 						return false;
 					}
 				}
+
 				stopwatch.Stop();
 				Console.WriteLine(string.Concat(new object[]
 				{
@@ -1583,12 +1662,14 @@ namespace QNetWeaver
 					" milliseconds"
 				}));
 			}
+
 			if (flag)
 			{
 				foreach (var methodDefinition in lists.replacedMethods)
 				{
 					lists.replacementMethodNames.Add(methodDefinition.FullName);
 				}
+
 				try
 				{
 					ProcessPropertySites();
@@ -1600,16 +1681,20 @@ namespace QNetWeaver
 					{
 						scriptDef.MainModule.SymbolReader.Dispose();
 					}
+
 					return false;
 				}
+
 				if (fail)
 				{
 					if (scriptDef.MainModule.SymbolReader != null)
 					{
 						scriptDef.MainModule.SymbolReader.Dispose();
 					}
+
 					return false;
 				}
+
 				var fileName = Helpers.DestinationFileFor(outputDir, assName);
 				var writerParameters = Helpers.GetWriterParameters(readerParameters);
 				if (writerParameters.SymbolWriterProvider is PdbWriterProvider)
@@ -1618,12 +1703,15 @@ namespace QNetWeaver
 					var text = Path.ChangeExtension(assName, ".pdb");
 					File.Delete(text);
 				}
+
 				scriptDef.Write(fileName, writerParameters);
 			}
+
 			if (scriptDef.MainModule.SymbolReader != null)
 			{
 				scriptDef.MainModule.SymbolReader.Dispose();
 			}
+
 			return true;
 		}
 
@@ -1650,6 +1738,7 @@ namespace QNetWeaver
 				Log.Error("Exception :" + ex);
 				return false;
 			}
+
 			corLib = null;
 			return true;
 		}

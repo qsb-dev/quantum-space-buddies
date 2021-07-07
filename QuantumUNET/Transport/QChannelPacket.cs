@@ -40,15 +40,18 @@ namespace QuantumUNET.Transport
 					result = false;
 				}
 			}
+
 			if (b != 0)
 			{
 				if (m_IsReliable && b == 4)
 				{
 					return false;
 				}
+
 				Debug.LogError($"Send Error: {(NetworkError)b} channel:{channelId} bytesToSend:{m_Position}");
 				result = false;
 			}
+
 			m_Position = 0;
 			return result;
 		}
