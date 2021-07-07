@@ -105,7 +105,7 @@ namespace QSB.Utility
 			| BindingFlags.NonPublic
 			| BindingFlags.DeclaredOnly;
 
-		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
+		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
 			if (!(typeof(T)
 				.GetField(eventName, Flags)?

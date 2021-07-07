@@ -36,14 +36,12 @@ namespace QSB.Player.Events
 				return;
 			}
 
-			// TODO : CLEAN. THIS. SHIT.
 			QSBWorldSync.DialogueConditions.ForEach(condition 
 				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));
 
 			QSBWorldSync.ShipLogFacts.ForEach(fact 
 				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));
 
-			//We could add a nested ForEach here, but, in my opinion, it would reduce readbility in this case - ShoosGun(Locochoco)
 			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				wallText.GetTranslatedIds().ForEach(id 
