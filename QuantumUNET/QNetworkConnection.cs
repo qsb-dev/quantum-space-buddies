@@ -323,7 +323,7 @@ namespace QuantumUNET
 
 		protected void HandleReader(QNetworkReader reader, int receivedSize, int channelId)
 		{
-			while (reader.Position < receivedSize)
+			while (reader.BaseStream.Position < receivedSize)
 			{
 				var num = reader.ReadUInt16();
 				var num2 = reader.ReadInt16();

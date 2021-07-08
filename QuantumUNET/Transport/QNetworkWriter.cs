@@ -1,46 +1,38 @@
 ﻿using QuantumUNET.Components;
 using QuantumUNET.Messages;
 using System;
-using System.Text;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace QuantumUNET.Transport
 {
-	public class QNetworkWriter
+	public class QNetworkWriter : BinaryWriter
 	{
-		public QNetworkWriter()
+        private MemoryStream _memStream;
+
+        public QNetworkWriter() : base()
 		{
-			m_Buffer = new QNetBuffer();
-			if (s_Encoding == null)
-			{
-				s_Encoding = new UTF8Encoding();
-				s_StringWriteBuffer = new byte[32768];
-			}
+            _memStream = new MemoryStream();
+            OutStream = _memStream;
 		}
 
-		public QNetworkWriter(byte[] buffer)
-		{
-			m_Buffer = new QNetBuffer(buffer);
-			if (s_Encoding == null)
-			{
-				s_Encoding = new UTF8Encoding();
-				s_StringWriteBuffer = new byte[32768];
-			}
-		}
-
-		public short Position => (short)m_Buffer.Position;
+		public QNetworkWriter(byte[] buffer) : base()
+        {
+            _memStream = new MemoryStream(buffer);
+            OutStream = _memStream;
+        }
+        public short Position => (short)_memStream.Position;
 
 		public byte[] ToArray()
 		{
-			var array = new byte[m_Buffer.AsArraySegment().Count];
-			Array.Copy(m_Buffer.AsArraySegment().Array, array, m_Buffer.AsArraySegment().Count);
-			return array;
-		}
+            byte[] data = _memStream.ToArray();
+            return data;
+        }
 
-		public byte[] AsArray() => AsArraySegment().Array;
+        public byte[] AsArray() => AsArraySegment().Array;
 
-		internal ArraySegment<byte> AsArraySegment() => m_Buffer.AsArraySegment();
+        internal ArraySegment<byte> AsArraySegment() => new ArraySegment<byte>(_memStream.ToArray(), 0, (int)_memStream.Position);
 
 		public void WritePackedUInt32(uint value)
 		{
@@ -154,93 +146,7 @@ namespace QuantumUNET.Transport
 
 		public void Write(NetworkInstanceId value) => WritePackedUInt32(value.Value);
 
-		public void Write(NetworkSceneId value) => WritePackedUInt32(value.Value);
-
-		public void Write(char value) => m_Buffer.WriteByte((byte)value);
-
-		public void Write(byte value) => m_Buffer.WriteByte(value);
-
-		public void Write(sbyte value) => m_Buffer.WriteByte((byte)value);
-
-		public void Write(short value) => m_Buffer.WriteByte2((byte)(value & 255), (byte)((value >> 8) & 255));
-
-		public void Write(ushort value) => m_Buffer.WriteByte2((byte)(value & 255), (byte)((value >> 8) & 255));
-
-		public void Write(int value) => m_Buffer.WriteByte4((byte)(value & 255), (byte)((value >> 8) & 255), (byte)((value >> 16) & 255), (byte)((value >> 24) & 255));
-
-		public void Write(uint value) => m_Buffer.WriteByte4((byte)(value & 255U), (byte)((value >> 8) & 255U), (byte)((value >> 16) & 255U), (byte)((value >> 24) & 255U));
-
-		public void Write(long value) => m_Buffer.WriteByte8((byte)(value & 255L), (byte)((value >> 8) & 255L), (byte)((value >> 16) & 255L), (byte)((value >> 24) & 255L), (byte)((value >> 32) & 255L), (byte)((value >> 40) & 255L), (byte)((value >> 48) & 255L), (byte)((value >> 56) & 255L));
-
-		public void Write(ulong value) => m_Buffer.WriteByte8((byte)(value & 255UL), (byte)((value >> 8) & 255UL), (byte)((value >> 16) & 255UL), (byte)((value >> 24) & 255UL), (byte)((value >> 32) & 255UL), (byte)((value >> 40) & 255UL), (byte)((value >> 48) & 255UL), (byte)((value >> 56) & 255UL));
-
-		public void Write(float value) => m_Buffer.WriteBytes(BitConverter.GetBytes(value), 4);
-
-		public void Write(double value) => m_Buffer.WriteBytes(BitConverter.GetBytes(value), 8);
-
-		public void Write(decimal value)
-		{
-			var bits = decimal.GetBits(value);
-			Write(bits[0]);
-			Write(bits[1]);
-			Write(bits[2]);
-			Write(bits[3]);
-		}
-
-		public void Write(string value)
-		{
-			if (value == null)
-			{
-				m_Buffer.WriteByte2(0, 0);
-			}
-			else
-			{
-				var byteCount = s_Encoding.GetByteCount(value);
-				if (byteCount >= 32768)
-				{
-					throw new IndexOutOfRangeException($"Serialize(string) too long: {value.Length}");
-				}
-
-				Write((ushort)byteCount);
-				var bytes = s_Encoding.GetBytes(value, 0, value.Length, s_StringWriteBuffer, 0);
-				m_Buffer.WriteBytes(s_StringWriteBuffer, (ushort)bytes);
-			}
-		}
-
-		public void Write(bool value)
-		{
-			if (value)
-			{
-				m_Buffer.WriteByte(1);
-				return;
-			}
-
-			m_Buffer.WriteByte(0);
-		}
-
-		public void Write(byte[] buffer, int count)
-		{
-			if (count > 65535)
-			{
-				Debug.LogError($"NetworkWriter Write: buffer is too large ({count}) bytes. The maximum buffer size is 64K bytes.");
-			}
-			else
-			{
-				m_Buffer.WriteBytes(buffer, (ushort)count);
-			}
-		}
-
-		public void Write(byte[] buffer, int offset, int count)
-		{
-			if (count > 65535)
-			{
-				Debug.LogError($"NetworkWriter Write: buffer is too large ({count}) bytes. The maximum buffer size is 64K bytes.");
-			}
-			else
-			{
-				m_Buffer.WriteBytesAtOffset(buffer, (ushort)offset, (ushort)count);
-			}
-		}
+		public void Write(NetworkSceneId value) => WritePackedUInt32(value.Value);		
 
 		public void WriteBytesAndSize(byte[] buffer, int count)
 		{
@@ -254,8 +160,7 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				Write((ushort)count);
-				m_Buffer.WriteBytes(buffer, (ushort)count);
+				Write(buffer, 0, (ushort)count);
 			}
 		}
 
@@ -271,8 +176,7 @@ namespace QuantumUNET.Transport
 			}
 			else
 			{
-				Write((ushort)buffer.Length);
-				m_Buffer.WriteBytes(buffer, (ushort)buffer.Length);
+				Write(buffer);
 			}
 		}
 
@@ -437,23 +341,22 @@ namespace QuantumUNET.Transport
 
 		public void Write(QMessageBase msg) => msg.Serialize(this);
 
-		public void SeekZero() => m_Buffer.SeekZero();
+		public void SeekZero() => _memStream.Position = 0;
 
 		public void StartMessage(short msgType)
 		{
 			SeekZero();
-			m_Buffer.WriteByte2(0, 0);
+            Write(new byte[] { 0, 0 });
 			Write(msgType);
 		}
 
-		public void FinishMessage() => m_Buffer.FinishMessage();
+        public void FinishMessage()
+        {
+            var num = (ushort)(_memStream.Position - 4U);
+            _memStream.Position = 0;
+            Write(num);
+        }
 
 		private const int k_MaxStringLength = 32768;
-
-		private readonly QNetBuffer m_Buffer;
-
-		private static Encoding s_Encoding;
-
-		private static byte[] s_StringWriteBuffer;
 	}
 }
