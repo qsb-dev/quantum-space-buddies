@@ -11,7 +11,7 @@ using UnityEngine;
 namespace QSB.Syncs.TransformSync
 {
 	/*
-	 * Rewrite number : 6
+	 * Rewrite number : 7
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
