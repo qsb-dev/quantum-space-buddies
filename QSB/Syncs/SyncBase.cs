@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET.Components;
@@ -97,6 +98,11 @@ namespace QSB.Syncs
 				return;
 			}
 
+			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			{
+				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+			}
+
 			if (!AttachedObject.gameObject.activeInHierarchy)
 			{
 				return;
@@ -104,10 +110,23 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform == null)
 			{
+				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is null. AttachedObject:{AttachedObject.name}", MessageType.Warning);
 				return;
 			}
 
 			UpdateTransform();
+
+			var expectedPosition = _intermediaryTransform.GetTargetPosition_Unparented();
+			var actualPosition = AttachedObject.transform.position;
+			var distance = Vector3.Distance(expectedPosition, actualPosition);
+			if (distance > 20)
+			{
+				DebugLog.ToConsole($"Warning - {_logName}'s AttachedObject ({AttachedObject.name}) is far away from it's expected position! Info:" +
+					$"\r\n AttachedObject's parent : {AttachedObject.transform.parent?.name}" +
+					$"\r\n Distance : {distance}" +
+					$"\r\n ReferenceTransform : {ReferenceTransform.name}" +
+					$"\r\n Intermediary's ReferenceTransform : {_intermediaryTransform.GetValue<Transform>("_referenceTransform").name}", MessageType.Warning);
+			}
 
 			base.Update();
 		}
@@ -125,6 +144,7 @@ namespace QSB.Syncs
 
 			/* Red Cube = Where visible object should be
 			 * Green/Yellow Cube = Where visible object is
+			 * Magenta cube = Reference transform
 			 * Red Line = Connection between Red Cube and Green/Yellow Cube
 			 * Cyan Line = Connection between Green/Yellow cube and reference transform
 			 */
@@ -133,6 +153,7 @@ namespace QSB.Syncs
 			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
+			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 2, Color.magenta);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}
