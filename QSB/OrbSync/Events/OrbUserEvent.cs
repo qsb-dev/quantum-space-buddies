@@ -114,7 +114,7 @@ namespace QSB.OrbSync.Events
 			}
 
 			var orb = NomaiOrbTransformSync.OrbTransformSyncs
-				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
+				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			orb.enabled = true;
 		}
 	}
