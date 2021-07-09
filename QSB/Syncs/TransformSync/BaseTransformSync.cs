@@ -183,7 +183,6 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
-			DebugLog.DebugWrite($"{_logName} set reference transform to {transform.name}");
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 			if (AttachedObject == null)
@@ -198,6 +197,12 @@ namespace QSB.Syncs.TransformSync
 			if (!HasAuthority)
 			{
 				ReparentAttachedObject(transform);
+			}
+
+			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			{
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 			}
 		}
 

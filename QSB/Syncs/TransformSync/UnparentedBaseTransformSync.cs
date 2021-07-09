@@ -125,9 +125,14 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
-			DebugLog.DebugWrite($"{PlayerId}.{GetType().Name} set reference transform to {transform.name}");
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
+
+			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			{
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+			}
 		}
 	}
 }
