@@ -23,7 +23,14 @@ namespace QSB.OrbSync.TransformSync
 		protected override void Init()
 		{
 			base.Init();
-			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
+			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
+			if (originalParent == Locator.GetRootTransform())
+			{
+				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Destroying...");
+				Destroy(this);
+			}
+
+			SetReferenceTransform(originalParent);
 		}
 
 		private Transform GetTransform()
