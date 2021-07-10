@@ -47,6 +47,22 @@ namespace QSB.Player.TransformSync
 			Player.TransformSync = this;
 		}
 
+		protected override void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		{
+			if (isInUniverse)
+			{
+				Player.PlayerStates.IsReady = true;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			}
+			else
+			{
+				Player.PlayerStates.IsReady = false;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+			}
+
+			base.OnSceneLoaded(scene, isInUniverse);
+		}
+
 		protected override void OnDestroy()
 		{
 			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
@@ -81,8 +97,6 @@ namespace QSB.Player.TransformSync
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
 
-			Player.PlayerStates.IsReady = true;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			DebugLog.DebugWrite("PlayerTransformSync init done - Request state!");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
 
@@ -215,6 +229,7 @@ namespace QSB.Player.TransformSync
 		public override bool IsReady => Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
+			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U;
 

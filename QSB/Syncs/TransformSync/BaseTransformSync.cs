@@ -73,7 +73,7 @@ namespace QSB.Syncs.TransformSync
 			DebugLog.DebugWrite($"Removed T:{GetType().Name} from dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		protected virtual void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
 
 		protected override void Init()
