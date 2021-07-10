@@ -17,6 +17,7 @@ namespace QSB.SectorSync
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
 		private TargetType _targetType;
+		private bool _isReady;
 
 		private void OnDestroy()
 		{
@@ -25,6 +26,7 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+			_isReady = false;
 		}
 
 		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
@@ -46,6 +48,7 @@ namespace QSB.SectorSync
 			}
 
 			_targetType = sectoredSync.Type;
+			_isReady = true;
 		}
 
 		private void AddSector(Sector sector)
@@ -91,6 +94,19 @@ namespace QSB.SectorSync
 				return null;
 			}
 
+			if (!_isReady)
+			{
+				DebugLog.ToConsole($"Warning - Tried to use SectorSync before it was initialized.", MessageType.Warning);
+				return null;
+			}
+
+			if (_sectorDetector == null || _attachedOWRigidbody == null || _targetType == TargetType.None)
+			{
+				_isReady = false;
+				DebugLog.ToConsole($"Error - SectorSync is no longer ready. Detector Null : {_sectorDetector == null}, OWRigidbody Null : {_attachedOWRigidbody == null}, None TargetType : {_targetType == TargetType.None}", MessageType.Error);
+				return null;
+			}
+
 			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
 
 			var listToCheck = numSectorsCurrentlyIn == 0
@@ -121,8 +137,6 @@ namespace QSB.SectorSync
 
 			return ordered.FirstOrDefault();
 		}
-
-		internal static object CalculateSectorScore(QSBSector x, Transform transform, object getValue) => throw new System.NotImplementedException();
 
 		public static float CalculateSectorScore(QSBSector sector, Transform trans, OWRigidbody rigidbody)
 		{
