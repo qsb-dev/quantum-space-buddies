@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Player;
 using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
@@ -55,6 +56,80 @@ namespace QSB.ProbeSync.TransformSync
 			Player.ProbeBody = body.gameObject;
 
 			return body;
+		}
+
+		// TODO : maybe just add a field like "useinterpolation" for still updating if the attachedobject is disabled
+		public override void Update()
+		{
+			if (!_isInitialized && IsReady)
+			{
+				Init();
+			}
+			else if (_isInitialized && !IsReady)
+			{
+				_isInitialized = false;
+				return;
+			}
+
+			if (!_isInitialized)
+			{
+				return;
+			}
+
+			if (AttachedObject == null)
+			{
+				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
+				_isInitialized = false;
+				return;
+			}
+
+			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			{
+				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+			}
+
+			if (ReferenceTransform == null)
+			{
+				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is null. AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				return;
+			}
+
+			UpdateTransform();
+		}
+
+		protected override void UpdateTransform()
+		{
+			if (HasAuthority)
+			{
+				if (!AttachedObject.gameObject.activeInHierarchy)
+				{
+					var probeOWRigidbody = Locator.GetProbe().GetComponent<SurveyorProbe>().GetOWRigidbody();
+					if (probeOWRigidbody == null)
+					{
+						DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
+					}
+
+					var probeLauncher = Player.LocalProbeLauncher;
+					var launcherTransform = probeLauncher.GetValue<Transform>("_launcherTransform");
+					probeOWRigidbody.SetPosition(launcherTransform.position);
+					probeOWRigidbody.SetRotation(launcherTransform.rotation);
+
+					_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+					_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+
+					var currentReferenceSector = ReferenceSector;
+					var playerReferenceSector = Player.TransformSync.ReferenceSector;
+
+					if (currentReferenceSector != playerReferenceSector)
+					{
+						SetReferenceSector(playerReferenceSector);
+					}
+
+					return;
+				}
+			}
+
+			base.UpdateTransform();
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null
