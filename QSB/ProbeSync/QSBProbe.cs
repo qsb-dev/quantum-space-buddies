@@ -148,5 +148,15 @@ namespace QSB.ProbeSync
 				OnStartRetrieveProbe(duration);
 			}
 		}
+
+		public void OnRenderObject()
+		{
+			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Line(transform.position, _owner.Body.transform.position, Color.blue);
+		}
 	}
 }
