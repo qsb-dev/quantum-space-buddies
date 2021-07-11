@@ -61,12 +61,20 @@ namespace QSB.Syncs.TransformSync
 
 		protected virtual void OnDestroy()
 		{
+			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject.gameObject);
 			}
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+
+			if (!QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				return;
+			}
+			DebugLog.DebugWrite($"{_logName} remove from dict");
+
 
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict.Remove(GetType());
@@ -143,13 +151,13 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				return;
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
@@ -167,6 +175,7 @@ namespace QSB.Syncs.TransformSync
 					AttachedObject.transform.localRotation = targetRot;
 				}
 			}
+			return true;
 		}
 
 		public override bool HasMoved()

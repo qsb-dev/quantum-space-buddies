@@ -3,6 +3,7 @@ using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
+using QuantumUNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,9 +21,8 @@ namespace QSB.Player
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					var method = new StackTrace().GetFrame(1).GetMethod();
 					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null." +
-						$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name} ", MessageType.Error);
+						$"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
 					return uint.MaxValue;
 				}
 
@@ -47,9 +47,8 @@ namespace QSB.Player
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
-				var method = new StackTrace().GetFrame(1).GetMethod();
 				DebugLog.ToConsole($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
-					$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name}", MessageType.Warning);
+					$"{Environment.NewLine} Stacktrace : {Environment.StackTrace}", MessageType.Warning);
 			}
 
 			if (id == uint.MaxValue || id == 0U)
@@ -63,8 +62,13 @@ namespace QSB.Player
 				return player;
 			}
 
-			var trace = new StackTrace().GetFrame(1).GetMethod();
-			DebugLog.DebugWrite($"Create Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Error - Tried to create player id:{id} when not in multiplayer! Stacktrace : {Environment.StackTrace}", MessageType.Error);
+				return default;
+			}
+
+			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace : {Environment.StackTrace}", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			return player;
@@ -72,8 +76,7 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			var trace = new StackTrace().GetFrame(1).GetMethod();
-			DebugLog.DebugWrite($"Remove Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
+			DebugLog.DebugWrite($"Remove Player : id<{id}> Stacktrace : {Environment.StackTrace}", MessageType.Info);
 			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
