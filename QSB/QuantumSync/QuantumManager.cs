@@ -119,13 +119,10 @@ namespace QSB.QuantumSync
 			return new Tuple<bool, List<PlayerInfo>>(foundPlayers, playersWhoCanSee);
 		}
 
-		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
-		{
-			return tracker.gameObject.activeInHierarchy
+		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
 				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).First
 				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
-		}
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{

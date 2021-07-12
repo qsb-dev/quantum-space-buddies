@@ -42,11 +42,15 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			if (!HasAuthority)
+			{
+				return;
+			}
+
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
-				// TODO : should this be set reference sector?
-				SetReferenceTransform(closestSector.Transform);
+				SetReferenceSector(closestSector);
 			}
 			else
 			{
@@ -97,6 +101,8 @@ namespace QSB.Syncs.TransformSync
 					base.DeserializeTransform(reader);
 					return;
 				}
+
+				DebugLog.DebugWrite($"REMOTE CHANGE SECTOR to {sector.Name}");
 
 				SetReferenceSector(sector);
 			}

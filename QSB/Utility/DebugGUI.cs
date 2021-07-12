@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.Utility
 {
-	class DebugGUI : MonoBehaviour
+	internal class DebugGUI : MonoBehaviour
 	{
 		private const float _debugLineSpacing = 11f;
 

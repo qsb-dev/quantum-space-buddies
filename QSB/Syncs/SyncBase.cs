@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET.Components;
@@ -136,6 +135,7 @@ namespace QSB.Syncs
 				return;
 			}
 
+			/*
 			var expectedPosition = _intermediaryTransform.GetTargetPosition_Unparented();
 			var actualPosition = AttachedObject.transform.position;
 			var distance = Vector3.Distance(expectedPosition, actualPosition);
@@ -148,6 +148,7 @@ namespace QSB.Syncs
 					$"\r\n ReferenceTransform : {(ReferenceTransform == null ? "NULL" : ReferenceTransform.name)}" +
 					$"\r\n Intermediary's ReferenceTransform : {(intermediaryReference == null ? "NULL" : intermediaryReference.name)}", MessageType.Warning);
 			}
+			*/
 
 			base.Update();
 		}

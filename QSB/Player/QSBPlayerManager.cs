@@ -3,10 +3,8 @@ using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
-using QuantumUNET;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -104,11 +102,8 @@ namespace QSB.Player
 
 		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
 
-		public static bool IsBelongingToLocalPlayer(uint id)
-		{
-			return id == LocalPlayerId ||
+		public static bool IsBelongingToLocalPlayer(uint id) => id == LocalPlayerId ||
 				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
-		}
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
@@ -149,12 +144,9 @@ namespace QSB.Player
 			player.Visible = visible;
 		}
 
-		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer)
-		{
-			return includeLocalPlayer
+		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
 				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
 				: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
-		}
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
 		{

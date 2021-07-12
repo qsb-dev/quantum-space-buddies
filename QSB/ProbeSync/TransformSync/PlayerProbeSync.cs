@@ -19,10 +19,7 @@ namespace QSB.ProbeSync.TransformSync
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
-		public override void OnStartAuthority()
-		{
-			LocalInstance = this;
-		}
+		public override void OnStartAuthority() => LocalInstance = this;
 
 		protected override Component InitLocalTransform()
 		{
