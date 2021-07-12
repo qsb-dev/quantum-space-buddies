@@ -50,6 +50,11 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
+			if (!HasAuthority)
+			{
+				base.OnSceneLoaded(scene, isInUniverse);
+			}
+
 			if (isInUniverse)
 			{
 				Player.PlayerStates.IsReady = true;
