@@ -187,6 +187,7 @@ namespace QSB.Syncs.TransformSync
 
 		public void SetReferenceTransform(Transform transform)
 		{
+			DebugLog.DebugWrite($"{_logName} set reference transform {transform.name}", MessageType.Info);
 			if (ReferenceTransform == transform)
 			{
 				return;
@@ -208,7 +209,7 @@ namespace QSB.Syncs.TransformSync
 				ReparentAttachedObject(transform);
 			}
 
-			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);

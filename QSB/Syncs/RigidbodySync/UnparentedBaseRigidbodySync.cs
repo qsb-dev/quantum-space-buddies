@@ -180,7 +180,7 @@ namespace QSB.Syncs.RigidbodySync
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 
-			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
