@@ -41,6 +41,11 @@ namespace QSB.Syncs.RigidbodySync
 				return;
 			}
 
+			if (!HasAuthority)
+			{
+				return;
+			}
+
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -92,7 +97,7 @@ namespace QSB.Syncs.RigidbodySync
 
 		protected override bool UpdateTransform()
 		{
-			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady)
+			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady && HasAuthority)
 			{
 				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 				if (closestSector != null)
