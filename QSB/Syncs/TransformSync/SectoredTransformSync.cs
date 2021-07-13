@@ -25,7 +25,6 @@ namespace QSB.Syncs.TransformSync
 
 		protected override void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			base.OnDestroy();
 			QSBSectorManager.Instance.SectoredTransformSyncs.Remove(this);
 			if (SectorSync != null)
@@ -102,7 +101,7 @@ namespace QSB.Syncs.TransformSync
 					return;
 				}
 
-				DebugLog.DebugWrite($"REMOTE CHANGE SECTOR to {sector.Name}");
+				DebugLog.DebugWrite($"{_logName} REMOTE CHANGE SECTOR to {sector.Name}");
 
 				SetReferenceSector(sector);
 			}
@@ -112,7 +111,26 @@ namespace QSB.Syncs.TransformSync
 
 		protected override bool UpdateTransform()
 		{
-			if ((ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null) && QSBSectorManager.Instance.IsReady)
+			var referenceNull = ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null;
+			var sectorManagerReady = QSBSectorManager.Instance.IsReady;
+
+			if (!sectorManagerReady)
+			{
+				if (referenceNull && HasAuthority)
+				{
+					DebugLog.ToConsole($"Warning - Reference was null, but sector manager wasn't ready. " +
+						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}, Intermediary:{_intermediaryTransform.GetReferenceTransform() == null}",
+						OWML.Common.MessageType.Warning);
+				}
+				return base.UpdateTransform();
+			}
+
+			if (!HasAuthority)
+			{
+				return base.UpdateTransform();
+			}
+
+			if (referenceNull)
 			{
 				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 				if (closestSector != null)
@@ -125,17 +143,13 @@ namespace QSB.Syncs.TransformSync
 					return false;
 				}
 			}
-			else if (ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null)
-			{
-				DebugLog.ToConsole($"Warning - Reference was null, but sector manager wasn't ready. Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}, Intermediary:{_intermediaryTransform.GetReferenceTransform() == null}", OWML.Common.MessageType.Warning);
-				return false;
-			}
 
 			return base.UpdateTransform();
 		}
 
 		public void SetReferenceSector(QSBSector sector)
 		{
+			DebugLog.DebugWrite($"{_logName} set reference sector {sector.Name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}
