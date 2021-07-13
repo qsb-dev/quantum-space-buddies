@@ -101,8 +101,6 @@ namespace QSB.Syncs.TransformSync
 					return;
 				}
 
-				DebugLog.DebugWrite($"{_logName} REMOTE CHANGE SECTOR to {sector.Name}");
-
 				SetReferenceSector(sector);
 			}
 
@@ -149,7 +147,6 @@ namespace QSB.Syncs.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			DebugLog.DebugWrite($"{_logName} set reference sector {sector.Name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}
