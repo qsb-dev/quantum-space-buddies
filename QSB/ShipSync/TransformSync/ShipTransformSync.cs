@@ -17,7 +17,6 @@ namespace QSB.ShipSync.TransformSync
 
 		public override void Start()
 		{
-			DebugLog.DebugWrite($"START!");
 			base.Start();
 			LocalInstance = this;
 		}

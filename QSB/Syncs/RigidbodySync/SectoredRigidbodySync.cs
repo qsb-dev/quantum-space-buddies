@@ -24,7 +24,6 @@ namespace QSB.Syncs.RigidbodySync
 
 		protected override void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			base.OnDestroy();
 			QSBSectorManager.Instance.SectoredRigidbodySyncs.Remove(this);
 			if (SectorSync != null)
@@ -115,7 +114,6 @@ namespace QSB.Syncs.RigidbodySync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			DebugLog.DebugWrite($"{GetType().Name} set reference sector to {transform.name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}

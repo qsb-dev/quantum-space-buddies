@@ -24,7 +24,6 @@ namespace QSB.Syncs.RigidbodySync
 
 		protected virtual void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 

@@ -3,7 +3,6 @@ using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
@@ -74,8 +73,6 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
-			DebugLog.DebugWrite($"TRY FIND INITAL STATE SECTOR sectorid:{_sectorIdWaitingSlot}");
-
 			var sector = _sectorIdWaitingSlot == -1
 				? null
 				: QSBWorldSync.GetWorldFromId<QSBSector>(_sectorIdWaitingSlot);
@@ -89,12 +86,12 @@ namespace QSB.Syncs.TransformSync
 					return;
 				}
 
-				DebugLog.DebugWrite($"INITIAL STATE - SET SECTOR TO {sector.Name}");
-
 				SetReferenceSector(sector);
 			}
 
 			_sectorIdWaitingSlot = int.MinValue;
+
+			base.Update();
 		}
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -123,9 +120,9 @@ namespace QSB.Syncs.TransformSync
 			if (!QSBCore.WorldObjectsReady)
 			{
 				sectorId = reader.ReadInt32();
-				if (initialState)
+				if (initialState && sectorId != -1)
 				{
-					DebugLog.DebugWrite($"SET WAITING FOR SECTOR SET");
+					DebugLog.DebugWrite($"SET WAITING FOR SECTOR SET - id {sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
 				reader.ReadVector3();

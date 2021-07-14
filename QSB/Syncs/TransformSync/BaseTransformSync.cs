@@ -57,12 +57,10 @@ namespace QSB.Syncs.TransformSync
 
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict[GetType()] = this;
-			DebugLog.DebugWrite($"Added T:{GetType().Name} to dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		protected virtual void OnDestroy()
 		{
-			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject.gameObject);
@@ -74,12 +72,9 @@ namespace QSB.Syncs.TransformSync
 			{
 				return;
 			}
-			DebugLog.DebugWrite($"{_logName} remove from dict");
-
 
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict.Remove(GetType());
-			DebugLog.DebugWrite($"Removed T:{GetType().Name} from dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		protected virtual void OnSceneLoaded(OWScene scene, bool isInUniverse)
@@ -119,11 +114,6 @@ namespace QSB.Syncs.TransformSync
 				writer.WritePackedUInt32(1U);
 			}
 
-			if (initialState)
-			{
-				DebugLog.DebugWrite($"{_logName} SERIALIZE INITAL STATE");
-			}
-
 			SerializeTransform(writer, initialState);
 			return true;
 		}
@@ -138,11 +128,6 @@ namespace QSB.Syncs.TransformSync
 					{
 						return;
 					}
-				}
-
-				if (initialState)
-				{
-					DebugLog.DebugWrite($"{_logName} DESERIALIZE INITAL STATE");
 				}
 
 				DeserializeTransform(reader, initialState);
@@ -168,7 +153,6 @@ namespace QSB.Syncs.TransformSync
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
-				DebugLog.DebugWrite($"{_logName} deserialize when worldobjects not ready");
 				reader.ReadVector3();
 				DeserializeRotation(reader);
 				return;
@@ -232,7 +216,6 @@ namespace QSB.Syncs.TransformSync
 
 		public void SetReferenceTransform(Transform transform)
 		{
-			DebugLog.DebugWrite($"{_logName} set reference transform {transform.name}", MessageType.Info);
 			if (ReferenceTransform == transform)
 			{
 				return;
