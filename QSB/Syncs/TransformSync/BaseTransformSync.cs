@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
+using QuantumUNET;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace QSB.Syncs.TransformSync
 
 	public abstract class BaseTransformSync : SyncBase
 	{
-		private readonly static Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
+		private static readonly Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
 
 		public static T GetPlayers<T>(PlayerInfo player)
 			where T : BaseTransformSync
@@ -56,7 +57,6 @@ namespace QSB.Syncs.TransformSync
 
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict[GetType()] = this;
-			DebugLog.DebugWrite($"Added T:{GetType().Name} to dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		protected virtual void OnDestroy()
@@ -68,9 +68,13 @@ namespace QSB.Syncs.TransformSync
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
+			if (!QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				return;
+			}
+
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict.Remove(GetType());
-			DebugLog.DebugWrite($"Removed T:{GetType().Name} from dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		protected virtual void OnSceneLoaded(OWScene scene, bool isInUniverse)
@@ -97,7 +101,40 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
+		{
+			if (!initialState)
+			{
+				if (SyncVarDirtyBits == 0U)
+				{
+					writer.WritePackedUInt32(0U);
+					return false;
+				}
+
+				writer.WritePackedUInt32(1U);
+			}
+
+			SerializeTransform(writer, initialState);
+			return true;
+		}
+
+		public override void OnDeserialize(QNetworkReader reader, bool initialState)
+		{
+			if (!IsServer || !QNetworkServer.localClientActive)
+			{
+				if (!initialState)
+				{
+					if (reader.ReadPackedUInt32() == 0U)
+					{
+						return;
+					}
+				}
+
+				DeserializeTransform(reader, initialState);
+			}
+		}
+
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -112,7 +149,7 @@ namespace QSB.Syncs.TransformSync
 			_prevRotation = worldRot;
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
@@ -143,13 +180,13 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				return;
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
@@ -167,6 +204,7 @@ namespace QSB.Syncs.TransformSync
 					AttachedObject.transform.localRotation = targetRot;
 				}
 			}
+			return true;
 		}
 
 		public override bool HasMoved()
@@ -199,7 +237,7 @@ namespace QSB.Syncs.TransformSync
 				ReparentAttachedObject(transform);
 			}
 
-			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);

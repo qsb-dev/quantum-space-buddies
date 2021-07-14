@@ -37,6 +37,12 @@ namespace QSB.SectorSync
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
 
+			if (detector == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init SectorSync with null SectorDetector.", MessageType.Error);
+				return;
+			}
+
 			_sectorDetector = detector;
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
@@ -47,8 +53,26 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
 
+			PopulateSectorList();
+
 			_targetType = sectoredSync.Type;
 			_isReady = true;
+		}
+
+		private void PopulateSectorList()
+		{
+			var currentList = _sectorDetector.GetValue<List<Sector>>("_sectorList");
+
+			SectorList.Clear();
+			foreach (var sector in currentList)
+			{
+				if (sector == null)
+				{
+					continue;
+				}
+
+				AddSector(sector);
+			}
 		}
 
 		private void AddSector(Sector sector)

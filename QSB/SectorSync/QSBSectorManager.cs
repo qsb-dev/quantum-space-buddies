@@ -3,7 +3,6 @@ using QSB.SectorSync.WorldObjects;
 using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -46,7 +45,7 @@ namespace QSB.SectorSync
 					continue;
 				}
 
-				if ((sync as QNetworkBehaviour).HasAuthority
+				if (sync.HasAuthority
 					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
@@ -99,8 +98,6 @@ namespace QSB.SectorSync
 			{
 				return;
 			}
-
-			DebugLog.DebugWrite($"LOCAL Change {attachedObject.name} to sector {closestSector.Name}");
 
 			transformSync.SetReferenceSector(closestSector);
 		}
