@@ -53,7 +53,7 @@ namespace QSB.Syncs.RigidbodySync
 			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -69,10 +69,10 @@ namespace QSB.Syncs.RigidbodySync
 				writer.Write(-1);
 			}
 
-			base.SerializeTransform(writer);
+			base.SerializeTransform(writer, initialState);
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
@@ -92,7 +92,7 @@ namespace QSB.Syncs.RigidbodySync
 				SetReferenceSector(sector);
 			}
 
-			base.DeserializeTransform(reader);
+			base.DeserializeTransform(reader, initialState);
 		}
 
 		protected override bool UpdateTransform()

@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
+using QuantumUNET;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -105,7 +106,50 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
+		{
+			if (!initialState)
+			{
+				if (SyncVarDirtyBits == 0U)
+				{
+					writer.WritePackedUInt32(0U);
+					return false;
+				}
+
+				writer.WritePackedUInt32(1U);
+			}
+
+			if (initialState)
+			{
+				DebugLog.DebugWrite($"{_logName} SERIALIZE INITAL STATE");
+			}
+
+			SerializeTransform(writer, initialState);
+			return true;
+		}
+
+		public override void OnDeserialize(QNetworkReader reader, bool initialState)
+		{
+			if (!IsServer || !QNetworkServer.localClientActive)
+			{
+				if (!initialState)
+				{
+					if (reader.ReadPackedUInt32() == 0U)
+					{
+						return;
+					}
+				}
+
+				if (initialState)
+				{
+					DebugLog.DebugWrite($"{_logName} DESERIALIZE INITAL STATE");
+				}
+
+				DeserializeTransform(reader, initialState);
+			}
+		}
+
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -120,10 +164,11 @@ namespace QSB.Syncs.TransformSync
 			_prevRotation = worldRot;
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
+				DebugLog.DebugWrite($"{_logName} deserialize when worldobjects not ready");
 				reader.ReadVector3();
 				DeserializeRotation(reader);
 				return;

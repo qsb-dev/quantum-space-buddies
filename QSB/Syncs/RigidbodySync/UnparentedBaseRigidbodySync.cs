@@ -42,7 +42,7 @@ namespace QSB.Syncs.RigidbodySync
 			_isInitialized = true;
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -73,7 +73,7 @@ namespace QSB.Syncs.RigidbodySync
 			_prevAngularVelocity = relativeAngularVelocity;
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{

@@ -3,6 +3,7 @@ using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
@@ -15,6 +16,8 @@ namespace QSB.Syncs.TransformSync
 
 		public override bool IgnoreNullReferenceTransform => true;
 		public override bool IgnoreDisabledAttachedObject => false;
+
+		private int _sectorIdWaitingSlot = int.MinValue;
 
 		public override void Start()
 		{
@@ -57,7 +60,44 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override void Update()
+		{
+			if (_sectorIdWaitingSlot == int.MinValue)
+			{
+				base.Update();
+				return;
+			}
+
+			if (!WorldObjectManager.AllReady)
+			{
+				base.Update();
+				return;
+			}
+
+			DebugLog.DebugWrite($"TRY FIND INITAL STATE SECTOR sectorid:{_sectorIdWaitingSlot}");
+
+			var sector = _sectorIdWaitingSlot == -1
+				? null
+				: QSBWorldSync.GetWorldFromId<QSBSector>(_sectorIdWaitingSlot);
+
+			if (sector != ReferenceSector)
+			{
+				if (sector == null)
+				{
+					DebugLog.ToConsole($"Error - {PlayerId}.{GetType().Name} got sector of ID -1.", OWML.Common.MessageType.Error);
+					base.Update();
+					return;
+				}
+
+				DebugLog.DebugWrite($"INITIAL STATE - SET SECTOR TO {sector.Name}");
+
+				SetReferenceSector(sector);
+			}
+
+			_sectorIdWaitingSlot = int.MinValue;
+		}
+
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -74,20 +114,26 @@ namespace QSB.Syncs.TransformSync
 				writer.Write(-1);
 			}
 
-			base.SerializeTransform(writer);
+			base.SerializeTransform(writer, initialState);
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
+			int sectorId;
 			if (!QSBCore.WorldObjectsReady)
 			{
-				reader.ReadInt32();
+				sectorId = reader.ReadInt32();
+				if (initialState)
+				{
+					DebugLog.DebugWrite($"SET WAITING FOR SECTOR SET");
+					_sectorIdWaitingSlot = sectorId;
+				}
 				reader.ReadVector3();
 				DeserializeRotation(reader);
 				return;
 			}
 
-			var sectorId = reader.ReadInt32();
+			sectorId = reader.ReadInt32();
 			var sector = sectorId == -1
 				? null
 				: QSBWorldSync.GetWorldFromId<QSBSector>(sectorId);
@@ -97,14 +143,14 @@ namespace QSB.Syncs.TransformSync
 				if (sector == null)
 				{
 					DebugLog.ToConsole($"Error - {PlayerId}.{GetType().Name} got sector of ID -1.", OWML.Common.MessageType.Error);
-					base.DeserializeTransform(reader);
+					base.DeserializeTransform(reader, initialState);
 					return;
 				}
 
 				SetReferenceSector(sector);
 			}
 
-			base.DeserializeTransform(reader);
+			base.DeserializeTransform(reader, initialState);
 		}
 
 		protected override bool UpdateTransform()
