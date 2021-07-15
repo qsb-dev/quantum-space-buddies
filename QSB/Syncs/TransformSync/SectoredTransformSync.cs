@@ -101,6 +101,11 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
 
+			if (!Player.PlayerStates.IsReady)
+			{
+				return;
+			}
+
 			if (ReferenceSector != null)
 			{
 				writer.Write(ReferenceSector.ObjectId);
