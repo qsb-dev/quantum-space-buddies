@@ -1,4 +1,5 @@
-﻿using QSB.SectorSync;
+﻿using QSB.Player;
+using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -99,6 +100,11 @@ namespace QSB.Syncs.TransformSync
 			if (_intermediaryTransform == null)
 			{
 				_intermediaryTransform = new IntermediaryTransform(transform);
+			}
+
+			if (!QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				return;
 			}
 
 			if (!Player.PlayerStates.IsReady)
