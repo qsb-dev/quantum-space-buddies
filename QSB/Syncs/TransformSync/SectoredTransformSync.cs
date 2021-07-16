@@ -104,12 +104,13 @@ namespace QSB.Syncs.TransformSync
 
 			if (!QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				return;
+				DebugLog.ToConsole($"Warning - Tried to serialize {_logName} before the right player exists.", OWML.Common.MessageType.Warning);
+				writer.Write(-1);
 			}
-
-			if (!Player.PlayerStates.IsReady)
+			else if (!Player.PlayerStates.IsReady)
 			{
-				return;
+				DebugLog.ToConsole($"Warning - Tried to serialize {_logName} before the player was ready.", OWML.Common.MessageType.Warning);
+				writer.Write(-1);
 			}
 
 			if (ReferenceSector != null)
