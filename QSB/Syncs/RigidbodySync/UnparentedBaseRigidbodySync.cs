@@ -1,7 +1,9 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Transport;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs.RigidbodySync
@@ -17,6 +19,10 @@ namespace QSB.Syncs.RigidbodySync
 
 		public virtual void Start()
 		{
+			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
+				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
+			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+
 			DontDestroyOnLoad(gameObject);
 			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
