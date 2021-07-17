@@ -112,15 +112,14 @@ namespace QSB.SectorSync
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			if (!QSBSectorManager.Instance.IsReady)
+			if (QSBSectorManager.Instance == null || !QSBSectorManager.Instance.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to get closest sector to {trans.name} before QSBSectorManager was ready.", MessageType.Warning);
 				return null;
 			}
 
 			if (!_isReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to use SectorSync before it was initialized.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name}", MessageType.Warning);
 				return null;
 			}
 
