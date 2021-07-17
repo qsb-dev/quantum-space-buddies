@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET.Components;
 using UnityEngine;
 
@@ -39,7 +40,12 @@ namespace QSB.Syncs
 		}
 
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
+		private bool _baseIsReady => QSBPlayerManager.PlayerExists(PlayerId)
+			&& Player != null
+			&& Player.PlayerStates.IsReady
+			&& NetId.Value != uint.MaxValue
+			&& NetId.Value != 0U
+			&& WorldObjectManager.AllReady;
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 		public abstract bool IgnoreDisabledAttachedObject { get; }
@@ -77,11 +83,13 @@ namespace QSB.Syncs
 
 		public override void Update()
 		{
-			if (!_isInitialized && IsReady)
+			if (!_isInitialized && IsReady && _baseIsReady)
 			{
 				Init();
+				base.Update();
+				return;
 			}
-			else if (_isInitialized && !IsReady)
+			else if (_isInitialized && (!IsReady || !_baseIsReady))
 			{
 				_isInitialized = false;
 				base.Update();

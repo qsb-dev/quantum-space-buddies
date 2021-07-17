@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Player;
 using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
@@ -23,7 +22,7 @@ namespace QSB.ProbeSync.TransformSync
 
 		protected override Component InitLocalTransform()
 		{
-			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this);
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this));
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
@@ -101,12 +100,6 @@ namespace QSB.ProbeSync.TransformSync
 			return true;
 		}
 
-		public override bool IsReady => Locator.GetProbe() != null
-			&& Player != null
-			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.PlayerStates.IsReady
-			&& NetId.Value != uint.MaxValue
-			&& NetId.Value != 0U
-			&& WorldObjectManager.AllReady;
+		public override bool IsReady => Locator.GetProbe() != null;
 	}
 }

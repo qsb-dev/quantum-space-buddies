@@ -83,7 +83,7 @@ namespace QSB.Player.TransformSync
 
 		protected override Component InitLocalTransform()
 		{
-			SectorSync.Init(Locator.GetPlayerSectorDetector(), this);
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), this));
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -237,14 +237,8 @@ namespace QSB.Player.TransformSync
 			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
 		}
 
-		public override bool IsReady 
-			=> Locator.GetPlayerTransform() != null
-			&& Player != null
-			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.PlayerStates.IsReady
-			&& NetId.Value != uint.MaxValue
-			&& NetId.Value != 0U
-			&& WorldObjectManager.AllReady;
+		public override bool IsReady
+			=> Locator.GetPlayerTransform() != null;
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
