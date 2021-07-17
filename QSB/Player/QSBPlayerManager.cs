@@ -46,7 +46,7 @@ namespace QSB.Player
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
 				DebugLog.ToConsole($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
-					$"{Environment.NewLine} Stacktrace : {Environment.StackTrace}", MessageType.Warning);
+					$"{Environment.NewLine} Stacktrace :\r\n{Environment.StackTrace}", MessageType.Warning);
 			}
 
 			if (id == uint.MaxValue || id == 0U)
@@ -66,7 +66,7 @@ namespace QSB.Player
 				return default;
 			}
 
-			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace : {Environment.StackTrace}", MessageType.Info);
+			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			return player;
@@ -74,7 +74,7 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}> Stacktrace : {Environment.StackTrace}", MessageType.Info);
+			DebugLog.DebugWrite($"Remove Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
 			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
