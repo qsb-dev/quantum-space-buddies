@@ -246,6 +246,8 @@ namespace QSB
 			{
 				Destroy(streaming);
 			}
+
+			WorldObjectManager.SetNotReady();
 		}
 	}
 }
