@@ -38,6 +38,11 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return default;
+			}
+
 			if (unityObject == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);

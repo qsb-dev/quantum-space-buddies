@@ -23,6 +23,11 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
+			if (!Instance.IsReady || !AllReady)
+			{
+				return;
+			}
+
 			foreach (var sync in SectoredTransformSyncs)
 			{
 				if (sync.AttachedObject == null)
