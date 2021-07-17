@@ -96,7 +96,7 @@ namespace QSB.Syncs.RigidbodySync
 
 		protected override bool UpdateTransform()
 		{
-			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady && HasAuthority)
+			if ((ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null) && QSBSectorManager.Instance.IsReady && HasAuthority)
 			{
 				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 				if (closestSector != null)
