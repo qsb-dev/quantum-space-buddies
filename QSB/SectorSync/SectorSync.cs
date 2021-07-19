@@ -17,6 +17,7 @@ namespace QSB.SectorSync
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
 		private TargetType _targetType;
+		private bool _isReady;
 
 		private void OnDestroy()
 		{
@@ -25,6 +26,7 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+			_isReady = false;
 		}
 
 		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
@@ -33,6 +35,12 @@ namespace QSB.SectorSync
 			{
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
+			}
+
+			if (detector == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init SectorSync with null SectorDetector.", MessageType.Error);
+				return;
 			}
 
 			_sectorDetector = detector;
@@ -45,7 +53,26 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
 
+			PopulateSectorList();
+
 			_targetType = sectoredSync.Type;
+			_isReady = true;
+		}
+
+		private void PopulateSectorList()
+		{
+			var currentList = _sectorDetector.GetValue<List<Sector>>("_sectorList");
+
+			SectorList.Clear();
+			foreach (var sector in currentList)
+			{
+				if (sector == null)
+				{
+					continue;
+				}
+
+				AddSector(sector);
+			}
 		}
 
 		private void AddSector(Sector sector)
@@ -85,9 +112,21 @@ namespace QSB.SectorSync
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			if (!QSBSectorManager.Instance.IsReady)
+			if (QSBSectorManager.Instance == null || !QSBSectorManager.Instance.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to get closest sector to {trans.name} before QSBSectorManager was ready.", MessageType.Warning);
+				return null;
+			}
+
+			if (!_isReady)
+			{
+				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name}", MessageType.Warning);
+				return null;
+			}
+
+			if (_sectorDetector == null || _attachedOWRigidbody == null || _targetType == TargetType.None)
+			{
+				_isReady = false;
+				DebugLog.ToConsole($"Error - SectorSync is no longer ready. Detector Null : {_sectorDetector == null}, OWRigidbody Null : {_attachedOWRigidbody == null}, None TargetType : {_targetType == TargetType.None}", MessageType.Error);
 				return null;
 			}
 
@@ -121,8 +160,6 @@ namespace QSB.SectorSync
 
 			return ordered.FirstOrDefault();
 		}
-
-		internal static object CalculateSectorScore(QSBSector x, Transform transform, object getValue) => throw new System.NotImplementedException();
 
 		public static float CalculateSectorScore(QSBSector sector, Transform trans, OWRigidbody rigidbody)
 		{

@@ -4,14 +4,14 @@ using QSB.Player;
 
 namespace QSB.ProbeSync.Events
 {
-	class ProbeStartRetrieveEvent : QSBEvent<FloatMessage>
+	internal class ProbeStartRetrieveEvent : QSBEvent<FloatMessage>
 	{
 		public override EventType Type => EventType.ProbeStartRetrieve;
 
-		public override void SetupListener() 
+		public override void SetupListener()
 			=> GlobalMessenger<float>.AddListener(EventNames.QSBProbeStartRetrieve, Handler);
 
-		public override void CloseListener() 
+		public override void CloseListener()
 			=> GlobalMessenger<float>.RemoveListener(EventNames.QSBProbeStartRetrieve, Handler);
 
 		private void Handler(float duration) => SendEvent(CreateMessage(duration));

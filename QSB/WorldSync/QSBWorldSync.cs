@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -19,11 +18,6 @@ namespace QSB.WorldSync
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
 		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
-		private const BindingFlags Flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
@@ -44,6 +38,11 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return default;
+			}
+
 			if (unityObject == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);
@@ -125,22 +124,6 @@ namespace QSB.WorldSync
 			return worldObject;
 		}
 
-		public static void RaiseEvent<T>(T instance, string eventName, params object[] args) // TODO : move this to qsb.utility
-		{
-			if (!(typeof(T)
-				.GetField(eventName, Flags)?
-				.GetValue(instance) is MulticastDelegate multiDelegate))
-			{
-				return;
-			}
-
-			var delegateList = multiDelegate.GetInvocationList().ToList();
-			foreach (var del in delegateList)
-			{
-				del.DynamicInvoke(args);
-			}
-		}
-
 		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
 		{
 			var slotList = GetWorldObjects<QSBOrbSlot>().ToList();
@@ -156,7 +139,7 @@ namespace QSB.WorldSync
 				return;
 			}
 
-			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.FirstOrDefault(x => x.AttachedObject == affectingOrb.gameObject);
+			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.FirstOrDefault(x => x.AttachedObject == affectingOrb.transform);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);

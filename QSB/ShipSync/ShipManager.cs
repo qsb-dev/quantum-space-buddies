@@ -47,7 +47,19 @@ namespace QSB.ShipSync
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			var shipTransform = GameObject.Find("Ship_Body");
+			if (shipTransform == null)
+			{
+				DebugLog.ToConsole($"Error - Couldn't find ship!", MessageType.Error);
+				return;
+			}
+
 			HatchController = shipTransform.GetComponentInChildren<HatchController>();
+			if (HatchController == null)
+			{
+				DebugLog.ToConsole($"Error - Couldn't find hatch controller!", MessageType.Error);
+				return;
+			}
+
 			HatchInteractZone = HatchController.GetComponent<InteractZone>();
 			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
 			CockpitController = Resources.FindObjectsOfTypeAll<ShipCockpitController>().First();
@@ -61,10 +73,19 @@ namespace QSB.ShipSync
 			{
 				if (ShipTransformSync.LocalInstance != null)
 				{
+					if (ShipTransformSync.LocalInstance.gameObject == null)
+					{
+						DebugLog.ToConsole($"Warning - ShipTransformSync's LocalInstance is not null, but it's gameobject is null!", MessageType.Warning);
+						return;
+					}
 					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
 
-				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
+				if (QSBPlayerManager.LocalPlayer.TransformSync == null)
+				{
+					DebugLog.ToConsole($"Error - Tried to spawn ship, but LocalPlayer's TransformSync is null!", MessageType.Error);
+				}
+				QNetworkServer.SpawnWithClientAuthority(Instantiate(QSBNetworkManager.Instance.ShipPrefab), QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
 			}
 
 			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();

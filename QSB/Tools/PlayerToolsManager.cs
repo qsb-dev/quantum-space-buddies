@@ -20,9 +20,9 @@ namespace QSB.Tools
 		private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
 		private static readonly Vector3 TranslatorScale = new Vector3(0.75f, 0.75f, 0.75f);
 
-		public static void Init(Transform camera)
+		public static void Init(Transform playerCamera)
 		{
-			CreateStowTransforms(camera);
+			CreateStowTransforms(playerCamera);
 
 			_playerToolsMaterial = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
@@ -34,10 +34,10 @@ namespace QSB.Tools
 				_lightbulbMaterial = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
 			}
 
-			CreateFlashlight(camera);
-			CreateSignalscope(camera);
-			CreateProbeLauncher(camera);
-			CreateTranslator(camera);
+			CreateFlashlight(playerCamera);
+			CreateSignalscope(playerCamera);
+			CreateProbeLauncher(playerCamera);
+			CreateTranslator(playerCamera);
 		}
 
 		public static void CreateProbe(Transform newProbe, PlayerInfo player)
@@ -164,43 +164,43 @@ namespace QSB.Tools
 
 		private static void CreateStowTransforms(Transform cameraBody)
 		{
-			var stow = new GameObject("ToolStowTransform");
+			var stow = new GameObject("REMOTE_ToolStowTransform");
 			_toolStowTransform = stow.transform;
 			stow.transform.parent = cameraBody;
 			stow.transform.localPosition = Vector3.zero;
 			stow.transform.localRotation = Quaternion.Euler(45f, 0f, 0f);
 
-			var hold = new GameObject("ToolHoldTransform");
+			var hold = new GameObject("REMOTE_ToolHoldTransform");
 			_toolHoldTransform = hold.transform;
 			hold.transform.parent = cameraBody;
 			hold.transform.localPosition = Vector3.zero;
 			hold.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 
-			var item = new GameObject("ItemSocket");
+			var item = new GameObject("REMOTE_ItemSocket");
 			item.transform.parent = cameraBody;
 			item.transform.localPosition = new Vector3(0.125f, -0.12f, 0.2f);
 			item.transform.localRotation = Quaternion.Euler(0, 0, 15);
 			item.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
 
-			var scroll = new GameObject("ScrollSocket");
+			var scroll = new GameObject("REMOTE_ScrollSocket");
 			scroll.transform.parent = cameraBody;
 			scroll.transform.localPosition = new Vector3(0.148f, -0.0522f, 0.2465f);
 			scroll.transform.localRotation = Quaternion.Euler(236.054f, 56.46799f, -152.472f);
 			scroll.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
 
-			var sharedStone = new GameObject("SharedStoneSocket");
+			var sharedStone = new GameObject("REMOTE_SharedStoneSocket");
 			sharedStone.transform.parent = cameraBody;
 			sharedStone.transform.localPosition = new Vector3(0.1375f, -0.119f, 0.2236f);
 			sharedStone.transform.localRotation = Quaternion.Euler(-23.053f, -0.263f, 6.704f);
 			sharedStone.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
 
-			var warpCore = new GameObject("WarpCoreSocket");
+			var warpCore = new GameObject("REMOTE_WarpCoreSocket");
 			warpCore.transform.parent = cameraBody;
 			warpCore.transform.localPosition = new Vector3(0.161f, -0.107f, 0.223f);
 			warpCore.transform.localRotation = Quaternion.Euler(179.949f, 82.59f, 163.697f);
 			warpCore.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
 
-			var vesselCore = new GameObject("VesselCoreSocket");
+			var vesselCore = new GameObject("REMOTE_VesselCoreSocket");
 			vesselCore.transform.parent = cameraBody;
 			vesselCore.transform.localPosition = new Vector3(0.177f, -0.106f, 0.2f);
 			vesselCore.transform.localRotation = Quaternion.Euler(3.142f, 14.827f, 12.094f);
@@ -210,7 +210,7 @@ namespace QSB.Tools
 		private static void CreateFlashlight(Transform cameraBody)
 		{
 			var flashlightRoot = Object.Instantiate(GameObject.Find("FlashlightRoot"));
-			flashlightRoot.name += "-RemotePlayer";
+			flashlightRoot.name = "REMOTE_FlashlightRoot";
 			flashlightRoot.SetActive(false);
 			var oldComponent = flashlightRoot.GetComponent<Flashlight>();
 			var component = flashlightRoot.AddComponent<QSBFlashlight>();
@@ -226,6 +226,7 @@ namespace QSB.Tools
 		private static void CreateSignalscope(Transform cameraBody)
 		{
 			var signalscopeRoot = Object.Instantiate(GameObject.Find("Signalscope"));
+			signalscopeRoot.name = "REMOTE_Signalscope";
 			signalscopeRoot.SetActive(false);
 
 			Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
@@ -255,6 +256,7 @@ namespace QSB.Tools
 			var original = GameObject.Find("NomaiTranslatorProp");
 
 			var translatorRoot = original.InstantiateInactive();
+			translatorRoot.name = "REMOTE_NomaiTranslatorProp";
 
 			var group = translatorRoot.transform.Find("TranslatorGroup");
 			var model = group.Find("Props_HEA_Translator");
@@ -291,7 +293,7 @@ namespace QSB.Tools
 
 		private static void CreateProbeLauncher(Transform cameraBody)
 		{
-			var launcherRoot = new GameObject("ProbeLauncher");
+			var launcherRoot = new GameObject("REMOTE_ProbeLauncher");
 			var modelOrig = GameObject.Find("PlayerCamera/ProbeLauncher/Props_HEA_ProbeLauncher");
 			var model = Object.Instantiate(modelOrig);
 			model.transform.parent = launcherRoot.transform;

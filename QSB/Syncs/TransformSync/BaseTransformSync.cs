@@ -2,7 +2,7 @@
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using QuantumUNET.Components;
+using QuantumUNET;
 using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
@@ -12,16 +12,16 @@ using UnityEngine;
 namespace QSB.Syncs.TransformSync
 {
 	/*
-	 * Rewrite number : 5
+	 * Rewrite number : 7
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
+	public abstract class BaseTransformSync : SyncBase
 	{
-		private readonly static Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
+		private static readonly Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
 
 		public static T GetPlayers<T>(PlayerInfo player)
-			where T : BaseTransformSync 
+			where T : BaseTransformSync
 		{
 			var dictOfOwnedSyncs = _storedTransformSyncs[player];
 			var wantedSync = dictOfOwnedSyncs[typeof(T)];
@@ -40,56 +40,6 @@ namespace QSB.Syncs.TransformSync
 			return (T)wantedSync;
 		}
 
-		public uint AttachedNetId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.NetId.Value;
-			}
-		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
-		public Transform ReferenceTransform { get; set; }
-		public Transform AttachedObject { get; set; }
-
-		public abstract bool IsReady { get; }
-		public abstract bool UseInterpolation { get; }
-
-		protected abstract Transform InitLocalTransform();
-		protected abstract Transform InitRemoteTransform();
-
-		protected bool _isInitialized;
-		private const float SmoothTime = 0.1f;
-		protected virtual float DistanceLeeway { get; } = 5f;
-		private float _previousDistance;
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
-		private string _logName => $"{PlayerId}.{GetType().Name}";
-		protected IntermediaryTransform _intermediaryTransform;
-
 		public virtual void Start()
 		{
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
@@ -107,7 +57,6 @@ namespace QSB.Syncs.TransformSync
 
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict[GetType()] = this;
-			DebugLog.DebugWrite($"Added T:{GetType().Name} to dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
 		protected virtual void OnDestroy()
@@ -119,15 +68,19 @@ namespace QSB.Syncs.TransformSync
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
+			if (!QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				return;
+			}
+
 			var playerDict = _storedTransformSyncs[Player];
 			playerDict.Remove(GetType());
-			DebugLog.DebugWrite($"Removed T:{GetType().Name} from dict of player {Player.PlayerId}", MessageType.Info);
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		protected virtual void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
 
-		protected virtual void Init()
+		protected override void Init()
 		{
 			if (!QSBSceneManager.IsInUniverse)
 			{
@@ -148,7 +101,40 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
+		{
+			if (!initialState)
+			{
+				if (SyncVarDirtyBits == 0U)
+				{
+					writer.WritePackedUInt32(0U);
+					return false;
+				}
+
+				writer.WritePackedUInt32(1U);
+			}
+
+			SerializeTransform(writer, initialState);
+			return true;
+		}
+
+		public override void OnDeserialize(QNetworkReader reader, bool initialState)
+		{
+			if (!IsServer || !QNetworkServer.localClientActive)
+			{
+				if (!initialState)
+				{
+					if (reader.ReadPackedUInt32() == 0U)
+					{
+						return;
+					}
+				}
+
+				DeserializeTransform(reader, initialState);
+			}
+		}
+
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -163,7 +149,7 @@ namespace QSB.Syncs.TransformSync
 			_prevRotation = worldRot;
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
@@ -194,60 +180,13 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void Update()
-		{
-			if (!_isInitialized && IsReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
-			}
-
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
-				_isInitialized = false;
-				return;
-			}
-
-			if (!AttachedObject.gameObject.activeInHierarchy)
-			{
-				return;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				return;
-			}
-
-			if (AttachedObject.transform.parent != ReferenceTransform && !HasAuthority)
-			{
-				DebugLog.ToConsole($"Warning - For {_logName}, AttachedObject's ({AttachedObject.name}) parent is not the same as ReferenceTransform! " +
-					$"({AttachedObject.transform.parent} v {ReferenceTransform.name})" +
-					$"Did you try to manually reparent AttachedObject?", MessageType.Error);
-				ReparentAttachedObject(ReferenceTransform);
-			}
-
-			UpdateTransform();
-
-			base.Update();
-		}
-
-		protected virtual void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				return;
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
@@ -265,6 +204,7 @@ namespace QSB.Syncs.TransformSync
 					AttachedObject.transform.localRotation = targetRot;
 				}
 			}
+			return true;
 		}
 
 		public override bool HasMoved()
@@ -296,6 +236,12 @@ namespace QSB.Syncs.TransformSync
 			{
 				ReparentAttachedObject(transform);
 			}
+
+			if (HasAuthority)
+			{
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+			}
 		}
 
 		private void ReparentAttachedObject(Transform newParent)
@@ -306,46 +252,7 @@ namespace QSB.Syncs.TransformSync
 			}
 
 			AttachedObject.transform.SetParent(newParent, true);
-			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
-				? Vector3.one / 10
-				: Vector3.one;
-		}
-
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
-			{
-				_previousDistance = distance;
-				return targetPosition;
-			}
-
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
-		}
-
-		protected virtual void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
-			{
-				return;
-			}
-
-			/* Red Cube = Where visible object should be
-			 * Green/Yellow Cube = Where visible object is
-			 * Red Line = Connection between Red Cube and Green/Yellow Cube
-			 * Cyan Line = Connection between Green/Yellow cube and reference transform
-			 */
-
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
-			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
-			var color = HasMoved() ? Color.green : Color.yellow;
-			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
+			AttachedObject.transform.localScale = Vector3.one;
 		}
 	}
 }

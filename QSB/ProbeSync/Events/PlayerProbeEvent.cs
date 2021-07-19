@@ -4,14 +4,14 @@ using QSB.Player;
 
 namespace QSB.ProbeSync.Events
 {
-	class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
+	internal class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{
 		public override EventType Type => EventType.ProbeEvent;
 
-		public override void SetupListener() 
+		public override void SetupListener()
 			=> GlobalMessenger<ProbeEvent>.AddListener(EventNames.QSBProbeEvent, Handler);
 
-		public override void CloseListener() 
+		public override void CloseListener()
 			=> GlobalMessenger<ProbeEvent>.RemoveListener(EventNames.QSBProbeEvent, Handler);
 
 		private void Handler(ProbeEvent probeEvent) => SendEvent(CreateMessage(probeEvent));
