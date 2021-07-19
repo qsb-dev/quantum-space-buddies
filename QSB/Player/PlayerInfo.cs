@@ -34,11 +34,11 @@ namespace QSB.Player
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
-		public Transform ItemSocket => CameraBody.transform.Find("ItemSocket");
-		public Transform ScrollSocket => CameraBody.transform.Find("ScrollSocket");
-		public Transform SharedStoneSocket => CameraBody.transform.Find("SharedStoneSocket");
-		public Transform WarpCoreSocket => CameraBody.transform.Find("WarpCoreSocket");
-		public Transform VesselCoreSocket => CameraBody.transform.Find("VesselCoreSocket");
+		public Transform ItemSocket => CameraBody.transform.Find("REMOTE_ItemSocket");
+		public Transform ScrollSocket => CameraBody.transform.Find("REMOTE_ScrollSocket");
+		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");
+		public Transform WarpCoreSocket => CameraBody.transform.Find("REMOTE_WarpCoreSocket");
+		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 
