@@ -50,15 +50,5 @@ namespace QSB.ProbeSync
 
 		private void OnStartRetrieveProbe(float length)
 			=> QSBEventManager.FireEvent(EventNames.QSBProbeStartRetrieve, length);
-
-		public void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-
-			Popcron.Gizmos.Line(_attachedProbe.transform.position, Locator.GetPlayerTransform().position, Color.blue);
-		}
 	}
 }
