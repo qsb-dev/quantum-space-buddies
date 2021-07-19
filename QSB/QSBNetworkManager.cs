@@ -95,6 +95,7 @@ namespace QSB
 			{
 				var child = go.AddComponent<QNetworkTransformChild>();
 				child.Target = item.target;
+				child.m_ChildIndex = item.childIndex;
 				Destroy(item);
 			}
 
