@@ -20,6 +20,7 @@ namespace QSB.Player.TransformSync
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
 
+		private Transform _visibleRoastingSystem;
 		private Transform _networkRoastingSystem => gameObject.transform.GetChild(1);
 		private Transform _networkStickRoot => _networkRoastingSystem.GetChild(0);
 
@@ -35,6 +36,8 @@ namespace QSB.Player.TransformSync
 		protected Quaternion _pivotRotationVelocity;
 		protected Vector3 _tipPositionVelocity;
 		protected Quaternion _tipRotationVelocity;
+		protected Vector3 _roastingPositionVelocity;
+		protected Quaternion _roastingRotationVelocity;
 
 		private Transform GetStickPivot()
 			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
@@ -100,7 +103,8 @@ namespace QSB.Player.TransformSync
 
 			// stick
 			var pivot = GetStickPivot();
-			Player.RoastingStick = pivot.gameObject;
+			Player.RoastingStick = pivot.parent.gameObject;
+			_visibleRoastingSystem = pivot.parent.parent;
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
 
@@ -177,6 +181,7 @@ namespace QSB.Player.TransformSync
 			 */
 
 			var REMOTE_Stick_Pivot = Instantiate(GetStickPivot());
+			REMOTE_Stick_Pivot.name = "REMOTE_Stick_Pivot";
 			REMOTE_Stick_Pivot.parent = REMOTE_Stick_Root.transform;
 			REMOTE_Stick_Pivot.gameObject.SetActive(false);
 
@@ -205,6 +210,7 @@ namespace QSB.Player.TransformSync
 			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
 			Player.Marshmallow = newMarshmallow;
 			mallowRoot.gameObject.SetActive(true);
+			_visibleRoastingSystem = REMOTE_RoastingSystem.transform;
 			_visibleStickPivot = REMOTE_Stick_Pivot;
 			_visibleStickTip = REMOTE_Stick_Pivot.Find("Stick_Tip");
 
@@ -221,6 +227,7 @@ namespace QSB.Player.TransformSync
 			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
 			UpdateSpecificTransform(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
 			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
+			UpdateSpecificTransform(_visibleRoastingSystem, _networkRoastingSystem, ref _roastingPositionVelocity, ref _roastingRotationVelocity);
 			return true;
 		}
 
@@ -235,6 +242,31 @@ namespace QSB.Player.TransformSync
 
 			visible.localPosition = Vector3.SmoothDamp(visible.localPosition, network.localPosition, ref positionVelocity, SmoothTime);
 			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
+		}
+
+		protected override void OnRenderObject()
+		{
+			base.OnRenderObject();
+
+			if (!QSBCore.WorldObjectsReady
+				|| !QSBCore.DebugMode
+				|| !QSBCore.ShowLinesInDebug
+				|| !IsReady
+				|| ReferenceTransform == null
+				|| _intermediaryTransform.GetReferenceTransform() == null)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
+			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickPivot.position), ReferenceTransform.TransformRotation(_networkStickPivot.rotation), Vector3.one / 4, Color.red);
+			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickTip.position), ReferenceTransform.TransformRotation(_networkStickTip.rotation), Vector3.one / 4, Color.red);
+			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkCameraRoot.position), ReferenceTransform.TransformRotation(_networkCameraRoot.rotation), Vector3.one / 4, Color.red);
+
+			Popcron.Gizmos.Cube(_visibleRoastingSystem.position, _visibleRoastingSystem.rotation, Vector3.one / 4, Color.magenta);
+			Popcron.Gizmos.Cube(_visibleStickPivot.position, _visibleStickPivot.rotation, Vector3.one / 4, Color.blue);
+			Popcron.Gizmos.Cube(_visibleStickTip.position, _visibleStickTip.rotation, Vector3.one / 4, Color.yellow);
+			Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 		}
 
 		public override bool IsReady
