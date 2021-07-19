@@ -9,7 +9,12 @@ namespace QSB.Utility
 {
 	internal class DebugGUI : MonoBehaviour
 	{
-		private const float _debugLineSpacing = 11f;
+		private const float _debugLineSpacing = 8f;
+
+		private GUIStyle guiStyle = new GUIStyle()
+		{
+			fontSize = 9
+		};
 
 		public void OnGUI()
 		{
@@ -18,16 +23,19 @@ namespace QSB.Utility
 				return;
 			}
 
+			guiStyle.normal.textColor = Color.white;
+			GUI.contentColor = Color.white;
+
 			var offset = 10f;
-			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
+			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}", guiStyle);
 			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {QSBCore.WorldObjectsReady}");
+			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {QSBCore.WorldObjectsReady}", guiStyle);
 			offset += _debugLineSpacing;
 			if (WakeUpSync.LocalInstance != null)
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}", guiStyle);
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}");
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}", guiStyle);
 				offset += _debugLineSpacing;
 			}
 
@@ -37,28 +45,26 @@ namespace QSB.Utility
 			}
 
 			var offset2 = 10f;
-			GUI.Label(new Rect(340, offset2, 200f, 20f), $"Player data :");
+			GUI.Label(new Rect(340, offset2, 200f, 20f), $"Player data :", guiStyle);
 			offset2 += _debugLineSpacing;
 			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
 				var networkTransform = player.TransformSync;
 				var sector = networkTransform.ReferenceSector;
 
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}", guiStyle);
 				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
 				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
 				offset2 += _debugLineSpacing;
 				var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
-				if (probeSync == default)
+				if (probeSync != default)
 				{
-					return;
+					var probeSector = probeSync.ReferenceSector;
+					GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}", guiStyle);
+					offset2 += _debugLineSpacing;
 				}
-
-				var probeSector = probeSync.ReferenceSector;
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}");
-				offset2 += _debugLineSpacing;
 			}
 		}
 	}
