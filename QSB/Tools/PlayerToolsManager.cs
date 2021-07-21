@@ -12,8 +12,9 @@ namespace QSB.Tools
 	{
 		private static Transform _toolStowTransform;
 		private static Transform _toolHoldTransform;
-		private static Material _playerToolsMaterial;
-		private static Material _lightbulbMaterial;
+		private static Material Props_HEA_PlayerTool_mat;
+		private static Material Props_HEA_Lightbulb_mat;
+		private static Material Props_HEA_Lightbulb_OFF_mat;
 
 		private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
 		private static readonly Vector3 ProbeLauncherOffset = new Vector3(0.5745087f, -0.26f, 0.4453125f);
@@ -24,14 +25,19 @@ namespace QSB.Tools
 		{
 			CreateStowTransforms(playerCamera);
 
-			_playerToolsMaterial = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
+			Props_HEA_PlayerTool_mat = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
+			Props_HEA_Lightbulb_OFF_mat = GameObject.Find("Props_HEA_Probe_Prelaunch").GetComponent<MeshRenderer>().materials[1];
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
-				_lightbulbMaterial = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
+				Props_HEA_Lightbulb_mat = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
+				Props_HEA_Lightbulb_OFF_mat = GameObject.Find("NomaiResearchExhibit/Props_HEA_Probe_STATIC").GetComponent<MeshRenderer>().materials[1];
 			}
 			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 			{
-				_lightbulbMaterial = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
+				Props_HEA_Lightbulb_mat = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
+
+				// TODO : uhhhhh fuckin' uhhhhhhhh (find a material)
+				Props_HEA_Lightbulb_OFF_mat = null;
 			}
 
 			CreateFlashlight(playerCamera);
@@ -243,7 +249,7 @@ namespace QSB.Tools
 			tool.ToolGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
 			oldSignalscope.enabled = false;
 
-			GetRenderer(signalscopeRoot, "Props_HEA_Signalscope").material = _playerToolsMaterial;
+			GetRenderer(signalscopeRoot, "Props_HEA_Signalscope").material = Props_HEA_PlayerTool_mat;
 
 			signalscopeRoot.transform.parent = cameraBody;
 			signalscopeRoot.transform.localPosition = Vector3.zero;
@@ -280,10 +286,10 @@ namespace QSB.Tools
 			tool.ToolGameObject = group.gameObject;
 			Object.Destroy(oldTranslator);
 
-			GetRenderer(translatorRoot, "Props_HEA_Translator_Geo").material = _playerToolsMaterial;
-			GetRenderer(translatorRoot, "Props_HEA_Translator_RotatingPart").material = _playerToolsMaterial;
-			GetRenderer(translatorRoot, "Props_HEA_Translator_Button_L").material = _lightbulbMaterial;
-			GetRenderer(translatorRoot, "Props_HEA_Translator_Button_R").material = _lightbulbMaterial;
+			GetRenderer(translatorRoot, "Props_HEA_Translator_Geo").material = Props_HEA_PlayerTool_mat;
+			GetRenderer(translatorRoot, "Props_HEA_Translator_RotatingPart").material = Props_HEA_PlayerTool_mat;
+			GetRenderer(translatorRoot, "Props_HEA_Translator_Button_L").material = Props_HEA_Lightbulb_mat;
+			GetRenderer(translatorRoot, "Props_HEA_Translator_Button_R").material = Props_HEA_Lightbulb_mat;
 
 			translatorRoot.transform.parent = cameraBody;
 			translatorRoot.transform.localPosition = Vector3.zero;
@@ -319,11 +325,12 @@ namespace QSB.Tools
 			tool.Type = ToolType.ProbeLauncher;
 			tool.ToolGameObject = model;
 
-			// TODO : investigate why probe is wack
-			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = _playerToolsMaterial;
-			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = _lightbulbMaterial;
-			GetRenderer(launcherRoot, "PressureGauge_Arrow").material = _playerToolsMaterial;
-			GetRenderer(launcherRoot, "ProbeLauncherChassis").material = _playerToolsMaterial;
+			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = Props_HEA_PlayerTool_mat;
+			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = Props_HEA_Lightbulb_mat;
+			GetRenderer(launcherRoot, "PressureGauge_Arrow").material = Props_HEA_PlayerTool_mat;
+			GetRenderer(launcherRoot, "ProbeLauncherChassis").material = Props_HEA_PlayerTool_mat;
+			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = Props_HEA_PlayerTool_mat;
+			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = Props_HEA_PlayerTool_mat;
 
 			launcherRoot.transform.parent = cameraBody;
 			launcherRoot.transform.localPosition = ProbeLauncherOffset;
