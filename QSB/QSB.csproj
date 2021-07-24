@@ -315,7 +315,7 @@
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\WorldObjects\QSBGeyser.cs" />
-    <Compile Include="ProbeSync\Events\PlayerProbeLauncherEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\PlayerProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
