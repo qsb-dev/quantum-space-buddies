@@ -55,6 +55,7 @@
 		ComponentRepaired,
 		ComponentRepairTick,
 		PlayerRespawn,
-		ProbeStartRetrieve
+		ProbeStartRetrieve,
+		RetrieveProbe
 	}
 }

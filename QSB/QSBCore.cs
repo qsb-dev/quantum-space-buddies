@@ -20,6 +20,7 @@ using QSB.SectorSync;
 using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -105,6 +106,7 @@ namespace QSB
 			gameObject.AddComponent<CampfireManager>();
 			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipManager>();
+			gameObject.AddComponent<ProbeLauncherManager>();
 
 			DebugBoxManager.Init();
 

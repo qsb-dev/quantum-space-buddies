@@ -18,6 +18,7 @@ using QSB.RoastingSync.Patches;
 using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
+using QSB.Tools.ProbeLauncherTool.Patches;
 using QSB.TranslationSync.Patches;
 using QSB.Utility;
 using System;
@@ -61,7 +62,8 @@ namespace QSB.Patches
 				new InputPatches(),
 				new TimePatches(),
 				new MapPatches(),
-				new RespawnPatches()
+				new RespawnPatches(),
+				new LauncherPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
