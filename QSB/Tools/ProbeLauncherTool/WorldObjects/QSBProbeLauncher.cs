@@ -8,7 +8,6 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 {
 	class QSBProbeLauncher : WorldObject<ProbeLauncher>
 	{
-		private bool _isRetrieving;
 		private float _probeRetrievalLength;
 		private GameObject _preLaunchProbeProxy;
 		private ProbeLauncherEffects _effects;
@@ -27,10 +26,6 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 		public void RetrieveProbe(bool playEffects)
 		{
 			DebugLog.DebugWrite($"{ObjectId} ({AttachedObject.name}) RETRIEVE");
-			if (_isRetrieving)
-			{
-				return;
-			}
 
 			_preLaunchProbeProxy.SetActive(true);
 			if (playEffects)
@@ -38,7 +33,6 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 				_effects.PlayRetrievalClip();
 				_probeRetrievalEffect.WarpObjectIn(_probeRetrievalLength);
 			}
-			_isRetrieving = true;
 		}
 	}
 }
