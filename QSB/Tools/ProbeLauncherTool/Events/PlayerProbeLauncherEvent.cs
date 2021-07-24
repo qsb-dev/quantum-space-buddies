@@ -1,11 +1,14 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {
 	public class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
 	{
+		private bool _nonPlayerLauncherEquipped;
+
 		public override EventType Type => EventType.ProbeLauncherActiveChange;
 
 		public override void SetupListener()
@@ -20,8 +23,35 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 			GlobalMessenger<ProbeLauncher>.RemoveListener(EventNames.ProbeLauncherUnequipped, HandleUnequip);
 		}
 
-		private void HandleEquip(ProbeLauncher var) => SendEvent(CreateMessage(true));
-		private void HandleUnequip(ProbeLauncher var) => SendEvent(CreateMessage(false));
+		private void HandleEquip(ProbeLauncher var)
+		{
+			if (var != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
+			{
+				_nonPlayerLauncherEquipped = true;
+				return;
+			}
+			if (_nonPlayerLauncherEquipped)
+			{
+				DebugLog.ToConsole($"Warning - Trying to equip player launcher whilst non player launcher is still equipped?", OWML.Common.MessageType.Warning);
+				return;
+			}
+			SendEvent(CreateMessage(true));
+		}
+
+		private void HandleUnequip(ProbeLauncher var)
+		{
+			if (var != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
+			{
+				_nonPlayerLauncherEquipped = false;
+				return;
+			}
+			if (_nonPlayerLauncherEquipped)
+			{
+				DebugLog.ToConsole($"Warning - Trying to de-equip player launcher whilst non player launcher is still equipped?", OWML.Common.MessageType.Warning);
+				return;
+			}
+			SendEvent(CreateMessage(false));
+		}
 
 		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
 		{
