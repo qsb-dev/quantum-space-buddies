@@ -1,7 +1,6 @@
 ﻿using QSB.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 
@@ -28,7 +27,6 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 
 		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
-			DebugLog.DebugWrite($"receive retrieve event id:{message.ObjectId} playEffects:{message.State}");
 			var worldObject = QSBWorldSync.GetWorldFromId<QSBProbeLauncher>(message.ObjectId);
 			worldObject.RetrieveProbe(message.State);
 		}

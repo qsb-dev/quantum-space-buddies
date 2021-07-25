@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.Events;
 using QSB.ProbeSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -21,18 +22,27 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 			_preLaunchProbeProxy = AttachedObject.GetValue<GameObject>("_preLaunchProbeProxy");
 			_effects = AttachedObject.GetValue<ProbeLauncherEffects>("_effects");
 			_probeRetrievalEffect = AttachedObject.GetValue<SingularityWarpEffect>("_probeRetrievalEffect");
+
+			AttachedObject.OnLaunchProbe += (SurveyorProbe probe) => QSBEventManager.FireEvent(EventNames.QSBLaunchProbe, this);
 		}
 
 		public void RetrieveProbe(bool playEffects)
 		{
-			DebugLog.DebugWrite($"{ObjectId} ({AttachedObject.name}) RETRIEVE");
-
 			_preLaunchProbeProxy.SetActive(true);
 			if (playEffects)
 			{
 				_effects.PlayRetrievalClip();
 				_probeRetrievalEffect.WarpObjectIn(_probeRetrievalLength);
 			}
+		}
+
+		public void LaunchProbe()
+		{
+			_preLaunchProbeProxy.SetActive(false);
+
+			// TODO : make this do underwater stuff correctly
+			_effects.PlayLaunchClip(false);
+			_effects.PlayLaunchParticles(false);
 		}
 	}
 }

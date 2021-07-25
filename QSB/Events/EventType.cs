@@ -117,5 +117,6 @@
 		// Probe Launcher
 		RetrieveProbe,
 		ProbeLauncherActiveChange,
+		LaunchProbe
 	}
 }

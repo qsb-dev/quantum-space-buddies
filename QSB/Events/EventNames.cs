@@ -79,5 +79,6 @@
 		public static string QSBProbeEvent = "QSBProbeEvent";
 		public static string QSBProbeStartRetrieve = "QSBProbeStartRetrieve";
 		public static string QSBRetrieveProbe = "QSBRetrieveProbe";
+		public static string QSBLaunchProbe = "QSBLaunchProbe";
 	}
 }

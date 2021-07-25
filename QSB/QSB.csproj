@@ -272,6 +272,7 @@
     <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
     <Compile Include="Syncs\SyncBase.cs" />
     <Compile Include="TimeSync\Patches\TimePatches.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\LaunchProbeEvent.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\RetrieveProbeEvent.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Patches\LauncherPatches.cs" />
     <Compile Include="Tools\ProbeLauncherTool\ProbeLauncherManager.cs" />

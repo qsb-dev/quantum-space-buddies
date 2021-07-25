@@ -59,6 +59,7 @@ namespace QSB.Events
 				new PlayerRespawnEvent(),
 				new ProbeStartRetrieveEvent(),
 				new RetrieveProbeEvent(),
+				new LaunchProbeEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
