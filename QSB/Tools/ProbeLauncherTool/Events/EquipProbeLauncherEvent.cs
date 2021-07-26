@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {
-	public class PlayerProbeLauncherEvent : QSBEvent<ToggleMessage>
+	public class EquipProbeLauncherEvent : QSBEvent<ToggleMessage>
 	{
 		private bool _nonPlayerLauncherEquipped;
 

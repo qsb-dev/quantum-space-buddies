@@ -31,10 +31,6 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 			SingularityWarpEffect ____probeRetrievalEffect,
 			float ____probeRetrievalLength)
 		{
-			if (__instance == QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
-			{
-				return true;
-			}
 
 			if (____isRetrieving)
 			{
@@ -59,9 +55,15 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 					____probeRetrievalEffect.WarpObjectIn(____probeRetrievalLength);
 				}
 
-				DebugLog.DebugWrite($"{__instance.name} retrieve probe playEffects:{playEffects}");
+				if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
+				{
+					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, QSBWorldSync.GetWorldFromUnity<QSBProbeLauncher, ProbeLauncher>(__instance), playEffects);
+				}
+				else
+				{
+					QSBEventManager.FireEvent(EventNames.QSBPlayerRetrieveProbe, playEffects);
+				}
 
-				QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, QSBWorldSync.GetWorldFromUnity<QSBProbeLauncher, ProbeLauncher>(__instance), playEffects);
 				____activeProbe.Retrieve(____probeRetrievalLength);
 				____isRetrieving = true;
 			}

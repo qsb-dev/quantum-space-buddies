@@ -6,6 +6,7 @@ using QSB.ProbeSync;
 using QSB.QuantumSync;
 using QSB.RoastingSync;
 using QSB.Tools;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace QSB.Player
 		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
-		public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
+		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
 		public Transform ItemSocket => CameraBody.transform.Find("REMOTE_ItemSocket");
 		public Transform ScrollSocket => CameraBody.transform.Find("REMOTE_ScrollSocket");
 		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");

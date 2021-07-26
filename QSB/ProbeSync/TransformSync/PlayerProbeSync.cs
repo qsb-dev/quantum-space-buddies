@@ -3,6 +3,7 @@ using OWML.Utils;
 using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -35,6 +36,9 @@ namespace QSB.ProbeSync.TransformSync
 
 			var listener = Player.Body.AddComponent<ProbeListener>();
 			listener.Init(Locator.GetProbe());
+
+			var launcherListener = Player.Body.AddComponent<ProbeLauncherListener>();
+			launcherListener.Init(Player.LocalProbeLauncher);
 
 			return body;
 		}

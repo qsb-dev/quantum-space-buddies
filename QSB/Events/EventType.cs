@@ -115,8 +115,10 @@
 		ProbeEvent,
 
 		// Probe Launcher
-		RetrieveProbe,
 		ProbeLauncherActiveChange,
-		LaunchProbe
+		RetrieveProbe,
+		PlayerRetrieveProbe,
+		LaunchProbe,
+		PlayerLaunchProbe
 	}
 }

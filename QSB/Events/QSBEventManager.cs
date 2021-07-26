@@ -44,7 +44,7 @@ namespace QSB.Events
 				new PlayerFlashlightEvent(),
 				new PlayerSignalscopeEvent(),
 				new PlayerTranslatorEvent(),
-				new PlayerProbeLauncherEvent(),
+				new EquipProbeLauncherEvent(),
 				new PlayerProbeEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
@@ -60,6 +60,8 @@ namespace QSB.Events
 				new ProbeStartRetrieveEvent(),
 				new RetrieveProbeEvent(),
 				new LaunchProbeEvent(),
+				new PlayerRetrieveProbeEvent(),
+				new PlayerLaunchProbeEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

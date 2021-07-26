@@ -273,10 +273,13 @@
     <Compile Include="Syncs\SyncBase.cs" />
     <Compile Include="TimeSync\Patches\TimePatches.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\LaunchProbeEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\PlayerLaunchProbeEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\PlayerRetrieveProbeEvent.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\RetrieveProbeEvent.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Patches\LauncherPatches.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\ProbeLauncherListener.cs" />
     <Compile Include="Tools\ProbeLauncherTool\ProbeLauncherManager.cs" />
-    <Compile Include="Tools\ProbeLauncherTool\QSBRemotePlayerProbeLauncher.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\QSBProbeLauncherTool.cs" />
     <Compile Include="Tools\ProbeLauncherTool\WorldObjects\QSBProbeLauncher.cs" />
     <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
@@ -316,7 +319,7 @@
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\WorldObjects\QSBGeyser.cs" />
-    <Compile Include="Tools\ProbeLauncherTool\Events\PlayerProbeLauncherEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\EquipProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />

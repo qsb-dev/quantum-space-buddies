@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Player;
 using QSB.ProbeSync;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -299,6 +300,49 @@ namespace QSB.Tools
 
 		private static void CreateProbeLauncher(Transform cameraBody)
 		{
+			var REMOTE_ProbeLauncher = Object.Instantiate(GameObject.Find("PlayerCamera/ProbeLauncher"));
+
+			Object.Destroy(REMOTE_ProbeLauncher.GetComponent<ProbePromptController>());
+			Object.Destroy(REMOTE_ProbeLauncher.GetComponent<PlayerProbeLauncher>());
+			Object.Destroy(REMOTE_ProbeLauncher.transform.Find("preLaunchCamera"));
+			Object.Destroy(REMOTE_ProbeLauncher.transform.Find("Props_HEA_ProbeLauncher_ProbeCamera")); // the correctly placed one...
+
+			var prop = REMOTE_ProbeLauncher.transform.Find("Props_HEA_ProbeLauncher");
+			var recallEffect = prop.Find("RecallEffect");
+
+			//Object.Destroy(prop.Find("PressureGauge_Arrow"));
+			//Object.Destroy(prop.Find("ProbeLauncherChassis"));
+			Object.Destroy(prop.Find("Props_HEA_ProbeLauncher_Prepass"));
+
+			var preLaunchProbe = prop.Find("Props_HEA_Probe_Prelaunch");
+			Object.Destroy(preLaunchProbe.Find("Props_HEA_Probe_Prelaunch_Prepass"));
+
+			var tool = REMOTE_ProbeLauncher.AddComponent<QSBProbeLauncherTool>();
+			var spring = new DampedSpringQuat
+			{
+				velocity = Vector4.zero,
+				settings = new DampedSpringSettings
+				{
+					springConstant = 50f,
+					dampingCoefficient = 8.485282f,
+					mass = 1
+				}
+			};
+			tool.MoveSpring = spring;
+			tool.StowTransform = _toolStowTransform;
+			tool.HoldTransform = _toolHoldTransform;
+			tool.ArrivalDegrees = 5f;
+			tool.Type = ToolType.ProbeLauncher;
+			tool.ToolGameObject = prop.gameObject;
+			tool.PreLaunchProbeProxy = preLaunchProbe.gameObject;
+			tool.ProbeRetrievalEffect = recallEffect.GetComponent<SingularityWarpEffect>();
+			tool.Effects = REMOTE_ProbeLauncher.GetComponent<ProbeLauncherEffects>();
+
+			REMOTE_ProbeLauncher.transform.parent = cameraBody;
+			REMOTE_ProbeLauncher.transform.localPosition = ProbeLauncherOffset;
+			REMOTE_ProbeLauncher.SetActive(true);
+
+			/*
 			var launcherRoot = new GameObject("REMOTE_ProbeLauncher");
 			var modelOrig = GameObject.Find("PlayerCamera/ProbeLauncher/Props_HEA_ProbeLauncher");
 			var model = Object.Instantiate(modelOrig);
@@ -307,7 +351,7 @@ namespace QSB.Tools
 			Object.Destroy(model.transform.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
 			Object.Destroy(model.transform.Find("Props_HEA_Probe_Prelaunch").Find("Props_HEA_Probe_Prelaunch_Prepass").gameObject);
 
-			var tool = launcherRoot.AddComponent<QSBTool>();
+			var tool = launcherRoot.AddComponent<QSBProbeLauncherTool>();
 			var spring = new DampedSpringQuat
 			{
 				velocity = Vector4.zero,
@@ -329,12 +373,11 @@ namespace QSB.Tools
 			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = Props_HEA_Lightbulb_mat;
 			GetRenderer(launcherRoot, "PressureGauge_Arrow").material = Props_HEA_PlayerTool_mat;
 			GetRenderer(launcherRoot, "ProbeLauncherChassis").material = Props_HEA_PlayerTool_mat;
-			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[0] = Props_HEA_PlayerTool_mat;
-			GetRenderer(launcherRoot, "Props_HEA_Probe_Prelaunch").materials[1] = Props_HEA_PlayerTool_mat;
 
 			launcherRoot.transform.parent = cameraBody;
 			launcherRoot.transform.localPosition = ProbeLauncherOffset;
 			launcherRoot.SetActive(true);
+			*/
 		}
 
 		private static MeshRenderer GetRenderer(GameObject root, string gameObjectName) =>
