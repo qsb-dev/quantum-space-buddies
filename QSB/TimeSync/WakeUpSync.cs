@@ -275,6 +275,8 @@ namespace QSB.TimeSync
 				var diff = _serverTime - Time.timeSinceLevelLoad;
 				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
+				TimeSyncUI.TargetTime = _serverTime;
+
 				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
 				{
 					var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
