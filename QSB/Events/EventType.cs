@@ -2,58 +2,123 @@
 {
 	public enum EventType
 	{
+		//unsorted
 		ServerTime,
+		StartStatue,
+
+		/*
+		 * PLAYER EVENTS
+		 */
+
 		PlayerState,
 		PlayerStatesRequest,
-		FlashlightActiveChange,
-		SignalscopeActiveChange,
-		TranslatorActiveChange,
-		ProbeLauncherActiveChange,
-		SuitActiveChange,
 		PlayerJoin,
 		PlayerDeath,
 		PlayerReady,
-		ProbeActiveChange,
-		Elevator,
-		Geyser,
-		OrbSlot,
-		OrbUser,
+		PlayerKick,
+		PlayerRespawn,
+		EnterLeave,
+
+		/*
+		 * DIALOGUE
+		 */
+
 		Conversation,
 		ConversationStartEnd,
-		PlayInstrument,
 		DialogueCondition,
 		RevealFact,
+
+		/*
+		 * ANIMATION
+		 */
+
+		PlayInstrument,
+		AnimTrigger,
+		NpcAnimEvent,
+		SuitActiveChange,
+
+		/*
+		 * ORBS
+		 */
+
+		OrbSlot,
+		OrbUser,
+
+		/*
+		 * CAMPFIRES
+		 */
+
+		CampfireState,
+		Roasting,
+		MarshmallowEvent,
+
+		/*
+		 * WORLD OBJECTS
+		 */
+
+		Geyser,
+		Elevator,
+
+		/*
+		 * ITEMS
+		 */
+
+		DropItem,
+		SocketItem,
+		MoveToCarry,
+
+		/*
+		 * QUANTUM OBJECTS
+		 */
+
 		SocketStateChange,
 		MultiStateChange,
 		QuantumShuffle,
 		QuantumAuthority,
 		MoonStateChange,
-		IdentifyFrequency,
-		IdentifySignal,
-		TextTranslated,
-		EnterLeave,
 		PlayerEntangle,
-		DropItem,
-		SocketItem,
-		MoveToCarry,
-		StartStatue,
-		PlayerKick,
-		CampfireState,
-		Roasting,
-		MarshmallowEvent,
-		AnimTrigger,
-		NpcAnimEvent,
-		FlyShip,
-		OpenHatch,
-		EnableFunnel,
+
+		/*
+		 * SHIP
+		 */
+
+		ComponentDamaged,
+		ComponentRepaired,
+		ComponentRepairTick,
 		HullImpact,
 		HullDamaged,
 		HullChangeIntegrity,
 		HullRepaired,
 		HullRepairTick,
-		ComponentDamaged,
-		ComponentRepaired,
-		ComponentRepairTick,
-		PlayerRespawn
+		FlyShip,
+		OpenHatch,
+		EnableFunnel,
+
+		/*
+		 * TOOLS
+		 */
+
+		// Flashlight
+		FlashlightActiveChange,
+
+		// Translator
+		TranslatorActiveChange,
+		TextTranslated,
+
+		// Signalscope
+		SignalscopeActiveChange,
+		IdentifyFrequency,
+		IdentifySignal,
+
+		// Probe
+		ProbeStartRetrieve,
+		ProbeEvent,
+
+		// Probe Launcher
+		ProbeLauncherActiveChange,
+		RetrieveProbe,
+		PlayerRetrieveProbe,
+		LaunchProbe,
+		PlayerLaunchProbe
 	}
 }

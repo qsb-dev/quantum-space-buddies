@@ -1,11 +1,10 @@
 ﻿using QSB.Events;
 using QSB.ShipSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ShipSync.Events.Hull
 {
-	class HullChangeIntegrityEvent : QSBEvent<HullChangeIntegrityMessage>
+	internal class HullChangeIntegrityEvent : QSBEvent<HullChangeIntegrityMessage>
 	{
 		public override EventType Type => EventType.HullChangeIntegrity;
 

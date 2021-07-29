@@ -20,6 +20,7 @@ using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
+using QSB.Tools.ProbeLauncherTool.Events;
 using QSB.TranslationSync.Events;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace QSB.Events
 				new PlayerFlashlightEvent(),
 				new PlayerSignalscopeEvent(),
 				new PlayerTranslatorEvent(),
-				new PlayerProbeLauncherEvent(),
+				new EquipProbeLauncherEvent(),
 				new PlayerProbeEvent(),
 				new PlayerDeathEvent(),
 				new PlayerStatesRequestEvent(),
@@ -56,6 +57,11 @@ namespace QSB.Events
 				new MarshmallowEventEvent(),
 				new AnimationTriggerEvent(),
 				new PlayerRespawnEvent(),
+				new ProbeStartRetrieveEvent(),
+				new RetrieveProbeEvent(),
+				new LaunchProbeEvent(),
+				new PlayerRetrieveProbeEvent(),
+				new PlayerLaunchProbeEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

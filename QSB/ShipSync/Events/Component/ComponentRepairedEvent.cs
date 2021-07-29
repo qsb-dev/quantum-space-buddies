@@ -1,12 +1,11 @@
 ﻿using QSB.Events;
 using QSB.ShipSync.WorldObjects;
-using QSB.Utility;
-using QSB.WorldSync.Events;
 using QSB.WorldSync;
+using QSB.WorldSync.Events;
 
 namespace QSB.ShipSync.Events.Component
 {
-	class ComponentRepairedEvent : QSBEvent<WorldObjectMessage>
+	internal class ComponentRepairedEvent : QSBEvent<WorldObjectMessage>
 	{
 		public override EventType Type => EventType.ComponentRepaired;
 

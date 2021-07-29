@@ -213,6 +213,13 @@
     <Compile Include="PoolSync\Patches\PoolPatches.cs" />
     <Compile Include="PoolSync\PoolManager.cs" />
     <Compile Include="Inputs\QSBInputManager.cs" />
+    <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
+    <Compile Include="ProbeSync\Events\ProbeStartRetrieveEvent.cs" />
+    <Compile Include="ProbeSync\ProbeEvent.cs" />
+    <Compile Include="ProbeSync\ProbeListener.cs" />
+    <Compile Include="ProbeSync\QSBProbeEffects.cs" />
+    <Compile Include="ProbeSync\QSBProbeLantern.cs" />
+    <Compile Include="ProbeSync\QSBProbeSpotlight.cs" />
     <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
@@ -261,10 +268,19 @@
     <Compile Include="ShipSync\WorldObjects\QSBShipComponent.cs" />
     <Compile Include="ShipSync\WorldObjects\QSBShipHull.cs" />
     <Compile Include="Syncs\ISectoredSync.cs" />
-    <Compile Include="Syncs\ISync.cs" />
     <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />
     <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
+    <Compile Include="Syncs\SyncBase.cs" />
     <Compile Include="TimeSync\Patches\TimePatches.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\LaunchProbeEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\PlayerLaunchProbeEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\PlayerRetrieveProbeEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\RetrieveProbeEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Patches\LauncherPatches.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\ProbeLauncherListener.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\ProbeLauncherManager.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\QSBProbeLauncherTool.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\WorldObjects\QSBProbeLauncher.cs" />
     <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
     <Compile Include="RoastingSync\Events\EnterExitRoastingEvent.cs" />
@@ -280,7 +296,6 @@
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
-    <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="Syncs\TransformSync\BaseTransformSync.cs" />
     <Compile Include="Syncs\IntermediaryTransform.cs" />
     <Compile Include="Syncs\TransformSync\SectoredTransformSync.cs" />
@@ -297,7 +312,6 @@
     <Compile Include="TimeSync\TimeSyncUI.cs" />
     <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
-    <Compile Include="ProbeSync\Events\PlayerProbeEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
     <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Animation\Player\Events\PlayerSuitEvent.cs" />
@@ -305,7 +319,7 @@
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
     <Compile Include="GeyserSync\GeyserManager.cs" />
     <Compile Include="GeyserSync\WorldObjects\QSBGeyser.cs" />
-    <Compile Include="ProbeSync\Events\PlayerProbeLauncherEvent.cs" />
+    <Compile Include="Tools\ProbeLauncherTool\Events\EquipProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
     <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
@@ -354,7 +368,6 @@
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
     <Compile Include="Player\QSBPlayerManager.cs" />
-    <Compile Include="Player\TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Player\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />

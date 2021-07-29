@@ -20,6 +20,7 @@ using QSB.SectorSync;
 using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -65,8 +66,6 @@ namespace QSB
 
 		public void Awake()
 		{
-			Application.runInBackground = true;
-
 			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
 			instance.theUITable[(int)UITextType.PleaseUseController] =
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
@@ -107,6 +106,7 @@ namespace QSB
 			gameObject.AddComponent<CampfireManager>();
 			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipManager>();
+			gameObject.AddComponent<ProbeLauncherManager>();
 
 			DebugBoxManager.Init();
 
@@ -114,6 +114,25 @@ namespace QSB
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
+
+			QSBPatchManager.OnPatchType += OnPatchType;
+			QSBPatchManager.OnUnpatchType += OnUnpatchType;
+		}
+
+		private void OnPatchType(QSBPatchTypes type)
+		{
+			if (type == QSBPatchTypes.OnClientConnect)
+			{
+				Application.runInBackground = true;
+			}
+		}
+
+		private void OnUnpatchType(QSBPatchTypes type)
+		{
+			if (type == QSBPatchTypes.OnClientConnect)
+			{
+				Application.runInBackground = false;
+			}
 		}
 
 		public void Update() =>
@@ -157,4 +176,5 @@ namespace QSB
  * Murray Gold
  * Teleskärm
  * Daft Punk
+ * Natalie Holt
  */

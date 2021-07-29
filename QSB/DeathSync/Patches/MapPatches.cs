@@ -1,11 +1,9 @@
-﻿using QSB.Events;
-using QSB.Patches;
-using QSB.Player;
+﻿using QSB.Patches;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches
 {
-	class MapPatches : QSBPatch
+	internal class MapPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.RespawnTime;
 

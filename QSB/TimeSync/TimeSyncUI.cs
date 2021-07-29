@@ -76,11 +76,12 @@ namespace QSB.TimeSync
 			var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
 			var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 			var seconds = Mathf.FloorToInt(totalSeconds) % 60;
+			var milliseconds = totalSeconds % 1 * 1000;
 			var text = "";
 			switch (_currentType)
 			{
 				case TimeSyncType.Fastforwarding:
-					text = $"{minutes:D2}:{seconds:D2}"
+					text = $"{minutes:D2}:{seconds:D2}.{milliseconds:000}"
 						+ Environment.NewLine
 						+ "Fast-forwarding to match server time...";
 					break;

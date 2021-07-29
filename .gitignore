@@ -361,6 +361,7 @@ QSB.csproj.user
 GameAssets/
 Chert/
 Riebeck/
+IgnoreInGithub/
 OWML.Config.json
 WeavedFiles/QSB.dll
 WeavedFiles/QSB.dll.mdb
