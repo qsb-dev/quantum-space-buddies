@@ -1,7 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {

@@ -24,6 +24,7 @@ namespace QSB.Tools.ProbeLauncherTool
 
 			// TODO : make this do underwater stuff correctly
 			Effects.PlayLaunchClip(false);
+			// TODO : this plays particles on everyone's launcher...
 			Effects.PlayLaunchParticles(false);
 		}
 	}
