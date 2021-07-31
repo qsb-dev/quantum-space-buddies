@@ -53,7 +53,7 @@ namespace QSB.Events
 			 * if <isServer> is true, this message has been received on the server *server*.
 			 * Therefore, we don't want to do any event handling code - that should be dealt
 			 * with on the server *client* and any other client. So just forward the message
-			 * onto all clients. This way, the server *server* just acts as the ditribution
+			 * onto all clients. This way, the server *server* just acts as the distribution
 			 * hub for all events.
 			 */
 
