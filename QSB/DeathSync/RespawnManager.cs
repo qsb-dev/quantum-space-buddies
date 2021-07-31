@@ -19,10 +19,20 @@ namespace QSB.DeathSync
 		private NotificationData _previousNotification;
 
 		private void Start()
-			=> Instance = this;
+		{
+			Instance = this;
+			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		}
+
+		private void OnSceneLoaded(OWScene scene, bool inUniverse)
+		{
+			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
+			_playersPendingRespawn.Clear();
+		}
 
 		public void TriggerRespawnMap()
 		{
+			DebugLog.DebugWrite($"TRIGGER RESPAWN MAP");
 			QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
 			QSBCore.UnityEvents.FireOnNextUpdate(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 		}
@@ -43,12 +53,15 @@ namespace QSB.DeathSync
 
 		public void OnPlayerDeath(PlayerInfo player)
 		{
+			DebugLog.DebugWrite($"ON PLAYER DEATH");
+
 			if (_playersPendingRespawn.Contains(player))
 			{
 				DebugLog.ToConsole($"Warning - Received death message for player who is already in _playersPendingRespawn!", OWML.Common.MessageType.Warning);
 				return;
 			}
 
+			DebugLog.DebugWrite($"set player to be dead");
 			player.IsDead = true;
 
 			_playersPendingRespawn.Add(player);
