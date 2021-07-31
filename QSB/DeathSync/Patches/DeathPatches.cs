@@ -1,8 +1,10 @@
 ﻿using Harmony;
 using QSB.Events;
 using QSB.Patches;
+using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -186,6 +188,7 @@ namespace QSB.DeathSync.Patches
 
 		public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
 		{
+			DebugLog.DebugWrite($"KILL PLAYER PREFIX stacetrace : \r\n {Environment.StackTrace}");
 			if (RespawnOnDeath.Instance == null)
 			{
 				return true;
@@ -196,12 +199,17 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
+			QSBPlayerManager.LocalPlayer.IsDead = true;
+
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
 		}
 
 		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
-			=> QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+		{
+			DebugLog.DebugWrite($"KILL PLAYER POSTFIX");
+			QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+		}
 
 		public static void ShipDamageController_Awake(ref bool ____exploded)
 			=> ____exploded = true;
