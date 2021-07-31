@@ -82,5 +82,6 @@
 		public static string QSBPlayerRetrieveProbe = "QSBPlayerRetrieveProbe";
 		public static string QSBLaunchProbe = "QSBLaunchProbe";
 		public static string QSBPlayerLaunchProbe = "QSBPlayerLaunchProbe";
+		public static string QSBEndLoop = "QSBEndLoop";
 	}
 }

@@ -5,6 +5,7 @@
 		//unsorted
 		ServerTime,
 		StartStatue,
+		EndLoop,
 
 		/*
 		 * PLAYER EVENTS

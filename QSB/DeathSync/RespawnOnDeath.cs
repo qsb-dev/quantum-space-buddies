@@ -1,5 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Events;
+using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
@@ -46,11 +48,19 @@ namespace QSB.DeathSync
 
 		public void ResetPlayer()
 		{
-			DebugLog.DebugWrite($"Trying to reset player.");
+			DebugLog.DebugWrite($"RESET PLAYER");
 			if (_playerSpawnPoint == null)
 			{
 				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
 				Init();
+			}
+
+			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				return;
 			}
 
 			RespawnManager.Instance.TriggerRespawnMap();
