@@ -72,10 +72,10 @@ namespace QSB.Patches
 		public static void DoPatchType(QSBPatchTypes type)
 		{
 			OnPatchType?.SafeInvoke(type);
-			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
-				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
+				//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
 				patch.DoPatches();
 			}
 		}
@@ -83,10 +83,10 @@ namespace QSB.Patches
 		public static void DoUnpatchType(QSBPatchTypes type)
 		{
 			OnUnpatchType?.SafeInvoke(type);
-			DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			//DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
-				DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
+				//DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
 				patch.DoUnpatches();
 			}
 		}

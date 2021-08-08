@@ -18,7 +18,7 @@ namespace QSB.Patches
 		{
 			foreach (var item in _patchedMethods)
 			{
-				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
+				//DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
 				Unpatch(item);
 			}
 
@@ -29,7 +29,7 @@ namespace QSB.Patches
 
 		public void Empty(string patchName)
 		{
-			DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Success);
+			//DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Success);
 			var method = GetMethodInfo(patchName);
 			QSBCore.Helper.HarmonyHelper.EmptyMethod(method);
 		}
@@ -58,7 +58,7 @@ namespace QSB.Patches
 				_patchedMethods.Add(method);
 			}
 
-			DebugLog.DebugWrite($"{(isPrefix ? "[Prefix]" : "[Postfix]")} {patchName}", method == null ? MessageType.Error : MessageType.Success);
+			//DebugLog.DebugWrite($"{(isPrefix ? "[Prefix]" : "[Postfix]")} {patchName}", method == null ? MessageType.Error : MessageType.Success);
 		}
 
 		private MethodInfo GetMethodInfo(string patchName)

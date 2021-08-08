@@ -105,7 +105,7 @@ namespace QSB.WorldSync
 		{
 			RemoveWorldObjects<TWorldObject>();
 			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
-			DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
+			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
 				var obj = CreateWorldObject<TWorldObject>();
