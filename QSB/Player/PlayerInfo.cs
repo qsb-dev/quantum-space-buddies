@@ -1,6 +1,7 @@
 ﻿using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
+using QSB.ClientServerStateSync;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;
 using QSB.QuantumSync;
@@ -31,7 +32,18 @@ namespace QSB.Player
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
+		public QSBFlashlight FlashLight 
+		{
+			get
+			{
+				if (CameraBody == null)
+				{
+					return null;
+				}
+
+				return CameraBody.GetComponentInChildren<QSBFlashlight>();
+			}
+		}
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
