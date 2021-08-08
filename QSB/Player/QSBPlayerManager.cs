@@ -81,8 +81,9 @@ namespace QSB.Player
 		public static bool PlayerExists(uint id) =>
 			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 
-		public static void HandleFullStateMessage(PlayerStateMessage message)
+		public static void HandleFullStateMessage(PlayerInformationMessage message)
 		{
+			DebugLog.DebugWrite($"Handle full state message of {message.AboutId}");
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			player.PlayerStates = message.PlayerState;

@@ -146,6 +146,7 @@
     <Compile Include="DeathSync\EndLoopReason.cs" />
     <Compile Include="DeathSync\Events\EndLoopEvent.cs" />
     <Compile Include="DeathSync\Events\PlayerRespawnEvent.cs" />
+    <Compile Include="DeathSync\Events\StartLoopEvent.cs" />
     <Compile Include="DeathSync\Patches\MapPatches.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathMessage.cs" />
     <Compile Include="DeathSync\Patches\DeathPatches.cs" />
@@ -171,6 +172,9 @@
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
     <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
+    <Compile Include="Player\Events\PlayerInformationEvent.cs" />
+    <Compile Include="Player\Events\PlayerInformationMessage.cs" />
+    <Compile Include="Player\Events\RequestStateResyncEvent.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
     <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
@@ -210,7 +214,6 @@
     <Compile Include="Patches\QSBPatchManager.cs" />
     <Compile Include="Player\Events\PlayerEntangledEvent.cs" />
     <Compile Include="Player\Events\PlayerKickEvent.cs" />
-    <Compile Include="Player\Events\ServerSendPlayerStatesEvent.cs" />
     <Compile Include="Player\KickReason.cs" />
     <Compile Include="Player\PlayerEntanglementWatcher.cs" />
     <Compile Include="Player\PlayerMapMarker.cs" />
@@ -279,7 +282,9 @@
     <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />
     <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
     <Compile Include="Syncs\SyncBase.cs" />
+    <Compile Include="TimeSync\FastForwardReason.cs" />
     <Compile Include="TimeSync\Patches\TimePatches.cs" />
+    <Compile Include="TimeSync\PauseReason.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\LaunchProbeEvent.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\PlayerLaunchProbeEvent.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\PlayerRetrieveProbeEvent.cs" />
@@ -321,7 +326,6 @@
     <Compile Include="Tools\Events\PlayerFlashlightEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinEvent.cs" />
     <Compile Include="Player\Events\PlayerReadyEvent.cs" />
-    <Compile Include="Player\Events\PlayerStatesRequestEvent.cs" />
     <Compile Include="Animation\Player\Events\PlayerSuitEvent.cs" />
     <Compile Include="TimeSync\Events\ServerTimeEvent.cs" />
     <Compile Include="GeyserSync\Events\GeyserEvent.cs" />
@@ -367,7 +371,6 @@
     <Compile Include="ProbeSync\TransformSync\PlayerProbeSync.cs" />
     <Compile Include="Utility\DebugActions.cs" />
     <Compile Include="Events\QSBEventManager.cs" />
-    <Compile Include="Player\Events\PlayerStateMessage.cs" />
     <Compile Include="DeathSync\Necronomicon.cs" />
     <Compile Include="Utility\DebugLog.cs" />
     <Compile Include="Messaging\PlayerMessage.cs" />

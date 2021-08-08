@@ -175,7 +175,7 @@ namespace QSB
 			if (!QSBCore.IsHost)
 			{
 				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
+				() => QSBEventManager.FireEvent(EventNames.QSBRequestStateResync));
 			}
 
 			_everConnected = true;

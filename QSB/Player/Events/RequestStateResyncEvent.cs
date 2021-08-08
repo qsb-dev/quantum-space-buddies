@@ -1,40 +1,67 @@
-﻿using OWML.Utils;
-using QSB.CampfireSync.WorldObjects;
+﻿using QSB.CampfireSync.WorldObjects;
+using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.QuantumSync;
-using QSB.TranslationSync;
 using QSB.TranslationSync.WorldObjects;
+using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using OWML.Utils;
 
 namespace QSB.Player.Events
 {
-	public class PlayerStatesRequestEvent : QSBEvent<PlayerMessage>
+	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
+	public class RequestStateResyncEvent : QSBEvent<PlayerMessage>
 	{
-		public override EventType Type => EventType.PlayerStatesRequest;
+		public override EventType Type => EventType.RequestStateResync;
 
-		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBPlayerStatesRequest, Handler);
-		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBPlayerStatesRequest, Handler);
+		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
+		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
 
-		private void Handler() => SendEvent(CreateMessage());
+		private void Handler()
+		{
+			DebugLog.DebugWrite($"Sending QSBRequestStateResync");
+			SendEvent(CreateMessage());
+		}
 
 		private PlayerMessage CreateMessage() => new PlayerMessage
 		{
-			AboutId = LocalPlayerId,
-			OnlySendToServer = true
+			AboutId = LocalPlayerId
 		};
 
-		public override void OnReceiveRemote(bool server, PlayerMessage message)
+		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
 		{
-			DebugLog.DebugWrite($"Get state request from {message.FromId} - isServer?{server}");
-			QSBEventManager.FireEvent(EventNames.QSBServerSendPlayerStates);
+			DebugLog.DebugWrite($"OnReceiveRemote RequestStateResyncEvent");
 
-			if (!server)
+			// if host, send worldobject and server states
+
+			if (isHost)
 			{
+				DebugLog.DebugWrite($"SENDING SERVER STATE");
+				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
+
+				DebugLog.DebugWrite($"SENDING PLAYER INFORMATION");
+				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+
+				SendWorldObjectInfo();
+
 				return;
 			}
+
+			// if client, send player and client states
+
+			DebugLog.DebugWrite($"SENDING PLAYER INFORMATION");
+			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+		}
+
+		private void SendWorldObjectInfo()
+		{
+			DebugLog.DebugWrite($"SENDING WORLDOBJECT INFORMATION");
 
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));

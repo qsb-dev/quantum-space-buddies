@@ -1,12 +1,14 @@
-﻿using QSB.Messaging;
+﻿using QSB.ClientServerStateSync;
+using QSB.Messaging;
 using QuantumUNET.Transport;
 
 namespace QSB.Player.Events
 {
-	public class PlayerStateMessage : PlayerMessage
+	public class PlayerInformationMessage : PlayerMessage
 	{
 		public string PlayerName { get; set; }
 		public PlayerState PlayerState { get; set; }
+		public ClientState ClientState { get; set; }
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -22,6 +24,7 @@ namespace QSB.Player.Events
 				TranslatorEquipped = reader.ReadBoolean(),
 				ProbeActive = reader.ReadBoolean()
 			};
+			ClientState = (ClientState)reader.ReadInt32();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -35,6 +38,7 @@ namespace QSB.Player.Events
 			writer.Write(PlayerState.SignalscopeEquipped);
 			writer.Write(PlayerState.TranslatorEquipped);
 			writer.Write(PlayerState.ProbeActive);
+			writer.Write((int)ClientState);
 		}
 	}
 }

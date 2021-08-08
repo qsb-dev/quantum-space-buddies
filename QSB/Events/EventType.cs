@@ -17,8 +17,8 @@
 		 * PLAYER EVENTS
 		 */
 
-		PlayerState,
-		PlayerStatesRequest,
+		PlayerInformation,
+		RequestStateResync,
 		PlayerJoin,
 		PlayerDeath,
 		PlayerReady,

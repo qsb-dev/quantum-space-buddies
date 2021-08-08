@@ -109,7 +109,7 @@ namespace QSB.Player.TransformSync
 			_visibleStickTip = pivot.Find("Stick_Tip");
 
 			DebugLog.DebugWrite("PlayerTransformSync init done - Request state!");
-			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
+			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
 
 			return player;
 		}
