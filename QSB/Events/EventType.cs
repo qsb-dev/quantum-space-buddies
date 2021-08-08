@@ -2,10 +2,14 @@
 {
 	public enum EventType
 	{
-		//unsorted
+		/*
+		 * SERVER EVENTS
+		 */
+
 		ServerTime,
 		StartStatue,
 		EndLoop,
+		StartLoop,
 		ServerState,
 		ClientState,
 
