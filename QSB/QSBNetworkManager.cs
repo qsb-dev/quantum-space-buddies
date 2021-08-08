@@ -169,7 +169,7 @@ namespace QSB
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
 
-			if (!QSBCore.IsServer)
+			if (!QSBCore.IsHost)
 			{
 				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
 				() => QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest));
@@ -183,6 +183,8 @@ namespace QSB
 			DebugLog.DebugWrite("OnStopClient", MessageType.Info);
 			DebugLog.ToConsole("Disconnecting from server...", MessageType.Info);
 			Destroy(GetComponent<RespawnOnDeath>());
+			Destroy(GetComponent<ServerStateManager>());
+			Destroy(GetComponent<ClientStateManager>());
 			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 

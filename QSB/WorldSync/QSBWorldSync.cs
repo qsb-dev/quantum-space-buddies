@@ -154,7 +154,7 @@ namespace QSB.WorldSync
 
 		public static void SetDialogueCondition(string name, bool state)
 		{
-			if (!QSBCore.IsServer)
+			if (!QSBCore.IsHost)
 			{
 				DebugLog.ToConsole("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
 				return;
@@ -165,7 +165,7 @@ namespace QSB.WorldSync
 
 		public static void AddFactReveal(string id, bool saveGame, bool showNotification)
 		{
-			if (!QSBCore.IsServer)
+			if (!QSBCore.IsHost)
 			{
 				DebugLog.ToConsole("Warning - Cannot write to fact list when not server!", MessageType.Warning);
 				return;

@@ -47,7 +47,7 @@ namespace QSB.QuantumSync
 
 		public void PlayerLeave(uint playerId)
 		{
-			if (!QSBCore.IsServer)
+			if (!QSBCore.IsHost)
 			{
 				return;
 			}

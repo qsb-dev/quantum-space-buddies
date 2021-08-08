@@ -30,8 +30,8 @@ namespace QSB.Events
 		public abstract void SetupListener();
 		public abstract void CloseListener();
 
-		public virtual void OnReceiveRemote(bool server, T message) { }
-		public virtual void OnReceiveLocal(bool server, T message) { }
+		public virtual void OnReceiveRemote(bool isHost, T message) { }
+		public virtual void OnReceiveLocal(bool isHost, T message) { }
 
 		public void SendEvent(T message)
 		{
@@ -68,7 +68,7 @@ namespace QSB.Events
 				return;
 			}
 
-			if (message.OnlySendToServer && !QNetworkServer.active)
+			if (message.OnlySendToHost && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -82,11 +82,11 @@ namespace QSB.Events
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
 			{
-				OnReceiveLocal(QNetworkServer.active, message);
+				OnReceiveLocal(QSBCore.IsHost, message);
 				return;
 			}
 
-			OnReceiveRemote(QNetworkServer.active, message);
+			OnReceiveRemote(QSBCore.IsHost, message);
 		}
 	}
 }

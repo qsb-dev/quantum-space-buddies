@@ -57,7 +57,7 @@ namespace QSB.ShipSync.Events
 				? id
 				: uint.MaxValue;
 
-			if (QSBCore.IsServer)
+			if (QSBCore.IsHost)
 			{
 				var newAuthority = ShipManager.Instance.CurrentFlyer == uint.MaxValue
 					? QNetworkServer.connections.First(x => x.GetPlayerId() == QSBPlayerManager.LocalPlayerId)

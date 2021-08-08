@@ -69,7 +69,7 @@ namespace QSB.ShipSync
 			sphereShape.radius = 2.5f;
 			sphereShape.center = new Vector3(0, 0, 1);
 
-			if (QSBCore.IsServer)
+			if (QSBCore.IsHost)
 			{
 				if (ShipTransformSync.LocalInstance != null)
 				{

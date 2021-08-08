@@ -21,7 +21,7 @@ namespace QSB.GeyserSync.Events
 			State = state
 		};
 
-		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
+		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
