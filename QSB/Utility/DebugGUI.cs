@@ -1,5 +1,6 @@
 ﻿using QSB.Player;
 using QSB.ProbeSync.TransformSync;
+using QSB.ClientServerStateSync;
 using QSB.Syncs.TransformSync;
 using QSB.TimeSync;
 using System.Linq;
@@ -33,6 +34,10 @@ namespace QSB.Utility
 			offset += _debugLineSpacing;
 			if (WakeUpSync.LocalInstance != null)
 			{
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"Server State : {ServerStateManager.Instance.GetServerState()}", guiStyle);
+				offset += _debugLineSpacing;
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"WakeUpSync State : {WakeUpSync.LocalInstance.CurrentState}", guiStyle);
+				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}", guiStyle);
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}", guiStyle);
@@ -41,31 +46,35 @@ namespace QSB.Utility
 				offset += _debugLineSpacing;
 			}
 
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			var offset2 = 10f;
-			GUI.Label(new Rect(340, offset2, 200f, 20f), $"Player data :", guiStyle);
+			GUI.Label(new Rect(420, offset2, 200f, 20f), $"Player data :", guiStyle);
 			offset2 += _debugLineSpacing;
-			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
+			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				var networkTransform = player.TransformSync;
-				var sector = networkTransform.ReferenceSector;
+				GUI.Label(new Rect(420, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}", guiStyle);
+				offset2 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset2, 400f, 20f), $"State : {player.State}", guiStyle);
+				offset2 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Dead : {player.IsDead}", guiStyle);
+				offset2 += _debugLineSpacing;
 
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}", guiStyle);
-				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
-				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
-				offset2 += _debugLineSpacing;
-				var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
-				if (probeSync != default)
+				if (player.PlayerStates.IsReady && QSBCore.WorldObjectsReady)
 				{
-					var probeSector = probeSync.ReferenceSector;
-					GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}", guiStyle);
+					var networkTransform = player.TransformSync;
+					var sector = networkTransform.ReferenceSector;
+
+					
+					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
 					offset2 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
+					offset2 += _debugLineSpacing;
+					var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
+					if (probeSync != default)
+					{
+						var probeSector = probeSync.ReferenceSector;
+						GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}", guiStyle);
+						offset2 += _debugLineSpacing;
+					}
 				}
 			}
 		}
