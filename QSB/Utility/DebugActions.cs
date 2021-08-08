@@ -34,6 +34,11 @@ namespace QSB.Utility
 				return;
 			}
 
+			if (Input.GetKeyDown(KeyCode.Keypad5))
+			{
+				Locator.GetDeathManager().KillPlayer(DeathType.Supernova);
+			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad4))
 			{
 				DamageShipElectricalSystem();
