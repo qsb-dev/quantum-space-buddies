@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 
@@ -29,6 +30,10 @@ namespace QSB.DeathSync.Events
 				case EndLoopReason.AllPlayersDead:
 					DebugLog.DebugWrite($"all players dead");
 					Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
+					if (QSBCore.IsHost)
+					{
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForDeath);
+					}
 					break;
 			}
 		}
