@@ -90,6 +90,7 @@ namespace QSB.Player
 			{
 				player.UpdateStateObjects();
 			}
+			player.State = message.ClientState;
 		}
 
 		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>

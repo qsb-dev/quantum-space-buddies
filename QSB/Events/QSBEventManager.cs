@@ -14,6 +14,7 @@ using QSB.Player.Events;
 using QSB.ProbeSync.Events;
 using QSB.QuantumSync.Events;
 using QSB.RoastingSync.Events;
+using QSB.ClientServerStateSync.Events;
 using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;
@@ -63,6 +64,7 @@ namespace QSB.Events
 				new PlayerRetrieveProbeEvent(),
 				new PlayerLaunchProbeEvent(),
 				new EndLoopEvent(),
+				new ClientStateEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

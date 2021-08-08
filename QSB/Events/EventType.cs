@@ -6,6 +6,7 @@
 		ServerTime,
 		StartStatue,
 		EndLoop,
+		ClientState,
 
 		/*
 		 * PLAYER EVENTS

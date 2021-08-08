@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync;
+using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 
@@ -25,6 +26,7 @@ namespace QSB.DeathSync.Events
 			DebugLog.DebugWrite($"RECEIVE LOCAL PLAYER DEATH");
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			RespawnManager.Instance.OnPlayerDeath(player);
+			ClientStateManager.Instance.OnDeath();
 		}
 
 		public override void OnReceiveRemote(bool server, PlayerDeathMessage message)

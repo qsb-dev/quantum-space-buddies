@@ -58,6 +58,7 @@ namespace QSB.Player
 		public bool IsInShrine; // TODO : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
 		public bool IsDead { get; set; }
+		public ClientState State { get; set; }
 
 		// Local only
 		public PlayerProbeLauncher LocalProbeLauncher

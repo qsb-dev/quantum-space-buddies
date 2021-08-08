@@ -11,6 +11,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ProbeSync.TransformSync;
+using QSB.ClientServerStateSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Utility;
@@ -151,6 +152,7 @@ namespace QSB
 			QSBEventManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
+			gameObject.AddComponent<ClientStateManager>();
 
 			if (QSBSceneManager.IsInUniverse)
 			{

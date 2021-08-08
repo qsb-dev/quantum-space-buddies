@@ -132,6 +132,8 @@
     <Compile Include="CampfireSync\Events\CampfireStateEvent.cs" />
     <Compile Include="CampfireSync\Patches\CampfirePatches.cs" />
     <Compile Include="CampfireSync\WorldObjects\QSBCampfire.cs" />
+    <Compile Include="ClientServerStateSync\ClientStateManager.cs" />
+    <Compile Include="ClientServerStateSync\Events\ClientStateEvent.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionEvent.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionMessage.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
@@ -160,6 +162,7 @@
     <Compile Include="FrequencySync\Events\IdentifyFrequencyEvent.cs" />
     <Compile Include="FrequencySync\Events\IdentifySignalEvent.cs" />
     <Compile Include="FrequencySync\Patches\FrequencyPatches.cs" />
+    <Compile Include="ClientServerStateSync\ClientState.cs" />
     <Compile Include="GeyserSync\Patches\GeyserPatches.cs" />
     <Compile Include="Inputs\Patches\InputPatches.cs" />
     <Compile Include="Instruments\QSBCamera\CameraController.cs" />
