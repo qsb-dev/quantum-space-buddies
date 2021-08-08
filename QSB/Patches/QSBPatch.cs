@@ -32,6 +32,7 @@ namespace QSB.Patches
 			//DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Success);
 			var method = GetMethodInfo(patchName);
 			QSBCore.Helper.HarmonyHelper.EmptyMethod(method);
+			_patchedMethods.Add(method);
 		}
 
 		public void Prefix(string patchName)
