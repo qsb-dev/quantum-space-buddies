@@ -256,6 +256,9 @@
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
     <Compile Include="SectorSync\TargetType.cs" />
+    <Compile Include="ClientServerStateSync\Events\ServerStateEvent.cs" />
+    <Compile Include="ClientServerStateSync\ServerState.cs" />
+    <Compile Include="ClientServerStateSync\ServerStateManager.cs" />
     <Compile Include="ShipSync\ComponentType.cs" />
     <Compile Include="ShipSync\Events\Component\ComponentDamagedEvent.cs" />
     <Compile Include="ShipSync\Events\Component\ComponentRepairedEvent.cs" />

@@ -64,6 +64,7 @@ namespace QSB.Events
 				new PlayerRetrieveProbeEvent(),
 				new PlayerLaunchProbeEvent(),
 				new EndLoopEvent(),
+				new ServerStateEvent(),
 				new ClientStateEvent(),
 				// World Objects
 				new ElevatorEvent(),

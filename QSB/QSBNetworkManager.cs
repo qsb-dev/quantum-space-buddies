@@ -152,6 +152,7 @@ namespace QSB
 			QSBEventManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
+			gameObject.AddComponent<ServerStateManager>();
 			gameObject.AddComponent<ClientStateManager>();
 
 			if (QSBSceneManager.IsInUniverse)
