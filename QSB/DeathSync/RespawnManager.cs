@@ -24,7 +24,7 @@ namespace QSB.DeathSync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool inUniverse)
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
 		{
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
 			_playersPendingRespawn.Clear();

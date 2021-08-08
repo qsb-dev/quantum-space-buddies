@@ -29,7 +29,7 @@ namespace QSB.WorldSync
 			AllReady = false;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool inUniverse)
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
 		{
 			AllReady = false;
 		}

@@ -77,7 +77,7 @@ namespace QSB.Syncs.TransformSync
 			playerDict.Remove(GetType());
 		}
 
-		protected virtual void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 			=> _isInitialized = false;
 
 		protected override void Init()

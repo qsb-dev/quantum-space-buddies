@@ -51,11 +51,11 @@ namespace QSB.Player.TransformSync
 			Player.TransformSync = this;
 		}
 
-		protected override void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 		{
 			if (!HasAuthority)
 			{
-				base.OnSceneLoaded(scene, isInUniverse);
+				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 			}
 
 			if (isInUniverse)
@@ -69,7 +69,7 @@ namespace QSB.Player.TransformSync
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
 
-			base.OnSceneLoaded(scene, isInUniverse);
+			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 		}
 
 		protected override void OnDestroy()

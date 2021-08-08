@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using System.Collections;
 using UnityEngine;
 
@@ -12,11 +13,11 @@ namespace QSB.StatueSync
 		private void Awake()
 		{
 			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += (OWScene scene) => QSBPlayerManager.ShowAllPlayers();
+			QSBSceneManager.OnUniverseSceneLoaded += (OWScene oldScene, OWScene newScene) => QSBPlayerManager.ShowAllPlayers();
 		}
 
 		private void OnDestroy()
-			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene scene) => QSBPlayerManager.ShowAllPlayers();
+			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene oldScene, OWScene newScene) => QSBPlayerManager.ShowAllPlayers();
 
 		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 			=> StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));

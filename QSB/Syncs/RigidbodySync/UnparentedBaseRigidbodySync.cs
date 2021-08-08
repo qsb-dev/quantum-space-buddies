@@ -33,7 +33,7 @@ namespace QSB.Syncs.RigidbodySync
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 			=> _isInitialized = false;
 
 		protected override void Init()
