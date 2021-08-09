@@ -51,6 +51,11 @@ namespace QSB.Syncs.RigidbodySync
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
 
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return;
+			}
+
 			/* We need to send :
 			 * - Position
 			 * - Rotation

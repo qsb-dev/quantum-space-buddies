@@ -58,6 +58,11 @@ namespace QSB.Syncs.RigidbodySync
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
 
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return;
+			}
+
 			if (ReferenceSector != null)
 			{
 				writer.Write(ReferenceSector.ObjectId);

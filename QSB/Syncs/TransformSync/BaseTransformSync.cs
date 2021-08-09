@@ -141,6 +141,11 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
 
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return;
+			}
+
 			var worldPos = _intermediaryTransform.GetPosition();
 			var worldRot = _intermediaryTransform.GetRotation();
 			writer.Write(worldPos);
