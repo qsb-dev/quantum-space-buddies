@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
+using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Instruments;
@@ -11,7 +12,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ProbeSync.TransformSync;
-using QSB.ClientServerStateSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Utility;

@@ -24,15 +24,9 @@ namespace QSB.WorldSync
 			_managers.Remove(this);
 		}
 
-		public static void SetNotReady()
-		{
-			AllReady = false;
-		}
+		public static void SetNotReady() => AllReady = false;
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
-		{
-			AllReady = false;
-		}
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse) => AllReady = false;
 
 		public static void Rebuild(OWScene scene)
 		{

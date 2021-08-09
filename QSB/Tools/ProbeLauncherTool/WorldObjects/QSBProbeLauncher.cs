@@ -1,13 +1,11 @@
 ﻿using OWML.Utils;
 using QSB.Events;
-using QSB.ProbeSync;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 {
-	class QSBProbeLauncher : WorldObject<ProbeLauncher>
+	internal class QSBProbeLauncher : WorldObject<ProbeLauncher>
 	{
 		private float _probeRetrievalLength;
 		private GameObject _preLaunchProbeProxy;

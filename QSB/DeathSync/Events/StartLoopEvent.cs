@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.DeathSync.Events
 {
-	class StartLoopEvent : QSBEvent<PlayerMessage>
+	internal class StartLoopEvent : QSBEvent<PlayerMessage>
 	{
 		public override EventType Type => EventType.StartLoop;
 

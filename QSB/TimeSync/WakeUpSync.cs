@@ -1,16 +1,15 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.Inputs;
 using QSB.Player;
-using QSB.ClientServerStateSync;
 using QSB.TimeSync.Events;
 using QSB.Utility;
 using QuantumUNET;
-using System.Linq;
-using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace QSB.TimeSync
 {

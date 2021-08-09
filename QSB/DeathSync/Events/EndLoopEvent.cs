@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.DeathSync.Events
 {
-	class EndLoopEvent : QSBEvent<EnumMessage<EndLoopReason>>
+	internal class EndLoopEvent : QSBEvent<EnumMessage<EndLoopReason>>
 	{
 		public override EventType Type => EventType.EndLoop;
 

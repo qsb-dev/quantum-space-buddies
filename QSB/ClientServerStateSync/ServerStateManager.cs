@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.ClientServerStateSync
 {
-	class ServerStateManager : MonoBehaviour
+	internal class ServerStateManager : MonoBehaviour
 	{
 		public static ServerStateManager Instance { get; private set; }
 

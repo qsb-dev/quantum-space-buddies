@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeLauncherTool
 {
-	class ProbeLauncherManager : WorldObjectManager
+	internal class ProbeLauncherManager : WorldObjectManager
 	{
 		protected override void RebuildWorldObjects(OWScene scene)
 			=> QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>();

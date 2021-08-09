@@ -5,7 +5,7 @@ using QSB.WorldSync.Events;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {
-	class LaunchProbeEvent : QSBEvent<WorldObjectMessage>
+	internal class LaunchProbeEvent : QSBEvent<WorldObjectMessage>
 	{
 		public override EventType Type => EventType.LaunchProbe;
 

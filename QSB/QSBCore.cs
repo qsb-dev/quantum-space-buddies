@@ -17,7 +17,6 @@ using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
 using QSB.SectorSync;
-using QSB.ClientServerStateSync;
 using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;

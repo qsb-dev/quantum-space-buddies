@@ -2,6 +2,7 @@
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
 using QSB.CampfireSync.Events;
+using QSB.ClientServerStateSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
@@ -14,7 +15,6 @@ using QSB.Player.Events;
 using QSB.ProbeSync.Events;
 using QSB.QuantumSync.Events;
 using QSB.RoastingSync.Events;
-using QSB.ClientServerStateSync.Events;
 using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;

@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {
-	class PlayerLaunchProbeEvent : QSBEvent<PlayerMessage>
+	internal class PlayerLaunchProbeEvent : QSBEvent<PlayerMessage>
 	{
 		public override EventType Type => EventType.PlayerLaunchProbe;
 

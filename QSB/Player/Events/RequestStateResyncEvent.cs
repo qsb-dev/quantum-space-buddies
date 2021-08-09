@@ -1,17 +1,14 @@
-﻿using QSB.CampfireSync.WorldObjects;
+﻿using OWML.Utils;
+using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.QuantumSync;
-using QSB.TranslationSync.WorldObjects;
 using QSB.TranslationSync;
+using QSB.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using OWML.Utils;
 
 namespace QSB.Player.Events
 {

@@ -1,10 +1,9 @@
 ﻿using QSB.Events;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool
 {
-	class ProbeLauncherListener : MonoBehaviour
+	internal class ProbeLauncherListener : MonoBehaviour
 	{
 		private PlayerProbeLauncher _attachedLauncher;
 
@@ -14,9 +13,6 @@ namespace QSB.Tools.ProbeLauncherTool
 			_attachedLauncher.OnLaunchProbe += OnLaunchProbe;
 		}
 
-		private void OnLaunchProbe(SurveyorProbe probe)
-		{
-			QSBEventManager.FireEvent(EventNames.QSBPlayerLaunchProbe);
-		}
+		private void OnLaunchProbe(SurveyorProbe probe) => QSBEventManager.FireEvent(EventNames.QSBPlayerLaunchProbe);
 	}
 }

@@ -1,5 +1,5 @@
-﻿using QSB.Events;
-using QSB.ClientServerStateSync;
+﻿using QSB.ClientServerStateSync;
+using QSB.Events;
 using UnityEngine;
 
 namespace QSB.StatueSync.Events

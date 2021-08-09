@@ -1,11 +1,10 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {
-	class PlayerRetrieveProbeEvent : QSBEvent<BoolMessage>
+	internal class PlayerRetrieveProbeEvent : QSBEvent<BoolMessage>
 	{
 		public override EventType Type => EventType.PlayerRetrieveProbe;
 

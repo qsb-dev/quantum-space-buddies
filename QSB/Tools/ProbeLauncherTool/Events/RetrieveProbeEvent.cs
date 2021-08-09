@@ -1,12 +1,11 @@
 ﻿using QSB.Events;
-using QSB.TimeSync.Events;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 
 namespace QSB.Tools.ProbeLauncherTool.Events
 {
-	class RetrieveProbeEvent : QSBEvent<BoolWorldObjectMessage>
+	internal class RetrieveProbeEvent : QSBEvent<BoolWorldObjectMessage>
 	{
 		public override EventType Type => EventType.RetrieveProbe;
 

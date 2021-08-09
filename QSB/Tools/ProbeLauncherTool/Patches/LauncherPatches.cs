@@ -2,13 +2,12 @@
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.Patches
 {
-	class LauncherPatches : QSBPatch
+	internal class LauncherPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
@@ -74,14 +73,8 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 		// TODO : ehhhh idk about this. maybe copy each sound source so we have a 2d version (for local) and a 3d version (for remote)?
 		// this would probably be a whole qsb version on it's own
 
-		public static void ProbeLauncherEffects_PlayRetrievalClip(OWAudioSource ____owAudioSource)
-		{
-			____owAudioSource.GetAudioSource().spatialBlend = 1f;
-		}
+		public static void ProbeLauncherEffects_PlayRetrievalClip(OWAudioSource ____owAudioSource) => ____owAudioSource.GetAudioSource().spatialBlend = 1f;
 
-		public static void ProbeLauncherEffects_PlayLaunchClip(OWAudioSource ____owAudioSource)
-		{
-			____owAudioSource.GetAudioSource().spatialBlend = 1f;
-		}
+		public static void ProbeLauncherEffects_PlayLaunchClip(OWAudioSource ____owAudioSource) => ____owAudioSource.GetAudioSource().spatialBlend = 1f;
 	}
 }

@@ -1,7 +1,5 @@
 ﻿using OWML.Utils;
-using QSB.Player;
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 

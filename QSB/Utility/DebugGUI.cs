@@ -1,9 +1,8 @@
-﻿using QSB.Player;
+﻿using QSB.ClientServerStateSync;
+using QSB.Player;
 using QSB.ProbeSync.TransformSync;
-using QSB.ClientServerStateSync;
 using QSB.Syncs.TransformSync;
 using QSB.TimeSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Utility
