@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using QSB.Player;
+using QSB.Utility;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -21,17 +24,50 @@ namespace QSB.WorldSync
 			_managers.Remove(this);
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool inUniverse)
-			=> AllReady = false;
+		public static void SetNotReady() => AllReady = false;
+
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse) => AllReady = false;
 
 		public static void Rebuild(OWScene scene)
 		{
-			foreach (var manager in _managers)
+			if (!QSBNetworkManager.Instance.IsReady)
 			{
-				manager.RebuildWorldObjects(scene);
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready!", OWML.Common.MessageType.Warning);
+				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.Instance.IsReady, () => Rebuild(scene));
+				return;
 			}
 
-			AllReady = true;
+			if (QSBPlayerManager.LocalPlayerId == uint.MaxValue)
+			{
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready!", OWML.Common.MessageType.Warning);
+				QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayerId != uint.MaxValue, () => Rebuild(scene));
+				return;
+			}
+
+			if (QSBPlayerManager.LocalPlayer.PlayerStates.IsReady)
+			{
+				DoRebuild(scene);
+				return;
+			}
+
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.PlayerStates.IsReady, () => DoRebuild(scene));
+		}
+
+		private static void DoRebuild(OWScene scene)
+		{
+			foreach (var manager in _managers)
+			{
+				try
+				{
+					manager.RebuildWorldObjects(scene);
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", OWML.Common.MessageType.Error);
+				}
+			}
+
+			QSBCore.UnityEvents.FireInNUpdates(() => AllReady = true, 1);
 		}
 
 		protected abstract void RebuildWorldObjects(OWScene scene);

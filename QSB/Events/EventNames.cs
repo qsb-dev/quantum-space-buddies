@@ -5,8 +5,6 @@
 		// Built into Outer Wilds -- don't change unless they change in-game!
 		public static string TurnOnFlashlight = "TurnOnFlashlight";
 		public static string TurnOffFlashlight = "TurnOffFlashlight";
-		public static string LaunchProbe = "LaunchProbe";
-		public static string RetrieveProbe = "RetrieveProbe";
 		public static string ProbeLauncherEquipped = "ProbeLauncherEquipped";
 		public static string ProbeLauncherUnequipped = "ProbeLauncherUnequipped";
 		public static string EquipSignalscope = "EquipSignalscope";
@@ -32,7 +30,7 @@
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";
 		public static string QSBPlayerReady = "QSBPlayerReady";
-		public static string QSBPlayerStatesRequest = "QSBPlayerStatesRequest";
+		public static string QSBRequestStateResync = "QSBPlayerStatesRequest";
 		public static string QSBServerTime = "QSBServerTime";
 		public static string QSBStartLift = "QSBStartLift";
 		public static string QSBGeyserState = "QSBGeyserState";
@@ -41,7 +39,7 @@
 		public static string QSBConversation = "QSBConversation";
 		public static string QSBConversationStartEnd = "QSBConversationStartEnd";
 		public static string QSBChangeAnimType = "QSBPlayInstrument";
-		public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
+		public static string QSBPlayerInformation = "QSBServerSendPlayerStates";
 		public static string QSBRevealFact = "QSBRevealFact";
 		public static string QSBSocketStateChange = "QSBSocketStateChange";
 		public static string QSBMultiStateChange = "QSBMultiStateChange";
@@ -77,5 +75,16 @@
 		public static string QSBComponentDamaged = "QSBComponentDamaged";
 		public static string QSBComponentRepaired = "QSBComponentRepaired";
 		public static string QSBComponentRepairTick = "QSBComponentRepairTick";
+		public static string QSBPlayerRespawn = "QSBPlayerRespawn";
+		public static string QSBProbeEvent = "QSBProbeEvent";
+		public static string QSBProbeStartRetrieve = "QSBProbeStartRetrieve";
+		public static string QSBRetrieveProbe = "QSBRetrieveProbe";
+		public static string QSBPlayerRetrieveProbe = "QSBPlayerRetrieveProbe";
+		public static string QSBLaunchProbe = "QSBLaunchProbe";
+		public static string QSBPlayerLaunchProbe = "QSBPlayerLaunchProbe";
+		public static string QSBEndLoop = "QSBEndLoop";
+		public static string QSBStartLoop = "QSBStartLoop";
+		public static string QSBServerState = "QSBServerState";
+		public static string QSBClientState = "QSBClientState";
 	}
 }

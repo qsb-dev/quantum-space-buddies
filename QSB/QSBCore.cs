@@ -5,6 +5,7 @@ using OWML.Utils;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
+using QSB.DeathSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
@@ -19,6 +20,7 @@ using QSB.SectorSync;
 using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -58,14 +60,12 @@ namespace QSB
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static bool WorldObjectsReady => WorldObjectManager.AllReady && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
-		public static bool IsServer => QNetworkServer.active;
+		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 
 		public void Awake()
 		{
-			Application.runInBackground = true;
-
 			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
 			instance.theUITable[(int)UITextType.PleaseUseController] =
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
@@ -91,6 +91,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
+			gameObject.AddComponent<RespawnManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();
@@ -105,6 +106,7 @@ namespace QSB
 			gameObject.AddComponent<CampfireManager>();
 			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipManager>();
+			gameObject.AddComponent<ProbeLauncherManager>();
 
 			DebugBoxManager.Init();
 
@@ -112,6 +114,25 @@ namespace QSB
 
 			// Stop players being able to pause
 			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
+
+			QSBPatchManager.OnPatchType += OnPatchType;
+			QSBPatchManager.OnUnpatchType += OnUnpatchType;
+		}
+
+		private void OnPatchType(QSBPatchTypes type)
+		{
+			if (type == QSBPatchTypes.OnClientConnect)
+			{
+				Application.runInBackground = true;
+			}
+		}
+
+		private void OnUnpatchType(QSBPatchTypes type)
+		{
+			if (type == QSBPatchTypes.OnClientConnect)
+			{
+				Application.runInBackground = false;
+			}
 		}
 
 		public void Update() =>
@@ -154,4 +175,6 @@ namespace QSB
  * Jake Chudnow
  * Murray Gold
  * Teleskärm
+ * Daft Punk
+ * Natalie Holt
  */

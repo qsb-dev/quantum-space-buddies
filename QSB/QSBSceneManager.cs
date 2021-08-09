@@ -11,8 +11,8 @@ namespace QSB
 
 		public static bool IsInUniverse => InUniverse(CurrentScene);
 
-		public static event Action<OWScene, bool> OnSceneLoaded;
-		public static event Action<OWScene> OnUniverseSceneLoaded;
+		public static event Action<OWScene, OWScene, bool> OnSceneLoaded;
+		public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
 
 		static QSBSceneManager()
 		{
@@ -30,10 +30,10 @@ namespace QSB
 				QSBCore.UnityEvents.FireOnNextUpdate(() => WorldObjectManager.Rebuild(newScene));
 			}
 
-			OnSceneLoaded?.SafeInvoke(newScene, universe);
+			OnSceneLoaded?.SafeInvoke(oldScene, newScene, universe);
 			if (universe)
 			{
-				OnUniverseSceneLoaded?.SafeInvoke(newScene);
+				OnUniverseSceneLoaded?.SafeInvoke(oldScene, newScene);
 			}
 		}
 

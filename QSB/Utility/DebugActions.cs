@@ -25,16 +25,18 @@ namespace QSB.Utility
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
-		private void DamageShipElectricalSystem()
-		{
-			ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
-		}
+		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
 		public void Update()
 		{
 			if (!QSBCore.DebugMode)
 			{
 				return;
+			}
+
+			if (Input.GetKeyDown(KeyCode.Keypad5))
+			{
+				Locator.GetDeathManager().KillPlayer(DeathType.Supernova);
 			}
 
 			if (Input.GetKeyDown(KeyCode.Keypad4))

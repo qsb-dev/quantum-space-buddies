@@ -1,6 +1,8 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.ShipSync.TransformSync;
+using QSB.Events;
+using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -17,21 +19,21 @@ namespace QSB.DeathSync
 			DeathType.TimeLoop
 		};
 
-		private readonly Vector3 ShipContainerOffset = new Vector3(-16.45f, -52.67f, 227.39f);
-		private readonly Quaternion ShipContainerRotation = Quaternion.Euler(-76.937f, 1.062f, -185.066f);
-
-		private SpawnPoint _shipSpawnPoint;
 		private SpawnPoint _playerSpawnPoint;
-		private OWRigidbody _shipBody;
 		private PlayerSpawner _playerSpawner;
 		private FluidDetector _fluidDetector;
 		private PlayerResources _playerResources;
-		private ShipComponent[] _shipComponents;
-		private HatchController _hatchController;
-		private ShipCockpitController _cockpitController;
 		private PlayerSpacesuit _spaceSuit;
-		private ShipTractorBeamSwitch _shipTractorBeam;
 		private SuitPickupVolume[] _suitPickupVolumes;
+		private Vector3 _deathPositionRelative;
+
+		public Transform DeathClosestAstroObject { get; private set; }
+		public Vector3 DeathPositionWorld 
+			=> DeathClosestAstroObject == null
+					? Vector3.zero
+					: DeathClosestAstroObject.TransformPoint(_deathPositionRelative);
+		public Vector3 DeathPlayerUpVector { get; private set; }
+		public Vector3 DeathPlayerForwardVector { get; private set; }
 
 		public void Awake() => Instance = this;
 
@@ -41,49 +43,48 @@ namespace QSB.DeathSync
 			_playerResources = playerTransform.GetComponent<PlayerResources>();
 			_spaceSuit = Locator.GetPlayerSuit();
 			_playerSpawner = FindObjectOfType<PlayerSpawner>();
-			_shipTractorBeam = FindObjectOfType<ShipTractorBeamSwitch>();
 			_suitPickupVolumes = FindObjectsOfType<SuitPickupVolume>();
-
 			_fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
-
 			_playerSpawnPoint = GetSpawnPoint();
-			_shipSpawnPoint = GetSpawnPoint(true);
-
-			var shipTransform = Locator.GetShipTransform();
-			if (shipTransform == null)
-			{
-				DebugLog.ToConsole($"Warning - Init() ran when ship was null?", MessageType.Warning);
-				return;
-			}
-
-			_shipComponents = shipTransform.GetComponentsInChildren<ShipComponent>();
-			_hatchController = shipTransform.GetComponentInChildren<HatchController>();
-			_cockpitController = shipTransform.GetComponentInChildren<ShipCockpitController>();
-			_shipBody = Locator.GetShipBody();
-
-			if (_shipSpawnPoint == null)
-			{
-				DebugLog.ToConsole("Warning - _shipSpawnPoint is null in Init()!", MessageType.Warning);
-				return;
-			}
-
-			// Move debug spawn point to initial ship position (so ship doesnt spawn in space!)
-			var timberHearth = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
-			_shipSpawnPoint.transform.SetParent(timberHearth);
-			_shipSpawnPoint.transform.localPosition = ShipContainerOffset;
-			_shipSpawnPoint.transform.localRotation = ShipContainerRotation;
 		}
 
 		public void ResetPlayer()
 		{
-			DebugLog.DebugWrite($"Trying to reset player.");
+			DebugLog.DebugWrite($"RESET PLAYER");
 			if (_playerSpawnPoint == null)
 			{
 				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
 				Init();
 			}
 
-			// Cant use _playerSpawner.DebugWarp because that will warp the ship if the player is in it
+			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				return;
+			}
+
+			RespawnManager.Instance.TriggerRespawnMap();
+
+			var inSpace = PlayerTransformSync.LocalInstance.SectorSync.SectorList.Count == 0;
+
+			if (inSpace)
+			{
+				DeathClosestAstroObject = Locator.GetAstroObject(AstroObject.Name.Sun).transform;
+			}
+			else
+			{
+				var allAstroobjects = Resources.FindObjectsOfTypeAll<AstroObject>().Where(x => x.GetAstroObjectName() != AstroObject.Name.None && x.GetAstroObjectType() != AstroObject.Type.Satellite);
+				var ordered = allAstroobjects.OrderBy(x => Vector3.SqrMagnitude(x.transform.position));
+				DeathClosestAstroObject = ordered.First().transform;
+			}
+
+			var deathPosition = Locator.GetPlayerTransform().position;
+			_deathPositionRelative = DeathClosestAstroObject.InverseTransformPoint(deathPosition);
+			DeathPlayerUpVector = Locator.GetPlayerTransform().up;
+			DeathPlayerForwardVector = Locator.GetPlayerTransform().forward;
+
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);
 			playerBody.SetVelocity(_playerSpawnPoint.GetPointVelocity());
@@ -123,49 +124,7 @@ namespace QSB.DeathSync
 			}
 		}
 
-		public void ResetShip()
-		{
-			DebugLog.DebugWrite($"Trying to reset ship.");
-			if (!ShipTransformSync.LocalInstance.HasAuthority)
-			{
-				DebugLog.ToConsole($"Warning - Tried to reset ship when not in control!", MessageType.Warning);
-				return;
-			}
-
-			if (_shipSpawnPoint == null)
-			{
-				DebugLog.ToConsole("Warning - _shipSpawnPoint is null!", MessageType.Warning);
-				Init();
-			}
-
-			if (_shipBody == null)
-			{
-				DebugLog.ToConsole($"Warning - Tried to reset ship, but the ship is null!", MessageType.Warning);
-				return;
-			}
-
-			_shipBody.SetVelocity(_shipSpawnPoint.GetPointVelocity());
-			_shipBody.WarpToPositionRotation(_shipSpawnPoint.transform.position, _shipSpawnPoint.transform.rotation);
-
-			foreach (var shipComponent in _shipComponents)
-			{
-				shipComponent.SetDamaged(false);
-			}
-
-			Invoke(nameof(ExitShip), 0.01f);
-		}
-
-		private void ExitShip()
-		{
-			DebugLog.DebugWrite($"Exit ship.");
-			_cockpitController.Invoke("ExitFlightConsole");
-			_cockpitController.Invoke("CompleteExitFlightConsole");
-			_hatchController.SetValue("_isPlayerInShip", false);
-			_hatchController.Invoke("OpenHatch");
-			_shipTractorBeam.ActivateTractorBeam();
-		}
-
-		private SpawnPoint GetSpawnPoint(bool isShip = false)
+		private SpawnPoint GetSpawnPoint()
 		{
 			var spawnList = _playerSpawner.GetValue<SpawnPoint[]>("_spawnList");
 			if (spawnList == null)
@@ -176,7 +135,7 @@ namespace QSB.DeathSync
 
 			return spawnList.FirstOrDefault(spawnPoint =>
 					spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth
-					&& spawnPoint.IsShipSpawn() == isShip);
+					&& spawnPoint.IsShipSpawn() == false);
 		}
 	}
 }

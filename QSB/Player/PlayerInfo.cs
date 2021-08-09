@@ -1,11 +1,14 @@
 ﻿using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
+using QSB.ClientServerStateSync;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;
 using QSB.QuantumSync;
 using QSB.RoastingSync;
 using QSB.Tools;
+using QSB.Tools.ProbeLauncherTool;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -24,19 +27,31 @@ namespace QSB.Player
 		public GameObject CameraBody { get; set; }
 		public GameObject Body { get; set; }
 		public GameObject RoastingStick { get; set; }
+		public bool Visible { get; set; } = true;
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
+		public QSBFlashlight FlashLight 
+		{
+			get
+			{
+				if (CameraBody == null)
+				{
+					return null;
+				}
+
+				return CameraBody.GetComponentInChildren<QSBFlashlight>();
+			}
+		}
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
-		public QSBTool ProbeLauncher => GetToolByType(ToolType.ProbeLauncher);
-		public Transform ItemSocket => CameraBody.transform.Find("ItemSocket");
-		public Transform ScrollSocket => CameraBody.transform.Find("ScrollSocket");
-		public Transform SharedStoneSocket => CameraBody.transform.Find("SharedStoneSocket");
-		public Transform WarpCoreSocket => CameraBody.transform.Find("WarpCoreSocket");
-		public Transform VesselCoreSocket => CameraBody.transform.Find("VesselCoreSocket");
+		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
+		public Transform ItemSocket => CameraBody.transform.Find("REMOTE_ItemSocket");
+		public Transform ScrollSocket => CameraBody.transform.Find("REMOTE_ScrollSocket");
+		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");
+		public Transform WarpCoreSocket => CameraBody.transform.Find("REMOTE_WarpCoreSocket");
+		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 
@@ -54,6 +69,66 @@ namespace QSB.Player
 		public bool IsInMoon; // TODO : move into PlayerStates?
 		public bool IsInShrine; // TODO : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
+		public bool IsDead { get; set; }
+		public ClientState State { get; set; }
+
+		// Local only
+		public PlayerProbeLauncher LocalProbeLauncher
+		{
+			get
+			{
+				if (QSBPlayerManager.LocalPlayer != this)
+				{
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					return null;
+				}
+
+				return CameraBody.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
+			}
+		}
+
+		public Flashlight LocalFlashlight 
+		{
+			get
+			{
+				if (QSBPlayerManager.LocalPlayer != this)
+				{
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					return null;
+				}
+
+				return Locator.GetFlashlight();
+			}
+		}
+
+		public Signalscope LocalSignalscope
+		{
+			get
+			{
+				if (QSBPlayerManager.LocalPlayer != this)
+				{
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					return null;
+				}
+
+				return CameraBody.transform.Find("Signalscope").GetComponent<Signalscope>();
+			}
+		}
+
+		public NomaiTranslator LocalTranslator
+		{
+			get
+			{
+				if (QSBPlayerManager.LocalPlayer != this)
+				{
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					return null;
+				}
+
+				return CameraBody.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
+			}
+		}
+
 
 		public PlayerInfo(uint id)
 		{
@@ -76,10 +151,7 @@ namespace QSB.Player
 				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(PlayerStates.SuitedUp));
 		}
 
-		private QSBTool GetToolByType(ToolType type)
-		{
-			return CameraBody?.GetComponentsInChildren<QSBTool>()
+		private QSBTool GetToolByType(ToolType type) => CameraBody?.GetComponentsInChildren<QSBTool>()
 				.FirstOrDefault(x => x.Type == type);
-		}
 	}
 }

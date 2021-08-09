@@ -3,7 +3,6 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using QuantumUNET;
 using QuantumUNET.Components;
 
 namespace QSB.Events
@@ -30,8 +29,8 @@ namespace QSB.Events
 		public abstract void SetupListener();
 		public abstract void CloseListener();
 
-		public virtual void OnReceiveRemote(bool server, T message) { }
-		public virtual void OnReceiveLocal(bool server, T message) { }
+		public virtual void OnReceiveRemote(bool isHost, T message) { }
+		public virtual void OnReceiveLocal(bool isHost, T message) { }
 
 		public void SendEvent(T message)
 		{
@@ -53,7 +52,7 @@ namespace QSB.Events
 			 * if <isServer> is true, this message has been received on the server *server*.
 			 * Therefore, we don't want to do any event handling code - that should be dealt
 			 * with on the server *client* and any other client. So just forward the message
-			 * onto all clients. This way, the server *server* just acts as the ditribution
+			 * onto all clients. This way, the server *server* just acts as the distribution
 			 * hub for all events.
 			 */
 
@@ -68,7 +67,7 @@ namespace QSB.Events
 				return;
 			}
 
-			if (message.OnlySendToServer && !QNetworkServer.active)
+			if (message.OnlySendToHost && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -82,11 +81,11 @@ namespace QSB.Events
 			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
 				QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
 			{
-				OnReceiveLocal(QNetworkServer.active, message);
+				OnReceiveLocal(QSBCore.IsHost, message);
 				return;
 			}
 
-			OnReceiveRemote(QNetworkServer.active, message);
+			OnReceiveRemote(QSBCore.IsHost, message);
 		}
 	}
 }

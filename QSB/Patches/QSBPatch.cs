@@ -18,7 +18,7 @@ namespace QSB.Patches
 		{
 			foreach (var item in _patchedMethods)
 			{
-				DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
+				//DebugLog.DebugWrite($"[Unpatch] {item.DeclaringType}.{item.Name}", MessageType.Info);
 				Unpatch(item);
 			}
 
@@ -29,9 +29,10 @@ namespace QSB.Patches
 
 		public void Empty(string patchName)
 		{
-			DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Success);
+			//DebugLog.DebugWrite($"[Empty] {patchName}", MessageType.Success);
 			var method = GetMethodInfo(patchName);
 			QSBCore.Helper.HarmonyHelper.EmptyMethod(method);
+			_patchedMethods.Add(method);
 		}
 
 		public void Prefix(string patchName)
@@ -58,7 +59,7 @@ namespace QSB.Patches
 				_patchedMethods.Add(method);
 			}
 
-			DebugLog.DebugWrite($"{(isPrefix ? "[Prefix]" : "[Postfix]")} {patchName}", method == null ? MessageType.Error : MessageType.Success);
+			//DebugLog.DebugWrite($"{(isPrefix ? "[Prefix]" : "[Postfix]")} {patchName}", method == null ? MessageType.Error : MessageType.Success);
 		}
 
 		private MethodInfo GetMethodInfo(string patchName)
@@ -103,7 +104,7 @@ namespace QSB.Patches
 		{
 			var dictionary = typeof(HarmonySharedState).Invoke<Dictionary<MethodBase, byte[]>>("GetState", new object[0]);
 			var methodBase = dictionary.Keys.First(m =>
-				m.DeclaringType == method.DeclaringType 
+				m.DeclaringType == method.DeclaringType
 				&& m.Name == method.Name);
 
 			var patchInfo = PatchInfoSerialization.Deserialize(dictionary.GetValueSafe(methodBase));

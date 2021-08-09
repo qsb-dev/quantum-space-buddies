@@ -22,7 +22,7 @@ namespace QSB.OrbSync
 		{
 			QSBWorldSync.OldOrbList.Clear();
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
-			if (QSBCore.IsServer)
+			if (QSBCore.IsHost)
 			{
 				NomaiOrbTransformSync.OrbTransformSyncs.ForEach(x => QNetworkServer.Destroy(x.gameObject));
 				NomaiOrbTransformSync.OrbTransformSyncs.Clear();

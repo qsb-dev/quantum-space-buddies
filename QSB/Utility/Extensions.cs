@@ -3,6 +3,7 @@ using OWML.Utils;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -43,28 +44,28 @@ namespace QSB.Utility
 		{
 			if (connection == null)
 			{
-				DebugLog.DebugWrite($"Error - Trying to get player id of null QNetworkConnection.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.", MessageType.Error);
 				return uint.MaxValue;
 			}
 
 			var playerController = connection.PlayerControllers[0];
 			if (playerController == null)
 			{
-				DebugLog.DebugWrite($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
 				return uint.MaxValue;
 			}
 
 			var go = playerController.Gameobject;
 			if (go == null)
 			{
-				DebugLog.DebugWrite($"Error - GameObject of {playerController.UnetView.NetId.Value} is null.", MessageType.Error);
+				DebugLog.ToConsole($"Error - GameObject of {playerController.UnetView.NetId.Value} is null.", MessageType.Error);
 				return uint.MaxValue;
 			}
 
 			var controller = go.GetComponent<PlayerTransformSync>();
 			if (controller == null)
 			{
-				DebugLog.DebugWrite($"Error - No PlayerTransformSync found on {go.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - No PlayerTransformSync found on {go.name}", MessageType.Error);
 				return uint.MaxValue;
 			}
 
@@ -90,20 +91,46 @@ namespace QSB.Utility
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
 			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
 
+		public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> enumerable, Action<T> action)
+		{
+			foreach (var item in enumerable)
+			{
+				action(item);
+			}
+		}
+
+		private const BindingFlags Flags = BindingFlags.Instance
+			| BindingFlags.Static
+			| BindingFlags.Public
+			| BindingFlags.NonPublic
+			| BindingFlags.DeclaredOnly;
+
+		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
+		{
+			if (!(typeof(T)
+				.GetField(eventName, Flags)?
+				.GetValue(instance) is MulticastDelegate multiDelegate))
+			{
+				return;
+			}
+
+			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
+		}
+
 		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
 			where ThisType : BaseType
 		{
 			var method = typeof(BaseType).GetAnyMethod(methodName);
 			if (method == null)
 			{
-				DebugLog.DebugWrite($"Error - Couldn't find method {methodName} in {typeof(BaseType).FullName}!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Couldn't find method {methodName} in {typeof(BaseType).FullName}!", MessageType.Error);
 				return;
 			}
 
 			var functionPointer = method.MethodHandle.GetFunctionPointer();
 			if (functionPointer == null)
 			{
-				DebugLog.DebugWrite($"Error - Function pointer for {methodName} in {typeof(BaseType).FullName} is null!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Function pointer for {methodName} in {typeof(BaseType).FullName} is null!", MessageType.Error);
 				return;
 			}
 

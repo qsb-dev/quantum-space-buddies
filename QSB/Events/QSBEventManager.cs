@@ -2,6 +2,7 @@
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
 using QSB.CampfireSync.Events;
+using QSB.ClientServerStateSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
@@ -20,6 +21,7 @@ using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
+using QSB.Tools.ProbeLauncherTool.Events;
 using QSB.TranslationSync.Events;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -43,11 +45,11 @@ namespace QSB.Events
 				new PlayerFlashlightEvent(),
 				new PlayerSignalscopeEvent(),
 				new PlayerTranslatorEvent(),
-				new PlayerProbeLauncherEvent(),
+				new EquipProbeLauncherEvent(),
 				new PlayerProbeEvent(),
 				new PlayerDeathEvent(),
-				new PlayerStatesRequestEvent(),
-				new ServerSendPlayerStatesEvent(),
+				new RequestStateResyncEvent(),
+				new PlayerInformationEvent(),
 				new ChangeAnimTypeEvent(),
 				new ServerTimeEvent(),
 				new PlayerEntangledEvent(),
@@ -55,6 +57,16 @@ namespace QSB.Events
 				new EnterExitRoastingEvent(),
 				new MarshmallowEventEvent(),
 				new AnimationTriggerEvent(),
+				new PlayerRespawnEvent(),
+				new ProbeStartRetrieveEvent(),
+				new RetrieveProbeEvent(),
+				new LaunchProbeEvent(),
+				new PlayerRetrieveProbeEvent(),
+				new PlayerLaunchProbeEvent(),
+				new EndLoopEvent(),
+				new StartLoopEvent(),
+				new ServerStateEvent(),
+				new ClientStateEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

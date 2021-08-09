@@ -11,6 +11,9 @@ namespace QSB.Syncs.RigidbodySync
 		public SectorSync.SectorSync SectorSync { get; private set; }
 		public abstract TargetType Type { get; }
 
+		public override bool IgnoreDisabledAttachedObject => false;
+		public override bool IgnoreNullReferenceTransform => true;
+
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
@@ -36,6 +39,11 @@ namespace QSB.Syncs.RigidbodySync
 				return;
 			}
 
+			if (!HasAuthority)
+			{
+				return;
+			}
+
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -43,7 +51,7 @@ namespace QSB.Syncs.RigidbodySync
 			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -59,10 +67,10 @@ namespace QSB.Syncs.RigidbodySync
 				writer.Write(-1);
 			}
 
-			base.SerializeTransform(writer);
+			base.SerializeTransform(writer, initialState);
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
@@ -82,12 +90,12 @@ namespace QSB.Syncs.RigidbodySync
 				SetReferenceSector(sector);
 			}
 
-			base.DeserializeTransform(reader);
+			base.DeserializeTransform(reader, initialState);
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
-			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady)
+			if ((ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null) && QSBSectorManager.Instance.IsReady && HasAuthority)
 			{
 				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 				if (closestSector != null)
@@ -96,11 +104,11 @@ namespace QSB.Syncs.RigidbodySync
 				}
 				else
 				{
-					return;
+					return false;
 				}
 			}
 
-			base.UpdateTransform();
+			return base.UpdateTransform();
 		}
 
 		public void SetReferenceSector(QSBSector sector)

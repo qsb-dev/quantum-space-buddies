@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync;
+using QSB.Events;
 using UnityEngine;
 
 namespace QSB.StatueSync.Events
@@ -23,6 +24,15 @@ namespace QSB.StatueSync.Events
 			PlayerRotation = rotation,
 			CameraDegrees = degrees
 		};
+
+		public override void OnReceiveLocal(bool server, StartStatueMessage message)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+			QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InStatueCutscene);
+		}
 
 		public override void OnReceiveRemote(bool server, StartStatueMessage message)
 			=> StatueManager.Instance.BeginSequence(message.PlayerPosition, message.PlayerRotation, message.CameraDegrees);

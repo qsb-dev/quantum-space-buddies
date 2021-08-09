@@ -38,7 +38,7 @@ namespace QuantumUNET.Components
 				writer.WritePackedUInt32(1U);
 			}
 
-			SerializeTransform(writer);
+			SerializeTransform(writer, initialState);
 			return true;
 		}
 
@@ -54,11 +54,11 @@ namespace QuantumUNET.Components
 					}
 				}
 
-				DeserializeTransform(reader);
+				DeserializeTransform(reader, initialState);
 			}
 		}
 
-		public virtual void SerializeTransform(QNetworkWriter writer)
+		public virtual void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			writer.Write(transform.position);
 			SerializeRotation(writer, transform.rotation);
@@ -66,7 +66,7 @@ namespace QuantumUNET.Components
 			_prevRotation = transform.rotation;
 		}
 
-		public virtual void DeserializeTransform(QNetworkReader reader)
+		public virtual void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (HasAuthority)
 			{
@@ -135,7 +135,7 @@ namespace QuantumUNET.Components
 			{
 				_localTransformWriter.StartMessage(QMsgType.LocalPlayerTransform);
 				_localTransformWriter.Write(NetId);
-				SerializeTransform(_localTransformWriter);
+				SerializeTransform(_localTransformWriter, false);
 				_prevPosition = transform.position;
 				_prevRotation = transform.rotation;
 				_localTransformWriter.FinishMessage();
@@ -175,7 +175,7 @@ namespace QuantumUNET.Components
 
 			if (netMsg.Connection.ClientOwnedObjects.Contains(networkInstanceId))
 			{
-				component.DeserializeTransform(netMsg.Reader);
+				component.DeserializeTransform(netMsg.Reader, false);
 			}
 			else
 			{

@@ -2,69 +2,43 @@
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using QuantumUNET.Components;
+using QuantumUNET;
 using QuantumUNET.Transport;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
 {
 	/*
-	 * Rewrite number : 5
+	 * Rewrite number : 7
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class BaseTransformSync : QNetworkTransform, ISync<Transform>
+	public abstract class BaseTransformSync : SyncBase
 	{
-		public uint AttachedNetId
+		private static readonly Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, BaseTransformSync>>();
+
+		public static T GetPlayers<T>(PlayerInfo player)
+			where T : BaseTransformSync
 		{
-			get
+			var dictOfOwnedSyncs = _storedTransformSyncs[player];
+			var wantedSync = dictOfOwnedSyncs[typeof(T)];
+			if (wantedSync == default)
 			{
-				if (NetIdentity == null)
+				DebugLog.ToConsole($"Error -  _storedTransformSyncs does not contain type:{typeof(T)} under player {player.PlayerId}. Attempting to find manually...", MessageType.Error);
+				var allSyncs = Resources.FindObjectsOfTypeAll<T>();
+				wantedSync = allSyncs.First(x => x.Player == player);
+				if (wantedSync == default)
 				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
+					DebugLog.ToConsole($"Error -  Could not find type:{typeof(T)} for player {player.PlayerId} manually!", MessageType.Error);
+					return default;
 				}
-
-				return NetIdentity.NetId.Value;
 			}
+
+			return (T)wantedSync;
 		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
-		public Transform ReferenceTransform { get; set; }
-		public Transform AttachedObject { get; set; }
-
-		public abstract bool IsReady { get; }
-		public abstract bool UseInterpolation { get; }
-
-		protected abstract Transform InitLocalTransform();
-		protected abstract Transform InitRemoteTransform();
-
-		protected bool _isInitialized;
-		private const float SmoothTime = 0.1f;
-		protected virtual float DistanceLeeway { get; } = 5f;
-		private float _previousDistance;
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
-		private string _logName => $"{PlayerId}.{GetType().Name}";
-		protected IntermediaryTransform _intermediaryTransform;
 
 		public virtual void Start()
 		{
@@ -75,6 +49,14 @@ namespace QSB.Syncs.TransformSync
 			DontDestroyOnLoad(gameObject);
 			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+
+			if (!_storedTransformSyncs.ContainsKey(Player))
+			{
+				_storedTransformSyncs.Add(Player, new Dictionary<Type, BaseTransformSync>());
+			}
+
+			var playerDict = _storedTransformSyncs[Player];
+			playerDict[GetType()] = this;
 		}
 
 		protected virtual void OnDestroy()
@@ -85,12 +67,20 @@ namespace QSB.Syncs.TransformSync
 			}
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+
+			if (!QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				return;
+			}
+
+			var playerDict = _storedTransformSyncs[Player];
+			playerDict.Remove(GetType());
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 			=> _isInitialized = false;
 
-		protected virtual void Init()
+		protected override void Init()
 		{
 			if (!QSBSceneManager.IsInUniverse)
 			{
@@ -104,9 +94,47 @@ namespace QSB.Syncs.TransformSync
 
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
+
+			if (QSBCore.DebugMode)
+			{
+				DebugBoxManager.CreateBox(AttachedObject.transform, 0, _logName);
+			}
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer)
+		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
+		{
+			if (!initialState)
+			{
+				if (SyncVarDirtyBits == 0U)
+				{
+					writer.WritePackedUInt32(0U);
+					return false;
+				}
+
+				writer.WritePackedUInt32(1U);
+			}
+
+			SerializeTransform(writer, initialState);
+			return true;
+		}
+
+		public override void OnDeserialize(QNetworkReader reader, bool initialState)
+		{
+			if (!IsServer || !QNetworkServer.localClientActive)
+			{
+				if (!initialState)
+				{
+					if (reader.ReadPackedUInt32() == 0U)
+					{
+						return;
+					}
+				}
+
+				DeserializeTransform(reader, initialState);
+			}
+		}
+
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (_intermediaryTransform == null)
 			{
@@ -121,7 +149,7 @@ namespace QSB.Syncs.TransformSync
 			_prevRotation = worldRot;
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
@@ -152,51 +180,13 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void Update()
-		{
-			if (!_isInitialized && IsReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
-			}
-
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
-				return;
-			}
-
-			if (!AttachedObject.gameObject.activeInHierarchy)
-			{
-				return;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				return;
-			}
-
-			UpdateTransform();
-
-			base.Update();
-		}
-
-		protected virtual void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				return;
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
@@ -214,6 +204,7 @@ namespace QSB.Syncs.TransformSync
 					AttachedObject.transform.localRotation = targetRot;
 				}
 			}
+			return true;
 		}
 
 		public override bool HasMoved()
@@ -245,50 +236,23 @@ namespace QSB.Syncs.TransformSync
 			{
 				ReparentAttachedObject(transform);
 			}
+
+			if (HasAuthority)
+			{
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+			}
 		}
 
-		private void ReparentAttachedObject(Transform sectorTransform)
+		private void ReparentAttachedObject(Transform newParent)
 		{
 			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
 			{
 				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
 			}
 
-			AttachedObject.transform.SetParent(sectorTransform, true);
-			AttachedObject.transform.localScale = GetType() == typeof(PlayerTransformSync)
-				? Vector3.one / 10
-				: Vector3.one;
-		}
-
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
-			{
-				_previousDistance = distance;
-				return targetPosition;
-			}
-
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
-			{
-				return;
-			}
-
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
-			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
-			var color = HasMoved() ? Color.green : Color.yellow;
-			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
+			AttachedObject.transform.SetParent(newParent, true);
+			AttachedObject.transform.localScale = Vector3.one;
 		}
 	}
 }

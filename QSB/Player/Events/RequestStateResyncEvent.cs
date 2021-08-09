@@ -1,0 +1,97 @@
+﻿using OWML.Utils;
+using QSB.CampfireSync.WorldObjects;
+using QSB.ClientServerStateSync;
+using QSB.Events;
+using QSB.Messaging;
+using QSB.QuantumSync;
+using QSB.TranslationSync;
+using QSB.TranslationSync.WorldObjects;
+using QSB.Utility;
+using QSB.WorldSync;
+using System.Linq;
+
+namespace QSB.Player.Events
+{
+	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
+	public class RequestStateResyncEvent : QSBEvent<PlayerMessage>
+	{
+		public override EventType Type => EventType.RequestStateResync;
+
+		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
+		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
+
+		private void Handler()
+		{
+			DebugLog.DebugWrite($"Sending QSBRequestStateResync");
+			SendEvent(CreateMessage());
+		}
+
+		private PlayerMessage CreateMessage() => new PlayerMessage
+		{
+			AboutId = LocalPlayerId
+		};
+
+		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
+		{
+			DebugLog.DebugWrite($"OnReceiveRemote RequestStateResyncEvent");
+
+			// if host, send worldobject and server states
+
+			if (isHost)
+			{
+				DebugLog.DebugWrite($"SENDING SERVER STATE");
+				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
+
+				DebugLog.DebugWrite($"SENDING PLAYER INFORMATION");
+				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+
+				SendWorldObjectInfo();
+
+				return;
+			}
+
+			// if client, send player and client states
+
+			DebugLog.DebugWrite($"SENDING PLAYER INFORMATION");
+			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+		}
+
+		private void SendWorldObjectInfo()
+		{
+			DebugLog.DebugWrite($"SENDING WORLDOBJECT INFORMATION");
+
+			QSBWorldSync.DialogueConditions.ForEach(condition
+				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));
+
+			QSBWorldSync.ShipLogFacts.ForEach(fact
+				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));
+
+			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				wallText.GetTranslatedIds().ForEach(id
+					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id));
+			}
+
+			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				computer.GetTranslatedIds().ForEach(id
+					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id));
+			}
+
+			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			{
+				vesselComputer.GetTranslatedIds().ForEach(id
+					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id));
+			}
+
+			var list = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
+			for (var i = 0; i < list.Count; i++)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
+			}
+
+			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
+				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
+		}
+	}
+}
