@@ -4,6 +4,7 @@ using QSB.SectorSync.WorldObjects;
 using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace QSB.SectorSync
 
 		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
 		{
+			DebugLog.DebugWrite($"INIT SECTOR SYNC detector:{detector.name}");
 			if (_sectorDetector != null)
 			{
 				_sectorDetector.OnEnterSector -= AddSector;
@@ -119,7 +121,7 @@ namespace QSB.SectorSync
 
 			if (!_isReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name} Stacktrace:{Environment.StackTrace}", MessageType.Warning);
 				return null;
 			}
 

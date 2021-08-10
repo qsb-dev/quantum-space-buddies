@@ -366,6 +366,11 @@ namespace QSB.TimeSync
 					ResetTimeScale();
 				}
 			}
+
+			if (CurrentState == State.Loaded)
+			{
+				CheckTimeDifference();
+			}
 		}
 
 		private void CheckTimeDifference()

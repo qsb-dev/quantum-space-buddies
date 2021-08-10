@@ -102,19 +102,12 @@ namespace QSB.Syncs.TransformSync
 				_intermediaryTransform = new IntermediaryTransform(transform);
 			}
 
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			if (!QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				DebugLog.ToConsole($"Warning - Tried to serialize {_logName} before the right player exists.", OWML.Common.MessageType.Warning);
 				writer.Write(-1);
 			}
 			else if (!Player.PlayerStates.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to serialize {_logName} before the player was ready.", OWML.Common.MessageType.Warning);
 				writer.Write(-1);
 			}
 

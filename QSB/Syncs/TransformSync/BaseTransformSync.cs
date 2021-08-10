@@ -50,6 +50,12 @@ namespace QSB.Syncs.TransformSync
 			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
+			if (Player == null)
+			{
+				DebugLog.ToConsole($"Error - Player in start of {_logName} was null!", MessageType.Error);
+				return;
+			}
+
 			if (!_storedTransformSyncs.ContainsKey(Player))
 			{
 				_storedTransformSyncs.Add(Player, new Dictionary<Type, BaseTransformSync>());
@@ -139,11 +145,6 @@ namespace QSB.Syncs.TransformSync
 			if (_intermediaryTransform == null)
 			{
 				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
-
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
 			}
 
 			var worldPos = _intermediaryTransform.GetPosition();

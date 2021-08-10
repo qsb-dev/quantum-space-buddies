@@ -63,6 +63,7 @@ namespace QSB
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
+		public static string GameVersion => Application.version;
 
 		public void Awake()
 		{
