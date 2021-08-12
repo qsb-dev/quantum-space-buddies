@@ -38,6 +38,11 @@ namespace QSB.QuantumSync.Patches
 			GameObject[] ____deactivateAtEye
 			)
 		{
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return false;
+			}
+
 			var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck);
 			//var moonVisible = isVisibleOutput.First;
 			var moonVisiblePlayers = isVisibleOutput.Second;
