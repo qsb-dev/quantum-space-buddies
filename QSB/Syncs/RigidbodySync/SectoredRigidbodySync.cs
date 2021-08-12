@@ -5,7 +5,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.Syncs.RigidbodySync
 {
-	public abstract class SectoredRigidbodySync : UnparentedBaseRigidbodySync, ISectoredSync<OWRigidbody>
+	public abstract class SectoredRigidbodySync : BaseRigidbodySync, ISectoredSync<OWRigidbody>
 	{
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
