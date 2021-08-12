@@ -13,12 +13,12 @@ namespace QSB.SectorSync
 {
 	public class SectorSync : MonoBehaviour
 	{
+		public bool IsReady { get; private set; }
 		public List<QSBSector> SectorList = new List<QSBSector>();
 
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
 		private TargetType _targetType;
-		private bool _isReady;
 
 		private void OnDestroy()
 		{
@@ -27,7 +27,7 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
-			_isReady = false;
+			IsReady = false;
 		}
 
 		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
@@ -58,7 +58,7 @@ namespace QSB.SectorSync
 			PopulateSectorList();
 
 			_targetType = sectoredSync.Type;
-			_isReady = true;
+			IsReady = true;
 		}
 
 		private void PopulateSectorList()
@@ -119,7 +119,7 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			if (!_isReady)
+			if (!IsReady)
 			{
 				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name} Stacktrace:{Environment.StackTrace}", MessageType.Warning);
 				return null;
@@ -127,7 +127,7 @@ namespace QSB.SectorSync
 
 			if (_sectorDetector == null || _attachedOWRigidbody == null || _targetType == TargetType.None)
 			{
-				_isReady = false;
+				IsReady = false;
 				DebugLog.ToConsole($"Error - SectorSync is no longer ready. Detector Null : {_sectorDetector == null}, OWRigidbody Null : {_attachedOWRigidbody == null}, None TargetType : {_targetType == TargetType.None}", MessageType.Error);
 				return null;
 			}
