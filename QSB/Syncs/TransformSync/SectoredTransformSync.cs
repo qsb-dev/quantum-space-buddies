@@ -49,6 +49,12 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			QSBCore.UnityEvents.RunWhen(() => SectorSync.IsReady, InitSector);
+		}
+
+		private void InitSector()
+		{
+			DebugLog.DebugWrite($"InitSector of {_logName}");
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -56,7 +62,7 @@ namespace QSB.Syncs.TransformSync
 			}
 			else
 			{
-				DebugLog.DebugWrite($"INIT - {PlayerId}.{GetType().Name}'s closest sector is null!");
+				DebugLog.ToConsole($"Warning - {_logName}'s initial sector was null.", OWML.Common.MessageType.Warning);
 			}
 		}
 
@@ -117,7 +123,10 @@ namespace QSB.Syncs.TransformSync
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - ReferenceSector of {PlayerId}.{GetType().Name} is null.", OWML.Common.MessageType.Warning);
+				if (_isInitialized)
+				{
+					DebugLog.ToConsole($"Warning - ReferenceSector of {PlayerId}.{GetType().Name} is null.", OWML.Common.MessageType.Warning);
+				}
 				writer.Write(-1);
 			}
 
@@ -132,7 +141,7 @@ namespace QSB.Syncs.TransformSync
 				sectorId = reader.ReadInt32();
 				if (initialState && sectorId != -1)
 				{
-					DebugLog.DebugWrite($"SET WAITING FOR SECTOR SET - id {sectorId}");
+					DebugLog.DebugWrite($"{_logName} set waiting sector id:{sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
 				reader.ReadVector3();
@@ -190,8 +199,12 @@ namespace QSB.Syncs.TransformSync
 				}
 				else
 				{
-					DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
-					return false;
+					if (SectorSync.IsReady)
+					{
+						DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
+					}
+					
+					return base.UpdateTransform();
 				}
 			}
 
