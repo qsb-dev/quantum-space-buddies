@@ -138,7 +138,6 @@ namespace QSB
 
 		public override void OnStartClient(QNetworkClient _)
 		{
-			DebugLog.DebugWrite($"Setting defaultServerIP to {networkAddress}");
 			var config = QSBCore.Helper.Config;
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
