@@ -279,7 +279,7 @@
     <Compile Include="ShipSync\WorldObjects\QSBShipComponent.cs" />
     <Compile Include="ShipSync\WorldObjects\QSBShipHull.cs" />
     <Compile Include="Syncs\ISectoredSync.cs" />
-    <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />
+    <Compile Include="Syncs\RigidbodySync\BaseRigidbodySync.cs" />
     <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
     <Compile Include="Syncs\SyncBase.cs" />
     <Compile Include="TimeSync\FastForwardReason.cs" />
