@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.Syncs.RigidbodySync
 {
-	public abstract class UnparentedBaseRigidbodySync : SyncBase
+	public abstract class BaseRigidbodySync : SyncBase
 	{
 		protected Vector3 _relativeVelocity;
 		protected Vector3 _relativeAngularVelocity;
