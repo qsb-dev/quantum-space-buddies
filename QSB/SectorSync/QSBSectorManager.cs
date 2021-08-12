@@ -68,7 +68,7 @@ namespace QSB.SectorSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
 				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");

@@ -31,7 +31,7 @@ namespace QSB.QuantumSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
 			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
