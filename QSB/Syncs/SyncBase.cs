@@ -1,14 +1,46 @@
-﻿using OWML.Common;
+﻿using Harmony;
+using OWML.Common;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs
 {
+	/*
+	 * Rewrite number : 9
+	 * God has cursed me for my hubris, and my work is never finished.
+	 */
+
 	public abstract class SyncBase : QNetworkTransform
 	{
+		private static readonly Dictionary<PlayerInfo, Dictionary<Type, SyncBase>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, SyncBase>>();
+
+		public static T GetPlayers<T>(PlayerInfo player)
+			where T : SyncBase
+		{
+			var dictOfOwnedSyncs = _storedTransformSyncs[player];
+			var wantedSync = dictOfOwnedSyncs[typeof(T)];
+			if (wantedSync == default)
+			{
+				DebugLog.ToConsole($"Error -  _storedTransformSyncs does not contain type:{typeof(T)} under player {player.PlayerId}. Attempting to find manually...", MessageType.Error);
+				var allSyncs = Resources.FindObjectsOfTypeAll<T>();
+				wantedSync = allSyncs.First(x => x.Player == player);
+				if (wantedSync == default)
+				{
+					DebugLog.ToConsole($"Error -  Could not find type:{typeof(T)} for player {player.PlayerId} manually!", MessageType.Error);
+					return default;
+				}
+			}
+
+			return (T)wantedSync;
+		}
+
 		public uint AttachedNetId
 		{
 			get
@@ -50,6 +82,7 @@ namespace QSB.Syncs
 		public abstract bool UseInterpolation { get; }
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
+		public abstract bool ShouldReparentAttachedObject { get; }
 
 		public Component AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
@@ -63,22 +96,82 @@ namespace QSB.Syncs
 		protected IntermediaryTransform _intermediaryTransform;
 		protected bool _isInitialized;
 
-		protected abstract Component InitLocalTransform();
-		protected abstract Component InitRemoteTransform();
+		protected abstract Component SetAttachedObject();
 		protected abstract bool UpdateTransform();
-		protected abstract void Init();
 
-		protected Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		public virtual void Start()
 		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
+			DebugLog.DebugWrite($"[SyncBase] {_logName} Start");
+			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
+				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
+			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+
+			DontDestroyOnLoad(gameObject);
+			_intermediaryTransform = new IntermediaryTransform(transform);
+			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+
+			if (Player == null)
 			{
-				_previousDistance = distance;
-				return targetPosition;
+				DebugLog.ToConsole($"Error - Player in start of {_logName} was null!", MessageType.Error);
+				return;
 			}
 
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+			if (!_storedTransformSyncs.ContainsKey(Player))
+			{
+				_storedTransformSyncs.Add(Player, new Dictionary<Type, SyncBase>());
+			}
+
+			var playerDict = _storedTransformSyncs[Player];
+			playerDict[GetType()] = this;
+		}
+
+		protected virtual void OnDestroy()
+		{
+			DebugLog.DebugWrite($"[SyncBase] {_logName} OnDestroy");
+			if (ShouldReparentAttachedObject)
+			{
+				if (!HasAuthority && AttachedObject != null)
+				{
+					Destroy(AttachedObject.gameObject);
+				}
+			}
+
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+
+			if (!QSBPlayerManager.PlayerExists(PlayerId))
+			{
+				return;
+			}
+
+			var playerDict = _storedTransformSyncs[Player];
+			playerDict.Remove(GetType());
+		}
+
+		protected virtual void Init()
+		{
+			DebugLog.DebugWrite($"[SyncBase] {_logName} Init");
+			if (!QSBSceneManager.IsInUniverse)
+			{
+				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
+			}
+
+			// TODO : maybe make it's own option
+			if (ShouldReparentAttachedObject)
+			{
+				if (!HasAuthority && AttachedObject != null)
+				{
+					Destroy(AttachedObject.gameObject);
+				}
+			}
+
+			AttachedObject = SetAttachedObject();
+			_isInitialized = true;
+		}
+
+		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		{
+			DebugLog.DebugWrite($"[SyncBase] {_logName} OnSceneLoaded");
+			_isInitialized = false;
 		}
 
 		public override void Update()
@@ -159,6 +252,66 @@ namespace QSB.Syncs
 			*/
 
 			base.Update();
+		}
+
+		protected Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		{
+			var distance = Vector3.Distance(currentPosition, targetPosition);
+			if (distance > _previousDistance + DistanceLeeway)
+			{
+				_previousDistance = distance;
+				return targetPosition;
+			}
+
+			_previousDistance = distance;
+			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+		}
+
+		public void SetReferenceTransform(Transform transform)
+		{
+			DebugLog.DebugWrite($"[SyncBase] {_logName} SetReferenceTransform");
+			if (ReferenceTransform == transform)
+			{
+				return;
+			}
+
+			ReferenceTransform = transform;
+			_intermediaryTransform.SetReferenceTransform(transform);
+
+			if (ShouldReparentAttachedObject)
+			{
+				if (AttachedObject == null)
+				{
+					DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
+					QSBCore.UnityEvents.RunWhen(
+						() => AttachedObject != null,
+						() => ReparentAttachedObject(transform));
+					return;
+				}
+
+				if (!HasAuthority)
+				{
+					ReparentAttachedObject(transform);
+				}
+			}
+
+			if (HasAuthority)
+			{
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+			}
+		}
+
+		private void ReparentAttachedObject(Transform newParent)
+		{
+			DebugLog.DebugWrite($"[SyncBase] {_logName} ReparentAttachedObject");
+			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
+			{
+				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
+			}
+
+			AttachedObject.transform.SetParent(newParent, true);
+			AttachedObject.transform.localScale = Vector3.one;
 		}
 
 		protected virtual void OnRenderObject()
