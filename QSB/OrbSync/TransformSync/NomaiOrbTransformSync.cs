@@ -1,4 +1,4 @@
-﻿using QSB.Syncs.TransformSync;
+﻿using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	internal class NomaiOrbTransformSync : UnparentedBaseTransformSync
+	internal class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
 		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
 

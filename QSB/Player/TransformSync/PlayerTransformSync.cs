@@ -4,7 +4,7 @@ using QSB.Events;
 using QSB.Instruments;
 using QSB.RoastingSync;
 using QSB.SectorSync;
-using QSB.Syncs.TransformSync;
+using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools;
 using QSB.Utility;
 using QSB.WorldSync;

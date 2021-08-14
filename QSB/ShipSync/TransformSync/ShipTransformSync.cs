@@ -1,6 +1,6 @@
 using QSB.Player;
 using QSB.SectorSync;
-using QSB.Syncs.RigidbodySync;
+using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -19,9 +19,6 @@ namespace QSB.ShipSync.TransformSync
 			base.Start();
 			LocalInstance = this;
 		}
-
-		protected override Component InitLocalTransform() => throw new System.NotImplementedException();
-		protected override Component InitRemoteTransform() => throw new System.NotImplementedException();
 
 		protected override OWRigidbody GetRigidbody()
 		{
