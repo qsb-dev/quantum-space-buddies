@@ -1,7 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.Player;
 using QSB.ProbeSync.TransformSync;
-using QSB.Syncs.TransformSync;
+using QSB.Syncs;
 using QSB.TimeSync;
 using UnityEngine;
 
@@ -67,7 +67,7 @@ namespace QSB.Utility
 					offset2 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
 					offset2 += _debugLineSpacing;
-					var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
+					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
 					if (probeSync != default)
 					{
 						var probeSector = probeSync.ReferenceSector;
