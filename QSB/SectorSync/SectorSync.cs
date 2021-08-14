@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
 using QSB.Syncs;
+using QSB.Syncs.Sectored;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -30,7 +31,7 @@ namespace QSB.SectorSync
 			IsReady = false;
 		}
 
-		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
+		public void Init(SectorDetector detector, BaseSectoredSync sectoredSync)
 		{
 			DebugLog.DebugWrite($"INIT SECTOR SYNC detector:{detector.name}");
 			if (_sectorDetector != null)
