@@ -41,8 +41,6 @@ namespace QSB.Utility
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}", guiStyle);
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Mouse input : {OWInput.GetValue(InputLibrary.look, false, InputMode.All)}", guiStyle);
-				offset += _debugLineSpacing;
 			}
 
 			var offset2 = 10f;
