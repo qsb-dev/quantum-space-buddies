@@ -17,7 +17,7 @@ namespace QSB.OrbSync.TransformSync
 		protected override void OnDestroy()
 		{
 			OrbTransformSyncs.Remove(this);
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			base.OnDestroy();
 		}
 
 		protected override void Init()
@@ -59,6 +59,7 @@ namespace QSB.OrbSync.TransformSync
 		protected override Component InitLocalTransform() => GetTransform();
 		protected override Component InitRemoteTransform() => GetTransform();
 
+		protected override float DistanceLeeway => 1f;
 		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => false;
 	}
