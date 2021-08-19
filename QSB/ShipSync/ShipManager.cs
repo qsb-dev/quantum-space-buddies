@@ -107,6 +107,9 @@ namespace QSB.ShipSync
 			UpdateElectricalComponent();
 		}
 
+		public bool IsPlayerInShip(PlayerInfo player)
+			=> _playersInShip.Contains(player);
+
 		private void UpdateElectricalComponent()
 		{
 			var electricalSystem = ShipElectricalComponent.GetValue<ElectricalSystem>("_electricalSystem");
