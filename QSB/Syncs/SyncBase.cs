@@ -101,7 +101,6 @@ namespace QSB.Syncs
 
 		public virtual void Start()
 		{
-			DebugLog.DebugWrite($"[SyncBase] {_logName} Start");
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
@@ -127,7 +126,6 @@ namespace QSB.Syncs
 
 		protected virtual void OnDestroy()
 		{
-			DebugLog.DebugWrite($"[SyncBase] {_logName} OnDestroy");
 			if (ShouldReparentAttachedObject)
 			{
 				if (!HasAuthority && AttachedObject != null)
@@ -149,7 +147,6 @@ namespace QSB.Syncs
 
 		protected virtual void Init()
 		{
-			DebugLog.DebugWrite($"[SyncBase] {_logName} Init");
 			if (!QSBSceneManager.IsInUniverse)
 			{
 				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
@@ -170,7 +167,6 @@ namespace QSB.Syncs
 
 		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 		{
-			DebugLog.DebugWrite($"[SyncBase] {_logName} OnSceneLoaded");
 			_isInitialized = false;
 		}
 
@@ -259,6 +255,11 @@ namespace QSB.Syncs
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
 			{
+				/*
+				DebugLog.DebugWrite($"{_logName} moved too far!" +
+					$"\r\n CurrentPosition:{currentPosition}," +
+					$"\r\n TargetPosition:{targetPosition}");
+				*/
 				_previousDistance = distance;
 				return targetPosition;
 			}
@@ -269,7 +270,6 @@ namespace QSB.Syncs
 
 		public void SetReferenceTransform(Transform transform)
 		{
-			DebugLog.DebugWrite($"[SyncBase] {_logName} SetReferenceTransform");
 			if (ReferenceTransform == transform)
 			{
 				return;
@@ -304,7 +304,6 @@ namespace QSB.Syncs
 
 		private void ReparentAttachedObject(Transform newParent)
 		{
-			DebugLog.DebugWrite($"[SyncBase] {_logName} ReparentAttachedObject");
 			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
 			{
 				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);

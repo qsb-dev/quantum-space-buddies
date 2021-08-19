@@ -1,12 +1,5 @@
 ﻿using QSB.SectorSync.WorldObjects;
 using QSB.SectorSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using QSB.Player.TransformSync;
-using UnityEngine;
-using OWML.Common;
 using QSB.Utility;
 using QSB.Player;
 using QSB.WorldSync;
@@ -60,7 +53,6 @@ namespace QSB.Syncs.Sectored
 
 		private void InitSector()
 		{
-			DebugLog.DebugWrite($"[BaseSectoredSync] {_logName} InitSector");
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -143,7 +135,6 @@ namespace QSB.Syncs.Sectored
 			if (!QSBCore.WorldObjectsReady)
 			{
 				sectorId = reader.ReadInt32();
-				DebugLog.DebugWrite($" - {_logName} ReadInt32 {sectorId}");
 				if (initialState && sectorId != -1)
 				{
 					DebugLog.DebugWrite($"{_logName} set waiting sector id:{sectorId}");
@@ -153,7 +144,6 @@ namespace QSB.Syncs.Sectored
 			}
 
 			sectorId = reader.ReadInt32();
-			DebugLog.DebugWrite($" - {_logName} ReadInt32 {sectorId}");
 			var sector = sectorId == -1
 				? null
 				: QSBWorldSync.GetWorldFromId<QSBSector>(sectorId);
@@ -190,8 +180,7 @@ namespace QSB.Syncs.Sectored
 
 			if (!HasAuthority)
 			{
-				DebugLog.DebugWrite($"[BaseSectoredSync] {_logName} : Does not have authority.");
-				return false;
+				return true;
 			}
 
 			if (referenceNull)
@@ -218,7 +207,6 @@ namespace QSB.Syncs.Sectored
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			DebugLog.DebugWrite($"[BaseSectoredSync] {_logName} SetReferenceSector {sector.Name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}
