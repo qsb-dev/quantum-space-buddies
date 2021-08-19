@@ -27,8 +27,6 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
-			base.DeserializeTransform(reader, initialState);
-
 			if (!QSBCore.WorldObjectsReady)
 			{
 				reader.ReadVector3();
@@ -67,20 +65,24 @@ namespace QSB.Syncs.Unsectored.Transforms
 				return true;
 			}
 
-			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
-			var targetRot = _intermediaryTransform.GetTargetRotation_ParentedToReference();
+			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
+			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
 			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
 			{
 				if (UseInterpolation)
 				{
-					AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
-					AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+					AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
+					AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
 				}
 				else
 				{
-					AttachedObject.transform.localPosition = targetPos;
-					AttachedObject.transform.localRotation = targetRot;
+					AttachedObject.transform.position = targetPos;
+					AttachedObject.transform.rotation = targetRot;
 				}
+			}
+			else if (targetPos == Vector3.zero)
+			{
+				DebugLog.ToConsole($"Warning - TargetPos for {_logName} was (0,0,0).", MessageType.Warning);
 			}
 
 			return true;
