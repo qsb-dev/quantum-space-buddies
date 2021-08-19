@@ -85,7 +85,8 @@ namespace QSB.ShipSync
 				{
 					DebugLog.ToConsole($"Error - Tried to spawn ship, but LocalPlayer's TransformSync is null!", MessageType.Error);
 				}
-				QNetworkServer.SpawnWithClientAuthority(Instantiate(QSBNetworkManager.Instance.ShipPrefab), QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
+
+				Instantiate(QSBNetworkManager.Instance.ShipPrefab).SpawnWithServerAuthority();
 			}
 
 			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();
