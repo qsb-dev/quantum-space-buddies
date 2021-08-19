@@ -84,9 +84,17 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
+			var currentOwner = orbIdentity.ClientAuthorityOwner;
+			var newOwner = fromPlayer;
+
+			if (currentOwner == newOwner)
 			{
-				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
+				return;
+			}
+
+			if (currentOwner != null && currentOwner != fromPlayer)
+			{
+				orbIdentity.RemoveClientAuthority(currentOwner);
 			}
 
 			orbIdentity.AssignClientAuthority(fromPlayer);
