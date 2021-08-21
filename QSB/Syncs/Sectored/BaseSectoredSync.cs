@@ -14,7 +14,6 @@ namespace QSB.Syncs.Sectored
 
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
-		public abstract TargetType Type { get; }
 
 		private int _sectorIdWaitingSlot = int.MinValue;
 

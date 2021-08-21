@@ -31,7 +31,7 @@ namespace QSB.SectorSync
 			IsReady = false;
 		}
 
-		public void Init(SectorDetector detector, BaseSectoredSync sectoredSync)
+		public void Init(SectorDetector detector, TargetType type)
 		{
 			DebugLog.DebugWrite($"INIT SECTOR SYNC detector:{detector.name}");
 			if (_sectorDetector != null)
@@ -58,7 +58,7 @@ namespace QSB.SectorSync
 
 			PopulateSectorList();
 
-			_targetType = sectoredSync.Type;
+			_targetType = type;
 			IsReady = true;
 		}
 

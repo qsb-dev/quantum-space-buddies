@@ -86,7 +86,7 @@ namespace QSB.Player.TransformSync
 
 		protected override Component InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), this));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -275,7 +275,5 @@ namespace QSB.Player.TransformSync
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
 		public override bool UseInterpolation => true;
-
-		public override TargetType Type => TargetType.Player;
 	}
 }

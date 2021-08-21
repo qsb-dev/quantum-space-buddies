@@ -14,7 +14,6 @@ namespace QSB.ProbeSync.TransformSync
 	{
 		protected override float DistanceLeeway => 10f;
 		public override bool UseInterpolation => true;
-		public override TargetType Type => TargetType.Probe;
 		public override bool IgnoreDisabledAttachedObject => true;
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
@@ -23,7 +22,7 @@ namespace QSB.ProbeSync.TransformSync
 
 		protected override Component InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe));
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
