@@ -46,7 +46,7 @@ namespace QSB.Animation.NPC.Patches
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // TODO : maybe cache this somewhere... or assess how slow this is
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
 			if (____inConversation)
@@ -63,7 +63,7 @@ namespace QSB.Animation.NPC.Patches
 						: player;
 				}
 			}
-			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // TODO : maybe this would be more fun if characters looked between players at random times? :P
+			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // IDEA : maybe this would be more fun if characters looked between players at random times? :P
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
 			}

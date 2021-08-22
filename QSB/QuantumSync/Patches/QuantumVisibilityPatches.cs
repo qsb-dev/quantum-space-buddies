@@ -83,14 +83,14 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 
-			// TODO : Implement checking for other probes!
+			// BUG : Implement checking for other probes!
 			if (Locator.GetProbe() != null && Locator.GetProbe().IsLaunched() && Locator.GetProbe().CheckIlluminationAtPoint(point, ____illuminationRadius))
 			{
 				__result = true;
 				return false;
 			}
 
-			// TODO : Implement checking for other player's thrusters!
+			// BUG : Implement checking for other player's thrusters!
 			if (Locator.GetThrusterLightTracker().CheckIlluminationAtPoint(point, ____illuminationRadius))
 			{
 				__result = true;

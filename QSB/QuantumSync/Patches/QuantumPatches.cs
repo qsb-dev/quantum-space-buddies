@@ -344,7 +344,7 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 
-			// TODO : make this *really* check for all players - check other probes and other jetpacks!
+			// BUG : make this *really* check for all players - check other probes and other jetpacks!
 			__result = ____gate.GetOpenFraction() == 0f
 				&& !____isProbeInside
 				&& Locator.GetThrusterLightTracker().GetLightRange() <= 0f;

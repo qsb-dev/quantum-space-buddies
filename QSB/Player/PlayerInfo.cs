@@ -66,8 +66,8 @@ namespace QSB.Player
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc
-		public bool IsInMoon; // TODO : move into PlayerStates?
-		public bool IsInShrine; // TODO : move into PlayerStates?
+		public bool IsInMoon; // MOVE : move into PlayerStates?
+		public bool IsInShrine; // MOVE : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
 		public bool IsDead { get; set; }
 		public ClientState State { get; set; }
