@@ -129,7 +129,6 @@ namespace QSB.Player
 			}
 		}
 
-
 		public PlayerInfo(uint id)
 		{
 			PlayerId = id;

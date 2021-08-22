@@ -60,7 +60,6 @@ namespace QSB.Utility
 					var networkTransform = player.TransformSync;
 					var sector = networkTransform.ReferenceSector;
 
-
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
 					offset2 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);

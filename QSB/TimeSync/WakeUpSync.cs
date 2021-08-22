@@ -237,7 +237,6 @@ namespace QSB.TimeSync
 		{
 			_serverTime = Time.timeSinceLevelLoad;
 
-
 			var serverState = ServerStateManager.Instance.GetServerState();
 			var clientState = QSBPlayerManager.LocalPlayer.State;
 
