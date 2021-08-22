@@ -16,7 +16,7 @@ namespace QSB.Syncs.Sectored.Transforms
 		protected abstract Component InitLocalTransform();
 		protected abstract Component InitRemoteTransform();
 
-		protected override Component SetAttachedObject() 
+		protected override Component SetAttachedObject()
 			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -36,7 +36,7 @@ namespace QSB.Syncs.Sectored.Transforms
 			base.DeserializeTransform(reader, initialState);
 
 			if (!QSBCore.WorldObjectsReady)
-			{	
+			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);
 				return;

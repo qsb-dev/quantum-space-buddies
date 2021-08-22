@@ -32,7 +32,7 @@ namespace QSB.Player
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight 
+		public QSBFlashlight FlashLight
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace QSB.Player
 			}
 		}
 
-		public Flashlight LocalFlashlight 
+		public Flashlight LocalFlashlight
 		{
 			get
 			{

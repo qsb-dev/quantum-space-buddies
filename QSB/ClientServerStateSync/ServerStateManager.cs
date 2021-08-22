@@ -16,7 +16,7 @@ namespace QSB.ClientServerStateSync
 
 		private ServerState _currentState;
 
-		private void Awake() 
+		private void Awake()
 			=> Instance = this;
 
 		private void Start()
@@ -42,7 +42,7 @@ namespace QSB.ClientServerStateSync
 			OnChangeState?.Invoke(newState);
 		}
 
-		public ServerState GetServerState() 
+		public ServerState GetServerState()
 			=> _currentState;
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)

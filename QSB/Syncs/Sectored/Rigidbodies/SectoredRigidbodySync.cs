@@ -166,7 +166,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			return true;
 		}
 
-		public override bool HasMoved() 
+		public override bool HasMoved()
 			=> CustomHasMoved(
 				_intermediaryTransform.GetPosition(),
 				_prevPosition,

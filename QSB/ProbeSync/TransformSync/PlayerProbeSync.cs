@@ -52,8 +52,8 @@ namespace QSB.ProbeSync.TransformSync
 				return default;
 			}
 
-			var body = probe.gameObject.activeSelf 
-				? probe.InstantiateInactive() 
+			var body = probe.gameObject.activeSelf
+				? probe.InstantiateInactive()
 				: Instantiate(probe);
 
 			body.name = "RemoteProbeTransform";
