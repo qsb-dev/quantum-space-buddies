@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.ShipSync;
 using QSB.Utility;
 using QuantumUNET.Transport;
 using UnityEngine;

@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
-using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
