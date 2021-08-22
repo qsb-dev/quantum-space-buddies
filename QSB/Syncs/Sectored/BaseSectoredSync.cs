@@ -1,7 +1,7 @@
-﻿using QSB.SectorSync.WorldObjects;
+﻿using QSB.Player;
 using QSB.SectorSync;
+using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
-using QSB.Player;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 
