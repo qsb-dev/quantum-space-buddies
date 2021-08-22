@@ -78,6 +78,7 @@ namespace QSB.ShipSync
 						DebugLog.ToConsole($"Warning - ShipTransformSync's LocalInstance is not null, but it's gameobject is null!", MessageType.Warning);
 						return;
 					}
+
 					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
 

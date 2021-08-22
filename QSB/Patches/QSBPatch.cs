@@ -109,6 +109,7 @@ namespace QSB.Patches
 				var paramList = method.GetParameters().Select(x => x.ParameterType);
 				DebugLog.ToConsole($"- Found {method.Name}, but with params {string.Join(", ", paramList.Select(x => x.FullName).ToArray())}", MessageType.Error);
 			}
+
 			return null;
 		}
 

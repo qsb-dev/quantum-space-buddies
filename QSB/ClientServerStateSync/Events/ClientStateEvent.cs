@@ -34,6 +34,7 @@ namespace QSB.ClientServerStateSync.Events
 				DebugLog.DebugWrite($"Error - ID is uint.MaxValue!", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.State = message.EnumValue;
 		}

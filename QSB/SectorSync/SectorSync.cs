@@ -26,6 +26,7 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+
 			IsReady = false;
 		}
 

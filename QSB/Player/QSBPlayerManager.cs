@@ -91,6 +91,7 @@ namespace QSB.Player
 			{
 				player.UpdateStateObjects();
 			}
+
 			player.State = message.ClientState;
 		}
 

@@ -34,6 +34,7 @@ namespace QSB.DeathSync.Events
 					{
 						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForDeath);
 					}
+
 					break;
 			}
 		}

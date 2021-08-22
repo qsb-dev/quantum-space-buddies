@@ -139,6 +139,7 @@ namespace QSB.Syncs.Sectored
 					DebugLog.DebugWrite($"{_logName} set waiting sector id:{sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
+
 				return;
 			}
 

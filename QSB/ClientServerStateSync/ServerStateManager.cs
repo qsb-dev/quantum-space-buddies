@@ -25,6 +25,7 @@ namespace QSB.ClientServerStateSync
 			{
 				return;
 			}
+
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			GlobalMessenger.AddListener("TriggerSupernova", OnTriggerSupernova);
 
@@ -37,6 +38,7 @@ namespace QSB.ClientServerStateSync
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"CHANGE SERVER STATE FROM {_currentState} to {newState}");
 			_currentState = newState;
 			OnChangeState?.Invoke(newState);
@@ -68,6 +70,7 @@ namespace QSB.ClientServerStateSync
 					{
 						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InSolarSystem);
 					}
+
 					break;
 
 				case OWScene.EyeOfTheUniverse:

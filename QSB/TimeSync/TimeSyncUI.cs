@@ -91,6 +91,7 @@ namespace QSB.TimeSync
 								+ "Fast-forwarding to match server time...";
 							break;
 					}
+
 					break;
 
 				case TimeSyncType.Pausing:
@@ -112,6 +113,7 @@ namespace QSB.TimeSync
 							text = "Waiting for end of loop...";
 							break;
 					}
+
 					break;
 			}
 

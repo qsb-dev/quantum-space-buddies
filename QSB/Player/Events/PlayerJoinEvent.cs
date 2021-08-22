@@ -30,6 +30,7 @@ namespace QSB.Player.Events
 					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong QSB version. (Client:{message.QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
 					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.QSBVersionNotMatching);
 				}
+
 				return;
 			}
 
@@ -40,6 +41,7 @@ namespace QSB.Player.Events
 					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong game version. (Client:{message.GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
 					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GameVersionNotMatching);
 				}
+
 				return;
 			}
 

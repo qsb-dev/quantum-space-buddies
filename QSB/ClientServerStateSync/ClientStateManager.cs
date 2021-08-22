@@ -28,6 +28,7 @@ namespace QSB.ClientServerStateSync
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"CHANGE CLIENT STATE FROM {QSBPlayerManager.LocalPlayer.State} to {newState}");
 			QSBPlayerManager.LocalPlayer.State = newState;
 			OnChangeState?.Invoke(newState);
