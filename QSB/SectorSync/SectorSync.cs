@@ -1,9 +1,9 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
-using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +12,7 @@ namespace QSB.SectorSync
 {
 	public class SectorSync : MonoBehaviour
 	{
+		public bool IsReady { get; private set; }
 		public List<QSBSector> SectorList = new List<QSBSector>();
 
 		private OWRigidbody _attachedOWRigidbody;
@@ -25,15 +26,25 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+
+			IsReady = false;
 		}
 
-		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
+		public void Init(SectorDetector detector, TargetType type)
 		{
+			DebugLog.DebugWrite($"INIT SECTOR SYNC detector:{detector.name}");
 			if (_sectorDetector != null)
 			{
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+
+			if (detector == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init SectorSync with null SectorDetector.", MessageType.Error);
+				return;
+			}
+
 			_sectorDetector = detector;
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
@@ -44,7 +55,26 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
 
-			_targetType = sectoredSync.Type;
+			PopulateSectorList();
+
+			_targetType = type;
+			IsReady = true;
+		}
+
+		private void PopulateSectorList()
+		{
+			var currentList = _sectorDetector.GetValue<List<Sector>>("_sectorList");
+
+			SectorList.Clear();
+			foreach (var sector in currentList)
+			{
+				if (sector == null)
+				{
+					continue;
+				}
+
+				AddSector(sector);
+			}
 		}
 
 		private void AddSector(Sector sector)
@@ -54,11 +84,13 @@ namespace QSB.SectorSync
 			{
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
 			}
+
 			if (SectorList.Contains(worldObject))
 			{
 				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
 				return;
 			}
+
 			SectorList.Add(worldObject);
 		}
 
@@ -70,37 +102,41 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
 				return;
 			}
+
 			if (!SectorList.Contains(worldObject))
 			{
 				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
 				return;
 			}
+
 			SectorList.Remove(worldObject);
 		}
 
 		public QSBSector GetClosestSector(Transform trans) // trans rights \o/
 		{
-			if (!QSBSectorManager.Instance.IsReady)
+			if (QSBSectorManager.Instance == null || !QSBSectorManager.Instance.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to get closest sector to {trans.name} before QSBSectorManager was ready.", MessageType.Warning);
+				return null;
+			}
+
+			if (!IsReady)
+			{
+				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name} Stacktrace:{Environment.StackTrace}", MessageType.Warning);
+				return null;
+			}
+
+			if (_sectorDetector == null || _attachedOWRigidbody == null || _targetType == TargetType.None)
+			{
+				IsReady = false;
+				DebugLog.ToConsole($"Error - SectorSync is no longer ready. Detector Null : {_sectorDetector == null}, OWRigidbody Null : {_attachedOWRigidbody == null}, None TargetType : {_targetType == TargetType.None}", MessageType.Error);
 				return null;
 			}
 
 			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
-			
-			var listToCheck = numSectorsCurrentlyIn == 0
-				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector)
-				: SectorList;
 
-			/* Explanation of working out which sector to sync to :
-			 * A) Closer sectors are best
-			 * B) Smaller sub-sectors are preferred
-			 * So, get all non-null sectors that aren't blacklisted and are active
-			 * (They need to be active otherwise it'll sync to disabled sectors, like the eye shuttle - which makes the player invisible)
-			 * Then, sort that list also by the radius of the sector.
-			 * We want smaller subsectors (e.g. Starting_Camp) to be preferred over general sectors (e.g. Village)
-			 * TL;DR : Sync to the smallest, closest sector
-			 */
+			var listToCheck = numSectorsCurrentlyIn == 0
+				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed)
+				: SectorList;
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
 				&& sector.ShouldSyncTo(_targetType));
@@ -108,10 +144,7 @@ namespace QSB.SectorSync
 			{
 				return default;
 			}
-			//var ordered = activeNotNullNotBlacklisted
-			//.OrderBy(sector => Vector3.Distance(sector.Position, trans.position))
-			//.ThenBy(sector => GetRelativeVelocity(sector, _attachedOWRigidbody))
-			//.ThenBy(sector => GetRadius(sector));
+
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
@@ -154,9 +187,10 @@ namespace QSB.SectorSync
 					return trigger.GetShape().CalcWorldBounds().radius;
 				}
 			}
+
 			return 0f;
 		}
-		
+
 		public static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
 		{
 			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
@@ -166,6 +200,7 @@ namespace QSB.SectorSync
 				var relativeVelocityMagnitude = relativeVelocity.sqrMagnitude; // Remember this is squared for efficiency!
 				return relativeVelocityMagnitude;
 			}
+
 			return 0;
 		}
 	}

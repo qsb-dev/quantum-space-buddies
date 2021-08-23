@@ -37,6 +37,7 @@ namespace QNetWeaver
 				Console.WriteLine("No symbols for " + inputFile);
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -48,6 +49,7 @@ namespace QNetWeaver
 				{
 					return false;
 				}
+
 				foreach (var typeReference in ResolveInheritanceHierarchy(typeRef))
 				{
 					if (typeReference.IsGenericInstance)
@@ -63,6 +65,7 @@ namespace QNetWeaver
 			catch
 			{
 			}
+
 			return false;
 		}
 
@@ -75,6 +78,7 @@ namespace QNetWeaver
 				yield return Weaver.objectType;
 				yield break;
 			}
+
 			while (type != null && type.FullName != Weaver.objectType.FullName)
 			{
 				yield return type;
@@ -85,6 +89,7 @@ namespace QNetWeaver
 					{
 						break;
 					}
+
 					type = typeDefinition.BaseType;
 				}
 				catch
@@ -92,6 +97,7 @@ namespace QNetWeaver
 					break;
 				}
 			}
+
 			yield return Weaver.objectType;
 			yield break;
 		}
@@ -122,6 +128,7 @@ namespace QNetWeaver
 			{
 				result = type.Name;
 			}
+
 			return result;
 		}
 
@@ -132,6 +139,7 @@ namespace QNetWeaver
 			{
 				assemblyResolver = new DefaultAssemblyResolver();
 			}
+
 			var addSearchDirectoryHelper = new Helpers.AddSearchDirectoryHelper(assemblyResolver);
 			addSearchDirectoryHelper.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
 			addSearchDirectoryHelper.AddSearchDirectory(UnityEngineDLLDirectoryName());
@@ -144,6 +152,7 @@ namespace QNetWeaver
 					addSearchDirectoryHelper.AddSearchDirectory(directory);
 				}
 			}
+
 			readerParameters.AssemblyResolver = assemblyResolver;
 			readerParameters.SymbolReaderProvider = GetSymbolReaderProvider(assemblyPath);
 			return readerParameters;
@@ -160,6 +169,7 @@ namespace QNetWeaver
 			{
 				writerParameters.SymbolWriterProvider = new MdbWriterProvider();
 			}
+
 			return writerParameters;
 		}
 
@@ -169,11 +179,13 @@ namespace QNetWeaver
 			{
 				throw new ArgumentException();
 			}
+
 			var genericInstanceType = new GenericInstanceType(self);
 			foreach (var item in arguments)
 			{
 				genericInstanceType.GenericArguments.Add(item);
 			}
+
 			return genericInstanceType;
 		}
 
@@ -189,10 +201,12 @@ namespace QNetWeaver
 			{
 				methodReference.Parameters.Add(new ParameterDefinition(parameterDefinition.ParameterType));
 			}
+
 			foreach (var genericParameter in self.GenericParameters)
 			{
 				methodReference.GenericParameters.Add(new GenericParameter(genericParameter.Name, methodReference));
 			}
+
 			return methodReference;
 		}
 
@@ -208,6 +222,7 @@ namespace QNetWeaver
 				{
 					throw new Exception("Assembly resolver doesn't implement AddSearchDirectory method.");
 				}
+
 				_addSearchDirectory = (Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate)Delegate.CreateDelegate(typeof(Helpers.AddSearchDirectoryHelper.AddSearchDirectoryDelegate), assemblyResolver, method);
 			}
 

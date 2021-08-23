@@ -11,10 +11,12 @@ namespace QSB.PoolSync
 			{
 				streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();
 			}
+
 			foreach (var camera in Resources.FindObjectsOfTypeAll<NomaiRemoteCamera>())
 			{
 				camera.gameObject.AddComponent<CustomNomaiRemoteCamera>();
 			}
+
 			foreach (var platform in Resources.FindObjectsOfTypeAll<NomaiRemoteCameraPlatform>())
 			{
 				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();

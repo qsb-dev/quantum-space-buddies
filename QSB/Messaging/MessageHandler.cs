@@ -35,6 +35,7 @@ namespace QSB.Messaging
 				QNetworkServer.handlers.Remove(_eventType);
 				QNetworkManager.singleton.client.handlers.Remove(_eventType);
 			}
+
 			QNetworkServer.RegisterHandler(_eventType, OnServerReceiveMessageHandler);
 			QNetworkManager.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
 		}
@@ -45,6 +46,7 @@ namespace QSB.Messaging
 			{
 				return;
 			}
+
 			QNetworkServer.SendToAll(_eventType, message);
 		}
 
@@ -54,6 +56,7 @@ namespace QSB.Messaging
 			{
 				return;
 			}
+
 			QNetworkManager.singleton.client.Send(_eventType, message);
 		}
 

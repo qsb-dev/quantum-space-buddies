@@ -60,6 +60,7 @@ namespace QuantumUNET
 						}
 					}
 				}
+
 				return s_Instance;
 			}
 		}
@@ -101,8 +102,10 @@ namespace QuantumUNET
 				{
 					s_Instance.m_SimpleServerSimple.Stop();
 				}
+
 				s_Instance = null;
 			}
+
 			dontListen = false;
 			active = false;
 		}
@@ -160,6 +163,7 @@ namespace QuantumUNET
 			{
 				return false;
 			}
+
 			maxPacketSize = hostTopology.DefaultConfig.PacketSize;
 			active = true;
 			RegisterMessageHandlers();
@@ -195,6 +199,7 @@ namespace QuantumUNET
 				m_LocalConnection.InvokeHandlerNoData(32);
 				result = 0;
 			}
+
 			return result;
 		}
 
@@ -208,12 +213,14 @@ namespace QuantumUNET
 					break;
 				}
 			}
+
 			if (m_LocalConnection != null)
 			{
 				m_LocalConnection.Disconnect();
 				m_LocalConnection.Dispose();
 				m_LocalConnection = null;
 			}
+
 			m_LocalClientActive = false;
 			m_SimpleServerSimple.RemoveConnectionAtIndex(0);
 		}
@@ -252,6 +259,7 @@ namespace QuantumUNET
 					flag &= networkConnection.Send(msgType, msg);
 				}
 			}
+
 			return flag;
 		}
 
@@ -273,8 +281,10 @@ namespace QuantumUNET
 					var networkConnection = component.Observers[i];
 					flag &= networkConnection.Send(msgType, msg);
 				}
+
 				result = flag;
 			}
+
 			return result;
 		}
 
@@ -313,9 +323,11 @@ namespace QuantumUNET
 							flag &= networkConnection2.Send(msgType, msg);
 						}
 					}
+
 					result = flag;
 				}
 			}
+
 			return result;
 		}
 
@@ -326,6 +338,7 @@ namespace QuantumUNET
 			{
 				throw new UnityException("NetworkWriter used buffer is too big!");
 			}
+
 			SendBytesToReady(contextObj, arraySegment.Array, arraySegment.Count, channelId);
 		}
 
@@ -344,6 +357,7 @@ namespace QuantumUNET
 						}
 					}
 				}
+
 				if (!flag)
 				{
 					QLog.Error("SendBytesToReady failed");
@@ -367,6 +381,7 @@ namespace QuantumUNET
 							}
 						}
 					}
+
 					if (!flag2)
 					{
 						QLog.Error($"SendBytesToReady failed for {contextObj}");
@@ -408,6 +423,7 @@ namespace QuantumUNET
 					flag &= networkConnection.SendUnreliable(msgType, msg);
 				}
 			}
+
 			return flag;
 		}
 
@@ -440,8 +456,10 @@ namespace QuantumUNET
 						flag &= networkConnection2.SendUnreliable(msgType, msg);
 					}
 				}
+
 				result = flag;
 			}
+
 			return result;
 		}
 
@@ -456,6 +474,7 @@ namespace QuantumUNET
 					flag &= networkConnection.SendByChannel(msgType, msg, channelId);
 				}
 			}
+
 			return flag;
 		}
 
@@ -488,8 +507,10 @@ namespace QuantumUNET
 						flag &= networkConnection2.SendByChannel(msgType, msg, channelId);
 					}
 				}
+
 				result = flag;
 			}
+
 			return result;
 		}
 
@@ -504,6 +525,7 @@ namespace QuantumUNET
 				m_LocalConnection.Dispose();
 				m_LocalConnection = null;
 			}
+
 			m_LocalClientActive = false;
 		}
 
@@ -524,6 +546,7 @@ namespace QuantumUNET
 				{
 				}
 			}
+
 			if (m_RemoveListCount++ % 100 == 0)
 			{
 				CheckForNullObjects();
@@ -540,12 +563,14 @@ namespace QuantumUNET
 					m_RemoveList.Add(networkInstanceId);
 				}
 			}
+
 			if (m_RemoveList.Count > 0)
 			{
 				foreach (var key in m_RemoveList)
 				{
 					objects.Remove(key);
 				}
+
 				m_RemoveList.Clear();
 			}
 		}
@@ -557,6 +582,7 @@ namespace QuantumUNET
 			{
 				m_SimpleServerSimple.UpdateConnections();
 			}
+
 			UpdateServerObjects();
 		}
 
@@ -578,6 +604,7 @@ namespace QuantumUNET
 					QLog.Warning("Player not destroyed when connection disconnected.");
 				}
 			}
+
 			QLog.Log($"Server lost client:{conn.connectionId}");
 			conn.RemoveObservers();
 			conn.Dispose();
@@ -676,6 +703,7 @@ namespace QuantumUNET
 					}
 				}
 			}
+
 			QLog.Error($"Failed to send message to player object '{player.name}, not found in connection list");
 		}
 
@@ -690,6 +718,7 @@ namespace QuantumUNET
 					return;
 				}
 			}
+
 			QLog.Error($"Failed to send message to connection ID '{connectionId}, not found in connection list");
 		}
 
@@ -718,6 +747,7 @@ namespace QuantumUNET
 					{
 						x = playerController.Gameobject;
 					}
+
 					if (x != null)
 					{
 						QLog.Log(
@@ -743,11 +773,13 @@ namespace QuantumUNET
 							{
 								networkIdentity.SetClientOwner(conn);
 							}
+
 							result = true;
 						}
 					}
 				}
 			}
+
 			return result;
 		}
 
@@ -770,8 +802,10 @@ namespace QuantumUNET
 				{
 					QLog.Warning($"AddPlayer: playerControllerId of {playerControllerId} is unusually high");
 				}
+
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -786,6 +820,7 @@ namespace QuantumUNET
 				{
 					uv.OnStartServer(true);
 				}
+
 				uv.RebuildObservers(true);
 				SendSpawnMessage(uv, null);
 				ulocalConnectionToClient.LocalClient.AddLocalPlayer(newPlayerController);
@@ -798,6 +833,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -807,54 +843,12 @@ namespace QuantumUNET
 			{
 				Spawn(playerGameObject);
 			}
+
 			conn.Send(4, new QOwnerMessage
 			{
 				NetId = uv.NetId,
 				PlayerControllerId = uv.PlayerControllerId
 			});
-		}
-
-		internal bool InternalReplacePlayerForConnection(QNetworkConnection conn, GameObject playerGameObject, short playerControllerId)
-		{
-			bool result;
-			if (!GetNetworkIdentity(playerGameObject, out var networkIdentity))
-			{
-				QLog.Error($"ReplacePlayer: playerGameObject has no NetworkIdentity. Please add a NetworkIdentity to {playerGameObject}");
-				result = false;
-			}
-			else if (!CheckPlayerControllerIdForConnection(conn, playerControllerId))
-			{
-				result = false;
-			}
-			else
-			{
-				QLog.Log("NetworkServer ReplacePlayer");
-				if (conn.GetPlayerController(playerControllerId, out var playerController))
-				{
-					playerController.UnetView.SetNotLocalPlayer();
-					playerController.UnetView.ClearClientOwner();
-				}
-				var playerController2 = new QPlayerController(playerGameObject, playerControllerId);
-				conn.SetPlayerController(playerController2);
-				networkIdentity.SetConnectionToClient(conn, playerController2.PlayerControllerId);
-				QLog.Log("NetworkServer ReplacePlayer setup local");
-				if (SetupLocalPlayerForConnection(conn, networkIdentity, playerController2))
-				{
-					result = true;
-				}
-				else
-				{
-					QLog.Log(
-						$"Replacing playerGameObject object netId: {playerGameObject.GetComponent<NetworkIdentity>().netId} asset ID {playerGameObject.GetComponent<NetworkIdentity>().assetId}");
-					FinishPlayerForConnection(conn, networkIdentity, playerGameObject);
-					if (networkIdentity.LocalPlayerAuthority)
-					{
-						networkIdentity.SetClientOwner(conn);
-					}
-					result = true;
-				}
-			}
-			return result;
 		}
 
 		private static bool GetNetworkIdentity(GameObject go, out QNetworkIdentity view)
@@ -870,6 +864,7 @@ namespace QuantumUNET
 			{
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -888,6 +883,7 @@ namespace QuantumUNET
 				{
 					QLog.Warning("Ready with no player object");
 				}
+
 				conn.isReady = true;
 				if (conn is QULocalConnectionToClient)
 				{
@@ -901,6 +897,7 @@ namespace QuantumUNET
 							{
 								networkIdentity.AddObserver(conn);
 							}
+
 							if (!networkIdentity.IsClient)
 							{
 								QLog.Log("LocalClient.SetSpawnObject calling OnStartClient");
@@ -934,6 +931,7 @@ namespace QuantumUNET
 							}
 						}
 					}
+
 					objectSpawnFinishedMessage.State = 1U;
 					conn.Send(12, objectSpawnFinishedMessage);
 				}
@@ -948,13 +946,10 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static void HideForConnection(QNetworkIdentity uv, QNetworkConnection conn)
+		internal static void HideForConnection(QNetworkIdentity uv, QNetworkConnection conn) => conn.Send(13, new QObjectDestroyMessage
 		{
-			conn.Send(13, new QObjectDestroyMessage
-			{
-				NetId = uv.NetId
-			});
-		}
+			NetId = uv.NetId
+		});
 
 		public static void SetAllClientsNotReady()
 		{
@@ -1031,6 +1026,7 @@ namespace QuantumUNET
 							break;
 						}
 					}
+
 					if (!flag)
 					{
 						if (component.ClientAuthorityOwner != netMsg.Connection)
@@ -1039,6 +1035,7 @@ namespace QuantumUNET
 							return;
 						}
 					}
+
 					QLog.Log($"OnCommandMessage for netId={networkInstanceId} conn={netMsg.Connection}");
 					component.HandleCommand(cmdHash, netMsg.Reader);
 				}
@@ -1083,6 +1080,7 @@ namespace QuantumUNET
 					{
 						objectSpawnMessage.Payload = networkWriter.ToArray();
 					}
+
 					if (conn != null)
 					{
 						conn.Send(3, objectSpawnMessage);
@@ -1106,6 +1104,7 @@ namespace QuantumUNET
 					{
 						objectSpawnSceneMessage.Payload = networkWriter2.ToArray();
 					}
+
 					if (conn != null)
 					{
 						conn.Send(10, objectSpawnSceneMessage);
@@ -1134,6 +1133,7 @@ namespace QuantumUNET
 						DestroyObject(gameObject);
 					}
 				}
+
 				foreach (var playerController in conn.PlayerControllers)
 				{
 					if (playerController.IsValid)
@@ -1142,9 +1142,11 @@ namespace QuantumUNET
 						{
 							DestroyObject(playerController.UnetView, true);
 						}
+
 						playerController.Gameobject = null;
 					}
 				}
+
 				conn.PlayerControllers.Clear();
 			}
 		}
@@ -1195,10 +1197,12 @@ namespace QuantumUNET
 				uv.OnNetworkDestroy();
 				QClientScene.SetLocalObject(objectDestroyMessage.NetId, null);
 			}
+
 			if (destroyServerObject)
 			{
 				UnityEngine.Object.Destroy(uv.gameObject);
 			}
+
 			uv.MarkForReset();
 		}
 
@@ -1226,6 +1230,7 @@ namespace QuantumUNET
 			{
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -1247,6 +1252,7 @@ namespace QuantumUNET
 			{
 				result = SpawnWithClientAuthority(obj, component.ConnectionToClient);
 			}
+
 			return result;
 		}
 
@@ -1264,6 +1270,7 @@ namespace QuantumUNET
 				var component = obj.GetComponent<QNetworkIdentity>();
 				result = !(component == null) && component.IsServer && component.AssignClientAuthority(conn);
 			}
+
 			return result;
 		}
 
@@ -1282,6 +1289,7 @@ namespace QuantumUNET
 				{
 					networkIdentity.SetDynamicAssetId(assetId);
 				}
+
 				instance.SpawnObject(obj);
 			}
 		}
@@ -1305,6 +1313,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -1324,6 +1333,7 @@ namespace QuantumUNET
 				QLog.Error($"Local invoke: Failed to find local connection to invoke handler on [connectionId={conn.connectionId}] for MsgId:{msgType}");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -1351,6 +1361,7 @@ namespace QuantumUNET
 						networkIdentity.gameObject.SetActive(true);
 					}
 				}
+
 				foreach (var networkIdentity2 in objectsOfTypeAll)
 				{
 					if (ValidateSceneObject(networkIdentity2))
@@ -1359,8 +1370,10 @@ namespace QuantumUNET
 						networkIdentity2.ForceAuthority(true);
 					}
 				}
+
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -1380,6 +1393,7 @@ namespace QuantumUNET
 							channel = (byte)QNetworkCRC.singleton.scripts[text]
 						});
 					}
+
 					crcmessage.scripts = list.ToArray();
 					targetConnection.Send(14, crcmessage);
 				}

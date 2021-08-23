@@ -27,12 +27,15 @@ namespace QuantumUNET.Components
 							{
 								Manager.StartHost();
 							}
+
 							yOffset += 20;
 						}
+
 						if (GUI.Button(new Rect(xOffset, yOffset, 105f, 20f), "Connect"))
 						{
 							Manager.StartClient();
 						}
+
 						Manager.networkAddress = GUI.TextField(new Rect(xOffset + 100, yOffset, 95f, 20f), Manager.networkAddress);
 						yOffset += 20;
 					}
@@ -56,15 +59,18 @@ namespace QuantumUNET.Components
 						{
 							text += " (using WebSockets)";
 						}
+
 						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), text);
 						yOffset += 20;
 					}
+
 					if (Manager.IsClientConnected())
 					{
 						GUI.Label(new Rect(xOffset, yOffset, 300f, 20f), $"Connected to {Manager.networkAddress}, port {Manager.networkPort}");
 						yOffset += 20;
 					}
 				}
+
 				if (Manager.IsClientConnected() && !QClientScene.ready)
 				{
 					if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Client Ready"))
@@ -75,14 +81,17 @@ namespace QuantumUNET.Components
 							QClientScene.AddPlayer(0);
 						}
 					}
+
 					yOffset += 20;
 				}
+
 				if (QNetworkServer.active || Manager.IsClientConnected())
 				{
 					if (GUI.Button(new Rect(xOffset, yOffset, 200f, 20f), "Stop"))
 					{
 						Manager.StopHost();
 					}
+
 					yOffset += 20;
 				}
 			}

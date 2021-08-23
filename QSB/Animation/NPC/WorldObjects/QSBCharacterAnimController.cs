@@ -8,7 +8,7 @@ namespace QSB.Animation.NPC.WorldObjects
 	{
 		private readonly List<PlayerInfo> _playersInHeadZone = new List<PlayerInfo>();
 
-		public List<PlayerInfo> GetPlayersInHeadZone() 
+		public List<PlayerInfo> GetPlayersInHeadZone()
 			=> _playersInHeadZone;
 
 		public void AddPlayerToHeadZone(PlayerInfo player)
@@ -17,7 +17,8 @@ namespace QSB.Animation.NPC.WorldObjects
 			{
 				return;
 			}
-			_playersInHeadZone.Add(player); 
+
+			_playersInHeadZone.Add(player);
 		}
 
 		public void RemovePlayerFromHeadZone(PlayerInfo player)
@@ -26,13 +27,14 @@ namespace QSB.Animation.NPC.WorldObjects
 			{
 				return;
 			}
+
 			_playersInHeadZone.Remove(player);
 		}
 
-		public override CharacterDialogueTree GetDialogueTree() 
+		public override CharacterDialogueTree GetDialogueTree()
 			=> AttachedObject.GetValue<CharacterDialogueTree>("_dialogueTree");
 
-		public override bool InConversation() 
+		public override bool InConversation()
 			=> AttachedObject.GetValue<bool>("_inConversation");
 	}
 }

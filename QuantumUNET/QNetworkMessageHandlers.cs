@@ -41,6 +41,7 @@ namespace QuantumUNET
 					QLog.Log($"RegisterHandler replacing {msgType}");
 					_msgHandlers.Remove(msgType);
 				}
+
 				QLog.Debug($"RegisterHandler id:{msgType} handler:{handler.GetMethodName()}");
 				_msgHandlers.Add(msgType, handler);
 			}

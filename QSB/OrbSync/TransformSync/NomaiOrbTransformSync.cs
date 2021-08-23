@@ -1,4 +1,4 @@
-﻿using QSB.Syncs.TransformSync;
+﻿using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	internal class NomaiOrbTransformSync : UnparentedBaseTransformSync
+	internal class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
 		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
 
@@ -17,38 +17,49 @@ namespace QSB.OrbSync.TransformSync
 		protected override void OnDestroy()
 		{
 			OrbTransformSyncs.Remove(this);
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			base.OnDestroy();
 		}
 
 		protected override void Init()
 		{
 			base.Init();
-			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
+			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
+			if (originalParent == Locator.GetRootTransform())
+			{
+				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Destroying...");
+				Destroy(this);
+			}
+
+			SetReferenceTransform(originalParent);
 		}
 
-		private GameObject GetTransform()
+		private Transform GetTransform()
 		{
 			if (_index == -1)
 			{
 				DebugLog.ToConsole($"Error - Index cannot be found.", OWML.Common.MessageType.Error);
 				return null;
 			}
+
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
 				return null;
 			}
+
 			if (QSBWorldSync.OldOrbList[_index] == null)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", OWML.Common.MessageType.Error);
 				return null;
 			}
-			return QSBWorldSync.OldOrbList[_index].gameObject;
+
+			return QSBWorldSync.OldOrbList[_index].transform;
 		}
 
-		protected override GameObject InitLocalTransform() => GetTransform();
-		protected override GameObject InitRemoteTransform() => GetTransform();
+		protected override Component InitLocalTransform() => GetTransform();
+		protected override Component InitRemoteTransform() => GetTransform();
 
+		protected override float DistanceLeeway => 1f;
 		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => false;
 	}

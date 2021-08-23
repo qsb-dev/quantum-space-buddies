@@ -60,6 +60,7 @@ namespace QSB.SectorSync.WorldObjects
 						DebugLog.ToConsole($"Warning - Expected to find a NomaiShuttleController for {AttachedObject.name}!", MessageType.Warning);
 						return false;
 					}
+
 					if (!shuttleController.IsPlayerInside())
 					{
 						return false;
@@ -73,12 +74,14 @@ namespace QSB.SectorSync.WorldObjects
 						DebugLog.ToConsole($"Warning - Expected to find a EyeShuttleController for {AttachedObject.name}!", MessageType.Warning);
 						return false;
 					}
+
 					if (!shuttleController.GetValue<bool>("_isPlayerInside"))
 					{
 						return false;
 					}
 				}
 			}
+
 			return true;
 		}
 	}

@@ -34,11 +34,13 @@ namespace QuantumUNET
 				{
 					networkIdentity = localObjects[netId];
 				}
+
 				if (networkIdentity == null)
 				{
 					networkIdentity = obj.GetComponent<QNetworkIdentity>();
 					localObjects[netId] = networkIdentity;
 				}
+
 				networkIdentity.UpdateClientServer(isClient, isServer);
 			}
 		}
@@ -53,6 +55,7 @@ namespace QuantumUNET
 					return networkIdentity.gameObject;
 				}
 			}
+
 			return null;
 		}
 
@@ -69,6 +72,7 @@ namespace QuantumUNET
 				uv = null;
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -87,6 +91,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -143,6 +148,7 @@ namespace QuantumUNET
 				prefab = null;
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -221,6 +227,7 @@ namespace QuantumUNET
 				handler = null;
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -237,6 +244,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -261,6 +269,7 @@ namespace QuantumUNET
 					}
 				}
 			}
+
 			ClearLocalObjects();
 		}
 

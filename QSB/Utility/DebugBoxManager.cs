@@ -17,6 +17,7 @@ namespace QSB.Utility
 			{
 				DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
 			}
+
 			_boxPrefab.GetComponent<Text>().font = font;
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
@@ -29,7 +30,7 @@ namespace QSB.Utility
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
 			newBox.transform.rotation = parent.rotation;
 			var lookAt = newBox.AddComponent<FaceActiveCamera>();
-			lookAt.SetValue("_useLookAt", false);
+			lookAt.SetValue("_useLookAt", true);
 			lookAt.SetValue("_localFacingVector", Vector3.back);
 			lookAt.SetValue("_localRotationAxis", Vector3.up);
 			newBox.GetComponent<Text>().text = text;

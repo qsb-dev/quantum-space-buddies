@@ -24,6 +24,7 @@
 			{
 				return;
 			}
+
 			UnityEngine.Debug.Log($"DEBUG : {message}");
 		}
 
@@ -33,6 +34,7 @@
 			{
 				return;
 			}
+
 			UnityEngine.Debug.Log($"LOG : {message}");
 		}
 
@@ -42,6 +44,7 @@
 			{
 				return;
 			}
+
 			UnityEngine.Debug.LogWarning($"WARN : {message}");
 		}
 
@@ -51,6 +54,7 @@
 			{
 				return;
 			}
+
 			UnityEngine.Debug.LogError($"ERROR : {message}");
 		}
 
@@ -60,6 +64,7 @@
 			{
 				return;
 			}
+
 			UnityEngine.Debug.LogError($"FATAL : {message}");
 		}
 	}

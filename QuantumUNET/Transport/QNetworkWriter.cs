@@ -200,6 +200,7 @@ namespace QuantumUNET.Transport
 				{
 					throw new IndexOutOfRangeException($"Serialize(string) too long: {value.Length}");
 				}
+
 				Write((ushort)byteCount);
 				var bytes = s_Encoding.GetBytes(value, 0, value.Length, s_StringWriteBuffer, 0);
 				m_Buffer.WriteBytes(s_StringWriteBuffer, (ushort)bytes);
@@ -213,6 +214,7 @@ namespace QuantumUNET.Transport
 				m_Buffer.WriteByte(1);
 				return;
 			}
+
 			m_Buffer.WriteByte(0);
 		}
 

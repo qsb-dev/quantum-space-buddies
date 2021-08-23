@@ -28,6 +28,7 @@ namespace QSB.ConversationSync.Events
 			{
 				return;
 			}
+
 			switch (message.EnumValue)
 			{
 				case ConversationType.Character:
@@ -45,6 +46,7 @@ namespace QSB.ConversationSync.Events
 					{
 						break;
 					}
+
 					var tree = QSBWorldSync.OldDialogueTrees[message.ObjectId];
 					UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;

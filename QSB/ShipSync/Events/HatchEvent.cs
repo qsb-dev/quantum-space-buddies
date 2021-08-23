@@ -8,10 +8,10 @@ namespace QSB.ShipSync.Events
 	{
 		public override QSB.Events.EventType Type => QSB.Events.EventType.OpenHatch;
 
-		public override void SetupListener() 
+		public override void SetupListener()
 			=> GlobalMessenger<bool>.AddListener(EventNames.QSBHatchState, Handler);
 
-		public override void CloseListener() 
+		public override void CloseListener()
 			=> GlobalMessenger<bool>.RemoveListener(EventNames.QSBHatchState, Handler);
 
 		private void Handler(bool open) => SendEvent(CreateMessage(open));

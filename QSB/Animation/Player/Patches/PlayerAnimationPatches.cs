@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.WorldSync;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Animation.Patches
@@ -10,8 +10,8 @@ namespace QSB.Animation.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<PlayerAnimController>("LateUpdate", typeof(PlayerAnimationPatches), nameof(PlayerAnimController_LateUpdate));
-		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<PlayerAnimController>("LateUpdate");
+		public override void DoPatches()
+			=> Prefix(nameof(PlayerAnimController_LateUpdate));
 
 		public static bool PlayerAnimController_LateUpdate(
 			PlayerAnimController __instance,
@@ -37,18 +37,22 @@ namespace QSB.Animation.Patches
 			{
 				movementVector = ____playerController.GetRelativeGroundVelocity();
 			}
+
 			if (Mathf.Abs(movementVector.x) < 0.05f)
 			{
 				movementVector.x = 0f;
 			}
+
 			if (Mathf.Abs(movementVector.z) < 0.05f)
 			{
 				movementVector.z = 0f;
 			}
+
 			if (isFlying)
 			{
 				____ungroundedTime = Time.time;
 			}
+
 			var freefallMagnitude = 0f;
 			var timeInFreefall = 0f;
 			var lastGroundBody = ____playerController.GetLastGroundBody();
@@ -57,6 +61,7 @@ namespace QSB.Animation.Patches
 				freefallMagnitude = (____playerController.GetAttachedOWRigidbody(false).GetVelocity() - lastGroundBody.GetPointVelocity(____playerController.transform.position)).magnitude;
 				timeInFreefall = Time.time - ____ungroundedTime;
 			}
+
 			____animator.SetFloat("RunSpeedX", movementVector.x / 3f);
 			____animator.SetFloat("RunSpeedY", movementVector.z / 3f);
 			____animator.SetFloat("TurnSpeed", ____playerController.GetTurning());
@@ -79,31 +84,34 @@ namespace QSB.Animation.Patches
 					QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "Land");
 				}
 			}
+
 			if (isGrounded)
 			{
 				var leftFootLift = ____animator.GetFloat("LeftFootLift");
 				if (!____leftFootGrounded && leftFootLift < 0.333f)
 				{
 					____leftFootGrounded = true;
-					QSBWorldSync.RaiseEvent(__instance, "OnLeftFootGrounded");
+					__instance.RaiseEvent("OnLeftFootGrounded");
 				}
 				else if (____leftFootGrounded && leftFootLift > 0.666f)
 				{
 					____leftFootGrounded = false;
-					QSBWorldSync.RaiseEvent(__instance, "OnLeftFootLift");
+					__instance.RaiseEvent("OnLeftFootLift");
 				}
+
 				var rightFootLift = ____animator.GetFloat("RightFootLift");
 				if (!____rightFootGrounded && rightFootLift < 0.333f)
 				{
 					____rightFootGrounded = true;
-					QSBWorldSync.RaiseEvent(__instance, "OnRightFootGrounded");
+					__instance.RaiseEvent("OnRightFootGrounded");
 				}
 				else if (____rightFootGrounded && rightFootLift > 0.666f)
 				{
 					____rightFootGrounded = false;
-					QSBWorldSync.RaiseEvent(__instance, "OnRightFootLift");
+					__instance.RaiseEvent("OnRightFootLift");
 				}
 			}
+
 			____justBecameGrounded = false;
 			____justTookFallDamage = false;
 			var usingTool = Locator.GetToolModeSwapper().GetToolMode() != ToolMode.None;

@@ -26,6 +26,7 @@ namespace QSB.Animation.Player.Events
 			{
 				return;
 			}
+
 			animationSync.VisibleAnimator.SetTrigger(message.Name);
 		}
 	}

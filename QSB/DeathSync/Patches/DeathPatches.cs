@@ -1,7 +1,10 @@
 ﻿using Harmony;
 using QSB.Events;
 using QSB.Patches;
+using QSB.Player;
+using QSB.ShipSync;
 using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -15,27 +18,27 @@ namespace QSB.DeathSync.Patches
 
 		public override void DoPatches()
 		{
-			QSBCore.HarmonyHelper.AddPrefix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(PreFinishDeathSequence));
-			QSBCore.HarmonyHelper.AddPostfix<DeathManager>("KillPlayer", typeof(DeathPatches), nameof(BroadcastDeath));
-			QSBCore.HarmonyHelper.Transpile<ShipDetachableLeg>("Detach", typeof(DeathPatches), nameof(ReturnNull));
-			QSBCore.HarmonyHelper.Transpile<ShipDetachableModule>("Detach", typeof(DeathPatches), nameof(ReturnNull));
-			QSBCore.HarmonyHelper.EmptyMethod<ShipEjectionSystem>("OnPressInteract");
-			QSBCore.HarmonyHelper.AddPostfix<ShipDamageController>("Awake", typeof(DeathPatches), nameof(DamageController_Exploded));
-			QSBCore.HarmonyHelper.AddPrefix<DestructionVolume>("VanishShip", typeof(DeathPatches), nameof(DestructionVolume_VanishShip));
-			QSBCore.HarmonyHelper.AddPrefix<HighSpeedImpactSensor>("FixedUpdate", typeof(DeathPatches), nameof(HighSpeedImpactSensor_FixedUpdate));
-			QSBCore.HarmonyHelper.AddPrefix<PlayerResources>("OnImpact", typeof(DeathPatches), nameof(PlayerResources_OnImpact));
+			Prefix(nameof(DeathManager_KillPlayer_Prefix));
+			Postfix(nameof(DeathManager_KillPlayer_Postfix));
+			Prefix(nameof(ShipDetachableLeg_Detach));
+			Prefix(nameof(ShipDetachableModule_Detach));
+			Empty("ShipEjectionSystem_OnPressInteract");
+			Postfix(nameof(ShipDamageController_Awake));
+			Prefix(nameof(DestructionVolume_VanishShip));
+			Prefix(nameof(HighSpeedImpactSensor_FixedUpdate));
+			Prefix(nameof(PlayerResources_OnImpact));
 		}
 
-		public override void DoUnpatches()
+		public static bool ShipDetachableLeg_Detach(ref OWRigidbody __result)
 		{
-			QSBCore.HarmonyHelper.Unpatch<DeathManager>("KillPlayer");
-			QSBCore.HarmonyHelper.Unpatch<ShipDetachableLeg>("Detach");
-			QSBCore.HarmonyHelper.Unpatch<ShipDetachableModule>("Detach");
-			QSBCore.HarmonyHelper.Unpatch<ShipEjectionSystem>("OnPressInteract");
-			QSBCore.HarmonyHelper.Unpatch<ShipDamageController>("Awake");
-			QSBCore.HarmonyHelper.Unpatch<DestructionVolume>("VanishShip");
-			QSBCore.HarmonyHelper.Unpatch<HighSpeedImpactSensor>("FixedUpdate");
-			QSBCore.HarmonyHelper.Unpatch<PlayerResources>("OnImpact");
+			__result = null;
+			return false;
+		}
+
+		public static bool ShipDetachableModule_Detach(ref OWRigidbody __result)
+		{
+			__result = null;
+			return false;
 		}
 
 		public static bool PlayerResources_OnImpact(ImpactData impact, PlayerResources __instance, float ____currentHealth)
@@ -59,6 +62,7 @@ namespace QSB.DeathSync.Patches
 				impact.otherCollider.attachedRigidbody.gameObject.name
 				}));
 			}
+
 			return false;
 		}
 
@@ -126,6 +130,7 @@ namespace QSB.DeathSync.Patches
 						}));
 					}
 				}
+
 				return false;
 			}
 
@@ -158,6 +163,7 @@ namespace QSB.DeathSync.Patches
 									{
 										____dieNextUpdate = true;
 									}
+
 									DebugLog.DebugWrite(string.Concat(new object[]
 									{
 									"HIGH SPEED IMPACT: ",
@@ -180,8 +186,9 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
-		public static bool PreFinishDeathSequence(DeathType deathType)
+		public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
 		{
+			DebugLog.DebugWrite($"KILL PLAYER PREFIX stacetrace : \r\n {Environment.StackTrace}");
 			if (RespawnOnDeath.Instance == null)
 			{
 				return true;
@@ -192,25 +199,26 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
-			RespawnOnDeath.Instance.ResetShip();
+			QSBPlayerManager.LocalPlayer.IsDead = true;
+
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
 		}
 
-		public static void BroadcastDeath(DeathType deathType)
-			=> QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
+		{
+			DebugLog.DebugWrite($"KILL PLAYER POSTFIX");
+			QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+		}
 
-		public static void DamageController_Exploded(ref bool ____exploded)
+		public static void ShipDamageController_Awake(ref bool ____exploded)
 			=> ____exploded = true;
 
-		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions)
-		{
-			return new List<CodeInstruction>
+		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions) => new List<CodeInstruction>
 			{
 				new CodeInstruction(OpCodes.Ldnull),
 				new CodeInstruction(OpCodes.Ret)
 			};
-		}
 
 		public static bool DestructionVolume_VanishShip(DeathType ____deathType)
 		{
@@ -219,13 +227,17 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
+			if (!ShipManager.Instance.HasAuthority)
+			{
+				return false;
+			}
+
 			if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
 			{
 				Locator.GetDeathManager().KillPlayer(____deathType);
 			}
-			// Ship is being destroyed, but player isn't in it.
-			RespawnOnDeath.Instance.ResetShip();
-			return false;
+
+			return true;
 		}
 	}
 }

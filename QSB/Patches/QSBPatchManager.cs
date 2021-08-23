@@ -7,6 +7,7 @@ using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
 using QSB.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
+using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
@@ -17,6 +18,7 @@ using QSB.RoastingSync.Patches;
 using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
+using QSB.Tools.ProbeLauncherTool.Patches;
 using QSB.TranslationSync.Patches;
 using QSB.Utility;
 using System;
@@ -40,7 +42,6 @@ namespace QSB.Patches
 				new DeathPatches(),
 				new ElevatorPatches(),
 				new OrbPatches(),
-				new WakeUpPatches(),
 				new LogPatches(),
 				new QuantumVisibilityPatches(),
 				new ServerQuantumPatches(),
@@ -57,7 +58,12 @@ namespace QSB.Patches
 				new PlayerPatches(),
 				new PlayerAnimationPatches(),
 				new CharacterAnimationPatches(),
-				new ShipPatches()
+				new ShipPatches(),
+				new InputPatches(),
+				new TimePatches(),
+				new MapPatches(),
+				new RespawnPatches(),
+				new LauncherPatches()
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
@@ -66,10 +72,10 @@ namespace QSB.Patches
 		public static void DoPatchType(QSBPatchTypes type)
 		{
 			OnPatchType?.SafeInvoke(type);
-			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
-				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
+				//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
 				patch.DoPatches();
 			}
 		}
@@ -77,10 +83,10 @@ namespace QSB.Patches
 		public static void DoUnpatchType(QSBPatchTypes type)
 		{
 			OnUnpatchType?.SafeInvoke(type);
-			DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			//DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
-				DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
+				//DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
 				patch.DoUnpatches();
 			}
 		}

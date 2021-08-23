@@ -31,6 +31,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, CurrentState.ToString()).GetComponent<Text>();
 			}
+
 			base.Init(attachedObject, id);
 		}
 
@@ -40,6 +41,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				QuantumStates[CurrentState].SetVisible(false);
 			}
+
 			QuantumStates[newStateIndex].SetVisible(true);
 			AttachedObject.SetValue("_stateIndex", newStateIndex);
 			if (QSBCore.DebugMode)

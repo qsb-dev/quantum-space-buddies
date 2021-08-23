@@ -37,6 +37,7 @@ namespace QuantumUNET
 					QLog.FatalError($"Trying to get QNetworkIdentity of a null gameobject?");
 					return null;
 				}
+
 				if (m_MyView == null)
 				{
 					m_MyView = GetComponent<QNetworkIdentity>();
@@ -44,12 +45,14 @@ namespace QuantumUNET
 					{
 						QLog.FatalError($"There is no QNetworkIdentity on this object (name={name}). Please add one.");
 					}
+
 					myView = m_MyView;
 				}
 				else
 				{
 					myView = m_MyView;
 				}
+
 				return myView;
 			}
 		}
@@ -94,6 +97,7 @@ namespace QuantumUNET
 				QLog.Warning("ClientRpc call on un-spawned object");
 				return;
 			}
+
 			writer.FinishMessage();
 			QNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 		}
@@ -105,6 +109,7 @@ namespace QuantumUNET
 				QLog.Warning("TargetRpc call on un-spawned object");
 				return;
 			}
+
 			writer.FinishMessage();
 			conn.SendWriter(writer, channelId);
 		}
@@ -118,6 +123,7 @@ namespace QuantumUNET
 				QLog.Error($"Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.");
 				return;
 			}
+
 			writer.FinishMessage();
 			QNetworkServer.SendWriterToReady(gameObject, writer, channelId);
 		}
@@ -194,6 +200,7 @@ namespace QuantumUNET
 				var invoker = s_CmdHandlerDelegates[cmdHash];
 				result = invoker.DebugString();
 			}
+
 			return result;
 		}
 
@@ -239,6 +246,7 @@ namespace QuantumUNET
 				invokeFunction = invoker.invokeFunction;
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -277,10 +285,12 @@ namespace QuantumUNET
 							return false;
 						}
 					}
+
 					invoker.invokeFunction(this, reader);
 					result = true;
 				}
 			}
+
 			return result;
 		}
 
@@ -307,10 +317,12 @@ namespace QuantumUNET
 							return false;
 						}
 					}
+
 					invoker.invokeFunction(this, reader);
 					result = true;
 				}
 			}
+
 			return result;
 		}
 
@@ -334,6 +346,7 @@ namespace QuantumUNET
 					result = true;
 				}
 			}
+
 			return result;
 		}
 
@@ -361,6 +374,7 @@ namespace QuantumUNET
 					result = true;
 				}
 			}
+
 			return result;
 		}
 
@@ -376,6 +390,7 @@ namespace QuantumUNET
 				var invoker = s_CmdHandlerDelegates[cmdHash];
 				result = $"{invoker.invokeType}:{invoker.invokeFunction.GetMethodName()}";
 			}
+
 			return result;
 		}
 
@@ -395,8 +410,10 @@ namespace QuantumUNET
 				{
 					text = text.Substring(prefix.Length);
 				}
+
 				result = text;
 			}
+
 			return result;
 		}
 
@@ -430,11 +447,13 @@ namespace QuantumUNET
 						}
 					}
 				}
+
 				NetworkInstanceId networkInstanceId2 = default;
 				if (gameObjectField != null)
 				{
 					networkInstanceId2 = gameObjectField.GetComponent<QNetworkIdentity>().NetId;
 				}
+
 				if (networkInstanceId != networkInstanceId2)
 				{
 					QLog.Log(
@@ -489,6 +508,7 @@ namespace QuantumUNET
 					return GetNetworkChannel();
 				}
 			}
+
 			return -1;
 		}
 
@@ -498,6 +518,7 @@ namespace QuantumUNET
 			{
 				writer.WritePackedUInt32(0U);
 			}
+
 			return false;
 		}
 

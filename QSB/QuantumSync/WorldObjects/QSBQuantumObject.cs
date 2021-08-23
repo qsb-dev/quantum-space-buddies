@@ -43,6 +43,7 @@ namespace QSB.QuantumSync.WorldObjects
 				shape.OnShapeDeactivated += (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 			}
+
 			if (GetAttachedShapes().Any(x => !x.enabled || !x.active))
 			{
 				ControllingPlayer = 0u;
@@ -60,37 +61,43 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				return new List<Shape>();
 			}
+
 			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
 			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
 			{
 				return new List<Shape>();
 			}
+
 			if (visibilityTrackers.Any(x => x.GetType() == typeof(RendererVisibilityTracker)))
 			{
 				DebugLog.ToConsole($"Warning - {AttachedObject.name} has a RendererVisibilityTracker!", MessageType.Warning);
 				return new List<Shape>();
 			}
+
 			var totalShapes = new List<Shape>();
 			foreach (var tracker in visibilityTrackers)
 			{
 				var shapes = tracker.GetValue<Shape[]>("_shapes");
 				totalShapes.AddRange(shapes);
 			}
+
 			return totalShapes;
 		}
 
 		private void OnEnable(Shape s)
 		{
 			IsEnabled = true;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsServer)
+			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}
+
 			if (ControllingPlayer != 0)
 			{
 				// controlled by another player, dont care that we activate it
 				return;
 			}
+
 			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
@@ -102,20 +109,24 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				return;
 			}
+
 			if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
 			{
 				return;
 			}
+
 			IsEnabled = false;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsServer)
+			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}
+
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				// not being controlled by us, don't care if we leave area
 				return;
 			}
+
 			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);

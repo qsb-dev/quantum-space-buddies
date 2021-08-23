@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.ShipSync;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -24,20 +25,35 @@ namespace QSB.Utility
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
+		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
+
 		public void Update()
 		{
 			if (!QSBCore.DebugMode)
 			{
 				return;
 			}
+
+			if (Input.GetKeyDown(KeyCode.Keypad5))
+			{
+				Locator.GetDeathManager().KillPlayer(DeathType.Supernova);
+			}
+
+			if (Input.GetKeyDown(KeyCode.Keypad4))
+			{
+				DamageShipElectricalSystem();
+			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad7))
 			{
 				GoToVessel();
 			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad8))
 			{
 				InsertWarpCore();
 			}
+
 			if (Input.GetKeyDown(KeyCode.Keypad9))
 			{
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
