@@ -65,6 +65,7 @@ namespace QSB
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
+		public static IMenuAPI MenuApi { get; private set; }
 
 		public void Awake()
 		{
