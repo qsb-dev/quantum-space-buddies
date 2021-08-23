@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Player;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
@@ -70,6 +71,17 @@ namespace QSB.Utility
 			}
 
 			return controller.NetId.Value;
+		}
+
+		public static void SpawnWithServerAuthority(this GameObject go)
+		{
+			if (!QSBCore.IsHost)
+			{
+				DebugLog.ToConsole($"Error - Tried to spawn {go.name} using SpawnWithServerAuthority when not the host!", MessageType.Error);
+				return;
+			}
+
+			QNetworkServer.SpawnWithClientAuthority(go, QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
 		}
 
 		// C#

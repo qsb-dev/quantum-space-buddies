@@ -9,10 +9,10 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 	{
 		public override EventType Type => EventType.RetrieveProbe;
 
-		public override void SetupListener() 
+		public override void SetupListener()
 			=> GlobalMessenger<QSBProbeLauncher, bool>.AddListener(EventNames.QSBRetrieveProbe, Handler);
 
-		public override void CloseListener() 
+		public override void CloseListener()
 			=> GlobalMessenger<QSBProbeLauncher, bool>.RemoveListener(EventNames.QSBRetrieveProbe, Handler);
 
 		private void Handler(QSBProbeLauncher launcher, bool playEffects) => SendEvent(CreateMessage(launcher, playEffects));

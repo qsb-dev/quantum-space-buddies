@@ -20,7 +20,7 @@ namespace QSB.DeathSync.Events
 			EnumValue = type
 		};
 
-		public override void OnReceiveLocal(bool server, EnumMessage<EndLoopReason> message) 
+		public override void OnReceiveLocal(bool server, EnumMessage<EndLoopReason> message)
 			=> OnReceiveRemote(server, message);
 
 		public override void OnReceiveRemote(bool server, EnumMessage<EndLoopReason> message)
@@ -34,6 +34,7 @@ namespace QSB.DeathSync.Events
 					{
 						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForDeath);
 					}
+
 					break;
 			}
 		}

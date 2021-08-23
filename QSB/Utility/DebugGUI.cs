@@ -1,7 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.Player;
 using QSB.ProbeSync.TransformSync;
-using QSB.Syncs.TransformSync;
+using QSB.Syncs;
 using QSB.TimeSync;
 using UnityEngine;
 
@@ -41,8 +41,6 @@ namespace QSB.Utility
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}", guiStyle);
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Mouse input : {OWInput.GetValue(InputLibrary.look, false, InputMode.All)}", guiStyle);
-				offset += _debugLineSpacing;
 			}
 
 			var offset2 = 10f;
@@ -62,12 +60,11 @@ namespace QSB.Utility
 					var networkTransform = player.TransformSync;
 					var sector = networkTransform.ReferenceSector;
 
-					
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
 					offset2 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
 					offset2 += _debugLineSpacing;
-					var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
+					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
 					if (probeSync != default)
 					{
 						var probeSector = probeSync.ReferenceSector;

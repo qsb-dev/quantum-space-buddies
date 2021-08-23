@@ -278,10 +278,13 @@
     <Compile Include="ShipSync\Events\RepairTickMessage.cs" />
     <Compile Include="ShipSync\WorldObjects\QSBShipComponent.cs" />
     <Compile Include="ShipSync\WorldObjects\QSBShipHull.cs" />
-    <Compile Include="Syncs\ISectoredSync.cs" />
-    <Compile Include="Syncs\RigidbodySync\BaseRigidbodySync.cs" />
-    <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
+    <Compile Include="Syncs\Sectored\BaseSectoredSync.cs" />
+    <Compile Include="Syncs\Sectored\Rigidbodies\SectoredRigidbodySync.cs" />
+    <Compile Include="Syncs\Sectored\Transforms\SectoredTransformSync.cs" />
     <Compile Include="Syncs\SyncBase.cs" />
+    <Compile Include="Syncs\Unsectored\BaseUnsectoredSync.cs" />
+    <Compile Include="Syncs\Unsectored\Rigidbodies\UnsectoredRigidbodySync.cs" />
+    <Compile Include="Syncs\Unsectored\Transforms\UnsectoredTransformSync.cs" />
     <Compile Include="TimeSync\FastForwardReason.cs" />
     <Compile Include="TimeSync\Patches\TimePatches.cs" />
     <Compile Include="TimeSync\PauseReason.cs" />
@@ -309,10 +312,7 @@
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
-    <Compile Include="Syncs\TransformSync\BaseTransformSync.cs" />
     <Compile Include="Syncs\IntermediaryTransform.cs" />
-    <Compile Include="Syncs\TransformSync\SectoredTransformSync.cs" />
-    <Compile Include="Syncs\TransformSync\UnparentedBaseTransformSync.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedEvent.cs" />
     <Compile Include="TranslationSync\Events\SetAsTranslatedMessage.cs" />
     <Compile Include="TranslationSync\NomaiTextType.cs" />

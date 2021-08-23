@@ -1,15 +1,16 @@
-using QSB.Player;
 using QSB.SectorSync;
-using QSB.Syncs.RigidbodySync;
+using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
 	public class ShipTransformSync : SectoredRigidbodySync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
+
+		private const int ForcePositionAfterUpdates = 50;
+		private int _updateCount;
 
 		public override bool IsReady
 			=> Locator.GetShipBody() != null;
@@ -20,33 +21,50 @@ namespace QSB.ShipSync.TransformSync
 			LocalInstance = this;
 		}
 
-		protected override Component InitLocalTransform() => throw new System.NotImplementedException();
-		protected override Component InitRemoteTransform() => throw new System.NotImplementedException();
-
 		protected override OWRigidbody GetRigidbody()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), this));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship));
 			return Locator.GetShipBody();
+		}
+
+		private void ForcePosition()
+		{
+			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
+			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
+
+			(AttachedObject as OWRigidbody).SetPosition(targetPos);
+			(AttachedObject as OWRigidbody).SetRotation(targetRot);
 		}
 
 		protected override bool UpdateTransform()
 		{
-			if (HasAuthority && ShipManager.Instance.CurrentFlyer != QSBPlayerManager.LocalPlayerId && ShipManager.Instance.CurrentFlyer != uint.MaxValue)
+			if (HasAuthority)
 			{
-				DebugLog.ToConsole("Warning - Has authority, but is not current flyer!", OWML.Common.MessageType.Warning);
-				return false;
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				_relativeVelocity = GetRelativeVelocity();
+				_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+				return true;
 			}
 
-			if (!HasAuthority && ShipManager.Instance.CurrentFlyer == QSBPlayerManager.LocalPlayerId)
+			_updateCount++;
+
+			if (_updateCount >= ForcePositionAfterUpdates)
 			{
-				DebugLog.ToConsole($"Warning - Doesn't have authority, but is current flyer!", OWML.Common.MessageType.Warning);
-				return false;
+				_updateCount = 0;
+				ForcePosition();
 			}
 
-			return base.UpdateTransform();
+			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
+
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity;
+
+			SetVelocity(AttachedObject as OWRigidbody, targetVelocity);
+			(AttachedObject as OWRigidbody).SetAngularVelocity(targetAngularVelocity);
+
+			return true;
 		}
-
-		public override TargetType Type => TargetType.Ship;
 
 		public override bool UseInterpolation => true;
 		protected override float DistanceLeeway => 20f;

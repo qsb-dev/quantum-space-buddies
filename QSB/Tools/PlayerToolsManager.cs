@@ -37,7 +37,7 @@ namespace QSB.Tools
 			{
 				Props_HEA_Lightbulb_mat = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
 
-				// TODO : uhhhhh fuckin' uhhhhhhhh (find a material)
+				// BUG : uhhhhh fuckin' uhhhhhhhh (find a material)
 				Props_HEA_Lightbulb_OFF_mat = null;
 			}
 

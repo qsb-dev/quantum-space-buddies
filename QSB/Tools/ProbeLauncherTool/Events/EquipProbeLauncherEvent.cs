@@ -30,11 +30,13 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 				_nonPlayerLauncherEquipped = true;
 				return;
 			}
+
 			if (_nonPlayerLauncherEquipped)
 			{
 				DebugLog.ToConsole($"Warning - Trying to equip player launcher whilst non player launcher is still equipped?", OWML.Common.MessageType.Warning);
 				return;
 			}
+
 			SendEvent(CreateMessage(true));
 		}
 
@@ -45,11 +47,13 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 				_nonPlayerLauncherEquipped = false;
 				return;
 			}
+
 			if (_nonPlayerLauncherEquipped)
 			{
 				DebugLog.ToConsole($"Warning - Trying to de-equip player launcher whilst non player launcher is still equipped?", OWML.Common.MessageType.Warning);
 				return;
 			}
+
 			SendEvent(CreateMessage(false));
 		}
 

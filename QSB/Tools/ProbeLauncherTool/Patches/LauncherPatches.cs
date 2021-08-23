@@ -70,6 +70,7 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 			return false;
 		}
 
+		// BUG : This plays the sound to everyone
 		// TODO : ehhhh idk about this. maybe copy each sound source so we have a 2d version (for local) and a 3d version (for remote)?
 		// this would probably be a whole qsb version on it's own
 

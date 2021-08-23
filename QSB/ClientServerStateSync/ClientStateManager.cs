@@ -13,7 +13,7 @@ namespace QSB.ClientServerStateSync
 		public event ChangeStateEvent OnChangeState;
 		public delegate void ChangeStateEvent(ClientState newState);
 
-		private void Awake() 
+		private void Awake()
 			=> Instance = this;
 
 		private void Start()
@@ -28,6 +28,7 @@ namespace QSB.ClientServerStateSync
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"CHANGE CLIENT STATE FROM {QSBPlayerManager.LocalPlayer.State} to {newState}");
 			QSBPlayerManager.LocalPlayer.State = newState;
 			OnChangeState?.Invoke(newState);
@@ -78,7 +79,7 @@ namespace QSB.ClientServerStateSync
 				}
 			}
 		}
-		
+
 		public void OnDeath()
 		{
 			var currentScene = QSBSceneManager.CurrentScene;

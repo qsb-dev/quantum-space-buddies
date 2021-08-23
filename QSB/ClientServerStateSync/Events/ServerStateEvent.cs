@@ -21,10 +21,10 @@ namespace QSB.ClientServerStateSync.Events
 			EnumValue = state
 		};
 
-		public override void OnReceiveLocal(bool server, EnumMessage<ServerState> message) 
+		public override void OnReceiveLocal(bool server, EnumMessage<ServerState> message)
 			=> OnReceiveRemote(server, message);
 
-		public override void OnReceiveRemote(bool server, EnumMessage<ServerState> message) 
+		public override void OnReceiveRemote(bool server, EnumMessage<ServerState> message)
 			=> ServerStateManager.Instance.ChangeServerState(message.EnumValue);
 	}
 }

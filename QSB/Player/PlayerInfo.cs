@@ -32,7 +32,7 @@ namespace QSB.Player
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight 
+		public QSBFlashlight FlashLight
 		{
 			get
 			{
@@ -66,8 +66,8 @@ namespace QSB.Player
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc
-		public bool IsInMoon; // TODO : move into PlayerStates?
-		public bool IsInShrine; // TODO : move into PlayerStates?
+		public bool IsInMoon; // MOVE : move into PlayerStates?
+		public bool IsInShrine; // MOVE : move into PlayerStates?
 		public IQSBQuantumObject EntangledObject;
 		public bool IsDead { get; set; }
 		public ClientState State { get; set; }
@@ -87,7 +87,7 @@ namespace QSB.Player
 			}
 		}
 
-		public Flashlight LocalFlashlight 
+		public Flashlight LocalFlashlight
 		{
 			get
 			{
@@ -128,7 +128,6 @@ namespace QSB.Player
 				return CameraBody.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
 			}
 		}
-
 
 		public PlayerInfo(uint id)
 		{

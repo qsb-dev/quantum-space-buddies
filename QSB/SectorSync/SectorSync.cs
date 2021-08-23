@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
-using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -27,10 +26,11 @@ namespace QSB.SectorSync
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
 			}
+
 			IsReady = false;
 		}
 
-		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
+		public void Init(SectorDetector detector, TargetType type)
 		{
 			DebugLog.DebugWrite($"INIT SECTOR SYNC detector:{detector.name}");
 			if (_sectorDetector != null)
@@ -57,7 +57,7 @@ namespace QSB.SectorSync
 
 			PopulateSectorList();
 
-			_targetType = sectoredSync.Type;
+			_targetType = type;
 			IsReady = true;
 		}
 
