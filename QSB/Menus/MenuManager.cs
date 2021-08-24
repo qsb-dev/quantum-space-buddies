@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace QSB.Menus
 {
 	class MenuManager : MonoBehaviour
 	{
 		private IMenuAPI MenuApi => QSBCore.MenuApi;
-		private PopupMenu HostWaitingPopup;
-		private PopupMenu ClientWaitingPopup;
+		private PopupMenu PopupMenu;
+		private GameObject MultiplayerButton;
+		private Button DisconnectButton;
 
 		public void Start()
 		{
@@ -19,37 +17,36 @@ namespace QSB.Menus
 
 		private void MakeTitleMenus()
 		{
-			HostWaitingPopup = MenuApi.MakeTwoChoicePopup("Waiting for players to join...", "Start Multiplayer Game", "Stop Server");
-			HostWaitingPopup.OnPopupCancel += StopServerOrLeaveServer;
-			ClientWaitingPopup = MenuApi.MakeTwoChoicePopup("Waiting for game to start...", "uhhhhh", "Disconnect");
-			ClientWaitingPopup.OnPopupCancel += StopServerOrLeaveServer;
+			PopupMenu = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Host a server", "Connect to server");
+			PopupMenu.OnPopupConfirm += Host;
+			PopupMenu.OnPopupCancel += Connect;
 
-			var hostButton = MenuApi.TitleScreen_MakeSimpleButton("HOST SERVER");
-			hostButton.onClick.AddListener(HostServer);
-			var connectButton = MenuApi.TitleScreen_MakeSimpleButton("CONNECT TO SERVER");
-			connectButton.onClick.AddListener(ConnectToServer);
-
-			var menu = MenuApi.OptionsMenu_MakeNonScrollingOptionsTab("MULTIPLAYER");
-			//MenuApi.OptionsMenu_MakeLabel("Connection Information", menu);
-			MenuApi.OptionsMenu_MakeTextInput("IP Address", "IP Address", QSBCore.DefaultServerIP, menu);
-			MenuApi.OptionsMenu_MakeTextInput("Port", "Port", $"{QSBCore.Port}", menu);
+			MultiplayerButton = MenuApi.TitleScreen_MakeMenuOpenButton("MULTIPLAYER", PopupMenu);
+			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT");
+			DisconnectButton.gameObject.SetActive(false);
+			DisconnectButton.onClick.AddListener(Disconnect);
 		}
 
-		private void HostServer()
-		{
-			HostWaitingPopup.EnableMenu(true);
-			QSBNetworkManager.Instance.StartHost();
-		}
-
-		private void StopServerOrLeaveServer()
+		private void Disconnect()
 		{
 			QSBNetworkManager.Instance.StopHost();
+			DisconnectButton.gameObject.SetActive(false);
+			MultiplayerButton.SetActive(true);
 		}
 
-		private void ConnectToServer()
+		private void Host()
 		{
-			ClientWaitingPopup.EnableMenu(true);
+			QSBNetworkManager.Instance.StartHost();
+			DisconnectButton.gameObject.SetActive(true);
+			MultiplayerButton.SetActive(false);
+		}
+
+		private void Connect()
+		{
+			QSBNetworkManager.Instance.networkAddress = (PopupMenu as PopupInputMenu).GetInputText();
 			QSBNetworkManager.Instance.StartClient();
+			DisconnectButton.gameObject.SetActive(true);
+			MultiplayerButton.SetActive(false);
 		}
 	}
 }
