@@ -90,7 +90,6 @@
     <Compile Include="QNetworkConnection.cs" />
     <Compile Include="QNetworkCRC.cs" />
     <Compile Include="Components\QNetworkIdentity.cs" />
-    <Compile Include="Components\QNetworkManagerHUD.cs" />
     <Compile Include="Components\QNetworkManager.cs" />
     <Compile Include="Messages\QNetworkMessage.cs" />
     <Compile Include="Messages\QNetworkMessageDelegate.cs" />
