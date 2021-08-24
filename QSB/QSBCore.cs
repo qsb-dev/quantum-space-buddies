@@ -96,6 +96,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
+			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
 
 			// WorldObject managers
