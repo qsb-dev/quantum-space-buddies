@@ -34,11 +34,11 @@ namespace QSB
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
+		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
 		private const int MaxBufferedPackets = 64;
 
-		private QSBNetworkLobby _lobby;
 		private AssetBundle _assetBundle;
 		private GameObject _probePrefab;
 		private bool _everConnected;
@@ -48,7 +48,7 @@ namespace QSB
 			base.Awake();
 			Instance = this;
 
-			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
+			PlayerName = GetPlayerName();
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
@@ -80,6 +80,15 @@ namespace QSB
 			spawnPrefabs.Add(OrbPrefab);
 
 			ConfigureNetworkManager();
+		}
+
+		private string GetPlayerName()
+		{
+			var profileManager = StandaloneProfileManager.SharedInstance;
+			profileManager.Initialize();
+			var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
+			var profileName = profile.profileName;
+			return profileName;
 		}
 
 		private void SetupNetworkId(GameObject go)
@@ -163,13 +172,11 @@ namespace QSB
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			_lobby.CanEditName = false;
-
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, PlayerName));
 
 			if (!QSBCore.IsHost)
 			{
@@ -200,8 +207,6 @@ namespace QSB
 				QSBPatchManager.DoUnpatchType(specificType);
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}
-
-			_lobby.CanEditName = true;
 
 			IsReady = false;
 			_everConnected = false;

@@ -230,7 +230,6 @@
     <Compile Include="ProbeSync\QSBProbeEffects.cs" />
     <Compile Include="ProbeSync\QSBProbeLantern.cs" />
     <Compile Include="ProbeSync\QSBProbeSpotlight.cs" />
-    <Compile Include="QSBNetworkLobby.cs" />
     <Compile Include="Patches\QSBPatch.cs" />
     <Compile Include="Patches\QSBPatchTypes.cs" />
     <Compile Include="QSBSceneManager.cs" />
