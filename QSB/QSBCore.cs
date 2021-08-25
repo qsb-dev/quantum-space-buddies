@@ -88,7 +88,6 @@ namespace QSB
 			QSBPatchManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
-			//gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
 			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
