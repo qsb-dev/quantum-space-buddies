@@ -28,7 +28,6 @@ namespace QSB.Menus
 
 			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT");
 			DisconnectButton.onClick.AddListener(Disconnect);
-
 			DisconnectButton.gameObject.SetActive(false);
 			DisconnectButton.GetComponent<CanvasGroup>().alpha = 1f;
 		}
