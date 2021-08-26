@@ -14,6 +14,7 @@ namespace QSB.Menus
 		private GameObject ClientButton;
 		private Button DisconnectButton;
 		private PopupMenu InfoPopup;
+		private bool _addedPauseLock;
 
 		public void Start()
 		{
@@ -37,12 +38,47 @@ namespace QSB.Menus
 			}
 		}
 
-		private void InitPauseMenus()
+		private void OpenInfoPopup(string message, string buttonText)
+		{
+			InfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(buttonText), null, true, false);
+
+			OWTime.Pause(OWTime.PauseType.System);
+			OWInput.ChangeInputMode(InputMode.Menu);
+
+			var pauseCommandListener = Locator.GetPauseCommandListener();
+			if (pauseCommandListener != null)
+			{
+				pauseCommandListener.AddPauseCommandLock();
+				_addedPauseLock = true;
+			}
+
+			InfoPopup.EnableMenu(true);
+		}
+
+		private void OnCloseInfoPopup()
+		{
+			var pauseCommandListener = Locator.GetPauseCommandListener();
+			if (pauseCommandListener != null && _addedPauseLock)
+			{
+				pauseCommandListener.RemovePauseCommandLock();
+				_addedPauseLock = false;
+			}
+			OWTime.Unpause(OWTime.PauseType.System);
+			OWInput.RestorePreviousInputs();
+		}
+
+		private void CreateCommonPopups()
 		{
 			PopupMenu = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
 			PopupMenu.OnPopupConfirm += Connect;
 
-			InfoPopup = MenuApi.MakeInfoPopup("you forgot to set the text!!!", "you dumpty!!!");
+			InfoPopup = MenuApi.MakeInfoPopup("DEFAULT TEXT", "you forgor 💀");
+			InfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
+		}
+
+		private void InitPauseMenus()
+		{
+			CreateCommonPopups();
 
 			HostButton = MenuApi.PauseMenu_MakeSimpleButton("MULTIPLAYER (HOST)");
 			HostButton.onClick.AddListener(Host);
@@ -57,10 +93,7 @@ namespace QSB.Menus
 
 		private void MakeTitleMenus()
 		{
-			PopupMenu = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
-			PopupMenu.OnPopupConfirm += Connect;
-
-			InfoPopup = MenuApi.MakeInfoPopup("you forgot to set the text!!!", "you dumpty!!!");
+			CreateCommonPopups();
 
 			HostButton = MenuApi.TitleScreen_MakeSimpleButton("MULTIPLAYER (HOST)");
 			HostButton.onClick.AddListener(Host);
@@ -114,8 +147,7 @@ namespace QSB.Menus
 				return;
 			}
 
-			InfoPopup.SetUpPopup($"Client Disconnected. Reason : {error}", InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt("OK"), null, true, false);
-			InfoPopup.EnableMenu(true);
+			OpenInfoPopup($"Client Disconnected. Reason : {error}", "OK");
 
 			DisconnectButton.gameObject.SetActive(false);
 			ClientButton.SetActive(true);
