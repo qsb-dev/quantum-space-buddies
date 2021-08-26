@@ -30,6 +30,8 @@ namespace QSB
 		public static QSBNetworkManager Instance { get; private set; }
 
 		public event Action OnNetworkManagerReady;
+		public event Action OnClientConnected;
+		public event Action<NetworkError> OnClientDisconnected;
 
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
@@ -157,6 +159,8 @@ namespace QSB
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
 			base.OnClientConnect(connection);
 
+			OnClientConnected?.SafeInvoke();
+
 			QSBEventManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
@@ -210,6 +214,12 @@ namespace QSB
 
 			IsReady = false;
 			_everConnected = false;
+		}
+
+		public override void OnClientDisconnect(QNetworkConnection conn)
+		{
+			base.OnClientDisconnect(conn);
+			OnClientDisconnected?.SafeInvoke(conn.LastError);
 		}
 
 		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects
