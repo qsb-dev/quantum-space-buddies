@@ -117,9 +117,6 @@ namespace QSB
 
 			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 
-			// Stop players being able to pause
-			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
-
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}
