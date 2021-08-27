@@ -72,7 +72,7 @@ namespace QSB.Menus
 			PopupMenu = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
 			PopupMenu.OnPopupConfirm += Connect;
 
-			InfoPopup = MenuApi.MakeInfoPopup("DEFAULT TEXT", "you forgor 💀");
+			InfoPopup = MenuApi.MakeInfoPopup("", "");
 			InfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
 		}
 
