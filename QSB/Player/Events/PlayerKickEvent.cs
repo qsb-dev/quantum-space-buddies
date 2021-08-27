@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
@@ -49,6 +50,7 @@ namespace QSB.Player.Events
 			}
 
 			DebugLog.ToAll($"Kicked from server. Reason : {message.EnumValue}");
+			MenuManager.Instance.OnKicked(message.EnumValue);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.Player;
+using QSB.Utility;
 using QuantumUNET;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,6 +9,8 @@ namespace QSB.Menus
 {
 	class MenuManager : MonoBehaviour
 	{
+		public static MenuManager Instance;
+
 		private IMenuAPI MenuApi => QSBCore.MenuApi;
 		private PopupMenu PopupMenu;
 		private Button HostButton;
@@ -18,6 +21,7 @@ namespace QSB.Menus
 
 		public void Start()
 		{
+			Instance = this;
 			MakeTitleMenus();
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
@@ -137,7 +141,34 @@ namespace QSB.Menus
 		private void OnConnected()
 		{
 			DebugLog.DebugWrite($"ON CONNECTED");
-			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = "DISCONNECT";
+
+			var text = QSBCore.IsHost 
+				? "STOP HOSTING" 
+				: "DISCONNECT";
+			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
+		}
+
+		public void OnKicked(KickReason reason)
+		{
+			string text;
+			switch (reason)
+			{
+				case KickReason.QSBVersionNotMatching:
+					text = "Server refused connection as QSB version does not match.";
+					break;
+				case KickReason.GameVersionNotMatching:
+					text = "Server refused connection as Outer Wilds version does not match.";
+					break;
+				default:
+					text = $"Kicked from server. KickReason:{reason}";
+					break;
+			}
+
+			OpenInfoPopup(text, "OK");
+
+			DisconnectButton.gameObject.SetActive(false);
+			ClientButton.SetActive(true);
+			HostButton.gameObject.SetActive(true);
 		}
 
 		private void OnDisconnected(NetworkError error)
@@ -147,7 +178,18 @@ namespace QSB.Menus
 				return;
 			}
 
-			OpenInfoPopup($"Client Disconnected. Reason : {error}", "OK");
+			string text;
+			switch (error)
+			{
+				case NetworkError.Timeout:
+					text = "Connection timed out. Either the server does not exist, or it has stopped responding.";
+					break;
+				default:
+					text = $"Disconnected due to error. NetworkError:{error}";
+					break;
+			}
+
+			OpenInfoPopup(text, "OK");
 
 			DisconnectButton.gameObject.SetActive(false);
 			ClientButton.SetActive(true);
