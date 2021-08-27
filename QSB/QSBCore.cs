@@ -10,6 +10,7 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
+using QSB.Menus;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
@@ -64,6 +65,7 @@ namespace QSB
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
+		public static IMenuAPI MenuApi { get; private set; }
 
 		public void Awake()
 		{
@@ -77,6 +79,8 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
@@ -84,7 +88,6 @@ namespace QSB
 			QSBPatchManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
 			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
@@ -92,6 +95,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
+			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
 
 			// WorldObject managers
@@ -112,9 +116,6 @@ namespace QSB
 			DebugBoxManager.Init();
 
 			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
-
-			// Stop players being able to pause
-			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;

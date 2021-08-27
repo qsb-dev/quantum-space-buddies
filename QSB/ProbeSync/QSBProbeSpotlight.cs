@@ -12,7 +12,6 @@ namespace QSB.ProbeSync
 
 		private QSBProbe _probe;
 		private OWLight2 _light;
-		private bool _inFlight;
 		private float _timer;
 
 		private void Awake()
@@ -64,15 +63,12 @@ namespace QSB.ProbeSync
 			{
 				StartFadeIn();
 			}
-
-			_inFlight = true;
 		}
 
 		private void OnAnchorOrRetrieve()
 		{
 			_light.GetLight().enabled = false;
 			enabled = false;
-			_inFlight = false;
 		}
 	}
 }

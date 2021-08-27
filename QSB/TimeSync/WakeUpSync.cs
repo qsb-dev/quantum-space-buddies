@@ -31,7 +31,6 @@ namespace QSB.TimeSync
 
 		private float _sendTimer;
 		private float _serverTime;
-		private bool _isFirstFastForward = true;
 		private int _serverLoopCount;
 		private bool _hasWokenUp;
 
@@ -46,7 +45,6 @@ namespace QSB.TimeSync
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				_isFirstFastForward = false;
 				Init();
 			}
 
@@ -203,7 +201,6 @@ namespace QSB.TimeSync
 			CurrentReason = null;
 
 			DebugLog.DebugWrite($"RESET TIMESCALE", MessageType.Info);
-			_isFirstFastForward = false;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();

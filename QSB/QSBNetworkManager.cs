@@ -30,15 +30,17 @@ namespace QSB
 		public static QSBNetworkManager Instance { get; private set; }
 
 		public event Action OnNetworkManagerReady;
+		public event Action OnClientConnected;
+		public event Action<NetworkError> OnClientDisconnected;
 
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
+		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
 		private const int MaxBufferedPackets = 64;
 
-		private QSBNetworkLobby _lobby;
 		private AssetBundle _assetBundle;
 		private GameObject _probePrefab;
 		private bool _everConnected;
@@ -48,7 +50,7 @@ namespace QSB
 			base.Awake();
 			Instance = this;
 
-			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
+			PlayerName = GetPlayerName();
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
@@ -80,6 +82,15 @@ namespace QSB
 			spawnPrefabs.Add(OrbPrefab);
 
 			ConfigureNetworkManager();
+		}
+
+		private string GetPlayerName()
+		{
+			var profileManager = StandaloneProfileManager.SharedInstance;
+			profileManager.Initialize();
+			var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
+			var profileName = profile.profileName;
+			return profileName;
 		}
 
 		private void SetupNetworkId(GameObject go)
@@ -148,6 +159,8 @@ namespace QSB
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
 			base.OnClientConnect(connection);
 
+			OnClientConnected?.SafeInvoke();
+
 			QSBEventManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
@@ -163,13 +176,11 @@ namespace QSB
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			_lobby.CanEditName = false;
-
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, PlayerName));
 
 			if (!QSBCore.IsHost)
 			{
@@ -201,10 +212,14 @@ namespace QSB
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}
 
-			_lobby.CanEditName = true;
-
 			IsReady = false;
 			_everConnected = false;
+		}
+
+		public override void OnClientDisconnect(QNetworkConnection conn)
+		{
+			base.OnClientDisconnect(conn);
+			OnClientDisconnected?.SafeInvoke(conn.LastError);
 		}
 
 		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects
