@@ -35,6 +35,7 @@ namespace QSB.Player
 		}
 
 		public static Action<uint> OnRemovePlayer;
+		public static Action<uint> OnAddPlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
@@ -69,6 +70,7 @@ namespace QSB.Player
 			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
+			OnAddPlayer?.Invoke(id);
 			return player;
 		}
 
