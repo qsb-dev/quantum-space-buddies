@@ -38,7 +38,7 @@ namespace QSB.TimeSync
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoad;
-			if (_canvas != null & _canvas.enabled)
+			if (_canvas != null && _canvas.enabled)
 			{
 				Canvas.willRenderCanvases -= OnWillRenderCanvases;
 			}
