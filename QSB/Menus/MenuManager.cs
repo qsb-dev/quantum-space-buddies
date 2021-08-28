@@ -1,6 +1,5 @@
 ﻿using QSB.Player;
 using QSB.Utility;
-using QuantumUNET;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -158,6 +157,9 @@ namespace QSB.Menus
 					break;
 				case KickReason.GameVersionNotMatching:
 					text = "Server refused connection as Outer Wilds version does not match.";
+					break;
+				case KickReason.None:
+					text = "Kicked from server. No reason given.";
 					break;
 				default:
 					text = $"Kicked from server. KickReason:{reason}";
