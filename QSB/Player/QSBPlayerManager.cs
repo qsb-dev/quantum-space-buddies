@@ -44,12 +44,6 @@ namespace QSB.Player
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (!QSBNetworkManager.Instance.IsReady)
-			{
-				DebugLog.ToConsole($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
-					$"{Environment.NewLine} Stacktrace :\r\n{Environment.StackTrace}", MessageType.Warning);
-			}
-
 			if (id == uint.MaxValue || id == 0U)
 			{
 				return default;
