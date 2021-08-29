@@ -8,11 +8,8 @@ namespace QuantumUNET
 	internal class QNetworkScene
 	{
 		internal static Dictionary<NetworkHash128, GameObject> guidToPrefab { get; } = new Dictionary<NetworkHash128, GameObject>();
-
 		internal static Dictionary<NetworkHash128, QSpawnDelegate> spawnHandlers { get; } = new Dictionary<NetworkHash128, QSpawnDelegate>();
-
 		internal static Dictionary<NetworkHash128, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<NetworkHash128, UnSpawnDelegate>();
-
 		internal Dictionary<NetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QNetworkIdentity>();
 
 		internal void Shutdown()
@@ -76,7 +73,8 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal bool RemoveLocalObject(NetworkInstanceId netId) => localObjects.Remove(netId);
+		internal bool RemoveLocalObject(NetworkInstanceId netId)
+			=> localObjects.Remove(netId);
 
 		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
 		{
@@ -95,7 +93,8 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal void ClearLocalObjects() => localObjects.Clear();
+		internal void ClearLocalObjects()
+			=> localObjects.Clear();
 
 		internal static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId)
 		{
@@ -271,17 +270,6 @@ namespace QuantumUNET
 			}
 
 			ClearLocalObjects();
-		}
-
-		internal void DumpAllClientObjects()
-		{
-			foreach (var networkInstanceId in localObjects.Keys)
-			{
-				var networkIdentity = localObjects[networkInstanceId];
-				Debug.Log(networkIdentity != null
-					? $"ID:{networkInstanceId} OBJ:{networkIdentity.gameObject} AS:{networkIdentity.AssetId}"
-					: $"ID:{networkInstanceId} OBJ: null");
-			}
 		}
 	}
 }
