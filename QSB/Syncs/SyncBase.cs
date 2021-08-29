@@ -18,12 +18,12 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase : QNetworkTransform
 	{
-		private static readonly Dictionary<PlayerInfo, Dictionary<Type, SyncBase>> _storedTransformSyncs = new Dictionary<PlayerInfo, Dictionary<Type, SyncBase>>();
+		private static readonly Dictionary<uint, Dictionary<Type, SyncBase>> _storedTransformSyncs = new Dictionary<uint, Dictionary<Type, SyncBase>>();
 
 		public static T GetPlayers<T>(PlayerInfo player)
 			where T : SyncBase
 		{
-			var dictOfOwnedSyncs = _storedTransformSyncs[player];
+			var dictOfOwnedSyncs = _storedTransformSyncs[player.PlayerId];
 			var wantedSync = dictOfOwnedSyncs[typeof(T)];
 			if (wantedSync == default)
 			{
@@ -114,12 +114,12 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (!_storedTransformSyncs.ContainsKey(Player))
+			if (!_storedTransformSyncs.ContainsKey(PlayerId))
 			{
-				_storedTransformSyncs.Add(Player, new Dictionary<Type, SyncBase>());
+				_storedTransformSyncs.Add(PlayerId, new Dictionary<Type, SyncBase>());
 			}
 
-			var playerDict = _storedTransformSyncs[Player];
+			var playerDict = _storedTransformSyncs[PlayerId];
 			playerDict[GetType()] = this;
 		}
 
@@ -140,7 +140,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			var playerDict = _storedTransformSyncs[Player];
+			var playerDict = _storedTransformSyncs[PlayerId];
 			playerDict.Remove(GetType());
 		}
 
