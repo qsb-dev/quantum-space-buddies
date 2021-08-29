@@ -11,10 +11,8 @@ namespace QuantumUNET.Components
 	public class QNetworkManager : MonoBehaviour
 	{
 		public static QNetworkManager singleton;
-		public static string networkSceneName = "";
 
 		public int networkPort { get; set; } = 7777;
-		public int simulatedLatency { get; set; } = 1;
 		public bool serverBindToIP { get; set; }
 		public bool dontDestroyOnLoad { get; set; } = true;
 		public bool runInBackground { get; set; } = true;
@@ -193,15 +191,6 @@ namespace QuantumUNET.Components
 			RegisterServerMessages();
 			QLog.Log($"NetworkManager StartServer port:{networkPort}");
 			isNetworkActive = true;
-			var name = SceneManager.GetSceneAt(0).name;
-			if (!string.IsNullOrEmpty(onlineScene) && onlineScene != name && onlineScene != offlineScene)
-			{
-				ServerChangeScene(onlineScene);
-			}
-			else
-			{
-				QNetworkServer.SpawnObjects();
-			}
 			QNetworkServer.SpawnObjects();
 
 			return true;
