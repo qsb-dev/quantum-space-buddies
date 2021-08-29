@@ -39,12 +39,6 @@ namespace QuantumUNET
 
 		public static bool dontListen { get; set; }
 
-		public static bool useWebSockets
-		{
-			get => instance.m_SimpleServerSimple.useWebSockets;
-			set => instance.m_SimpleServerSimple.useWebSockets = value;
-		}
-
 		internal static QNetworkServer instance
 		{
 			get
@@ -70,12 +64,6 @@ namespace QuantumUNET
 		public static bool localClientActive => instance.m_LocalClientActive;
 
 		public static int numChannels => instance.m_SimpleServerSimple.hostTopology.DefaultConfig.ChannelCount;
-
-		public static float maxDelay
-		{
-			get => instance.m_MaxDelay;
-			set => instance.InternalSetMaxDelay(value);
-		}
 
 		public static Type networkConnectionClass => instance.m_SimpleServerSimple.networkConnectionClass;
 
@@ -140,15 +128,6 @@ namespace QuantumUNET
 			}
 		}
 
-		public static void ListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId) => instance.InternalListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
-
-		private void InternalListenRelay(string relayIp, int relayPort, NetworkID netGuid, SourceID sourceId, NodeID nodeId)
-		{
-			m_SimpleServerSimple.ListenRelay(relayIp, relayPort, netGuid, sourceId, nodeId);
-			active = true;
-			RegisterMessageHandlers();
-		}
-
 		public static bool Listen(int serverPort) => instance.InternalListen(null, serverPort);
 
 		public static bool Listen(string ipAddress, int serverPort) => instance.InternalListen(ipAddress, serverPort);
@@ -168,16 +147,6 @@ namespace QuantumUNET
 			active = true;
 			RegisterMessageHandlers();
 			return true;
-		}
-
-		private void InternalSetMaxDelay(float seconds)
-		{
-			foreach (var networkConnection in connections)
-			{
-				networkConnection?.SetMaxDelay(seconds);
-			}
-
-			m_MaxDelay = seconds;
 		}
 
 		internal int AddLocalClient(QLocalClient localClient)
@@ -652,40 +621,6 @@ namespace QuantumUNET
 		public static void ClearHandlers() => instance.m_SimpleServerSimple.ClearHandlers();
 
 		public static void ClearSpawners() => QNetworkScene.ClearSpawners();
-
-		public static void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			foreach (var networkConnection in connections)
-			{
-				if (networkConnection != null)
-				{
-					networkConnection.GetStatsOut(out var num, out var num2, out var num3, out var num4);
-					numMsgs += num;
-					numBufferedMsgs += num2;
-					numBytes += num3;
-					lastBufferedPerSecond += num4;
-				}
-			}
-		}
-
-		public static void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			foreach (var networkConnection in connections)
-			{
-				if (networkConnection != null)
-				{
-					networkConnection.GetStatsIn(out var num, out var num2);
-					numMsgs += num;
-					numBytes += num2;
-				}
-			}
-		}
 
 		public static void SendToClientOfPlayer(GameObject player, short msgType, QMessageBase msg)
 		{
