@@ -509,28 +509,6 @@ namespace QuantumUNET
 			}
 		}
 
-		public void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			if (m_Connection != null)
-			{
-				m_Connection.GetStatsOut(out numMsgs, out numBufferedMsgs, out numBytes, out lastBufferedPerSecond);
-			}
-		}
-
-		public void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			if (m_Connection != null)
-			{
-				m_Connection.GetStatsIn(out numMsgs, out numBytes);
-			}
-		}
-
 		public Dictionary<short, QNetworkConnection.PacketStat> GetConnectionStats() =>
 			m_Connection?.PacketStats;
 
