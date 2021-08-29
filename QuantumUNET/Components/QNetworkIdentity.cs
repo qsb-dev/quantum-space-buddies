@@ -815,7 +815,6 @@ namespace QuantumUNET.Components
 		{
 			QNetworkServer.Update();
 			QNetworkClient.UpdateClients();
-			QNetworkManager.UpdateScene();
 		}
 
 		[SerializeField]

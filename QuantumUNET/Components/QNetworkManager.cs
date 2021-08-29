@@ -21,13 +21,9 @@ namespace QuantumUNET.Components
 		public bool scriptCRCCheck { get; set; } = true;
 		public bool autoCreatePlayer { get; set; } = true;
 		public bool isNetworkActive;
-		public bool useWebSockets { get; set; }
-		public bool useSimulator { get; set; }
 		public bool clientLoadedScene { get; set; }
 		public string serverBindAddress { get; set; } = "";
 		public string networkAddress { get; set; } = "localhost";
-		public string offlineScene { get; set; } = "";
-		public string onlineScene { get; set; } = "";
 		public float packetLossPercentage { get; set; }
 		public float maxDelay { get; set; } = 0.01f;
 		public GameObject playerPrefab { get; set; }
@@ -159,7 +155,6 @@ namespace QuantumUNET.Components
 			}
 
 			QNetworkCRC.scriptCRCCheck = scriptCRCCheck;
-			QNetworkServer.useWebSockets = useWebSockets;
 			if (m_GlobalConfig != null)
 			{
 				NetworkTransport.Init(m_GlobalConfig);
@@ -207,6 +202,7 @@ namespace QuantumUNET.Components
 			{
 				QNetworkServer.SpawnObjects();
 			}
+			QNetworkServer.SpawnObjects();
 
 			return true;
 		}
@@ -217,7 +213,6 @@ namespace QuantumUNET.Components
 			client.RegisterHandler(QMsgType.Disconnect, OnClientDisconnectInternal);
 			client.RegisterHandler(QMsgType.NotReady, OnClientNotReadyMessageInternal);
 			client.RegisterHandler(QMsgType.Error, OnClientErrorInternal);
-			client.RegisterHandler(QMsgType.Scene, OnClientSceneInternal);
 			if (playerPrefab != null)
 			{
 				QClientScene.RegisterPrefab(playerPrefab);
@@ -230,35 +225,6 @@ namespace QuantumUNET.Components
 					QClientScene.RegisterPrefab(gameObject);
 				}
 			}
-		}
-
-		public void UseExternalClient(QNetworkClient externalClient)
-		{
-			if (runInBackground)
-			{
-				Application.runInBackground = true;
-			}
-
-			if (externalClient != null)
-			{
-				client = externalClient;
-				isNetworkActive = true;
-				RegisterClientMessages(client);
-				OnStartClient(client);
-			}
-			else
-			{
-				OnStopClient();
-				QClientScene.DestroyAllClientObjects();
-				QClientScene.HandleClientDisconnect(client.connection);
-				client = null;
-				if (!string.IsNullOrEmpty(offlineScene))
-				{
-					ClientChangeScene(offlineScene, false);
-				}
-			}
-
-			s_Address = networkAddress;
 		}
 
 		public QNetworkClient StartClient(ConnectionConfig config, int hostPort)
@@ -382,10 +348,6 @@ namespace QuantumUNET.Components
 				QLog.Log("NetworkManager StopServer");
 				isNetworkActive = false;
 				QNetworkServer.Shutdown();
-				if (!string.IsNullOrEmpty(offlineScene))
-				{
-					ServerChangeScene(offlineScene);
-				}
 
 				CleanupNetworkIdentities();
 			}
@@ -404,29 +366,8 @@ namespace QuantumUNET.Components
 			}
 
 			QClientScene.DestroyAllClientObjects();
-			if (!string.IsNullOrEmpty(offlineScene))
-			{
-				ClientChangeScene(offlineScene, false);
-			}
 
 			CleanupNetworkIdentities();
-		}
-
-		public virtual void ServerChangeScene(string newSceneName)
-		{
-			if (string.IsNullOrEmpty(newSceneName))
-			{
-				QLog.Error("ServerChangeScene empty scene name");
-			}
-			else
-			{
-				QLog.Log($"ServerChangeScene {newSceneName}");
-				QNetworkServer.SetAllClientsNotReady();
-				networkSceneName = newSceneName;
-				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
-				var msg = new QStringMessage(networkSceneName);
-				QNetworkServer.SendToAll(39, msg);
-			}
 		}
 
 		private void CleanupNetworkIdentities()
@@ -434,75 +375,6 @@ namespace QuantumUNET.Components
 			foreach (var networkIdentity in Resources.FindObjectsOfTypeAll<QNetworkIdentity>())
 			{
 				networkIdentity.MarkForReset();
-			}
-		}
-
-		internal void ClientChangeScene(string newSceneName, bool forceReload)
-		{
-			if (string.IsNullOrEmpty(newSceneName))
-			{
-				QLog.Error("ClientChangeScene empty scene name");
-			}
-			else
-			{
-				QLog.Log($"ClientChangeScene newSceneName:{newSceneName} networkSceneName:{networkSceneName}");
-				if (newSceneName == networkSceneName)
-				{
-					if (!forceReload)
-					{
-						FinishLoadScene();
-						return;
-					}
-				}
-
-				s_LoadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
-				networkSceneName = newSceneName;
-			}
-		}
-
-		private void FinishLoadScene()
-		{
-			if (client != null)
-			{
-				if (s_ClientReadyConnection != null)
-				{
-					clientLoadedScene = true;
-					OnClientConnect(s_ClientReadyConnection);
-					s_ClientReadyConnection = null;
-				}
-			}
-			else
-			{
-				QLog.Error("FinishLoadScene client is null");
-			}
-
-			if (QNetworkServer.active)
-			{
-				QNetworkServer.SpawnObjects();
-				OnServerSceneChanged(networkSceneName);
-			}
-
-			if (IsClientConnected() && client != null)
-			{
-				RegisterClientMessages(client);
-				OnClientSceneChanged(client.connection);
-			}
-		}
-
-		internal static void UpdateScene()
-		{
-			if (!(singleton == null))
-			{
-				if (s_LoadingSceneAsync != null)
-				{
-					if (s_LoadingSceneAsync.isDone)
-					{
-						QLog.Log($"ClientChangeScene done readyCon:{s_ClientReadyConnection}");
-						singleton.FinishLoadScene();
-						s_LoadingSceneAsync.allowSceneActivation = true;
-						s_LoadingSceneAsync = null;
-					}
-				}
 			}
 		}
 
@@ -536,12 +408,6 @@ namespace QuantumUNET.Components
 				{
 					netMsg.Connection.SetChannelOption(j, ChannelOption.AllowFragmentation, 0);
 				}
-			}
-
-			if (networkSceneName != "" && networkSceneName != offlineScene)
-			{
-				var msg = new QStringMessage(networkSceneName);
-				netMsg.Connection.Send(39, msg);
 			}
 
 			OnServerConnect(netMsg.Connection);
@@ -595,24 +461,13 @@ namespace QuantumUNET.Components
 			QLog.Log("NetworkManager:OnClientConnectInternal");
 			netMsg.Connection.SetMaxDelay(maxDelay);
 			var name = SceneManager.GetSceneAt(0).name;
-			if (string.IsNullOrEmpty(onlineScene) || onlineScene == offlineScene || name == onlineScene)
-			{
-				clientLoadedScene = false;
-				OnClientConnect(netMsg.Connection);
-			}
-			else
-			{
-				s_ClientReadyConnection = netMsg.Connection;
-			}
+			clientLoadedScene = false;
+			OnClientConnect(netMsg.Connection);
 		}
 
 		internal void OnClientDisconnectInternal(QNetworkMessage netMsg)
 		{
 			QLog.Log("NetworkManager:OnClientDisconnectInternal");
-			if (!string.IsNullOrEmpty(offlineScene))
-			{
-				ClientChangeScene(offlineScene, false);
-			}
 
 			OnClientDisconnect(netMsg.Connection);
 		}
@@ -629,16 +484,6 @@ namespace QuantumUNET.Components
 			QLog.Log("NetworkManager:OnClientErrorInternal");
 			netMsg.ReadMessage(s_ErrorMessage);
 			OnClientError(netMsg.Connection, s_ErrorMessage.errorCode);
-		}
-
-		internal void OnClientSceneInternal(QNetworkMessage netMsg)
-		{
-			QLog.Log("NetworkManager:OnClientSceneInternal");
-			var newSceneName = netMsg.Reader.ReadString();
-			if (IsClientConnected() && !QNetworkServer.active)
-			{
-				ClientChangeScene(newSceneName, true);
-			}
 		}
 
 		public virtual void OnServerConnect(QNetworkConnection conn)
