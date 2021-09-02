@@ -174,7 +174,7 @@ namespace QSB.Syncs.Sectored
 						OWML.Common.MessageType.Warning);
 				}
 
-				DebugLog.DebugWrite($"[BaseSectoredSync] {_logName} : Sector Manager not ready.");
+				DebugLog.DebugWrite($"{_logName} : Sector Manager not ready.");
 				return false;
 			}
 
@@ -183,7 +183,7 @@ namespace QSB.Syncs.Sectored
 				return true;
 			}
 
-			if (referenceNull)
+			if (referenceNull && SectorSync.IsReady)
 			{
 				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 				if (closestSector != null)
@@ -195,10 +195,10 @@ namespace QSB.Syncs.Sectored
 					if (SectorSync.IsReady)
 					{
 						DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
+						return false;
 					}
 
-					DebugLog.DebugWrite($"[BaseSectoredSync] {_logName} : No sector found.");
-					return false;
+					return true;
 				}
 			}
 
