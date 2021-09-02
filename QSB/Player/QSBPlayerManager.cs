@@ -113,6 +113,16 @@ namespace QSB.Player
 			{
 				cameraList.Add(LocalPlayer);
 			}
+			else if (includeLocalCamera && (LocalPlayer == default || LocalPlayer.Camera == null))
+			{
+				if (LocalPlayer == default)
+				{
+					DebugLog.ToConsole($"Error - LocalPlayer is null.", MessageType.Error);
+					return cameraList;
+				}
+
+				DebugLog.DebugWrite($"Error - LocalPlayer.Camera is null.", MessageType.Error);
+			}
 
 			return cameraList;
 		}
