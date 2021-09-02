@@ -32,7 +32,6 @@ namespace QSB.SectorSync
 
 		public void Init(SectorDetector detector, TargetType type)
 		{
-			DebugLog.DebugWrite($"INIT SECTOR SYNC detector:{detector.name}");
 			if (_sectorDetector != null)
 			{
 				_sectorDetector.OnEnterSector -= AddSector;

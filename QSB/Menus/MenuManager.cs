@@ -139,8 +139,6 @@ namespace QSB.Menus
 
 		private void OnConnected()
 		{
-			DebugLog.DebugWrite($"ON CONNECTED");
-
 			var text = QSBCore.IsHost 
 				? "STOP HOSTING" 
 				: "DISCONNECT";
