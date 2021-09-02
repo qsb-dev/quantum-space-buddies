@@ -88,8 +88,16 @@ namespace QSB.ProbeSync.TransformSync
 					probeOWRigidbody.SetPosition(launcherTransform.position);
 					probeOWRigidbody.SetRotation(launcherTransform.rotation);
 
-					_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-					_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+					if (ReferenceTransform != null)
+					{
+						_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+						_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+					}
+					else
+					{
+						_intermediaryTransform.SetPosition(Vector3.zero);
+						_intermediaryTransform.SetRotation(Quaternion.identity);
+					}
 
 					var currentReferenceSector = ReferenceSector;
 					var playerReferenceSector = Player.TransformSync.ReferenceSector;

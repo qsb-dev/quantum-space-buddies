@@ -69,8 +69,17 @@ namespace QSB.Syncs.Sectored.Transforms
 
 			if (HasAuthority)
 			{
-				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				if (ReferenceTransform != null)
+				{
+					_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+					_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				}
+				else
+				{
+					_intermediaryTransform.SetPosition(Vector3.zero);
+					_intermediaryTransform.SetRotation(Quaternion.identity);
+				}
+				
 				return true;
 			}
 

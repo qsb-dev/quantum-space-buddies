@@ -2,6 +2,7 @@ using QSB.SectorSync;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
@@ -40,11 +41,22 @@ namespace QSB.ShipSync.TransformSync
 		{
 			if (HasAuthority)
 			{
-				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				_relativeVelocity = GetRelativeVelocity();
-				_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
-				return true;
+				if (ReferenceTransform != null)
+				{
+					_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+					_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+					_relativeVelocity = GetRelativeVelocity();
+					_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+					return true;
+				}
+				else
+				{
+					_intermediaryTransform.SetPosition(Vector3.zero);
+					_intermediaryTransform.SetRotation(Quaternion.identity);
+					_relativeVelocity = Vector3.zero;
+					_relativeAngularVelocity = Vector3.zero;
+					return true;
+				}
 			}
 
 			_updateCount++;
