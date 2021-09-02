@@ -120,7 +120,7 @@ namespace QSB.SectorSync
 
 			if (!IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector before it was initialized. Transform:{trans.name} Stacktrace:{Environment.StackTrace}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector() before this SectorSync is ready. Transform:{trans.name} Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
 				return null;
 			}
 

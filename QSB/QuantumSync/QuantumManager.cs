@@ -87,7 +87,7 @@ namespace QSB.QuantumSync
 			var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
 			if (playersWithCameras.Count == 0)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Could not find any players with cameras!", MessageType.Warning);
 				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
 
