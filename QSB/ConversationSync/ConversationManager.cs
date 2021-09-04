@@ -91,7 +91,7 @@ namespace QSB.ConversationSync
 				Destroy(playerBox);
 			}
 
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
+			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 2, text);
 		}
 
 		public void DisplayCharacterConversationBox(int index, string text)
