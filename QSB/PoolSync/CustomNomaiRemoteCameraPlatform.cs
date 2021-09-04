@@ -360,7 +360,8 @@ namespace QSB.PoolSync
 					continue;
 				}
 
-				var hologram = item.Value.transform.GetChild(0);
+				//var hologram = item.Value.transform.GetChild(0);
+				var hologram = item.Value.transform;
 				hologram.position = TransformPoint(item.Key.Body.transform.position, this, _slavePlatform);
 				hologram.rotation = TransformRotation(item.Key.Body.transform.rotation, this, _slavePlatform);
 			}
