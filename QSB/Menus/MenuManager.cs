@@ -25,6 +25,7 @@ namespace QSB.Menus
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
 			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
+			QSBNetworkManager.Instance.OnClientErrorThrown += OnClientError;
 		}
 
 		void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
@@ -182,10 +183,10 @@ namespace QSB.Menus
 			switch (error)
 			{
 				case NetworkError.Timeout:
-					text = "Connection timed out. Either the server does not exist, or it has stopped responding.";
+					text = "Client disconnected with error!\r\nConnection timed out.";
 					break;
 				default:
-					text = $"Disconnected due to error. NetworkError:{error}";
+					text = $"Client disconnected with error!\r\nNetworkError:{error}";
 					break;
 			}
 
@@ -194,6 +195,31 @@ namespace QSB.Menus
 			DisconnectButton.gameObject.SetActive(false);
 			ClientButton.SetActive(true);
 			HostButton.gameObject.SetActive(true);
+		}
+
+		private void OnClientError(NetworkError error)
+		{
+			if (error == NetworkError.Ok)
+			{
+				// lol wut
+				return;
+			}
+
+			string text;
+			switch (error)
+			{
+				case NetworkError.DNSFailure:
+					text = "Internal QNet client error!\r\nDNS Faliure. Address was invalid or could not be resolved.";
+					DisconnectButton.gameObject.SetActive(false);
+					ClientButton.SetActive(true);
+					HostButton.gameObject.SetActive(true);
+					break;
+				default:
+					text = $"Internal QNet client error!\n\nNetworkError:{error}";
+					break;
+			}
+
+			OpenInfoPopup(text, "OK");
 		}
 	}
 }

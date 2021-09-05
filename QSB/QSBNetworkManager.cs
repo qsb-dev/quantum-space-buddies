@@ -32,6 +32,7 @@ namespace QSB
 		public event Action OnNetworkManagerReady;
 		public event Action OnClientConnected;
 		public event Action<NetworkError> OnClientDisconnected;
+		public event Action<NetworkError> OnClientErrorThrown;
 
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
@@ -153,6 +154,9 @@ namespace QSB
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
+
+		public override void OnClientError(QNetworkConnection conn, int errorCode)
+			=> OnClientErrorThrown?.SafeInvoke((NetworkError)errorCode);
 
 		public override void OnClientConnect(QNetworkConnection connection) // Called on the client when connecting to a server
 		{
