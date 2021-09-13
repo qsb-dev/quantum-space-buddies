@@ -160,7 +160,7 @@ namespace QSB.Syncs.Sectored
 			}
 		}
 
-		protected override bool UpdateTransform()
+		protected bool UpdateSectors()
 		{
 			var referenceNull = ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null;
 			var sectorManagerReady = QSBSectorManager.Instance.IsReady;
@@ -183,27 +183,33 @@ namespace QSB.Syncs.Sectored
 				return true;
 			}
 
-			if (referenceNull && SectorSync.IsReady)
+			if (referenceNull)
 			{
-				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
-				if (closestSector != null)
+				if (SectorSync.IsReady)
 				{
-					SetReferenceTransform(closestSector.Transform);
-				}
-				else
-				{
-					if (SectorSync.IsReady)
+					var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+					if (closestSector != null)
+					{
+						SetReferenceTransform(closestSector.Transform);
+						return true;
+					}
+					else
 					{
 						DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
 						return false;
 					}
-
-					return true;
+				}
+				else
+				{
+					return false;
 				}
 			}
 
 			return true;
 		}
+
+		protected override bool UpdateTransform()
+			=> UpdateSectors();
 
 		public void SetReferenceSector(QSBSector sector)
 		{

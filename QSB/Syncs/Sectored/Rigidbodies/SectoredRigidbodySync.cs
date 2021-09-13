@@ -97,6 +97,14 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			}
 		}
 
+		protected void SetValuesToSync()
+		{
+			_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+			_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+			_relativeVelocity = GetRelativeVelocity();
+			_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+		}
+
 		protected override bool UpdateTransform()
 		{
 			if (!base.UpdateTransform())
@@ -106,10 +114,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 			if (HasAuthority)
 			{
-				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				_relativeVelocity = GetRelativeVelocity();
-				_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+				SetValuesToSync();
 				return true;
 			}
 
