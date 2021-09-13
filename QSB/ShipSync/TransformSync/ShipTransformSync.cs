@@ -39,6 +39,11 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override bool UpdateTransform()
 		{
+			if (!base.UpdateTransform())
+			{
+				return false;
+			}
+
 			if (HasAuthority)
 			{
 				if (ReferenceTransform != null)
@@ -65,6 +70,11 @@ namespace QSB.ShipSync.TransformSync
 			{
 				_updateCount = 0;
 				ForcePosition();
+			}
+
+			if (ReferenceTransform == null)
+			{
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
