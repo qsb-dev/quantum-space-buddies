@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 
@@ -29,6 +30,7 @@ namespace QSB.DeathSync.Events
 			if (message.AboutId == LocalPlayerId)
 			{
 				RespawnManager.Instance.Respawn();
+				ClientStateManager.Instance.OnRespawn();
 			}
 
 			RespawnManager.Instance.OnPlayerRespawn(QSBPlayerManager.GetPlayer(message.AboutId));

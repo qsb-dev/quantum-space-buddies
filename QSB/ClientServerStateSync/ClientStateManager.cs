@@ -98,6 +98,19 @@ namespace QSB.ClientServerStateSync
 			}
 		}
 
+		public void OnRespawn()
+		{
+			var currentScene = QSBSceneManager.CurrentScene;
+			if (currentScene == OWScene.SolarSystem)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Error - Player tried to respawn in scene {currentScene}", OWML.Common.MessageType.Error);
+			}
+		}
+
 		private ClientState ForceGetCurrentState()
 		{
 			var currentScene = LoadManager.GetCurrentScene();
