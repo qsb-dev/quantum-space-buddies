@@ -223,28 +223,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			var state = UpdateTransform();
-			if (!state)
-			{
-				DebugLog.ToConsole($"{_logName} UpdateTransform() fail.", MessageType.Error);
-				base.Update();
-				return;
-			}
-
-			/*
-			var expectedPosition = _intermediaryTransform.GetTargetPosition_Unparented();
-			var actualPosition = AttachedObject.transform.position;
-			var distance = Vector3.Distance(expectedPosition, actualPosition);
-			if (distance > 20)
-			{
-				var intermediaryReference = _intermediaryTransform.GetReferenceTransform();
-				DebugLog.ToConsole($"Warning - {_logName}'s AttachedObject ({AttachedObject?.name}) is far away from it's expected position! Info:" +
-					$"\r\n AttachedObject's parent : {AttachedObject?.transform.parent?.name}" +
-					$"\r\n Distance : {distance}" +
-					$"\r\n ReferenceTransform : {(ReferenceTransform == null ? "NULL" : ReferenceTransform.name)}" +
-					$"\r\n Intermediary's ReferenceTransform : {(intermediaryReference == null ? "NULL" : intermediaryReference.name)}", MessageType.Warning);
-			}
-			*/
+			UpdateTransform();
 
 			base.Update();
 		}
