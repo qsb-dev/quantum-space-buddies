@@ -20,11 +20,7 @@ namespace QSB.Player.Events
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
 
-		private void Handler()
-		{
-			DebugLog.DebugWrite($"Sending QSBRequestStateResync");
-			SendEvent(CreateMessage());
-		}
+		private void Handler() => SendEvent(CreateMessage());
 
 		private PlayerMessage CreateMessage() => new PlayerMessage
 		{
@@ -33,16 +29,11 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
 		{
-			DebugLog.DebugWrite($"OnReceiveRemote RequestStateResyncEvent");
-
 			// if host, send worldobject and server states
 
 			if (isHost)
 			{
-				DebugLog.DebugWrite($"SENDING SERVER STATE");
 				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
-
-				DebugLog.DebugWrite($"SENDING PLAYER INFORMATION");
 				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 
 				SendWorldObjectInfo();
@@ -51,15 +42,11 @@ namespace QSB.Player.Events
 			}
 
 			// if client, send player and client states
-
-			DebugLog.DebugWrite($"SENDING PLAYER INFORMATION");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 		}
 
 		private void SendWorldObjectInfo()
 		{
-			DebugLog.DebugWrite($"SENDING WORLDOBJECT INFORMATION");
-
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));
 
