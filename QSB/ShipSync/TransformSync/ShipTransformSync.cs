@@ -30,6 +30,11 @@ namespace QSB.ShipSync.TransformSync
 
 		private void ForcePosition()
 		{
+			if (ReferenceTransform == null)
+			{
+				return;
+			}
+
 			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
 			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
 
@@ -39,29 +44,17 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override bool UpdateTransform()
 		{
-			if (!base.UpdateTransform())
+			if (!UpdateSectors())
 			{
 				return false;
 			}
 
+			// Dont do base... this is a replacement!
+
 			if (HasAuthority)
 			{
-				if (ReferenceTransform != null)
-				{
-					_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-					_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-					_relativeVelocity = GetRelativeVelocity();
-					_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
-					return true;
-				}
-				else
-				{
-					_intermediaryTransform.SetPosition(Vector3.zero);
-					_intermediaryTransform.SetRotation(Quaternion.identity);
-					_relativeVelocity = Vector3.zero;
-					_relativeAngularVelocity = Vector3.zero;
-					return true;
-				}
+				SetValuesToSync();
+				return true;
 			}
 
 			_updateCount++;
