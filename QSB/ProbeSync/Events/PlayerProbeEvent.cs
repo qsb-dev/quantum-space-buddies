@@ -25,6 +25,11 @@ namespace QSB.ProbeSync.Events
 		public override void OnReceiveRemote(bool server, EnumMessage<ProbeEvent> message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
+			if (!player.PlayerStates.IsReady || player.Probe == null)
+			{
+				return;
+			}
+
 			var probe = player.Probe;
 
 			probe.HandleEvent(message.EnumValue);
