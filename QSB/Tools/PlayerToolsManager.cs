@@ -300,21 +300,35 @@ namespace QSB.Tools
 
 		private static void CreateProbeLauncher(Transform cameraBody)
 		{
-			var REMOTE_ProbeLauncher = Object.Instantiate(GameObject.Find("PlayerCamera/ProbeLauncher"));
+			var ProbeLauncher = GameObject.Find("PlayerCamera/ProbeLauncher");
 
-			Object.Destroy(REMOTE_ProbeLauncher.GetComponent<ProbePromptController>());
-			Object.Destroy(REMOTE_ProbeLauncher.GetComponent<PlayerProbeLauncher>());
-			Object.Destroy(REMOTE_ProbeLauncher.transform.Find("preLaunchCamera").gameObject);
-			Object.Destroy(REMOTE_ProbeLauncher.transform.Find("Props_HEA_ProbeLauncher_ProbeCamera").gameObject); // the correctly placed one...
+			// Create new ProbeLauncher
+			var REMOTE_ProbeLauncher = new GameObject("REMOTE_ProbeLauncher");
+			REMOTE_ProbeLauncher.SetActive(false);
 
-			var prop = REMOTE_ProbeLauncher.transform.Find("Props_HEA_ProbeLauncher");
-			var recallEffect = prop.Find("RecallEffect");
+			// Copy children of ProbeLauncher
+			var Props_HEA_ProbeLauncher = ProbeLauncher.transform.Find("Props_HEA_ProbeLauncher");
+			var REMOTE_Props_HEA_ProbeLauncher = Object.Instantiate(Props_HEA_ProbeLauncher, REMOTE_ProbeLauncher.transform, false);
 
-			prop.Find("PressureGauge_Arrow").GetComponent<MeshRenderer>().material = Props_HEA_PlayerTool_mat;
-			prop.Find("ProbeLauncherChassis").GetComponent<MeshRenderer>().material = Props_HEA_PlayerTool_mat;
-			Object.Destroy(prop.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
+			var LaunchParticleEffect_Underwater = ProbeLauncher.transform.Find("LaunchParticleEffect_Underwater");
+			var REMOTE_LaunchParticleEffect_Underwater = Object.Instantiate(LaunchParticleEffect_Underwater, REMOTE_ProbeLauncher.transform, false);
 
-			var preLaunchProbe = prop.Find("Props_HEA_Probe_Prelaunch");
+			var LaunchParticleEffect = ProbeLauncher.transform.Find("LaunchParticleEffect");
+			var REMOTE_LaunchParticleEffect = Object.Instantiate(LaunchParticleEffect, REMOTE_ProbeLauncher.transform, false);
+
+			// Set up effects
+			var effects = REMOTE_ProbeLauncher.AddComponent<ProbeLauncherEffects>();
+			effects.SetValue("_launchParticles", REMOTE_LaunchParticleEffect.GetComponent<ParticleSystem>());
+			effects.SetValue("_underwaterLaunchParticles", REMOTE_LaunchParticleEffect_Underwater.GetComponent<ParticleSystem>());
+			effects.SetValue("_owAudioSource", ProbeLauncher.GetComponent<ProbeLauncherEffects>().GetValue<OWAudioSource>("_owAudioSource"));
+
+			var recallEffect = REMOTE_Props_HEA_ProbeLauncher.Find("RecallEffect");
+
+			REMOTE_Props_HEA_ProbeLauncher.Find("PressureGauge_Arrow").GetComponent<MeshRenderer>().material = Props_HEA_PlayerTool_mat;
+			REMOTE_Props_HEA_ProbeLauncher.Find("ProbeLauncherChassis").GetComponent<MeshRenderer>().material = Props_HEA_PlayerTool_mat;
+			Object.Destroy(REMOTE_Props_HEA_ProbeLauncher.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
+
+			var preLaunchProbe = REMOTE_Props_HEA_ProbeLauncher.Find("Props_HEA_Probe_Prelaunch");
 			Object.Destroy(preLaunchProbe.Find("Props_HEA_Probe_Prelaunch_Prepass").gameObject);
 
 			// fuck you unity
@@ -340,13 +354,15 @@ namespace QSB.Tools
 			tool.HoldTransform = _toolHoldTransform;
 			tool.ArrivalDegrees = 5f;
 			tool.Type = ToolType.ProbeLauncher;
-			tool.ToolGameObject = prop.gameObject;
+			tool.ToolGameObject = REMOTE_Props_HEA_ProbeLauncher.gameObject;
 			tool.PreLaunchProbeProxy = preLaunchProbe.gameObject;
 			tool.ProbeRetrievalEffect = recallEffect.GetComponent<SingularityWarpEffect>();
-			tool.Effects = REMOTE_ProbeLauncher.GetComponent<ProbeLauncherEffects>();
+			tool.Effects = effects;
 
 			REMOTE_ProbeLauncher.transform.parent = cameraBody;
 			REMOTE_ProbeLauncher.transform.localPosition = ProbeLauncherOffset;
+
+			//QSBCore.UnityEvents.FireInNUpdates(() => REMOTE_ProbeLauncher.SetActive(true), 5);
 			REMOTE_ProbeLauncher.SetActive(true);
 		}
 
