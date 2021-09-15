@@ -39,7 +39,7 @@ namespace QSB.Animation.NPC.Patches
 			Animator ____animator,
 			CharacterDialogueTree ____dialogueTree)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllReady || ConversationManager.Instance == null)
 			{
 				return false;
 			}
