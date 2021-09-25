@@ -35,7 +35,26 @@ namespace QSB.Utility
 			{
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Server State : {ServerStateManager.Instance.GetServerState()}", guiStyle);
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"WakeUpSync State : {WakeUpSync.LocalInstance.CurrentState}", guiStyle);
+				var currentState = WakeUpSync.LocalInstance.CurrentState;
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"WakeUpSync State : {currentState}", guiStyle);
+				offset += _debugLineSpacing;
+				var reason = WakeUpSync.LocalInstance.CurrentReason;
+				if (currentState == WakeUpSync.State.FastForwarding && reason != null)
+				{
+					
+					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(FastForwardReason)reason}", guiStyle);
+					offset += _debugLineSpacing;
+				}
+				else if (currentState == WakeUpSync.State.Pausing && reason != null)
+				{
+					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(PauseReason)reason}", guiStyle);
+					offset += _debugLineSpacing;
+				}
+				else if (currentState != WakeUpSync.State.Loaded && currentState != WakeUpSync.State.NotLoaded && reason == null)
+				{
+					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : NULL", guiStyle);
+					offset += _debugLineSpacing;
+				}
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}", guiStyle);
 				offset += _debugLineSpacing;
