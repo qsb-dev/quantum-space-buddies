@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.Utility;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,6 +53,11 @@ namespace QSB.TimeSync
 
 		private void StartTimeSync(TimeSyncType type, Enum reason)
 		{
+			if (!QSBSceneManager.IsInUniverse)
+			{
+				DebugLog.ToConsole("Error - Tried to start time sync UI when not in universe!", OWML.Common.MessageType.Error);
+				return;
+			}
 			_currentType = type;
 			_currentReason = reason;
 			_startTime = Time.timeSinceLevelLoad;
