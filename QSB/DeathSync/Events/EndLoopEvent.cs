@@ -25,14 +25,14 @@ namespace QSB.DeathSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<EndLoopReason> message)
 		{
+			DebugLog.DebugWrite($" ~~~~ END LOOP - Reason:{message.EnumValue} ~~~~ ");
 			switch (message.EnumValue)
 			{
 				case EndLoopReason.AllPlayersDead:
-					DebugLog.DebugWrite($"all players dead");
 					Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
 					if (QSBCore.IsHost)
 					{
-						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForDeath);
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToDie);
 					}
 
 					break;
