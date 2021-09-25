@@ -38,46 +38,97 @@ namespace QSB.ClientServerStateSync
 		{
 			var serverState = ServerStateManager.Instance.GetServerState();
 
+			ClientState newState;
+
 			if (QSBCore.IsHost)
 			{
-				if (newScene == OWScene.SolarSystem && oldScene != OWScene.SolarSystem)
+				
+				switch (newScene)
 				{
-					DebugLog.DebugWrite($"Server is loading SolarSystem just after creating server.");
-					QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
-				}
-
-				if (newScene == OWScene.SolarSystem && oldScene == OWScene.SolarSystem)
-				{
-					DebugLog.DebugWrite($"Server is reloading SolarSystem");
-					QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.WaitingForOthersToReadyInSolarSystem);
-				}
-
-				if (newScene == OWScene.TitleScreen)
-				{
-					DebugLog.DebugWrite($"Server has gone back to title screen");
-					QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.InTitleScreen);
+					case OWScene.TitleScreen:
+						DebugLog.DebugWrite($"SERVER LOAD TITLESCREEN");
+						newState = ClientState.InTitleScreen;
+						break;
+					case OWScene.Credits_Fast:
+						DebugLog.DebugWrite($"SERVER LOAD SHORT CREDITS");
+						newState = ClientState.WatchingShortCredits;
+						break;
+					case OWScene.Credits_Final:
+					case OWScene.PostCreditsScene:
+						DebugLog.DebugWrite($"SERVER LOAD LONG CREDITS");
+						newState = ClientState.WatchingLongCredits;
+						break;
+					case OWScene.SolarSystem:
+						if (oldScene == OWScene.SolarSystem)
+						{
+							// reloading scene
+							DebugLog.DebugWrite($"SERVER RELOAD SOLARSYSTEM");
+							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+						}
+						else
+						{
+							// loading in from title screen
+							DebugLog.DebugWrite($"SERVER LOAD SOLARSYSTEM");
+							newState = ClientState.AliveInSolarSystem;
+						}
+						break;
+					default:
+						newState = ClientState.NotLoaded;
+						break;
 				}
 			}
 			else
 			{
-				if (newScene == OWScene.SolarSystem && oldScene != OWScene.SolarSystem && serverState != ServerState.AwaitingPlayConfirmation)
+				switch (newScene)
 				{
-					DebugLog.DebugWrite($"Client is loading SolarSystem just after connecting.");
-					QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
-				}
+					case OWScene.TitleScreen:
+						DebugLog.DebugWrite($"CLIENT LOAD TITLESCREEN");
+						newState = ClientState.InTitleScreen;
+						break;
+					case OWScene.Credits_Fast:
+						DebugLog.DebugWrite($"CLIENT LOAD SHORT CREDITS");
+						newState = ClientState.WatchingShortCredits;
+						break;
+					case OWScene.Credits_Final:
+					case OWScene.PostCreditsScene:
+						DebugLog.DebugWrite($"CLIENT LOAD LONG CREDITS");
+						newState = ClientState.WatchingLongCredits;
+						break;
+					case OWScene.SolarSystem:
+						if (serverState == ServerState.WaitingForAllPlayersToDie)
+						{
+							DebugLog.DebugWrite($"SEVER IN DEATH PHASE - WAIT");
+							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							break;
+						}
 
-				if (newScene == OWScene.SolarSystem && oldScene == OWScene.SolarSystem)
-				{
-					DebugLog.DebugWrite($"Client is reloading SolarSystem");
-					QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.WaitingForOthersToReadyInSolarSystem);
-				}
-
-				if (serverState == ServerState.WaitingForDeath)
-				{
-					DebugLog.DebugWrite($"Client loaded new scene while server is waiting for all players to die");
-					QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.WaitingForOthersToReadyInSolarSystem);
+						if (oldScene == OWScene.SolarSystem)
+						{
+							// reloading scene
+							DebugLog.DebugWrite($"CLIENT RELOAD SOLARSYSTEM");
+							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+						}
+						else
+						{
+							// loading in from title screen
+							DebugLog.DebugWrite($"CLIENT LOAD SOLARSYSTEM");
+							if (serverState == ServerState.WaitingForAllPlayersToReady)
+							{
+								newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							}
+							else
+							{
+								newState = ClientState.AliveInSolarSystem;
+							}
+						}
+						break;
+					default:
+						newState = ClientState.NotLoaded;
+						break;
 				}
 			}
+
+			QSBEventManager.FireEvent(EventNames.QSBClientState, newState);
 		}
 
 		public void OnDeath()
@@ -103,6 +154,7 @@ namespace QSB.ClientServerStateSync
 			var currentScene = QSBSceneManager.CurrentScene;
 			if (currentScene == OWScene.SolarSystem)
 			{
+				DebugLog.DebugWrite($"RESPAWN!");
 				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
 			}
 			else
@@ -113,27 +165,32 @@ namespace QSB.ClientServerStateSync
 
 		private ClientState ForceGetCurrentState()
 		{
+			DebugLog.DebugWrite($"ForceGetCurrentState");
 			var currentScene = LoadManager.GetCurrentScene();
 			var lastScene = LoadManager.GetPreviousScene();
 
-			if (currentScene == OWScene.TitleScreen || currentScene == OWScene.Credits_Fast || currentScene == OWScene.Credits_Final)
+			switch (currentScene)
 			{
-				return ClientState.InTitleScreen;
+				case OWScene.TitleScreen:
+					DebugLog.DebugWrite($"- TitleScreen");
+					return ClientState.InTitleScreen;
+				case OWScene.Credits_Fast:
+					DebugLog.DebugWrite($"- Short Credits");
+					return ClientState.WatchingShortCredits;
+				case OWScene.Credits_Final:
+				case OWScene.PostCreditsScene:
+					DebugLog.DebugWrite($"- Long Credits");
+					return ClientState.WatchingLongCredits;
+				case OWScene.SolarSystem:
+					DebugLog.DebugWrite($"- SolarSystem");
+					return ClientState.AliveInSolarSystem;
+				case OWScene.EyeOfTheUniverse:
+					DebugLog.DebugWrite($"- Eye");
+					return ClientState.AliveInEye;
+				default:
+					DebugLog.DebugWrite($"- Not Loaded");
+					return ClientState.NotLoaded;
 			}
-
-			// cant join while dead...
-
-			if (currentScene == OWScene.SolarSystem)
-			{
-				return ClientState.AliveInSolarSystem;
-			}
-
-			if (currentScene == OWScene.EyeOfTheUniverse)
-			{
-				return ClientState.AliveInEye;
-			}
-
-			return ClientState.NotLoaded;
 		}
 	}
 }
