@@ -105,6 +105,8 @@ namespace QSB.Menus
 				DisconnectButton.gameObject.SetActive(false);
 				DisconnectButton.GetComponent<CanvasGroup>().alpha = 1f;
 			}
+
+			OnConnected();
 		}
 
 		private void MakeTitleMenus()
@@ -118,8 +120,21 @@ namespace QSB.Menus
 
 			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT");
 			DisconnectButton.onClick.AddListener(Disconnect);
-			DisconnectButton.gameObject.SetActive(false);
-			DisconnectButton.GetComponent<CanvasGroup>().alpha = 1f;
+
+			if (QSBCore.IsInMultiplayer)
+			{
+				ClientButton.SetActive(false);
+				HostButton.gameObject.SetActive(false);
+				DisconnectButton.gameObject.SetActive(true);
+				DisconnectButton.GetComponent<CanvasGroup>().alpha = 1f;
+			}
+			else
+			{
+				DisconnectButton.gameObject.SetActive(false);
+				DisconnectButton.GetComponent<CanvasGroup>().alpha = 1f;
+			}
+
+			OnConnected();
 		}
 
 		private void Disconnect()
