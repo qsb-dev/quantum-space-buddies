@@ -79,7 +79,6 @@ namespace QSB.Player
 
 		public static void HandleFullStateMessage(PlayerInformationMessage message)
 		{
-			DebugLog.DebugWrite($"Handle full state message of {message.AboutId}");
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			player.PlayerStates = message.PlayerState;

@@ -4,7 +4,6 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -188,7 +187,6 @@ namespace QSB.DeathSync.Patches
 
 		public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
 		{
-			DebugLog.DebugWrite($"KILL PLAYER PREFIX stacetrace : \r\n {Environment.StackTrace}");
 			if (RespawnOnDeath.Instance == null)
 			{
 				return true;
@@ -207,7 +205,6 @@ namespace QSB.DeathSync.Patches
 
 		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
 		{
-			DebugLog.DebugWrite($"KILL PLAYER POSTFIX");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
 		}
 

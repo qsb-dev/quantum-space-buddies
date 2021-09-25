@@ -23,7 +23,6 @@ namespace QSB.DeathSync.Events
 
 		public override void OnReceiveLocal(bool server, PlayerDeathMessage message)
 		{
-			DebugLog.DebugWrite($"RECEIVE LOCAL PLAYER DEATH");
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			RespawnManager.Instance.OnPlayerDeath(player);
 			ClientStateManager.Instance.OnDeath();
@@ -31,7 +30,6 @@ namespace QSB.DeathSync.Events
 
 		public override void OnReceiveRemote(bool server, PlayerDeathMessage message)
 		{
-			DebugLog.DebugWrite($"RECEIVE REMOTE PLAYER DEATH");
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			var playerName = player.Name;
 			var deathMessage = Necronomicon.GetPhrase(message.EnumValue, message.NecronomiconIndex);
