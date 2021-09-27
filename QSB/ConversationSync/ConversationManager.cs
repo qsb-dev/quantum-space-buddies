@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -120,10 +119,7 @@ namespace QSB.ConversationSync
 			newBox.transform.SetParent(parent);
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
 			newBox.transform.rotation = parent.rotation;
-			var lookAt = newBox.AddComponent<FaceActiveCamera>();
-			lookAt.SetValue("_useLookAt", false);
-			lookAt.SetValue("_localFacingVector", Vector3.back);
-			lookAt.SetValue("_localRotationAxis", Vector3.up);
+			newBox.AddComponent<CameraFacingBillboard>();
 			newBox.GetComponent<Text>().text = text;
 			newBox.AddComponent<ZOverride>();
 			newBox.SetActive(true);

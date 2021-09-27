@@ -134,6 +134,7 @@
     <Compile Include="CampfireSync\WorldObjects\QSBCampfire.cs" />
     <Compile Include="ClientServerStateSync\ClientStateManager.cs" />
     <Compile Include="ClientServerStateSync\Events\ClientStateEvent.cs" />
+    <Compile Include="ConversationSync\CameraFacingBillboard.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionEvent.cs" />
     <Compile Include="ConversationSync\Events\DialogueConditionMessage.cs" />
     <Compile Include="ConversationSync\Events\ConversationEvent.cs" />
