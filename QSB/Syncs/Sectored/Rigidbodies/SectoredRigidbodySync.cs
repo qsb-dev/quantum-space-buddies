@@ -228,12 +228,12 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			if (isRunningKinematic)
 			{
 				var kinematicRigidbody = rigidbody.GetValue<KinematicRigidbody>("_kinematicRigidbody");
-				kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+				kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 			}
 			else
 			{
 				var normalRigidbody = rigidbody.GetValue<Rigidbody>("_rigidbody");
-				normalRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameWorldVelocity();
+				normalRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 			}
 
 			rigidbody.SetValue("_lastVelocity", currentVelocity);

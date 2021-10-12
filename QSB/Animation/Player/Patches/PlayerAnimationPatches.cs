@@ -66,7 +66,7 @@ namespace QSB.Animation.Patches
 			____animator.SetFloat("RunSpeedY", movementVector.z / 3f);
 			____animator.SetFloat("TurnSpeed", ____playerController.GetTurning());
 			____animator.SetBool("Grounded", isGrounded || isAttached || PlayerState.IsRecentlyDetached());
-			____animator.SetLayerWeight(1, ____playerController.GetJumpChargeFraction());
+			____animator.SetLayerWeight(1, ____playerController.GetJumpCrouchFraction());
 			____animator.SetFloat("FreefallSpeed", freefallMagnitude / 15f * (timeInFreefall / 3f));
 			____animator.SetBool("InZeroG", isInZeroG || isFlying);
 			____animator.SetBool("UsingJetpack", isInZeroG && PlayerState.IsWearingSuit());
