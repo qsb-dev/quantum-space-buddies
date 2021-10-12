@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Utility;
