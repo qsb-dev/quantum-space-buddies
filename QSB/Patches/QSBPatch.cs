@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using OWML.Common;
-using OWML.Utils;
+﻿using OWML.Common;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
