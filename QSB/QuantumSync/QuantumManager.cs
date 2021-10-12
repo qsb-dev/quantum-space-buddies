@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -120,7 +121,7 @@ namespace QSB.QuantumSync
 		}
 
 		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
-				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).First
+				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
 				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 
