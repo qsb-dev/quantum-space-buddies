@@ -79,7 +79,7 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+			//MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
@@ -95,8 +95,9 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
-			gameObject.AddComponent<MenuManager>();
+			//gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
+			gameObject.AddComponent<QNetworkManagerHUD>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();

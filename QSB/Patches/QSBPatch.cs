@@ -130,6 +130,7 @@ namespace QSB.Patches
 
 		private void Unpatch(MethodInfo method)
 		{
+			/*
 			var dictionary = typeof(HarmonySharedState).Invoke<Dictionary<MethodBase, byte[]>>("GetState", new object[0]);
 			var methodBase = dictionary.Keys.First(m =>
 				m.DeclaringType == method.DeclaringType
@@ -142,6 +143,7 @@ namespace QSB.Patches
 
 			PatchFunctions.UpdateWrapper(methodBase, patchInfo, QSBCore.Helper.Manifest.UniqueName);
 			dictionary[methodBase] = patchInfo.Serialize();
+			*/
 		}
 	}
 }
