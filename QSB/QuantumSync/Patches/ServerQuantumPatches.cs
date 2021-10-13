@@ -45,7 +45,7 @@ namespace QSB.QuantumSync.Patches
 
 			var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck);
 			//var moonVisible = isVisibleOutput.First;
-			var moonVisiblePlayers = isVisibleOutput.Second;
+			var moonVisiblePlayers = isVisibleOutput.Item2;
 			var inMoonPlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
 			if (inMoonPlayers == null)
 			{
@@ -153,7 +153,7 @@ namespace QSB.QuantumSync.Patches
 						Physics.SyncTransforms();
 					}
 
-					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck).First)
+					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck).Item1)
 					{
 						____moonBody.transform.position = position;
 						if (!Physics.autoSyncTransforms)

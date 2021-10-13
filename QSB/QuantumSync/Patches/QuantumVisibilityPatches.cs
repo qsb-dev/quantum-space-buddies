@@ -31,7 +31,7 @@ namespace QSB.QuantumSync.Patches
 
 		public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
 		{
-			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).First;
+			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).Item1;
 			return false;
 		}
 
@@ -66,8 +66,8 @@ namespace QSB.QuantumSync.Patches
 
 			var point = __instance.transform.TransformPoint(____localIlluminationOffset);
 			var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
-			var localFlashlight = tupleFlashlights.First;
-			var playerFlashlights = tupleFlashlights.Second;
+			var localFlashlight = tupleFlashlights.Item1;
+			var playerFlashlights = tupleFlashlights.Item2;
 
 			// local player flashlight
 			if (localFlashlight.CheckIlluminationAtPoint(point, ____illuminationRadius))

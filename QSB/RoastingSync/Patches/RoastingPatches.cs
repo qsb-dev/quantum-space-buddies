@@ -96,7 +96,7 @@ namespace QSB.RoastingSync.Patches
 					if (____marshmallow.IsBurned())
 					{
 						showRemovePrompt = true;
-						if (OWInput.IsNewlyPressed(InputLibrary.cancel, true, InputMode.Roasting))
+						if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Roasting))
 						{
 							____marshmallow.Remove();
 							Locator.GetPlayerAudioController().PlayMarshmallowToss();

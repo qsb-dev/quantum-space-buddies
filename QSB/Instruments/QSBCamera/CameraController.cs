@@ -55,7 +55,7 @@ namespace QSB.Instruments.QSBCamera
 
 		private void UpdateInput()
 		{
-			var input = OWInput.GetValue(InputLibrary.look, false);
+			var input = InputLibrary.look.GetAxisValue(false);
 			_degreesX += input.x * 180f * Time.fixedDeltaTime;
 			_degreesY += input.y * 180f * Time.fixedDeltaTime;
 		}

@@ -164,9 +164,9 @@ namespace QSB.DeathSync.Patches
 			var zoomInput = 0f;
 			if (canInteractWith)
 			{
-				XZinput = OWInput.GetValue(InputLibrary.moveXZ, InputMode.All);
-				lookInput = InputLibrary.look.GetValue(false);
-				zoomInput = OWInput.GetValue(InputLibrary.mapZoom, InputMode.All);
+				XZinput = OWInput.GetAxisValue(InputLibrary.moveXZ, InputMode.All);
+				lookInput = InputLibrary.look.GetAxisValue(false);
+				zoomInput = OWInput.GetValue(InputLibrary.mapZoomIn, InputMode.All) - OWInput.GetValue(InputLibrary.mapZoomOut, InputMode.All);
 				lookInput.y *= -1f;
 				zoomInput *= -1f;
 			}

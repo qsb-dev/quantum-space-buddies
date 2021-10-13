@@ -49,7 +49,7 @@ namespace QSB.ItemSync.Patches
 			return true;
 		}
 
-		public static bool ItemTool_DropItem(RaycastHit hit, OWRigidbody targetRigidbody, DetachableFragment detachableFragment, ref OWItem ____heldItem)
+		public static bool ItemTool_DropItem(RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget, ref OWItem ____heldItem)
 		{
 			Locator.GetPlayerAudioController().PlayDropItem(____heldItem.GetItemType());
 			var hitGameObject = hit.collider.gameObject;
@@ -65,13 +65,21 @@ namespace QSB.ItemSync.Patches
 			if (sectorGroup != null)
 			{
 				sector = sectorGroup.GetSector();
+				if (sector == null && sectorGroup is SectorCullGroup)
+{
+					SectorProxy controllingProxy = (sectorGroup as SectorCullGroup).GetControllingProxy();
+					if (controllingProxy != null)
+					{
+						sector = controllingProxy.GetSector();
+					}
+				}
 			}
 
-			var parent = (detachableFragment != null)
-				? detachableFragment.transform
-				: targetRigidbody.transform;
+			var parent = (customDropTarget == null)
+				? targetRigidbody.transform
+				: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
 			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
-			____heldItem.DropItem(hit.point, hit.normal, parent, sector, detachableFragment);
+			____heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
 			____heldItem = null;
 			Locator.GetToolModeSwapper().UnequipTool();
 			var parentSector = parent.GetComponentInChildren<Sector>();

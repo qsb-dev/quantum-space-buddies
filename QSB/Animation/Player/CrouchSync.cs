@@ -41,7 +41,7 @@ namespace QSB.Animation.Player
 				return;
 			}
 
-			var jumpChargeFraction = _playerController.GetJumpChargeFraction();
+			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
 			_crouchValue = jumpChargeFraction;
 		}
 

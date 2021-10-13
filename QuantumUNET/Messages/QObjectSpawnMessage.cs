@@ -7,7 +7,7 @@ namespace QuantumUNET.Messages
 	internal class QObjectSpawnMessage : QMessageBase
 	{
 		public NetworkInstanceId NetId;
-		public NetworkHash128 assetId;
+		public int assetId;
 		public Vector3 Position;
 		public byte[] Payload;
 		public Quaternion Rotation;
@@ -24,7 +24,7 @@ namespace QuantumUNET.Messages
 		public override void Deserialize(QNetworkReader reader)
 		{
 			NetId = reader.ReadNetworkId();
-			assetId = reader.ReadNetworkHash128();
+			assetId = reader.ReadInt32();
 			Position = reader.ReadVector3();
 			Payload = reader.ReadBytesAndSize();
 			if (reader.Length - reader.Position >= 16U)

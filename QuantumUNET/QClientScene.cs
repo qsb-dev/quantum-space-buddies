@@ -21,7 +21,7 @@ namespace QuantumUNET
 
 		public static Dictionary<NetworkInstanceId, QNetworkIdentity> Objects => s_NetworkScene.localObjects;
 
-		public static Dictionary<NetworkHash128, GameObject> Prefabs => QNetworkScene.guidToPrefab;
+		public static Dictionary<int, GameObject> Prefabs => QNetworkScene.guidToPrefab;
 
 		public static Dictionary<NetworkSceneId, QNetworkIdentity> SpawnableObjects { get; private set; }
 
@@ -305,7 +305,7 @@ namespace QuantumUNET
 			client.RegisterHandlerSafe(QMsgType.AnimationTrigger, QNetworkAnimator.OnAnimationTriggerClientMessage);
 		}
 
-		internal static string GetStringForAssetId(NetworkHash128 assetId)
+		internal static string GetStringForAssetId(int assetId)
 		{
 			if (QNetworkScene.GetPrefab(assetId, out var gameObject))
 			{
@@ -317,7 +317,7 @@ namespace QuantumUNET
 				: "unknown";
 		}
 
-		public static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId) => QNetworkScene.RegisterPrefab(prefab, newAssetId);
+		public static void RegisterPrefab(GameObject prefab, int newAssetId) => QNetworkScene.RegisterPrefab(prefab, newAssetId);
 
 		public static void RegisterPrefab(GameObject prefab) => QNetworkScene.RegisterPrefab(prefab);
 
@@ -325,9 +325,9 @@ namespace QuantumUNET
 
 		public static void UnregisterPrefab(GameObject prefab) => QNetworkScene.UnregisterPrefab(prefab);
 
-		public static void RegisterSpawnHandler(NetworkHash128 assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
+		public static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
 
-		public static void UnregisterSpawnHandler(NetworkHash128 assetId) => QNetworkScene.UnregisterSpawnHandler(assetId);
+		public static void UnregisterSpawnHandler(int assetId) => QNetworkScene.UnregisterSpawnHandler(assetId);
 
 		public static void ClearSpawners() => QNetworkScene.ClearSpawners();
 
@@ -367,7 +367,7 @@ namespace QuantumUNET
 		private static void OnObjectSpawn(QNetworkMessage netMsg)
 		{
 			netMsg.ReadMessage(s_ObjectSpawnMessage);
-			if (!s_ObjectSpawnMessage.assetId.IsValid())
+			if (s_ObjectSpawnMessage.assetId == 0)
 			{
 				Debug.LogError($"OnObjSpawn netId: {s_ObjectSpawnMessage.NetId} has invalid asset Id. {s_ObjectSpawnMessage.assetId}");
 			}

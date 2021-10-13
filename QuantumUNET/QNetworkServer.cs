@@ -1018,7 +1018,7 @@ namespace QuantumUNET
 
 					if (conn != null)
 					{
-						conn.Send(3, objectSpawnMessage);
+						conn.Send(QMsgType.ObjectSpawn, objectSpawnMessage);
 					}
 					else
 					{
@@ -1209,14 +1209,14 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static bool SpawnWithClientAuthority(GameObject obj, NetworkHash128 assetId, QNetworkConnection conn)
+		public static bool SpawnWithClientAuthority(GameObject obj, int assetId, QNetworkConnection conn)
 		{
 			Spawn(obj, assetId);
 			var component = obj.GetComponent<QNetworkIdentity>();
 			return !(component == null) && component.IsServer && component.AssignClientAuthority(conn);
 		}
 
-		public static void Spawn(GameObject obj, NetworkHash128 assetId)
+		public static void Spawn(GameObject obj, int assetId)
 		{
 			if (VerifyCanSpawn(obj))
 			{
