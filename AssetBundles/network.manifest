@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3621554448
+CRC: 4070870812
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c9002a0b83220186e94179a065236b5c
+    Hash: 29833081f68126f69e50212247d21be7
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 8b6abf066340f652e25eed06e6b72102
+    Hash: 51df0ad50c79617520b68dc5fc2a08cf
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -14,13 +14,16 @@ ClassTypes:
 - Class: 4
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  Script: {fileID: 372142912, guid: 93b08009869340045a8e7321508b6355, type: 3}
 - Class: 114
-  Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  Script: {fileID: -1768714887, guid: 93b08009869340045a8e7321508b6355, type: 3}
 - Class: 114
-  Script: {fileID: -1267208747, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  Script: {fileID: -1267208747, guid: 93b08009869340045a8e7321508b6355, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f8c40b79b6cc65d4e904a1e931638b0f, type: 3}
 - Class: 115
   Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/NetworkProbe.prefab
 - Assets/NETWORK_Player_Body.prefab
