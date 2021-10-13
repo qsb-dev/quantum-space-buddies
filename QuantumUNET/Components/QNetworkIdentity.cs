@@ -17,7 +17,7 @@ namespace QuantumUNET.Components
 		public NetworkInstanceId NetId { get; private set; }
 		public NetworkSceneId SceneId => m_SceneId;
 		public QNetworkConnection ClientAuthorityOwner { get; private set; }
-		public NetworkHash128 AssetId => m_AssetId;
+		public int AssetId => m_AssetId;
 		public bool IsLocalPlayer { get; private set; }
 		public short PlayerControllerId { get; private set; } = -1;
 		public QNetworkConnection ConnectionToServer { get; private set; }
@@ -57,9 +57,9 @@ namespace QuantumUNET.Components
 		internal void RemoveSubIdentity(QNetworkIdentity identityToRemove)
 			=> SubIdentities.Remove(identityToRemove);
 
-		internal void SetDynamicAssetId(NetworkHash128 newAssetId)
+		internal void SetDynamicAssetId(int newAssetId)
 		{
-			if (!m_AssetId.IsValid() || m_AssetId.Equals(newAssetId))
+			if (m_AssetId == 0 || m_AssetId.Equals(newAssetId))
 			{
 				m_AssetId = newAssetId;
 			}
@@ -821,7 +821,7 @@ namespace QuantumUNET.Components
 		private NetworkSceneId m_SceneId;
 
 		[SerializeField]
-		private NetworkHash128 m_AssetId;
+		private int m_AssetId;
 
 		[SerializeField]
 		private bool m_ServerOnly;
