@@ -55,7 +55,7 @@ namespace QSB
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
-			SetupNetworkId(playerPrefab);
+			SetupNetworkId(playerPrefab, 1);
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();
 			playerPrefab.AddComponent<AnimationSync>();
@@ -65,19 +65,19 @@ namespace QSB
 			playerPrefab.AddComponent<InstrumentsManager>();
 
 			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-			SetupNetworkId(ShipPrefab);
+			SetupNetworkId(ShipPrefab, 2);
 			SetupNetworkTransform(ShipPrefab);
 			ShipPrefab.AddComponent<ShipTransformSync>();
 			spawnPrefabs.Add(ShipPrefab);
 
 			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
-			SetupNetworkId(_probePrefab);
+			SetupNetworkId(_probePrefab, 3);
 			SetupNetworkTransform(_probePrefab);
 			_probePrefab.AddComponent<PlayerProbeSync>();
 			spawnPrefabs.Add(_probePrefab);
 
 			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-			SetupNetworkId(OrbPrefab);
+			SetupNetworkId(OrbPrefab, 4);
 			SetupNetworkTransform(OrbPrefab);
 			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
 			spawnPrefabs.Add(OrbPrefab);
@@ -94,12 +94,13 @@ namespace QSB
 			return profileName;
 		}
 
-		private void SetupNetworkId(GameObject go)
+		private void SetupNetworkId(GameObject go, int assetId)
 		{
 			var ident = go.AddComponent<QNetworkIdentity>();
 			ident.LocalPlayerAuthority = true;
-			ident.SetValue("m_AssetId", go.GetComponent<NetworkIdentity>().assetId);
-			ident.SetValue("m_SceneId", go.GetComponent<NetworkIdentity>().sceneId);
+			var networkIdentity = go.GetComponent<NetworkIdentity>();
+			ident.SetValue("m_AssetId", assetId);
+			ident.SetValue("m_SceneId", networkIdentity.GetComponent<NetworkIdentity>().sceneId);
 		}
 
 		private void SetupNetworkTransform(GameObject go)
