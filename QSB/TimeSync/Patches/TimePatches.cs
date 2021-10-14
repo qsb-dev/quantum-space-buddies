@@ -10,6 +10,7 @@ namespace QSB.TimeSync.Patches
 		{
 			Prefix(nameof(PlayerCameraEffectController_OnStartOfTimeLoop));
 			Empty("OWTime_Pause");
+			Empty("SubmitActionSkipToNextLoop_AdvanceToNextLoop"); // TODO : remove this, remove meditation button instead
 		}
 
 		public static bool PlayerCameraEffectController_OnStartOfTimeLoop()
