@@ -13,7 +13,7 @@ namespace QSB.PoolSync
 		private NomaiRemoteCameraStreaming _oldStreaming;
 		private bool _hasLoadedAssets;
 
-		protected override void Awake()
+		public override void Awake()
 		{
 			base.Awake();
 			_oldStreaming = GetComponent<NomaiRemoteCameraStreaming>();
@@ -48,7 +48,7 @@ namespace QSB.PoolSync
 			}
 		}
 
-		protected override void OnSectorOccupantAdded(SectorDetector sectorDetector)
+		public override void OnSectorOccupantAdded(SectorDetector sectorDetector)
 		{
 			if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && StreamingManager.isStreamingEnabled)
 			{
@@ -56,7 +56,7 @@ namespace QSB.PoolSync
 			}
 		}
 
-		protected override void OnSectorOccupantRemoved(SectorDetector sectorDetector)
+		public override void OnSectorOccupantRemoved(SectorDetector sectorDetector)
 		{
 			if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
 			{

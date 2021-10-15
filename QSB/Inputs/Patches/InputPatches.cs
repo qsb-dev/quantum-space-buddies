@@ -1,14 +1,15 @@
-﻿using QSB.Patches;
+﻿using HarmonyLib;
+using QSB.Patches;
 
 namespace QSB.Inputs.Patches
 {
+	[HarmonyPatch]
 	internal class InputPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-			=> Prefix(nameof(OWInput_Update));
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(OWInput), nameof(OWInput.Update))]
 		public static bool OWInput_Update()
 			=> QSBInputManager.Instance.InputsEnabled;
 	}

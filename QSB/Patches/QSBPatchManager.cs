@@ -1,4 +1,6 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
+using OWML.Utils;
 using QSB.Animation.NPC.Patches;
 using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;
@@ -34,6 +36,8 @@ namespace QSB.Patches
 
 		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
+		public static Harmony HarmonyInstance;
+
 		public static void Init()
 		{
 			_patchList = new List<QSBPatch>
@@ -66,27 +70,36 @@ namespace QSB.Patches
 				new LauncherPatches()
 			};
 
+			HarmonyInstance = QSBCore.Helper.HarmonyHelper.GetValue<Harmony>("_harmony");
+
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
 		}
 
 		public static void DoPatchType(QSBPatchTypes type)
 		{
 			OnPatchType?.SafeInvoke(type);
-			//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
-				//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
-				patch.DoPatches();
+				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
+				try
+				{
+					patch.DoPatches();
+				}
+				catch (Exception ex)
+				{
+					DebugLog.DebugWrite($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
+				}
 			}
 		}
 
 		public static void DoUnpatchType(QSBPatchTypes type)
 		{
 			OnUnpatchType?.SafeInvoke(type);
-			//DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+			DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
 			{
-				//DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
+				DebugLog.DebugWrite($" - Unpatching in {patch.GetType().Name}", MessageType.Info);
 				patch.DoUnpatches();
 			}
 		}

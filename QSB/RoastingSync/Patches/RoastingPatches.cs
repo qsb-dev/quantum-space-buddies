@@ -1,28 +1,34 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using UnityEngine;
 
 namespace QSB.RoastingSync.Patches
 {
+	[HarmonyPatch]
 	internal class RoastingPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(RoastingStickController_UpdateMarshmallowInput));
-			Prefix(nameof(Marshmallow_Burn));
-			Prefix(nameof(Marshmallow_Shrivel));
-			Prefix(nameof(Marshmallow_RemoveMallow));
-			Prefix(nameof(Marshmallow_SpawnMallow));
-		}
+		//public override void DoPatches()
+		//{
+		//	Prefix<RoastingStickController>(nameof(RoastingStickController.UpdateMarshmallowInput), nameof(RoastingStickController_UpdateMarshmallowInput));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.Burn), nameof(Marshmallow_Burn));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.Shrivel), nameof(Marshmallow_Shrivel));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.RemoveMallow), nameof(Marshmallow_RemoveMallow));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.SpawnMallow), nameof(Marshmallow_SpawnMallow));
+		//}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.SpawnMallow))]
 		public static bool Marshmallow_SpawnMallow()
 		{
 			QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Replace);
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.Burn))]
 		public static bool Marshmallow_Burn(
 			ref Marshmallow.MallowState ____mallowState,
 			MeshRenderer ____fireRenderer,
@@ -43,6 +49,8 @@ namespace QSB.RoastingSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.Shrivel))]
 		public static bool Marshmallow_Shrivel(
 			ref Marshmallow.MallowState ____mallowState,
 			ref float ____initShrivelTime)
@@ -57,6 +65,8 @@ namespace QSB.RoastingSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.RemoveMallow))]
 		public static bool Marshmallow_RemoveMallow(
 			ParticleSystem ____smokeParticles,
 			MeshRenderer ____fireRenderer,
@@ -73,6 +83,8 @@ namespace QSB.RoastingSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(RoastingStickController), nameof(RoastingStickController.UpdateMarshmallowInput))]
 		public static bool RoastingStickController_UpdateMarshmallowInput(
 			float ____extendFraction,
 			Marshmallow ____marshmallow,

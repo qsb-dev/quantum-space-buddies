@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
@@ -6,27 +7,27 @@ using UnityEngine;
 
 namespace QSB.Animation.Patches
 {
+	[HarmonyPatch]
 	internal class PlayerAnimationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-			=> Prefix(nameof(PlayerAnimController_LateUpdate));
-
-		public static bool PlayerAnimController_LateUpdate(
-			PlayerAnimController __instance,
-			PlayerCharacterController ____playerController,
-			ThrusterModel ____playerJetpack,
-			ref float ____ungroundedTime,
-			Animator ____animator,
-			ref bool ____justBecameGrounded,
-			ref bool ____justTookFallDamage,
-			ref bool ____leftFootGrounded,
-			ref bool ____rightFootGrounded,
-			ref bool ____rightArmHidden,
-			GameObject[] ____rightArmObjects,
-			int ____defaultLayer,
-			int ____probeOnlyLayer)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
+		public static bool LateUpdateReplacement(
+				PlayerAnimController __instance,
+				PlayerCharacterController ____playerController,
+				ThrusterModel ____playerJetpack,
+				ref float ____ungroundedTime,
+				Animator ____animator,
+				ref bool ____justBecameGrounded,
+				ref bool ____justTookFallDamage,
+				ref bool ____leftFootGrounded,
+				ref bool ____rightFootGrounded,
+				ref bool ____rightArmHidden,
+				GameObject[] ____rightArmObjects,
+				int ____defaultLayer,
+				int ____probeOnlyLayer)
 		{
 			var isGrounded = ____playerController.IsGrounded();
 			var isAttached = PlayerState.IsAttached();

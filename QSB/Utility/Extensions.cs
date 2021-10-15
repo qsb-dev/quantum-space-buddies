@@ -129,27 +129,6 @@ namespace QSB.Utility
 			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
 		}
 
-		public static void CallBase<ThisType, BaseType>(this ThisType obj, string methodName)
-			where ThisType : BaseType
-		{
-			var method = typeof(BaseType).GetAnyMethod(methodName);
-			if (method == null)
-			{
-				DebugLog.ToConsole($"Error - Couldn't find method {methodName} in {typeof(BaseType).FullName}!", MessageType.Error);
-				return;
-			}
-
-			var functionPointer = method.MethodHandle.GetFunctionPointer();
-			if (functionPointer == null)
-			{
-				DebugLog.ToConsole($"Error - Function pointer for {methodName} in {typeof(BaseType).FullName} is null!", MessageType.Error);
-				return;
-			}
-
-			var methodAction = (Action)Activator.CreateInstance(typeof(Action), obj, functionPointer);
-			methodAction();
-		}
-
 		// OW
 
 		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)

@@ -7,11 +7,11 @@ namespace QSB.DeathSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.RespawnTime;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(MapController_LateUpdate));
-			Prefix(nameof(MapController_EnterMapView));
-		}
+		//public override void DoPatches()
+		//{
+		//	Prefix<MapController>(nameof(MapController.LateUpdate), nameof(MapController_LateUpdate));
+		//	Prefix<MapController>(nameof(MapController.EnterMapView), nameof(MapController_EnterMapView));
+		//}
 
 		public static bool MapController_EnterMapView(
 			MapController __instance,

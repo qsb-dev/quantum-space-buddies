@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
@@ -7,18 +8,13 @@ using System.Collections.Generic;
 
 namespace QSB.ConversationSync.Patches
 {
+	[HarmonyPatch]
 	public class ConversationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Postfix(nameof(DialogueNode_GetNextPage));
-			Prefix(nameof(CharacterDialogueTree_InputDialogueOption));
-			Prefix(nameof(CharacterDialogueTree_StartConversation));
-			Prefix(nameof(CharacterDialogueTree_EndConversation));
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.StartConversation))]
 		public static void CharacterDialogueTree_StartConversation(CharacterDialogueTree __instance)
 		{
 			var index = QSBWorldSync.OldDialogueTrees.FindIndex(x => x == __instance);
@@ -31,6 +27,8 @@ namespace QSB.ConversationSync.Patches
 			ConversationManager.Instance.SendConvState(index, true);
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.EndConversation))]
 		public static bool CharacterDialogueTree_EndConversation(CharacterDialogueTree __instance)
 		{
 			if (!__instance.enabled)
@@ -51,6 +49,8 @@ namespace QSB.ConversationSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.InputDialogueOption))]
 		public static bool CharacterDialogueTree_InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
 		{
 			if (optionIndex < 0)
@@ -65,6 +65,8 @@ namespace QSB.ConversationSync.Patches
 			return true;
 		}
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(DialogueNode), nameof(DialogueNode.GetNextPage))]
 		public static void DialogueNode_GetNextPage(string ____name, List<string> ____listPagesToDisplay, int ____currentPage)
 		{
 			var key = ____name + ____listPagesToDisplay[____currentPage];

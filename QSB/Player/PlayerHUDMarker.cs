@@ -9,7 +9,7 @@ namespace QSB.Player
 		private bool _needsInitializing;
 		private bool _isReady;
 
-		protected override void InitCanvasMarker()
+		public override void InitCanvasMarker()
 		{
 			_markerRadius = 2f;
 

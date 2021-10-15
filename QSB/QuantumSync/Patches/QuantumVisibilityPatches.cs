@@ -1,4 +1,5 @@
-﻿using QSB.Patches;
+﻿using HarmonyLib;
+using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using System.Linq;
@@ -7,34 +8,33 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
 {
+	[HarmonyPatch]
 	public class QuantumVisibilityPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(ShapeVisibilityTracker_IsVisibleUsingCameraFrustum));
-			Prefix(nameof(ShapeVisibilityTracker_IsVisible));
-			Prefix(nameof(RendererVisibilityTracker_IsVisibleUsingCameraFrustum));
-			Prefix(nameof(VisibilityObject_CheckIllumination));
-			Postfix(nameof(Shape_OnEnable));
-			Postfix(nameof(Shape_OnDisable));
-		}
-
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(Shape), nameof(Shape.OnEnable))]
 		public static void Shape_OnEnable(Shape __instance)
 			=> __instance.RaiseEvent("OnShapeActivated", __instance);
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(Shape), nameof(Shape.OnDisable))]
 		public static void Shape_OnDisable(Shape __instance)
 			=> __instance.RaiseEvent("OnShapeDeactivated", __instance);
 
 		// ShapeVisibilityTracker patches
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisibleUsingCameraFrustum))]
 		public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
 		{
 			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).Item1;
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisible))]
 		public static bool ShapeVisibilityTracker_IsVisible(ShapeVisibilityTracker __instance, ref bool __result)
 		{
 			__result = QuantumManager.IsVisible(__instance, false);
@@ -43,6 +43,8 @@ namespace QSB.QuantumSync.Patches
 
 		// RendererVisibilityTracker patches - probably not needed as i don't think RendererVisibilityTracker is ever used?
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(RendererVisibilityTracker), nameof(RendererVisibilityTracker.IsVisibleUsingCameraFrustum))]
 		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{
 			__result = QSBPlayerManager.GetPlayersWithCameras()
@@ -56,6 +58,8 @@ namespace QSB.QuantumSync.Patches
 
 		// VisibilityObject
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(VisibilityObject), nameof(VisibilityObject.CheckIllumination))]
 		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, ref bool __result, bool ____checkIllumination, Vector3 ____localIlluminationOffset, float ____illuminationRadius, Light[] ____lightSources)
 		{
 			if (!____checkIllumination)

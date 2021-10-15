@@ -1,20 +1,22 @@
-﻿using QSB.CampfireSync.WorldObjects;
+﻿using HarmonyLib;
+using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
 using QSB.Patches;
 using QSB.WorldSync;
 
 namespace QSB.CampfireSync.Patches
 {
+	[HarmonyPatch]
 	internal class CampfirePatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() => Prefix(nameof(Campfire_OnPressInteract));
-
-		public static bool Campfire_OnPressInteract(Campfire __instance, Campfire.State ____state)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Campfire), nameof(Campfire.OnPressInteract))]
+		public static bool LightCampfireEvent(Campfire __instance)
 		{
 			var qsbCampfire = QSBWorldSync.GetWorldFromUnity<QSBCampfire, Campfire>(__instance);
-			if (____state == Campfire.State.LIT)
+			if (__instance._state == Campfire.State.LIT)
 			{
 				qsbCampfire.StartRoasting();
 			}

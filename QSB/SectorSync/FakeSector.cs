@@ -4,6 +4,6 @@
 	{
 		public Sector AttachedSector;
 
-		protected override void Awake() { }
+		public override void Awake() { }
 	}
 }

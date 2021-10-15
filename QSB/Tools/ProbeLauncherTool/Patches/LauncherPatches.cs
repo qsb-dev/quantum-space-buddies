@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
@@ -7,17 +8,13 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.Patches
 {
+	[HarmonyPatch]
 	internal class LauncherPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(ProbeLauncher_RetrieveProbe));
-			Postfix(nameof(ProbeLauncherEffects_PlayRetrievalClip));
-			Postfix(nameof(ProbeLauncherEffects_PlayLaunchClip));
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ProbeLauncher), nameof(ProbeLauncher.RetrieveProbe))]
 		public static bool ProbeLauncher_RetrieveProbe(
 			ProbeLauncher __instance,
 			bool playEffects,
@@ -74,8 +71,12 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 		// TODO : ehhhh idk about this. maybe copy each sound source so we have a 2d version (for local) and a 3d version (for remote)?
 		// this would probably be a whole qsb version on it's own
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayRetrievalClip))]
 		public static void ProbeLauncherEffects_PlayRetrievalClip(OWAudioSource ____owAudioSource) => ____owAudioSource.GetAudioSource().spatialBlend = 1f;
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayLaunchClip))]
 		public static void ProbeLauncherEffects_PlayLaunchClip(OWAudioSource ____owAudioSource) => ____owAudioSource.GetAudioSource().spatialBlend = 1f;
 	}
 }

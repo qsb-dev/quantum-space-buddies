@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -6,10 +7,13 @@ using UnityEngine;
 
 namespace QSB.OrbSync.Patches
 {
+	[HarmonyPatch]
 	public class OrbPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(NomaiInterfaceOrb), nameof(NomaiInterfaceOrb.StartDragFromPosition))]
 		public static void NomaiInterfaceOrb_StartDragFromPosition(bool __result, NomaiInterfaceOrb __instance)
 		{
 			if (__result)
@@ -18,6 +22,8 @@ namespace QSB.OrbSync.Patches
 			}
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiInterfaceSlot), nameof(NomaiInterfaceSlot.CheckOrbCollision))]
 		public static bool NomaiInterfaceSlot_CheckOrbCollision(ref bool __result, NomaiInterfaceSlot __instance, NomaiInterfaceOrb orb,
 			bool ____ignoreDraggedOrbs, float ____radius, float ____exitRadius, ref NomaiInterfaceOrb ____occupyingOrb)
 		{
@@ -59,12 +65,6 @@ namespace QSB.OrbSync.Patches
 
 			__result = true;
 			return false;
-		}
-
-		public override void DoPatches()
-		{
-			Postfix(nameof(NomaiInterfaceOrb_StartDragFromPosition));
-			Prefix(nameof(NomaiInterfaceSlot_CheckOrbCollision));
 		}
 	}
 }

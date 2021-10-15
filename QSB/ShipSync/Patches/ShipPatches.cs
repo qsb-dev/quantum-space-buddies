@@ -1,30 +1,22 @@
-﻿using OWML.Utils;
+﻿using HarmonyLib;
+using OWML.Utils;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
 {
+	[HarmonyPatch]
 	internal class ShipPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(HatchController_OnPressInteract));
-			Prefix(nameof(HatchController_OnEntry));
-			Prefix(nameof(ShipTractorBeamSwitch_OnTriggerExit));
-			Prefix(nameof(InteractZone_UpdateInteractVolume));
-			Prefix(nameof(ShipElectricalComponent_OnEnterShip));
-			Prefix(nameof(ShipElectricalComponent_OnExitShip));
-			Prefix(nameof(ShipComponent_SetDamaged));
-			Prefix(nameof(ShipHull_FixedUpdate));
-			Prefix(nameof(ShipDamageController_OnImpact));
-			Postfix(nameof(ShipComponent_RepairTick));
-			Prefix(nameof(ShipHull_RepairTick));
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(HatchController), nameof(HatchController.OnPressInteract))]
 		public static bool HatchController_OnPressInteract()
 		{
 			if (!PlayerState.IsInsideShip())
@@ -37,6 +29,8 @@ namespace QSB.ShipSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(HatchController), nameof(HatchController.OnEntry))]
 		public static bool HatchController_OnEntry(GameObject hitObj)
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
@@ -47,9 +41,11 @@ namespace QSB.ShipSync.Patches
 			return true;
 		}
 
-		public static bool ShipTractorBeamSwitch_OnTriggerExit(Collider hitCollider, bool ____isPlayerInShip, bool ____functional)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipTractorBeamSwitch), nameof(ShipTractorBeamSwitch.OnTriggerExit))]
+		public static bool ShipTractorBeamSwitch_OnTriggerExit(ShipTractorBeamSwitch __instance, Collider hitCollider)
 		{
-			if (!____isPlayerInShip && ____functional && hitCollider.CompareTag("PlayerDetector") && !ShipManager.Instance.HatchController.GetValue<GameObject>("_hatchObject").activeSelf)
+			if (!__instance._isPlayerInShip && __instance._functional && hitCollider.CompareTag("PlayerDetector") && !ShipManager.Instance.HatchController._hatchObject.activeSelf)
 			{
 				ShipManager.Instance.HatchController.Invoke("CloseHatch");
 				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
@@ -59,7 +55,16 @@ namespace QSB.ShipSync.Patches
 			return false;
 		}
 
-		public static bool InteractZone_UpdateInteractVolume(InteractZone __instance, OWCamera ____playerCam, ref bool ____focused)
+		[HarmonyReversePatch]
+		[HarmonyPatch(typeof(SingleInteractionVolume), nameof(SingleInteractionVolume.UpdateInteractVolume))]
+		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance)
+		{
+			throw new NotImplementedException();
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(InteractZone), nameof(InteractZone.UpdateInteractVolume))]
+		public static bool InteractZone_UpdateInteractVolume(InteractZone __instance)
 		{
 			/* Angle for interaction with the ship hatch
 			 *  
@@ -78,64 +83,86 @@ namespace QSB.ShipSync.Patches
 				return true;
 			}
 
-			var angle = 2f * Vector3.Angle(____playerCam.transform.forward, __instance.transform.forward);
+			var angle = 2f * Vector3.Angle(__instance._playerCam.transform.forward, __instance.transform.forward);
 
-			____focused = PlayerState.IsInsideShip()
+			__instance._focused = PlayerState.IsInsideShip()
 				? angle <= 80
 				: angle >= 280;
 
-			__instance.CallBase<InteractZone, SingleInteractionVolume>("UpdateInteractVolume");
+			SingleInteractionVolume_UpdateInteractVolume_Stub(__instance as SingleInteractionVolume);
 
 			return false;
 		}
 
-		public static bool ShipElectricalComponent_OnEnterShip(ShipElectricalComponent __instance, bool ____damaged, ElectricalSystem ____electricalSystem)
+		[HarmonyReversePatch]
+		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnEnterShip))]
+		public static void ShipComponent_OnEnterShip_Stub(object instance)
 		{
-			__instance.CallBase<ShipElectricalComponent, ShipComponent>("OnEnterShip");
+			throw new NotImplementedException();
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnEnterShip))]
+		public static bool ShipElectricalComponent_OnEnterShip(ShipElectricalComponent __instance)
+		{
+			ShipComponent_OnEnterShip_Stub(__instance as ShipComponent);
 
 			return false;
 		}
 
-		public static bool ShipElectricalComponent_OnExitShip(ShipElectricalComponent __instance, bool ____damaged, ElectricalSystem ____electricalSystem)
+		[HarmonyReversePatch]
+		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnExitShip))]
+		public static void ShipComponent_OnExitShip_Stub(object instance)
 		{
-			__instance.CallBase<ShipElectricalComponent, ShipComponent>("OnExitShip");
+			throw new NotImplementedException();
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnExitShip))]
+		public static bool ShipElectricalComponent_OnExitShip(ShipElectricalComponent __instance)
+		{
+			ShipComponent_OnExitShip_Stub(__instance as ShipComponent);
 
 			return false;
 		}
 
-		public static bool ShipComponent_SetDamaged(ShipComponent __instance, bool damaged, ref bool ____damaged, ref float ____repairFraction, DamageEffect ____damageEffect)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.SetDamaged))]
+		public static bool ShipComponent_SetDamaged(ShipComponent __instance, bool damaged)
 		{
-			if (____damaged == damaged)
+			if (__instance._damaged == damaged)
 			{
 				return false;
 			}
 
 			if (damaged)
 			{
-				____damaged = true;
-				____repairFraction = 0f;
+				__instance._damaged = true;
+				__instance._repairFraction = 0f;
 				__instance.GetType().GetAnyMethod("OnComponentDamaged").Invoke(__instance, null);
 				__instance.RaiseEvent("OnDamaged", __instance);
 				QSBEventManager.FireEvent(EventNames.QSBComponentDamaged, __instance);
 			}
 			else
 			{
-				____damaged = false;
-				____repairFraction = 1f;
+				__instance._damaged = false;
+				__instance._repairFraction = 1f;
 				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
 				__instance.RaiseEvent("OnRepaired", __instance);
 				QSBEventManager.FireEvent(EventNames.QSBComponentRepaired, __instance);
 			}
 
 			__instance.GetType().GetAnyMethod("UpdateColliderState").Invoke(__instance, null);
-			if (____damageEffect)
+			if (__instance._damageEffect)
 			{
-				____damageEffect.SetEffectBlend(1f - ____repairFraction);
+				__instance._damageEffect.SetEffectBlend(1f - __instance._repairFraction);
 			}
 
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipHull), nameof(ShipHull.FixedUpdate))]
 		public static bool ShipHull_FixedUpdate(ShipHull __instance, ref ImpactData ____dominantImpact, ref float ____integrity, ref bool ____damaged, DamageEffect ____damageEffect, ShipComponent[] ____components)
 		{
 			if (____dominantImpact != null)
@@ -186,15 +213,21 @@ namespace QSB.ShipSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.OnImpact))]
 		public static bool ShipDamageController_OnImpact()
 			=> ShipManager.Instance.HasAuthority;
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
 		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
 		{
 			QSBEventManager.FireEvent(EventNames.QSBComponentRepairTick, __instance, ____repairFraction);
 			return;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipHull), nameof(ShipHull.RepairTick))]
 		public static bool ShipHull_RepairTick(ShipHull __instance, ref float ____integrity, ref bool ____damaged, DamageEffect ____damageEffect, float ____repairTime)
 		{
 			if (!____damaged)

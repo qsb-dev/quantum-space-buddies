@@ -1,19 +1,26 @@
-﻿using QSB.Patches;
+﻿using HarmonyLib;
+using QSB.Patches;
 
 namespace QSB.TimeSync.Patches
 {
+	[HarmonyPatch]
 	internal class TimePatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(PlayerCameraEffectController_OnStartOfTimeLoop));
-			Empty("OWTime_Pause");
-			Empty("SubmitActionSkipToNextLoop_AdvanceToNextLoop"); // TODO : remove this, remove meditation button instead
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.OnStartOfTimeLoop))]
 		public static bool PlayerCameraEffectController_OnStartOfTimeLoop()
+			=> false;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
+		public static bool StopPausing()
+			=> false;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(SubmitActionSkipToNextLoop), nameof(SubmitActionSkipToNextLoop.AdvanceToNewTimeLoop))]
+		public static bool StopMeditation()
 			=> false;
 	}
 }

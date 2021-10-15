@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
@@ -9,13 +10,13 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
 {
+	[HarmonyPatch]
 	public class ServerQuantumPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
-		public override void DoPatches()
-			=> Prefix(nameof(QuantumMoon_ChangeQuantumState));
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.ChangeQuantumState))]
 		public static bool QuantumMoon_ChangeQuantumState(
 			QuantumMoon __instance,
 			ref bool __result,
