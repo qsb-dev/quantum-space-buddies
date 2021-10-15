@@ -1,5 +1,4 @@
 ﻿using QSB.Player;
-using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -91,7 +90,7 @@ namespace QSB.Menus
 
 			DisconnectButton = MenuApi.PauseMenu_MakeSimpleButton("DISCONNECT");
 			DisconnectButton.onClick.AddListener(Disconnect);
-			
+
 
 			if (QSBCore.IsInMultiplayer)
 			{
@@ -167,8 +166,8 @@ namespace QSB.Menus
 
 		private void OnConnected()
 		{
-			var text = QSBCore.IsHost 
-				? "STOP HOSTING" 
+			var text = QSBCore.IsHost
+				? "STOP HOSTING"
 				: "DISCONNECT";
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 		}

@@ -4,9 +4,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches

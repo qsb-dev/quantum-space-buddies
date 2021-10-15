@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Types;
 
 namespace QuantumUNET
 {

@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
-using OWML.Utils;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;

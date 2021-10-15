@@ -42,7 +42,7 @@ namespace QSB.ClientServerStateSync
 
 			if (QSBCore.IsHost)
 			{
-				
+
 				switch (newScene)
 				{
 					case OWScene.TitleScreen:

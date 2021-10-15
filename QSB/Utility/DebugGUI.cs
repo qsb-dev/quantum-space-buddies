@@ -41,7 +41,7 @@ namespace QSB.Utility
 				var reason = WakeUpSync.LocalInstance.CurrentReason;
 				if (currentState == WakeUpSync.State.FastForwarding && reason != null)
 				{
-					
+
 					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(FastForwardReason)reason}", guiStyle);
 					offset += _debugLineSpacing;
 				}

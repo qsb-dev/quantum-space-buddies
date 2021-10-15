@@ -1,8 +1,6 @@
 using QSB.SectorSync;
 using QSB.Syncs.Sectored.Rigidbodies;
-using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {

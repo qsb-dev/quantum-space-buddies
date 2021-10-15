@@ -79,7 +79,7 @@ namespace QSB.Syncs.Sectored.Transforms
 					_intermediaryTransform.SetPosition(Vector3.zero);
 					_intermediaryTransform.SetRotation(Quaternion.identity);
 				}
-				
+
 				return true;
 			}
 

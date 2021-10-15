@@ -4,8 +4,6 @@ using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
 using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches

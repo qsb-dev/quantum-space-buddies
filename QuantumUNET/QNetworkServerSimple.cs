@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Types;
 
 namespace QuantumUNET
 {
@@ -22,8 +21,8 @@ namespace QuantumUNET
 		public NetworkReader messageReader { get; private set; }
 		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
 
-		public void SetNetworkConnectionClass<T>() 
-			where T : QNetworkConnection 
+		public void SetNetworkConnectionClass<T>()
+			where T : QNetworkConnection
 			=> networkConnectionClass = typeof(T);
 
 		public virtual void Initialize()
@@ -77,7 +76,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool Listen(int serverListenPort) 
+		public bool Listen(int serverListenPort)
 			=> Listen(serverListenPort, hostTopology);
 
 		public bool Listen(int serverListenPort, HostTopology topology)

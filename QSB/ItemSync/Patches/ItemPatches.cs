@@ -69,7 +69,7 @@ namespace QSB.ItemSync.Patches
 			{
 				sector = sectorGroup.GetSector();
 				if (sector == null && sectorGroup is SectorCullGroup)
-{
+				{
 					SectorProxy controllingProxy = (sectorGroup as SectorCullGroup).GetControllingProxy();
 					if (controllingProxy != null)
 					{

@@ -1,9 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QSB.Patches;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace QSBTests
 {
