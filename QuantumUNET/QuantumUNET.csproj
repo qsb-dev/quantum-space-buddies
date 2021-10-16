@@ -65,7 +65,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\QNetworkManagerHUD.cs" />
     <Compile Include="Components\QNetworkTransformChild.cs" />
     <Compile Include="Messages\QMsgType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,5 +9,6 @@
 	},
 	"uniqueName": "Raicuparta.QuantumSpaceBuddies",
 	"version": "0.12.0-pr4",
-	"owmlVersion": "2.0.0"
+	"owmlVersion": "2.0.0",
+	"dependencies": [ "_nebula.MenuFramework" ]
 }

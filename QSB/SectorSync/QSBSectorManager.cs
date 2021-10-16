@@ -36,7 +36,8 @@ namespace QSB.SectorSync
 
 				if (sync.HasAuthority
 					&& sync.AttachedObject.gameObject.activeInHierarchy
-					&& sync.IsReady)
+					&& sync.IsReady
+					&& sync.SectorSync.IsReady)
 				{
 					CheckTransformSyncSector(sync);
 				}
