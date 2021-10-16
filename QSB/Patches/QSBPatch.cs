@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using System.Linq;
+﻿using HarmonyLib;
 
 namespace QSB.Patches
 {
@@ -7,18 +6,9 @@ namespace QSB.Patches
 	{
 		public abstract QSBPatchTypes Type { get; }
 
-		public virtual void DoPatches()
+		public void DoPatches(Harmony instance)
 		{
-			var oldMethods = QSBPatchManager.HarmonyInstance.GetPatchedMethods();
-			QSBPatchManager.HarmonyInstance.PatchAll(GetType());
-			foreach (var method in QSBPatchManager.HarmonyInstance.GetPatchedMethods().Except(oldMethods))
-			{
-				DebugLog.DebugWrite($"- Patching {method.DeclaringType}.{method.Name}");
-			}
-		}
-
-		public void DoUnpatches()
-		{
+			instance.PatchAll(GetType());
 		}
 	}
 }
