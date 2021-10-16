@@ -246,12 +246,12 @@ namespace QSB.QuantumSync.Patches
 
 			if (____sector == null)
 			{
-				__instance.GetType().GetMethod("CheckEnabled", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+				__instance.CheckEnabled();
 			}
 
 			if (____collapseOnStart)
 			{
-				__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+				__instance.Collapse(true);
 			}
 
 			return false;
@@ -292,7 +292,13 @@ namespace QSB.QuantumSync.Patches
 
 			var allMultiStates = QSBWorldSync.GetWorldObjects<QSBMultiStateQuantumObject>();
 			var stateObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(__instance);
-			var owner = allMultiStates.First(x => x.QuantumStates.Contains(stateObject));
+			var owner = allMultiStates.FirstOrDefault(x => x.QuantumStates.Contains(stateObject));
+			if (owner == default)
+			{
+				DebugLog.DebugWrite($"Error - Could not find QSBMultiStateQuantumObject for state {__instance.name}", MessageType.Error);
+				return;
+			}
+
 			if (owner.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
 				return;

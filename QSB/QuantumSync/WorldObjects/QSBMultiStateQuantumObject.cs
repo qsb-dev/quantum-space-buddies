@@ -11,7 +11,7 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public List<QSBQuantumState> QuantumStates { get; private set; }
 		public Text DebugBoxText;
-		public int CurrentState => AttachedObject.GetValue<int>("_stateIndex");
+		public int CurrentState => AttachedObject._stateIndex;
 
 		public override void OnRemoval()
 		{
@@ -26,13 +26,23 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
-			QuantumStates = AttachedObject.GetValue<QuantumState[]>("_states").ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(x)).ToList();
+
 			if (QSBCore.DebugMode)
 			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, CurrentState.ToString()).GetComponent<Text>();
+				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{id}\r\nstate:{CurrentState}").GetComponent<Text>();
 			}
 
 			base.Init(attachedObject, id);
+		}
+
+		public override void PostInit()
+		{
+			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(x)).ToList();
+
+			if (QuantumStates.Any(x => x == null))
+			{
+				DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
+			}
 		}
 
 		public void ChangeState(int newStateIndex)
@@ -43,10 +53,10 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			QuantumStates[newStateIndex].SetVisible(true);
-			AttachedObject.SetValue("_stateIndex", newStateIndex);
+			AttachedObject._stateIndex = newStateIndex;
 			if (QSBCore.DebugMode)
 			{
-				DebugBoxText.text = newStateIndex.ToString();
+				DebugBoxText.text = $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}";
 			}
 		}
 	}
