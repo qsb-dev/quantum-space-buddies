@@ -36,10 +36,6 @@ namespace QSB.Patches
 
 		private static List<QSBPatch> _patchList = new List<QSBPatch>();
 
-		public static Harmony ClientInstance;
-		public static Harmony ServerInstance;
-		public static Harmony NonServerInstance;
-		public static Harmony DeathInstance;
 		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>();
 
 		public static void Init()
@@ -74,16 +70,12 @@ namespace QSB.Patches
 				new LauncherPatches()
 			};
 
-			ClientInstance = new Harmony("QSB.Client");
-			ServerInstance = new Harmony("QSB.Server");
-			NonServerInstance = new Harmony("QSB.NonServer");
-			DeathInstance = new Harmony("QSB.Death");
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
 			{
-				{ QSBPatchTypes.OnClientConnect, ClientInstance },
-				{ QSBPatchTypes.OnServerClientConnect, ServerInstance },
-				{ QSBPatchTypes.OnNonServerClientConnect, NonServerInstance },
-				{ QSBPatchTypes.RespawnTime, DeathInstance }
+				{ QSBPatchTypes.OnClientConnect, new Harmony("QSB.Client") },
+				{ QSBPatchTypes.OnServerClientConnect, new Harmony("QSB.Server") },
+				{ QSBPatchTypes.OnNonServerClientConnect, new Harmony("QSB.NonServer") },
+				{ QSBPatchTypes.RespawnTime, new Harmony("QSB.Death") }
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
