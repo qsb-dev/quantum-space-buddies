@@ -59,6 +59,7 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
+		public static AssetBundle DebugAssetBundle { get; private set; }
 		public static bool WorldObjectsReady => WorldObjectManager.AllReady && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
@@ -83,6 +84,7 @@ namespace QSB
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
+			DebugAssetBundle = Helper.Assets.LoadBundle("assets/debug");
 
 			QSBPatchManager.Init();
 
