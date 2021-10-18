@@ -1,26 +1,34 @@
 ManifestFileVersion: 0
-CRC: 2815158869
+CRC: 3009665417
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 5677b7876f2afae05c0920067ef29e8a
+    Hash: dbc913ca95e649d2e00d188ff573830e
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 4d6a73cb377370ba69c96eb5da1b5028
+    Hash: b2ece8ae09df261ff59d764d08696641
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
 - Class: 21
   Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
 - Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
   Script: {instanceID: 0}
 - Class: 48
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
 - Class: 114
-  Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -31,6 +39,11 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 224
   Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/Cube.prefab
+- Assets/Capsule.prefab
+- Assets/DebugVis.mat
 - Assets/LogCanvas.prefab
+- Assets/Sphere.prefab
 Dependencies: []

@@ -28,7 +28,7 @@ namespace QSB.DeathSync
 		private Vector3 _deathPositionRelative;
 
 		public Transform DeathClosestAstroObject { get; private set; }
-		public Vector3 DeathPositionWorld 
+		public Vector3 DeathPositionWorld
 			=> DeathClosestAstroObject == null
 					? Vector3.zero
 					: DeathClosestAstroObject.TransformPoint(_deathPositionRelative);

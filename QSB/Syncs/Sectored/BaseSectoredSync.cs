@@ -4,32 +4,30 @@ using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using UnityEngine;
 
-namespace QSB.Syncs.TransformSync
+namespace QSB.Syncs.Sectored
 {
-	public abstract class SectoredTransformSync : BaseTransformSync, ISectoredSync<Transform>
+	public abstract class BaseSectoredSync : SyncBase
 	{
+		public override bool IgnoreDisabledAttachedObject => false;
+		public override bool IgnoreNullReferenceTransform => true;
+
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
-		public abstract TargetType Type { get; }
-
-		public override bool IgnoreNullReferenceTransform => true;
-		public override bool IgnoreDisabledAttachedObject => false;
 
 		private int _sectorIdWaitingSlot = int.MinValue;
 
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
-			QSBSectorManager.Instance.SectoredTransformSyncs.Add(this);
+			QSBSectorManager.Instance.SectoredSyncs.Add(this);
 			base.Start();
 		}
 
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
-			QSBSectorManager.Instance.SectoredTransformSyncs.Remove(this);
+			QSBSectorManager.Instance.SectoredSyncs.Remove(this);
 			if (SectorSync != null)
 			{
 				Destroy(SectorSync);
@@ -49,6 +47,11 @@ namespace QSB.Syncs.TransformSync
 				return;
 			}
 
+			QSBCore.UnityEvents.RunWhen(() => SectorSync.IsReady, InitSector);
+		}
+
+		private void InitSector()
+		{
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
@@ -56,7 +59,7 @@ namespace QSB.Syncs.TransformSync
 			}
 			else
 			{
-				DebugLog.DebugWrite($"INIT - {PlayerId}.{GetType().Name}'s closest sector is null!");
+				DebugLog.ToConsole($"Warning - {_logName}'s initial sector was null.", OWML.Common.MessageType.Warning);
 			}
 		}
 
@@ -104,26 +107,25 @@ namespace QSB.Syncs.TransformSync
 
 			if (!QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				DebugLog.ToConsole($"Warning - Tried to serialize {_logName} before the right player exists.", OWML.Common.MessageType.Warning);
 				writer.Write(-1);
 			}
 			else if (!Player.PlayerStates.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to serialize {_logName} before the player was ready.", OWML.Common.MessageType.Warning);
 				writer.Write(-1);
 			}
-
-			if (ReferenceSector != null)
+			else if (ReferenceSector != null)
 			{
 				writer.Write(ReferenceSector.ObjectId);
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - ReferenceSector of {PlayerId}.{GetType().Name} is null.", OWML.Common.MessageType.Warning);
+				if (_isInitialized)
+				{
+					DebugLog.ToConsole($"Warning - ReferenceSector of {PlayerId}.{GetType().Name} is null.", OWML.Common.MessageType.Warning);
+				}
+
 				writer.Write(-1);
 			}
-
-			base.SerializeTransform(writer, initialState);
 		}
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
@@ -134,11 +136,10 @@ namespace QSB.Syncs.TransformSync
 				sectorId = reader.ReadInt32();
 				if (initialState && sectorId != -1)
 				{
-					DebugLog.DebugWrite($"SET WAITING FOR SECTOR SET - id {sectorId}");
+					DebugLog.DebugWrite($"{_logName} set waiting sector id:{sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
-				reader.ReadVector3();
-				DeserializeRotation(reader);
+
 				return;
 			}
 
@@ -152,17 +153,14 @@ namespace QSB.Syncs.TransformSync
 				if (sector == null)
 				{
 					DebugLog.ToConsole($"Error - {PlayerId}.{GetType().Name} got sector of ID -1.", OWML.Common.MessageType.Error);
-					base.DeserializeTransform(reader, initialState);
 					return;
 				}
 
 				SetReferenceSector(sector);
 			}
-
-			base.DeserializeTransform(reader, initialState);
 		}
 
-		protected override bool UpdateTransform()
+		protected bool UpdateSectors()
 		{
 			var referenceNull = ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null;
 			var sectorManagerReady = QSBSectorManager.Instance.IsReady;
@@ -175,30 +173,43 @@ namespace QSB.Syncs.TransformSync
 						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}, Intermediary:{_intermediaryTransform.GetReferenceTransform() == null}",
 						OWML.Common.MessageType.Warning);
 				}
-				return base.UpdateTransform();
+
+				DebugLog.DebugWrite($"{_logName} : Sector Manager not ready.");
+				return false;
 			}
 
 			if (!HasAuthority)
 			{
-				return base.UpdateTransform();
+				return true;
 			}
 
 			if (referenceNull)
 			{
-				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
-				if (closestSector != null)
+				if (SectorSync.IsReady)
 				{
-					SetReferenceTransform(closestSector.Transform);
+					var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+					if (closestSector != null)
+					{
+						SetReferenceTransform(closestSector.Transform);
+						return true;
+					}
+					else
+					{
+						DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
+						return false;
+					}
 				}
 				else
 				{
-					DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
 					return false;
 				}
 			}
 
-			return base.UpdateTransform();
+			return true;
 		}
+
+		protected override bool UpdateTransform()
+			=> UpdateSectors();
 
 		public void SetReferenceSector(QSBSector sector)
 		{

@@ -30,15 +30,18 @@ namespace QSB
 		public static QSBNetworkManager Instance { get; private set; }
 
 		public event Action OnNetworkManagerReady;
+		public event Action OnClientConnected;
+		public event Action<NetworkError> OnClientDisconnected;
+		public event Action<NetworkError> OnClientErrorThrown;
 
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
+		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
 		private const int MaxBufferedPackets = 64;
 
-		private QSBNetworkLobby _lobby;
 		private AssetBundle _assetBundle;
 		private GameObject _probePrefab;
 		private bool _everConnected;
@@ -48,11 +51,11 @@ namespace QSB
 			base.Awake();
 			Instance = this;
 
-			_lobby = gameObject.AddComponent<QSBNetworkLobby>();
+			PlayerName = GetPlayerName();
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
 			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
-			SetupNetworkId(playerPrefab);
+			SetupNetworkId(playerPrefab, 1);
 			SetupNetworkTransform(playerPrefab);
 			playerPrefab.AddComponent<PlayerTransformSync>();
 			playerPrefab.AddComponent<AnimationSync>();
@@ -62,19 +65,19 @@ namespace QSB
 			playerPrefab.AddComponent<InstrumentsManager>();
 
 			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-			SetupNetworkId(ShipPrefab);
+			SetupNetworkId(ShipPrefab, 2);
 			SetupNetworkTransform(ShipPrefab);
 			ShipPrefab.AddComponent<ShipTransformSync>();
 			spawnPrefabs.Add(ShipPrefab);
 
 			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
-			SetupNetworkId(_probePrefab);
+			SetupNetworkId(_probePrefab, 3);
 			SetupNetworkTransform(_probePrefab);
 			_probePrefab.AddComponent<PlayerProbeSync>();
 			spawnPrefabs.Add(_probePrefab);
 
 			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-			SetupNetworkId(OrbPrefab);
+			SetupNetworkId(OrbPrefab, 4);
 			SetupNetworkTransform(OrbPrefab);
 			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
 			spawnPrefabs.Add(OrbPrefab);
@@ -82,12 +85,22 @@ namespace QSB
 			ConfigureNetworkManager();
 		}
 
-		private void SetupNetworkId(GameObject go)
+		private string GetPlayerName()
+		{
+			var profileManager = StandaloneProfileManager.SharedInstance;
+			profileManager.Initialize();
+			var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
+			var profileName = profile.profileName;
+			return profileName;
+		}
+
+		private void SetupNetworkId(GameObject go, int assetId)
 		{
 			var ident = go.AddComponent<QNetworkIdentity>();
 			ident.LocalPlayerAuthority = true;
-			ident.SetValue("m_AssetId", go.GetComponent<NetworkIdentity>().assetId);
-			ident.SetValue("m_SceneId", go.GetComponent<NetworkIdentity>().sceneId);
+			var networkIdentity = go.GetComponent<NetworkIdentity>();
+			ident.SetValue("m_AssetId", assetId);
+			ident.SetValue("m_SceneId", networkIdentity.GetComponent<NetworkIdentity>().sceneId);
 		}
 
 		private void SetupNetworkTransform(GameObject go)
@@ -138,16 +151,20 @@ namespace QSB
 
 		public override void OnStartClient(QNetworkClient _)
 		{
-			DebugLog.DebugWrite($"Setting defaultServerIP to {networkAddress}");
 			var config = QSBCore.Helper.Config;
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
 
+		public override void OnClientError(QNetworkConnection conn, int errorCode)
+			=> OnClientErrorThrown?.SafeInvoke((NetworkError)errorCode);
+
 		public override void OnClientConnect(QNetworkConnection connection) // Called on the client when connecting to a server
 		{
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
 			base.OnClientConnect(connection);
+
+			OnClientConnected?.SafeInvoke();
 
 			QSBEventManager.Init();
 
@@ -164,13 +181,11 @@ namespace QSB
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			_lobby.CanEditName = false;
-
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, _lobby.PlayerName));
+				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, PlayerName));
 
 			if (!QSBCore.IsHost)
 			{
@@ -202,10 +217,14 @@ namespace QSB
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}
 
-			_lobby.CanEditName = true;
-
 			IsReady = false;
 			_everConnected = false;
+		}
+
+		public override void OnClientDisconnect(QNetworkConnection conn)
+		{
+			base.OnClientDisconnect(conn);
+			OnClientDisconnected?.SafeInvoke(conn.LastError);
 		}
 
 		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects

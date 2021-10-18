@@ -31,6 +31,7 @@ namespace QSB.StatueSync.Events
 			{
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InStatueCutscene);
 		}
 

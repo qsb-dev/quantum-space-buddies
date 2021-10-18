@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -31,7 +32,7 @@ namespace QSB.QuantumSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
 			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
@@ -87,7 +88,7 @@ namespace QSB.QuantumSync
 			var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
 			if (playersWithCameras.Count == 0)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Could not find any players with cameras!", MessageType.Warning);
 				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
 
@@ -120,7 +121,7 @@ namespace QSB.QuantumSync
 		}
 
 		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
-				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).First
+				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
 				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 

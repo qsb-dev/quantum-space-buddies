@@ -35,6 +35,7 @@ namespace QSB.Player
 		}
 
 		public static Action<uint> OnRemovePlayer;
+		public static Action<uint> OnAddPlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
@@ -43,12 +44,6 @@ namespace QSB.Player
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (!QSBNetworkManager.Instance.IsReady)
-			{
-				DebugLog.ToConsole($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
-					$"{Environment.NewLine} Stacktrace :\r\n{Environment.StackTrace}", MessageType.Warning);
-			}
-
 			if (id == uint.MaxValue || id == 0U)
 			{
 				return default;
@@ -69,6 +64,7 @@ namespace QSB.Player
 			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
+			OnAddPlayer?.Invoke(id);
 			return player;
 		}
 
@@ -83,7 +79,6 @@ namespace QSB.Player
 
 		public static void HandleFullStateMessage(PlayerInformationMessage message)
 		{
-			DebugLog.DebugWrite($"Handle full state message of {message.AboutId}");
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			player.PlayerStates = message.PlayerState;
@@ -91,6 +86,7 @@ namespace QSB.Player
 			{
 				player.UpdateStateObjects();
 			}
+
 			player.State = message.ClientState;
 		}
 
@@ -115,6 +111,16 @@ namespace QSB.Player
 				&& LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
+			}
+			else if (includeLocalCamera && (LocalPlayer == default || LocalPlayer.Camera == null))
+			{
+				if (LocalPlayer == default)
+				{
+					DebugLog.ToConsole($"Error - LocalPlayer is null.", MessageType.Error);
+					return cameraList;
+				}
+
+				DebugLog.DebugWrite($"Error - LocalPlayer.Camera is null.", MessageType.Error);
 			}
 
 			return cameraList;

@@ -6,6 +6,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -29,6 +30,26 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void Init(T attachedObject, int id)
 		{
+			var debugBundle = QSBCore.DebugAssetBundle;
+			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Sphere.prefab");
+			var cube = debugBundle.LoadAsset<GameObject>("Assets/Cube.prefab");
+			var capsule = debugBundle.LoadAsset<GameObject>("Assets/Capsule.prefab");
+
+			if (cube == null)
+			{
+				DebugLog.DebugWrite($"CUBE IS NULL");
+			}
+
+			if (sphere == null)
+			{
+				DebugLog.DebugWrite($"SPHERE IS NULL");
+			}
+
+			if (capsule == null)
+			{
+				DebugLog.DebugWrite($"CAPSULE IS NULL");
+			}
+
 			foreach (var shape in GetAttachedShapes())
 			{
 				if (shape == null)
@@ -42,6 +63,31 @@ namespace QSB.QuantumSync.WorldObjects
 
 				shape.OnShapeDeactivated += (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
+
+				if (shape is BoxShape boxShape)
+				{
+					var newCube = UnityEngine.Object.Instantiate(cube);
+					newCube.transform.parent = shape.transform;
+					newCube.transform.localPosition = Vector3.zero;
+					newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
+					newCube.transform.localScale = boxShape.size;
+				}
+				else if (shape is SphereShape sphereShape)
+				{
+					var newSphere = UnityEngine.Object.Instantiate(sphere);
+					newSphere.transform.parent = shape.transform;
+					newSphere.transform.localPosition = Vector3.zero;
+					newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
+					newSphere.transform.localScale = Vector3.one * (sphereShape.radius * 2);
+				}
+				else if (shape is CapsuleShape capsuleShape)
+				{
+					var newCapsule = Object.Instantiate(capsule);
+					newCapsule.transform.parent = shape.transform;
+					newCapsule.transform.localPosition = Vector3.zero;
+					newCapsule.transform.localRotation = Quaternion.Euler(0, 0, 0);
+					newCapsule.transform.localScale = new Vector3(capsuleShape.radius * 2, capsuleShape.height, capsuleShape.radius * 2);
+				}
 			}
 
 			if (GetAttachedShapes().Any(x => !x.enabled || !x.active))

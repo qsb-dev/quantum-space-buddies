@@ -1,7 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.Player;
 using QSB.ProbeSync.TransformSync;
-using QSB.Syncs.TransformSync;
+using QSB.Syncs;
 using QSB.TimeSync;
 using UnityEngine;
 
@@ -35,13 +35,30 @@ namespace QSB.Utility
 			{
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Server State : {ServerStateManager.Instance.GetServerState()}", guiStyle);
 				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"WakeUpSync State : {WakeUpSync.LocalInstance.CurrentState}", guiStyle);
+				var currentState = WakeUpSync.LocalInstance.CurrentState;
+				GUI.Label(new Rect(220, offset, 200f, 20f), $"WakeUpSync State : {currentState}", guiStyle);
+				offset += _debugLineSpacing;
+				var reason = WakeUpSync.LocalInstance.CurrentReason;
+				if (currentState == WakeUpSync.State.FastForwarding && reason != null)
+				{
+
+					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(FastForwardReason)reason}", guiStyle);
+					offset += _debugLineSpacing;
+				}
+				else if (currentState == WakeUpSync.State.Pausing && reason != null)
+				{
+					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(PauseReason)reason}", guiStyle);
+					offset += _debugLineSpacing;
+				}
+				else if (currentState != WakeUpSync.State.Loaded && currentState != WakeUpSync.State.NotLoaded && reason == null)
+				{
+					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : NULL", guiStyle);
+					offset += _debugLineSpacing;
+				}
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}", guiStyle);
 				offset += _debugLineSpacing;
 				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}", guiStyle);
-				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Mouse input : {OWInput.GetValue(InputLibrary.look, false, InputMode.All)}", guiStyle);
 				offset += _debugLineSpacing;
 			}
 
@@ -62,12 +79,11 @@ namespace QSB.Utility
 					var networkTransform = player.TransformSync;
 					var sector = networkTransform.ReferenceSector;
 
-					
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
 					offset2 += _debugLineSpacing;
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
 					offset2 += _debugLineSpacing;
-					var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
+					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
 					if (probeSync != default)
 					{
 						var probeSector = probeSync.ReferenceSector;

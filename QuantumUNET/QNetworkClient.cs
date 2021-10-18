@@ -408,7 +408,7 @@ namespace QuantumUNET
 							}
 
 							m_AsyncConnect = ConnectState.Connected;
-							m_Connection.InvokeHandlerNoData(32);
+							m_Connection.InvokeHandlerNoData(QMsgType.Connect);
 							break;
 
 						case NetworkEventType.DisconnectEvent:
@@ -423,7 +423,7 @@ namespace QuantumUNET
 							}
 
 							QClientScene.HandleClientDisconnect(m_Connection);
-							m_Connection?.InvokeHandlerNoData(33);
+							m_Connection?.InvokeHandlerNoData(QMsgType.Disconnect);
 							break;
 
 						case NetworkEventType.Nothing:
@@ -487,8 +487,8 @@ namespace QuantumUNET
 
 		private void GenerateError(int error)
 		{
-			var handler = m_MessageHandlers.GetHandler(34)
-						  ?? m_MessageHandlers.GetHandler(34);
+			var handler = m_MessageHandlers.GetHandler(QMsgType.Error)
+						  ?? m_MessageHandlers.GetHandler(QMsgType.Error);
 			if (handler != null)
 			{
 				var errorMessage = new QErrorMessage
@@ -501,33 +501,11 @@ namespace QuantumUNET
 				var reader = new QNetworkReader(buffer);
 				handler(new QNetworkMessage
 				{
-					MsgType = 34,
+					MsgType = QMsgType.Error,
 					Reader = reader,
 					Connection = m_Connection,
 					ChannelId = 0
 				});
-			}
-		}
-
-		public void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			if (m_Connection != null)
-			{
-				m_Connection.GetStatsOut(out numMsgs, out numBufferedMsgs, out numBytes, out lastBufferedPerSecond);
-			}
-		}
-
-		public void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			if (m_Connection != null)
-			{
-				m_Connection.GetStatsIn(out numMsgs, out numBytes);
 			}
 		}
 

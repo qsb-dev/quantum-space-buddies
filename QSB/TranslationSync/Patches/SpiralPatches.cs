@@ -1,21 +1,18 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using QSB.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 
 namespace QSB.TranslationSync.Patches
 {
+	[HarmonyPatch]
 	internal class SpiralPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(NomaiWallText_SetAsTranslated));
-			Prefix(nameof(NomaiComputer_SetAsTranslated));
-			Prefix(nameof(NomaiVesselComputer_SetAsTranslated));
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiWallText), nameof(NomaiWallText.SetAsTranslated))]
 		public static bool NomaiWallText_SetAsTranslated(NomaiWallText __instance, int id)
 		{
 			if (__instance.IsTranslated(id))
@@ -31,6 +28,8 @@ namespace QSB.TranslationSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiComputer), nameof(NomaiWallText.SetAsTranslated))]
 		public static bool NomaiComputer_SetAsTranslated(NomaiComputer __instance, int id)
 		{
 			if (__instance.IsTranslated(id))
@@ -46,6 +45,8 @@ namespace QSB.TranslationSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiVesselComputer), nameof(NomaiWallText.SetAsTranslated))]
 		public static bool NomaiVesselComputer_SetAsTranslated(NomaiVesselComputer __instance, int id)
 		{
 			if (__instance.IsTranslated(id))

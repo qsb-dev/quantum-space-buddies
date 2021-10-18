@@ -9,7 +9,6 @@ namespace QSB.ProbeSync
 		public OWAudioSource _flightLoopAudio;
 		public OWAudioSource _anchorAudio;
 		public ParticleSystem _anchorParticles;
-		public ParticleSystem _underwaterAnchorParticles;
 
 		private QSBProbe _probe;
 

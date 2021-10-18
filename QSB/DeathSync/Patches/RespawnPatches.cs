@@ -1,18 +1,22 @@
-﻿using OWML.Utils;
+﻿using HarmonyLib;
+using OWML.Utils;
 using QSB.Patches;
 
 namespace QSB.DeathSync.Patches
 {
+	[HarmonyPatch]
 	internal class RespawnPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(PlayerRecoveryPoint_OnGainFocus));
-			Prefix(nameof(PlayerRecoveryPoint_OnPressInteract));
-		}
+		//public override void DoPatches()
+		//{
+		//	Prefix<PlayerRecoveryPoint>(nameof(PlayerRecoveryPoint.OnGainFocus), nameof(PlayerRecoveryPoint_OnGainFocus));
+		//	Prefix<PlayerRecoveryPoint>(nameof(PlayerRecoveryPoint.OnPressInteract), nameof(PlayerRecoveryPoint_OnPressInteract));
+		//}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerRecoveryPoint), nameof(PlayerRecoveryPoint.OnGainFocus))]
 		public static bool PlayerRecoveryPoint_OnGainFocus(
 			PlayerResources ____playerResources,
 			bool ____refuelsPlayer,
@@ -100,6 +104,8 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerRecoveryPoint), nameof(PlayerRecoveryPoint.OnPressInteract))]
 		public static bool PlayerRecoveryPoint_OnPressInteract(
 			PlayerRecoveryPoint __instance,
 			PlayerResources ____playerResources,

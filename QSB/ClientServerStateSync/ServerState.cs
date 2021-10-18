@@ -15,10 +15,10 @@
 		InEye,
 
 		// At end of loop, waiting for everyone to be ready to reload the scene
-		WaitingForDeath,
+		WaitingForAllPlayersToDie,
 
 		// At start of loop, waiting for everybody to be ready to start playing
-		AwaitingPlayConfirmation,
+		WaitingForAllPlayersToReady,
 
 		// When the statue has been activated
 		InStatueCutscene

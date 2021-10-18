@@ -350,32 +350,6 @@ namespace QuantumUNET
 			}
 		}
 
-		public virtual void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			foreach (var channelBuffer in m_Channels)
-			{
-				numMsgs += channelBuffer.NumMsgsOut;
-				numBufferedMsgs += channelBuffer.NumBufferedMsgsOut;
-				numBytes += channelBuffer.NumBytesOut;
-				lastBufferedPerSecond += channelBuffer.LastBufferedPerSecond;
-			}
-		}
-
-		public virtual void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			foreach (var channelBuffer in m_Channels)
-			{
-				numMsgs += channelBuffer.NumMsgsIn;
-				numBytes += channelBuffer.NumBytesIn;
-			}
-		}
-
 		public override string ToString() =>
 			$"hostId: {hostId} connectionId: {connectionId} isReady: {isReady} channel count: {m_Channels?.Length ?? 0}";
 

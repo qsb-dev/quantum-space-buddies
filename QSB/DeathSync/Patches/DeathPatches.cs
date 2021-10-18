@@ -1,46 +1,45 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches
 {
+	[HarmonyPatch]
 	public class DeathPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(DeathManager_KillPlayer_Prefix));
-			Postfix(nameof(DeathManager_KillPlayer_Postfix));
-			Prefix(nameof(ShipDetachableLeg_Detach));
-			Prefix(nameof(ShipDetachableModule_Detach));
-			Empty("ShipEjectionSystem_OnPressInteract");
-			Postfix(nameof(ShipDamageController_Awake));
-			Prefix(nameof(DestructionVolume_VanishShip));
-			Prefix(nameof(HighSpeedImpactSensor_FixedUpdate));
-			Prefix(nameof(PlayerResources_OnImpact));
-		}
+		// TODO : Remove with future functionality.
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipEjectionSystem), nameof(ShipEjectionSystem.OnPressInteract))]
+		public static bool DisableEjection()
+			=> false;
 
+		// TODO : Remove with future functionality.
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipDetachableLeg), nameof(ShipDetachableLeg.Detach))]
 		public static bool ShipDetachableLeg_Detach(ref OWRigidbody __result)
 		{
 			__result = null;
 			return false;
 		}
 
+		// TODO : Remove with future functionality.
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShipDetachableModule), nameof(ShipDetachableModule.Detach))]
 		public static bool ShipDetachableModule_Detach(ref OWRigidbody __result)
 		{
 			__result = null;
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
 		public static bool PlayerResources_OnImpact(ImpactData impact, PlayerResources __instance, float ____currentHealth)
 		{
 			if (PlayerState.IsInsideShip())
@@ -66,6 +65,8 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
 		public static bool HighSpeedImpactSensor_FixedUpdate(
 			HighSpeedImpactSensor __instance,
 			bool ____isPlayer,
@@ -186,9 +187,10 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
 		{
-			DebugLog.DebugWrite($"KILL PLAYER PREFIX stacetrace : \r\n {Environment.StackTrace}");
 			if (RespawnOnDeath.Instance == null)
 			{
 				return true;
@@ -205,21 +207,20 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
 		{
-			DebugLog.DebugWrite($"KILL PLAYER POSTFIX");
 			QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
 		}
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]
 		public static void ShipDamageController_Awake(ref bool ____exploded)
 			=> ____exploded = true;
 
-		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions) => new List<CodeInstruction>
-			{
-				new CodeInstruction(OpCodes.Ldnull),
-				new CodeInstruction(OpCodes.Ret)
-			};
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]
 		public static bool DestructionVolume_VanishShip(DeathType ____deathType)
 		{
 			if (RespawnOnDeath.Instance == null)

@@ -360,7 +360,8 @@ namespace QSB.PoolSync
 					continue;
 				}
 
-				var hologram = item.Value.transform.GetChild(0);
+				//var hologram = item.Value.transform.GetChild(0);
+				var hologram = item.Value.transform;
 				hologram.position = TransformPoint(item.Key.Body.transform.position, this, _slavePlatform);
 				hologram.rotation = TransformRotation(item.Key.Body.transform.rotation, this, _slavePlatform);
 			}
@@ -719,7 +720,7 @@ namespace QSB.PoolSync
 			hologramCopy.GetChild(0).Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
 			hologramCopy.GetChild(0).Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
-			// TODO : Look at this again... probably need to sync head rotation to something else
+			// BUG : Look at this again... probably need to sync head rotation to something else
 			//var ikSync = hologramCopy.GetChild(0).gameObject.AddComponent<PlayerHeadRotationSync>();
 			//ikSync.Init(player.CameraBody.transform);
 

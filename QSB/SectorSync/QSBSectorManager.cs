@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
-using QSB.Syncs;
+using QSB.Syncs.Sectored;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -18,8 +18,7 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<SyncBase> SectoredTransformSyncs = new List<SyncBase>();
-		public List<SyncBase> SectoredRigidbodySyncs = new List<SyncBase>();
+		public List<BaseSectoredSync> SectoredSyncs = new List<BaseSectoredSync>();
 
 		public void Invoke()
 		{
@@ -28,7 +27,7 @@ namespace QSB.SectorSync
 				return;
 			}
 
-			foreach (var sync in SectoredTransformSyncs)
+			foreach (var sync in SectoredSyncs)
 			{
 				if (sync.AttachedObject == null)
 				{
@@ -37,24 +36,10 @@ namespace QSB.SectorSync
 
 				if (sync.HasAuthority
 					&& sync.AttachedObject.gameObject.activeInHierarchy
-					&& sync.IsReady)
+					&& sync.IsReady
+					&& sync.SectorSync.IsReady)
 				{
-					CheckTransformSyncSector(sync as ISectoredSync<Transform>);
-				}
-			}
-
-			foreach (var sync in SectoredRigidbodySyncs)
-			{
-				if (sync.AttachedObject == null)
-				{
-					continue;
-				}
-
-				if (sync.HasAuthority
-					&& sync.AttachedObject.gameObject.activeInHierarchy
-					&& sync.IsReady)
-				{
-					CheckTransformSyncSector(sync as ISectoredSync<OWRigidbody>);
+					CheckTransformSyncSector(sync);
 				}
 			}
 		}
@@ -68,7 +53,7 @@ namespace QSB.SectorSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
 				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
@@ -89,10 +74,9 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector<T>(ISectoredSync<T> transformSync)
-			where T : Component
+		private void CheckTransformSyncSector(BaseSectoredSync transformSync)
 		{
-			var attachedObject = (transformSync as SyncBase).AttachedObject;
+			var attachedObject = transformSync.AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
 			if (closestSector == default(QSBSector))
 			{

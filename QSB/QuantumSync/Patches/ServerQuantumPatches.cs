@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
@@ -9,13 +10,13 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
 {
+	[HarmonyPatch]
 	public class ServerQuantumPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
-		public override void DoPatches()
-			=> Prefix(nameof(QuantumMoon_ChangeQuantumState));
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.ChangeQuantumState))]
 		public static bool QuantumMoon_ChangeQuantumState(
 			QuantumMoon __instance,
 			ref bool __result,
@@ -38,9 +39,14 @@ namespace QSB.QuantumSync.Patches
 			GameObject[] ____deactivateAtEye
 			)
 		{
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return false;
+			}
+
 			var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck);
 			//var moonVisible = isVisibleOutput.First;
-			var moonVisiblePlayers = isVisibleOutput.Second;
+			var moonVisiblePlayers = isVisibleOutput.Item2;
 			var inMoonPlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
 			if (inMoonPlayers == null)
 			{
@@ -148,7 +154,7 @@ namespace QSB.QuantumSync.Patches
 						Physics.SyncTransforms();
 					}
 
-					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck).First)
+					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck).Item1)
 					{
 						____moonBody.transform.position = position;
 						if (!Physics.autoSyncTransforms)

@@ -78,6 +78,7 @@ namespace QSB.ShipSync
 						DebugLog.ToConsole($"Warning - ShipTransformSync's LocalInstance is not null, but it's gameobject is null!", MessageType.Warning);
 						return;
 					}
+
 					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
 
@@ -85,7 +86,8 @@ namespace QSB.ShipSync
 				{
 					DebugLog.ToConsole($"Error - Tried to spawn ship, but LocalPlayer's TransformSync is null!", MessageType.Error);
 				}
-				QNetworkServer.SpawnWithClientAuthority(Instantiate(QSBNetworkManager.Instance.ShipPrefab), QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
+
+				Instantiate(QSBNetworkManager.Instance.ShipPrefab).SpawnWithServerAuthority();
 			}
 
 			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();
@@ -105,6 +107,9 @@ namespace QSB.ShipSync
 			_playersInShip.Remove(player);
 			UpdateElectricalComponent();
 		}
+
+		public bool IsPlayerInShip(PlayerInfo player)
+			=> _playersInShip.Contains(player);
 
 		private void UpdateElectricalComponent()
 		{

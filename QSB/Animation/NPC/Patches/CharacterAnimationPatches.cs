@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
 using QSB.Events;
@@ -12,22 +13,14 @@ using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches
 {
+	[HarmonyPatch]
 	public class CharacterAnimationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(CharacterAnimController_OnAnimatorIK));
-			Prefix(nameof(CharacterAnimController_OnZoneEntry));
-			Prefix(nameof(CharacterAnimController_OnZoneExit));
-			Prefix(nameof(FacePlayerWhenTalking_OnStartConversation));
-			Prefix(nameof(CharacterDialogueTree_StartConversation));
-			Prefix(nameof(CharacterDialogueTree_EndConversation));
-			Prefix(nameof(KidRockController_Update));
-		}
-
-		public static bool CharacterAnimController_OnAnimatorIK(
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnAnimatorIK))]
+		public static bool AnimatorIKReplacement(
 			CharacterAnimController __instance,
 			float ___headTrackingWeight,
 			bool ___lookOnlyWhenTalking,
@@ -39,14 +32,14 @@ namespace QSB.Animation.NPC.Patches
 			Animator ____animator,
 			CharacterDialogueTree ____dialogueTree)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllReady || ConversationManager.Instance == null)
 			{
 				return false;
 			}
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // TODO : maybe cache this somewhere... or assess how slow this is
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
 			if (____inConversation)
@@ -63,7 +56,7 @@ namespace QSB.Animation.NPC.Patches
 						: player;
 				}
 			}
-			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // TODO : maybe this would be more fun if characters looked between players at random times? :P
+			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // IDEA : maybe this would be more fun if characters looked between players at random times? :P
 			{
 				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
 			}
@@ -103,21 +96,27 @@ namespace QSB.Animation.NPC.Patches
 
 		}
 
-		public static bool CharacterAnimController_OnZoneExit(CharacterAnimController __instance)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
+		public static bool HeadZoneExit(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBExitHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
-		public static bool CharacterAnimController_OnZoneEntry(CharacterAnimController __instance)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneEntry))]
+		public static bool HeadZoneEntry(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBEnterHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
-		public static bool FacePlayerWhenTalking_OnStartConversation(
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(FacePlayerWhenTalking), nameof(FacePlayerWhenTalking.OnStartConversation))]
+		public static bool OnStartConversation(
 			FacePlayerWhenTalking __instance,
 			CharacterDialogueTree ____dialogueTree)
 		{
@@ -140,7 +139,9 @@ namespace QSB.Animation.NPC.Patches
 			return false;
 		}
 
-		public static bool CharacterDialogueTree_StartConversation(CharacterDialogueTree __instance)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.StartConversation))]
+		public static bool StartConversation(CharacterDialogueTree __instance)
 		{
 			var allNpcAnimControllers = QSBWorldSync.GetWorldObjects<INpcAnimController>();
 			var ownerOfThis = allNpcAnimControllers.FirstOrDefault(x => x.GetDialogueTree() == __instance);
@@ -154,7 +155,9 @@ namespace QSB.Animation.NPC.Patches
 			return true;
 		}
 
-		public static bool CharacterDialogueTree_EndConversation(CharacterDialogueTree __instance)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.EndConversation))]
+		public static bool EndConversation(CharacterDialogueTree __instance)
 		{
 			var allNpcAnimControllers = QSBWorldSync.GetWorldObjects<INpcAnimController>();
 			var ownerOfThis = allNpcAnimControllers.FirstOrDefault(x => x.GetDialogueTree() == __instance);
@@ -168,7 +171,9 @@ namespace QSB.Animation.NPC.Patches
 			return true;
 		}
 
-		public static bool KidRockController_Update(
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(KidRockController), nameof(KidRockController.Update))]
+		public static bool UpdateReplacement(
 			KidRockController __instance,
 			bool ____throwingRock,
 			CharacterDialogueTree ____dialogueTree,

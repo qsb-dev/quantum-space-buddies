@@ -7,6 +7,7 @@ namespace QSB.WorldSync
 		int ObjectId { get; }
 		string Name { get; }
 
+		void PostInit();
 		void OnRemoval();
 		MonoBehaviour ReturnObject();
 	}

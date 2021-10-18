@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.Utility;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +39,7 @@ namespace QSB.TimeSync
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoad;
-			if (_canvas != null & _canvas.enabled)
+			if (_canvas != null && _canvas.enabled)
 			{
 				Canvas.willRenderCanvases -= OnWillRenderCanvases;
 			}
@@ -52,6 +53,11 @@ namespace QSB.TimeSync
 
 		private void StartTimeSync(TimeSyncType type, Enum reason)
 		{
+			if (!QSBSceneManager.IsInUniverse)
+			{
+				DebugLog.ToConsole("Error - Tried to start time sync UI when not in universe!", OWML.Common.MessageType.Error);
+				return;
+			}
 			_currentType = type;
 			_currentReason = reason;
 			_startTime = Time.timeSinceLevelLoad;
@@ -91,6 +97,7 @@ namespace QSB.TimeSync
 								+ "Fast-forwarding to match server time...";
 							break;
 					}
+
 					break;
 
 				case TimeSyncType.Pausing:
@@ -112,6 +119,7 @@ namespace QSB.TimeSync
 							text = "Waiting for end of loop...";
 							break;
 					}
+
 					break;
 			}
 

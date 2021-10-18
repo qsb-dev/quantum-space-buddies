@@ -67,9 +67,19 @@ namespace QSB.WorldSync
 				}
 			}
 
-			QSBCore.UnityEvents.FireInNUpdates(() => AllReady = true, 1);
+			QSBCore.UnityEvents.FireInNUpdates(DoPostInit, 1);
 		}
 
+		private static void DoPostInit()
+		{
+			AllReady = true;
+			var allWorldObjects = QSBWorldSync.GetWorldObjects<IWorldObject>();
+			foreach (var worldObject in allWorldObjects)
+			{
+				worldObject.PostInit();
+			}
+		}
+		
 		protected abstract void RebuildWorldObjects(OWScene scene);
 	}
 }

@@ -1,17 +1,18 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using UnityEngine;
 
 namespace QSB.StatueSync.Patches
 {
+	[HarmonyPatch]
 	internal class StatuePatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-			=> Prefix(nameof(MemoryUplinkTrigger_Update));
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MemoryUplinkTrigger), nameof(MemoryUplinkTrigger.Update))]
 		public static bool MemoryUplinkTrigger_Update(bool ____waitForPlayerGrounded)
 		{
 			if (StatueManager.Instance.HasStartedStatueLocally)

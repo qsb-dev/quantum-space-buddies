@@ -31,7 +31,6 @@ namespace QSB.TimeSync
 
 		private float _sendTimer;
 		private float _serverTime;
-		private bool _isFirstFastForward = true;
 		private int _serverLoopCount;
 		private bool _hasWokenUp;
 
@@ -46,7 +45,6 @@ namespace QSB.TimeSync
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				_isFirstFastForward = false;
 				Init();
 			}
 
@@ -203,7 +201,6 @@ namespace QSB.TimeSync
 			CurrentReason = null;
 
 			DebugLog.DebugWrite($"RESET TIMESCALE", MessageType.Info);
-			_isFirstFastForward = false;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
@@ -236,12 +233,11 @@ namespace QSB.TimeSync
 		private void UpdateServer()
 		{
 			_serverTime = Time.timeSinceLevelLoad;
-			
 
 			var serverState = ServerStateManager.Instance.GetServerState();
 			var clientState = QSBPlayerManager.LocalPlayer.State;
 
-			if (serverState == ServerState.AwaitingPlayConfirmation && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToReady && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
 			{
 				if (CurrentState != State.Pausing)
 				{
@@ -278,6 +274,7 @@ namespace QSB.TimeSync
 
 			var serverState = ServerStateManager.Instance.GetServerState();
 			var clientState = QSBPlayerManager.LocalPlayer.State;
+			var currentScene = QSBSceneManager.CurrentScene;
 
 			// set fastforwarding timescale
 
@@ -306,13 +303,13 @@ namespace QSB.TimeSync
 				return;
 			}
 
-			if (serverState == ServerState.NotLoaded && CurrentState != State.Pausing)
+			if (serverState == ServerState.NotLoaded && CurrentState != State.Pausing && QSBSceneManager.IsInUniverse)
 			{
 				DebugLog.DebugWrite($"Server Not Loaded");
 				StartPausing(PauseReason.ServerNotStarted);
 			}
 
-			if (serverState == ServerState.AwaitingPlayConfirmation && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToReady && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
 			{
 				DebugLog.DebugWrite($"Awaiting Play Confirmation");
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
@@ -323,7 +320,7 @@ namespace QSB.TimeSync
 				DebugLog.DebugWrite($"Server is still running game normally, but this player has died from an accepted death!", MessageType.Warning);
 			}
 
-			if (serverState == ServerState.WaitingForDeath && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
 			{
 				DebugLog.DebugWrite($"Wait for others to load new scene");
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
@@ -365,6 +362,11 @@ namespace QSB.TimeSync
 					DebugLog.DebugWrite($"Done fast-forwarding to match time!");
 					ResetTimeScale();
 				}
+			}
+
+			if (CurrentState == State.Loaded)
+			{
+				CheckTimeDifference();
 			}
 		}
 

@@ -10,6 +10,7 @@ namespace QSB.WorldSync
 		public string Name => AttachedObject == null ? "<NullObject!>" : AttachedObject.name;
 
 		public abstract void Init(T attachedObject, int id);
+		public virtual void PostInit() { }
 		public virtual void OnRemoval() { }
 		public MonoBehaviour ReturnObject() => AttachedObject;
 	}

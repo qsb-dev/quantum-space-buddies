@@ -9,7 +9,7 @@ namespace QSB.ItemSync
 	{
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Info);
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
 			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();

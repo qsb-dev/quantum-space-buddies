@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
-using OWML.Utils;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
@@ -10,6 +9,7 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
+using QSB.Menus;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
@@ -59,14 +59,17 @@ namespace QSB
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
+		public static AssetBundle DebugAssetBundle { get; private set; }
 		public static bool WorldObjectsReady => WorldObjectManager.AllReady && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
+		public static string GameVersion => Application.version;
+		public static IMenuAPI MenuApi { get; private set; }
 
 		public void Awake()
 		{
-			var instance = TextTranslation.Get().GetValue<TextTranslation.TranslationTable>("m_table");
+			var instance = TextTranslation.Get().m_table;
 			instance.theUITable[(int)UITextType.PleaseUseController] =
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
 		}
@@ -76,14 +79,16 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+
 			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
+			DebugAssetBundle = Helper.Assets.LoadBundle("assets/debug");
 
 			QSBPatchManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<QNetworkManagerHUD>();
 			gameObject.AddComponent<DebugActions>();
 			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
@@ -91,6 +96,7 @@ namespace QSB
 			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
+			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
 
 			// WorldObject managers
@@ -111,9 +117,6 @@ namespace QSB
 			DebugBoxManager.Init();
 
 			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
-
-			// Stop players being able to pause
-			Helper.HarmonyHelper.EmptyMethod(typeof(OWTime).GetMethod("Pause"));
 
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
@@ -177,4 +180,5 @@ namespace QSB
  * Teleskärm
  * Daft Punk
  * Natalie Holt
+ * WMD
  */

@@ -28,12 +28,12 @@ namespace QSB.ClientServerStateSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<ClientState> message)
 		{
-			DebugLog.DebugWrite($"Remote receive id:{message.AboutId} state:{message.EnumValue}");
 			if (message.AboutId == uint.MaxValue)
 			{
 				DebugLog.DebugWrite($"Error - ID is uint.MaxValue!", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.State = message.EnumValue;
 		}

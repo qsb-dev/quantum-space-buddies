@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
@@ -7,19 +8,13 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Patches
 {
+	[HarmonyPatch]
 	internal class ItemPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			Prefix(nameof(ItemTool_MoveItemToCarrySocket));
-			Prefix(nameof(ItemTool_SocketItem));
-			Prefix(nameof(ItemTool_StartUnsocketItem));
-			Prefix(nameof(ItemTool_CompleteUnsocketItem));
-			Prefix(nameof(ItemTool_DropItem));
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.MoveItemToCarrySocket))]
 		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
 		{
 			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(item));
@@ -27,6 +22,8 @@ namespace QSB.ItemSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.SocketItem))]
 		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
 		{
 			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
@@ -35,6 +32,8 @@ namespace QSB.ItemSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.StartUnsocketItem))]
 		public static bool ItemTool_StartUnsocketItem(OWItemSocket socket)
 		{
 			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
@@ -42,6 +41,8 @@ namespace QSB.ItemSync.Patches
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.CompleteUnsocketItem))]
 		public static bool ItemTool_CompleteUnsocketItem(OWItem ____heldItem)
 		{
 			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
@@ -49,7 +50,9 @@ namespace QSB.ItemSync.Patches
 			return true;
 		}
 
-		public static bool ItemTool_DropItem(RaycastHit hit, OWRigidbody targetRigidbody, DetachableFragment detachableFragment, ref OWItem ____heldItem)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.DropItem))]
+		public static bool ItemTool_DropItem(RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget, ref OWItem ____heldItem)
 		{
 			Locator.GetPlayerAudioController().PlayDropItem(____heldItem.GetItemType());
 			var hitGameObject = hit.collider.gameObject;
@@ -65,13 +68,21 @@ namespace QSB.ItemSync.Patches
 			if (sectorGroup != null)
 			{
 				sector = sectorGroup.GetSector();
+				if (sector == null && sectorGroup is SectorCullGroup)
+				{
+					SectorProxy controllingProxy = (sectorGroup as SectorCullGroup).GetControllingProxy();
+					if (controllingProxy != null)
+					{
+						sector = controllingProxy.GetSector();
+					}
+				}
 			}
 
-			var parent = (detachableFragment != null)
-				? detachableFragment.transform
-				: targetRigidbody.transform;
+			var parent = (customDropTarget == null)
+				? targetRigidbody.transform
+				: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
 			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
-			____heldItem.DropItem(hit.point, hit.normal, parent, sector, detachableFragment);
+			____heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
 			____heldItem = null;
 			Locator.GetToolModeSwapper().UnequipTool();
 			var parentSector = parent.GetComponentInChildren<Sector>();

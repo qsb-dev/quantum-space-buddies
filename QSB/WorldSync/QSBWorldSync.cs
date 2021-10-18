@@ -45,23 +45,31 @@ namespace QSB.WorldSync
 
 			if (unityObject == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Error);
 				return default;
 			}
 
 			if (!QSBCore.IsInMultiplayer)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer!");
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Warning);
 				return default;
 			}
 
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! Called from {new StackTrace().GetFrame(1).GetMethod().Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Error);
 				return default;
 			}
 
-			return WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+			var returnObject = WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+
+			if (returnObject == default || returnObject == null)
+			{
+				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Error);
+				return default;
+			}
+
+			return returnObject;
 		}
 
 		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
@@ -121,6 +129,12 @@ namespace QSB.WorldSync
 		{
 			var worldObject = (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
 			WorldObjects.Add(worldObject);
+			if (worldObject == null)
+			{
+				// if this happens, god help you
+				DebugLog.ToConsole($"Error - CreateWorldObject is returning a null value! This is very bad!", MessageType.Error);
+			}
+
 			return worldObject;
 		}
 
