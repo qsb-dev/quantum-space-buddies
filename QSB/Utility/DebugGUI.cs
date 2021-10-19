@@ -1,4 +1,5 @@
 ﻿using QSB.ClientServerStateSync;
+using QSB.OrbSync.TransformSync;
 using QSB.Player;
 using QSB.ProbeSync.TransformSync;
 using QSB.Syncs;
@@ -63,6 +64,8 @@ namespace QSB.Utility
 			}
 
 			var offset2 = 10f;
+			GUI.Label(new Rect(420, offset2, 200f, 20f), $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}", guiStyle);
+			offset2 += _debugLineSpacing;
 			GUI.Label(new Rect(420, offset2, 200f, 20f), $"Player data :", guiStyle);
 			offset2 += _debugLineSpacing;
 			foreach (var player in QSBPlayerManager.PlayerList)

@@ -1,6 +1,7 @@
 ﻿using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +28,14 @@ namespace QSB.OrbSync.TransformSync
 			if (originalParent == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Destroying...");
-				Destroy(this);
+				if (QSBCore.IsHost)
+				{
+					QNetworkServer.Destroy(gameObject);
+				}
+				else
+				{
+					DebugLog.ToConsole($"Error - Parent mismatch when not running on host?! A client should never be spawning the orbs.", OWML.Common.MessageType.Error);
+				}
 			}
 
 			SetReferenceTransform(originalParent);
