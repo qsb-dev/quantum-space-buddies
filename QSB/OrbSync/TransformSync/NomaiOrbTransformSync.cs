@@ -1,7 +1,7 @@
-﻿using QSB.Syncs.Unsectored.Transforms;
+﻿using OWML.Common;
+using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,15 +27,9 @@ namespace QSB.OrbSync.TransformSync
 			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
 			if (originalParent == Locator.GetRootTransform())
 			{
-				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Destroying...");
-				if (QSBCore.IsHost)
-				{
-					QNetworkServer.Destroy(gameObject);
-				}
-				else
-				{
-					DebugLog.ToConsole($"Error - Parent mismatch when not running on host?! A client should never be spawning the orbs.", OWML.Common.MessageType.Error);
-				}
+				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
+				enabled = false;
+				OrbTransformSyncs[_index] = null;
 			}
 
 			SetReferenceTransform(originalParent);
@@ -45,20 +39,25 @@ namespace QSB.OrbSync.TransformSync
 		{
 			if (_index == -1)
 			{
-				DebugLog.ToConsole($"Error - Index cannot be found.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Index cannot be found.", MessageType.Error);
 				return null;
 			}
 
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", MessageType.Error);
 				return null;
 			}
 
 			if (QSBWorldSync.OldOrbList[_index] == null)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", MessageType.Error);
 				return null;
+			}
+
+			if (QSBWorldSync.OldOrbList.Count != OrbTransformSyncs.Count)
+			{
+				DebugLog.ToConsole($"Warning - OldOrbList count ({QSBWorldSync.OldOrbList.Count}) does not equal OrbTransformSyncs count ({OrbTransformSyncs.Count})!", MessageType.Warning);
 			}
 
 			return QSBWorldSync.OldOrbList[_index].transform;
