@@ -64,29 +64,32 @@ namespace QSB.QuantumSync.WorldObjects
 				shape.OnShapeDeactivated += (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 
-				if (shape is BoxShape boxShape)
+				if (QSBCore.DebugMode)
 				{
-					var newCube = UnityEngine.Object.Instantiate(cube);
-					newCube.transform.parent = shape.transform;
-					newCube.transform.localPosition = Vector3.zero;
-					newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
-					newCube.transform.localScale = boxShape.size;
-				}
-				else if (shape is SphereShape sphereShape)
-				{
-					var newSphere = UnityEngine.Object.Instantiate(sphere);
-					newSphere.transform.parent = shape.transform;
-					newSphere.transform.localPosition = Vector3.zero;
-					newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
-					newSphere.transform.localScale = Vector3.one * (sphereShape.radius * 2);
-				}
-				else if (shape is CapsuleShape capsuleShape)
-				{
-					var newCapsule = Object.Instantiate(capsule);
-					newCapsule.transform.parent = shape.transform;
-					newCapsule.transform.localPosition = Vector3.zero;
-					newCapsule.transform.localRotation = Quaternion.Euler(0, 0, 0);
-					newCapsule.transform.localScale = new Vector3(capsuleShape.radius * 2, capsuleShape.height, capsuleShape.radius * 2);
+					if (shape is BoxShape boxShape)
+					{
+						var newCube = UnityEngine.Object.Instantiate(cube);
+						newCube.transform.parent = shape.transform;
+						newCube.transform.localPosition = Vector3.zero;
+						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
+						newCube.transform.localScale = boxShape.size;
+					}
+					else if (shape is SphereShape sphereShape)
+					{
+						var newSphere = UnityEngine.Object.Instantiate(sphere);
+						newSphere.transform.parent = shape.transform;
+						newSphere.transform.localPosition = Vector3.zero;
+						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
+						newSphere.transform.localScale = Vector3.one * (sphereShape.radius * 2);
+					}
+					else if (shape is CapsuleShape capsuleShape)
+					{
+						var newCapsule = Object.Instantiate(capsule);
+						newCapsule.transform.parent = shape.transform;
+						newCapsule.transform.localPosition = Vector3.zero;
+						newCapsule.transform.localRotation = Quaternion.Euler(0, 0, 0);
+						newCapsule.transform.localScale = new Vector3(capsuleShape.radius * 2, capsuleShape.height, capsuleShape.radius * 2);
+					}
 				}
 			}
 
