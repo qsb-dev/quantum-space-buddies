@@ -86,5 +86,6 @@
 		public static string QSBStartLoop = "QSBStartLoop";
 		public static string QSBServerState = "QSBServerState";
 		public static string QSBClientState = "QSBClientState";
+		public static string QSBDebugEvent = "QSBDebugEvent";
 	}
 }

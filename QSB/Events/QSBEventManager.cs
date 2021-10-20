@@ -24,6 +24,7 @@ using QSB.Tools.Events;
 using QSB.Tools.ProbeLauncherTool.Events;
 using QSB.TranslationSync.Events;
 using QSB.Utility;
+using QSB.Utility.Events;
 using System.Collections.Generic;
 
 namespace QSB.Events
@@ -67,6 +68,7 @@ namespace QSB.Events
 				new StartLoopEvent(),
 				new ServerStateEvent(),
 				new ClientStateEvent(),
+				new DebugEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
