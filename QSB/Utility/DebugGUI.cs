@@ -76,6 +76,8 @@ namespace QSB.Utility
 				offset2 += _debugLineSpacing;
 				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Dead : {player.IsDead}", guiStyle);
 				offset2 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Visible : {player.Visible}", guiStyle);
+				offset2 += _debugLineSpacing;
 
 				if (player.PlayerStates.IsReady && QSBCore.WorldObjectsReady)
 				{
