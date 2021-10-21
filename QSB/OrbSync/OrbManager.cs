@@ -4,6 +4,7 @@ using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace QSB.OrbSync
 {
 	public class OrbManager : WorldObjectManager
 	{
+		private List<GameObject> _orbs = new List<GameObject>();
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBOrbSlot, NomaiInterfaceSlot>();
@@ -24,11 +27,13 @@ namespace QSB.OrbSync
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QSBCore.IsHost)
 			{
-				NomaiOrbTransformSync.OrbTransformSyncs.ForEach(x => QNetworkServer.Destroy(x.gameObject));
+				_orbs.ForEach(x => QNetworkServer.Destroy(x));
+				_orbs.Clear();
 				NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 				foreach (var orb in QSBWorldSync.OldOrbList)
 				{
-					Instantiate(QSBNetworkManager.Instance.OrbPrefab).SpawnWithServerAuthority();
+					var newOrb = Instantiate(QSBNetworkManager.Instance.OrbPrefab);
+					newOrb.SpawnWithServerAuthority();
 				}
 			}
 

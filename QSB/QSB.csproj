@@ -109,6 +109,7 @@
     <Compile Include="Player\Events\PlayerInformationEvent.cs" />
     <Compile Include="Player\Events\PlayerInformationMessage.cs" />
     <Compile Include="Player\Events\RequestStateResyncEvent.cs" />
+    <Compile Include="Player\GamePlatform.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
     <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />

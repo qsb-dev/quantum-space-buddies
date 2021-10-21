@@ -15,6 +15,7 @@ namespace QSB.ClientServerStateSync
 		public delegate void ChangeStateEvent(ServerState newState);
 
 		private ServerState _currentState;
+		private bool _blockNextCheck;
 
 		private void Awake()
 			=> Instance = this;
@@ -123,6 +124,12 @@ namespace QSB.ClientServerStateSync
 				return;
 			}
 
+			if (_blockNextCheck)
+			{
+				_blockNextCheck = false;
+				return;
+			}
+
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
 				if (QSBPlayerManager.PlayerList.All(x => x.State == ClientState.WaitingForOthersToReadyInSolarSystem)
@@ -131,6 +138,7 @@ namespace QSB.ClientServerStateSync
 					DebugLog.DebugWrite($"All ready!!");
 					QSBEventManager.FireEvent(EventNames.QSBStartLoop);
 					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InSolarSystem);
+					_blockNextCheck = true;
 				}
 			}
 		}

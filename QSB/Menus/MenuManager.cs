@@ -183,6 +183,9 @@ namespace QSB.Menus
 				case KickReason.GameVersionNotMatching:
 					text = "Server refused connection as Outer Wilds version does not match.";
 					break;
+				case KickReason.GamePlatformNotMatching:
+					text = "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)";
+					break;
 				case KickReason.None:
 					text = "Kicked from server. No reason given.";
 					break;
