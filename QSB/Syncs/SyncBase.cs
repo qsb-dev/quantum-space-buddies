@@ -223,6 +223,14 @@ namespace QSB.Syncs
 				return;
 			}
 
+			if (ShouldReparentAttachedObject
+				&& !HasAuthority
+				&& AttachedObject.transform.parent != ReferenceTransform)
+			{
+				DebugLog.ToConsole($"Warning : {_logName} : AttachedObject's parent is different to ReferenceTransform. Correcting...", MessageType.Warning);
+				ReparentAttachedObject(ReferenceTransform);
+			}
+
 			UpdateTransform();
 
 			base.Update();
