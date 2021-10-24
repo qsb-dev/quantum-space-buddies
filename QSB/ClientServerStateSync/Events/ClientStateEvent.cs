@@ -30,7 +30,7 @@ namespace QSB.ClientServerStateSync.Events
 		{
 			if (message.AboutId == uint.MaxValue)
 			{
-				DebugLog.DebugWrite($"Error - ID is uint.MaxValue!", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - ID is uint.MaxValue!", OWML.Common.MessageType.Error);
 				return;
 			}
 

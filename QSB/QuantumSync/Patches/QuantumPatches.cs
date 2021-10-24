@@ -295,7 +295,7 @@ namespace QSB.QuantumSync.Patches
 			var owner = allMultiStates.FirstOrDefault(x => x.QuantumStates.Contains(stateObject));
 			if (owner == default)
 			{
-				DebugLog.DebugWrite($"Error - Could not find QSBMultiStateQuantumObject for state {__instance.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Could not find QSBMultiStateQuantumObject for state {__instance.name}", MessageType.Error);
 				return;
 			}
 

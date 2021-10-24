@@ -111,7 +111,7 @@ namespace QSB.ProbeSync
 					break;
 				case ProbeEvent.Invalid:
 				default:
-					DebugLog.DebugWrite($"Warning - Unknown/Invalid probe event.", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Unknown/Invalid probe event.", OWML.Common.MessageType.Warning);
 					break;
 			}
 		}

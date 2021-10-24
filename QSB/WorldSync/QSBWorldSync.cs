@@ -90,17 +90,29 @@ namespace QSB.WorldSync
 
 		public static void RemoveWorldObjects<TWorldObject>()
 		{
+			if (WorldObjects == null || WorldObjects.Count == 0)
+			{
+				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects of type {typeof(TWorldObject).Name}, but there are no WorldObjects!");
+			}
+
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
+
 			foreach (var item in itemsToRemove)
 			{
-				WorldObjectsToUnityObjects.Remove(item.ReturnObject());
+				if (item is null)
+				{
+					DebugLog.ToConsole($"Error - Trying to remove a null WorldObject of type {typeof(TWorldObject).Name}.", MessageType.Error);
+					continue;
+				}
+
 				try
 				{
+					WorldObjectsToUnityObjects.Remove(item.ReturnObject());
 					item.OnRemoval();
 				}
 				catch (Exception e)
 				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.InnerException.Message}, Stack trace : {e.InnerException.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
 				}
 			}
 

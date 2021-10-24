@@ -293,7 +293,7 @@ namespace QSB.TimeSync
 
 			if (CurrentState != State.Loaded && CurrentState != State.NotLoaded && CurrentReason == null)
 			{
-				DebugLog.DebugWrite($"Warning - CurrentReason is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - CurrentReason is null.", MessageType.Warning);
 			}
 
 			// Checks to pause/fastforward

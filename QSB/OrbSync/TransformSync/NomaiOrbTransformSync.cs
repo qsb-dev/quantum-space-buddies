@@ -24,6 +24,12 @@ namespace QSB.OrbSync.TransformSync
 		protected override void Init()
 		{
 			base.Init();
+
+			if (AttachedObject == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init orb with null AttachedObject.", MessageType.Error);
+			}
+
 			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
 			if (originalParent == Locator.GetRootTransform())
 			{
@@ -39,7 +45,7 @@ namespace QSB.OrbSync.TransformSync
 		{
 			if (_index == -1)
 			{
-				DebugLog.ToConsole($"Error - Index cannot be found.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Index cannot be found. OrbTransformSyncs count : {OrbTransformSyncs.Count}", MessageType.Error);
 				return null;
 			}
 
