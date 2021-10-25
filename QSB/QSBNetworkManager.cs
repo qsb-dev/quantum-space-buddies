@@ -234,6 +234,11 @@ namespace QSB
 
 			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
 			{
+				if (item is null)
+				{
+					continue;
+				}
+
 				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)
 				{
