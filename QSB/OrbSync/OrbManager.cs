@@ -34,6 +34,7 @@ namespace QSB.OrbSync
 				{
 					var newOrb = Instantiate(QSBNetworkManager.Instance.OrbPrefab);
 					newOrb.SpawnWithServerAuthority();
+					_orbs.Add(newOrb);
 				}
 			}
 

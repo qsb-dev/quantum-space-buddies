@@ -34,6 +34,12 @@ namespace QSB.Syncs.Sectored
 			}
 		}
 
+		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		{
+			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+			SetReferenceSector(null);
+		}
+
 		protected override void Init()
 		{
 			base.Init();
