@@ -24,12 +24,12 @@ namespace QSB.OrbSync
 		private void BuildOrbs()
 		{
 			QSBWorldSync.OldOrbList.Clear();
+			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QSBCore.IsHost)
 			{
 				_orbs.ForEach(x => QNetworkServer.Destroy(x));
 				_orbs.Clear();
-				NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 				foreach (var orb in QSBWorldSync.OldOrbList)
 				{
 					var newOrb = Instantiate(QSBNetworkManager.Instance.OrbPrefab);

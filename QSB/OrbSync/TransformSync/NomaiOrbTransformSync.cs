@@ -23,11 +23,17 @@ namespace QSB.OrbSync.TransformSync
 
 		protected override void Init()
 		{
+			if (!OrbTransformSyncs.Contains(this))
+			{
+				OrbTransformSyncs.Add(this);
+			}
+
 			base.Init();
 
 			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to init orb with null AttachedObject.", MessageType.Error);
+				return;
 			}
 
 			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
@@ -59,11 +65,6 @@ namespace QSB.OrbSync.TransformSync
 			{
 				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", MessageType.Error);
 				return null;
-			}
-
-			if (QSBWorldSync.OldOrbList.Count != OrbTransformSyncs.Count)
-			{
-				DebugLog.ToConsole($"Warning - OldOrbList count ({QSBWorldSync.OldOrbList.Count}) does not equal OrbTransformSyncs count ({OrbTransformSyncs.Count})!", MessageType.Warning);
 			}
 
 			return QSBWorldSync.OldOrbList[_index].transform;
