@@ -94,7 +94,7 @@ namespace QSB.Patches
 				}
 				catch (Exception ex)
 				{
-					DebugLog.DebugWrite($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
+					DebugLog.ToConsole($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
 				}
 			}
 		}

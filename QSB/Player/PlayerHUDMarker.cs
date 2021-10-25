@@ -50,7 +50,7 @@ namespace QSB.Player
 			}
 			else
 			{
-				DebugLog.DebugWrite($"Warning - _canvasMarker for {_player.PlayerId} is null!", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - _canvasMarker for {_player.PlayerId} is null!", OWML.Common.MessageType.Warning);
 			}
 		}
 

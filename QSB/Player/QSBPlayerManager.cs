@@ -120,7 +120,8 @@ namespace QSB.Player
 					return cameraList;
 				}
 
-				DebugLog.DebugWrite($"Error - LocalPlayer.Camera is null.", MessageType.Error);
+				DebugLog.ToConsole($"Error - LocalPlayer.Camera is null.", MessageType.Error);
+				LocalPlayer.Camera = Locator.GetPlayerCamera();
 			}
 
 			return cameraList;
@@ -158,6 +159,12 @@ namespace QSB.Player
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
 		{
+			if (playerList == null)
+			{
+				DebugLog.ToConsole($"Error - Cannot get closest player from null player list.", MessageType.Error);
+				return null;
+			}
+
 			if (playerList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - Cannot get closest player from empty player list.", MessageType.Error);

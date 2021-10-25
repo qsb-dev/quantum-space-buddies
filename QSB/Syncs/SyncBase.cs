@@ -86,7 +86,7 @@ namespace QSB.Syncs
 		public Component AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		protected string _logName => $"{PlayerId}.{GetType().Name}";
+		protected string _logName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
@@ -221,6 +221,14 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform does not match the reference transform set for the intermediary. ReferenceTransform null : {ReferenceTransform == null}, Intermediary reference null : {_intermediaryTransform.GetReferenceTransform() == null}");
 				base.Update();
 				return;
+			}
+
+			if (ShouldReparentAttachedObject
+				&& !HasAuthority
+				&& AttachedObject.transform.parent != ReferenceTransform)
+			{
+				DebugLog.ToConsole($"Warning : {_logName} : AttachedObject's parent is different to ReferenceTransform. Correcting...", MessageType.Warning);
+				ReparentAttachedObject(ReferenceTransform);
 			}
 
 			UpdateTransform();

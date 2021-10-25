@@ -87,11 +87,19 @@ namespace QSB
 
 		private string GetPlayerName()
 		{
-			var profileManager = StandaloneProfileManager.SharedInstance;
-			profileManager.Initialize();
-			var profile = profileManager.GetValue<StandaloneProfileManager.ProfileData>("_currentProfile");
-			var profileName = profile.profileName;
-			return profileName;
+			try
+			{
+				var profileManager = StandaloneProfileManager.SharedInstance;
+				profileManager.Initialize();
+				var profile = profileManager._currentProfile;
+				var profileName = profile.profileName;
+				return profileName;
+			}
+			catch (Exception ex)
+			{
+				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
+				return "Player";
+			}
 		}
 
 		private void SetupNetworkId(GameObject go, int assetId)
@@ -234,6 +242,11 @@ namespace QSB
 
 			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
 			{
+				if (item is null)
+				{
+					continue;
+				}
+
 				var identity = item.GetComponent<QNetworkIdentity>();
 				if (identity.ClientAuthorityOwner == connection)
 				{

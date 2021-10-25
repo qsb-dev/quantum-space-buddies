@@ -58,7 +58,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} \r\n{Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
 
@@ -73,7 +73,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} \r\n{Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return;
 			}
 
@@ -99,7 +99,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} \r\n{Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return Vector3.zero;
 			}
 
@@ -113,7 +113,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} \r\n{Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
 				return Quaternion.identity;
 			}
 

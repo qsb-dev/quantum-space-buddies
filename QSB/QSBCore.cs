@@ -26,6 +26,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System.Linq;
 using UnityEngine;
 
 /*
@@ -65,6 +66,9 @@ namespace QSB
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
+		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
+			? GamePlatform.Epic
+			: GamePlatform.Steam;
 		public static IMenuAPI MenuApi { get; private set; }
 
 		public void Awake()
@@ -127,6 +131,10 @@ namespace QSB
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
 				Application.runInBackground = true;
+				if (Locator.GetSceneMenuManager() != null && Locator.GetSceneMenuManager().pauseMenu.IsOpen())
+				{
+					Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
+				}
 			}
 		}
 

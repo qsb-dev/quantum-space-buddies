@@ -18,7 +18,8 @@ namespace QSB.Player.Events
 			AboutId = LocalPlayerId,
 			PlayerName = name,
 			QSBVersion = QSBCore.QSBVersion,
-			GameVersion = QSBCore.GameVersion
+			GameVersion = QSBCore.GameVersion,
+			Platform = QSBCore.Platform
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerJoinMessage message)
@@ -45,10 +46,19 @@ namespace QSB.Player.Events
 				return;
 			}
 
+			if (message.Platform != QSBCore.Platform)
+			{
+				if (server)
+				{
+					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong game platform. (Client:{message.Platform}, Server:{QSBCore.Platform})", MessageType.Error);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GamePlatformNotMatching);
+				}
+			}
+
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
-			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{message.QSBVersion}, gameVersion:{message.GameVersion}", MessageType.Info);
+			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{message.QSBVersion}, gameVersion:{message.GameVersion}, platform:{message.Platform}", MessageType.Info);
 		}
 
 		public override void OnReceiveLocal(bool server, PlayerJoinMessage message)

@@ -3,6 +3,11 @@
 	public enum EventType
 	{
 		/*
+		 * MISC. 
+		 */
+		DebugEvent,
+
+		/*
 		 * SERVER EVENTS
 		 */
 

@@ -34,6 +34,12 @@ namespace QSB.Syncs.Sectored
 			}
 		}
 
+		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		{
+			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+			SetReferenceSector(null);
+		}
+
 		protected override void Init()
 		{
 			base.Init();
@@ -67,6 +73,12 @@ namespace QSB.Syncs.Sectored
 		{
 			if (_sectorIdWaitingSlot == int.MinValue)
 			{
+				if (ReferenceSector != null && ReferenceSector.Transform != ReferenceTransform)
+				{
+					DebugLog.ToConsole($"Warning - {_logName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", OWML.Common.MessageType.Warning);
+					SetReferenceTransform(ReferenceSector.Transform);
+				}
+
 				base.Update();
 				return;
 			}

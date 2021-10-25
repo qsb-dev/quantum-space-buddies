@@ -109,6 +109,7 @@
     <Compile Include="Player\Events\PlayerInformationEvent.cs" />
     <Compile Include="Player\Events\PlayerInformationMessage.cs" />
     <Compile Include="Player\Events\RequestStateResyncEvent.cs" />
+    <Compile Include="Player\GamePlatform.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
     <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
@@ -275,6 +276,8 @@
     <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugGUI.cs" />
+    <Compile Include="Utility\Events\DebugEvent.cs" />
+    <Compile Include="Utility\Events\DebugEventEnum.cs" />
     <Compile Include="Utility\ZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\GlobalMessenger4Args.cs" />

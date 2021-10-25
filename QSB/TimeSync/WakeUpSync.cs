@@ -255,6 +255,16 @@ namespace QSB.TimeSync
 				}
 			}
 
+			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			{
+				if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
+				{
+					//?
+					DebugLog.ToConsole($"Warning - Server waiting for players to die, but players waiting for ready signal! Assume players correct.", MessageType.Warning);
+					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToReady);
+				}
+			}
+
 			if (CurrentState != State.Loaded)
 			{
 				return;
@@ -293,7 +303,7 @@ namespace QSB.TimeSync
 
 			if (CurrentState != State.Loaded && CurrentState != State.NotLoaded && CurrentReason == null)
 			{
-				DebugLog.DebugWrite($"Warning - CurrentReason is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - CurrentReason is null.", MessageType.Warning);
 			}
 
 			// Checks to pause/fastforward

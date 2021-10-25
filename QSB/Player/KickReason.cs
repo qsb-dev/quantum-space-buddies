@@ -4,6 +4,7 @@
 	{
 		None,
 		QSBVersionNotMatching,
-		GameVersionNotMatching
+		GameVersionNotMatching,
+		GamePlatformNotMatching
 	}
 }

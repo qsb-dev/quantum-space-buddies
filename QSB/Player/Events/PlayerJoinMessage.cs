@@ -8,6 +8,7 @@ namespace QSB.Player.Events
 		public string PlayerName { get; set; }
 		public string QSBVersion { get; set; }
 		public string GameVersion { get; set; }
+		public GamePlatform Platform { get; set; }
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -15,6 +16,7 @@ namespace QSB.Player.Events
 			PlayerName = reader.ReadString();
 			QSBVersion = reader.ReadString();
 			GameVersion = reader.ReadString();
+			Platform = (GamePlatform)reader.ReadInt32();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -23,6 +25,7 @@ namespace QSB.Player.Events
 			writer.Write(PlayerName);
 			writer.Write(QSBVersion);
 			writer.Write(GameVersion);
+			writer.Write((int)Platform);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -10,7 +11,19 @@ namespace QSB.SectorSync.WorldObjects
 	public class QSBSector : WorldObject<Sector>
 	{
 		public Sector.Name Type => AttachedObject.GetName();
-		public Transform Transform => AttachedObject.transform;
+		public Transform Transform
+		{
+			get
+			{
+				if (AttachedObject == null)
+				{
+					DebugLog.ToConsole($"Error - Tried to get Transform from QSBSector {ObjectId} with null AttachedObject!\r\n{Environment.StackTrace}", MessageType.Error);
+					return null;
+				}
+
+				return AttachedObject.transform;
+			}
+		}
 		public Vector3 Position => Transform.position;
 		public bool IsFakeSector => AttachedObject.GetType() == typeof(FakeSector);
 

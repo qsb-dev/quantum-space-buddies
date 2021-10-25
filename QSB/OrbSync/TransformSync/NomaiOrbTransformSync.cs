@@ -1,4 +1,5 @@
-﻿using QSB.Syncs.Unsectored.Transforms;
+﻿using OWML.Common;
+using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -22,12 +23,25 @@ namespace QSB.OrbSync.TransformSync
 
 		protected override void Init()
 		{
+			if (!OrbTransformSyncs.Contains(this))
+			{
+				OrbTransformSyncs.Add(this);
+			}
+
 			base.Init();
+
+			if (AttachedObject == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init orb with null AttachedObject.", MessageType.Error);
+				return;
+			}
+
 			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
 			if (originalParent == Locator.GetRootTransform())
 			{
-				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Destroying...");
-				Destroy(this);
+				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
+				enabled = false;
+				OrbTransformSyncs[_index] = null;
 			}
 
 			SetReferenceTransform(originalParent);
@@ -37,19 +51,19 @@ namespace QSB.OrbSync.TransformSync
 		{
 			if (_index == -1)
 			{
-				DebugLog.ToConsole($"Error - Index cannot be found.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Index cannot be found. OrbTransformSyncs count : {OrbTransformSyncs.Count}", MessageType.Error);
 				return null;
 			}
 
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", MessageType.Error);
 				return null;
 			}
 
 			if (QSBWorldSync.OldOrbList[_index] == null)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", MessageType.Error);
 				return null;
 			}
 

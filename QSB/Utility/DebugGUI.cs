@@ -1,4 +1,6 @@
-﻿using QSB.ClientServerStateSync;
+﻿using OWML.Utils;
+using QSB.ClientServerStateSync;
+using QSB.OrbSync.TransformSync;
 using QSB.Player;
 using QSB.ProbeSync.TransformSync;
 using QSB.Syncs;
@@ -63,6 +65,8 @@ namespace QSB.Utility
 			}
 
 			var offset2 = 10f;
+			GUI.Label(new Rect(420, offset2, 200f, 20f), $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}", guiStyle);
+			offset2 += _debugLineSpacing;
 			GUI.Label(new Rect(420, offset2, 200f, 20f), $"Player data :", guiStyle);
 			offset2 += _debugLineSpacing;
 			foreach (var player in QSBPlayerManager.PlayerList)
@@ -73,16 +77,30 @@ namespace QSB.Utility
 				offset2 += _debugLineSpacing;
 				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Dead : {player.IsDead}", guiStyle);
 				offset2 += _debugLineSpacing;
+				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Visible : {player.Visible}", guiStyle);
+				offset2 += _debugLineSpacing;
 
 				if (player.PlayerStates.IsReady && QSBCore.WorldObjectsReady)
 				{
 					var networkTransform = player.TransformSync;
-					var sector = networkTransform.ReferenceSector;
+					var referenceSector = networkTransform.ReferenceSector;
+					var referenceTransform = networkTransform.ReferenceTransform;
+					var parent = networkTransform.AttachedObject?.transform.parent;
+					var intermediary = networkTransform.GetValue<IntermediaryTransform>("_intermediaryTransform");
+					var interTransform = intermediary.GetReferenceTransform();
 
 					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
 					offset2 += _debugLineSpacing;
-					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}", guiStyle);
+					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", guiStyle);
 					offset2 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", guiStyle);
+					offset2 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Inter. Ref. Transform : {(interTransform == null ? "NULL" : interTransform.name)}", guiStyle);
+					offset2 += _debugLineSpacing;
+					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Parent : {(parent == null ? "NULL" : parent.name)}", guiStyle);
+					offset2 += _debugLineSpacing;
+
+					/*
 					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
 					if (probeSync != default)
 					{
@@ -90,6 +108,7 @@ namespace QSB.Utility
 						GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}", guiStyle);
 						offset2 += _debugLineSpacing;
 					}
+					*/
 				}
 			}
 		}

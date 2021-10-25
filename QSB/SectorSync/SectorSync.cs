@@ -131,7 +131,18 @@ namespace QSB.SectorSync
 				return null;
 			}
 
-			var numSectorsCurrentlyIn = SectorList.Count(x => x.ShouldSyncTo(_targetType));
+			bool ShouldSyncTo(QSBSector sector, TargetType type)
+			{
+				if (sector == null)
+				{
+					DebugLog.ToConsole($"Warning - Tried to check if we should sync to null sector!", MessageType.Warning);
+					return false;
+				}
+
+				return sector.ShouldSyncTo(type);
+			}
+
+			var numSectorsCurrentlyIn = SectorList.Count(x => ShouldSyncTo(x, _targetType));
 
 			var listToCheck = numSectorsCurrentlyIn == 0
 				? QSBWorldSync.GetWorldObjects<QSBSector>().Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed)

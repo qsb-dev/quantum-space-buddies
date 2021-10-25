@@ -1,4 +1,5 @@
-﻿using QSB.Animation.Player;
+﻿using OWML.Common;
+using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
@@ -23,9 +24,49 @@ namespace QSB.Player
 		public PlayerTransformSync TransformSync { get; set; }
 
 		// Body Objects
-		public OWCamera Camera { get; set; }
+		public OWCamera Camera
+		{
+			get
+			{
+				if (_camera == null && PlayerStates.IsReady)
+				{
+					DebugLog.ToConsole($"Warning - {PlayerId}.Camera is null!", MessageType.Warning);
+				}
+				return _camera;
+			}
+			set
+			{
+				if (value == null)
+				{
+					DebugLog.ToConsole($"Warning - Setting {PlayerId}.Camera to null.", MessageType.Warning);
+				}
+				_camera = value;
+			}
+		}
+		private OWCamera _camera;
+
 		public GameObject CameraBody { get; set; }
-		public GameObject Body { get; set; }
+		public GameObject Body
+		{
+			get
+			{
+				if (_body == null && PlayerStates.IsReady)
+				{
+					DebugLog.ToConsole($"Warning - {PlayerId}.Body is null!", MessageType.Warning);
+				}
+				return _body;
+			}
+			set
+			{
+				if (value == null)
+				{
+					DebugLog.ToConsole($"Warning - Setting {PlayerId}.Body to null.", MessageType.Warning);
+				}
+				_body = value;
+			}
+		}
+		private GameObject _body;
+
 		public GameObject RoastingStick { get; set; }
 		public bool Visible { get; set; } = true;
 
@@ -79,7 +120,7 @@ namespace QSB.Player
 			{
 				if (QSBPlayerManager.LocalPlayer != this)
 				{
-					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
 				}
 
@@ -93,7 +134,7 @@ namespace QSB.Player
 			{
 				if (QSBPlayerManager.LocalPlayer != this)
 				{
-					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
 				}
 
@@ -107,7 +148,7 @@ namespace QSB.Player
 			{
 				if (QSBPlayerManager.LocalPlayer != this)
 				{
-					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
 				}
 
@@ -121,7 +162,7 @@ namespace QSB.Player
 			{
 				if (QSBPlayerManager.LocalPlayer != this)
 				{
-					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
 				}
 
