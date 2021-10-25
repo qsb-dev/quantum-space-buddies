@@ -12,7 +12,7 @@ namespace QSB.Animation.NPC
 			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
 			QSBWorldSync.Init<QSBTravelerController, TravelerController>();
 
-			//TODO : this is the wrong place to put this... move it to Conversations?
+			//MOVE : this is the wrong place to put this... move it to Conversations?
 			QSBWorldSync.OldDialogueTrees.Clear();
 			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}

@@ -20,7 +20,7 @@ namespace QSB.QuantumSync.WorldObjects
 			base.Init(quantumObject, id);
 			if (QSBCore.DebugMode)
 			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, ObjectId.ToString()).GetComponent<Text>();
+				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Socketed\r\nid:{ObjectId}").GetComponent<Text>();
 			}
 		}
 
@@ -41,6 +41,7 @@ namespace QSB.QuantumSync.WorldObjects
 				DebugLog.ToConsole($"Couldn't find socket id {message.SocketId}", MessageType.Error);
 				return;
 			}
+
 			var socket = qsbSocket.AttachedObject;
 			if (socket == null)
 			{

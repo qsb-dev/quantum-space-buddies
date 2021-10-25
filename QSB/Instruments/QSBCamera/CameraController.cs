@@ -23,6 +23,7 @@ namespace QSB.Instruments.QSBCamera
 			{
 				return;
 			}
+
 			UpdatePosition();
 			UpdateInput();
 			UpdateRotation();
@@ -43,6 +44,7 @@ namespace QSB.Instruments.QSBCamera
 				// Raycast didn't hit collider, get target from camera direction
 				localTargetPoint = RayLength * PercentToMove * localDirection;
 			}
+
 			var targetDistance = Vector3.Distance(origin, transform.TransformPoint(localTargetPoint));
 			var currentDistance = Vector3.Distance(origin, CameraObject.transform.position);
 			var movement = targetDistance < currentDistance
@@ -53,7 +55,7 @@ namespace QSB.Instruments.QSBCamera
 
 		private void UpdateInput()
 		{
-			var input = OWInput.GetValue(InputLibrary.look, false);
+			var input = InputLibrary.look.GetAxisValue(false);
 			_degreesX += input.x * 180f * Time.fixedDeltaTime;
 			_degreesY += input.y * 180f * Time.fixedDeltaTime;
 		}

@@ -79,6 +79,7 @@ namespace QSB.PoolSync
 				s_propID_Ripple2Position = Shader.PropertyToID("_Ripple2Position");
 				s_propID_Ripple2Params = Shader.PropertyToID("_Ripple2Params");
 			}
+
 			_socket = GetComponentInChildren<SharedStoneSocket>();
 			if (_socket != null)
 			{
@@ -88,6 +89,7 @@ namespace QSB.PoolSync
 			{
 				Debug.LogWarning("SharedStoneSocket not found!", this);
 			}
+
 			UpdatePoolRenderer();
 			_hologramGroup.SetActive(false);
 			UpdateRendererFade();
@@ -101,6 +103,7 @@ namespace QSB.PoolSync
 			{
 				CustomPlatformList = new List<CustomNomaiRemoteCameraPlatform>(32);
 			}
+
 			CustomPlatformList.Add(this);
 			_playerCamera = Locator.GetPlayerCamera();
 			if (_socket != null)
@@ -108,6 +111,7 @@ namespace QSB.PoolSync
 				_socket.OnSocketableRemoved += OnSocketableRemoved;
 				_socket.OnSocketableDonePlacing += OnSocketableDonePlacing;
 			}
+
 			enabled = false;
 			QSBPlayerManager.OnRemovePlayer += OnRemovePlayer;
 		}
@@ -119,15 +123,18 @@ namespace QSB.PoolSync
 				_socket.OnSocketableRemoved -= OnSocketableRemoved;
 				_socket.OnSocketableDonePlacing -= OnSocketableDonePlacing;
 			}
+
 			if (CustomPlatformList != null)
 			{
 				CustomPlatformList.Remove(this);
 			}
+
 			if (_cameraState == CameraState.Connected || _cameraState == CameraState.Connecting_FadeIn || _cameraState == CameraState.Connecting_FadeOut)
 			{
 				DisconnectCamera();
 				SwitchToPlayerCamera();
 			}
+
 			QSBPlayerManager.OnRemovePlayer -= OnRemovePlayer;
 		}
 
@@ -159,6 +166,7 @@ namespace QSB.PoolSync
 					UpdateHologramTransforms();
 				}
 			}
+
 			if (_platformActive)
 			{
 				UpdatePools(1f, _poolFillLength);
@@ -167,6 +175,7 @@ namespace QSB.PoolSync
 			{
 				UpdatePools(0f, _poolEmptyLength);
 			}
+
 			switch (_cameraState)
 			{
 				case CameraState.WaitingForPedestalContact:
@@ -175,6 +184,7 @@ namespace QSB.PoolSync
 						_cameraState = CameraState.Disconnected;
 						ConnectCamera();
 					}
+
 					break;
 				case CameraState.Connecting_FadeIn:
 					_transitionFade = Mathf.MoveTowards(_transitionFade, 1f, Time.deltaTime / _fadeInLength);
@@ -195,6 +205,7 @@ namespace QSB.PoolSync
 						Locator.GetAudioMixer().MixRemoteCameraPlatform(_fadeInLength);
 						_cameraState = CameraState.Connecting_FadeOut;
 					}
+
 					break;
 				case CameraState.Connecting_FadeOut:
 					_slavePlatform._transitionFade = Mathf.MoveTowards(_slavePlatform._transitionFade, 0f, Time.deltaTime / _fadeInLength);
@@ -205,6 +216,7 @@ namespace QSB.PoolSync
 					{
 						_cameraState = CameraState.Connected;
 					}
+
 					break;
 				case CameraState.Connected:
 					VerifySectorOccupancy();
@@ -231,6 +243,7 @@ namespace QSB.PoolSync
 						_hologramGroup.SetActive(false);
 						_cameraState = CameraState.Disconnecting_FadeOut;
 					}
+
 					break;
 				case CameraState.Disconnecting_FadeOut:
 					_transitionFade = Mathf.MoveTowards(_transitionFade, 0f, Time.deltaTime / _fadeOutLength);
@@ -239,8 +252,10 @@ namespace QSB.PoolSync
 					{
 						_cameraState = CameraState.Disconnected;
 					}
+
 					break;
 			}
+
 			if (_cameraState == CameraState.Disconnected && !_platformActive && _poolT == 0f)
 			{
 				enabled = false;
@@ -256,8 +271,10 @@ namespace QSB.PoolSync
 				{
 					_slavePlatform = null;
 				}
+
 				return;
 			}
+
 			UpdatePoolRenderer();
 			_slavePlatform._poolT = _poolT;
 			_slavePlatform.UpdatePoolRenderer();
@@ -276,15 +293,16 @@ namespace QSB.PoolSync
 					{
 						parentSector.AddOccupant(Locator.GetPlayerSectorDetector());
 					}
+
 					parentSector = parentSector.GetParentSector();
 				}
 			}
+
 			if (_slavePlatform._visualSector2 != null && !_slavePlatform._visualSector2.ContainsOccupant(DynamicOccupant.Player))
 			{
 				_slavePlatform._visualSector2.AddOccupant(Locator.GetPlayerSectorDetector());
 			}
 		}
-
 
 		private void UpdatePoolRenderer()
 		{
@@ -302,6 +320,7 @@ namespace QSB.PoolSync
 				ripplePosition.y = playerPosition.z;
 				rippleParams.x = 0.5f;
 			}
+
 			_poolRenderer.material.SetVector(s_propID_Ripple2Position, ripplePosition);
 			_poolRenderer.material.SetVector(s_propID_Ripple2Params, rippleParams);
 		}
@@ -321,6 +340,7 @@ namespace QSB.PoolSync
 					_transitionRenderers[i].enabled = true;
 				}
 			}
+
 			_ownedCamera.SetImageEffectFade(1f - _transitionFade);
 		}
 
@@ -339,7 +359,9 @@ namespace QSB.PoolSync
 					DebugLog.ToConsole($"Error - Gameobject for {item.Key.PlayerId} in _playerToHologram is null!", MessageType.Error);
 					continue;
 				}
-				var hologram = item.Value.transform.GetChild(0);
+
+				//var hologram = item.Value.transform.GetChild(0);
+				var hologram = item.Value.transform;
 				hologram.position = TransformPoint(item.Key.Body.transform.position, this, _slavePlatform);
 				hologram.rotation = TransformRotation(item.Key.Body.transform.rotation, this, _slavePlatform);
 			}
@@ -362,10 +384,12 @@ namespace QSB.PoolSync
 			{
 				QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
 			}
+
 			if (_slavePlatform == null)
 			{
 				return;
 			}
+
 			DisconnectCamera();
 			_transitionStone.SetActive(false);
 			_slavePlatform._transitionStone.SetActive(false);
@@ -374,14 +398,17 @@ namespace QSB.PoolSync
 			{
 				_transitionPedestalAnimator.PlayOpen();
 			}
+
 			if (_slavePlatform._pedestalAnimator != null)
 			{
 				_slavePlatform._pedestalAnimator.PlayOpen();
 			}
+
 			if (_slavePlatform._transitionPedestalAnimator != null)
 			{
 				_slavePlatform._transitionPedestalAnimator.PlayOpen();
 			}
+
 			_sharedStone = null;
 			_platformActive = false;
 			_wasLocalInBounds = false;
@@ -395,17 +422,20 @@ namespace QSB.PoolSync
 			{
 				Debug.LogError("Placed an empty item or a non SharedStone in a NomaiRemoteCameraPlatform");
 			}
+
 			_slavePlatform = GetPlatform(_sharedStone.GetRemoteCameraID());
 			if (_slavePlatform == null)
 			{
 				Debug.LogError("Shared stone with Remote Camera ID: " + _sharedStone.GetRemoteCameraID() + " has no registered camera platform!");
 			}
+
 			if (_slavePlatform == this || !_slavePlatform.gameObject.activeSelf)
 			{
 				_sharedStone = null;
 				_slavePlatform = null;
 				return;
 			}
+
 			_transitionStone.SetActive(true);
 			_slavePlatform._transitionStone.SetActive(true);
 			_socket.GetPedestalAnimator().PlayClose();
@@ -413,14 +443,17 @@ namespace QSB.PoolSync
 			{
 				_transitionPedestalAnimator.PlayClose();
 			}
+
 			if (_slavePlatform._pedestalAnimator != null)
 			{
 				_slavePlatform._pedestalAnimator.PlayClose();
 			}
+
 			if (_slavePlatform._transitionPedestalAnimator != null)
 			{
 				_slavePlatform._transitionPedestalAnimator.PlayClose();
 			}
+
 			enabled = true;
 		}
 
@@ -438,6 +471,7 @@ namespace QSB.PoolSync
 				{
 					_alreadyOccupiedSectors.Add(_visualSector);
 				}
+
 				_slavePlatform._visualSector.AddOccupant(Locator.GetPlayerSectorDetector());
 				var parentSector = _slavePlatform._visualSector.GetParentSector();
 				while (parentSector != null)
@@ -446,14 +480,17 @@ namespace QSB.PoolSync
 					{
 						_alreadyOccupiedSectors.Add(parentSector);
 					}
+
 					parentSector.AddOccupant(Locator.GetPlayerSectorDetector());
 					parentSector = parentSector.GetParentSector();
 				}
 			}
+
 			if (_slavePlatform._visualSector2 != null)
 			{
 				_slavePlatform._visualSector2.AddOccupant(Locator.GetPlayerSectorDetector());
 			}
+
 			if (_slavePlatform._darkZone != null)
 			{
 				_slavePlatform._darkZone.AddPlayerToZone(true);
@@ -468,6 +505,7 @@ namespace QSB.PoolSync
 				{
 					_slavePlatform._visualSector.RemoveOccupant(Locator.GetPlayerSectorDetector());
 				}
+
 				var parentSector = _slavePlatform._visualSector.GetParentSector();
 				while (parentSector != null)
 				{
@@ -475,17 +513,21 @@ namespace QSB.PoolSync
 					{
 						parentSector.RemoveOccupant(Locator.GetPlayerSectorDetector());
 					}
+
 					parentSector = parentSector.GetParentSector();
 				}
 			}
+
 			if (_slavePlatform._visualSector2 != null)
 			{
 				_slavePlatform._visualSector2.RemoveOccupant(Locator.GetPlayerSectorDetector());
 			}
+
 			if (_slavePlatform._darkZone != null)
 			{
 				_slavePlatform._darkZone.RemovePlayerFromZone(true);
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
 			GlobalMessenger.FireEvent("ExitNomaiRemoteCamera");
 			_slavePlatform._ownedCamera.Deactivate();
@@ -506,6 +548,7 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
 			var cameraState = _cameraState;
 			if (cameraState != CameraState.Disconnected && cameraState != CameraState.Disconnecting_FadeOut)
 			{
@@ -518,6 +561,7 @@ namespace QSB.PoolSync
 			{
 				_cameraState = CameraState.Connecting_FadeIn;
 			}
+
 			_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraEntry, 1f);
 			enabled = true;
 		}
@@ -528,6 +572,7 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
 			var cameraState = _cameraState;
 			if (cameraState != CameraState.Connected && cameraState != CameraState.Connecting_FadeOut)
 			{
@@ -551,6 +596,7 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
 			if (_pedestalAnimator.HasMadeContact())
 			{
 				ConnectCamera();
@@ -569,21 +615,25 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
 			_platformActive = false;
 			if (_pedestalAnimator != null)
 			{
 				_pedestalAnimator.PlayOpen();
 			}
+
 			if (_transitionPedestalAnimator != null)
 			{
 				_transitionPedestalAnimator.PlayOpen();
 			}
+
 			if (_slavePlatform != null)
 			{
 				if (_slavePlatform._pedestalAnimator != null)
 				{
 					_slavePlatform._pedestalAnimator.PlayOpen();
 				}
+
 				if (_slavePlatform._transitionPedestalAnimator != null)
 				{
 					_slavePlatform._transitionPedestalAnimator.PlayOpen();
@@ -615,6 +665,7 @@ namespace QSB.PoolSync
 					}
 				}
 			}
+
 			return null;
 		}
 
@@ -628,16 +679,19 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(id);
 			if (!_playerToHologram.Any(x => x.Key == player))
 			{
 				return;
 			}
+
 			var hologram = _playerToHologram.First(x => x.Key == player).Value;
 			if (hologram.activeSelf)
 			{
 				OnRemotePlayerExit(id);
 			}
+
 			_playerToHologram.Remove(player);
 		}
 
@@ -656,6 +710,7 @@ namespace QSB.PoolSync
 				_playerToHologram[player].SetActive(true);
 				return;
 			}
+
 			var hologramCopy = Instantiate(_playerHologram);
 			hologramCopy.parent = _playerHologram.parent;
 			Destroy(hologramCopy.GetChild(0).GetComponent<PlayerAnimController>());
@@ -665,7 +720,7 @@ namespace QSB.PoolSync
 			hologramCopy.GetChild(0).Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
 			hologramCopy.GetChild(0).Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
-			// TODO : Look at this again... probably need to sync head rotation to something else
+			// BUG : Look at this again... probably need to sync head rotation to something else
 			//var ikSync = hologramCopy.GetChild(0).gameObject.AddComponent<PlayerHeadRotationSync>();
 			//ikSync.Init(player.CameraBody.transform);
 
@@ -673,6 +728,7 @@ namespace QSB.PoolSync
 			{
 				DebugLog.ToConsole($"Warning - {playerId}'s VisibleAnimator is null!", MessageType.Error);
 			}
+
 			mirror.Init(player.AnimationSync.VisibleAnimator, hologramCopy.GetChild(0).gameObject.GetComponent<Animator>());
 
 			_playerToHologram.Add(player, hologramCopy.gameObject);
@@ -686,11 +742,13 @@ namespace QSB.PoolSync
 			{
 				return;
 			}
+
 			var player = QSBPlayerManager.GetPlayer(playerId);
 			if (!_playerToHologram.ContainsKey(player))
 			{
 				return;
 			}
+
 			_playerToHologram[player].SetActive(false);
 
 			if (!_platformActive)

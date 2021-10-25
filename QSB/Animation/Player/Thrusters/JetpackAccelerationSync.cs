@@ -16,7 +16,7 @@ namespace QSB.Animation.Player.Thrusters
 		public Vector3 LocalAcceleration => _localAcceleration;
 		public bool IsThrusting => _isThrusting;
 
-		public void Init(ThrusterModel model) 
+		public void Init(ThrusterModel model)
 			=> _thrusterModel = model;
 
 		public void Update()

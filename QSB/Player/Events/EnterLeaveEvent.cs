@@ -1,6 +1,7 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.PoolSync;
+using QSB.ShipSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
@@ -21,6 +22,8 @@ namespace QSB.Player.Events
 			GlobalMessenger<int>.AddListener(EventNames.QSBExitPlatform, (int id) => Handler(EnterLeaveType.ExitPlatform, id));
 			GlobalMessenger<int>.AddListener(EventNames.QSBEnterHeadZone, (int id) => Handler(EnterLeaveType.EnterHeadZone, id));
 			GlobalMessenger<int>.AddListener(EventNames.QSBExitHeadZone, (int id) => Handler(EnterLeaveType.ExitHeadZone, id));
+			GlobalMessenger.AddListener(EventNames.EnterShip, () => Handler(EnterLeaveType.EnterShip));
+			GlobalMessenger.AddListener(EventNames.ExitShip, () => Handler(EnterLeaveType.ExitShip));
 		}
 
 		public override void CloseListener()
@@ -73,6 +76,12 @@ namespace QSB.Player.Events
 					break;
 				case EnterLeaveType.ExitHeadZone:
 					QSBWorldSync.GetWorldFromId<QSBCharacterAnimController>(message.ObjectId).RemovePlayerFromHeadZone(player);
+					break;
+				case EnterLeaveType.EnterShip:
+					ShipManager.Instance.AddPlayerToShip(player);
+					break;
+				case EnterLeaveType.ExitShip:
+					ShipManager.Instance.RemovePlayerFromShip(player);
 					break;
 				default:
 					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {message.EnumValue}", OWML.Common.MessageType.Warning);

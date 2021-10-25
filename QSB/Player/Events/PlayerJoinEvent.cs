@@ -17,21 +17,48 @@ namespace QSB.Player.Events
 		{
 			AboutId = LocalPlayerId,
 			PlayerName = name,
-			QSBVersion = QSBCore.QSBVersion
+			QSBVersion = QSBCore.QSBVersion,
+			GameVersion = QSBCore.GameVersion,
+			Platform = QSBCore.Platform
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerJoinMessage message)
 		{
-			if (server && (message.QSBVersion != QSBCore.QSBVersion))
+			if (message.QSBVersion != QSBCore.QSBVersion)
 			{
-				DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong version. (Client:{message.QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
-				QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.VersionNotMatching);
+				if (server)
+				{
+					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong QSB version. (Client:{message.QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.QSBVersionNotMatching);
+				}
+
 				return;
 			}
+
+			if (message.GameVersion != QSBCore.GameVersion)
+			{
+				if (server)
+				{
+					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong game version. (Client:{message.GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GameVersionNotMatching);
+				}
+
+				return;
+			}
+
+			if (message.Platform != QSBCore.Platform)
+			{
+				if (server)
+				{
+					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong game platform. (Client:{message.Platform}, Server:{QSBCore.Platform})", MessageType.Error);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GamePlatformNotMatching);
+				}
+			}
+
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
-			DebugLog.DebugWrite($"{player.Name} joined as id {player.PlayerId}", MessageType.Info);
+			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{message.QSBVersion}, gameVersion:{message.GameVersion}, platform:{message.Platform}", MessageType.Info);
 		}
 
 		public override void OnReceiveLocal(bool server, PlayerJoinMessage message)
@@ -40,6 +67,12 @@ namespace QSB.Player.Events
 			player.Name = message.PlayerName;
 			var text = $"Connected to server as {player.Name}.";
 			DebugLog.ToAll(text, MessageType.Info);
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = true;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			}
 		}
 	}
 }

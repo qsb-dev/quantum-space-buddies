@@ -2,6 +2,7 @@
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
 using QSB.CampfireSync.Events;
+using QSB.ClientServerStateSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
@@ -14,11 +15,16 @@ using QSB.Player.Events;
 using QSB.ProbeSync.Events;
 using QSB.QuantumSync.Events;
 using QSB.RoastingSync.Events;
+using QSB.ShipSync.Events;
+using QSB.ShipSync.Events.Component;
+using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
+using QSB.Tools.ProbeLauncherTool.Events;
 using QSB.TranslationSync.Events;
 using QSB.Utility;
+using QSB.Utility.Events;
 using System.Collections.Generic;
 
 namespace QSB.Events
@@ -40,11 +46,11 @@ namespace QSB.Events
 				new PlayerFlashlightEvent(),
 				new PlayerSignalscopeEvent(),
 				new PlayerTranslatorEvent(),
-				new PlayerProbeLauncherEvent(),
+				new EquipProbeLauncherEvent(),
 				new PlayerProbeEvent(),
 				new PlayerDeathEvent(),
-				new PlayerStatesRequestEvent(),
-				new ServerSendPlayerStatesEvent(),
+				new RequestStateResyncEvent(),
+				new PlayerInformationEvent(),
 				new ChangeAnimTypeEvent(),
 				new ServerTimeEvent(),
 				new PlayerEntangledEvent(),
@@ -52,6 +58,17 @@ namespace QSB.Events
 				new EnterExitRoastingEvent(),
 				new MarshmallowEventEvent(),
 				new AnimationTriggerEvent(),
+				new PlayerRespawnEvent(),
+				new ProbeStartRetrieveEvent(),
+				new RetrieveProbeEvent(),
+				new LaunchProbeEvent(),
+				new PlayerRetrieveProbeEvent(),
+				new PlayerLaunchProbeEvent(),
+				new EndLoopEvent(),
+				new StartLoopEvent(),
+				new ServerStateEvent(),
+				new ClientStateEvent(),
+				new DebugEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
@@ -76,7 +93,19 @@ namespace QSB.Events
 				new RevealFactEvent(),
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
-				new NpcAnimationEvent()
+				new NpcAnimationEvent(),
+				// Ship
+				new FlyShipEvent(),
+				new HatchEvent(),
+				new FunnelEnableEvent(),
+				new HullImpactEvent(),
+				new HullDamagedEvent(),
+				new HullChangeIntegrityEvent(),
+				new HullRepairedEvent(),
+				new HullRepairTickEvent(),
+				new ComponentDamagedEvent(),
+				new ComponentRepairedEvent(),
+				new ComponentRepairTickEvent()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)
@@ -104,6 +133,7 @@ namespace QSB.Events
 			{
 				return;
 			}
+
 			GlobalMessenger.FireEvent(eventName);
 		}
 
@@ -114,6 +144,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T>.FireEvent(eventName, arg);
 		}
 
@@ -124,6 +155,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U>.FireEvent(eventName, arg1, arg2);
 		}
 
@@ -134,6 +166,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V>.FireEvent(eventName, arg1, arg2, arg3);
 		}
 
@@ -144,6 +177,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V, W>.FireEvent(eventName, arg1, arg2, arg3, arg4);
 		}
 
@@ -154,6 +188,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V, W, X>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5);
 		}
 
@@ -164,6 +199,7 @@ namespace QSB.Events
 				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
+
 			GlobalMessenger<T, U, V, W, X, Y>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6);
 		}
 	}

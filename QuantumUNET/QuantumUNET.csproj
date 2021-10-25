@@ -55,6 +55,10 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
@@ -86,7 +90,6 @@
     <Compile Include="QNetworkConnection.cs" />
     <Compile Include="QNetworkCRC.cs" />
     <Compile Include="Components\QNetworkIdentity.cs" />
-    <Compile Include="Components\QNetworkManagerHUD.cs" />
     <Compile Include="Components\QNetworkManager.cs" />
     <Compile Include="Messages\QNetworkMessage.cs" />
     <Compile Include="Messages\QNetworkMessageDelegate.cs" />

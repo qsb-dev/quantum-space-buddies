@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -23,13 +22,14 @@ namespace QSB.ConversationSync
 			Instance = this;
 
 			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
-			// TODO : make dynamic so it can be different sizes!
+			// BUG : make dynamic so it can be different sizes!
 			// the dynamic font seems to be super lo-res at this size...?
 			var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
 			if (font == null)
 			{
 				DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
 			}
+
 			_boxPrefab.GetComponent<Text>().font = font;
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
@@ -52,6 +52,7 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
 		}
 
@@ -68,6 +69,7 @@ namespace QSB.ConversationSync
 				DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
+
 			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
 		}
 
@@ -88,7 +90,7 @@ namespace QSB.ConversationSync
 				Destroy(playerBox);
 			}
 
-			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 25, text);
+			QSBPlayerManager.GetPlayer(playerId).CurrentDialogueBox = CreateBox(player.Body.transform, 2, text);
 		}
 
 		public void DisplayCharacterConversationBox(int index, string text)
@@ -117,10 +119,7 @@ namespace QSB.ConversationSync
 			newBox.transform.SetParent(parent);
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
 			newBox.transform.rotation = parent.rotation;
-			var lookAt = newBox.AddComponent<FaceActiveCamera>();
-			lookAt.SetValue("_useLookAt", false);
-			lookAt.SetValue("_localFacingVector", Vector3.back);
-			lookAt.SetValue("_localRotationAxis", Vector3.up);
+			newBox.AddComponent<CameraFacingBillboard>();
 			newBox.GetComponent<Text>().text = text;
 			newBox.AddComponent<ZOverride>();
 			newBox.SetActive(true);

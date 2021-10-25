@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -31,7 +32,7 @@ namespace QSB.QuantumSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
 			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
@@ -47,10 +48,11 @@ namespace QSB.QuantumSync
 
 		public void PlayerLeave(uint playerId)
 		{
-			if (!QSBCore.IsServer)
+			if (!QSBCore.IsHost)
 			{
 				return;
 			}
+
 			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
 			for (var i = 0; i < quantumObjects.Count; i++)
 			{
@@ -76,19 +78,29 @@ namespace QSB.QuantumSync
 			}
 		}
 
-		public static bool IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
+		public static Tuple<bool, List<PlayerInfo>> IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
+			if (!AllReady)
+			{
+				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
+			}
+
 			var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
 			if (playersWithCameras.Count == 0)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
-				return false;
+				DebugLog.ToConsole($"Warning - Could not find any players with cameras!", MessageType.Warning);
+				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
+
 			if (!tracker.gameObject.activeInHierarchy)
 			{
-				return false;
+				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
+
 			var frustumMethod = tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var playersWhoCanSee = new List<PlayerInfo>();
+			var foundPlayers = false;
 			foreach (var player in playersWithCameras)
 			{
 				if (player.Camera == null)
@@ -96,22 +108,22 @@ namespace QSB.QuantumSync
 					DebugLog.ToConsole($"Warning - Camera is null for id:{player.PlayerId}!", MessageType.Warning);
 					continue;
 				}
+
 				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
 				if (isInFrustum)
 				{
-					return true;
+					playersWhoCanSee.Add(player);
+					foundPlayers = true;
 				}
 			}
-			return false;
+
+			return new Tuple<bool, List<PlayerInfo>>(foundPlayers, playersWhoCanSee);
 		}
 
-		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
-		{
-			return tracker.gameObject.activeInHierarchy
-				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera)
+		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
+				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
 				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
-		}
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
@@ -119,6 +131,7 @@ namespace QSB.QuantumSync
 			{
 				return Enumerable.Empty<PlayerInfo>();
 			}
+
 			var worldObj = GetObject(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
@@ -150,6 +163,7 @@ namespace QSB.QuantumSync
 			{
 				DebugLog.ToConsole($"Warning - couldn't work out type of QuantumObject {unityObject.name}.", MessageType.Warning);
 			}
+
 			return worldObj;
 		}
 	}

@@ -4,39 +4,35 @@ using QSB.Player;
 
 namespace QSB.ProbeSync.Events
 {
-	public class PlayerProbeEvent : QSBEvent<ToggleMessage>
+	internal class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{
-		public override EventType Type => EventType.ProbeActiveChange;
+		public override EventType Type => EventType.ProbeEvent;
 
 		public override void SetupListener()
-		{
-			GlobalMessenger<SurveyorProbe>.AddListener(EventNames.LaunchProbe, HandleLaunch);
-			GlobalMessenger<SurveyorProbe>.AddListener(EventNames.RetrieveProbe, HandleRetrieve);
-		}
+			=> GlobalMessenger<ProbeEvent>.AddListener(EventNames.QSBProbeEvent, Handler);
 
 		public override void CloseListener()
-		{
-			GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.LaunchProbe, HandleLaunch);
-			GlobalMessenger<SurveyorProbe>.RemoveListener(EventNames.RetrieveProbe, HandleRetrieve);
-		}
+			=> GlobalMessenger<ProbeEvent>.RemoveListener(EventNames.QSBProbeEvent, Handler);
 
-		private void HandleLaunch(SurveyorProbe probe) => SendEvent(CreateMessage(true));
-		private void HandleRetrieve(SurveyorProbe probe) => SendEvent(CreateMessage(false));
+		private void Handler(ProbeEvent probeEvent) => SendEvent(CreateMessage(probeEvent));
 
-		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		private EnumMessage<ProbeEvent> CreateMessage(ProbeEvent probeEvent) => new EnumMessage<ProbeEvent>
 		{
 			AboutId = LocalPlayerId,
-			ToggleValue = value
+			EnumValue = probeEvent
 		};
 
-		public override void OnReceiveRemote(bool server, ToggleMessage message)
+		public override void OnReceiveRemote(bool server, EnumMessage<ProbeEvent> message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
-			player.PlayerStates.ProbeActive = message.ToggleValue;
-			player.Probe?.SetState(message.ToggleValue);
-		}
+			if (!player.PlayerStates.IsReady || player.Probe == null)
+			{
+				return;
+			}
 
-		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
-			QSBPlayerManager.LocalPlayer.PlayerStates.ProbeActive = message.ToggleValue;
+			var probe = player.Probe;
+
+			probe.HandleEvent(message.EnumValue);
+		}
 	}
 }

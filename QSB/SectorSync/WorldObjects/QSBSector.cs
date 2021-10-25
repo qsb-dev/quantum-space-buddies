@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -10,7 +11,19 @@ namespace QSB.SectorSync.WorldObjects
 	public class QSBSector : WorldObject<Sector>
 	{
 		public Sector.Name Type => AttachedObject.GetName();
-		public Transform Transform => AttachedObject.transform;
+		public Transform Transform
+		{
+			get
+			{
+				if (AttachedObject == null)
+				{
+					DebugLog.ToConsole($"Error - Tried to get Transform from QSBSector {ObjectId} with null AttachedObject!\r\n{Environment.StackTrace}", MessageType.Error);
+					return null;
+				}
+
+				return AttachedObject.transform;
+			}
+		}
 		public Vector3 Position => Transform.position;
 		public bool IsFakeSector => AttachedObject.GetType() == typeof(FakeSector);
 
@@ -32,7 +45,7 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 
-		public bool ShouldSyncTo()
+		public bool ShouldSyncTo(TargetType targetType)
 		{
 			if (AttachedObject == null)
 			{
@@ -45,7 +58,7 @@ namespace QSB.SectorSync.WorldObjects
 				return false;
 			}
 
-			if (Type == Sector.Name.Ship)
+			if (targetType == TargetType.Ship && Type == Sector.Name.Ship)
 			{
 				return false;
 			}
@@ -60,6 +73,7 @@ namespace QSB.SectorSync.WorldObjects
 						DebugLog.ToConsole($"Warning - Expected to find a NomaiShuttleController for {AttachedObject.name}!", MessageType.Warning);
 						return false;
 					}
+
 					if (!shuttleController.IsPlayerInside())
 					{
 						return false;
@@ -73,12 +87,14 @@ namespace QSB.SectorSync.WorldObjects
 						DebugLog.ToConsole($"Warning - Expected to find a EyeShuttleController for {AttachedObject.name}!", MessageType.Warning);
 						return false;
 					}
+
 					if (!shuttleController.GetValue<bool>("_isPlayerInside"))
 					{
 						return false;
 					}
 				}
 			}
+
 			return true;
 		}
 	}

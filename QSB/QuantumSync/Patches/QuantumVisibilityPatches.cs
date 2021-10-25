@@ -1,51 +1,41 @@
-﻿using QSB.Patches;
+﻿using HarmonyLib;
+using QSB.Patches;
 using QSB.Player;
-using QSB.WorldSync;
+using QSB.Utility;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
 {
+	[HarmonyPatch]
 	public class QuantumVisibilityPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			QSBCore.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisibleUsingCameraFrustum));
-			QSBCore.HarmonyHelper.AddPrefix<ShapeVisibilityTracker>("IsVisible", typeof(QuantumVisibilityPatches), nameof(ShapeIsVisible));
-			QSBCore.HarmonyHelper.AddPrefix<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum", typeof(QuantumVisibilityPatches), nameof(RenderIsVisibleUsingCameraFrustum));
-			QSBCore.HarmonyHelper.AddPrefix<VisibilityObject>("CheckIllumination", typeof(QuantumVisibilityPatches), nameof(CheckIllumination));
-			QSBCore.HarmonyHelper.AddPostfix<Shape>("OnEnable", typeof(QuantumVisibilityPatches), nameof(Shape_OnEnable));
-			QSBCore.HarmonyHelper.AddPostfix<Shape>("OnDisable", typeof(QuantumVisibilityPatches), nameof(Shape_OnDisable));
-		}
-
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisibleUsingCameraFrustum");
-			QSBCore.HarmonyHelper.Unpatch<ShapeVisibilityTracker>("IsVisible");
-			QSBCore.HarmonyHelper.Unpatch<RendererVisibilityTracker>("IsVisibleUsingCameraFrustum");
-			QSBCore.HarmonyHelper.Unpatch<VisibilityObject>("CheckIllumination");
-			QSBCore.HarmonyHelper.Unpatch<Shape>("OnEnable");
-			QSBCore.HarmonyHelper.Unpatch<Shape>("OnDisable");
-		}
-
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(Shape), nameof(Shape.OnEnable))]
 		public static void Shape_OnEnable(Shape __instance)
-			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeActivated", __instance);
+			=> __instance.RaiseEvent("OnShapeActivated", __instance);
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(Shape), nameof(Shape.OnDisable))]
 		public static void Shape_OnDisable(Shape __instance)
-			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeDeactivated", __instance);
+			=> __instance.RaiseEvent("OnShapeDeactivated", __instance);
 
 		// ShapeVisibilityTracker patches
 
-		public static bool ShapeIsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisibleUsingCameraFrustum))]
+		public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
 		{
-			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false);
+			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).Item1;
 			return false;
 		}
 
-		public static bool ShapeIsVisible(ShapeVisibilityTracker __instance, ref bool __result)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisible))]
+		public static bool ShapeVisibilityTracker_IsVisible(ShapeVisibilityTracker __instance, ref bool __result)
 		{
 			__result = QuantumManager.IsVisible(__instance, false);
 			return false;
@@ -53,7 +43,9 @@ namespace QSB.QuantumSync.Patches
 
 		// RendererVisibilityTracker patches - probably not needed as i don't think RendererVisibilityTracker is ever used?
 
-		public static bool RenderIsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(RendererVisibilityTracker), nameof(RendererVisibilityTracker.IsVisibleUsingCameraFrustum))]
+		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
 		{
 			__result = QSBPlayerManager.GetPlayersWithCameras()
 					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), ____renderer.bounds))
@@ -66,17 +58,20 @@ namespace QSB.QuantumSync.Patches
 
 		// VisibilityObject
 
-		public static bool CheckIllumination(VisibilityObject __instance, ref bool __result, bool ____checkIllumination, Vector3 ____localIlluminationOffset, float ____illuminationRadius, Light[] ____lightSources)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(VisibilityObject), nameof(VisibilityObject.CheckIllumination))]
+		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, ref bool __result, bool ____checkIllumination, Vector3 ____localIlluminationOffset, float ____illuminationRadius, Light[] ____lightSources)
 		{
 			if (!____checkIllumination)
 			{
 				__result = true;
 				return false;
 			}
+
 			var point = __instance.transform.TransformPoint(____localIlluminationOffset);
 			var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
-			var localFlashlight = tupleFlashlights.First;
-			var playerFlashlights = tupleFlashlights.Second;
+			var localFlashlight = tupleFlashlights.Item1;
+			var playerFlashlights = tupleFlashlights.Item2;
 
 			// local player flashlight
 			if (localFlashlight.CheckIlluminationAtPoint(point, ____illuminationRadius))
@@ -92,14 +87,14 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 
-			// TODO : Implement checking for other probes!
+			// BUG : Implement checking for other probes!
 			if (Locator.GetProbe() != null && Locator.GetProbe().IsLaunched() && Locator.GetProbe().CheckIlluminationAtPoint(point, ____illuminationRadius))
 			{
 				__result = true;
 				return false;
 			}
 
-			// TODO : Implement checking for other player's thrusters!
+			// BUG : Implement checking for other player's thrusters!
 			if (Locator.GetThrusterLightTracker().CheckIlluminationAtPoint(point, ____illuminationRadius))
 			{
 				__result = true;
@@ -117,6 +112,7 @@ namespace QSB.QuantumSync.Patches
 					}
 				}
 			}
+
 			__result = false;
 			return false;
 		}

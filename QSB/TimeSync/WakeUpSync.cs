@@ -1,9 +1,14 @@
 ﻿using OWML.Common;
+using OWML.Utils;
+using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
+using QSB.Inputs;
+using QSB.Player;
 using QSB.TimeSync.Events;
 using QSB.Utility;
 using QuantumUNET;
+using System;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -19,15 +24,15 @@ namespace QSB.TimeSync
 		private const float MaxFastForwardDiff = 20f;
 		private const float MinFastForwardSpeed = 2f;
 
-		private enum State { NotLoaded, Loaded, FastForwarding, Pausing }
+		public enum State { NotLoaded, Loaded, FastForwarding, Pausing }
 
-		private State _state = State.NotLoaded;
+		public State CurrentState { get; private set; } = State.NotLoaded;
+		public Enum CurrentReason { get; private set; }
 
 		private float _sendTimer;
 		private float _serverTime;
-		private bool _isFirstFastForward = true;
-		private int _localLoopCount;
 		private int _serverLoopCount;
+		private bool _hasWokenUp;
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
@@ -40,12 +45,11 @@ namespace QSB.TimeSync
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				_isFirstFastForward = false;
 				Init();
 			}
+
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-			GlobalMessenger.AddListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
 		}
 
@@ -62,34 +66,38 @@ namespace QSB.TimeSync
 			{
 				RespawnOnDeath.Instance.Init();
 			}
+
+			_hasWokenUp = true;
 		}
 
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			GlobalMessenger.RemoveListener(EventNames.RestartTimeLoop, OnLoopStart);
 			GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
 		}
 
-		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 		{
-			DebugLog.DebugWrite($"ONSCENELOADED");
+			_hasWokenUp = false;
 			if (isInUniverse)
 			{
+				if (newScene == OWScene.EyeOfTheUniverse)
+				{
+					_hasWokenUp = true;
+				}
+
 				Init();
 			}
 			else
 			{
-				_state = State.NotLoaded;
+				CurrentState = State.NotLoaded;
 			}
 		}
 
-		private void OnLoopStart() => _localLoopCount++;
-
 		private void Init()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
-			_state = State.Loaded;
+			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			CurrentState = State.Loaded;
 			gameObject.GetAddComponent<PreserveTimeScale>();
 			if (IsServer)
 			{
@@ -101,7 +109,8 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void SendServerTime() => QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, _localLoopCount);
+		private void SendServerTime()
+			=> QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, PlayerData.LoadLoopCount());
 
 		public void OnClientReceiveMessage(ServerTimeMessage message)
 		{
@@ -111,8 +120,14 @@ namespace QSB.TimeSync
 
 		private void WakeUpOrSleep()
 		{
-			if (_state == State.NotLoaded || _localLoopCount != _serverLoopCount)
+			if (CurrentState == State.NotLoaded)
 			{
+				return;
+			}
+
+			if (PlayerData.LoadLoopCount() != _serverLoopCount && !IsServer)
+			{
+				DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
 				return;
 			}
 
@@ -121,47 +136,59 @@ namespace QSB.TimeSync
 
 			if (diff > PauseOrFastForwardThreshold)
 			{
-				StartPausing();
+				StartPausing(PauseReason.TooFarAhead);
 				return;
 			}
 
 			if (diff < -PauseOrFastForwardThreshold)
 			{
-				StartFastForwarding();
+				StartFastForwarding(FastForwardReason.TooFarBehind);
 			}
 		}
 
-		private void StartFastForwarding()
+		private void StartFastForwarding(FastForwardReason reason)
 		{
-			if (_state == State.FastForwarding)
+			if (CurrentState == State.FastForwarding)
 			{
 				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
+
 			DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			if (Locator.GetActiveCamera() != null)
 			{
 				Locator.GetActiveCamera().enabled = false;
 			}
-			_state = State.FastForwarding;
+
+			//OWInput.ChangeInputMode(InputMode.None);
+			QSBInputManager.Instance.SetInputsEnabled(false);
+
+			CurrentState = State.FastForwarding;
+			CurrentReason = reason;
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
-			TimeSyncUI.Start(TimeSyncType.Fastforwarding);
+			TimeSyncUI.Start(TimeSyncType.Fastforwarding, FastForwardReason.TooFarBehind);
 		}
 
-		private void StartPausing()
+		private void StartPausing(PauseReason reason)
 		{
-			if (_state == State.Pausing)
+			if (CurrentState == State.Pausing)
 			{
 				return;
 			}
+
 			DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
 			Locator.GetActiveCamera().enabled = false;
+
+			//OWInput.ChangeInputMode(InputMode.None);
+			QSBInputManager.Instance.SetInputsEnabled(false);
+
 			OWTime.SetTimeScale(0f);
-			_state = State.Pausing;
+			CurrentState = State.Pausing;
+			CurrentReason = reason;
 			SpinnerUI.Show();
-			TimeSyncUI.Start(TimeSyncType.Pausing);
+			TimeSyncUI.Start(TimeSyncType.Pausing, reason);
 		}
 
 		private void ResetTimeScale()
@@ -170,16 +197,26 @@ namespace QSB.TimeSync
 			OWTime.SetMaxDeltaTime(0.06666667f);
 			OWTime.SetFixedTimestep(0.01666667f);
 			Locator.GetActiveCamera().enabled = true;
-			_state = State.Loaded;
+			CurrentState = State.Loaded;
+			CurrentReason = null;
 
 			DebugLog.DebugWrite($"RESET TIMESCALE", MessageType.Info);
-			_isFirstFastForward = false;
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
-			QSBEventManager.FireEvent(EventNames.QSBPlayerStatesRequest);
+			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
 			RespawnOnDeath.Instance.Init();
+
+			QSBInputManager.Instance.SetInputsEnabled(true);
+
+			if (!_hasWokenUp)
+			{
+				WakeUp();
+			}
 		}
+
+		private void WakeUp()
+			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().Invoke("WakeUp");
 
 		public void Update()
 		{
@@ -189,14 +226,46 @@ namespace QSB.TimeSync
 			}
 			else if (IsLocalPlayer)
 			{
-				UpdateLocal();
+				UpdateClient();
 			}
 		}
 
 		private void UpdateServer()
 		{
 			_serverTime = Time.timeSinceLevelLoad;
-			if (_state != State.Loaded)
+
+			var serverState = ServerStateManager.Instance.GetServerState();
+			var clientState = QSBPlayerManager.LocalPlayer.State;
+
+			if (serverState == ServerState.WaitingForAllPlayersToReady && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			{
+				if (CurrentState != State.Pausing)
+				{
+					DebugLog.DebugWrite($"Wait for other clients to be ready");
+					StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
+				}
+			}
+
+			if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
+			{
+				if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
+				{
+					DebugLog.DebugWrite($"start of new loop!");
+					ResetTimeScale();
+				}
+			}
+
+			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			{
+				if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
+				{
+					//?
+					DebugLog.ToConsole($"Warning - Server waiting for players to die, but players waiting for ready signal! Assume players correct.", MessageType.Warning);
+					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToReady);
+				}
+			}
+
+			if (CurrentState != State.Loaded)
 			{
 				return;
 			}
@@ -209,42 +278,103 @@ namespace QSB.TimeSync
 			}
 		}
 
-		private void UpdateLocal()
+		private void UpdateClient()
 		{
 			_serverTime += Time.unscaledDeltaTime;
 
-			if (_state == State.NotLoaded)
-			{
-				return;
-			}
+			var serverState = ServerStateManager.Instance.GetServerState();
+			var clientState = QSBPlayerManager.LocalPlayer.State;
+			var currentScene = QSBSceneManager.CurrentScene;
 
-			if (_state == State.FastForwarding)
+			// set fastforwarding timescale
+
+			if (CurrentState == State.FastForwarding)
 			{
 				if (Locator.GetPlayerCamera() != null && !Locator.GetPlayerCamera().enabled)
 				{
 					Locator.GetPlayerCamera().enabled = false;
 				}
+
 				var diff = _serverTime - Time.timeSinceLevelLoad;
 				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
-				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem && _isFirstFastForward)
+				TimeSyncUI.TargetTime = _serverTime;
+			}
+
+			if (CurrentState != State.Loaded && CurrentState != State.NotLoaded && CurrentReason == null)
+			{
+				DebugLog.ToConsole($"Warning - CurrentReason is null.", MessageType.Warning);
+			}
+
+			// Checks to pause/fastforward
+
+			if (clientState == ClientState.NotLoaded || clientState == ClientState.InTitleScreen)
+			{
+				return;
+			}
+
+			if (serverState == ServerState.NotLoaded && CurrentState != State.Pausing && QSBSceneManager.IsInUniverse)
+			{
+				DebugLog.DebugWrite($"Server Not Loaded");
+				StartPausing(PauseReason.ServerNotStarted);
+			}
+
+			if (serverState == ServerState.WaitingForAllPlayersToReady && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			{
+				DebugLog.DebugWrite($"Awaiting Play Confirmation");
+				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
+			}
+
+			if (serverState == ServerState.InSolarSystem && (clientState == ClientState.WaitingForOthersToReadyInSolarSystem || clientState == ClientState.WaitingForOthersToDieInSolarSystem))
+			{
+				DebugLog.DebugWrite($"Server is still running game normally, but this player has died from an accepted death!", MessageType.Warning);
+			}
+
+			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			{
+				DebugLog.DebugWrite($"Wait for others to load new scene");
+				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
+			}
+
+			// Checks to revert to normal
+
+			if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.ServerNotStarted)
+			{
+				if (serverState != ServerState.NotLoaded)
 				{
-					var spawnPoint = Locator.GetPlayerBody().GetComponent<PlayerSpawner>().GetInitialSpawnPoint().transform;
-					Locator.GetPlayerTransform().position = spawnPoint.position;
-					Locator.GetPlayerTransform().rotation = spawnPoint.rotation;
-					Physics.SyncTransforms();
+					DebugLog.DebugWrite($"Server started!");
+					ResetTimeScale();
 				}
 			}
 
-			var isDoneFastForwarding = _state == State.FastForwarding && Time.timeSinceLevelLoad >= _serverTime;
-			var isDonePausing = _state == State.Pausing && Time.timeSinceLevelLoad < _serverTime;
-
-			if (isDoneFastForwarding || isDonePausing)
+			if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
 			{
-				ResetTimeScale();
+				if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
+				{
+					DebugLog.DebugWrite($"start of new loop!");
+					ResetTimeScale();
+				}
 			}
 
-			if (_state == State.Loaded)
+			if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.TooFarAhead)
+			{
+				if (Time.timeSinceLevelLoad <= _serverTime)
+				{
+					DebugLog.DebugWrite($"Done pausing to match time!");
+					ResetTimeScale();
+				}
+			}
+
+			if (CurrentState == State.FastForwarding && (FastForwardReason)CurrentReason == FastForwardReason.TooFarBehind)
+			{
+				if (Time.timeSinceLevelLoad >= _serverTime)
+				{
+					DebugLog.DebugWrite($"Done fast-forwarding to match time!");
+					ResetTimeScale();
+				}
+			}
+
+			if (CurrentState == State.Loaded)
 			{
 				CheckTimeDifference();
 			}
@@ -257,19 +387,22 @@ namespace QSB.TimeSync
 			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
 			{
 				WakeUpOrSleep();
+				return;
 			}
 
 			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
 			if (mappedTimescale > 100f)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned over 100 - should have switched into fast-forward!", MessageType.Warning);
-				mappedTimescale = 100f;
+				mappedTimescale = 0f;
 			}
+
 			if (mappedTimescale < 0)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned below 0 - should have switched into pausing!", MessageType.Warning);
 				mappedTimescale = 0f;
 			}
+
 			OWTime.SetTimeScale(mappedTimescale);
 		}
 	}

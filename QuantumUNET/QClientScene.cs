@@ -21,7 +21,7 @@ namespace QuantumUNET
 
 		public static Dictionary<NetworkInstanceId, QNetworkIdentity> Objects => s_NetworkScene.localObjects;
 
-		public static Dictionary<NetworkHash128, GameObject> Prefabs => QNetworkScene.guidToPrefab;
+		public static Dictionary<int, GameObject> Prefabs => QNetworkScene.guidToPrefab;
 
 		public static Dictionary<NetworkSceneId, QNetworkIdentity> SpawnableObjects { get; private set; }
 
@@ -58,6 +58,7 @@ namespace QuantumUNET
 				player = localPlayers[playerControllerId];
 				result = player.Gameobject != null;
 			}
+
 			return result;
 		}
 
@@ -73,6 +74,7 @@ namespace QuantumUNET
 					localPlayers.Add(new QPlayerController());
 				}
 			}
+
 			var playerController = new QPlayerController
 			{
 				Gameobject = view.gameObject,
@@ -106,10 +108,12 @@ namespace QuantumUNET
 				{
 					Debug.LogWarning($"ClientScene::AddPlayer: playerControllerId of {playerControllerId} is unusually high");
 				}
+
 				while (playerControllerId >= localPlayers.Count)
 				{
 					localPlayers.Add(new QPlayerController());
 				}
+
 				if (readyConn == null)
 				{
 					if (!ready)
@@ -123,6 +127,7 @@ namespace QuantumUNET
 					ready = true;
 					readyConnection = readyConn;
 				}
+
 				if (readyConnection.GetPlayerController(playerControllerId, out var playerController))
 				{
 					if (playerController.IsValid && playerController.Gameobject != null)
@@ -131,6 +136,7 @@ namespace QuantumUNET
 						return false;
 					}
 				}
+
 				Debug.Log($"ClientScene::AddPlayer() for ID {playerControllerId} called with connection [{readyConnection}]");
 				var addPlayerMessage = new QAddPlayerMessage
 				{
@@ -143,9 +149,11 @@ namespace QuantumUNET
 					addPlayerMessage.msgData = networkWriter.ToArray();
 					addPlayerMessage.msgSize = networkWriter.Position;
 				}
+
 				readyConnection.Send(37, addPlayerMessage);
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -170,6 +178,7 @@ namespace QuantumUNET
 				Debug.LogError($"Failed to find player ID {playerControllerId}");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -199,6 +208,7 @@ namespace QuantumUNET
 					result = false;
 				}
 			}
+
 			return result;
 		}
 
@@ -261,6 +271,7 @@ namespace QuantumUNET
 			{
 				result = null;
 			}
+
 			return result;
 		}
 
@@ -288,12 +299,13 @@ namespace QuantumUNET
 				client.RegisterHandlerSafe(QMsgType.Animation, QNetworkAnimator.OnAnimationClientMessage);
 				client.RegisterHandlerSafe(QMsgType.AnimationParameters, QNetworkAnimator.OnAnimationParametersClientMessage);
 			}
+
 			client.RegisterHandlerSafe(QMsgType.Rpc, OnRPCMessage);
 			client.RegisterHandlerSafe(QMsgType.SyncEvent, OnSyncEventMessage);
 			client.RegisterHandlerSafe(QMsgType.AnimationTrigger, QNetworkAnimator.OnAnimationTriggerClientMessage);
 		}
 
-		internal static string GetStringForAssetId(NetworkHash128 assetId)
+		internal static string GetStringForAssetId(int assetId)
 		{
 			if (QNetworkScene.GetPrefab(assetId, out var gameObject))
 			{
@@ -305,7 +317,7 @@ namespace QuantumUNET
 				: "unknown";
 		}
 
-		public static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId) => QNetworkScene.RegisterPrefab(prefab, newAssetId);
+		public static void RegisterPrefab(GameObject prefab, int newAssetId) => QNetworkScene.RegisterPrefab(prefab, newAssetId);
 
 		public static void RegisterPrefab(GameObject prefab) => QNetworkScene.RegisterPrefab(prefab);
 
@@ -313,9 +325,9 @@ namespace QuantumUNET
 
 		public static void UnregisterPrefab(GameObject prefab) => QNetworkScene.UnregisterPrefab(prefab);
 
-		public static void RegisterSpawnHandler(NetworkHash128 assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
+		public static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
 
-		public static void UnregisterSpawnHandler(NetworkHash128 assetId) => QNetworkScene.UnregisterSpawnHandler(assetId);
+		public static void UnregisterSpawnHandler(int assetId) => QNetworkScene.UnregisterSpawnHandler(assetId);
 
 		public static void ClearSpawners() => QNetworkScene.ClearSpawners();
 
@@ -331,12 +343,14 @@ namespace QuantumUNET
 			{
 				uv.gameObject.SetActive(true);
 			}
+
 			uv.transform.position = position;
 			if (payload != null && payload.Length > 0)
 			{
 				var reader = new QNetworkReader(payload);
 				uv.OnUpdateVars(reader, true);
 			}
+
 			if (newGameObject != null)
 			{
 				newGameObject.SetActive(true);
@@ -353,7 +367,7 @@ namespace QuantumUNET
 		private static void OnObjectSpawn(QNetworkMessage netMsg)
 		{
 			netMsg.ReadMessage(s_ObjectSpawnMessage);
-			if (!s_ObjectSpawnMessage.assetId.IsValid())
+			if (s_ObjectSpawnMessage.assetId == 0)
 			{
 				Debug.LogError($"OnObjSpawn netId: {s_ObjectSpawnMessage.NetId} has invalid asset Id. {s_ObjectSpawnMessage.assetId}");
 			}
@@ -448,6 +462,7 @@ namespace QuantumUNET
 						CheckForOwner(networkIdentity);
 					}
 				}
+
 				s_IsSpawnFinished = true;
 			}
 		}
@@ -471,6 +486,7 @@ namespace QuantumUNET
 						SpawnableObjects[networkIdentity.SceneId] = networkIdentity;
 					}
 				}
+
 				s_NetworkScene.RemoveLocalObject(s_ObjectDestroyMessage.NetId);
 				networkIdentity.MarkForReset();
 			}
@@ -594,6 +610,7 @@ namespace QuantumUNET
 			{
 				playerController.UnetView.SetNotLocalPlayer();
 			}
+
 			if (s_NetworkScene.GetNetworkIdentity(s_OwnerMessage.NetId, out var networkIdentity))
 			{
 				networkIdentity.SetConnectionToServer(netMsg.Connection);
@@ -627,6 +644,7 @@ namespace QuantumUNET
 						Debug.LogError("Owner message received on a local client.");
 						break;
 					}
+
 					InternalAddPlayer(uv, pendingOwner.playerControllerId);
 					s_PendingOwnerIds.RemoveAt(i);
 					break;

@@ -41,6 +41,7 @@ namespace QSB.Tools
 				EquipTool();
 				return;
 			}
+
 			UnequipTool();
 		}
 	}

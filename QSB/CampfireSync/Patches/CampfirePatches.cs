@@ -1,21 +1,22 @@
-﻿using QSB.CampfireSync.WorldObjects;
+﻿using HarmonyLib;
+using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
 using QSB.Patches;
 using QSB.WorldSync;
 
 namespace QSB.CampfireSync.Patches
 {
+	[HarmonyPatch]
 	internal class CampfirePatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches() => QSBCore.HarmonyHelper.AddPrefix<Campfire>("OnPressInteract", typeof(CampfirePatches), nameof(Campfire_OnPressInteract));
-		public override void DoUnpatches() => QSBCore.HarmonyHelper.Unpatch<Campfire>("OnPressInteract");
-
-		public static bool Campfire_OnPressInteract(Campfire __instance, Campfire.State ____state)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Campfire), nameof(Campfire.OnPressInteract))]
+		public static bool LightCampfireEvent(Campfire __instance)
 		{
 			var qsbCampfire = QSBWorldSync.GetWorldFromUnity<QSBCampfire, Campfire>(__instance);
-			if (____state == Campfire.State.LIT)
+			if (__instance._state == Campfire.State.LIT)
 			{
 				qsbCampfire.StartRoasting();
 			}
@@ -25,6 +26,7 @@ namespace QSB.CampfireSync.Patches
 				QSBEventManager.FireEvent(EventNames.QSBCampfireState, qsbCampfire.ObjectId, Campfire.State.LIT);
 				Locator.GetFlashlight().TurnOff(false);
 			}
+
 			return false;
 		}
 	}

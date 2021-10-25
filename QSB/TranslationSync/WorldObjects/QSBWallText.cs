@@ -19,6 +19,7 @@ namespace QSB.TranslationSync.WorldObjects
 			{
 				return;
 			}
+
 			AttachedObject.SetAsTranslated(id);
 		}
 

@@ -5,8 +5,6 @@
 		// Built into Outer Wilds -- don't change unless they change in-game!
 		public static string TurnOnFlashlight = "TurnOnFlashlight";
 		public static string TurnOffFlashlight = "TurnOffFlashlight";
-		public static string LaunchProbe = "LaunchProbe";
-		public static string RetrieveProbe = "RetrieveProbe";
 		public static string ProbeLauncherEquipped = "ProbeLauncherEquipped";
 		public static string ProbeLauncherUnequipped = "ProbeLauncherUnequipped";
 		public static string EquipSignalscope = "EquipSignalscope";
@@ -22,13 +20,17 @@
 		public static string ExitQuantumMoon = "PlayerExitQuantumMoon";
 		public static string EnterRoastingMode = "EnterRoastingMode";
 		public static string ExitRoastingMode = "ExitRoastingMode";
+		public static string EnterFlightConsole = "EnterFlightConsole";
+		public static string ExitFlightConsole = "ExitFlightConsole";
+		public static string EnterShip = "EnterShip";
+		public static string ExitShip = "ExitShip";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
 		public static string QSBPlayerDeath = "QSBPlayerDeath";
 		public static string QSBPlayerJoin = "QSBPlayerJoin";
 		public static string QSBPlayerReady = "QSBPlayerReady";
-		public static string QSBPlayerStatesRequest = "QSBPlayerStatesRequest";
+		public static string QSBRequestStateResync = "QSBPlayerStatesRequest";
 		public static string QSBServerTime = "QSBServerTime";
 		public static string QSBStartLift = "QSBStartLift";
 		public static string QSBGeyserState = "QSBGeyserState";
@@ -37,7 +39,7 @@
 		public static string QSBConversation = "QSBConversation";
 		public static string QSBConversationStartEnd = "QSBConversationStartEnd";
 		public static string QSBChangeAnimType = "QSBPlayInstrument";
-		public static string QSBServerSendPlayerStates = "QSBServerSendPlayerStates";
+		public static string QSBPlayerInformation = "QSBServerSendPlayerStates";
 		public static string QSBRevealFact = "QSBRevealFact";
 		public static string QSBSocketStateChange = "QSBSocketStateChange";
 		public static string QSBMultiStateChange = "QSBMultiStateChange";
@@ -63,5 +65,27 @@
 		public static string QSBEnterHeadZone = "QSBEnterHeadZone";
 		public static string QSBExitHeadZone = "QSBExitHeadZone";
 		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
+		public static string QSBHatchState = "QSBHatchState";
+		public static string QSBEnableFunnel = "QSBEnableFunnel";
+		public static string QSBHullImpact = "QSBHullImpact";
+		public static string QSBHullDamaged = "QSBHullDamaged";
+		public static string QSBHullChangeIntegrity = "QSBHullChangeIntegrity";
+		public static string QSBHullRepaired = "QSBHullRepaired";
+		public static string QSBHullRepairTick = "QSBHullRepairTick";
+		public static string QSBComponentDamaged = "QSBComponentDamaged";
+		public static string QSBComponentRepaired = "QSBComponentRepaired";
+		public static string QSBComponentRepairTick = "QSBComponentRepairTick";
+		public static string QSBPlayerRespawn = "QSBPlayerRespawn";
+		public static string QSBProbeEvent = "QSBProbeEvent";
+		public static string QSBProbeStartRetrieve = "QSBProbeStartRetrieve";
+		public static string QSBRetrieveProbe = "QSBRetrieveProbe";
+		public static string QSBPlayerRetrieveProbe = "QSBPlayerRetrieveProbe";
+		public static string QSBLaunchProbe = "QSBLaunchProbe";
+		public static string QSBPlayerLaunchProbe = "QSBPlayerLaunchProbe";
+		public static string QSBEndLoop = "QSBEndLoop";
+		public static string QSBStartLoop = "QSBStartLoop";
+		public static string QSBServerState = "QSBServerState";
+		public static string QSBClientState = "QSBClientState";
+		public static string QSBDebugEvent = "QSBDebugEvent";
 	}
 }

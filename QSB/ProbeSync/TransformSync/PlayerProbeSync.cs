@@ -1,41 +1,50 @@
 ﻿using OWML.Common;
-using QSB.Player;
-using QSB.Syncs.TransformSync;
+using OWML.Utils;
+using QSB.SectorSync;
+using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools;
+using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ProbeSync.TransformSync
 {
 	public class PlayerProbeSync : SectoredTransformSync
 	{
-		public static PlayerProbeSync LocalInstance { get; private set; }
-
 		protected override float DistanceLeeway => 10f;
 		public override bool UseInterpolation => true;
+		public override bool IgnoreDisabledAttachedObject => true;
 
-		public override void OnStartAuthority()
+		public static PlayerProbeSync LocalInstance { get; private set; }
+
+		public override void OnStartAuthority() => LocalInstance = this;
+
+		protected override Component InitLocalTransform()
 		{
-			DebugLog.DebugWrite($"OnStartAuthority probe");
-			LocalInstance = this;
-		}
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe));
 
-		private Transform GetProbe() =>
-			Locator.GetProbe().transform.Find("CameraPivot").Find("Geometry");
-
-		protected override GameObject InitLocalTransform()
-		{
-			SectorSync.SetSectorDetector(Locator.GetProbe().GetSectorDetector());
-			var body = GetProbe();
-
+			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			if (Player.Body == null)
+			{
+				DebugLog.ToConsole($"Warning - Player.Body is null!", MessageType.Warning);
+				return null;
+			}
+
+			var listener = Player.Body.AddComponent<ProbeListener>();
+			listener.Init(Locator.GetProbe());
+
+			var launcherListener = Player.Body.AddComponent<ProbeLauncherListener>();
+			launcherListener.Init(Player.LocalProbeLauncher);
+
+			return body;
 		}
 
-		protected override GameObject InitRemoteTransform()
+		protected override Component InitRemoteTransform()
 		{
-			var probe = GetProbe();
+			var probe = Locator.GetProbe().transform;
 
 			if (probe == null)
 			{
@@ -43,23 +52,66 @@ namespace QSB.ProbeSync.TransformSync
 				return default;
 			}
 
-			var body = probe.InstantiateInactive();
-			body.name = "RemoteProbeTransform";
+			var body = probe.gameObject.activeSelf
+				? probe.InstantiateInactive()
+				: Instantiate(probe);
 
-			Destroy(body.GetComponentInChildren<ProbeAnimatorController>());
+			body.name = "RemoteProbeTransform";
 
 			PlayerToolsManager.CreateProbe(body, Player);
 
 			Player.ProbeBody = body.gameObject;
 
-			return body.gameObject;
+			return body;
 		}
 
-		public override bool IsReady => Locator.GetProbe() != null
-			&& Player != null
-			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
-			&& Player.PlayerStates.IsReady
-			&& NetId.Value != uint.MaxValue
-			&& NetId.Value != 0U;
+		protected override bool UpdateTransform()
+		{
+			if (!base.UpdateTransform())
+			{
+				return false;
+			}
+
+			if (HasAuthority)
+			{
+				if (!AttachedObject.gameObject.activeInHierarchy)
+				{
+					var probeOWRigidbody = Locator.GetProbe().GetComponent<SurveyorProbe>().GetOWRigidbody();
+					if (probeOWRigidbody == null)
+					{
+						DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
+					}
+
+					var probeLauncher = Player.LocalProbeLauncher;
+					// TODO : make this sync to the *active* probe launcher's _launcherTransform
+					var launcherTransform = probeLauncher.GetValue<Transform>("_launcherTransform");
+					probeOWRigidbody.SetPosition(launcherTransform.position);
+					probeOWRigidbody.SetRotation(launcherTransform.rotation);
+
+					if (ReferenceTransform != null)
+					{
+						_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+						_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+					}
+					else
+					{
+						_intermediaryTransform.SetPosition(Vector3.zero);
+						_intermediaryTransform.SetRotation(Quaternion.identity);
+					}
+
+					var currentReferenceSector = ReferenceSector;
+					var playerReferenceSector = Player.TransformSync.ReferenceSector;
+
+					if (currentReferenceSector != playerReferenceSector)
+					{
+						SetReferenceSector(playerReferenceSector);
+					}
+				}
+			}
+
+			return true;
+		}
+
+		public override bool IsReady => Locator.GetProbe() != null;
 	}
 }

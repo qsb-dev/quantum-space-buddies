@@ -57,32 +57,46 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (fromPlayer == null)
 			{
 				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
+
 			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs
-				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
+				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			var orbIdentity = orbSync.GetComponent<QNetworkIdentity>();
 			if (orbIdentity == null)
 			{
 				DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
-			if (orbIdentity.ClientAuthorityOwner != null && orbIdentity.ClientAuthorityOwner != fromPlayer)
+
+			var currentOwner = orbIdentity.ClientAuthorityOwner;
+			var newOwner = fromPlayer;
+
+			if (currentOwner == newOwner)
 			{
-				orbIdentity.RemoveClientAuthority(orbIdentity.ClientAuthorityOwner);
+				return;
 			}
+
+			if (currentOwner != null && currentOwner != fromPlayer)
+			{
+				orbIdentity.RemoveClientAuthority(currentOwner);
+			}
+
 			orbIdentity.AssignClientAuthority(fromPlayer);
 			orbSync.enabled = true;
 		}
@@ -94,18 +108,21 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
+
 			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
-			if (!NomaiOrbTransformSync.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject))
+
+			if (!NomaiOrbTransformSync.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform))
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
+
 			var orb = NomaiOrbTransformSync.OrbTransformSyncs
-				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
+				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			orb.enabled = true;
 		}
 	}

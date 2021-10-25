@@ -38,6 +38,7 @@ namespace QuantumUNET
 			{
 				throw new ArgumentOutOfRangeException("Platform specific protocols are not supported on this platform");
 			}
+
 			m_Channels = new QChannelBuffer[channelCount];
 			for (var i = 0; i < channelCount; i++)
 			{
@@ -47,6 +48,7 @@ namespace QuantumUNET
 				{
 					bufferSize = hostTopology.DefaultConfig.FragmentSize * 128;
 				}
+
 				m_Channels[i] = new QChannelBuffer(this, bufferSize, (byte)i, IsReliableQoS(channelQOS.QOS), IsSequencedQoS(channelQOS.QOS));
 			}
 		}
@@ -71,6 +73,7 @@ namespace QuantumUNET
 					channel.Dispose();
 				}
 			}
+
 			m_Channels = null;
 			if (ClientOwnedObjects != null)
 			{
@@ -83,6 +86,7 @@ namespace QuantumUNET
 					}
 				}
 			}
+
 			ClientOwnedObjects = null;
 			m_Disposed = true;
 		}
@@ -139,6 +143,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -155,6 +160,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -183,6 +189,7 @@ namespace QuantumUNET
 			{
 				PlayerControllers.Add(new QPlayerController());
 			}
+
 			PlayerControllers[player.PlayerControllerId] = player;
 		}
 
@@ -196,6 +203,7 @@ namespace QuantumUNET
 					return;
 				}
 			}
+
 			QLog.Error($"RemovePlayer player at playerControllerId {playerControllerId} not found");
 		}
 
@@ -220,6 +228,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -275,6 +284,7 @@ namespace QuantumUNET
 					break;
 				}
 			}
+
 			QLog.Log(
 				$"ConnectionSend con:{connectionId} bytes:{num} msgId:{num2} {stringBuilder}");
 		}
@@ -297,6 +307,7 @@ namespace QuantumUNET
 			{
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -323,43 +334,19 @@ namespace QuantumUNET
 				{
 					networkMessageDelegate = m_MessageHandlersDict[num2];
 				}
+
 				if (networkMessageDelegate == null)
 				{
 					QLog.Error($"Unknown message ID {num2} connId:{connectionId}");
 					break;
 				}
+
 				m_NetMsg.MsgType = num2;
 				m_NetMsg.Reader = reader2;
 				m_NetMsg.Connection = this;
 				m_NetMsg.ChannelId = channelId;
 				networkMessageDelegate(m_NetMsg);
 				lastMessageTime = Time.time;
-			}
-		}
-
-		public virtual void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			foreach (var channelBuffer in m_Channels)
-			{
-				numMsgs += channelBuffer.NumMsgsOut;
-				numBufferedMsgs += channelBuffer.NumBufferedMsgsOut;
-				numBytes += channelBuffer.NumBytesOut;
-				lastBufferedPerSecond += channelBuffer.LastBufferedPerSecond;
-			}
-		}
-
-		public virtual void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			foreach (var channelBuffer in m_Channels)
-			{
-				numMsgs += channelBuffer.NumMsgsIn;
-				numBytes += channelBuffer.NumBytesIn;
 			}
 		}
 
@@ -387,6 +374,7 @@ namespace QuantumUNET
 			{
 				networkIdentity.RemoveObserverInternal(this);
 			}
+
 			VisList.Clear();
 		}
 
@@ -400,6 +388,7 @@ namespace QuantumUNET
 			{
 				ClientOwnedObjects = new HashSet<NetworkInstanceId>();
 			}
+
 			ClientOwnedObjects.Add(obj.NetId);
 		}
 

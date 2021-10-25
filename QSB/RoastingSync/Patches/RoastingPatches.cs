@@ -1,33 +1,34 @@
-﻿using QSB.Events;
+﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 using UnityEngine;
 
 namespace QSB.RoastingSync.Patches
 {
+	[HarmonyPatch]
 	internal class RoastingPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			QSBCore.HarmonyHelper.AddPrefix<RoastingStickController>("UpdateMarshmallowInput", typeof(RoastingPatches), nameof(RoastingStickController_UpdateMarshmallowInput));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("Burn", typeof(RoastingPatches), nameof(Marshmallow_Burn));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("Shrivel", typeof(RoastingPatches), nameof(Marshmallow_Shrivel));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("RemoveMallow", typeof(RoastingPatches), nameof(Marshmallow_RemoveMallow));
-			QSBCore.HarmonyHelper.AddPrefix<Marshmallow>("SpawnMallow", typeof(RoastingPatches), nameof(Marshmallow_SpawnMallow));
-		}
+		//public override void DoPatches()
+		//{
+		//	Prefix<RoastingStickController>(nameof(RoastingStickController.UpdateMarshmallowInput), nameof(RoastingStickController_UpdateMarshmallowInput));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.Burn), nameof(Marshmallow_Burn));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.Shrivel), nameof(Marshmallow_Shrivel));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.RemoveMallow), nameof(Marshmallow_RemoveMallow));
+		//	Prefix<Marshmallow>(nameof(Marshmallow.SpawnMallow), nameof(Marshmallow_SpawnMallow));
+		//}
 
-		public override void DoUnpatches()
-		{
-
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.SpawnMallow))]
 		public static bool Marshmallow_SpawnMallow()
 		{
 			QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Replace);
 			return true;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.Burn))]
 		public static bool Marshmallow_Burn(
 			ref Marshmallow.MallowState ____mallowState,
 			MeshRenderer ____fireRenderer,
@@ -44,9 +45,12 @@ namespace QSB.RoastingSync.Patches
 				____audioController.PlayMarshmallowCatchFire();
 				QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Burn);
 			}
+
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.Shrivel))]
 		public static bool Marshmallow_Shrivel(
 			ref Marshmallow.MallowState ____mallowState,
 			ref float ____initShrivelTime)
@@ -57,9 +61,12 @@ namespace QSB.RoastingSync.Patches
 				____mallowState = Marshmallow.MallowState.Shriveling;
 				QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Shrivel);
 			}
+
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.RemoveMallow))]
 		public static bool Marshmallow_RemoveMallow(
 			ParticleSystem ____smokeParticles,
 			MeshRenderer ____fireRenderer,
@@ -76,6 +83,8 @@ namespace QSB.RoastingSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(RoastingStickController), nameof(RoastingStickController.UpdateMarshmallowInput))]
 		public static bool RoastingStickController_UpdateMarshmallowInput(
 			float ____extendFraction,
 			Marshmallow ____marshmallow,
@@ -99,7 +108,7 @@ namespace QSB.RoastingSync.Patches
 					if (____marshmallow.IsBurned())
 					{
 						showRemovePrompt = true;
-						if (OWInput.IsNewlyPressed(InputLibrary.cancel, true, InputMode.Roasting))
+						if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Roasting))
 						{
 							____marshmallow.Remove();
 							Locator.GetPlayerAudioController().PlayMarshmallowToss();
@@ -112,6 +121,7 @@ namespace QSB.RoastingSync.Patches
 							QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Toss);
 						}
 					}
+
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting) && ____marshmallow.IsEdible())
 					{
 						____marshmallow.Eat();

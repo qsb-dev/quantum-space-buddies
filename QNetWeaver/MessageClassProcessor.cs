@@ -34,6 +34,7 @@ namespace QNetWeaver
 					return;
 				}
 			}
+
 			if (m_td.Fields.Count != 0)
 			{
 				foreach (var fieldDefinition in m_td.Fields)
@@ -52,6 +53,7 @@ namespace QNetWeaver
 						return;
 					}
 				}
+
 				var methodDefinition2 = new MethodDefinition("Serialize", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.voidType);
 				methodDefinition2.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
 				var ilprocessor = methodDefinition2.Body.GetILProcessor();
@@ -74,6 +76,7 @@ namespace QNetWeaver
 							}));
 							return;
 						}
+
 						if (fieldDefinition2.FieldType.Resolve().IsInterface)
 						{
 							Weaver.fail = true;
@@ -89,6 +92,7 @@ namespace QNetWeaver
 							}));
 							return;
 						}
+
 						var writeFunc = Weaver.GetWriteFunc(fieldDefinition2.FieldType);
 						if (writeFunc == null)
 						{
@@ -105,12 +109,14 @@ namespace QNetWeaver
 							}));
 							return;
 						}
+
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldfld, fieldDefinition2));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Call, writeFunc));
 					}
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				m_td.Methods.Add(methodDefinition2);
 			}
@@ -126,6 +132,7 @@ namespace QNetWeaver
 					return;
 				}
 			}
+
 			if (m_td.Fields.Count != 0)
 			{
 				var methodDefinition2 = new MethodDefinition("Deserialize", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.voidType);
@@ -149,12 +156,14 @@ namespace QNetWeaver
 							}));
 							return;
 						}
+
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Call, readFunc));
 						ilprocessor.Append(ilprocessor.Create(OpCodes.Stfld, fieldDefinition));
 					}
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				m_td.Methods.Add(methodDefinition2);
 			}

@@ -1,9 +1,14 @@
-﻿namespace QSB.Patches
+﻿using HarmonyLib;
+
+namespace QSB.Patches
 {
 	public abstract class QSBPatch
 	{
 		public abstract QSBPatchTypes Type { get; }
-		public abstract void DoPatches();
-		public abstract void DoUnpatches();
+
+		public void DoPatches(Harmony instance)
+		{
+			instance.PatchAll(GetType());
+		}
 	}
 }

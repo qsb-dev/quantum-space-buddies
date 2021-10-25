@@ -7,12 +7,9 @@ namespace QuantumUNET
 {
 	internal class QNetworkScene
 	{
-		internal static Dictionary<NetworkHash128, GameObject> guidToPrefab { get; } = new Dictionary<NetworkHash128, GameObject>();
-
-		internal static Dictionary<NetworkHash128, QSpawnDelegate> spawnHandlers { get; } = new Dictionary<NetworkHash128, QSpawnDelegate>();
-
-		internal static Dictionary<NetworkHash128, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<NetworkHash128, UnSpawnDelegate>();
-
+		internal static Dictionary<int, GameObject> guidToPrefab { get; } = new Dictionary<int, GameObject>();
+		internal static Dictionary<int, QSpawnDelegate> spawnHandlers { get; } = new Dictionary<int, QSpawnDelegate>();
+		internal static Dictionary<int, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<int, UnSpawnDelegate>();
 		internal Dictionary<NetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QNetworkIdentity>();
 
 		internal void Shutdown()
@@ -34,11 +31,13 @@ namespace QuantumUNET
 				{
 					networkIdentity = localObjects[netId];
 				}
+
 				if (networkIdentity == null)
 				{
 					networkIdentity = obj.GetComponent<QNetworkIdentity>();
 					localObjects[netId] = networkIdentity;
 				}
+
 				networkIdentity.UpdateClientServer(isClient, isServer);
 			}
 		}
@@ -53,6 +52,7 @@ namespace QuantumUNET
 					return networkIdentity.gameObject;
 				}
 			}
+
 			return null;
 		}
 
@@ -69,10 +69,12 @@ namespace QuantumUNET
 				uv = null;
 				result = false;
 			}
+
 			return result;
 		}
 
-		internal bool RemoveLocalObject(NetworkInstanceId netId) => localObjects.Remove(netId);
+		internal bool RemoveLocalObject(NetworkInstanceId netId)
+			=> localObjects.Remove(netId);
 
 		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
 		{
@@ -87,12 +89,14 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
-		internal void ClearLocalObjects() => localObjects.Clear();
+		internal void ClearLocalObjects()
+			=> localObjects.Clear();
 
-		internal static void RegisterPrefab(GameObject prefab, NetworkHash128 newAssetId)
+		internal static void RegisterPrefab(GameObject prefab, int newAssetId)
 		{
 			var component = prefab.GetComponent<QNetworkIdentity>();
 			if (component)
@@ -125,10 +129,10 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static bool GetPrefab(NetworkHash128 assetId, out GameObject prefab)
+		internal static bool GetPrefab(int assetId, out GameObject prefab)
 		{
 			bool result;
-			if (!assetId.IsValid())
+			if (assetId == 0)
 			{
 				prefab = null;
 				result = false;
@@ -143,6 +147,7 @@ namespace QuantumUNET
 				prefab = null;
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -153,13 +158,13 @@ namespace QuantumUNET
 			unspawnHandlers.Clear();
 		}
 
-		public static void UnregisterSpawnHandler(NetworkHash128 assetId)
+		public static void UnregisterSpawnHandler(int assetId)
 		{
 			spawnHandlers.Remove(assetId);
 			unspawnHandlers.Remove(assetId);
 		}
 
-		internal static void RegisterSpawnHandler(NetworkHash128 assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+		internal static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
 		{
 			if (spawnHandler == null || unspawnHandler == null)
 			{
@@ -197,7 +202,7 @@ namespace QuantumUNET
 			{
 				Debug.LogError($"RegisterPrefab custom spawn function null for {component.AssetId}");
 			}
-			else if (!component.AssetId.IsValid())
+			else if (component.AssetId == 0)
 			{
 				Debug.LogError($"RegisterPrefab game object {prefab.name} has no prefab. Use RegisterSpawnHandler() instead?");
 			}
@@ -208,7 +213,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static bool GetSpawnHandler(NetworkHash128 assetId, out QSpawnDelegate handler)
+		internal static bool GetSpawnHandler(int assetId, out QSpawnDelegate handler)
 		{
 			bool result;
 			if (spawnHandlers.ContainsKey(assetId))
@@ -221,10 +226,11 @@ namespace QuantumUNET
 				handler = null;
 				result = false;
 			}
+
 			return result;
 		}
 
-		internal static bool InvokeUnSpawnHandler(NetworkHash128 assetId, GameObject obj)
+		internal static bool InvokeUnSpawnHandler(int assetId, GameObject obj)
 		{
 			bool result;
 			if (unspawnHandlers.ContainsKey(assetId) && unspawnHandlers[assetId] != null)
@@ -237,6 +243,7 @@ namespace QuantumUNET
 			{
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -261,18 +268,8 @@ namespace QuantumUNET
 					}
 				}
 			}
-			ClearLocalObjects();
-		}
 
-		internal void DumpAllClientObjects()
-		{
-			foreach (var networkInstanceId in localObjects.Keys)
-			{
-				var networkIdentity = localObjects[networkInstanceId];
-				Debug.Log(networkIdentity != null
-					? $"ID:{networkInstanceId} OBJ:{networkIdentity.gameObject} AS:{networkIdentity.AssetId}"
-					: $"ID:{networkInstanceId} OBJ: null");
-			}
+			ClearLocalObjects();
 		}
 	}
 }

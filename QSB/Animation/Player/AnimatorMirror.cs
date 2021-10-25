@@ -21,15 +21,18 @@ namespace QSB.Animation.Player
 			{
 				DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"from\".", MessageType.Error);
 			}
+
 			if (to == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"to\".", MessageType.Error);
 			}
+
 			if (to == null || from == null)
 			{
 				// Doing the return this way so you can see if one or both are null
 				return;
 			}
+
 			_from = from;
 			_to = to;
 			if (_from.runtimeAnimatorController == null)
@@ -40,6 +43,7 @@ namespace QSB.Animation.Player
 			{
 				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
 			}
+
 			foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
 			{
 				_floatParams.Add(param.name, new AnimFloatParam());
@@ -52,10 +56,12 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
+
 			if (_to.runtimeAnimatorController != _from.runtimeAnimatorController)
 			{
 				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
 			}
+
 			SyncParams();
 			SmoothFloats();
 		}
@@ -73,6 +79,7 @@ namespace QSB.Animation.Player
 							RebuildFloatParams();
 							break;
 						}
+
 						_floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
 						break;
 

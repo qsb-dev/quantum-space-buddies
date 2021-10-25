@@ -73,10 +73,12 @@ namespace QuantumUNET
 				{
 					throw new ArgumentException("Port must not be a negative number.");
 				}
+
 				if (value > 65535)
 				{
 					throw new ArgumentException("Port must not be greater than 65535.");
 				}
+
 				m_HostPort = value;
 			}
 		}
@@ -142,6 +144,7 @@ namespace QuantumUNET
 				connectionConfig.UsePlatformSpecificProtocols = false;
 				hostTopology = new HostTopology(connectionConfig, 8);
 			}
+
 			hostId = NetworkTransport.AddHost(hostTopology, m_HostPort);
 		}
 
@@ -218,6 +221,7 @@ namespace QuantumUNET
 				QLog.Error("NetworkClient Send with no connection");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -241,6 +245,7 @@ namespace QuantumUNET
 				QLog.Error("NetworkClient SendWriter with no connection");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -264,6 +269,7 @@ namespace QuantumUNET
 				QLog.Error("NetworkClient SendBytes with no connection");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -287,6 +293,7 @@ namespace QuantumUNET
 				QLog.Error("NetworkClient SendUnreliable with no connection");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -310,6 +317,7 @@ namespace QuantumUNET
 				QLog.Error("NetworkClient SendByChannel with no connection");
 				result = false;
 			}
+
 			return result;
 		}
 
@@ -333,6 +341,7 @@ namespace QuantumUNET
 				NetworkTransport.RemoveHost(hostId);
 				hostId = -1;
 			}
+
 			RemoveClient(this);
 			if (allClients.Count == 0)
 			{
@@ -359,6 +368,7 @@ namespace QuantumUNET
 						m_AsyncConnect = ConnectState.Disconnected;
 						return;
 				}
+
 				if (m_Connection != null)
 				{
 					if ((int)Time.time != m_StatResetTime)
@@ -367,6 +377,7 @@ namespace QuantumUNET
 						m_StatResetTime = (int)Time.time;
 					}
 				}
+
 				var num = 0;
 				byte b;
 				for (; ; )
@@ -376,6 +387,7 @@ namespace QuantumUNET
 					{
 						m_Connection.LastError = (NetworkError)b;
 					}
+
 					switch (networkEventType)
 					{
 						case NetworkEventType.DataEvent:
@@ -383,6 +395,7 @@ namespace QuantumUNET
 							{
 								goto Block_11;
 							}
+
 							m_MsgReader.SeekZero();
 							m_Connection.TransportReceive(m_MsgBuffer, numBytes, channelId);
 							break;
@@ -393,8 +406,9 @@ namespace QuantumUNET
 							{
 								goto Block_10;
 							}
+
 							m_AsyncConnect = ConnectState.Connected;
-							m_Connection.InvokeHandlerNoData(32);
+							m_Connection.InvokeHandlerNoData(QMsgType.Connect);
 							break;
 
 						case NetworkEventType.DisconnectEvent:
@@ -407,8 +421,9 @@ namespace QuantumUNET
 									GenerateDisconnectError(b);
 								}
 							}
+
 							QClientScene.HandleClientDisconnect(m_Connection);
-							m_Connection?.InvokeHandlerNoData(33);
+							m_Connection?.InvokeHandlerNoData(QMsgType.Disconnect);
 							break;
 
 						case NetworkEventType.Nothing:
@@ -418,29 +433,33 @@ namespace QuantumUNET
 							QLog.Error($"Unknown network message type received: {networkEventType}");
 							break;
 					}
+
 					if (++num >= 500)
 					{
 						goto Block_17;
 					}
+
 					if (hostId == -1)
 					{
 						goto Block_19;
 					}
+
 					if (networkEventType == NetworkEventType.Nothing)
 					{
 						goto IL_2C6;
 					}
 				}
-				Block_10:
+
+			Block_10:
 				GenerateConnectError(b);
 				return;
-				Block_11:
+			Block_11:
 				GenerateDataError(b);
 				return;
-				Block_17:
+			Block_17:
 				QLog.Log($"MaxEventsPerFrame hit ({500})");
-				Block_19:
-				IL_2C6:
+			Block_19:
+			IL_2C6:
 				if (m_Connection != null && m_AsyncConnect == ConnectState.Connected)
 				{
 					m_Connection.FlushChannels();
@@ -468,8 +487,8 @@ namespace QuantumUNET
 
 		private void GenerateError(int error)
 		{
-			var handler = m_MessageHandlers.GetHandler(34)
-						  ?? m_MessageHandlers.GetHandler(34);
+			var handler = m_MessageHandlers.GetHandler(QMsgType.Error)
+						  ?? m_MessageHandlers.GetHandler(QMsgType.Error);
 			if (handler != null)
 			{
 				var errorMessage = new QErrorMessage
@@ -482,33 +501,11 @@ namespace QuantumUNET
 				var reader = new QNetworkReader(buffer);
 				handler(new QNetworkMessage
 				{
-					MsgType = 34,
+					MsgType = QMsgType.Error,
 					Reader = reader,
 					Connection = m_Connection,
 					ChannelId = 0
 				});
-			}
-		}
-
-		public void GetStatsOut(out int numMsgs, out int numBufferedMsgs, out int numBytes, out int lastBufferedPerSecond)
-		{
-			numMsgs = 0;
-			numBufferedMsgs = 0;
-			numBytes = 0;
-			lastBufferedPerSecond = 0;
-			if (m_Connection != null)
-			{
-				m_Connection.GetStatsOut(out numMsgs, out numBufferedMsgs, out numBytes, out lastBufferedPerSecond);
-			}
-		}
-
-		public void GetStatsIn(out int numMsgs, out int numBytes)
-		{
-			numMsgs = 0;
-			numBytes = 0;
-			if (m_Connection != null)
-			{
-				m_Connection.GetStatsIn(out numMsgs, out numBytes);
 			}
 		}
 
@@ -559,6 +556,7 @@ namespace QuantumUNET
 					}
 				}
 			}
+
 			return dictionary;
 		}
 
@@ -587,6 +585,7 @@ namespace QuantumUNET
 			{
 				allClients[0].Shutdown();
 			}
+
 			allClients = new List<QNetworkClient>();
 			active = false;
 			QClientScene.Shutdown();
@@ -598,6 +597,7 @@ namespace QuantumUNET
 			{
 				NetworkTransport.Init();
 			}
+
 			active = state;
 		}
 

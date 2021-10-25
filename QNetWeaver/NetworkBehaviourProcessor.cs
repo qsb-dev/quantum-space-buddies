@@ -117,12 +117,14 @@ namespace QNetWeaver
 						Weaver.fail = true;
 						return false;
 					}
+
 					worker.Append(worker.Create(OpCodes.Ldloc_0));
 					worker.Append(worker.Create(OpCodes.Ldarg, num));
 					worker.Append(worker.Create(OpCodes.Call, writeFunc));
 					num += 1;
 				}
 			}
+
 			return true;
 		}
 
@@ -135,6 +137,7 @@ namespace QNetWeaver
 					return;
 				}
 			}
+
 			var methodDefinition2 = new MethodDefinition("UNetVersion", MethodAttributes.Private, Weaver.voidType);
 			var ilprocessor = methodDefinition2.Body.GetILProcessor();
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
@@ -169,6 +172,7 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						cctorMethodDef.Body.Instructions.RemoveAt(cctorMethodDef.Body.Instructions.Count - 1);
 					}
 				}
@@ -191,6 +195,7 @@ namespace QNetWeaver
 							ctorMethodDef.Body.Instructions.RemoveAt(ctorMethodDef.Body.Instructions.Count - 1);
 							break;
 						}
+
 						Weaver.fail = true;
 						Log.Error("No .ctor for " + m_td.Name);
 						return;
@@ -266,6 +271,7 @@ namespace QNetWeaver
 						GenerateCommandDelegate(ilprocessor2, Weaver.registerSyncListDelegateReference, m_SyncListInvocationFuncs[syncListIndex], field5);
 						syncListIndex++;
 					}
+
 					ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldstr, m_td.Name));
 					ilprocessor2.Append(ilprocessor2.Create(OpCodes.Ldc_I4, m_QosChannel));
 					ilprocessor2.Append(ilprocessor2.Create(OpCodes.Call, Weaver.RegisterBehaviourReference));
@@ -274,6 +280,7 @@ namespace QNetWeaver
 					{
 						m_td.Methods.Add(cctorMethodDef);
 					}
+
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 					m_td.Attributes = (m_td.Attributes & ~TypeAttributes.BeforeFieldInit);
 					if (m_SyncLists.Count != 0)
@@ -288,6 +295,7 @@ namespace QNetWeaver
 								flag2 = true;
 							}
 						}
+
 						if (methodDefinition8 != null)
 						{
 							if (methodDefinition8.Body.Instructions.Count != 0)
@@ -299,6 +307,7 @@ namespace QNetWeaver
 									Weaver.fail = true;
 									return;
 								}
+
 								methodDefinition8.Body.Instructions.RemoveAt(methodDefinition8.Body.Instructions.Count - 1);
 							}
 						}
@@ -306,17 +315,20 @@ namespace QNetWeaver
 						{
 							methodDefinition8 = new MethodDefinition("Awake", MethodAttributes.Private, Weaver.voidType);
 						}
+
 						var ilprocessor3 = methodDefinition8.Body.GetILProcessor();
 						if (!flag2)
 						{
 							CheckForCustomBaseClassAwakeMethod(ilprocessor3);
 						}
+
 						var num6 = 0;
 						foreach (var fd in m_SyncLists)
 						{
 							GenerateSyncListInitializer(ilprocessor3, fd, num6);
 							num6++;
 						}
+
 						ilprocessor3.Append(ilprocessor3.Create(OpCodes.Ret));
 						if (!flag2)
 						{
@@ -339,6 +351,7 @@ namespace QNetWeaver
 					awakeWorker.Append(awakeWorker.Create(OpCodes.Call, methodDefinition));
 					break;
 				}
+
 				baseType = baseType.Resolve().BaseType;
 			}
 		}
@@ -356,6 +369,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			var method = Weaver.scriptDef.MainModule.ImportReference(Enumerable.First<MethodDefinition>(fd.FieldType.Resolve().Methods, (MethodDefinition x) => x.Name == ".ctor" && !x.HasParameters));
 			ctorWorker.Append(ctorWorker.Create(OpCodes.Ldarg_0));
 			ctorWorker.Append(ctorWorker.Create(OpCodes.Newobj, method));
@@ -402,6 +416,7 @@ namespace QNetWeaver
 					return;
 				}
 			}
+
 			var methodDefinition2 = new MethodDefinition("OnSerialize", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.boolType);
 			methodDefinition2.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkWriterType)));
 			methodDefinition2.Parameters.Add(new ParameterDefinition("forceAll", ParameterAttributes.None, Weaver.boolType));
@@ -440,6 +455,7 @@ namespace QNetWeaver
 				{
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				m_td.Methods.Add(methodDefinition2);
 			}
@@ -469,8 +485,10 @@ namespace QNetWeaver
 						}));
 						return;
 					}
+
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Call, writeFunc));
 				}
+
 				Weaver.DLog(m_td, $"    Finish foreach 1", new object[0]);
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4_1));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
@@ -512,10 +530,12 @@ namespace QNetWeaver
 						Weaver.fail = true;
 						return;
 					}
+
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Call, writeFunc2));
 					ilprocessor.Append(instruction2);
 					num++;
 				}
+
 				Weaver.DLog(m_td, $"    Finish foreach 2", new object[0]);
 				WriteDirtyCheck(ilprocessor, false);
 				if (Weaver.generateLogErrors)
@@ -523,6 +543,7 @@ namespace QNetWeaver
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldstr, "Injected Serialize " + m_td.Name));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.logErrorReference));
 				}
+
 				if (flag)
 				{
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
@@ -533,10 +554,12 @@ namespace QNetWeaver
 				{
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				m_td.Methods.Add(methodDefinition2);
 				Weaver.DLog(m_td, $"    Finish", new object[0]);
 			}
+
 			Weaver.DLog(m_td, $"  Finish", new object[0]);
 		}
 
@@ -554,6 +577,7 @@ namespace QNetWeaver
 				serWorker.Append(serWorker.Create(OpCodes.Ldc_I4_1));
 				serWorker.Append(serWorker.Create(OpCodes.Stloc_0));
 			}
+
 			serWorker.Append(instruction);
 		}
 
@@ -574,6 +598,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			return result;
 		}
 
@@ -599,16 +624,19 @@ namespace QNetWeaver
 										Weaver.fail = true;
 										return false;
 									}
+
 									if (methodDefinition.Parameters[0].ParameterType != syncVar.FieldType)
 									{
 										Log.Error("SyncVar Hook function " + text + " has wrong type signature for " + m_td.Name);
 										Weaver.fail = true;
 										return false;
 									}
+
 									foundMethod = methodDefinition;
 									return true;
 								}
 							}
+
 							Log.Error("SyncVar Hook function " + text + " not found for " + m_td.Name);
 							Weaver.fail = true;
 							return false;
@@ -616,6 +644,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			return true;
 		}
 
@@ -651,15 +680,18 @@ namespace QNetWeaver
 							{
 								continue;
 							}
+
 							if (HasMethod("GetNetworkChannel"))
 							{
 								Log.Error("GetNetworkChannel, is already implemented, please make sure you either use NetworkSettings or GetNetworkChannel");
 								Weaver.fail = true;
 								return;
 							}
+
 							m_QosChannel = (int)customAttributeNamedArgument.Argument.Value;
 							GenerateNetworkChannelSetting(m_QosChannel);
 						}
+
 						if (customAttributeNamedArgument.Name == "sendInterval")
 						{
 							if (Math.Abs((float)customAttributeNamedArgument.Argument.Value - 0.1f) > 1E-05f)
@@ -670,6 +702,7 @@ namespace QNetWeaver
 									Weaver.fail = true;
 									return;
 								}
+
 								GenerateNetworkIntervalSetting((float)customAttributeNamedArgument.Argument.Value);
 							}
 						}
@@ -690,6 +723,7 @@ namespace QNetWeaver
 					return;
 				}
 			}
+
 			foreach (var fieldDefinition in m_SyncVars)
 			{
 				if (fieldDefinition.FieldType.FullName == Weaver.gameObjectType.FullName)
@@ -699,6 +733,7 @@ namespace QNetWeaver
 						methodDefinition = new MethodDefinition("PreStartClient", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.voidType);
 						ilprocessor = methodDefinition.Body.GetILProcessor();
 					}
+
 					var field = m_SyncVarNetIds[m_NetIdFieldCounter];
 					m_NetIdFieldCounter++;
 					var instruction = ilprocessor.Create(OpCodes.Nop);
@@ -714,6 +749,7 @@ namespace QNetWeaver
 					ilprocessor.Append(instruction);
 				}
 			}
+
 			if (methodDefinition != null)
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
@@ -732,6 +768,7 @@ namespace QNetWeaver
 					return;
 				}
 			}
+
 			var methodDefinition2 = new MethodDefinition("OnDeserialize", MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.Virtual | MethodAttributes.HideBySig, Weaver.voidType);
 			methodDefinition2.Parameters.Add(new ParameterDefinition("reader", ParameterAttributes.None, Weaver.scriptDef.MainModule.ImportReference(Weaver.NetworkReaderType)));
 			methodDefinition2.Parameters.Add(new ParameterDefinition("initialState", ParameterAttributes.None, Weaver.boolType));
@@ -747,6 +784,7 @@ namespace QNetWeaver
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Call, methodReference));
 				}
 			}
+
 			if (m_SyncVars.Count == 0)
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
@@ -794,11 +832,13 @@ namespace QNetWeaver
 								Weaver.fail = true;
 								return;
 							}
+
 							ilprocessor.Append(ilprocessor.Create(OpCodes.Call, readFunc));
 							ilprocessor.Append(ilprocessor.Create(OpCodes.Stfld, fieldDefinition));
 						}
 					}
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				ilprocessor.Append(instruction);
 				methodDefinition2.Body.InitLocals = true;
@@ -839,10 +879,12 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						if (!CheckForHookFunction(fieldDefinition2, out var methodDefinition3))
 						{
 							return;
 						}
+
 						if (methodDefinition3 == null)
 						{
 							ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
@@ -858,14 +900,17 @@ namespace QNetWeaver
 							ilprocessor.Append(ilprocessor.Create(OpCodes.Call, methodDefinition3));
 						}
 					}
+
 					ilprocessor.Append(instruction2);
 					num++;
 				}
+
 				if (Weaver.generateLogErrors)
 				{
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ldstr, "Injected Deserialize " + m_td.Name));
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.logErrorReference));
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				m_td.Methods.Add(methodDefinition2);
 			}
@@ -894,6 +939,7 @@ namespace QNetWeaver
 						Weaver.fail = true;
 						return false;
 					}
+
 					worker.Append(worker.Create(OpCodes.Ldarg_1));
 					worker.Append(worker.Create(OpCodes.Call, readFunc));
 					if (parameterDefinition.ParameterType.FullName == Weaver.singleType.FullName)
@@ -906,6 +952,7 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			return true;
 		}
 
@@ -929,6 +976,7 @@ namespace QNetWeaver
 				AddInvokeParameters(methodDefinition.Parameters);
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -945,6 +993,7 @@ namespace QNetWeaver
 			{
 				methodDefinition.Parameters.Add(new ParameterDefinition(parameterDefinition.Name, ParameterAttributes.None, parameterDefinition.ParameterType));
 			}
+
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
 			WriteSetupLocals(ilprocessor);
@@ -953,6 +1002,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldstr, "Call Command function " + md.Name));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.logErrorReference));
 			}
+
 			WriteClientActiveCheck(ilprocessor, md.Name, label, "Command function");
 			var instruction = ilprocessor.Create(OpCodes.Nop);
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
@@ -963,6 +1013,7 @@ namespace QNetWeaver
 			{
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg, i + 1));
 			}
+
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Call, md));
 			ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 			ilprocessor.Append(instruction);
@@ -995,12 +1046,14 @@ namespace QNetWeaver
 						value = (int)customAttributeNamedArgument.Argument.Value;
 					}
 				}
+
 				var text = md.Name;
 				var num = text.IndexOf("InvokeCmd");
 				if (num > -1)
 				{
 					text = text.Substring("InvokeCmd".Length);
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4, value));
@@ -1009,6 +1062,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -1033,6 +1087,7 @@ namespace QNetWeaver
 				AddInvokeParameters(methodDefinition.Parameters);
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -1056,6 +1111,7 @@ namespace QNetWeaver
 				AddInvokeParameters(methodDefinition.Parameters);
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -1066,6 +1122,7 @@ namespace QNetWeaver
 			{
 				methodDefinition.Parameters.Add(new ParameterDefinition(parameterDefinition.Name, ParameterAttributes.None, parameterDefinition.ParameterType));
 			}
+
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
 			WriteSetupLocals(ilprocessor);
@@ -1106,12 +1163,14 @@ namespace QNetWeaver
 						value = (int)customAttributeNamedArgument.Argument.Value;
 					}
 				}
+
 				var text = md.Name;
 				var num = text.IndexOf("InvokeTargetRpc");
 				if (num > -1)
 				{
 					text = text.Substring("InvokeTargetRpc".Length);
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_1));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
@@ -1121,6 +1180,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -1131,6 +1191,7 @@ namespace QNetWeaver
 			{
 				methodDefinition.Parameters.Add(new ParameterDefinition(parameterDefinition.Name, ParameterAttributes.None, parameterDefinition.ParameterType));
 			}
+
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
 			WriteSetupLocals(ilprocessor);
@@ -1163,12 +1224,14 @@ namespace QNetWeaver
 						value = (int)customAttributeNamedArgument.Argument.Value;
 					}
 				}
+
 				var text = md.Name;
 				var num = text.IndexOf("InvokeRpc");
 				if (num > -1)
 				{
 					text = text.Substring("InvokeRpc".Length);
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4, value));
@@ -1177,6 +1240,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -1229,6 +1293,7 @@ namespace QNetWeaver
 			{
 				result = true;
 			}
+
 			return result;
 		}
 
@@ -1320,9 +1385,11 @@ namespace QNetWeaver
 								return false;
 							}
 						}
+
 						i++;
 						continue;
 					}
+
 					Log.Error(string.Concat(new string[]
 					{
 						actionType,
@@ -1336,8 +1403,10 @@ namespace QNetWeaver
 					Weaver.fail = true;
 					result = false;
 				}
+
 				return result;
 			}
+
 			return true;
 		}
 
@@ -1374,6 +1443,7 @@ namespace QNetWeaver
 			{
 				result = (ProcessMethodsValidateFunction(md, ca, "Command") && ProcessMethodsValidateParameters(md, ca, "Command"));
 			}
+
 			return result;
 		}
 
@@ -1441,6 +1511,7 @@ namespace QNetWeaver
 			{
 				result = ProcessMethodsValidateParameters(md, ca, "Target Rpc");
 			}
+
 			return result;
 		}
 
@@ -1477,6 +1548,7 @@ namespace QNetWeaver
 			{
 				result = (ProcessMethodsValidateFunction(md, ca, "Rpc") && ProcessMethodsValidateParameters(md, ca, "Rpc"));
 			}
+
 			return result;
 		}
 
@@ -1494,6 +1566,7 @@ namespace QNetWeaver
 						{
 							return;
 						}
+
 						if (hashSet.Contains(methodDefinition.Name))
 						{
 							Log.Error(string.Concat(new string[]
@@ -1507,6 +1580,7 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						hashSet.Add(methodDefinition.Name);
 						m_Cmds.Add(methodDefinition);
 						var methodDefinition2 = ProcessCommandInvoke(methodDefinition);
@@ -1514,6 +1588,7 @@ namespace QNetWeaver
 						{
 							m_CmdInvocationFuncs.Add(methodDefinition2);
 						}
+
 						var methodDefinition3 = ProcessCommandCall(methodDefinition, customAttribute);
 						if (methodDefinition3 != null)
 						{
@@ -1521,6 +1596,7 @@ namespace QNetWeaver
 							Weaver.lists.replacedMethods.Add(methodDefinition);
 							Weaver.lists.replacementMethods.Add(methodDefinition3);
 						}
+
 						break;
 					}
 					else if (customAttribute.AttributeType.FullName == Weaver.TargetRpcType.FullName)
@@ -1529,6 +1605,7 @@ namespace QNetWeaver
 						{
 							return;
 						}
+
 						if (hashSet.Contains(methodDefinition.Name))
 						{
 							Log.Error(string.Concat(new string[]
@@ -1542,6 +1619,7 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						hashSet.Add(methodDefinition.Name);
 						m_TargetRpcs.Add(methodDefinition);
 						var methodDefinition4 = ProcessTargetRpcInvoke(methodDefinition);
@@ -1549,6 +1627,7 @@ namespace QNetWeaver
 						{
 							m_TargetRpcInvocationFuncs.Add(methodDefinition4);
 						}
+
 						var methodDefinition5 = ProcessTargetRpcCall(methodDefinition, customAttribute);
 						if (methodDefinition5 != null)
 						{
@@ -1556,6 +1635,7 @@ namespace QNetWeaver
 							Weaver.lists.replacedMethods.Add(methodDefinition);
 							Weaver.lists.replacementMethods.Add(methodDefinition5);
 						}
+
 						break;
 					}
 					else if (customAttribute.AttributeType.FullName == Weaver.ClientRpcType.FullName)
@@ -1564,6 +1644,7 @@ namespace QNetWeaver
 						{
 							return;
 						}
+
 						if (hashSet.Contains(methodDefinition.Name))
 						{
 							Log.Error(string.Concat(new string[]
@@ -1577,6 +1658,7 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						hashSet.Add(methodDefinition.Name);
 						m_Rpcs.Add(methodDefinition);
 						var methodDefinition6 = ProcessRpcInvoke(methodDefinition);
@@ -1584,6 +1666,7 @@ namespace QNetWeaver
 						{
 							m_RpcInvocationFuncs.Add(methodDefinition6);
 						}
+
 						var methodDefinition7 = ProcessRpcCall(methodDefinition, customAttribute);
 						if (methodDefinition7 != null)
 						{
@@ -1591,30 +1674,37 @@ namespace QNetWeaver
 							Weaver.lists.replacedMethods.Add(methodDefinition);
 							Weaver.lists.replacementMethods.Add(methodDefinition7);
 						}
+
 						break;
 					}
 				}
 			}
+
 			foreach (var item in m_CmdInvocationFuncs)
 			{
 				m_td.Methods.Add(item);
 			}
+
 			foreach (var item2 in m_CmdCallFuncs)
 			{
 				m_td.Methods.Add(item2);
 			}
+
 			foreach (var item3 in m_RpcInvocationFuncs)
 			{
 				m_td.Methods.Add(item3);
 			}
+
 			foreach (var item4 in m_TargetRpcInvocationFuncs)
 			{
 				m_td.Methods.Add(item4);
 			}
+
 			foreach (var item5 in m_RpcCallFuncs)
 			{
 				m_td.Methods.Add(item5);
 			}
+
 			foreach (var item6 in m_TargetRpcCallFuncs)
 			{
 				m_td.Methods.Add(item6);
@@ -1632,6 +1722,7 @@ namespace QNetWeaver
 					break;
 				}
 			}
+
 			MethodDefinition result;
 			if (fieldDefinition == null)
 			{
@@ -1668,6 +1759,7 @@ namespace QNetWeaver
 					result = methodDefinition;
 				}
 			}
+
 			return result;
 		}
 
@@ -1679,6 +1771,7 @@ namespace QNetWeaver
 			{
 				methodDefinition.Parameters.Add(new ParameterDefinition(parameterDefinition.Name, ParameterAttributes.None, parameterDefinition.ParameterType));
 			}
+
 			var ilprocessor = methodDefinition.Body.GetILProcessor();
 			var label = ilprocessor.Create(OpCodes.Nop);
 			WriteSetupLocals(ilprocessor);
@@ -1711,6 +1804,7 @@ namespace QNetWeaver
 						value = (int)customAttributeNamedArgument.Argument.Value;
 					}
 				}
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldloc_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldc_I4, value));
@@ -1719,6 +1813,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
 				result = methodDefinition;
 			}
+
 			return result;
 		}
 
@@ -1743,6 +1838,7 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						if (eventDefinition.EventType.Resolve().HasGenericParameters)
 						{
 							Log.Error(string.Concat(new string[]
@@ -1756,12 +1852,14 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						m_Events.Add(eventDefinition);
 						var methodDefinition = ProcessEventInvoke(eventDefinition);
 						if (methodDefinition == null)
 						{
 							return;
 						}
+
 						m_td.Methods.Add(methodDefinition);
 						m_EventInvocationFuncs.Add(methodDefinition);
 						Weaver.DLog(m_td, "ProcessEvent " + eventDefinition, new object[0]);
@@ -1800,7 +1898,7 @@ namespace QNetWeaver
 			CheckForHookFunction(fd, out var methodDefinition2);
 			if (methodDefinition2 != null)
 			{
-				
+
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkServerGetLocalClientActive));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Brfalse, noOperatorInstruction));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
@@ -1852,6 +1950,7 @@ namespace QNetWeaver
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Ldarg_0));
 				ilprocessor.Append(ilprocessor.Create(OpCodes.Call, Weaver.NetworkBehaviourClientSendUpdateVars));
 			}
+
 			ilprocessor.Append(returnInstruction);
 			methodDefinition.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.In, fd.FieldType));
 			methodDefinition.SemanticsAttributes = MethodSemanticsAttributes.Setter;
@@ -1870,6 +1969,7 @@ namespace QNetWeaver
 				m_SyncVarNetIds.Add(fieldDefinition);
 				Weaver.lists.netIdFields.Add(fieldDefinition);
 			}
+
 			var methodDefinition = ProcessSyncVarGet(fd, name);
 			var methodDefinition2 = ProcessSyncVarSet(fd, name, dirtyBit, fieldDefinition);
 			var item = new PropertyDefinition("Network" + name, PropertyAttributes.None, fd.FieldType)
@@ -1932,30 +2032,35 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						if (Weaver.IsDerivedFrom(typeDefinition, Weaver.ScriptableObjectType))
 						{
 							Log.Error("SyncVar [" + fieldDefinition.FullName + "] cannot be derived from ScriptableObject.");
 							Weaver.fail = true;
 							return;
 						}
+
 						if ((ushort)(fieldDefinition.Attributes & FieldAttributes.Static) != 0)
 						{
 							Log.Error("SyncVar [" + fieldDefinition.FullName + "] cannot be static.");
 							Weaver.fail = true;
 							return;
 						}
+
 						if (typeDefinition.HasGenericParameters)
 						{
 							Log.Error("SyncVar [" + fieldDefinition.FullName + "] cannot have generic parameters.");
 							Weaver.fail = true;
 							return;
 						}
+
 						if (typeDefinition.IsInterface)
 						{
 							Log.Error("SyncVar [" + fieldDefinition.FullName + "] cannot be an interface.");
 							Weaver.fail = true;
 							return;
 						}
+
 						var name = typeDefinition.Module.Name;
 						if (name != Weaver.scriptDef.MainModule.Name && name != Weaver.UnityAssemblyDefinition.MainModule.Name && name != Weaver.QNetAssemblyDefinition.MainModule.Name && name != Weaver.corLib.Name && name != "System.Runtime.dll")
 						{
@@ -1963,17 +2068,20 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						if (fieldDefinition.FieldType.IsArray)
 						{
 							Log.Error("SyncVar [" + fieldDefinition.FullName + "] cannot be an array. Use a SyncList instead.");
 							Weaver.fail = true;
 							return;
 						}
+
 						if (Helpers.InheritsFromSyncList(fieldDefinition.FieldType))
 						{
 							Log.Warning(string.Format("Script class [{0}] has [SyncVar] attribute on SyncList field {1}, SyncLists should not be marked with SyncVar.", m_td.FullName, fieldDefinition.Name));
 							break;
 						}
+
 						m_SyncVars.Add(fieldDefinition);
 						ProcessSyncVar(fieldDefinition, 1 << num2);
 						num2++;
@@ -1991,15 +2099,18 @@ namespace QNetWeaver
 							Weaver.fail = true;
 							return;
 						}
+
 						break;
 					}
 				}
+
 				if (fieldDefinition.FieldType.FullName.Contains("UnityEngine.Networking.SyncListStruct"))
 				{
 					Log.Error("SyncListStruct member variable [" + fieldDefinition.FullName + "] must use a dervied class, like \"class MySyncList : SyncListStruct<MyStruct> {}\".");
 					Weaver.fail = true;
 					return;
 				}
+
 				if (Weaver.IsDerivedFrom(fieldDefinition.FieldType.Resolve(), Weaver.SyncListType))
 				{
 					if (fieldDefinition.IsStatic)
@@ -2015,6 +2126,7 @@ namespace QNetWeaver
 						Weaver.fail = true;
 						return;
 					}
+
 					m_SyncVars.Add(fieldDefinition);
 					m_SyncLists.Add(fieldDefinition);
 					list.Add(ProcessSyncList(fieldDefinition, 1 << num2));
@@ -2035,19 +2147,23 @@ namespace QNetWeaver
 					}
 				}
 			}
+
 			foreach (var fieldDefinition2 in list)
 			{
 				m_td.Fields.Add(fieldDefinition2);
 				m_SyncListStaticFields.Add(fieldDefinition2);
 			}
+
 			foreach (var item in m_SyncVarNetIds)
 			{
 				m_td.Fields.Add(item);
 			}
+
 			foreach (var item2 in m_SyncListInvocationFuncs)
 			{
 				m_td.Methods.Add(item2);
 			}
+
 			Weaver.SetNumSyncVars(m_td.FullName, num);
 		}
 
@@ -2068,6 +2184,7 @@ namespace QNetWeaver
 					return true;
 				}
 			}
+
 			return false;
 		}
 

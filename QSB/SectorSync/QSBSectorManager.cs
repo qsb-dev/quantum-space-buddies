@@ -1,6 +1,6 @@
 ﻿using OWML.Common;
 using QSB.SectorSync.WorldObjects;
-using QSB.Syncs.TransformSync;
+using QSB.Syncs.Sectored;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -18,17 +18,26 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
+		public List<BaseSectoredSync> SectoredSyncs = new List<BaseSectoredSync>();
+
 		public void Invoke()
 		{
-			foreach (var sync in SectoredTransformSync.SectoredNetworkTransformList)
+			if (!Instance.IsReady || !AllReady)
+			{
+				return;
+			}
+
+			foreach (var sync in SectoredSyncs)
 			{
 				if (sync.AttachedObject == null)
 				{
 					continue;
 				}
-				if (sync.HasAuthority 
-					&& sync.AttachedObject.activeInHierarchy 
-					&& sync.IsReady)
+
+				if (sync.HasAuthority
+					&& sync.AttachedObject.gameObject.activeInHierarchy
+					&& sync.IsReady
+					&& sync.SectorSync.IsReady)
 				{
 					CheckTransformSyncSector(sync);
 				}
@@ -44,7 +53,7 @@ namespace QSB.SectorSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Warning);
+			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
 				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
@@ -60,11 +69,12 @@ namespace QSB.SectorSync
 					DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
 				}
 			}
+
 			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(SectoredTransformSync transformSync)
+		private void CheckTransformSyncSector(BaseSectoredSync transformSync)
 		{
 			var attachedObject = transformSync.AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
@@ -72,10 +82,12 @@ namespace QSB.SectorSync
 			{
 				return;
 			}
+
 			if (closestSector == transformSync.ReferenceSector)
 			{
 				return;
 			}
+
 			transformSync.SetReferenceSector(closestSector);
 		}
 	}

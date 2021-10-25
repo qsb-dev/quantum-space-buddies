@@ -30,6 +30,7 @@ namespace QSB.Animation.Player
 				SyncLocalCrouch();
 				return;
 			}
+
 			SyncRemoteCrouch();
 		}
 
@@ -39,7 +40,8 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
-			var jumpChargeFraction = _playerController.GetJumpChargeFraction();
+
+			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
 			_crouchValue = jumpChargeFraction;
 		}
 
@@ -49,6 +51,7 @@ namespace QSB.Animation.Player
 			{
 				return;
 			}
+
 			CrouchParam.Target = _crouchValue;
 			CrouchParam.Smooth(CrouchSmoothTime);
 			var jumpChargeFraction = CrouchParam.Current;

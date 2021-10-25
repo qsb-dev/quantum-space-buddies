@@ -1,23 +1,15 @@
-﻿using QSB.Patches;
+﻿using HarmonyLib;
+using QSB.Patches;
 
 namespace QSB.Player.Patches
 {
+	[HarmonyPatch]
 	internal class PlayerPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public override void DoPatches()
-		{
-			QSBCore.HarmonyHelper.AddPrefix<PlayerCrushedController>("CrushPlayer", typeof(PlayerPatches), nameof(PlayerCrushedController_CrushPlayer));
-			QSBCore.HarmonyHelper.AddPrefix<PauseMenuManager>("OnExitToMainMenu", typeof(PlayerPatches), nameof(PauseMenuManager_OnExitToMainMenu));
-		}
-
-		public override void DoUnpatches()
-		{
-			QSBCore.HarmonyHelper.Unpatch<PlayerCrushedController>("CrushPlayer");
-			QSBCore.HarmonyHelper.Unpatch<PauseMenuManager>("OnExitToMainMenu");
-		}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerCrushedController), nameof(PlayerCrushedController.CrushPlayer))]
 		public static bool PlayerCrushedController_CrushPlayer()
 		{
 			// #CrushIt https://www.twitch.tv/videos/846916781?t=00h03m51s
@@ -26,6 +18,9 @@ namespace QSB.Player.Patches
 			return false;
 		}
 
-		public static void PauseMenuManager_OnExitToMainMenu() => QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.OnExitToMainMenu))]
+		public static void PauseMenuManager_OnExitToMainMenu()
+			=> QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
 	}
 }

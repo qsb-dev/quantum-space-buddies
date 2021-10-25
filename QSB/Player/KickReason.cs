@@ -2,6 +2,9 @@
 {
 	public enum KickReason
 	{
-		VersionNotMatching
+		None,
+		QSBVersionNotMatching,
+		GameVersionNotMatching,
+		GamePlatformNotMatching
 	}
 }

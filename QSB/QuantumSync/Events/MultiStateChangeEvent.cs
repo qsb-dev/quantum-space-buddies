@@ -28,6 +28,7 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
+
 			var qsbObj = QSBWorldSync.GetWorldFromId<QSBMultiStateQuantumObject>(message.ObjectId);
 			qsbObj.DebugBoxText.text = message.StateIndex.ToString();
 		}
@@ -38,12 +39,14 @@ namespace QSB.QuantumSync.Events
 			{
 				return;
 			}
+
 			var qsbObj = QSBWorldSync.GetWorldFromId<QSBMultiStateQuantumObject>(message.ObjectId);
 			if (qsbObj.ControllingPlayer != message.FromId)
 			{
 				DebugLog.ToConsole($"Error - Got MultiStateChangeEvent for {qsbObj.Name} from {message.FromId}, but it's currently controlled by {qsbObj.ControllingPlayer}!", MessageType.Error);
 				return;
 			}
+
 			qsbObj.ChangeState(message.StateIndex);
 		}
 	}
