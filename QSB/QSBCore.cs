@@ -131,6 +131,10 @@ namespace QSB
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
 				Application.runInBackground = true;
+				if (Locator.GetSceneMenuManager().pauseMenu.IsOpen())
+				{
+					Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
+				}
 			}
 		}
 
