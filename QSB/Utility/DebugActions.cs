@@ -59,6 +59,7 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)
 			{
+				PlayerData.SaveWarpedToTheEye(60);
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
 			}
 		}
