@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 257686626
+CRC: 3320435706
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b5ac4b30628daf591d68835ebe7eeff0
+    Hash: 3df7152b225d5dd66f0a326cb9ec0cef
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c8bdde0b3a6c63068e0e0c532e8ccb6e
+    Hash: 50a27bfc3e679077929938a6fa57f4db
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -25,11 +25,11 @@ ClassTypes:
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
+  Script: {instanceID: 0}
+- Class: 213
   Script: {instanceID: 0}
 - Class: 222
   Script: {instanceID: 0}
@@ -40,4 +40,5 @@ ClassTypes:
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/DialogueBubble.prefab
+- Assets/GameAssets/Texture2D/UI_DialogueBox_d.png
 Dependencies: []
