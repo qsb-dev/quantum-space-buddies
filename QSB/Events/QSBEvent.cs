@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Components;
+using System;
 
 namespace QSB.Events
 {
@@ -78,14 +79,21 @@ namespace QSB.Events
 				return;
 			}
 
-			if (message.FromId == QSBPlayerManager.LocalPlayerId ||
-				QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
+			try
 			{
-				OnReceiveLocal(QSBCore.IsHost, message);
-				return;
-			}
+				if (message.FromId == QSBPlayerManager.LocalPlayerId ||
+				QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
+				{
+					OnReceiveLocal(QSBCore.IsHost, message);
+					return;
+				}
 
-			OnReceiveRemote(QSBCore.IsHost, message);
+				OnReceiveRemote(QSBCore.IsHost, message);
+			}
+			catch (Exception ex)
+			{
+				DebugLog.ToConsole($"Error - Exception handling message {message.GetType().Name} : {ex}", MessageType.Error);
+			}
 		}
 	}
 }
