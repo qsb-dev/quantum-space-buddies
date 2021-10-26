@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: a561d4a8b0d22c744a16a573d5efe615, type: 2}
+  m_Material: {fileID: 2100000, guid: 4e6da33672306aa4f9e9fe70ddfd9d8b, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 1
@@ -70,7 +70,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 19a1b91dbf7856445a66d7c242a73641, type: 3}
+    m_Font: {fileID: 12800000, guid: 1c803be2199fabd41b853684b5e45b6a, type: 3}
     m_FontSize: 35
     m_FontStyle: 0
     m_BestFit: 0
@@ -82,15 +82,15 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '<b>OOPSIE WOOPSIE!!</b>
+  m_Text: 'OOPSIE WOOPSIE!!
 
     This isn''t meant to appear.
 
-    <i><size=20>
-    what did i do wrong...</size></i>
+    <i><size=20> what
+    did i do wrong...</size></i>
 
-    Submit an error to the QSB Github with
-    the reproduction steps please!
+    Submit an error to the QSB Github with the
+    reproduction steps please!
 
     <size=30>- Your humble servant, <color=magenta>_nebula</color></size>'
 --- !u!223 &4465360732322480311
