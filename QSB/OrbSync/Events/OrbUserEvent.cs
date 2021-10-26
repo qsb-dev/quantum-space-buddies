@@ -69,7 +69,7 @@ namespace QSB.OrbSync.Events
 				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
 			}
 
-			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs
+			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null)
 				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			if (orbSync == null)
 			{
@@ -115,13 +115,13 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			if (!NomaiOrbTransformSync.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform))
+			if (!NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null).Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform))
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
 
-			var orb = NomaiOrbTransformSync.OrbTransformSyncs
+			var orb = NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null)
 				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			orb.enabled = true;
 		}
