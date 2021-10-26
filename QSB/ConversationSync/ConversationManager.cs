@@ -23,7 +23,7 @@ namespace QSB.ConversationSync
 
 			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
 
-			var font = (Font)Resources.Load(@"fonts\english - latin\HVD Fonts - BrandonGroteque-Bold_Dynamic");
+			var font = (Font)Resources.Load(@"fonts\english - latin\HVD Fonts - BrandonGrotesque-Bold_Dynamic");
 			if (font == null)
 			{
 				DebugLog.ToConsole("Error - Font is null!", MessageType.Error);
