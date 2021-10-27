@@ -82,5 +82,16 @@ namespace QSB.Animation.Player.Thrusters
 		}
 
 		private float GetThrustFraction() => Vector3.Dot(_attachedPlayer.JetpackAcceleration.LocalAcceleration, _thrusterFilter);
+
+		private void OnRenderObject()
+		{
+			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Sphere(_light.transform.position, 0.05f, Color.yellow, false, 4);
+			Popcron.Gizmos.Line(_light.transform.position, _light.transform.parent.position, Color.yellow);
+		}
 	}
 }
