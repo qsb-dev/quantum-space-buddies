@@ -47,10 +47,29 @@ namespace QSB.Animation.Player.Thrusters
 				var gameObject = controller.gameObject;
 				var oldThruster = controller.GetValue<Thruster>("_thruster");
 				var oldLight = controller.GetValue<Light>("_light");
+
+				// pain
+				Vector3 localPos;
+				switch (oldThruster)
+				{
+					case Thruster.Up_RightThruster:
+					case Thruster.Up_LeftThruster:
+						localPos = new Vector3(0, 0, 3);
+						break;
+					case Thruster.Down_RightThruster:
+					case Thruster.Down_LeftThruster:
+						localPos = new Vector3(0, 0, 7);
+						break;
+					default:
+						localPos = new Vector3(0, 0, 5);
+						break;
+				}
+				oldLight.transform.localPosition = localPos;
+
 				var oldAnimCurve = controller.GetValue<AnimationCurve>("_scaleByThrust");
 				var oldScaleSpring = controller.GetValue<DampedSpring>("_scaleSpring");
 				var oldScalar = controller.GetValue<float>("_belowMaxThrustScalar");
-				var oldBase = controller.GetValue<float>("_baseLightRadius");
+				var oldBase = oldLight.range;
 				Object.Destroy(controller);
 				var newObj = gameObject.AddComponent<RemoteThrusterFlameController>();
 				newObj.InitFromOld(oldThruster, oldLight, oldAnimCurve, oldScaleSpring, oldScalar, oldBase, player);
