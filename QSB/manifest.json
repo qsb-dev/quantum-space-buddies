@@ -2,7 +2,6 @@
 	"filename": "QSB.dll",
 	"author": "Nebula, Alek, & Rai",
 	"name": "Quantum Space Buddies",
-	"description": "Adds online multiplayer to the game.",
 	"warning": {
 		"title": "Follow these steps before playing multiplayer :",
 		"body": "- Disable *all* other mods. (Can heavily affect performance)\n- Make sure you are not running any other network-intensive applications.\n- Make sure you have forwarded/opened the correct ports. (See the GitHub readme.)"
