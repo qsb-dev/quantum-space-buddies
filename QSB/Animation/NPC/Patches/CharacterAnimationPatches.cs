@@ -24,7 +24,6 @@ namespace QSB.Animation.NPC.Patches
 			CharacterAnimController __instance,
 			float ___headTrackingWeight,
 			bool ___lookOnlyWhenTalking,
-			bool ____playerInHeadZone,
 			bool ____inConversation,
 			ref float ____currentLookWeight,
 			ref Vector3 ____currentLookTarget,
@@ -97,6 +96,32 @@ namespace QSB.Animation.NPC.Patches
 		}
 
 		[HarmonyPrefix]
+		[HarmonyPatch(typeof(SolanumAnimController), nameof(SolanumAnimController.LateUpdate))]
+		public static bool SolanumLateUpdateReplacement(SolanumAnimController __instance)
+		{
+			if (__instance._animatorStateEvents == null)
+			{
+				__instance._animatorStateEvents = __instance._animator.GetBehaviour<AnimatorStateEvents>();
+				__instance._animatorStateEvents.OnEnterState += __instance.OnEnterAnimatorState;
+			}
+
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance);
+			var playersInHeadZone = qsbObj.GetPlayersInHeadZone();
+
+			Transform targetCamera = playersInHeadZone == null || playersInHeadZone.Count == 0
+				? __instance._playerCameraTransform
+				: QSBPlayerManager.GetClosestPlayerToWorldPoint(playersInHeadZone, __instance.transform.position).CameraBody.transform;
+
+			var targetValue = Quaternion.LookRotation(targetCamera.position - __instance._headBoneTransform.position, __instance.transform.up);
+			__instance._currentLookRotation = __instance._lookSpring.Update(__instance._currentLookRotation, targetValue, Time.deltaTime);
+
+			var position = __instance._headBoneTransform.position + (__instance._currentLookRotation * Vector3.forward);
+			__instance._localLookPosition = __instance.transform.InverseTransformPoint(position);
+
+			return false;
+		}
+
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
 		public static bool HeadZoneExit(CharacterAnimController __instance)
 		{
@@ -111,6 +136,24 @@ namespace QSB.Animation.NPC.Patches
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnEnterWatchVolume))]
+		public static bool EnterWatchZone(NomaiConversationManager __instance)
+		{
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance._solanumAnimController);
+			QSBEventManager.FireEvent(EventNames.QSBEnterNomaiHeadZone, qsbObj.ObjectId);
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnExitWatchVolume))]
+		public static bool ExitWatchZone(NomaiConversationManager __instance)
+		{
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance._solanumAnimController);
+			QSBEventManager.FireEvent(EventNames.QSBExitNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 

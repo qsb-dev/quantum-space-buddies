@@ -22,6 +22,8 @@ namespace QSB.Player.Events
 			GlobalMessenger<int>.AddListener(EventNames.QSBExitPlatform, (int id) => Handler(EnterLeaveType.ExitPlatform, id));
 			GlobalMessenger<int>.AddListener(EventNames.QSBEnterNonNomaiHeadZone, (int id) => Handler(EnterLeaveType.EnterNonNomaiHeadZone, id));
 			GlobalMessenger<int>.AddListener(EventNames.QSBExitNonNomaiHeadZone, (int id) => Handler(EnterLeaveType.ExitNonNomaiHeadZone, id));
+			GlobalMessenger<int>.AddListener(EventNames.QSBEnterNomaiHeadZone, (int id) => Handler(EnterLeaveType.EnterNomaiHeadZone, id));
+			GlobalMessenger<int>.AddListener(EventNames.QSBExitNomaiHeadZone, (int id) => Handler(EnterLeaveType.ExitNomaiHeadZone, id));
 			GlobalMessenger.AddListener(EventNames.EnterShip, () => Handler(EnterLeaveType.EnterShip));
 			GlobalMessenger.AddListener(EventNames.ExitShip, () => Handler(EnterLeaveType.ExitShip));
 		}
@@ -82,6 +84,12 @@ namespace QSB.Player.Events
 					break;
 				case EnterLeaveType.ExitNonNomaiHeadZone:
 					QSBWorldSync.GetWorldFromId<QSBCharacterAnimController>(message.ObjectId).RemovePlayerFromHeadZone(player);
+					break;
+				case EnterLeaveType.EnterNomaiHeadZone:
+					QSBWorldSync.GetWorldFromId<QSBSolanumAnimController>(message.ObjectId).AddPlayerToHeadZone(player);
+					break;
+				case EnterLeaveType.ExitNomaiHeadZone:
+					QSBWorldSync.GetWorldFromId<QSBSolanumAnimController>(message.ObjectId).RemovePlayerFromHeadZone(player);
 					break;
 				case EnterLeaveType.EnterShip:
 					ShipManager.Instance.AddPlayerToShip(player);
