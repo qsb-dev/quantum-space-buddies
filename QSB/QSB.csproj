@@ -44,6 +44,7 @@
     <Compile Include="Animation\NPC\WorldObjects\INpcAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\NpcAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\QSBCharacterAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\QSBSolanumAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\QSBSolanumController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\QSBTravelerController.cs" />
     <Compile Include="Animation\Player\AnimationSync.cs" />
