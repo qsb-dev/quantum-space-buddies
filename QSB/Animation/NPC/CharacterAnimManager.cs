@@ -12,6 +12,7 @@ namespace QSB.Animation.NPC
 			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
 			QSBWorldSync.Init<QSBTravelerController, TravelerController>();
 			QSBWorldSync.Init<QSBSolanumController, NomaiConversationManager>();
+			QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>();
 
 			//MOVE : this is the wrong place to put this... move it to Conversations?
 			QSBWorldSync.OldDialogueTrees.Clear();
