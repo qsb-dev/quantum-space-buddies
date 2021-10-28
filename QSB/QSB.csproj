@@ -44,6 +44,7 @@
     <Compile Include="Animation\NPC\WorldObjects\INpcAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\NpcAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\QSBCharacterAnimController.cs" />
+    <Compile Include="Animation\NPC\WorldObjects\QSBSolanumController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\QSBTravelerController.cs" />
     <Compile Include="Animation\Player\AnimationSync.cs" />
     <Compile Include="Animation\Player\AnimationType.cs" />
@@ -425,6 +426,7 @@
       <Version>2.0.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"
