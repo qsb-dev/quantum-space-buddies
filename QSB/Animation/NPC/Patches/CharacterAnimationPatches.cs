@@ -101,7 +101,7 @@ namespace QSB.Animation.NPC.Patches
 		public static bool HeadZoneExit(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBExitHeadZone, qsbObj.ObjectId);
+			QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
@@ -110,7 +110,7 @@ namespace QSB.Animation.NPC.Patches
 		public static bool HeadZoneEntry(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBEnterHeadZone, qsbObj.ObjectId);
+			QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 

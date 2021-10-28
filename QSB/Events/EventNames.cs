@@ -62,8 +62,8 @@
 		public static string QSBCampfireState = "QSBCampfireState";
 		public static string QSBMarshmallowEvent = "QSBMarshmallowEvent";
 		public static string QSBAnimTrigger = "QSBAnimTrigger";
-		public static string QSBEnterHeadZone = "QSBEnterHeadZone";
-		public static string QSBExitHeadZone = "QSBExitHeadZone";
+		public static string QSBEnterNonNomaiHeadZone = "QSBEnterHeadZone";
+		public static string QSBExitNonNomaiHeadZone = "QSBExitHeadZone";
 		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
 		public static string QSBHatchState = "QSBHatchState";
 		public static string QSBEnableFunnel = "QSBEnableFunnel";
