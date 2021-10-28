@@ -140,6 +140,15 @@ namespace QSB.Animation.NPC.Patches
 		}
 
 		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.Update))]
+		public static bool ReplacementUpdate(NomaiConversationManager __instance)
+		{
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance._solanumAnimController);
+			__instance._playerInWatchVolume = qsbObj.GetPlayersInHeadZone().Any();
+			return true;
+		}
+
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnEnterWatchVolume))]
 		public static bool EnterWatchZone(NomaiConversationManager __instance)
 		{
