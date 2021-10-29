@@ -12,6 +12,13 @@ namespace QSB.QuantumSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
+		/*
+		 * This patch used to be different, but that one completely broke Solanum's NomaiTextLines.
+		 * I have no idea why, and I fixed it by just writing this patch again.
+		 * The patches did the same thing.
+		 * ¯\_(ツ)_/¯
+		 */
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.ChangeQuantumState))]
 		public static bool ChangeQuantumState(QuantumMoon __instance, bool skipInstantVisibilityCheck, ref bool __result)
