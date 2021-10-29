@@ -209,10 +209,7 @@ namespace QSB.DeathSync.Patches
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
-		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
-		{
-			QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
-		}
+		public static void DeathManager_KillPlayer_Postfix(DeathType deathType) => QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]

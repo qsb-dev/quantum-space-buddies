@@ -126,8 +126,8 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return false;
 			}
 
-			Vector3 positionToSet = targetPos;
-			Quaternion rotationToSet = targetRot;
+			var positionToSet = targetPos;
+			var rotationToSet = targetRot;
 
 			if (UseInterpolation)
 			{

@@ -73,12 +73,12 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 
-			for (int i = 0; i < 10; i++)
+			for (var i = 0; i < 10; i++)
 			{
-				FindStateAndOrbit(__instance, out int stateIndex, out int orbitIndex);
+				FindStateAndOrbit(__instance, out var stateIndex, out var orbitIndex);
 
-				GetTargetPosition(__instance, stateIndex, orbitIndex, out float orbitRadius, out OWRigidbody bodyToOrbit, out Vector3 targetPosition, out Vector3 onUnitSphere);
-				
+				GetTargetPosition(__instance, stateIndex, orbitIndex, out var orbitRadius, out var bodyToOrbit, out var targetPosition, out var onUnitSphere);
+
 				if (!Physics.CheckSphere(targetPosition, __instance._sphereCheckRadius, OWLayerMask.physicalMask) || __instance._collapseToIndex != -1)
 				{
 					__instance._visibilityTracker.transform.position = targetPosition;
@@ -139,7 +139,7 @@ namespace QSB.QuantumSync.Patches
 					: __instance.GetRandomStateIndex();
 			orbitIndex = -1;
 
-			for (int j = 0; j < __instance._orbits.Length; j++)
+			for (var j = 0; j < __instance._orbits.Length; j++)
 			{
 				if (__instance._orbits[j].GetStateIndex() == stateIndex)
 				{
@@ -163,11 +163,11 @@ namespace QSB.QuantumSync.Patches
 			}
 			__instance._visibilityTracker.transform.localPosition = Vector3.zero;
 			__instance._constantForceDetector.AddConstantVolume(bodyToOrbit.GetAttachedGravityVolume(), true, true);
-			Vector3 bodyVelocity = bodyToOrbit.GetVelocity();
+			var bodyVelocity = bodyToOrbit.GetVelocity();
 
 			if (__instance._useInitialMotion)
 			{
-				InitialMotion component = bodyToOrbit.GetComponent<InitialMotion>();
+				var component = bodyToOrbit.GetComponent<InitialMotion>();
 				bodyVelocity = (component != null)
 					? component.GetInitVelocity()
 					: Vector3.zero;
@@ -182,7 +182,7 @@ namespace QSB.QuantumSync.Patches
 			__instance._collapseToIndex = -1;
 			foundNewPosition = true;
 
-			for (int k = 0; k < __instance._stateSkipCounts.Length; k++)
+			for (var k = 0; k < __instance._stateSkipCounts.Length; k++)
 			{
 				__instance._stateSkipCounts[k] = (k == __instance._stateIndex)
 					? 0
@@ -207,7 +207,7 @@ namespace QSB.QuantumSync.Patches
 			__instance._referenceFrameVolume.gameObject.SetActive(__instance._stateIndex != 5);
 			__instance._moonBody.SetIsTargetable(__instance._stateIndex != 5);
 
-			for (int l = 0; l < __instance._deactivateAtEye.Length; l++)
+			for (var l = 0; l < __instance._deactivateAtEye.Length; l++)
 			{
 				__instance._deactivateAtEye[l].SetActive(__instance._stateIndex != 5);
 			}

@@ -1,6 +1,4 @@
-﻿using OWML.Utils;
-
-namespace QSB.Animation.NPC.WorldObjects
+﻿namespace QSB.Animation.NPC.WorldObjects
 {
 	internal class QSBTravelerController : NpcAnimController<TravelerController>
 	{

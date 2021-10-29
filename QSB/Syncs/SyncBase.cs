@@ -164,10 +164,7 @@ namespace QSB.Syncs
 			_isInitialized = true;
 		}
 
-		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
-		{
-			_isInitialized = false;
-		}
+		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => _isInitialized = false;
 
 		public override void Update()
 		{

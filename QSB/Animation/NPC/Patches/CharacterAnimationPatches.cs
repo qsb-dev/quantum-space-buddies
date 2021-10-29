@@ -8,7 +8,6 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches
@@ -108,7 +107,7 @@ namespace QSB.Animation.NPC.Patches
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance);
 			var playersInHeadZone = qsbObj.GetPlayersInHeadZone();
 
-			Transform targetCamera = playersInHeadZone == null || playersInHeadZone.Count == 0
+			var targetCamera = playersInHeadZone == null || playersInHeadZone.Count == 0
 				? __instance._playerCameraTransform
 				: QSBPlayerManager.GetClosestPlayerToWorldPoint(playersInHeadZone, __instance.transform.position).CameraBody.transform;
 

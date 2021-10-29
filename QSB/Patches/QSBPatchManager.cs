@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using OWML.Utils;
 using QSB.Animation.NPC.Patches;
 using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;

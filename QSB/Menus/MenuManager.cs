@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace QSB.Menus
 {
-	class MenuManager : MonoBehaviour
+	internal class MenuManager : MonoBehaviour
 	{
 		public static MenuManager Instance;
 
@@ -27,7 +27,7 @@ namespace QSB.Menus
 			QSBNetworkManager.Instance.OnClientErrorThrown += OnClientError;
 		}
 
-		void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
 		{
 			if (isUniverse)
 			{

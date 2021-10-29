@@ -18,10 +18,7 @@ namespace QSB.Utility.Events
 			EnumValue = type
 		};
 
-		public override void OnReceiveLocal(bool isHost, EnumMessage<DebugEventEnum> message)
-		{
-			OnReceiveRemote(isHost, message);
-		}
+		public override void OnReceiveLocal(bool isHost, EnumMessage<DebugEventEnum> message) => OnReceiveRemote(isHost, message);
 
 		public override void OnReceiveRemote(bool isHost, EnumMessage<DebugEventEnum> message)
 		{

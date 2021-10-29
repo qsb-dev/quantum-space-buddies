@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace QSB.Animation.NPC.WorldObjects
 {
-	class QSBSolanumAnimController : WorldObject<SolanumAnimController>
+	internal class QSBSolanumAnimController : WorldObject<SolanumAnimController>
 	{
 		private readonly List<PlayerInfo> _playersInHeadZone = new List<PlayerInfo>();
 
