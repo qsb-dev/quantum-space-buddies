@@ -66,7 +66,8 @@ namespace QSB.Patches
 				new TimePatches(),
 				new MapPatches(),
 				new RespawnPatches(),
-				new LauncherPatches()
+				new LauncherPatches(),
+				new SolanumPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
