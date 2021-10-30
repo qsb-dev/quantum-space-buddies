@@ -1,18 +1,16 @@
-﻿using QSB.Patches;
+﻿using HarmonyLib;
+using QSB.Patches;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches
 {
+	[HarmonyPatch]
 	internal class MapPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.RespawnTime;
 
-		//public override void DoPatches()
-		//{
-		//	Prefix<MapController>(nameof(MapController.LateUpdate), nameof(MapController_LateUpdate));
-		//	Prefix<MapController>(nameof(MapController.EnterMapView), nameof(MapController_EnterMapView));
-		//}
-
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MapController), nameof(MapController.EnterMapView))]
 		public static bool MapController_EnterMapView(
 			MapController __instance,
 			ref bool ____isMapMode,
@@ -95,6 +93,8 @@ namespace QSB.DeathSync.Patches
 			return false;
 		}
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MapController), nameof(MapController.LateUpdate))]
 		public static bool MapController_LateUpdate(
 			MapController __instance,
 			ref float ____observatoryRevealTwist,
