@@ -9,12 +9,6 @@ namespace QSB.DeathSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		//public override void DoPatches()
-		//{
-		//	Prefix<PlayerRecoveryPoint>(nameof(PlayerRecoveryPoint.OnGainFocus), nameof(PlayerRecoveryPoint_OnGainFocus));
-		//	Prefix<PlayerRecoveryPoint>(nameof(PlayerRecoveryPoint.OnPressInteract), nameof(PlayerRecoveryPoint_OnPressInteract));
-		//}
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerRecoveryPoint), nameof(PlayerRecoveryPoint.OnGainFocus))]
 		public static bool PlayerRecoveryPoint_OnGainFocus(
