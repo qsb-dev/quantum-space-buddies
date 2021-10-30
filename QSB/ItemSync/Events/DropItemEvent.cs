@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.ItemSync.WorldObjects;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -31,6 +32,9 @@ namespace QSB.ItemSync.Events
 		{
 			var worldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ObjectId);
 			worldObject.DropItem(message.Position, message.Normal, message.Sector);
+
+			var player = QSBPlayerManager.GetPlayer(message.FromId);
+			player.HeldItem = worldObject;
 		}
 	}
 }

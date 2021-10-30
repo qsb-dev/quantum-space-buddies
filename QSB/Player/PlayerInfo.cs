@@ -3,6 +3,7 @@ using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
+using QSB.ItemSync.WorldObjects;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;
 using QSB.QuantumSync;
@@ -95,6 +96,7 @@ namespace QSB.Player
 		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
+		public IQSBOWItem HeldItem { get; set; }
 
 		// Conversation
 		public int CurrentCharacterDialogueTreeId { get; set; }

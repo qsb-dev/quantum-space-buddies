@@ -2,6 +2,7 @@
 using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -17,7 +18,9 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.MoveItemToCarrySocket))]
 		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
 		{
-			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(item));
+			var qsbObj = ItemManager.GetObject(item);
+			var itemId = QSBWorldSync.GetIdFromTypeSubset(qsbObj);
+			QSBPlayerManager.LocalPlayer.HeldItem = qsbObj;
 			QSBEventManager.FireEvent(EventNames.QSBMoveToCarry, itemId);
 			return true;
 		}
@@ -26,8 +29,10 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.SocketItem))]
 		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
 		{
+			var qsbObj = ItemManager.GetObject(____heldItem);
 			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
-			var itemId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
+			var itemId = QSBWorldSync.GetIdFromTypeSubset(qsbObj);
+			QSBPlayerManager.LocalPlayer.HeldItem = null;
 			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, itemId, SocketEventType.Socket);
 			return true;
 		}
@@ -36,6 +41,8 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.StartUnsocketItem))]
 		public static bool ItemTool_StartUnsocketItem(OWItemSocket socket)
 		{
+			var item = ItemManager.GetObject(socket.GetSocketedItem());
+			QSBPlayerManager.LocalPlayer.HeldItem = item;
 			var socketId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(socket));
 			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, 0, SocketEventType.StartUnsocket);
 			return true;
@@ -84,6 +91,7 @@ namespace QSB.ItemSync.Patches
 			var objectId = QSBWorldSync.GetIdFromTypeSubset(ItemManager.GetObject(____heldItem));
 			____heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
 			____heldItem = null;
+			QSBPlayerManager.LocalPlayer.HeldItem = null;
 			Locator.GetToolModeSwapper().UnequipTool();
 			var parentSector = parent.GetComponentInChildren<Sector>();
 			if (parentSector != null)

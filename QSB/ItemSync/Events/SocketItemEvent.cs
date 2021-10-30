@@ -31,6 +31,8 @@ namespace QSB.ItemSync.Events
 		{
 			var socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
 			var itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
+			var player = QSBPlayerManager.GetPlayer(message.FromId);
+			player.HeldItem = null;
 			switch (message.SocketType)
 			{
 				case SocketEventType.Socket:
