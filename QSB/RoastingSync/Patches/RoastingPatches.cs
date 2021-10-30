@@ -10,15 +10,6 @@ namespace QSB.RoastingSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		//public override void DoPatches()
-		//{
-		//	Prefix<RoastingStickController>(nameof(RoastingStickController.UpdateMarshmallowInput), nameof(RoastingStickController_UpdateMarshmallowInput));
-		//	Prefix<Marshmallow>(nameof(Marshmallow.Burn), nameof(Marshmallow_Burn));
-		//	Prefix<Marshmallow>(nameof(Marshmallow.Shrivel), nameof(Marshmallow_Shrivel));
-		//	Prefix<Marshmallow>(nameof(Marshmallow.RemoveMallow), nameof(Marshmallow_RemoveMallow));
-		//	Prefix<Marshmallow>(nameof(Marshmallow.SpawnMallow), nameof(Marshmallow_SpawnMallow));
-		//}
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.SpawnMallow))]
 		public static bool Marshmallow_SpawnMallow()
