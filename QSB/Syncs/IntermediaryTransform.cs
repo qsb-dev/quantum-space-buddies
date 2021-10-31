@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Utility;
-using System;
 using UnityEngine;
 
 namespace QSB.Syncs

@@ -74,7 +74,7 @@ namespace QSB.ItemSync
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBWarpCoreSocket, WarpCoreSocket>((WarpCoreSocket)unityObject);
 			}
-			else if (unityObject.GetType() == typeof(NomaiConversationStone))
+			else if (unityObject.GetType() == typeof(NomaiConversationStoneSocket))
 			{
 				worldObj = QSBWorldSync.GetWorldFromUnity<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>((NomaiConversationStoneSocket)unityObject);
 			}

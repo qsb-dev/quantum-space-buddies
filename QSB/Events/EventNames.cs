@@ -62,8 +62,8 @@
 		public static string QSBCampfireState = "QSBCampfireState";
 		public static string QSBMarshmallowEvent = "QSBMarshmallowEvent";
 		public static string QSBAnimTrigger = "QSBAnimTrigger";
-		public static string QSBEnterHeadZone = "QSBEnterHeadZone";
-		public static string QSBExitHeadZone = "QSBExitHeadZone";
+		public static string QSBEnterNonNomaiHeadZone = "QSBEnterNonNomaiHeadZone";
+		public static string QSBExitNonNomaiHeadZone = "QSBExitNonNomaiHeadZone";
 		public static string QSBNpcAnimEvent = "QSBNpcAnimEvent";
 		public static string QSBHatchState = "QSBHatchState";
 		public static string QSBEnableFunnel = "QSBEnableFunnel";
@@ -87,5 +87,7 @@
 		public static string QSBServerState = "QSBServerState";
 		public static string QSBClientState = "QSBClientState";
 		public static string QSBDebugEvent = "QSBDebugEvent";
+		public static string QSBEnterNomaiHeadZone = "QSBEnterNomaiHeadZone";
+		public static string QSBExitNomaiHeadZone = "QSBExitNomaiHeadZone";
 	}
 }

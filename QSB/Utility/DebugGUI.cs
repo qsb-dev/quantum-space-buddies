@@ -2,7 +2,6 @@
 using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
 using QSB.Player;
-using QSB.ProbeSync.TransformSync;
 using QSB.Syncs;
 using QSB.TimeSync;
 using UnityEngine;

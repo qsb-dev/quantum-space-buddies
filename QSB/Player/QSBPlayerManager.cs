@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.ItemSync.WorldObjects;
 using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Tools;
@@ -173,5 +174,8 @@ namespace QSB.Player
 
 			return playerList.Where(x => x.PlayerStates.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
+
+		public static IEnumerable<Tuple<PlayerInfo, IQSBOWItem>> GetPlayerCarryItems()
+			=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBOWItem>(x, x.HeldItem));
 	}
 }

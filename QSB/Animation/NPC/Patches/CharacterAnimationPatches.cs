@@ -8,7 +8,6 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches
@@ -24,7 +23,6 @@ namespace QSB.Animation.NPC.Patches
 			CharacterAnimController __instance,
 			float ___headTrackingWeight,
 			bool ___lookOnlyWhenTalking,
-			bool ____playerInHeadZone,
 			bool ____inConversation,
 			ref float ____currentLookWeight,
 			ref Vector3 ____currentLookTarget,
@@ -101,7 +99,7 @@ namespace QSB.Animation.NPC.Patches
 		public static bool HeadZoneExit(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBExitHeadZone, qsbObj.ObjectId);
+			QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
@@ -110,20 +108,18 @@ namespace QSB.Animation.NPC.Patches
 		public static bool HeadZoneEntry(CharacterAnimController __instance)
 		{
 			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBEnterHeadZone, qsbObj.ObjectId);
+			QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(FacePlayerWhenTalking), nameof(FacePlayerWhenTalking.OnStartConversation))]
-		public static bool OnStartConversation(
-			FacePlayerWhenTalking __instance,
-			CharacterDialogueTree ____dialogueTree)
+		public static bool OnStartConversation(FacePlayerWhenTalking __instance)
 		{
-			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
+			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(__instance._dialogueTree);
 			if (playerId == uint.MaxValue)
 			{
-				DebugLog.ToConsole($"Error - No player talking to {____dialogueTree.name}!", MessageType.Error);
+				DebugLog.ToConsole($"Error - No player talking to {__instance._dialogueTree.name}!", MessageType.Error);
 				return false;
 			}
 
@@ -134,7 +130,7 @@ namespace QSB.Animation.NPC.Patches
 			var angle = Vector3.Angle(__instance.transform.forward, vector2) * Mathf.Sign(Vector3.Dot(vector2, __instance.transform.right));
 			var axis = __instance.transform.parent.InverseTransformDirection(__instance.transform.up);
 			var lhs = Quaternion.AngleAxis(angle, axis);
-			__instance.GetType().GetMethod("FaceLocalRotation", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { lhs * __instance.transform.localRotation });
+			__instance.FaceLocalRotation(lhs * __instance.transform.localRotation);
 
 			return false;
 		}
@@ -173,22 +169,18 @@ namespace QSB.Animation.NPC.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(KidRockController), nameof(KidRockController.Update))]
-		public static bool UpdateReplacement(
-			KidRockController __instance,
-			bool ____throwingRock,
-			CharacterDialogueTree ____dialogueTree,
-			float ____nextThrowTime)
+		public static bool UpdateReplacement(KidRockController __instance)
 		{
 			if (!WorldObjectManager.AllReady)
 			{
 				return true;
 			}
 
-			var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == ____dialogueTree);
+			var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == __instance._dialogueTree);
 
-			if (!____throwingRock && !qsbObj.InConversation() && Time.time > ____nextThrowTime)
+			if (!__instance._throwingRock && !qsbObj.InConversation() && Time.time > __instance._nextThrowTime)
 			{
-				__instance.GetType().GetMethod("StartRockThrow", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+				__instance.StartRockThrow();
 			}
 
 			return false;

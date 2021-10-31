@@ -8,9 +8,11 @@
 		ExitShrine = 3,
 		EnterPlatform = 4,
 		ExitPlatform = 5,
-		EnterHeadZone = 6,
-		ExitHeadZone = 7,
+		EnterNonNomaiHeadZone = 6,
+		ExitNonNomaiHeadZone = 7,
 		EnterShip = 8,
-		ExitShip = 9
+		ExitShip = 9,
+		EnterNomaiHeadZone = 10,
+		ExitNomaiHeadZone = 11
 	}
 }

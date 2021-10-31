@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using OWML.Utils;
 using QSB.Animation.NPC.Patches;
 using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;
@@ -67,7 +66,8 @@ namespace QSB.Patches
 				new TimePatches(),
 				new MapPatches(),
 				new RespawnPatches(),
-				new LauncherPatches()
+				new LauncherPatches(),
+				new SolanumPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

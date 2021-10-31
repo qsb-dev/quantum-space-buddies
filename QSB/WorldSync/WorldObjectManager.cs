@@ -79,7 +79,7 @@ namespace QSB.WorldSync
 				worldObject.PostInit();
 			}
 		}
-		
+
 		protected abstract void RebuildWorldObjects(OWScene scene);
 	}
 }

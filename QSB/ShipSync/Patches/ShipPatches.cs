@@ -55,10 +55,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(SingleInteractionVolume), nameof(SingleInteractionVolume.UpdateInteractVolume))]
-		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance)
-		{
-			throw new NotImplementedException();
-		}
+		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance) => throw new NotImplementedException();
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(InteractZone), nameof(InteractZone.UpdateInteractVolume))]
@@ -87,39 +84,33 @@ namespace QSB.ShipSync.Patches
 				? angle <= 80
 				: angle >= 280;
 
-			SingleInteractionVolume_UpdateInteractVolume_Stub(__instance as SingleInteractionVolume);
+			SingleInteractionVolume_UpdateInteractVolume_Stub(__instance);
 
 			return false;
 		}
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnEnterShip))]
-		public static void ShipComponent_OnEnterShip_Stub(object instance)
-		{
-			throw new NotImplementedException();
-		}
+		public static void ShipComponent_OnEnterShip_Stub(object instance) => throw new NotImplementedException();
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnEnterShip))]
 		public static bool ShipElectricalComponent_OnEnterShip(ShipElectricalComponent __instance)
 		{
-			ShipComponent_OnEnterShip_Stub(__instance as ShipComponent);
+			ShipComponent_OnEnterShip_Stub(__instance);
 
 			return false;
 		}
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnExitShip))]
-		public static void ShipComponent_OnExitShip_Stub(object instance)
-		{
-			throw new NotImplementedException();
-		}
+		public static void ShipComponent_OnExitShip_Stub(object instance) => throw new NotImplementedException();
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnExitShip))]
 		public static bool ShipElectricalComponent_OnExitShip(ShipElectricalComponent __instance)
 		{
-			ShipComponent_OnExitShip_Stub(__instance as ShipComponent);
+			ShipComponent_OnExitShip_Stub(__instance);
 
 			return false;
 		}
