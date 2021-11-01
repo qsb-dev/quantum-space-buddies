@@ -1,5 +1,5 @@
 ﻿using QSB.Events;
-using QSB.ItemSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
@@ -47,6 +47,18 @@ namespace QSB.ItemSync.Events
 					itemSocket = ((QSBWarpCoreItem)itemObject).IsVesselCoreType()
 						? player.VesselCoreSocket
 						: player.WarpCoreSocket;
+					break;
+				case ItemType.Lantern:
+					itemSocket = player.SimpleLanternSocket;
+					break;
+				case ItemType.DreamLantern:
+					itemSocket = player.DreamLanternSocket;
+					break;
+				case ItemType.SlideReel:
+					itemSocket = player.SlideReelSocket;
+					break;
+				case ItemType.VisionTorch:
+					itemSocket = player.VisionTorchSocket;
 					break;
 				default:
 					itemSocket = player.ItemSocket;

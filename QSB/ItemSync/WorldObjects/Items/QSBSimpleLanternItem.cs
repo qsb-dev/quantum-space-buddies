@@ -1,8 +1,8 @@
-﻿namespace QSB.ItemSync.WorldObjects
+﻿namespace QSB.ItemSync.WorldObjects.Items
 {
-	internal class QSBScrollItem : QSBOWItem<ScrollItem>
+	class QSBSimpleLanternItem : QSBOWItem<SimpleLanternItem>
 	{
-		public override void Init(ScrollItem attachedObject, int id)
+		public override void Init(SimpleLanternItem attachedObject, int id)
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
@@ -17,11 +17,5 @@
 
 		public override void OnCompleteUnsocket()
 			=> AttachedObject.OnCompleteUnsocket();
-
-		public void HideNomaiText()
-			=> AttachedObject.HideNomaiText();
-
-		public void ShowNomaiText()
-			=> AttachedObject.ShowNomaiText();
 	}
 }

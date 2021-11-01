@@ -28,7 +28,7 @@ namespace QSB.Animation.NPC.Patches
 				__instance._animatorStateEvents.OnEnterState += __instance.OnEnterAnimatorState;
 			}
 
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance);
 			var playersInHeadZone = qsbObj.GetPlayersInHeadZone();
 
 			var targetCamera = playersInHeadZone == null || playersInHeadZone.Count == 0
@@ -48,7 +48,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnEnterWatchVolume))]
 		public static bool EnterWatchZone(NomaiConversationManager __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance._solanumAnimController);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
 			QSBEventManager.FireEvent(EventNames.QSBEnterNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
@@ -57,7 +57,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnExitWatchVolume))]
 		public static bool ExitWatchZone(NomaiConversationManager __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance._solanumAnimController);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
 			QSBEventManager.FireEvent(EventNames.QSBExitNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
@@ -66,7 +66,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.Update))]
 		public static bool ReplacementUpdate(NomaiConversationManager __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController, SolanumAnimController>(__instance._solanumAnimController);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
 			__instance._playerInWatchVolume = qsbObj.GetPlayersInHeadZone().Any();
 
 			if (!__instance._initialized)

@@ -1,7 +1,7 @@
-﻿using OWML.Utils;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.WorldSync;
 
-namespace QSB.ItemSync.WorldObjects
+namespace QSB.ItemSync.WorldObjects.Sockets
 {
 	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
 		where T : OWItemSocket
@@ -11,7 +11,7 @@ namespace QSB.ItemSync.WorldObjects
 		public virtual bool AcceptsItem(IQSBOWItem item)
 		{
 			var itemType = item.GetItemType();
-			var acceptableType = AttachedObject.GetValue<ItemType>("_acceptableType");
+			var acceptableType = AttachedObject._acceptableType;
 			return (itemType & acceptableType) == itemType;
 		}
 

@@ -1,10 +1,11 @@
 ﻿using OWML.Utils;
+using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.ItemSync.WorldObjects
+namespace QSB.ItemSync.WorldObjects.Items
 {
 	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
 		where T : OWItem
@@ -21,7 +22,7 @@ namespace QSB.ItemSync.WorldObjects
 			InitialParent = attachedObject.transform.parent;
 			InitialPosition = attachedObject.transform.localPosition;
 			InitialRotation = attachedObject.transform.localRotation;
-			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(attachedObject.GetSector());
+			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(attachedObject.GetSector());
 			if (InitialParent.GetComponent<OWItemSocket>() != null)
 			{
 				var qsbObj = ItemManager.GetObject(InitialParent.GetComponent<OWItemSocket>());
@@ -76,10 +77,10 @@ namespace QSB.ItemSync.WorldObjects
 		{
 			AttachedObject.transform.SetParent(sector.transform);
 			AttachedObject.transform.localScale = Vector3.one;
-			var localDropNormal = AttachedObject.GetValue<Vector3>("_localDropNormal");
+			var localDropNormal = AttachedObject._localDropNormal;
 			var lhs = Quaternion.FromToRotation(AttachedObject.transform.TransformDirection(localDropNormal), normal);
 			AttachedObject.transform.rotation = lhs * AttachedObject.transform.rotation;
-			var localDropOffset = AttachedObject.GetValue<Vector3>("_localDropOffset");
+			var localDropOffset = AttachedObject._localDropOffset;
 			AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
 			AttachedObject.SetSector(sector);
 			AttachedObject.SetColliderActivation(true);

@@ -141,23 +141,23 @@ namespace QSB.QuantumSync
 			IQSBQuantumObject worldObj = null;
 			if (unityObject.GetType() == typeof(SocketedQuantumObject) || unityObject.GetType() == typeof(QuantumShrine))
 			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)unityObject);
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject>((SocketedQuantumObject)unityObject);
 			}
 			else if (unityObject.GetType() == typeof(MultiStateQuantumObject))
 			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
 			}
 			else if (unityObject.GetType() == typeof(QuantumShuffleObject))
 			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject>((QuantumShuffleObject)unityObject);
 			}
 			else if (unityObject.GetType() == typeof(QuantumMoon))
 			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumMoon, QuantumMoon>((QuantumMoon)unityObject);
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumMoon>((QuantumMoon)unityObject);
 			}
 			else if (unityObject.GetType() == typeof(EyeProxyQuantumMoon))
 			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>((EyeProxyQuantumMoon)unityObject);
+				worldObj = QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>((EyeProxyQuantumMoon)unityObject);
 			}
 			else
 			{

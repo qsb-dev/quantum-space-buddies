@@ -4,6 +4,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ItemSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.TransformSync;
 using QSB.ProbeSync;
 using QSB.QuantumSync;
@@ -94,6 +95,10 @@ namespace QSB.Player
 		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");
 		public Transform WarpCoreSocket => CameraBody.transform.Find("REMOTE_WarpCoreSocket");
 		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
+		public Transform SimpleLanternSocket => CameraBody.transform.Find("REMOTE_SimpleLanternSocket");
+		public Transform DreamLanternSocket => CameraBody.transform.Find("REMOTE_DreamLanternSocket");
+		public Transform SlideReelSocket => CameraBody.transform.Find("REMOTE_SlideReelSocket");
+		public Transform VisionTorchSocket => CameraBody.transform.Find("REMOTE_VisionTorchSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 		public IQSBOWItem HeldItem { get; set; }

@@ -1,8 +1,8 @@
-﻿namespace QSB.ItemSync.WorldObjects
+﻿namespace QSB.ItemSync.WorldObjects.Items
 {
-	internal class QSBSharedStone : QSBOWItem<SharedStone>
+	internal class QSBScrollItem : QSBOWItem<ScrollItem>
 	{
-		public override void Init(SharedStone attachedObject, int id)
+		public override void Init(ScrollItem attachedObject, int id)
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
@@ -18,7 +18,10 @@
 		public override void OnCompleteUnsocket()
 			=> AttachedObject.OnCompleteUnsocket();
 
-		public NomaiRemoteCameraPlatform.ID GetRemoteCameraID()
-			=> AttachedObject.GetRemoteCameraID();
+		public void HideNomaiText()
+			=> AttachedObject.HideNomaiText();
+
+		public void ShowNomaiText()
+			=> AttachedObject.ShowNomaiText();
 	}
 }

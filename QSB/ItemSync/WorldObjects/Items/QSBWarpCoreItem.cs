@@ -1,4 +1,4 @@
-﻿namespace QSB.ItemSync.WorldObjects
+﻿namespace QSB.ItemSync.WorldObjects.Items
 {
 	internal class QSBWarpCoreItem : QSBOWItem<WarpCoreItem>
 	{
