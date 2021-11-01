@@ -1,7 +1,7 @@
 ﻿using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.ItemSync.WorldObjects
+namespace QSB.ItemSync.WorldObjects.Items
 {
 	public interface IQSBOWItem : IWorldObjectTypeSubset
 	{

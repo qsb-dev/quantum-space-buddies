@@ -15,7 +15,7 @@ namespace QSB.CampfireSync.Patches
 		[HarmonyPatch(typeof(Campfire), nameof(Campfire.OnPressInteract))]
 		public static bool LightCampfireEvent(Campfire __instance)
 		{
-			var qsbCampfire = QSBWorldSync.GetWorldFromUnity<QSBCampfire, Campfire>(__instance);
+			var qsbCampfire = QSBWorldSync.GetWorldFromUnity<QSBCampfire>(__instance);
 			if (__instance._state == Campfire.State.LIT)
 			{
 				qsbCampfire.StartRoasting();

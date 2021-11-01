@@ -29,7 +29,7 @@ namespace QSB.ItemSync.Events
 			writer.Write(ObjectId);
 			writer.Write(Position);
 			writer.Write(Normal);
-			var qsbSector = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(Sector);
+			var qsbSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(Sector);
 			writer.Write(qsbSector.ObjectId);
 		}
 	}

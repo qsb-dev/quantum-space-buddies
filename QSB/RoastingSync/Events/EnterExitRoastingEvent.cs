@@ -31,7 +31,7 @@ namespace QSB.RoastingSync.Events
 				return;
 			}
 
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCampfire, Campfire>(campfire);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCampfire>(campfire);
 			SendEvent(CreateMessage(qsbObj.ObjectId, roasting));
 		}
 

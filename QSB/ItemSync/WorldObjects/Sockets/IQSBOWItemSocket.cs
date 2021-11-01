@@ -1,6 +1,7 @@
-﻿using QSB.WorldSync;
+﻿using QSB.ItemSync.WorldObjects.Items;
+using QSB.WorldSync;
 
-namespace QSB.ItemSync.WorldObjects
+namespace QSB.ItemSync.WorldObjects.Sockets
 {
 	public interface IQSBOWItemSocket : IWorldObjectTypeSubset
 	{

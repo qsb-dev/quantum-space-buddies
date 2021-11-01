@@ -1,5 +1,5 @@
 ﻿using OWML.Common;
-using QSB.ItemSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Tools;

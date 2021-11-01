@@ -212,6 +212,30 @@ namespace QSB.Tools
 			vesselCore.transform.localPosition = new Vector3(0.177f, -0.106f, 0.2f);
 			vesselCore.transform.localRotation = Quaternion.Euler(3.142f, 14.827f, 12.094f);
 			vesselCore.transform.localScale = new Vector3(0.27f, 0.27f, 0.27f);
+
+			var simpleLantern = new GameObject("REMOTE_SimpleLanternSocket");
+			simpleLantern.transform.parent = cameraBody;
+			simpleLantern.transform.localPosition = new Vector3(0.242997f, -0.18f, 0.2620007f);
+			simpleLantern.transform.localRotation = Quaternion.Euler(0f, 33f, 0f);
+			simpleLantern.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var dreamLantern = new GameObject("REMOTE_DreamLanternSocket");
+			dreamLantern.transform.parent = cameraBody;
+			dreamLantern.transform.localPosition = new Vector3(0.243f, -0.207f, 0.262f);
+			dreamLantern.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+			dreamLantern.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+
+			var slideReel = new GameObject("REMOTE_SlideReelSocket");
+			slideReel.transform.parent = cameraBody;
+			slideReel.transform.localPosition = new Vector3(0.1353f, -0.0878f, 0.2878f);
+			slideReel.transform.localRotation = Quaternion.Euler(-145.532f, 6.589996f, -94.54901f);
+			slideReel.transform.localScale = new Vector3(0.3300001f, 0.33f, 0.3299999f);
+
+			var visionTorch = new GameObject("REMOTE_VisionTorchSocket");
+			visionTorch.transform.parent = cameraBody;
+			visionTorch.transform.localPosition = new Vector3(0.21f, -0.32f, 0.33f);
+			visionTorch.transform.localRotation = Quaternion.Euler(-4.5f, 0.03f, 9f);
+			visionTorch.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
 		}
 
 		private static void CreateFlashlight(Transform cameraBody)

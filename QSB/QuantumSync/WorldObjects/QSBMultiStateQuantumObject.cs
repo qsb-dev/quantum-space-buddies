@@ -36,7 +36,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void PostInit()
 		{
-			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(x)).ToList();
+			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState>(x)).ToList();
 
 			if (QuantumStates.Any(x => x == null))
 			{

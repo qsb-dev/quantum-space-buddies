@@ -1,5 +1,5 @@
 ﻿using QSB.Events;
-using QSB.ItemSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;

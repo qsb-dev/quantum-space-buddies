@@ -37,7 +37,7 @@ namespace QSB.Animation.NPC.Patches
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
 			if (____inConversation)
@@ -98,7 +98,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
 		public static bool HeadZoneExit(CharacterAnimController __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
@@ -107,7 +107,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneEntry))]
 		public static bool HeadZoneEntry(CharacterAnimController __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController, CharacterAnimController>(__instance);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
 			return false;
 		}
