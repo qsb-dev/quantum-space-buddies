@@ -25,7 +25,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(attachedObject.GetSector());
 			if (InitialParent.GetComponent<OWItemSocket>() != null)
 			{
-				var qsbObj = ItemManager.GetObject(InitialParent.GetComponent<OWItemSocket>());
+				var qsbObj = (IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(InitialParent.GetComponent<OWItemSocket>());
 				InitialSocket = qsbObj;
 			}
 
