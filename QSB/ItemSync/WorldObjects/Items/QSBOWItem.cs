@@ -2,6 +2,7 @@
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -19,11 +20,23 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 		public override void Init(T attachedObject, int id)
 		{
+			if (attachedObject == null)
+			{
+				DebugLog.ToConsole($"Error - AttachedObject is null! Type:{GetType().Name}", OWML.Common.MessageType.Error);
+				return;
+			}
+
 			InitialParent = attachedObject.transform.parent;
 			InitialPosition = attachedObject.transform.localPosition;
 			InitialRotation = attachedObject.transform.localRotation;
 			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(attachedObject.GetSector());
-			if (InitialParent.GetComponent<OWItemSocket>() != null)
+
+			if (InitialParent == null)
+			{
+				DebugLog.ToConsole($"Warning - InitialParent of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
+			}
+
+			if (InitialParent?.GetComponent<OWItemSocket>() != null)
 			{
 				var qsbObj = (IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(InitialParent.GetComponent<OWItemSocket>());
 				InitialSocket = qsbObj;

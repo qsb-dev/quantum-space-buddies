@@ -106,6 +106,10 @@
     <Compile Include="Instruments\QSBCamera\CameraMode.cs" />
     <Compile Include="Instruments\InstrumentsManager.cs" />
     <Compile Include="ItemSync\WorldObjects\Items\QSBSimpleLanternItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\Items\QSBSlideReelItem.cs" />
+    <Compile Include="ItemSync\WorldObjects\Sockets\QSBOWItemDoubleSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\Sockets\QSBSlideProjectorSocket.cs" />
+    <Compile Include="ItemSync\WorldObjects\Sockets\QSBSlideReelSocket.cs" />
     <Compile Include="Menus\IMenuAPI.cs" />
     <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
