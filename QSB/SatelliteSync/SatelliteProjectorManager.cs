@@ -55,6 +55,7 @@ namespace QSB.SatelliteSync
 		public void RemoteExit()
 		{
 			Projector.enabled = false;
+			Projector._interactVolume.EnableInteraction();
 			Projector._interactVolume.ResetInteraction();
 
 			if (Projector._showSplashTexture)
