@@ -6,6 +6,8 @@
 		 * MISC. 
 		 */
 		DebugEvent,
+		SatelliteProjector,
+		SatelliteProjectorSnapshot,
 
 		/*
 		 * SERVER EVENTS
