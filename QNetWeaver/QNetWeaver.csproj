@@ -52,8 +52,9 @@
     <Reference Include="Unity.Cecil.Pdb">
       <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2017.4.33f1\Editor\Data\Managed\Unity.Cecil.Pdb.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.UNetWeaver">
-      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2017.4.33f1\Editor\Data\Managed\Unity.UNetWeaver.dll</HintPath>
+    <Reference Include="Unity.UNetWeaver, Version=1.0.7209.2424, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Unity.UNetWeaver.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +68,9 @@
     <Compile Include="SyncListStructProcessor.cs" />
     <Compile Include="Weaver.cs" />
     <Compile Include="WeaverLists.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\Unity.UNetWeaver.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
