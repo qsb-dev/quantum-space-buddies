@@ -91,10 +91,10 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Quantum objects | Yes |
 | Repairing ship parts | Yes |
 | Repairing "satellite" parts | No |
-| Ship | Kinda of |
+| Ship | Yes |
 | Ship log | Yes |
-| Solanum | No |
-| Timber Hearth satellite | No |
+| Solanum | Yes |
+| Timber Hearth satellite | Yes |
 | Tornadoes | No |
 
 QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
