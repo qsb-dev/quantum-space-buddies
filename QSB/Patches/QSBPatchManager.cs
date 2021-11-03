@@ -16,6 +16,7 @@ using QSB.Player.Patches;
 using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
+using QSB.SatelliteSync.Patches;
 using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
@@ -67,7 +68,8 @@ namespace QSB.Patches
 				new MapPatches(),
 				new RespawnPatches(),
 				new LauncherPatches(),
-				new SolanumPatches()
+				new SolanumPatches(),
+				new SatelliteProjectorPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

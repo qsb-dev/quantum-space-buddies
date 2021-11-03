@@ -89,5 +89,8 @@
 		public static string QSBDebugEvent = "QSBDebugEvent";
 		public static string QSBEnterNomaiHeadZone = "QSBEnterNomaiHeadZone";
 		public static string QSBExitNomaiHeadZone = "QSBExitNomaiHeadZone";
+		public static string QSBEnterSatelliteCamera = "QSBEnterSatelliteCamera";
+		public static string QSBExitSatelliteCamera = "QSBExitSatelliteCamera";
+		public static string QSBSatelliteSnapshot = "QSBSatelliteSnapshot";
 	}
 }

@@ -91,10 +91,10 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Quantum objects | Yes |
 | Repairing ship parts | Yes |
 | Repairing "satellite" parts | No |
-| Ship | Kinda of |
+| Ship | Yes |
 | Ship log | Yes |
-| Solanum | No |
-| Timber Hearth satellite | No |
+| Solanum | Yes |
+| Timber Hearth satellite | Yes |
 | Tornadoes | No |
 
 QSB also changes some mechanics of the base game, to better fit a multiplayer experience. These include :
@@ -137,19 +137,15 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 ## Playing as a client
 
 - Run the game.
-- You'll see some new buttons on the top left.
-- Replace `localhost` with the server's public IP address.
-- Press "Connect". You can join servers in the menu or in-game, but it is recommended to join in the main menu.
-- If you see "Stop", you are connected.
-- If it stops at "Connecting to..." then you or the host has issues with their firewall/router/other.
+- On the title/pause menu, select "MULTIPLAYER (CONNECT)".
+- Enter the public IP address of the host.
+- Hit connect, and pray.
 
 ## Playing as a host
 
 - Open port `7777` on your router.
 - Run the game.
-- You'll see some new buttons on the top left.
-- Press "Host". This can be done in-game or in the menu, but it is recommened to start servers in the menu.
-- If you now see the "Stop" button, you are hosting.
+- On the title/pause menu, select "MULTIPLAYER (HOST)".
 - Give your external IPv4 address to your clients ([like what you see here](http://whatismyip.host/)).
 
 ## Development Setup
@@ -160,10 +156,10 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 - Open the file `QSB/QSB.csproj.user` in your favorite text editor
 - Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
-- Do the same for QuantumUNET/QuantumUNET.csproj.user
+- Do the same for `QuantumUNET/QuantumUNET.csproj.user` and `QSBTests/QSBTests.csproj.user`
 - Open the project solution file `QSB.sln` in Visual Studio
 - If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references
-- Run this to stop tracking QSB.csproj.user: ```git update-index --skip-worktree QSB/QSB.csproj.user```
+- Run this to stop tracking QSB.csproj.user: ```git update-index --skip-worktree QSB/QSB.csproj.user``` (and do the same for the other .user files)
 
 To fix the references, right click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 

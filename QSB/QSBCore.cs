@@ -16,6 +16,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
+using QSB.SatelliteSync;
 using QSB.SectorSync;
 using QSB.ShipSync;
 using QSB.StatueSync;
@@ -102,6 +103,7 @@ namespace QSB
 			gameObject.AddComponent<DebugGUI>();
 			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
+			gameObject.AddComponent<SatelliteProjectorManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();

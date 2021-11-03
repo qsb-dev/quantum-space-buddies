@@ -200,6 +200,10 @@
     <Compile Include="QuantumSync\QuantumManager.cs" />
     <Compile Include="QuantumSync\Patches\QuantumVisibilityPatches.cs" />
     <Compile Include="QuantumSync\Patches\ServerQuantumPatches.cs" />
+    <Compile Include="SatelliteSync\Events\SatelliteProjectorEvent.cs" />
+    <Compile Include="SatelliteSync\Events\SatelliteProjectorSnapshotEvent.cs" />
+    <Compile Include="SatelliteSync\Patches\SatelliteProjectorPatches.cs" />
+    <Compile Include="SatelliteSync\SatelliteProjectorManager.cs" />
     <Compile Include="SectorSync\TargetType.cs" />
     <Compile Include="ClientServerStateSync\Events\ServerStateEvent.cs" />
     <Compile Include="ClientServerStateSync\ServerState.cs" />
