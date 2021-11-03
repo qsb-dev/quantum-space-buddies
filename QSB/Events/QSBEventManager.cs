@@ -71,6 +71,7 @@ namespace QSB.Events
 				new ClientStateEvent(),
 				new DebugEvent(),
 				new SatelliteProjectorEvent(),
+				new SatelliteProjectorSnapshotEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
