@@ -33,8 +33,6 @@ namespace QSB.SatelliteSync
 
 		public void RemoteEnter()
 		{
-			DebugLog.DebugWrite($"Remote Enter");
-
 			Projector.enabled = true;
 			Projector._interactVolume.DisableInteraction();
 
@@ -56,8 +54,6 @@ namespace QSB.SatelliteSync
 
 		public void RemoteExit()
 		{
-			DebugLog.DebugWrite($"Remote Exit");
-
 			Projector.enabled = false;
 			Projector._interactVolume.ResetInteraction();
 
