@@ -8,6 +8,7 @@ using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.FrequencySync.Events;
 using QSB.GeyserSync.Events;
+using QSB.MeteorSync.Events;
 using QSB.ItemSync.Events;
 using QSB.LogSync.Events;
 using QSB.OrbSync.Events;
@@ -75,6 +76,7 @@ namespace QSB.Events
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
+				new MeteorEvent(),
 				new OrbSlotEvent(),
 				new OrbUserEvent(),
 				new SocketStateChangeEvent(),

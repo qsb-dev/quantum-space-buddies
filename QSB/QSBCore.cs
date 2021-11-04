@@ -28,14 +28,15 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
+using QSB.MeteorSync;
 using UnityEngine;
 
 /*
 	Copyright (C) 2020 - 2021
-			Henry Pointer (_nebula / misternebula), 
-			Aleksander Waage (AmazingAlek), 
+			Henry Pointer (_nebula / misternebula),
+			Aleksander Waage (AmazingAlek),
 			Ricardo Lopes (Raicuparta)
-	
+
 	This program is free software: you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License
 	as published by the Free Software Foundation, either version 3 of
@@ -110,6 +111,7 @@ namespace QSB
 			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<ElevatorManager>();
 			gameObject.AddComponent<GeyserManager>();
+			gameObject.AddComponent<MeteorManager>();
 			gameObject.AddComponent<OrbManager>();
 			gameObject.AddComponent<QSBSectorManager>();
 			gameObject.AddComponent<ItemManager>();
@@ -169,7 +171,7 @@ namespace QSB
 /*
  * _nebula's music thanks
  * I listen to music constantly while programming/working - here's my thanks to them for keeping me entertained :P
- * 
+ *
  * Wintergatan
  * HOME
  * C418

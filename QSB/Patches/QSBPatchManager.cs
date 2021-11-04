@@ -8,6 +8,7 @@ using QSB.DeathSync.Patches;
 using QSB.ElevatorSync.Patches;
 using QSB.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
+using QSB.MeteorSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
@@ -56,6 +57,9 @@ namespace QSB.Patches
 				new ItemPatches(),
 				new StatuePatches(),
 				new GeyserPatches(),
+				new ClientMeteorPatches(),
+				new ServerMeteorPatches(),
+				new MeteorPatches(),
 				new PoolPatches(),
 				new CampfirePatches(),
 				new RoastingPatches(),

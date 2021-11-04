@@ -3,7 +3,7 @@
 	public enum EventType
 	{
 		/*
-		 * MISC. 
+		 * MISC.
 		 */
 		DebugEvent,
 		SatelliteProjector,
@@ -72,6 +72,7 @@
 
 		Geyser,
 		Elevator,
+		Meteor,
 
 		/*
 		 * ITEMS
