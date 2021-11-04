@@ -134,6 +134,8 @@
 		RetrieveProbe,
 		PlayerRetrieveProbe,
 		LaunchProbe,
-		PlayerLaunchProbe
+		PlayerLaunchProbe,
+
+		AnglerResync
 	}
 }

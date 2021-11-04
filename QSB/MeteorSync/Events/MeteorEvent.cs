@@ -25,13 +25,13 @@ namespace QSB.MeteorSync.Events {
                 launchSpeed = qsbLauncher.launchSpeed,
                 damage = qsbLauncher.damage
             };
-            DebugLog.DebugWrite($"server sending meteor {message}");
+            // DebugLog.DebugWrite($"server sending meteor {message}");
             SendEvent(message);
         }
 
         /// client: get precalculated values and launch
         public override void OnReceiveRemote(bool isHost, MeteorMessage message) {
-            DebugLog.DebugWrite($"client launching meteor with precalculated {message}");
+            // DebugLog.DebugWrite($"client launching meteor with precalculated {message}");
 
             var qsbLauncher = QSBWorldSync.GetWorldFromId<QSBMeteorLauncher>(message.ObjectId);
             qsbLauncher.num = message.num;

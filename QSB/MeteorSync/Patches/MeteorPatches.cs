@@ -19,7 +19,7 @@ namespace QSB.MeteorSync.Patches {
             var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
             if (componentInParent != null) {
                 var damage = QSBWorldSync.GetWorldFromUnity<QSBMeteorController>(__instance).damage;
-                DebugLog.DebugWrite($"meteor impact with precalculated damage {damage}");
+                // DebugLog.DebugWrite($"meteor impact with precalculated damage {damage}");
                 if (!componentInParent.GetIgnoreMeteorDamage())
                     componentInParent.AddDamage(damage);
                 else if (componentInParent.GetParentFragment() != null &&

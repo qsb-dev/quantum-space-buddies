@@ -36,6 +36,11 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnglerFish\Events\AnglerResyncMessage.cs" />
+    <Compile Include="AnglerFish\Events\AnglerResyncEvent.cs" />
+    <Compile Include="AnglerFish\AnglerManager.cs" />
+    <Compile Include="AnglerFish\Patches\AnglerPatches.cs" />
+    <Compile Include="AnglerFish\WorldObjects\QSBAngler.cs" />
     <Compile Include="Animation\NPC\AnimationEvent.cs" />
     <Compile Include="Animation\NPC\CharacterAnimManager.cs" />
     <Compile Include="Animation\NPC\Events\NpcAnimationEvent.cs" />

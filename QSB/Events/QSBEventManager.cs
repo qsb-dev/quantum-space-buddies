@@ -28,6 +28,7 @@ using QSB.TranslationSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using System.Collections.Generic;
+using QSB.AnglerFish.Events;
 
 namespace QSB.Events
 {
@@ -91,6 +92,7 @@ namespace QSB.Events
 				new MoveToCarryEvent(),
 				new StartStatueEvent(),
 				new CampfireStateEvent(),
+				new AnglerResyncEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

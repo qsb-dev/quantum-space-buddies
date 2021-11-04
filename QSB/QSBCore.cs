@@ -28,6 +28,7 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
+using QSB.AnglerFish;
 using QSB.MeteorSync;
 using UnityEngine;
 
@@ -121,6 +122,7 @@ namespace QSB
 			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipManager>();
 			gameObject.AddComponent<ProbeLauncherManager>();
+			gameObject.AddComponent<AnglerManager>();
 
 			DebugBoxManager.Init();
 

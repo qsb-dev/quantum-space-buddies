@@ -27,6 +27,7 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QSB.AnglerFish.Patches;
 
 namespace QSB.Patches
 {
@@ -57,9 +58,9 @@ namespace QSB.Patches
 				new ItemPatches(),
 				new StatuePatches(),
 				new GeyserPatches(),
-				new ClientMeteorPatches(),
-				new ServerMeteorPatches(),
-				new MeteorPatches(),
+				// new ClientMeteorPatches(),
+				// new ServerMeteorPatches(),
+				// new MeteorPatches(),
 				new PoolPatches(),
 				new CampfirePatches(),
 				new RoastingPatches(),
@@ -73,7 +74,8 @@ namespace QSB.Patches
 				new RespawnPatches(),
 				new LauncherPatches(),
 				new SolanumPatches(),
-				new SatelliteProjectorPatches()
+				new SatelliteProjectorPatches(),
+				new AnglerPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
