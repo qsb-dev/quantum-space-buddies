@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using QSB.Events;
-using QSB.Utility;
+﻿using QSB.Events;
 using QSB.WorldSync;
 using QuantumUNET;
 
@@ -12,11 +10,8 @@ namespace QSB.AnglerFish.WorldObjects {
         }
 
         public void HandleEvent() {
-            // DebugLog.ToAll($"{AttachedObject} {ObjectId}: sector occupants changed...");
-            // DebugLog.ToConsole(AttachedObject._sector.GetOccupants().Join());
-            if (QNetworkServer.active) {
+            if (QNetworkServer.active)
                 QSBEventManager.FireEvent(EventNames.QSBAnglerResync, ObjectId);
-            }
         }
     }
 }
