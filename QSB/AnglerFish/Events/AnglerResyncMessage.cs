@@ -6,8 +6,8 @@ using UnityEngine;
 namespace QSB.AnglerFish.Events {
     public class AnglerResyncMessage : WorldObjectMessage {
         public enum Type : byte {
-            /// tell host we are in/out of a sector
-            OccupantUpdate,
+            /// tell host we entered/left a sector
+            SectorEnterLeave,
             /// host asks player for angler transform
             TransformRequest,
             /// player broadcasts with that transform
@@ -17,7 +17,7 @@ namespace QSB.AnglerFish.Events {
         public Type type;
 
         public string sector;
-        public bool inside;
+        public bool entered;
 
         public Vector3 pos;
         public Quaternion rot;
@@ -27,14 +27,15 @@ namespace QSB.AnglerFish.Events {
             // use object id for angler
             type = (Type)reader.ReadByte();
             switch (type) {
-                case Type.OccupantUpdate:
+                case Type.SectorEnterLeave:
                     sector = reader.ReadString();
-                    inside = reader.ReadBoolean();
+                    entered = reader.ReadBoolean();
                     break;
                 case Type.TransformRequest:
                     // use about id to request specific player
                     break;
                 case Type.TransformBroadcast:
+                    // use about id to represent what player has this transform
                     pos = reader.ReadVector3();
                     rot = reader.ReadQuaternion();
                     break;
@@ -44,20 +45,21 @@ namespace QSB.AnglerFish.Events {
         }
 
         public override void Serialize(QNetworkWriter writer) {
-            if (type == Type.OccupantUpdate) OnlySendToHost = true;
+            if (type == Type.SectorEnterLeave) OnlySendToHost = true;
 
             base.Serialize(writer);
             // use object id for angler
             writer.Write((byte)type);
             switch (type) {
-                case Type.OccupantUpdate:
+                case Type.SectorEnterLeave:
                     writer.Write(sector);
-                    writer.Write(inside);
+                    writer.Write(entered);
                     break;
                 case Type.TransformRequest:
                     // use about id to request specific player
                     break;
                 case Type.TransformBroadcast:
+                    // use about id to represent what player has this transform
                     writer.Write(pos);
                     writer.Write(rot);
                     break;
@@ -68,12 +70,12 @@ namespace QSB.AnglerFish.Events {
 
         public override string ToString() {
             switch (type) {
-                case Type.OccupantUpdate:
-                    return $"angler {ObjectId}: {FromId} in {sector} = {inside}";
+                case Type.SectorEnterLeave:
+                    return $"{FromId} {(entered ? "entered" : "exited")} {sector} ({ObjectId})";
                 case Type.TransformRequest:
-                    return $"angler {ObjectId}: trans req -> {AboutId}";
+                    return $"{AboutId}: {ObjectId} trans?";
                 case Type.TransformBroadcast:
-                    return $"angler {ObjectId}: trans bc from {FromId} = {pos} {rot}";
+                    return $"{AboutId}: {ObjectId} trans = {pos} {rot}";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

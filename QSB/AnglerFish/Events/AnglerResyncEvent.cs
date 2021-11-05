@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using QSB.AnglerFish.WorldObjects;
 using QSB.Events;
 using QSB.Utility;
@@ -12,27 +11,22 @@ namespace QSB.AnglerFish.Events {
         public override EventType Type => EventType.AnglerResync;
 
         public override void SetupListener() =>
-            GlobalMessenger<int>.AddListener(EventNames.QSBAnglerResync, Handler);
+            GlobalMessenger<int, string, bool>.AddListener(EventNames.QSBAnglerResync, Handler);
 
         public override void CloseListener() =>
-            GlobalMessenger<int>.RemoveListener(EventNames.QSBAnglerResync, Handler);
+            GlobalMessenger<int, string, bool>.RemoveListener(EventNames.QSBAnglerResync, Handler);
 
-        private void Handler(int anglerId) {
-            var angler = QSBWorldSync.GetWorldFromId<QSBAngler>(anglerId).AttachedObject;
-
-            // DebugLog.ToAll($"{angler} {anglerId}: sector occupants changed...");
-            // DebugLog.ToConsole(angler.GetSector().GetOccupants().Join());
-
+        private void Handler(int anglerId, string sector, bool entered) {
             SendEvent(new AnglerResyncMessage {
-                type = AnglerResyncMessage.Type.OccupantUpdate,
+                type = AnglerResyncMessage.Type.SectorEnterLeave,
 
-                sector = angler.GetSector().name,
-                inside = angler.GetSector().ContainsAnyOccupants(
-                    DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship)
+                ObjectId = anglerId,
+                sector = sector,
+                entered = entered
             });
         }
 
-        private void BroadcastTransform(int anglerId) {
+        private void BroadcastTransform(uint fromId, int anglerId) {
             var angler = QSBWorldSync.GetWorldFromId<QSBAngler>(anglerId).AttachedObject;
             var transform = angler._anglerBody.transform;
             // coords are relative to bramble
@@ -41,6 +35,7 @@ namespace QSB.AnglerFish.Events {
                 type = AnglerResyncMessage.Type.TransformBroadcast,
 
                 ObjectId = anglerId,
+                AboutId = fromId,
                 pos = reference.InverseTransformPoint(transform.position),
                 rot = reference.InverseTransformRotation(transform.rotation),
             });
@@ -49,48 +44,43 @@ namespace QSB.AnglerFish.Events {
         public override void OnReceiveLocal(bool isHost, AnglerResyncMessage message) => OnReceiveRemote(isHost, message);
 
         public override void OnReceiveRemote(bool isHost, AnglerResyncMessage message) {
-            DebugLog.ToAll(message.ToString());
             switch (message.type) {
-                case AnglerResyncMessage.Type.OccupantUpdate when isHost:
-                    if (message.inside) {
-                        // player already in this sector, do nothing
-                        if (AnglerManager.sectorOccupants.ContainsKey(message.FromId)) return;
-
+                case AnglerResyncMessage.Type.SectorEnterLeave when isHost:
+                    DebugLog.ToAll(message.ToString());
+                    if (message.entered) {
                         var id = message.FromId;
                         // use an existing occupant's transform if there is one
-                        foreach (var pair in AnglerManager.sectorOccupants.Where(pair => pair.Value == message.sector)) {
-                            id = pair.Key;
-                            break;
-                        }
+                        var pair = AnglerManager.sectorOccupants.FirstOrDefault(p => p.Value == message.sector);
+                        if (pair.Value != null) id = pair.Key;
 
                         // request transform
                         SendEvent(new AnglerResyncMessage {
                             type = AnglerResyncMessage.Type.TransformRequest,
 
-                            AboutId = id,
-                            ObjectId = message.ObjectId
+                            ObjectId = message.ObjectId,
+                            AboutId = id
                         });
 
                         AnglerManager.sectorOccupants[message.FromId] = message.sector;
                     } else {
-                        var removed = AnglerManager.sectorOccupants.Remove(message.FromId);
-                        // player already out of the sector, somehow, so do nothing
-                        if (!removed) return;
+                        AnglerManager.sectorOccupants.Remove(message.FromId);
 
                         // if player is the last one out
                         if (AnglerManager.sectorOccupants.Count(pair => pair.Value == message.sector) == 0)
-                            BroadcastTransform(message.ObjectId);
+                            BroadcastTransform(message.FromId, message.ObjectId);
                     }
 
                     break;
 
 
                 case AnglerResyncMessage.Type.TransformRequest when message.AboutId == LocalPlayerId:
-                    BroadcastTransform(message.ObjectId);
+                    DebugLog.ToAll(message.ToString());
+                    BroadcastTransform(LocalPlayerId, message.ObjectId);
                     break;
 
 
-                case AnglerResyncMessage.Type.TransformBroadcast when message.FromId != LocalPlayerId:
+                case AnglerResyncMessage.Type.TransformBroadcast when message.AboutId != LocalPlayerId:
+                    DebugLog.ToAll(message.ToString());
                     var angler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId).AttachedObject;
                     var reference = angler._brambleBody.transform;
                     // convert to transform relative to us
