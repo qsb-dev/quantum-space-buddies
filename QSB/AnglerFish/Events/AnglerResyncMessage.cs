@@ -14,6 +14,31 @@ namespace QSB.AnglerFish.Events {
             TransformBroadcast
         }
 
+        public static AnglerResyncMessage SectorEnterLeave(int anglerId, string sector, bool entered) =>
+            new AnglerResyncMessage {
+                OnlySendToHost = true,
+                type = Type.SectorEnterLeave,
+                ObjectId = anglerId,
+                sector = sector,
+                entered = entered
+            };
+
+        public static AnglerResyncMessage TransformRequest(int anglerId, uint toId) =>
+            new AnglerResyncMessage {
+                type = Type.TransformRequest,
+                ObjectId = anglerId,
+                AboutId = toId
+            };
+
+        public static AnglerResyncMessage TransformBroadcast(int anglerId, uint fromId, Vector3 pos, Quaternion rot) =>
+            new AnglerResyncMessage {
+                type = Type.TransformBroadcast,
+                ObjectId = anglerId,
+                AboutId = fromId,
+                pos = pos,
+                rot = rot,
+            };
+
         public Type type;
 
         public string sector;
@@ -45,8 +70,6 @@ namespace QSB.AnglerFish.Events {
         }
 
         public override void Serialize(QNetworkWriter writer) {
-            if (type == Type.SectorEnterLeave) OnlySendToHost = true;
-
             base.Serialize(writer);
             // use object id for angler
             writer.Write((byte)type);

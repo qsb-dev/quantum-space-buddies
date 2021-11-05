@@ -4,13 +4,13 @@ using QSB.WorldSync;
 
 namespace QSB.AnglerFish {
     public class AnglerManager : WorldObjectManager {
-        /// holds which player is in which sector
-        public static Dictionary<uint, string> sectorOccupants;
+        /// holds sectors and their occupants
+        public static Dictionary<string, HashSet<uint>> sectorOccupants;
 
         protected override void RebuildWorldObjects(OWScene scene) {
             QSBWorldSync.Init<QSBAngler, AnglerfishController>();
 
-            if (QSBCore.IsHost) sectorOccupants = new Dictionary<uint, string>();
+            if (QSBCore.IsHost) sectorOccupants = new Dictionary<string, HashSet<uint>>();
         }
     }
 }

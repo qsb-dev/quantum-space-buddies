@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
 using QSB.AnglerFish.WorldObjects;
 using QSB.Events;
 using QSB.Utility;
@@ -16,29 +18,24 @@ namespace QSB.AnglerFish.Events {
         public override void CloseListener() =>
             GlobalMessenger<int, string, bool>.RemoveListener(EventNames.QSBAnglerResync, Handler);
 
-        private void Handler(int anglerId, string sector, bool entered) {
-            SendEvent(new AnglerResyncMessage {
-                type = AnglerResyncMessage.Type.SectorEnterLeave,
-
-                ObjectId = anglerId,
-                sector = sector,
-                entered = entered
-            });
-        }
+        private void Handler(int anglerId, string sector, bool entered) =>
+            SendEvent(AnglerResyncMessage.SectorEnterLeave(
+                anglerId,
+                sector,
+                entered
+            ));
 
         private void BroadcastTransform(uint fromId, int anglerId) {
             var angler = QSBWorldSync.GetWorldFromId<QSBAngler>(anglerId).AttachedObject;
             var transform = angler._anglerBody.transform;
             // coords are relative to bramble
             var reference = angler._brambleBody.transform;
-            SendEvent(new AnglerResyncMessage {
-                type = AnglerResyncMessage.Type.TransformBroadcast,
-
-                ObjectId = anglerId,
-                AboutId = fromId,
-                pos = reference.InverseTransformPoint(transform.position),
-                rot = reference.InverseTransformRotation(transform.rotation),
-            });
+            SendEvent(AnglerResyncMessage.TransformBroadcast(
+                anglerId,
+                fromId,
+                reference.InverseTransformPoint(transform.position),
+                reference.InverseTransformRotation(transform.rotation)
+            ));
         }
 
         public override void OnReceiveLocal(bool isHost, AnglerResyncMessage message) => OnReceiveRemote(isHost, message);
@@ -47,29 +44,31 @@ namespace QSB.AnglerFish.Events {
             switch (message.type) {
                 case AnglerResyncMessage.Type.SectorEnterLeave when isHost:
                     DebugLog.ToAll(message.ToString());
+
+                    // init occupants set if needed
+                    if (!AnglerManager.sectorOccupants.TryGetValue(message.sector, out var occupants)) {
+                        occupants = new HashSet<uint>();
+                        AnglerManager.sectorOccupants[message.sector] = occupants;
+                    }
+
                     if (message.entered) {
-                        var id = message.FromId;
-                        // use an existing occupant's transform if there is one
-                        var pair = AnglerManager.sectorOccupants.FirstOrDefault(p => p.Value == message.sector);
-                        if (pair.Value != null) id = pair.Key;
+                        // if there's already occupants in this sector, get transform from them
+                        if (occupants.Any())
+                            SendEvent(AnglerResyncMessage.TransformRequest(
+                                message.ObjectId,
+                                occupants.First()
+                            ));
 
-                        // request transform
-                        SendEvent(new AnglerResyncMessage {
-                            type = AnglerResyncMessage.Type.TransformRequest,
-
-                            ObjectId = message.ObjectId,
-                            AboutId = id
-                        });
-
-                        AnglerManager.sectorOccupants[message.FromId] = message.sector;
+                        occupants.Add(message.FromId);
                     } else {
-                        AnglerManager.sectorOccupants.Remove(message.FromId);
+                        occupants.Remove(message.FromId);
 
-                        // if player is the last one out
-                        if (AnglerManager.sectorOccupants.Count(pair => pair.Value == message.sector) == 0)
+                        // if player is the last one out, sync transform one final time
+                        if (!occupants.Any())
                             BroadcastTransform(message.FromId, message.ObjectId);
                     }
 
+                    DebugLog.ToAll(AnglerManager.sectorOccupants.Join(pair => $"{{{pair.Key}: {pair.Value.Join()}}}"));
                     break;
 
 

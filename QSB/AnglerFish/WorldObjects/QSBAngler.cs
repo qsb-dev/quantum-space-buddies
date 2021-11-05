@@ -11,6 +11,8 @@ namespace QSB.AnglerFish.WorldObjects {
             attachedObject.OnAnglerSuspended += _ => OnSectorEnterLeave(false);
         }
 
+        public override void OnRemoval() => OnSectorEnterLeave(false);
+
         private void OnSectorEnterLeave(bool entered) =>
             QSBEventManager.FireEvent(EventNames.QSBAnglerResync, ObjectId, AttachedObject.GetSector().name, entered);
     }
