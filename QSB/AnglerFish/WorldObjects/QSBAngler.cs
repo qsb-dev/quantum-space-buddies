@@ -7,11 +7,20 @@ namespace QSB.AnglerFish.WorldObjects {
             ObjectId = id;
             AttachedObject = attachedObject;
 
-            attachedObject.OnAnglerUnsuspended += _ => OnSectorEnterLeave(true);
-            attachedObject.OnAnglerSuspended += _ => OnSectorEnterLeave(false);
+            // delay to prevent weird sector exit calls when a client joins
+            QSBCore.UnityEvents.FireInNUpdates(() => {
+                AttachedObject.OnAnglerUnsuspended += OnUnsuspended;
+                AttachedObject.OnAnglerSuspended += OnSuspended;
+            }, 10);
         }
 
-        public override void OnRemoval() => OnSectorEnterLeave(false);
+        public override void OnRemoval() {
+            AttachedObject.OnAnglerUnsuspended -= OnUnsuspended;
+            AttachedObject.OnAnglerSuspended -= OnSuspended;
+        }
+
+        private void OnSuspended(AnglerfishController.AnglerState _) => OnSectorEnterLeave(false);
+        private void OnUnsuspended(AnglerfishController.AnglerState _) => OnSectorEnterLeave(true);
 
         private void OnSectorEnterLeave(bool entered) =>
             QSBEventManager.FireEvent(EventNames.QSBAnglerResync, ObjectId, AttachedObject.GetSector().name, entered);

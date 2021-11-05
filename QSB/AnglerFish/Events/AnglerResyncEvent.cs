@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+﻿using System.Linq;
 using QSB.AnglerFish.WorldObjects;
 using QSB.Events;
 using QSB.Utility;
@@ -45,12 +43,7 @@ namespace QSB.AnglerFish.Events {
                 case AnglerResyncMessage.Type.SectorEnterLeave when isHost:
                     DebugLog.ToAll(message.ToString());
 
-                    // init occupants set if needed
-                    if (!AnglerManager.sectorOccupants.TryGetValue(message.sector, out var occupants)) {
-                        occupants = new HashSet<uint>();
-                        AnglerManager.sectorOccupants[message.sector] = occupants;
-                    }
-
+                    var occupants = AnglerManager.GetSectorOccupants(message.sector);
                     if (message.entered) {
                         // if there's already occupants in this sector, get transform from them
                         if (occupants.Any())
@@ -68,7 +61,7 @@ namespace QSB.AnglerFish.Events {
                             BroadcastTransform(message.FromId, message.ObjectId);
                     }
 
-                    DebugLog.ToAll(AnglerManager.sectorOccupants.Join(pair => $"{{{pair.Key}: {pair.Value.Join()}}}"));
+                    // DebugLog.ToAll(AnglerManager.sectorOccupants.Join(pair => $"{pair.Key}: {pair.Value.Join()}", "\n"));
                     break;
 
 
