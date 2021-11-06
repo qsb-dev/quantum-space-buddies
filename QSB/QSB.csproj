@@ -118,14 +118,6 @@
     <Compile Include="Menus\IMenuAPI.cs" />
     <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
-    <Compile Include="MeteorSync\Events\MeteorEvent.cs" />
-    <Compile Include="MeteorSync\Events\MeteorMessage.cs" />
-    <Compile Include="MeteorSync\MeteorManager.cs" />
-    <Compile Include="MeteorSync\Patches\MeteorPatches.cs" />
-    <Compile Include="MeteorSync\Patches\ClientMeteorPatches.cs" />
-    <Compile Include="MeteorSync\Patches\ServerMeteorPatches.cs" />
-    <Compile Include="MeteorSync\WorldObjects\QSBMeteorController.cs" />
-    <Compile Include="MeteorSync\WorldObjects\QSBMeteorLauncher.cs" />
     <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Events\PlayerInformationEvent.cs" />
     <Compile Include="Player\Events\PlayerInformationMessage.cs" />

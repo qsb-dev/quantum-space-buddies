@@ -72,7 +72,6 @@
 
 		Geyser,
 		Elevator,
-		Meteor,
 
 		/*
 		 * ITEMS

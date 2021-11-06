@@ -29,7 +29,6 @@ using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
 using QSB.AnglerFish;
-using QSB.MeteorSync;
 using UnityEngine;
 
 /*
@@ -112,7 +111,6 @@ namespace QSB
 			gameObject.AddComponent<SpiralManager>();
 			gameObject.AddComponent<ElevatorManager>();
 			gameObject.AddComponent<GeyserManager>();
-			gameObject.AddComponent<MeteorManager>();
 			gameObject.AddComponent<OrbManager>();
 			gameObject.AddComponent<QSBSectorManager>();
 			gameObject.AddComponent<ItemManager>();

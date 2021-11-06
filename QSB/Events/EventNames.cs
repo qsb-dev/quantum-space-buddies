@@ -34,7 +34,6 @@
 		public const string QSBServerTime = nameof(QSBServerTime);
 		public const string QSBStartLift = nameof(QSBStartLift);
 		public const string QSBGeyserState = nameof(QSBGeyserState);
-		public const string QSBMeteorLaunch = nameof(QSBMeteorLaunch);
 		public const string QSBOrbSlot = nameof(QSBOrbSlot);
 		public const string QSBOrbUser = nameof(QSBOrbUser);
 		public const string QSBConversation = nameof(QSBConversation);
