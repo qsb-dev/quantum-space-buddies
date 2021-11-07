@@ -430,6 +430,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\Assembly-CSharp_publicized.dll" />
     <Content Include="lib\UnityEngine.Networking.dll" />
   </ItemGroup>
   <ItemGroup>
