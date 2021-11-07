@@ -41,7 +41,7 @@ namespace QSB.AnglerFish.Events {
         public override void OnReceiveRemote(bool isHost, AnglerResyncMessage message) {
             switch (message.type) {
                 case AnglerResyncMessage.Type.SectorEnterLeave when isHost:
-                    DebugLog.ToAll(message.ToString());
+                    // DebugLog.ToAll(message.ToString());
 
                     var occupants = AnglerManager.GetSectorOccupants(message.sector);
                     if (message.entered) {
@@ -66,13 +66,13 @@ namespace QSB.AnglerFish.Events {
 
 
                 case AnglerResyncMessage.Type.TransformRequest when message.AboutId == LocalPlayerId:
-                    DebugLog.ToAll(message.ToString());
+                    // DebugLog.ToAll(message.ToString());
                     BroadcastTransform(LocalPlayerId, message.ObjectId);
                     break;
 
 
                 case AnglerResyncMessage.Type.TransformBroadcast when message.AboutId != LocalPlayerId:
-                    DebugLog.ToAll(message.ToString());
+                    // DebugLog.ToAll(message.ToString());
                     var angler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId).AttachedObject;
                     var reference = angler._brambleBody.transform;
                     // convert to transform relative to us
