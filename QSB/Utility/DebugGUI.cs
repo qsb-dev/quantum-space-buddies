@@ -2,8 +2,11 @@
 using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
 using QSB.Player;
+using QSB.QuantumSync;
 using QSB.Syncs;
 using QSB.TimeSync;
+using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -11,11 +14,51 @@ namespace QSB.Utility
 	internal class DebugGUI : MonoBehaviour
 	{
 		private const float _debugLineSpacing = 8f;
+		private const float FixedWidth = 200f;
+		private const float Column1 = 20f;
+		private float column1Offset = 10f;
+		private const float Column2 = Column1 + FixedWidth;
+		private float column2Offset = 10f;
+		private const float Column3 = Column2 + FixedWidth;
+		private float column3Offset = 10f;
+		private const float Column4 = Column3 + FixedWidth;
+		private float column4Offset = 10f;
 
 		private GUIStyle guiStyle = new GUIStyle()
 		{
 			fontSize = 9
 		};
+
+		private void WriteLine(int collumnID, string text)
+		{
+			var currentOffset = 0f;
+			var x = 0f;
+			switch (collumnID)
+			{
+				case 1:
+					x = Column1;
+					currentOffset = column1Offset;
+					column1Offset += _debugLineSpacing;
+					break;
+				case 2:
+					x = Column2;
+					currentOffset = column2Offset;
+					column2Offset += _debugLineSpacing;
+					break;
+				case 3:
+					x = Column3;
+					currentOffset = column3Offset;
+					column3Offset += _debugLineSpacing;
+					break;
+				case 4:
+					x = Column4;
+					currentOffset = column4Offset;
+					column4Offset += _debugLineSpacing;
+					break;
+			}
+
+			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiStyle);
+		}
 
 		public void OnGUI()
 		{
@@ -27,57 +70,46 @@ namespace QSB.Utility
 			guiStyle.normal.textColor = Color.white;
 			GUI.contentColor = Color.white;
 
-			var offset = 10f;
-			GUI.Label(new Rect(220, 10, 200f, 20f), $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}", guiStyle);
-			offset += _debugLineSpacing;
-			GUI.Label(new Rect(220, offset, 200f, 20f), $"HasWokenUp : {QSBCore.WorldObjectsReady}", guiStyle);
-			offset += _debugLineSpacing;
+			column1Offset = 10f;
+			column2Offset = 10f;
+			column3Offset = 10f;
+			column4Offset = 10f;
+
+			#region Column1 - Server data
+			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
+			WriteLine(1, $"HasWokenUp : {QSBCore.WorldObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
 			{
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Server State : {ServerStateManager.Instance.GetServerState()}", guiStyle);
-				offset += _debugLineSpacing;
+				WriteLine(1, $"Server State : {ServerStateManager.Instance.GetServerState()}");
 				var currentState = WakeUpSync.LocalInstance.CurrentState;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"WakeUpSync State : {currentState}", guiStyle);
-				offset += _debugLineSpacing;
+				WriteLine(1, $"WakeUpSync State : {currentState}");
 				var reason = WakeUpSync.LocalInstance.CurrentReason;
 				if (currentState == WakeUpSync.State.FastForwarding && reason != null)
 				{
-
-					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(FastForwardReason)reason}", guiStyle);
-					offset += _debugLineSpacing;
+					WriteLine(1, $"Reason : {(FastForwardReason)reason}");
 				}
 				else if (currentState == WakeUpSync.State.Pausing && reason != null)
 				{
-					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : {(PauseReason)reason}", guiStyle);
-					offset += _debugLineSpacing;
+					WriteLine(1, $"Reason : {(PauseReason)reason}");
 				}
 				else if (currentState != WakeUpSync.State.Loaded && currentState != WakeUpSync.State.NotLoaded && reason == null)
 				{
-					GUI.Label(new Rect(220, offset, 200f, 20f), $"Reason : NULL", guiStyle);
-					offset += _debugLineSpacing;
+					WriteLine(1, $"Reason : NULL");
 				}
-				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}", guiStyle);
-				offset += _debugLineSpacing;
-				GUI.Label(new Rect(220, offset, 200f, 20f), $"Timescale : {OWTime.GetTimeScale()}", guiStyle);
-				offset += _debugLineSpacing;
+				WriteLine(1, $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
+				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
 			}
+			#endregion
 
-			var offset2 = 10f;
-			GUI.Label(new Rect(420, offset2, 200f, 20f), $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}", guiStyle);
-			offset2 += _debugLineSpacing;
-			GUI.Label(new Rect(420, offset2, 200f, 20f), $"Player data :", guiStyle);
-			offset2 += _debugLineSpacing;
+			#region Column2 - Player data
+			WriteLine(2, $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}");
+			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				GUI.Label(new Rect(420, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}", guiStyle);
-				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset2, 400f, 20f), $"State : {player.State}", guiStyle);
-				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Dead : {player.IsDead}", guiStyle);
-				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(420, offset2, 400f, 20f), $"Visible : {player.Visible}", guiStyle);
-				offset2 += _debugLineSpacing;
+				WriteLine(2, $"{player.PlayerId}.{player.Name}");
+				WriteLine(2, $"State : {player.State}");
+				WriteLine(2, $"Dead : {player.IsDead}");
+				WriteLine(2, $"Visible : {player.Visible}");
 
 				if (player.PlayerStates.IsReady && QSBCore.WorldObjectsReady)
 				{
@@ -88,16 +120,11 @@ namespace QSB.Utility
 					var intermediary = networkTransform.GetValue<IntermediaryTransform>("_intermediaryTransform");
 					var interTransform = intermediary.GetReferenceTransform();
 
-					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}", guiStyle);
-					offset2 += _debugLineSpacing;
-					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", guiStyle);
-					offset2 += _debugLineSpacing;
-					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", guiStyle);
-					offset2 += _debugLineSpacing;
-					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Inter. Ref. Transform : {(interTransform == null ? "NULL" : interTransform.name)}", guiStyle);
-					offset2 += _debugLineSpacing;
-					GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Parent : {(parent == null ? "NULL" : parent.name)}", guiStyle);
-					offset2 += _debugLineSpacing;
+					WriteLine(2, $" - L.Pos : {networkTransform.transform.localPosition}");
+					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}");
+					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}");
+					WriteLine(2, $" - Inter. Ref. Transform : {(interTransform == null ? "NULL" : interTransform.name)}");
+					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}");
 
 					/*
 					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
@@ -108,6 +135,20 @@ namespace QSB.Utility
 						offset2 += _debugLineSpacing;
 					}
 					*/
+				}
+			}
+			#endregion
+
+			foreach (var player in QSBPlayerManager.PlayerList)
+			{
+				WriteLine(4, $"- {player.PlayerId}.{player.Name}");
+				var allQuantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
+				var ownedQuantumObjects = allQuantumObjects.Where(x => x.ControllingPlayer == player.PlayerId);
+
+				foreach (var quantumObject in ownedQuantumObjects)
+				{
+					var qsbObj = quantumObject as IWorldObject;
+					WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
 				}
 			}
 		}
