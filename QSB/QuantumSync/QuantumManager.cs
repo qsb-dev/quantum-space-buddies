@@ -2,6 +2,7 @@
 using QSB.Events;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -75,6 +76,18 @@ namespace QSB.QuantumSync
 			if (Shrine != null)
 			{
 				Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta);
+			}
+
+			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
+			{
+				if (quantumObject.ControllingPlayer == 0)
+				{
+					continue;
+				}
+
+				Popcron.Gizmos.Line((quantumObject as IWorldObject).ReturnObject().transform.position,
+					QSBPlayerManager.GetPlayer(quantumObject.ControllingPlayer).Body.transform.position,
+					Color.magenta);
 			}
 		}
 
