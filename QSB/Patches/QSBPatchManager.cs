@@ -10,6 +10,7 @@ using QSB.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
+using QSB.EchoesOfTheEye.LightSensorSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.OrbSync.Patches;
 using QSB.Player.Patches;
@@ -69,7 +70,8 @@ namespace QSB.Patches
 				new RespawnPatches(),
 				new LauncherPatches(),
 				new SolanumPatches(),
-				new SatelliteProjectorPatches()
+				new SatelliteProjectorPatches(),
+				new LightSensorPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

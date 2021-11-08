@@ -90,7 +90,7 @@ namespace QSB.Animation.Player.Thrusters
 				return;
 			}
 
-			Popcron.Gizmos.Sphere(_light.transform.position, 0.05f, Color.yellow, false, 4);
+			Popcron.Gizmos.Sphere(_light.transform.position, 0.05f, Color.yellow, 4);
 			Popcron.Gizmos.Line(_light.transform.position, _light.transform.parent.position, Color.yellow);
 		}
 	}

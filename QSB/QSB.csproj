@@ -87,6 +87,8 @@
     <Compile Include="DeathSync\Patches\DeathPatches.cs" />
     <Compile Include="DeathSync\Patches\RespawnPatches.cs" />
     <Compile Include="DeathSync\RespawnManager.cs" />
+    <Compile Include="EchoesOfTheEye\AirlockSync\AirlockManager.cs" />
+    <Compile Include="EchoesOfTheEye\AirlockSync\WorldObjects\QSBGhostAirlock.cs" />
     <Compile Include="ElevatorSync\WorldObjects\QSBElevator.cs" />
     <Compile Include="ElevatorSync\Events\ElevatorEvent.cs" />
     <Compile Include="ElevatorSync\ElevatorManager.cs" />
@@ -110,6 +112,9 @@
     <Compile Include="ItemSync\WorldObjects\Sockets\QSBOWItemDoubleSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\Sockets\QSBSlideProjectorSocket.cs" />
     <Compile Include="ItemSync\WorldObjects\Sockets\QSBSlideReelSocket.cs" />
+    <Compile Include="EchoesOfTheEye\LightSensorSync\LightSensorManager.cs" />
+    <Compile Include="EchoesOfTheEye\LightSensorSync\Patches\LightSensorPatches.cs" />
+    <Compile Include="EchoesOfTheEye\LightSensorSync\WorldObjects\QSBSingleLightSensor.cs" />
     <Compile Include="Menus\IMenuAPI.cs" />
     <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />

@@ -64,6 +64,7 @@ namespace QSB.DeathSync
 			} },
 			{ DeathType.BigBang, new[] // End of the game
 			{
+				// TODO : maybe don't show these?
 				"{0} sacrificed themself for the universe",
 				"{0} knows the true meaning of sacrifice",
 				"{0} won at the cost of their life"
@@ -78,10 +79,6 @@ namespace QSB.DeathSync
 				"{0} went swimming in the sand",
 				"{0} underestimated the danger of sand",
 				"{0} died due to being crushed"
-			} },
-			{ DeathType.Meditation, new[] // Meditation
-			{
-				"{0} broke QSB. this is a bug, you should never see this"
 			} },
 			{ DeathType.TimeLoop, new[] // Escaping the supernova
 			{
@@ -105,11 +102,31 @@ namespace QSB.DeathSync
 				"{0} should visit the Ash Twin Project again",
 				"{0} waited inside the Ash Twin Project",
 				"{0} chased their memories"
-			} }
+			} },
+			{ DeathType.DreamExplosion, new[] // using the prototype
+			{
+				"{0} exploded",
+				"{0} was an early adopter",
+				"{0} went kaboom",
+				"{0} was fried",
+				"{0} died due to explosion",
+				"{0} used the wrong artifact"
+			} },
+			{ DeathType.CrushedByElevator, new[] // elevator-induced pancakeness
+			{
+				"{0} was crushed",
+				"{0} was squished",
+				"{0} was crushed by an elevator",
+				"{0} stood under an elevator",
+				"{0} became a flat-hearther",
+				"{0} was squished by an elevator"
+			} },
 		};
 
-		public static string GetPhrase(DeathType deathType, int index) =>
-			Darkhold[deathType][index];
+		public static string GetPhrase(DeathType deathType, int index)
+			=> !Darkhold.ContainsKey(deathType)
+				? Darkhold[DeathType.Default][index]
+				: Darkhold[deathType][index];
 
 		public static int GetRandomIndex(DeathType deathType)
 			=> new Random().Next(0, Darkhold[deathType].Length);

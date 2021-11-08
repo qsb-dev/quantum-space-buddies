@@ -1,3 +1,4 @@
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -83,8 +84,10 @@ namespace Popcron
 				//none were found, create a new one
 				if (!instance)
 				{
-					instance = new GameObject(typeof(GizmosInstance).FullName).AddComponent<GizmosInstance>();
-					instance.gameObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+					//instance = new GameObject(typeof(GizmosInstance).FullName).AddComponent<GizmosInstance>();
+					//instance.gameObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+					instance = Locator.GetPlayerCamera().gameObject.AddComponent<GizmosInstance>();
+					DebugLog.DebugWrite("CREATE GIZMOS INSTANCE!");
 				}
 			}
 
@@ -96,7 +99,7 @@ namespace Popcron
 		/// <summary>
 		/// Submits an array of points to draw into the queue.
 		/// </summary>
-		internal static void Submit(Vector3[] points, Color? color, bool dashed)
+		internal static void Submit(Vector3[] points, Color? color)
 		{
 			var inst = GetOrCreate();
 
@@ -122,7 +125,6 @@ namespace Popcron
 
 			inst.queue[inst.queueIndex].color = color ?? Color.white;
 			inst.queue[inst.queueIndex].points = points;
-			inst.queue[inst.queueIndex].dashed = dashed;
 
 			inst.queueIndex++;
 		}
@@ -135,17 +137,13 @@ namespace Popcron
 			{
 				queue[i] = new Element();
 			}
-
-			Camera.onPostRender += OnRendered;
 		}
-
-		private void OnDisable() => Camera.onPostRender -= OnRendered;
 
 		private void Update() =>
 			//always render something
 			Gizmos.Line(default, default);
 
-		private void OnRendered(Camera camera)
+		private void OnPostRender()
 		{
 			Material.SetPass(0);
 
@@ -155,8 +153,6 @@ namespace Popcron
 			GL.MultMatrix(Matrix4x4.identity);
 			GL.Begin(GL.LINES);
 
-			var alt = CurrentTime % 1 > 0.5f;
-			var dashGap = Mathf.Clamp(Gizmos.DashGap, 0.01f, 32f);
 			var points = new List<Vector3>();
 
 			//draw le elements
@@ -171,44 +167,7 @@ namespace Popcron
 				var element = queue[e];
 
 				points.Clear();
-				if (element.dashed)
-				{
-					//subdivide
-					for (var i = 0; i < element.points.Length - 1; i++)
-					{
-						var pointA = element.points[i];
-						var pointB = element.points[i + 1];
-						var direction = pointB - pointA;
-						if (direction.sqrMagnitude > dashGap * dashGap * 2f)
-						{
-							var magnitude = direction.magnitude;
-							var amount = Mathf.RoundToInt(magnitude / dashGap);
-							direction /= magnitude;
-
-							for (var p = 0; p < amount - 1; p++)
-							{
-								if (p % 2 == (alt ? 1 : 0))
-								{
-									var startLerp = p / (amount - 1f);
-									var endLerp = (p + 1) / (amount - 1f);
-									var start = Vector3.Lerp(pointA, pointB, startLerp);
-									var end = Vector3.Lerp(pointA, pointB, endLerp);
-									points.Add(start);
-									points.Add(end);
-								}
-							}
-						}
-						else
-						{
-							points.Add(pointA);
-							points.Add(pointB);
-						}
-					}
-				}
-				else
-				{
-					points.AddRange(element.points);
-				}
+				points.AddRange(element.points);
 
 				GL.Color(element.color);
 				for (var i = 0; i < points.Count; i++)
