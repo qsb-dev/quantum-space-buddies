@@ -3,29 +3,35 @@ using UnityEngine;
 
 namespace QSB.Tools
 {
-	public class QSBFlashlight : MonoBehaviour
+	public class QSBFlashlight : MonoBehaviour, ILightSource
 	{
 		private OWLight2[] _lights;
+		internal OWLight2 _illuminationCheckLight;
 		private Transform _root;
 		private Transform _basePivot;
 		private Transform _wobblePivot;
 		private Vector3 _baseForward;
 		private Quaternion _baseRotation;
+		private LightSourceVolume _lightSourceVolume;
 
 		public bool FlashlightOn;
 
 		public void Start()
 		{
+			_lightSourceVolume = this.GetRequiredComponentInChildren<LightSourceVolume>();
+			_lightSourceVolume.LinkLightSource(this);
+			_lightSourceVolume.SetVolumeActivation(FlashlightOn);
 			_baseForward = _basePivot.forward;
 			_baseRotation = _basePivot.rotation;
 		}
 
 		public void Init(Flashlight oldComponent)
 		{
-			_lights = oldComponent.GetValue<OWLight2[]>("_lights");
-			_root = oldComponent.GetValue<Transform>("_root");
-			_basePivot = oldComponent.GetValue<Transform>("_basePivot");
-			_wobblePivot = oldComponent.GetValue<Transform>("_wobblePivot");
+			_lights = oldComponent._lights;
+			_illuminationCheckLight = oldComponent._illuminationCheckLight;
+			_root = oldComponent._root;
+			_basePivot = oldComponent._basePivot;
+			_wobblePivot = oldComponent._wobblePivot;
 			Destroy(oldComponent.GetComponent<LightLOD>());
 
 			foreach (var light in _lights)
@@ -36,6 +42,12 @@ namespace QSB.Tools
 
 			FlashlightOn = false;
 		}
+
+		public LightSourceType GetLightSourceType()
+			=> LightSourceType.FLASHLIGHT;
+
+		public OWLight2[] GetLights()
+			=> _lights;
 
 		public void UpdateState(bool value)
 		{
@@ -58,7 +70,7 @@ namespace QSB.Tools
 
 			foreach (var light in _lights)
 			{
-				light.GetLight().enabled = true;
+				light.SetActivation(true);
 			}
 
 			FlashlightOn = true;
@@ -66,6 +78,7 @@ namespace QSB.Tools
 			_basePivot.rotation = rotation;
 			_baseRotation = rotation;
 			_baseForward = _basePivot.forward;
+			_lightSourceVolume.SetVolumeActivation(FlashlightOn);
 		}
 
 		private void TurnOff()
@@ -77,15 +90,16 @@ namespace QSB.Tools
 
 			foreach (var light in _lights)
 			{
-				light.GetLight().enabled = false;
+				light.SetActivation(false);
 			}
 
 			FlashlightOn = false;
+			_lightSourceVolume.SetVolumeActivation(FlashlightOn);
 		}
 
-		public bool CheckIlluminationAtPoint(Vector3 point, float buffer = 0f, float maxDistance = float.PositiveInfinity)
+		public bool CheckIlluminationAtPoint(Vector3 worldPoint, float buffer = 0f, float maxDistance = float.PositiveInfinity)
 			=> FlashlightOn
-				&& _lights[1].CheckIlluminationAtPoint(point, buffer, maxDistance);
+				&& _illuminationCheckLight.CheckIlluminationAtPoint(worldPoint, buffer, maxDistance);
 
 		public void FixedUpdate()
 		{
@@ -96,20 +110,6 @@ namespace QSB.Tools
 			_basePivot.rotation = _baseRotation;
 			_baseForward = _basePivot.forward;
 			_wobblePivot.localRotation = OWUtilities.GetWobbleRotation(0.3f, 0.15f) * Quaternion.identity;
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
-			{
-				return;
-			}
-
-			var light = _lights[1].GetLight();
-			if (light.enabled)
-			{
-				Popcron.Gizmos.Cone(light.transform.position, light.transform.rotation, light.range, light.spotAngle, Color.yellow);
-			}
 		}
 	}
 }

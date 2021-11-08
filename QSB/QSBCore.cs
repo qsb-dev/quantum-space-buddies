@@ -5,10 +5,12 @@ using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
 using QSB.DeathSync;
+using QSB.EchoesOfTheEye.AirlockSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
+using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.Menus;
 using QSB.OrbSync;
 using QSB.Patches;
@@ -119,6 +121,8 @@ namespace QSB
 			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipManager>();
 			gameObject.AddComponent<ProbeLauncherManager>();
+			gameObject.AddComponent<LightSensorManager>();
+			gameObject.AddComponent<AirlockManager>();
 
 			DebugBoxManager.Init();
 
