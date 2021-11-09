@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>QNetWeaver</RootNamespace>
     <AssemblyName>QNetWeaver</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,21 +38,24 @@
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Unity.Cecil">
-      <HintPath>lib\Unity.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Cecil.Mdb">
-      <HintPath>lib\Unity.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Cecil.Pdb">
-      <HintPath>lib\Unity.Cecil.Pdb.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.UNetWeaver, Version=1.0.7209.2424, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Unity.UNetWeaver.dll</HintPath>
@@ -70,7 +74,14 @@
     <Compile Include="WeaverLists.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\Unity.Cecil.dll" />
+    <Content Include="lib\Unity.Cecil.Mdb.dll" />
+    <Content Include="lib\Unity.Cecil.Pdb.dll" />
     <Content Include="lib\Unity.UNetWeaver.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
