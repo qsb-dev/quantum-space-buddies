@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +23,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -453,7 +453,7 @@ copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ProjectName)"
 copy /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"
 copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ProjectName)"
 
-"$(SolutionDir)\QNetWeaver\bin\Debug\QNetWeaver.exe" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll" "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" "$(ProjectDir)\lib\UnityEngine.Networking.dll"  "$(SolutionDir)\WeavedFiles" "$(TargetPath)"
+"$(SolutionDir)\QNetWeaver\bin\$(Configuration)\QNetWeaver.exe" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll" "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" "$(ProjectDir)\lib\UnityEngine.Networking.dll"  "$(SolutionDir)\WeavedFiles" "$(TargetPath)"
 
 copy /y "$(SolutionDir)\WeavedFiles\QSB.dll" "$(OwmlDir)\Mods\$(ProjectName)"
 
