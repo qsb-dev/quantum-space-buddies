@@ -153,13 +153,12 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 - [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
 - Install OWML using the Mod Manager
 - Clone QSB's source
-- Open the file `QSB/QSB.csproj.user` in your favorite text editor
+- Open the file `Director.Build.targets` in your favorite text editor
 - Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
-- Do the same for `QuantumUNET/QuantumUNET.csproj.user` and `QSBTests/QSBTests.csproj.user`
 - Open the project solution file `QSB.sln` in Visual Studio
 - If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references
-- Run this to stop tracking QSB.csproj.user: ```git update-index --skip-worktree QSB/QSB.csproj.user``` (and do the same for the other .user files)
+- Run this to stop tracking Director.Build.targets: ```git update-index --skip-worktree Director.Build.targets```
 
 To fix the references, right click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 
@@ -199,13 +198,22 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 
 ## Authors and Special Thanks
 
+### Authors
+
 - [\_nebula](https://github.com/misternebula) - Developer of v0.3 onwards
 - [AmazingAlek](https://github.com/amazingalek) - On-and-off developer and sometimes code tidy-er
 - [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1 - v0.2
+
+### Contributers
+
+- [ShoosGun](https://github.com/ShoosGun)
+- [Chris Yeninas](https://github.com/PhantomGamers)
+
+### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code.
 - Thanks to all the people in the Outer Wilds Discord for helping in public tests.
 - Special thanks (and apologies) to all the people in the #modding channel, which I (_nebula) have been using as a virtual [rubber duck.](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
 
 ## Help / Discuss development / Whatever
 
-[Join the unofficial Outer Wilds Discord](https://discord.gg/Sftcc9Z), we have a nice `#modding` channel where you can discuss all types of things.
+[Join the unofficial Outer Wilds Discord](https://discord.gg/Sftcc9Z), we have a nice `#modding-support` channel for any mod help, and a `#modding` channel to discuss modding!
