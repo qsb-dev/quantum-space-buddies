@@ -369,9 +369,7 @@
     <Reference Include="netstandard">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="System">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="Unity.InputSystem, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Unity.InputSystem.dll</HintPath>
