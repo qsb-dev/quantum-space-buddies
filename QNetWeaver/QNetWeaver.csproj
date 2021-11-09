@@ -44,13 +44,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Unity.Cecil">
-      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2017.4.33f1\Editor\Data\Managed\Unity.Cecil.dll</HintPath>
+      <HintPath>lib\Unity.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Cecil.Mdb">
-      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2017.4.33f1\Editor\Data\Managed\Unity.Cecil.Mdb.dll</HintPath>
+      <HintPath>lib\Unity.Cecil.Mdb.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Cecil.Pdb">
-      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2017.4.33f1\Editor\Data\Managed\Unity.Cecil.Pdb.dll</HintPath>
+      <HintPath>lib\Unity.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="Unity.UNetWeaver, Version=1.0.7209.2424, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
