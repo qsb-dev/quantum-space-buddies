@@ -23,6 +23,7 @@ using QSB.StatueSync.Events;
 using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.Tools.ProbeLauncherTool.Events;
+using QSB.Tools.TranslatorTool.Events;
 using QSB.TranslationSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
