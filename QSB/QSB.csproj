@@ -284,7 +284,7 @@
     <Compile Include="GeyserSync\WorldObjects\QSBGeyser.cs" />
     <Compile Include="Tools\ProbeLauncherTool\Events\EquipProbeLauncherEvent.cs" />
     <Compile Include="Tools\Events\PlayerSignalscopeEvent.cs" />
-    <Compile Include="Tools\Events\PlayerTranslatorEvent.cs" />
+    <Compile Include="Tools\TranslatorTool\Events\PlayerTranslatorEvent.cs" />
     <Compile Include="Events\QSBEvent.cs" />
     <Compile Include="Player\Events\PlayerJoinMessage.cs" />
     <Compile Include="Messaging\ToggleMessage.cs" />
