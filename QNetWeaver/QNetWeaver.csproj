@@ -74,9 +74,6 @@
     <Compile Include="WeaverLists.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="lib\Unity.Cecil.dll" />
-    <Content Include="lib\Unity.Cecil.Mdb.dll" />
-    <Content Include="lib\Unity.Cecil.Pdb.dll" />
     <Content Include="lib\Unity.UNetWeaver.dll" />
   </ItemGroup>
   <ItemGroup>
