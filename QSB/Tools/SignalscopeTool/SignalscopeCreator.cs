@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.Tools.SignalscopeTool
 {
-	static class SignalscopeCreator
+	internal static class SignalscopeCreator
 	{
 		private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
 

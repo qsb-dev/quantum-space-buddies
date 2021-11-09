@@ -1,6 +1,6 @@
 ﻿namespace QSB.ItemSync.WorldObjects.Items
 {
-	class QSBSlideReelItem : QSBOWItem<SlideReelItem>
+	internal class QSBSlideReelItem : QSBOWItem<SlideReelItem>
 	{
 		public override void Init(SlideReelItem attachedObject, int id)
 		{

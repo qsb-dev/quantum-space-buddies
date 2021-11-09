@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QSB.ItemSync.WorldObjects.Sockets
+﻿namespace QSB.ItemSync.WorldObjects.Sockets
 {
 	internal class QSBSlideProjectorSocket : QSBOWItemDoubleSocket<SlideProjectorSocket>
 	{

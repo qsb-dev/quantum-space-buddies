@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.FlashlightTool
 {
-	static class FlashlightCreator
+	internal static class FlashlightCreator
 	{
 		private static readonly Vector3 FlashlightOffset = new Vector3(0.7196316f, -0.2697681f, 0.3769455f);
 

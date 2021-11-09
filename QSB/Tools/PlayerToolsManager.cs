@@ -1,12 +1,9 @@
-﻿using OWML.Utils;
-using QSB.Player;
-using QSB.Tools.FlashlightTool;
+﻿using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.SignalscopeTool;
 using QSB.Tools.TranslatorTool;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
 namespace QSB.Tools
 {

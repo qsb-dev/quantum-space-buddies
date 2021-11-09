@@ -1,6 +1,6 @@
 ﻿namespace QSB.ItemSync.WorldObjects.Items
 {
-	class QSBSimpleLanternItem : QSBOWItem<SimpleLanternItem>
+	internal class QSBSimpleLanternItem : QSBOWItem<SimpleLanternItem>
 	{
 		public override void Init(SimpleLanternItem attachedObject, int id)
 		{

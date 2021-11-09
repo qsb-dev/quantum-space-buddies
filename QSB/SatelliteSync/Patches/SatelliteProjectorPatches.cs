@@ -6,7 +6,7 @@ using UnityEngine;
 namespace QSB.SatelliteSync.Patches
 {
 	[HarmonyPatch]
-	class SatelliteProjectorPatches : QSBPatch
+	internal class SatelliteProjectorPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

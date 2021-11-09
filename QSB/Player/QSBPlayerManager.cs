@@ -2,7 +2,6 @@
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.Events;
 using QSB.Player.TransformSync;
-using QSB.Tools;
 using QSB.Tools.FlashlightTool;
 using QSB.Utility;
 using System;

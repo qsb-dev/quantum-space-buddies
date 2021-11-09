@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.ProbeLauncherTool
 {
-	static class ProbeLauncherCreator
+	internal static class ProbeLauncherCreator
 	{
 		private static readonly Vector3 ProbeLauncherOffset = new Vector3(0.5745087f, -0.26f, 0.4453125f);
 

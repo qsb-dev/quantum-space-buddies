@@ -1,13 +1,10 @@
 ﻿using QSB.Player;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine.PostProcessing;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace QSB.Tools.ProbeTool
 {
-	static class ProbeCreator
+	internal static class ProbeCreator
 	{
 		public static void CreateProbe(Transform newProbe, PlayerInfo player)
 		{

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool
 {
-	static class TranslatorCreator
+	internal static class TranslatorCreator
 	{
 		private static readonly Vector3 TranslatorScale = new Vector3(0.75f, 0.75f, 0.75f);
 

@@ -1,18 +1,14 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Tools;
 using QSB.Tools.FlashlightTool;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 {
 	[HarmonyPatch]
-	class LightSensorPatches : QSBPatch
+	internal class LightSensorPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

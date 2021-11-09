@@ -2,7 +2,7 @@
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects
 {
-	class QSBSingleLightSensor : WorldObject<SingleLightSensor>
+	internal class QSBSingleLightSensor : WorldObject<SingleLightSensor>
 	{
 		public override void Init(SingleLightSensor sensor, int id)
 		{
