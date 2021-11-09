@@ -2,6 +2,7 @@
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools;
+using QSB.Tools.FlashlightTool;
 using System;
 using System.Collections.Generic;
 using System.Linq;

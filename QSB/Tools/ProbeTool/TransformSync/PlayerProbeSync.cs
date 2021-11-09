@@ -4,11 +4,12 @@ using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools;
 using QSB.Tools.ProbeLauncherTool;
+using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.ProbeSync.TransformSync
+namespace QSB.Tools.ProbeTool.TransformSync
 {
 	public class PlayerProbeSync : SectoredTransformSync
 	{
@@ -58,7 +59,7 @@ namespace QSB.ProbeSync.TransformSync
 
 			body.name = "RemoteProbeTransform";
 
-			PlayerToolsManager.CreateProbe(body, Player);
+			ProbeCreator.CreateProbe(body, Player);
 
 			Player.ProbeBody = body.gameObject;
 

@@ -1,7 +1,7 @@
 ﻿using OWML.Utils;
 using UnityEngine;
 
-namespace QSB.Tools
+namespace QSB.Tools.FlashlightTool
 {
 	public class QSBFlashlight : MonoBehaviour, ILightSource
 	{
