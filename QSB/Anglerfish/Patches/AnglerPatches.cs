@@ -95,9 +95,6 @@ namespace QSB.Anglerfish.Patches
 				case AnglerfishController.AnglerState.Consuming:
 					if (__instance._consumeComplete)
 					{
-						qsbAngler.targetTransform = null;
-						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
-						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
 
@@ -111,6 +108,10 @@ namespace QSB.Anglerfish.Patches
 					var num = Time.time - __instance._consumeStartTime;
 					if (qsbAngler.TargetTransform.CompareTag("Player") && num > (double)__instance._consumeDeathDelay)
 					{
+						qsbAngler.TargetTransform = null;
+						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+
 						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 						__instance._consumeComplete = true;
 						break;
@@ -133,6 +134,10 @@ namespace QSB.Anglerfish.Patches
 
 					if (PlayerState.IsInsideShip())
 					{
+						qsbAngler.TargetTransform = null;
+						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+
 						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 					}
 
