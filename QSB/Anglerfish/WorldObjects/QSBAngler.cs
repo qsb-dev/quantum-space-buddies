@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using OWML.Common;
 using QSB.Anglerfish.TransformSync;
 using QSB.Events;
-using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -44,12 +42,6 @@ namespace QSB.Anglerfish.WorldObjects
 
 		public void TransferAuthority(uint id)
 		{
-			if (!QSBCore.IsHost)
-			{
-				DebugLog.ToConsole("Error - non-host trying to transfer angler authority", MessageType.Error);
-				return;
-			}
-
 			var conn = QNetworkServer.connections.First(x => x.GetPlayerId() == id);
 			var identity = transformSync.NetIdentity;
 
@@ -68,19 +60,17 @@ namespace QSB.Anglerfish.WorldObjects
 		}
 
 
-		public Transform target;
-		public uint TargetToId()
+		public Transform targetTransform;
+		public Vector3 TargetVelocity { get; private set; }
+		private Vector3 _lastTargetPosition;
+		public void FixedUpdate()
 		{
-			var body = AttachedObject._targetBody;
-			if (body == null) return uint.MaxValue;
-			if (body == Locator.GetShipBody()) return uint.MaxValue - 1;
-			return QSBPlayerManager.LocalPlayerId;
-		}
-		public static Transform IdToTarget(uint id)
-		{
-			if (id == uint.MaxValue) return null;
-			if (id == uint.MaxValue - 1) return Locator.GetShipTransform();
-			return QSBPlayerManager.GetPlayer(id).Body.transform;
+			if (targetTransform == null)
+			{
+				return;
+			}
+			TargetVelocity = targetTransform.position - _lastTargetPosition;
+			_lastTargetPosition = targetTransform.position;
 		}
 	}
 }

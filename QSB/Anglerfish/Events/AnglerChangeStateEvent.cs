@@ -1,7 +1,10 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.Events;
+using QSB.Player;
 using QSB.WorldSync;
+using UnityEngine;
 using static AnglerfishController;
+using EventType = QSB.Events.EventType;
 
 namespace QSB.Anglerfish.Events
 {
@@ -15,7 +18,7 @@ namespace QSB.Anglerfish.Events
 			{
 				ObjectId = qsbAngler.ObjectId,
 				EnumValue = qsbAngler.AttachedObject._currentState,
-				targetId = qsbAngler.TargetToId(),
+				targetId = TargetToId(qsbAngler.targetTransform),
 				localDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos
 			});
 
@@ -31,10 +34,34 @@ namespace QSB.Anglerfish.Events
 				qsbAngler.TransferAuthority(message.FromId);
 			}
 
-			qsbAngler.AttachedObject.enabled = qsbAngler.transformSync.HasAuthority;
 			qsbAngler.AttachedObject._currentState = message.EnumValue;
-			qsbAngler.target = QSBAngler.IdToTarget(message.targetId);
+			qsbAngler.targetTransform = IdToTarget(message.targetId);
 			qsbAngler.AttachedObject._localDisturbancePos = message.localDisturbancePos;
+		}
+
+		private static uint TargetToId(Transform transform)
+		{
+			if (transform == null)
+			{
+				return uint.MaxValue;
+			}
+			if (transform == Locator.GetShipTransform())
+			{
+				return uint.MaxValue - 1;
+			}
+			return QSBPlayerManager.LocalPlayerId;
+		}
+		private static Transform IdToTarget(uint id)
+		{
+			if (id == uint.MaxValue)
+			{
+				return null;
+			}
+			if (id == uint.MaxValue - 1)
+			{
+				return Locator.GetShipTransform();
+			}
+			return QSBPlayerManager.GetPlayer(id).Body.transform;
 		}
 	}
 }

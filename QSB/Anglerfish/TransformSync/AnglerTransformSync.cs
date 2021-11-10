@@ -2,6 +2,7 @@
 using QSB.Anglerfish.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
 {
@@ -32,7 +33,25 @@ namespace QSB.Anglerfish.TransformSync
 			_qsbAngler.transformSync = this;
 
 			base.Init();
-			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody._transform);
+			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
+		}
+
+
+		protected override void OnRenderObject()
+		{
+			base.OnRenderObject();
+
+			if (!QSBCore.WorldObjectsReady
+				|| !QSBCore.DebugMode
+				|| !QSBCore.ShowLinesInDebug
+				|| !IsReady
+				|| ReferenceTransform == null
+				|| _intermediaryTransform.GetReferenceTransform() == null)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Line(AttachedObject.transform.position, _qsbAngler.AttachedObject.GetTargetPosition(), Color.white);
 		}
 	}
 }
