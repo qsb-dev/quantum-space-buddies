@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Utility;
 using QuantumUNET.Transport;
 using UnityEngine;
@@ -163,7 +164,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity;
 
-			(AttachedObject as OWRigidbody).SetVelocity(targetVelocity);
+			SetVelocity(AttachedObject as OWRigidbody, targetVelocity);
 			(AttachedObject as OWRigidbody).SetAngularVelocity(targetAngularVelocity);
 
 			return true;
@@ -216,6 +217,26 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			}
 
 			return false;
+		}
+
+		protected void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
+		{
+			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
+			var currentVelocity = rigidbody.GetValue<Vector3>("_currentVelocity");
+
+			if (isRunningKinematic)
+			{
+				var kinematicRigidbody = rigidbody.GetValue<KinematicRigidbody>("_kinematicRigidbody");
+				kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+			else
+			{
+				var normalRigidbody = rigidbody.GetValue<Rigidbody>("_rigidbody");
+				normalRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+
+			rigidbody.SetValue("_lastVelocity", currentVelocity);
+			rigidbody.SetValue("_currentVelocity", relativeVelocity);
 		}
 
 		public float GetVelocityChangeMagnitude()
