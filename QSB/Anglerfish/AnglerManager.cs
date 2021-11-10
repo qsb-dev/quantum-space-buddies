@@ -5,6 +5,7 @@ namespace QSB.Anglerfish
 {
 	public class AnglerManager : WorldObjectManager
 	{
-		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBAngler, AnglerfishController>();
+		protected override void RebuildWorldObjects(OWScene scene)
+			=> QSBWorldSync.Init<QSBAngler, AnglerfishController>();
 	}
 }
