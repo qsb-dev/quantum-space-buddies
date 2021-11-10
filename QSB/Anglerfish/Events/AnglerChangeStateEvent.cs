@@ -13,6 +13,7 @@ namespace QSB.Anglerfish.Events
 		public override EventType Type => EventType.AnglerChangeState;
 		public override void SetupListener() => GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
 		public override void CloseListener() => GlobalMessenger<QSBAngler>.RemoveListener(EventNames.QSBAnglerChangeState, Handler);
+
 		private void Handler(QSBAngler qsbAngler) =>
 			SendEvent(new AnglerChangeStateMessage
 			{
@@ -24,6 +25,7 @@ namespace QSB.Anglerfish.Events
 
 		public override void OnReceiveLocal(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
 		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
+
 		private static void OnReceive(bool isHost, AnglerChangeStateMessage message)
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId);
@@ -51,6 +53,7 @@ namespace QSB.Anglerfish.Events
 			}
 			return QSBPlayerManager.LocalPlayerId;
 		}
+
 		private static Transform IdToTarget(uint id)
 		{
 			if (id == uint.MaxValue)

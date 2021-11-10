@@ -54,6 +54,7 @@ namespace QSB.Anglerfish.WorldObjects
 		public Transform targetTransform;
 		public Vector3 TargetVelocity { get; private set; }
 		private Vector3 _lastTargetPosition;
+
 		public void FixedUpdate()
 		{
 			if (targetTransform == null)

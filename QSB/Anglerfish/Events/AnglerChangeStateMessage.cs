@@ -15,6 +15,7 @@ namespace QSB.Anglerfish.Events
 			targetId = reader.ReadUInt32();
 			localDisturbancePos = reader.ReadVector3();
 		}
+
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

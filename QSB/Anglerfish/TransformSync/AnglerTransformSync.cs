@@ -14,11 +14,13 @@ namespace QSB.Anglerfish.TransformSync
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new List<AnglerTransformSync>();
+
 		public override void Start()
 		{
 			_instances.Add(this);
 			base.Start();
 		}
+
 		protected override void OnDestroy()
 		{
 			_instances.Remove(this);
