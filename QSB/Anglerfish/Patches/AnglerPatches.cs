@@ -90,6 +90,9 @@ namespace QSB.Anglerfish.Patches
 				case AnglerfishController.AnglerState.Consuming:
 					if (__instance._consumeComplete)
 					{
+						qsbAngler.targetTransform = null;
+						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
 

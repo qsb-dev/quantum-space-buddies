@@ -30,8 +30,7 @@ namespace QSB.Anglerfish.Events
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId);
 
-			if (isHost &&
-				(message.EnumValue == AnglerState.Chasing || message.EnumValue == AnglerState.Consuming || message.EnumValue == AnglerState.Investigating))
+			if (isHost)
 			{
 				qsbAngler.TransferAuthority(message.FromId);
 			}
