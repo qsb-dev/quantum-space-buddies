@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using QSB.Anglerfish.TransformSync;
-using QSB.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -22,8 +21,6 @@ namespace QSB.Anglerfish.WorldObjects
 			{
 				Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab).SpawnWithServerAuthority();
 			}
-
-			AttachedObject.OnChangeAnglerState += OnChangeState;
 		}
 
 		public override void OnRemoval()
@@ -32,12 +29,7 @@ namespace QSB.Anglerfish.WorldObjects
 			{
 				QNetworkServer.Destroy(transformSync.gameObject);
 			}
-
-			AttachedObject.OnChangeAnglerState -= OnChangeState;
 		}
-
-		private void OnChangeState(AnglerfishController.AnglerState state) =>
-			QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, this);
 
 		public void TransferAuthority(uint id)
 		{

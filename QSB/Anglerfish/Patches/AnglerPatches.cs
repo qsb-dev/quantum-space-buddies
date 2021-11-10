@@ -1,6 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using QSB.Anglerfish.WorldObjects;
+using QSB.Events;
 using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
@@ -62,17 +63,20 @@ namespace QSB.Anglerfish.Patches
 					if ((__instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos) - __instance._anglerBody.GetPosition()).sqrMagnitude >= __instance._arrivalDistance * (double)__instance._arrivalDistance)
 						break;
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
 				case AnglerfishController.AnglerState.Chasing:
 					if (qsbAngler.targetTransform == null)
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
 					if ((qsbAngler.targetTransform.position - __instance._anglerBody.GetPosition()).sqrMagnitude <= __instance._escapeDistance * (double)__instance._escapeDistance)
 						break;
 					qsbAngler.targetTransform = null;
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
 				case AnglerfishController.AnglerState.Consuming:
 					if (__instance._consumeComplete)
@@ -80,6 +84,7 @@ namespace QSB.Anglerfish.Patches
 					if (qsbAngler.targetTransform == null)
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
 					var num = Time.time - __instance._consumeStartTime;
@@ -106,9 +111,11 @@ namespace QSB.Anglerfish.Patches
 					if (qsbAngler.targetTransform != null)
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
 			}
 
@@ -205,11 +212,7 @@ namespace QSB.Anglerfish.Patches
 			{
 				qsbAngler.targetTransform = attachedOwRigidbody.transform;
 				__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
-			}
-			else
-			{
-				if (impact.speed <= (__instance._investigateSpeed + (double)__instance._chaseSpeed) * 0.5)
-					return false;
+				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
 			return false;
@@ -237,6 +240,7 @@ namespace QSB.Anglerfish.Patches
 				if (__instance._currentState == AnglerfishController.AnglerState.Chasing)
 					return false;
 				__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
+				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 			else
 			{
@@ -246,6 +250,7 @@ namespace QSB.Anglerfish.Patches
 				if (__instance._currentState == AnglerfishController.AnglerState.Investigating)
 					return false;
 				__instance.ChangeState(AnglerfishController.AnglerState.Investigating);
+				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
 			return false;
@@ -272,6 +277,7 @@ namespace QSB.Anglerfish.Patches
 				qsbAngler.targetTransform = caughtBody.transform;
 				__instance._consumeStartTime = Time.time;
 				__instance.ChangeState(AnglerfishController.AnglerState.Consuming);
+				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
 			return false;

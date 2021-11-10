@@ -36,9 +36,7 @@ namespace QSB.Anglerfish.Events
 
 			qsbAngler.targetTransform = IdToTarget(message.targetId);
 			qsbAngler.AttachedObject._localDisturbancePos = message.localDisturbancePos;
-			qsbAngler.AttachedObject._currentState = message.EnumValue;
-			qsbAngler.AttachedObject.GetComponent<AnglerfishAnimController>()?.OnChangeAnglerState(message.EnumValue);
-			qsbAngler.AttachedObject.GetComponent<AnglerfishAudioController>()?.OnChangeAnglerState(message.EnumValue);
+			qsbAngler.AttachedObject.ChangeState(message.EnumValue);
 		}
 
 		private static uint TargetToId(Transform transform)
