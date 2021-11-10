@@ -27,6 +27,7 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QSB.Anglerfish;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
@@ -34,10 +35,10 @@ using UnityEngine;
 
 /*
 	Copyright (C) 2020 - 2021
-			Henry Pointer (_nebula / misternebula), 
-			Aleksander Waage (AmazingAlek), 
+			Henry Pointer (_nebula / misternebula),
+			Aleksander Waage (AmazingAlek),
 			Ricardo Lopes (Raicuparta)
-	
+
 	This program is free software: you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License
 	as published by the Free Software Foundation, either version 3 of
@@ -123,6 +124,7 @@ namespace QSB
 			gameObject.AddComponent<ProbeLauncherManager>();
 			gameObject.AddComponent<LightSensorManager>();
 			gameObject.AddComponent<AirlockManager>();
+			gameObject.AddComponent<AnglerManager>();
 
 			DebugBoxManager.Init();
 
@@ -173,7 +175,7 @@ namespace QSB
 /*
  * _nebula's music thanks
  * I listen to music constantly while programming/working - here's my thanks to them for keeping me entertained :P
- * 
+ *
  * Wintergatan
  * HOME
  * C418

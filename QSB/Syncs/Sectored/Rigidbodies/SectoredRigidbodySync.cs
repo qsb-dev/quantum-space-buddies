@@ -219,7 +219,6 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			return false;
 		}
 
-		// TODO : why? isn't owrigidbody.setvelocity the same...? :P
 		protected void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
 		{
 			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
