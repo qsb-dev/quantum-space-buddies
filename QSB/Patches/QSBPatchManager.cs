@@ -27,6 +27,7 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QSB.Anglerfish.Patches;
 
 namespace QSB.Patches
 {
@@ -71,7 +72,8 @@ namespace QSB.Patches
 				new LauncherPatches(),
 				new SolanumPatches(),
 				new SatelliteProjectorPatches(),
-				new LightSensorPatches()
+				new LightSensorPatches(),
+				new AnglerPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

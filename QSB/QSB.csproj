@@ -36,6 +36,12 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Anglerfish\AnglerManager.cs" />
+    <Compile Include="Anglerfish\Events\AnglerChangeStateEvent.cs" />
+    <Compile Include="Anglerfish\Events\AnglerChangeStateMessage.cs" />
+    <Compile Include="Anglerfish\Patches\AnglerPatches.cs" />
+    <Compile Include="Anglerfish\TransformSync\AnglerTransformSync.cs" />
+    <Compile Include="Anglerfish\WorldObjects\QSBAngler.cs" />
     <Compile Include="Animation\NPC\AnimationEvent.cs" />
     <Compile Include="Animation\NPC\CharacterAnimManager.cs" />
     <Compile Include="Animation\NPC\Events\NpcAnimationEvent.cs" />
@@ -447,7 +453,6 @@
       <Version>2.0.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>md "$(OwmlDir)\Mods\$(ProjectName)"
