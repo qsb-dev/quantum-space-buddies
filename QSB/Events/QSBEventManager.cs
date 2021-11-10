@@ -24,6 +24,7 @@ using QSB.TimeSync.Events;
 using QSB.Tools.Events;
 using QSB.Tools.ProbeLauncherTool.Events;
 using QSB.TranslationSync.Events;
+using QSB.Anglerfish.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using System.Collections.Generic;
@@ -89,6 +90,7 @@ namespace QSB.Events
 				new MoveToCarryEvent(),
 				new StartStatueEvent(),
 				new CampfireStateEvent(),
+				new AnglerUnsuspendEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

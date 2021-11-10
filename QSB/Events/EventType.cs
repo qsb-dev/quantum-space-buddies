@@ -3,7 +3,7 @@
 	public enum EventType
 	{
 		/*
-		 * MISC. 
+		 * MISC.
 		 */
 		DebugEvent,
 		SatelliteProjector,
@@ -133,6 +133,8 @@
 		RetrieveProbe,
 		PlayerRetrieveProbe,
 		LaunchProbe,
-		PlayerLaunchProbe
+		PlayerLaunchProbe,
+
+		AnglerUnsuspend
 	}
 }
