@@ -173,7 +173,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 				_prevAngularVelocity);
 
 		// OPTIMIZE : optimize by using sqrMagnitude
-		private static bool CustomHasMoved(
+		private bool CustomHasMoved(
 			Vector3 newPosition,
 			Vector3 prevPosition,
 			Quaternion newRotation,
