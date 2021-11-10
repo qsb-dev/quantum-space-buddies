@@ -11,17 +11,22 @@ namespace QSB.Anglerfish.Events
 	public class AnglerChangeStateEvent : QSBEvent<AnglerChangeStateMessage>
 	{
 		public override EventType Type => EventType.AnglerChangeState;
-		public override void SetupListener() => GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
-		public override void CloseListener() => GlobalMessenger<QSBAngler>.RemoveListener(EventNames.QSBAnglerChangeState, Handler);
 
-		private void Handler(QSBAngler qsbAngler) =>
-			SendEvent(new AnglerChangeStateMessage
-			{
-				ObjectId = qsbAngler.ObjectId,
-				EnumValue = qsbAngler.AttachedObject._currentState,
-				targetId = TargetToId(qsbAngler.targetTransform),
-				localDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos
-			});
+		public override void SetupListener()
+			=> GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
+
+		public override void CloseListener()
+			=> GlobalMessenger<QSBAngler>.RemoveListener(EventNames.QSBAnglerChangeState, Handler);
+
+		private void Handler(QSBAngler qsbAngler) => SendEvent(CreateMessage(qsbAngler));
+
+		private AnglerChangeStateMessage CreateMessage(QSBAngler qsbAngler) => new AnglerChangeStateMessage
+		{
+			ObjectId = qsbAngler.ObjectId,
+			EnumValue = qsbAngler.AttachedObject._currentState,
+			TargetId = TargetToId(qsbAngler.TargetTransform),
+			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos
+		};
 
 		public override void OnReceiveLocal(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
 		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
@@ -36,8 +41,8 @@ namespace QSB.Anglerfish.Events
 				qsbAngler.TransferAuthority(message.FromId);
 			}
 
-			qsbAngler.targetTransform = IdToTarget(message.targetId);
-			qsbAngler.AttachedObject._localDisturbancePos = message.localDisturbancePos;
+			qsbAngler.TargetTransform = IdToTarget(message.TargetId);
+			qsbAngler.AttachedObject._localDisturbancePos = message.LocalDisturbancePos;
 			qsbAngler.AttachedObject.ChangeState(message.EnumValue);
 		}
 
@@ -47,10 +52,12 @@ namespace QSB.Anglerfish.Events
 			{
 				return uint.MaxValue;
 			}
+
 			if (transform == Locator.GetShipTransform())
 			{
 				return uint.MaxValue - 1;
 			}
+
 			return QSBPlayerManager.LocalPlayerId;
 		}
 
@@ -60,10 +67,12 @@ namespace QSB.Anglerfish.Events
 			{
 				return null;
 			}
+
 			if (id == uint.MaxValue - 1)
 			{
 				return Locator.GetShipTransform();
 			}
+
 			return QSBPlayerManager.GetPlayer(id).Body.transform;
 		}
 	}

@@ -10,10 +10,12 @@ namespace QSB.Anglerfish.TransformSync
 	{
 		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => true;
-		protected override OWRigidbody GetRigidbody() => _qsbAngler.AttachedObject._anglerBody;
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new List<AnglerTransformSync>();
+
+		protected override OWRigidbody GetRigidbody()
+			=> _qsbAngler.AttachedObject._anglerBody;
 
 		public override void Start()
 		{
@@ -27,17 +29,17 @@ namespace QSB.Anglerfish.TransformSync
 			base.OnDestroy();
 		}
 
-		public override float GetNetworkSendInterval() => 1 / 4f;
+		public override float GetNetworkSendInterval()
+			=> 1 / 4f;
 
 		protected override void Init()
 		{
 			_qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(_instances.IndexOf(this));
-			_qsbAngler.transformSync = this;
+			_qsbAngler.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
 		}
-
 
 		protected override void OnRenderObject()
 		{

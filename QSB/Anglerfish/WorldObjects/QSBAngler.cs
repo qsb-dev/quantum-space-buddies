@@ -10,7 +10,11 @@ namespace QSB.Anglerfish.WorldObjects
 {
 	public class QSBAngler : WorldObject<AnglerfishController>
 	{
-		public AnglerTransformSync transformSync;
+		public AnglerTransformSync TransformSync;
+		public Transform TargetTransform;
+		public Vector3 TargetVelocity { get; private set; }
+
+		private Vector3 _lastTargetPosition;
 
 		public override void Init(AnglerfishController attachedObject, int id)
 		{
@@ -27,14 +31,14 @@ namespace QSB.Anglerfish.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Destroy(transformSync.gameObject);
+				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
 
 		public void TransferAuthority(uint id)
 		{
 			var conn = QNetworkServer.connections.First(x => x.GetPlayerId() == id);
-			var identity = transformSync.NetIdentity;
+			var identity = TransformSync.NetIdentity;
 
 			if (identity.ClientAuthorityOwner == conn)
 			{
@@ -50,19 +54,14 @@ namespace QSB.Anglerfish.WorldObjects
 			DebugLog.DebugWrite($"angler {ObjectId} - transferred authority to {id}");
 		}
 
-
-		public Transform targetTransform;
-		public Vector3 TargetVelocity { get; private set; }
-		private Vector3 _lastTargetPosition;
-
 		public void FixedUpdate()
 		{
-			if (targetTransform == null)
+			if (TargetTransform == null)
 			{
 				return;
 			}
-			TargetVelocity = targetTransform.position - _lastTargetPosition;
-			_lastTargetPosition = targetTransform.position;
+			TargetVelocity = TargetTransform.position - _lastTargetPosition;
+			_lastTargetPosition = TargetTransform.position;
 		}
 	}
 }
