@@ -90,7 +90,7 @@ namespace QSB.Events
 				new MoveToCarryEvent(),
 				new StartStatueEvent(),
 				new CampfireStateEvent(),
-				new AnglerUnsuspendEvent(),
+				new AnglerChangeStateEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

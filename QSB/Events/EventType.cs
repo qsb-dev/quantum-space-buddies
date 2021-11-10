@@ -135,6 +135,6 @@
 		LaunchProbe,
 		PlayerLaunchProbe,
 
-		AnglerUnsuspend
+		AnglerChangeState
 	}
 }

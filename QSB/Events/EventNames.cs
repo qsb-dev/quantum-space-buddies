@@ -92,6 +92,6 @@
 		public static string QSBEnterSatelliteCamera = "QSBEnterSatelliteCamera";
 		public static string QSBExitSatelliteCamera = "QSBExitSatelliteCamera";
 		public static string QSBSatelliteSnapshot = "QSBSatelliteSnapshot";
-		public static string QSBAnglerUnsuspend = "QSBAnglerUnsuspend";
+		public static string QSBAnglerChangeState = "QSBAnglerChangeState";
 	}
 }

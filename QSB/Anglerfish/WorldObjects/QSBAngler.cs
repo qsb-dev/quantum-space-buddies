@@ -23,7 +23,7 @@ namespace QSB.Anglerfish.WorldObjects
 				Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab).SpawnWithServerAuthority();
 			}
 
-			AttachedObject.OnAnglerUnsuspended += OnUnsuspend;
+			AttachedObject.OnChangeAnglerState += OnChangeState;
 		}
 
 		public override void OnRemoval()
@@ -33,11 +33,11 @@ namespace QSB.Anglerfish.WorldObjects
 				QNetworkServer.Destroy(transformSync.gameObject);
 			}
 
-			AttachedObject.OnAnglerUnsuspended -= OnUnsuspend;
+			AttachedObject.OnChangeAnglerState -= OnChangeState;
 		}
 
-		private void OnUnsuspend(AnglerfishController.AnglerState _) =>
-			QSBEventManager.FireEvent(EventNames.QSBAnglerUnsuspend, ObjectId);
+		private void OnChangeState(AnglerfishController.AnglerState state) =>
+			QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, ObjectId, state);
 
 
 		public void TransferAuthority(uint id)

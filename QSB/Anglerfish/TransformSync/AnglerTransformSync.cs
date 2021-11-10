@@ -24,7 +24,7 @@ namespace QSB.Anglerfish.TransformSync
 			base.OnDestroy();
 		}
 
-		public override float GetNetworkSendInterval() => 1;
+		public override float GetNetworkSendInterval() => 1 / 4f;
 
 		protected override void Init()
 		{
