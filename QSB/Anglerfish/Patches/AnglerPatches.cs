@@ -1,9 +1,9 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using QSB.Anglerfish.WorldObjects;
 using QSB.Events;
 using QSB.Patches;
 using QSB.WorldSync;
+using System;
 using UnityEngine;
 
 namespace QSB.Anglerfish.Patches
@@ -40,7 +40,10 @@ namespace QSB.Anglerfish.Patches
 			}
 
 			if (!(qsbAngler.targetTransform != null) || !(sectorDetector.GetAttachedOWRigidbody().transform == qsbAngler.targetTransform))
+			{
 				return false;
+			}
+
 			qsbAngler.targetTransform = null;
 
 			return false;
@@ -61,7 +64,10 @@ namespace QSB.Anglerfish.Patches
 			{
 				case AnglerfishController.AnglerState.Investigating:
 					if ((__instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos) - __instance._anglerBody.GetPosition()).sqrMagnitude >= __instance._arrivalDistance * (double)__instance._arrivalDistance)
+					{
 						break;
+					}
+
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
@@ -73,14 +79,20 @@ namespace QSB.Anglerfish.Patches
 						break;
 					}
 					if ((qsbAngler.targetTransform.position - __instance._anglerBody.GetPosition()).sqrMagnitude <= __instance._escapeDistance * (double)__instance._escapeDistance)
+					{
 						break;
+					}
+
 					qsbAngler.targetTransform = null;
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
 				case AnglerfishController.AnglerState.Consuming:
 					if (__instance._consumeComplete)
+					{
 						break;
+					}
+
 					if (qsbAngler.targetTransform == null)
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
@@ -95,19 +107,34 @@ namespace QSB.Anglerfish.Patches
 						break;
 					}
 					if (!qsbAngler.targetTransform.CompareTag("Ship"))
+					{
 						break;
+					}
+
 					if (num > (double)__instance._consumeShipCrushDelay)
+					{
 						qsbAngler.targetTransform.GetComponentInChildren<ShipDamageController>().TriggerSystemFailure();
+					}
+
 					if (num <= (double)__instance._consumeDeathDelay)
+					{
 						break;
+					}
+
 					if (PlayerState.IsInsideShip())
+					{
 						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
+					}
+
 					__instance._consumeComplete = true;
 					break;
 				case AnglerfishController.AnglerState.Stunned:
 					__instance._stunTimer -= Time.deltaTime;
 					if (__instance._stunTimer > 0.0)
+					{
 						break;
+					}
+
 					if (qsbAngler.targetTransform != null)
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
@@ -139,7 +166,10 @@ namespace QSB.Anglerfish.Patches
 			qsbAngler.FixedUpdate();
 
 			if (__instance._anglerBody.GetVelocity().sqrMagnitude > (double)Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))
+			{
 				__instance.ApplyDrag(10f);
+			}
+
 			switch (__instance._currentState)
 			{
 				case AnglerfishController.AnglerState.Lurking:
@@ -149,7 +179,10 @@ namespace QSB.Anglerfish.Patches
 					var targetPos = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
 					__instance.RotateTowardsTarget(targetPos, __instance._turnSpeed, __instance._turnSpeed);
 					if (__instance._turningInPlace)
+					{
 						break;
+					}
+
 					__instance.MoveTowardsTarget(targetPos, __instance._investigateSpeed, __instance._acceleration);
 					break;
 				case AnglerfishController.AnglerState.Chasing:
@@ -181,7 +214,10 @@ namespace QSB.Anglerfish.Patches
 					__instance._targetPos = qsbAngler.targetTransform.position + normalized * num2;
 					__instance.RotateTowardsTarget(__instance._targetPos, __instance._turnSpeed, __instance._quickTurnSpeed);
 					if (__instance._turningInPlace)
+					{
 						break;
+					}
+
 					__instance.MoveTowardsTarget(__instance._targetPos, __instance._chaseSpeed, __instance._acceleration);
 					break;
 				case AnglerfishController.AnglerState.Consuming:
@@ -231,24 +267,39 @@ namespace QSB.Anglerfish.Patches
 			}
 
 			if (__instance._currentState == AnglerfishController.AnglerState.Consuming || __instance._currentState == AnglerfishController.AnglerState.Stunned)
+			{
 				return false;
+			}
+
 			if ((noiseMaker.GetNoiseOrigin() - __instance.transform.position).sqrMagnitude < __instance._pursueDistance * (double)__instance._pursueDistance)
 			{
 				if (!(qsbAngler.targetTransform != noiseMaker.GetAttachedBody().transform))
+				{
 					return false;
+				}
+
 				qsbAngler.targetTransform = noiseMaker.GetAttachedBody().transform;
 				if (__instance._currentState == AnglerfishController.AnglerState.Chasing)
+				{
 					return false;
+				}
+
 				__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
 				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 			else
 			{
 				if (__instance._currentState != AnglerfishController.AnglerState.Lurking && __instance._currentState != AnglerfishController.AnglerState.Investigating)
+				{
 					return false;
+				}
+
 				__instance._localDisturbancePos = __instance._brambleBody.transform.InverseTransformPoint(noiseMaker.GetNoiseOrigin());
 				if (__instance._currentState == AnglerfishController.AnglerState.Investigating)
+				{
 					return false;
+				}
+
 				__instance.ChangeState(AnglerfishController.AnglerState.Investigating);
 				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
@@ -267,13 +318,19 @@ namespace QSB.Anglerfish.Patches
 			if (__instance._currentState == AnglerfishController.AnglerState.Consuming)
 			{
 				if (qsbAngler.targetTransform.CompareTag("Player") || !caughtBody.CompareTag("Player"))
+				{
 					return false;
+				}
+
 				Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 			}
 			else
 			{
 				if (!caughtBody.CompareTag("Player") && !caughtBody.CompareTag("Ship"))
+				{
 					return false;
+				}
+
 				qsbAngler.targetTransform = caughtBody.transform;
 				__instance._consumeStartTime = Time.time;
 				__instance.ChangeState(AnglerfishController.AnglerState.Consuming);
