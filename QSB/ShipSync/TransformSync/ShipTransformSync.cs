@@ -73,7 +73,7 @@ namespace QSB.ShipSync.TransformSync
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity;
 
-			SetVelocity(AttachedObject as OWRigidbody, targetVelocity);
+			(AttachedObject as OWRigidbody).SetVelocity(targetVelocity);
 			(AttachedObject as OWRigidbody).SetAngularVelocity(targetAngularVelocity);
 
 			return true;
