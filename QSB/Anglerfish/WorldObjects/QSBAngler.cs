@@ -1,11 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using OWML.Common;
 using QSB.Anglerfish.TransformSync;
 using QSB.Events;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.Anglerfish.WorldObjects
 {
@@ -37,8 +40,7 @@ namespace QSB.Anglerfish.WorldObjects
 		}
 
 		private void OnChangeState(AnglerfishController.AnglerState state) =>
-			QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, ObjectId, state);
-
+			QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, this);
 
 		public void TransferAuthority(uint id)
 		{
@@ -63,6 +65,22 @@ namespace QSB.Anglerfish.WorldObjects
 			identity.AssignClientAuthority(conn);
 
 			DebugLog.DebugWrite($"angler {ObjectId} - transferred authority to {id}");
+		}
+
+
+		public Transform target;
+		public uint TargetToId()
+		{
+			var body = AttachedObject._targetBody;
+			if (body == null) return uint.MaxValue;
+			if (body == Locator.GetShipBody()) return uint.MaxValue - 1;
+			return QSBPlayerManager.LocalPlayerId;
+		}
+		public static Transform IdToTarget(uint id)
+		{
+			if (id == uint.MaxValue) return null;
+			if (id == uint.MaxValue - 1) return Locator.GetShipTransform();
+			return QSBPlayerManager.GetPlayer(id).Body.transform;
 		}
 	}
 }

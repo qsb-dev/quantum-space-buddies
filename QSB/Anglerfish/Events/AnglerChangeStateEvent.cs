@@ -1,39 +1,40 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.Events;
 using QSB.WorldSync;
-using QSB.WorldSync.Events;
+using static AnglerfishController;
 
 namespace QSB.Anglerfish.Events
 {
-	public class AnglerChangeStateEvent : QSBEvent<EnumWorldObjectMessage<AnglerfishController.AnglerState>>
+	public class AnglerChangeStateEvent : QSBEvent<AnglerChangeStateMessage>
 	{
 		public override EventType Type => EventType.AnglerChangeState;
-		public override void SetupListener() => GlobalMessenger<int, AnglerfishController.AnglerState>.AddListener(EventNames.QSBAnglerChangeState, Handler);
-		public override void CloseListener() => GlobalMessenger<int, AnglerfishController.AnglerState>.RemoveListener(EventNames.QSBAnglerChangeState, Handler);
-		private void Handler(int id, AnglerfishController.AnglerState state) =>
-			SendEvent(new EnumWorldObjectMessage<AnglerfishController.AnglerState>
+		public override void SetupListener() => GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
+		public override void CloseListener() => GlobalMessenger<QSBAngler>.RemoveListener(EventNames.QSBAnglerChangeState, Handler);
+		private void Handler(QSBAngler qsbAngler) =>
+			SendEvent(new AnglerChangeStateMessage
 			{
-				OnlySendToHost = true,
-				ObjectId = id,
-				EnumValue = state
+				ObjectId = qsbAngler.ObjectId,
+				EnumValue = qsbAngler.AttachedObject._currentState,
+				targetId = qsbAngler.TargetToId(),
+				localDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos
 			});
 
-		public override void OnReceiveLocal(bool isHost, EnumWorldObjectMessage<AnglerfishController.AnglerState> message)
-		{
-			if (message.EnumValue == AnglerfishController.AnglerState.Chasing)
-			{
-				QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId).TransferAuthority(message.FromId);
-			}
-		}
-		public override void OnReceiveRemote(bool isHost, EnumWorldObjectMessage<AnglerfishController.AnglerState> message)
+		public override void OnReceiveLocal(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
+		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
+		private static void OnReceive(bool isHost, AnglerChangeStateMessage message)
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId);
-			qsbAngler.AttachedObject._currentState = message.EnumValue;
 
-			if (message.EnumValue == AnglerfishController.AnglerState.Chasing)
+			if (isHost &&
+				(message.EnumValue == AnglerState.Chasing || message.EnumValue == AnglerState.Consuming || message.EnumValue == AnglerState.Investigating))
 			{
 				qsbAngler.TransferAuthority(message.FromId);
 			}
+
+			qsbAngler.AttachedObject.enabled = qsbAngler.transformSync.HasAuthority;
+			qsbAngler.AttachedObject._currentState = message.EnumValue;
+			qsbAngler.target = QSBAngler.IdToTarget(message.targetId);
+			qsbAngler.AttachedObject._localDisturbancePos = message.localDisturbancePos;
 		}
 	}
 }

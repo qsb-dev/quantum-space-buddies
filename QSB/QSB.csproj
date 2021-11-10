@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Anglerfish\AnglerManager.cs" />
     <Compile Include="Anglerfish\Events\AnglerChangeStateEvent.cs" />
+    <Compile Include="Anglerfish\Events\AnglerChangeStateMessage.cs" />
     <Compile Include="Anglerfish\Patches\AnglerPatches.cs" />
     <Compile Include="Anglerfish\TransformSync\AnglerTransformSync.cs" />
     <Compile Include="Anglerfish\WorldObjects\QSBAngler.cs" />
