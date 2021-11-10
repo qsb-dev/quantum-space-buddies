@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using QSB.Anglerfish.TransformSync;
+﻿using QSB.Anglerfish.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
