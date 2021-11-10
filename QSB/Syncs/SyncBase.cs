@@ -228,7 +228,7 @@ namespace QSB.Syncs
 				ReparentAttachedObject(ReferenceTransform);
 			}
 
-			UpdateTransform();
+			oh rUpdateTransform();
 
 			base.Update();
 		}

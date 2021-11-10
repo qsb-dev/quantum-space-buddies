@@ -15,6 +15,7 @@ namespace QSB.Tools
 		public static Material Props_HEA_PlayerTool_mat;
 		public static Material Props_HEA_Lightbulb_mat;
 		public static Material Props_HEA_Lightbulb_OFF_mat;
+		public static Material Structure_HEA_PlayerShip_Screens_mat;
 
 		public static void Init(Transform playerCamera)
 		{
@@ -22,6 +23,7 @@ namespace QSB.Tools
 
 			Props_HEA_PlayerTool_mat = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
 			Props_HEA_Lightbulb_OFF_mat = GameObject.Find("Props_HEA_Probe_Prelaunch").GetComponent<MeshRenderer>().materials[1];
+
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
 				Props_HEA_Lightbulb_mat = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];

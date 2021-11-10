@@ -252,6 +252,8 @@
     <Compile Include="Tools\ProbeLauncherTool\WorldObjects\QSBProbeLauncher.cs" />
     <Compile Include="Tools\ProbeTool\ProbeCreator.cs" />
     <Compile Include="Tools\SignalscopeTool\SignalscopeCreator.cs" />
+    <Compile Include="Tools\TranslatorTool\QSBNomaiTranslator.cs" />
+    <Compile Include="Tools\TranslatorTool\QSBNomaiTranslatorProp.cs" />
     <Compile Include="Tools\TranslatorTool\TranslatorCreator.cs" />
     <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
