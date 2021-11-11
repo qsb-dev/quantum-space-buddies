@@ -17,11 +17,7 @@ namespace QSB.Tools.TranslatorTool
 			var REMOTE_TranslatorGroup = REMOTE_NomaiTranslatorProp.transform.Find("TranslatorGroup");
 			var REMOTE_Props_HEA_Translator = REMOTE_TranslatorGroup.Find("Props_HEA_Translator");
 
-			var oldProp = REMOTE_NomaiTranslatorProp.GetComponent<NomaiTranslatorProp>();
-			var newProp = REMOTE_NomaiTranslatorProp.AddComponent<QSBNomaiTranslatorProp>();
-			newProp.TranslatorProp = REMOTE_TranslatorGroup.gameObject;
-
-			Object.Destroy(REMOTE_NomaiTranslatorProp.GetComponent<NomaiTranslatorProp>());
+			
 			Object.Destroy(REMOTE_TranslatorGroup.Find("Canvas").gameObject);
 			//Object.Destroy(REMOTE_TranslatorGroup.Find("Lighting").gameObject);
 			//Object.Destroy(REMOTE_TranslatorGroup.Find("TranslatorBeams").gameObject);
@@ -29,6 +25,22 @@ namespace QSB.Tools.TranslatorTool
 				.Find("Props_HEA_Translator_RotatingPart")
 				.Find("Props_HEA_Translator_RotatingPart_Prepass").gameObject);
 			Object.Destroy(REMOTE_Props_HEA_Translator.Find("Props_HEA_Translator_Prepass").gameObject);
+
+			foreach (Transform scanBeam in REMOTE_TranslatorGroup.Find("TranslatorBeams"))
+			{
+				var oldBeam = scanBeam.GetComponent<TranslatorScanBeam>();
+				var newBeam = scanBeam.gameObject.AddComponent<QSBTranslatorScanBeam>();
+				newBeam._projectorRenderer = oldBeam._projectorRenderer;
+				newBeam._lightVolumeRenderer = oldBeam._lightVolumeRenderer;
+				newBeam._scanSpeed = oldBeam._scanSpeed;
+				newBeam._baseRotation = oldBeam._baseRotation;
+				Object.Destroy(oldBeam);
+			}
+
+			var oldProp = REMOTE_NomaiTranslatorProp.GetComponent<NomaiTranslatorProp>();
+			var newProp = REMOTE_NomaiTranslatorProp.AddComponent<QSBNomaiTranslatorProp>();
+			newProp.TranslatorProp = REMOTE_TranslatorGroup.gameObject;
+			Object.Destroy(oldProp);
 
 			var oldTranslator = REMOTE_NomaiTranslatorProp.GetComponent<NomaiTranslator>();
 			var tool = REMOTE_NomaiTranslatorProp.AddComponent<QSBNomaiTranslator>();
@@ -50,7 +62,7 @@ namespace QSB.Tools.TranslatorTool
 			REMOTE_NomaiTranslatorProp.transform.parent = cameraBody;
 			REMOTE_NomaiTranslatorProp.transform.localPosition = Vector3.zero;
 			REMOTE_NomaiTranslatorProp.transform.localScale = TranslatorScale;
-			QSBCore.UnityEvents.FireOnNextUpdate(() => REMOTE_NomaiTranslatorProp.SetActive(true));
+			QSBCore.UnityEvents.FireInNUpdates(() => REMOTE_NomaiTranslatorProp.SetActive(true), 5);
 		}
 	}
 }

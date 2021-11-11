@@ -24,7 +24,6 @@ namespace QSB.Tools.TranslatorTool
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite($"Awake.");
 			_lastHitCollider = null;
 			_translatorProp = this.GetRequiredComponentInChildren<QSBNomaiTranslatorProp>();
 			_currentNomaiText = null;
@@ -37,14 +36,12 @@ namespace QSB.Tools.TranslatorTool
 
 		public override void EquipTool()
 		{
-			DebugLog.DebugWrite($"Equip.");
 			base.EquipTool();
 			_translatorProp.OnEquipTool();
 		}
 
 		public override void UnequipTool()
 		{
-			DebugLog.DebugWrite($"Unequip.");
 			base.UnequipTool();
 			_translatorProp.OnUnequipTool();
 		}
@@ -64,16 +61,12 @@ namespace QSB.Tools.TranslatorTool
 			{
 				_lastHitCollider = raycastHit.collider;
 				_currentNomaiText = _lastHitCollider.GetComponent<NomaiText>();
-				if (_currentNomaiText != null)
-				{
-					DebugLog.DebugWrite($"Found Nomai text.");
-				}
 
 				if (_currentNomaiText != null && !_currentNomaiText.CheckAllowFocus(raycastHit.distance, RaycastTransform.forward))
 				{
-					DebugLog.DebugWrite($"This text doesn't allow focus.");
 					_currentNomaiText = null;
 				}
+
 				num = raycastHit.distance;
 			}
 			else
@@ -88,7 +81,6 @@ namespace QSB.Tools.TranslatorTool
 
 				if (_currentNomaiText is NomaiWallText)
 				{
-					DebugLog.DebugWrite($"Wall text.");
 					var nomaiTextLine = (_currentNomaiText as NomaiWallText).GetClosestTextLineByCenter(raycastHit.point);
 					if (_lastLineLocked)
 					{
@@ -136,7 +128,6 @@ namespace QSB.Tools.TranslatorTool
 				}
 				else if (_currentNomaiText is NomaiComputer)
 				{
-					DebugLog.DebugWrite($"Nomai Computer");
 					var closestRing = (_currentNomaiText as NomaiComputer).GetClosestRing(raycastHit.point, out var num2);
 					if (closestRing)
 					{

@@ -13,30 +13,28 @@ namespace QSB.Tools.TranslatorTool
 		public GameObject TranslatorProp;
 
 		private TranslatorTargetBeam _targetBeam;
-		private TranslatorScanBeam[] _scanBeams;
+		private QSBTranslatorScanBeam[] _scanBeams;
 		private bool _isTranslating;
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite($"Awake.");
 			_targetBeam = transform.GetComponentInChildren<TranslatorTargetBeam>();
-			_scanBeams = transform.GetComponentsInChildren<TranslatorScanBeam>();
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].enabled = false;
-			}
 			TranslatorProp.SetActive(false);
 		}
 
 		private void Start()
 		{
-			DebugLog.DebugWrite($"Start.");
+			_scanBeams = transform.GetComponentsInChildren<QSBTranslatorScanBeam>();
+			for (var i = 0; i < _scanBeams.Length; i++)
+			{
+				_scanBeams[i].enabled = false;
+			}
+
 			enabled = false;
 		}
 
 		public void OnEquipTool()
 		{
-			DebugLog.DebugWrite($"OnEquipTool.");
 			enabled = true;
 			if (_targetBeam)
 			{
@@ -51,15 +49,12 @@ namespace QSB.Tools.TranslatorTool
 
 		public void OnUnequipTool()
 		{
-			DebugLog.DebugWrite($"On unequip tool.");
 			enabled = false;
 			StopTranslating();
 		}
 
 		public void OnFinishUnequipAnimation()
 		{
-			DebugLog.DebugWrite($"On finish unequip animation.");
-
 			if (_targetBeam)
 			{
 				_targetBeam.Deactivate();
@@ -82,8 +77,6 @@ namespace QSB.Tools.TranslatorTool
 
 		public void SetNomaiTextLine(NomaiTextLine line)
 		{
-			DebugLog.DebugWrite($"Set Nomai Text Line.");
-
 			for (var i = 0; i < _scanBeams.Length; i++)
 			{
 				_scanBeams[i].SetNomaiTextLine(line);
@@ -102,7 +95,6 @@ namespace QSB.Tools.TranslatorTool
 
 		public void SetNomaiComputerRing(NomaiComputerRing ring)
 		{
-			DebugLog.DebugWrite($"Set nomai computer ring.");
 			for (var i = 0; i < _scanBeams.Length; i++)
 			{
 				_scanBeams[i].SetNomaiTextLine(null);
@@ -139,7 +131,6 @@ namespace QSB.Tools.TranslatorTool
 
 		private void StopTranslating()
 		{
-			DebugLog.DebugWrite($"Stop Translating.");
 			if (_isTranslating)
 			{
 				_isTranslating = false;
