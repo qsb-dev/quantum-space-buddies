@@ -26,6 +26,11 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
 		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return;
+			}
+
 			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromId<QSBMeteorLauncher>(message.ObjectId);
 			qsbMeteorLauncher.LaunchMeteor(message.State);
 		}

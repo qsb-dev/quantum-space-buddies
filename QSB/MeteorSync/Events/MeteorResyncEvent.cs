@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 using EventType = QSB.Events.EventType;
@@ -28,8 +29,15 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)
 		{
+			if (!MeteorManager.MeteorsReady)
+			{
+				return;
+			}
+
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
 			// todo
+
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - resync requested");
 		}
 	}
 }

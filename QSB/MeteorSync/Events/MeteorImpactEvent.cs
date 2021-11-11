@@ -29,6 +29,11 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, MeteorImpactMessage message)
 		{
+			if (!MeteorManager.MeteorsReady)
+			{
+				return;
+			}
+
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
 			qsbMeteor.Impact(message.Position, message.RelativeVelocity, message.Damage);
 		}

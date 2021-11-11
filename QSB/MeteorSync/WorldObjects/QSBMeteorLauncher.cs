@@ -1,5 +1,4 @@
-﻿using QSB.Player;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects

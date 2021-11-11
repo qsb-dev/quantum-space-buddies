@@ -6,7 +6,7 @@ namespace QSB.MeteorSync
 	/// we have to do this fake bs
 	public class MeteorManager : WorldObjectManager
 	{
-		public new static bool AllReady;
+		public static bool MeteorsReady;
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
@@ -15,7 +15,7 @@ namespace QSB.MeteorSync
 			QSBCore.UnityEvents.FireInNUpdates(() =>
 			{
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
-				AllReady = true;
+				MeteorsReady = true;
 			}, 10);
 		}
 	}

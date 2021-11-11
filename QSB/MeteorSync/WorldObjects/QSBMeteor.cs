@@ -1,5 +1,4 @@
 ﻿using QSB.MeteorSync.TransformSync;
-using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -45,7 +44,7 @@ namespace QSB.MeteorSync.WorldObjects
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 
-			MeteorManager.AllReady = false;
+			MeteorManager.MeteorsReady = false;
 		}
 
 
@@ -58,7 +57,7 @@ namespace QSB.MeteorSync.WorldObjects
 
 			Damage = damage;
 			// todo get object
-			AttachedObject.Impact(null, position, relativeVelocity);
+			// AttachedObject.Impact(null, position, relativeVelocity);
 		}
 	}
 }

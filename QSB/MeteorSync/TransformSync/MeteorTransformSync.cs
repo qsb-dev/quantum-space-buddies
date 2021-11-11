@@ -7,7 +7,7 @@ namespace QSB.MeteorSync.TransformSync
 {
 	public class MeteorTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => MeteorManager.AllReady;
+		public override bool IsReady => MeteorManager.MeteorsReady;
 		public override bool UseInterpolation => true;
 
 		private QSBMeteor _qsbMeteor;
