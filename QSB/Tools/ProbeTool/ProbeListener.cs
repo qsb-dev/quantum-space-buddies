@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using UnityEngine;
 
-namespace QSB.ProbeSync
+namespace QSB.Tools.ProbeTool
 {
 	internal class ProbeListener : MonoBehaviour
 	{

@@ -36,6 +36,22 @@ namespace QSB.TimeSync
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
+		public void OnDisconnect()
+		{
+			OWTime.SetTimeScale(1f);
+			OWTime.SetMaxDeltaTime(0.06666667f);
+			OWTime.SetFixedTimestep(0.01666667f);
+			Locator.GetActiveCamera().enabled = true;
+			CurrentState = State.NotLoaded;
+			CurrentReason = null;
+
+			Physics.SyncTransforms();
+			SpinnerUI.Hide();
+			TimeSyncUI.Stop();
+
+			QSBInputManager.Instance.SetInputsEnabled(true);
+		}
+
 		public void Start()
 		{
 			if (!IsLocalPlayer)

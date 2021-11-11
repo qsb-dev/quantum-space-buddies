@@ -22,7 +22,7 @@ namespace QSB.Animation.Player.Events
 		public override void OnReceiveRemote(bool server, AnimationTriggerMessage message)
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AttachedNetId);
-			if (!QSBCore.WorldObjectsReady || animationSync != null)
+			if (!QSBCore.WorldObjectsReady || animationSync == null)
 			{
 				return;
 			}

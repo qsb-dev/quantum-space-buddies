@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.SatelliteSync.Events
 {
-	class SatelliteProjectorEvent : QSBEvent<BoolMessage>
+	internal class SatelliteProjectorEvent : QSBEvent<BoolMessage>
 	{
 		public override EventType Type => EventType.SatelliteProjector;
 

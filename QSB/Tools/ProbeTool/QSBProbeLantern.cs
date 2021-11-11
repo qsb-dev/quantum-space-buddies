@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.ProbeSync
+namespace QSB.Tools.ProbeTool
 {
 	internal class QSBProbeLantern : MonoBehaviour
 	{

@@ -2,7 +2,7 @@
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.ProbeSync
+namespace QSB.Tools.ProbeTool
 {
 	public class QSBProbe : MonoBehaviour
 	{

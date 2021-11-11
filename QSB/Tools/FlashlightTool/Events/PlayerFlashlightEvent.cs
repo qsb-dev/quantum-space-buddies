@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.Tools.Events
+namespace QSB.Tools.FlashlightTool.Events
 {
 	public class PlayerFlashlightEvent : QSBEvent<ToggleMessage>
 	{

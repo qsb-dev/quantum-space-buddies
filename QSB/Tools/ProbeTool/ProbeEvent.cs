@@ -1,4 +1,4 @@
-﻿namespace QSB.ProbeSync
+﻿namespace QSB.Tools.ProbeTool
 {
 	public enum ProbeEvent
 	{

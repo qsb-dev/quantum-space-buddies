@@ -3,11 +3,8 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.AirlockSync
 {
-	class AirlockManager : WorldObjectManager
+	internal class AirlockManager : WorldObjectManager
 	{
-		protected override void RebuildWorldObjects(OWScene scene)
-		{
-			QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>();
-		}
+		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>();
 	}
 }
