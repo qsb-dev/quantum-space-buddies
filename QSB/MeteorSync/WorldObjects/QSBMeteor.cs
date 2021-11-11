@@ -43,8 +43,6 @@ namespace QSB.MeteorSync.WorldObjects
 			impactPoint = Locator._brittleHollow.transform.TransformPoint(impactPoint);
 			Damage = damage;
 
-			AttachedObject.transform.position = impactPoint;
-
 			var hits = Physics.OverlapSphere(impactPoint, 1, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
 			var obj = hits
 				.Select(x => x.gameObject)
@@ -56,6 +54,7 @@ namespace QSB.MeteorSync.WorldObjects
 				return;
 			}
 
+			AttachedObject.owRigidbody.MoveToPosition(impactPoint);
 			var impactVel = AttachedObject.owRigidbody.GetVelocity() - obj.GetAttachedOWRigidbody().GetVelocity();
 			AttachedObject.Impact(obj, impactPoint, impactVel);
 
