@@ -40,6 +40,9 @@ namespace QSB.Tools.TranslatorTool
 			var oldProp = REMOTE_NomaiTranslatorProp.GetComponent<NomaiTranslatorProp>();
 			var newProp = REMOTE_NomaiTranslatorProp.AddComponent<QSBNomaiTranslatorProp>();
 			newProp.TranslatorProp = REMOTE_TranslatorGroup.gameObject;
+			newProp._leftPageArrowRenderer = oldProp._leftPageArrowRenderer;
+			newProp._rightPageArrowRenderer = oldProp._rightPageArrowRenderer;
+			newProp._baseEmissionColor = oldProp._baseEmissionColor;
 			Object.Destroy(oldProp);
 
 			var oldTranslator = REMOTE_NomaiTranslatorProp.GetComponent<NomaiTranslator>();

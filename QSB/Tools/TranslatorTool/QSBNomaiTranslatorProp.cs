@@ -10,15 +10,31 @@ namespace QSB.Tools.TranslatorTool
 {
 	class QSBNomaiTranslatorProp : MonoBehaviour
 	{
+		private static MaterialPropertyBlock s_matPropBlock;
+		private static int s_propID_EmissionColor;
+
 		public GameObject TranslatorProp;
+		public MeshRenderer _leftPageArrowRenderer;
+		public MeshRenderer _rightPageArrowRenderer;
+		public Color _baseEmissionColor;
 
 		private TranslatorTargetBeam _targetBeam;
 		private QSBTranslatorScanBeam[] _scanBeams;
 		private bool _isTranslating;
+		
 
 		private void Awake()
 		{
 			_targetBeam = transform.GetComponentInChildren<TranslatorTargetBeam>();
+
+			if (s_matPropBlock == null)
+			{
+				s_matPropBlock = new MaterialPropertyBlock();
+				s_propID_EmissionColor = Shader.PropertyToID("_EmissionColor");
+			}
+
+			TurnOffArrowEmission();
+
 			TranslatorProp.SetActive(false);
 		}
 
@@ -31,6 +47,30 @@ namespace QSB.Tools.TranslatorTool
 			}
 
 			enabled = false;
+		}
+
+		private void TurnOffArrowEmission()
+		{
+			if (_leftPageArrowRenderer != null)
+			{
+				SetMaterialEmissionEnabled(_leftPageArrowRenderer, false);
+			}
+			if (_rightPageArrowRenderer != null)
+			{
+				SetMaterialEmissionEnabled(_rightPageArrowRenderer, false);
+			}
+		}
+
+		private void SetMaterialEmissionEnabled(MeshRenderer emissiveRenderer, bool emissionEnabled)
+		{
+			if (emissionEnabled)
+			{
+				s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 1f);
+				emissiveRenderer.SetPropertyBlock(s_matPropBlock);
+				return;
+			}
+			s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 0f);
+			emissiveRenderer.SetPropertyBlock(s_matPropBlock);
 		}
 
 		public void OnEquipTool()
@@ -51,6 +91,7 @@ namespace QSB.Tools.TranslatorTool
 		{
 			enabled = false;
 			StopTranslating();
+			TurnOffArrowEmission();
 		}
 
 		public void OnFinishUnequipAnimation()
