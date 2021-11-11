@@ -26,6 +26,7 @@ namespace QSB.Tools
 
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
+				Structure_HEA_PlayerShip_Screens_mat = GameObject.Find("ProbeScreen (1)/ProbeScreenPivot/ProbeScreen").GetComponent<MeshRenderer>().materials[2];
 				Props_HEA_Lightbulb_mat = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
 				Props_HEA_Lightbulb_OFF_mat = GameObject.Find("NomaiResearchExhibit/Props_HEA_Probe_STATIC").GetComponent<MeshRenderer>().materials[1];
 			}
@@ -35,6 +36,7 @@ namespace QSB.Tools
 
 				// BUG : uhhhhh fuckin' uhhhhhhhh (find a material)
 				Props_HEA_Lightbulb_OFF_mat = null;
+				Structure_HEA_PlayerShip_Screens_mat = null;
 			}
 
 			FlashlightCreator.CreateFlashlight(playerCamera);
