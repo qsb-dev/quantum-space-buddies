@@ -92,6 +92,7 @@ namespace QSB.Events
 				new StartStatueEvent(),
 				new CampfireStateEvent(),
 				new AnglerChangeStateEvent(),
+				new MeteorPreLaunchEvent(),
 				new MeteorLaunchEvent(),
 				new MeteorImpactEvent(),
 				new MeteorResyncEvent(),

@@ -137,6 +137,7 @@
 
 		AnglerChangeState,
 
+		MeteorPreLaunch,
 		MeteorLaunch,
 		MeteorImpact,
 		MeteorResync

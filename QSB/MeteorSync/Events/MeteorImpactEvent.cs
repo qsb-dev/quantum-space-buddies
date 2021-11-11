@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 using EventType = QSB.Events.EventType;
@@ -12,16 +11,17 @@ namespace QSB.MeteorSync.Events
 		public override EventType Type => EventType.MeteorImpact;
 
 		public override void SetupListener()
-			=> GlobalMessenger<int, Vector3, Vector3, float>.AddListener(EventNames.QSBMeteorImpact, Handler);
+			=> GlobalMessenger<int, Vector3, float>.AddListener(EventNames.QSBMeteorImpact, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<int, Vector3, Vector3, float>.RemoveListener(EventNames.QSBMeteorImpact, Handler);
+			=> GlobalMessenger<int, Vector3, float>.RemoveListener(EventNames.QSBMeteorImpact, Handler);
 
-		private void Handler(int id, Vector3 pos, Vector3 vel, float damage) => SendEvent(CreateMessage(id, pos, vel, damage));
+		private void Handler(int id, Vector3 impactPoint, float damage) => SendEvent(CreateMessage(id, impactPoint, damage));
 
-		private MeteorImpactMessage CreateMessage(int id, Vector3 pos, Vector3 vel, float damage) => new MeteorImpactMessage
+		private MeteorImpactMessage CreateMessage(int id, Vector3 impactPoint, float damage) => new MeteorImpactMessage
 		{
 			ObjectId = id,
+			ImpactPoint = impactPoint,
 			Damage = damage
 		};
 
@@ -33,7 +33,7 @@ namespace QSB.MeteorSync.Events
 			}
 
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
-			qsbMeteor.Impact(message.Damage);
+			qsbMeteor.Impact(message.ImpactPoint, message.Damage);
 		}
 	}
 }

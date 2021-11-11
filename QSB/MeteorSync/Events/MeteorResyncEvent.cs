@@ -8,7 +8,7 @@ using EventType = QSB.Events.EventType;
 namespace QSB.MeteorSync.Events
 {
 	/// called when we request a resync on client join
-	public class MeteorResyncEvent : QSBEvent<WorldObjectMessage>
+	public class MeteorResyncEvent : QSBEvent<MeteorResyncMessage>
 	{
 		public override EventType Type => EventType.MeteorResync;
 
@@ -20,14 +20,15 @@ namespace QSB.MeteorSync.Events
 
 		private void Handler(QSBMeteor qsbMeteor) => SendEvent(CreateMessage(qsbMeteor));
 
-		private WorldObjectMessage CreateMessage(QSBMeteor qsbMeteor) => new WorldObjectMessage
+		private MeteorResyncMessage CreateMessage(QSBMeteor qsbMeteor) => new MeteorResyncMessage
 		{
 			ObjectId = qsbMeteor.ObjectId
-			// todo is suspended
+			// todo pos/rot/vel/angvel
+			// todo is suspended/launched
 			// todo fragment states
 		};
 
-		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)
+		public override void OnReceiveRemote(bool isHost, MeteorResyncMessage message)
 		{
 			if (!MeteorManager.MeteorsReady)
 			{

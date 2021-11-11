@@ -14,7 +14,7 @@ namespace QSB.MeteorSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
-		public static bool LaunchMeteor(MeteorLauncher __instance)
+		public static bool FixedUpdate(MeteorLauncher __instance)
 		{
 			if (__instance._launchedMeteors != null)
 			{
@@ -48,7 +48,6 @@ namespace QSB.MeteorSync.Patches
 			}
 			if (__instance._initialized && Time.time > __instance._lastLaunchTime + __instance._launchDelay)
 			{
-				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
 				if (!__instance._areParticlesPlaying)
 				{
 					__instance._areParticlesPlaying = true;
@@ -57,7 +56,8 @@ namespace QSB.MeteorSync.Patches
 						particleSystem.Play();
 					}
 
-					QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, true);
+					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher.ObjectId);
 				}
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
 				{
@@ -69,9 +69,58 @@ namespace QSB.MeteorSync.Patches
 					{
 						particleSystem.Stop();
 					}
-
-					QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, false);
 				}
+			}
+
+			return false;
+		}
+
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
+		public static bool LaunchMeteor(MeteorLauncher __instance)
+		{
+			var flag = __instance._dynamicMeteorPool != null && (__instance._meteorPool == null || Random.value < __instance._dynamicProbability);
+			MeteorController meteorController = null;
+			if (!flag)
+			{
+				if (__instance._meteorPool.Count == 0)
+				{
+					Debug.LogWarning("MeteorLauncher is out of Meteors!", __instance);
+				}
+				else
+				{
+					meteorController = __instance._meteorPool[__instance._meteorPool.Count - 1];
+					meteorController.Initialize(__instance.transform, __instance._detectableField, __instance._detectableFluid);
+					__instance._meteorPool.QuickRemoveAt(__instance._meteorPool.Count - 1);
+					__instance._launchedMeteors.Add(meteorController);
+				}
+			}
+			else if (__instance._dynamicMeteorPool.Count == 0)
+			{
+				Debug.LogWarning("MeteorLauncher is out of Dynamic Meteors!", __instance);
+			}
+			else
+			{
+				meteorController = __instance._dynamicMeteorPool[__instance._dynamicMeteorPool.Count - 1];
+				meteorController.Initialize(__instance.transform, null, null);
+				__instance._dynamicMeteorPool.QuickRemoveAt(__instance._dynamicMeteorPool.Count - 1);
+				__instance._launchedDynamicMeteors.Add(meteorController);
+			}
+			if (meteorController != null)
+			{
+				var launchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
+				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * launchSpeed;
+				var angularVelocity = __instance.transform.forward * 2f;
+				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
+				if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
+				{
+					__instance._launchSource.pitch = Random.Range(0.4f, 0.6f);
+					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
+				}
+
+				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, launchSpeed);
 			}
 
 			return false;
@@ -83,13 +132,10 @@ namespace QSB.MeteorSync.Patches
 		public static bool Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-
 			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
-			var damage = float.NaN;
+			var damage = Random.Range(__instance._minDamage, __instance._maxDamage);
 			if (componentInParent != null)
 			{
-				damage = Random.Range(__instance._minDamage, __instance._maxDamage);
 				if (!componentInParent.GetIgnoreMeteorDamage())
 				{
 					componentInParent.AddDamage(damage);
@@ -122,7 +168,9 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
-			QSBEventManager.FireEvent(EventNames.QSBMeteorImpact, qsbMeteor.ObjectId, impactPoint, impactVel, damage);
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			impactPoint = Locator._brittleHollow.transform.InverseTransformPoint(impactPoint);
+			QSBEventManager.FireEvent(EventNames.QSBMeteorImpact, qsbMeteor.ObjectId, impactPoint, damage);
 
 			return false;
 		}

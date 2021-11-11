@@ -1,30 +1,29 @@
 ﻿using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
-using QSB.WorldSync.Events;
 using EventType = QSB.Events.EventType;
 
 namespace QSB.MeteorSync.Events
 {
-	public class MeteorLaunchEvent : QSBEvent<BoolWorldObjectMessage>
+	public class MeteorLaunchEvent : QSBEvent<MeteorLaunchMessage>
 	{
 		public override EventType Type => EventType.MeteorLaunch;
 
 		public override void SetupListener()
-			=> GlobalMessenger<int, bool>.AddListener(EventNames.QSBMeteorLaunch, Handler);
+			=> GlobalMessenger<int, float>.AddListener(EventNames.QSBMeteorLaunch, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBMeteorLaunch, Handler);
+			=> GlobalMessenger<int, float>.RemoveListener(EventNames.QSBMeteorLaunch, Handler);
 
-		private void Handler(int id, bool preLaunch) => SendEvent(CreateMessage(id, preLaunch));
+		private void Handler(int id, float launchSpeed) => SendEvent(CreateMessage(id, launchSpeed));
 
-		private BoolWorldObjectMessage CreateMessage(int id, bool preLaunch) => new BoolWorldObjectMessage
+		private MeteorLaunchMessage CreateMessage(int id, float launchSpeed) => new MeteorLaunchMessage
 		{
 			ObjectId = id,
-			State = preLaunch
+			LaunchSpeed = launchSpeed
 		};
 
-		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
+		public override void OnReceiveRemote(bool isHost, MeteorLaunchMessage message)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
@@ -32,7 +31,7 @@ namespace QSB.MeteorSync.Events
 			}
 
 			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromId<QSBMeteorLauncher>(message.ObjectId);
-			qsbMeteorLauncher.LaunchMeteor(message.State);
+			qsbMeteorLauncher.LaunchMeteor(message.LaunchSpeed);
 		}
 	}
 }

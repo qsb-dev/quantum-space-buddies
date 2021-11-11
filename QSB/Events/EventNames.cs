@@ -93,6 +93,7 @@
 		public static string QSBExitSatelliteCamera = "QSBExitSatelliteCamera";
 		public static string QSBSatelliteSnapshot = "QSBSatelliteSnapshot";
 		public static string QSBAnglerChangeState = "QSBAnglerChangeState";
+		public static string QSBMeteorPreLaunch = "QSBMeteorPreLaunch";
 		public static string QSBMeteorLaunch = "QSBMeteorLaunch";
 		public static string QSBMeteorImpact = "QSBMeteorImpact";
 		public static string QSBMeteorResync = "QSBMeteorResync";

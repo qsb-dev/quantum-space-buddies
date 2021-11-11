@@ -12,27 +12,29 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
-		public void LaunchMeteor(bool preLaunch)
+		public float LaunchSpeed;
+
+		public void PreLaunchMeteor()
 		{
-			if (preLaunch)
+			foreach (var particleSystem in AttachedObject._launchParticles)
 			{
-				DebugLog.DebugWrite($"{LogName} - pre launch");
-
-				foreach (var particleSystem in AttachedObject._launchParticles)
-				{
-					particleSystem.Play();
-				}
+				particleSystem.Play();
 			}
-			else
+
+			DebugLog.DebugWrite($"{LogName} - pre launch");
+		}
+
+		public void LaunchMeteor(float launchSpeed)
+		{
+			LaunchSpeed = launchSpeed;
+
+			AttachedObject.LaunchMeteor();
+			foreach (var particleSystem in AttachedObject._launchParticles)
 			{
-				DebugLog.DebugWrite($"{LogName} - launch");
-
-				AttachedObject.LaunchMeteor();
-				foreach (var particleSystem in AttachedObject._launchParticles)
-				{
-					particleSystem.Stop();
-				}
+				particleSystem.Stop();
 			}
+
+			DebugLog.DebugWrite($"{LogName} - launch {launchSpeed}");
 		}
 	}
 }

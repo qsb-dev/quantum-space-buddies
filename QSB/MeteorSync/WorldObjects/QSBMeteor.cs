@@ -1,17 +1,13 @@
 ﻿using System.Linq;
 using OWML.Common;
-using QSB.MeteorSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBMeteor : WorldObject<MeteorController>
 	{
-		public MeteorTransformSync TransformSync;
 		private bool _initialized;
 
 		public override void Init(MeteorController attachedObject, int id)
@@ -26,11 +22,6 @@ namespace QSB.MeteorSync.WorldObjects
 				return;
 			}
 
-			if (QSBCore.IsHost)
-			{
-				Object.Instantiate(QSBNetworkManager.Instance.MeteorPrefab).SpawnWithServerAuthority();
-			}
-
 			_initialized = true;
 		}
 
@@ -41,28 +32,35 @@ namespace QSB.MeteorSync.WorldObjects
 				return;
 			}
 
-			if (QSBCore.IsHost)
-			{
-				QNetworkServer.Destroy(TransformSync.gameObject);
-			}
-
 			MeteorManager.MeteorsReady = false;
 		}
 
 
-		public bool ShouldImpact;
-		public float Damage = float.NaN;
+		public float Damage;
 
-		public void Impact(float damage)
+		public void Impact(Vector3 impactPoint, float damage)
 		{
-			ShouldImpact = true;
+			impactPoint = Locator._brittleHollow.transform.TransformPoint(impactPoint);
 			Damage = damage;
 
-			DebugLog.DebugWrite($"{LogName} - prepare to impact! {damage}");
+			AttachedObject.transform.position = impactPoint;
 
-			// just in case, set this up so even if no hit happens, it will reset itself eventually
-			AttachedObject._hasImpacted = true;
-			AttachedObject._impactTime = Time.time;
+			var hits = Physics.OverlapSphere(impactPoint, 1, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
+			var obj = hits
+				.Select(x => x.gameObject)
+				.OrderBy(x => Vector3.Distance(impactPoint, x.transform.position))
+				.FirstOrDefault();
+			if (obj == null)
+			{
+				DebugLog.ToConsole($"{LogName} - got impact from server, but found no hit object locally", MessageType.Error);
+				return;
+			}
+
+			var impactVel = AttachedObject.owRigidbody.GetVelocity() - obj.GetAttachedOWRigidbody().GetVelocity();
+			AttachedObject.Impact(obj, impactPoint, impactVel);
+
+			DebugLog.DebugWrite($"{LogName} - impact! {obj.name} {impactPoint} {impactVel} {damage}");
+
 		}
 	}
 }
