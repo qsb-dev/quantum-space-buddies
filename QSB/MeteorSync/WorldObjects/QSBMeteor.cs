@@ -50,21 +50,19 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
+		public bool ShouldImpact;
 		public float Damage = float.NaN;
 
 		public void Impact(float damage)
 		{
+			ShouldImpact = true;
 			Damage = damage;
+
+			DebugLog.DebugWrite($"{LogName} - prepare to impact! {damage}");
 
 			// just in case, set this up so even if no hit happens, it will reset itself eventually
 			AttachedObject._hasImpacted = true;
 			AttachedObject._impactTime = Time.time;
-
-			// let the collision happen naturally
-			foreach (var owCollider in AttachedObject._owColliders)
-			{
-				owCollider.SetActivation(true);
-			}
 		}
 	}
 }

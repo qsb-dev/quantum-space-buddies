@@ -1,5 +1,6 @@
 ﻿using System;
 using HarmonyLib;
+using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
@@ -53,24 +54,17 @@ namespace QSB.MeteorSync.Patches
 		}
 
 
-		[HarmonyPostfix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Launch))]
-		public static void Launch(MeteorController __instance)
-		{
-			// disable stuff again because we are client and have no say
-			foreach (var owCollider in __instance._owColliders)
-			{
-				owCollider.SetActivation(false);
-			}
-		}
-
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
 		public static bool Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			if (!qsbMeteor.ShouldImpact)
+			{
+				return false;
+			}
+			qsbMeteor.ShouldImpact = false;
 
 			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
 			// get damage from server
@@ -127,6 +121,12 @@ namespace QSB.MeteorSync.Patches
 
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
+
+			if (qsbMeteor.ShouldImpact)
+			{
+				DebugLog.DebugWrite($"{qsbMeteor.LogName} - prepared to impact but never did", MessageType.Error);
+			}
+			qsbMeteor.ShouldImpact = false;
 		}
 	}
 }
