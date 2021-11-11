@@ -1,4 +1,6 @@
-﻿using QSB.MeteorSync.TransformSync;
+﻿using System.Linq;
+using OWML.Common;
+using QSB.MeteorSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -48,16 +50,21 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
-		public float Damage;
+		public float Damage = float.NaN;
 
-		public void Impact(Vector3 position, Vector3 relativeVelocity, float damage)
+		public void Impact(float damage)
 		{
-			DebugLog.DebugWrite($"{LogName} - impact! "
-				+ $"{position} {relativeVelocity} {damage}");
-
 			Damage = damage;
-			// todo get object
-			// AttachedObject.Impact(null, position, relativeVelocity);
+
+			// just in case, set this up so even if no hit happens, it will reset itself eventually
+			AttachedObject._hasImpacted = true;
+			AttachedObject._impactTime = Time.time;
+
+			// let the collision happen naturally
+			foreach (var owCollider in AttachedObject._owColliders)
+			{
+				owCollider.SetActivation(true);
+			}
 		}
 	}
 }

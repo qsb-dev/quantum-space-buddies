@@ -22,8 +22,6 @@ namespace QSB.MeteorSync.Events
 		private MeteorImpactMessage CreateMessage(int id, Vector3 pos, Vector3 vel, float damage) => new MeteorImpactMessage
 		{
 			ObjectId = id,
-			Position = pos,
-			RelativeVelocity = vel,
 			Damage = damage
 		};
 
@@ -35,7 +33,7 @@ namespace QSB.MeteorSync.Events
 			}
 
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
-			qsbMeteor.Impact(message.Position, message.RelativeVelocity, message.Damage);
+			qsbMeteor.Impact(message.Damage);
 		}
 	}
 }

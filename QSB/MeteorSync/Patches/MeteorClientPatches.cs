@@ -1,6 +1,8 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -71,10 +73,10 @@ namespace QSB.MeteorSync.Patches
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 
 			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
+			// get damage from server
+			var damage = qsbMeteor.Damage;
 			if (componentInParent != null)
 			{
-				// get damage from server
-				var damage = qsbMeteor.Damage;
 				if (!componentInParent.GetIgnoreMeteorDamage())
 				{
 					componentInParent.AddDamage(damage);
@@ -107,7 +109,24 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! "
+				+ $"{hitObject.name} {impactPoint} {impactVel} {damage}");
+
 			return false;
+		}
+
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Suspend), new Type[0])]
+		public static void Suspend(MeteorController __instance)
+		{
+			if (!MeteorManager.MeteorsReady)
+			{
+				return;
+			}
+
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
 		}
 	}
 }
