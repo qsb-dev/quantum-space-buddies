@@ -17,7 +17,7 @@ namespace QSB.MeteorSync.WorldObjects
 		{
 			if (preLaunch)
 			{
-				DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {ObjectId} - pre launch");
+				DebugLog.DebugWrite($"{LogName} - pre launch");
 
 				foreach (var particleSystem in AttachedObject._launchParticles)
 				{
@@ -26,7 +26,7 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 			else
 			{
-				DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {ObjectId} - launch");
+				DebugLog.DebugWrite($"{LogName} - launch");
 
 				AttachedObject.LaunchMeteor();
 				foreach (var particleSystem in AttachedObject._launchParticles)

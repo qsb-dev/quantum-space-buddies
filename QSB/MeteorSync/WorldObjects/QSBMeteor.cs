@@ -53,7 +53,7 @@ namespace QSB.MeteorSync.WorldObjects
 
 		public void Impact(Vector3 position, Vector3 relativeVelocity, float damage)
 		{
-			DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {ObjectId} - impact! "
+			DebugLog.DebugWrite($"{LogName} - impact! "
 				+ $"{position} {relativeVelocity} {damage}");
 
 			Damage = damage;

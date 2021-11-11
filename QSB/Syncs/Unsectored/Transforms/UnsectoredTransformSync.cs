@@ -82,7 +82,7 @@ namespace QSB.Syncs.Unsectored.Transforms
 			}
 			else if (targetPos == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - TargetPos for {_logName} was (0,0,0).", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - TargetPos for {LogName} was (0,0,0).", MessageType.Warning);
 			}
 
 			return true;

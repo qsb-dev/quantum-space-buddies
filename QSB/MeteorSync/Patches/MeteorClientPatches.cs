@@ -73,7 +73,11 @@ namespace QSB.MeteorSync.Patches
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {qsbMeteor.ObjectId} - oh no! hit obj is null (for now)", MessageType.Error);
+			if (hitObject == null)
+			{
+				DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {qsbMeteor.ObjectId} - oh no! hit obj is null (for now)", MessageType.Error);
+				return false;
+			}
 
 			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
 			if (componentInParent != null)

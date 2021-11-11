@@ -56,7 +56,7 @@ namespace QSB.Syncs.Sectored.Transforms
 
 			if (_intermediaryTransform.GetPosition() == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
 		}
 
