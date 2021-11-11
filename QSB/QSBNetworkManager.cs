@@ -226,6 +226,11 @@ namespace QSB
 			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
+			if (WakeUpSync.LocalInstance != null)
+			{
+				WakeUpSync.LocalInstance.OnDisconnect();
+			}
+
 			if (_everConnected)
 			{
 				var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
