@@ -1,6 +1,5 @@
 ﻿using System;
 using HarmonyLib;
-using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
@@ -103,6 +102,13 @@ namespace QSB.MeteorSync.Patches
 
 			return false;
 		}
+
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.OnCollisionEnter))]
+		public static bool OnCollisionEnter(MeteorController __instance,
+			Collision collision)
+			=> false;
 
 
 		[HarmonyPrefix]
