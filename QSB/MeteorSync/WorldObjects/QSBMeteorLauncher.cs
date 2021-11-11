@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Player;
+using QSB.Utility;
+using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -15,6 +17,8 @@ namespace QSB.MeteorSync.WorldObjects
 		{
 			if (preLaunch)
 			{
+				DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {ObjectId} - pre launch");
+
 				foreach (var particleSystem in AttachedObject._launchParticles)
 				{
 					particleSystem.Play();
@@ -22,6 +26,8 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 			else
 			{
+				DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {ObjectId} - launch");
+
 				AttachedObject.LaunchMeteor();
 				foreach (var particleSystem in AttachedObject._launchParticles)
 				{

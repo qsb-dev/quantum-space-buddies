@@ -1,7 +1,9 @@
 ﻿using QSB.MeteorSync.TransformSync;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace QSB.MeteorSync.WorldObjects
@@ -47,10 +49,16 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
+		public float Damage;
 
-		public void Impact()
+		public void Impact(Vector3 position, Vector3 relativeVelocity, float damage)
 		{
-			// todo
+			DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId} {ObjectId} - impact! "
+				+ $"{position} {relativeVelocity} {damage}");
+
+			Damage = damage;
+			// todo get object
+			AttachedObject.Impact(null, position, relativeVelocity);
 		}
 	}
 }

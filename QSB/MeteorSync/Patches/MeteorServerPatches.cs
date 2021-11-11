@@ -78,12 +78,53 @@ namespace QSB.MeteorSync.Patches
 		}
 
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-		public static void Impact(MeteorController __instance)
+		public static bool Impact(MeteorController __instance,
+			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBMeteorImpact, qsbMeteor);
+
+			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
+			var damage = float.NaN;
+			if (componentInParent != null)
+			{
+				damage = Random.Range(__instance._minDamage, __instance._maxDamage);
+				if (!componentInParent.GetIgnoreMeteorDamage())
+				{
+					componentInParent.AddDamage(damage);
+				}
+				else if (componentInParent.GetParentFragment() != null && !componentInParent.GetParentFragment().GetIgnoreMeteorDamage())
+				{
+					componentInParent.GetParentFragment().AddDamage(damage);
+				}
+			}
+			MeteorImpactMapper.RecordImpact(impactPoint, componentInParent);
+			__instance._intactRenderer.enabled = false;
+			__instance._impactLight.enabled = true;
+			__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
+			var rotation = Quaternion.LookRotation(impactVel);
+			foreach (var particleSystem in __instance._impactParticles)
+			{
+				particleSystem.transform.rotation = rotation;
+				particleSystem.Play();
+			}
+			__instance._impactSource.PlayOneShot(AudioType.BH_MeteorImpact);
+			foreach (var owCollider in __instance._owColliders)
+			{
+				owCollider.SetActivation(false);
+			}
+			__instance._owRigidbody.MakeKinematic();
+			__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
+			FragmentSurfaceProxy.UntrackMeteor(__instance);
+			FragmentCollisionProxy.UntrackMeteor(__instance);
+			__instance._ignoringCollisions = false;
+			__instance._hasImpacted = true;
+			__instance._impactTime = Time.time;
+
+			QSBEventManager.FireEvent(EventNames.QSBMeteorImpact, qsbMeteor.ObjectId, impactPoint, impactVel, damage);
+
+			return false;
 		}
 	}
 }

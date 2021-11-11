@@ -1,34 +1,36 @@
 ﻿using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
-using QSB.WorldSync.Events;
+using UnityEngine;
 using EventType = QSB.Events.EventType;
 
 namespace QSB.MeteorSync.Events
 {
-	public class MeteorImpactEvent : QSBEvent<WorldObjectMessage>
+	public class MeteorImpactEvent : QSBEvent<MeteorImpactMessage>
 	{
 		public override EventType Type => EventType.MeteorImpact;
 
 		public override void SetupListener()
-			=> GlobalMessenger<QSBMeteor>.AddListener(EventNames.QSBMeteorImpact, Handler);
+			=> GlobalMessenger<int, Vector3, Vector3, float>.AddListener(EventNames.QSBMeteorImpact, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<QSBMeteor>.RemoveListener(EventNames.QSBMeteorImpact, Handler);
+			=> GlobalMessenger<int, Vector3, Vector3, float>.RemoveListener(EventNames.QSBMeteorImpact, Handler);
 
-		private void Handler(QSBMeteor qsbMeteor) => SendEvent(CreateMessage(qsbMeteor));
+		private void Handler(int id, Vector3 pos, Vector3 vel, float damage) => SendEvent(CreateMessage(id, pos, vel, damage));
 
-		private WorldObjectMessage CreateMessage(QSBMeteor qsbMeteor) => new WorldObjectMessage
+		private MeteorImpactMessage CreateMessage(int id, Vector3 pos, Vector3 vel, float damage) => new MeteorImpactMessage
 		{
-			ObjectId = qsbMeteor.ObjectId
-			// todo where
-			// todo velocity
+			ObjectId = id,
+			Position = pos,
+			RelativeVelocity = vel,
+			Damage = damage
 		};
 
-		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)
+		public override void OnReceiveRemote(bool isHost, MeteorImpactMessage message)
 		{
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
-			// todo
+			qsbMeteor.Impact(message.Position, message.RelativeVelocity, message.Damage);
 		}
 	}
 }
