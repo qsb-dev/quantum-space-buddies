@@ -45,5 +45,12 @@ namespace QSB.MeteorSync.WorldObjects
 
 			MeteorManager.AllReady = false;
 		}
+
+
+
+		public void Impact()
+		{
+			// todo
+		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.CampfireSync.WorldObjects;
+using QSB.MeteorSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
@@ -79,6 +80,9 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
+
+			QSBWorldSync.GetWorldObjects<QSBMeteor>().ForEach(meteor
+				=> QSBEventManager.FireEvent(EventNames.QSBMeteorResync, meteor));
 		}
 	}
 }

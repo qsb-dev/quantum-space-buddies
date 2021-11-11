@@ -135,6 +135,10 @@
 		LaunchProbe,
 		PlayerLaunchProbe,
 
-		AnglerChangeState
+		AnglerChangeState,
+
+		MeteorLaunch,
+		MeteorImpact,
+		MeteorResync
 	}
 }

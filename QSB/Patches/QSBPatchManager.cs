@@ -75,7 +75,8 @@ namespace QSB.Patches
 				new SatelliteProjectorPatches(),
 				new LightSensorPatches(),
 				new AnglerPatches(),
-				new MeteorPatches()
+				new MeteorClientPatches(),
+				new MeteorServerPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
