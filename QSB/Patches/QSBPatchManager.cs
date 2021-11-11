@@ -23,11 +23,12 @@ using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
 using QSB.Tools.ProbeLauncherTool.Patches;
 using QSB.TranslationSync.Patches;
+using QSB.Anglerfish.Patches;
+using QSB.MeteorSync.Patches;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QSB.Anglerfish.Patches;
 
 namespace QSB.Patches
 {
@@ -73,7 +74,8 @@ namespace QSB.Patches
 				new SolanumPatches(),
 				new SatelliteProjectorPatches(),
 				new LightSensorPatches(),
-				new AnglerPatches()
+				new AnglerPatches(),
+				new MeteorPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

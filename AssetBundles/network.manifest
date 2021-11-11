@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 460430998
+CRC: 1413327377
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1b708df8b57f5442fbea4c45a9f17743
+    Hash: f90094727e1ce28574220075b5b78331
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6968c5d2bbef57a79632abd61ea01bb3
@@ -26,6 +26,7 @@ Assets:
 - Assets/NetworkProbe.prefab
 - Assets/NETWORK_Player_Body.prefab
 - Assets/NetworkOrb.prefab
+- Assets/NetworkMeteor.prefab
 - Assets/NetworkAngler.prefab
 - Assets/NetworkShip.prefab
 Dependencies: []

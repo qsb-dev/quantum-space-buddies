@@ -152,6 +152,28 @@ namespace QSB.WorldSync
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
+		public static void RemoveWorldObject<TWorldObject>(TWorldObject item)
+			where TWorldObject : IWorldObject
+		{
+
+			if (item == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to remove a null WorldObject of type {typeof(TWorldObject).Name}.", MessageType.Error);
+				return;
+			}
+
+			try
+			{
+				WorldObjects.Remove(item);
+				WorldObjectsToUnityObjects.Remove(item.ReturnObject());
+				item.OnRemoval();
+			}
+			catch (Exception e)
+			{
+				DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+			}
+		}
+
 		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour

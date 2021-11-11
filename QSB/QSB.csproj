@@ -124,6 +124,10 @@
     <Compile Include="Menus\IMenuAPI.cs" />
     <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
+    <Compile Include="MeteorSync\MeteorManager.cs" />
+    <Compile Include="MeteorSync\Patches\MeteorPatches.cs" />
+    <Compile Include="MeteorSync\TransformSync\MeteorTransformSync.cs" />
+    <Compile Include="MeteorSync\WorldObjects\QSBMeteor.cs" />
     <Compile Include="OrbSync\TransformSync\NomaiOrbTransformSync.cs" />
     <Compile Include="Player\Events\PlayerInformationEvent.cs" />
     <Compile Include="Player\Events\PlayerInformationMessage.cs" />
@@ -445,6 +449,9 @@
     <PackageReference Include="OWML">
       <Version>2.0.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MeteorSync\Events" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

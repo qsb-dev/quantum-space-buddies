@@ -14,6 +14,7 @@ using QSB.PoolSync;
 using QSB.ProbeSync.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Anglerfish.TransformSync;
+using QSB.MeteorSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -39,6 +40,7 @@ namespace QSB
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
 		public GameObject AnglerPrefab { get; private set; }
+		public GameObject MeteorPrefab { get; private set; }
 		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
@@ -89,6 +91,12 @@ namespace QSB
 			SetupNetworkTransform(AnglerPrefab);
 			AnglerPrefab.AddComponent<AnglerTransformSync>();
 			spawnPrefabs.Add(AnglerPrefab);
+
+			MeteorPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkmeteor.prefab");
+			SetupNetworkId(MeteorPrefab, 6);
+			SetupNetworkTransform(MeteorPrefab);
+			MeteorPrefab.AddComponent<MeteorTransformSync>();
+			spawnPrefabs.Add(MeteorPrefab);
 
 			ConfigureNetworkManager();
 		}
