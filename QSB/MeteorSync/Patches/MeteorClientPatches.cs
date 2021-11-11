@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
-using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
-using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -58,7 +55,7 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Launch))]
 		public static void Launch(MeteorController __instance)
 		{
-			// display collisions again because we are client and have no say
+			// disable stuff again because we are client and have no say
 			foreach (var owCollider in __instance._owColliders)
 			{
 				owCollider.SetActivation(false);

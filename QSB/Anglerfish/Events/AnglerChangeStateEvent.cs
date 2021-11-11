@@ -33,6 +33,11 @@ namespace QSB.Anglerfish.Events
 
 		private static void OnReceive(bool isHost, AnglerChangeStateMessage message)
 		{
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return;
+			}
+
 			var qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId);
 
 			if (isHost)
