@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;

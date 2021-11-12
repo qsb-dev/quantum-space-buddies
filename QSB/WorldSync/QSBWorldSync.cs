@@ -66,7 +66,7 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			return (IWorldObject)returnObject;
+			return returnObject;
 		}
 
 		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)

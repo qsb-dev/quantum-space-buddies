@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.ItemSync.WorldObjects.Sockets;
+﻿using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;

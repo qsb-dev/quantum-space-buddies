@@ -1,10 +1,9 @@
-﻿using QSB.Utility;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace QSB.SatelliteSync
 {
-	class SatelliteProjectorManager : MonoBehaviour
+	internal class SatelliteProjectorManager : MonoBehaviour
 	{
 		public static SatelliteProjectorManager Instance { get; private set; }
 
@@ -16,10 +15,7 @@ namespace QSB.SatelliteSync
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
 		}
 
-		public void OnDestroy()
-		{
-			QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
-		}
+		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene)
 		{

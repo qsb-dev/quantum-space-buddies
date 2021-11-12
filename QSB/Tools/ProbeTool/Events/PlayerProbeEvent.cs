@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.ProbeSync.Events
+namespace QSB.Tools.ProbeTool.Events
 {
 	internal class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{

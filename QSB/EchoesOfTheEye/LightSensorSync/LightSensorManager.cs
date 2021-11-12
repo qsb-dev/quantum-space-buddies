@@ -3,11 +3,8 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync
 {
-	class LightSensorManager : WorldObjectManager
+	internal class LightSensorManager : WorldObjectManager
 	{
-		protected override void RebuildWorldObjects(OWScene scene)
-		{
-			QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
-		}
+		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
 	}
 }

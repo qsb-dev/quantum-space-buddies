@@ -11,10 +11,10 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
-using QSB.ProbeSync.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Anglerfish.TransformSync;
 using QSB.TimeSync;
+using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -225,6 +225,11 @@ namespace QSB
 			RemoveWorldObjects();
 			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
+
+			if (WakeUpSync.LocalInstance != null)
+			{
+				WakeUpSync.LocalInstance.OnDisconnect();
+			}
 
 			if (_everConnected)
 			{

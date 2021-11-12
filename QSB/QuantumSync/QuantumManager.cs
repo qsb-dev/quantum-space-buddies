@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
