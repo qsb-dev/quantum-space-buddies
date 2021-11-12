@@ -2,6 +2,8 @@
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.SignalscopeTool;
 using QSB.Tools.TranslatorTool;
+using QSB.Utility;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -19,24 +21,32 @@ namespace QSB.Tools
 
 		public static void Init(Transform playerCamera)
 		{
-			CreateStowTransforms(playerCamera);
-
-			Props_HEA_PlayerTool_mat = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
-			Props_HEA_Lightbulb_OFF_mat = GameObject.Find("Props_HEA_Probe_Prelaunch").GetComponent<MeshRenderer>().materials[1];
-
-			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			try
 			{
-				Structure_HEA_PlayerShip_Screens_mat = GameObject.Find("ProbeScreen (1)/ProbeScreenPivot/ProbeScreen").GetComponent<MeshRenderer>().materials[2];
-				Props_HEA_Lightbulb_mat = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
-				Props_HEA_Lightbulb_OFF_mat = GameObject.Find("NomaiResearchExhibit/Props_HEA_Probe_STATIC").GetComponent<MeshRenderer>().materials[1];
+				CreateStowTransforms(playerCamera);
+
+				Props_HEA_PlayerTool_mat = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
+				Props_HEA_Lightbulb_OFF_mat = GameObject.Find("Props_HEA_Probe_Prelaunch").GetComponent<MeshRenderer>().materials[1];
+
+				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+				{
+					Structure_HEA_PlayerShip_Screens_mat = GameObject.Find("ProbeScreen (1)/ProbeScreenPivot/ProbeScreen").GetComponent<MeshRenderer>().materials[2];
+					Props_HEA_Lightbulb_mat = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
+					Props_HEA_Lightbulb_OFF_mat = GameObject.Find("NomaiResearchExhibit/Props_HEA_Probe_STATIC").GetComponent<MeshRenderer>().materials[1];
+				}
+				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+				{
+					Props_HEA_Lightbulb_mat = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
+
+					// BUG : uhhhhh fuckin' uhhhhhhhh (find a material)
+					Props_HEA_Lightbulb_OFF_mat = null;
+					Structure_HEA_PlayerShip_Screens_mat = null;
+				}
+
 			}
-			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+			catch (Exception ex)
 			{
-				Props_HEA_Lightbulb_mat = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
-
-				// BUG : uhhhhh fuckin' uhhhhhhhh (find a material)
-				Props_HEA_Lightbulb_OFF_mat = null;
-				Structure_HEA_PlayerShip_Screens_mat = null;
+				DebugLog.ToConsole($"Error when trying to find materials : {ex}", OWML.Common.MessageType.Error);
 			}
 
 			FlashlightCreator.CreateFlashlight(playerCamera);

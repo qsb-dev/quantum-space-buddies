@@ -132,12 +132,27 @@ namespace QSB.ClientServerStateSync
 
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
-				if (QSBPlayerManager.PlayerList.All(x => x.State == ClientState.WaitingForOthersToReadyInSolarSystem)
-					|| QSBPlayerManager.PlayerList.All(x => x.State == ClientState.AliveInSolarSystem))
+				if (QSBPlayerManager.PlayerList.All(x
+					=> x.State == ClientState.WaitingForOthersToReadyInSolarSystem
+					|| x.State == ClientState.AliveInSolarSystem
+					|| x.State == ClientState.AliveInEye))
 				{
 					DebugLog.DebugWrite($"All ready!!");
 					QSBEventManager.FireEvent(EventNames.QSBStartLoop);
-					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InSolarSystem);
+					if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+					{
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InSolarSystem);
+					}
+					else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+					{
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InEye);
+					}
+					else
+					{
+						DebugLog.ToConsole($"Error - All players were ready in non-universe scene!?", OWML.Common.MessageType.Error);
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.NotLoaded);
+					}
+					
 					_blockNextCheck = true;
 				}
 			}
