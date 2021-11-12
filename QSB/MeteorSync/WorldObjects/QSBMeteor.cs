@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using OWML.Common;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -48,18 +46,10 @@ namespace QSB.MeteorSync.WorldObjects
 				.Select(x => x.gameObject)
 				.OrderBy(x => Vector3.Distance(impactPoint, x.transform.position))
 				.FirstOrDefault();
-			if (obj == null)
-			{
-				DebugLog.ToConsole($"{LogName} - got impact from server, but found no hit object locally", MessageType.Error);
-				return;
-			}
 
 			AttachedObject.owRigidbody.MoveToPosition(impactPoint);
-			var impactVel = AttachedObject.owRigidbody.GetVelocity() - obj.GetAttachedOWRigidbody().GetVelocity();
+			var impactVel = obj != null ? AttachedObject.owRigidbody.GetVelocity() - obj.GetAttachedOWRigidbody().GetVelocity() : default;
 			AttachedObject.Impact(obj, impactPoint, impactVel);
-
-			DebugLog.DebugWrite($"{LogName} - impact! {obj.name} {impactPoint} {impactVel} {damage}");
-
 		}
 	}
 }

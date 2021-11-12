@@ -1,5 +1,6 @@
 ﻿using System;
 using HarmonyLib;
+using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
@@ -118,7 +119,7 @@ namespace QSB.MeteorSync.Patches
 		{
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 
-			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
+			var componentInParent = hitObject != null ? hitObject.GetComponentInParent<FragmentIntegrity>() : null;
 			var damage = qsbMeteor.Damage;
 			if (componentInParent != null)
 			{
@@ -147,12 +148,25 @@ namespace QSB.MeteorSync.Patches
 				owCollider.SetActivation(false);
 			}
 			__instance._owRigidbody.MakeKinematic();
-			__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
+			if (hitObject != null)
+			{
+				__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
+			}
 			FragmentSurfaceProxy.UntrackMeteor(__instance);
 			FragmentCollisionProxy.UntrackMeteor(__instance);
 			__instance._ignoringCollisions = false;
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
+
+			if (hitObject != null)
+			{
+				DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
+			}
+			else
+			{
+				DebugLog.ToConsole($"{qsbMeteor.LogName} - got impact from server, but found no hit object locally "
+					+ $"({impactPoint} {impactVel} {damage})", MessageType.Error);
+			}
 
 			return false;
 		}
