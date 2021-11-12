@@ -1,5 +1,6 @@
 ﻿using System;
 using HarmonyLib;
+using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
