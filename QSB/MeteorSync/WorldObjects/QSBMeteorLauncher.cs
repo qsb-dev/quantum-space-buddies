@@ -12,6 +12,8 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
+		public bool Flag;
+		public int PoolIndex;
 		public float LaunchSpeed;
 
 		public void PreLaunchMeteor()
@@ -24,8 +26,10 @@ namespace QSB.MeteorSync.WorldObjects
 			DebugLog.DebugWrite($"{LogName} - pre launch");
 		}
 
-		public void LaunchMeteor(float launchSpeed)
+		public void LaunchMeteor(bool flag, int poolIndex, float launchSpeed)
 		{
+			Flag = flag;
+			PoolIndex = poolIndex;
 			LaunchSpeed = launchSpeed;
 
 			AttachedObject.LaunchMeteor();
@@ -34,7 +38,7 @@ namespace QSB.MeteorSync.WorldObjects
 				particleSystem.Stop();
 			}
 
-			DebugLog.DebugWrite($"{LogName} - launch {launchSpeed}");
+			DebugLog.DebugWrite($"{LogName} - launch {flag} {poolIndex} {launchSpeed}");
 		}
 	}
 }

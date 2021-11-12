@@ -82,6 +82,7 @@ namespace QSB.MeteorSync.Patches
 		{
 			var flag = __instance._dynamicMeteorPool != null && (__instance._meteorPool == null || Random.value < __instance._dynamicProbability);
 			MeteorController meteorController = null;
+			var poolIndex = 0;
 			if (!flag)
 			{
 				if (__instance._meteorPool.Count == 0)
@@ -90,9 +91,10 @@ namespace QSB.MeteorSync.Patches
 				}
 				else
 				{
-					meteorController = __instance._meteorPool[__instance._meteorPool.Count - 1];
+					poolIndex = __instance._meteorPool.Count - 1;
+					meteorController = __instance._meteorPool[poolIndex];
 					meteorController.Initialize(__instance.transform, __instance._detectableField, __instance._detectableFluid);
-					__instance._meteorPool.QuickRemoveAt(__instance._meteorPool.Count - 1);
+					__instance._meteorPool.QuickRemoveAt(poolIndex);
 					__instance._launchedMeteors.Add(meteorController);
 				}
 			}
@@ -102,9 +104,10 @@ namespace QSB.MeteorSync.Patches
 			}
 			else
 			{
-				meteorController = __instance._dynamicMeteorPool[__instance._dynamicMeteorPool.Count - 1];
+				poolIndex = __instance._dynamicMeteorPool.Count - 1;
+				meteorController = __instance._dynamicMeteorPool[poolIndex];
 				meteorController.Initialize(__instance.transform, null, null);
-				__instance._dynamicMeteorPool.QuickRemoveAt(__instance._dynamicMeteorPool.Count - 1);
+				__instance._dynamicMeteorPool.QuickRemoveAt(poolIndex);
 				__instance._launchedDynamicMeteors.Add(meteorController);
 			}
 			if (meteorController != null)
@@ -120,7 +123,7 @@ namespace QSB.MeteorSync.Patches
 				}
 
 				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, launchSpeed);
+				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, flag, poolIndex, launchSpeed);
 			}
 
 			return false;

@@ -59,8 +59,11 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
 		public static bool LaunchMeteor(MeteorLauncher __instance)
 		{
-			var flag = __instance._dynamicMeteorPool != null && (__instance._meteorPool == null || Random.value < __instance._dynamicProbability);
+			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+
+			var flag = qsbMeteorLauncher.Flag;
 			MeteorController meteorController = null;
+			var poolIndex = qsbMeteorLauncher.PoolIndex;
 			if (!flag)
 			{
 				if (__instance._meteorPool.Count == 0)
@@ -69,9 +72,9 @@ namespace QSB.MeteorSync.Patches
 				}
 				else
 				{
-					meteorController = __instance._meteorPool[__instance._meteorPool.Count - 1];
+					meteorController = __instance._meteorPool[poolIndex];
 					meteorController.Initialize(__instance.transform, __instance._detectableField, __instance._detectableFluid);
-					__instance._meteorPool.QuickRemoveAt(__instance._meteorPool.Count - 1);
+					__instance._meteorPool.QuickRemoveAt(poolIndex);
 					__instance._launchedMeteors.Add(meteorController);
 				}
 			}
@@ -81,15 +84,13 @@ namespace QSB.MeteorSync.Patches
 			}
 			else
 			{
-				meteorController = __instance._dynamicMeteorPool[__instance._dynamicMeteorPool.Count - 1];
+				meteorController = __instance._dynamicMeteorPool[poolIndex];
 				meteorController.Initialize(__instance.transform, null, null);
-				__instance._dynamicMeteorPool.QuickRemoveAt(__instance._dynamicMeteorPool.Count - 1);
+				__instance._dynamicMeteorPool.QuickRemoveAt(poolIndex);
 				__instance._launchedDynamicMeteors.Add(meteorController);
 			}
 			if (meteorController != null)
 			{
-				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-
 				var launchSpeed = qsbMeteorLauncher.LaunchSpeed;
 				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * launchSpeed;
 				var angularVelocity = __instance.transform.forward * 2f;
