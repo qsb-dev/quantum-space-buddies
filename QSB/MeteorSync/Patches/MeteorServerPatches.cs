@@ -1,9 +1,12 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace QSB.MeteorSync.Patches
 {
@@ -58,6 +61,7 @@ namespace QSB.MeteorSync.Patches
 
 					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
 					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher.ObjectId);
+					DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - pre launch");
 				}
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
 				{
@@ -124,6 +128,7 @@ namespace QSB.MeteorSync.Patches
 
 				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
 				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, flag, poolIndex, launchSpeed);
+				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {flag} {poolIndex} {launchSpeed}");
 			}
 
 			return false;
@@ -174,8 +179,23 @@ namespace QSB.MeteorSync.Patches
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 			impactPoint = Locator._brittleHollow.transform.InverseTransformPoint(impactPoint);
 			QSBEventManager.FireEvent(EventNames.QSBMeteorImpact, qsbMeteor.ObjectId, impactPoint, damage);
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
 
 			return false;
+		}
+
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Suspend), new Type[0])]
+		public static void Suspend(MeteorController __instance)
+		{
+			if (!MeteorManager.MeteorsReady)
+			{
+				return;
+			}
+
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
 		}
 	}
 }

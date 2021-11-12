@@ -100,6 +100,7 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.pitch = Random.Range(0.4f, 0.6f);
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
+				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {flag} {poolIndex} {launchSpeed}");
 			}
 
 			return false;

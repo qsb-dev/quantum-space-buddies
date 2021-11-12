@@ -37,8 +37,6 @@ namespace QSB.MeteorSync.WorldObjects
 			{
 				particleSystem.Stop();
 			}
-
-			DebugLog.DebugWrite($"{LogName} - launch {flag} {poolIndex} {launchSpeed}");
 		}
 	}
 }
