@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
-using static AnglerfishController;
 using EventType = QSB.Events.EventType;
 
 namespace QSB.Anglerfish.Events

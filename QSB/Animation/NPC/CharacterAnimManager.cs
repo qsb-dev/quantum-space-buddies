@@ -1,7 +1,6 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.WorldSync;
 using System.Linq;
-using UnityEngine;
 
 namespace QSB.Animation.NPC
 {
