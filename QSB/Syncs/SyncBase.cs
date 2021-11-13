@@ -170,7 +170,16 @@ namespace QSB.Syncs
 		{
 			if (!_isInitialized && IsReady && _baseIsReady)
 			{
-				Init();
+
+				try
+				{
+					Init();
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Exception when initializing {name} : {ex}", MessageType.Error);
+					enabled = false;
+				}
 				base.Update();
 				return;
 			}
