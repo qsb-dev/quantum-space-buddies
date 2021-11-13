@@ -1,4 +1,7 @@
 ﻿using QSB.Player;
+
+using System.Linq;
+
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -155,7 +158,7 @@ namespace QSB.Menus
 
 		private void Connect()
 		{
-			QSBNetworkManager.Instance.networkAddress = (PopupMenu as PopupInputMenu).GetInputText();
+			QSBNetworkManager.Instance.networkAddress = string.Concat((PopupMenu as PopupInputMenu).GetInputText().Where(c => !char.IsWhiteSpace(c)));
 			QSBNetworkManager.Instance.StartClient();
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = "CONNECTING... (STOP)";
 			DisconnectButton.gameObject.SetActive(true);
