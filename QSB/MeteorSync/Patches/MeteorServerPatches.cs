@@ -193,12 +193,11 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Suspend), new Type[0])]
 		public static void Suspend(MeteorController __instance)
 		{
-			if (!MeteorManager.MeteorsReady)
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			if (qsbMeteor == null)
 			{
 				return;
 			}
-
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
 		}
 	}
