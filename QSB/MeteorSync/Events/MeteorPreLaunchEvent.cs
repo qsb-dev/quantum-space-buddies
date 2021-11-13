@@ -11,16 +11,16 @@ namespace QSB.MeteorSync.Events
 		public override EventType Type => EventType.MeteorPreLaunch;
 
 		public override void SetupListener()
-			=> GlobalMessenger<int>.AddListener(EventNames.QSBMeteorPreLaunch, Handler);
+			=> GlobalMessenger<QSBMeteorLauncher>.AddListener(EventNames.QSBMeteorPreLaunch, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<int>.RemoveListener(EventNames.QSBMeteorPreLaunch, Handler);
+			=> GlobalMessenger<QSBMeteorLauncher>.RemoveListener(EventNames.QSBMeteorPreLaunch, Handler);
 
-		private void Handler(int id) => SendEvent(CreateMessage(id));
+		private void Handler(QSBMeteorLauncher qsbMeteorLauncher) => SendEvent(CreateMessage(qsbMeteorLauncher));
 
-		private WorldObjectMessage CreateMessage(int id) => new WorldObjectMessage
+		private WorldObjectMessage CreateMessage(QSBMeteorLauncher qsbMeteorLauncher) => new WorldObjectMessage
 		{
-			ObjectId = id
+			ObjectId = qsbMeteorLauncher.ObjectId
 		};
 
 		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)

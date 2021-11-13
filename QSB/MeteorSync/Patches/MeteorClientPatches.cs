@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using HarmonyLib;
 using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
@@ -95,8 +94,9 @@ namespace QSB.MeteorSync.Patches
 			}
 			if (meteorController != null)
 			{
-				var launchSpeed = qsbMeteorLauncher.LaunchSpeed;
-				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * launchSpeed;
+				qsbMeteor.Damage = qsbMeteorLauncher.Damage;
+
+				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed;
 				var angularVelocity = __instance.transform.forward * 2f;
 				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
 				if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
@@ -104,34 +104,15 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.pitch = Random.Range(0.4f, 0.6f);
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
-				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {launchSpeed}");
+
+				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed} {qsbMeteor.Damage}");
+			}
+			else
+			{
+				DebugLog.ToConsole($"{qsbMeteorLauncher.LogName} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
 			}
 
 			return false;
-		}
-
-
-		[HarmonyPostfix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Launch))]
-		public static void Launch(MeteorController __instance,
-			Transform parent, Vector3 worldPosition, Quaternion worldRotation, Vector3 linearVelocity, Vector3 angularVelocity)
-		{
-			__instance.gameObject.SetActive(true);
-			__instance.transform.SetParent(parent);
-			__instance.transform.SetPositionAndRotation(worldPosition, worldRotation);
-			__instance._owRigidbody.MakeNonKinematic();
-			__instance._owRigidbody.SetVelocity(linearVelocity);
-			__instance._owRigidbody.SetAngularVelocity(angularVelocity);
-			__instance._intactRenderer.enabled = true;
-			__instance._glowLight.intensity = __instance._lightStartIntensity;
-			__instance._smokeTrail.enabled = true;
-			__instance._smokeTrail.GetParticleSystem().Play();
-			__instance._suspended = false;
-			__instance._hasLaunched = true;
-			__instance._launchTime = Time.time;
-			__instance._hasImpacted = false;
-			__instance._impactTime = 0f;
-			__instance._heat = 1f;
 		}
 
 
@@ -178,15 +159,7 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
-			if (qsbMeteor.ShouldImpact)
-			{
-				DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
-				qsbMeteor.ShouldImpact = false;
-			}
-			else
-			{
-				DebugLog.ToConsole($"{qsbMeteor.LogName} - impacted locally, but not on server. THIS SHOULD BE IMPOSSIBLE", MessageType.Error);
-			}
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
 
 			return false;
 		}
@@ -202,11 +175,6 @@ namespace QSB.MeteorSync.Patches
 			}
 
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			if (qsbMeteor.ShouldImpact)
-			{
-				DebugLog.ToConsole($"{qsbMeteor.LogName} - impacted on server, but not locally", MessageType.Error);
-				qsbMeteor.ShouldImpact = false;
-			}
 			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
 		}
 	}

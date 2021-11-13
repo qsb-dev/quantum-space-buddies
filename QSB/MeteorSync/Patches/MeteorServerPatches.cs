@@ -60,7 +60,7 @@ namespace QSB.MeteorSync.Patches
 					}
 
 					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher.ObjectId);
+					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher);
 				}
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
 				{
@@ -115,8 +115,15 @@ namespace QSB.MeteorSync.Patches
 			}
 			if (meteorController != null)
 			{
-				var launchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
-				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * launchSpeed;
+				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+				var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(meteorController);
+
+				qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
+				qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
+				qsbMeteorLauncher.Damage = Random.Range(meteorController._minDamage, meteorController._maxDamage);
+				qsbMeteor.Damage = qsbMeteorLauncher.Damage;
+
+				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed;
 				var angularVelocity = __instance.transform.forward * 2f;
 				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
 				if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
@@ -125,10 +132,8 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
 
-				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-				var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(meteorController);
-				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher.ObjectId, qsbMeteor.ObjectId, launchSpeed);
-				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {launchSpeed}");
+				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher);
+				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed} {qsbMeteor.Damage}");
 			}
 
 			return false;
@@ -140,8 +145,10 @@ namespace QSB.MeteorSync.Patches
 		public static bool Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+
 			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
-			var damage = Random.Range(__instance._minDamage, __instance._maxDamage);
+			var damage = qsbMeteor.Damage;
 			if (componentInParent != null)
 			{
 				if (!componentInParent.GetIgnoreMeteorDamage())
@@ -176,10 +183,6 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			var pos = Locator._brittleHollow.transform.InverseTransformPoint(__instance.owRigidbody.GetPosition());
-			var rot = Locator._brittleHollow.transform.InverseTransformRotation(__instance.owRigidbody.GetRotation());
-			QSBEventManager.FireEvent(EventNames.QSBMeteorImpact, qsbMeteor.ObjectId, pos, rot, damage);
 			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
 
 			return false;

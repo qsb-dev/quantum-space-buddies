@@ -13,6 +13,7 @@ namespace QSB.MeteorSync.WorldObjects
 
 		public int MeteorId;
 		public float LaunchSpeed;
+		public float Damage;
 
 		public void PreLaunchMeteor()
 		{
@@ -22,10 +23,11 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 		}
 
-		public void LaunchMeteor(int meteorId, float launchSpeed)
+		public void LaunchMeteor(int meteorId, float launchSpeed, float damage)
 		{
 			MeteorId = meteorId;
 			LaunchSpeed = launchSpeed;
+			Damage = damage;
 
 			AttachedObject.LaunchMeteor();
 			foreach (var particleSystem in AttachedObject._launchParticles)

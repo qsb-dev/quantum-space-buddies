@@ -124,8 +124,6 @@
     <Compile Include="Menus\IMenuAPI.cs" />
     <Compile Include="Menus\MenuManager.cs" />
     <Compile Include="Messaging\BoolMessage.cs" />
-    <Compile Include="MeteorSync\Events\MeteorImpactEvent.cs" />
-    <Compile Include="MeteorSync\Events\MeteorImpactMessage.cs" />
     <Compile Include="MeteorSync\Events\MeteorLaunchEvent.cs" />
     <Compile Include="MeteorSync\Events\MeteorLaunchMessage.cs" />
     <Compile Include="MeteorSync\Events\MeteorPreLaunchEvent.cs" />

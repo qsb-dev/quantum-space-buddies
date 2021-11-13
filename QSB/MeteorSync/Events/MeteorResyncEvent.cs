@@ -37,7 +37,7 @@ namespace QSB.MeteorSync.Events
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
 			// todo
 
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - resync requested");
+			// DebugLog.DebugWrite($"{qsbMeteor.LogName} - resync requested");
 		}
 	}
 }

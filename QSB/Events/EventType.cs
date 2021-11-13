@@ -139,7 +139,6 @@
 
 		MeteorPreLaunch,
 		MeteorLaunch,
-		MeteorImpact,
 		MeteorResync
 	}
 }

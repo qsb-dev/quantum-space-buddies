@@ -1,6 +1,4 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
-using UnityEngine;
+﻿using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -34,29 +32,6 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
-		public bool ShouldImpact;
 		public float Damage;
-
-		public void Impact(Vector3 pos, Quaternion rot, float damage)
-		{
-			pos = Locator._brittleHollow.transform.TransformPoint(pos);
-			rot = Locator._brittleHollow.transform.TransformRotation(rot);
-			Damage = damage;
-
-			AttachedObject.owRigidbody.SetPosition(pos);
-			AttachedObject.owRigidbody.SetRotation(rot);
-
-			foreach (var owCollider in AttachedObject._owColliders)
-			{
-				owCollider.SetActivation(!OWLayerMask.IsLayerInMask(owCollider.gameObject.layer, OWLayerMask.physicalMask));
-			}
-			FragmentSurfaceProxy.TrackMeteor(AttachedObject);
-			FragmentCollisionProxy.TrackMeteor(AttachedObject);
-
-			AttachedObject._hasImpacted = true;
-			AttachedObject._impactTime = Time.time;
-
-			ShouldImpact = true;
-		}
 	}
 }
