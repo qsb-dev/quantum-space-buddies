@@ -3,7 +3,6 @@ using QSB.WorldSync;
 
 namespace QSB.MeteorSync
 {
-	/// we have to do this fake bs
 	public class MeteorManager : WorldObjectManager
 	{
 		public static bool MeteorsReady;
