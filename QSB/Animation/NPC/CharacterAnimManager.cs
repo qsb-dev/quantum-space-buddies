@@ -16,7 +16,7 @@ namespace QSB.Animation.NPC
 
 			//MOVE : this is the wrong place to put this... move it to Conversations?
 			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+			QSBWorldSync.OldDialogueTrees = QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().ToList();
 		}
 	}
 }
