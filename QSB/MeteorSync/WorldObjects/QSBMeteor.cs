@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -34,22 +34,29 @@ namespace QSB.MeteorSync.WorldObjects
 		}
 
 
+		public bool ShouldImpact;
 		public float Damage;
 
-		public void Impact(Vector3 impactPoint, float damage)
+		public void Impact(Vector3 pos, Quaternion rot, float damage)
 		{
-			impactPoint = Locator._brittleHollow.transform.TransformPoint(impactPoint);
+			pos = Locator._brittleHollow.transform.TransformPoint(pos);
+			rot = Locator._brittleHollow.transform.TransformRotation(rot);
 			Damage = damage;
 
-			var hits = Physics.OverlapSphere(impactPoint, 1, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
-			var obj = hits
-				.Select(x => x.gameObject)
-				.OrderBy(x => Vector3.Distance(impactPoint, x.transform.position))
-				.FirstOrDefault();
+			AttachedObject.owRigidbody.SetPosition(pos);
+			AttachedObject.owRigidbody.SetRotation(rot);
 
-			AttachedObject.owRigidbody.MoveToPosition(impactPoint);
-			var impactVel = obj != null ? AttachedObject.owRigidbody.GetVelocity() - obj.GetAttachedOWRigidbody().GetVelocity() : default;
-			AttachedObject.Impact(obj, impactPoint, impactVel);
+			foreach (var owCollider in AttachedObject._owColliders)
+			{
+				owCollider.SetActivation(!OWLayerMask.IsLayerInMask(owCollider.gameObject.layer, OWLayerMask.physicalMask));
+			}
+			FragmentSurfaceProxy.TrackMeteor(AttachedObject);
+			FragmentCollisionProxy.TrackMeteor(AttachedObject);
+
+			AttachedObject._hasImpacted = true;
+			AttachedObject._impactTime = Time.time;
+
+			ShouldImpact = true;
 		}
 	}
 }

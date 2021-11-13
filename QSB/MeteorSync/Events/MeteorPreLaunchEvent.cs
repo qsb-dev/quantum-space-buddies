@@ -1,9 +1,7 @@
 ﻿using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
-using UnityEngine;
 using EventType = QSB.Events.EventType;
 
 namespace QSB.MeteorSync.Events

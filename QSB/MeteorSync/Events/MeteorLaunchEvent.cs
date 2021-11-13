@@ -11,19 +11,18 @@ namespace QSB.MeteorSync.Events
 		public override EventType Type => EventType.MeteorLaunch;
 
 		public override void SetupListener()
-			=> GlobalMessenger<int, bool, int, float>.AddListener(EventNames.QSBMeteorLaunch, Handler);
+			=> GlobalMessenger<int, int, float>.AddListener(EventNames.QSBMeteorLaunch, Handler);
 
 		public override void CloseListener()
-			=> GlobalMessenger<int, bool, int, float>.RemoveListener(EventNames.QSBMeteorLaunch, Handler);
+			=> GlobalMessenger<int, int, float>.RemoveListener(EventNames.QSBMeteorLaunch, Handler);
 
-		private void Handler(int id, bool flag, int poolIndex, float launchSpeed) =>
-			SendEvent(CreateMessage(id, flag, poolIndex, launchSpeed));
+		private void Handler(int id, int meteorId, float launchSpeed) =>
+			SendEvent(CreateMessage(id, meteorId, launchSpeed));
 
-		private MeteorLaunchMessage CreateMessage(int id, bool flag, int poolIndex, float launchSpeed) => new MeteorLaunchMessage
+		private MeteorLaunchMessage CreateMessage(int id, int meteorId, float launchSpeed) => new MeteorLaunchMessage
 		{
 			ObjectId = id,
-			Flag = flag,
-			PoolIndex = poolIndex,
+			MeteorId = meteorId,
 			LaunchSpeed = launchSpeed
 		};
 
@@ -35,7 +34,7 @@ namespace QSB.MeteorSync.Events
 			}
 
 			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromId<QSBMeteorLauncher>(message.ObjectId);
-			qsbMeteorLauncher.LaunchMeteor(message.Flag, message.PoolIndex, message.LaunchSpeed);
+			qsbMeteorLauncher.LaunchMeteor(message.MeteorId, message.LaunchSpeed);
 		}
 	}
 }
