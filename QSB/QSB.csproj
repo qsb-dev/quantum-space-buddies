@@ -126,6 +126,7 @@
     <Compile Include="Messaging\BoolMessage.cs" />
     <Compile Include="MeteorSync\Events\FragmentDamageEvent.cs" />
     <Compile Include="MeteorSync\Events\FragmentDamageMessage.cs" />
+    <Compile Include="MeteorSync\Events\MeteorSpecialImpactEvent.cs" />
     <Compile Include="MeteorSync\Events\MeteorLaunchEvent.cs" />
     <Compile Include="MeteorSync\Events\MeteorLaunchMessage.cs" />
     <Compile Include="MeteorSync\Events\MeteorPreLaunchEvent.cs" />

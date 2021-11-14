@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using OWML.Common;
+using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
@@ -77,8 +78,6 @@ namespace QSB.MeteorSync.Patches
 		public static bool Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
-			// todo send back when a player (or probe???) impacts
-
 			__instance._intactRenderer.enabled = false;
 			__instance._impactLight.enabled = true;
 			__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
@@ -102,7 +101,15 @@ namespace QSB.MeteorSync.Patches
 			__instance._impactTime = Time.time;
 
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
+			if (QSBMeteor.IsSpecialImpact(hitObject))
+			{
+				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
+				DebugLog.DebugWrite($"{qsbMeteor.LogName} - special impact {hitObject.name}");
+			}
+			else
+			{
+				DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
+			}
 
 			return false;
 		}

@@ -139,6 +139,7 @@
 
 		MeteorPreLaunch,
 		MeteorLaunch,
+		MeteorSpecialImpact,
 		FragmentDamage,
 		FragmentResync
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using QSB.Events;
+using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
@@ -145,7 +146,15 @@ namespace QSB.MeteorSync.Patches
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
+			if (QSBMeteor.IsSpecialImpact(hitObject))
+			{
+				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
+				DebugLog.DebugWrite($"{qsbMeteor.LogName} - special impact {hitObject.name}");
+			}
+			else
+			{
+				DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
+			}
 		}
 
 
