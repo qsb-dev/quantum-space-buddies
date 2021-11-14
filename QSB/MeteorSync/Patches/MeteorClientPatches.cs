@@ -101,6 +101,9 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
+
 			return false;
 		}
 	}

@@ -140,6 +140,16 @@ namespace QSB.MeteorSync.Patches
 
 
 		[HarmonyPostfix]
+		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
+		public static void Impact(MeteorController __instance,
+			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
+		{
+			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
+		}
+
+
+		[HarmonyPostfix]
 		[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
 		public static void AddDamage(FragmentIntegrity __instance,
 			float damage)
