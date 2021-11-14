@@ -10,7 +10,7 @@ namespace QuantumUNET.Components
 	{
 		public float SendInterval { get; set; } = 0.05f;
 
-		protected float _lastClientSendTime;
+		private float _lastClientSendTime;
 		protected Vector3 _prevPosition;
 		protected Quaternion _prevRotation;
 		private QNetworkWriter _localTransformWriter;
