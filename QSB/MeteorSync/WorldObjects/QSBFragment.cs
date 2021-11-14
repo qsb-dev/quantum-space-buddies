@@ -11,10 +11,16 @@ namespace QSB.MeteorSync.WorldObjects
 			AttachedObject = attachedObject;
 		}
 
+		public override void OnRemoval()
+		{
+			MeteorManager.Ready = false;
+		}
+
+
 		public void AddDamage(float damage)
 		{
 			AttachedObject.AddDamage(damage);
-			DebugLog.DebugWrite($"{LogName} - damage {damage}");
+			DebugLog.DebugWrite($"{LogName} - damage {damage} {AttachedObject._integrity} / {AttachedObject._origIntegrity}");
 		}
 	}
 }

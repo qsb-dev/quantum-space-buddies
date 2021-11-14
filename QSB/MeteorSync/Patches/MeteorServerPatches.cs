@@ -146,7 +146,7 @@ namespace QSB.MeteorSync.Patches
 		{
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
-			DebugLog.DebugWrite($"{qsbFragment.LogName} - damage {damage}");
+			DebugLog.DebugWrite($"{qsbFragment.LogName} - damage {damage} {__instance._integrity} / {__instance._origIntegrity}");
 		}
 	}
 }

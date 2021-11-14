@@ -22,48 +22,48 @@ namespace QSB.MeteorSync.Events
 
 		private FragmentResyncMessage CreateMessage(QSBFragment qsbFragment)
 		{
-			return new FragmentResyncMessage();
 			var msg = new FragmentResyncMessage
 			{
 				ObjectId = qsbFragment.ObjectId,
-				Integrity = qsbFragment.AttachedObject.GetIntegrity()
+				Integrity = qsbFragment.AttachedObject._integrity,
+				OrigIntegrity = qsbFragment.AttachedObject._origIntegrity
 			};
-			if (msg.Integrity <= 0)
-			{
-				var refBody = Locator._brittleHollow.GetOWRigidbody();
-				var body = qsbFragment.AttachedObject.GetAttachedOWRigidbody();
-				msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
-				msg.Rot = refBody.transform.InverseTransformRotation(body.transform.rotation);
-				msg.Vel = GetRelativeVelocity(body, refBody);
-				msg.AngVel = body.GetRelativeAngularVelocity(refBody);
-			}
+			// if (msg.Integrity <= 0)
+			// {
+			// 	var refBody = Locator._brittleHollow.GetOWRigidbody();
+			// 	var body = qsbFragment.AttachedObject.GetAttachedOWRigidbody();
+			// 	msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
+			// 	msg.Rot = refBody.transform.InverseTransformRotation(body.transform.rotation);
+			// 	msg.Vel = GetRelativeVelocity(body, refBody);
+			// 	msg.AngVel = body.GetRelativeAngularVelocity(refBody);
+			// }
 
 			return msg;
 		}
 
 		public override void OnReceiveRemote(bool isHost, FragmentResyncMessage msg)
 		{
-			return;
-			if (!MeteorManager.MeteorsReady)
+			if (!MeteorManager.Ready)
 			{
 				return;
 			}
 
 			var qsbFragment = QSBWorldSync.GetWorldFromId<QSBFragment>(msg.ObjectId);
 			qsbFragment.AttachedObject._integrity = msg.Integrity;
-			if (msg.Integrity <= 0)
-			{
-				var refBody = Locator._brittleHollow.GetOWRigidbody();
-				var body = qsbFragment.AttachedObject.GetAttachedOWRigidbody();
-				var targetPos = refBody.transform.TransformPoint(msg.Pos);
-				var targetRot = refBody.transform.TransformRotation(msg.Rot);
-				var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
-				var targetAngVel = refBody.GetAngularVelocity() + msg.AngVel;
-				body.MoveToPosition(targetPos);
-				body.MoveToRotation(targetRot);
-				SetVelocity(body, targetVel);
-				body.SetAngularVelocity(targetAngVel);
-			}
+			qsbFragment.AttachedObject._origIntegrity = msg.OrigIntegrity;
+			// if (msg.Integrity <= 0)
+			// {
+			// 	var refBody = Locator._brittleHollow.GetOWRigidbody();
+			// 	var body = qsbFragment.AttachedObject.GetAttachedOWRigidbody();
+			// 	var targetPos = refBody.transform.TransformPoint(msg.Pos);
+			// 	var targetRot = refBody.transform.TransformRotation(msg.Rot);
+			// 	var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
+			// 	var targetAngVel = refBody.GetAngularVelocity() + msg.AngVel;
+			// 	body.MoveToPosition(targetPos);
+			// 	body.MoveToRotation(targetRot);
+			// 	SetVelocity(body, targetVel);
+			// 	body.SetAngularVelocity(targetAngVel);
+			// }
 		}
 
 

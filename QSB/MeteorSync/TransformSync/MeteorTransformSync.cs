@@ -8,7 +8,7 @@ namespace QSB.MeteorSync.TransformSync
 {
 	public class MeteorTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => MeteorManager.MeteorsReady;
+		public override bool IsReady => MeteorManager.Ready;
 		public override bool UseInterpolation => false;
 
 		private QSBMeteor _qsbMeteor;
@@ -68,7 +68,7 @@ namespace QSB.MeteorSync.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady
+			if (!MeteorManager.Ready
 				|| !QSBCore.DebugMode
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady

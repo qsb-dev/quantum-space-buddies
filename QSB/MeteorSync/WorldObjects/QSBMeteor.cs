@@ -28,7 +28,7 @@ namespace QSB.MeteorSync.WorldObjects
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 
-			MeteorManager.MeteorsReady = false;
+			MeteorManager.Ready = false;
 		}
 	}
 }
