@@ -3,7 +3,7 @@ using QSB.MeteorSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine;
+using QuantumUNET.Transport;
 
 namespace QSB.MeteorSync.TransformSync
 {
@@ -40,18 +40,30 @@ namespace QSB.MeteorSync.TransformSync
 
 			base.Init();
 			SetReferenceTransform(Locator._brittleHollow.transform);
+		}
 
-			DebugLog.DebugWrite($"{LogName} - init");
+
+		private bool _shouldUpdate;
+
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
+		{
+			base.DeserializeTransform(reader, initialState);
+			_shouldUpdate = true;
 		}
 
 		protected override bool UpdateTransform()
 		{
-			// DebugLog.DebugWrite($"{LogName} - {Time.time - _lastClientSendTime}");
-			if (Time.time - _lastClientSendTime > GetNetworkSendInterval())
+			if (HasAuthority)
 			{
 				return base.UpdateTransform();
 			}
-			return false;
+
+			if (!_shouldUpdate)
+			{
+				return false;
+			}
+			_shouldUpdate = false;
+			return base.UpdateTransform();
 		}
 
 
