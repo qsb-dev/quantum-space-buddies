@@ -1,5 +1,4 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using OWML.Common;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
@@ -17,42 +16,7 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 		public static bool FixedUpdate(MeteorLauncher __instance)
-		{
-			if (__instance._launchedMeteors != null)
-			{
-				for (var i = __instance._launchedMeteors.Count - 1; i >= 0; i--)
-				{
-					if (__instance._launchedMeteors[i] == null)
-					{
-						__instance._launchedMeteors.QuickRemoveAt(i);
-					}
-					else if (__instance._launchedMeteors[i].isSuspended)
-					{
-						__instance._meteorPool.Add(__instance._launchedMeteors[i]);
-						__instance._launchedMeteors.QuickRemoveAt(i);
-					}
-				}
-			}
-			if (__instance._launchedDynamicMeteors != null)
-			{
-				for (var j = __instance._launchedDynamicMeteors.Count - 1; j >= 0; j--)
-				{
-					if (__instance._launchedDynamicMeteors[j] == null)
-					{
-						__instance._launchedDynamicMeteors.QuickRemoveAt(j);
-					}
-					else if (__instance._launchedDynamicMeteors[j].isSuspended)
-					{
-						__instance._dynamicMeteorPool.Add(__instance._launchedDynamicMeteors[j]);
-						__instance._launchedDynamicMeteors.QuickRemoveAt(j);
-					}
-				}
-			}
-
-			// skip meteor launching
-
-			return false;
-		}
+			=> false;
 
 
 		[HarmonyPrefix]
@@ -72,24 +36,18 @@ namespace QSB.MeteorSync.Patches
 
 			if (__instance._meteorPool != null)
 			{
-				var poolIndex = __instance._meteorPool.FindIndex(MeteorMatches);
-				if (poolIndex != -1)
+				meteorController = __instance._meteorPool.Find(MeteorMatches);
+				if (meteorController != null)
 				{
-					meteorController = __instance._meteorPool[poolIndex];
 					meteorController.Initialize(__instance.transform, __instance._detectableField, __instance._detectableFluid);
-					__instance._meteorPool.QuickRemoveAt(poolIndex);
-					__instance._launchedMeteors.Add(meteorController);
 				}
 			}
 			else if (__instance._dynamicMeteorPool != null)
 			{
-				var poolIndex = __instance._dynamicMeteorPool.FindIndex(MeteorMatches);
-				if (poolIndex != -1)
+				meteorController = __instance._dynamicMeteorPool.Find(MeteorMatches);
+				if (meteorController != null)
 				{
-					meteorController = __instance._dynamicMeteorPool[poolIndex];
 					meteorController.Initialize(__instance.transform, null, null);
-					__instance._dynamicMeteorPool.QuickRemoveAt(poolIndex);
-					__instance._launchedDynamicMeteors.Add(meteorController);
 				}
 			}
 			if (meteorController != null)
@@ -105,6 +63,7 @@ namespace QSB.MeteorSync.Patches
 
 				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed}");
 			}
+
 			else
 			{
 				DebugLog.ToConsole($"{qsbMeteorLauncher.LogName} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
