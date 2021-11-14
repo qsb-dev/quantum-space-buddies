@@ -33,7 +33,7 @@ namespace QSB.MeteorSync.WorldObjects
 
 
 		public static bool IsSpecialImpact(GameObject go) =>
-			go == Locator.GetPlayerBody().gameObject || go == Locator.GetProbe().gameObject;
+			go == Locator.GetPlayerCollider().gameObject || go == Locator.GetProbe()._anchor._collider.gameObject;
 
 		public void SpecialImpact()
 		{
