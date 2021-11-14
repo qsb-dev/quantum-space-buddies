@@ -152,12 +152,17 @@ namespace QSB.WorldSync
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
-		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
+		public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
+			where TUnityObject : MonoBehaviour
+			=> Resources.FindObjectsOfTypeAll<TUnityObject>()
+				.Where(x => x.gameObject.scene.name != null);
+
+		public static void Init<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
 			RemoveWorldObjects<TWorldObject>();
-			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
+			var list = GetUnityObjects<TUnityObject>().ToList();
 			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
@@ -165,8 +170,6 @@ namespace QSB.WorldSync
 				obj.Init(list[id], id);
 				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
-
-			return list;
 		}
 
 		private static TWorldObject CreateWorldObject<TWorldObject>()
