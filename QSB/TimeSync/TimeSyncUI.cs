@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace QSB.TimeSync
 		private void OnUniverseSceneLoad(OWScene oldScene, OWScene newScene)
 		{
 			_isSetUp = true;
-			var obj = Resources.FindObjectsOfTypeAll<SleepTimerUI>().First();
+			var obj = QSBWorldSync.GetUnityObjects<SleepTimerUI>().First();
 			_canvas = obj.GetValue<Canvas>("_canvas");
 			_text = obj.GetValue<Text>("_text");
 			_canvas.enabled = false;

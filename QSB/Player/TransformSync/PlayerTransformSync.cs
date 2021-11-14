@@ -40,7 +40,7 @@ namespace QSB.Player.TransformSync
 		protected Quaternion _roastingRotationVelocity;
 
 		private Transform GetStickPivot()
-			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
+			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
