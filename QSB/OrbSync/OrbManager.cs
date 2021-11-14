@@ -25,7 +25,7 @@ namespace QSB.OrbSync
 		{
 			QSBWorldSync.OldOrbList.Clear();
 			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
-			QSBWorldSync.OldOrbList = QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>().ToList();
+			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
 			if (QSBCore.IsHost)
 			{
 				_orbs.ForEach(x => QNetworkServer.Destroy(x));

@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -67,7 +66,7 @@ namespace QSB.RoastingSync.Events
 			var stick = player.RoastingStick;
 			var stickTip = stick.transform.GetChild(0);
 
-			var mallowPrefab = QSBWorldSync.GetUnityObjects<RoastingStickController>().First().GetValue<GameObject>("_mallowBodyPrefab");
+			var mallowPrefab = Resources.FindObjectsOfTypeAll<RoastingStickController>().First().GetValue<GameObject>("_mallowBodyPrefab");
 
 			var tossedMallow = Object.Instantiate(mallowPrefab, stickTip.position, stickTip.rotation);
 			var rigidbody = tossedMallow.GetComponent<OWRigidbody>();

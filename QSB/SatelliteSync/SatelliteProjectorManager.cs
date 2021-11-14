@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.SatelliteSync
@@ -22,7 +21,7 @@ namespace QSB.SatelliteSync
 		{
 			if (newScene == OWScene.SolarSystem)
 			{
-				Projector = QSBWorldSync.GetUnityObjects<SatelliteSnapshotController>().First();
+				Projector = Resources.FindObjectsOfTypeAll<SatelliteSnapshotController>().First();
 				Projector._loopingSource.spatialBlend = 1f;
 				Projector._oneShotSource.spatialBlend = 1f;
 			}

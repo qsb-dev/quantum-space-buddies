@@ -1,6 +1,7 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.WorldSync;
 using System.Linq;
+using UnityEngine;
 
 namespace QSB.Animation.NPC
 {
@@ -15,7 +16,7 @@ namespace QSB.Animation.NPC
 
 			//MOVE : this is the wrong place to put this... move it to Conversations?
 			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.OldDialogueTrees = QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().ToList();
+			QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
 		}
 	}
 }

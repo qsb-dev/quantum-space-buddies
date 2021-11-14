@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.MeteorSync
 {
@@ -17,7 +18,7 @@ namespace QSB.MeteorSync
 				QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
 				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
-				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
+				WhiteHoleVolume = Resources.FindObjectsOfTypeAll<WhiteHoleVolume>().First();
 				Ready = true;
 			}, 10);
 		}

@@ -3,7 +3,6 @@ using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Player.TransformSync;
-using QSB.WorldSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -76,7 +75,7 @@ namespace QSB.DeathSync
 			}
 			else
 			{
-				var allAstroobjects = QSBWorldSync.GetUnityObjects<AstroObject>().Where(x => x.GetAstroObjectName() != AstroObject.Name.None && x.GetAstroObjectType() != AstroObject.Type.Satellite);
+				var allAstroobjects = Resources.FindObjectsOfTypeAll<AstroObject>().Where(x => x.GetAstroObjectName() != AstroObject.Name.None && x.GetAstroObjectType() != AstroObject.Type.Satellite);
 				var ordered = allAstroobjects.OrderBy(x => Vector3.SqrMagnitude(x.transform.position));
 				DeathClosestAstroObject = ordered.First().transform;
 			}
