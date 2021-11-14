@@ -61,9 +61,9 @@ namespace QSB.ShipSync
 			}
 
 			HatchInteractZone = HatchController.GetComponent<InteractZone>();
-			ShipTractorBeam = Resources.FindObjectsOfTypeAll<ShipTractorBeamSwitch>().First();
-			CockpitController = Resources.FindObjectsOfTypeAll<ShipCockpitController>().First();
-			ShipElectricalComponent = Resources.FindObjectsOfTypeAll<ShipElectricalComponent>().First();
+			ShipTractorBeam = QSBWorldSync.GetUnityObjects<ShipTractorBeamSwitch>().First();
+			CockpitController = QSBWorldSync.GetUnityObjects<ShipCockpitController>().First();
+			ShipElectricalComponent = QSBWorldSync.GetUnityObjects<ShipElectricalComponent>().First();
 
 			var sphereShape = HatchController.GetComponent<SphereShape>();
 			sphereShape.radius = 2.5f;

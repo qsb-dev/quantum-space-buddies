@@ -153,7 +153,7 @@ namespace QSB
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+				QSBWorldSync.OldDialogueTrees = QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().ToList();
 			}
 		}
 
@@ -283,17 +283,17 @@ namespace QSB
 		{
 			QSBWorldSync.RemoveWorldObjects<IWorldObjectTypeSubset>();
 			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
-			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
+			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
 			{
 				Destroy(platform);
 			}
 
-			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
+			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
 			{
 				Destroy(camera);
 			}
 
-			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
+			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
 			{
 				Destroy(streaming);
 			}

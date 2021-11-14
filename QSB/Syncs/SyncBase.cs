@@ -28,7 +28,7 @@ namespace QSB.Syncs
 			if (wantedSync == default)
 			{
 				DebugLog.ToConsole($"Error -  _storedTransformSyncs does not contain type:{typeof(T)} under player {player.PlayerId}. Attempting to find manually...", MessageType.Error);
-				var allSyncs = Resources.FindObjectsOfTypeAll<T>();
+				var allSyncs = QSBWorldSync.GetUnityObjects<T>();
 				wantedSync = allSyncs.First(x => x.Player == player);
 				if (wantedSync == default)
 				{
@@ -100,7 +100,7 @@ namespace QSB.Syncs
 
 		public virtual void Start()
 		{
-			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
+			var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 

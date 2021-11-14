@@ -42,7 +42,7 @@ namespace QSB.QuantumSync
 			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
 			if (scene == OWScene.SolarSystem)
 			{
-				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
+				Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
 			}
 		}
 

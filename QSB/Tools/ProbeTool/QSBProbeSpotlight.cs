@@ -1,4 +1,5 @@
 ﻿using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ namespace QSB.Tools.ProbeTool
 
 		private void Awake()
 		{
-			_probe = Resources.FindObjectsOfTypeAll<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
+			_probe = QSBWorldSync.GetUnityObjects<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 			if (_probe == null)
 			{
 				DebugLog.ToConsole($"Error - Couldn't find QSBProbe!", OWML.Common.MessageType.Error);
