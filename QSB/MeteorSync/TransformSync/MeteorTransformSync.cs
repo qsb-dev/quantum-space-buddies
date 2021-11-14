@@ -29,8 +29,7 @@ namespace QSB.MeteorSync.TransformSync
 			base.OnDestroy();
 		}
 
-		public override float GetNetworkSendInterval()
-			=> 5f;
+		public override float GetNetworkSendInterval() => 5;
 
 		protected override void Init()
 		{
