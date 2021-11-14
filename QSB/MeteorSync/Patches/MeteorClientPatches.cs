@@ -6,7 +6,6 @@ using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace QSB.MeteorSync.Patches
 {
@@ -61,8 +60,6 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.pitch = Random.Range(0.4f, 0.6f);
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
-
-				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed}");
 			}
 			else
 			{
@@ -104,11 +101,6 @@ namespace QSB.MeteorSync.Patches
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
 				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
-				DebugLog.DebugWrite($"{qsbMeteor.LogName} - special impact {hitObject.name}");
-			}
-			else
-			{
-				DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
 			}
 
 			return false;

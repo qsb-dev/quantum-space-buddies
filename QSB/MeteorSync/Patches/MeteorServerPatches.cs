@@ -1,13 +1,9 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using QSB.Events;
-using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace QSB.MeteorSync.Patches
 {
@@ -62,7 +58,6 @@ namespace QSB.MeteorSync.Patches
 
 					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
 					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher);
-					DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - prelaunch");
 				}
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
 				{
@@ -133,7 +128,6 @@ namespace QSB.MeteorSync.Patches
 				}
 
 				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher);
-				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed}");
 			}
 
 			return false;
@@ -149,11 +143,6 @@ namespace QSB.MeteorSync.Patches
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
 				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
-				DebugLog.DebugWrite($"{qsbMeteor.LogName} - special impact {hitObject.name}");
-			}
-			else
-			{
-				DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact {hitObject.name} {impactPoint} {impactVel}");
 			}
 		}
 
@@ -165,7 +154,6 @@ namespace QSB.MeteorSync.Patches
 		{
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
-			DebugLog.DebugWrite($"{qsbFragment.LogName} - damage {damage} {__instance._integrity} / {__instance._origIntegrity}");
 		}
 	}
 }

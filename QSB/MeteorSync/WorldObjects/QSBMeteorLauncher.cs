@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -26,7 +25,6 @@ namespace QSB.MeteorSync.WorldObjects
 			{
 				particleSystem.Play();
 			}
-			DebugLog.DebugWrite($"{LogName} - prelaunch");
 		}
 
 		public void LaunchMeteor(int meteorId, float launchSpeed)

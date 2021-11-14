@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -20,7 +19,6 @@ namespace QSB.MeteorSync.WorldObjects
 		public void AddDamage(float damage)
 		{
 			AttachedObject.AddDamage(damage);
-			DebugLog.DebugWrite($"{LogName} - damage {damage} {AttachedObject._integrity} / {AttachedObject._origIntegrity}");
 		}
 	}
 }

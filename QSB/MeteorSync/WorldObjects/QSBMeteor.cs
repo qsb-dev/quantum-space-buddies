@@ -55,8 +55,6 @@ namespace QSB.MeteorSync.WorldObjects
 			AttachedObject._ignoringCollisions = false;
 			AttachedObject._hasImpacted = true;
 			AttachedObject._impactTime = Time.time;
-
-			DebugLog.DebugWrite($"{LogName} - special impact");
 		}
 	}
 }
