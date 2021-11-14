@@ -10,6 +10,7 @@ namespace QSB.MeteorSync
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
+			QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 			// wait a bit because meteors get created late
 			QSBCore.UnityEvents.FireInNUpdates(() =>
 			{

@@ -19,64 +19,64 @@ namespace QSB.MeteorSync.Events
 		{
 			base.Deserialize(reader);
 
-			Suspended = new bool[reader.ReadInt32()];
-			for (var i = 0; i < Suspended.Length; i++)
-			{
-				Suspended[i] = reader.ReadBoolean();
-			}
-			Damage = new float[reader.ReadInt32()];
-			for (var i = 0; i < Damage.Length; i++)
-			{
-				Damage[i] = reader.ReadSingle();
-			}
-			MeteorTransforms = new TransformMessage[reader.ReadInt32()];
-			for (var i = 0; i < MeteorTransforms.Length; i++)
-			{
-				MeteorTransforms[i] = reader.ReadMessage<TransformMessage>();
-			}
-
-			Integrity = new float[reader.ReadInt32()];
-			for (var i = 0; i < Integrity.Length; i++)
-			{
-				Integrity[i] = reader.ReadSingle();
-			}
-			FragmentTransforms = new TransformMessage[reader.ReadInt32()];
-			for (var i = 0; i < FragmentTransforms.Length; i++)
-			{
-				FragmentTransforms[i] = reader.ReadMessage<TransformMessage>();
-			}
+			// Suspended = new bool[reader.ReadInt32()];
+			// for (var i = 0; i < Suspended.Length; i++)
+			// {
+			// 	Suspended[i] = reader.ReadBoolean();
+			// }
+			// Damage = new float[reader.ReadInt32()];
+			// for (var i = 0; i < Damage.Length; i++)
+			// {
+			// 	Damage[i] = reader.ReadSingle();
+			// }
+			// MeteorTransforms = new TransformMessage[reader.ReadInt32()];
+			// for (var i = 0; i < MeteorTransforms.Length; i++)
+			// {
+			// 	MeteorTransforms[i] = reader.ReadMessage<TransformMessage>();
+			// }
+			//
+			// Integrity = new float[reader.ReadInt32()];
+			// for (var i = 0; i < Integrity.Length; i++)
+			// {
+			// 	Integrity[i] = reader.ReadSingle();
+			// }
+			// FragmentTransforms = new TransformMessage[reader.ReadInt32()];
+			// for (var i = 0; i < FragmentTransforms.Length; i++)
+			// {
+			// 	FragmentTransforms[i] = reader.ReadMessage<TransformMessage>();
+			// }
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 
-			writer.Write(Suspended.Length);
-			foreach (var x in Suspended)
-			{
-				writer.Write(x);
-			}
-			writer.Write(Damage.Length);
-			foreach (var x in Damage)
-			{
-				writer.Write(x);
-			}
-			writer.Write(MeteorTransforms.Length);
-			foreach (var x in MeteorTransforms)
-			{
-				writer.Write(x);
-			}
-
-			writer.Write(Integrity.Length);
-			foreach (var x in Integrity)
-			{
-				writer.Write(x);
-			}
-			writer.Write(FragmentTransforms.Length);
-			foreach (var x in FragmentTransforms)
-			{
-				writer.Write(x);
-			}
+			// writer.Write(Suspended.Length);
+			// foreach (var x in Suspended)
+			// {
+			// 	writer.Write(x);
+			// }
+			// writer.Write(Damage.Length);
+			// foreach (var x in Damage)
+			// {
+			// 	writer.Write(x);
+			// }
+			// writer.Write(MeteorTransforms.Length);
+			// foreach (var x in MeteorTransforms)
+			// {
+			// 	writer.Write(x);
+			// }
+			//
+			// writer.Write(Integrity.Length);
+			// foreach (var x in Integrity)
+			// {
+			// 	writer.Write(x);
+			// }
+			// writer.Write(FragmentTransforms.Length);
+			// foreach (var x in FragmentTransforms)
+			// {
+			// 	writer.Write(x);
+			// }
 		}
 
 
