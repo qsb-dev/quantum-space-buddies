@@ -94,8 +94,6 @@ namespace QSB.MeteorSync.Patches
 			}
 			if (meteorController != null)
 			{
-				qsbMeteor.Damage = qsbMeteorLauncher.Damage;
-
 				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed;
 				var angularVelocity = __instance.transform.forward * 2f;
 				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
@@ -105,7 +103,7 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
 
-				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed} {qsbMeteor.Damage}");
+				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed}");
 			}
 			else
 			{
@@ -121,22 +119,8 @@ namespace QSB.MeteorSync.Patches
 		public static bool Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			// todo send back when a player (or probe???) impacts
 
-			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
-			var damage = qsbMeteor.Damage;
-			if (componentInParent != null)
-			{
-				if (!componentInParent.GetIgnoreMeteorDamage())
-				{
-					componentInParent.AddDamage(damage);
-				}
-				else if (componentInParent.GetParentFragment() != null && !componentInParent.GetParentFragment().GetIgnoreMeteorDamage())
-				{
-					componentInParent.GetParentFragment().AddDamage(damage);
-				}
-			}
-			MeteorImpactMapper.RecordImpact(impactPoint, componentInParent);
 			__instance._intactRenderer.enabled = false;
 			__instance._impactLight.enabled = true;
 			__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
@@ -159,22 +143,7 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
-
 			return false;
-		}
-
-
-		[HarmonyPostfix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Suspend), new Type[0])]
-		public static void Suspend(MeteorController __instance)
-		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			if (qsbMeteor == null)
-			{
-				return;
-			}
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
 		}
 	}
 }

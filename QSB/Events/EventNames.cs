@@ -95,6 +95,7 @@
 		public static string QSBAnglerChangeState = "QSBAnglerChangeState";
 		public static string QSBMeteorPreLaunch = "QSBMeteorPreLaunch";
 		public static string QSBMeteorLaunch = "QSBMeteorLaunch";
-		public static string QSBMeteorResync = "QSBMeteorResync";
+		public static string QSBFragmentDamage = "QSBFragmentDamage";
+		public static string QSBFragmentResync = "QSBFragmentResync";
 	}
 }

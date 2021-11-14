@@ -23,7 +23,6 @@ namespace QSB.MeteorSync.Events
 			ObjectId = qsbMeteorLauncher.ObjectId,
 			MeteorId = qsbMeteorLauncher.MeteorId,
 			LaunchSpeed = qsbMeteorLauncher.LaunchSpeed,
-			Damage = qsbMeteorLauncher.Damage
 		};
 
 		public override void OnReceiveRemote(bool isHost, MeteorLaunchMessage message)
@@ -34,7 +33,7 @@ namespace QSB.MeteorSync.Events
 			}
 
 			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromId<QSBMeteorLauncher>(message.ObjectId);
-			qsbMeteorLauncher.LaunchMeteor(message.MeteorId, message.LaunchSpeed, message.Damage);
+			qsbMeteorLauncher.LaunchMeteor(message.MeteorId, message.LaunchSpeed);
 		}
 	}
 }

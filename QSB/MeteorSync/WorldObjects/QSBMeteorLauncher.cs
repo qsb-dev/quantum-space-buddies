@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -13,7 +14,6 @@ namespace QSB.MeteorSync.WorldObjects
 
 		public int MeteorId;
 		public float LaunchSpeed;
-		public float Damage;
 
 		public void PreLaunchMeteor()
 		{
@@ -21,13 +21,13 @@ namespace QSB.MeteorSync.WorldObjects
 			{
 				particleSystem.Play();
 			}
+			DebugLog.DebugWrite($"{LogName} - prelaunch");
 		}
 
-		public void LaunchMeteor(int meteorId, float launchSpeed, float damage)
+		public void LaunchMeteor(int meteorId, float launchSpeed)
 		{
 			MeteorId = meteorId;
 			LaunchSpeed = launchSpeed;
-			Damage = damage;
 
 			AttachedObject.LaunchMeteor();
 			foreach (var particleSystem in AttachedObject._launchParticles)

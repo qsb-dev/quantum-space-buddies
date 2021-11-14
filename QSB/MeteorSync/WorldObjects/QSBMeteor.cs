@@ -30,8 +30,5 @@ namespace QSB.MeteorSync.WorldObjects
 
 			MeteorManager.MeteorsReady = false;
 		}
-
-
-		public float Damage;
 	}
 }

@@ -81,7 +81,8 @@ namespace QSB.Player.Events
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
 
-			QSBEventManager.FireEvent(EventNames.QSBMeteorResync);
+			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
+				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));
 		}
 	}
 }

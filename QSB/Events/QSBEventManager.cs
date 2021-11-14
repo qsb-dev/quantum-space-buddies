@@ -96,7 +96,8 @@ namespace QSB.Events
 				new AnglerChangeStateEvent(),
 				new MeteorPreLaunchEvent(),
 				new MeteorLaunchEvent(),
-				new MeteorResyncEvent(),
+				new FragmentDamageEvent(),
+				new FragmentResyncEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

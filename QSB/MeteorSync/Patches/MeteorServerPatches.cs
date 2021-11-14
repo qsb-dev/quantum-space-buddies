@@ -61,6 +61,7 @@ namespace QSB.MeteorSync.Patches
 
 					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
 					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher);
+					DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - prelaunch");
 				}
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
 				{
@@ -120,8 +121,6 @@ namespace QSB.MeteorSync.Patches
 
 				qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
 				qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
-				qsbMeteorLauncher.Damage = Random.Range(meteorController._minDamage, meteorController._maxDamage);
-				qsbMeteor.Damage = qsbMeteorLauncher.Damage;
 
 				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed;
 				var angularVelocity = __instance.transform.forward * 2f;
@@ -133,72 +132,21 @@ namespace QSB.MeteorSync.Patches
 				}
 
 				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher);
-				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed} {qsbMeteor.Damage}");
+				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed}");
 			}
-
-			return false;
-		}
-
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-		public static bool Impact(MeteorController __instance,
-			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
-		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-
-			var componentInParent = hitObject.GetComponentInParent<FragmentIntegrity>();
-			var damage = qsbMeteor.Damage;
-			if (componentInParent != null)
-			{
-				if (!componentInParent.GetIgnoreMeteorDamage())
-				{
-					componentInParent.AddDamage(damage);
-				}
-				else if (componentInParent.GetParentFragment() != null && !componentInParent.GetParentFragment().GetIgnoreMeteorDamage())
-				{
-					componentInParent.GetParentFragment().AddDamage(damage);
-				}
-			}
-			MeteorImpactMapper.RecordImpact(impactPoint, componentInParent);
-			__instance._intactRenderer.enabled = false;
-			__instance._impactLight.enabled = true;
-			__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
-			var rotation = Quaternion.LookRotation(impactVel);
-			foreach (var particleSystem in __instance._impactParticles)
-			{
-				particleSystem.transform.rotation = rotation;
-				particleSystem.Play();
-			}
-			__instance._impactSource.PlayOneShot(AudioType.BH_MeteorImpact);
-			foreach (var owCollider in __instance._owColliders)
-			{
-				owCollider.SetActivation(false);
-			}
-			__instance._owRigidbody.MakeKinematic();
-			__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
-			FragmentSurfaceProxy.UntrackMeteor(__instance);
-			FragmentCollisionProxy.UntrackMeteor(__instance);
-			__instance._ignoringCollisions = false;
-			__instance._hasImpacted = true;
-			__instance._impactTime = Time.time;
-
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - impact! {hitObject.name} {impactPoint} {impactVel} {damage}");
 
 			return false;
 		}
 
 
 		[HarmonyPostfix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Suspend), new Type[0])]
-		public static void Suspend(MeteorController __instance)
+		[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
+		public static void AddDamage(FragmentIntegrity __instance,
+			float damage)
 		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
-			if (qsbMeteor == null)
-			{
-				return;
-			}
-			DebugLog.DebugWrite($"{qsbMeteor.LogName} - suspended");
+			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
+			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
+			DebugLog.DebugWrite($"{qsbFragment.LogName} - damage {damage}");
 		}
 	}
 }
