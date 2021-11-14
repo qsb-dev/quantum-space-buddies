@@ -63,7 +63,6 @@ namespace QSB.MeteorSync.Patches
 
 				DebugLog.DebugWrite($"{qsbMeteorLauncher.LogName} - launch {qsbMeteor.LogName} {qsbMeteorLauncher.LaunchSpeed}");
 			}
-
 			else
 			{
 				DebugLog.ToConsole($"{qsbMeteorLauncher.LogName} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
