@@ -1,10 +1,15 @@
-﻿using QSB.Events;
+﻿using System;
+using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
+using UnityEngine;
+using EventType = QSB.Events.EventType;
 
 namespace QSB.MeteorSync.Events
 {
 	/// called when we request a resync on client join
+	/// pain
 	public class FragmentResyncEvent : QSBEvent<FragmentResyncMessage>
 	{
 		public override EventType Type => EventType.FragmentResync;
@@ -26,6 +31,30 @@ namespace QSB.MeteorSync.Events
 				OrigIntegrity = qsbFragment.AttachedObject._origIntegrity
 			};
 
+			if (msg.Integrity <= 0)
+			{
+				var detachableFragment = qsbFragment.AttachedObject.GetRequiredComponent<DetachableFragment>();
+
+				msg.IsThruWhitehole = detachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
+
+				var refBody = GetRefBody(msg.IsThruWhitehole);
+				var body = detachableFragment.transform.parent.parent.GetAttachedOWRigidbody();
+				if (!body.CompareTag("DetachedFragment"))
+				{
+					throw new Exception("HUGE BRUH MOMENT");
+				}
+
+				if (msg.IsThruWhitehole)
+				{
+					msg.LeashLength = body.gameObject.GetRequiredComponent<DebrisLeash>()._leashLength;
+				}
+
+				msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
+				msg.Rot = refBody.transform.InverseTransformRotation(body.transform.rotation);
+				msg.Vel = GetRelativeVelocity(body, refBody);
+				msg.AngVel = body.GetRelativeAngularVelocity(refBody);
+			}
+
 			return msg;
 		}
 
@@ -40,6 +69,65 @@ namespace QSB.MeteorSync.Events
 			qsbFragment.AttachedObject._integrity = msg.Integrity;
 			qsbFragment.AttachedObject._origIntegrity = msg.OrigIntegrity;
 			qsbFragment.AttachedObject.CallOnTakeDamage();
+
+			if (msg.Integrity <= 0)
+			{
+				// the detach is delay, so wait even more until that happens lol
+				QSBCore.UnityEvents.FireInNUpdates(() =>
+				{
+					var detachableFragment = qsbFragment.AttachedObject.GetRequiredComponent<DetachableFragment>();
+
+					var refBody = GetRefBody(msg.IsThruWhitehole);
+					var body = detachableFragment.transform.parent.parent.GetAttachedOWRigidbody();
+					if (!body.CompareTag("DetachedFragment"))
+					{
+						throw new Exception("HUGE BRUH MOMENT");
+					}
+
+					if (msg.IsThruWhitehole)
+					{
+						detachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
+							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
+						body.gameObject.AddComponent<DebrisLeash>().Init(MeteorManager.WhiteHoleVolume._whiteHoleBody,
+							msg.LeashLength);
+					}
+
+					var targetPos = refBody.transform.TransformPoint(msg.Pos);
+					var targetRot = refBody.transform.TransformRotation(msg.Rot);
+					var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
+					var targetAngVel = refBody.GetAngularVelocity() + msg.AngVel;
+					body.MoveToPosition(targetPos);
+					body.MoveToRotation(targetRot);
+					SetVelocity(body, targetVel);
+					body.SetAngularVelocity(targetAngVel);
+				}, 20);
+			}
 		}
+
+
+		private static OWRigidbody GetRefBody(bool isThruWhitehole) =>
+			isThruWhitehole ? MeteorManager.WhiteHoleVolume._whiteHoleBody : Locator._brittleHollow._owRigidbody;
+
+		// code yoink from transform sync lol
+		private static void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
+		{
+			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
+			var currentVelocity = rigidbody._currentVelocity;
+
+			if (isRunningKinematic)
+			{
+				rigidbody._kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+			else
+			{
+				rigidbody._rigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+
+			rigidbody._lastVelocity = currentVelocity;
+			rigidbody._currentVelocity = relativeVelocity;
+		}
+
+		private static Vector3 GetRelativeVelocity(OWRigidbody body, OWRigidbody refBody)
+			=> body.GetVelocity() - refBody.GetPointVelocity(body.transform.position);
 	}
 }

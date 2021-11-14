@@ -1,4 +1,5 @@
-﻿using QSB.MeteorSync.WorldObjects;
+﻿using System.Linq;
+using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
 
 namespace QSB.MeteorSync
@@ -6,6 +7,7 @@ namespace QSB.MeteorSync
 	public class MeteorManager : WorldObjectManager
 	{
 		public static bool Ready;
+		public static WhiteHoleVolume WhiteHoleVolume;
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
@@ -15,6 +17,7 @@ namespace QSB.MeteorSync
 				QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
 				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
+				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 				Ready = true;
 			}, 10);
 		}
