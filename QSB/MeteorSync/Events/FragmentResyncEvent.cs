@@ -84,7 +84,8 @@ namespace QSB.MeteorSync.Events
 						throw new Exception("HUGE BRUH MOMENT");
 					}
 
-					if (msg.IsThruWhitehole)
+					if (msg.IsThruWhitehole
+						&& detachableFragment._sector._parentSector != MeteorManager.WhiteHoleVolume._whiteHoleSector)
 					{
 						detachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
 							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
