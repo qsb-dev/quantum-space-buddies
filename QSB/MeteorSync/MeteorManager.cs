@@ -14,10 +14,10 @@ namespace QSB.MeteorSync
 			// wait a bit because meteors get created late
 			QSBCore.UnityEvents.FireInNUpdates(() =>
 			{
+				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 				QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
 				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
-				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 				Ready = true;
 			}, 10);
 		}

@@ -1,4 +1,5 @@
 ﻿using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -9,6 +10,11 @@ namespace QSB.MeteorSync.WorldObjects
 			ObjectId = id;
 			AttachedObject = attachedObject;
 			DetachableFragment = AttachedObject.GetRequiredComponent<DetachableFragment>();
+
+			if (QSBCore.IsHost)
+			{
+				LeashLength = Random.Range(MeteorManager.WhiteHoleVolume._debrisDistMin, MeteorManager.WhiteHoleVolume._debrisDistMax);
+			}
 		}
 
 		public override void OnRemoval()
@@ -19,17 +25,13 @@ namespace QSB.MeteorSync.WorldObjects
 
 		public DetachableFragment DetachableFragment;
 		public bool IsThruWhiteHole => DetachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
+		public OWRigidbody refBody => IsThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody :
+			Locator._brittleHollow._owRigidbody;
+		public OWRigidbody Body => IsThruWhiteHole ? AttachedObject.transform.parent.parent.GetAttachedOWRigidbody() :
+			AttachedObject.GetAttachedOWRigidbody();
 
-		public float LeashLength
-		{
-			get => AttachedObject.GetComponent<DebrisLeash>()._leashLength;
-			set
-			{
-				var debrisLeash = AttachedObject.GetComponent<DebrisLeash>();
-				debrisLeash._deccelerating = false;
-				debrisLeash._leashLength = value;
-			}
-		}
+		/// what the leash length will be when we eventually detach and fall thru white hole
+		public float LeashLength;
 
 		public void AddDamage(float damage)
 		{

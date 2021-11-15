@@ -105,5 +105,13 @@ namespace QSB.MeteorSync.Patches
 
 			return false;
 		}
+
+
+
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
+		public static bool Impact(MeteorController __instance,
+
 	}
 }

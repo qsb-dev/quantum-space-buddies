@@ -35,15 +35,13 @@ namespace QSB.MeteorSync.Events
 			if (msg.Integrity <= 0)
 			{
 				msg.IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
-
-				var refBody = GetRefBody(msg.IsThruWhiteHole);
-				var body = qsbFragment.AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
-
 				if (msg.IsThruWhiteHole)
 				{
 					msg.LeashLength = qsbFragment.LeashLength;
 				}
 
+				var refBody = GetRefBody(msg.IsThruWhiteHole);
+				var body = qsbFragment.AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
 				msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
 				msg.Rot = refBody.transform.InverseTransformRotation(body.transform.rotation);
 				msg.Vel = GetRelativeVelocity(body, refBody);
@@ -70,14 +68,11 @@ namespace QSB.MeteorSync.Events
 				// the detach is delay, so wait even more until that happens lol
 				QSBCore.UnityEvents.FireInNUpdates(() =>
 				{
-					var refBody = GetRefBody(msg.IsThruWhiteHole);
-					var body = qsbFragment.AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
-
 					if (msg.IsThruWhiteHole && !qsbFragment.IsThruWhiteHole)
 					{
 						qsbFragment.DetachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
 							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
-						body.gameObject.AddComponent<DebrisLeash>().Init(MeteorManager.WhiteHoleVolume._whiteHoleBody,
+						qsbFragment.Body.gameObject.AddComponent<DebrisLeash>().Init(MeteorManager.WhiteHoleVolume._whiteHoleBody,
 							msg.LeashLength);
 					}
 					else if (msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
@@ -91,6 +86,8 @@ namespace QSB.MeteorSync.Events
 						Application.Quit();
 					}
 
+					var refBody = GetRefBody(msg.IsThruWhiteHole);
+					var body = qsbFragment.Body;
 					var targetPos = refBody.transform.TransformPoint(msg.Pos);
 					var targetRot = refBody.transform.TransformRotation(msg.Rot);
 					var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
