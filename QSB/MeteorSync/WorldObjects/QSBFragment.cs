@@ -8,6 +8,7 @@ namespace QSB.MeteorSync.WorldObjects
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
+			DetachableFragment = AttachedObject.GetRequiredComponent<DetachableFragment>();
 		}
 
 		public override void OnRemoval()
@@ -15,6 +16,20 @@ namespace QSB.MeteorSync.WorldObjects
 			MeteorManager.Ready = false;
 		}
 
+
+		public DetachableFragment DetachableFragment;
+		public bool IsThruWhiteHole => DetachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
+
+		public float LeashLength
+		{
+			get => AttachedObject.GetComponent<DebrisLeash>()._leashLength;
+			set
+			{
+				var debrisLeash = AttachedObject.GetComponent<DebrisLeash>();
+				debrisLeash._deccelerating = false;
+				debrisLeash._leashLength = value;
+			}
+		}
 
 		public void AddDamage(float damage)
 		{

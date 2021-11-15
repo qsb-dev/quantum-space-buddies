@@ -1,4 +1,5 @@
 ﻿using System;
+using OWML.Common;
 using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Utility;
@@ -33,20 +34,14 @@ namespace QSB.MeteorSync.Events
 
 			if (msg.Integrity <= 0)
 			{
-				var detachableFragment = qsbFragment.AttachedObject.GetRequiredComponent<DetachableFragment>();
+				msg.IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
 
-				msg.IsThruWhitehole = detachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
+				var refBody = GetRefBody(msg.IsThruWhiteHole);
+				var body = qsbFragment.AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
 
-				var refBody = GetRefBody(msg.IsThruWhitehole);
-				var body = detachableFragment.transform.parent.parent.GetAttachedOWRigidbody();
-				if (!body.CompareTag("DetachedFragment"))
+				if (msg.IsThruWhiteHole)
 				{
-					throw new Exception("HUGE BRUH MOMENT");
-				}
-
-				if (msg.IsThruWhitehole)
-				{
-					msg.LeashLength = body.gameObject.GetRequiredComponent<DebrisLeash>()._leashLength;
+					msg.LeashLength = qsbFragment.LeashLength;
 				}
 
 				msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
@@ -75,22 +70,25 @@ namespace QSB.MeteorSync.Events
 				// the detach is delay, so wait even more until that happens lol
 				QSBCore.UnityEvents.FireInNUpdates(() =>
 				{
-					var detachableFragment = qsbFragment.AttachedObject.GetRequiredComponent<DetachableFragment>();
+					var refBody = GetRefBody(msg.IsThruWhiteHole);
+					var body = qsbFragment.AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
 
-					var refBody = GetRefBody(msg.IsThruWhitehole);
-					var body = detachableFragment.transform.parent.parent.GetAttachedOWRigidbody();
-					if (!body.CompareTag("DetachedFragment"))
+					if (msg.IsThruWhiteHole && !qsbFragment.IsThruWhiteHole)
 					{
-						throw new Exception("HUGE BRUH MOMENT");
-					}
-
-					if (msg.IsThruWhitehole
-						&& detachableFragment._sector._parentSector != MeteorManager.WhiteHoleVolume._whiteHoleSector)
-					{
-						detachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
+						qsbFragment.DetachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
 							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
 						body.gameObject.AddComponent<DebrisLeash>().Init(MeteorManager.WhiteHoleVolume._whiteHoleBody,
 							msg.LeashLength);
+					}
+					else if (msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
+					{
+						qsbFragment.LeashLength = msg.LeashLength;
+					}
+					else if (!msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
+					{
+						// should only happen if client is way too far ahead and they try to connect. we fail here.
+						DebugLog.ToConsole($"{qsbFragment.LogName} is thru white hole, but msg is not. goodbye", MessageType.Quit);
+						Application.Quit();
 					}
 
 					var targetPos = refBody.transform.TransformPoint(msg.Pos);
@@ -106,16 +104,15 @@ namespace QSB.MeteorSync.Events
 		}
 
 
-		private static OWRigidbody GetRefBody(bool isThruWhitehole) =>
-			isThruWhitehole ? MeteorManager.WhiteHoleVolume._whiteHoleBody : Locator._brittleHollow._owRigidbody;
+		private static OWRigidbody GetRefBody(bool isThruWhiteHole) =>
+			isThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody : Locator._brittleHollow._owRigidbody;
 
 		// code yoink from transform sync lol
 		private static void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
 		{
-			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
 			var currentVelocity = rigidbody._currentVelocity;
 
-			if (isRunningKinematic)
+			if (rigidbody.RunningKinematicSimulation())
 			{
 				rigidbody._kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 			}
