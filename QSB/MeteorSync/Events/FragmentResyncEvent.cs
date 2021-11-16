@@ -33,7 +33,7 @@ namespace QSB.MeteorSync.Events
 				LeashLength = qsbFragment.LeashLength
 			};
 
-			if (msg.Integrity <= 0)
+			if (msg.Integrity <= 0 && qsbFragment.DetachableFragment != null)
 			{
 				msg.IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
 
