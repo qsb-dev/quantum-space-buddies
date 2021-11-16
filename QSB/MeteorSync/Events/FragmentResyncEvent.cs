@@ -29,16 +29,13 @@ namespace QSB.MeteorSync.Events
 			{
 				ObjectId = qsbFragment.ObjectId,
 				Integrity = qsbFragment.AttachedObject._integrity,
-				OrigIntegrity = qsbFragment.AttachedObject._origIntegrity
+				OrigIntegrity = qsbFragment.AttachedObject._origIntegrity,
+				LeashLength = qsbFragment.LeashLength
 			};
 
 			if (msg.Integrity <= 0)
 			{
 				msg.IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
-				if (msg.IsThruWhiteHole)
-				{
-					msg.LeashLength = qsbFragment.LeashLength;
-				}
 
 				var refBody = qsbFragment.RefBody;
 				var body = qsbFragment.Body;
@@ -61,6 +58,7 @@ namespace QSB.MeteorSync.Events
 			var qsbFragment = QSBWorldSync.GetWorldFromId<QSBFragment>(msg.ObjectId);
 			qsbFragment.AttachedObject._integrity = msg.Integrity;
 			qsbFragment.AttachedObject._origIntegrity = msg.OrigIntegrity;
+			qsbFragment.LeashLength = msg.LeashLength;
 			qsbFragment.AttachedObject.CallOnTakeDamage();
 
 			if (msg.Integrity <= 0)
@@ -73,7 +71,6 @@ namespace QSB.MeteorSync.Events
 						qsbFragment.DetachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
 							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
 						qsbFragment.DetachableFragment.EndWarpScaling();
-						qsbFragment.LeashLength = msg.LeashLength;
 						qsbFragment.Body.gameObject.AddComponent<DebrisLeash>()
 							.Init(MeteorManager.WhiteHoleVolume._whiteHoleBody, qsbFragment.LeashLength);
 					}
