@@ -108,10 +108,26 @@ namespace QSB.MeteorSync.Patches
 
 
 		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
+		public static void Detach_Prefix(DetachableFragment __instance, out FragmentIntegrity __state) =>
+			// this gets set to null in Detach, so store it here and and then restore it in postfix
+			__state = __instance._fragmentIntegrity;
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
+		public static void Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
+			__instance._fragmentIntegrity = __state;
+
+
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
 		public static bool MoveByDistance(DebrisLeash __instance,
 			float distance)
 		{
+			if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
+			{
+				return true;
+			}
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 
 			if (__instance.enabled)
@@ -129,6 +145,10 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]
 		public static bool FixedUpdate(DebrisLeash __instance)
 		{
+			if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
+			{
+				return true;
+			}
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 
 			if (!__instance._deccelerating)
