@@ -10,11 +10,11 @@ namespace QSB.MeteorSync.Events
 		public float OrigIntegrity;
 		public float LeashLength;
 
+		public bool IsThruWhiteHole;
 		public Vector3 Pos;
 		public Quaternion Rot;
 		public Vector3 Vel;
 		public Vector3 AngVel;
-		public bool IsThruWhiteHole;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -24,11 +24,11 @@ namespace QSB.MeteorSync.Events
 			LeashLength = reader.ReadSingle();
 			if (Integrity <= 0)
 			{
+				IsThruWhiteHole = reader.ReadBoolean();
 				Pos = reader.ReadVector3();
 				Rot = reader.ReadQuaternion();
 				Vel = reader.ReadVector3();
 				AngVel = reader.ReadVector3();
-				IsThruWhiteHole = reader.ReadBoolean();
 			}
 		}
 
@@ -41,6 +41,10 @@ namespace QSB.MeteorSync.Events
 			if (Integrity <= 0)
 			{
 				writer.Write(IsThruWhiteHole);
+				writer.Write(Pos);
+				writer.Write(Rot);
+				writer.Write(Vel);
+				writer.Write(AngVel);
 			}
 		}
 	}
