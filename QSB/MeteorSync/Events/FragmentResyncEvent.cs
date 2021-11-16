@@ -77,8 +77,8 @@ namespace QSB.MeteorSync.Events
 					else if (!msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
 					{
 						// should only happen if client is way too far ahead and they try to connect. we fail here.
-						DebugLog.ToConsole($"{qsbFragment.LogName} is thru white hole, but msg is not. goodbye", MessageType.Quit);
-						Application.Quit();
+						DebugLog.ToConsole($"{qsbFragment.LogName} is thru white hole, but msg is not. fuck", MessageType.Error);
+						return;
 					}
 
 					var refBody = qsbFragment.RefBody;
