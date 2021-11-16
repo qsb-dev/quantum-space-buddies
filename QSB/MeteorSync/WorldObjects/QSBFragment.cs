@@ -25,10 +25,9 @@ namespace QSB.MeteorSync.WorldObjects
 
 		public DetachableFragment DetachableFragment;
 		public bool IsThruWhiteHole => DetachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
-		public OWRigidbody refBody => IsThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody :
+		public OWRigidbody RefBody => IsThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody :
 			Locator._brittleHollow._owRigidbody;
-		public OWRigidbody Body => IsThruWhiteHole ? AttachedObject.transform.parent.parent.GetAttachedOWRigidbody() :
-			AttachedObject.GetAttachedOWRigidbody();
+		public OWRigidbody Body => IsThruWhiteHole ? AttachedObject.transform.parent.parent.GetAttachedOWRigidbody() : null;
 
 		/// what the leash length will be when we eventually detach and fall thru white hole
 		public float LeashLength;

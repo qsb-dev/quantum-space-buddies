@@ -40,8 +40,8 @@ namespace QSB.MeteorSync.Events
 					msg.LeashLength = qsbFragment.LeashLength;
 				}
 
-				var refBody = GetRefBody(msg.IsThruWhiteHole);
-				var body = qsbFragment.AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
+				var refBody = qsbFragment.RefBody;
+				var body = qsbFragment.Body;
 				msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
 				msg.Rot = refBody.transform.InverseTransformRotation(body.transform.rotation);
 				msg.Vel = GetRelativeVelocity(body, refBody);
@@ -65,7 +65,7 @@ namespace QSB.MeteorSync.Events
 
 			if (msg.Integrity <= 0)
 			{
-				// the detach is delay, so wait even more until that happens lol
+				// the detach is delayed, so wait even more until that happens lol
 				QSBCore.UnityEvents.FireInNUpdates(() =>
 				{
 					if (msg.IsThruWhiteHole && !qsbFragment.IsThruWhiteHole)
@@ -86,7 +86,7 @@ namespace QSB.MeteorSync.Events
 						Application.Quit();
 					}
 
-					var refBody = GetRefBody(msg.IsThruWhiteHole);
+					var refBody = qsbFragment.RefBody;
 					var body = qsbFragment.Body;
 					var targetPos = refBody.transform.TransformPoint(msg.Pos);
 					var targetRot = refBody.transform.TransformRotation(msg.Rot);
@@ -100,9 +100,6 @@ namespace QSB.MeteorSync.Events
 			}
 		}
 
-
-		private static OWRigidbody GetRefBody(bool isThruWhiteHole) =>
-			isThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody : Locator._brittleHollow._owRigidbody;
 
 		// code yoink from transform sync lol
 		private static void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
