@@ -72,12 +72,10 @@ namespace QSB.MeteorSync.Events
 					{
 						qsbFragment.DetachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
 							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
-						qsbFragment.Body.gameObject.AddComponent<DebrisLeash>().Init(MeteorManager.WhiteHoleVolume._whiteHoleBody,
-							msg.LeashLength);
-					}
-					else if (msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
-					{
+						qsbFragment.DetachableFragment.EndWarpScaling();
 						qsbFragment.LeashLength = msg.LeashLength;
+						qsbFragment.Body.gameObject.AddComponent<DebrisLeash>()
+							.Init(MeteorManager.WhiteHoleVolume._whiteHoleBody, qsbFragment.LeashLength);
 					}
 					else if (!msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
 					{

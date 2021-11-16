@@ -155,5 +155,62 @@ namespace QSB.MeteorSync.Patches
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
 		}
+
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
+		public static bool MoveByDistance(DebrisLeash __instance,
+			float distance)
+		{
+			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
+
+			if (__instance.enabled)
+			{
+				var vector = __instance._attachedBody.GetPosition() - __instance._anchorBody.GetPosition();
+				var d = Mathf.Min(distance, qsbFragment.LeashLength - vector.magnitude);
+				__instance._attachedBody.SetPosition(__instance._anchorBody.GetPosition() + vector.normalized * d);
+			}
+
+			return false;
+		}
+
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]
+		public static bool FixedUpdate(DebrisLeash __instance)
+		{
+			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
+
+			if (!__instance._deccelerating)
+			{
+				var num = Vector3.Distance(__instance._attachedBody.GetPosition(), __instance._anchorBody.GetPosition());
+				var num2 = Mathf.Pow(__instance._attachedBody.GetVelocity().magnitude, 2f) / (2f * __instance._deccel);
+				var vector = __instance._attachedBody.GetVelocity() - __instance._anchorBody.GetVelocity();
+				if (num >= qsbFragment.LeashLength - num2 && vector.magnitude > 0.1f)
+				{
+					__instance._deccelerating = true;
+					return false;
+				}
+			}
+			else
+			{
+				var vector2 = __instance._attachedBody.GetVelocity() - __instance._anchorBody.GetVelocity();
+				var velocityChange = -vector2.normalized * Mathf.Min(__instance._deccel * Time.deltaTime, vector2.magnitude);
+				if (velocityChange.magnitude < 0.01f)
+				{
+					__instance._attachedBody.SetVelocity(__instance._anchorBody.GetVelocity());
+					__instance._deccelerating = false;
+					if (__instance._detachableFragment != null)
+					{
+						__instance._detachableFragment.ComeToRest(__instance._anchorBody);
+					}
+					__instance.enabled = false;
+					return false;
+				}
+				__instance._attachedBody.AddVelocityChange(velocityChange);
+			}
+
+			return false;
+		}
 	}
 }

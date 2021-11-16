@@ -9,7 +9,7 @@ namespace QSB.MeteorSync.WorldObjects
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
-			DetachableFragment = AttachedObject.GetRequiredComponent<DetachableFragment>();
+			DetachableFragment = AttachedObject.GetComponent<DetachableFragment>();
 
 			if (QSBCore.IsHost)
 			{
@@ -24,7 +24,8 @@ namespace QSB.MeteorSync.WorldObjects
 
 
 		public DetachableFragment DetachableFragment;
-		public bool IsThruWhiteHole => DetachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
+		public bool IsThruWhiteHole => DetachableFragment != null &&
+			DetachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
 		public OWRigidbody RefBody => IsThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody :
 			Locator._brittleHollow._owRigidbody;
 		public OWRigidbody Body => IsThruWhiteHole ? AttachedObject.transform.parent.parent.GetAttachedOWRigidbody() : null;
