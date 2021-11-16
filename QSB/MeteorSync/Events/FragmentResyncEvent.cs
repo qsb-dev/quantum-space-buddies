@@ -61,7 +61,7 @@ namespace QSB.MeteorSync.Events
 			qsbFragment.LeashLength = msg.LeashLength;
 			qsbFragment.AttachedObject.CallOnTakeDamage();
 
-			if (msg.Integrity <= 0)
+			if (msg.Integrity <= 0 && qsbFragment.DetachableFragment != null)
 			{
 				// the detach is delayed, so wait even more until that happens lol
 				QSBCore.UnityEvents.FireInNUpdates(() =>
