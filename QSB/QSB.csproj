@@ -95,6 +95,7 @@
     <Compile Include="DeathSync\Patches\DeathPatches.cs" />
     <Compile Include="DeathSync\Patches\RespawnPatches.cs" />
     <Compile Include="DeathSync\RespawnManager.cs" />
+    <Compile Include="DeathSync\ShipRecoveryPoint.cs" />
     <Compile Include="EchoesOfTheEye\AirlockSync\AirlockManager.cs" />
     <Compile Include="EchoesOfTheEye\AirlockSync\WorldObjects\QSBGhostAirlock.cs" />
     <Compile Include="ElevatorSync\WorldObjects\QSBElevator.cs" />

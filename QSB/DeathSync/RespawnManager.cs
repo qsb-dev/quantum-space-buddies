@@ -6,6 +6,7 @@ using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace QSB.DeathSync
 {
@@ -17,11 +18,29 @@ namespace QSB.DeathSync
 
 		private List<PlayerInfo> _playersPendingRespawn = new List<PlayerInfo>();
 		private NotificationData _previousNotification;
+		private GameObject _owRecoveryPoint;
+		private GameObject _qsbRecoveryPoint;
 
 		private void Start()
 		{
 			Instance = this;
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
+			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
+		}
+
+		private void OnConnected()
+		{
+			if (QSBSceneManager.IsInUniverse)
+			{
+				OnSceneLoaded(OWScene.None, QSBSceneManager.CurrentScene, true);
+			}
+		}
+
+		private void OnDisconnected(NetworkError error)
+		{
+			_owRecoveryPoint?.SetActive(true);
+			_qsbRecoveryPoint?.SetActive(false);
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
@@ -29,6 +48,48 @@ namespace QSB.DeathSync
 			QSBPlayerManager.ShowAllPlayers();
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
 			_playersPendingRespawn.Clear();
+
+			if (newScene != OWScene.SolarSystem)
+			{
+				return;
+			}
+
+			if (_owRecoveryPoint == null)
+			{
+				_owRecoveryPoint = GameObject.Find("Systems_Supplies/PlayerRecoveryPoint");
+			}
+
+			if (_owRecoveryPoint == null)
+			{
+				DebugLog.ToConsole($"Error - Couldn't find the ship's PlayerRecoveryPoint!", OWML.Common.MessageType.Error);
+				return;
+			}
+			
+			_owRecoveryPoint.SetActive(false);
+
+			var Systems_Supplies = _owRecoveryPoint.gameObject.transform.parent;
+
+			if (_qsbRecoveryPoint == null)
+			{
+				_qsbRecoveryPoint = new GameObject("QSBPlayerRecoveryPoint");
+				_qsbRecoveryPoint.SetActive(false);
+				_qsbRecoveryPoint.transform.parent = Systems_Supplies;
+				_qsbRecoveryPoint.transform.localPosition = new Vector3(2.46f, 1.957f, 1.156f);
+				_qsbRecoveryPoint.transform.localRotation = Quaternion.Euler(0, 6.460001f, 0f);
+				_qsbRecoveryPoint.layer = 21;
+
+				var boxCollider = _qsbRecoveryPoint.AddComponent<BoxCollider>();
+				boxCollider.isTrigger = true;
+				boxCollider.size = new Vector3(1.3f, 1.01f, 0.47f);
+
+				var multiInteract = _qsbRecoveryPoint.AddComponent<MultiInteractReceiver>();
+				multiInteract._usableInShip = true;
+				multiInteract._interactRange = 1.5f;
+
+				_qsbRecoveryPoint.AddComponent<ShipRecoveryPoint>();
+			}
+
+			_qsbRecoveryPoint.SetActive(true);
 		}
 
 		public void TriggerRespawnMap()
