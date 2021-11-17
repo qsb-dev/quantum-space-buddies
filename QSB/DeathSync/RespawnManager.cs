@@ -24,7 +24,10 @@ namespace QSB.DeathSync
 		private void Start()
 		{
 			Instance = this;
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			QSBSceneManager.OnSceneLoaded += (OWScene old, OWScene newScene, bool inUniverse)
+				=> QSBCore.UnityEvents.RunWhen(
+					() => Locator.GetMarkerManager() != null,
+					() => Init(newScene, inUniverse));
 			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
 			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
 		}
@@ -33,7 +36,7 @@ namespace QSB.DeathSync
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
-				OnSceneLoaded(OWScene.None, QSBSceneManager.CurrentScene, true);
+				Init(QSBSceneManager.CurrentScene, true);
 			}
 		}
 
@@ -43,7 +46,7 @@ namespace QSB.DeathSync
 			_qsbRecoveryPoint?.SetActive(false);
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+		private void Init(OWScene newScene, bool inUniverse)
 		{
 			QSBPlayerManager.ShowAllPlayers();
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);

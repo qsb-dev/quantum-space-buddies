@@ -68,7 +68,6 @@ namespace QSB.Patches
 				new InputPatches(),
 				new TimePatches(),
 				new MapPatches(),
-				new RespawnPatches(),
 				new LauncherPatches(),
 				new SolanumPatches(),
 				new SatelliteProjectorPatches(),
