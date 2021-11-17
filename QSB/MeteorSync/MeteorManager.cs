@@ -11,15 +11,15 @@ namespace QSB.MeteorSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			// wait a bit because meteors get created late
-			QSBCore.UnityEvents.FireInNUpdates(() =>
+			// wait for all late initializers (which includes meteor launchers) to finish
+			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.s_lateInitializers.Count == 0, () =>
 			{
 				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 				QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
 				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 				Ready = true;
-			}, 50);
+			});
 		}
 	}
 }

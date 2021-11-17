@@ -91,7 +91,7 @@ namespace QSB.MeteorSync.Events
 					body.MoveToRotation(targetRot);
 					SetVelocity(body, targetVel);
 					body.SetAngularVelocity(targetAngVel);
-				}, 50);
+				}, 20);
 			}
 		}
 
