@@ -63,8 +63,8 @@ namespace QSB.MeteorSync.Events
 
 			if (msg.Integrity <= 0 && qsbFragment.DetachableFragment != null)
 			{
-				// the detach is delayed, so wait even more until that happens lol
-				QSBCore.UnityEvents.FireInNUpdates(() =>
+				// the detach is delayed, so wait until that happens
+				QSBCore.UnityEvents.RunWhen(() => qsbFragment.DetachableFragment._isDetached,() =>
 				{
 					if (msg.IsThruWhiteHole && !qsbFragment.IsThruWhiteHole)
 					{
@@ -91,7 +91,7 @@ namespace QSB.MeteorSync.Events
 					body.MoveToRotation(targetRot);
 					SetVelocity(body, targetVel);
 					body.SetAngularVelocity(targetAngVel);
-				}, 20);
+				});
 			}
 		}
 
