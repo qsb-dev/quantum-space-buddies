@@ -19,7 +19,7 @@ namespace QSB.MeteorSync
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
 				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 				Ready = true;
-			}, 10);
+			}, 50);
 		}
 	}
 }
