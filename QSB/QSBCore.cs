@@ -4,7 +4,6 @@ using OWML.ModHelper.Input;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
-using QSB.DeathSync;
 using QSB.EchoesOfTheEye.AirlockSync;
 using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.ElevatorSync;
@@ -32,6 +31,7 @@ using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
+using QSB.RespawnSync;
 
 /*
 	Copyright (C) 2020 - 2021

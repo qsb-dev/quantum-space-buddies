@@ -1,6 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Player;
+using QSB.RespawnSync;
 using QSB.Utility;
 
 namespace QSB.DeathSync.Events
