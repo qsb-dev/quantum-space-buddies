@@ -33,7 +33,7 @@ namespace QSB.MeteorSync.Events
 				LeashLength = qsbFragment.LeashLength
 			};
 
-			if (msg.Integrity <= 0 && qsbFragment.DetachableFragment != null)
+			if (qsbFragment.DetachableFragment != null && qsbFragment.DetachableFragment._isDetached)
 			{
 				msg.IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
 
@@ -61,7 +61,7 @@ namespace QSB.MeteorSync.Events
 			qsbFragment.LeashLength = msg.LeashLength;
 			qsbFragment.AttachedObject.CallOnTakeDamage();
 
-			if (msg.Integrity <= 0 && qsbFragment.DetachableFragment != null)
+			if (qsbFragment.DetachableFragment != null && msg.Integrity <= 0)
 			{
 				// the detach is delayed, so wait until that happens
 				QSBCore.UnityEvents.RunWhen(() => qsbFragment.DetachableFragment._isDetached, () =>
@@ -82,25 +82,15 @@ namespace QSB.MeteorSync.Events
 					}
 
 					var refBody = qsbFragment.RefBody;
-					if (msg.IsThruWhiteHole)
-					{
-						var body = qsbFragment.Body;
-						var targetPos = refBody.transform.TransformPoint(msg.Pos);
-						var targetRot = refBody.transform.TransformRotation(msg.Rot);
-						var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
-						var targetAngVel = refBody.GetAngularVelocity() + msg.AngVel;
-						body.MoveToPosition(targetPos);
-						body.MoveToRotation(targetRot);
-						SetVelocity(body, targetVel);
-						body.SetAngularVelocity(targetAngVel);
-					}
-					else
-					{
-						var targetPos = refBody.transform.TransformPoint(msg.Pos);
-						var targetRot = refBody.transform.TransformRotation(msg.Rot);
-						qsbFragment.AttachedObject.transform.position = targetPos;
-						qsbFragment.AttachedObject.transform.rotation = targetRot;
-					}
+					var body = qsbFragment.Body;
+					var targetPos = refBody.transform.TransformPoint(msg.Pos);
+					var targetRot = refBody.transform.TransformRotation(msg.Rot);
+					var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
+					var targetAngVel = refBody.GetAngularVelocity() + msg.AngVel;
+					body.MoveToPosition(targetPos);
+					body.MoveToRotation(targetRot);
+					SetVelocity(body, targetVel);
+					body.SetAngularVelocity(targetAngVel);
 				});
 			}
 		}

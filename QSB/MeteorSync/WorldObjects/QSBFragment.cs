@@ -21,19 +21,18 @@ namespace QSB.MeteorSync.WorldObjects
 
 
 		public DetachableFragment DetachableFragment;
-		public bool IsThruWhiteHole => DetachableFragment != null &&
+		public bool IsThruWhiteHole => DetachableFragment != null && DetachableFragment._sector != null &&
 			DetachableFragment._sector._parentSector == MeteorManager.WhiteHoleVolume._whiteHoleSector;
 		public OWRigidbody RefBody => IsThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody : Locator._brittleHollow._owRigidbody;
 		public OWRigidbody Body
 		{
 			get
 			{
-				if (IsThruWhiteHole)
+				if (DetachableFragment != null && DetachableFragment._isDetached)
 				{
 					return AttachedObject.transform.parent.parent.GetAttachedOWRigidbody();
 				}
-				DebugLog.ToConsole($"{LogName} - trying to get rigidbody when not thru white hole. "
-					+ "did you mean to get the transform instead?", MessageType.Error);
+				DebugLog.ToConsole($"{LogName} - trying to get rigidbody when not detached", MessageType.Error);
 				return null;
 			}
 		}
