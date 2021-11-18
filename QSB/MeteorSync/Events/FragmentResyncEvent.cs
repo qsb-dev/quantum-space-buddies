@@ -1,5 +1,4 @@
-﻿using System;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Utility;
