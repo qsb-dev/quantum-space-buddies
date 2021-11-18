@@ -16,7 +16,7 @@ namespace QSB.Player
 			_markerTarget = new GameObject().transform;
 			_markerTarget.parent = transform;
 
-			_markerTarget.localPosition = Vector3.up * 2;
+			_markerTarget.localPosition = Vector3.up * 0.25f;
 		}
 
 		public void Init(PlayerInfo player)
