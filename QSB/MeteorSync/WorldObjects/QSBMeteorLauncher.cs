@@ -10,11 +10,6 @@ namespace QSB.MeteorSync.WorldObjects
 			AttachedObject = attachedObject;
 		}
 
-		public override void OnRemoval()
-		{
-			MeteorManager.Ready = false;
-		}
-
 
 		public int MeteorId;
 		public float LaunchSpeed;

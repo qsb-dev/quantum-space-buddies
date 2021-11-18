@@ -36,10 +36,6 @@ namespace QSB.MeteorSync.TransformSync
 			_qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(_instances.IndexOf(this));
 			_qsbMeteor.TransformSync = this;
 
-			if (SetAttachedObject() == null)
-			{
-				return;
-			}
 			base.Init();
 			SetReferenceTransform(Locator._brittleHollow.transform);
 		}

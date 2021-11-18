@@ -19,11 +19,6 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 		}
 
-		public override void OnRemoval()
-		{
-			MeteorManager.Ready = false;
-		}
-
 
 		public DetachableFragment DetachableFragment;
 		public bool IsThruWhiteHole => DetachableFragment != null &&

@@ -27,8 +27,6 @@ namespace QSB.MeteorSync.WorldObjects
 			{
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
-
-			MeteorManager.Ready = false;
 		}
 
 
