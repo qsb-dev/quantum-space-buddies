@@ -30,6 +30,7 @@ using QSB.Anglerfish.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using System.Collections.Generic;
+using QSB.RespawnSync.Events;
 
 namespace QSB.Events
 {

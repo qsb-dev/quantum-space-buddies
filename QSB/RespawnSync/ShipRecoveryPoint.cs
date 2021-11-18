@@ -1,7 +1,7 @@
 ﻿using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.DeathSync
+namespace QSB.RespawnSync
 {
 	internal class ShipRecoveryPoint : MonoBehaviour
 	{

@@ -8,7 +8,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace QSB.DeathSync
+namespace QSB.RespawnSync
 {
 	internal class RespawnManager : MonoBehaviour
 	{
@@ -90,6 +90,9 @@ namespace QSB.DeathSync
 				multiInteract._interactRange = 1.5f;
 
 				_qsbRecoveryPoint.AddComponent<ShipRecoveryPoint>();
+
+				var marker = _qsbRecoveryPoint.AddComponent<RespawnHUDMarker>();
+				marker.Initialize();
 			}
 
 			_qsbRecoveryPoint.SetActive(true);
