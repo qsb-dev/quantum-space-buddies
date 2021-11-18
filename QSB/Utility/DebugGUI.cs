@@ -24,10 +24,8 @@ namespace QSB.Utility
 		private const float Column4 = Column3 + FixedWidth;
 		private float column4Offset = 10f;
 
-		private GUIStyle guiStyle = new GUIStyle()
-		{
-			fontSize = 9
-		};
+		private GUIStyle guiStyle = new GUIStyle();
+		private void Awake() => guiStyle.fontSize = 9;
 
 		private void WriteLine(int collumnID, string text)
 		{
