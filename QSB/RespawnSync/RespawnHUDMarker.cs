@@ -15,14 +15,12 @@ namespace QSB.RespawnSync
 
 		public override void InitCanvasMarker()
 		{
-			DebugLog.DebugWrite($"InitCanvasMarker");
+			_markerRadius = 0.2f;
+			_markerTarget = transform;
+			_markerLabel = "RESPAWN PLAYER";
+			_isReady = true;
 
-			_markerRadius = 2f;
-
-			_markerTarget = new GameObject().transform;
-			_markerTarget.parent = transform;
-
-			_markerTarget.localPosition = Vector3.up * 0.25f;
+			base.InitCanvasMarker();
 		}
 
 		private void Update()
@@ -38,36 +36,19 @@ namespace QSB.RespawnSync
 
 				if (RespawnManager.Instance.RespawnNeeded != isVisible)
 				{
-					DebugLog.DebugWrite($"set visibility to {isVisible}");
-					_canvasMarker.SetVisibility(RespawnManager.Instance.RespawnNeeded);
+					_isVisible = RespawnManager.Instance.RespawnNeeded;
+					_canvasMarker.SetVisibility(_isVisible);
 				}
 			}
-		}
 
-		public void Initialize()
-		{
-			DebugLog.DebugWrite($"initialize");
-			_markerLabel = "RESPAWN PLAYER";
-			_isReady = true;
-
-			base.InitCanvasMarker();
-		}
-
-		public void Remove()
-		{
-			_isReady = false;
-			// do N O T destroy the parent - it completely breaks the ENTIRE GAME
-			if (_canvasMarker != null)
+			if (_isVisible && _canvasMarker != null)
 			{
-				_canvasMarker.DestroyMarker();
+				var color = (Mathf.Sin(Time.unscaledTime * 10f) > 0f)
+					? Color.white
+					: new Color(1f, 1f, 1f, 0.1f);
+				_canvasMarker._mainTextField.color = color;
+				_canvasMarker._offScreenIndicator._textField.color = color;
 			}
-
-			if (_markerTarget != null)
-			{
-				Destroy(_markerTarget.gameObject);
-			}
-
-			Destroy(this);
 		}
 	}
 }

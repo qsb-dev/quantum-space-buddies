@@ -91,8 +91,7 @@ namespace QSB.RespawnSync
 
 				_qsbRecoveryPoint.AddComponent<ShipRecoveryPoint>();
 
-				var marker = _qsbRecoveryPoint.AddComponent<RespawnHUDMarker>();
-				marker.Initialize();
+				_qsbRecoveryPoint.AddComponent<RespawnHUDMarker>();
 			}
 
 			_qsbRecoveryPoint.SetActive(true);

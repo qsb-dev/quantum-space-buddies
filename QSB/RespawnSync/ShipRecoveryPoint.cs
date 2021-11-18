@@ -15,7 +15,6 @@ namespace QSB.RespawnSync
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite($"AWAKE");
 			_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
 			_interactVolume.OnPressInteract += OnPressInteract;
 			_interactVolume.OnGainFocus += OnGainFocus;
@@ -51,8 +50,6 @@ namespace QSB.RespawnSync
 
 		private void OnGainFocus()
 		{
-			DebugLog.DebugWrite($"OnGainFocus");
-
 			if (_playerResources == null)
 			{
 				_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
@@ -118,16 +115,22 @@ namespace QSB.RespawnSync
 
 		private void OnPressInteract(IInputCommands inputCommand)
 		{
-			DebugLog.DebugWrite($"OnPressInteract");
-
 			if (inputCommand == _interactVolume.GetInteractionAt(_refillIndex).inputCommand)
 			{
-				DebugLog.DebugWrite($"recovery");
+				if (!_wearingSuit)
+				{
+					return;
+				}
+
 				HandleRecovery();
 			}
 			else if (inputCommand == _interactVolume.GetInteractionAt(_respawnIndex).inputCommand)
 			{
-				DebugLog.DebugWrite($"respawn");
+				if (!RespawnManager.Instance.RespawnNeeded)
+				{
+					return;
+				}
+
 				RespawnManager.Instance.RespawnSomePlayer();
 			}
 			else
