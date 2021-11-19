@@ -7,6 +7,7 @@ using QSB.WorldSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using QSB.RespawnSync;
 
 namespace QSB.DeathSync
 {

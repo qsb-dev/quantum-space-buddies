@@ -88,13 +88,14 @@
     <Compile Include="ConversationSync\ConversationManager.cs" />
     <Compile Include="DeathSync\EndLoopReason.cs" />
     <Compile Include="DeathSync\Events\EndLoopEvent.cs" />
-    <Compile Include="DeathSync\Events\PlayerRespawnEvent.cs" />
+    <Compile Include="RespawnSync\Events\PlayerRespawnEvent.cs" />
     <Compile Include="DeathSync\Events\StartLoopEvent.cs" />
     <Compile Include="DeathSync\Patches\MapPatches.cs" />
     <Compile Include="DeathSync\Events\PlayerDeathMessage.cs" />
     <Compile Include="DeathSync\Patches\DeathPatches.cs" />
-    <Compile Include="DeathSync\Patches\RespawnPatches.cs" />
-    <Compile Include="DeathSync\RespawnManager.cs" />
+    <Compile Include="RespawnSync\RespawnHUDMarker.cs" />
+    <Compile Include="RespawnSync\RespawnManager.cs" />
+    <Compile Include="RespawnSync\ShipRecoveryPoint.cs" />
     <Compile Include="EchoesOfTheEye\AirlockSync\AirlockManager.cs" />
     <Compile Include="EchoesOfTheEye\AirlockSync\WorldObjects\QSBGhostAirlock.cs" />
     <Compile Include="ElevatorSync\WorldObjects\QSBElevator.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Utility\DebugGUI.cs" />
     <Compile Include="Utility\Events\DebugEvent.cs" />
     <Compile Include="Utility\Events\DebugEventEnum.cs" />
+    <Compile Include="Utility\UIHelper.cs" />
     <Compile Include="Utility\ZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\GlobalMessenger4Args.cs" />

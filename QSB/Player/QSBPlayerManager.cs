@@ -62,7 +62,7 @@ namespace QSB.Player
 				return default;
 			}
 
-			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
+			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			OnAddPlayer?.Invoke(id);
@@ -71,7 +71,7 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
+			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
 			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
@@ -140,6 +140,8 @@ namespace QSB.Player
 		public static void ChangePlayerVisibility(uint playerId, bool visible)
 		{
 			var player = GetPlayer(playerId);
+			player.Visible = visible;
+
 			if (player.Body == null)
 			{
 				DebugLog.ToConsole($"Warning - Player {playerId} has a null player model!", MessageType.Warning);
@@ -150,8 +152,6 @@ namespace QSB.Player
 			{
 				renderer.enabled = visible;
 			}
-
-			player.Visible = visible;
 		}
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer

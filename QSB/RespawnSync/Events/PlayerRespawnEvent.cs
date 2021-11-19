@@ -3,7 +3,7 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.DeathSync.Events
+namespace QSB.RespawnSync.Events
 {
 	internal class PlayerRespawnEvent : QSBEvent<PlayerMessage>
 	{

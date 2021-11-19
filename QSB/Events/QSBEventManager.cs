@@ -31,6 +31,7 @@ using QSB.Utility;
 using QSB.Utility.Events;
 using System.Collections.Generic;
 using QSB.MeteorSync.Events;
+using QSB.RespawnSync.Events;
 
 namespace QSB.Events
 {

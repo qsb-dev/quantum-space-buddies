@@ -38,6 +38,7 @@ namespace QSB.Patches
 		public static event Action<QSBPatchTypes> OnUnpatchType;
 
 		private static List<QSBPatch> _patchList = new List<QSBPatch>();
+		private static List<QSBPatchTypes> _patchedTypes = new List<QSBPatchTypes>();
 
 		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>();
 
@@ -69,7 +70,6 @@ namespace QSB.Patches
 				new InputPatches(),
 				new TimePatches(),
 				new MapPatches(),
-				new RespawnPatches(),
 				new LauncherPatches(),
 				new SolanumPatches(),
 				new SatelliteProjectorPatches(),
@@ -92,6 +92,12 @@ namespace QSB.Patches
 
 		public static void DoPatchType(QSBPatchTypes type)
 		{
+			if (_patchedTypes.Contains(type))
+			{
+				DebugLog.ToConsole($"Warning - Tried to patch type {type}, when it has already been patched!", MessageType.Warning);
+				return;
+			}
+
 			OnPatchType?.SafeInvoke(type);
 			//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
@@ -100,6 +106,7 @@ namespace QSB.Patches
 				try
 				{
 					patch.DoPatches(TypeToInstance[type]);
+					_patchedTypes.Add(type);
 				}
 				catch (Exception ex)
 				{
@@ -110,9 +117,16 @@ namespace QSB.Patches
 
 		public static void DoUnpatchType(QSBPatchTypes type)
 		{
+			if (!_patchedTypes.Contains(type))
+			{
+				DebugLog.ToConsole($"Warning - Tried to unpatch type {type}, when it is either unpatched or was never patched.", MessageType.Warning);
+				return;
+			}
+
 			OnUnpatchType?.SafeInvoke(type);
 			//DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			TypeToInstance[type].UnpatchSelf();
+			_patchedTypes.Remove(type);
 		}
 	}
 }
