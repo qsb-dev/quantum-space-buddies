@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.SectorSync;
+using QSB.Syncs;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
@@ -89,13 +90,13 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 					if (ReferenceTransform != null)
 					{
-						_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-						_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+						transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
+						transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
 					}
 					else
 					{
-						_intermediaryTransform.SetPosition(Vector3.zero);
-						_intermediaryTransform.SetRotation(Quaternion.identity);
+						transform.position = Vector3.zero;
+						transform.rotation = Quaternion.identity;
 					}
 
 					var currentReferenceSector = ReferenceSector;

@@ -19,8 +19,8 @@ namespace QSB.Syncs.Sectored.Transforms
 		{
 			base.SerializeTransform(writer, initialState);
 
-			var worldPos = _intermediaryTransform.GetPosition();
-			var worldRot = _intermediaryTransform.GetRotation();
+			var worldPos = transform.position;
+			var worldRot = transform.rotation;
 			writer.Write(worldPos);
 			SerializeRotation(writer, worldRot);
 			_prevPosition = worldPos;
@@ -46,15 +46,10 @@ namespace QSB.Syncs.Sectored.Transforms
 				return;
 			}
 
-			if (_intermediaryTransform == null)
-			{
-				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
+			transform.position = pos;
+			transform.rotation = rot;
 
-			_intermediaryTransform.SetPosition(pos);
-			_intermediaryTransform.SetRotation(rot);
-
-			if (_intermediaryTransform.GetPosition() == Vector3.zero)
+			if (transform.position == Vector3.zero)
 			{
 				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
@@ -71,21 +66,21 @@ namespace QSB.Syncs.Sectored.Transforms
 			{
 				if (ReferenceTransform != null)
 				{
-					_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-					_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+					transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
+					transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
 				}
 				else
 				{
-					_intermediaryTransform.SetPosition(Vector3.zero);
-					_intermediaryTransform.SetRotation(Quaternion.identity);
+					transform.position = Vector3.zero;
+					transform.rotation = Quaternion.identity;
 				}
 
 				return true;
 			}
 
-			var targetPos = _intermediaryTransform.GetTargetPosition_ParentedToReference();
-			var targetRot = _intermediaryTransform.GetTargetRotation_ParentedToReference();
-			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
+			var targetPos = transform.position;
+			var targetRot = transform.rotation;
+			if (targetPos != Vector3.zero && ReferenceTransform.DecodePos(transform.position) != Vector3.zero)
 			{
 				if (UseInterpolation)
 				{

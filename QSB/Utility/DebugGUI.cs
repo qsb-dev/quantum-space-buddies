@@ -117,13 +117,10 @@ namespace QSB.Utility
 					var referenceSector = networkTransform.ReferenceSector;
 					var referenceTransform = networkTransform.ReferenceTransform;
 					var parent = networkTransform.AttachedObject?.transform.parent;
-					var intermediary = networkTransform.GetValue<IntermediaryTransform>("_intermediaryTransform");
-					var interTransform = intermediary.GetReferenceTransform();
 
 					WriteLine(2, $" - L.Pos : {networkTransform.transform.localPosition}");
 					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}");
 					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}");
-					WriteLine(2, $" - Inter. Ref. Transform : {(interTransform == null ? "NULL" : interTransform.name)}");
 					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}");
 
 					/*

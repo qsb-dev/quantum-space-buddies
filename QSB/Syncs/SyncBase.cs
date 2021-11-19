@@ -92,7 +92,6 @@ namespace QSB.Syncs
 		protected const float SmoothTime = 0.1f;
 		protected Vector3 _positionSmoothVelocity;
 		protected Quaternion _rotationSmoothVelocity;
-		protected IntermediaryTransform _intermediaryTransform;
 		protected bool _isInitialized;
 
 		protected abstract Component SetAttachedObject();
@@ -105,7 +104,6 @@ namespace QSB.Syncs
 			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 
 			DontDestroyOnLoad(gameObject);
-			_intermediaryTransform = new IntermediaryTransform(transform);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
 			if (Player == null)
@@ -222,13 +220,6 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform != _intermediaryTransform.GetReferenceTransform())
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform does not match the reference transform set for the intermediary. ReferenceTransform null : {ReferenceTransform == null}, Intermediary reference null : {_intermediaryTransform.GetReferenceTransform() == null}");
-				base.Update();
-				return;
-			}
-
 			if (ShouldReparentAttachedObject
 				&& !HasAuthority
 				&& AttachedObject.transform.parent != ReferenceTransform)
@@ -260,37 +251,36 @@ namespace QSB.Syncs
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
-		public void SetReferenceTransform(Transform transform)
+		public void SetReferenceTransform(Transform referenceTransform)
 		{
-			if (ReferenceTransform == transform)
+			if (ReferenceTransform == referenceTransform)
 			{
 				return;
 			}
 
-			ReferenceTransform = transform;
-			_intermediaryTransform.SetReferenceTransform(transform);
+			ReferenceTransform = referenceTransform;
 
 			if (ShouldReparentAttachedObject)
 			{
 				if (AttachedObject == null)
 				{
-					DebugLog.ToConsole($"Warning - AttachedObject was null for {LogName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - AttachedObject was null for {LogName} when trying to set reference transform to {referenceTransform?.name}. Waiting until not null...", MessageType.Warning);
 					QSBCore.UnityEvents.RunWhen(
 						() => AttachedObject != null,
-						() => ReparentAttachedObject(transform));
+						() => ReparentAttachedObject(referenceTransform));
 					return;
 				}
 
 				if (!HasAuthority)
 				{
-					ReparentAttachedObject(transform);
+					ReparentAttachedObject(referenceTransform);
 				}
 			}
 
 			if (HasAuthority)
 			{
-				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
 			}
 		}
 
@@ -311,8 +301,7 @@ namespace QSB.Syncs
 				|| !QSBCore.DebugMode
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
-				|| ReferenceTransform == null
-				|| _intermediaryTransform.GetReferenceTransform() == null)
+				|| ReferenceTransform == null)
 			{
 				return;
 			}
@@ -324,8 +313,8 @@ namespace QSB.Syncs
 			 * Cyan Line = Connection between Green/Yellow cube and reference transform
 			 */
 
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 4, Color.red);
-			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
+			Popcron.Gizmos.Cube(ReferenceTransform.DecodePos(transform.position), ReferenceTransform.DecodeRot(transform.rotation), Vector3.one / 4, Color.red);
+			Popcron.Gizmos.Line(ReferenceTransform.DecodePos(transform.position), AttachedObject.transform.position, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 4, color);
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 4, Color.magenta);

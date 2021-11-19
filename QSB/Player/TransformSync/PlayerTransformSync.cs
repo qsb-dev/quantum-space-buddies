@@ -251,8 +251,7 @@ namespace QSB.Player.TransformSync
 				|| !QSBCore.DebugMode
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
-				|| ReferenceTransform == null
-				|| _intermediaryTransform.GetReferenceTransform() == null)
+				|| ReferenceTransform == null)
 			{
 				return;
 			}

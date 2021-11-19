@@ -1,9 +1,9 @@
 ﻿using OWML.Common;
 using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
+using QSB.Syncs;
 using QSB.Utility;
 using QSB.WorldSync;
-using EventType = QSB.Events.EventType;
 
 namespace QSB.MeteorSync.Events
 {
@@ -39,10 +39,10 @@ namespace QSB.MeteorSync.Events
 				var body = qsbFragment.Body;
 				var refBody = qsbFragment.RefBody;
 				var pos = body.GetPosition();
-				msg.Pos = refBody.transform.InverseTransformPoint(pos);
-				msg.Rot = refBody.transform.InverseTransformRotation(body.GetRotation());
-				msg.Vel = body.GetVelocity() - refBody.GetPointVelocity(pos);
-				msg.AngVel = body.GetAngularVelocity() - refBody.GetAngularVelocity();
+				msg.Pos = refBody.transform.EncodePos(pos);
+				msg.Rot = refBody.transform.EncodeRot(body.GetRotation());
+				msg.Vel = refBody.EncodeVel(body.GetVelocity(), pos);
+				msg.AngVel = refBody.EncodeAngVel(body.GetAngularVelocity());
 			}
 
 			return msg;
@@ -102,11 +102,11 @@ namespace QSB.MeteorSync.Events
 					}
 
 					var refBody = qsbFragment.RefBody;
-					var pos = refBody.transform.TransformPoint(msg.Pos);
+					var pos = refBody.transform.DecodePos(msg.Pos);
 					body.SetPosition(pos);
-					body.SetRotation(refBody.transform.TransformRotation(msg.Rot));
-					body.SetVelocity(msg.Vel + refBody.GetPointVelocity(pos));
-					body.SetAngularVelocity(msg.AngVel + refBody.GetAngularVelocity());
+					body.SetRotation(refBody.transform.DecodeRot(msg.Rot));
+					body.SetVelocity(refBody.DecodeVel(msg.Vel, pos));
+					body.SetAngularVelocity(refBody.DecodeAngVel(msg.AngVel));
 				});
 			}
 			else if (!msg.IsDetached && qsbFragment.IsDetached)
