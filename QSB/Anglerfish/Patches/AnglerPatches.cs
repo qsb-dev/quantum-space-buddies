@@ -111,6 +111,7 @@ namespace QSB.Anglerfish.Patches
 						qsbAngler.TargetTransform = null;
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+						__instance.ApplyDrag(1f);
 
 						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 						__instance._consumeComplete = true;
@@ -137,6 +138,7 @@ namespace QSB.Anglerfish.Patches
 						qsbAngler.TargetTransform = null;
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+						__instance.ApplyDrag(1f);
 
 						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 					}
@@ -175,12 +177,6 @@ namespace QSB.Anglerfish.Patches
 			{
 				return false;
 			}
-
-			if (!qsbAngler.TransformSync.HasAuthority)
-			{
-				return false;
-			}
-
 			qsbAngler.FixedUpdate();
 
 			if (__instance._anglerBody.GetVelocity().sqrMagnitude > (double)Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))

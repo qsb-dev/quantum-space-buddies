@@ -1,6 +1,4 @@
-﻿using QSB.Utility;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool
 {

@@ -86,7 +86,7 @@ namespace QSB.Syncs
 		public Component AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		protected string _logName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
+		public string LogName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
@@ -110,7 +110,7 @@ namespace QSB.Syncs
 
 			if (Player == null)
 			{
-				DebugLog.ToConsole($"Error - Player in start of {_logName} was null!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Player in start of {LogName} was null!", MessageType.Error);
 				return;
 			}
 
@@ -148,7 +148,7 @@ namespace QSB.Syncs
 		{
 			if (!QSBSceneManager.IsInUniverse)
 			{
-				DebugLog.ToConsole($"Error - {_logName} is being init-ed when not in the universe!", MessageType.Error);
+				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
 			}
 
 			// TODO : maybe make it's own option
@@ -198,7 +198,7 @@ namespace QSB.Syncs
 
 			if (AttachedObject == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
 				_isInitialized = false;
 				base.Update();
 				return;
@@ -206,7 +206,7 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
 			}
 
 			if (!AttachedObject.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
@@ -217,14 +217,14 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform == null && !IgnoreNullReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is null. AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedObject.name}", MessageType.Warning);
 				base.Update();
 				return;
 			}
 
 			if (ReferenceTransform != _intermediaryTransform.GetReferenceTransform())
 			{
-				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform does not match the reference transform set for the intermediary. ReferenceTransform null : {ReferenceTransform == null}, Intermediary reference null : {_intermediaryTransform.GetReferenceTransform() == null}");
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform does not match the reference transform set for the intermediary. ReferenceTransform null : {ReferenceTransform == null}, Intermediary reference null : {_intermediaryTransform.GetReferenceTransform() == null}");
 				base.Update();
 				return;
 			}
@@ -233,7 +233,7 @@ namespace QSB.Syncs
 				&& !HasAuthority
 				&& AttachedObject.transform.parent != ReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning : {_logName} : AttachedObject's parent is different to ReferenceTransform. Correcting...", MessageType.Warning);
+				DebugLog.ToConsole($"Warning : {LogName} : AttachedObject's parent is different to ReferenceTransform. Correcting...", MessageType.Warning);
 				ReparentAttachedObject(ReferenceTransform);
 			}
 
@@ -274,7 +274,7 @@ namespace QSB.Syncs
 			{
 				if (AttachedObject == null)
 				{
-					DebugLog.ToConsole($"Warning - AttachedObject was null for {_logName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - AttachedObject was null for {LogName} when trying to set reference transform to {transform?.name}. Waiting until not null...", MessageType.Warning);
 					QSBCore.UnityEvents.RunWhen(
 						() => AttachedObject != null,
 						() => ReparentAttachedObject(transform));

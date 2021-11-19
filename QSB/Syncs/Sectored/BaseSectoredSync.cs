@@ -65,7 +65,7 @@ namespace QSB.Syncs.Sectored
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - {_logName}'s initial sector was null.", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s initial sector was null.", OWML.Common.MessageType.Warning);
 			}
 		}
 
@@ -75,7 +75,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (ReferenceSector != null && ReferenceSector.Transform != ReferenceTransform)
 				{
-					DebugLog.ToConsole($"Warning - {_logName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - {LogName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", OWML.Common.MessageType.Warning);
 					SetReferenceTransform(ReferenceSector.Transform);
 				}
 
@@ -148,7 +148,7 @@ namespace QSB.Syncs.Sectored
 				sectorId = reader.ReadInt32();
 				if (initialState && sectorId != -1)
 				{
-					DebugLog.DebugWrite($"{_logName} set waiting sector id:{sectorId}");
+					DebugLog.DebugWrite($"{LogName} set waiting sector id:{sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
 
@@ -186,7 +186,7 @@ namespace QSB.Syncs.Sectored
 						OWML.Common.MessageType.Warning);
 				}
 
-				DebugLog.DebugWrite($"{_logName} : Sector Manager not ready.");
+				DebugLog.DebugWrite($"{LogName} : Sector Manager not ready.");
 				return false;
 			}
 

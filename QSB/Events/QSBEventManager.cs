@@ -30,6 +30,7 @@ using QSB.Anglerfish.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using System.Collections.Generic;
+using QSB.MeteorSync.Events;
 using QSB.RespawnSync.Events;
 
 namespace QSB.Events
@@ -94,6 +95,11 @@ namespace QSB.Events
 				new StartStatueEvent(),
 				new CampfireStateEvent(),
 				new AnglerChangeStateEvent(),
+				new MeteorPreLaunchEvent(),
+				new MeteorLaunchEvent(),
+				new MeteorSpecialImpactEvent(),
+				new FragmentDamageEvent(),
+				new FragmentResyncEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

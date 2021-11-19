@@ -1,4 +1,6 @@
-﻿namespace QSB.QuantumSync.WorldObjects
+﻿using QSB.Player;
+
+namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
 	{
@@ -6,7 +8,7 @@
 		{
 			ObjectId = id;
 			AttachedObject = moonObject;
-			ControllingPlayer = 1u;
+			ControllingPlayer = QSBPlayerManager.LocalPlayerId;
 			base.Init(moonObject, id);
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using QSB.Player;
 using System.Linq;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -135,6 +136,26 @@ namespace QSB.Menus
 			}
 
 			OnConnected();
+
+			if (QSBCore.DebugMode)
+			{
+				Application.runInBackground = true;
+				var titleScreenManager = FindObjectOfType<TitleScreenManager>();
+				var titleScreenAnimation = titleScreenManager._cameraController;
+				const float small = 1 / 1000f;
+				titleScreenAnimation._gamepadSplash = false;
+				titleScreenAnimation._introPan = false;
+				titleScreenAnimation._fadeDuration = small;
+				titleScreenAnimation.Start();
+				var titleAnimationController = titleScreenManager._gfxController;
+				titleAnimationController._logoFadeDelay = small;
+				titleAnimationController._logoFadeDuration = small;
+				titleAnimationController._echoesFadeDelay = small;
+				titleAnimationController._optionsFadeDelay = small;
+				titleAnimationController._optionsFadeDuration = small;
+				titleAnimationController._optionsFadeSpacing = small;
+			}
+
 		}
 
 		private void Disconnect()

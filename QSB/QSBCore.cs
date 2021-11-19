@@ -27,6 +27,7 @@ using QSB.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.Anglerfish;
+using QSB.MeteorSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
@@ -125,6 +126,7 @@ namespace QSB
 			gameObject.AddComponent<LightSensorManager>();
 			gameObject.AddComponent<AirlockManager>();
 			gameObject.AddComponent<AnglerManager>();
+			gameObject.AddComponent<MeteorManager>();
 
 			DebugBoxManager.Init();
 

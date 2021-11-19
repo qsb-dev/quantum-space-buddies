@@ -65,8 +65,8 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 
 | System / Mechanic  | Synced? |
 | :---: | :---: |
-| Anglerfish  | No |
-| Brittle Hollow fragments  | No |
+| Anglerfish  | Yes |
+| Brittle Hollow fragments  | Yes |
 | Campfires | Yes |
 | Conversations with NPCs | Yes |
 | Discovering signals/frequencies | Yes |
@@ -78,7 +78,7 @@ QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll
 | Items | Yes |
 | Jellyfish | No |
 | Marshmallow roasting | Yes |
-| Meteors | No |
+| Meteors | Yes |
 | Museum statue | Yes |
 | NPC animations | Yes |
 | Nomai orbs | Yes |
@@ -153,12 +153,13 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 - [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
 - Install OWML using the Mod Manager
 - Clone QSB's source
-- Open the file `Director.Build.targets` in your favorite text editor
+- Open the file `Directory.Build.targets` in your favorite text editor
 - Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
 - Open the project solution file `QSB.sln` in Visual Studio
 - If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references
-- Run this to stop tracking Director.Build.targets: ```git update-index --skip-worktree Director.Build.targets```
+  - Use [this](https://github.com/MrPurple6411/AssemblyPublicizer) to create `Assembly-CSharp_publicized.dll`, if you don't already have it
+- Run this to stop tracking Director.Build.targets: ```git update-index --skip-worktree Directory.Build.targets```
 
 To fix the references, right click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 
