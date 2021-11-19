@@ -9,6 +9,7 @@ namespace QSB.MeteorSync.Events
 		public float Integrity;
 		public float OrigIntegrity;
 		public float LeashLength;
+		public bool IsDetached;
 
 		public bool IsThruWhiteHole;
 		public Vector3 Pos;
@@ -22,7 +23,8 @@ namespace QSB.MeteorSync.Events
 			Integrity = reader.ReadSingle();
 			OrigIntegrity = reader.ReadSingle();
 			LeashLength = reader.ReadSingle();
-			if (Integrity <= 0)
+			IsDetached = reader.ReadBoolean();
+			if (IsDetached)
 			{
 				IsThruWhiteHole = reader.ReadBoolean();
 				Pos = reader.ReadVector3();
@@ -38,7 +40,8 @@ namespace QSB.MeteorSync.Events
 			writer.Write(Integrity);
 			writer.Write(OrigIntegrity);
 			writer.Write(LeashLength);
-			if (Integrity <= 0)
+			writer.Write(IsDetached);
+			if (IsDetached)
 			{
 				writer.Write(IsThruWhiteHole);
 				writer.Write(Pos);

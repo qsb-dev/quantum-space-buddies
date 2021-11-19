@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine;
 using EventType = QSB.Events.EventType;
 
 namespace QSB.MeteorSync.Events
@@ -29,19 +28,21 @@ namespace QSB.MeteorSync.Events
 				ObjectId = qsbFragment.ObjectId,
 				Integrity = qsbFragment.AttachedObject._integrity,
 				OrigIntegrity = qsbFragment.AttachedObject._origIntegrity,
-				LeashLength = qsbFragment.LeashLength
+				LeashLength = qsbFragment.LeashLength,
+				IsDetached = qsbFragment.IsDetached
 			};
 
-			if (qsbFragment.DetachableFragment != null && qsbFragment.DetachableFragment._isDetached)
+			if (msg.IsDetached)
 			{
 				msg.IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
 
-				var refBody = qsbFragment.RefBody;
 				var body = qsbFragment.Body;
-				msg.Pos = refBody.transform.InverseTransformPoint(body.transform.position);
-				msg.Rot = refBody.transform.InverseTransformRotation(body.transform.rotation);
-				msg.Vel = GetRelativeVelocity(body, refBody);
-				msg.AngVel = body.GetRelativeAngularVelocity(refBody);
+				var refBody = qsbFragment.RefBody;
+				var pos = body.GetPosition();
+				msg.Pos = refBody.transform.InverseTransformPoint(pos);
+				msg.Rot = refBody.transform.InverseTransformRotation(body.GetRotation());
+				msg.Vel = body.GetVelocity() - refBody.GetPointVelocity(pos);
+				msg.AngVel = body.GetAngularVelocity() - refBody.GetAngularVelocity();
 			}
 
 			return msg;
@@ -60,18 +61,32 @@ namespace QSB.MeteorSync.Events
 			qsbFragment.LeashLength = msg.LeashLength;
 			qsbFragment.AttachedObject.CallOnTakeDamage();
 
-			if (qsbFragment.DetachableFragment != null && msg.Integrity <= 0)
+			if (msg.IsDetached)
 			{
 				// the detach is delayed, so wait until that happens
-				QSBCore.UnityEvents.RunWhen(() => qsbFragment.DetachableFragment._isDetached, () =>
+				QSBCore.UnityEvents.RunWhen(() => qsbFragment.IsDetached, () =>
 				{
+					var body = qsbFragment.Body;
+
 					if (msg.IsThruWhiteHole && !qsbFragment.IsThruWhiteHole)
 					{
-						qsbFragment.DetachableFragment.ChangeFragmentSector(MeteorManager.WhiteHoleVolume._whiteHoleSector,
-							MeteorManager.WhiteHoleVolume._whiteHoleProxyShadowSuperGroup);
+						var whiteHoleVolume = MeteorManager.WhiteHoleVolume;
+						var attachedFluidDetector = body.GetAttachedFluidDetector();
+						var attachedForceDetector = body.GetAttachedForceDetector();
+						if (attachedFluidDetector != null && attachedFluidDetector is ConstantFluidDetector constantFluidDetector)
+						{
+							constantFluidDetector.SetDetectableFluid(whiteHoleVolume._fluidVolume);
+						}
+						if (attachedForceDetector != null && attachedForceDetector is ConstantForceDetector constantForceDetector)
+						{
+							constantForceDetector.ClearAllFields();
+						}
+						qsbFragment.DetachableFragment.ChangeFragmentSector(whiteHoleVolume._whiteHoleSector,
+							whiteHoleVolume._whiteHoleProxyShadowSuperGroup);
+
 						qsbFragment.DetachableFragment.EndWarpScaling();
-						qsbFragment.Body.gameObject.AddComponent<DebrisLeash>()
-							.Init(MeteorManager.WhiteHoleVolume._whiteHoleBody, qsbFragment.LeashLength);
+						body.gameObject.AddComponent<DebrisLeash>().Init(whiteHoleVolume._whiteHoleBody, qsbFragment.LeashLength);
+						whiteHoleVolume._ejectedBodyList.Add(body);
 					}
 					else if (!msg.IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
 					{
@@ -79,41 +94,26 @@ namespace QSB.MeteorSync.Events
 						DebugLog.ToConsole($"{qsbFragment.LogName} is thru white hole, but msg is not. fuck", MessageType.Error);
 						return;
 					}
+					if (qsbFragment.IsThruWhiteHole)
+					{
+						var debrisLeash = body.GetComponent<DebrisLeash>();
+						debrisLeash._deccelerating = false;
+						debrisLeash.enabled = true;
+					}
 
 					var refBody = qsbFragment.RefBody;
-					var body = qsbFragment.Body;
-					var targetPos = refBody.transform.TransformPoint(msg.Pos);
-					var targetRot = refBody.transform.TransformRotation(msg.Rot);
-					var targetVel = refBody.GetPointVelocity(targetPos) + msg.Vel;
-					var targetAngVel = refBody.GetAngularVelocity() + msg.AngVel;
-					body.MoveToPosition(targetPos);
-					body.MoveToRotation(targetRot);
-					SetVelocity(body, targetVel);
-					body.SetAngularVelocity(targetAngVel);
+					var pos = refBody.transform.TransformPoint(msg.Pos);
+					body.SetPosition(pos);
+					body.SetRotation(refBody.transform.TransformRotation(msg.Rot));
+					body.SetVelocity(msg.Vel + refBody.GetPointVelocity(pos));
+					body.SetAngularVelocity(msg.AngVel + refBody.GetAngularVelocity());
 				});
 			}
-		}
-
-
-		// code yoink from transform sync lol
-		private static void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
-		{
-			var currentVelocity = rigidbody._currentVelocity;
-
-			if (rigidbody.RunningKinematicSimulation())
+			else if (!msg.IsDetached && qsbFragment.IsDetached)
 			{
-				rigidbody._kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+				// should only happen if client is way too far ahead and they try to connect. we fail here.
+				DebugLog.ToConsole($"{qsbFragment.LogName} is detached, but msg is not. fuck", MessageType.Error);
 			}
-			else
-			{
-				rigidbody._rigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
-			}
-
-			rigidbody._lastVelocity = currentVelocity;
-			rigidbody._currentVelocity = relativeVelocity;
 		}
-
-		private static Vector3 GetRelativeVelocity(OWRigidbody body, OWRigidbody refBody)
-			=> body.GetVelocity() - refBody.GetPointVelocity(body.transform.position);
 	}
 }
