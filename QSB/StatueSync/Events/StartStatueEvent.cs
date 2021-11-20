@@ -18,7 +18,7 @@ namespace QSB.StatueSync.Events
 		private void Handler(Vector3 position, Quaternion rotation, float degrees)
 			=> SendEvent(CreateMessage(position, rotation, degrees));
 
-		private StartStatueMessage CreateMessage(Vector3 position, Quaternion rotation, float degrees) => new StartStatueMessage
+		private StartStatueMessage CreateMessage(Vector3 position, Quaternion rotation, float degrees) => new()
 		{
 			AboutId = LocalPlayerId,
 			PlayerPosition = position,

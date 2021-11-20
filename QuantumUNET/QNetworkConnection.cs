@@ -44,7 +44,7 @@ namespace QuantumUNET
 			{
 				var channelQOS = hostTopology.DefaultConfig.Channels[i];
 				var bufferSize = packetSize;
-				if (channelQOS.QOS == QosType.ReliableFragmented || channelQOS.QOS == QosType.UnreliableFragmented)
+				if (channelQOS.QOS is QosType.ReliableFragmented or QosType.UnreliableFragmented)
 				{
 					bufferSize = hostTopology.DefaultConfig.FragmentSize * 128;
 				}
@@ -91,9 +91,9 @@ namespace QuantumUNET
 			m_Disposed = true;
 		}
 
-		private static bool IsSequencedQoS(QosType qos) => qos == QosType.ReliableSequenced || qos == QosType.UnreliableSequenced;
+		private static bool IsSequencedQoS(QosType qos) => qos is QosType.ReliableSequenced or QosType.UnreliableSequenced;
 
-		private static bool IsReliableQoS(QosType qos) => qos == QosType.Reliable || qos == QosType.ReliableFragmented || qos == QosType.ReliableSequenced || qos == QosType.ReliableStateUpdate;
+		private static bool IsReliableQoS(QosType qos) => qos is QosType.Reliable or QosType.ReliableFragmented or QosType.ReliableSequenced or QosType.ReliableStateUpdate;
 
 		public bool SetChannelOption(int channelId, ChannelOption option, int value) => m_Channels != null && channelId >= 0 && channelId < m_Channels.Length && m_Channels[channelId].SetOption(option, value);
 
@@ -397,13 +397,13 @@ namespace QuantumUNET
 		internal static void OnFragment(QNetworkMessage netMsg) => netMsg.Connection.HandleFragment(netMsg.Reader, netMsg.ChannelId);
 
 		private QChannelBuffer[] m_Channels;
-		private readonly QNetworkMessage m_NetMsg = new QNetworkMessage();
+		private readonly QNetworkMessage m_NetMsg = new();
 		private QNetworkWriter m_Writer;
 
 		private Dictionary<short, QNetworkMessageDelegate> m_MessageHandlersDict;
 
 		private QNetworkMessageHandlers m_MessageHandlers;
-		private readonly QNetworkMessage m_MessageInfo = new QNetworkMessage();
+		private readonly QNetworkMessage m_MessageInfo = new();
 
 		private const int k_MaxMessageLogSize = 150;
 		public int hostId = -1;

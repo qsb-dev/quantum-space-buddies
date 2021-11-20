@@ -12,7 +12,7 @@ namespace QSB.OrbSync
 {
 	public class OrbManager : WorldObjectManager
 	{
-		private List<GameObject> _orbs = new List<GameObject>();
+		private List<GameObject> _orbs = new();
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{

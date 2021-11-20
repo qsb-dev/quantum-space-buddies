@@ -41,11 +41,11 @@ namespace QSB.Player
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new List<PlayerSyncObject>();
+		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (id == uint.MaxValue || id == 0U)
+			if (id is uint.MaxValue or 0U)
 			{
 				return default;
 			}
@@ -135,7 +135,7 @@ namespace QSB.Player
 		}
 
 		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
-			=> new Tuple<Flashlight, IEnumerable<QSBFlashlight>>(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+			=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 		public static void ShowAllPlayers()
 			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, true));

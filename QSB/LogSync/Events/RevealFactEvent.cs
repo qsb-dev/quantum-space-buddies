@@ -12,7 +12,7 @@ namespace QSB.LogSync.Events
 
 		private void Handler(string id, bool saveGame, bool showNotification) => SendEvent(CreateMessage(id, saveGame, showNotification));
 
-		private RevealFactMessage CreateMessage(string id, bool saveGame, bool showNotification) => new RevealFactMessage
+		private RevealFactMessage CreateMessage(string id, bool saveGame, bool showNotification) => new()
 		{
 			AboutId = LocalPlayerId,
 			FactId = id,

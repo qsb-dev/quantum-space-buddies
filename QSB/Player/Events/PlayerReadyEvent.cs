@@ -14,7 +14,7 @@ namespace QSB.Player.Events
 
 		private void Handler(bool ready) => SendEvent(CreateMessage(ready));
 
-		private ToggleMessage CreateMessage(bool ready) => new ToggleMessage
+		private ToggleMessage CreateMessage(bool ready) => new()
 		{
 			AboutId = LocalPlayerId,
 			ToggleValue = ready

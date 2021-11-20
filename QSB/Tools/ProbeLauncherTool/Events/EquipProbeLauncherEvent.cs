@@ -57,7 +57,7 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 			SendEvent(CreateMessage(false));
 		}
 
-		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		private ToggleMessage CreateMessage(bool value) => new()
 		{
 			AboutId = LocalPlayerId,
 			ToggleValue = value

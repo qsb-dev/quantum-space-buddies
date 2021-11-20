@@ -13,7 +13,7 @@ namespace QSB.QuantumSync.Events
 
 		private void Handler(int objId, uint authorityOwner) => SendEvent(CreateMessage(objId, authorityOwner));
 
-		private QuantumAuthorityMessage CreateMessage(int objId, uint authorityOwner) => new QuantumAuthorityMessage
+		private QuantumAuthorityMessage CreateMessage(int objId, uint authorityOwner) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = objId,

@@ -15,7 +15,7 @@ namespace QSB.ShipSync.Events
 
 		private void Handler() => SendEvent(CreateMessage());
 
-		private PlayerMessage CreateMessage() => new PlayerMessage
+		private PlayerMessage CreateMessage() => new()
 		{
 			AboutId = LocalPlayerId
 		};

@@ -57,6 +57,7 @@ namespace QSB.Player
 				{
 					DebugLog.ToConsole($"Warning - {PlayerId}.Body is null!", MessageType.Warning);
 				}
+
 				return _body;
 			}
 			set
@@ -65,6 +66,7 @@ namespace QSB.Player
 				{
 					DebugLog.ToConsole($"Warning - Setting {PlayerId}.Body to null.", MessageType.Warning);
 				}
+
 				_body = value;
 			}
 		}
@@ -76,18 +78,7 @@ namespace QSB.Player
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight
-		{
-			get
-			{
-				if (CameraBody == null)
-				{
-					return null;
-				}
-
-				return CameraBody.GetComponentInChildren<QSBFlashlight>();
-			}
-		}
+		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
@@ -110,8 +101,8 @@ namespace QSB.Player
 
 		// Animation
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
-		public bool PlayingInstrument => AnimationSync.CurrentType != AnimationType.PlayerSuited
-			&& AnimationSync.CurrentType != AnimationType.PlayerUnsuited;
+		public bool PlayingInstrument => AnimationSync.CurrentType is not AnimationType.PlayerSuited
+			and not AnimationType.PlayerUnsuited;
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc

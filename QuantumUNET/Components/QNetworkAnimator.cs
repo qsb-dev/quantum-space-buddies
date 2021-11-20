@@ -6,9 +6,9 @@ namespace QuantumUNET.Components
 {
 	public class QNetworkAnimator : QNetworkBehaviour
 	{
-		private static readonly QAnimationMessage AnimationMessage = new QAnimationMessage();
-		private static readonly QAnimationParametersMessage ParametersMessage = new QAnimationParametersMessage();
-		private static readonly QAnimationTriggerMessage TriggersMessage = new QAnimationTriggerMessage();
+		private static readonly QAnimationMessage AnimationMessage = new();
+		private static readonly QAnimationParametersMessage ParametersMessage = new();
+		private static readonly QAnimationTriggerMessage TriggersMessage = new();
 
 		private Animator m_Animator;
 		private uint m_ParameterSendBits;

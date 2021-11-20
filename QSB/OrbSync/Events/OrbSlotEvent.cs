@@ -13,7 +13,7 @@ namespace QSB.OrbSync.Events
 
 		private void Handler(int slotId, int orbId, bool slotState) => SendEvent(CreateMessage(slotId, orbId, slotState));
 
-		private OrbSlotMessage CreateMessage(int slotId, int orbId, bool slotState) => new OrbSlotMessage
+		private OrbSlotMessage CreateMessage(int slotId, int orbId, bool slotState) => new()
 		{
 			AboutId = LocalPlayerId,
 			SlotId = slotId,

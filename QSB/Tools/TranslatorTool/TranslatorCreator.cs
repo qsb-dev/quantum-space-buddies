@@ -5,7 +5,7 @@ namespace QSB.Tools.TranslatorTool
 {
 	internal static class TranslatorCreator
 	{
-		private static readonly Vector3 TranslatorScale = new Vector3(0.75f, 0.75f, 0.75f);
+		private static readonly Vector3 TranslatorScale = new(0.75f, 0.75f, 0.75f);
 
 		internal static void CreateTranslator(Transform cameraBody)
 		{

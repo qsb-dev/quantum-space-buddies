@@ -246,7 +246,7 @@ namespace QuantumUNET
 			{
 				if (!networkIdentity.gameObject.activeSelf)
 				{
-					if (networkIdentity.gameObject.hideFlags != HideFlags.NotEditable && networkIdentity.gameObject.hideFlags != HideFlags.HideAndDontSave)
+					if (networkIdentity.gameObject.hideFlags is not HideFlags.NotEditable and not HideFlags.HideAndDontSave)
 					{
 						if (!networkIdentity.SceneId.IsEmpty())
 						{
@@ -656,25 +656,25 @@ namespace QuantumUNET
 
 		private static bool s_IsSpawnFinished;
 
-		private static readonly QNetworkScene s_NetworkScene = new QNetworkScene();
+		private static readonly QNetworkScene s_NetworkScene = new();
 
-		private static readonly QObjectSpawnSceneMessage s_ObjectSpawnSceneMessage = new QObjectSpawnSceneMessage();
+		private static readonly QObjectSpawnSceneMessage s_ObjectSpawnSceneMessage = new();
 
-		private static readonly QObjectSpawnFinishedMessage s_ObjectSpawnFinishedMessage = new QObjectSpawnFinishedMessage();
+		private static readonly QObjectSpawnFinishedMessage s_ObjectSpawnFinishedMessage = new();
 
-		private static readonly QObjectDestroyMessage s_ObjectDestroyMessage = new QObjectDestroyMessage();
+		private static readonly QObjectDestroyMessage s_ObjectDestroyMessage = new();
 
-		private static readonly QObjectSpawnMessage s_ObjectSpawnMessage = new QObjectSpawnMessage();
+		private static readonly QObjectSpawnMessage s_ObjectSpawnMessage = new();
 
-		private static readonly QOwnerMessage s_OwnerMessage = new QOwnerMessage();
+		private static readonly QOwnerMessage s_OwnerMessage = new();
 
-		private static readonly QClientAuthorityMessage s_ClientAuthorityMessage = new QClientAuthorityMessage();
+		private static readonly QClientAuthorityMessage s_ClientAuthorityMessage = new();
 
 		public const int ReconnectIdInvalid = -1;
 
 		public const int ReconnectIdHost = 0;
 
-		private static List<PendingOwner> s_PendingOwnerIds = new List<PendingOwner>();
+		private static List<PendingOwner> s_PendingOwnerIds = new();
 
 		private struct PendingOwner
 		{

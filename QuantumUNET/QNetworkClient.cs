@@ -56,8 +56,8 @@ namespace QuantumUNET
 		private int m_HostPort;
 		private int m_ClientConnectionId = -1;
 		private int m_StatResetTime;
-		private static readonly QCRCMessage s_CRCMessage = new QCRCMessage();
-		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
+		private static readonly QCRCMessage s_CRCMessage = new();
+		private readonly QNetworkMessageHandlers m_MessageHandlers = new();
 		protected QNetworkConnection m_Connection;
 		private readonly byte[] m_MsgBuffer;
 		private readonly NetworkReader m_MsgReader;
@@ -102,7 +102,7 @@ namespace QuantumUNET
 		}
 
 		private static bool IsValidIpV6(string address) =>
-			address.All(c => c == ':' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
+			address.All(c => c is ':' or (>= '0' and <= '9') or (>= 'a' and <= 'f') or (>= 'A' and <= 'F'));
 
 		public void Connect(string serverIp, int serverPort)
 		{

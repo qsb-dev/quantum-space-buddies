@@ -19,7 +19,7 @@ namespace QSB.Anglerfish.Events
 
 		private void Handler(QSBAngler qsbAngler) => SendEvent(CreateMessage(qsbAngler));
 
-		private AnglerChangeStateMessage CreateMessage(QSBAngler qsbAngler) => new AnglerChangeStateMessage
+		private AnglerChangeStateMessage CreateMessage(QSBAngler qsbAngler) => new()
 		{
 			ObjectId = qsbAngler.ObjectId,
 			EnumValue = qsbAngler.AttachedObject._currentState,

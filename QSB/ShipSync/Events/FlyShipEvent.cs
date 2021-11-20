@@ -28,7 +28,7 @@ namespace QSB.ShipSync.Events
 
 		private void Handler(bool flying) => SendEvent(CreateMessage(flying));
 
-		private BoolMessage CreateMessage(bool flying) => new BoolMessage
+		private BoolMessage CreateMessage(bool flying) => new()
 		{
 			AboutId = LocalPlayerId,
 			Value = flying

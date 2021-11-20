@@ -13,7 +13,7 @@ namespace QSB.SatelliteSync.Events
 
 		private void Handler(bool forward) => SendEvent(CreateMessage(forward));
 
-		private BoolMessage CreateMessage(bool forward) => new BoolMessage
+		private BoolMessage CreateMessage(bool forward) => new()
 		{
 			AboutId = LocalPlayerId,
 			Value = forward

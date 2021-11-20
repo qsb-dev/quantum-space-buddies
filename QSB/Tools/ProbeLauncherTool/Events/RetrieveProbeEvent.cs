@@ -17,7 +17,7 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 
 		private void Handler(QSBProbeLauncher launcher, bool playEffects) => SendEvent(CreateMessage(launcher, playEffects));
 
-		private BoolWorldObjectMessage CreateMessage(QSBProbeLauncher launcher, bool playEffects) => new BoolWorldObjectMessage
+		private BoolWorldObjectMessage CreateMessage(QSBProbeLauncher launcher, bool playEffects) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = launcher.ObjectId,

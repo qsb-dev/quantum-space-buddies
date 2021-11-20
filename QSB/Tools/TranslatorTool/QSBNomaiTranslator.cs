@@ -25,9 +25,7 @@ namespace QSB.Tools.TranslatorTool
 		}
 
 		public override void OnDisable()
-		{
-			_translatorProp.OnFinishUnequipAnimation();
-		}
+			=> _translatorProp.OnFinishUnequipAnimation();
 
 		public override void EquipTool()
 		{
@@ -72,7 +70,7 @@ namespace QSB.Tools.TranslatorTool
 
 			if (_currentNomaiText != null)
 			{
-				tooCloseToTarget = (num < _currentNomaiText.GetMinimumReadableDistance());
+				tooCloseToTarget = num < _currentNomaiText.GetMinimumReadableDistance();
 
 				if (_currentNomaiText is NomaiWallText)
 				{
@@ -83,7 +81,7 @@ namespace QSB.Tools.TranslatorTool
 						if (distToCenter > _lastLineDist + 0.1f)
 						{
 							_lastHighlightedTextLine = nomaiTextLine;
-							_lastLineWasTranslated = (nomaiTextLine != null && nomaiTextLine.IsTranslated());
+							_lastLineWasTranslated = nomaiTextLine != null && nomaiTextLine.IsTranslated();
 							_lastLineLocked = false;
 						}
 						else
@@ -105,7 +103,7 @@ namespace QSB.Tools.TranslatorTool
 					else
 					{
 						_lastHighlightedTextLine = nomaiTextLine;
-						_lastLineWasTranslated = (nomaiTextLine != null && nomaiTextLine.IsTranslated());
+						_lastLineWasTranslated = nomaiTextLine != null && nomaiTextLine.IsTranslated();
 					}
 
 					if (nomaiTextLine && !nomaiTextLine.IsHidden() && nomaiTextLine.IsActive())

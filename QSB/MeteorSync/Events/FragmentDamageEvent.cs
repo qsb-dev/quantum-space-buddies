@@ -17,7 +17,7 @@ namespace QSB.MeteorSync.Events
 		private void Handler(QSBFragment qsbFragment, float damage) =>
 			SendEvent(CreateMessage(qsbFragment, damage));
 
-		private FragmentDamageMessage CreateMessage(QSBFragment qsbFragment, float damage) => new FragmentDamageMessage
+		private FragmentDamageMessage CreateMessage(QSBFragment qsbFragment, float damage) => new()
 		{
 			ObjectId = qsbFragment.ObjectId,
 			Damage = damage

@@ -8,7 +8,7 @@ namespace QSB.WorldSync
 {
 	public abstract class WorldObjectManager : MonoBehaviour
 	{
-		private static readonly List<WorldObjectManager> _managers = new List<WorldObjectManager>();
+		private static readonly List<WorldObjectManager> _managers = new();
 
 		public static bool AllReady { get; private set; }
 

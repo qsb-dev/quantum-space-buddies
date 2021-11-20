@@ -13,7 +13,7 @@ namespace QSB.QuantumSync.Events
 
 		private void Handler(int objid, int[] indexArray) => SendEvent(CreateMessage(objid, indexArray));
 
-		private QuantumShuffleMessage CreateMessage(int objid, int[] indexArray) => new QuantumShuffleMessage
+		private QuantumShuffleMessage CreateMessage(int objid, int[] indexArray) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = objid,

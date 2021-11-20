@@ -5,7 +5,7 @@
 		public static string MsgTypeToString(short value)
 		{
 			string result;
-			if (value < 0 || value > 48)
+			if (value is < 0 or > 48)
 			{
 				result = string.Empty;
 			}

@@ -23,7 +23,7 @@ namespace QSB.Tools.FlashlightTool.Events
 		private void HandleTurnOn() => SendEvent(CreateMessage(true));
 		private void HandleTurnOff() => SendEvent(CreateMessage(false));
 
-		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		private ToggleMessage CreateMessage(bool value) => new()
 		{
 			AboutId = LocalPlayerId,
 			ToggleValue = value
