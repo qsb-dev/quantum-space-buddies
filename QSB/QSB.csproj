@@ -91,7 +91,6 @@
     <Compile Include="ConversationSync\ConversationManager.cs" />
     <Compile Include="DeathSync\EndLoopReason.cs" />
     <Compile Include="DeathSync\Events\EndLoopEvent.cs" />
-    <Compile Include="Player\Events\LaunchCodesEvent.cs" />
     <Compile Include="Player\PlayerState.cs" />
     <Compile Include="RespawnSync\Events\PlayerRespawnEvent.cs" />
     <Compile Include="DeathSync\Events\StartLoopEvent.cs" />
