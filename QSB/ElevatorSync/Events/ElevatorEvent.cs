@@ -14,7 +14,7 @@ namespace QSB.ElevatorSync.Events
 
 		private void Handler(int id, bool isGoingUp) => SendEvent(CreateMessage(id, isGoingUp));
 
-		private BoolWorldObjectMessage CreateMessage(int id, bool isGoingUp) => new BoolWorldObjectMessage
+		private BoolWorldObjectMessage CreateMessage(int id, bool isGoingUp) => new()
 		{
 			State = isGoingUp,
 			ObjectId = id

@@ -16,7 +16,7 @@ namespace QSB.ShipSync.Events
 
 		private void Handler(bool open) => SendEvent(CreateMessage(open));
 
-		private BoolMessage CreateMessage(bool open) => new BoolMessage
+		private BoolMessage CreateMessage(bool open) => new()
 		{
 			AboutId = LocalPlayerId,
 			Value = open

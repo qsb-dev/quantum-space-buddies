@@ -15,7 +15,7 @@ namespace QSB.QuantumSync.Events
 
 		private void Handler(int stateIndex, Vector3 onUnitSphere, int orbitAngle) => SendEvent(CreateMessage(stateIndex, onUnitSphere, orbitAngle));
 
-		private MoonStateChangeMessage CreateMessage(int stateIndex, Vector3 onUnitSphere, int orbitAngle) => new MoonStateChangeMessage
+		private MoonStateChangeMessage CreateMessage(int stateIndex, Vector3 onUnitSphere, int orbitAngle) => new()
 		{
 			AboutId = LocalPlayerId,
 			StateIndex = stateIndex,

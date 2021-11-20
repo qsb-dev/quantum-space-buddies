@@ -13,7 +13,7 @@ namespace QSB.Player.Events
 
 		private void Handler(string name) => SendEvent(CreateMessage(name));
 
-		private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage
+		private PlayerJoinMessage CreateMessage(string name) => new()
 		{
 			AboutId = LocalPlayerId,
 			PlayerName = name,

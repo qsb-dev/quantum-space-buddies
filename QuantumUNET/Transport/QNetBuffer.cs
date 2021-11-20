@@ -39,7 +39,7 @@ namespace QuantumUNET.Transport
 			Position += count;
 		}
 
-		internal ArraySegment<byte> AsArraySegment() => new ArraySegment<byte>(m_Buffer, 0, (int)Position);
+		internal ArraySegment<byte> AsArraySegment() => new(m_Buffer, 0, (int)Position);
 
 		public void WriteByte(byte value)
 		{

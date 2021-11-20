@@ -13,7 +13,7 @@ namespace QSB.Anglerfish.TransformSync
 		public override bool UseInterpolation => false;
 
 		private QSBAngler _qsbAngler;
-		private static readonly List<AnglerTransformSync> _instances = new List<AnglerTransformSync>();
+		private static readonly List<AnglerTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
 			=> _qsbAngler.AttachedObject._anglerBody;

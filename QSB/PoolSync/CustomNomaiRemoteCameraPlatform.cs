@@ -55,7 +55,7 @@ namespace QSB.PoolSync
 		private bool _anyoneStillOnPlatform;
 		private bool _wasLocalInBounds;
 		private CameraState _cameraState;
-		private readonly Dictionary<PlayerInfo, GameObject> _playerToHologram = new Dictionary<PlayerInfo, GameObject>();
+		private readonly Dictionary<PlayerInfo, GameObject> _playerToHologram = new();
 
 		private void Awake()
 		{
@@ -129,7 +129,7 @@ namespace QSB.PoolSync
 				CustomPlatformList.Remove(this);
 			}
 
-			if (_cameraState == CameraState.Connected || _cameraState == CameraState.Connecting_FadeIn || _cameraState == CameraState.Connecting_FadeOut)
+			if (_cameraState is CameraState.Connected or CameraState.Connecting_FadeIn or CameraState.Connecting_FadeOut)
 			{
 				DisconnectCamera();
 				SwitchToPlayerCamera();
@@ -231,7 +231,7 @@ namespace QSB.PoolSync
 					_slavePlatform.UpdatePoolRenderer();
 					if (_slavePlatform._transitionFade == 1f)
 					{
-						_slavePlatform._poolT = ((!(_slavePlatform._sharedStone == null)) ? 1f : 0f);
+						_slavePlatform._poolT = (!(_slavePlatform._sharedStone == null)) ? 1f : 0f;
 						_slavePlatform._showPlayerRipples = false;
 						_slavePlatform._activePlayerHolo = null;
 						_slavePlatform.UpdatePoolRenderer();
@@ -550,7 +550,7 @@ namespace QSB.PoolSync
 			}
 
 			var cameraState = _cameraState;
-			if (cameraState != CameraState.Disconnected && cameraState != CameraState.Disconnecting_FadeOut)
+			if (cameraState is not CameraState.Disconnected and not CameraState.Disconnecting_FadeOut)
 			{
 				if (cameraState == CameraState.Disconnecting_FadeIn)
 				{
@@ -574,7 +574,7 @@ namespace QSB.PoolSync
 			}
 
 			var cameraState = _cameraState;
-			if (cameraState != CameraState.Connected && cameraState != CameraState.Connecting_FadeOut)
+			if (cameraState is not CameraState.Connected and not CameraState.Connecting_FadeOut)
 			{
 				if (cameraState == CameraState.Connecting_FadeIn)
 				{

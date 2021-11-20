@@ -16,7 +16,7 @@ namespace QSB.Tools.ProbeTool.Events
 
 		private void Handler(ProbeEvent probeEvent) => SendEvent(CreateMessage(probeEvent));
 
-		private EnumMessage<ProbeEvent> CreateMessage(ProbeEvent probeEvent) => new EnumMessage<ProbeEvent>
+		private EnumMessage<ProbeEvent> CreateMessage(ProbeEvent probeEvent) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = probeEvent

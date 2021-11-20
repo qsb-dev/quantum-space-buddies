@@ -9,7 +9,7 @@ namespace QSB.Utility
 		private const string shaderTestMode = "unity_GUIZTestMode";
 		private readonly UnityEngine.Rendering.CompareFunction desiredUIComparison = UnityEngine.Rendering.CompareFunction.Always;
 		private Graphic[] uiElementsToApplyTo;
-		private readonly Dictionary<Material, Material> materialMappings = new Dictionary<Material, Material>();
+		private readonly Dictionary<Material, Material> materialMappings = new();
 
 		protected virtual void Start()
 		{

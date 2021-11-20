@@ -99,22 +99,7 @@ namespace QuantumUNET.Components
 		}
 
 		public ReadOnlyCollection<QNetworkConnection> Observers
-		{
-			get
-			{
-				ReadOnlyCollection<QNetworkConnection> result;
-				if (m_Observers == null)
-				{
-					result = null;
-				}
-				else
-				{
-					result = new ReadOnlyCollection<QNetworkConnection>(m_Observers);
-				}
-
-				return result;
-			}
-		}
+			=> m_Observers == null ? null : new ReadOnlyCollection<QNetworkConnection>(m_Observers);
 
 		internal static NetworkInstanceId GetNextNetworkId()
 		{
@@ -187,14 +172,7 @@ namespace QuantumUNET.Components
 			if (!m_IsServer)
 			{
 				m_IsServer = true;
-				if (m_LocalPlayerAuthority)
-				{
-					HasAuthority = false;
-				}
-				else
-				{
-					HasAuthority = true;
-				}
+				HasAuthority = !m_LocalPlayerAuthority;
 
 				m_Observers = new List<QNetworkConnection>();
 				m_ObserverConnections = new HashSet<int>();
@@ -841,7 +819,7 @@ namespace QuantumUNET.Components
 
 		private static uint s_NextNetworkId = 1U;
 
-		private static readonly QNetworkWriter s_UpdateWriter = new QNetworkWriter();
+		private static readonly QNetworkWriter s_UpdateWriter = new();
 
 		public static ClientAuthorityCallback clientAuthorityCallback;
 

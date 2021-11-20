@@ -118,9 +118,9 @@ namespace QSB.Utility
 
 		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
-			if (!(typeof(T)
+			if (typeof(T)
 				.GetField(eventName, Flags)?
-				.GetValue(instance) is MulticastDelegate multiDelegate))
+				.GetValue(instance) is not MulticastDelegate multiDelegate)
 			{
 				return;
 			}

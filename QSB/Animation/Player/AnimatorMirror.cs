@@ -13,7 +13,7 @@ namespace QSB.Animation.Player
 		private Animator _from;
 		private Animator _to;
 
-		private readonly Dictionary<string, AnimFloatParam> _floatParams = new Dictionary<string, AnimFloatParam>();
+		private readonly Dictionary<string, AnimFloatParam> _floatParams = new();
 
 		public void Init(Animator from, Animator to)
 		{

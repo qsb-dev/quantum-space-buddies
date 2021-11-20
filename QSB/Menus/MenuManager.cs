@@ -196,26 +196,14 @@ namespace QSB.Menus
 
 		public void OnKicked(KickReason reason)
 		{
-			string text;
-			switch (reason)
+			var text = reason switch
 			{
-				case KickReason.QSBVersionNotMatching:
-					text = "Server refused connection as QSB version does not match.";
-					break;
-				case KickReason.GameVersionNotMatching:
-					text = "Server refused connection as Outer Wilds version does not match.";
-					break;
-				case KickReason.GamePlatformNotMatching:
-					text = "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)";
-					break;
-				case KickReason.None:
-					text = "Kicked from server. No reason given.";
-					break;
-				default:
-					text = $"Kicked from server. KickReason:{reason}";
-					break;
-			}
-
+				KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
+				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
+				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)",
+				KickReason.None => "Kicked from server. No reason given.",
+				_ => $"Kicked from server. KickReason:{reason}",
+			};
 			OpenInfoPopup(text, "OK");
 
 			DisconnectButton.gameObject.SetActive(false);
@@ -230,17 +218,11 @@ namespace QSB.Menus
 				return;
 			}
 
-			string text;
-			switch (error)
+			var text = error switch
 			{
-				case NetworkError.Timeout:
-					text = "Client disconnected with error!\r\nConnection timed out.";
-					break;
-				default:
-					text = $"Client disconnected with error!\r\nNetworkError:{error}";
-					break;
-			}
-
+				NetworkError.Timeout => "Client disconnected with error!\r\nConnection timed out.",
+				_ => $"Client disconnected with error!\r\nNetworkError:{error}",
+			};
 			OpenInfoPopup(text, "OK");
 
 			DisconnectButton.gameObject.SetActive(false);

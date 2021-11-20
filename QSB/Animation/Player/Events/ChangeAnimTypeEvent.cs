@@ -14,7 +14,7 @@ namespace QSB.Animation.Player.Events
 
 		private void Handler(uint player, AnimationType type) => SendEvent(CreateMessage(player, type));
 
-		private EnumMessage<AnimationType> CreateMessage(uint player, AnimationType type) => new EnumMessage<AnimationType>
+		private EnumMessage<AnimationType> CreateMessage(uint player, AnimationType type) => new()
 		{
 			AboutId = player,
 			EnumValue = type

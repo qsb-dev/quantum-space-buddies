@@ -12,7 +12,7 @@ namespace QSB.Utility.Events
 
 		private void Handler(DebugEventEnum type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<DebugEventEnum> CreateMessage(DebugEventEnum type) => new EnumMessage<DebugEventEnum>
+		private EnumMessage<DebugEventEnum> CreateMessage(DebugEventEnum type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type

@@ -16,7 +16,7 @@ namespace QSB.RespawnSync
 
 		public bool RespawnNeeded => _playersPendingRespawn.Count != 0;
 
-		private List<PlayerInfo> _playersPendingRespawn = new List<PlayerInfo>();
+		private List<PlayerInfo> _playersPendingRespawn = new();
 		private NotificationData _previousNotification;
 		private GameObject _owRecoveryPoint;
 		private GameObject _qsbRecoveryPoint;

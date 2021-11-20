@@ -23,7 +23,7 @@ namespace QSB.Tools.TranslatorTool.Events
 		private void HandleEquip() => SendEvent(CreateMessage(true));
 		private void HandleUnequip() => SendEvent(CreateMessage(false));
 
-		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		private ToggleMessage CreateMessage(bool value) => new()
 		{
 			AboutId = LocalPlayerId,
 			ToggleValue = value

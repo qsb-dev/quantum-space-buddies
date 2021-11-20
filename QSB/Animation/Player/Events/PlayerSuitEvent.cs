@@ -23,7 +23,7 @@ namespace QSB.Animation.Player.Events
 		private void HandleSuitUp() => SendEvent(CreateMessage(true));
 		private void HandleSuitDown() => SendEvent(CreateMessage(false));
 
-		private ToggleMessage CreateMessage(bool value) => new ToggleMessage
+		private ToggleMessage CreateMessage(bool value) => new()
 		{
 			AboutId = LocalPlayerId,
 			ToggleValue = value

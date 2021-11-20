@@ -15,7 +15,7 @@ namespace QSB.DeathSync.Events
 
 		private void Handler(EndLoopReason type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<EndLoopReason> CreateMessage(EndLoopReason type) => new EnumMessage<EndLoopReason>
+		private EnumMessage<EndLoopReason> CreateMessage(EndLoopReason type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type

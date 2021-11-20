@@ -17,7 +17,7 @@ namespace QSB.RespawnSync.Events
 
 		private void Handler(uint playerId) => SendEvent(CreateMessage(playerId));
 
-		private PlayerMessage CreateMessage(uint playerId) => new PlayerMessage
+		private PlayerMessage CreateMessage(uint playerId) => new()
 		{
 			AboutId = playerId
 		};

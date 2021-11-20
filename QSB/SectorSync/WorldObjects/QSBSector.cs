@@ -63,7 +63,7 @@ namespace QSB.SectorSync.WorldObjects
 				return false;
 			}
 
-			if (AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
+			if (AttachedObject.name is "Sector_Shuttle" or "Sector_NomaiShuttleInterior")
 			{
 				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 				{

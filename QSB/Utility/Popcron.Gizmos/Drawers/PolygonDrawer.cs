@@ -22,12 +22,12 @@ namespace Popcron
 
 			for (var i = 0; i < points; i++)
 			{
-				var cx = Mathf.Cos(Mathf.Deg2Rad * step * i + offset) * radius;
-				var cy = Mathf.Sin(Mathf.Deg2Rad * step * i + offset) * radius;
+				var cx = Mathf.Cos((Mathf.Deg2Rad * step * i) + offset) * radius;
+				var cy = Mathf.Sin((Mathf.Deg2Rad * step * i) + offset) * radius;
 				var current = new Vector3(cx, cy);
 
-				var nx = Mathf.Cos(Mathf.Deg2Rad * step * (i + 1) + offset) * radius;
-				var ny = Mathf.Sin(Mathf.Deg2Rad * step * (i + 1) + offset) * radius;
+				var nx = Mathf.Cos((Mathf.Deg2Rad * step * (i + 1)) + offset) * radius;
+				var ny = Mathf.Sin((Mathf.Deg2Rad * step * (i + 1)) + offset) * radius;
 				var next = new Vector3(nx, ny);
 
 				buffer[i * 2] = position + (rotation * current);
