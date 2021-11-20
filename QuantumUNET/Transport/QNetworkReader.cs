@@ -53,16 +53,16 @@ namespace QuantumUNET.Transport
 			else
 			{
 				var b2 = ReadByte();
-				if (b >= 241 && b <= 248)
+				if (b is >= 241 and <= 248)
 				{
-					result = 240U + 256U * (uint)(b - 241) + b2;
+					result = 240U + (256U * (uint)(b - 241)) + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288U + 256U * b2 + b3;
+						result = 2288U + (256U * b2) + b3;
 					}
 					else
 					{
@@ -99,16 +99,16 @@ namespace QuantumUNET.Transport
 			else
 			{
 				var b2 = ReadByte();
-				if (b >= 241 && b <= 248)
+				if (b is >= 241 and <= 248)
 				{
-					result = 240UL + 256UL * (b - 241UL) + b2;
+					result = 240UL + (256UL * (b - 241UL)) + b2;
 				}
 				else
 				{
 					var b3 = ReadByte();
 					if (b == 249)
 					{
-						result = 2288UL + 256UL * b2 + b3;
+						result = 2288UL + (256UL * b2) + b3;
 					}
 					else
 					{
@@ -166,9 +166,9 @@ namespace QuantumUNET.Transport
 			return result;
 		}
 
-		public NetworkInstanceId ReadNetworkId() => new NetworkInstanceId(ReadPackedUInt32());
+		public NetworkInstanceId ReadNetworkId() => new(ReadPackedUInt32());
 
-		public NetworkSceneId ReadSceneId() => new NetworkSceneId(ReadPackedUInt32());
+		public NetworkSceneId ReadSceneId() => new(ReadPackedUInt32());
 
 		public byte ReadByte() => m_buf.ReadByte();
 
@@ -245,7 +245,7 @@ namespace QuantumUNET.Transport
 		}
 
 		public decimal ReadDecimal() =>
-			new decimal(new[]
+			new(new[]
 			{
 				ReadInt32(),
 				ReadInt32(),
@@ -319,25 +319,25 @@ namespace QuantumUNET.Transport
 			return num == 0 ? new byte[0] : ReadBytes(num);
 		}
 
-		public Vector2 ReadVector2() => new Vector2(ReadSingle(), ReadSingle());
+		public Vector2 ReadVector2() => new(ReadSingle(), ReadSingle());
 
-		public Vector3 ReadVector3() => new Vector3(ReadSingle(), ReadSingle(), ReadSingle());
+		public Vector3 ReadVector3() => new(ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Vector4 ReadVector4() => new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
+		public Vector4 ReadVector4() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Color ReadColor() => new Color(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
+		public Color ReadColor() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Color32 ReadColor32() => new Color32(ReadByte(), ReadByte(), ReadByte(), ReadByte());
+		public Color32 ReadColor32() => new(ReadByte(), ReadByte(), ReadByte(), ReadByte());
 
-		public Quaternion ReadQuaternion() => new Quaternion(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
+		public Quaternion ReadQuaternion() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Rect ReadRect() => new Rect(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
+		public Rect ReadRect() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-		public Plane ReadPlane() => new Plane(ReadVector3(), ReadSingle());
+		public Plane ReadPlane() => new(ReadVector3(), ReadSingle());
 
-		public Ray ReadRay() => new Ray(ReadVector3(), ReadVector3());
+		public Ray ReadRay() => new(ReadVector3(), ReadVector3());
 
-		public Matrix4x4 ReadMatrix4x4() => new Matrix4x4
+		public Matrix4x4 ReadMatrix4x4() => new()
 		{
 			m00 = ReadSingle(),
 			m01 = ReadSingle(),

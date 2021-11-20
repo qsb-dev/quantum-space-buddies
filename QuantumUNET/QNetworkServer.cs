@@ -1340,7 +1340,7 @@ namespace QuantumUNET
 
 		private bool m_LocalClientActive;
 
-		private readonly List<QNetworkConnection> m_LocalConnectionsFakeList = new List<QNetworkConnection>();
+		private readonly List<QNetworkConnection> m_LocalConnectionsFakeList = new();
 
 		private QULocalConnectionToClient m_LocalConnection;
 
@@ -1360,7 +1360,7 @@ namespace QuantumUNET
 
 		internal static ushort maxPacketSize;
 
-		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new QRemovePlayerMessage();
+		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new();
 
 		private class ServerSimpleWrapper : QNetworkServerSimple
 		{

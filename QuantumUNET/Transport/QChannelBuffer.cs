@@ -33,11 +33,11 @@ namespace QuantumUNET.Transport
 		private static List<QChannelPacket> _freePackets;
 		internal static int _pendingPacketCount;
 		private float _lastBufferedMessageCountTimer = Time.realtimeSinceStartup;
-		private static readonly QNetworkWriter _sendWriter = new QNetworkWriter();
-		private static readonly QNetworkWriter _fragmentWriter = new QNetworkWriter();
+		private static readonly QNetworkWriter _sendWriter = new();
+		private static readonly QNetworkWriter _fragmentWriter = new();
 		private const int _packetHeaderReserveSize = 100;
 		private bool _disposed;
-		internal QNetBuffer _fragmentBuffer = new QNetBuffer();
+		internal QNetBuffer _fragmentBuffer = new();
 		private bool _readingFragment;
 
 		public QChannelBuffer(QNetworkConnection conn, int bufferSize, byte cid, bool isReliable, bool isSequenced)
@@ -132,7 +132,7 @@ namespace QuantumUNET.Transport
 			{
 				result = false;
 			}
-			else if (value < 0 || value >= 512)
+			else if (value is < 0 or >= 512)
 			{
 				Debug.LogError(
 					$"Invalid MaxPendingBuffers for channel {_channelId}. Must be greater than zero and less than {512}");
