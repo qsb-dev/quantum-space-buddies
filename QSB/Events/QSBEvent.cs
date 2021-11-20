@@ -75,7 +75,7 @@ namespace QSB.Events
 
 			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QNetworkIdentity>() == null)
 			{
-				DebugLog.ToConsole($"Warning - Tried to handle message of type <{message.GetType().Name}> before localplayer was established.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to handle message of type <{GetType().Name}> before localplayer was established.", MessageType.Warning);
 				return;
 			}
 
@@ -92,7 +92,7 @@ namespace QSB.Events
 			}
 			catch (Exception ex)
 			{
-				DebugLog.ToConsole($"Error - Exception handling message {message.GetType().Name} : {ex}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Exception handling message {GetType().Name} : {ex}", MessageType.Error);
 			}
 		}
 	}
