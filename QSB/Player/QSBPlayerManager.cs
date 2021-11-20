@@ -82,8 +82,14 @@ namespace QSB.Player
 		{
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
-			player.PlayerStates = message.PlayerState;
-			if (LocalPlayer.PlayerStates.IsReady)
+			player.IsReady = message.IsReady;
+			player.FlashlightActive = message.FlashlightActive;
+			player.SuitedUp = message.SuitedUp;
+			player.ProbeLauncherEquipped = message.ProbeLauncherEquipped;
+			player.SignalscopeEquipped = message.SignalscopeEquipped;
+			player.TranslatorEquipped = message.TranslatorEquipped;
+			player.ProbeActive = message.ProbeActive;
+			if (LocalPlayer.IsReady)
 			{
 				player.UpdateStateObjects();
 			}
@@ -172,7 +178,7 @@ namespace QSB.Player
 				return null;
 			}
 
-			return playerList.Where(x => x.PlayerStates.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+			return playerList.Where(x => x.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
 
 		public static IEnumerable<Tuple<PlayerInfo, IQSBOWItem>> GetPlayerCarryItems()

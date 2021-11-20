@@ -25,7 +25,7 @@ namespace QSB.Tools.ProbeTool.Events
 		public override void OnReceiveRemote(bool server, FloatMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
-			if (!player.PlayerStates.IsReady || player.Probe == null)
+			if (!player.IsReady || player.Probe == null)
 			{
 				return;
 			}

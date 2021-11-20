@@ -88,6 +88,7 @@
     <Compile Include="ConversationSync\ConversationManager.cs" />
     <Compile Include="DeathSync\EndLoopReason.cs" />
     <Compile Include="DeathSync\Events\EndLoopEvent.cs" />
+    <Compile Include="Player\Events\LaunchCodesEvent.cs" />
     <Compile Include="RespawnSync\Events\PlayerRespawnEvent.cs" />
     <Compile Include="DeathSync\Events\StartLoopEvent.cs" />
     <Compile Include="DeathSync\Patches\MapPatches.cs" />
@@ -147,7 +148,6 @@
     <Compile Include="Player\Events\RequestStateResyncEvent.cs" />
     <Compile Include="Player\GamePlatform.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
-    <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />

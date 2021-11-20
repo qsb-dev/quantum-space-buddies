@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using System.Collections;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace QSB.StatueSync
 
 		private void Awake()
 		{
+			DebugLog.DebugWrite($"Awake");
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += (OWScene oldScene, OWScene newScene) => QSBPlayerManager.ShowAllPlayers();
 		}
@@ -19,10 +21,14 @@ namespace QSB.StatueSync
 			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene oldScene, OWScene newScene) => QSBPlayerManager.ShowAllPlayers();
 
 		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
-			=> StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
+		{
+			DebugLog.DebugWrite($"Begin Sequence");
+			StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
+		}
 
 		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 		{
+			DebugLog.DebugWrite($"Begin Remote Uplink Sequence");
 			HasStartedStatueLocally = true;
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
 			cameraEffectController.CloseEyes(0.5f);

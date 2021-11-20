@@ -3,6 +3,9 @@ using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
 using QSB.Player;
 using QSB.QuantumSync;
+using QSB.ShipSync;
+using QSB.ShipSync.TransformSync;
+using QSB.ShipSync.WorldObjects;
 using QSB.Syncs;
 using QSB.TimeSync;
 using QSB.WorldSync;
@@ -96,8 +99,11 @@ namespace QSB.Utility
 				{
 					WriteLine(1, $"Reason : NULL");
 				}
+
 				WriteLine(1, $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
 				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
+				WriteLine(1, $"Time Remaining : {Mathf.Floor(TimeLoop.GetSecondsRemaining() / 60f)}:{Mathf.Round(TimeLoop.GetSecondsRemaining() % 60f * 100f / 100f)}");
+				WriteLine(1, $"Loop Count : {TimeLoop.GetLoopCount()}");
 			}
 			#endregion
 
@@ -110,35 +116,56 @@ namespace QSB.Utility
 				WriteLine(2, $"State : {player.State}");
 				WriteLine(2, $"Dead : {player.IsDead}");
 				WriteLine(2, $"Visible : {player.Visible}");
+				WriteLine(2, $"Ready : {player.IsReady}");
 
-				if (player.PlayerStates.IsReady && QSBCore.WorldObjectsReady)
+				if (player.IsReady && QSBCore.WorldObjectsReady)
 				{
 					var networkTransform = player.TransformSync;
 					var referenceSector = networkTransform.ReferenceSector;
 					var referenceTransform = networkTransform.ReferenceTransform;
 					var parent = networkTransform.AttachedObject?.transform.parent;
-					var intermediary = networkTransform.GetValue<IntermediaryTransform>("_intermediaryTransform");
-					var interTransform = intermediary.GetReferenceTransform();
 
-					WriteLine(2, $" - L.Pos : {networkTransform.transform.localPosition}");
 					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}");
 					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}");
-					WriteLine(2, $" - Inter. Ref. Transform : {(interTransform == null ? "NULL" : interTransform.name)}");
 					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}");
-
-					/*
-					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
-					if (probeSync != default)
-					{
-						var probeSector = probeSync.ReferenceSector;
-						GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}", guiStyle);
-						offset2 += _debugLineSpacing;
-					}
-					*/
 				}
 			}
 			#endregion
 
+			#region Column3 - Ship data
+			
+			WriteLine(3, $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
+			if (ShipTransformSync.LocalInstance != null)
+			{
+				var instance = ShipTransformSync.LocalInstance;
+				if (QSBCore.IsHost)
+				{
+					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
+				}
+				var sector = instance.ReferenceSector;
+				WriteLine(3, $"Ref. Sector : {(sector != null ? sector.Name : "NULL")}");
+				var transform = instance.ReferenceTransform;
+				WriteLine(3, $"Ref. Transform : {(transform != null ? transform.name : "NULL")}");
+			}
+			else
+			{
+				WriteLine(3, $"ShipTransformSync.LocalInstance is null.");
+			}
+
+			WriteLine(3, $"QSBShipComponent");
+			foreach (var component in QSBWorldSync.GetWorldObjects<QSBShipComponent>())
+			{
+				WriteLine(3, $"- {component.AttachedObject.name} RepairFraction:{component.AttachedObject._repairFraction}");
+			}
+
+			WriteLine(3, $"QSBShipHull");
+			foreach (var hull in QSBWorldSync.GetWorldObjects<QSBShipHull>())
+			{
+				WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
+			}
+			#endregion
+
+			#region Column4 - Quantum Object Possesion
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
 				WriteLine(4, $"- {player.PlayerId}.{player.Name}");
@@ -151,6 +178,7 @@ namespace QSB.Utility
 					WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
 				}
 			}
+			#endregion
 		}
 	}
 }

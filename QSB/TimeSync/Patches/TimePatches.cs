@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using QSB.Utility;
 
 namespace QSB.TimeSync.Patches
 {
@@ -11,8 +12,10 @@ namespace QSB.TimeSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.OnStartOfTimeLoop))]
 		public static bool PlayerCameraEffectController_OnStartOfTimeLoop()
-			=> false;
-
+		{
+			DebugLog.DebugWrite($"OnStartOfTimeLoop");
+			return false;
+		}
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
 		public static bool StopPausing()

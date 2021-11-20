@@ -17,7 +17,13 @@ namespace QSB.Player.Events
 		{
 			AboutId = player.PlayerId,
 			PlayerName = player.Name,
-			PlayerState = player.PlayerStates,
+			IsReady = player.IsReady,
+			FlashlightActive = player.FlashlightActive,
+			SuitedUp = player.SuitedUp,
+			ProbeLauncherEquipped = player.ProbeLauncherEquipped,
+			SignalscopeEquipped = player.SignalscopeEquipped,
+			TranslatorEquipped = player.TranslatorEquipped,
+			ProbeActive = player.ProbeActive,
 			ClientState = player.State
 		};
 

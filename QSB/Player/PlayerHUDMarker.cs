@@ -34,7 +34,7 @@ namespace QSB.Player
 				Initialize();
 			}
 
-			if (!_isReady || !_player.PlayerStates.IsReady)
+			if (!_isReady || !_player.IsReady)
 			{
 				return;
 			}

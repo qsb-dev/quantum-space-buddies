@@ -32,11 +32,11 @@ namespace QSB.Tools.FlashlightTool.Events
 		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
-			player.PlayerStates.FlashlightActive = message.ToggleValue;
+			player.FlashlightActive = message.ToggleValue;
 			player.FlashLight?.UpdateState(message.ToggleValue);
 		}
 
 		public override void OnReceiveLocal(bool server, ToggleMessage message) =>
-			QSBPlayerManager.LocalPlayer.PlayerStates.FlashlightActive = message.ToggleValue;
+			QSBPlayerManager.LocalPlayer.FlashlightActive = message.ToggleValue;
 	}
 }
