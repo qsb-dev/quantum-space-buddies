@@ -13,7 +13,7 @@ namespace QSB.Player.Events
 
 		private void Handler() => SendEvent(CreateMessage(QSBPlayerManager.LocalPlayer));
 
-		private PlayerInformationMessage CreateMessage(PlayerInfo player) => new PlayerInformationMessage
+		private PlayerInformationMessage CreateMessage(PlayerInfo player) => new()
 		{
 			AboutId = player.PlayerId,
 			PlayerName = player.Name,

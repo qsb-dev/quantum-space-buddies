@@ -11,7 +11,7 @@ namespace QSB.TimeSync.Events
 
 		private void Handler(float time, int count) => SendEvent(CreateMessage(time, count));
 
-		private ServerTimeMessage CreateMessage(float time, int count) => new ServerTimeMessage
+		private ServerTimeMessage CreateMessage(float time, int count) => new()
 		{
 			AboutId = LocalPlayerId,
 			ServerTime = time,

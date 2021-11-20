@@ -13,7 +13,7 @@ namespace QSB.TranslationSync.Events
 
 		private void Handler(NomaiTextType type, int objId, int textId) => SendEvent(CreateMessage(type, objId, textId));
 
-		private SetAsTranslatedMessage CreateMessage(NomaiTextType type, int objId, int textId) => new SetAsTranslatedMessage
+		private SetAsTranslatedMessage CreateMessage(NomaiTextType type, int objId, int textId) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = objId,

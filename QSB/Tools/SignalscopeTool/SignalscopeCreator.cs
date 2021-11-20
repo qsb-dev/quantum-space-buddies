@@ -4,7 +4,7 @@ namespace QSB.Tools.SignalscopeTool
 {
 	internal static class SignalscopeCreator
 	{
-		private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
+		private static readonly Vector3 SignalscopeScale = new(1.5f, 1.5f, 1.5f);
 
 		internal static void CreateSignalscope(Transform cameraBody)
 		{

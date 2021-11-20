@@ -13,7 +13,7 @@ namespace QSB.SectorSync
 	public class SectorSync : MonoBehaviour
 	{
 		public bool IsReady { get; private set; }
-		public List<QSBSector> SectorList = new List<QSBSector>();
+		public List<QSBSector> SectorList = new();
 
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;

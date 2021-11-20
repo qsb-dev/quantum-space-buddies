@@ -15,7 +15,7 @@ namespace QSB.QuantumSync.Events
 
 		private void Handler(int objid, int stateIndex) => SendEvent(CreateMessage(objid, stateIndex));
 
-		private MultiStateChangeMessage CreateMessage(int objid, int stateIndex) => new MultiStateChangeMessage
+		private MultiStateChangeMessage CreateMessage(int objid, int stateIndex) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = objid,

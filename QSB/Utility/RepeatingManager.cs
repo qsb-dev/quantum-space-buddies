@@ -5,7 +5,7 @@ namespace QSB.Utility
 {
 	internal class RepeatingManager : MonoBehaviour
 	{
-		public static List<IRepeating> Repeatings = new List<IRepeating>();
+		public static List<IRepeating> Repeatings = new();
 
 		private const float TimeInterval = 0.4f;
 		private float _checkTimer = TimeInterval;

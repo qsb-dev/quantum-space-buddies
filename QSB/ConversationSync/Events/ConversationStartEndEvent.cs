@@ -15,7 +15,7 @@ namespace QSB.ConversationSync.Events
 
 		private void Handler(int objId, uint playerId, bool state) => SendEvent(CreateMessage(objId, playerId, state));
 
-		private ConversationStartEndMessage CreateMessage(int objId, uint playerId, bool state) => new ConversationStartEndMessage
+		private ConversationStartEndMessage CreateMessage(int objId, uint playerId, bool state) => new()
 		{
 			AboutId = LocalPlayerId,
 			TreeId = objId,

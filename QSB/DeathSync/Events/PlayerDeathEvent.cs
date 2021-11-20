@@ -15,7 +15,7 @@ namespace QSB.DeathSync.Events
 
 		private void Handler(DeathType type) => SendEvent(CreateMessage(type));
 
-		private PlayerDeathMessage CreateMessage(DeathType type) => new PlayerDeathMessage
+		private PlayerDeathMessage CreateMessage(DeathType type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type,

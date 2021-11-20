@@ -17,7 +17,7 @@ namespace QSB.MeteorSync.Events
 
 		private void Handler(QSBMeteor qsbMeteor) => SendEvent(CreateMessage(qsbMeteor));
 
-		private WorldObjectMessage CreateMessage(QSBMeteor qsbMeteor) => new WorldObjectMessage
+		private WorldObjectMessage CreateMessage(QSBMeteor qsbMeteor) => new()
 		{
 			ObjectId = qsbMeteor.ObjectId
 		};

@@ -18,7 +18,7 @@ namespace QSB.RoastingSync.Events
 
 		private void Handler(MarshmallowEventType type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<MarshmallowEventType> CreateMessage(MarshmallowEventType type) => new EnumMessage<MarshmallowEventType>
+		private EnumMessage<MarshmallowEventType> CreateMessage(MarshmallowEventType type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type

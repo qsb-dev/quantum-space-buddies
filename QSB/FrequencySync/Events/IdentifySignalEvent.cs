@@ -13,7 +13,7 @@ namespace QSB.FrequencySync.Events
 
 		private void Handler(SignalName name) => SendEvent(CreateMessage(name));
 
-		private EnumMessage<SignalName> CreateMessage(SignalName name) => new EnumMessage<SignalName>
+		private EnumMessage<SignalName> CreateMessage(SignalName name) => new()
 		{
 			AboutId = QSBPlayerManager.LocalPlayerId,
 			EnumValue = name

@@ -324,7 +324,7 @@ namespace QSB.TimeSync
 
 			// Checks to pause/fastforward
 
-			if (clientState == ClientState.NotLoaded || clientState == ClientState.InTitleScreen)
+			if (clientState is ClientState.NotLoaded or ClientState.InTitleScreen)
 			{
 				return;
 			}
@@ -400,7 +400,7 @@ namespace QSB.TimeSync
 		{
 			var diff = GetTimeDifference();
 
-			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
+			if (diff is > PauseOrFastForwardThreshold or < (-PauseOrFastForwardThreshold))
 			{
 				WakeUpOrSleep();
 				return;

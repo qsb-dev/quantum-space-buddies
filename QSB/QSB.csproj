@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <LangVersion>9</LangVersion>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -88,6 +91,8 @@
     <Compile Include="ConversationSync\ConversationManager.cs" />
     <Compile Include="DeathSync\EndLoopReason.cs" />
     <Compile Include="DeathSync\Events\EndLoopEvent.cs" />
+    <Compile Include="Player\Events\LaunchCodesEvent.cs" />
+    <Compile Include="Player\PlayerState.cs" />
     <Compile Include="RespawnSync\Events\PlayerRespawnEvent.cs" />
     <Compile Include="DeathSync\Events\StartLoopEvent.cs" />
     <Compile Include="DeathSync\Patches\MapPatches.cs" />
@@ -147,7 +152,6 @@
     <Compile Include="Player\Events\RequestStateResyncEvent.cs" />
     <Compile Include="Player\GamePlatform.cs" />
     <Compile Include="Player\Patches\PlayerPatches.cs" />
-    <Compile Include="Player\PlayerState.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraPlatform.cs" />
     <Compile Include="PoolSync\CustomNomaiRemoteCameraStreaming.cs" />
     <Compile Include="ItemSync\Events\DropItemEvent.cs" />

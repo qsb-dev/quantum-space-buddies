@@ -20,7 +20,7 @@ namespace QSB.ItemSync.Events
 		private void Handler(int socketId, int itemId, SocketEventType type)
 			=> SendEvent(CreateMessage(socketId, itemId, type));
 
-		private SocketItemMessage CreateMessage(int socketId, int itemId, SocketEventType type) => new SocketItemMessage
+		private SocketItemMessage CreateMessage(int socketId, int itemId, SocketEventType type) => new()
 		{
 			AboutId = QSBPlayerManager.LocalPlayerId,
 			SocketId = socketId,

@@ -118,7 +118,7 @@ namespace QSB.MeteorSync.Patches
 				qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
 				qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
 
-				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed;
+				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + (__instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed);
 				var angularVelocity = __instance.transform.forward * 2f;
 				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
 				if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
@@ -184,7 +184,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				var vector = __instance._attachedBody.GetPosition() - __instance._anchorBody.GetPosition();
 				var d = Mathf.Min(distance, qsbFragment.LeashLength - vector.magnitude);
-				__instance._attachedBody.SetPosition(__instance._anchorBody.GetPosition() + vector.normalized * d);
+				__instance._attachedBody.SetPosition(__instance._anchorBody.GetPosition() + (vector.normalized * d));
 			}
 
 			return false;

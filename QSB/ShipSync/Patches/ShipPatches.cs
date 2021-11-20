@@ -224,7 +224,7 @@ namespace QSB.ShipSync.Patches
 				return false;
 			}
 
-			____integrity = Mathf.Min(____integrity + Time.deltaTime / ____repairTime, 1f);
+			____integrity = Mathf.Min(____integrity + (Time.deltaTime / ____repairTime), 1f);
 			QSBEventManager.FireEvent(EventNames.QSBHullRepairTick, __instance, ____integrity);
 
 			if (____integrity >= 1f)

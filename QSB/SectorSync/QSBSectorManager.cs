@@ -13,12 +13,12 @@ namespace QSB.SectorSync
 	{
 		public static QSBSectorManager Instance { get; private set; }
 		public bool IsReady { get; private set; }
-		public List<QSBSector> FakeSectors = new List<QSBSector>();
+		public List<QSBSector> FakeSectors = new();
 
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<BaseSectoredSync> SectoredSyncs = new List<BaseSectoredSync>();
+		public List<BaseSectoredSync> SectoredSyncs = new();
 
 		public void Invoke()
 		{

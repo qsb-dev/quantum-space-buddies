@@ -6,7 +6,7 @@ namespace QSB.Animation.NPC.WorldObjects
 {
 	internal class QSBCharacterAnimController : NpcAnimController<CharacterAnimController>
 	{
-		private readonly List<PlayerInfo> _playersInHeadZone = new List<PlayerInfo>();
+		private readonly List<PlayerInfo> _playersInHeadZone = new();
 
 		public List<PlayerInfo> GetPlayersInHeadZone()
 			=> _playersInHeadZone;

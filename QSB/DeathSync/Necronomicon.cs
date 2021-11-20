@@ -5,7 +5,7 @@ namespace QSB.DeathSync
 {
 	public static class Necronomicon
 	{
-		private static readonly Dictionary<DeathType, string[]> Darkhold = new Dictionary<DeathType, string[]>
+		private static readonly Dictionary<DeathType, string[]> Darkhold = new()
 		{
 			{ DeathType.Default, new[] // Running out of health
 			{

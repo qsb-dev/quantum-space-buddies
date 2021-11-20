@@ -47,23 +47,12 @@ namespace QSB.Animation.Player.Thrusters
 				var gameObject = controller.gameObject;
 				var oldThruster = controller.GetValue<Thruster>("_thruster");
 				var oldLight = controller.GetValue<Light>("_light");
-
-				// pain
-				Vector3 localPos;
-				switch (oldThruster)
+				var localPos = oldThruster switch
 				{
-					case Thruster.Up_RightThruster:
-					case Thruster.Up_LeftThruster:
-						localPos = new Vector3(0, 0, 3);
-						break;
-					case Thruster.Down_RightThruster:
-					case Thruster.Down_LeftThruster:
-						localPos = new Vector3(0, 0, 7);
-						break;
-					default:
-						localPos = new Vector3(0, 0, 5);
-						break;
-				}
+					Thruster.Up_RightThruster or Thruster.Up_LeftThruster => new Vector3(0, 0, 3),
+					Thruster.Down_RightThruster or Thruster.Down_LeftThruster => new Vector3(0, 0, 7),
+					_ => new Vector3(0, 0, 5),
+				};
 				oldLight.transform.localPosition = localPos;
 
 				var oldAnimCurve = controller.GetValue<AnimationCurve>("_scaleByThrust");

@@ -16,8 +16,8 @@ namespace QSB.WorldSync
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
-		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
-		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
+		private static readonly List<IWorldObject> WorldObjects = new();
+		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();

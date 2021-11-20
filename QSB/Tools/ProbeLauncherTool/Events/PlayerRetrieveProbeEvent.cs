@@ -16,7 +16,7 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 
 		private void Handler(bool playEffects) => SendEvent(CreateMessage(playEffects));
 
-		private BoolMessage CreateMessage(bool playEffects) => new BoolMessage
+		private BoolMessage CreateMessage(bool playEffects) => new()
 		{
 			AboutId = LocalPlayerId,
 			Value = playEffects

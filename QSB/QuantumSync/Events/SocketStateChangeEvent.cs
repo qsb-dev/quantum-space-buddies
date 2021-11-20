@@ -16,7 +16,7 @@ namespace QSB.QuantumSync.Events
 
 		private void Handler(int objid, int socketid, Quaternion localRotation) => SendEvent(CreateMessage(objid, socketid, localRotation));
 
-		private SocketStateChangeMessage CreateMessage(int objid, int socketid, Quaternion localRotation) => new SocketStateChangeMessage
+		private SocketStateChangeMessage CreateMessage(int objid, int socketid, Quaternion localRotation) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = objid,

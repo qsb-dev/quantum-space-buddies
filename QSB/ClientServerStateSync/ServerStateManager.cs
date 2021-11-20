@@ -133,9 +133,9 @@ namespace QSB.ClientServerStateSync
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
 				if (QSBPlayerManager.PlayerList.All(x
-					=> x.State == ClientState.WaitingForOthersToReadyInSolarSystem
-					|| x.State == ClientState.AliveInSolarSystem
-					|| x.State == ClientState.AliveInEye))
+					=> x.State is ClientState.WaitingForOthersToReadyInSolarSystem
+					or ClientState.AliveInSolarSystem
+					or ClientState.AliveInEye))
 				{
 					DebugLog.DebugWrite($"All ready!!");
 					QSBEventManager.FireEvent(EventNames.QSBStartLoop);

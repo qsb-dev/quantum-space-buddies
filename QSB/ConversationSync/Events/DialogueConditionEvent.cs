@@ -12,7 +12,7 @@ namespace QSB.ConversationSync.Events
 
 		private void Handler(string name, bool state) => SendEvent(CreateMessage(name, state));
 
-		private DialogueConditionMessage CreateMessage(string name, bool state) => new DialogueConditionMessage
+		private DialogueConditionMessage CreateMessage(string name, bool state) => new()
 		{
 			AboutId = LocalPlayerId,
 			ConditionName = name,
