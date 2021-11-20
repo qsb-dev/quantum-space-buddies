@@ -662,8 +662,7 @@ namespace QNetWeaver
 		{
 			if (i.OpCode == OpCodes.Call || i.OpCode == OpCodes.Callvirt)
 			{
-				var methodReference = i.Operand as MethodReference;
-				if (methodReference != null)
+				if (i.Operand is MethodReference methodReference)
 				{
 					ProcessInstructionMethod(moduleDef, td, md, i, methodReference, iCount);
 				}
@@ -671,8 +670,7 @@ namespace QNetWeaver
 
 			if (i.OpCode == OpCodes.Stfld)
 			{
-				var fieldDefinition = i.Operand as FieldDefinition;
-				if (fieldDefinition != null)
+				if (i.Operand is FieldDefinition fieldDefinition)
 				{
 					ProcessInstructionField(td, md, i, fieldDefinition);
 				}
@@ -2025,7 +2023,7 @@ namespace QNetWeaver
 
 		public static AssemblyDefinition UNetAssemblyDefinition;
 
-		private static bool m_DebugFlag = true;
+		private static readonly bool m_DebugFlag = true;
 
 		public static bool fail;
 

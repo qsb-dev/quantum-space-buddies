@@ -302,7 +302,7 @@ namespace QNetWeaver
 			return methodDefinition2;
 		}
 
-		private TypeDefinition m_TypeDef;
+		private readonly TypeDefinition m_TypeDef;
 
 		private TypeReference m_ItemType;
 	}

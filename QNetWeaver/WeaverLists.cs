@@ -5,21 +5,21 @@ namespace QNetWeaver
 {
 	internal class WeaverLists
 	{
-		public List<FieldDefinition> replacedFields = new List<FieldDefinition>();
+		public List<FieldDefinition> replacedFields = new();
 
-		public List<MethodDefinition> replacementProperties = new List<MethodDefinition>();
+		public List<MethodDefinition> replacementProperties = new();
 
-		public List<FieldDefinition> netIdFields = new List<FieldDefinition>();
+		public List<FieldDefinition> netIdFields = new();
 
-		public List<MethodDefinition> replacedMethods = new List<MethodDefinition>();
+		public List<MethodDefinition> replacedMethods = new();
 
-		public List<MethodDefinition> replacementMethods = new List<MethodDefinition>();
+		public List<MethodDefinition> replacementMethods = new();
 
-		public HashSet<string> replacementMethodNames = new HashSet<string>();
+		public HashSet<string> replacementMethodNames = new();
 
-		public List<EventDefinition> replacedEvents = new List<EventDefinition>();
+		public List<EventDefinition> replacedEvents = new();
 
-		public List<MethodDefinition> replacementEvents = new List<MethodDefinition>();
+		public List<MethodDefinition> replacementEvents = new();
 
 		public Dictionary<string, MethodReference> readFuncs;
 
@@ -27,12 +27,12 @@ namespace QNetWeaver
 
 		public Dictionary<string, MethodReference> writeFuncs;
 
-		public List<MethodDefinition> generatedReadFunctions = new List<MethodDefinition>();
+		public List<MethodDefinition> generatedReadFunctions = new();
 
-		public List<MethodDefinition> generatedWriteFunctions = new List<MethodDefinition>();
+		public List<MethodDefinition> generatedWriteFunctions = new();
 
 		public TypeDefinition generateContainerClass;
 
-		public Dictionary<string, int> numSyncVars = new Dictionary<string, int>();
+		public Dictionary<string, int> numSyncVars = new();
 	}
 }

@@ -138,6 +138,6 @@ namespace QNetWeaver
 			}
 		}
 
-		private TypeDefinition m_td;
+		private readonly TypeDefinition m_td;
 	}
 }

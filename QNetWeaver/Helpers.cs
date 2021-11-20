@@ -15,7 +15,7 @@ namespace QNetWeaver
 		public static string UnityEngineDLLDirectoryName()
 		{
 			var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-			return (directoryName == null) ? null : directoryName.Replace("file:\\", "");
+			return directoryName?.Replace("file:\\", "");
 		}
 
 		public static ISymbolReaderProvider GetSymbolReaderProvider(string inputFile)

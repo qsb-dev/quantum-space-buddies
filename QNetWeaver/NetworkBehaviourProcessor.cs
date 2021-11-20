@@ -282,7 +282,7 @@ namespace QNetWeaver
 					}
 
 					ilprocessor.Append(ilprocessor.Create(OpCodes.Ret));
-					m_td.Attributes = (m_td.Attributes & ~TypeAttributes.BeforeFieldInit);
+					m_td.Attributes &= ~TypeAttributes.BeforeFieldInit;
 					if (m_SyncLists.Count != 0)
 					{
 						MethodDefinition methodDefinition8 = null;
@@ -2188,43 +2188,43 @@ namespace QNetWeaver
 			return false;
 		}
 
-		private List<FieldDefinition> m_SyncVars = new List<FieldDefinition>();
+		private readonly List<FieldDefinition> m_SyncVars = new();
 
-		private List<FieldDefinition> m_SyncLists = new List<FieldDefinition>();
+		private readonly List<FieldDefinition> m_SyncLists = new();
 
-		private List<FieldDefinition> m_SyncVarNetIds = new List<FieldDefinition>();
+		private readonly List<FieldDefinition> m_SyncVarNetIds = new();
 
-		private List<MethodDefinition> m_Cmds = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_Cmds = new();
 
-		private List<MethodDefinition> m_Rpcs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_Rpcs = new();
 
-		private List<MethodDefinition> m_TargetRpcs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_TargetRpcs = new();
 
-		private List<EventDefinition> m_Events = new List<EventDefinition>();
+		private readonly List<EventDefinition> m_Events = new();
 
-		private List<FieldDefinition> m_SyncListStaticFields = new List<FieldDefinition>();
+		private readonly List<FieldDefinition> m_SyncListStaticFields = new();
 
-		private List<MethodDefinition> m_CmdInvocationFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_CmdInvocationFuncs = new();
 
-		private List<MethodDefinition> m_SyncListInvocationFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_SyncListInvocationFuncs = new();
 
-		private List<MethodDefinition> m_RpcInvocationFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_RpcInvocationFuncs = new();
 
-		private List<MethodDefinition> m_TargetRpcInvocationFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_TargetRpcInvocationFuncs = new();
 
-		private List<MethodDefinition> m_EventInvocationFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_EventInvocationFuncs = new();
 
-		private List<MethodDefinition> m_CmdCallFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_CmdCallFuncs = new();
 
-		private List<MethodDefinition> m_RpcCallFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_RpcCallFuncs = new();
 
-		private List<MethodDefinition> m_TargetRpcCallFuncs = new List<MethodDefinition>();
+		private readonly List<MethodDefinition> m_TargetRpcCallFuncs = new();
 
 		private const int k_SyncVarLimit = 32;
 
 		private int m_QosChannel;
 
-		private TypeDefinition m_td;
+		private readonly TypeDefinition m_td;
 
 		private int m_NetIdFieldCounter;
 

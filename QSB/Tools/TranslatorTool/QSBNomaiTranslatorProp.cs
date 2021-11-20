@@ -15,7 +15,7 @@ namespace QSB.Tools.TranslatorTool
 		private TranslatorTargetBeam _targetBeam;
 		private QSBTranslatorScanBeam[] _scanBeams;
 		private bool _isTranslating;
-		
+
 
 		private void Awake()
 		{

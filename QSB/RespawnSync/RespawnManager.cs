@@ -67,7 +67,7 @@ namespace QSB.RespawnSync
 				DebugLog.ToConsole($"Error - Couldn't find the ship's PlayerRecoveryPoint!", OWML.Common.MessageType.Error);
 				return;
 			}
-			
+
 			_owRecoveryPoint.SetActive(false);
 
 			var Systems_Supplies = _owRecoveryPoint.gameObject.transform.parent;
