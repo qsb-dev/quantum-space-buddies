@@ -10,6 +10,8 @@ using QSB.Syncs;
 using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -63,6 +65,13 @@ namespace QSB.Utility
 			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiStyle);
 		}
 
+		private void WriteLine(int collumnID, string text, Color color)
+		{
+			guiStyle.normal.textColor = color;
+			WriteLine(collumnID, text);
+			guiStyle.normal.textColor = Color.white;
+		}
+
 		public void OnGUI()
 		{
 			if (!QSBCore.DebugMode)
@@ -97,7 +106,7 @@ namespace QSB.Utility
 				}
 				else if (currentState != WakeUpSync.State.Loaded && currentState != WakeUpSync.State.NotLoaded && reason == null)
 				{
-					WriteLine(1, $"Reason : NULL");
+					WriteLine(1, $"Reason : NULL", Color.red);
 				}
 
 				WriteLine(1, $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
@@ -117,6 +126,7 @@ namespace QSB.Utility
 				WriteLine(2, $"Dead : {player.IsDead}");
 				WriteLine(2, $"Visible : {player.Visible}");
 				WriteLine(2, $"Ready : {player.IsReady}");
+				WriteLine(2, $"Suited Up : {player.SuitedUp}");
 
 				if (player.IsReady && QSBCore.WorldObjectsReady)
 				{
@@ -125,9 +135,9 @@ namespace QSB.Utility
 					var referenceTransform = networkTransform.ReferenceTransform;
 					var parent = networkTransform.AttachedObject?.transform.parent;
 
-					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}");
-					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}");
-					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}");
+					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
+					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
+					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}", parent == null ? Color.red : Color.white);
 				}
 			}
 			#endregion
@@ -143,13 +153,13 @@ namespace QSB.Utility
 					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
 				}
 				var sector = instance.ReferenceSector;
-				WriteLine(3, $"Ref. Sector : {(sector != null ? sector.Name : "NULL")}");
+				WriteLine(3, $"Ref. Sector : {(sector != null ? sector.Name : "NULL")}", sector == null ? Color.red : Color.white);
 				var transform = instance.ReferenceTransform;
-				WriteLine(3, $"Ref. Transform : {(transform != null ? transform.name : "NULL")}");
+				WriteLine(3, $"Ref. Transform : {(transform != null ? transform.name : "NULL")}", transform == null ? Color.red : Color.white);
 			}
 			else
 			{
-				WriteLine(3, $"ShipTransformSync.LocalInstance is null.");
+				WriteLine(3, $"ShipTransformSync.LocalInstance is null.", Color.red);
 			}
 
 			WriteLine(3, $"QSBShipComponent");
