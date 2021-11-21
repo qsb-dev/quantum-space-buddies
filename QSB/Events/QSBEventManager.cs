@@ -149,7 +149,7 @@ namespace QSB.Events
 					}
 				}
 
-				DebugLog.DebugWrite($"Error - These QSBEvents handle the same EventType!\r\n{totalSb}", MessageType.Error);
+				DebugLog.ToConsole($"Error - These QSBEvents handle the same EventType!\r\n{totalSb}", MessageType.Error);
 				return;
 			}
 
