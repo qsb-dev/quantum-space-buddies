@@ -70,7 +70,7 @@ namespace QSB.Player.Events
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = true;
+				QSBPlayerManager.LocalPlayer.IsReady = true;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			}
 		}

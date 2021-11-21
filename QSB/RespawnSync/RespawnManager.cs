@@ -49,6 +49,7 @@ namespace QSB.RespawnSync
 		private void Init(OWScene newScene, bool inUniverse)
 		{
 			QSBPlayerManager.ShowAllPlayers();
+			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
 			_playersPendingRespawn.Clear();
 
@@ -99,7 +100,6 @@ namespace QSB.RespawnSync
 
 		public void TriggerRespawnMap()
 		{
-			DebugLog.DebugWrite($"TRIGGER RESPAWN MAP");
 			QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
 			QSBCore.UnityEvents.FireOnNextUpdate(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 		}

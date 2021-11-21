@@ -3,10 +3,16 @@ using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
 using QSB.Player;
 using QSB.QuantumSync;
+using QSB.ShipSync;
+using QSB.ShipSync.TransformSync;
+using QSB.ShipSync.WorldObjects;
 using QSB.Syncs;
 using QSB.TimeSync;
 using QSB.WorldSync;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -60,6 +66,13 @@ namespace QSB.Utility
 			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiStyle);
 		}
 
+		private void WriteLine(int collumnID, string text, Color color)
+		{
+			guiStyle.normal.textColor = color;
+			WriteLine(collumnID, text);
+			guiStyle.normal.textColor = Color.white;
+		}
+
 		public void OnGUI()
 		{
 			if (!QSBCore.DebugMode)
@@ -94,10 +107,13 @@ namespace QSB.Utility
 				}
 				else if (currentState != WakeUpSync.State.Loaded && currentState != WakeUpSync.State.NotLoaded && reason == null)
 				{
-					WriteLine(1, $"Reason : NULL");
+					WriteLine(1, $"Reason : NULL", Color.red);
 				}
+
 				WriteLine(1, $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
 				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
+				WriteLine(1, $"Time Remaining : {Mathf.Floor(TimeLoop.GetSecondsRemaining() / 60f)}:{Mathf.Round(TimeLoop.GetSecondsRemaining() % 60f * 100f / 100f)}");
+				WriteLine(1, $"Loop Count : {TimeLoop.GetLoopCount()}");
 			}
 			#endregion
 
@@ -106,41 +122,91 @@ namespace QSB.Utility
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
+				if (player == null)
+				{
+					WriteLine(2, $"NULL PLAYER", Color.red);
+					continue;
+				}
+
 				WriteLine(2, $"{player.PlayerId}.{player.Name}");
 				WriteLine(2, $"State : {player.State}");
 				WriteLine(2, $"Dead : {player.IsDead}");
 				WriteLine(2, $"Visible : {player.Visible}");
+				WriteLine(2, $"Ready : {player.IsReady}");
+				WriteLine(2, $"Suited Up : {player.SuitedUp}");
 
-				if (player.PlayerStates.IsReady && QSBCore.WorldObjectsReady)
+				if (player.IsReady && QSBCore.WorldObjectsReady)
 				{
 					var networkTransform = player.TransformSync;
 					var referenceSector = networkTransform.ReferenceSector;
 					var referenceTransform = networkTransform.ReferenceTransform;
 					var parent = networkTransform.AttachedObject?.transform.parent;
-					var intermediary = networkTransform.GetValue<IntermediaryTransform>("_intermediaryTransform");
-					var interTransform = intermediary.GetReferenceTransform();
 
-					WriteLine(2, $" - L.Pos : {networkTransform.transform.localPosition}");
-					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}");
-					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}");
-					WriteLine(2, $" - Inter. Ref. Transform : {(interTransform == null ? "NULL" : interTransform.name)}");
-					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}");
-
-					/*
-					var probeSync = SyncBase.GetPlayers<PlayerProbeSync>(player);
-					if (probeSync != default)
-					{
-						var probeSector = probeSync.ReferenceSector;
-						GUI.Label(new Rect(420, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}", guiStyle);
-						offset2 += _debugLineSpacing;
-					}
-					*/
+					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
+					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
+					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}", parent == null ? Color.red : Color.white);
 				}
 			}
 			#endregion
 
+			#region Column3 - Ship data
+			
+			WriteLine(3, $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
+			if (ShipTransformSync.LocalInstance != null)
+			{
+				var instance = ShipTransformSync.LocalInstance;
+				if (QSBCore.IsHost)
+				{
+					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
+				}
+				var sector = instance.ReferenceSector;
+				WriteLine(3, $"Ref. Sector : {(sector != null ? sector.Name : "NULL")}", sector == null ? Color.red : Color.white);
+				var transform = instance.ReferenceTransform;
+				WriteLine(3, $"Ref. Transform : {(transform != null ? transform.name : "NULL")}", transform == null ? Color.red : Color.white);
+			}
+			else
+			{
+				WriteLine(3, $"ShipTransformSync.LocalInstance is null.", Color.red);
+			}
+
+			WriteLine(3, $"QSBShipComponent");
+			foreach (var component in QSBWorldSync.GetWorldObjects<QSBShipComponent>())
+			{
+				var attachedObject = component.AttachedObject;
+				if (attachedObject == null)
+				{
+					WriteLine(3, $"- {component.ObjectId} NULL ATTACHEDOBJECT", Color.red);
+				}
+				else
+				{
+					WriteLine(3, $"- {component.AttachedObject.name} RepairFraction:{component.AttachedObject._repairFraction}");
+				}
+			}
+
+			WriteLine(3, $"QSBShipHull");
+			foreach (var hull in QSBWorldSync.GetWorldObjects<QSBShipHull>())
+			{
+				var attachedObject = hull.AttachedObject;
+				if (attachedObject == null)
+{
+					WriteLine(3, $"- {hull.ObjectId} NULL ATTACHEDOBJECT", Color.red);
+				}
+				else
+				{
+					WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
+				}
+			}
+			#endregion
+
+			#region Column4 - Quantum Object Possesion
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
+				if (player == null)
+				{
+					WriteLine(4, $"- NULL PLAYER", Color.red);
+					continue;
+				}
+
 				WriteLine(4, $"- {player.PlayerId}.{player.Name}");
 				var allQuantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 				var ownedQuantumObjects = allQuantumObjects.Where(x => x.ControllingPlayer == player.PlayerId);
@@ -148,9 +214,17 @@ namespace QSB.Utility
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
 					var qsbObj = quantumObject as IWorldObject;
-					WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
+					if (qsbObj == null)
+					{
+						WriteLine(4, $"NULL QSBOBJ", Color.red);
+					}
+					else
+					{
+						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
+					}
 				}
 			}
+			#endregion
 		}
 	}
 }

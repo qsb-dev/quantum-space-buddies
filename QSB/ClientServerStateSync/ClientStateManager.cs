@@ -29,7 +29,6 @@ namespace QSB.ClientServerStateSync
 				return;
 			}
 
-			DebugLog.DebugWrite($"CHANGE CLIENT STATE FROM {QSBPlayerManager.LocalPlayer.State} to {newState}");
 			QSBPlayerManager.LocalPlayer.State = newState;
 			OnChangeState?.Invoke(newState);
 		}
@@ -46,29 +45,24 @@ namespace QSB.ClientServerStateSync
 				switch (newScene)
 				{
 					case OWScene.TitleScreen:
-						DebugLog.DebugWrite($"SERVER LOAD TITLESCREEN");
 						newState = ClientState.InTitleScreen;
 						break;
 					case OWScene.Credits_Fast:
-						DebugLog.DebugWrite($"SERVER LOAD SHORT CREDITS");
 						newState = ClientState.WatchingShortCredits;
 						break;
 					case OWScene.Credits_Final:
 					case OWScene.PostCreditsScene:
-						DebugLog.DebugWrite($"SERVER LOAD LONG CREDITS");
 						newState = ClientState.WatchingLongCredits;
 						break;
 					case OWScene.SolarSystem:
 						if (oldScene == OWScene.SolarSystem)
 						{
 							// reloading scene
-							DebugLog.DebugWrite($"SERVER RELOAD SOLARSYSTEM");
 							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
 						}
 						else
 						{
 							// loading in from title screen
-							DebugLog.DebugWrite($"SERVER LOAD SOLARSYSTEM");
 							newState = ClientState.AliveInSolarSystem;
 						}
 						break;
@@ -85,22 +79,18 @@ namespace QSB.ClientServerStateSync
 				switch (newScene)
 				{
 					case OWScene.TitleScreen:
-						DebugLog.DebugWrite($"CLIENT LOAD TITLESCREEN");
 						newState = ClientState.InTitleScreen;
 						break;
 					case OWScene.Credits_Fast:
-						DebugLog.DebugWrite($"CLIENT LOAD SHORT CREDITS");
 						newState = ClientState.WatchingShortCredits;
 						break;
 					case OWScene.Credits_Final:
 					case OWScene.PostCreditsScene:
-						DebugLog.DebugWrite($"CLIENT LOAD LONG CREDITS");
 						newState = ClientState.WatchingLongCredits;
 						break;
 					case OWScene.SolarSystem:
 						if (serverState == ServerState.WaitingForAllPlayersToDie)
 						{
-							DebugLog.DebugWrite($"SEVER IN DEATH PHASE - WAIT");
 							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
 							break;
 						}
@@ -108,13 +98,11 @@ namespace QSB.ClientServerStateSync
 						if (oldScene == OWScene.SolarSystem)
 						{
 							// reloading scene
-							DebugLog.DebugWrite($"CLIENT RELOAD SOLARSYSTEM");
 							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
 						}
 						else
 						{
 							// loading in from title screen
-							DebugLog.DebugWrite($"CLIENT LOAD SOLARSYSTEM");
 							if (serverState == ServerState.WaitingForAllPlayersToReady)
 							{
 								newState = ClientState.WaitingForOthersToReadyInSolarSystem;
@@ -171,32 +159,17 @@ namespace QSB.ClientServerStateSync
 
 		private ClientState ForceGetCurrentState()
 		{
-			DebugLog.DebugWrite($"ForceGetCurrentState");
 			var currentScene = LoadManager.GetCurrentScene();
-			var lastScene = LoadManager.GetPreviousScene();
 
-			switch (currentScene)
+			return currentScene switch
 			{
-				case OWScene.TitleScreen:
-					DebugLog.DebugWrite($"- TitleScreen");
-					return ClientState.InTitleScreen;
-				case OWScene.Credits_Fast:
-					DebugLog.DebugWrite($"- Short Credits");
-					return ClientState.WatchingShortCredits;
-				case OWScene.Credits_Final:
-				case OWScene.PostCreditsScene:
-					DebugLog.DebugWrite($"- Long Credits");
-					return ClientState.WatchingLongCredits;
-				case OWScene.SolarSystem:
-					DebugLog.DebugWrite($"- SolarSystem");
-					return ClientState.AliveInSolarSystem;
-				case OWScene.EyeOfTheUniverse:
-					DebugLog.DebugWrite($"- Eye");
-					return ClientState.AliveInEye;
-				default:
-					DebugLog.DebugWrite($"- Not Loaded");
-					return ClientState.NotLoaded;
-			}
+				OWScene.TitleScreen => ClientState.InTitleScreen,
+				OWScene.Credits_Fast => ClientState.WatchingShortCredits,
+				OWScene.Credits_Final or OWScene.PostCreditsScene => ClientState.WatchingLongCredits,
+				OWScene.SolarSystem => ClientState.AliveInSolarSystem,
+				OWScene.EyeOfTheUniverse => ClientState.AliveInEye,
+				_ => ClientState.NotLoaded,
+			};
 		}
 	}
 }

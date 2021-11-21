@@ -121,7 +121,7 @@ namespace QSB.Syncs.Sectored
 			{
 				writer.Write(-1);
 			}
-			else if (!Player.PlayerStates.IsReady)
+			else if (!Player.IsReady)
 			{
 				writer.Write(-1);
 			}

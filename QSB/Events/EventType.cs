@@ -8,6 +8,7 @@
 		DebugEvent,
 		SatelliteProjector,
 		SatelliteProjectorSnapshot,
+		LaunchCodes,
 
 		/*
 		 * SERVER EVENTS

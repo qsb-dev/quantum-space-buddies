@@ -32,6 +32,9 @@ using QSB.Utility.Events;
 using System.Collections.Generic;
 using QSB.MeteorSync.Events;
 using QSB.RespawnSync.Events;
+using System.Linq;
+using HarmonyLib;
+using System.Text;
 
 namespace QSB.Events
 {
@@ -77,6 +80,7 @@ namespace QSB.Events
 				new DebugEvent(),
 				new SatelliteProjectorEvent(),
 				new SatelliteProjectorSnapshotEvent(),
+				new LaunchCodesEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
@@ -128,6 +132,26 @@ namespace QSB.Events
 			}
 
 			_eventList.ForEach(ev => ev.SetupListener());
+
+			var duplicates = _eventList
+				.GroupBy(qsbEvent => qsbEvent.Type)
+				.Where(group => group.Count() > 1);
+
+			if (duplicates.Count() != 0)
+			{
+				var totalSb = new StringBuilder();
+				foreach (var group in duplicates)
+				{
+					totalSb.Append($"{group.Key}\r\n");
+					foreach (var qsbEvent in group)
+					{
+						totalSb.Append($"- {qsbEvent.GetType().Name}\r\n");
+					}
+				}
+
+				DebugLog.ToConsole($"Error - These QSBEvents handle the same EventType!\r\n{totalSb}", MessageType.Error);
+				return;
+			}
 
 			Ready = true;
 
