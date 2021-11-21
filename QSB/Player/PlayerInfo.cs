@@ -3,6 +3,7 @@ using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
+using QSB.Events;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.TransformSync;
 using QSB.QuantumSync;
@@ -78,7 +79,18 @@ namespace QSB.Player
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
+		public QSBFlashlight FlashLight 
+		{
+			get
+			{
+				if (CameraBody == null)
+				{
+					return null;
+				}
+
+				return CameraBody.GetComponentInChildren<QSBFlashlight>();
+			}
+		}
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
@@ -182,7 +194,7 @@ namespace QSB.Player
 			CurrentCharacterDialogueTreeId = -1;
 		}
 
-		public void UpdateStateObjects()
+		public void UpdateObjectsFromStates()
 		{
 			if (OWInput.GetInputMode() == InputMode.None)
 			{
@@ -195,6 +207,22 @@ namespace QSB.Player
 			Signalscope?.ChangeEquipState(SignalscopeEquipped);
 			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
 				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(SuitedUp));
+		}
+
+		public void UpdateStatesFromObjects()
+		{
+			if (Locator.GetFlashlight() == null || Locator.GetPlayerBody() == null)
+			{
+				FlashlightActive = false;
+				SuitedUp = false;
+			}
+			else
+			{
+				FlashlightActive = Locator.GetFlashlight()._flashlightOn;
+				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit(true);
+			}
+
+			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 		}
 
 		private QSBTool GetToolByType(ToolType type) => CameraBody?.GetComponentsInChildren<QSBTool>()

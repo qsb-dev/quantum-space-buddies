@@ -49,6 +49,7 @@ namespace QSB.RespawnSync
 		private void Init(OWScene newScene, bool inUniverse)
 		{
 			QSBPlayerManager.ShowAllPlayers();
+			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
 			_playersPendingRespawn.Clear();
 

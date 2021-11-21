@@ -91,7 +91,7 @@ namespace QSB.Player
 			player.ProbeActive = message.ProbeActive;
 			if (LocalPlayer.IsReady)
 			{
-				player.UpdateStateObjects();
+				player.UpdateObjectsFromStates();
 			}
 
 			player.State = message.ClientState;

@@ -24,7 +24,6 @@
 		public static string ExitFlightConsole = "ExitFlightConsole";
 		public static string EnterShip = "EnterShip";
 		public static string ExitShip = "ExitShip";
-		public static string LaunchCodes = "LearnLaunchCodes";
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
@@ -99,5 +98,6 @@
 		public static string QSBMeteorSpecialImpact = "QSBMeteorSpecialImpact";
 		public static string QSBFragmentDamage = "QSBFragmentDamage";
 		public static string QSBFragmentResync = "QSBFragmentResync";
+		public static string QSBLearnLaunchCodes = "QSBLearnLaunchCodes";
 	}
 }

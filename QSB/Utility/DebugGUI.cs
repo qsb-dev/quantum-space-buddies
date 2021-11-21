@@ -9,6 +9,7 @@ using QSB.ShipSync.WorldObjects;
 using QSB.Syncs;
 using QSB.TimeSync;
 using QSB.WorldSync;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -121,6 +122,12 @@ namespace QSB.Utility
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
+				if (player == null)
+				{
+					WriteLine(2, $"NULL PLAYER", Color.red);
+					continue;
+				}
+
 				WriteLine(2, $"{player.PlayerId}.{player.Name}");
 				WriteLine(2, $"State : {player.State}");
 				WriteLine(2, $"Dead : {player.IsDead}");
@@ -165,19 +172,41 @@ namespace QSB.Utility
 			WriteLine(3, $"QSBShipComponent");
 			foreach (var component in QSBWorldSync.GetWorldObjects<QSBShipComponent>())
 			{
-				WriteLine(3, $"- {component.AttachedObject.name} RepairFraction:{component.AttachedObject._repairFraction}");
+				var attachedObject = component.AttachedObject;
+				if (attachedObject == null)
+				{
+					WriteLine(3, $"- {component.ObjectId} NULL ATTACHEDOBJECT", Color.red);
+				}
+				else
+				{
+					WriteLine(3, $"- {component.AttachedObject.name} RepairFraction:{component.AttachedObject._repairFraction}");
+				}
 			}
 
 			WriteLine(3, $"QSBShipHull");
 			foreach (var hull in QSBWorldSync.GetWorldObjects<QSBShipHull>())
 			{
-				WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
+				var attachedObject = hull.AttachedObject;
+				if (attachedObject == null)
+{
+					WriteLine(3, $"- {hull.ObjectId} NULL ATTACHEDOBJECT", Color.red);
+				}
+				else
+				{
+					WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
+				}
 			}
 			#endregion
 
 			#region Column4 - Quantum Object Possesion
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
+				if (player == null)
+				{
+					WriteLine(4, $"- NULL PLAYER", Color.red);
+					continue;
+				}
+
 				WriteLine(4, $"- {player.PlayerId}.{player.Name}");
 				var allQuantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 				var ownedQuantumObjects = allQuantumObjects.Where(x => x.ControllingPlayer == player.PlayerId);
@@ -185,7 +214,14 @@ namespace QSB.Utility
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
 					var qsbObj = quantumObject as IWorldObject;
-					WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
+					if (qsbObj == null)
+					{
+						WriteLine(4, $"NULL QSBOBJ", Color.red);
+					}
+					else
+					{
+						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
+					}
 				}
 			}
 			#endregion

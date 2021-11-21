@@ -1,4 +1,6 @@
 ﻿using OWML.Common;
+using QSB.ClientServerStateSync;
+using QSB.Player;
 using QSB.Utility;
 using UnityEngine;
 
@@ -57,7 +59,11 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				if (QSBPlayerManager.LocalPlayer.State is ClientState.AliveInEye or ClientState.AliveInSolarSystem or ClientState.DeadInSolarSystem)
+				{
+					DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				}
+
 				return;
 			}
 
@@ -72,7 +78,11 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				if (QSBPlayerManager.LocalPlayer.State is ClientState.AliveInEye or ClientState.AliveInSolarSystem or ClientState.DeadInSolarSystem)
+				{
+					DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				}
+
 				return;
 			}
 
@@ -98,7 +108,11 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				if (QSBPlayerManager.LocalPlayer.State is ClientState.AliveInEye or ClientState.AliveInSolarSystem or ClientState.DeadInSolarSystem)
+				{
+					DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				}
+
 				return Vector3.zero;
 			}
 
@@ -112,7 +126,11 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				if (QSBPlayerManager.LocalPlayer.State is ClientState.AliveInEye or ClientState.AliveInSolarSystem or ClientState.DeadInSolarSystem)
+				{
+					DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				}
+
 				return Quaternion.identity;
 			}
 
