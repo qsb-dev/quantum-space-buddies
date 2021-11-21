@@ -12,7 +12,6 @@ namespace QSB.StatueSync
 
 		private void Awake()
 		{
-			DebugLog.DebugWrite($"Awake");
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
@@ -28,13 +27,11 @@ namespace QSB.StatueSync
 
 		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 		{
-			DebugLog.DebugWrite($"Begin Sequence");
 			StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
 		}
 
 		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 		{
-			DebugLog.DebugWrite($"Begin Remote Uplink Sequence");
 			HasStartedStatueLocally = true;
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
 			cameraEffectController.CloseEyes(0.5f);

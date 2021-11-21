@@ -100,7 +100,6 @@ namespace QSB.RespawnSync
 
 		public void TriggerRespawnMap()
 		{
-			DebugLog.DebugWrite($"TRIGGER RESPAWN MAP");
 			QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
 			QSBCore.UnityEvents.FireOnNextUpdate(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 		}
