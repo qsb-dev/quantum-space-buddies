@@ -6,7 +6,7 @@ namespace QSB.Player.Events
 {
 	public class PlayerInformationEvent : QSBEvent<PlayerInformationMessage>
 	{
-		public override EventType Type => EventType.LaunchCodes;
+		public override EventType Type => EventType.PlayerInformation;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBPlayerInformation, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBPlayerInformation, Handler);
