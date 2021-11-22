@@ -37,10 +37,10 @@ namespace QSB.Patches
 		public static event Action<QSBPatchTypes> OnPatchType;
 		public static event Action<QSBPatchTypes> OnUnpatchType;
 
-		private static List<QSBPatch> _patchList = new List<QSBPatch>();
-		private static List<QSBPatchTypes> _patchedTypes = new List<QSBPatchTypes>();
+		private static List<QSBPatch> _patchList = new();
+		private static List<QSBPatchTypes> _patchedTypes = new();
 
-		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>();
+		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new();
 
 		public static void Init()
 		{

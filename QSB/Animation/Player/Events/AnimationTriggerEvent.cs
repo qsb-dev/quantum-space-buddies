@@ -12,7 +12,7 @@ namespace QSB.Animation.Player.Events
 
 		private void Handler(uint attachedNetId, string name) => SendEvent(CreateMessage(attachedNetId, name));
 
-		private AnimationTriggerMessage CreateMessage(uint attachedNetId, string name) => new AnimationTriggerMessage
+		private AnimationTriggerMessage CreateMessage(uint attachedNetId, string name) => new()
 		{
 			AboutId = LocalPlayerId,
 			AttachedNetId = attachedNetId,

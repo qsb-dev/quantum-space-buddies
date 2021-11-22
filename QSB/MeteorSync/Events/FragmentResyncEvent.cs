@@ -73,11 +73,11 @@ namespace QSB.MeteorSync.Events
 						var whiteHoleVolume = MeteorManager.WhiteHoleVolume;
 						var attachedFluidDetector = body.GetAttachedFluidDetector();
 						var attachedForceDetector = body.GetAttachedForceDetector();
-						if (attachedFluidDetector != null && attachedFluidDetector is ConstantFluidDetector constantFluidDetector)
+						if (attachedFluidDetector is not null and ConstantFluidDetector constantFluidDetector)
 						{
 							constantFluidDetector.SetDetectableFluid(whiteHoleVolume._fluidVolume);
 						}
-						if (attachedForceDetector != null && attachedForceDetector is ConstantForceDetector constantForceDetector)
+						if (attachedForceDetector is not null and ConstantForceDetector constantForceDetector)
 						{
 							constantForceDetector.ClearAllFields();
 						}

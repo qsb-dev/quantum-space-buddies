@@ -361,7 +361,7 @@ namespace QuantumUNET
 
 		private bool m_Initialized;
 		private int m_RelaySlotId = -1;
-		private readonly List<QNetworkConnection> m_Connections = new List<QNetworkConnection>();
-		private readonly QNetworkMessageHandlers m_MessageHandlers = new QNetworkMessageHandlers();
+		private readonly List<QNetworkConnection> m_Connections = new();
+		private readonly QNetworkMessageHandlers m_MessageHandlers = new();
 	}
 }

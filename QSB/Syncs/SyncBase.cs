@@ -18,7 +18,7 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase : QNetworkTransform
 	{
-		private static readonly Dictionary<uint, Dictionary<Type, SyncBase>> _storedTransformSyncs = new Dictionary<uint, Dictionary<Type, SyncBase>>();
+		private static readonly Dictionary<uint, Dictionary<Type, SyncBase>> _storedTransformSyncs = new();
 
 		public static T GetPlayers<T>(PlayerInfo player)
 			where T : SyncBase

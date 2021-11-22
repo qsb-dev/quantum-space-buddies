@@ -14,7 +14,7 @@ namespace QSB.CampfireSync.Events
 
 		private void Handler(int objId, Campfire.State state) => SendEvent(CreateMessage(objId, state));
 
-		private EnumWorldObjectMessage<Campfire.State> CreateMessage(int objId, Campfire.State state) => new EnumWorldObjectMessage<Campfire.State>
+		private EnumWorldObjectMessage<Campfire.State> CreateMessage(int objId, Campfire.State state) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = objId,

@@ -20,7 +20,7 @@ namespace QSB.ItemSync.Events
 		private void Handler(int objectId, Vector3 position, Vector3 normal, Sector sector)
 			=> SendEvent(CreateMessage(objectId, position, normal, sector));
 
-		private DropItemMessage CreateMessage(int objectId, Vector3 position, Vector3 normal, Sector sector) => new DropItemMessage
+		private DropItemMessage CreateMessage(int objectId, Vector3 position, Vector3 normal, Sector sector) => new()
 		{
 			ObjectId = objectId,
 			Position = position,

@@ -4,7 +4,7 @@ namespace QSB.Tools.ProbeLauncherTool
 {
 	internal static class ProbeLauncherCreator
 	{
-		private static readonly Vector3 ProbeLauncherOffset = new Vector3(0.5745087f, -0.26f, 0.4453125f);
+		private static readonly Vector3 ProbeLauncherOffset = new(0.5745087f, -0.26f, 0.4453125f);
 
 		internal static void CreateProbeLauncher(Transform cameraBody)
 		{

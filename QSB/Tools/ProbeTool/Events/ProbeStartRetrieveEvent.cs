@@ -16,7 +16,7 @@ namespace QSB.Tools.ProbeTool.Events
 
 		private void Handler(float duration) => SendEvent(CreateMessage(duration));
 
-		private FloatMessage CreateMessage(float duration) => new FloatMessage
+		private FloatMessage CreateMessage(float duration) => new()
 		{
 			AboutId = LocalPlayerId,
 			Value = duration

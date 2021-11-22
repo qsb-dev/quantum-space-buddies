@@ -573,7 +573,7 @@ namespace QuantumUNET
 		private float m_LastSendTime;
 		private QNetworkIdentity m_MyView;
 
-		private static readonly Dictionary<int, Invoker> s_CmdHandlerDelegates = new Dictionary<int, Invoker>();
+		private static readonly Dictionary<int, Invoker> s_CmdHandlerDelegates = new();
 
 		public delegate void CmdDelegate(QNetworkBehaviour obj, QNetworkReader reader);
 

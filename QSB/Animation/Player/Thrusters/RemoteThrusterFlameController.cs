@@ -8,7 +8,7 @@ namespace QSB.Animation.Player.Thrusters
 		private Thruster _thruster;
 		private Light _light;
 		private AnimationCurve _scaleByThrust = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-		private DampedSpring _scaleSpring = new DampedSpring();
+		private DampedSpring _scaleSpring = new();
 		private float _belowMaxThrustScalar = 1f;
 		private MeshRenderer _thrusterRenderer;
 		private Vector3 _thrusterFilter;

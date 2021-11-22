@@ -6,7 +6,7 @@ namespace QSB.Animation.NPC.WorldObjects
 {
 	internal class QSBSolanumAnimController : WorldObject<SolanumAnimController>
 	{
-		private readonly List<PlayerInfo> _playersInHeadZone = new List<PlayerInfo>();
+		private readonly List<PlayerInfo> _playersInHeadZone = new();
 
 		public override void Init(SolanumAnimController controller, int id)
 		{

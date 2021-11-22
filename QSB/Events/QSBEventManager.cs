@@ -39,7 +39,7 @@ namespace QSB.Events
 	{
 		public static bool Ready { get; private set; }
 
-		private static List<IQSBEvent> _eventList = new List<IQSBEvent>();
+		private static List<IQSBEvent> _eventList = new();
 
 		public static void Init()
 		{

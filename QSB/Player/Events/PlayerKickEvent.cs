@@ -16,7 +16,7 @@ namespace QSB.Player.Events
 
 		private void Handler(uint player, KickReason reason) => SendEvent(CreateMessage(player, reason));
 
-		private EnumMessage<KickReason> CreateMessage(uint player, KickReason reason) => new EnumMessage<KickReason>
+		private EnumMessage<KickReason> CreateMessage(uint player, KickReason reason) => new()
 		{
 			AboutId = player,
 			EnumValue = reason

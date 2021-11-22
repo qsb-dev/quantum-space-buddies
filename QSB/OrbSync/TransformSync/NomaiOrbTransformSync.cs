@@ -9,7 +9,7 @@ namespace QSB.OrbSync.TransformSync
 {
 	internal class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new List<NomaiOrbTransformSync>();
+		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new();
 
 		private int _index => OrbTransformSyncs.IndexOf(this);
 

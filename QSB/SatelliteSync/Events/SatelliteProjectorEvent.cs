@@ -21,7 +21,7 @@ namespace QSB.SatelliteSync.Events
 
 		private void Handler(bool usingProjector) => SendEvent(CreateMessage(usingProjector));
 
-		private BoolMessage CreateMessage(bool usingProjector) => new BoolMessage
+		private BoolMessage CreateMessage(bool usingProjector) => new()
 		{
 			AboutId = LocalPlayerId,
 			Value = usingProjector

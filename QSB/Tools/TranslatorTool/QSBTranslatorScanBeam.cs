@@ -15,8 +15,8 @@ namespace QSB.Tools.TranslatorTool
 		const float _fadeLength = 0.66f;
 
 		public float _scanSpeed = 1f;
-		public readonly Color _baseProjectorColor = new Color(0.3545942f, 2.206932f, 4.594794f, 1f);
-		public readonly Color _baseLightColor = new Color(0.1301365f, 0.2158605f, 0.6239606f, 1f);
+		public readonly Color _baseProjectorColor = new(0.3545942f, 2.206932f, 4.594794f, 1f);
+		public readonly Color _baseLightColor = new(0.1301365f, 0.2158605f, 0.6239606f, 1f);
 		public Quaternion _baseRotation;
 
 		private bool _tooCloseToTarget;
@@ -92,7 +92,7 @@ namespace QSB.Tools.TranslatorTool
 				_switchTime = Mathf.MoveTowards(_switchTime, 1f, Time.deltaTime / _switchLength);
 				var smoothedSwitchTime = Mathf.SmoothStep(0f, 1f, _switchTime);
 				_scanTime += Time.deltaTime * _scanSpeed;
-				var num = Mathf.Cos(_scanTime + _scanOffset) * 0.5f + 0.5f;
+				var num = (Mathf.Cos(_scanTime + _scanOffset) * 0.5f) + 0.5f;
 				var pointAlongLine = _nomaiTextLine.GetPointAlongLine(num);
 				var rhs = _nomaiTextLine.GetPointAlongLine(num + 0.1f) - _nomaiTextLine.GetPointAlongLine(num - 0.1f);
 				var vector = pointAlongLine - transform.position;
@@ -108,7 +108,7 @@ namespace QSB.Tools.TranslatorTool
 				_switchTime = Mathf.MoveTowards(_switchTime, 1f, Time.deltaTime / _switchLength);
 				var t2 = Mathf.SmoothStep(0f, 1f, _switchTime);
 				_scanTime += Time.deltaTime * _scanSpeed;
-				var t3 = Mathf.Cos(_scanTime + _scanOffset) * 0.5f + 0.5f;
+				var t3 = (Mathf.Cos(_scanTime + _scanOffset) * 0.5f) + 0.5f;
 				t3 = Mathf.Lerp(0.25f, 0.75f, t3);
 				var pointOnRing = _nomaiComputerRing.GetPointOnRing(t3, transform.position);
 				var forward = pointOnRing - transform.position;
@@ -125,7 +125,7 @@ namespace QSB.Tools.TranslatorTool
 				var smoothedSwitchTime = Mathf.SmoothStep(0f, 1f, _switchTime);
 
 				_scanTime += Time.deltaTime * _scanSpeed;
-				var t5 = Mathf.Cos(_scanTime + _scanOffset) * 0.5f + 0.5f;
+				var t5 = (Mathf.Cos(_scanTime + _scanOffset) * 0.5f) + 0.5f;
 				t5 = Mathf.Lerp(0.25f, 0.75f, t5);
 				var pointOnRing2 = _nomaiVesselComputerRing.GetPointOnRing(t5, transform.position);
 				var forward2 = pointOnRing2 - transform.position;

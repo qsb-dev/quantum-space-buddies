@@ -20,7 +20,7 @@ namespace QSB.ItemSync.Events
 		private void Handler(int itemId)
 			=> SendEvent(CreateMessage(itemId));
 
-		private WorldObjectMessage CreateMessage(int itemid) => new WorldObjectMessage
+		private WorldObjectMessage CreateMessage(int itemid) => new()
 		{
 			AboutId = QSBPlayerManager.LocalPlayerId,
 			ObjectId = itemid
@@ -33,39 +33,19 @@ namespace QSB.ItemSync.Events
 			var itemType = itemObject.GetItemType();
 
 			player.HeldItem = itemObject;
-
-			Transform itemSocket = null;
-			switch (itemType)
+			var itemSocket = itemType switch
 			{
-				case ItemType.Scroll:
-					itemSocket = player.ScrollSocket;
-					break;
-				case ItemType.SharedStone:
-					itemSocket = player.SharedStoneSocket;
-					break;
-				case ItemType.WarpCore:
-					itemSocket = ((QSBWarpCoreItem)itemObject).IsVesselCoreType()
-						? player.VesselCoreSocket
-						: player.WarpCoreSocket;
-					break;
-				case ItemType.Lantern:
-					itemSocket = player.SimpleLanternSocket;
-					break;
-				case ItemType.DreamLantern:
-					itemSocket = player.DreamLanternSocket;
-					break;
-				case ItemType.SlideReel:
-					itemSocket = player.SlideReelSocket;
-					break;
-				case ItemType.VisionTorch:
-					itemSocket = player.VisionTorchSocket;
-					break;
-				default:
-					itemSocket = player.ItemSocket;
-					break;
-
-			}
-
+				ItemType.Scroll => player.ScrollSocket,
+				ItemType.SharedStone => player.SharedStoneSocket,
+				ItemType.WarpCore => ((QSBWarpCoreItem)itemObject).IsVesselCoreType()
+					? player.VesselCoreSocket
+					: player.WarpCoreSocket,
+				ItemType.Lantern => player.SimpleLanternSocket,
+				ItemType.DreamLantern => player.DreamLanternSocket,
+				ItemType.SlideReel => player.SlideReelSocket,
+				ItemType.VisionTorch => player.VisionTorchSocket,
+				_ => player.ItemSocket,
+			};
 			itemObject.PickUpItem(itemSocket, message.AboutId);
 		}
 	}

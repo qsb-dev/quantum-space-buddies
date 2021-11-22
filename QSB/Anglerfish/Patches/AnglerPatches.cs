@@ -228,7 +228,7 @@ namespace QSB.Anglerfish.Patches
 						}
 					}
 
-					__instance._targetPos = qsbAngler.TargetTransform.position + normalized * num2;
+					__instance._targetPos = qsbAngler.TargetTransform.position + (normalized * num2);
 					__instance.RotateTowardsTarget(__instance._targetPos, __instance._turnSpeed, __instance._quickTurnSpeed);
 					if (__instance._turningInPlace)
 					{
@@ -287,8 +287,8 @@ namespace QSB.Anglerfish.Patches
 				return false;
 			}
 
-			if (__instance._currentState == AnglerfishController.AnglerState.Consuming
-				|| __instance._currentState == AnglerfishController.AnglerState.Stunned)
+			if (__instance._currentState is AnglerfishController.AnglerState.Consuming
+				or AnglerfishController.AnglerState.Stunned)
 			{
 				return false;
 			}
@@ -311,8 +311,8 @@ namespace QSB.Anglerfish.Patches
 			}
 			else
 			{
-				if (__instance._currentState != AnglerfishController.AnglerState.Lurking
-					&& __instance._currentState != AnglerfishController.AnglerState.Investigating)
+				if (__instance._currentState is not AnglerfishController.AnglerState.Lurking
+					and not AnglerfishController.AnglerState.Investigating)
 				{
 					return false;
 				}

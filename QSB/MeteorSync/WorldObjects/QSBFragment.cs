@@ -34,8 +34,6 @@ namespace QSB.MeteorSync.WorldObjects
 		public float LeashLength;
 
 		public void AddDamage(float damage)
-		{
-			AttachedObject.AddDamage(damage);
-		}
+			=> AttachedObject.AddDamage(damage);
 	}
 }

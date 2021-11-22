@@ -44,7 +44,7 @@ namespace QSB.Player.Events
 
 		private void Handler(EnterLeaveType type, int objectId = -1) => SendEvent(CreateMessage(type, objectId));
 
-		private EnumWorldObjectMessage<EnterLeaveType> CreateMessage(EnterLeaveType type, int objectId) => new EnumWorldObjectMessage<EnterLeaveType>
+		private EnumWorldObjectMessage<EnterLeaveType> CreateMessage(EnterLeaveType type, int objectId) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type,

@@ -17,7 +17,7 @@ namespace QSB.MeteorSync.Events
 		private void Handler(QSBMeteorLauncher qsbMeteorLauncher) =>
 			SendEvent(CreateMessage(qsbMeteorLauncher));
 
-		private MeteorLaunchMessage CreateMessage(QSBMeteorLauncher qsbMeteorLauncher) => new MeteorLaunchMessage
+		private MeteorLaunchMessage CreateMessage(QSBMeteorLauncher qsbMeteorLauncher) => new()
 		{
 			ObjectId = qsbMeteorLauncher.ObjectId,
 			MeteorId = qsbMeteorLauncher.MeteorId,
