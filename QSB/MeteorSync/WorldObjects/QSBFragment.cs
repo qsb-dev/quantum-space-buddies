@@ -1,6 +1,4 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects

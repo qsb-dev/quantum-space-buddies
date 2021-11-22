@@ -42,8 +42,8 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 		{
 			base.SerializeTransform(writer, initialState);
 
-			var worldPos = _intermediaryTransform.GetPosition();
-			var worldRot = _intermediaryTransform.GetRotation();
+			var worldPos = transform.position;
+			var worldRot = transform.rotation;
 			var relativeVelocity = _relativeVelocity;
 			var relativeAngularVelocity = _relativeAngularVelocity;
 
@@ -81,17 +81,12 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return;
 			}
 
-			if (_intermediaryTransform == null)
-			{
-				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
-
-			_intermediaryTransform.SetPosition(pos);
-			_intermediaryTransform.SetRotation(rot);
+			transform.position = pos;
+			transform.rotation = rot;
 			_relativeVelocity = relativeVelocity;
 			_relativeAngularVelocity = relativeAngularVelocity;
 
-			if (_intermediaryTransform.GetPosition() == Vector3.zero)
+			if (transform.position == Vector3.zero)
 			{
 				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
@@ -99,10 +94,10 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected void SetValuesToSync()
 		{
-			_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-			_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-			_relativeVelocity = GetRelativeVelocity();
-			_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
+			transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
+			transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeVel(((OWRigidbody)AttachedObject).GetVelocity(), AttachedObject.transform.position);
+			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(((OWRigidbody)AttachedObject).GetAngularVelocity());
 		}
 
 		protected override bool UpdateTransform()
@@ -118,10 +113,10 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return true;
 			}
 
-			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
-			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
+			var targetPos = ReferenceTransform.DecodePos(transform.position);
+			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 
-			if (targetPos == Vector3.zero || _intermediaryTransform.GetTargetPosition_ParentedToReference() == Vector3.zero)
+			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
 			{
 				return false;
 			}
@@ -136,17 +131,17 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			}
 
 			var hasMoved = CustomHasMoved(
-				_intermediaryTransform.GetTargetPosition_ParentedToReference(),
+				transform.position,
 				_localPrevPosition,
-				_intermediaryTransform.GetTargetRotation_ParentedToReference(),
+				transform.rotation,
 				_localPrevRotation,
 				_relativeVelocity,
 				_localPrevVelocity,
 				_relativeAngularVelocity,
 				_localPrevAngularVelocity);
 
-			_localPrevPosition = _intermediaryTransform.GetTargetPosition_ParentedToReference();
-			_localPrevRotation = _intermediaryTransform.GetTargetRotation_ParentedToReference();
+			_localPrevPosition = transform.position;
+			_localPrevRotation = transform.rotation;
 			_localPrevVelocity = _relativeVelocity;
 			_localPrevAngularVelocity = _relativeAngularVelocity;
 
@@ -155,26 +150,23 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return true;
 			}
 
-			//(AttachedObject as OWRigidbody).SetPosition(positionToSet);
-			//(AttachedObject as OWRigidbody).SetRotation(rotationToSet);
+			((OWRigidbody)AttachedObject).MoveToPosition(positionToSet);
+			((OWRigidbody)AttachedObject).MoveToRotation(rotationToSet);
 
-			(AttachedObject as OWRigidbody).MoveToPosition(positionToSet);
-			(AttachedObject as OWRigidbody).MoveToRotation(rotationToSet);
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity;
-
-			SetVelocity(AttachedObject as OWRigidbody, targetVelocity);
-			(AttachedObject as OWRigidbody).SetAngularVelocity(targetAngularVelocity);
+			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
+			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
 
 			return true;
 		}
 
 		public override bool HasMoved()
 			=> CustomHasMoved(
-				_intermediaryTransform.GetPosition(),
+				transform.position,
 				_prevPosition,
-				_intermediaryTransform.GetRotation(),
+				transform.rotation,
 				_prevRotation,
 				_relativeVelocity,
 				_prevVelocity,
@@ -217,54 +209,6 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			}
 
 			return false;
-		}
-
-		protected void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
-		{
-			var isRunningKinematic = rigidbody.RunningKinematicSimulation();
-			var currentVelocity = rigidbody.GetValue<Vector3>("_currentVelocity");
-
-			if (isRunningKinematic)
-			{
-				var kinematicRigidbody = rigidbody.GetValue<KinematicRigidbody>("_kinematicRigidbody");
-				kinematicRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
-			}
-			else
-			{
-				var normalRigidbody = rigidbody.GetValue<Rigidbody>("_rigidbody");
-				normalRigidbody.velocity = relativeVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
-			}
-
-			rigidbody.SetValue("_lastVelocity", currentVelocity);
-			rigidbody.SetValue("_currentVelocity", relativeVelocity);
-		}
-
-		public float GetVelocityChangeMagnitude()
-			=> (_relativeVelocity - _prevVelocity).magnitude;
-
-		public Vector3 GetRelativeVelocity()
-		{
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Error - Trying to get relative velocity when AttachedObject is null.", MessageType.Error);
-				return Vector3.zero;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				DebugLog.ToConsole($"Error - Trying to get relative velocity when ReferenceTransform is null. ({AttachedObject.name})", MessageType.Error);
-				return Vector3.zero;
-			}
-
-			var attachedRigid = ReferenceTransform.GetAttachedOWRigidbody();
-			if (attachedRigid == null)
-			{
-				DebugLog.ToConsole($"Error - ReferenceTransform ({ReferenceTransform.name}) on {AttachedObject.name} has no attached OWRigidBody.", MessageType.Error);
-				return Vector3.zero;
-			}
-
-			var pointVelocity = attachedRigid.GetPointVelocity(AttachedObject.transform.position);
-			return (AttachedObject as OWRigidbody).GetVelocity() - pointVelocity;
 		}
 	}
 }

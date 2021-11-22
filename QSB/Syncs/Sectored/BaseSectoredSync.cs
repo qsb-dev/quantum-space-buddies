@@ -112,11 +112,6 @@ namespace QSB.Syncs.Sectored
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
-			if (_intermediaryTransform == null)
-			{
-				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
-
 			if (!QSBPlayerManager.PlayerExists(PlayerId))
 			{
 				writer.Write(-1);
@@ -174,7 +169,7 @@ namespace QSB.Syncs.Sectored
 
 		protected bool UpdateSectors()
 		{
-			var referenceNull = ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null;
+			var referenceNull = ReferenceTransform == null || ReferenceSector == null;
 			var sectorManagerReady = QSBSectorManager.Instance.IsReady;
 
 			if (!sectorManagerReady)
@@ -182,7 +177,7 @@ namespace QSB.Syncs.Sectored
 				if (referenceNull && HasAuthority)
 				{
 					DebugLog.ToConsole($"Warning - Reference was null, but sector manager wasn't ready. " +
-						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}, Intermediary:{_intermediaryTransform.GetReferenceTransform() == null}",
+						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}",
 						OWML.Common.MessageType.Warning);
 				}
 
