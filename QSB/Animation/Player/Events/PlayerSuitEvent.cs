@@ -32,9 +32,9 @@ namespace QSB.Animation.Player.Events
 		public override void OnReceiveRemote(bool server, ToggleMessage message)
 		{
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
-			player.PlayerStates.SuitedUp = message.ToggleValue;
+			player.SuitedUp = message.ToggleValue;
 
-			if (!QSBCore.WorldObjectsReady || !player.PlayerStates.IsReady)
+			if (!QSBCore.WorldObjectsReady || !player.IsReady)
 			{
 				return;
 			}
@@ -46,7 +46,7 @@ namespace QSB.Animation.Player.Events
 
 		public override void OnReceiveLocal(bool server, ToggleMessage message)
 		{
-			QSBPlayerManager.LocalPlayer.PlayerStates.SuitedUp = message.ToggleValue;
+			QSBPlayerManager.LocalPlayer.SuitedUp = message.ToggleValue;
 			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
 			var type = message.ToggleValue ? AnimationType.PlayerSuited : AnimationType.PlayerUnsuited;
 			animator.CurrentType = type;

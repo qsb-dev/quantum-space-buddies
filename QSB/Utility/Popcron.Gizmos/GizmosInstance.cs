@@ -87,7 +87,6 @@ namespace Popcron
 					//instance = new GameObject(typeof(GizmosInstance).FullName).AddComponent<GizmosInstance>();
 					//instance.gameObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
 					instance = Locator.GetPlayerCamera().gameObject.AddComponent<GizmosInstance>();
-					DebugLog.DebugWrite("CREATE GIZMOS INSTANCE!");
 				}
 			}
 

@@ -80,7 +80,6 @@ namespace QSB.Animation.NPC.Patches
 				case NomaiConversationManager.State.WatchingSky:
 					if (__instance._playerInWatchVolume)
 					{
-						DebugLog.DebugWrite($"{__instance._state} => WACHING PLAYER");
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._solanumAnimController.StartWatchingPlayer();
 					}
@@ -92,7 +91,6 @@ namespace QSB.Animation.NPC.Patches
 						// player left watch zone
 						if (!__instance._playerInWatchVolume)
 						{
-							DebugLog.DebugWrite($"{__instance._state} => WATCHING SKY");
 							__instance._state = NomaiConversationManager.State.WatchingSky;
 							__instance._solanumAnimController.StopWatchingPlayer();
 						}
@@ -104,7 +102,6 @@ namespace QSB.Animation.NPC.Patches
 								__instance._stoneCreationTimer -= Time.deltaTime;
 								if (__instance._stoneCreationTimer <= 0f)
 								{
-									DebugLog.DebugWrite($"{__instance._state} => CREATING STONES");
 									__instance._state = NomaiConversationManager.State.CreatingStones;
 									__instance._solanumAnimController.PlayCreateWordStones();
 								}
@@ -123,7 +120,6 @@ namespace QSB.Animation.NPC.Patches
 								// raise cairns
 								else if (__instance._solanumAnimController.IsPlayerLooking())
 								{
-									DebugLog.DebugWrite($"{__instance._state} => RAISING CAIRNS");
 									__instance._state = NomaiConversationManager.State.RaisingCairns;
 									__instance._solanumAnimController.PlayRaiseCairns();
 									__instance._cairnAnimator.SetTrigger("Raise");
@@ -132,7 +128,6 @@ namespace QSB.Animation.NPC.Patches
 							}
 							else if (__instance._activeResponseText == null && __instance._hasValidSocketedStonePair)
 							{
-								DebugLog.DebugWrite($"{__instance._state} => WRITING RESPONSE");
 								__instance._activeResponseText = __instance._pendingResponseText;
 								__instance._pendingResponseText = null;
 								__instance._state = NomaiConversationManager.State.WritingResponse;
@@ -140,7 +135,6 @@ namespace QSB.Animation.NPC.Patches
 							}
 							else if (__instance._activeResponseText != null && (!__instance._hasValidSocketedStonePair || __instance._pendingResponseText != null))
 							{
-								DebugLog.DebugWrite($"{__instance._state} => ERASING RESPONSE");
 								__instance._state = NomaiConversationManager.State.ErasingResponse;
 								__instance._solanumAnimController.StartWritingMessage();
 							}
@@ -177,7 +171,6 @@ namespace QSB.Animation.NPC.Patches
 				case NomaiConversationManager.State.CreatingStones:
 					if (!__instance._solanumAnimController.isPerformingAction)
 					{
-						DebugLog.DebugWrite($"{__instance._state} => WATCHING PLAYER");
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._conversationStonesCreated = true;
 					}
@@ -186,7 +179,6 @@ namespace QSB.Animation.NPC.Patches
 				case NomaiConversationManager.State.RaisingCairns:
 					if (!__instance._solanumAnimController.isPerformingAction)
 					{
-						DebugLog.DebugWrite($"{__instance._state} => WATCHING PLAYER");
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._cairnRaised = true;
 						__instance._stoneSocketATrigger.SetActivation(true);
@@ -200,13 +192,11 @@ namespace QSB.Animation.NPC.Patches
 						__instance._activeResponseText = null;
 						if (__instance._pendingResponseText == null)
 						{
-							DebugLog.DebugWrite($"{__instance._state} => WATCHING PLAYER");
 							__instance._state = NomaiConversationManager.State.WatchingPlayer;
 							__instance._solanumAnimController.StopWritingMessage(false);
 						}
 						else
 						{
-							DebugLog.DebugWrite($"{__instance._state} => WATCHING WRITING RESPONSE");
 							__instance._activeResponseText = __instance._pendingResponseText;
 							__instance._pendingResponseText = null;
 							__instance._state = NomaiConversationManager.State.WritingResponse;
@@ -218,7 +208,6 @@ namespace QSB.Animation.NPC.Patches
 				case NomaiConversationManager.State.WritingResponse:
 					if (!__instance._solanumAnimController.isStartingWrite && !__instance._activeResponseText.IsAnimationPlaying())
 					{
-						DebugLog.DebugWrite($"{__instance._state} => WATCHING PLAYER");
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._solanumAnimController.StopWritingMessage(true);
 					}

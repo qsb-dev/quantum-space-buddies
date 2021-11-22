@@ -98,5 +98,6 @@
 		public static string QSBMeteorSpecialImpact = "QSBMeteorSpecialImpact";
 		public static string QSBFragmentDamage = "QSBFragmentDamage";
 		public static string QSBFragmentResync = "QSBFragmentResync";
+		public static string QSBLearnLaunchCodes = "QSBLearnLaunchCodes";
 	}
 }

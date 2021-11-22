@@ -60,12 +60,12 @@ namespace QSB.Player.TransformSync
 
 			if (isInUniverse)
 			{
-				Player.PlayerStates.IsReady = true;
+				Player.IsReady = true;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			}
 			else
 			{
-				Player.PlayerStates.IsReady = false;
+				Player.IsReady = false;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
 
