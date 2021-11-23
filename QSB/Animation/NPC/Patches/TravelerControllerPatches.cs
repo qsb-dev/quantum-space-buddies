@@ -24,7 +24,7 @@ namespace QSB.Animation.NPC.Patches
 					gabbro._animator.CrossFadeInFixedTime("Gabbro_Talking", 1.8f);
 					gabbro._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Talking", 1.8f);
 				}
-				Locator.GetTravelerAudioManager().StopTravelerAudio(__instance.name);
+				Locator.GetTravelerAudioManager().StopTravelerAudio(gabbro.name);
 			}
 			else
 			{
@@ -58,7 +58,7 @@ namespace QSB.Animation.NPC.Patches
 					gabbro._animator.CrossFadeInFixedTime("Gabbro_Playing", gabbro._delayToRestartAudio, -1, -gabbro._delayToRestartAudio);
 					gabbro._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Playing", gabbro._delayToRestartAudio, -1, -gabbro._delayToRestartAudio);
 				}
-				Locator.GetTravelerAudioManager().PlayTravelerAudio(__instance.name, gabbro._delayToRestartAudio);
+				Locator.GetTravelerAudioManager().PlayTravelerAudio(gabbro.name, gabbro._delayToRestartAudio);
 				if (DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_REMINDER") || DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION"))
 				{
 					var conditionState = DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION");
