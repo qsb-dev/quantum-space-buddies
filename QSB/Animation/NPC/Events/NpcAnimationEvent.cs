@@ -1,5 +1,6 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.Animation.NPC.Events
@@ -26,9 +27,11 @@ namespace QSB.Animation.NPC.Events
 			switch (message.AnimationEvent)
 			{
 				case AnimationEvent.StartConversation:
+					DebugLog.DebugWrite($"Start conversation");
 					qsbObj.StartConversation();
 					break;
 				case AnimationEvent.EndConversation:
+					DebugLog.DebugWrite($"End conversation");
 					qsbObj.EndConversation();
 					break;
 			}
