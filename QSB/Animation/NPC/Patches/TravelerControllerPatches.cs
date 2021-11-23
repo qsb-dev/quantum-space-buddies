@@ -2,7 +2,6 @@
 using System.Linq;
 using HarmonyLib;
 using QSB.Patches;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches
@@ -16,7 +15,6 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(nameof(TravelerController.OnStartConversation))]
 		public static bool OnStartConversation(TravelerController __instance)
 		{
-			DebugLog.DebugWrite($"{__instance.name} OnStartConversation");
 			__instance._talking = true;
 
 			if (__instance is GabbroTravelerController gabbro)
@@ -53,8 +51,6 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(nameof(TravelerController.OnEndConversation))]
 		public static bool OnEndConversation(TravelerController __instance)
 		{
-			DebugLog.DebugWrite($"{__instance.name} OnEndConversation");
-
 			if (__instance is GabbroTravelerController gabbro)
 			{
 				if (gabbro._animator.enabled)

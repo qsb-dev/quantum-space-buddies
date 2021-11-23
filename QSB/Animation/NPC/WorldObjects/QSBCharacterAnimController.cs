@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Player;
+﻿using QSB.Player;
 using System.Collections.Generic;
 
 namespace QSB.Animation.NPC.WorldObjects
