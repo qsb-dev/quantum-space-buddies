@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Player;
+﻿using QSB.Player;
 using System.Collections.Generic;
 
 namespace QSB.Animation.NPC.WorldObjects
@@ -32,9 +31,9 @@ namespace QSB.Animation.NPC.WorldObjects
 		}
 
 		public override CharacterDialogueTree GetDialogueTree()
-			=> AttachedObject.GetValue<CharacterDialogueTree>("_dialogueTree");
+			=> AttachedObject._dialogueTree;
 
 		public override bool InConversation()
-			=> AttachedObject.GetValue<bool>("_inConversation");
+			=> AttachedObject._inConversation;
 	}
 }

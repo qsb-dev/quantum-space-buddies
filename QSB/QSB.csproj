@@ -53,6 +53,7 @@
     <Compile Include="Animation\NPC\Events\NpcAnimationMessage.cs" />
     <Compile Include="Animation\NPC\Patches\CharacterAnimationPatches.cs" />
     <Compile Include="Animation\NPC\Patches\SolanumPatches.cs" />
+    <Compile Include="Animation\NPC\Patches\TravelerControllerPatches.cs" />
     <Compile Include="Animation\NPC\WorldObjects\INpcAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\NpcAnimController.cs" />
     <Compile Include="Animation\NPC\WorldObjects\QSBCharacterAnimController.cs" />
