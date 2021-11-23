@@ -1,6 +1,9 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Linq;
+using HarmonyLib;
 using QSB.Patches;
 using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches
 {
@@ -23,7 +26,7 @@ namespace QSB.Animation.NPC.Patches
 					gabbro._animator.CrossFadeInFixedTime("Gabbro_Talking", 1.8f);
 					gabbro._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Talking", 1.8f);
 				}
-				// Locator.GetTravelerAudioManager().StopAllTravelerAudio();
+				Locator.GetTravelerAudioManager().StopTravelerAudio(__instance.name);
 			}
 			else
 			{
@@ -35,7 +38,7 @@ namespace QSB.Animation.NPC.Patches
 
 					__instance._animator.SetTrigger("Talking");
 				}
-				// Locator.GetTravelerAudioManager().StopAllTravelerAudio();
+				Locator.GetTravelerAudioManager().StopTravelerAudio(__instance.name);
 
 				if (__instance is ChertTravelerController chert)
 				{
@@ -59,7 +62,7 @@ namespace QSB.Animation.NPC.Patches
 					gabbro._animator.CrossFadeInFixedTime("Gabbro_Playing", gabbro._delayToRestartAudio, -1, -gabbro._delayToRestartAudio);
 					gabbro._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Playing", gabbro._delayToRestartAudio, -1, -gabbro._delayToRestartAudio);
 				}
-				// Locator.GetTravelerAudioManager().PlayAllTravelerAudio(gabbro._delayToRestartAudio);
+				Locator.GetTravelerAudioManager().PlayTravelerAudio(__instance.name, gabbro._delayToRestartAudio);
 				if (DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_REMINDER") || DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION"))
 				{
 					var conditionState = DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION");
@@ -81,12 +84,75 @@ namespace QSB.Animation.NPC.Patches
 						__instance._animator.SetTrigger("Playing");
 					}
 				}
-				// Locator.GetTravelerAudioManager().PlayAllTravelerAudio(__instance._delayToRestartAudio);
+				Locator.GetTravelerAudioManager().PlayTravelerAudio(__instance.name, __instance._delayToRestartAudio);
 			}
 
 			__instance._talking = false;
 
 			return false;
+		}
+	}
+
+	internal static class TravelerAudioManagerExtensions
+	{
+		/// bad, but works great
+		private static SignalName TravelerToSignal(string name)
+		{
+			if (name.Contains("Esker"))
+			{
+				return SignalName.Traveler_Esker;
+			}
+			if (name.Contains("Chert"))
+			{
+				return SignalName.Traveler_Chert;
+			}
+			if (name.Contains("Riebeck"))
+			{
+				return SignalName.Traveler_Riebeck;
+			}
+			if (name.Contains("Gabbro"))
+			{
+				return SignalName.Traveler_Gabbro;
+			}
+			if (name.Contains("Feldspar"))
+			{
+				return SignalName.Traveler_Feldspar;
+			}
+			if (name.Contains("Nomai"))
+			{
+				return SignalName.Traveler_Nomai;
+			}
+			if (name.Contains("Prisoner"))
+			{
+				return SignalName.Traveler_Prisoner;
+			}
+
+			throw new ArgumentOutOfRangeException(nameof(name), name, null);
+		}
+
+		internal static void StopTravelerAudio(this TravelerAudioManager manager, string name)
+		{
+			var signalName = TravelerToSignal(name);
+			var audioSignal = manager._signals.First(x => x.GetName() == signalName);
+
+			audioSignal.GetOWAudioSource().FadeOut(0.5f);
+		}
+
+		internal static void PlayTravelerAudio(this TravelerAudioManager manager, string name, float audioDelay)
+		{
+			var signalName = TravelerToSignal(name);
+			var audioSignal = manager._signals.First(x => x.GetName() == signalName);
+
+			manager._playAfterDelay = false;
+			manager._playAudioTime = Time.time + audioDelay;
+			QSBCore.UnityEvents.RunWhen(() => Time.time >= manager._playAudioTime, () =>
+			{
+				if (!audioSignal.IsOnlyAudibleToScope() || audioSignal.GetOWAudioSource().isPlaying)
+				{
+					audioSignal.GetOWAudioSource().FadeIn(0.5f);
+					audioSignal.GetOWAudioSource().timeSamples = 0;
+				}
+			});
 		}
 	}
 }
