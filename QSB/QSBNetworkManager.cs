@@ -1,20 +1,14 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation.Player;
-using QSB.Animation.Player.Thrusters;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
-using QSB.Instruments;
 using QSB.OrbSync.TransformSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
-using QSB.ShipSync.TransformSync;
-using QSB.Anglerfish.TransformSync;
 using QSB.TimeSync;
-using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -56,38 +50,18 @@ namespace QSB
 			PlayerName = GetPlayerName();
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
-			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
-			SetupNetworkId(playerPrefab, 1);
-			SetupNetworkTransform(playerPrefab);
-			playerPrefab.AddComponent<PlayerTransformSync>();
-			playerPrefab.AddComponent<AnimationSync>();
-			playerPrefab.AddComponent<CrouchSync>();
-			playerPrefab.AddComponent<WakeUpSync>();
-			playerPrefab.AddComponent<JetpackAccelerationSync>();
-			playerPrefab.AddComponent<InstrumentsManager>();
+			playerPrefab = _assetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 
-			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-			SetupNetworkId(ShipPrefab, 2);
-			SetupNetworkTransform(ShipPrefab);
-			ShipPrefab.AddComponent<ShipTransformSync>();
+			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkship.prefab");
 			spawnPrefabs.Add(ShipPrefab);
 
-			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
-			SetupNetworkId(_probePrefab, 3);
-			SetupNetworkTransform(_probePrefab);
-			_probePrefab.AddComponent<PlayerProbeSync>();
+			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkprobe.prefab");
 			spawnPrefabs.Add(_probePrefab);
 
-			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-			SetupNetworkId(OrbPrefab, 4);
-			SetupNetworkTransform(OrbPrefab);
-			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
+			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkorb.prefab");
 			spawnPrefabs.Add(OrbPrefab);
 
-			AnglerPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkangler.prefab");
-			SetupNetworkId(AnglerPrefab, 5);
-			SetupNetworkTransform(AnglerPrefab);
-			AnglerPrefab.AddComponent<AnglerTransformSync>();
+			AnglerPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkangler.prefab");
 			spawnPrefabs.Add(AnglerPrefab);
 
 			ConfigureNetworkManager();
@@ -108,29 +82,6 @@ namespace QSB
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				return "Player";
 			}
-		}
-
-		private void SetupNetworkId(GameObject go, int assetId)
-		{
-			var ident = go.AddComponent<QNetworkIdentity>();
-			ident.LocalPlayerAuthority = true;
-			var networkIdentity = go.GetComponent<NetworkIdentity>();
-			ident.SetValue("m_AssetId", assetId);
-			ident.SetValue("m_SceneId", networkIdentity.GetComponent<NetworkIdentity>().sceneId);
-		}
-
-		private void SetupNetworkTransform(GameObject go)
-		{
-			foreach (var item in go.GetComponents<NetworkTransformChild>())
-			{
-				var child = go.AddComponent<QNetworkTransformChild>();
-				child.Target = item.target;
-				child.m_ChildIndex = item.childIndex;
-				Destroy(item);
-			}
-
-			Destroy(go.GetComponent<NetworkTransform>());
-			Destroy(go.GetComponent<NetworkIdentity>());
 		}
 
 		private void ConfigureNetworkManager()

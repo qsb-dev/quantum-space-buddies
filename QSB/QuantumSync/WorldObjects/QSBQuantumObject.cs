@@ -31,9 +31,9 @@ namespace QSB.QuantumSync.WorldObjects
 		public override void Init(T attachedObject, int id)
 		{
 			var debugBundle = QSBCore.DebugAssetBundle;
-			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Sphere.prefab");
-			var cube = debugBundle.LoadAsset<GameObject>("Assets/Cube.prefab");
-			var capsule = debugBundle.LoadAsset<GameObject>("Assets/Capsule.prefab");
+			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
+			var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
+			var capsule = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
 
 			if (cube == null)
 			{
