@@ -1,0 +1,8 @@
+﻿{
+  "debugMode": true,
+  "showLines": false,
+  "showQuantumVisibilityObjects": false,
+  "showQuantumDebugBoxes": false,
+  "avoidTimeSync": false,
+  "skipTitleScreen": true
+}

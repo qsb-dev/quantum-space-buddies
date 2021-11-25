@@ -328,6 +328,7 @@
     <Compile Include="Utility\CustomCallbacks.cs" />
     <Compile Include="Utility\DebugBoxManager.cs" />
     <Compile Include="Utility\DebugGUI.cs" />
+    <Compile Include="Utility\DebugSettings.cs" />
     <Compile Include="Utility\Events\DebugEvent.cs" />
     <Compile Include="Utility\Events\DebugEventEnum.cs" />
     <Compile Include="Utility\UIHelper.cs" />
@@ -388,6 +389,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="debugsettings.json" />
     <None Include="default-config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -489,6 +491,7 @@ del "$(OwmlDir)\Mods\$(ProjectName)\config.json"
 copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ProjectName)"
 copy /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"
 copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ProjectName)"
+copy /y "$(ProjectDir)\debugsettings.json" "$(OwmlDir)\Mods\$(ProjectName)"
 
 :: process qsb.dll
 "$(SolutionDir)\QNetWeaver\bin\$(Configuration)\QNetWeaver.exe" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll" "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" "$(ProjectDir)\lib\UnityEngine.Networking.dll"  "$(SolutionDir)\WeavedFiles" "$(TargetPath)"

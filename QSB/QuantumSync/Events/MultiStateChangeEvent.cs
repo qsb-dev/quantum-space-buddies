@@ -24,7 +24,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveLocal(bool server, MultiStateChangeMessage message)
 		{
-			if (!QSBCore.DebugMode)
+			if (!QSBCore.ShowQuantumDebugBoxes)
 			{
 				return;
 			}

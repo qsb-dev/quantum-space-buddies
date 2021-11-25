@@ -136,7 +136,7 @@ namespace QSB.Menus
 
 			OnConnected();
 
-			if (QSBCore.DebugMode)
+			if (QSBCore.SkipTitleScreen)
 			{
 				Application.runInBackground = true;
 				var titleScreenManager = FindObjectOfType<TitleScreenManager>();

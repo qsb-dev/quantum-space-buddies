@@ -64,7 +64,7 @@ namespace QSB.QuantumSync.WorldObjects
 				shape.OnShapeDeactivated += (Shape s)
 					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 
-				if (QSBCore.DebugMode)
+				if (QSBCore.ShowQuantumVisibilityObjects)
 				{
 					if (shape is BoxShape boxShape)
 					{

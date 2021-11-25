@@ -18,7 +18,7 @@ namespace QSB.QuantumSync.WorldObjects
 			ObjectId = id;
 			AttachedObject = quantumObject;
 			base.Init(quantumObject, id);
-			if (QSBCore.DebugMode)
+			if (QSBCore.ShowQuantumDebugBoxes)
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Socketed\r\nid:{ObjectId}").GetComponent<Text>();
 			}
