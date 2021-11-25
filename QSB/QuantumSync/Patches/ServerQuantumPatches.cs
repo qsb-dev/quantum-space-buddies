@@ -107,6 +107,7 @@ namespace QSB.QuantumSync.Patches
 				__result = true;
 				return false;
 			}
+
 			__result = false;
 			return false;
 		}
@@ -161,6 +162,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				Physics.SyncTransforms();
 			}
+
 			__instance._visibilityTracker.transform.localPosition = Vector3.zero;
 			__instance._constantForceDetector.AddConstantVolume(bodyToOrbit.GetAttachedGravityVolume(), true, true);
 			var bodyVelocity = bodyToOrbit.GetVelocity();

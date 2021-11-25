@@ -92,6 +92,7 @@ namespace QSB.ShipSync.TransformSync
 			{
 				rigidbody._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 			}
+
 			rigidbody._lastVelocity = rigidbody._currentVelocity;
 			rigidbody._currentVelocity = newVelocity;
 		}

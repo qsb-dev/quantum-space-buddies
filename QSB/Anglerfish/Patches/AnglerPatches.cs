@@ -157,6 +157,7 @@ namespace QSB.Anglerfish.Patches
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
+
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
@@ -174,6 +175,7 @@ namespace QSB.Anglerfish.Patches
 			{
 				return false;
 			}
+
 			qsbAngler.FixedUpdate();
 
 			if (__instance._anglerBody.GetVelocity().sqrMagnitude > (double)Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))

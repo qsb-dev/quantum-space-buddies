@@ -48,6 +48,7 @@ namespace QSB.Tools.TranslatorTool
 			{
 				SetMaterialEmissionEnabled(_leftPageArrowRenderer, false);
 			}
+
 			if (_rightPageArrowRenderer != null)
 			{
 				SetMaterialEmissionEnabled(_rightPageArrowRenderer, false);
@@ -62,6 +63,7 @@ namespace QSB.Tools.TranslatorTool
 				emissiveRenderer.SetPropertyBlock(s_matPropBlock);
 				return;
 			}
+
 			s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 0f);
 			emissiveRenderer.SetPropertyBlock(s_matPropBlock);
 		}
@@ -73,10 +75,12 @@ namespace QSB.Tools.TranslatorTool
 			{
 				_targetBeam.Activate();
 			}
+
 			for (var i = 0; i < _scanBeams.Length; i++)
 			{
 				_scanBeams[i].enabled = true;
 			}
+
 			TranslatorProp.SetActive(true);
 		}
 
@@ -98,6 +102,7 @@ namespace QSB.Tools.TranslatorTool
 			{
 				_scanBeams[i].enabled = false;
 			}
+
 			TranslatorProp.SetActive(false);
 		}
 

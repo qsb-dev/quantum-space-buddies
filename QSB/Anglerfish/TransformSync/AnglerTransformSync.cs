@@ -60,6 +60,7 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				return false;
 			}
+
 			_shouldUpdate = false;
 			return base.UpdateTransform();
 		}

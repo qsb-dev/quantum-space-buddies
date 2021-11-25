@@ -77,10 +77,12 @@ namespace QSB.MeteorSync.Events
 						{
 							constantFluidDetector.SetDetectableFluid(whiteHoleVolume._fluidVolume);
 						}
+
 						if (attachedForceDetector is not null and ConstantForceDetector constantForceDetector)
 						{
 							constantForceDetector.ClearAllFields();
 						}
+
 						qsbFragment.DetachableFragment.ChangeFragmentSector(whiteHoleVolume._whiteHoleSector,
 							whiteHoleVolume._whiteHoleProxyShadowSuperGroup);
 
@@ -94,6 +96,7 @@ namespace QSB.MeteorSync.Events
 						DebugLog.ToConsole($"{qsbFragment.LogName} is thru white hole, but msg is not. fuck", MessageType.Error);
 						return;
 					}
+
 					if (qsbFragment.IsThruWhiteHole)
 					{
 						var debrisLeash = body.GetComponent<DebrisLeash>();

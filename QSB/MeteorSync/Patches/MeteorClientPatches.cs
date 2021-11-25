@@ -49,6 +49,7 @@ namespace QSB.MeteorSync.Patches
 					meteorController.Initialize(__instance.transform, null, null);
 				}
 			}
+
 			if (meteorController != null)
 			{
 				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + (__instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed);
@@ -82,11 +83,13 @@ namespace QSB.MeteorSync.Patches
 				particleSystem.transform.rotation = rotation;
 				particleSystem.Play();
 			}
+
 			__instance._impactSource.PlayOneShot(AudioType.BH_MeteorImpact);
 			foreach (var owCollider in __instance._owColliders)
 			{
 				owCollider.SetActivation(false);
 			}
+
 			__instance._owRigidbody.MakeKinematic();
 			__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
 			FragmentSurfaceProxy.UntrackMeteor(__instance);
@@ -124,6 +127,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
+
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 
 			if (__instance.enabled)
@@ -144,6 +148,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
+
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 
 			if (!__instance._deccelerating)
@@ -169,9 +174,11 @@ namespace QSB.MeteorSync.Patches
 					{
 						__instance._detachableFragment.ComeToRest(__instance._anchorBody);
 					}
+
 					__instance.enabled = false;
 					return false;
 				}
+
 				__instance._attachedBody.AddVelocityChange(velocityChange);
 			}
 

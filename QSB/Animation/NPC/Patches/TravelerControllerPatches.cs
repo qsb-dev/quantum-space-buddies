@@ -24,6 +24,7 @@ namespace QSB.Animation.NPC.Patches
 					gabbro._animator.CrossFadeInFixedTime("Gabbro_Talking", 1.8f);
 					gabbro._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Talking", 1.8f);
 				}
+
 				Locator.GetTravelerAudioManager().StopTravelerAudio(gabbro.name);
 			}
 			else
@@ -36,6 +37,7 @@ namespace QSB.Animation.NPC.Patches
 
 					__instance._animator.SetTrigger("Talking");
 				}
+
 				Locator.GetTravelerAudioManager().StopTravelerAudio(__instance.name);
 
 				if (__instance is ChertTravelerController chert)
@@ -58,6 +60,7 @@ namespace QSB.Animation.NPC.Patches
 					gabbro._animator.CrossFadeInFixedTime("Gabbro_Playing", gabbro._delayToRestartAudio, -1, -gabbro._delayToRestartAudio);
 					gabbro._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Playing", gabbro._delayToRestartAudio, -1, -gabbro._delayToRestartAudio);
 				}
+
 				Locator.GetTravelerAudioManager().PlayTravelerAudio(gabbro.name, gabbro._delayToRestartAudio);
 				if (DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_REMINDER") || DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION"))
 				{
@@ -80,6 +83,7 @@ namespace QSB.Animation.NPC.Patches
 						__instance._animator.SetTrigger("Playing");
 					}
 				}
+
 				Locator.GetTravelerAudioManager().PlayTravelerAudio(__instance.name, __instance._delayToRestartAudio);
 			}
 
@@ -98,26 +102,32 @@ namespace QSB.Animation.NPC.Patches
 			{
 				return SignalName.Traveler_Esker;
 			}
+
 			if (name.Contains("Chert"))
 			{
 				return SignalName.Traveler_Chert;
 			}
+
 			if (name.Contains("Riebeck"))
 			{
 				return SignalName.Traveler_Riebeck;
 			}
+
 			if (name.Contains("Gabbro"))
 			{
 				return SignalName.Traveler_Gabbro;
 			}
+
 			if (name.Contains("Feldspar"))
 			{
 				return SignalName.Traveler_Feldspar;
 			}
+
 			if (name.Contains("Nomai"))
 			{
 				return SignalName.Traveler_Nomai;
 			}
+
 			if (name.Contains("Prisoner"))
 			{
 				return SignalName.Traveler_Prisoner;

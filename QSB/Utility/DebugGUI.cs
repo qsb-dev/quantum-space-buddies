@@ -154,6 +154,7 @@ namespace QSB.Utility
 				{
 					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
 				}
+
 				var sector = instance.ReferenceSector;
 				WriteLine(3, $"Ref. Sector : {(sector != null ? sector.Name : "NULL")}", sector == null ? Color.red : Color.white);
 				var transform = instance.ReferenceTransform;

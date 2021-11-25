@@ -49,6 +49,7 @@ namespace QSB.Anglerfish.WorldObjects
 			{
 				identity.RemoveClientAuthority(identity.ClientAuthorityOwner);
 			}
+
 			identity.AssignClientAuthority(conn);
 
 			DebugLog.DebugWrite($"angler {ObjectId} - transferred authority to {id}");
@@ -60,6 +61,7 @@ namespace QSB.Anglerfish.WorldObjects
 			{
 				return;
 			}
+
 			TargetVelocity = TargetTransform.position - _lastTargetPosition;
 			_lastTargetPosition = TargetTransform.position;
 		}

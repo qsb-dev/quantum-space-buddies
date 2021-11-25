@@ -67,6 +67,7 @@ namespace QSB.Menus
 				pauseCommandListener.RemovePauseCommandLock();
 				_addedPauseLock = false;
 			}
+
 			OWTime.Unpause(OWTime.PauseType.System);
 			OWInput.RestorePreviousInputs();
 		}
@@ -153,7 +154,6 @@ namespace QSB.Menus
 				titleAnimationController._optionsFadeDuration = small;
 				titleAnimationController._optionsFadeSpacing = small;
 			}
-
 		}
 
 		private void Disconnect()
