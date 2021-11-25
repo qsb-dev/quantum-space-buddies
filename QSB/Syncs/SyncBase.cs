@@ -178,6 +178,7 @@ namespace QSB.Syncs
 					DebugLog.ToConsole($"Exception when initializing {name} : {ex}", MessageType.Error);
 					enabled = false;
 				}
+
 				base.Update();
 				return;
 			}

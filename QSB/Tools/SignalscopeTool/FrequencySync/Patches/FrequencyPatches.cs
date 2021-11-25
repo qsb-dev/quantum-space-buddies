@@ -2,7 +2,7 @@
 using QSB.Events;
 using QSB.Patches;
 
-namespace QSB.FrequencySync.Patches
+namespace QSB.Tools.SignalscopeTool.FrequencySync.Patches
 {
 	[HarmonyPatch]
 	public class FrequencyPatches : QSBPatch

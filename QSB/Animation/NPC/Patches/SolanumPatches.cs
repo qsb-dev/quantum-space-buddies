@@ -3,7 +3,6 @@ using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -83,6 +82,7 @@ namespace QSB.Animation.NPC.Patches
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._solanumAnimController.StartWatchingPlayer();
 					}
+
 					break;
 
 				case NomaiConversationManager.State.WatchingPlayer:
@@ -144,6 +144,7 @@ namespace QSB.Animation.NPC.Patches
 								{
 									__instance.ResetStoneGestureTimer();
 								}
+
 								__instance._stoneGestureTimer -= Time.deltaTime;
 								if (__instance._stoneGestureTimer < 0f)
 								{
@@ -157,6 +158,7 @@ namespace QSB.Animation.NPC.Patches
 								{
 									__instance.ResetCairnGestureTimer();
 								}
+
 								__instance._cairnGestureTimer -= Time.deltaTime;
 								if (__instance._cairnGestureTimer < 0f)
 								{
@@ -166,6 +168,7 @@ namespace QSB.Animation.NPC.Patches
 							}
 						}
 					}
+
 					break;
 
 				case NomaiConversationManager.State.CreatingStones:
@@ -174,6 +177,7 @@ namespace QSB.Animation.NPC.Patches
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._conversationStonesCreated = true;
 					}
+
 					break;
 
 				case NomaiConversationManager.State.RaisingCairns:
@@ -184,6 +188,7 @@ namespace QSB.Animation.NPC.Patches
 						__instance._stoneSocketATrigger.SetActivation(true);
 						__instance._stoneSocketBTrigger.SetActivation(true);
 					}
+
 					break;
 
 				case NomaiConversationManager.State.ErasingResponse:
@@ -203,6 +208,7 @@ namespace QSB.Animation.NPC.Patches
 							__instance._activeResponseText.Show();
 						}
 					}
+
 					break;
 
 				case NomaiConversationManager.State.WritingResponse:
@@ -211,6 +217,7 @@ namespace QSB.Animation.NPC.Patches
 						__instance._state = NomaiConversationManager.State.WatchingPlayer;
 						__instance._solanumAnimController.StopWritingMessage(true);
 					}
+
 					break;
 			}
 

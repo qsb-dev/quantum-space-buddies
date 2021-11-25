@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.TranslatorTool
 {
-	class QSBNomaiTranslatorProp : MonoBehaviour
+	internal class QSBNomaiTranslatorProp : MonoBehaviour
 	{
 		private static MaterialPropertyBlock s_matPropBlock;
 		private static int s_propID_EmissionColor;
@@ -15,7 +15,6 @@ namespace QSB.Tools.TranslatorTool
 		private TranslatorTargetBeam _targetBeam;
 		private QSBTranslatorScanBeam[] _scanBeams;
 		private bool _isTranslating;
-		
 
 		private void Awake()
 		{
@@ -49,6 +48,7 @@ namespace QSB.Tools.TranslatorTool
 			{
 				SetMaterialEmissionEnabled(_leftPageArrowRenderer, false);
 			}
+
 			if (_rightPageArrowRenderer != null)
 			{
 				SetMaterialEmissionEnabled(_rightPageArrowRenderer, false);
@@ -63,6 +63,7 @@ namespace QSB.Tools.TranslatorTool
 				emissiveRenderer.SetPropertyBlock(s_matPropBlock);
 				return;
 			}
+
 			s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 0f);
 			emissiveRenderer.SetPropertyBlock(s_matPropBlock);
 		}
@@ -74,10 +75,12 @@ namespace QSB.Tools.TranslatorTool
 			{
 				_targetBeam.Activate();
 			}
+
 			for (var i = 0; i < _scanBeams.Length; i++)
 			{
 				_scanBeams[i].enabled = true;
 			}
+
 			TranslatorProp.SetActive(true);
 		}
 
@@ -99,6 +102,7 @@ namespace QSB.Tools.TranslatorTool
 			{
 				_scanBeams[i].enabled = false;
 			}
+
 			TranslatorProp.SetActive(false);
 		}
 

@@ -130,12 +130,14 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 									break;
 								}
 							}
+
 							break;
 						default:
 							if (lightSourceType == LightSourceType.VOLUME_ONLY)
 							{
 								__instance._illuminated = true;
 							}
+
 							break;
 					}
 				}

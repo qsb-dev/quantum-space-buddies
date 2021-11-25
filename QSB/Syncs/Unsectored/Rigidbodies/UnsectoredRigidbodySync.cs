@@ -93,7 +93,6 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(((OWRigidbody)AttachedObject).GetAngularVelocity());
 		}
 
-
 		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)

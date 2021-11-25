@@ -1,5 +1,4 @@
 ﻿using QSB.Player;
-using QSB.Utility;
 using System.Collections;
 using UnityEngine;
 
@@ -25,10 +24,7 @@ namespace QSB.StatueSync
 			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 		}
 
-		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
-		{
-			StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
-		}
+		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees) => StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
 
 		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 		{

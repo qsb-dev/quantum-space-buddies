@@ -1,8 +1,8 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using QuantumUNET.Transport;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
@@ -41,7 +41,6 @@ namespace QSB.Anglerfish.TransformSync
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
 		}
 
-
 		private bool _shouldUpdate;
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
@@ -61,10 +60,10 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				return false;
 			}
+
 			_shouldUpdate = false;
 			return base.UpdateTransform();
 		}
-
 
 		protected override void OnRenderObject()
 		{

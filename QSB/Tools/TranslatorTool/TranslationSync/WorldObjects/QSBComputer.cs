@@ -2,7 +2,7 @@
 using QSB.WorldSync;
 using System.Collections.Generic;
 
-namespace QSB.TranslationSync.WorldObjects
+namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBComputer : WorldObject<NomaiComputer>
 	{

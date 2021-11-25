@@ -1,12 +1,12 @@
 ﻿using OWML.Utils;
 using QSB.CampfireSync.WorldObjects;
-using QSB.MeteorSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.MeteorSync.WorldObjects;
 using QSB.QuantumSync;
-using QSB.TranslationSync;
-using QSB.TranslationSync.WorldObjects;
+using QSB.Tools.TranslatorTool.TranslationSync;
+using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;

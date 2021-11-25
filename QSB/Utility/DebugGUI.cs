@@ -1,18 +1,13 @@
-﻿using OWML.Utils;
-using QSB.ClientServerStateSync;
+﻿using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
 using QSB.Player;
 using QSB.QuantumSync;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
-using QSB.Syncs;
 using QSB.TimeSync;
 using QSB.WorldSync;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -150,7 +145,7 @@ namespace QSB.Utility
 			#endregion
 
 			#region Column3 - Ship data
-			
+
 			WriteLine(3, $"Current Flyer : {ShipManager.Instance.CurrentFlyer}");
 			if (ShipTransformSync.LocalInstance != null)
 			{
@@ -159,6 +154,7 @@ namespace QSB.Utility
 				{
 					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
 				}
+
 				var sector = instance.ReferenceSector;
 				WriteLine(3, $"Ref. Sector : {(sector != null ? sector.Name : "NULL")}", sector == null ? Color.red : Color.white);
 				var transform = instance.ReferenceTransform;
@@ -188,7 +184,7 @@ namespace QSB.Utility
 			{
 				var attachedObject = hull.AttachedObject;
 				if (attachedObject == null)
-{
+				{
 					WriteLine(3, $"- {hull.ObjectId} NULL ATTACHEDOBJECT", Color.red);
 				}
 				else
@@ -213,8 +209,7 @@ namespace QSB.Utility
 
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
-					var qsbObj = quantumObject as IWorldObject;
-					if (qsbObj == null)
+					if (quantumObject is not IWorldObject qsbObj)
 					{
 						WriteLine(4, $"NULL QSBOBJ", Color.red);
 					}

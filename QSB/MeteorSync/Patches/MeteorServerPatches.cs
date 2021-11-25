@@ -11,7 +11,6 @@ namespace QSB.MeteorSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 		public static bool FixedUpdate(MeteorLauncher __instance)
@@ -31,6 +30,7 @@ namespace QSB.MeteorSync.Patches
 					}
 				}
 			}
+
 			if (__instance._launchedDynamicMeteors != null)
 			{
 				for (var j = __instance._launchedDynamicMeteors.Count - 1; j >= 0; j--)
@@ -46,6 +46,7 @@ namespace QSB.MeteorSync.Patches
 					}
 				}
 			}
+
 			if (__instance._initialized && Time.time > __instance._lastLaunchTime + __instance._launchDelay)
 			{
 				if (!__instance._areParticlesPlaying)
@@ -59,6 +60,7 @@ namespace QSB.MeteorSync.Patches
 					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
 					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher);
 				}
+
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
 				{
 					__instance.LaunchMeteor();
@@ -74,7 +76,6 @@ namespace QSB.MeteorSync.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
@@ -110,6 +111,7 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchedDynamicMeteors.Add(meteorController);
 				}
 			}
+
 			if (meteorController != null)
 			{
 				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
@@ -133,7 +135,6 @@ namespace QSB.MeteorSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
 		public static void Impact(MeteorController __instance,
@@ -146,7 +147,6 @@ namespace QSB.MeteorSync.Patches
 			}
 		}
 
-
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
 		public static void AddDamage(FragmentIntegrity __instance,
@@ -155,7 +155,6 @@ namespace QSB.MeteorSync.Patches
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
@@ -168,7 +167,6 @@ namespace QSB.MeteorSync.Patches
 		public static void Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
 			__instance._fragmentIntegrity = __state;
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
 		public static bool MoveByDistance(DebrisLeash __instance,
@@ -178,6 +176,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
+
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 
 			if (__instance.enabled)
@@ -190,7 +189,6 @@ namespace QSB.MeteorSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]
 		public static bool FixedUpdate(DebrisLeash __instance)
@@ -199,6 +197,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
+
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 
 			if (!__instance._deccelerating)
@@ -224,9 +223,11 @@ namespace QSB.MeteorSync.Patches
 					{
 						__instance._detachableFragment.ComeToRest(__instance._anchorBody);
 					}
+
 					__instance.enabled = false;
 					return false;
 				}
+
 				__instance._attachedBody.AddVelocityChange(velocityChange);
 			}
 

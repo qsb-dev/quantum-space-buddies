@@ -2,17 +2,16 @@
 
 namespace QSB.Tools.TranslatorTool
 {
-	class QSBTranslatorScanBeam : MonoBehaviour
+	internal class QSBTranslatorScanBeam : MonoBehaviour
 	{
 		public Renderer _projectorRenderer;
 		public Renderer _lightVolumeRenderer;
-
-		const float _focusedBeamWidth = 0.25f;
-		const float _maxBeamWidth = 1f;
-		const float _maxBeamLength = 10f;
-		const float _scanOffset = 0f;
-		const float _switchLength = 0.33f;
-		const float _fadeLength = 0.66f;
+		private const float _focusedBeamWidth = 0.25f;
+		private const float _maxBeamWidth = 1f;
+		private const float _maxBeamLength = 10f;
+		private const float _scanOffset = 0f;
+		private const float _switchLength = 0.33f;
+		private const float _fadeLength = 0.66f;
 
 		public float _scanSpeed = 1f;
 		public readonly Color _baseProjectorColor = new(0.3545942f, 2.206932f, 4.594794f, 1f);

@@ -60,6 +60,7 @@ namespace QSB.TimeSync
 				DebugLog.ToConsole("Error - Tried to start time sync UI when not in universe!", OWML.Common.MessageType.Error);
 				return;
 			}
+
 			_currentType = type;
 			_currentReason = reason;
 			_startTime = Time.timeSinceLevelLoad;

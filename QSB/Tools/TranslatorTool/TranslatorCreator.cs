@@ -18,7 +18,6 @@ namespace QSB.Tools.TranslatorTool
 			var REMOTE_TranslatorGroup = REMOTE_NomaiTranslatorProp.transform.Find("TranslatorGroup");
 			var REMOTE_Props_HEA_Translator = REMOTE_TranslatorGroup.Find("Props_HEA_Translator");
 
-			
 			Object.Destroy(REMOTE_TranslatorGroup.Find("Canvas").gameObject);
 			Object.Destroy(REMOTE_Props_HEA_Translator.Find("Props_HEA_Translator_Pivot_RotatingPart")
 				.Find("Props_HEA_Translator_RotatingPart")

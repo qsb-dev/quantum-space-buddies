@@ -3,7 +3,7 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QSB.TranslationSync.WorldObjects
+namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBVesselComputer : WorldObject<NomaiVesselComputer>
 	{

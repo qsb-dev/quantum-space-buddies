@@ -29,7 +29,6 @@ namespace QSB.Anglerfish.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnSectorOccupantRemoved))]
 		public static bool OnSectorOccupantRemoved(AnglerfishController __instance,
@@ -50,7 +49,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateState))]
@@ -159,6 +157,7 @@ namespace QSB.Anglerfish.Patches
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						break;
 					}
+
 					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
@@ -166,7 +165,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateMovement))]
@@ -177,6 +175,7 @@ namespace QSB.Anglerfish.Patches
 			{
 				return false;
 			}
+
 			qsbAngler.FixedUpdate();
 
 			if (__instance._anglerBody.GetVelocity().sqrMagnitude > (double)Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))
@@ -250,7 +249,6 @@ namespace QSB.Anglerfish.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnImpact))]
 		public static bool OnImpact(AnglerfishController __instance,
@@ -274,7 +272,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnClosestAudibleNoise))]
@@ -329,7 +326,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnCaughtObject))]

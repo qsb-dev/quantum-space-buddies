@@ -3,7 +3,6 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
-using UnityEngine;
 
 namespace QSB.ItemSync.Events
 {

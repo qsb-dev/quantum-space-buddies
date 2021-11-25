@@ -65,6 +65,7 @@ namespace QSB.ClientServerStateSync
 							// loading in from title screen
 							newState = ClientState.AliveInSolarSystem;
 						}
+
 						break;
 					case OWScene.EyeOfTheUniverse:
 						newState = ClientState.AliveInEye;
@@ -112,6 +113,7 @@ namespace QSB.ClientServerStateSync
 								newState = ClientState.AliveInSolarSystem;
 							}
 						}
+
 						break;
 					case OWScene.EyeOfTheUniverse:
 						newState = ClientState.WaitingForOthersToReadyInSolarSystem;

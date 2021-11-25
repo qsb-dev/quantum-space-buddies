@@ -142,7 +142,7 @@ namespace QSB.ClientServerStateSync
 						DebugLog.ToConsole($"Error - All players were ready in non-universe scene!?", OWML.Common.MessageType.Error);
 						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.NotLoaded);
 					}
-					
+
 					_blockNextCheck = true;
 				}
 			}

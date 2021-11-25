@@ -1,7 +1,7 @@
-﻿using QSB.TranslationSync.WorldObjects;
+﻿using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.TranslationSync
+namespace QSB.Tools.TranslatorTool.TranslationSync
 {
 	internal class SpiralManager : WorldObjectManager
 	{

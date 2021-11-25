@@ -1,6 +1,5 @@
 ﻿using QSB.Player;
 using System.Linq;
-using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -68,6 +67,7 @@ namespace QSB.Menus
 				pauseCommandListener.RemovePauseCommandLock();
 				_addedPauseLock = false;
 			}
+
 			OWTime.Unpause(OWTime.PauseType.System);
 			OWInput.RestorePreviousInputs();
 		}
@@ -92,7 +92,6 @@ namespace QSB.Menus
 
 			DisconnectButton = MenuApi.PauseMenu_MakeSimpleButton("DISCONNECT");
 			DisconnectButton.onClick.AddListener(Disconnect);
-
 
 			if (QSBCore.IsInMultiplayer)
 			{
@@ -155,7 +154,6 @@ namespace QSB.Menus
 				titleAnimationController._optionsFadeDuration = small;
 				titleAnimationController._optionsFadeSpacing = small;
 			}
-
 		}
 
 		private void Disconnect()
