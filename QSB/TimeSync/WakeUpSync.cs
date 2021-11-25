@@ -250,6 +250,18 @@ namespace QSB.TimeSync
 		{
 			_serverTime = Time.timeSinceLevelLoad;
 
+			if (ServerStateManager.Instance == null)
+			{
+				DebugLog.ToConsole($"Warning - ServerStateManager.Instance is null!", MessageType.Warning);
+				return;
+			}
+
+			if (QSBPlayerManager.LocalPlayer == null)
+			{
+				DebugLog.ToConsole($"Warning - LocalPlayer is null!", MessageType.Warning);
+				return;
+			}
+
 			var serverState = ServerStateManager.Instance.GetServerState();
 			var clientState = QSBPlayerManager.LocalPlayer.State;
 

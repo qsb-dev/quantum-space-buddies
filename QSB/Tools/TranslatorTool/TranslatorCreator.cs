@@ -1,5 +1,6 @@
 ﻿using QSB.Utility;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace QSB.Tools.TranslatorTool
 {
@@ -19,8 +20,6 @@ namespace QSB.Tools.TranslatorTool
 
 			
 			Object.Destroy(REMOTE_TranslatorGroup.Find("Canvas").gameObject);
-			//Object.Destroy(REMOTE_TranslatorGroup.Find("Lighting").gameObject);
-			//Object.Destroy(REMOTE_TranslatorGroup.Find("TranslatorBeams").gameObject);
 			Object.Destroy(REMOTE_Props_HEA_Translator.Find("Props_HEA_Translator_Pivot_RotatingPart")
 				.Find("Props_HEA_Translator_RotatingPart")
 				.Find("Props_HEA_Translator_RotatingPart_Prepass").gameObject);
@@ -57,10 +56,15 @@ namespace QSB.Tools.TranslatorTool
 			Object.Destroy(oldTranslator);
 
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Screen").material = PlayerToolsManager.Structure_HEA_PlayerShip_Screens_mat;
+			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Screen").shadowCastingMode = ShadowCastingMode.On;
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Geo").material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Geo").shadowCastingMode = ShadowCastingMode.On;
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_RotatingPart").material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_RotatingPart").shadowCastingMode = ShadowCastingMode.On;
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Button_L").material = PlayerToolsManager.Props_HEA_Lightbulb_mat;
+			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Button_L").shadowCastingMode = ShadowCastingMode.On;
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Button_R").material = PlayerToolsManager.Props_HEA_Lightbulb_mat;
+			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Button_R").shadowCastingMode = ShadowCastingMode.On;
 
 			REMOTE_NomaiTranslatorProp.transform.parent = cameraBody;
 			REMOTE_NomaiTranslatorProp.transform.localPosition = Vector3.zero;

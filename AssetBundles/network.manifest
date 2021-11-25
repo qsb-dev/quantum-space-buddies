@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 460430998
+CRC: 912924545
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 64e530cbe1016c9071aaf21970181f1d
+    Hash: 01fb51db952cadf5ea7a5ff414ca5734
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 6968c5d2bbef57a79632abd61ea01bb3
+    Hash: 4c1d64afc7729493eb4d28f957f9246d
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -14,18 +14,36 @@ ClassTypes:
 - Class: 4
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 372142912, guid: 93b08009869340045a8e7321508b6355, type: 3}
+  Script: {fileID: -1208705890, guid: 8929207a0d76fd54a8a2a820c652720f, type: 3}
 - Class: 114
-  Script: {fileID: -1768714887, guid: 93b08009869340045a8e7321508b6355, type: 3}
+  Script: {fileID: 1142416158, guid: 8929207a0d76fd54a8a2a820c652720f, type: 3}
 - Class: 114
-  Script: {fileID: -1267208747, guid: 93b08009869340045a8e7321508b6355, type: 3}
+  Script: {fileID: 519208029, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -790547616, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 916105004, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -1309757293, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -1381557116, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -1937550126, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -749020886, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -2281650, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 2036222940, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/NetworkProbe.prefab
-- Assets/NETWORK_Player_Body.prefab
-- Assets/NetworkOrb.prefab
-- Assets/NetworkAngler.prefab
-- Assets/NetworkShip.prefab
+- Assets/Prefabs/NetworkProbe.prefab
+- Assets/Prefabs/NETWORK_Player_Body.prefab
+- Assets/Prefabs/NetworkOrb.prefab
+- Assets/Prefabs/NetworkAngler.prefab
+- Assets/Prefabs/NetworkShip.prefab
 Dependencies: []

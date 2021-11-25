@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace QSB.Tools.SignalscopeTool
 {
@@ -12,9 +13,10 @@ namespace QSB.Tools.SignalscopeTool
 			signalscopeRoot.name = "REMOTE_Signalscope";
 			signalscopeRoot.SetActive(false);
 
+			var Props_HEA_Signalscope = signalscopeRoot.transform.Find("Props_HEA_Signalscope");
+
 			Object.Destroy(signalscopeRoot.GetComponent<SignalscopePromptController>());
-			Object.Destroy(signalscopeRoot.transform.Find("Props_HEA_Signalscope")
-				.Find("Props_HEA_Signalscope_Prepass").gameObject);
+			Object.Destroy(Props_HEA_Signalscope.Find("Props_HEA_Signalscope_Prepass").gameObject);
 
 			var oldSignalscope = signalscopeRoot.GetComponent<Signalscope>();
 			var tool = signalscopeRoot.AddComponent<QSBTool>();
@@ -23,10 +25,11 @@ namespace QSB.Tools.SignalscopeTool
 			tool.HoldTransform = PlayerToolsManager.HoldTransform;
 			tool.ArrivalDegrees = 5f;
 			tool.Type = ToolType.Signalscope;
-			tool.ToolGameObject = signalscopeRoot.transform.Find("Props_HEA_Signalscope").gameObject;
+			tool.ToolGameObject = Props_HEA_Signalscope.gameObject;
 			oldSignalscope.enabled = false;
 
-			PlayerToolsManager.GetRenderer(signalscopeRoot, "Props_HEA_Signalscope").material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			Props_HEA_Signalscope.GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			Props_HEA_Signalscope.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
 
 			signalscopeRoot.transform.parent = cameraBody;
 			signalscopeRoot.transform.localPosition = Vector3.zero;
