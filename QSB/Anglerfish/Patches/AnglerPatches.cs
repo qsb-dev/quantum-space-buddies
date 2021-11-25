@@ -29,7 +29,6 @@ namespace QSB.Anglerfish.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnSectorOccupantRemoved))]
 		public static bool OnSectorOccupantRemoved(AnglerfishController __instance,
@@ -50,7 +49,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateState))]
@@ -167,7 +165,6 @@ namespace QSB.Anglerfish.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateMovement))]
 		public static bool UpdateMovement(AnglerfishController __instance)
@@ -250,7 +247,6 @@ namespace QSB.Anglerfish.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnImpact))]
 		public static bool OnImpact(AnglerfishController __instance,
@@ -274,7 +270,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnClosestAudibleNoise))]
@@ -329,7 +324,6 @@ namespace QSB.Anglerfish.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnCaughtObject))]

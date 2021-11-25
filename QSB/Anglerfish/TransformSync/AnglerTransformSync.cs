@@ -41,7 +41,6 @@ namespace QSB.Anglerfish.TransformSync
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
 		}
 
-
 		private bool _shouldUpdate;
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
@@ -64,7 +63,6 @@ namespace QSB.Anglerfish.TransformSync
 			_shouldUpdate = false;
 			return base.UpdateTransform();
 		}
-
 
 		protected override void OnRenderObject()
 		{

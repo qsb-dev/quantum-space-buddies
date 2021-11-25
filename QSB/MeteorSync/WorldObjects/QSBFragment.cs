@@ -22,7 +22,6 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 		}
 
-
 		public DetachableFragment DetachableFragment;
 		public bool IsDetached => DetachableFragment != null && DetachableFragment._isDetached;
 		public bool IsThruWhiteHole => IsDetached && DetachableFragment._sector != null &&

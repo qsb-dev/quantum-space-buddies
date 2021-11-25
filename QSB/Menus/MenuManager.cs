@@ -92,7 +92,6 @@ namespace QSB.Menus
 			DisconnectButton = MenuApi.PauseMenu_MakeSimpleButton("DISCONNECT");
 			DisconnectButton.onClick.AddListener(Disconnect);
 
-
 			if (QSBCore.IsInMultiplayer)
 			{
 				ClientButton.SetActive(false);

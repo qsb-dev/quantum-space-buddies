@@ -18,7 +18,6 @@ namespace QSB.MeteorSync.Patches
 		public static bool FixedUpdate(MeteorLauncher __instance)
 			=> false;
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
 		public static bool LaunchMeteor(MeteorLauncher __instance)
@@ -69,7 +68,6 @@ namespace QSB.MeteorSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
 		public static bool Impact(MeteorController __instance,
@@ -106,7 +104,6 @@ namespace QSB.MeteorSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
 		public static void Detach_Prefix(DetachableFragment __instance, out FragmentIntegrity __state) =>
@@ -117,7 +114,6 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
 		public static void Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
 			__instance._fragmentIntegrity = __state;
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
@@ -139,7 +135,6 @@ namespace QSB.MeteorSync.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]

@@ -10,7 +10,6 @@ namespace QSB.MeteorSync.WorldObjects
 			AttachedObject = attachedObject;
 		}
 
-
 		public int MeteorId;
 		public float LaunchSpeed;
 

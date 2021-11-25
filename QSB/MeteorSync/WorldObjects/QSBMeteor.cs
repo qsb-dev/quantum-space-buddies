@@ -11,7 +11,6 @@ namespace QSB.MeteorSync.WorldObjects
 			AttachedObject = attachedObject;
 		}
 
-
 		public static bool IsSpecialImpact(GameObject go) =>
 			go == Locator.GetPlayerCollider().gameObject || go == Locator.GetProbe()._anchor._collider.gameObject;
 

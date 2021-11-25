@@ -11,7 +11,6 @@ namespace QSB.MeteorSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 		public static bool FixedUpdate(MeteorLauncher __instance)
@@ -75,7 +74,6 @@ namespace QSB.MeteorSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
 		public static bool LaunchMeteor(MeteorLauncher __instance)
@@ -133,7 +131,6 @@ namespace QSB.MeteorSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
 		public static void Impact(MeteorController __instance,
@@ -146,7 +143,6 @@ namespace QSB.MeteorSync.Patches
 			}
 		}
 
-
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
 		public static void AddDamage(FragmentIntegrity __instance,
@@ -155,7 +151,6 @@ namespace QSB.MeteorSync.Patches
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
 			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
@@ -167,7 +162,6 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
 		public static void Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
 			__instance._fragmentIntegrity = __state;
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
@@ -189,7 +183,6 @@ namespace QSB.MeteorSync.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]
