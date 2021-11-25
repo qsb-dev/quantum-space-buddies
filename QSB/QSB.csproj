@@ -330,7 +330,6 @@
     <Compile Include="Utility\DebugGUI.cs" />
     <Compile Include="Utility\Events\DebugEvent.cs" />
     <Compile Include="Utility\Events\DebugEventEnum.cs" />
-    <Compile Include="Utility\GrabMaterialInGame.cs" />
     <Compile Include="Utility\UIHelper.cs" />
     <Compile Include="Utility\ZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
