@@ -209,8 +209,7 @@ namespace QSB.Utility
 
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
-					var qsbObj = quantumObject as IWorldObject;
-					if (qsbObj == null)
+					if (quantumObject is not IWorldObject qsbObj)
 					{
 						WriteLine(4, $"NULL QSBOBJ", Color.red);
 					}
