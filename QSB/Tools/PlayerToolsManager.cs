@@ -19,7 +19,7 @@ namespace QSB.Tools
 		public static Material Props_HEA_Lightbulb_OFF_mat;
 		public static Material Structure_HEA_PlayerShip_Screens_mat;
 
-		public static void Init(Transform playerCamera)
+		public static void InitRemote(Transform playerCamera)
 		{
 			try
 			{
@@ -42,7 +42,6 @@ namespace QSB.Tools
 					Props_HEA_Lightbulb_OFF_mat = null;
 					Structure_HEA_PlayerShip_Screens_mat = null;
 				}
-
 			}
 			catch (Exception ex)
 			{
@@ -53,6 +52,19 @@ namespace QSB.Tools
 			SignalscopeCreator.CreateSignalscope(playerCamera);
 			ProbeLauncherCreator.CreateProbeLauncher(playerCamera);
 			TranslatorCreator.CreateTranslator(playerCamera);
+		}
+
+		public static void InitLocal()
+		{
+			var flashlight = Locator.GetFlashlight();
+			var spot = flashlight._illuminationCheckLight;
+			var lightLOD = spot.GetComponent<LightLOD>();
+
+			if (lightLOD != null)
+			{
+				UnityEngine.Object.Destroy(lightLOD);
+				spot.GetLight().shadows = LightShadows.Soft;
+			}
 		}
 
 		private static void CreateStowTransforms(Transform cameraBody)

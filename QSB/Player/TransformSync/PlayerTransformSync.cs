@@ -101,6 +101,8 @@ namespace QSB.Player.TransformSync
 			Player.CameraBody = cameraBody.gameObject;
 			_visibleCameraRoot = cameraBody;
 
+			PlayerToolsManager.InitLocal();
+
 			// stick
 			var pivot = GetStickPivot();
 			Player.RoastingStick = pivot.parent.gameObject;
@@ -163,7 +165,7 @@ namespace QSB.Player.TransformSync
 			 * SET UP PLAYER CAMERA
 			 */
 
-			PlayerToolsManager.Init(REMOTE_PlayerCamera.transform);
+			PlayerToolsManager.InitRemote(REMOTE_PlayerCamera.transform);
 
 			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
 			camera.enabled = false;
