@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
+using QSB.Anglerfish;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
@@ -11,12 +12,14 @@ using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
 using QSB.Menus;
+using QSB.MeteorSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
+using QSB.RespawnSync;
 using QSB.SatelliteSync;
 using QSB.SectorSync;
 using QSB.ShipSync;
@@ -26,13 +29,10 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QSB.Anglerfish;
-using QSB.MeteorSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
-using QSB.RespawnSync;
 
 /*
 	Copyright (C) 2020 - 2021

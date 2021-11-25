@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.SatelliteSync

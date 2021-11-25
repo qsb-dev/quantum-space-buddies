@@ -3,11 +3,11 @@ using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Player.TransformSync;
-using QSB.WorldSync;
+using QSB.RespawnSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
-using QSB.RespawnSync;
 
 namespace QSB.DeathSync
 {

@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using OWML.Utils;
+﻿using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility.Events;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

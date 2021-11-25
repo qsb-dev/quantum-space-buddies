@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using QSB.Patches;
+using System;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches

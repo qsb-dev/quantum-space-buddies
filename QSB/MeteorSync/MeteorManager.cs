@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using QSB.MeteorSync.WorldObjects;
+﻿using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.MeteorSync
 {

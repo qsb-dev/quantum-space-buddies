@@ -3,7 +3,6 @@ using QSB.Animation.NPC.WorldObjects;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
