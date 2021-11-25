@@ -10,7 +10,7 @@ namespace QSB.Utility
 
 		public static void Init()
 		{
-			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/dialoguebubble.prefab");
+			_boxPrefab = QSBCore.ConversationAssetBundle.LoadAsset<GameObject>("assets/Prefabs/dialoguebubble.prefab");
 			var font = (Font)Resources.Load(@"fonts\english - latin\spacemono-bold");
 			if (font == null)
 			{
@@ -28,9 +28,7 @@ namespace QSB.Utility
 			newBox.transform.SetParent(parent);
 			newBox.transform.localPosition = new Vector3(0, vertOffset, 0);
 			newBox.transform.rotation = parent.rotation;
-			newBox.AddComponent<CameraFacingBillboard>();
 			newBox.GetComponent<Text>().text = text;
-			newBox.AddComponent<ZOverride>();
 			newBox.SetActive(true);
 			return newBox;
 		}
