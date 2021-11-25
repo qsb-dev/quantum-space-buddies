@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace QSB.Tools.ProbeLauncherTool
 {
@@ -32,8 +33,13 @@ namespace QSB.Tools.ProbeLauncherTool
 
 			var recallEffect = REMOTE_Props_HEA_ProbeLauncher.Find("RecallEffect");
 
-			REMOTE_Props_HEA_ProbeLauncher.Find("PressureGauge_Arrow").GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
-			REMOTE_Props_HEA_ProbeLauncher.Find("ProbeLauncherChassis").GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			var arrow = REMOTE_Props_HEA_ProbeLauncher.Find("PressureGauge_Arrow");
+			arrow.GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			arrow.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+
+			var chassis = REMOTE_Props_HEA_ProbeLauncher.Find("ProbeLauncherChassis");
+			chassis.GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
+			chassis.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
 			Object.Destroy(REMOTE_Props_HEA_ProbeLauncher.Find("Props_HEA_ProbeLauncher_Prepass").gameObject);
 
 			var preLaunchProbe = REMOTE_Props_HEA_ProbeLauncher.Find("Props_HEA_Probe_Prelaunch");
@@ -44,6 +50,8 @@ namespace QSB.Tools.ProbeLauncherTool
 			materials[0] = PlayerToolsManager.Props_HEA_PlayerTool_mat;
 			materials[1] = PlayerToolsManager.Props_HEA_Lightbulb_OFF_mat;
 			preLaunchProbe.GetComponent<MeshRenderer>().materials = materials;
+
+			preLaunchProbe.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
 
 			var tool = REMOTE_ProbeLauncher.AddComponent<QSBProbeLauncherTool>();
 			var spring = new DampedSpringQuat
