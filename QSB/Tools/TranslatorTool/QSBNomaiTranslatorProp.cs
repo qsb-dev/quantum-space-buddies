@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.TranslatorTool
 {
-	class QSBNomaiTranslatorProp : MonoBehaviour
+	internal class QSBNomaiTranslatorProp : MonoBehaviour
 	{
 		private static MaterialPropertyBlock s_matPropBlock;
 		private static int s_propID_EmissionColor;
