@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.FrequencySync.Events
+namespace QSB.Tools.SignalscopeTool.FrequencySync.Events
 {
 	public class IdentifySignalEvent : QSBEvent<EnumMessage<SignalName>>
 	{

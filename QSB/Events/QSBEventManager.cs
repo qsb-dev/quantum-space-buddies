@@ -6,7 +6,7 @@ using QSB.ClientServerStateSync.Events;
 using QSB.ConversationSync.Events;
 using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
-using QSB.FrequencySync.Events;
+using QSB.Tools.SignalscopeTool.FrequencySync.Events;
 using QSB.GeyserSync.Events;
 using QSB.ItemSync.Events;
 using QSB.LogSync.Events;

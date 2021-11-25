@@ -7,7 +7,7 @@ using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
 using QSB.EchoesOfTheEye.LightSensorSync.Patches;
 using QSB.ElevatorSync.Patches;
-using QSB.FrequencySync.Patches;
+using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
