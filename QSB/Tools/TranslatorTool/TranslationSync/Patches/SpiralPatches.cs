@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using QSB.Events;
 using QSB.Patches;
-using QSB.TranslationSync.WorldObjects;
+using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.TranslationSync.Patches
+namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 {
 	[HarmonyPatch]
 	internal class SpiralPatches : QSBPatch

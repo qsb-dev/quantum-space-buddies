@@ -23,7 +23,7 @@ using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeLauncherTool;
-using QSB.TranslationSync;
+using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.Anglerfish;

@@ -22,7 +22,7 @@ using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
 using QSB.Tools.ProbeLauncherTool.Patches;
-using QSB.TranslationSync.Patches;
+using QSB.Tools.TranslatorTool.TranslationSync.Patches;
 using QSB.Anglerfish.Patches;
 using QSB.MeteorSync.Patches;
 using QSB.Utility;

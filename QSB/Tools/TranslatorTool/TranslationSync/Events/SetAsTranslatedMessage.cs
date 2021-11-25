@@ -1,7 +1,7 @@
 ﻿using QSB.WorldSync.Events;
 using QuantumUNET.Transport;
 
-namespace QSB.TranslationSync.Events
+namespace QSB.Tools.TranslatorTool.TranslationSync.Events
 {
 	public class SetAsTranslatedMessage : EnumWorldObjectMessage<NomaiTextType>
 	{

@@ -25,7 +25,7 @@ using QSB.Tools.ProbeLauncherTool.Events;
 using QSB.Tools.ProbeTool.Events;
 using QSB.Tools.SignalscopeTool.Events;
 using QSB.Tools.TranslatorTool.Events;
-using QSB.TranslationSync.Events;
+using QSB.Tools.TranslatorTool.TranslationSync.Events;
 using QSB.Anglerfish.Events;
 using QSB.Utility;
 using QSB.Utility.Events;

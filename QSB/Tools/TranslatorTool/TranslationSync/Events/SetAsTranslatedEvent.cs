@@ -1,8 +1,8 @@
 ﻿using QSB.Events;
-using QSB.TranslationSync.WorldObjects;
+using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.TranslationSync.Events
+namespace QSB.Tools.TranslatorTool.TranslationSync.Events
 {
 	public class SetAsTranslatedEvent : QSBEvent<SetAsTranslatedMessage>
 	{
