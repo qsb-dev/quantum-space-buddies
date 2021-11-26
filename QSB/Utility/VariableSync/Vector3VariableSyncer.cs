@@ -11,7 +11,7 @@ namespace QSB.Utility.VariableSync
 		{
 			if (FloatToSync == null)
 			{
-				writer.Write(0f);
+				writer.Write(Vector3.zero);
 			}
 			else
 			{
@@ -23,7 +23,7 @@ namespace QSB.Utility.VariableSync
 		{
 			if (FloatToSync == null)
 			{
-				writer.ReadSingle();
+				writer.ReadVector3();
 			}
 			else
 			{
