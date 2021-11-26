@@ -9,6 +9,7 @@
 		SatelliteProjector,
 		SatelliteProjectorSnapshot,
 		LaunchCodes,
+		VariableSync,
 
 		/*
 		 * SERVER EVENTS

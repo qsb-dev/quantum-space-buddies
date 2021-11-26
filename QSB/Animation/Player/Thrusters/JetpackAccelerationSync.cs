@@ -1,23 +1,27 @@
-﻿using QuantumUNET;
+﻿using QSB.Utility.VariableSync;
+using QuantumUNET;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Animation.Player.Thrusters
 {
 	public class JetpackAccelerationSync : QNetworkBehaviour
 	{
-		[SyncVar]
-		private Vector3 _localAcceleration;
-		[SyncVar]
-		private bool _isThrusting;
+		public Vector3VariableSyncer AccelerationVariableSyncer;
+		public BoolVariableSyncer ThrustingVariableSyncer;
+		public Vector3 LocalAcceleration => AccelerationVariableSyncer.ValueToSync.Value;
+		public bool IsThrusting => ThrustingVariableSyncer.ValueToSync.Value;
 
+		private Vector3 _localAcceleration;
+		private bool _isThrusting;
 		private ThrusterModel _thrusterModel;
 
-		public Vector3 LocalAcceleration => _localAcceleration;
-		public bool IsThrusting => _isThrusting;
-
 		public void Init(ThrusterModel model)
-			=> _thrusterModel = model;
+		{
+			_thrusterModel = model;
+
+			AccelerationVariableSyncer.Init(() => _localAcceleration, val => _localAcceleration = val);
+			ThrustingVariableSyncer.Init(() => _isThrusting, val => _isThrusting = val);
+		}
 
 		public void Update()
 		{
@@ -31,8 +35,8 @@ namespace QSB.Animation.Player.Thrusters
 		{
 			if (_thrusterModel != null)
 			{
-				_localAcceleration = _thrusterModel.GetLocalAcceleration();
-				_isThrusting = _thrusterModel.IsTranslationalThrusterFiring();
+				AccelerationVariableSyncer.ValueToSync.Value = _thrusterModel.GetLocalAcceleration();
+				ThrustingVariableSyncer.ValueToSync.Value = _thrusterModel.IsTranslationalThrusterFiring();
 			}
 		}
 	}

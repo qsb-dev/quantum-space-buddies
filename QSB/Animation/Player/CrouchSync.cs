@@ -1,4 +1,6 @@
-﻿using QuantumUNET;
+﻿using QSB.Utility;
+using QSB.Utility.VariableSync;
+using QuantumUNET;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -14,13 +16,15 @@ namespace QSB.Animation.Player
 		private PlayerCharacterController _playerController;
 		private Animator _bodyAnim;
 
-		[SyncVar]
-		private float _crouchValue;
+		public FloatVariableSyncer CrouchVariableSyncer;
+		public float CrouchValue = 0f;
 
 		public void Init(PlayerCharacterController playerController, Animator bodyAnim)
 		{
 			_playerController = playerController;
 			_bodyAnim = bodyAnim;
+
+			CrouchVariableSyncer.Init(() => CrouchValue, val => CrouchValue = val);
 		}
 
 		public void Update()
@@ -42,7 +46,7 @@ namespace QSB.Animation.Player
 			}
 
 			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
-			_crouchValue = jumpChargeFraction;
+			CrouchVariableSyncer.ValueToSync.Value = jumpChargeFraction;
 		}
 
 		private void SyncRemoteCrouch()
@@ -52,7 +56,7 @@ namespace QSB.Animation.Player
 				return;
 			}
 
-			CrouchParam.Target = _crouchValue;
+			CrouchParam.Target = CrouchValue;
 			CrouchParam.Smooth(CrouchSmoothTime);
 			var jumpChargeFraction = CrouchParam.Current;
 			_bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);

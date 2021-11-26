@@ -38,7 +38,7 @@ namespace QuantumUNET
 
 		public static bool dontListen { get; set; }
 
-		internal static QNetworkServer instance
+		public static QNetworkServer instance
 		{
 			get
 			{
@@ -1348,7 +1348,7 @@ namespace QuantumUNET
 
 		private readonly HashSet<int> m_ExternalConnections;
 
-		private readonly ServerSimpleWrapper m_SimpleServerSimple;
+		public readonly ServerSimpleWrapper m_SimpleServerSimple;
 
 		private float m_MaxDelay = 0.1f;
 
@@ -1362,7 +1362,7 @@ namespace QuantumUNET
 
 		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new();
 
-		private class ServerSimpleWrapper : QNetworkServerSimple
+		public class ServerSimpleWrapper : QNetworkServerSimple
 		{
 			public ServerSimpleWrapper(QNetworkServer server) => m_Server = server;
 
