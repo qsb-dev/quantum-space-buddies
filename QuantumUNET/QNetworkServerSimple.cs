@@ -106,7 +106,7 @@ namespace QuantumUNET
 			serverHostId = -1;
 		}
 
-		internal void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler)
+		public void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler)
 			=> m_MessageHandlers.RegisterHandlerSafe(msgType, handler);
 
 		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler)
