@@ -8,6 +8,7 @@ namespace QuantumUNET.Messages
 		public short MsgType;
 		public QNetworkConnection Connection;
 		public QNetworkReader Reader;
+		public int ChannelId;
 
 		public TMsg ReadMessage<TMsg>() where TMsg : QMessageBase, new()
 		{

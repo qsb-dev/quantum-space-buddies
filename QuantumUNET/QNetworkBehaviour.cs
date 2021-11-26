@@ -67,20 +67,428 @@ namespace QuantumUNET
 			{
 				ClearAllDirtyBits();
 				writer.FinishMessage();
-				QClientScene.readyConnection.SendWriter(writer);
+				QClientScene.readyConnection.SendWriter(writer, GetNetworkChannel());
 			}
 		}
 
-		protected void SendEventInternal(QNetworkWriter writer, string eventName)
+		protected void SendCommandInternal(QNetworkWriter writer, int channelId, string cmdName)
 		{
-			if (!QNetworkServer.active)
+			if (!IsLocalPlayer && !HasAuthority)
 			{
-				QLog.Error($"Tried to send event {eventName} but QSBNetworkServer isn't active.");
+				QLog.Warning("Trying to send command for object without authority.");
+			}
+			else if (QClientScene.readyConnection == null)
+			{
+				QLog.Error($"Send command attempted with no client running [client={ConnectionToServer}].");
+			}
+			else
+			{
+				writer.FinishMessage();
+				QClientScene.readyConnection.SendWriter(writer, channelId);
+			}
+		}
+
+		public virtual bool InvokeCommand(int cmdHash, QNetworkReader reader) => InvokeCommandDelegate(cmdHash, reader);
+
+		protected void SendRPCInternal(QNetworkWriter writer, int channelId, string rpcName)
+		{
+			if (!IsServer)
+			{
+				QLog.Warning("ClientRpc call on un-spawned object");
 				return;
 			}
 
 			writer.FinishMessage();
-			QNetworkServer.SendWriterToReady(gameObject, writer);
+			QNetworkServer.SendWriterToReady(gameObject, writer, channelId);
+		}
+
+		protected void SendTargetRPCInternal(QNetworkConnection conn, QNetworkWriter writer, int channelId, string rpcName)
+		{
+			if (!IsServer)
+			{
+				QLog.Warning("TargetRpc call on un-spawned object");
+				return;
+			}
+
+			writer.FinishMessage();
+			conn.SendWriter(writer, channelId);
+		}
+
+		public virtual bool InvokeRPC(int cmdHash, QNetworkReader reader) => InvokeRpcDelegate(cmdHash, reader);
+
+		protected void SendEventInternal(QNetworkWriter writer, int channelId, string eventName)
+		{
+			if (!QNetworkServer.active)
+			{
+				QLog.Error($"Tried to send event {eventName} on channel {channelId} but QSBNetworkServer isn't active.");
+				return;
+			}
+
+			writer.FinishMessage();
+			QNetworkServer.SendWriterToReady(gameObject, writer, channelId);
+		}
+
+		public virtual bool InvokeSyncEvent(int cmdHash, QNetworkReader reader) => InvokeSyncEventDelegate(cmdHash, reader);
+
+		public virtual bool InvokeSyncList(int cmdHash, QNetworkReader reader) => InvokeSyncListDelegate(cmdHash, reader);
+
+		protected static void RegisterCommandDelegate(Type invokeClass, int cmdHash, CmdDelegate func)
+		{
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				var invoker = new Invoker
+				{
+					invokeType = UNetInvokeType.Command,
+					invokeClass = invokeClass,
+					invokeFunction = func
+				};
+				s_CmdHandlerDelegates[cmdHash] = invoker;
+			}
+		}
+
+		protected static void RegisterRpcDelegate(Type invokeClass, int cmdHash, CmdDelegate func)
+		{
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				var invoker = new Invoker
+				{
+					invokeType = UNetInvokeType.ClientRpc,
+					invokeClass = invokeClass,
+					invokeFunction = func
+				};
+				s_CmdHandlerDelegates[cmdHash] = invoker;
+			}
+		}
+
+		protected static void RegisterEventDelegate(Type invokeClass, int cmdHash, CmdDelegate func)
+		{
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				var invoker = new Invoker
+				{
+					invokeType = UNetInvokeType.SyncEvent,
+					invokeClass = invokeClass,
+					invokeFunction = func
+				};
+				s_CmdHandlerDelegates[cmdHash] = invoker;
+			}
+		}
+
+		protected static void RegisterSyncListDelegate(Type invokeClass, int cmdHash, CmdDelegate func)
+		{
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				var invoker = new Invoker
+				{
+					invokeType = UNetInvokeType.SyncList,
+					invokeClass = invokeClass,
+					invokeFunction = func
+				};
+				s_CmdHandlerDelegates[cmdHash] = invoker;
+			}
+		}
+
+		internal static string GetInvoker(int cmdHash)
+		{
+			string result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = null;
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				result = invoker.DebugString();
+			}
+
+			return result;
+		}
+
+		internal static bool GetInvokerForHashCommand(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
+			=> GetInvokerForHash(cmdHash, UNetInvokeType.Command, out invokeClass, out invokeFunction);
+
+		internal static bool GetInvokerForHashClientRpc(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
+			=> GetInvokerForHash(cmdHash, UNetInvokeType.ClientRpc, out invokeClass, out invokeFunction);
+
+		internal static bool GetInvokerForHashSyncList(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
+			=> GetInvokerForHash(cmdHash, UNetInvokeType.SyncList, out invokeClass, out invokeFunction);
+
+		internal static bool GetInvokerForHashSyncEvent(int cmdHash, out Type invokeClass, out CmdDelegate invokeFunction)
+			=> GetInvokerForHash(cmdHash, UNetInvokeType.SyncEvent, out invokeClass, out invokeFunction);
+
+		private static bool GetInvokerForHash(int cmdHash, UNetInvokeType invokeType, out Type invokeClass, out CmdDelegate invokeFunction)
+		{
+			bool result;
+			if (!s_CmdHandlerDelegates.TryGetValue(cmdHash, out var invoker))
+			{
+				QLog.Error($"GetInvokerForHash hash:{cmdHash} not found");
+				invokeClass = null;
+				invokeFunction = null;
+				result = false;
+			}
+			else if (invoker == null)
+			{
+				QLog.Error($"GetInvokerForHash hash:{cmdHash} invoker null");
+				invokeClass = null;
+				invokeFunction = null;
+				result = false;
+			}
+			else if (invoker.invokeType != invokeType)
+			{
+				QLog.Error($"GetInvokerForHash hash:{cmdHash} mismatched invokeType");
+				invokeClass = null;
+				invokeFunction = null;
+				result = false;
+			}
+			else
+			{
+				invokeClass = invoker.invokeClass;
+				invokeFunction = invoker.invokeFunction;
+				result = true;
+			}
+
+			return result;
+		}
+
+		internal static void DumpInvokers()
+		{
+			QLog.Log($"DumpInvokers size:{s_CmdHandlerDelegates.Count}");
+			foreach (var keyValuePair in s_CmdHandlerDelegates)
+			{
+				QLog.Log($"  Invoker:{keyValuePair.Value.invokeClass}:{keyValuePair.Value.invokeFunction.GetMethodName()} {keyValuePair.Value.invokeType} {keyValuePair.Key}");
+			}
+		}
+
+		internal bool ContainsCommandDelegate(int cmdHash)
+			=> s_CmdHandlerDelegates.ContainsKey(cmdHash);
+
+		internal bool InvokeCommandDelegate(int cmdHash, QNetworkReader reader)
+		{
+			bool result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = false;
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				if (invoker.invokeType != UNetInvokeType.Command)
+				{
+					result = false;
+				}
+				else
+				{
+					if (GetType() != invoker.invokeClass)
+					{
+						if (!GetType().IsSubclassOf(invoker.invokeClass))
+						{
+							return false;
+						}
+					}
+
+					invoker.invokeFunction(this, reader);
+					result = true;
+				}
+			}
+
+			return result;
+		}
+
+		internal bool InvokeRpcDelegate(int cmdHash, QNetworkReader reader)
+		{
+			bool result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = false;
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				if (invoker.invokeType != UNetInvokeType.ClientRpc)
+				{
+					result = false;
+				}
+				else
+				{
+					if (GetType() != invoker.invokeClass)
+					{
+						if (!GetType().IsSubclassOf(invoker.invokeClass))
+						{
+							return false;
+						}
+					}
+
+					invoker.invokeFunction(this, reader);
+					result = true;
+				}
+			}
+
+			return result;
+		}
+
+		internal bool InvokeSyncEventDelegate(int cmdHash, QNetworkReader reader)
+		{
+			bool result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = false;
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				if (invoker.invokeType != UNetInvokeType.SyncEvent)
+				{
+					result = false;
+				}
+				else
+				{
+					invoker.invokeFunction(this, reader);
+					result = true;
+				}
+			}
+
+			return result;
+		}
+
+		internal bool InvokeSyncListDelegate(int cmdHash, QNetworkReader reader)
+		{
+			bool result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = false;
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				if (invoker.invokeType != UNetInvokeType.SyncList)
+				{
+					result = false;
+				}
+				else if (GetType() != invoker.invokeClass)
+				{
+					result = false;
+				}
+				else
+				{
+					invoker.invokeFunction(this, reader);
+					result = true;
+				}
+			}
+
+			return result;
+		}
+
+		internal static string GetCmdHashHandlerName(int cmdHash)
+		{
+			string result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = cmdHash.ToString();
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				result = $"{invoker.invokeType}:{invoker.invokeFunction.GetMethodName()}";
+			}
+
+			return result;
+		}
+
+		private static string GetCmdHashPrefixName(int cmdHash, string prefix)
+		{
+			string result;
+			if (!s_CmdHandlerDelegates.ContainsKey(cmdHash))
+			{
+				result = cmdHash.ToString();
+			}
+			else
+			{
+				var invoker = s_CmdHandlerDelegates[cmdHash];
+				var text = invoker.invokeFunction.GetMethodName();
+				var num = text.IndexOf(prefix);
+				if (num > -1)
+				{
+					text = text.Substring(prefix.Length);
+				}
+
+				result = text;
+			}
+
+			return result;
+		}
+
+		internal static string GetCmdHashCmdName(int cmdHash)
+			=> GetCmdHashPrefixName(cmdHash, "InvokeCmd");
+
+		internal static string GetCmdHashRpcName(int cmdHash)
+			=> GetCmdHashPrefixName(cmdHash, "InvokeRpc");
+
+		internal static string GetCmdHashEventName(int cmdHash)
+			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncEvent");
+
+		internal static string GetCmdHashListName(int cmdHash)
+			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncList");
+
+		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref NetworkInstanceId netIdField)
+		{
+			if (!SyncVarHookGuard)
+			{
+				NetworkInstanceId networkInstanceId = default;
+				if (newGameObject != null)
+				{
+					var component = newGameObject.GetComponent<QNetworkIdentity>();
+					if (component != null)
+					{
+						networkInstanceId = component.NetId;
+						if (networkInstanceId.IsEmpty())
+						{
+							QLog.Warning(
+								$"SetSyncVarGameObject GameObject {newGameObject} has a zero netId. Maybe it is not spawned yet?");
+						}
+					}
+				}
+
+				NetworkInstanceId networkInstanceId2 = default;
+				if (gameObjectField != null)
+				{
+					networkInstanceId2 = gameObjectField.GetComponent<QNetworkIdentity>().NetId;
+				}
+
+				if (networkInstanceId != networkInstanceId2)
+				{
+					QLog.Log(
+						$"SetSyncVar GameObject {GetType().Name} bit [{dirtyBit}] netfieldId:{networkInstanceId2}->{networkInstanceId}");
+					SetDirtyBit(dirtyBit);
+					gameObjectField = newGameObject;
+					netIdField = networkInstanceId;
+				}
+			}
+		}
+
+		protected bool SetSyncVar<T>(T value, ref T fieldValue, uint dirtyBit)
+		{
+			var shouldSet = false;
+			if (value == null)
+			{
+				if (fieldValue != null)
+				{
+					shouldSet = true;
+				}
+			}
+			else
+			{
+				shouldSet = !value.Equals(fieldValue);
+			}
+
+			if (shouldSet)
+			{
+				QLog.Log($"SetSyncVar {GetType().Name} bit [{dirtyBit}] {fieldValue}->{value}");
+
+				SetDirtyBit(dirtyBit);
+				fieldValue = value;
+			}
+
+			return shouldSet;
 		}
 
 		public void SetDirtyBit(uint dirtyBit) => SyncVarDirtyBits |= dirtyBit;
@@ -97,7 +505,7 @@ namespace QuantumUNET
 			{
 				if (SyncVarDirtyBits != 0U)
 				{
-					return 0;
+					return GetNetworkChannel();
 				}
 			}
 
@@ -158,14 +566,36 @@ namespace QuantumUNET
 
 		public virtual bool OnCheckObserver(QNetworkConnection conn) => true;
 
+		public virtual int GetNetworkChannel() => 0;
+
 		public virtual float GetNetworkSendInterval() => 0.1f;
 
 		private float m_LastSendTime;
 		private QNetworkIdentity m_MyView;
 
+		private static readonly Dictionary<int, Invoker> s_CmdHandlerDelegates = new();
+
 		public delegate void CmdDelegate(QNetworkBehaviour obj, QNetworkReader reader);
 
 		protected delegate void EventDelegate(List<Delegate> targets, QNetworkReader reader);
+
+		protected enum UNetInvokeType
+		{
+			Command,
+			ClientRpc,
+			SyncEvent,
+			SyncList
+		}
+
+		protected class Invoker
+		{
+			public string DebugString() =>
+				$"{invokeType}:{invokeClass}:{invokeFunction.GetMethodName()}";
+
+			public UNetInvokeType invokeType;
+			public Type invokeClass;
+			public CmdDelegate invokeFunction;
+		}
 	}
 
 	internal static class DotNetCompatibility

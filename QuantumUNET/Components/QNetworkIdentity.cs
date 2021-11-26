@@ -321,6 +321,132 @@ namespace QuantumUNET.Components
 			}
 		}
 
+		private bool GetInvokeComponent(int cmdHash, Type invokeClass, out QNetworkBehaviour invokeComponent)
+		{
+			QNetworkBehaviour networkBehaviour = null;
+			foreach (var networkBehaviour2 in m_NetworkBehaviours)
+			{
+				if (networkBehaviour2.GetType() == invokeClass || networkBehaviour2.GetType().IsSubclassOf(invokeClass))
+				{
+					networkBehaviour = networkBehaviour2;
+					break;
+				}
+			}
+
+			bool result;
+			if (networkBehaviour == null)
+			{
+				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.FatalError(
+					$"Found no behaviour for incoming [{cmdHashHandlerName}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
+				invokeComponent = null;
+				result = false;
+			}
+			else
+			{
+				invokeComponent = networkBehaviour;
+				result = true;
+			}
+
+			return result;
+		}
+
+		internal void HandleSyncEvent(int cmdHash, QNetworkReader reader)
+		{
+			if (gameObject == null)
+			{
+				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"SyncEvent [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+			}
+			else if (!QNetworkBehaviour.GetInvokerForHashSyncEvent(cmdHash, out var invokeClass, out var cmdDelegate))
+			{
+				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.FatalError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
+			}
+			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
+			{
+				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"SyncEvent [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+			}
+			else
+			{
+				cmdDelegate(obj, reader);
+			}
+		}
+
+		internal void HandleSyncList(int cmdHash, QNetworkReader reader)
+		{
+			if (gameObject == null)
+			{
+				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"SyncList [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+			}
+			else if (!QNetworkBehaviour.GetInvokerForHashSyncList(cmdHash, out var invokeClass, out var cmdDelegate))
+			{
+				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.FatalError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
+			}
+			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
+			{
+				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"SyncList [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+			}
+			else
+			{
+				cmdDelegate(obj, reader);
+			}
+		}
+
+		internal void HandleCommand(int cmdHash, QNetworkReader reader)
+		{
+			if (gameObject == null)
+			{
+				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"Command [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+			}
+			else if (!QNetworkBehaviour.GetInvokerForHashCommand(cmdHash, out var invokeClass, out var cmdDelegate))
+			{
+				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.FatalError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
+			}
+			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
+			{
+				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"Command [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+			}
+			else
+			{
+				cmdDelegate(obj, reader);
+			}
+		}
+
+		internal void HandleRPC(int cmdHash, QNetworkReader reader)
+		{
+			if (gameObject == null)
+			{
+				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"ClientRpc [{cmdHashHandlerName}] received for deleted object [netId={NetId}]");
+			}
+			else if (!QNetworkBehaviour.GetInvokerForHashClientRpc(cmdHash, out var invokeClass, out var cmdDelegate))
+			{
+				var cmdHashHandlerName2 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.FatalError(
+					$"Found no receiver for incoming [{cmdHashHandlerName2}] on {gameObject},  the server and client should have the same NetworkBehaviour instances [netId={NetId}].");
+			}
+			else if (!GetInvokeComponent(cmdHash, invokeClass, out var obj))
+			{
+				var cmdHashHandlerName3 = QNetworkBehaviour.GetCmdHashHandlerName(cmdHash);
+				QLog.Warning($"ClientRpc [{cmdHashHandlerName3}] handler not found [netId={NetId}]");
+			}
+			else
+			{
+				cmdDelegate(obj, reader);
+			}
+		}
+
 		internal void UNetUpdate()
 		{
 			var num = 0U;
@@ -370,7 +496,7 @@ namespace QuantumUNET.Components
 						if (flag)
 						{
 							s_UpdateWriter.FinishMessage();
-							QNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter);
+							QNetworkServer.SendWriterToReady(gameObject, s_UpdateWriter, j);
 						}
 					}
 

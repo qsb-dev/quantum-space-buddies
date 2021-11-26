@@ -17,6 +17,8 @@ namespace QuantumUNET
 
 		public static QNetworkConnection readyConnection { get; private set; }
 
+		public static int reconnectId { get; private set; } = -1;
+
 		public static Dictionary<NetworkInstanceId, QNetworkIdentity> Objects => s_NetworkScene.localObjects;
 
 		public static Dictionary<int, GameObject> Prefabs => QNetworkScene.guidToPrefab;
@@ -32,6 +34,7 @@ namespace QuantumUNET
 			readyConnection = null;
 			ready = false;
 			s_IsSpawnFinished = false;
+			reconnectId = -1;
 			NetworkTransport.Shutdown();
 			NetworkTransport.Init();
 		}
@@ -288,6 +291,7 @@ namespace QuantumUNET
 				client.RegisterHandlerSafe(QMsgType.ObjectSpawn, OnObjectSpawn);
 				client.RegisterHandlerSafe(QMsgType.Owner, OnOwnerMessage);
 				client.RegisterHandlerSafe(QMsgType.UpdateVars, OnUpdateVarsMessage);
+				client.RegisterHandlerSafe(QMsgType.SyncList, OnSyncListMessage);
 				client.RegisterHandlerSafe(QMsgType.ObjectSpawnScene, OnObjectSpawnScene);
 				client.RegisterHandlerSafe(QMsgType.SpawnFinished, OnObjectSpawnFinished);
 				client.RegisterHandlerSafe(QMsgType.ObjectHide, OnObjectDestroy);
@@ -296,6 +300,8 @@ namespace QuantumUNET
 				client.RegisterHandlerSafe(QMsgType.AnimationParameters, QNetworkAnimator.OnAnimationParametersClientMessage);
 			}
 
+			client.RegisterHandlerSafe(QMsgType.Rpc, OnRPCMessage);
+			client.RegisterHandlerSafe(QMsgType.SyncEvent, OnSyncEventMessage);
 			client.RegisterHandlerSafe(QMsgType.AnimationTrigger, QNetworkAnimator.OnAnimationTriggerClientMessage);
 		}
 
@@ -535,6 +541,52 @@ namespace QuantumUNET
 			else
 			{
 				Debug.LogWarning($"Did not find target for sync message for {networkInstanceId}");
+			}
+		}
+
+		private static void OnRPCMessage(QNetworkMessage netMsg)
+		{
+			var num = (int)netMsg.Reader.ReadPackedUInt32();
+			var networkInstanceId = netMsg.Reader.ReadNetworkId();
+			Debug.Log($"ClientScene::OnRPCMessage hash:{num} netId:{networkInstanceId}");
+			if (s_NetworkScene.GetNetworkIdentity(networkInstanceId, out var networkIdentity))
+			{
+				networkIdentity.HandleRPC(num, netMsg.Reader);
+			}
+			else
+			{
+				var cmdHashHandlerName = QNetworkBehaviour.GetCmdHashHandlerName(num);
+				Debug.LogWarningFormat("Could not find target object with netId:{0} for RPC call {1}", networkInstanceId, cmdHashHandlerName);
+			}
+		}
+
+		private static void OnSyncEventMessage(QNetworkMessage netMsg)
+		{
+			var cmdHash = (int)netMsg.Reader.ReadPackedUInt32();
+			var networkInstanceId = netMsg.Reader.ReadNetworkId();
+			Debug.Log($"ClientScene::OnSyncEventMessage {networkInstanceId}");
+			if (s_NetworkScene.GetNetworkIdentity(networkInstanceId, out var networkIdentity))
+			{
+				networkIdentity.HandleSyncEvent(cmdHash, netMsg.Reader);
+			}
+			else
+			{
+				Debug.LogWarning($"Did not find target for SyncEvent message for {networkInstanceId}");
+			}
+		}
+
+		private static void OnSyncListMessage(QNetworkMessage netMsg)
+		{
+			var networkInstanceId = netMsg.Reader.ReadNetworkId();
+			var cmdHash = (int)netMsg.Reader.ReadPackedUInt32();
+			Debug.Log($"ClientScene::OnSyncListMessage {networkInstanceId}");
+			if (s_NetworkScene.GetNetworkIdentity(networkInstanceId, out var networkIdentity))
+			{
+				networkIdentity.HandleSyncList(cmdHash, netMsg.Reader);
+			}
+			else
+			{
+				Debug.LogWarning($"Did not find target for SyncList message for {networkInstanceId}");
 			}
 		}
 

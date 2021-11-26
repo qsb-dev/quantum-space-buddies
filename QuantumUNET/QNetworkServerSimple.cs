@@ -37,6 +37,7 @@ namespace QuantumUNET
 				{
 					var connectionConfig = new ConnectionConfig();
 					connectionConfig.AddChannel(QosType.ReliableSequenced);
+					connectionConfig.AddChannel(QosType.Unreliable);
 					hostTopology = new HostTopology(connectionConfig, 8);
 				}
 
@@ -309,16 +310,16 @@ namespace QuantumUNET
 			}
 		}
 
-		public void SendBytesTo(int connectionId, byte[] bytes, int numBytes)
+		public void SendBytesTo(int connectionId, byte[] bytes, int numBytes, int channelId)
 		{
 			var networkConnection = FindConnection(connectionId);
-			networkConnection?.SendBytes(bytes, numBytes);
+			networkConnection?.SendBytes(bytes, numBytes, channelId);
 		}
 
-		public void SendWriterTo(int connectionId, QNetworkWriter writer)
+		public void SendWriterTo(int connectionId, QNetworkWriter writer, int channelId)
 		{
 			var networkConnection = FindConnection(connectionId);
-			networkConnection?.SendWriter(writer);
+			networkConnection?.SendWriter(writer, channelId);
 		}
 
 		public void Disconnect(int connectionId)

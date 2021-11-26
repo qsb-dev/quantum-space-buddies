@@ -140,7 +140,7 @@ namespace QuantumUNET.Components
 				_prevRotation = transform.rotation;
 				_localTransformWriter.FinishMessage();
 
-				QClientScene.readyConnection.SendWriter(_localTransformWriter);
+				QClientScene.readyConnection.SendWriter(_localTransformWriter, GetNetworkChannel());
 			}
 		}
 
@@ -199,6 +199,9 @@ namespace QuantumUNET.Components
 			rotation.eulerAngles = eulerAngles;
 			return rotation;
 		}
+
+		public override int GetNetworkChannel()
+			=> 1;
 
 		public override float GetNetworkSendInterval()
 			=> SendInterval;

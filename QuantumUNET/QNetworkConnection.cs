@@ -39,14 +39,18 @@ namespace QuantumUNET
 				throw new ArgumentOutOfRangeException("Platform specific protocols are not supported on this platform");
 			}
 
-			var channelQOS = hostTopology.DefaultConfig.Channels[0];
-			var bufferSize = packetSize;
-			if (channelQOS.QOS is QosType.ReliableFragmented or QosType.UnreliableFragmented)
+			m_Channels = new QChannelBuffer[channelCount];
+			for (var i = 0; i < channelCount; i++)
 			{
-				bufferSize = hostTopology.DefaultConfig.FragmentSize * 128;
-			}
+				var channelQOS = hostTopology.DefaultConfig.Channels[i];
+				var bufferSize = packetSize;
+				if (channelQOS.QOS is QosType.ReliableFragmented or QosType.UnreliableFragmented)
+				{
+					bufferSize = hostTopology.DefaultConfig.FragmentSize * 128;
+				}
 
-			m_Channel = new QChannelBuffer(this, bufferSize, 0, IsReliableQoS(channelQOS.QOS), IsSequencedQoS(channelQOS.QOS));
+				m_Channels[i] = new QChannelBuffer(this, bufferSize, (byte)i, IsReliableQoS(channelQOS.QOS), IsSequencedQoS(channelQOS.QOS));
+			}
 		}
 
 		~QNetworkConnection()
@@ -62,12 +66,15 @@ namespace QuantumUNET
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!m_Disposed && m_Channel != null)
+			if (!m_Disposed && m_Channels != null)
 			{
-				m_Channel.Dispose();
+				foreach (var channel in m_Channels)
+				{
+					channel.Dispose();
+				}
 			}
 
-			m_Channel = null;
+			m_Channels = null;
 			if (ClientOwnedObjects != null)
 			{
 				foreach (var netId in ClientOwnedObjects)
@@ -88,7 +95,7 @@ namespace QuantumUNET
 
 		private static bool IsReliableQoS(QosType qos) => qos is QosType.Reliable or QosType.ReliableFragmented or QosType.ReliableSequenced or QosType.ReliableStateUpdate;
 
-		public bool SetChannelOption(int channelId, ChannelOption option, int value) => m_Channel != null && channelId >= 0 && m_Channel.SetOption(option, value);
+		public bool SetChannelOption(int channelId, ChannelOption option, int value) => m_Channels != null && channelId >= 0 && channelId < m_Channels.Length && m_Channels[channelId].SetOption(option, value);
 
 		public void Disconnect()
 		{
@@ -110,9 +117,9 @@ namespace QuantumUNET
 
 		public bool CheckHandler(short msgType) => m_MessageHandlersDict.ContainsKey(msgType);
 
-		public bool InvokeHandlerNoData(short msgType) => InvokeHandler(msgType, null);
+		public bool InvokeHandlerNoData(short msgType) => InvokeHandler(msgType, null, 0);
 
-		public bool InvokeHandler(short msgType, QNetworkReader reader)
+		public bool InvokeHandler(short msgType, QNetworkReader reader, int channelId)
 		{
 			bool result;
 			if (m_MessageHandlersDict.ContainsKey(msgType))
@@ -120,6 +127,7 @@ namespace QuantumUNET
 				m_MessageInfo.MsgType = msgType;
 				m_MessageInfo.Connection = this;
 				m_MessageInfo.Reader = reader;
+				m_MessageInfo.ChannelId = channelId;
 				var networkMessageDelegate = m_MessageHandlersDict[msgType];
 				if (networkMessageDelegate == null)
 				{
@@ -154,6 +162,21 @@ namespace QuantumUNET
 			}
 
 			return result;
+		}
+
+		internal void HandleFragment(QNetworkReader reader, int channelId)
+		{
+			if (channelId >= 0 && channelId < m_Channels.Length)
+			{
+				var channelBuffer = m_Channels[channelId];
+				if (channelBuffer.HandleFragment(reader))
+				{
+					var networkReader = new QNetworkReader(channelBuffer._fragmentBuffer.AsArraySegment().Array);
+					networkReader.ReadInt16();
+					var msgType = networkReader.ReadInt16();
+					InvokeHandler(msgType, networkReader, channelId);
+				}
+			}
 		}
 
 		public void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => m_MessageHandlers.RegisterHandler(msgType, handler);
@@ -211,33 +234,41 @@ namespace QuantumUNET
 
 		public void FlushChannels()
 		{
-			if (m_Channel != null)
+			if (m_Channels != null)
 			{
-				m_Channel.CheckInternalBuffer();
+				foreach (var channel in m_Channels)
+				{
+					channel.CheckInternalBuffer();
+				}
 			}
 		}
 
 		public void SetMaxDelay(float seconds)
 		{
-			if (m_Channel != null)
+			if (m_Channels != null)
 			{
-				m_Channel.MaxDelay = seconds;
+				foreach (var channel in m_Channels)
+				{
+					channel.MaxDelay = seconds;
+				}
 			}
 		}
 
-		public virtual bool Send(short msgType, QMessageBase msg) => SendByChannel(msgType, msg);
+		public virtual bool Send(short msgType, QMessageBase msg) => SendByChannel(msgType, msg, 0);
 
-		public virtual bool SendByChannel(short msgType, QMessageBase msg)
+		public virtual bool SendUnreliable(short msgType, QMessageBase msg) => SendByChannel(msgType, msg, 1);
+
+		public virtual bool SendByChannel(short msgType, QMessageBase msg, int channelId)
 		{
 			m_Writer.StartMessage(msgType);
 			msg.Serialize(m_Writer);
 			m_Writer.FinishMessage();
-			return SendWriter(m_Writer);
+			return SendWriter(m_Writer, channelId);
 		}
 
-		public virtual bool SendBytes(byte[] bytes, int numBytes) => m_Channel.SendBytes(bytes, numBytes);
+		public virtual bool SendBytes(byte[] bytes, int numBytes, int channelId) => CheckChannel(channelId) && m_Channels[channelId].SendBytes(bytes, numBytes);
 
-		public virtual bool SendWriter(QNetworkWriter writer) => m_Channel.SendWriter(writer);
+		public virtual bool SendWriter(QNetworkWriter writer, int channelId) => CheckChannel(channelId) && m_Channels[channelId].SendWriter(writer);
 
 		private void LogSend(byte[] bytes)
 		{
@@ -256,6 +287,28 @@ namespace QuantumUNET
 
 			QLog.Log(
 				$"ConnectionSend con:{connectionId} bytes:{num} msgId:{num2} {stringBuilder}");
+		}
+
+		private bool CheckChannel(int channelId)
+		{
+			bool result;
+			if (m_Channels == null)
+			{
+				QLog.Warning($"Channels not initialized sending on id '{channelId}");
+				result = false;
+			}
+			else if (channelId < 0 || channelId >= m_Channels.Length)
+			{
+				QLog.Error(
+					$"Invalid channel when sending buffered data, '{channelId}'. Current channel count is {m_Channels.Length}");
+				result = false;
+			}
+			else
+			{
+				result = true;
+			}
+
+			return result;
 		}
 
 		public void ResetStats()
@@ -291,13 +344,14 @@ namespace QuantumUNET
 				m_NetMsg.MsgType = num2;
 				m_NetMsg.Reader = reader2;
 				m_NetMsg.Connection = this;
+				m_NetMsg.ChannelId = channelId;
 				networkMessageDelegate(m_NetMsg);
 				lastMessageTime = Time.time;
 			}
 		}
 
 		public override string ToString() =>
-			$"hostId: {hostId} connectionId: {connectionId} isReady: {isReady}";
+			$"hostId: {hostId} connectionId: {connectionId} isReady: {isReady} channel count: {m_Channels?.Length ?? 0}";
 
 		internal void AddToVisList(QNetworkIdentity uv)
 		{
@@ -340,7 +394,9 @@ namespace QuantumUNET
 
 		internal void RemoveOwnedObject(QNetworkIdentity obj) => ClientOwnedObjects?.Remove(obj.NetId);
 
-		private QChannelBuffer m_Channel;
+		internal static void OnFragment(QNetworkMessage netMsg) => netMsg.Connection.HandleFragment(netMsg.Reader, netMsg.ChannelId);
+
+		private QChannelBuffer[] m_Channels;
 		private readonly QNetworkMessage m_NetMsg = new();
 		private QNetworkWriter m_Writer;
 
