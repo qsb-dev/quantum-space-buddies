@@ -1,6 +1,7 @@
 ﻿using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -89,6 +90,8 @@ namespace QSB.Utility.VariableSync
 			{
 				_writer.StartMessage((short)QSB.Events.EventType.VariableSync);
 				_writer.Write(NetId);
+				// OPTIMIZE - cache this
+				_writer.Write(GetComponents<BaseVariableSyncer>().ToList().IndexOf(this));
 				WriteData(_writer);
 				_writer.FinishMessage();
 				QClientScene.readyConnection.SendWriter(_writer, GetNetworkChannel());
@@ -98,9 +101,10 @@ namespace QSB.Utility.VariableSync
 		public static void HandleVariable(QNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
+			var index = netMsg.Reader.ReadInt32();
 			var gameObject = QNetworkServer.FindLocalObject(networkInstanceId);
-			var component = gameObject.GetComponent<BaseVariableSyncer>();
-			component.ReadData(netMsg.Reader);
+			var components = gameObject.GetComponents<BaseVariableSyncer>();
+			components[index].ReadData(netMsg.Reader);
 		}
 	}
 }
