@@ -1,10 +1,11 @@
 ﻿using QuantumUNET.Transport;
+using UnityEngine;
 
 namespace QSB.Utility.VariableSync
 {
-	public class FloatVariableSyncer : BaseVariableSyncer
+	public class Vector3VariableSyncer : BaseVariableSyncer
 	{
-		public VariableReference<float> FloatToSync;
+		public VariableReference<Vector3> FloatToSync;
 
 		public override void WriteData(QNetworkWriter writer)
 		{
@@ -26,7 +27,7 @@ namespace QSB.Utility.VariableSync
 			}
 			else
 			{
-				FloatToSync.Value = writer.ReadSingle();
+				FloatToSync.Value = writer.ReadVector3();
 			}
 		}
 

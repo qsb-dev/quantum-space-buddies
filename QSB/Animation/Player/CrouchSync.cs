@@ -16,8 +16,8 @@ namespace QSB.Animation.Player
 		private PlayerCharacterController _playerController;
 		private Animator _bodyAnim;
 		private VariableReference<float> _crouchValueReference;
-		private FloatVariableSyncer _variableSyncer;
 
+		public FloatVariableSyncer CrouchVariableSyncer;
 		public float CrouchValue;
 
 		public void Init(PlayerCharacterController playerController, Animator bodyAnim)
@@ -25,11 +25,8 @@ namespace QSB.Animation.Player
 			_playerController = playerController;
 			_bodyAnim = bodyAnim;
 
-			DebugLog.DebugWrite($"create reference");
 			_crouchValueReference = new VariableReference<float>(() => CrouchValue, val => CrouchValue = val);
-			DebugLog.DebugWrite($"add syncer");
-			_variableSyncer = gameObject.AddComponent<FloatVariableSyncer>();
-			_variableSyncer.FloatToSync = _crouchValueReference;
+			CrouchVariableSyncer.FloatToSync = _crouchValueReference;
 		}
 
 		public void Update()
@@ -51,7 +48,6 @@ namespace QSB.Animation.Player
 			}
 
 			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
-			DebugLog.DebugWrite($"update reference value");
 			_crouchValueReference.Value = jumpChargeFraction;
 		}
 

@@ -2,7 +2,7 @@
 
 namespace QSB.Utility.VariableSync
 {
-	internal class VariableReference<T>
+	public class VariableReference<T>
 	{
 		private Func<T> _getter;
 		private Action<T> _setter;

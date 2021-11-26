@@ -2,9 +2,9 @@
 
 namespace QSB.Utility.VariableSync
 {
-	public class FloatVariableSyncer : BaseVariableSyncer
+	public class BoolVariableSyncer : BaseVariableSyncer
 	{
-		public VariableReference<float> FloatToSync;
+		public VariableReference<bool> FloatToSync;
 
 		public override void WriteData(QNetworkWriter writer)
 		{
@@ -26,7 +26,7 @@ namespace QSB.Utility.VariableSync
 			}
 			else
 			{
-				FloatToSync.Value = writer.ReadSingle();
+				FloatToSync.Value = writer.ReadBoolean();
 			}
 		}
 
