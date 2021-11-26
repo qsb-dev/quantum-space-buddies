@@ -24,14 +24,10 @@
 		}
 
 		public const short ObjectDestroy = 1;
-		public const short Rpc = 2;
 		public const short ObjectSpawn = 3;
 		public const short Owner = 4;
-		public const short Command = 5;
 		public const short LocalPlayerTransform = 6;
-		public const short SyncEvent = 7;
 		public const short UpdateVars = 8;
-		public const short SyncList = 9;
 		public const short ObjectSpawnScene = 10;
 		public const short NetworkInfo = 11;
 		public const short SpawnFinished = 12;
@@ -69,14 +65,10 @@
 		internal static string[] msgLabels = {
 			"none",
 			"ObjectDestroy",
-			"Rpc",
 			"ObjectSpawn",
 			"Owner",
-			"Command",
 			"LocalPlayerTransform",
-			"SyncEvent",
 			"UpdateVars",
-			"SyncList",
 			"ObjectSpawnScene",
 			"NetworkInfo",
 			"SpawnFinished",

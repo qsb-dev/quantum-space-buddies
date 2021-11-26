@@ -15,31 +15,25 @@ namespace QuantumUNET
 
 		public override bool Send(short msgType, QMessageBase msg)
 		{
-			LocalClient.InvokeHandlerOnClient(msgType, msg, 0);
+			LocalClient.InvokeHandlerOnClient(msgType, msg);
 			return true;
 		}
 
-		public override bool SendUnreliable(short msgType, QMessageBase msg)
+		public override bool SendByChannel(short msgType, QMessageBase msg)
 		{
-			LocalClient.InvokeHandlerOnClient(msgType, msg, 1);
+			LocalClient.InvokeHandlerOnClient(msgType, msg);
 			return true;
 		}
 
-		public override bool SendByChannel(short msgType, QMessageBase msg, int channelId)
+		public override bool SendBytes(byte[] bytes, int numBytes)
 		{
-			LocalClient.InvokeHandlerOnClient(msgType, msg, channelId);
+			LocalClient.InvokeBytesOnClient(bytes);
 			return true;
 		}
 
-		public override bool SendBytes(byte[] bytes, int numBytes, int channelId)
+		public override bool SendWriter(QNetworkWriter writer)
 		{
-			LocalClient.InvokeBytesOnClient(bytes, channelId);
-			return true;
-		}
-
-		public override bool SendWriter(QNetworkWriter writer, int channelId)
-		{
-			LocalClient.InvokeBytesOnClient(writer.AsArray(), channelId);
+			LocalClient.InvokeBytesOnClient(writer.AsArray());
 			return true;
 		}
 	}

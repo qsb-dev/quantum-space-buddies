@@ -101,7 +101,6 @@ namespace QuantumUNET
 		{
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.ClientUpdateVars, OnUpdateVarsMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Ready, OnClientReadyMessage);
-			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.Command, OnCommandMessage);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalPlayerTransform, QNetworkTransform.HandleTransform);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.LocalChildTransform, QNetworkTransformChild.HandleChildTransform);
 			m_SimpleServerSimple.RegisterHandlerSafe(QMsgType.RemovePlayer, OnRemovePlayerMessage);
@@ -299,7 +298,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static void SendWriterToReady(GameObject contextObj, QNetworkWriter writer, int channelId)
+		public static void SendWriterToReady(GameObject contextObj, QNetworkWriter writer)
 		{
 			var arraySegment = writer.AsArraySegment();
 			if (arraySegment.Count > 32767)
@@ -307,10 +306,10 @@ namespace QuantumUNET
 				throw new UnityException("NetworkWriter used buffer is too big!");
 			}
 
-			SendBytesToReady(contextObj, arraySegment.Array, arraySegment.Count, channelId);
+			SendBytesToReady(contextObj, arraySegment.Array, arraySegment.Count);
 		}
 
-		public static void SendBytesToReady(GameObject contextObj, byte[] buffer, int numBytes, int channelId)
+		public static void SendBytesToReady(GameObject contextObj, byte[] buffer, int numBytes)
 		{
 			if (contextObj == null)
 			{
@@ -319,7 +318,7 @@ namespace QuantumUNET
 				{
 					if (networkConnection != null && networkConnection.isReady)
 					{
-						if (!networkConnection.SendBytes(buffer, numBytes, channelId))
+						if (!networkConnection.SendBytes(buffer, numBytes))
 						{
 							flag = false;
 						}
@@ -343,7 +342,7 @@ namespace QuantumUNET
 						var networkConnection2 = component.Observers[j];
 						if (networkConnection2.isReady)
 						{
-							if (!networkConnection2.SendBytes(buffer, numBytes, channelId))
+							if (!networkConnection2.SendBytes(buffer, numBytes))
 							{
 								flag2 = false;
 							}
@@ -362,7 +361,7 @@ namespace QuantumUNET
 			}
 		}
 
-		public static void SendBytesToPlayer(GameObject player, byte[] buffer, int numBytes, int channelId)
+		public static void SendBytesToPlayer(GameObject player, byte[] buffer, int numBytes)
 		{
 			foreach (var networkConnection in connections)
 			{
@@ -372,7 +371,7 @@ namespace QuantumUNET
 					{
 						if (controller.IsValid && controller.Gameobject == player)
 						{
-							networkConnection.SendBytes(buffer, numBytes, channelId);
+							networkConnection.SendBytes(buffer, numBytes);
 							break;
 						}
 					}
@@ -380,58 +379,7 @@ namespace QuantumUNET
 			}
 		}
 
-		public static bool SendUnreliableToAll(short msgType, QMessageBase msg)
-		{
-			QLog.Log($"Server.SendUnreliableToAll msgType:{msgType}");
-			var flag = true;
-			foreach (var networkConnection in connections)
-			{
-				if (networkConnection != null)
-				{
-					flag &= networkConnection.SendUnreliable(msgType, msg);
-				}
-			}
-
-			return flag;
-		}
-
-		public static bool SendUnreliableToReady(GameObject contextObj, short msgType, QMessageBase msg)
-		{
-			QLog.Log($"Server.SendUnreliableToReady id:{msgType}");
-			bool result;
-			if (contextObj == null)
-			{
-				foreach (var networkConnection in connections)
-				{
-					if (networkConnection != null && networkConnection.isReady)
-					{
-						networkConnection.SendUnreliable(msgType, msg);
-					}
-				}
-
-				result = true;
-			}
-			else
-			{
-				var flag = true;
-				var component = contextObj.GetComponent<QNetworkIdentity>();
-				var count = component.Observers.Count;
-				for (var j = 0; j < count; j++)
-				{
-					var networkConnection2 = component.Observers[j];
-					if (networkConnection2.isReady)
-					{
-						flag &= networkConnection2.SendUnreliable(msgType, msg);
-					}
-				}
-
-				result = flag;
-			}
-
-			return result;
-		}
-
-		public static bool SendByChannelToAll(short msgType, QMessageBase msg, int channelId)
+		public static bool SendByChannelToAll(short msgType, QMessageBase msg)
 		{
 			QLog.Log($"Server.SendByChannelToAll id:{msgType}");
 			var flag = true;
@@ -439,14 +387,14 @@ namespace QuantumUNET
 			{
 				if (networkConnection != null)
 				{
-					flag &= networkConnection.SendByChannel(msgType, msg, channelId);
+					flag &= networkConnection.SendByChannel(msgType, msg);
 				}
 			}
 
 			return flag;
 		}
 
-		public static bool SendByChannelToReady(GameObject contextObj, short msgType, QMessageBase msg, int channelId)
+		public static bool SendByChannelToReady(GameObject contextObj, short msgType, QMessageBase msg)
 		{
 			QLog.Log($"Server.SendByChannelToReady msgType:{msgType}");
 			bool result;
@@ -456,7 +404,7 @@ namespace QuantumUNET
 				{
 					if (networkConnection != null && networkConnection.isReady)
 					{
-						networkConnection.SendByChannel(msgType, msg, channelId);
+						networkConnection.SendByChannel(msgType, msg);
 					}
 				}
 
@@ -472,7 +420,7 @@ namespace QuantumUNET
 					var networkConnection2 = component.Observers[j];
 					if (networkConnection2.isReady)
 					{
-						flag &= networkConnection2.SendByChannel(msgType, msg, channelId);
+						flag &= networkConnection2.SendByChannel(msgType, msg);
 					}
 				}
 
@@ -609,7 +557,7 @@ namespace QuantumUNET
 				var writer = new QNetworkWriter();
 				errorMessage.Serialize(writer);
 				var reader = new QNetworkReader(writer);
-				conn.InvokeHandler(34, reader, 0);
+				conn.InvokeHandler(34, reader);
 			}
 		}
 
@@ -932,50 +880,6 @@ namespace QuantumUNET
 			}
 		}
 
-		private static void OnCommandMessage(QNetworkMessage netMsg)
-		{
-			var cmdHash = (int)netMsg.Reader.ReadPackedUInt32();
-			var networkInstanceId = netMsg.Reader.ReadNetworkId();
-			var gameObject = FindLocalObject(networkInstanceId);
-			if (gameObject == null)
-			{
-				QLog.Warning($"Instance not found when handling Command message [netId={networkInstanceId}]");
-			}
-			else
-			{
-				var component = gameObject.GetComponent<QNetworkIdentity>();
-				if (component == null)
-				{
-					QLog.Warning(
-						$"NetworkIdentity deleted when handling Command message [netId={networkInstanceId}]");
-				}
-				else
-				{
-					var flag = false;
-					foreach (var playerController in netMsg.Connection.PlayerControllers)
-					{
-						if (playerController.Gameobject != null && playerController.Gameobject.GetComponent<QNetworkIdentity>().NetId == component.NetId)
-						{
-							flag = true;
-							break;
-						}
-					}
-
-					if (!flag)
-					{
-						if (component.ClientAuthorityOwner != netMsg.Connection)
-						{
-							QLog.Warning($"Command for object without authority [netId={networkInstanceId}]");
-							return;
-						}
-					}
-
-					QLog.Log($"OnCommandMessage for netId={networkInstanceId} conn={netMsg.Connection}");
-					component.HandleCommand(cmdHash, netMsg.Reader);
-				}
-			}
-		}
-
 		internal void SpawnObject(GameObject obj)
 		{
 			if (!active)
@@ -1232,7 +1136,7 @@ namespace QuantumUNET
 
 		public static void UnSpawn(GameObject obj) => UnSpawnObject(obj);
 
-		internal bool InvokeBytes(QULocalConnectionToServer conn, byte[] buffer, int numBytes, int channelId)
+		internal bool InvokeBytes(QULocalConnectionToServer conn, byte[] buffer, int numBytes)
 		{
 			var networkReader = new QNetworkReader(buffer);
 			networkReader.ReadInt16();
@@ -1240,7 +1144,7 @@ namespace QuantumUNET
 			bool result;
 			if (handlers.ContainsKey(num) && m_LocalConnection != null)
 			{
-				m_LocalConnection.InvokeHandler(num, networkReader, channelId);
+				m_LocalConnection.InvokeHandler(num, networkReader);
 				result = true;
 			}
 			else
@@ -1251,7 +1155,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal bool InvokeHandlerOnServer(QULocalConnectionToServer conn, short msgType, QMessageBase msg, int channelId)
+		internal bool InvokeHandlerOnServer(QULocalConnectionToServer conn, short msgType, QMessageBase msg)
 		{
 			bool result;
 			if (handlers.ContainsKey(msgType) && m_LocalConnection != null)
@@ -1259,7 +1163,7 @@ namespace QuantumUNET
 				var writer = new QNetworkWriter();
 				msg.Serialize(writer);
 				var reader = new QNetworkReader(writer);
-				m_LocalConnection.InvokeHandler(msgType, reader, channelId);
+				m_LocalConnection.InvokeHandler(msgType, reader);
 				result = true;
 			}
 			else

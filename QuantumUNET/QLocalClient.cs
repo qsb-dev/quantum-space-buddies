@@ -64,11 +64,10 @@ namespace QuantumUNET
 			QClientScene.InternalAddPlayer(unetView, localPlayer.PlayerControllerId);
 		}
 
-		private void PostInternalMessage(byte[] buffer, int channelId)
+		private void PostInternalMessage(byte[] buffer)
 		{
 			var item = m_FreeMessages.Count == 0 ? default : m_FreeMessages.Pop();
 			item.buffer = buffer;
-			item.channelId = channelId;
 			m_InternalMsgs.Add(item);
 		}
 
@@ -77,7 +76,7 @@ namespace QuantumUNET
 			var networkWriter = new QNetworkWriter();
 			networkWriter.StartMessage(msgType);
 			networkWriter.FinishMessage();
-			PostInternalMessage(networkWriter.AsArray(), 0);
+			PostInternalMessage(networkWriter.AsArray());
 		}
 
 		private void ProcessInternalMessages()
@@ -98,7 +97,6 @@ namespace QuantumUNET
 					}
 
 					s_InternalMessage.Reader.ReadInt16();
-					s_InternalMessage.ChannelId = msg.channelId;
 					s_InternalMessage.Connection = connection;
 					s_InternalMessage.MsgType = s_InternalMessage.Reader.ReadInt16();
 					m_Connection.InvokeHandler(s_InternalMessage);
@@ -117,16 +115,16 @@ namespace QuantumUNET
 			}
 		}
 
-		internal void InvokeHandlerOnClient(short msgType, QMessageBase msg, int channelId)
+		internal void InvokeHandlerOnClient(short msgType, QMessageBase msg)
 		{
 			var networkWriter = new QNetworkWriter();
 			networkWriter.StartMessage(msgType);
 			msg.Serialize(networkWriter);
 			networkWriter.FinishMessage();
-			InvokeBytesOnClient(networkWriter.AsArray(), channelId);
+			InvokeBytesOnClient(networkWriter.AsArray());
 		}
 
-		internal void InvokeBytesOnClient(byte[] buffer, int channelId) => PostInternalMessage(buffer, channelId);
+		internal void InvokeBytesOnClient(byte[] buffer) => PostInternalMessage(buffer);
 
 		private const int k_InitialFreeMessagePoolSize = 64;
 
@@ -145,8 +143,6 @@ namespace QuantumUNET
 		private struct InternalMsg
 		{
 			internal byte[] buffer;
-
-			internal int channelId;
 		}
 	}
 }

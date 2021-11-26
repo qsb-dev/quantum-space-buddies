@@ -225,7 +225,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool SendWriter(QNetworkWriter writer, int channelId)
+		public bool SendWriter(QNetworkWriter writer)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -237,7 +237,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					result = m_Connection.SendWriter(writer, channelId);
+					result = m_Connection.SendWriter(writer);
 				}
 			}
 			else
@@ -249,7 +249,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool SendBytes(byte[] data, int numBytes, int channelId)
+		public bool SendBytes(byte[] data, int numBytes)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -261,7 +261,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					result = m_Connection.SendBytes(data, numBytes, channelId);
+					result = m_Connection.SendBytes(data, numBytes);
 				}
 			}
 			else
@@ -273,31 +273,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public bool SendUnreliable(short msgType, QMessageBase msg)
-		{
-			bool result;
-			if (m_Connection != null)
-			{
-				if (m_AsyncConnect != ConnectState.Connected)
-				{
-					QLog.Error("NetworkClient SendUnreliable when not connected to a server");
-					result = false;
-				}
-				else
-				{
-					result = m_Connection.SendUnreliable(msgType, msg);
-				}
-			}
-			else
-			{
-				QLog.Error("NetworkClient SendUnreliable with no connection");
-				result = false;
-			}
-
-			return result;
-		}
-
-		public bool SendByChannel(short msgType, QMessageBase msg, int channelId)
+		public bool SendByChannel(short msgType, QMessageBase msg)
 		{
 			bool result;
 			if (m_Connection != null)
@@ -309,7 +285,7 @@ namespace QuantumUNET
 				}
 				else
 				{
-					result = m_Connection.SendByChannel(msgType, msg, channelId);
+					result = m_Connection.SendByChannel(msgType, msg);
 				}
 			}
 			else
@@ -503,8 +479,7 @@ namespace QuantumUNET
 				{
 					MsgType = QMsgType.Error,
 					Reader = reader,
-					Connection = m_Connection,
-					ChannelId = 0
+					Connection = m_Connection
 				});
 			}
 		}

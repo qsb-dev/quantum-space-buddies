@@ -8,7 +8,6 @@ namespace QuantumUNET.Components
 {
 	public class QNetworkTransformChild : QNetworkBehaviour
 	{
-		public override int GetNetworkChannel() => 1;
 		public override float GetNetworkSendInterval() => m_SendInterval;
 		public Transform m_Target;
 		public uint m_ChildIndex;
@@ -246,7 +245,7 @@ namespace QuantumUNET.Components
 				_prevPosition = m_Target.localPosition;
 				_prevRotation = m_Target.localRotation;
 				_localTransformWriter.FinishMessage();
-				QClientScene.readyConnection.SendWriter(_localTransformWriter, GetNetworkChannel());
+				QClientScene.readyConnection.SendWriter(_localTransformWriter);
 			}
 		}
 
