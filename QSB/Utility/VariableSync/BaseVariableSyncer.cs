@@ -11,12 +11,13 @@ namespace QSB.Utility.VariableSync
 	{
 		private float _lastClientSendTime;
 		private QNetworkWriter _writer;
+		private int _index;
+		protected bool _ready;
 
-		public abstract bool HasChanged();
 		public abstract void WriteData(QNetworkWriter writer);
 		public abstract void ReadData(QNetworkReader writer);
 
-		public void Awake()
+		public virtual void Awake()
 		{
 			QNetworkServer.instance.m_SimpleServerSimple.RegisterHandlerSafe((short)QSB.Events.EventType.VariableSync, HandleVariable);
 
@@ -25,6 +26,9 @@ namespace QSB.Utility.VariableSync
 				_writer = new QNetworkWriter();
 			}
 		}
+
+		public virtual void Start()
+			=> _index = GetComponents<BaseVariableSyncer>().ToList().IndexOf(this);
 
 		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
 		{
@@ -58,12 +62,12 @@ namespace QSB.Utility.VariableSync
 
 		private void FixedUpdate()
 		{
-			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active)
+			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !_ready)
 			{
 				return;
 			}
 
-			if (GetNetworkSendInterval() != 0f && HasChanged())
+			if (GetNetworkSendInterval() != 0f)
 			{
 				SetDirtyBit(1U);
 			}
@@ -71,7 +75,7 @@ namespace QSB.Utility.VariableSync
 
 		public virtual void Update()
 		{
-			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active)
+			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !_ready)
 			{
 				return;
 			}
@@ -86,12 +90,12 @@ namespace QSB.Utility.VariableSync
 		[Client]
 		private void SendVariable()
 		{
-			if (HasChanged() && QClientScene.readyConnection != null)
+			// TODO - this sends a message, even when the value hasnt changed! this is really bad!
+			if (QClientScene.readyConnection != null)
 			{
 				_writer.StartMessage((short)QSB.Events.EventType.VariableSync);
 				_writer.Write(NetId);
-				// OPTIMIZE - cache this
-				_writer.Write(GetComponents<BaseVariableSyncer>().ToList().IndexOf(this));
+				_writer.Write(_index);
 				WriteData(_writer);
 				_writer.FinishMessage();
 				QClientScene.readyConnection.SendWriter(_writer, GetNetworkChannel());

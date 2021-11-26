@@ -1,39 +1,26 @@
 ﻿using QuantumUNET.Transport;
+using System;
 
 namespace QSB.Utility.VariableSync
 {
 	public class BoolVariableSyncer : BaseVariableSyncer
 	{
-		public VariableReference<bool> FloatToSync;
+		public VariableReference<bool> ValueToSync { get; private set; } = new();
+
+		public void Init(Func<bool> getter, Action<bool> setter)
+		{
+			ValueToSync.Getter = getter;
+			ValueToSync.Setter = setter;
+			_ready = true;
+		}
+
+		public void OnDestroy()
+			=> _ready = false;
 
 		public override void WriteData(QNetworkWriter writer)
-		{
-			if (FloatToSync == null)
-			{
-				writer.Write(false);
-			}
-			else
-			{
-				writer.Write(FloatToSync.Value);
-			}
-		}
+			=> writer.Write(ValueToSync.Value);
 
 		public override void ReadData(QNetworkReader writer)
-		{
-			if (FloatToSync == null)
-			{
-				writer.ReadBoolean();
-			}
-			else
-			{
-				FloatToSync.Value = writer.ReadBoolean();
-			}
-		}
-
-		public override bool HasChanged()
-		{
-			// TODO - do this!!
-			return true;
-		}
+			=> ValueToSync.Value = writer.ReadBoolean();
 	}
 }

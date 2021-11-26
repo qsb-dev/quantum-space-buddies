@@ -15,18 +15,16 @@ namespace QSB.Animation.Player
 
 		private PlayerCharacterController _playerController;
 		private Animator _bodyAnim;
-		private VariableReference<float> _crouchValueReference;
 
 		public FloatVariableSyncer CrouchVariableSyncer;
-		public float CrouchValue;
+		public float CrouchValue = 0f;
 
 		public void Init(PlayerCharacterController playerController, Animator bodyAnim)
 		{
 			_playerController = playerController;
 			_bodyAnim = bodyAnim;
 
-			_crouchValueReference = new VariableReference<float>(() => CrouchValue, val => CrouchValue = val);
-			CrouchVariableSyncer.FloatToSync = _crouchValueReference;
+			CrouchVariableSyncer.Init(() => CrouchValue, val => CrouchValue = val);
 		}
 
 		public void Update()
@@ -48,7 +46,7 @@ namespace QSB.Animation.Player
 			}
 
 			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
-			_crouchValueReference.Value = jumpChargeFraction;
+			CrouchVariableSyncer.ValueToSync.Value = jumpChargeFraction;
 		}
 
 		private void SyncRemoteCrouch()

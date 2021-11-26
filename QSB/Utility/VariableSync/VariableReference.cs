@@ -1,22 +1,45 @@
-﻿using System;
+﻿using QSB.Player;
+using System;
 
 namespace QSB.Utility.VariableSync
 {
 	public class VariableReference<T>
 	{
-		private Func<T> _getter;
-		private Action<T> _setter;
-
-		public VariableReference(Func<T> getter, Action<T> setter)
-		{
-			_getter = getter;
-			_setter = setter;
-		}
+		public Func<T> Getter;
+		public Action<T> Setter;
 
 		public T Value
 		{
-			get => _getter();
-			set => _setter(value);
+			get
+			{
+				if (Getter != null)
+				{
+					return Getter();
+				}
+				else
+				{
+					if (QSBPlayerManager.LocalPlayer.IsReady)
+					{
+						DebugLog.ToConsole($"Warning - Getter is null!", OWML.Common.MessageType.Warning);
+					}
+					
+					return default;
+				}
+			}
+			set
+			{
+				if (Setter != null)
+				{
+					Setter(value);
+				}
+				else
+				{
+					if (QSBPlayerManager.LocalPlayer.IsReady)
+					{
+						DebugLog.ToConsole($"Warning - Setter is null!", OWML.Common.MessageType.Warning);
+					}
+				}
+			}
 		}
 	}
 }
