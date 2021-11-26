@@ -331,6 +331,9 @@
     <Compile Include="Utility\Events\DebugEvent.cs" />
     <Compile Include="Utility\Events\DebugEventEnum.cs" />
     <Compile Include="Utility\UIHelper.cs" />
+    <Compile Include="Utility\VariableSync\BaseVariableSyncer.cs" />
+    <Compile Include="Utility\VariableSync\VariableReference.cs" />
+    <Compile Include="Utility\VariableSync\FloatVariableSyncer.cs" />
     <Compile Include="Utility\ZOverride.cs" />
     <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\GlobalMessenger4Args.cs" />
@@ -485,22 +488,17 @@ md "$(OwmlDir)\Mods\$(ProjectName)\assets"
 :: delete old config file
 del "$(OwmlDir)\Mods\$(ProjectName)\config.json"
 
-:: copy files that dont need to be processed
+:: copy files
 copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ProjectName)"
 copy /y "$(SolutionDir)\AssetBundles" "$(OwmlDir)\Mods\$(ProjectName)\assets"
 copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ProjectName)"
-
-:: process qsb.dll
-"$(SolutionDir)\QNetWeaver\bin\$(Configuration)\QNetWeaver.exe" "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll" "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" "$(ProjectDir)\lib\UnityEngine.Networking.dll"  "$(SolutionDir)\WeavedFiles" "$(TargetPath)"
-
-:: copy processed dll
-copy /y "$(SolutionDir)\WeavedFiles\QSB.dll" "$(OwmlDir)\Mods\$(ProjectName)"
+copy /y "$(TargetPath)" "$(OwmlDir)\Mods\$(ProjectName)"
 
 :: copy all lib files
 xcopy /y "$(ProjectDir)\lib"  "$(OwmlDir)\Mods\$(ProjectName)"
 
-:: copy processed dll to unity project
-copy /y "$(SolutionDir)\WeavedFiles\QSB.dll" $(UnityAssetsDir)
+:: copy dll to unity project
+copy /y "$(TargetPath)" $(UnityAssetsDir)
 :: copy quantumunet to unity project
 copy /y "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" $(UnityAssetsDir)
 :: copy game assembly to unity project
