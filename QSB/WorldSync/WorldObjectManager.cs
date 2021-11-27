@@ -8,7 +8,7 @@ namespace QSB.WorldSync
 {
 	public abstract class WorldObjectManager : MonoBehaviour
 	{
-		private static readonly List<WorldObjectManager> _managers = new List<WorldObjectManager>();
+		private static readonly List<WorldObjectManager> _managers = new();
 
 		public static bool AllReady { get; private set; }
 
@@ -44,13 +44,13 @@ namespace QSB.WorldSync
 				return;
 			}
 
-			if (QSBPlayerManager.LocalPlayer.PlayerStates.IsReady)
+			if (QSBPlayerManager.LocalPlayer.IsReady)
 			{
 				DoRebuild(scene);
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.PlayerStates.IsReady, () => DoRebuild(scene));
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.IsReady, () => DoRebuild(scene));
 		}
 
 		private static void DoRebuild(OWScene scene)
@@ -79,7 +79,7 @@ namespace QSB.WorldSync
 				worldObject.PostInit();
 			}
 		}
-		
+
 		protected abstract void RebuildWorldObjects(OWScene scene);
 	}
 }

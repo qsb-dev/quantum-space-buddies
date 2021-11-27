@@ -31,11 +31,11 @@ namespace QSB.RoastingSync.Events
 				return;
 			}
 
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCampfire, Campfire>(campfire);
+			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCampfire>(campfire);
 			SendEvent(CreateMessage(qsbObj.ObjectId, roasting));
 		}
 
-		private BoolWorldObjectMessage CreateMessage(int objectId, bool roasting) => new BoolWorldObjectMessage
+		private BoolWorldObjectMessage CreateMessage(int objectId, bool roasting) => new()
 		{
 			AboutId = LocalPlayerId,
 			State = roasting,
@@ -57,14 +57,9 @@ namespace QSB.RoastingSync.Events
 
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.RoastingStick.SetActive(message.State);
-			if (message.State)
-			{
-				player.Campfire = QSBWorldSync.GetWorldFromId<QSBCampfire>(message.ObjectId);
-			}
-			else
-			{
-				player.Campfire = null;
-			}
+			player.Campfire = message.State
+				? QSBWorldSync.GetWorldFromId<QSBCampfire>(message.ObjectId)
+				: null;
 		}
 	}
 }

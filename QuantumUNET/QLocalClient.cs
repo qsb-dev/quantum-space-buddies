@@ -130,9 +130,9 @@ namespace QuantumUNET
 
 		private const int k_InitialFreeMessagePoolSize = 64;
 
-		private List<InternalMsg> m_InternalMsgs = new List<InternalMsg>();
+		private List<InternalMsg> m_InternalMsgs = new();
 
-		private readonly List<InternalMsg> m_InternalMsgs2 = new List<InternalMsg>();
+		private readonly List<InternalMsg> m_InternalMsgs2 = new();
 
 		private Stack<InternalMsg> m_FreeMessages;
 
@@ -140,7 +140,7 @@ namespace QuantumUNET
 
 		private bool m_Connected;
 
-		private readonly QNetworkMessage s_InternalMessage = new QNetworkMessage();
+		private readonly QNetworkMessage s_InternalMessage = new();
 
 		private struct InternalMsg
 		{

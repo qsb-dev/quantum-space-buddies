@@ -4,7 +4,6 @@ using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -17,8 +16,8 @@ namespace QSB.WorldSync
 		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
 		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
 
-		private static readonly List<IWorldObject> WorldObjects = new List<IWorldObject>();
-		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new Dictionary<MonoBehaviour, IWorldObject>();
+		private static readonly List<IWorldObject> WorldObjects = new();
+		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			=> WorldObjects.OfType<TWorldObject>();
@@ -34,9 +33,7 @@ namespace QSB.WorldSync
 			return GetWorldObjects<TWorldObject>().ToList()[id];
 		}
 
-		public static TWorldObject GetWorldFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
-			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : MonoBehaviour
+		public static IWorldObject GetWorldFromUnity(MonoBehaviour unityObject)
 		{
 			if (!WorldObjectManager.AllReady)
 			{
@@ -45,37 +42,73 @@ namespace QSB.WorldSync
 
 			if (unityObject == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TUnityObject:NULL", MessageType.Error);
 				return default;
 			}
 
 			if (!QSBCore.IsInMultiplayer)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TUnityObject:{unityObject.GetType().Name}", MessageType.Warning);
 				return default;
 			}
 
 			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
 			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
 				return default;
 			}
 
-			var returnObject = WorldObjectsToUnityObjects[unityObject] as TWorldObject;
+			var returnObject = WorldObjectsToUnityObjects[unityObject];
 
-			if (returnObject == default || returnObject == null)
+			if (returnObject == null)
 			{
-				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
 				return default;
 			}
 
 			return returnObject;
 		}
 
-		public static int GetIdFromUnity<TWorldObject, TUnityObject>(TUnityObject unityObject)
-			where TWorldObject : WorldObject<TUnityObject>
-			where TUnityObject : MonoBehaviour
-			=> GetWorldFromUnity<TWorldObject, TUnityObject>(unityObject).ObjectId;
+		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
+			where TWorldObject : IWorldObject
+		{
+			if (!WorldObjectManager.AllReady)
+			{
+				return default;
+			}
+
+			if (unityObject == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL", MessageType.Error);
+				return default;
+			}
+
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Warning);
+				return default;
+			}
+
+			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
+			{
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
+				return default;
+			}
+
+			var returnObject = (TWorldObject)WorldObjectsToUnityObjects[unityObject];
+
+			if (returnObject == null)
+			{
+				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
+				return default;
+			}
+
+			return returnObject;
+		}
+
+		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)
+			where TWorldObject : IWorldObject
+			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
 		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
 		{
@@ -119,12 +152,17 @@ namespace QSB.WorldSync
 			WorldObjects.RemoveAll(x => x is TWorldObject);
 		}
 
-		public static List<TUnityObject> Init<TWorldObject, TUnityObject>()
+		public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
+			where TUnityObject : MonoBehaviour
+			=> Resources.FindObjectsOfTypeAll<TUnityObject>()
+				.Where(x => x.gameObject.scene.name != null);
+
+		public static void Init<TWorldObject, TUnityObject>()
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
 			RemoveWorldObjects<TWorldObject>();
-			var list = Resources.FindObjectsOfTypeAll<TUnityObject>().ToList();
+			var list = GetUnityObjects<TUnityObject>().ToList();
 			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
@@ -132,8 +170,6 @@ namespace QSB.WorldSync
 				obj.Init(list[id], id);
 				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
-
-			return list;
 		}
 
 		private static TWorldObject CreateWorldObject<TWorldObject>()

@@ -13,7 +13,7 @@ namespace QSB.Player.Events
 
 		private void Handler(string name) => SendEvent(CreateMessage(name));
 
-		private PlayerJoinMessage CreateMessage(string name) => new PlayerJoinMessage
+		private PlayerJoinMessage CreateMessage(string name) => new()
 		{
 			AboutId = LocalPlayerId,
 			PlayerName = name,
@@ -70,7 +70,7 @@ namespace QSB.Player.Events
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = true;
+				QSBPlayerManager.LocalPlayer.IsReady = true;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			}
 		}

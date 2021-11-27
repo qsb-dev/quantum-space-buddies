@@ -1,12 +1,11 @@
-﻿using OWML.Utils;
-using QSB.Player;
+﻿using QSB.Player;
 using System.Collections.Generic;
 
 namespace QSB.Animation.NPC.WorldObjects
 {
 	internal class QSBCharacterAnimController : NpcAnimController<CharacterAnimController>
 	{
-		private readonly List<PlayerInfo> _playersInHeadZone = new List<PlayerInfo>();
+		private readonly List<PlayerInfo> _playersInHeadZone = new();
 
 		public List<PlayerInfo> GetPlayersInHeadZone()
 			=> _playersInHeadZone;
@@ -32,9 +31,9 @@ namespace QSB.Animation.NPC.WorldObjects
 		}
 
 		public override CharacterDialogueTree GetDialogueTree()
-			=> AttachedObject.GetValue<CharacterDialogueTree>("_dialogueTree");
+			=> AttachedObject._dialogueTree;
 
 		public override bool InConversation()
-			=> AttachedObject.GetValue<bool>("_inConversation");
+			=> AttachedObject._inConversation;
 	}
 }

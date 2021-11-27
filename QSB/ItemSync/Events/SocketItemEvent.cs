@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
-using QSB.ItemSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
+using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -19,7 +20,7 @@ namespace QSB.ItemSync.Events
 		private void Handler(int socketId, int itemId, SocketEventType type)
 			=> SendEvent(CreateMessage(socketId, itemId, type));
 
-		private SocketItemMessage CreateMessage(int socketId, int itemId, SocketEventType type) => new SocketItemMessage
+		private SocketItemMessage CreateMessage(int socketId, int itemId, SocketEventType type) => new()
 		{
 			AboutId = QSBPlayerManager.LocalPlayerId,
 			SocketId = socketId,
@@ -31,6 +32,8 @@ namespace QSB.ItemSync.Events
 		{
 			var socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
 			var itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
+			var player = QSBPlayerManager.GetPlayer(message.FromId);
+			player.HeldItem = null;
 			switch (message.SocketType)
 			{
 				case SocketEventType.Socket:

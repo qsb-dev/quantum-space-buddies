@@ -1,27 +1,30 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using OWML.Utils;
+using QSB.Anglerfish.Patches;
 using QSB.Animation.NPC.Patches;
 using QSB.Animation.Patches;
 using QSB.CampfireSync.Patches;
 using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
+using QSB.EchoesOfTheEye.LightSensorSync.Patches;
 using QSB.ElevatorSync.Patches;
-using QSB.FrequencySync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
 using QSB.LogSync.Patches;
+using QSB.MeteorSync.Patches;
 using QSB.OrbSync.Patches;
 using QSB.Player.Patches;
 using QSB.PoolSync.Patches;
 using QSB.QuantumSync.Patches;
 using QSB.RoastingSync.Patches;
+using QSB.SatelliteSync.Patches;
 using QSB.ShipSync.Patches;
 using QSB.StatueSync.Patches;
 using QSB.TimeSync.Patches;
 using QSB.Tools.ProbeLauncherTool.Patches;
-using QSB.TranslationSync.Patches;
+using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
+using QSB.Tools.TranslatorTool.TranslationSync.Patches;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -34,9 +37,10 @@ namespace QSB.Patches
 		public static event Action<QSBPatchTypes> OnPatchType;
 		public static event Action<QSBPatchTypes> OnUnpatchType;
 
-		private static List<QSBPatch> _patchList = new List<QSBPatch>();
+		private static List<QSBPatch> _patchList = new();
+		private static List<QSBPatchTypes> _patchedTypes = new();
 
-		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>();
+		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new();
 
 		public static void Init()
 		{
@@ -66,8 +70,14 @@ namespace QSB.Patches
 				new InputPatches(),
 				new TimePatches(),
 				new MapPatches(),
-				new RespawnPatches(),
-				new LauncherPatches()
+				new LauncherPatches(),
+				new SolanumPatches(),
+				new SatelliteProjectorPatches(),
+				new LightSensorPatches(),
+				new AnglerPatches(),
+				new MeteorClientPatches(),
+				new MeteorServerPatches(),
+				new TravelerControllerPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
@@ -83,6 +93,12 @@ namespace QSB.Patches
 
 		public static void DoPatchType(QSBPatchTypes type)
 		{
+			if (_patchedTypes.Contains(type))
+			{
+				DebugLog.ToConsole($"Warning - Tried to patch type {type}, when it has already been patched!", MessageType.Warning);
+				return;
+			}
+
 			OnPatchType?.SafeInvoke(type);
 			//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			foreach (var patch in _patchList.Where(x => x.Type == type))
@@ -91,6 +107,7 @@ namespace QSB.Patches
 				try
 				{
 					patch.DoPatches(TypeToInstance[type]);
+					_patchedTypes.Add(type);
 				}
 				catch (Exception ex)
 				{
@@ -101,9 +118,16 @@ namespace QSB.Patches
 
 		public static void DoUnpatchType(QSBPatchTypes type)
 		{
+			if (!_patchedTypes.Contains(type))
+			{
+				DebugLog.ToConsole($"Warning - Tried to unpatch type {type}, when it is either unpatched or was never patched.", MessageType.Warning);
+				return;
+			}
+
 			OnUnpatchType?.SafeInvoke(type);
 			//DebugLog.DebugWrite($"Unpatch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 			TypeToInstance[type].UnpatchSelf();
+			_patchedTypes.Remove(type);
 		}
 	}
 }

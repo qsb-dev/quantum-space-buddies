@@ -42,7 +42,7 @@ namespace QSB.QuantumSync
 			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
 			if (scene == OWScene.SolarSystem)
 			{
-				Shrine = Resources.FindObjectsOfTypeAll<QuantumShrine>().First();
+				Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.DebugMode || !QSBCore.ShowLinesInDebug)
+			if (!QSBCore.WorldObjectsReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -75,6 +75,18 @@ namespace QSB.QuantumSync
 			if (Shrine != null)
 			{
 				Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta);
+			}
+
+			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
+			{
+				if (quantumObject.ControllingPlayer == 0)
+				{
+					continue;
+				}
+
+				Popcron.Gizmos.Line((quantumObject as IWorldObject).ReturnObject().transform.position,
+					QSBPlayerManager.GetPlayer(quantumObject.ControllingPlayer).Body.transform.position,
+					Color.magenta);
 			}
 		}
 
@@ -132,39 +144,8 @@ namespace QSB.QuantumSync
 				return Enumerable.Empty<PlayerInfo>();
 			}
 
-			var worldObj = GetObject(obj);
+			var worldObj = (IQSBQuantumObject)QSBWorldSync.GetWorldFromUnity(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
-		}
-
-		public static IQSBQuantumObject GetObject(QuantumObject unityObject)
-		{
-			IQSBQuantumObject worldObj = null;
-			if (unityObject.GetType() == typeof(SocketedQuantumObject) || unityObject.GetType() == typeof(QuantumShrine))
-			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject, SocketedQuantumObject>((SocketedQuantumObject)unityObject);
-			}
-			else if (unityObject.GetType() == typeof(MultiStateQuantumObject))
-			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBMultiStateQuantumObject, MultiStateQuantumObject>((MultiStateQuantumObject)unityObject);
-			}
-			else if (unityObject.GetType() == typeof(QuantumShuffleObject))
-			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject, QuantumShuffleObject>((QuantumShuffleObject)unityObject);
-			}
-			else if (unityObject.GetType() == typeof(QuantumMoon))
-			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBQuantumMoon, QuantumMoon>((QuantumMoon)unityObject);
-			}
-			else if (unityObject.GetType() == typeof(EyeProxyQuantumMoon))
-			{
-				worldObj = QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>((EyeProxyQuantumMoon)unityObject);
-			}
-			else
-			{
-				DebugLog.ToConsole($"Warning - couldn't work out type of QuantumObject {unityObject.name}.", MessageType.Warning);
-			}
-
-			return worldObj;
 		}
 	}
 }

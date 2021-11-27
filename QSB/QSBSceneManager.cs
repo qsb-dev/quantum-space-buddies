@@ -38,6 +38,6 @@ namespace QSB
 		}
 
 		private static bool InUniverse(OWScene scene) =>
-			scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse;
+			scene is OWScene.SolarSystem or OWScene.EyeOfTheUniverse;
 	}
 }

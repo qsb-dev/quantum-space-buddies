@@ -1,18 +1,13 @@
 ﻿using OWML.Common;
 using OWML.Utils;
-using QSB.Animation.Player;
-using QSB.Animation.Player.Thrusters;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
-using QSB.Instruments;
 using QSB.OrbSync.TransformSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
-using QSB.ProbeSync.TransformSync;
-using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -37,6 +32,7 @@ namespace QSB
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
+		public GameObject AnglerPrefab { get; private set; }
 		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
@@ -54,33 +50,19 @@ namespace QSB
 			PlayerName = GetPlayerName();
 			_assetBundle = QSBCore.NetworkAssetBundle;
 
-			playerPrefab = _assetBundle.LoadAsset<GameObject>("assets/NETWORK_Player_Body.prefab");
-			SetupNetworkId(playerPrefab, 1);
-			SetupNetworkTransform(playerPrefab);
-			playerPrefab.AddComponent<PlayerTransformSync>();
-			playerPrefab.AddComponent<AnimationSync>();
-			playerPrefab.AddComponent<CrouchSync>();
-			playerPrefab.AddComponent<WakeUpSync>();
-			playerPrefab.AddComponent<JetpackAccelerationSync>();
-			playerPrefab.AddComponent<InstrumentsManager>();
+			playerPrefab = _assetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 
-			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkship.prefab");
-			SetupNetworkId(ShipPrefab, 2);
-			SetupNetworkTransform(ShipPrefab);
-			ShipPrefab.AddComponent<ShipTransformSync>();
+			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkship.prefab");
 			spawnPrefabs.Add(ShipPrefab);
 
-			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/networkprobe.prefab");
-			SetupNetworkId(_probePrefab, 3);
-			SetupNetworkTransform(_probePrefab);
-			_probePrefab.AddComponent<PlayerProbeSync>();
+			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkprobe.prefab");
 			spawnPrefabs.Add(_probePrefab);
 
-			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/networkorb.prefab");
-			SetupNetworkId(OrbPrefab, 4);
-			SetupNetworkTransform(OrbPrefab);
-			OrbPrefab.AddComponent<NomaiOrbTransformSync>();
+			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkorb.prefab");
 			spawnPrefabs.Add(OrbPrefab);
+
+			AnglerPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkangler.prefab");
+			spawnPrefabs.Add(AnglerPrefab);
 
 			ConfigureNetworkManager();
 		}
@@ -100,29 +82,6 @@ namespace QSB
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				return "Player";
 			}
-		}
-
-		private void SetupNetworkId(GameObject go, int assetId)
-		{
-			var ident = go.AddComponent<QNetworkIdentity>();
-			ident.LocalPlayerAuthority = true;
-			var networkIdentity = go.GetComponent<NetworkIdentity>();
-			ident.SetValue("m_AssetId", assetId);
-			ident.SetValue("m_SceneId", networkIdentity.GetComponent<NetworkIdentity>().sceneId);
-		}
-
-		private void SetupNetworkTransform(GameObject go)
-		{
-			foreach (var item in go.GetComponents<NetworkTransformChild>())
-			{
-				var child = go.AddComponent<QNetworkTransformChild>();
-				child.Target = item.target;
-				child.m_ChildIndex = item.childIndex;
-				Destroy(item);
-			}
-
-			Destroy(go.GetComponent<NetworkTransform>());
-			Destroy(go.GetComponent<NetworkIdentity>());
 		}
 
 		private void ConfigureNetworkManager()
@@ -145,7 +104,7 @@ namespace QSB
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.OldDialogueTrees = Resources.FindObjectsOfTypeAll<CharacterDialogueTree>().ToList();
+				QSBWorldSync.OldDialogueTrees = QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().ToList();
 			}
 		}
 
@@ -218,6 +177,11 @@ namespace QSB
 			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
+			if (WakeUpSync.LocalInstance != null)
+			{
+				WakeUpSync.LocalInstance.OnDisconnect();
+			}
+
 			if (_everConnected)
 			{
 				var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -270,17 +234,17 @@ namespace QSB
 		{
 			QSBWorldSync.RemoveWorldObjects<IWorldObjectTypeSubset>();
 			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
-			foreach (var platform in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraPlatform>())
+			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
 			{
 				Destroy(platform);
 			}
 
-			foreach (var camera in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCamera>())
+			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
 			{
 				Destroy(camera);
 			}
 
-			foreach (var streaming in Resources.FindObjectsOfTypeAll<CustomNomaiRemoteCameraStreaming>())
+			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
 			{
 				Destroy(streaming);
 			}

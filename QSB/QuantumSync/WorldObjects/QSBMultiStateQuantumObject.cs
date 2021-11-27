@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace QSB.QuantumSync.WorldObjects
 			ObjectId = id;
 			AttachedObject = attachedObject;
 
-			if (QSBCore.DebugMode)
+			if (QSBCore.ShowQuantumDebugBoxes)
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{id}\r\nstate:{CurrentState}").GetComponent<Text>();
 			}
@@ -37,7 +36,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void PostInit()
 		{
-			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState, QuantumState>(x)).ToList();
+			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState>(x)).ToList();
 
 			if (QuantumStates.Any(x => x == null))
 			{
@@ -54,7 +53,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 			QuantumStates[newStateIndex].SetVisible(true);
 			AttachedObject._stateIndex = newStateIndex;
-			if (QSBCore.DebugMode)
+			if (QSBCore.ShowQuantumDebugBoxes)
 			{
 				DebugBoxText.text = $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}";
 			}

@@ -1,7 +1,9 @@
 ﻿using OWML.Utils;
 using QSB.Events;
+using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility.Events;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -61,6 +63,27 @@ namespace QSB.Utility
 			{
 				PlayerData.SaveWarpedToTheEye(60);
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
+			}
+
+			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
+			{
+				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x.PlayerId != QSBPlayerManager.LocalPlayerId);
+				if (otherPlayer != null && otherPlayer.Body != null)
+				{
+					var playerBody = Locator.GetPlayerBody();
+					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
+					var parentBody = otherPlayer.Body.GetAttachedOWRigidbody(true);
+					if (parentBody != null)
+					{
+						playerBody.SetVelocity(parentBody.GetVelocity());
+						playerBody.SetAngularVelocity(parentBody.GetAngularVelocity());
+					}
+					else
+					{
+						playerBody.SetVelocity(Vector3.zero);
+						playerBody.SetAngularVelocity(Vector3.zero);
+					}
+				}
 			}
 		}
 	}

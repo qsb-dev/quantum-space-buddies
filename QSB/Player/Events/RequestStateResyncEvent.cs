@@ -3,9 +3,10 @@ using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.MeteorSync.WorldObjects;
 using QSB.QuantumSync;
-using QSB.TranslationSync;
-using QSB.TranslationSync.WorldObjects;
+using QSB.Tools.TranslatorTool.TranslationSync;
+using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace QSB.Player.Events
 
 		private void Handler() => SendEvent(CreateMessage());
 
-		private PlayerMessage CreateMessage() => new PlayerMessage
+		private PlayerMessage CreateMessage() => new()
 		{
 			AboutId = LocalPlayerId
 		};
@@ -79,6 +80,9 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
+
+			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
+				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));
 		}
 	}
 }

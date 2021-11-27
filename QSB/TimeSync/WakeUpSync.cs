@@ -36,6 +36,22 @@ namespace QSB.TimeSync
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
+		public void OnDisconnect()
+		{
+			OWTime.SetTimeScale(1f);
+			OWTime.SetMaxDeltaTime(0.06666667f);
+			OWTime.SetFixedTimestep(0.01666667f);
+			Locator.GetActiveCamera().enabled = true;
+			CurrentState = State.NotLoaded;
+			CurrentReason = null;
+
+			Physics.SyncTransforms();
+			SpinnerUI.Hide();
+			TimeSyncUI.Stop();
+
+			QSBInputManager.Instance.SetInputsEnabled(true);
+		}
+
 		public void Start()
 		{
 			if (!IsLocalPlayer)
@@ -105,7 +121,10 @@ namespace QSB.TimeSync
 			}
 			else
 			{
-				WakeUpOrSleep();
+				if (!QSBCore.SkipTitleScreen)
+				{
+					WakeUpOrSleep();
+				}
 			}
 		}
 
@@ -224,7 +243,7 @@ namespace QSB.TimeSync
 			{
 				UpdateServer();
 			}
-			else if (IsLocalPlayer)
+			else if (IsLocalPlayer && !QSBCore.AvoidTimeSync)
 			{
 				UpdateClient();
 			}
@@ -233,6 +252,18 @@ namespace QSB.TimeSync
 		private void UpdateServer()
 		{
 			_serverTime = Time.timeSinceLevelLoad;
+
+			if (ServerStateManager.Instance == null)
+			{
+				DebugLog.ToConsole($"Warning - ServerStateManager.Instance is null!", MessageType.Warning);
+				return;
+			}
+
+			if (QSBPlayerManager.LocalPlayer == null)
+			{
+				DebugLog.ToConsole($"Warning - LocalPlayer is null!", MessageType.Warning);
+				return;
+			}
 
 			var serverState = ServerStateManager.Instance.GetServerState();
 			var clientState = QSBPlayerManager.LocalPlayer.State;
@@ -308,7 +339,7 @@ namespace QSB.TimeSync
 
 			// Checks to pause/fastforward
 
-			if (clientState == ClientState.NotLoaded || clientState == ClientState.InTitleScreen)
+			if (clientState is ClientState.NotLoaded or ClientState.InTitleScreen)
 			{
 				return;
 			}
@@ -384,7 +415,7 @@ namespace QSB.TimeSync
 		{
 			var diff = GetTimeDifference();
 
-			if (diff > PauseOrFastForwardThreshold || diff < -PauseOrFastForwardThreshold)
+			if (diff is > PauseOrFastForwardThreshold or < (-PauseOrFastForwardThreshold))
 			{
 				WakeUpOrSleep();
 				return;

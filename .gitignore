@@ -8,6 +8,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+.idea
+
 # User-specific files
 *.rsuser
 *.suo
@@ -365,3 +367,7 @@ IgnoreInGithub/
 OWML.Config.json
 WeavedFiles/QSB.dll
 WeavedFiles/QSB.dll.mdb
+qsb-unityproject
+
+# User specific locations
+DevEnv.targets

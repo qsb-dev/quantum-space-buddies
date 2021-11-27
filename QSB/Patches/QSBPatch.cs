@@ -6,9 +6,6 @@ namespace QSB.Patches
 	{
 		public abstract QSBPatchTypes Type { get; }
 
-		public void DoPatches(Harmony instance)
-		{
-			instance.PatchAll(GetType());
-		}
+		public void DoPatches(Harmony instance) => instance.PatchAll(GetType());
 	}
 }

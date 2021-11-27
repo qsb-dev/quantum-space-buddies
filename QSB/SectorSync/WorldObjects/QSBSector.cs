@@ -63,7 +63,7 @@ namespace QSB.SectorSync.WorldObjects
 				return false;
 			}
 
-			if (AttachedObject.name == "Sector_Shuttle" || AttachedObject.name == "Sector_NomaiShuttleInterior")
+			if (AttachedObject.name is "Sector_Shuttle" or "Sector_NomaiShuttleInterior")
 			{
 				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 				{
@@ -81,7 +81,7 @@ namespace QSB.SectorSync.WorldObjects
 				}
 				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 				{
-					var shuttleController = Resources.FindObjectsOfTypeAll<EyeShuttleController>().First();
+					var shuttleController = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
 					if (shuttleController == null)
 					{
 						DebugLog.ToConsole($"Warning - Expected to find a EyeShuttleController for {AttachedObject.name}!", MessageType.Warning);

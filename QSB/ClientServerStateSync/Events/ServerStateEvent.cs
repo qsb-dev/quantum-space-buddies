@@ -15,7 +15,7 @@ namespace QSB.ClientServerStateSync.Events
 
 		private void Handler(ServerState state) => SendEvent(CreateMessage(state));
 
-		private EnumMessage<ServerState> CreateMessage(ServerState state) => new EnumMessage<ServerState>
+		private EnumMessage<ServerState> CreateMessage(ServerState state) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = state

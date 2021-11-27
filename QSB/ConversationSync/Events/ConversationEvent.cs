@@ -14,7 +14,7 @@ namespace QSB.ConversationSync.Events
 
 		private void Handler(uint id, string message, ConversationType type) => SendEvent(CreateMessage(id, message, type));
 
-		private ConversationMessage CreateMessage(uint id, string message, ConversationType type) => new ConversationMessage
+		private ConversationMessage CreateMessage(uint id, string message, ConversationType type) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = (int)id,

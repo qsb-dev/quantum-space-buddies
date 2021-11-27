@@ -74,8 +74,8 @@ namespace QSB.Utility
 
 		private class EventData
 		{
-			public List<Callback<T, U, V, W, X, Y>> Callbacks = new List<Callback<T, U, V, W, X, Y>>();
-			public List<Callback<T, U, V, W, X, Y>> Temp = new List<Callback<T, U, V, W, X, Y>>();
+			public List<Callback<T, U, V, W, X, Y>> Callbacks = new();
+			public List<Callback<T, U, V, W, X, Y>> Temp = new();
 			public bool IsInvoking;
 		}
 	}

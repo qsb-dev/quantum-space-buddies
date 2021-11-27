@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.Events;
 using QSB.Patches;
 
 namespace QSB.Player.Patches
@@ -21,6 +22,32 @@ namespace QSB.Player.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.OnExitToMainMenu))]
 		public static void PauseMenuManager_OnExitToMainMenu()
-			=> QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = false;
+			=> QSBPlayerManager.LocalPlayer.IsReady = false;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerData), nameof(PlayerData.LearnLaunchCodes))]
+		public static bool LearnLaunchCodes()
+		{
+			var flag = false;
+			if (!PlayerData._currentGameSave.PersistentConditionExists("LAUNCH_CODES_GIVEN"))
+			{
+				flag = true;
+			}
+
+			else if (PlayerData._currentGameSave.GetPersistentCondition("LAUNCH_CODES_GIVEN"))
+			{
+				flag = true;
+			}
+
+			if (flag)
+			{
+				DialogueConditionManager.SharedInstance.SetConditionState("SCIENTIST_3", true);
+				PlayerData._currentGameSave.SetPersistentCondition("LAUNCH_CODES_GIVEN", true);
+				GlobalMessenger.FireEvent("LearnLaunchCodes");
+				QSBEventManager.FireEvent(EventNames.QSBLearnLaunchCodes);
+			}
+
+			return false;
+		}
 	}
 }

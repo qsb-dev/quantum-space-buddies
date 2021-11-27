@@ -1,7 +1,8 @@
 ﻿using OWML.Common;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.Events;
 using QSB.Player.TransformSync;
-using QSB.Tools;
+using QSB.Tools.FlashlightTool;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -40,11 +41,11 @@ namespace QSB.Player
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
 
-		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new List<PlayerSyncObject>();
+		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (id == uint.MaxValue || id == 0U)
+			if (id is uint.MaxValue or 0U)
 			{
 				return default;
 			}
@@ -61,7 +62,7 @@ namespace QSB.Player
 				return default;
 			}
 
-			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
+			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			OnAddPlayer?.Invoke(id);
@@ -70,7 +71,7 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}> Stacktrace :\r\n{Environment.StackTrace}", MessageType.Info);
+			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
 			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
@@ -81,10 +82,16 @@ namespace QSB.Player
 		{
 			var player = GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
-			player.PlayerStates = message.PlayerState;
-			if (LocalPlayer.PlayerStates.IsReady)
+			player.IsReady = message.IsReady;
+			player.FlashlightActive = message.FlashlightActive;
+			player.SuitedUp = message.SuitedUp;
+			player.ProbeLauncherEquipped = message.ProbeLauncherEquipped;
+			player.SignalscopeEquipped = message.SignalscopeEquipped;
+			player.TranslatorEquipped = message.TranslatorEquipped;
+			player.ProbeActive = message.ProbeActive;
+			if (LocalPlayer.IsReady)
 			{
-				player.UpdateStateObjects();
+				player.UpdateObjectsFromStates();
 			}
 
 			player.State = message.ClientState;
@@ -128,7 +135,7 @@ namespace QSB.Player
 		}
 
 		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
-			=> new Tuple<Flashlight, IEnumerable<QSBFlashlight>>(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+			=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 		public static void ShowAllPlayers()
 			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, true));
@@ -139,6 +146,8 @@ namespace QSB.Player
 		public static void ChangePlayerVisibility(uint playerId, bool visible)
 		{
 			var player = GetPlayer(playerId);
+			player.Visible = visible;
+
 			if (player.Body == null)
 			{
 				DebugLog.ToConsole($"Warning - Player {playerId} has a null player model!", MessageType.Warning);
@@ -149,8 +158,6 @@ namespace QSB.Player
 			{
 				renderer.enabled = visible;
 			}
-
-			player.Visible = visible;
 		}
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
@@ -171,7 +178,10 @@ namespace QSB.Player
 				return null;
 			}
 
-			return playerList.Where(x => x.PlayerStates.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+			return playerList.Where(x => x.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
+
+		public static IEnumerable<Tuple<PlayerInfo, IQSBOWItem>> GetPlayerCarryItems()
+			=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBOWItem>(x, x.HeldItem));
 	}
 }

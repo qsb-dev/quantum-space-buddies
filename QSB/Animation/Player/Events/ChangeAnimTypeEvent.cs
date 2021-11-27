@@ -14,7 +14,7 @@ namespace QSB.Animation.Player.Events
 
 		private void Handler(uint player, AnimationType type) => SendEvent(CreateMessage(player, type));
 
-		private EnumMessage<AnimationType> CreateMessage(uint player, AnimationType type) => new EnumMessage<AnimationType>
+		private EnumMessage<AnimationType> CreateMessage(uint player, AnimationType type) => new()
 		{
 			AboutId = player,
 			EnumValue = type
@@ -22,7 +22,7 @@ namespace QSB.Animation.Player.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBPlayerManager.GetPlayer(message.AboutId).PlayerStates.IsReady)
+			if (!QSBCore.WorldObjectsReady || !QSBPlayerManager.GetPlayer(message.AboutId).IsReady)
 			{
 				return;
 			}

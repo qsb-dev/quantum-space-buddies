@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace QuantumUNET.Components
 {
@@ -34,9 +33,9 @@ namespace QuantumUNET.Components
 		private GlobalConfig m_GlobalConfig;
 		private readonly int m_MaxBufferedPackets = 16;
 		private readonly bool m_AllowFragmentation = true;
-		private static readonly QAddPlayerMessage s_AddPlayerMessage = new QAddPlayerMessage();
-		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new QRemovePlayerMessage();
-		private static readonly QErrorMessage s_ErrorMessage = new QErrorMessage();
+		private static readonly QAddPlayerMessage s_AddPlayerMessage = new();
+		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new();
+		private static readonly QErrorMessage s_ErrorMessage = new();
 		private static AsyncOperation s_LoadingSceneAsync;
 		private static QNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;
@@ -449,7 +448,6 @@ namespace QuantumUNET.Components
 		{
 			QLog.Log("NetworkManager:OnClientConnectInternal");
 			netMsg.Connection.SetMaxDelay(maxDelay);
-			var name = SceneManager.GetSceneAt(0).name;
 			clientLoadedScene = false;
 			OnClientConnect(netMsg.Connection);
 		}

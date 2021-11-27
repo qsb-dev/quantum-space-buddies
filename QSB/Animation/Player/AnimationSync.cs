@@ -155,7 +155,7 @@ namespace QSB.Animation.Player
 
 		public void SetSuitState(bool state)
 		{
-			if (!Player.PlayerStates.IsReady)
+			if (!Player.IsReady)
 			{
 				return;
 			}
@@ -225,7 +225,7 @@ namespace QSB.Animation.Player
 
 			InvisibleAnimator.runtimeAnimatorController = controller;
 			VisibleAnimator.runtimeAnimatorController = controller;
-			if (type != AnimationType.PlayerSuited && type != AnimationType.PlayerUnsuited)
+			if (type is not AnimationType.PlayerSuited and not AnimationType.PlayerUnsuited)
 			{
 				VisibleAnimator.SetTrigger("Playing");
 				InvisibleAnimator.SetTrigger("Playing");

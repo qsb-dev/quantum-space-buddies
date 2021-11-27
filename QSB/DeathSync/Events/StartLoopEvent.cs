@@ -14,7 +14,7 @@ namespace QSB.DeathSync.Events
 
 		private void Handler() => SendEvent(CreateMessage());
 
-		private PlayerMessage CreateMessage() => new PlayerMessage
+		private PlayerMessage CreateMessage() => new()
 		{
 			AboutId = LocalPlayerId
 		};
@@ -25,7 +25,19 @@ namespace QSB.DeathSync.Events
 		public override void OnReceiveRemote(bool server, PlayerMessage message)
 		{
 			DebugLog.DebugWrite($" ~~~ LOOP START ~~~");
-			QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
+			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
+			}
+			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInEye);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Error - Got StartLoop event when not in universe!", OWML.Common.MessageType.Error);
+				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.NotLoaded);
+			}
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace QSB.Animation.Player.Thrusters
 		private Thruster _thruster;
 		private Light _light;
 		private AnimationCurve _scaleByThrust = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-		private DampedSpring _scaleSpring = new DampedSpring();
+		private DampedSpring _scaleSpring = new();
 		private float _belowMaxThrustScalar = 1f;
 		private MeshRenderer _thrusterRenderer;
 		private Vector3 _thrusterFilter;
@@ -82,5 +82,16 @@ namespace QSB.Animation.Player.Thrusters
 		}
 
 		private float GetThrustFraction() => Vector3.Dot(_attachedPlayer.JetpackAcceleration.LocalAcceleration, _thrusterFilter);
+
+		private void OnRenderObject()
+		{
+			if (!QSBCore.WorldObjectsReady || !QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Sphere(_light.transform.position, 0.05f, Color.yellow, 4);
+			Popcron.Gizmos.Line(_light.transform.position, _light.transform.parent.position, Color.yellow);
+		}
 	}
 }

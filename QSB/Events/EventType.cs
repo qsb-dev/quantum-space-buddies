@@ -3,9 +3,13 @@
 	public enum EventType
 	{
 		/*
-		 * MISC. 
+		 * MISC.
 		 */
 		DebugEvent,
+		SatelliteProjector,
+		SatelliteProjectorSnapshot,
+		LaunchCodes,
+		VariableSync,
 
 		/*
 		 * SERVER EVENTS
@@ -131,6 +135,14 @@
 		RetrieveProbe,
 		PlayerRetrieveProbe,
 		LaunchProbe,
-		PlayerLaunchProbe
+		PlayerLaunchProbe,
+
+		AnglerChangeState,
+
+		MeteorPreLaunch,
+		MeteorLaunch,
+		MeteorSpecialImpact,
+		FragmentDamage,
+		FragmentResync
 	}
 }

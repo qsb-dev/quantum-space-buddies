@@ -3,6 +3,7 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace QSB.RoastingSync.Events
 
 		private void Handler(MarshmallowEventType type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<MarshmallowEventType> CreateMessage(MarshmallowEventType type) => new EnumMessage<MarshmallowEventType>
+		private EnumMessage<MarshmallowEventType> CreateMessage(MarshmallowEventType type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type
@@ -66,7 +67,7 @@ namespace QSB.RoastingSync.Events
 			var stick = player.RoastingStick;
 			var stickTip = stick.transform.GetChild(0);
 
-			var mallowPrefab = Resources.FindObjectsOfTypeAll<RoastingStickController>().First().GetValue<GameObject>("_mallowBodyPrefab");
+			var mallowPrefab = QSBWorldSync.GetUnityObjects<RoastingStickController>().First().GetValue<GameObject>("_mallowBodyPrefab");
 
 			var tossedMallow = Object.Instantiate(mallowPrefab, stickTip.position, stickTip.rotation);
 			var rigidbody = tossedMallow.GetComponent<OWRigidbody>();

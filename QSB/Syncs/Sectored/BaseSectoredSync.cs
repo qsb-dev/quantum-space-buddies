@@ -65,7 +65,7 @@ namespace QSB.Syncs.Sectored
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - {_logName}'s initial sector was null.", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s initial sector was null.", OWML.Common.MessageType.Warning);
 			}
 		}
 
@@ -75,7 +75,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (ReferenceSector != null && ReferenceSector.Transform != ReferenceTransform)
 				{
-					DebugLog.ToConsole($"Warning - {_logName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - {LogName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", OWML.Common.MessageType.Warning);
 					SetReferenceTransform(ReferenceSector.Transform);
 				}
 
@@ -112,16 +112,11 @@ namespace QSB.Syncs.Sectored
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
-			if (_intermediaryTransform == null)
-			{
-				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
-
 			if (!QSBPlayerManager.PlayerExists(PlayerId))
 			{
 				writer.Write(-1);
 			}
-			else if (!Player.PlayerStates.IsReady)
+			else if (!Player.IsReady)
 			{
 				writer.Write(-1);
 			}
@@ -148,7 +143,7 @@ namespace QSB.Syncs.Sectored
 				sectorId = reader.ReadInt32();
 				if (initialState && sectorId != -1)
 				{
-					DebugLog.DebugWrite($"{_logName} set waiting sector id:{sectorId}");
+					DebugLog.DebugWrite($"{LogName} set waiting sector id:{sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
 
@@ -174,7 +169,7 @@ namespace QSB.Syncs.Sectored
 
 		protected bool UpdateSectors()
 		{
-			var referenceNull = ReferenceTransform == null || ReferenceSector == null || _intermediaryTransform.GetReferenceTransform() == null;
+			var referenceNull = ReferenceTransform == null || ReferenceSector == null;
 			var sectorManagerReady = QSBSectorManager.Instance.IsReady;
 
 			if (!sectorManagerReady)
@@ -182,11 +177,11 @@ namespace QSB.Syncs.Sectored
 				if (referenceNull && HasAuthority)
 				{
 					DebugLog.ToConsole($"Warning - Reference was null, but sector manager wasn't ready. " +
-						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}, Intermediary:{_intermediaryTransform.GetReferenceTransform() == null}",
+						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}",
 						OWML.Common.MessageType.Warning);
 				}
 
-				DebugLog.DebugWrite($"{_logName} : Sector Manager not ready.");
+				DebugLog.DebugWrite($"{LogName} : Sector Manager not ready.");
 				return false;
 			}
 

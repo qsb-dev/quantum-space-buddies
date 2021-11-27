@@ -13,7 +13,7 @@ namespace QSB.SectorSync
 	public class SectorSync : MonoBehaviour
 	{
 		public bool IsReady { get; private set; }
-		public List<QSBSector> SectorList = new List<QSBSector>();
+		public List<QSBSector> SectorList = new();
 
 		private OWRigidbody _attachedOWRigidbody;
 		private SectorDetector _sectorDetector;
@@ -78,7 +78,7 @@ namespace QSB.SectorSync
 
 		private void AddSector(Sector sector)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
+			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector>(sector);
 			if (worldObject == null)
 			{
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
@@ -95,7 +95,7 @@ namespace QSB.SectorSync
 
 		private void RemoveSector(Sector sector)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
+			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector>(sector);
 			if (worldObject == null)
 			{
 				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);

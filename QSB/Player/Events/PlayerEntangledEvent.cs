@@ -14,7 +14,7 @@ namespace QSB.Player.Events
 
 		private void Handler(int id) => SendEvent(CreateMessage(id));
 
-		private WorldObjectMessage CreateMessage(int id) => new WorldObjectMessage
+		private WorldObjectMessage CreateMessage(int id) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = id

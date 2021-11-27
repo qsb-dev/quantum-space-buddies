@@ -17,8 +17,8 @@ namespace QSB.Syncs.Unsectored.Transforms
 		{
 			base.SerializeTransform(writer, initialState);
 
-			var worldPos = _intermediaryTransform.GetPosition();
-			var worldRot = _intermediaryTransform.GetRotation();
+			var worldPos = transform.position;
+			var worldRot = transform.rotation;
 			writer.Write(worldPos);
 			SerializeRotation(writer, worldRot);
 			_prevPosition = worldPos;
@@ -42,15 +42,10 @@ namespace QSB.Syncs.Unsectored.Transforms
 				return;
 			}
 
-			if (_intermediaryTransform == null)
-			{
-				_intermediaryTransform = new IntermediaryTransform(transform);
-			}
+			transform.position = pos;
+			transform.rotation = rot;
 
-			_intermediaryTransform.SetPosition(pos);
-			_intermediaryTransform.SetRotation(rot);
-
-			if (_intermediaryTransform.GetPosition() == Vector3.zero)
+			if (transform.position == Vector3.zero)
 			{
 				//DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
 			}
@@ -60,14 +55,14 @@ namespace QSB.Syncs.Unsectored.Transforms
 		{
 			if (HasAuthority)
 			{
-				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
-				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
 				return true;
 			}
 
-			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
-			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
-			if (targetPos != Vector3.zero && _intermediaryTransform.GetTargetPosition_Unparented() != Vector3.zero)
+			var targetPos = ReferenceTransform.DecodePos(transform.position);
+			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
+			if (targetPos != Vector3.zero && ReferenceTransform.DecodePos(transform.position) != Vector3.zero)
 			{
 				if (UseInterpolation)
 				{
@@ -82,7 +77,7 @@ namespace QSB.Syncs.Unsectored.Transforms
 			}
 			else if (targetPos == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - TargetPos for {_logName} was (0,0,0).", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - TargetPos for {LogName} was (0,0,0).", MessageType.Warning);
 			}
 
 			return true;

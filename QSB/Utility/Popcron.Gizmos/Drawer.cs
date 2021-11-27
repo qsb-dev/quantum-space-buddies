@@ -32,14 +32,9 @@ namespace Popcron
 				};
 			}
 
-			if (typeToDrawer.TryGetValue(typeof(T), out var drawer))
-			{
-				return drawer;
-			}
-			else
-			{
-				return null;
-			}
+			return typeToDrawer.TryGetValue(typeof(T), out var drawer)
+				? drawer
+				: null;
 		}
 	}
 }

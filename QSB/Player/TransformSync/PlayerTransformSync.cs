@@ -40,7 +40,7 @@ namespace QSB.Player.TransformSync
 		protected Quaternion _roastingRotationVelocity;
 
 		private Transform GetStickPivot()
-			=> Resources.FindObjectsOfTypeAll<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
+			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
 		public override void OnStartLocalPlayer()
 			=> LocalInstance = this;
@@ -60,12 +60,12 @@ namespace QSB.Player.TransformSync
 
 			if (isInUniverse)
 			{
-				Player.PlayerStates.IsReady = true;
+				Player.IsReady = true;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			}
 			else
 			{
-				Player.PlayerStates.IsReady = false;
+				Player.IsReady = false;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
 
@@ -100,6 +100,8 @@ namespace QSB.Player.TransformSync
 			Player.Camera = Locator.GetPlayerCamera();
 			Player.CameraBody = cameraBody.gameObject;
 			_visibleCameraRoot = cameraBody;
+
+			PlayerToolsManager.InitLocal();
 
 			// stick
 			var pivot = GetStickPivot();
@@ -163,7 +165,7 @@ namespace QSB.Player.TransformSync
 			 * SET UP PLAYER CAMERA
 			 */
 
-			PlayerToolsManager.Init(REMOTE_PlayerCamera.transform);
+			PlayerToolsManager.InitRemote(REMOTE_PlayerCamera.transform);
 
 			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
 			camera.enabled = false;
@@ -248,11 +250,9 @@ namespace QSB.Player.TransformSync
 			base.OnRenderObject();
 
 			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
-				|| ReferenceTransform == null
-				|| _intermediaryTransform.GetReferenceTransform() == null)
+				|| ReferenceTransform == null)
 			{
 				return;
 			}

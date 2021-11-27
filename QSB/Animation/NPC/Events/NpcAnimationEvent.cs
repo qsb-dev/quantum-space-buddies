@@ -13,7 +13,7 @@ namespace QSB.Animation.NPC.Events
 
 		private void Handler(AnimationEvent animEvent, int index) => SendEvent(CreateMessage(animEvent, index));
 
-		private NpcAnimationMessage CreateMessage(AnimationEvent animEvent, int index) => new NpcAnimationMessage
+		private NpcAnimationMessage CreateMessage(AnimationEvent animEvent, int index) => new()
 		{
 			AboutId = LocalPlayerId,
 			AnimationEvent = animEvent,

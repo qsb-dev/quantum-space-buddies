@@ -13,11 +13,17 @@ namespace QSB.Player.Events
 
 		private void Handler() => SendEvent(CreateMessage(QSBPlayerManager.LocalPlayer));
 
-		private PlayerInformationMessage CreateMessage(PlayerInfo player) => new PlayerInformationMessage
+		private PlayerInformationMessage CreateMessage(PlayerInfo player) => new()
 		{
 			AboutId = player.PlayerId,
 			PlayerName = player.Name,
-			PlayerState = player.PlayerStates,
+			IsReady = player.IsReady,
+			FlashlightActive = player.FlashlightActive,
+			SuitedUp = player.SuitedUp,
+			ProbeLauncherEquipped = player.ProbeLauncherEquipped,
+			SignalscopeEquipped = player.SignalscopeEquipped,
+			TranslatorEquipped = player.TranslatorEquipped,
+			ProbeActive = player.ProbeActive,
 			ClientState = player.State
 		};
 

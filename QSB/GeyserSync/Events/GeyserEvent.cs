@@ -14,7 +14,7 @@ namespace QSB.GeyserSync.Events
 
 		private void Handler(int id, bool state) => SendEvent(CreateMessage(id, state));
 
-		private BoolWorldObjectMessage CreateMessage(int id, bool state) => new BoolWorldObjectMessage
+		private BoolWorldObjectMessage CreateMessage(int id, bool state) => new()
 		{
 			AboutId = LocalPlayerId,
 			ObjectId = id,

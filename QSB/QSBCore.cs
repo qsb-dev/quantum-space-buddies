@@ -1,27 +1,32 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
+using QSB.Anglerfish;
 using QSB.Animation.NPC;
 using QSB.CampfireSync;
 using QSB.ConversationSync;
-using QSB.DeathSync;
+using QSB.EchoesOfTheEye.AirlockSync;
+using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
 using QSB.Menus;
+using QSB.MeteorSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
+using QSB.RespawnSync;
+using QSB.SatelliteSync;
 using QSB.SectorSync;
 using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeLauncherTool;
-using QSB.TranslationSync;
+using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -31,10 +36,10 @@ using UnityEngine;
 
 /*
 	Copyright (C) 2020 - 2021
-			Henry Pointer (_nebula / misternebula), 
-			Aleksander Waage (AmazingAlek), 
+			Henry Pointer (_nebula / misternebula),
+			Aleksander Waage (AmazingAlek),
 			Ricardo Lopes (Raicuparta)
-	
+
 	This program is free software: you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License
 	as published by the Free Software Foundation, either version 3 of
@@ -55,8 +60,12 @@ namespace QSB
 		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
-		public static bool DebugMode { get; private set; }
-		public static bool ShowLinesInDebug { get; private set; }
+		public static bool DebugMode => DebugSettings.DebugMode;
+		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
+		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
+		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
+		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
+		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -70,6 +79,8 @@ namespace QSB
 			? GamePlatform.Epic
 			: GamePlatform.Steam;
 		public static IMenuAPI MenuApi { get; private set; }
+
+		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
 
 		public void Awake()
 		{
@@ -85,10 +96,17 @@ namespace QSB
 
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
-			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
-			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
-			DebugAssetBundle = Helper.Assets.LoadBundle("assets/debug");
+			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
+			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
+			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
+			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
+
+			DebugSettings = ModHelper.Storage.Load<DebugSettings>("debugsettings.json");
+
+			if (DebugSettings == null)
+			{
+				DebugSettings = new DebugSettings();
+			}
 
 			QSBPatchManager.Init();
 
@@ -102,6 +120,7 @@ namespace QSB
 			gameObject.AddComponent<DebugGUI>();
 			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
+			gameObject.AddComponent<SatelliteProjectorManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();
@@ -117,6 +136,10 @@ namespace QSB
 			gameObject.AddComponent<CharacterAnimManager>();
 			gameObject.AddComponent<ShipManager>();
 			gameObject.AddComponent<ProbeLauncherManager>();
+			gameObject.AddComponent<LightSensorManager>();
+			gameObject.AddComponent<AirlockManager>();
+			gameObject.AddComponent<AnglerManager>();
+			gameObject.AddComponent<MeteorManager>();
 
 			DebugBoxManager.Init();
 
@@ -157,9 +180,6 @@ namespace QSB
 			{
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
-
-			DebugMode = config.GetSettingsValue<bool>("debugMode");
-			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 		}
 	}
 }
@@ -167,7 +187,7 @@ namespace QSB
 /*
  * _nebula's music thanks
  * I listen to music constantly while programming/working - here's my thanks to them for keeping me entertained :P
- * 
+ *
  * Wintergatan
  * HOME
  * C418

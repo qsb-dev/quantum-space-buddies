@@ -22,7 +22,7 @@ public class CameraFacingBillboard : MonoBehaviour
 		UpdateRotation();
 	}
 
-	void LateUpdate()
+	private void LateUpdate()
 		=> UpdateRotation();
 
 	private void UpdateRotation()

@@ -53,7 +53,7 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 
 				if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
 				{
-					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, QSBWorldSync.GetWorldFromUnity<QSBProbeLauncher, ProbeLauncher>(__instance), playEffects);
+					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, QSBWorldSync.GetWorldFromUnity<QSBProbeLauncher>(__instance), playEffects);
 				}
 				else
 				{
@@ -71,12 +71,20 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 		// TODO : ehhhh idk about this. maybe copy each sound source so we have a 2d version (for local) and a 3d version (for remote)?
 		// this would probably be a whole qsb version on it's own
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayRetrievalClip))]
-		public static void ProbeLauncherEffects_PlayRetrievalClip(OWAudioSource ____owAudioSource) => ____owAudioSource.GetAudioSource().spatialBlend = 1f;
+		public static bool ProbeLauncherEffects_PlayRetrievalClip(OWAudioSource ____owAudioSource)
+		{
+			____owAudioSource.GetAudioSource().spatialBlend = 1f;
+			return true;
+		}
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayLaunchClip))]
-		public static void ProbeLauncherEffects_PlayLaunchClip(OWAudioSource ____owAudioSource) => ____owAudioSource.GetAudioSource().spatialBlend = 1f;
+		public static bool ProbeLauncherEffects_PlayLaunchClip(OWAudioSource ____owAudioSource)
+		{
+			____owAudioSource.GetAudioSource().spatialBlend = 1f;
+			return true;
+		}
 	}
 }

@@ -1,11 +1,8 @@
 ﻿using HarmonyLib;
-using OWML.Common;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
@@ -15,104 +12,62 @@ namespace QSB.QuantumSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
+		/*
+		 * This patch used to be different, but that one completely broke Solanum's NomaiTextLines.
+		 * I have no idea why, and I fixed it by just writing this patch again.
+		 * The patches did the same thing.
+		 * ¯\_(ツ)_/¯
+		 */
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.ChangeQuantumState))]
-		public static bool QuantumMoon_ChangeQuantumState(
-			QuantumMoon __instance,
-			ref bool __result,
-			bool skipInstantVisibilityCheck,
-			bool ____isPlayerInside,
-			bool ____hasSunCollapsed,
-			float ____playerWarpTime,
-			ref int ____stateIndex,
-			ref int ____collapseToIndex,
-			QuantumOrbit[] ____orbits,
-			float ____sphereCheckRadius,
-			VisibilityTracker ____visibilityTracker,
-			OWRigidbody ____moonBody,
-			ConstantForceDetector ____constantForceDetector,
-			ref bool ____useInitialMotion,
-			ref int ____lastStateIndex,
-			ref int[] ____stateSkipCounts,
-			AudioSignal ____quantumSignal,
-			ReferenceFrameVolume ____referenceFrameVolume,
-			GameObject[] ____deactivateAtEye
-			)
+		public static bool ChangeQuantumState(QuantumMoon __instance, bool skipInstantVisibilityCheck, ref bool __result)
 		{
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return false;
-			}
+			var foundNewPosition = false;
 
-			var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck);
-			//var moonVisible = isVisibleOutput.First;
-			var moonVisiblePlayers = isVisibleOutput.Item2;
-			var inMoonPlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
-			if (inMoonPlayers == null)
-			{
-				DebugLog.ToConsole($"Warning - inMoonPlayers is null.", MessageType.Warning);
-				return false;
-			}
-
-			var inShrinePlayers = QSBPlayerManager.PlayerList.Where(x => x.IsInShrine);
-			if (inShrinePlayers == null)
-			{
-				DebugLog.ToConsole($"Warning - inShrinePlayers is null.", MessageType.Warning);
-				return false;
-			}
-
-			//var outMoonPlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsInMoon);
-
-			var outShrinePlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsInShrine);
-			if (outShrinePlayers == null)
-			{
-				DebugLog.ToConsole($"Warning - outShrinePlayers is null.", MessageType.Warning);
-				return false;
-			}
-
-			if (QuantumManager.Shrine == null)
-			{
-				DebugLog.ToConsole($"Warning - QuantumManager.Shrine is null.", MessageType.Warning);
-				return false;
-			}
-
-			var shrineLit = QuantumManager.Shrine.IsPlayerInDarkness();
+			var playersInQuantumMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
+			var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, skipInstantVisibilityCheck);
+			var shrineLit = QuantumManager.Shrine != null && QuantumManager.Shrine.IsPlayerInDarkness();
+			var playersInQuantumShrine = QSBPlayerManager.PlayerList.Where(x => x.IsInShrine);
+			var playersWhoCanSeeQuantumMoon = isVisibleOutput.Item2;
+			var playersNotInQuantumShrine = QSBPlayerManager.PlayerList.Where(x => !x.IsInShrine);
 
 			// If any of the players in the moon are not in the shrine
-			if (inMoonPlayers.Any(x => !x.IsInShrine))
+			if (playersInQuantumMoon.Any(x => !x.IsInShrine))
 			{
 				__result = false;
 				return false;
 			}
 
 			// If any of the players outside the shrine can see the moon
-			if (outShrinePlayers.Any(moonVisiblePlayers.Contains))
+			if (playersNotInQuantumShrine.Any(playersWhoCanSeeQuantumMoon.Contains))
 			{
 				__result = false;
 				return false;
 			}
 
 			// If there are players in the shrine and the shrine is not lit
-			if (inShrinePlayers.Count() != 0 && !shrineLit)
+			if (playersInQuantumShrine.Count() != 0 && !shrineLit)
 			{
 				__result = false;
 				return false;
 			}
 
-			var flag = false;
-			if (____isPlayerInside && ____hasSunCollapsed)
+			var anyPlayerInQM = playersInQuantumMoon.Any();
+
+			if (anyPlayerInQM && __instance._hasSunCollapsed)
 			{
 				__result = false;
 				return false;
 			}
 
-			if (Time.time - ____playerWarpTime < 1f)
+			if (Time.time - __instance._playerWarpTime < 1f)
 			{
 				__result = false;
 				return false;
 			}
 
-			if (____stateIndex == 5 && ____isPlayerInside && !__instance.IsPlayerEntangled())
+			if (__instance._stateIndex == 5 && anyPlayerInQM && !__instance.IsPlayerEntangled())
 			{
 				__result = false;
 				return false;
@@ -120,107 +75,146 @@ namespace QSB.QuantumSync.Patches
 
 			for (var i = 0; i < 10; i++)
 			{
-				var stateIndex = (____collapseToIndex == -1) ? (int)__instance.GetType().GetMethod("GetRandomStateIndex", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) : ____collapseToIndex;
-				var orbitIndex = -1;
-				for (var j = 0; j < ____orbits.Length; j++)
-				{
-					if (____orbits[j].GetStateIndex() == stateIndex)
-					{
-						orbitIndex = j;
-						break;
-					}
-				}
+				FindStateAndOrbit(__instance, out var stateIndex, out var orbitIndex);
 
-				if (orbitIndex == -1)
-				{
-					DebugLog.ToConsole($"Error - QM failed to find orbit for state {stateIndex}", MessageType.Error);
-				}
+				GetTargetPosition(__instance, stateIndex, orbitIndex, out var orbitRadius, out var bodyToOrbit, out var targetPosition, out var onUnitSphere);
 
-				var orbitRadius = (orbitIndex == -1) ? 10000f : ____orbits[orbitIndex].GetOrbitRadius();
-				var owRigidbody = (orbitIndex == -1) ? Locator.GetAstroObject(AstroObject.Name.Sun).GetOWRigidbody() : ____orbits[orbitIndex].GetAttachedOWRigidbody();
-				var onUnitSphere = UnityEngine.Random.onUnitSphere;
-				if (stateIndex == 5)
+				if (!Physics.CheckSphere(targetPosition, __instance._sphereCheckRadius, OWLayerMask.physicalMask) || __instance._collapseToIndex != -1)
 				{
-					onUnitSphere.y = 0f;
-					onUnitSphere.Normalize();
-				}
-
-				var position = (onUnitSphere * orbitRadius) + owRigidbody.GetWorldCenterOfMass();
-				if (!Physics.CheckSphere(position, ____sphereCheckRadius, OWLayerMask.physicalMask) || ____collapseToIndex != -1)
-				{
-					____visibilityTracker.transform.position = position;
+					__instance._visibilityTracker.transform.position = targetPosition;
 					if (!Physics.autoSyncTransforms)
 					{
 						Physics.SyncTransforms();
 					}
 
-					if (__instance.IsPlayerEntangled() || !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, skipInstantVisibilityCheck).Item1)
+					if (skipInstantVisibilityCheck || anyPlayerInQM || !__instance.CheckVisibilityInstantly())
 					{
-						____moonBody.transform.position = position;
-						if (!Physics.autoSyncTransforms)
-						{
-							Physics.SyncTransforms();
-						}
-
-						____visibilityTracker.transform.localPosition = Vector3.zero;
-						____constantForceDetector.AddConstantVolume(owRigidbody.GetAttachedGravityVolume(), true, true);
-						var velocity = owRigidbody.GetVelocity();
-						if (____useInitialMotion)
-						{
-							var initialMotion = owRigidbody.GetComponent<InitialMotion>();
-							velocity = (initialMotion == null) ? Vector3.zero : initialMotion.GetInitVelocity();
-							____useInitialMotion = false;
-						}
-
-						var orbitAngle = UnityEngine.Random.Range(0, 360);
-						____moonBody.SetVelocity(OWPhysics.CalculateOrbitVelocity(owRigidbody, ____moonBody, orbitAngle) + velocity);
-						____lastStateIndex = ____stateIndex;
-						____stateIndex = stateIndex;
-						____collapseToIndex = -1;
-						flag = true;
-						for (var k = 0; k < ____stateSkipCounts.Length; k++)
-						{
-							____stateSkipCounts[k] = (k != ____stateIndex) ? (____stateSkipCounts[k] + 1) : 0;
-						}
-
-						QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+						MoveMoon(__instance, targetPosition, bodyToOrbit, stateIndex, onUnitSphere, ref foundNewPosition);
 						break;
 					}
 
-					____visibilityTracker.transform.localPosition = Vector3.zero;
+					__instance._visibilityTracker.transform.localPosition = Vector3.zero;
 				}
 				else
 				{
-					DebugLog.ToConsole("Warning - Quantum moon orbit position occupied! Aborting collapse.", MessageType.Warning);
+					Debug.LogError("Quantum moon orbit position occupied! Aborting collapse.");
 				}
 			}
 
-			if (flag)
+			if (foundNewPosition)
 			{
-				if (____isPlayerInside)
-				{
-					__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
-				}
-				else
-				{
-					__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
-					____quantumSignal.SetSignalActivation(____stateIndex != 5, 2f);
-				}
-
-				____referenceFrameVolume.gameObject.SetActive(____stateIndex != 5);
-				____moonBody.SetIsTargetable(____stateIndex != 5);
-				for (var l = 0; l < ____deactivateAtEye.Length; l++)
-				{
-					____deactivateAtEye[l].SetActive(____stateIndex != 5);
-				}
-
-				GlobalMessenger<OWRigidbody>.FireEvent("QuantumMoonChangeState", ____moonBody);
+				DealWithNewPosition(__instance);
 				__result = true;
 				return false;
 			}
 
 			__result = false;
 			return false;
+		}
+
+		private static void GetTargetPosition(QuantumMoon __instance, int stateIndex, int orbitIndex, out float orbitRadius, out OWRigidbody bodyToOrbit, out Vector3 targetPosition, out Vector3 onUnitSphere)
+		{
+			orbitRadius = (orbitIndex != -1)
+					? __instance._orbits[orbitIndex].GetOrbitRadius()
+					: 10000f;
+
+			bodyToOrbit = (orbitIndex != -1)
+				? __instance._orbits[orbitIndex].GetAttachedOWRigidbody()
+				: Locator.GetAstroObject(AstroObject.Name.Sun).GetOWRigidbody();
+
+			onUnitSphere = UnityEngine.Random.onUnitSphere;
+
+			if (stateIndex == 5)
+			{
+				onUnitSphere.y = 0f;
+				onUnitSphere.Normalize();
+			}
+
+			targetPosition = (onUnitSphere * orbitRadius) + bodyToOrbit.GetWorldCenterOfMass();
+		}
+
+		private static void FindStateAndOrbit(QuantumMoon __instance, out int stateIndex, out int orbitIndex)
+		{
+			stateIndex = (__instance._collapseToIndex != -1)
+					? __instance._collapseToIndex
+					: __instance.GetRandomStateIndex();
+			orbitIndex = -1;
+
+			for (var j = 0; j < __instance._orbits.Length; j++)
+			{
+				if (__instance._orbits[j].GetStateIndex() == stateIndex)
+				{
+					orbitIndex = j;
+					break;
+				}
+			}
+
+			if (orbitIndex == -1)
+			{
+				Debug.LogError("QUANTUM MOON FAILED TO FIND ORBIT FOR STATE " + stateIndex);
+			}
+		}
+
+		private static void MoveMoon(QuantumMoon __instance, Vector3 targetPosition, OWRigidbody bodyToOrbit, int stateIndex, Vector3 onUnitSphere, ref bool foundNewPosition)
+		{
+			__instance._moonBody.transform.position = targetPosition;
+			if (!Physics.autoSyncTransforms)
+			{
+				Physics.SyncTransforms();
+			}
+
+			__instance._visibilityTracker.transform.localPosition = Vector3.zero;
+			__instance._constantForceDetector.AddConstantVolume(bodyToOrbit.GetAttachedGravityVolume(), true, true);
+			var bodyVelocity = bodyToOrbit.GetVelocity();
+
+			if (__instance._useInitialMotion)
+			{
+				var component = bodyToOrbit.GetComponent<InitialMotion>();
+				bodyVelocity = (component != null)
+					? component.GetInitVelocity()
+					: Vector3.zero;
+				__instance._useInitialMotion = false;
+			}
+
+			var orbitAngle = Random.Range(0, 360);
+			__instance._moonBody.SetVelocity(OWPhysics.CalculateOrbitVelocity(bodyToOrbit, __instance._moonBody, orbitAngle) + bodyVelocity);
+			__instance._useInitialMotion = false;
+			__instance._lastStateIndex = __instance._stateIndex;
+			__instance._stateIndex = stateIndex;
+			__instance._collapseToIndex = -1;
+			foundNewPosition = true;
+
+			for (var k = 0; k < __instance._stateSkipCounts.Length; k++)
+			{
+				__instance._stateSkipCounts[k] = (k == __instance._stateIndex)
+					? 0
+					: (__instance._stateSkipCounts[k] + 1);
+			}
+
+			QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+		}
+
+		private static void DealWithNewPosition(QuantumMoon __instance)
+		{
+			if (__instance._isPlayerInside)
+			{
+				__instance.SetSurfaceState(__instance._stateIndex);
+			}
+			else
+			{
+				__instance.SetSurfaceState(-1);
+				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5, 2f);
+			}
+
+			__instance._referenceFrameVolume.gameObject.SetActive(__instance._stateIndex != 5);
+			__instance._moonBody.SetIsTargetable(__instance._stateIndex != 5);
+
+			for (var l = 0; l < __instance._deactivateAtEye.Length; l++)
+			{
+				__instance._deactivateAtEye[l].SetActive(__instance._stateIndex != 5);
+			}
+
+			GlobalMessenger<OWRigidbody>.FireEvent("QuantumMoonChangeState", __instance._moonBody);
 		}
 	}
 }

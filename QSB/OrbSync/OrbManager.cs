@@ -12,7 +12,7 @@ namespace QSB.OrbSync
 {
 	public class OrbManager : WorldObjectManager
 	{
-		private List<GameObject> _orbs = new List<GameObject>();
+		private List<GameObject> _orbs = new();
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
@@ -25,7 +25,7 @@ namespace QSB.OrbSync
 		{
 			QSBWorldSync.OldOrbList.Clear();
 			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
-			QSBWorldSync.OldOrbList = Resources.FindObjectsOfTypeAll<NomaiInterfaceOrb>().ToList();
+			QSBWorldSync.OldOrbList = QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>().ToList();
 			if (QSBCore.IsHost)
 			{
 				_orbs.ForEach(x => QNetworkServer.Destroy(x));

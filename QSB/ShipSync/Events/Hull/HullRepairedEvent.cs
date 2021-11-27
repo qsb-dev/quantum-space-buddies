@@ -16,7 +16,7 @@ namespace QSB.ShipSync.Events.Hull
 
 		private WorldObjectMessage CreateMessage(ShipHull hull)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBShipHull, ShipHull>(hull);
+			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(hull);
 			return new WorldObjectMessage
 			{
 				AboutId = LocalPlayerId,

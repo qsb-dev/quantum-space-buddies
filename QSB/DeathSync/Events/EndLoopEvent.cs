@@ -1,6 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.Patches;
 using QSB.Utility;
 
 namespace QSB.DeathSync.Events
@@ -14,7 +15,7 @@ namespace QSB.DeathSync.Events
 
 		private void Handler(EndLoopReason type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<EndLoopReason> CreateMessage(EndLoopReason type) => new EnumMessage<EndLoopReason>
+		private EnumMessage<EndLoopReason> CreateMessage(EndLoopReason type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type
@@ -29,6 +30,8 @@ namespace QSB.DeathSync.Events
 			switch (message.EnumValue)
 			{
 				case EndLoopReason.AllPlayersDead:
+					QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
+
 					Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
 					if (QSBCore.IsHost)
 					{

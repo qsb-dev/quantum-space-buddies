@@ -31,8 +31,8 @@ namespace QSB.Tools
 			set => _arrivalDegrees = value;
 		}
 
-		public void OnEnable() => ToolGameObject?.SetActive(true);
-		public void OnDisable() => ToolGameObject?.SetActive(false);
+		public virtual void OnEnable() => ToolGameObject?.SetActive(true);
+		public virtual void OnDisable() => ToolGameObject?.SetActive(false);
 
 		public void ChangeEquipState(bool equipState)
 		{

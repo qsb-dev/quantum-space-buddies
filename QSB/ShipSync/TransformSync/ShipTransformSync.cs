@@ -1,6 +1,8 @@
 using QSB.SectorSync;
+using QSB.Syncs;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
@@ -33,11 +35,11 @@ namespace QSB.ShipSync.TransformSync
 				return;
 			}
 
-			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
-			var targetRot = _intermediaryTransform.GetTargetRotation_Unparented();
+			var targetPos = ReferenceTransform.DecodePos(transform.position);
+			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 
-			(AttachedObject as OWRigidbody).SetPosition(targetPos);
-			(AttachedObject as OWRigidbody).SetRotation(targetRot);
+			((ShipBody)AttachedObject).SetPosition(targetPos);
+			((ShipBody)AttachedObject).SetRotation(targetRot);
 		}
 
 		protected override bool UpdateTransform()
@@ -68,15 +70,31 @@ namespace QSB.ShipSync.TransformSync
 				return true;
 			}
 
-			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
+			var targetPos = ReferenceTransform.DecodePos(transform.position);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetPointVelocity(targetPos) + _relativeVelocity;
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity;
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
 
-			SetVelocity(AttachedObject as OWRigidbody, targetVelocity);
-			(AttachedObject as OWRigidbody).SetAngularVelocity(targetAngularVelocity);
+			SetVelocity((ShipBody)AttachedObject, targetVelocity);
+			((ShipBody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
 
 			return true;
+		}
+
+		/// use OWRigidbody version instead of ShipBody override
+		private void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
+		{
+			if (rigidbody.RunningKinematicSimulation())
+			{
+				rigidbody._kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+			else
+			{
+				rigidbody._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+
+			rigidbody._lastVelocity = rigidbody._currentVelocity;
+			rigidbody._currentVelocity = newVelocity;
 		}
 
 		public override bool UseInterpolation => true;

@@ -12,7 +12,7 @@ namespace QSB.Animation.Player.Events
 
 		private void Handler(uint attachedNetId, string name) => SendEvent(CreateMessage(attachedNetId, name));
 
-		private AnimationTriggerMessage CreateMessage(uint attachedNetId, string name) => new AnimationTriggerMessage
+		private AnimationTriggerMessage CreateMessage(uint attachedNetId, string name) => new()
 		{
 			AboutId = LocalPlayerId,
 			AttachedNetId = attachedNetId,
@@ -22,7 +22,7 @@ namespace QSB.Animation.Player.Events
 		public override void OnReceiveRemote(bool server, AnimationTriggerMessage message)
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AttachedNetId);
-			if (!QSBCore.WorldObjectsReady || animationSync != null)
+			if (!QSBCore.WorldObjectsReady || animationSync == null)
 			{
 				return;
 			}

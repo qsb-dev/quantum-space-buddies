@@ -12,14 +12,24 @@ namespace QSB.StatueSync
 		private void Awake()
 		{
 			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += (OWScene oldScene, OWScene newScene) => QSBPlayerManager.ShowAllPlayers();
+			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
 		private void OnDestroy()
-			=> QSBSceneManager.OnUniverseSceneLoaded -= (OWScene oldScene, OWScene newScene) => QSBPlayerManager.ShowAllPlayers();
+			=> QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 
-		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
-			=> StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
+		private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene)
+		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				return;
+			}
+
+			QSBPlayerManager.ShowAllPlayers();
+			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
+		}
+
+		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees) => StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
 
 		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
 		{

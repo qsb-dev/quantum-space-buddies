@@ -50,7 +50,7 @@ namespace QuantumUNET.Transport
 			}
 			else if (value <= 2287U)
 			{
-				Write((byte)((value - 240U) / 256U + 241U));
+				Write((byte)(((value - 240U) / 256U) + 241U));
 				Write((byte)((value - 240U) % 256U));
 			}
 			else if (value <= 67823U)
@@ -84,7 +84,7 @@ namespace QuantumUNET.Transport
 			}
 			else if (value <= 2287UL)
 			{
-				Write((byte)((value - 240UL) / 256UL + 241UL));
+				Write((byte)(((value - 240UL) / 256UL) + 241UL));
 				Write((byte)((value - 240UL) % 256UL));
 			}
 			else if (value <= 67823UL)

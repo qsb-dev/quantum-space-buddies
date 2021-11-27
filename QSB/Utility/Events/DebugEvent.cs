@@ -12,16 +12,13 @@ namespace QSB.Utility.Events
 
 		private void Handler(DebugEventEnum type) => SendEvent(CreateMessage(type));
 
-		private EnumMessage<DebugEventEnum> CreateMessage(DebugEventEnum type) => new EnumMessage<DebugEventEnum>
+		private EnumMessage<DebugEventEnum> CreateMessage(DebugEventEnum type) => new()
 		{
 			AboutId = LocalPlayerId,
 			EnumValue = type
 		};
 
-		public override void OnReceiveLocal(bool isHost, EnumMessage<DebugEventEnum> message)
-		{
-			OnReceiveRemote(isHost, message);
-		}
+		public override void OnReceiveLocal(bool isHost, EnumMessage<DebugEventEnum> message) => OnReceiveRemote(isHost, message);
 
 		public override void OnReceiveRemote(bool isHost, EnumMessage<DebugEventEnum> message)
 		{

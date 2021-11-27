@@ -54,17 +54,14 @@ namespace QSB.ClientServerStateSync
 				case OWScene.Credits_Fast:
 				case OWScene.Credits_Final:
 				case OWScene.PostCreditsScene:
-					DebugLog.DebugWrite($"SERVER LOAD CREDITS");
 					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.Credits);
 					break;
 
 				case OWScene.TitleScreen:
-					DebugLog.DebugWrite($"SERVER LOAD TITLE SCREEN");
 					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.NotLoaded);
 					break;
 
 				case OWScene.SolarSystem:
-					DebugLog.DebugWrite($"SERVER LOAD SOLARSYSTEM");
 					if (oldScene == OWScene.SolarSystem)
 					{
 						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToReady);
@@ -77,7 +74,6 @@ namespace QSB.ClientServerStateSync
 					break;
 
 				case OWScene.EyeOfTheUniverse:
-					DebugLog.DebugWrite($"EYE");
 					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToReady);
 					break;
 
@@ -98,21 +94,15 @@ namespace QSB.ClientServerStateSync
 
 		private ServerState ForceGetCurrentState()
 		{
-			DebugLog.DebugWrite($"ForceGetCurrentState");
-
 			var currentScene = LoadManager.GetCurrentScene();
-			var lastScene = LoadManager.GetPreviousScene();
 
 			switch (currentScene)
 			{
 				case OWScene.SolarSystem:
-					DebugLog.DebugWrite($"- SolarSystem");
 					return ServerState.InSolarSystem;
 				case OWScene.EyeOfTheUniverse:
-					DebugLog.DebugWrite($"- Eye");
 					return ServerState.InEye;
 				default:
-					DebugLog.DebugWrite($"- Not Loaded");
 					return ServerState.NotLoaded;
 			}
 		}
@@ -132,12 +122,27 @@ namespace QSB.ClientServerStateSync
 
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
-				if (QSBPlayerManager.PlayerList.All(x => x.State == ClientState.WaitingForOthersToReadyInSolarSystem)
-					|| QSBPlayerManager.PlayerList.All(x => x.State == ClientState.AliveInSolarSystem))
+				if (QSBPlayerManager.PlayerList.All(x
+					=> x.State is ClientState.WaitingForOthersToReadyInSolarSystem
+					or ClientState.AliveInSolarSystem
+					or ClientState.AliveInEye))
 				{
 					DebugLog.DebugWrite($"All ready!!");
 					QSBEventManager.FireEvent(EventNames.QSBStartLoop);
-					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InSolarSystem);
+					if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+					{
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InSolarSystem);
+					}
+					else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
+					{
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InEye);
+					}
+					else
+					{
+						DebugLog.ToConsole($"Error - All players were ready in non-universe scene!?", OWML.Common.MessageType.Error);
+						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.NotLoaded);
+					}
+
 					_blockNextCheck = true;
 				}
 			}
