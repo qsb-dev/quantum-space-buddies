@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.Player.TransformSync;
 using System;
 
 namespace QSB.Utility.VariableSync
@@ -18,7 +19,7 @@ namespace QSB.Utility.VariableSync
 				}
 				else
 				{
-					if (QSBPlayerManager.LocalPlayer.IsReady)
+					if (PlayerTransformSync.LocalInstance != null && QSBPlayerManager.LocalPlayer.IsReady)
 					{
 						DebugLog.ToConsole($"Warning - Getter is null!", OWML.Common.MessageType.Warning);
 					}
@@ -34,7 +35,7 @@ namespace QSB.Utility.VariableSync
 				}
 				else
 				{
-					if (QSBPlayerManager.LocalPlayer.IsReady)
+					if (PlayerTransformSync.LocalInstance != null && QSBPlayerManager.LocalPlayer.IsReady)
 					{
 						DebugLog.ToConsole($"Warning - Setter is null!", OWML.Common.MessageType.Warning);
 					}
