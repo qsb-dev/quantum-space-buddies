@@ -153,13 +153,14 @@ Note - _nebula has no idea how Hamachi works and has never used it, so don't ask
 - [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
 - Install OWML using the Mod Manager
 - Clone QSB's source
-- Open the file `Directory.Build.targets` in your favorite text editor
+- Open the file `DevEnv.targets` in your favorite text editor
 - Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
+- Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
 - Open the project solution file `QSB.sln` in Visual Studio
 - If needed, right click `References` in the Solution Explorer > Manage NuGet Packages > Update OWML to fix missing references
   - Use [this](https://github.com/MrPurple6411/AssemblyPublicizer) to create `Assembly-CSharp_publicized.dll`, if you don't already have it
-- Run this to stop tracking Director.Build.targets: ```git update-index --skip-worktree Directory.Build.targets```
+- Run this to stop tracking DevEnv.targets: ```git update-index --skip-worktree DevEnv.targets```
 
 To fix the references, right click "References" in the Solution Explorer > "Add Reference", and add all the missing DLLs (references with yellow warning icon). You can find these DLLs in the game's directory (`OuterWilds\OuterWilds_Data\Managed`);
 
@@ -169,22 +170,15 @@ The build pipeline (in post-build events):
 
 - Build QuantumUNET.
   - Copy built `QuantumUNET.dll` to mod folder.
-- Build QNetWeaver.
 - Build QSB.
   - Copy `default-config.json` to mod folder.
   - Copy AssetBundles to mod folder.
   - Copy `manifest.json` to mod folder.
-  - Run QNetWeaver on built `QSB.dll`, putting weaved files into `QSB\WeavedFiles`.
-  - Copy QSB.dll from `QSB\WeavedFiles` into mod folder.
+  - Copy built `QSB.dll` into mod folder.
 - Build QSBTests.
   - Use `dotnet test` to run QSBTests on QSB project.
 
 If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
-
-
-If QNetWeaver does not work and does not output anything to `WeavedFiles` :
-- Check what directories it's getting in the post-build events and make sure they point to the correct DLLs.
-- Contact _nebula on the Outer Wilds modding server. 
 
 It is recommended to use the Epic version of Outer Wilds, as you cannot run multiple versions of the Steam version.
 
@@ -209,6 +203,7 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 
 - [ShoosGun](https://github.com/ShoosGun)
 - [Chris Yeninas](https://github.com/PhantomGamers)
+- [Will Corby](https://github.com/JohnCorby)
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code.
