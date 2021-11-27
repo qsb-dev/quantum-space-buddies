@@ -1,0 +1,21 @@
+name: Build
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: "5.0.x"
+    - run: dotnet build -c Release
+    - uses: actions/upload-artifact@v2
+      with:
+        name: QSB-prerelease
+        path: .\QSB\Bin\Release
