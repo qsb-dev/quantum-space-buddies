@@ -1,135 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<PropertyGroup>
-    <LangVersion>9</LangVersion>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyTitle>QuantumUNET</AssemblyTitle>
+    <Product>QuantumUNET</Product>
     <ProjectGuid>{C8C53004-1508-4F86-A419-4292C188DC2A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantumUNET</RootNamespace>
-    <AssemblyName>QuantumUNET</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Networking, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\QSB\lib\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Components\QNetworkTransformChild.cs" />
-    <Compile Include="Messages\QMsgType.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Messages\QAddPlayerMessage.cs" />
-    <Compile Include="Messages\QAnimationMessage.cs" />
-    <Compile Include="Messages\QAnimationParametersMessage.cs" />
-    <Compile Include="Messages\QAnimationTriggerMessage.cs" />
-    <Compile Include="Logging\QLog.cs" />
-    <Compile Include="Transport\QChannelBuffer.cs" />
-    <Compile Include="Transport\QChannelPacket.cs" />
-    <Compile Include="Messages\QClientAuthorityMessage.cs" />
-    <Compile Include="QClientScene.cs" />
-    <Compile Include="Messages\QCRCMessage.cs" />
-    <Compile Include="QCRCMessageEntry.cs" />
-    <Compile Include="Messages\QEmptyMessage.cs" />
-    <Compile Include="Messages\QErrorMessage.cs" />
-    <Compile Include="QLocalClient.cs" />
-    <Compile Include="Messages\QMessageBase.cs" />
-    <Compile Include="Transport\QNetBuffer.cs" />
-    <Compile Include="Components\QNetworkAnimator.cs" />
-    <Compile Include="QNetworkBehaviour.cs" />
-    <Compile Include="QNetworkClient.cs" />
-    <Compile Include="QNetworkConnection.cs" />
-    <Compile Include="QNetworkCRC.cs" />
-    <Compile Include="Components\QNetworkIdentity.cs" />
-    <Compile Include="Components\QNetworkManager.cs" />
-    <Compile Include="Messages\QNetworkMessage.cs" />
-    <Compile Include="Messages\QNetworkMessageDelegate.cs" />
-    <Compile Include="QNetworkMessageHandlers.cs" />
-    <Compile Include="Transport\QNetworkReader.cs" />
-    <Compile Include="QNetworkScene.cs" />
-    <Compile Include="QNetworkServer.cs" />
-    <Compile Include="QNetworkServerSimple.cs" />
-    <Compile Include="Components\QNetworkTransform.cs" />
-    <Compile Include="Transport\QNetworkWriter.cs" />
-    <Compile Include="Messages\QNotReadyMessage.cs" />
-    <Compile Include="Messages\QObjectDestroyMessage.cs" />
-    <Compile Include="Messages\QObjectSpawnFinishedMessage.cs" />
-    <Compile Include="Messages\QObjectSpawnMessage.cs" />
-    <Compile Include="Messages\QObjectSpawnSceneMessage.cs" />
-    <Compile Include="Messages\QOwnerMessage.cs" />
-    <Compile Include="QPlayerController.cs" />
-    <Compile Include="Messages\QReadyMessage.cs" />
-    <Compile Include="Messages\QRemovePlayerMessage.cs" />
-    <Compile Include="Messages\QStringMessage.cs" />
-    <Compile Include="Messages\QSpawnDelegate.cs" />
-    <Compile Include="QULocalConnectionToClient.cs" />
-    <Compile Include="QULocalConnectionToServer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Json.Net.Unity3D">
-      <Version>9.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Lib.Harmony">
-      <Version>1.2.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>md "$(OwmlDir)\Mods\QSB"
-
-copy /y "$(TargetPath)" "$(OwmlDir)\Mods\QSB"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -90,10 +90,10 @@ namespace QSB
 
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
-			NetworkAssetBundle = Helper.Assets.LoadBundle("assets/network");
-			InstrumentAssetBundle = Helper.Assets.LoadBundle("assets/instruments");
-			ConversationAssetBundle = Helper.Assets.LoadBundle("assets/conversation");
-			DebugAssetBundle = Helper.Assets.LoadBundle("assets/debug");
+			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
+			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
+			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
+			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 
 			QSBPatchManager.Init();
 
