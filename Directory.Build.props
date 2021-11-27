@@ -13,7 +13,7 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <OutputPath>bin\$(Configuration)\QSB</OutputPath>
         <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
         <NeutralLanguage>en-GB</NeutralLanguage>
         <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
