@@ -10,7 +10,7 @@ jobs:
   build:
     # only runs if:
     # not a PR, PR is approved, or PR is pushed by the repo owner or a collaborator
-    if: not github.base_ref || github.event.review.state == 'approved' || github.event.review.author_association == 'COLLABORATOR' || github.event.review.author_association == 'OWNER'
+    if: github.base_ref == '' || github.event.review.state == 'approved' || github.event.review.author_association == 'COLLABORATOR' || github.event.review.author_association == 'OWNER'
     runs-on: windows-latest
     steps:
 
