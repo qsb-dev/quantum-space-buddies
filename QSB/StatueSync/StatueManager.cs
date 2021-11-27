@@ -20,6 +20,11 @@ namespace QSB.StatueSync
 
 		private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene)
 		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				return;
+			}
+
 			QSBPlayerManager.ShowAllPlayers();
 			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 		}

@@ -250,7 +250,6 @@ namespace QSB.Player.TransformSync
 			base.OnRenderObject();
 
 			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null)

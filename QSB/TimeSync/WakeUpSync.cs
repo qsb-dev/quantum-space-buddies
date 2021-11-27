@@ -121,7 +121,10 @@ namespace QSB.TimeSync
 			}
 			else
 			{
-				WakeUpOrSleep();
+				if (!QSBCore.SkipTitleScreen)
+				{
+					WakeUpOrSleep();
+				}
 			}
 		}
 
@@ -240,7 +243,7 @@ namespace QSB.TimeSync
 			{
 				UpdateServer();
 			}
-			else if (IsLocalPlayer)
+			else if (IsLocalPlayer && !QSBCore.AvoidTimeSync)
 			{
 				UpdateClient();
 			}

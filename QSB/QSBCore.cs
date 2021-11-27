@@ -60,8 +60,12 @@ namespace QSB
 		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
-		public static bool DebugMode { get; private set; }
-		public static bool ShowLinesInDebug { get; private set; }
+		public static bool DebugMode => DebugSettings.DebugMode;
+		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
+		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
+		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
+		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
+		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
 		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -75,6 +79,8 @@ namespace QSB
 			? GamePlatform.Epic
 			: GamePlatform.Steam;
 		public static IMenuAPI MenuApi { get; private set; }
+
+		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
 
 		public void Awake()
 		{
@@ -94,6 +100,13 @@ namespace QSB
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
+
+			DebugSettings = ModHelper.Storage.Load<DebugSettings>("debugsettings.json");
+
+			if (DebugSettings == null)
+			{
+				DebugSettings = new DebugSettings();
+			}
 
 			QSBPatchManager.Init();
 
@@ -167,9 +180,6 @@ namespace QSB
 			{
 				QSBNetworkManager.Instance.networkPort = Port;
 			}
-
-			DebugMode = config.GetSettingsValue<bool>("debugMode");
-			ShowLinesInDebug = config.GetSettingsValue<bool>("showLinesInDebug");
 		}
 	}
 }

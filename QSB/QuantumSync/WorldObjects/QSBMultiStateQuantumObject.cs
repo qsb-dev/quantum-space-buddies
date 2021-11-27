@@ -26,7 +26,7 @@ namespace QSB.QuantumSync.WorldObjects
 			ObjectId = id;
 			AttachedObject = attachedObject;
 
-			if (QSBCore.DebugMode)
+			if (QSBCore.ShowQuantumDebugBoxes)
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{id}\r\nstate:{CurrentState}").GetComponent<Text>();
 			}
@@ -53,7 +53,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 			QuantumStates[newStateIndex].SetVisible(true);
 			AttachedObject._stateIndex = newStateIndex;
-			if (QSBCore.DebugMode)
+			if (QSBCore.ShowQuantumDebugBoxes)
 			{
 				DebugBoxText.text = $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}";
 			}

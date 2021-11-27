@@ -77,4 +77,9 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" $(UnityAssetsDir)
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="debugsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
