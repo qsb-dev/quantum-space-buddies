@@ -29,9 +29,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
+    <PackageReference Include="OuterWildsGameLibs" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSB\QSB.csproj" />
