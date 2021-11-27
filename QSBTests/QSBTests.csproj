@@ -1,20 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <AssemblyTitle>QSBTests</AssemblyTitle>
+    <Product>QSBTests</Product>
     <ProjectGuid>{2FE8256C-0CB6-48F1-A4C0-5FA18A1846A3}</ProjectGuid>
-    <TargetFramework>net48</TargetFramework>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <AssemblyTitle>QSBTests</AssemblyTitle>
-    <Product>QSBTests</Product>
-    <Copyright>Copyright ©  2021</Copyright>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
     <PostBuildEvent>dotnet test QSBTests.dll</PostBuildEvent>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -27,13 +22,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="*" />
     <PackageReference Include="OWML" Version="2.*" />
     <PackageReference Include="HarmonyX" Version="2.*" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\QSB\QSB.csproj" />
   </ItemGroup>
 </Project>

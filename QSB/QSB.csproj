@@ -1,21 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <LangVersion>9</LangVersion>
     <AssemblyTitle>Quantum Space Buddies</AssemblyTitle>
-    <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
-    <Product>Quantum Space Buddies</Product>
-    <NeutralLanguage>en-GB</NeutralLanguage>
     <Description>Multiplayer mod for Outer Wilds</Description>
-    <Copyright>Copyright © Henry Pointer, Aleksander Waage, Ricardo Lopes 2020-2021</Copyright>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-  </PropertyGroup>
-  <PropertyGroup>
+    <Product>Quantum Space Buddies</Product>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
-    <TargetFramework>net48</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -25,14 +14,9 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent Condition="$(CopyToAssets) == 1">
-:: copy dll to unity project
-copy /y "$(TargetPath)" $(UnityAssetsDir)
-:: copy quantumunet to unity project
-copy /y "$(OwmlDir)\Mods\$(ProjectName)\QuantumUNET.dll" $(UnityAssetsDir)
+    <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
+:: copy output to unity project
+copy /y "$(OutputPath)" $(UnityAssetsDir)
 :: copy game assembly to unity project
 copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll" $(UnityAssetsDir)
 copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll" $(UnityAssetsDir)
@@ -84,11 +68,7 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" $(UnityAssetsDir)
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="HarmonyX" Version="2.*" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.*" IncludeAssets="compile" />
   </ItemGroup>
