@@ -4,6 +4,7 @@
     <Product>QuantumUNET</Product>
     <ProjectGuid>{C8C53004-1508-4F86-A419-4292C188DC2A}</ProjectGuid>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <NoWarn>1701;1702;0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
