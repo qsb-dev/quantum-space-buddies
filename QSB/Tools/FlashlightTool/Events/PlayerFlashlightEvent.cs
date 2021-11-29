@@ -6,8 +6,6 @@ namespace QSB.Tools.FlashlightTool.Events
 {
 	public class PlayerFlashlightEvent : QSBEvent<ToggleMessage>
 	{
-		public override EventType Type => EventType.FlashlightActiveChange;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.TurnOnFlashlight, HandleTurnOn);

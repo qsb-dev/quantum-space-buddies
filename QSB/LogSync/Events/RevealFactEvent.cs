@@ -5,8 +5,6 @@ namespace QSB.LogSync.Events
 {
 	public class RevealFactEvent : QSBEvent<RevealFactMessage>
 	{
-		public override EventType Type => EventType.RevealFact;
-
 		public override void SetupListener() => GlobalMessenger<string, bool, bool>.AddListener(EventNames.QSBRevealFact, Handler);
 		public override void CloseListener() => GlobalMessenger<string, bool, bool>.RemoveListener(EventNames.QSBRevealFact, Handler);
 

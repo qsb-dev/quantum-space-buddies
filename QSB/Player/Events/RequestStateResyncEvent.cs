@@ -16,8 +16,6 @@ namespace QSB.Player.Events
 	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
 	public class RequestStateResyncEvent : QSBEvent<PlayerMessage>
 	{
-		public override EventType Type => EventType.RequestStateResync;
-
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
 

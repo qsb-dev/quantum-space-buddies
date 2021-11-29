@@ -7,8 +7,6 @@ namespace QSB.ClientServerStateSync.Events
 {
 	internal class ClientStateEvent : QSBEvent<EnumMessage<ClientState>>
 	{
-		public override EventType Type => EventType.ClientState;
-
 		public override void SetupListener()
 			=> GlobalMessenger<ClientState>.AddListener(EventNames.QSBClientState, Handler);
 

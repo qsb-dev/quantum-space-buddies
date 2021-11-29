@@ -6,8 +6,6 @@ namespace QSB.Animation.Player.Events
 {
 	public class PlayerSuitEvent : QSBEvent<ToggleMessage>
 	{
-		public override EventType Type => EventType.SuitActiveChange;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.SuitUp, HandleSuitUp);

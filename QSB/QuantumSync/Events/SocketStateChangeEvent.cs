@@ -9,8 +9,6 @@ namespace QSB.QuantumSync.Events
 {
 	public class SocketStateChangeEvent : QSBEvent<SocketStateChangeMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.SocketStateChange;
-
 		public override void SetupListener() => GlobalMessenger<int, int, Quaternion>.AddListener(EventNames.QSBSocketStateChange, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int, Quaternion>.RemoveListener(EventNames.QSBSocketStateChange, Handler);
 

@@ -31,6 +31,7 @@ using QSB.Tools.TranslatorTool.Events;
 using QSB.Tools.TranslatorTool.TranslationSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
+using QSB.ZeroGCaveSync.Events;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -122,7 +123,8 @@ namespace QSB.Events
 				new HullRepairTickEvent(),
 				new ComponentDamagedEvent(),
 				new ComponentRepairedEvent(),
-				new ComponentRepairTickEvent()
+				new ComponentRepairTickEvent(),
+				new SatelliteNodeRepairTick()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)
@@ -131,26 +133,6 @@ namespace QSB.Events
 			}
 
 			_eventList.ForEach(ev => ev.SetupListener());
-
-			var duplicates = _eventList
-				.GroupBy(qsbEvent => qsbEvent.Type)
-				.Where(group => group.Count() > 1);
-
-			if (duplicates.Count() != 0)
-			{
-				var totalSb = new StringBuilder();
-				foreach (var group in duplicates)
-				{
-					totalSb.Append($"{group.Key}\r\n");
-					foreach (var qsbEvent in group)
-					{
-						totalSb.Append($"- {qsbEvent.GetType().Name}\r\n");
-					}
-				}
-
-				DebugLog.ToConsole($"Error - These QSBEvents handle the same EventType!\r\n{totalSb}", MessageType.Error);
-				return;
-			}
 
 			Ready = true;
 

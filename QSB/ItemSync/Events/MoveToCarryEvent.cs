@@ -8,8 +8,6 @@ namespace QSB.ItemSync.Events
 {
 	internal class MoveToCarryEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.MoveToCarry;
-
 		public override void SetupListener()
 			=> GlobalMessenger<int>.AddListener(EventNames.QSBMoveToCarry, Handler);
 

@@ -7,8 +7,6 @@ namespace QSB.MeteorSync.Events
 {
 	public class MeteorSpecialImpactEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override EventType Type => EventType.MeteorSpecialImpact;
-
 		public override void SetupListener()
 			=> GlobalMessenger<QSBMeteor>.AddListener(EventNames.QSBMeteorSpecialImpact, Handler);
 

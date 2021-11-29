@@ -5,8 +5,6 @@ namespace QSB.ShipSync.Events
 {
 	internal class FunnelEnableEvent : QSBEvent<PlayerMessage>
 	{
-		public override EventType Type => EventType.EnableFunnel;
-
 		public override void SetupListener()
 			=> GlobalMessenger.AddListener(EventNames.QSBEnableFunnel, Handler);
 

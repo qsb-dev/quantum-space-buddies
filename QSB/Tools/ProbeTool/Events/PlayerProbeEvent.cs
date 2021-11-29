@@ -6,8 +6,6 @@ namespace QSB.Tools.ProbeTool.Events
 {
 	internal class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{
-		public override EventType Type => EventType.ProbeEvent;
-
 		public override void SetupListener()
 			=> GlobalMessenger<ProbeEvent>.AddListener(EventNames.QSBProbeEvent, Handler);
 

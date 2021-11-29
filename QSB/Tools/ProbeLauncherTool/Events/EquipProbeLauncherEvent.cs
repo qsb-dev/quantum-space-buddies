@@ -9,8 +9,6 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 	{
 		private bool _nonPlayerLauncherEquipped;
 
-		public override EventType Type => EventType.ProbeLauncherActiveChange;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, HandleEquip);

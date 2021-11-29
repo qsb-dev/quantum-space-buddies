@@ -12,8 +12,6 @@ namespace QSB.OrbSync.Events
 {
 	public class OrbUserEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override EventType Type => EventType.OrbUser;
-
 		public override void SetupListener() => GlobalMessenger<int>.AddListener(EventNames.QSBOrbUser, Handler);
 		public override void CloseListener() => GlobalMessenger<int>.RemoveListener(EventNames.QSBOrbUser, Handler);
 

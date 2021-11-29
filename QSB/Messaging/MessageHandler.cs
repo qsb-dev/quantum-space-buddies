@@ -15,9 +15,17 @@ namespace QSB.Messaging
 
 		private readonly short _eventType;
 
-		public MessageHandler(EventType eventType)
+		public MessageHandler(int msgType)
 		{
-			_eventType = (short)(eventType + QMsgType.Highest + 1);
+			
+			_eventType = (short)(msgType + QMsgType.Highest + 1);
+			if (_eventType >= short.MaxValue)
+			{
+				DebugLog.ToConsole($"Hey, uh, maybe don't create 32,767 events? You really should never be seeing this." +
+					$"If you are, something has either gone terrible wrong or QSB somehow needs more events that classes in Outer Wilds." +
+					$"In either case, I guess something has gone terribly wrong...", OWML.Common.MessageType.Error);
+			}
+
 			if (QSBNetworkManager.Instance.IsReady)
 			{
 				Init();
@@ -30,6 +38,8 @@ namespace QSB.Messaging
 
 		private void Init()
 		{
+			DebugLog.DebugWrite($"Init eventType:{_eventType}");
+
 			if (QNetworkServer.handlers.Keys.Contains(_eventType))
 			{
 				QNetworkServer.handlers.Remove(_eventType);

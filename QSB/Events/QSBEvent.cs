@@ -7,12 +7,12 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Components;
 using System;
+using UnityEngine;
 
 namespace QSB.Events
 {
-	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
+	public abstract class QSBEvent<T> : BaseQSBEvent where T : PlayerMessage, new()
 	{
-		public abstract EventType Type { get; }
 		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
 
 		private readonly MessageHandler<T> _eventHandler;
@@ -24,13 +24,15 @@ namespace QSB.Events
 				return;
 			}
 
-			_eventHandler = new MessageHandler<T>(Type);
+			_eventHandler = new MessageHandler<T>(_msgType++);
 			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
 		}
 
-		public abstract void SetupListener();
-		public abstract void CloseListener();
+		~QSBEvent()
+		{
+			_msgType--;
+		}
 
 		public virtual void OnReceiveRemote(bool isHost, T message) { }
 		public virtual void OnReceiveLocal(bool isHost, T message) { }

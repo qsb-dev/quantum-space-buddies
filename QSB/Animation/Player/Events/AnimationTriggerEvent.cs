@@ -5,8 +5,6 @@ namespace QSB.Animation.Player.Events
 {
 	internal class AnimationTriggerEvent : QSBEvent<AnimationTriggerMessage>
 	{
-		public override EventType Type => EventType.AnimTrigger;
-
 		public override void SetupListener() => GlobalMessenger<uint, string>.AddListener(EventNames.QSBAnimTrigger, Handler);
 		public override void CloseListener() => GlobalMessenger<uint, string>.RemoveListener(EventNames.QSBAnimTrigger, Handler);
 

@@ -9,8 +9,6 @@ namespace QSB.RoastingSync.Events
 {
 	internal class EnterExitRoastingEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override EventType Type => EventType.Roasting;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger<Campfire>.AddListener(EventNames.EnterRoastingMode, (Campfire fire) => Handler(fire, true));

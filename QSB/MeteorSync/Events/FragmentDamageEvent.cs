@@ -6,8 +6,6 @@ namespace QSB.MeteorSync.Events
 {
 	public class FragmentDamageEvent : QSBEvent<FragmentDamageMessage>
 	{
-		public override EventType Type => EventType.FragmentDamage;
-
 		public override void SetupListener()
 			=> GlobalMessenger<QSBFragment, float>.AddListener(EventNames.QSBFragmentDamage, Handler);
 

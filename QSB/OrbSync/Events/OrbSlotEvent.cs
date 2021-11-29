@@ -6,8 +6,6 @@ namespace QSB.OrbSync.Events
 {
 	public class OrbSlotEvent : QSBEvent<OrbSlotMessage>
 	{
-		public override EventType Type => EventType.OrbSlot;
-
 		public override void SetupListener() => GlobalMessenger<int, int, bool>.AddListener(EventNames.QSBOrbSlot, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int, bool>.RemoveListener(EventNames.QSBOrbSlot, Handler);
 

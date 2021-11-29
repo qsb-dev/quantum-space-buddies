@@ -7,8 +7,6 @@ namespace QSB.ElevatorSync.Events
 {
 	public class ElevatorEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override EventType Type => EventType.Elevator;
-
 		public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBStartLift, Handler);
 		public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBStartLift, Handler);
 

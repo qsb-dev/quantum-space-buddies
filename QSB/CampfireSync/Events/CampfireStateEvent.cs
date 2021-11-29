@@ -7,8 +7,6 @@ namespace QSB.CampfireSync.Events
 {
 	internal class CampfireStateEvent : QSBEvent<EnumWorldObjectMessage<Campfire.State>>
 	{
-		public override EventType Type => EventType.CampfireState;
-
 		public override void SetupListener() => GlobalMessenger<int, Campfire.State>.AddListener(EventNames.QSBCampfireState, Handler);
 		public override void CloseListener() => GlobalMessenger<int, Campfire.State>.RemoveListener(EventNames.QSBCampfireState, Handler);
 

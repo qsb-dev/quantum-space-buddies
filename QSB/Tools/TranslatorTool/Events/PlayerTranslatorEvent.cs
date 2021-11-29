@@ -6,8 +6,6 @@ namespace QSB.Tools.TranslatorTool.Events
 {
 	public class PlayerTranslatorEvent : QSBEvent<ToggleMessage>
 	{
-		public override EventType Type => EventType.TranslatorActiveChange;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.EquipTranslator, HandleEquip);
