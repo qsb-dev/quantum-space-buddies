@@ -124,7 +124,8 @@ namespace QSB.Events
 				new ComponentDamagedEvent(),
 				new ComponentRepairedEvent(),
 				new ComponentRepairTickEvent(),
-				new SatelliteNodeRepairTick()
+				new SatelliteNodeRepairTick(),
+				new SatelliteNodeRepaired()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)
