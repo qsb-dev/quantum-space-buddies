@@ -38,8 +38,6 @@ namespace QSB.Messaging
 
 		private void Init()
 		{
-			DebugLog.DebugWrite($"Init eventType:{_eventType}");
-
 			if (QNetworkServer.handlers.Keys.Contains(_eventType))
 			{
 				QNetworkServer.handlers.Remove(_eventType);
