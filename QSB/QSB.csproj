@@ -16,42 +16,42 @@
   <PropertyGroup>
     <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
 :: copy output to unity project
-copy /y "$(OutputPath)" $(UnityAssetsDir)
+copy /y "$(OutputPath)" "$(UnityAssetsDir)"
 :: copy game assembly to unity project
-copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll" $(UnityAssetsDir)
-copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll" $(UnityAssetsDir)
-copy /y "$(GameDir)\OuterWilds_Data\Managed\Unity.InputSystem.dll" $(UnityAssetsDir)
-copy /y "$(GameDir)\OuterWilds_Data\Managed\EOS-SDK.dll" $(UnityAssetsDir)
-copy /y "$(GameDir)\OuterWilds_Data\Managed\UniSense.dll" $(UnityAssetsDir)
+copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll" "$(UnityAssetsDir)"
+copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll" "$(UnityAssetsDir)"
+copy /y "$(GameDir)\OuterWilds_Data\Managed\Unity.InputSystem.dll" "$(UnityAssetsDir)"
+copy /y "$(GameDir)\OuterWilds_Data\Managed\EOS-SDK.dll" "$(UnityAssetsDir)"
+copy /y "$(GameDir)\OuterWilds_Data\Managed\UniSense.dll" "$(UnityAssetsDir)"
 
 :: copy owml files to unity project
-copy /y "$(OwmlDir)\Autofac.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\Newtonsoft.Json.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\0Harmony.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\MonoMod.Utils.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\MonoMod.RuntimeDetour.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\Mono.Cecil.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\Mono.Cecil.Mdb.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\Mono.Cecil.Pdb.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\Mono.Cecil.Rocks.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\dnpatch.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\dnlib.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\Gameloop.Vdf.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\NAudio-Unity.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.Common.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModHelper.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModHelper.Assets.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModHelper.Events.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModHelper.Menus.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModHelper.Input.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModHelper.Interaction.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.Utils.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.Common.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.Logging.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.ModLoader.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.Patcher.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.GameFinder.dll" $(UnityAssetsDir)
-copy /y "$(OwmlDir)\OWML.Abstractions.dll" $(UnityAssetsDir)
+copy /y "$(OwmlDir)\Autofac.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\Newtonsoft.Json.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\0Harmony.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\MonoMod.Utils.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\MonoMod.RuntimeDetour.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\Mono.Cecil.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\Mono.Cecil.Mdb.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\Mono.Cecil.Pdb.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\Mono.Cecil.Rocks.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\dnpatch.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\dnlib.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\Gameloop.Vdf.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\NAudio-Unity.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.Common.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModHelper.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModHelper.Assets.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModHelper.Events.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModHelper.Menus.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModHelper.Input.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModHelper.Interaction.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.Utils.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.Common.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.Logging.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.ModLoader.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.Patcher.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.GameFinder.dll" "$(UnityAssetsDir)"
+copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
 </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
