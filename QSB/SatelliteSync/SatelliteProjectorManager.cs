@@ -9,14 +9,43 @@ namespace QSB.SatelliteSync
 		public static SatelliteProjectorManager Instance { get; private set; }
 
 		public SatelliteSnapshotController Projector { get; private set; }
+		public RenderTexture SatelliteCameraSnapshot
+		{
+			get
+			{
+				if (_satelliteCameraSnapshot == null)
+				{
+					_satelliteCameraSnapshot = new RenderTexture(512, 512, 16)
+					{
+						name = "SatelliteCameraSnapshot",
+						hideFlags = HideFlags.HideAndDontSave
+					};
+					_satelliteCameraSnapshot.Create();
+				}
+
+				return _satelliteCameraSnapshot;
+			}
+		}
+
+		private static RenderTexture _satelliteCameraSnapshot;
 
 		public void Start()
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
+			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
 		}
 
 		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
+
+		public void OnConnected()
+		{
+			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			{
+				Projector._snapshotTexture = SatelliteCameraSnapshot;
+				Projector._satelliteCamera.targetTexture = Projector._snapshotTexture;
+			}
+		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene)
 		{
@@ -25,6 +54,9 @@ namespace QSB.SatelliteSync
 				Projector = QSBWorldSync.GetUnityObjects<SatelliteSnapshotController>().First();
 				Projector._loopingSource.spatialBlend = 1f;
 				Projector._oneShotSource.spatialBlend = 1f;
+
+				Projector._snapshotTexture = SatelliteCameraSnapshot;
+				Projector._satelliteCamera.targetTexture = Projector._snapshotTexture;
 			}
 		}
 

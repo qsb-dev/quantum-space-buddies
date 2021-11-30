@@ -10,6 +10,14 @@ namespace QSB.SatelliteSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(SatelliteSnapshotController), nameof(SatelliteSnapshotController.Awake))]
+		public static void CreateNewRenderTexture(SatelliteSnapshotController __instance)
+		{
+			__instance._snapshotTexture = SatelliteProjectorManager.Instance.SatelliteCameraSnapshot;
+			__instance._satelliteCamera.targetTexture = __instance._snapshotTexture;
+		}
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(SatelliteSnapshotController), nameof(SatelliteSnapshotController.OnPressInteract))]
 		public static bool UseProjector()
