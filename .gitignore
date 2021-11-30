@@ -358,7 +358,7 @@ MigrationBackup/
 # End of https://www.gitignore.io/api/visualstudio
 
 # Unecessary asset bundle file
-/AssetBundles/AssetBundles*
+QSB/AssetBundles/AssetBundles*
 QSB.csproj.user
 GameAssets/
 Chert/
