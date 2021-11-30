@@ -6,8 +6,6 @@ namespace QSB.ShipSync.Events.Hull
 {
 	internal class HullImpactEvent : QSBEvent<HullImpactMessage>
 	{
-		public override EventType Type => EventType.HullImpact;
-
 		public override void SetupListener() => GlobalMessenger<ShipHull, ImpactData, float>.AddListener(EventNames.QSBHullImpact, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipHull, ImpactData, float>.RemoveListener(EventNames.QSBHullImpact, Handler);
 

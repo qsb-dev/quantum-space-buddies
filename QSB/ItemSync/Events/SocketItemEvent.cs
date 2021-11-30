@@ -9,8 +9,6 @@ namespace QSB.ItemSync.Events
 {
 	internal class SocketItemEvent : QSBEvent<SocketItemMessage>
 	{
-		public override EventType Type => EventType.SocketItem;
-
 		public override void SetupListener()
 			=> GlobalMessenger<int, int, SocketEventType>.AddListener(EventNames.QSBSocketItem, Handler);
 

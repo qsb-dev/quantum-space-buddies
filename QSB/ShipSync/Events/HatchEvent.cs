@@ -6,8 +6,6 @@ namespace QSB.ShipSync.Events
 {
 	internal class HatchEvent : QSBEvent<BoolMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.OpenHatch;
-
 		public override void SetupListener()
 			=> GlobalMessenger<bool>.AddListener(EventNames.QSBHatchState, Handler);
 

@@ -6,8 +6,6 @@ namespace QSB.Tools.ProbeTool.Events
 {
 	internal class ProbeStartRetrieveEvent : QSBEvent<FloatMessage>
 	{
-		public override EventType Type => EventType.ProbeStartRetrieve;
-
 		public override void SetupListener()
 			=> GlobalMessenger<float>.AddListener(EventNames.QSBProbeStartRetrieve, Handler);
 

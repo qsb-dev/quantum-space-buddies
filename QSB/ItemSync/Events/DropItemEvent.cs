@@ -9,8 +9,6 @@ namespace QSB.ItemSync.Events
 {
 	internal class DropItemEvent : QSBEvent<DropItemMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.DropItem;
-
 		public override void SetupListener()
 			=> GlobalMessenger<int, Vector3, Vector3, Sector>.AddListener(EventNames.QSBDropItem, Handler);
 

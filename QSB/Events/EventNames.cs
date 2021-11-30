@@ -99,5 +99,7 @@
 		public static string QSBFragmentDamage = "QSBFragmentDamage";
 		public static string QSBFragmentResync = "QSBFragmentResync";
 		public static string QSBLearnLaunchCodes = "QSBLearnLaunchCodes";
+		public static string QSBSatelliteRepairTick = "QSBSatelliteRepairTick";
+		public static string QSBSatelliteRepaired = "QSBSatelliteRepairTick";
 	}
 }

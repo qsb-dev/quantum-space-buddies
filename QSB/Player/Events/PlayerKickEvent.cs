@@ -9,8 +9,6 @@ namespace QSB.Player.Events
 {
 	internal class PlayerKickEvent : QSBEvent<EnumMessage<KickReason>>
 	{
-		public override EventType Type => EventType.PlayerKick;
-
 		public override void SetupListener() => GlobalMessenger<uint, KickReason>.AddListener(EventNames.QSBPlayerKick, Handler);
 		public override void CloseListener() => GlobalMessenger<uint, KickReason>.RemoveListener(EventNames.QSBPlayerKick, Handler);
 

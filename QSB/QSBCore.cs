@@ -29,6 +29,7 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QSB.ZeroGCaveSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
@@ -140,6 +141,7 @@ namespace QSB
 			gameObject.AddComponent<AirlockManager>();
 			gameObject.AddComponent<AnglerManager>();
 			gameObject.AddComponent<MeteorManager>();
+			gameObject.AddComponent<ZeroGCaveManager>();
 
 			DebugBoxManager.Init();
 

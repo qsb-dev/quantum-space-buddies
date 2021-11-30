@@ -5,8 +5,6 @@ namespace QSB.Utility.Events
 {
 	public class DebugEvent : QSBEvent<EnumMessage<DebugEventEnum>>
 	{
-		public override EventType Type => EventType.DebugEvent;
-
 		public override void SetupListener() => GlobalMessenger<DebugEventEnum>.AddListener(EventNames.QSBDebugEvent, Handler);
 		public override void CloseListener() => GlobalMessenger<DebugEventEnum>.RemoveListener(EventNames.QSBDebugEvent, Handler);
 

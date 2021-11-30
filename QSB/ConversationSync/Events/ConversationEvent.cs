@@ -7,8 +7,6 @@ namespace QSB.ConversationSync.Events
 {
 	public class ConversationEvent : QSBEvent<ConversationMessage>
 	{
-		public override EventType Type => EventType.Conversation;
-
 		public override void SetupListener() => GlobalMessenger<uint, string, ConversationType>.AddListener(EventNames.QSBConversation, Handler);
 		public override void CloseListener() => GlobalMessenger<uint, string, ConversationType>.RemoveListener(EventNames.QSBConversation, Handler);
 

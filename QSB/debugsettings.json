@@ -3,6 +3,6 @@
   "drawLines": true,
   "showQuantumVisibilityObjects": false,
   "showQuantumDebugBoxes": false,
-  "avoidTimeSync": true,
+  "avoidTimeSync": false,
   "skipTitleScreen": true
 }

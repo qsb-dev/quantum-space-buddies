@@ -6,8 +6,6 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Events
 {
 	public class IdentifyFrequencyEvent : QSBEvent<EnumMessage<SignalFrequency>>
 	{
-		public override EventType Type => EventType.IdentifyFrequency;
-
 		public override void SetupListener() => GlobalMessenger<SignalFrequency>.AddListener(EventNames.QSBIdentifyFrequency, Handler);
 		public override void CloseListener() => GlobalMessenger<SignalFrequency>.RemoveListener(EventNames.QSBIdentifyFrequency, Handler);
 

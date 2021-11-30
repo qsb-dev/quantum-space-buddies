@@ -6,8 +6,6 @@ namespace QSB.QuantumSync.Events
 {
 	public class QuantumShuffleEvent : QSBEvent<QuantumShuffleMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.QuantumShuffle;
-
 		public override void SetupListener() => GlobalMessenger<int, int[]>.AddListener(EventNames.QSBQuantumShuffle, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int[]>.RemoveListener(EventNames.QSBQuantumShuffle, Handler);
 

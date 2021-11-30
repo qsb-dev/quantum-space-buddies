@@ -7,8 +7,6 @@ namespace QSB.GeyserSync.Events
 {
 	public class GeyserEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override EventType Type => EventType.Geyser;
-
 		public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBGeyserState, Handler);
 		public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBGeyserState, Handler);
 

@@ -6,8 +6,6 @@ namespace QSB.ShipSync.Events.Hull
 {
 	internal class HullChangeIntegrityEvent : QSBEvent<HullChangeIntegrityMessage>
 	{
-		public override EventType Type => EventType.HullChangeIntegrity;
-
 		public override void SetupListener() => GlobalMessenger<ShipHull, float>.AddListener(EventNames.QSBHullChangeIntegrity, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipHull, float>.RemoveListener(EventNames.QSBHullChangeIntegrity, Handler);
 

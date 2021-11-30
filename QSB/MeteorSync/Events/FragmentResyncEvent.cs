@@ -11,8 +11,6 @@ namespace QSB.MeteorSync.Events
 	/// pain
 	public class FragmentResyncEvent : QSBEvent<FragmentResyncMessage>
 	{
-		public override EventType Type => EventType.FragmentResync;
-
 		public override void SetupListener()
 			=> GlobalMessenger<QSBFragment>.AddListener(EventNames.QSBFragmentResync, Handler);
 

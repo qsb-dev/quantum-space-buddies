@@ -19,7 +19,7 @@ namespace QSB.Utility.VariableSync
 
 		public virtual void Awake()
 		{
-			QNetworkServer.instance.m_SimpleServerSimple.RegisterHandlerSafe((short)QSB.Events.EventType.VariableSync, HandleVariable);
+			QNetworkServer.instance.m_SimpleServerSimple.RegisterHandlerSafe(short.MaxValue, HandleVariable);
 
 			if (LocalPlayerAuthority)
 			{
@@ -93,7 +93,7 @@ namespace QSB.Utility.VariableSync
 			// TODO - this sends a message, even when the value hasnt changed! this is really bad!
 			if (QClientScene.readyConnection != null)
 			{
-				_writer.StartMessage((short)QSB.Events.EventType.VariableSync);
+				_writer.StartMessage(short.MaxValue);
 				_writer.Write(NetId);
 				_writer.Write(_index);
 				WriteData(_writer);

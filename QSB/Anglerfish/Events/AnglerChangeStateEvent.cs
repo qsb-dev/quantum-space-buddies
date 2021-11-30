@@ -3,14 +3,11 @@ using QSB.Events;
 using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
-using EventType = QSB.Events.EventType;
 
 namespace QSB.Anglerfish.Events
 {
 	public class AnglerChangeStateEvent : QSBEvent<AnglerChangeStateMessage>
 	{
-		public override EventType Type => EventType.AnglerChangeState;
-
 		public override void SetupListener()
 			=> GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
 

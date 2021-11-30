@@ -6,8 +6,6 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 {
 	internal class PlayerLaunchProbeEvent : QSBEvent<PlayerMessage>
 	{
-		public override EventType Type => EventType.PlayerLaunchProbe;
-
 		public override void SetupListener()
 			=> GlobalMessenger.AddListener(EventNames.QSBPlayerLaunchProbe, Handler);
 

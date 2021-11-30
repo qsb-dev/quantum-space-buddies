@@ -8,8 +8,6 @@ namespace QSB.DeathSync.Events
 {
 	internal class EndLoopEvent : QSBEvent<EnumMessage<EndLoopReason>>
 	{
-		public override EventType Type => EventType.EndLoop;
-
 		public override void SetupListener() => GlobalMessenger<EndLoopReason>.AddListener(EventNames.QSBEndLoop, Handler);
 		public override void CloseListener() => GlobalMessenger<EndLoopReason>.RemoveListener(EventNames.QSBEndLoop, Handler);
 

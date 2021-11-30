@@ -8,8 +8,6 @@ namespace QSB.QuantumSync.Events
 {
 	public class MoonStateChangeEvent : QSBEvent<MoonStateChangeMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.MoonStateChange;
-
 		public override void SetupListener() => GlobalMessenger<int, Vector3, int>.AddListener(EventNames.QSBMoonStateChange, Handler);
 		public override void CloseListener() => GlobalMessenger<int, Vector3, int>.RemoveListener(EventNames.QSBMoonStateChange, Handler);
 

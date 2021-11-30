@@ -6,8 +6,6 @@ namespace QSB.Tools.SignalscopeTool.Events
 {
 	public class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
 	{
-		public override EventType Type => EventType.SignalscopeActiveChange;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger<Signalscope>.AddListener(EventNames.EquipSignalscope, HandleEquip);

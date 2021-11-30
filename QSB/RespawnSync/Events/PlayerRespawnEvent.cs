@@ -7,8 +7,6 @@ namespace QSB.RespawnSync.Events
 {
 	internal class PlayerRespawnEvent : QSBEvent<PlayerMessage>
 	{
-		public override EventType Type => EventType.PlayerRespawn;
-
 		public override void SetupListener()
 			=> GlobalMessenger<uint>.AddListener(EventNames.QSBPlayerRespawn, Handler);
 

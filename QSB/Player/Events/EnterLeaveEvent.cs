@@ -10,8 +10,6 @@ namespace QSB.Player.Events
 {
 	internal class EnterLeaveEvent : QSBEvent<EnumWorldObjectMessage<EnterLeaveType>>
 	{
-		public override EventType Type => EventType.EnterLeave;
-
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.EnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
