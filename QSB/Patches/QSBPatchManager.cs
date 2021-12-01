@@ -84,10 +84,18 @@ namespace QSB.Patches
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
 			{
-				{ QSBPatchTypes.OnClientConnect, new Harmony("QSB.Client") },
-				{ QSBPatchTypes.OnServerClientConnect, new Harmony("QSB.Server") },
-				{ QSBPatchTypes.OnNonServerClientConnect, new Harmony("QSB.NonServer") },
-				{ QSBPatchTypes.RespawnTime, new Harmony("QSB.Death") }
+				{
+					QSBPatchTypes.OnClientConnect, new Harmony("QSB.Client")
+				},
+				{
+					QSBPatchTypes.OnServerClientConnect, new Harmony("QSB.Server")
+				},
+				{
+					QSBPatchTypes.OnNonServerClientConnect, new Harmony("QSB.NonServer")
+				},
+				{
+					QSBPatchTypes.RespawnTime, new Harmony("QSB.Death")
+				}
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
@@ -109,13 +117,13 @@ namespace QSB.Patches
 				try
 				{
 					patch.DoPatches(TypeToInstance[type]);
-					_patchedTypes.Add(type);
 				}
 				catch (Exception ex)
 				{
 					DebugLog.ToConsole($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
 				}
 			}
+			_patchedTypes.Add(type);
 		}
 
 		public static void DoUnpatchType(QSBPatchTypes type)

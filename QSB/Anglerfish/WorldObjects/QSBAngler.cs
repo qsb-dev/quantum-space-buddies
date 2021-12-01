@@ -1,10 +1,9 @@
 ﻿using QSB.Anglerfish.TransformSync;
-using QSB.Utility;
+using QSB.Events;
+using QSB.SuspendableSync;
 using QSB.WorldSync;
 using QuantumUNET;
-using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QSB.Anglerfish.WorldObjects
 {
@@ -23,39 +22,26 @@ namespace QSB.Anglerfish.WorldObjects
 
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab).SpawnWithServerAuthority();
+				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab));
+				QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
+					SuspendableManager.Register(TransformSync.NetIdentity));
 			}
+
+			// for when you host/connect mid-game
+			QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
+				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, TransformSync.NetIdentity, AttachedObject._anglerBody.IsSuspended()));
 		}
 
 		public override void OnRemoval()
 		{
 			if (QSBCore.IsHost)
 			{
+				SuspendableManager.Unregister(TransformSync.NetIdentity);
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
 
-		public void TransferAuthority(uint id)
-		{
-			var conn = QNetworkServer.connections.First(x => x.GetPlayerId() == id);
-			var identity = TransformSync.NetIdentity;
-
-			if (identity.ClientAuthorityOwner == conn)
-			{
-				return;
-			}
-
-			if (identity.ClientAuthorityOwner != null)
-			{
-				identity.RemoveClientAuthority(identity.ClientAuthorityOwner);
-			}
-
-			identity.AssignClientAuthority(conn);
-
-			DebugLog.DebugWrite($"angler {ObjectId} - transferred authority to {id}");
-		}
-
-		public void FixedUpdate()
+		public void UpdateTargetVelocity()
 		{
 			if (TargetTransform == null)
 			{

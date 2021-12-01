@@ -148,6 +148,10 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
+			if (!MeteorManager.Ready)
+			{
+				return false;
+			}
 
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
 

@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using System;
+using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Player;
@@ -6,8 +7,6 @@ using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using QuantumUNET.Components;
-using System;
-using UnityEngine;
 
 namespace QSB.Events
 {
@@ -27,11 +26,6 @@ namespace QSB.Events
 			_eventHandler = new MessageHandler<T>(_msgType++);
 			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
-		}
-
-		~QSBEvent()
-		{
-			_msgType--;
 		}
 
 		public virtual void OnReceiveRemote(bool isHost, T message) { }
