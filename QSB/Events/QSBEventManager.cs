@@ -45,6 +45,7 @@ namespace QSB.Events
 
 		public static void Init()
 		{
+			BaseQSBEvent._msgType = 0;
 			_eventList = new List<IQSBEvent>
 			{
 				// Player
