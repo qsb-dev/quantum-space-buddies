@@ -221,7 +221,7 @@ namespace QSB
 			}
 
 			// remove authority from ship
-			if (!ShipTransformSync.LocalInstance)
+			if (ShipTransformSync.LocalInstance)
 			{
 				var identity = ShipTransformSync.LocalInstance.NetIdentity;
 				if (identity.ClientAuthorityOwner == conn)
