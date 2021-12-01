@@ -67,8 +67,6 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			base.OnRenderObject();
-
 			if (!QSBCore.WorldObjectsReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
@@ -77,6 +75,8 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				return;
 			}
+
+			base.OnRenderObject();
 
 			Popcron.Gizmos.Sphere(AttachedObject.transform.position, _qsbAngler.AttachedObject._arrivalDistance, Color.blue);
 			Popcron.Gizmos.Sphere(AttachedObject.transform.position, _qsbAngler.AttachedObject._pursueDistance, Color.red);

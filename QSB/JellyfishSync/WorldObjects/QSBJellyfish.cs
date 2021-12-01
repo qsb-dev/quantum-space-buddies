@@ -10,11 +10,13 @@ namespace QSB.JellyfishSync.WorldObjects
 	public class QSBJellyfish : WorldObject<JellyfishController>
 	{
 		public JellyfishTransformSync TransformSync;
+		private AlignWithTargetBody _alignWithTargetBody;
 
 		public override void Init(JellyfishController attachedObject, int id)
 		{
 			ObjectId = id;
 			AttachedObject = attachedObject;
+			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
 
 			if (QSBCore.IsHost)
 			{
@@ -46,6 +48,11 @@ namespace QSB.JellyfishSync.WorldObjects
 				AttachedObject._isRising = value;
 				AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
 			}
+		}
+
+		public bool Align
+		{
+			set => _alignWithTargetBody.enabled = value;
 		}
 	}
 }

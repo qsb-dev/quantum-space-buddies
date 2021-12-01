@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using QSB.JellyfishSync.WorldObjects;
+using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
@@ -49,11 +51,14 @@ namespace QSB.JellyfishSync.TransformSync
 			_shouldUpdate = true;
 		}
 
+		/// replacement using SetPosition/Rotation instead of Move
 		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
-				return base.UpdateTransform();
+				_qsbJellyfish.Align = true;
+				SetValuesToSync();
+				return true;
 			}
 
 			if (!_shouldUpdate)
@@ -62,14 +67,60 @@ namespace QSB.JellyfishSync.TransformSync
 			}
 
 			_shouldUpdate = false;
-			return base.UpdateTransform();
+
+			var targetPos = ReferenceTransform.DecodePos(transform.position);
+			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
+
+			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
+			{
+				return false;
+			}
+
+			var positionToSet = targetPos;
+			var rotationToSet = targetRot;
+
+			if (UseInterpolation)
+			{
+				positionToSet = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
+				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+			}
+
+			var hasMoved = CustomHasMoved(
+				transform.position,
+				_localPrevPosition,
+				transform.rotation,
+				_localPrevRotation,
+				_relativeVelocity,
+				_localPrevVelocity,
+				_relativeAngularVelocity,
+				_localPrevAngularVelocity);
+
+			_localPrevPosition = transform.position;
+			_localPrevRotation = transform.rotation;
+			_localPrevVelocity = _relativeVelocity;
+			_localPrevAngularVelocity = _relativeAngularVelocity;
+
+			if (!hasMoved)
+			{
+				return true;
+			}
+
+			_qsbJellyfish.Align = false;
+			((OWRigidbody)AttachedObject).SetPosition(positionToSet);
+			((OWRigidbody)AttachedObject).SetRotation(rotationToSet);
+
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
+
+			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
+			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+
+			return true;
 		}
 
 
 		protected override void OnRenderObject()
 		{
-			base.OnRenderObject();
-
 			if (!QSBCore.WorldObjectsReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
@@ -79,10 +130,12 @@ namespace QSB.JellyfishSync.TransformSync
 				return;
 			}
 
+			base.OnRenderObject();
+
 			var jellyfish = _qsbJellyfish.AttachedObject;
 			var position = ReferenceTransform.position;
 			var dir = Vector3.Normalize(jellyfish.transform.position - position);
-			Popcron.Gizmos.Line(position + dir * jellyfish._lowerLimit, position + dir * jellyfish._upperLimit, Color.magenta);
+			// Popcron.Gizmos.Line(position + dir * jellyfish._lowerLimit, position + dir * jellyfish._upperLimit, Color.magenta);
 			Popcron.Gizmos.Sphere(position + dir * jellyfish._lowerLimit, 10f, Color.magenta);
 			Popcron.Gizmos.Sphere(position + dir * jellyfish._upperLimit, 10f, Color.magenta);
 		}
