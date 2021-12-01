@@ -1,4 +1,5 @@
-﻿using QSB.JellyfishSync.WorldObjects;
+﻿using System.Collections.Generic;
+using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
@@ -12,21 +13,20 @@ namespace QSB.JellyfishSync.TransformSync
 		public override bool UseInterpolation => false;
 
 		private QSBJellyfish _qsbJellyfish;
-		private static int _nextId;
-		private int _id;
+		private static readonly List<JellyfishTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
 			=> _qsbJellyfish.AttachedObject._jellyfishBody;
 
 		public override void Start()
 		{
-			_id = _nextId++;
+			_instances.Add(this);
 			base.Start();
 		}
 
 		protected override void OnDestroy()
 		{
-			_nextId--;
+			_instances.Remove(this);
 			base.OnDestroy();
 		}
 
@@ -34,7 +34,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void Init()
 		{
-			_qsbJellyfish = QSBWorldSync.GetWorldFromId<QSBJellyfish>(_id);
+			_qsbJellyfish = QSBWorldSync.GetWorldFromId<QSBJellyfish>(_instances.IndexOf(this));
 			_qsbJellyfish.TransformSync = this;
 
 			base.Init();
