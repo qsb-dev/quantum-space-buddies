@@ -24,7 +24,7 @@ namespace QSB.JellyfishSync.Patches
 			{
 				__instance.gameObject.SetActive(true);
 				__instance._jellyfishBody.Unsuspend();
-				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbJellyfish.TransformSync.NetIdentity, true);
+				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbJellyfish.TransformSync.NetIdentity, false);
 				return false;
 			}
 			if (__instance.gameObject.activeSelf && !__instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
