@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using System.Linq;
+using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
 using QSB.Anglerfish;
@@ -11,6 +12,7 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
+using QSB.JellyfishSync;
 using QSB.Menus;
 using QSB.MeteorSync;
 using QSB.OrbSync;
@@ -32,7 +34,6 @@ using QSB.WorldSync;
 using QSB.ZeroGCaveSync;
 using QuantumUNET;
 using QuantumUNET.Components;
-using System.Linq;
 using UnityEngine;
 
 /*
@@ -141,6 +142,7 @@ namespace QSB
 			gameObject.AddComponent<AirlockManager>();
 			gameObject.AddComponent<AnglerManager>();
 			gameObject.AddComponent<MeteorManager>();
+			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
 
 			DebugBoxManager.Init();

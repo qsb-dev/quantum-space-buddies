@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1923832523
+CRC: 551896829
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 81ec87f15e23d40065c2c9c6a04728d0
+    Hash: 0fa5758f55c8803c7ba77a52ab2c9488
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 0f787b84b284b04ad8bc62b6e0ef5423
+    Hash: 927887737c4cf3ead147733f47326ca9
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -30,6 +30,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1309757293, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
+  Script: {fileID: 316226861, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
   Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: -1381557116, guid: 27687deae413b90448366870cb0de502, type: 3}
@@ -47,6 +49,7 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/Prefabs/NetworkJellyfish.prefab
 - Assets/Prefabs/NetworkProbe.prefab
 - Assets/Prefabs/NETWORK_Player_Body.prefab
 - Assets/Prefabs/NetworkOrb.prefab

@@ -1,4 +1,7 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
 using OWML.Common;
 using QSB.Anglerfish.Patches;
 using QSB.Animation.NPC.Patches;
@@ -11,6 +14,7 @@ using QSB.ElevatorSync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
+using QSB.JellyfishSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.MeteorSync.Patches;
 using QSB.OrbSync.Patches;
@@ -27,9 +31,6 @@ using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
 using QSB.Tools.TranslatorTool.TranslationSync.Patches;
 using QSB.Utility;
 using QSB.ZeroGCaveSync.Patches;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace QSB.Patches
 {
@@ -78,6 +79,7 @@ namespace QSB.Patches
 				new AnglerPatches(),
 				new MeteorClientPatches(),
 				new MeteorServerPatches(),
+				new JellyfishPatches(),
 				new TravelerControllerPatches(),
 				new ZeroGCavePatches()
 			};
