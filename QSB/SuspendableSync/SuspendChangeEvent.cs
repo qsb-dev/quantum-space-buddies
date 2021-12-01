@@ -31,7 +31,7 @@ namespace QSB.SuspendableSync
 				return;
 			}
 
-			SuspendableManager.SetSuspended(message.FromId, message.Identity, message.Suspended);
+			SuspendableManager.UpdateSuspended(message.FromId, message.Identity, message.Suspended);
 		}
 	}
 }

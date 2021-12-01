@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QSB.Player;
+using HarmonyLib;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
@@ -12,25 +12,10 @@ namespace QSB.SuspendableSync
 	{
 		private static readonly Dictionary<QNetworkIdentity, List<uint>> _unsuspendedFor = new();
 
-		static SuspendableManager() => QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
-
-		private static void OnPlayerLeave(uint id)
-		{
-			if (!QSBCore.IsHost)
-			{
-				return;
-			}
-
-			foreach (var (identity, _) in _unsuspendedFor)
-			{
-				SetSuspended(id, identity, false);
-			}
-		}
-
 		public static void Register(QNetworkIdentity identity) => _unsuspendedFor.Add(identity, new List<uint>());
 		public static void Unregister(QNetworkIdentity identity) => _unsuspendedFor.Remove(identity);
 
-		public static void SetSuspended(uint id, QNetworkIdentity identity, bool suspended)
+		public static void UpdateSuspended(uint id, QNetworkIdentity identity, bool suspended)
 		{
 			var unsuspendedFor = _unsuspendedFor[identity];
 
@@ -51,7 +36,6 @@ namespace QSB.SuspendableSync
 
 			var newOwner = unsuspendedFor.Count != 0 ? unsuspendedFor[0] : uint.MaxValue;
 			SetAuthority(identity, newOwner);
-
 		}
 
 		private static void SetAuthority(QNetworkIdentity identity, uint id)
@@ -76,7 +60,22 @@ namespace QSB.SuspendableSync
 				identity.AssignClientAuthority(newConn);
 			}
 
-			DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId}.{identity.NetId}:{identity.gameObject.name} - set authority to {id}");
+			DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - set authority to {id}");
+		}
+
+
+		/// transfer authority to a different client
+		public static void OnDisconnect(QNetworkConnection conn)
+		{
+			var id = conn.GetPlayerId();
+			foreach (var (identity, unsuspendedFor) in _unsuspendedFor)
+			{
+				if (unsuspendedFor.Remove(id))
+				{
+					var newOwner = unsuspendedFor.Count != 0 ? unsuspendedFor[0] : uint.MaxValue;
+					SetAuthority(identity, newOwner);
+				}
+			}
 		}
 	}
 }

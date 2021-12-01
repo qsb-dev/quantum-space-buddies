@@ -1,4 +1,6 @@
-﻿using OWML.Common;
+﻿using System;
+using System.Linq;
+using OWML.Common;
 using OWML.Utils;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
@@ -8,13 +10,13 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
+using QSB.ShipSync.TransformSync;
+using QSB.SuspendableSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
-using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -157,7 +159,7 @@ namespace QSB
 			if (!QSBCore.IsHost)
 			{
 				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBRequestStateResync));
+					() => QSBEventManager.FireEvent(EventNames.QSBRequestStateResync));
 			}
 
 			_everConnected = true;
@@ -199,24 +201,38 @@ namespace QSB
 			OnClientDisconnected?.SafeInvoke(conn.LastError);
 		}
 
-		public override void OnServerDisconnect(QNetworkConnection connection) // Called on the server when any client disconnects
+		public override void OnServerDisconnect(QNetworkConnection conn) // Called on the server when any client disconnects
 		{
-			base.OnServerDisconnect(connection);
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
+			// remove authority for orbs
 			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
 			{
-				if (item is null)
+				if (!item)
 				{
 					continue;
 				}
 
-				var identity = item.GetComponent<QNetworkIdentity>();
-				if (identity.ClientAuthorityOwner == connection)
+				var identity = item.NetIdentity;
+				if (identity.ClientAuthorityOwner == conn)
 				{
-					identity.RemoveClientAuthority(connection);
+					identity.RemoveClientAuthority(conn);
 				}
 			}
+
+			// remove authority from ship
+			if (!ShipTransformSync.LocalInstance)
+			{
+				var identity = ShipTransformSync.LocalInstance.NetIdentity;
+				if (identity.ClientAuthorityOwner == conn)
+				{
+					identity.RemoveClientAuthority(conn);
+				}
+			}
+
+			SuspendableManager.OnDisconnect(conn);
+
+			base.OnServerDisconnect(conn);
 		}
 
 		public override void OnStopServer()
