@@ -15,6 +15,11 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 		public static bool FixedUpdate(MeteorLauncher __instance)
 		{
+			if (!MeteorManager.Ready)
+			{
+				return false;
+			}
+
 			if (__instance._launchedMeteors != null)
 			{
 				for (var i = __instance._launchedMeteors.Count - 1; i >= 0; i--)
@@ -196,6 +201,10 @@ namespace QSB.MeteorSync.Patches
 			if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
 			{
 				return true;
+			}
+			if (!MeteorManager.Ready)
+			{
+				return false;
 			}
 
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
