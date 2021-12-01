@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using System.Collections.Generic;
+using OWML.Common;
 using QSB.Anglerfish.Events;
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
@@ -21,6 +22,7 @@ using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
+using QSB.SuspensionAuthoritySync;
 using QSB.TimeSync.Events;
 using QSB.Tools.FlashlightTool.Events;
 using QSB.Tools.ProbeLauncherTool.Events;
@@ -32,9 +34,6 @@ using QSB.Tools.TranslatorTool.TranslationSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using QSB.ZeroGCaveSync.Events;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QSB.Events
 {
@@ -112,6 +111,7 @@ namespace QSB.Events
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
+				new SuspensionChangeEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),
