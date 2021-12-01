@@ -31,6 +31,10 @@ namespace QSB.Anglerfish.Patches
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnSectorOccupantsUpdated))]
 		public static bool OnSectorOccupantsUpdated(AnglerfishController __instance)
 		{
+			if (!QSBCore.WorldObjectsReady)
+			{
+				return false;
+			}
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
 
 			if (!__instance.gameObject.activeSelf && __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
