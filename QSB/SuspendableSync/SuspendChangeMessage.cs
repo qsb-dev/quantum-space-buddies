@@ -2,9 +2,9 @@
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
 
-namespace QSB.SuspensionAuthoritySync
+namespace QSB.SuspendableSync
 {
-	public class SuspensionChangeMessage : PlayerMessage
+	public class SuspendChangeMessage : PlayerMessage
 	{
 		public QNetworkIdentity Identity;
 		public bool Suspended;

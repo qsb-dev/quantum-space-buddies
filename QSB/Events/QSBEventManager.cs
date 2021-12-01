@@ -22,7 +22,7 @@ using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
-using QSB.SuspensionAuthoritySync;
+using QSB.SuspendableSync;
 using QSB.TimeSync.Events;
 using QSB.Tools.FlashlightTool.Events;
 using QSB.Tools.ProbeLauncherTool.Events;
@@ -112,7 +112,7 @@ namespace QSB.Events
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
-				new SuspensionChangeEvent(),
+				new SuspendChangeEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),

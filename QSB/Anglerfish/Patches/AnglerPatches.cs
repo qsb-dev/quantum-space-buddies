@@ -38,7 +38,7 @@ namespace QSB.Anglerfish.Patches
 				__instance.gameObject.SetActive(true);
 				__instance._anglerBody.Unsuspend();
 				__instance.RaiseEvent(nameof(__instance.OnAnglerUnsuspended), __instance._currentState);
-				QSBEventManager.FireEvent(EventNames.QSBSuspensionChange, qsbAngler.TransformSync.NetIdentity, false);
+				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbAngler.TransformSync.NetIdentity, false);
 				return false;
 			}
 			if (__instance.gameObject.activeSelf && !__instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
@@ -46,7 +46,7 @@ namespace QSB.Anglerfish.Patches
 				__instance._anglerBody.Suspend();
 				__instance.gameObject.SetActive(false);
 				__instance.RaiseEvent(nameof(__instance.OnAnglerSuspended), __instance._currentState);
-				QSBEventManager.FireEvent(EventNames.QSBSuspensionChange, qsbAngler.TransformSync.NetIdentity, true);
+				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbAngler.TransformSync.NetIdentity, true);
 			}
 
 			return false;
