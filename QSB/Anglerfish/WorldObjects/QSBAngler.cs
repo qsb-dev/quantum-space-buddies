@@ -1,8 +1,6 @@
 ﻿using QSB.Anglerfish.TransformSync;
 using QSB.Events;
-using QSB.Player;
 using QSB.SuspendableSync;
-using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using UnityEngine;
