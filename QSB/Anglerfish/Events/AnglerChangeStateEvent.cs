@@ -24,10 +24,7 @@ namespace QSB.Anglerfish.Events
 			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos
 		};
 
-		public override void OnReceiveLocal(bool isHost, AnglerChangeStateMessage message) => OnReceive(message);
-		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message) => OnReceive(message);
-
-		private static void OnReceive(AnglerChangeStateMessage message)
+		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message)
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{

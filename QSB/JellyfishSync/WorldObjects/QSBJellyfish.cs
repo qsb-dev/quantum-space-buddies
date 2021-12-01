@@ -36,5 +36,16 @@ namespace QSB.JellyfishSync.WorldObjects
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
+
+
+		public bool IsRising
+		{
+			get => AttachedObject._isRising;
+			set
+			{
+				AttachedObject._isRising = value;
+				AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
+			}
+		}
 	}
 }
