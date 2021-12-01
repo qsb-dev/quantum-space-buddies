@@ -1,5 +1,6 @@
 ﻿using QSB.Anglerfish.TransformSync;
 using QSB.Events;
+using QSB.Player;
 using QSB.SuspendableSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -23,9 +24,9 @@ namespace QSB.Anglerfish.WorldObjects
 
 			if (QSBCore.IsHost)
 			{
+				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab));
 				QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
 					SuspendableManager.Register(TransformSync.NetIdentity));
-				Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab).SpawnWithServerAuthority();
 			}
 
 			// for when you host/connect mid-game
