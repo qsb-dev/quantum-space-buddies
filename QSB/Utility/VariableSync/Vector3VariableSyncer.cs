@@ -6,10 +6,11 @@ namespace QSB.Utility.VariableSync
 {
 	public class Vector3VariableSyncer : BaseVariableSyncer
 	{
-		public VariableReference<Vector3> ValueToSync { get; private set; } = new();
+		public VariableReference<Vector3> ValueToSync { get; private set; }
 
 		public void Init(Func<Vector3> getter, Action<Vector3> setter)
 		{
+			ValueToSync = new(this);
 			ValueToSync.Getter = getter;
 			ValueToSync.Setter = setter;
 			_ready = true;
@@ -19,9 +20,27 @@ namespace QSB.Utility.VariableSync
 			=> _ready = false;
 
 		public override void WriteData(QNetworkWriter writer)
-			=> writer.Write(ValueToSync.Value);
+		{
+			if (Ready)
+			{
+				writer.Write(ValueToSync.Value);
+			}
+			else
+			{
+				writer.Write(default(Vector3));
+			}
+		}
 
-		public override void ReadData(QNetworkReader writer)
-			=> ValueToSync.Value = writer.ReadVector3();
+		public override void ReadData(QNetworkReader reader)
+		{
+			if (Ready)
+			{
+				ValueToSync.Value = reader.ReadVector3();
+			}
+			else
+			{
+				reader.ReadVector3();
+			}
+		}
 	}
 }

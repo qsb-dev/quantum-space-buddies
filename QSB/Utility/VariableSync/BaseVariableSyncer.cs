@@ -17,6 +17,8 @@ namespace QSB.Utility.VariableSync
 		public abstract void WriteData(QNetworkWriter writer);
 		public abstract void ReadData(QNetworkReader writer);
 
+		public bool Ready => _ready;
+
 		public virtual void Awake()
 		{
 			QNetworkServer.instance.m_SimpleServerSimple.RegisterHandlerSafe(short.MaxValue, HandleVariable);
