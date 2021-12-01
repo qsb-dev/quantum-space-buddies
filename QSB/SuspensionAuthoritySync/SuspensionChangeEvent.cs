@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using QSB.Events;
+using QSB.Player;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
@@ -91,7 +92,7 @@ namespace QSB.SuspensionAuthoritySync
 				identity.AssignClientAuthority(newConn);
 			}
 
-			DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - set authority to {id}");
+			DebugLog.DebugWrite($"{QSBPlayerManager.LocalPlayerId}.{identity.NetId}:{identity.gameObject.name} - set authority to {id}");
 		}
 	}
 }
