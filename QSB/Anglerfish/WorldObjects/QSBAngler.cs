@@ -22,13 +22,21 @@ namespace QSB.Anglerfish.WorldObjects
 			if (QSBCore.IsHost)
 			{
 				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab));
-				QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
-					TransformSync.NetIdentity.RegisterAuthQueue());
 			}
 
-			// for when you host/connect mid-game
+			StartDelayedReady();
 			QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
-				TransformSync.NetIdentity.FireAuthQueue(!AttachedObject._anglerBody.IsSuspended()));
+			{
+				FinishDelayedReady();
+
+				if (QSBCore.IsHost)
+				{
+					TransformSync.NetIdentity.RegisterAuthQueue();
+				}
+
+				// for when you host/connect mid-game
+				TransformSync.NetIdentity.FireAuthQueue(!AttachedObject._anglerBody.IsSuspended());
+			});
 		}
 
 		public override void OnRemoval()

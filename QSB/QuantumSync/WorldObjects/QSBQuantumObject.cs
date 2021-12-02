@@ -162,7 +162,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 			DebugLog.DebugWrite($"{LogName}-{Name} enable", MessageType.Success);
 			IsEnabled = true;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -193,7 +193,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 			DebugLog.DebugWrite($"{LogName}-{Name} disable", MessageType.Error);
 			IsEnabled = false;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
 			{
 				return;
 			}

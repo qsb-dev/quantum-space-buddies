@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool
 {
@@ -76,7 +77,7 @@ namespace QSB.Tools.TranslatorTool
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.ShowLinesInDebug)
+			if (!WorldObjectManager.AllReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

@@ -9,7 +9,7 @@ namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => QSBCore.WorldObjectsReady;
+		public override bool IsReady => WorldObjectManager.AllAdded;
 		public override bool UseInterpolation => false;
 
 		private QSBAngler _qsbAngler;
@@ -47,7 +47,7 @@ namespace QSB.Anglerfish.TransformSync
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!QSBCore.WorldObjectsReady || HasAuthority)
+			if (!WorldObjectManager.AllReady || HasAuthority)
 			{
 				return;
 			}
@@ -73,7 +73,7 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady
+			if (!WorldObjectManager.AllReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null

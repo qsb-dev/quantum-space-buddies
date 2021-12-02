@@ -1,7 +1,7 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine.UI;
 
 namespace QSB.QuantumSync.WorldObjects
@@ -32,16 +32,19 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			base.Init(attachedObject, id);
-		}
 
-		public override void PostInit()
-		{
-			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState>(x)).ToList();
-
-			if (QuantumStates.Any(x => x == null))
+			StartDelayedReady();
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllAdded, () =>
 			{
-				DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
-			}
+				FinishDelayedReady();
+
+				QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldFromUnity<QSBQuantumState>).ToList();
+
+				if (QuantumStates.Any(x => x == null))
+				{
+					DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
+				}
+			});
 		}
 
 		public void ChangeState(int newStateIndex)

@@ -24,7 +24,7 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, MeteorLaunchMessage message)
 		{
-			if (!MeteorManager.Ready)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

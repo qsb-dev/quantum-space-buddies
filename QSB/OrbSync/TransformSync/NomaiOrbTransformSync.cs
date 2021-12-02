@@ -74,7 +74,7 @@ namespace QSB.OrbSync.TransformSync
 		protected override Component InitRemoteTransform() => GetTransform();
 
 		protected override float DistanceLeeway => 1f;
-		public override bool IsReady => QSBCore.WorldObjectsReady;
+		public override bool IsReady => WorldObjectManager.AllReady;
 		public override bool UseInterpolation => false;
 	}
 }

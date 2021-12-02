@@ -76,7 +76,7 @@ namespace QSB.Syncs
 			&& Player.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U
-			&& WorldObjectManager.AllReady;
+			&& WorldObjectManager.AllAdded;
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 		public abstract bool IgnoreDisabledAttachedObject { get; }
@@ -298,7 +298,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady
+			if (!WorldObjectManager.AllReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null)

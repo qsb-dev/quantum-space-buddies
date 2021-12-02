@@ -15,7 +15,7 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 		public static bool FixedUpdate(MeteorLauncher __instance)
 		{
-			if (!MeteorManager.Ready)
+			if (!WorldObjectManager.AllReady)
 			{
 				return true;
 			}
@@ -202,7 +202,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
-			if (!MeteorManager.Ready)
+			if (!WorldObjectManager.AllReady)
 			{
 				return true;
 			}

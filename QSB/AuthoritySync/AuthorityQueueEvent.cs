@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.WorldSync;
 using QuantumUNET.Components;
 
 namespace QSB.AuthoritySync
@@ -26,7 +27,7 @@ namespace QSB.AuthoritySync
 
 		private static void OnReceive(AuthorityQueueMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

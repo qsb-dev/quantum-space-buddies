@@ -15,7 +15,7 @@ namespace QSB.JellyfishSync.Patches
 		[HarmonyPatch(typeof(JellyfishController), nameof(JellyfishController.OnSectorOccupantsUpdated))]
 		public static bool OnSectorOccupantsUpdated(JellyfishController __instance)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return true;
 			}
@@ -42,7 +42,7 @@ namespace QSB.JellyfishSync.Patches
 		[HarmonyPatch(typeof(JellyfishController), nameof(JellyfishController.FixedUpdate))]
 		public static bool FixedUpdate(JellyfishController __instance)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return true;
 			}

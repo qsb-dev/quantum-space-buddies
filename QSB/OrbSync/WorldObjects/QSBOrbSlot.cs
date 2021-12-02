@@ -20,7 +20,7 @@ namespace QSB.OrbSync.WorldObjects
 
 		public void HandleEvent(bool state, int orbId)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

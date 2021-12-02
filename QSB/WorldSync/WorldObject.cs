@@ -12,8 +12,13 @@ namespace QSB.WorldSync
 		public string LogName => $"{QSBPlayerManager.LocalPlayerId}.{ObjectId}:{GetType().Name}";
 
 		public abstract void Init(T attachedObject, int id);
-		public virtual void PostInit() { }
 		public virtual void OnRemoval() { }
 		public MonoBehaviour ReturnObject() => AttachedObject;
+
+		/// indicates that this won't become ready immediately
+		protected void StartDelayedReady() => WorldObjectManager._numObjectsReadying++;
+
+		/// indicates that this is now ready
+		protected void FinishDelayedReady() => WorldObjectManager._numObjectsReadying--;
 	}
 }
