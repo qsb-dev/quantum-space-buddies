@@ -1,11 +1,9 @@
 ﻿using OWML.Utils;
+using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
-using QSB.Utility;
-using QuantumUNET;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.ShipSync.Events
@@ -57,24 +55,9 @@ namespace QSB.ShipSync.Events
 
 			if (QSBCore.IsHost)
 			{
-				var newAuthority = ShipManager.Instance.CurrentFlyer == uint.MaxValue
-					? QNetworkServer.connections.First(x => x.GetPlayerId() == QSBPlayerManager.LocalPlayerId)
-					: QNetworkServer.connections.First(x => x.GetPlayerId() == id);
-
-				var ship = ShipTransformSync.LocalInstance;
-				var shipNetId = ship.NetIdentity;
-
-				if (shipNetId.ClientAuthorityOwner == newAuthority)
-				{
-					return;
-				}
-
-				if (shipNetId.ClientAuthorityOwner != null && shipNetId.ClientAuthorityOwner != newAuthority)
-				{
-					shipNetId.RemoveClientAuthority(shipNetId.ClientAuthorityOwner);
-				}
-
-				shipNetId.AssignClientAuthority(newAuthority);
+				ShipTransformSync.LocalInstance.NetIdentity.SetAuthority(isFlying
+					? id
+					: QSBPlayerManager.LocalPlayerId);
 			}
 		}
 	}

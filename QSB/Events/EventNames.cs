@@ -101,7 +101,7 @@
 		public static string QSBLearnLaunchCodes = "QSBLearnLaunchCodes";
 		public static string QSBSatelliteRepairTick = "QSBSatelliteRepairTick";
 		public static string QSBSatelliteRepaired = "QSBSatelliteRepairTick";
-		public static string QSBSuspendChange = "QSBSuspendChange";
+		public static string QSBAuthorityQueue = "QSBAuthorityQueue";
 		public static string QSBJellyfishRising = "QSBJellyfishRising";
 	}
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using OWML.Common;
 using OWML.Utils;
+using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
@@ -11,7 +12,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
-using QSB.SuspendableSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -209,32 +209,33 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			// remove authority for orbs
+			// revert authority for orbs
 			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
 			{
 				if (!item)
 				{
+					DebugLog.ToConsole($"Warning - null transform sync in NomaiOrbTransformSync.OrbTransformSyncs!", MessageType.Warning);
 					continue;
 				}
 
 				var identity = item.NetIdentity;
 				if (identity.ClientAuthorityOwner == conn)
 				{
-					identity.RemoveClientAuthority(conn);
+					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
 			}
 
-			// remove authority from ship
+			// revert authority from ship
 			if (ShipTransformSync.LocalInstance)
 			{
 				var identity = ShipTransformSync.LocalInstance.NetIdentity;
 				if (identity.ClientAuthorityOwner == conn)
 				{
-					identity.RemoveClientAuthority(conn);
+					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
 			}
 
-			SuspendableManager.OnDisconnect(conn);
+			AuthorityManager.OnDisconnect(conn.GetPlayerId());
 
 			base.OnServerDisconnect(conn);
 		}
