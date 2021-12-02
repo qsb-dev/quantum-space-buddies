@@ -10,6 +10,7 @@ using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
 using QSB.ItemSync.Events;
+using QSB.JellyfishSync.Events;
 using QSB.LogSync.Events;
 using QSB.MeteorSync.Events;
 using QSB.OrbSync.Events;
@@ -104,6 +105,7 @@ namespace QSB.Events
 				new MeteorSpecialImpactEvent(),
 				new FragmentDamageEvent(),
 				new FragmentResyncEvent(),
+				new JellyfishRisingEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

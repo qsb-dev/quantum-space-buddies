@@ -12,6 +12,7 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
+using QSB.JellyfishSync;
 using QSB.Menus;
 using QSB.MeteorSync;
 using QSB.OrbSync;
@@ -141,6 +142,7 @@ namespace QSB
 			gameObject.AddComponent<AirlockManager>();
 			gameObject.AddComponent<AnglerManager>();
 			gameObject.AddComponent<MeteorManager>();
+			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
 
 			DebugBoxManager.Init();
