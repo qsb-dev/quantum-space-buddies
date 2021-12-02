@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OWML.Common;
 using QSB.Events;
 using QSB.Utility;
 using QuantumUNET;
@@ -72,8 +71,8 @@ namespace QSB.AuthoritySync
 				identity.AssignClientAuthority(newConn);
 			}
 
-			DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - "
-				+ $"set authority to {id}");
+			// DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - "
+				// + $"set authority to {id}");
 		}
 
 		#endregion
