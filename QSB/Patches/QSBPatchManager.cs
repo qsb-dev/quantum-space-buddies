@@ -14,7 +14,6 @@ using QSB.ElevatorSync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
-using QSB.JellyfishSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.MeteorSync.Patches;
 using QSB.OrbSync.Patches;
@@ -79,7 +78,6 @@ namespace QSB.Patches
 				new AnglerPatches(),
 				new MeteorClientPatches(),
 				new MeteorServerPatches(),
-				new JellyfishPatches(),
 				new TravelerControllerPatches(),
 				new ZeroGCavePatches()
 			};
