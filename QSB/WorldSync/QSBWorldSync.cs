@@ -36,11 +36,6 @@ namespace QSB.WorldSync
 
 		public static IWorldObject GetWorldFromUnity(MonoBehaviour unityObject)
 		{
-			if (!WorldObjectManager.AllAdded)
-			{
-				return default;
-			}
-
 			if (unityObject == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TUnityObject:NULL", MessageType.Error);
@@ -71,11 +66,6 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
-			if (!WorldObjectManager.AllAdded)
-			{
-				return default;
-			}
-
 			if (unityObject == null)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL", MessageType.Error);
