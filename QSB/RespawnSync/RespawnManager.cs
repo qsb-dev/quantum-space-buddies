@@ -2,6 +2,7 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,9 @@ namespace QSB.RespawnSync
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
-				Init(QSBSceneManager.CurrentScene, true);
+				QSBCore.UnityEvents.RunWhen(
+					() => PlayerTransformSync.LocalInstance != null,
+					() => Init(QSBSceneManager.CurrentScene, true));
 			}
 		}
 

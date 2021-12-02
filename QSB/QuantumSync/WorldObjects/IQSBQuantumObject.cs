@@ -1,4 +1,5 @@
 ﻿using QSB.WorldSync;
+using System.Collections.Generic;
 
 namespace QSB.QuantumSync
 {
@@ -6,5 +7,8 @@ namespace QSB.QuantumSync
 	{
 		uint ControllingPlayer { get; set; }
 		bool IsEnabled { get; set; }
+
+		List<ShapeVisibilityTracker> GetVisibilityTrackers();
+		List<Shape> GetAttachedShapes();
 	}
 }

@@ -1,13 +1,16 @@
-﻿using QSB.Player;
-using QSB.Player.TransformSync;
-using System;
+﻿using System;
 
 namespace QSB.Utility.VariableSync
 {
 	public class VariableReference<T>
 	{
+		private BaseVariableSyncer _owner;
+
 		public Func<T> Getter;
 		public Action<T> Setter;
+
+		public VariableReference(BaseVariableSyncer owner)
+			=> _owner = owner;
 
 		public T Value
 		{
@@ -19,7 +22,7 @@ namespace QSB.Utility.VariableSync
 				}
 				else
 				{
-					if (PlayerTransformSync.LocalInstance != null && QSBPlayerManager.LocalPlayer.IsReady)
+					if (_owner.Ready)
 					{
 						DebugLog.ToConsole($"Warning - Getter is null!", OWML.Common.MessageType.Warning);
 					}
@@ -35,7 +38,7 @@ namespace QSB.Utility.VariableSync
 				}
 				else
 				{
-					if (PlayerTransformSync.LocalInstance != null && QSBPlayerManager.LocalPlayer.IsReady)
+					if (_owner.Ready)
 					{
 						DebugLog.ToConsole($"Warning - Setter is null!", OWML.Common.MessageType.Warning);
 					}

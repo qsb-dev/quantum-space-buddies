@@ -1,7 +1,9 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
+using QSB.OrbSync.WorldObjects;
 using QSB.Player;
 using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
@@ -9,6 +11,7 @@ using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 namespace QSB.Utility
 {
@@ -210,6 +213,28 @@ namespace QSB.Utility
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
 					if (quantumObject is not IWorldObject qsbObj)
+					{
+						WriteLine(4, $"NULL QSBOBJ", Color.red);
+					}
+					else
+					{
+						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
+					}
+				}
+			}
+
+			WriteLine(4, $"");
+			WriteLine(4, $"Enabled QuantumObjects :");
+			foreach (var qo in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
+			{
+				if (qo.ControllingPlayer != 0)
+				{
+					continue;
+				}
+
+				if (qo.IsEnabled)
+				{
+					if (qo is not IWorldObject qsbObj)
 					{
 						WriteLine(4, $"NULL QSBOBJ", Color.red);
 					}

@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using System.Linq;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -8,7 +9,9 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			ObjectId = id;
 			AttachedObject = moonObject;
-			ControllingPlayer = QSBPlayerManager.LocalPlayerId;
+			ControllingPlayer = QSBCore.IsHost
+				? QSBPlayerManager.LocalPlayerId
+				: QSBPlayerManager.PlayerList.OrderBy(x => x.PlayerId).First().PlayerId;
 			base.Init(moonObject, id);
 		}
 	}

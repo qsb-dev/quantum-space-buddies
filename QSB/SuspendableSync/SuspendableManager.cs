@@ -58,8 +58,6 @@ namespace QSB.SuspendableSync
 			{
 				identity.AssignClientAuthority(newConn);
 			}
-
-			DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - set authority to {id}");
 		}
 
 

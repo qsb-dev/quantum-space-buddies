@@ -5,10 +5,11 @@ namespace QSB.Utility.VariableSync
 {
 	public class BoolVariableSyncer : BaseVariableSyncer
 	{
-		public VariableReference<bool> ValueToSync { get; private set; } = new();
+		public VariableReference<bool> ValueToSync { get; private set; }
 
 		public void Init(Func<bool> getter, Action<bool> setter)
 		{
+			ValueToSync = new(this);
 			ValueToSync.Getter = getter;
 			ValueToSync.Setter = setter;
 			_ready = true;
@@ -18,9 +19,27 @@ namespace QSB.Utility.VariableSync
 			=> _ready = false;
 
 		public override void WriteData(QNetworkWriter writer)
-			=> writer.Write(ValueToSync.Value);
+		{
+			if (Ready)
+			{
+				writer.Write(ValueToSync.Value);
+			}
+			else
+			{
+				writer.Write(default(bool));
+			}
+		}
 
-		public override void ReadData(QNetworkReader writer)
-			=> ValueToSync.Value = writer.ReadBoolean();
+		public override void ReadData(QNetworkReader reader)
+		{
+			if (Ready)
+			{
+				ValueToSync.Value = reader.ReadBoolean();
+			}
+			else
+			{
+				reader.ReadBoolean();
+			}
+		}
 	}
 }

@@ -81,6 +81,13 @@ namespace QSB.QuantumSync
 			{
 				if (quantumObject.ControllingPlayer == 0)
 				{
+					if (quantumObject.IsEnabled)
+					{
+						Popcron.Gizmos.Line((quantumObject as IWorldObject).ReturnObject().transform.position,
+							QSBPlayerManager.LocalPlayer.Body.transform.position,
+							Color.magenta * 0.25f);
+					}
+
 					continue;
 				}
 
