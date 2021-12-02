@@ -9,7 +9,7 @@ namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllAdded;
+		public override bool IsReady => QSBCore.WorldObjectsAdded;
 		public override bool UseInterpolation => false;
 
 		private QSBAngler _qsbAngler;

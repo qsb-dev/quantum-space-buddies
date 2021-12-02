@@ -11,7 +11,7 @@ namespace QSB.JellyfishSync.TransformSync
 {
 	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllAdded;
+		public override bool IsReady => QSBCore.WorldObjectsAdded;
 		public override bool UseInterpolation => false;
 
 		private QSBJellyfish _qsbJellyfish;
