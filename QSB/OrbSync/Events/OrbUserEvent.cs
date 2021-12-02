@@ -1,12 +1,11 @@
-﻿using OWML.Common;
+﻿using System.Linq;
+using OWML.Common;
+using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
-using QuantumUNET;
-using QuantumUNET.Components;
-using System.Linq;
 
 namespace QSB.OrbSync.Events
 {
@@ -49,7 +48,6 @@ namespace QSB.OrbSync.Events
 
 		private static void HandleServer(WorldObjectMessage message)
 		{
-			var fromPlayer = QNetworkServer.connections.First(x => x.GetPlayerId() == message.FromId);
 			if (NomaiOrbTransformSync.OrbTransformSyncs == null || NomaiOrbTransformSync.OrbTransformSyncs.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
@@ -62,11 +60,6 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			if (fromPlayer == null)
-			{
-				DebugLog.ToConsole("Error - FromPlayer is null!", MessageType.Error);
-			}
-
 			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null)
 				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			if (orbSync == null)
@@ -75,27 +68,7 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			var orbIdentity = orbSync.GetComponent<QNetworkIdentity>();
-			if (orbIdentity == null)
-			{
-				DebugLog.ToConsole($"Error - Orb identity is null. (ID {message.ObjectId})", MessageType.Error);
-				return;
-			}
-
-			var currentOwner = orbIdentity.ClientAuthorityOwner;
-			var newOwner = fromPlayer;
-
-			if (currentOwner == newOwner)
-			{
-				return;
-			}
-
-			if (currentOwner != null && currentOwner != fromPlayer)
-			{
-				orbIdentity.RemoveClientAuthority(currentOwner);
-			}
-
-			orbIdentity.AssignClientAuthority(fromPlayer);
+			orbSync.NetIdentity.SetAuthority(message.FromId);
 			orbSync.enabled = true;
 		}
 
