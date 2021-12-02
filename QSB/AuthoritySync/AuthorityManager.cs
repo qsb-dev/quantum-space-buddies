@@ -25,8 +25,6 @@ namespace QSB.AuthoritySync
 			var oldAuthority = authQueue.Contains(id);
 			if (queue == oldAuthority)
 			{
-				DebugLog.ToConsole($"{identity.NetId}:{identity.gameObject.name} - "
-					+ $"{id} already {(queue ? "" : "not ")} queued", MessageType.Warning);
 				return;
 			}
 
@@ -61,8 +59,6 @@ namespace QSB.AuthoritySync
 
 			if (oldConn == newConn)
 			{
-				DebugLog.ToConsole($"{identity.NetId}:{identity.gameObject.name} - "
-					+ $"{id} already has authority", MessageType.Warning);
 				return;
 			}
 
