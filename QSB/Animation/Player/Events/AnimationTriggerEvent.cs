@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Player;
+using QSB.WorldSync;
 
 namespace QSB.Animation.Player.Events
 {
@@ -20,7 +21,7 @@ namespace QSB.Animation.Player.Events
 		public override void OnReceiveRemote(bool server, AnimationTriggerMessage message)
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AttachedNetId);
-			if (!QSBCore.WorldObjectsReady || animationSync == null)
+			if (!WorldObjectManager.AllReady || animationSync == null)
 			{
 				return;
 			}

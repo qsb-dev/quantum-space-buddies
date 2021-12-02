@@ -33,7 +33,7 @@ namespace QSB.LogSync.Events
 				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
 			}
 
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

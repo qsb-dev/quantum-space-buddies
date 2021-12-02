@@ -22,7 +22,7 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

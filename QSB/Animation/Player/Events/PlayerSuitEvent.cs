@@ -1,6 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.WorldSync;
 
 namespace QSB.Animation.Player.Events
 {
@@ -32,7 +33,7 @@ namespace QSB.Animation.Player.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.SuitedUp = message.ToggleValue;
 
-			if (!QSBCore.WorldObjectsReady || !player.IsReady)
+			if (!WorldObjectManager.AllReady || !player.IsReady)
 			{
 				return;
 			}

@@ -136,7 +136,7 @@ namespace QSB.QuantumSync.WorldObjects
 		private void OnEnable(Shape s)
 		{
 			IsEnabled = true;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -165,7 +165,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = false;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
 			{
 				return;
 			}

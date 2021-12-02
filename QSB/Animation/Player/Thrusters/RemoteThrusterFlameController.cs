@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters
@@ -85,7 +86,7 @@ namespace QSB.Animation.Player.Thrusters
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.ShowLinesInDebug)
+			if (!WorldObjectManager.AllReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

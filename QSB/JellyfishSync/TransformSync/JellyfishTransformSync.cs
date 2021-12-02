@@ -11,7 +11,7 @@ namespace QSB.JellyfishSync.TransformSync
 {
 	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => QSBCore.WorldObjectsAdded;
+		public override bool IsReady => WorldObjectManager.AllAdded;
 		public override bool UseInterpolation => false;
 
 		private QSBJellyfish _qsbJellyfish;
@@ -47,7 +47,7 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			base.SerializeTransform(writer, initialState);
 
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				writer.Write(false);
 				return;
@@ -63,7 +63,7 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!QSBCore.WorldObjectsReady || HasAuthority)
+			if (!WorldObjectManager.AllReady || HasAuthority)
 			{
 				reader.ReadBoolean();
 				return;
@@ -142,7 +142,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady
+			if (!WorldObjectManager.AllReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null

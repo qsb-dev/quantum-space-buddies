@@ -138,7 +138,7 @@ namespace QSB.Syncs.Sectored
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			int sectorId;
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				sectorId = reader.ReadInt32();
 				if (initialState && sectorId != -1)

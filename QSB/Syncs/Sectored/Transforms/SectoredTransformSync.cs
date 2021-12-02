@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace QSB.Syncs.Sectored.Transforms
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);

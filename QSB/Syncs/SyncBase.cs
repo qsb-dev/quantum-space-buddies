@@ -298,7 +298,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady
+			if (!WorldObjectManager.AllReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null)

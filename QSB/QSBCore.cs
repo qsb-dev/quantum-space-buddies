@@ -72,8 +72,6 @@ namespace QSB
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
-		public static bool WorldObjectsAdded => WorldObjectManager.AllAdded && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
-		public static bool WorldObjectsReady => WorldObjectManager.AllReady && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;

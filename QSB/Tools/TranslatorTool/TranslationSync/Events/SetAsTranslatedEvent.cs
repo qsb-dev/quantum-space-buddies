@@ -21,7 +21,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Events
 
 		public override void OnReceiveRemote(bool server, SetAsTranslatedMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

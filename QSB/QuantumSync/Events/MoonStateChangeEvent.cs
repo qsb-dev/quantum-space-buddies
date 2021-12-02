@@ -2,6 +2,7 @@
 using QSB.Events;
 using System.Linq;
 using System.Reflection;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Events
@@ -23,7 +24,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, MoonStateChangeMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllReady)
 			{
 				return;
 			}

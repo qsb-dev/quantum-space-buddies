@@ -4,6 +4,7 @@ using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
 using System;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
@@ -62,7 +63,7 @@ namespace QSB.ShipSync.Patches
 		public static bool InteractZone_UpdateInteractVolume(InteractZone __instance)
 		{
 			/* Angle for interaction with the ship hatch
-			 *  
+			 *
 			 *  \  80°  / - If in ship
 			 *   \     /
 			 *    \   /
@@ -70,10 +71,10 @@ namespace QSB.ShipSync.Patches
 			 *    /   \
 			 *   /     \
 			 *  / 280°  \ - If not in ship
-			 *  
+			 *
 			 */
 
-			if (!QSBCore.WorldObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
+			if (!WorldObjectManager.AllReady || __instance != ShipManager.Instance.HatchInteractZone)
 			{
 				return true;
 			}
