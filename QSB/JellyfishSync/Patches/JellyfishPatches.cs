@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.JellyfishSync.WorldObjects;
 using QSB.Patches;
@@ -24,14 +25,14 @@ namespace QSB.JellyfishSync.Patches
 			{
 				__instance.gameObject.SetActive(true);
 				__instance._jellyfishBody.Unsuspend();
-				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbJellyfish.TransformSync.NetIdentity, false);
+				qsbJellyfish.TransformSync.NetIdentity.FireAuthQueue(true);
 				return false;
 			}
 			if (__instance.gameObject.activeSelf && !__instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
 			{
 				__instance._jellyfishBody.Suspend();
 				__instance.gameObject.SetActive(false);
-				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbJellyfish.TransformSync.NetIdentity, true);
+				qsbJellyfish.TransformSync.NetIdentity.FireAuthQueue(false);
 			}
 
 			return false;

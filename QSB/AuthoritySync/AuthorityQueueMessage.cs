@@ -2,25 +2,25 @@
 using QuantumUNET.Components;
 using QuantumUNET.Transport;
 
-namespace QSB.SuspendableSync
+namespace QSB.AuthoritySync
 {
-	public class SuspendChangeMessage : PlayerMessage
+	public class AuthorityQueueMessage : PlayerMessage
 	{
 		public QNetworkIdentity Identity;
-		public bool Suspended;
+		public bool Queue;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			Identity = reader.ReadNetworkIdentity();
-			Suspended = reader.ReadBoolean();
+			Queue = reader.ReadBoolean();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Identity);
-			writer.Write(Suspended);
+			writer.Write(Queue);
 		}
 	}
 }
