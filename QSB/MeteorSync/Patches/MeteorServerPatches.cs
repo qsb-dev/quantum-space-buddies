@@ -17,7 +17,7 @@ namespace QSB.MeteorSync.Patches
 		{
 			if (!MeteorManager.Ready)
 			{
-				return false;
+				return true;
 			}
 
 			if (__instance._launchedMeteors != null)
@@ -204,7 +204,7 @@ namespace QSB.MeteorSync.Patches
 			}
 			if (!MeteorManager.Ready)
 			{
-				return false;
+				return true;
 			}
 
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);

@@ -10,6 +10,7 @@ namespace QSB.WorldSync
 	{
 		private static readonly List<WorldObjectManager> _managers = new();
 
+		// BUG : this gets set to true even if the objects aren't technically ready (i.e. they wait for something else)
 		public static bool AllReady { get; private set; }
 
 		public virtual void Awake()

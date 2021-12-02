@@ -46,6 +46,12 @@ namespace QSB.Anglerfish.TransformSync
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			base.DeserializeTransform(reader, initialState);
+
+			if (!QSBCore.WorldObjectsReady || HasAuthority)
+			{
+				return;
+			}
+
 			_shouldUpdate = true;
 		}
 
@@ -67,17 +73,32 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			base.OnRenderObject();
-
 			if (!QSBCore.WorldObjectsReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
-				|| ReferenceTransform == null)
+				|| ReferenceTransform == null
+				|| ((OWRigidbody)AttachedObject).IsSuspended())
 			{
 				return;
 			}
 
-			Popcron.Gizmos.Line(AttachedObject.transform.position, _qsbAngler.AttachedObject.GetTargetPosition(), Color.white);
+			base.OnRenderObject();
+
+			Popcron.Gizmos.Sphere(AttachedObject.transform.position, _qsbAngler.AttachedObject._arrivalDistance, Color.blue);
+			Popcron.Gizmos.Sphere(AttachedObject.transform.position, _qsbAngler.AttachedObject._pursueDistance, Color.red);
+			Popcron.Gizmos.Sphere(AttachedObject.transform.position, _qsbAngler.AttachedObject._escapeDistance, Color.yellow);
+			Popcron.Gizmos.Sphere(AttachedObject.transform.position
+				+ AttachedObject.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
+
+			if (_qsbAngler.TargetTransform != null)
+			{
+				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, ((OWRigidbody)AttachedObject).GetPosition(), Color.gray);
+				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, _qsbAngler.TargetTransform.position + _qsbAngler.TargetVelocity, Color.green);
+				Popcron.Gizmos.Line(((OWRigidbody)AttachedObject).GetPosition(), _qsbAngler.AttachedObject._targetPos, Color.red);
+				Popcron.Gizmos.Sphere(_qsbAngler.AttachedObject._targetPos, 5, Color.red);
+			}
+
+			// Popcron.Gizmos.Line(AttachedObject.transform.position, _qsbAngler.AttachedObject.GetTargetPosition(), Color.white);
 		}
 	}
 }

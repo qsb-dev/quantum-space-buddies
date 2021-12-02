@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using System.Linq;
+using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
 using QSB.Anglerfish;
@@ -32,7 +33,6 @@ using QSB.WorldSync;
 using QSB.ZeroGCaveSync;
 using QuantumUNET;
 using QuantumUNET.Components;
-using System.Linq;
 using UnityEngine;
 
 /*
