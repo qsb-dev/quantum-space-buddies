@@ -2,6 +2,7 @@
 using System.Linq;
 using OWML.Common;
 using OWML.Utils;
+using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
@@ -11,7 +12,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
-using QSB.SuspendableSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -234,7 +234,7 @@ namespace QSB
 				}
 			}
 
-			SuspendableManager.OnDisconnect(conn);
+			AuthorityManager.OnDisconnect(conn.GetPlayerId());
 
 			base.OnServerDisconnect(conn);
 		}

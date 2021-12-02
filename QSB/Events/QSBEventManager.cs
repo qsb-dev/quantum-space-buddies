@@ -3,6 +3,7 @@ using OWML.Common;
 using QSB.Anglerfish.Events;
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
+using QSB.AuthoritySync;
 using QSB.CampfireSync.Events;
 using QSB.ClientServerStateSync.Events;
 using QSB.ConversationSync.Events;
@@ -23,7 +24,6 @@ using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;
 using QSB.StatueSync.Events;
-using QSB.SuspendableSync;
 using QSB.TimeSync.Events;
 using QSB.Tools.FlashlightTool.Events;
 using QSB.Tools.ProbeLauncherTool.Events;
@@ -114,7 +114,7 @@ namespace QSB.Events
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
-				new SuspendChangeEvent(),
+				new AuthorityQueueEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),

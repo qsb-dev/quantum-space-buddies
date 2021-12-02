@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Anglerfish.WorldObjects;
+using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
@@ -42,7 +43,7 @@ namespace QSB.Anglerfish.Patches
 				__instance.gameObject.SetActive(true);
 				__instance._anglerBody.Unsuspend();
 				__instance.RaiseEvent(nameof(__instance.OnAnglerUnsuspended), __instance._currentState);
-				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbAngler.TransformSync.NetIdentity, false);
+				qsbAngler.TransformSync.NetIdentity.FireAuthQueue(true);
 				return false;
 			}
 			if (__instance.gameObject.activeSelf && !__instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
@@ -50,7 +51,7 @@ namespace QSB.Anglerfish.Patches
 				__instance._anglerBody.Suspend();
 				__instance.gameObject.SetActive(false);
 				__instance.RaiseEvent(nameof(__instance.OnAnglerSuspended), __instance._currentState);
-				QSBEventManager.FireEvent(EventNames.QSBSuspendChange, qsbAngler.TransformSync.NetIdentity, true);
+				qsbAngler.TransformSync.NetIdentity.FireAuthQueue(false);
 			}
 
 			return false;
