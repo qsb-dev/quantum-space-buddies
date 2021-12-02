@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
