@@ -35,7 +35,6 @@ namespace QSB
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
 		public GameObject AnglerPrefab { get; private set; }
-		public GameObject JellyfishPrefab { get; private set; }
 		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
@@ -66,9 +65,6 @@ namespace QSB
 
 			AnglerPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkangler.prefab");
 			spawnPrefabs.Add(AnglerPrefab);
-
-			JellyfishPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkjellyfish.prefab");
-			spawnPrefabs.Add(JellyfishPrefab);
 
 			ConfigureNetworkManager();
 		}

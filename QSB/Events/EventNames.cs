@@ -102,6 +102,5 @@
 		public static string QSBSatelliteRepairTick = "QSBSatelliteRepairTick";
 		public static string QSBSatelliteRepaired = "QSBSatelliteRepairTick";
 		public static string QSBSuspendChange = "QSBSuspendChange";
-		public static string QSBJellyfishRising = "QSBJellyfishRising";
 	}
 }
