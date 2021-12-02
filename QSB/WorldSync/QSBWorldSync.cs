@@ -1,20 +1,20 @@
-﻿using OWML.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using OWML.Common;
 using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new List<NomaiInterfaceOrb>();
-		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new List<CharacterDialogueTree>();
-		public static Dictionary<string, bool> DialogueConditions { get; } = new Dictionary<string, bool>();
-		public static List<FactReveal> ShipLogFacts { get; } = new List<FactReveal>();
+		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new();
+		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new();
+		public static Dictionary<string, bool> DialogueConditions { get; } = new();
+		public static List<FactReveal> ShipLogFacts { get; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
@@ -24,18 +24,19 @@ namespace QSB.WorldSync
 
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
 		{
-			if (id < 0 || id >= GetWorldObjects<TWorldObject>().Count())
+			var worldObjects = GetWorldObjects<TWorldObject>().ToList();
+			if (id < 0 || id >= worldObjects.Count)
 			{
-				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {GetWorldObjects<TWorldObject>().Count()}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {worldObjects.Count}.", MessageType.Warning);
 				return default;
 			}
 
-			return GetWorldObjects<TWorldObject>().ToList()[id];
+			return worldObjects[id];
 		}
 
 		public static IWorldObject GetWorldFromUnity(MonoBehaviour unityObject)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllAdded)
 			{
 				return default;
 			}
@@ -52,13 +53,11 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
+			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
 				return default;
 			}
-
-			var returnObject = WorldObjectsToUnityObjects[unityObject];
 
 			if (returnObject == null)
 			{
@@ -72,7 +71,7 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllAdded)
 			{
 				return default;
 			}
@@ -89,13 +88,11 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			if (!WorldObjectsToUnityObjects.ContainsKey(unityObject))
+			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
 				return default;
 			}
-
-			var returnObject = (TWorldObject)WorldObjectsToUnityObjects[unityObject];
 
 			if (returnObject == null)
 			{
@@ -103,7 +100,7 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			return returnObject;
+			return (TWorldObject)returnObject;
 		}
 
 		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)
@@ -115,7 +112,7 @@ namespace QSB.WorldSync
 			var index = GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
 			if (index == -1)
 			{
-				DebugLog.ToConsole($"Warning - {(typeSubset as IWorldObject).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {((IWorldObject)typeSubset).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
 			}
 
 			return index;
@@ -123,21 +120,16 @@ namespace QSB.WorldSync
 
 		public static void RemoveWorldObjects<TWorldObject>()
 		{
-			if (WorldObjects == null || WorldObjects.Count == 0)
+			if (WorldObjects.Count == 0)
 			{
-				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects of type {typeof(TWorldObject).Name}, but there are no WorldObjects!");
+				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects of type {typeof(TWorldObject).Name}, but there are no WorldObjects!", MessageType.Warning);
+				return;
 			}
 
 			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
 
 			foreach (var item in itemsToRemove)
 			{
-				if (item is null)
-				{
-					DebugLog.ToConsole($"Error - Trying to remove a null WorldObject of type {typeof(TWorldObject).Name}.", MessageType.Error);
-					continue;
-				}
-
 				try
 				{
 					WorldObjectsToUnityObjects.Remove(item.ReturnObject());

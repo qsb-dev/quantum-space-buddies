@@ -1,7 +1,9 @@
-﻿using QSB.Player;
-using QSB.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using OWML.Common;
+using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -10,7 +12,7 @@ namespace QSB.WorldSync
 	{
 		private static readonly List<WorldObjectManager> _managers = new();
 
-		// BUG : this gets set to true even if the objects aren't technically ready (i.e. they wait for something else)
+		public static bool AllAdded { get; private set; }
 		public static bool AllReady { get; private set; }
 
 		public virtual void Awake()
@@ -25,9 +27,17 @@ namespace QSB.WorldSync
 			_managers.Remove(this);
 		}
 
-		public static void SetNotReady() => AllReady = false;
+		public static void SetNotReady()
+		{
+			AllAdded = false;
+			AllReady = false;
+		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse) => AllReady = false;
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+		{
+			AllAdded = false;
+			AllReady = false;
+		}
 
 		public static void Rebuild(OWScene scene)
 		{
@@ -56,6 +66,10 @@ namespace QSB.WorldSync
 
 		private static void DoRebuild(OWScene scene)
 		{
+			_numManagersReadying = 0;
+			_numObjectsReadying = 0;
+			AllAdded = false;
+			AllReady = false;
 			foreach (var manager in _managers)
 			{
 				try
@@ -68,19 +82,27 @@ namespace QSB.WorldSync
 				}
 			}
 
-			QSBCore.UnityEvents.FireInNUpdates(DoPostInit, 1);
-		}
-
-		private static void DoPostInit()
-		{
-			AllReady = true;
-			var allWorldObjects = QSBWorldSync.GetWorldObjects<IWorldObject>();
-			foreach (var worldObject in allWorldObjects)
+			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
 			{
-				worldObject.PostInit();
-			}
+				AllAdded = true;
+				DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+				QSBCore.UnityEvents.RunWhen(() => _numObjectsReadying == 0, () =>
+				{
+					AllReady = true;
+					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+				});
+			});
 		}
 
 		protected abstract void RebuildWorldObjects(OWScene scene);
+
+		private static uint _numManagersReadying;
+		internal static uint _numObjectsReadying;
+
+		/// indicates that this won't become ready immediately
+		protected void StartDelayedReady() => _numManagersReadying++;
+
+		/// indicates that this is now ready
+		protected void FinishDelayedReady() => _numManagersReadying--;
 	}
 }

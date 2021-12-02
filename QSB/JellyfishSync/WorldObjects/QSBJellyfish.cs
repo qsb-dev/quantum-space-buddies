@@ -20,13 +20,21 @@ namespace QSB.JellyfishSync.WorldObjects
 			if (QSBCore.IsHost)
 			{
 				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab));
-				QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
-					TransformSync.NetIdentity.RegisterAuthQueue());
 			}
 
-			// for when you host/connect mid-game
+			StartDelayedReady();
 			QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
-				TransformSync.NetIdentity.FireAuthQueue(!AttachedObject._jellyfishBody.IsSuspended()));
+			{
+				FinishDelayedReady();
+
+				if (QSBCore.IsHost)
+				{
+					TransformSync.NetIdentity.RegisterAuthQueue();
+				}
+
+				// for when you host/connect mid-game
+				TransformSync.NetIdentity.FireAuthQueue(!AttachedObject._jellyfishBody.IsSuspended());
+			});
 		}
 
 		public override void OnRemoval()

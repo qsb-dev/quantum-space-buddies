@@ -148,7 +148,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
-			if (!MeteorManager.Ready)
+			if (!QSBCore.WorldObjectsReady)
 			{
 				return true;
 			}
