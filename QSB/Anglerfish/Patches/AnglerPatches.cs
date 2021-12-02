@@ -33,7 +33,7 @@ namespace QSB.Anglerfish.Patches
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
-				return false;
+				return true;
 			}
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
 
@@ -78,7 +78,7 @@ namespace QSB.Anglerfish.Patches
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
-				return false;
+				return true;
 			}
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
 
@@ -173,7 +173,7 @@ namespace QSB.Anglerfish.Patches
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
-				return false;
+				return true;
 			}
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
 			qsbAngler.UpdateTargetVelocity();

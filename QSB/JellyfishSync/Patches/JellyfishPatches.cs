@@ -16,7 +16,7 @@ namespace QSB.JellyfishSync.Patches
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
-				return false;
+				return true;
 			}
 			var qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(__instance);
 
@@ -43,7 +43,7 @@ namespace QSB.JellyfishSync.Patches
 		{
 			if (!QSBCore.WorldObjectsReady)
 			{
-				return false;
+				return true;
 			}
 			var qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(__instance);
 
