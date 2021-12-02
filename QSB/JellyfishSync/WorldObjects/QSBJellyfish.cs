@@ -45,6 +45,11 @@ namespace QSB.JellyfishSync.WorldObjects
 			get => AttachedObject._isRising;
 			set
 			{
+				if (AttachedObject._isRising == value)
+				{
+					return;
+				}
+
 				AttachedObject._isRising = value;
 				AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
 			}

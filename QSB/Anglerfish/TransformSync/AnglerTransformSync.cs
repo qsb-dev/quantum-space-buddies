@@ -46,6 +46,12 @@ namespace QSB.Anglerfish.TransformSync
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			base.DeserializeTransform(reader, initialState);
+
+			if (!QSBCore.WorldObjectsReady || HasAuthority)
+			{
+				return;
+			}
+
 			_shouldUpdate = true;
 		}
 

@@ -43,11 +43,34 @@ namespace QSB.JellyfishSync.TransformSync
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
 		}
 
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
+		{
+			base.SerializeTransform(writer, initialState);
+
+			if (!QSBCore.WorldObjectsReady)
+			{
+				writer.Write(false);
+				return;
+			}
+
+			_qsbJellyfish.Align = true;
+			writer.Write(_qsbJellyfish.IsRising);
+		}
+
 		private bool _shouldUpdate;
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			base.DeserializeTransform(reader, initialState);
+
+			if (!QSBCore.WorldObjectsReady || HasAuthority)
+			{
+				reader.ReadBoolean();
+				return;
+			}
+
+			_qsbJellyfish.Align = false;
+			_qsbJellyfish.IsRising = reader.ReadBoolean();
 			_shouldUpdate = true;
 		}
 
@@ -56,7 +79,6 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			if (HasAuthority)
 			{
-				_qsbJellyfish.Align = true;
 				SetValuesToSync();
 				return true;
 			}
@@ -105,7 +127,6 @@ namespace QSB.JellyfishSync.TransformSync
 				return true;
 			}
 
-			_qsbJellyfish.Align = false;
 			((OWRigidbody)AttachedObject).SetPosition(positionToSet);
 			((OWRigidbody)AttachedObject).SetRotation(rotationToSet);
 
