@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
@@ -17,7 +16,7 @@ namespace QuantumUNET
 		public bool IsClient => MyView.IsClient;
 		public bool IsLocalPlayer => MyView.IsLocalPlayer;
 		public bool HasAuthority => MyView.HasAuthority;
-		public NetworkInstanceId NetId => MyView.NetId;
+		public QNetworkInstanceId NetId => MyView.NetId;
 		public QNetworkConnection ConnectionToServer => MyView.ConnectionToServer;
 		public QNetworkConnection ConnectionToClient => MyView.ConnectionToClient;
 		public short PlayerControllerId => MyView.PlayerControllerId;
@@ -429,11 +428,11 @@ namespace QuantumUNET
 		internal static string GetCmdHashListName(int cmdHash)
 			=> GetCmdHashPrefixName(cmdHash, "InvokeSyncList");
 
-		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref NetworkInstanceId netIdField)
+		protected void SetSyncVarGameObject(GameObject newGameObject, ref GameObject gameObjectField, uint dirtyBit, ref QNetworkInstanceId netIdField)
 		{
 			if (!SyncVarHookGuard)
 			{
-				NetworkInstanceId networkInstanceId = default;
+				QNetworkInstanceId networkInstanceId = default;
 				if (newGameObject != null)
 				{
 					var component = newGameObject.GetComponent<QNetworkIdentity>();
@@ -448,7 +447,7 @@ namespace QuantumUNET
 					}
 				}
 
-				NetworkInstanceId networkInstanceId2 = default;
+				QNetworkInstanceId networkInstanceId2 = default;
 				if (gameObjectField != null)
 				{
 					networkInstanceId2 = gameObjectField.GetComponent<QNetworkIdentity>().NetId;

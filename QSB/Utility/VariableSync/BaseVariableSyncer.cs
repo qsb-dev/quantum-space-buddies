@@ -3,7 +3,6 @@ using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Utility.VariableSync
 {
@@ -89,7 +88,6 @@ namespace QSB.Utility.VariableSync
 			}
 		}
 
-		[Client]
 		private void SendVariable()
 		{
 			// TODO - this sends a message, even when the value hasnt changed! this is really bad!

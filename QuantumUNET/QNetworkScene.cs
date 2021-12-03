@@ -1,7 +1,7 @@
 ﻿using QuantumUNET.Components;
 using System.Collections.Generic;
+using QuantumUNET.Messages;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
@@ -9,8 +9,8 @@ namespace QuantumUNET
 	{
 		internal static Dictionary<int, GameObject> guidToPrefab { get; } = new Dictionary<int, GameObject>();
 		internal static Dictionary<int, QSpawnDelegate> spawnHandlers { get; } = new Dictionary<int, QSpawnDelegate>();
-		internal static Dictionary<int, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<int, UnSpawnDelegate>();
-		internal Dictionary<NetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QNetworkIdentity>();
+		internal static Dictionary<int, QUnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<int, QUnSpawnDelegate>();
+		internal Dictionary<QNetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<QNetworkInstanceId, QNetworkIdentity>();
 
 		internal void Shutdown()
 		{
@@ -18,7 +18,7 @@ namespace QuantumUNET
 			ClearSpawners();
 		}
 
-		internal void SetLocalObject(NetworkInstanceId netId, GameObject obj, bool isClient, bool isServer)
+		internal void SetLocalObject(QNetworkInstanceId netId, GameObject obj, bool isClient, bool isServer)
 		{
 			if (obj == null)
 			{
@@ -42,7 +42,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal GameObject FindLocalObject(NetworkInstanceId netId)
+		internal GameObject FindLocalObject(QNetworkInstanceId netId)
 		{
 			if (localObjects.ContainsKey(netId))
 			{
@@ -56,7 +56,7 @@ namespace QuantumUNET
 			return null;
 		}
 
-		internal bool GetNetworkIdentity(NetworkInstanceId netId, out QNetworkIdentity uv)
+		internal bool GetNetworkIdentity(QNetworkInstanceId netId, out QNetworkIdentity uv)
 		{
 			bool result;
 			if (localObjects.ContainsKey(netId) && localObjects[netId] != null)
@@ -73,10 +73,10 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal bool RemoveLocalObject(NetworkInstanceId netId)
+		internal bool RemoveLocalObject(QNetworkInstanceId netId)
 			=> localObjects.Remove(netId);
 
-		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
+		internal bool RemoveLocalObjectAndDestroy(QNetworkInstanceId netId)
 		{
 			bool result;
 			if (localObjects.ContainsKey(netId))
@@ -116,7 +116,7 @@ namespace QuantumUNET
 			if (component)
 			{
 				guidToPrefab[component.AssetId] = prefab;
-				var componentsInChildren = prefab.GetComponentsInChildren<NetworkIdentity>();
+				var componentsInChildren = prefab.GetComponentsInChildren<QNetworkIdentity>();
 				if (componentsInChildren.Length > 1)
 				{
 					Debug.LogWarning(
@@ -164,7 +164,7 @@ namespace QuantumUNET
 			unspawnHandlers.Remove(assetId);
 		}
 
-		internal static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+		internal static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, QUnSpawnDelegate unspawnHandler)
 		{
 			if (spawnHandler == null || unspawnHandler == null)
 			{
@@ -191,7 +191,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static void RegisterPrefab(GameObject prefab, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+		internal static void RegisterPrefab(GameObject prefab, QSpawnDelegate spawnHandler, QUnSpawnDelegate unspawnHandler)
 		{
 			var component = prefab.GetComponent<QNetworkIdentity>();
 			if (component == null)

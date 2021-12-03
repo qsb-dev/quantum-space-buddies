@@ -3,7 +3,6 @@ using QuantumUNET.Messages;
 using System;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Transport
 {
@@ -166,9 +165,9 @@ namespace QuantumUNET.Transport
 			return result;
 		}
 
-		public NetworkInstanceId ReadNetworkId() => new(ReadPackedUInt32());
+		public QNetworkInstanceId ReadNetworkId() => new(ReadPackedUInt32());
 
-		public NetworkSceneId ReadSceneId() => new(ReadPackedUInt32());
+		public QNetworkSceneId ReadSceneId() => new(ReadPackedUInt32());
 
 		public byte ReadByte() => m_buf.ReadByte();
 
@@ -357,9 +356,9 @@ namespace QuantumUNET.Transport
 			m33 = ReadSingle()
 		};
 
-		public NetworkHash128 ReadNetworkHash128()
+		public QNetworkHash128 ReadNetworkHash128()
 		{
-			NetworkHash128 result;
+			QNetworkHash128 result;
 			result.i0 = ReadByte();
 			result.i1 = ReadByte();
 			result.i2 = ReadByte();
