@@ -15,9 +15,5 @@
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="UnityEngine.Networking, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\QSB\lib\UnityEngine.Networking.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
 </Project>

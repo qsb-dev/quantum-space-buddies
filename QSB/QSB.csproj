@@ -63,10 +63,6 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="UnityEngine.Networking, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\QSB\lib\UnityEngine.Networking.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile" />
     <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj" />
     <PackageReference Include="HarmonyX" Version="2.*" IncludeAssets="compile" />
