@@ -234,7 +234,6 @@ namespace QuantumUNET.Components
 			return result;
 		}
 
-		[Client]
 		private void SendTransform()
 		{
 			if (HasMoved() && QClientScene.readyConnection != null)
