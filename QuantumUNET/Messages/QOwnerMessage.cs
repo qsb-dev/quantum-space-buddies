@@ -4,7 +4,7 @@ namespace QuantumUNET.Messages
 {
 	internal class QOwnerMessage : QMessageBase
 	{
-		public NetworkInstanceId NetId;
+		public QNetworkInstanceId NetId;
 		public short PlayerControllerId;
 
 		public override void Serialize(QNetworkWriter writer)

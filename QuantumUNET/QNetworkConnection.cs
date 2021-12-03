@@ -18,7 +18,7 @@ namespace QuantumUNET
 
 		public List<QPlayerController> PlayerControllers { get; } = new List<QPlayerController>();
 
-		public HashSet<NetworkInstanceId> ClientOwnedObjects { get; private set; }
+		public HashSet<QNetworkInstanceId> ClientOwnedObjects { get; private set; }
 
 		public bool isConnected => hostId != -1;
 
@@ -386,7 +386,7 @@ namespace QuantumUNET
 		{
 			if (ClientOwnedObjects == null)
 			{
-				ClientOwnedObjects = new HashSet<NetworkInstanceId>();
+				ClientOwnedObjects = new HashSet<QNetworkInstanceId>();
 			}
 
 			ClientOwnedObjects.Add(obj.NetId);

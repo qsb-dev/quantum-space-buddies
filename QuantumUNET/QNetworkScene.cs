@@ -10,7 +10,7 @@ namespace QuantumUNET
 		internal static Dictionary<int, GameObject> guidToPrefab { get; } = new Dictionary<int, GameObject>();
 		internal static Dictionary<int, QSpawnDelegate> spawnHandlers { get; } = new Dictionary<int, QSpawnDelegate>();
 		internal static Dictionary<int, QUnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<int, QUnSpawnDelegate>();
-		internal Dictionary<NetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QNetworkIdentity>();
+		internal Dictionary<QNetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<QNetworkInstanceId, QNetworkIdentity>();
 
 		internal void Shutdown()
 		{
@@ -18,7 +18,7 @@ namespace QuantumUNET
 			ClearSpawners();
 		}
 
-		internal void SetLocalObject(NetworkInstanceId netId, GameObject obj, bool isClient, bool isServer)
+		internal void SetLocalObject(QNetworkInstanceId netId, GameObject obj, bool isClient, bool isServer)
 		{
 			if (obj == null)
 			{
@@ -42,7 +42,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal GameObject FindLocalObject(NetworkInstanceId netId)
+		internal GameObject FindLocalObject(QNetworkInstanceId netId)
 		{
 			if (localObjects.ContainsKey(netId))
 			{
@@ -56,7 +56,7 @@ namespace QuantumUNET
 			return null;
 		}
 
-		internal bool GetNetworkIdentity(NetworkInstanceId netId, out QNetworkIdentity uv)
+		internal bool GetNetworkIdentity(QNetworkInstanceId netId, out QNetworkIdentity uv)
 		{
 			bool result;
 			if (localObjects.ContainsKey(netId) && localObjects[netId] != null)
@@ -73,10 +73,10 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal bool RemoveLocalObject(NetworkInstanceId netId)
+		internal bool RemoveLocalObject(QNetworkInstanceId netId)
 			=> localObjects.Remove(netId);
 
-		internal bool RemoveLocalObjectAndDestroy(NetworkInstanceId netId)
+		internal bool RemoveLocalObjectAndDestroy(QNetworkInstanceId netId)
 		{
 			bool result;
 			if (localObjects.ContainsKey(netId))

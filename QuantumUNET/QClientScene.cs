@@ -19,11 +19,11 @@ namespace QuantumUNET
 
 		public static int reconnectId { get; private set; } = -1;
 
-		public static Dictionary<NetworkInstanceId, QNetworkIdentity> Objects => s_NetworkScene.localObjects;
+		public static Dictionary<QNetworkInstanceId, QNetworkIdentity> Objects => s_NetworkScene.localObjects;
 
 		public static Dictionary<int, GameObject> Prefabs => QNetworkScene.guidToPrefab;
 
-		public static Dictionary<NetworkSceneId, QNetworkIdentity> SpawnableObjects { get; private set; }
+		public static Dictionary<QNetworkSceneId, QNetworkIdentity> SpawnableObjects { get; private set; }
 
 		internal static void Shutdown()
 		{
@@ -241,7 +241,7 @@ namespace QuantumUNET
 
 		internal static void PrepareToSpawnSceneObjects()
 		{
-			SpawnableObjects = new Dictionary<NetworkSceneId, QNetworkIdentity>();
+			SpawnableObjects = new Dictionary<QNetworkSceneId, QNetworkIdentity>();
 			foreach (var networkIdentity in Resources.FindObjectsOfTypeAll<QNetworkIdentity>())
 			{
 				if (!networkIdentity.gameObject.activeSelf)
@@ -258,7 +258,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static QNetworkIdentity SpawnSceneObject(NetworkSceneId sceneId)
+		internal static QNetworkIdentity SpawnSceneObject(QNetworkSceneId sceneId)
 		{
 			QNetworkIdentity result;
 			if (SpawnableObjects.ContainsKey(sceneId))
@@ -333,11 +333,11 @@ namespace QuantumUNET
 
 		public static void DestroyAllClientObjects() => s_NetworkScene.DestroyAllClientObjects();
 
-		public static void SetLocalObject(NetworkInstanceId netId, GameObject obj) => s_NetworkScene.SetLocalObject(netId, obj, s_IsSpawnFinished, false);
+		public static void SetLocalObject(QNetworkInstanceId netId, GameObject obj) => s_NetworkScene.SetLocalObject(netId, obj, s_IsSpawnFinished, false);
 
-		public static GameObject FindLocalObject(NetworkInstanceId netId) => s_NetworkScene.FindLocalObject(netId);
+		public static GameObject FindLocalObject(QNetworkInstanceId netId) => s_NetworkScene.FindLocalObject(netId);
 
-		private static void ApplySpawnPayload(QNetworkIdentity uv, Vector3 position, byte[] payload, NetworkInstanceId netId, GameObject newGameObject)
+		private static void ApplySpawnPayload(QNetworkIdentity uv, Vector3 position, byte[] payload, QNetworkInstanceId netId, GameObject newGameObject)
 		{
 			if (!uv.gameObject.activeSelf)
 			{
@@ -678,7 +678,7 @@ namespace QuantumUNET
 
 		private struct PendingOwner
 		{
-			public NetworkInstanceId netId;
+			public QNetworkInstanceId netId;
 
 			public short playerControllerId;
 		}

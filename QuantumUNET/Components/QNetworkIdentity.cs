@@ -13,8 +13,8 @@ namespace QuantumUNET.Components
 		public bool IsClient { get; private set; }
 		public bool IsServer => m_IsServer && QNetworkServer.active && m_IsServer;
 		public bool HasAuthority { get; private set; }
-		public NetworkInstanceId NetId { get; private set; }
-		public NetworkSceneId SceneId => m_SceneId;
+		public QNetworkInstanceId NetId { get; private set; }
+		public QNetworkSceneId SceneId => m_SceneId;
 		public QNetworkConnection ClientAuthorityOwner { get; private set; }
 		public int AssetId => m_AssetId;
 		public bool IsLocalPlayer { get; private set; }
@@ -100,11 +100,11 @@ namespace QuantumUNET.Components
 		public ReadOnlyCollection<QNetworkConnection> Observers
 			=> m_Observers == null ? null : new ReadOnlyCollection<QNetworkConnection>(m_Observers);
 
-		internal static NetworkInstanceId GetNextNetworkId()
+		internal static QNetworkInstanceId GetNextNetworkId()
 		{
 			var value = s_NextNetworkId;
 			s_NextNetworkId += 1U;
-			return new NetworkInstanceId(value);
+			return new QNetworkInstanceId(value);
 		}
 
 		private void CacheBehaviours()
@@ -123,7 +123,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		internal void SetNetworkInstanceId(NetworkInstanceId newNetId)
+		internal void SetNetworkInstanceId(QNetworkInstanceId newNetId)
 		{
 			NetId = newNetId;
 			if (newNetId.Value == 0U)
@@ -132,7 +132,7 @@ namespace QuantumUNET.Components
 			}
 		}
 
-		public void ForceSceneId(int newSceneId) => m_SceneId = new NetworkSceneId((uint)newSceneId);
+		public void ForceSceneId(int newSceneId) => m_SceneId = new QNetworkSceneId((uint)newSceneId);
 
 		internal void UpdateClientServer(bool isClientFlag, bool isServerFlag)
 		{
@@ -777,7 +777,7 @@ namespace QuantumUNET.Components
 				m_IsServer = false;
 				IsClient = false;
 				HasAuthority = false;
-				NetId = (NetworkInstanceId)typeof(NetworkInstanceId).GetField("Zero", System.Reflection.BindingFlags.Static).GetValue(null);
+				NetId = (QNetworkInstanceId)typeof(QNetworkInstanceId).GetField("Zero", System.Reflection.BindingFlags.Static).GetValue(null);
 				IsLocalPlayer = false;
 				ConnectionToServer = null;
 				ConnectionToClient = null;
@@ -795,7 +795,7 @@ namespace QuantumUNET.Components
 		}
 
 		[SerializeField]
-		private NetworkSceneId m_SceneId;
+		private QNetworkSceneId m_SceneId;
 
 		[SerializeField]
 		private int m_AssetId;

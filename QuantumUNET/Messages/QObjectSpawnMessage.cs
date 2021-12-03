@@ -5,7 +5,7 @@ namespace QuantumUNET.Messages
 {
 	internal class QObjectSpawnMessage : QMessageBase
 	{
-		public NetworkInstanceId NetId;
+		public QNetworkInstanceId NetId;
 		public int assetId;
 		public Vector3 Position;
 		public byte[] Payload;

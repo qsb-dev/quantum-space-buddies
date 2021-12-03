@@ -165,9 +165,9 @@ namespace QuantumUNET.Transport
 			return result;
 		}
 
-		public NetworkInstanceId ReadNetworkId() => new(ReadPackedUInt32());
+		public QNetworkInstanceId ReadNetworkId() => new(ReadPackedUInt32());
 
-		public NetworkSceneId ReadSceneId() => new(ReadPackedUInt32());
+		public QNetworkSceneId ReadSceneId() => new(ReadPackedUInt32());
 
 		public byte ReadByte() => m_buf.ReadByte();
 

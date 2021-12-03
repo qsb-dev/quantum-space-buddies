@@ -4,7 +4,7 @@ namespace QuantumUNET.Messages
 {
 	internal class QObjectDestroyMessage : QMessageBase
 	{
-		public NetworkInstanceId NetId;
+		public QNetworkInstanceId NetId;
 
 		public override void Serialize(QNetworkWriter writer) => writer.Write(NetId);
 

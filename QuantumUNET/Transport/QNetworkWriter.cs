@@ -151,9 +151,9 @@ namespace QuantumUNET.Transport
 			}
 		}
 
-		public void Write(NetworkInstanceId value) => WritePackedUInt32(value.Value);
+		public void Write(QNetworkInstanceId value) => WritePackedUInt32(value.Value);
 
-		public void Write(NetworkSceneId value) => WritePackedUInt32(value.Value);
+		public void Write(QNetworkSceneId value) => WritePackedUInt32(value.Value);
 
 		public void Write(char value) => m_Buffer.WriteByte((byte)value);
 

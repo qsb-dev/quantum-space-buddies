@@ -4,7 +4,7 @@ namespace QuantumUNET.Messages
 {
 	internal class QClientAuthorityMessage : QMessageBase
 	{
-		public NetworkInstanceId netId;
+		public QNetworkInstanceId netId;
 		public bool authority;
 
 		public override void Deserialize(QNetworkReader reader)
