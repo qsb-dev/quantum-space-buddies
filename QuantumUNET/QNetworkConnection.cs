@@ -95,7 +95,7 @@ namespace QuantumUNET
 
 		private static bool IsReliableQoS(QosType qos) => qos is QosType.Reliable or QosType.ReliableFragmented or QosType.ReliableSequenced or QosType.ReliableStateUpdate;
 
-		public bool SetChannelOption(int channelId, ChannelOption option, int value) => m_Channels != null && channelId >= 0 && channelId < m_Channels.Length && m_Channels[channelId].SetOption(option, value);
+		public bool SetChannelOption(int channelId, QChannelOption option, int value) => m_Channels != null && channelId >= 0 && channelId < m_Channels.Length && m_Channels[channelId].SetOption(option, value);
 
 		public void Disconnect()
 		{

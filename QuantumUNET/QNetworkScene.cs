@@ -116,7 +116,7 @@ namespace QuantumUNET
 			if (component)
 			{
 				guidToPrefab[component.AssetId] = prefab;
-				var componentsInChildren = prefab.GetComponentsInChildren<NetworkIdentity>();
+				var componentsInChildren = prefab.GetComponentsInChildren<QNetworkIdentity>();
 				if (componentsInChildren.Length > 1)
 				{
 					Debug.LogWarning(

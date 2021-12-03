@@ -356,9 +356,9 @@ namespace QuantumUNET.Transport
 			m33 = ReadSingle()
 		};
 
-		public NetworkHash128 ReadNetworkHash128()
+		public QNetworkHash128 ReadNetworkHash128()
 		{
-			NetworkHash128 result;
+			QNetworkHash128 result;
 			result.i0 = ReadByte();
 			result.i1 = ReadByte();
 			result.i2 = ReadByte();

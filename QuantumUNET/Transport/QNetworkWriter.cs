@@ -360,7 +360,7 @@ namespace QuantumUNET.Transport
 			Write(value.m33);
 		}
 
-		public void Write(NetworkHash128 value)
+		public void Write(QNetworkHash128 value)
 		{
 			Write(value.i0);
 			Write(value.i1);
