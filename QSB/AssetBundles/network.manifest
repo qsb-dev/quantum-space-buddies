@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 551896829
+CRC: 3350054713
 Hashes:
   AssetFileHash:
     serializedVersion: 2
     Hash: 0fa5758f55c8803c7ba77a52ab2c9488
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 927887737c4cf3ead147733f47326ca9
+    Hash: 698a2b9aa48fb1ac782b58a41445f7df
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -16,37 +16,35 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1208705890, guid: 8929207a0d76fd54a8a2a820c652720f, type: 3}
 - Class: 114
-  Script: {fileID: 1142416158, guid: 8929207a0d76fd54a8a2a820c652720f, type: 3}
+  Script: {fileID: 316226861, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: 519208029, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
-  Script: {fileID: -790547616, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: 806682216, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: 916105004, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: -1164351254, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: -1309757293, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: 316226861, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: -1381557116, guid: 27687deae413b90448366870cb0de502, type: 3}
+  Script: {fileID: -2281650, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: -1937550126, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: -749020886, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
-  Script: {fileID: -2281650, guid: 27687deae413b90448366870cb0de502, type: 3}
+  Script: {fileID: 1142416158, guid: 8929207a0d76fd54a8a2a820c652720f, type: 3}
+- Class: 114
+  Script: {fileID: -790547616, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 916105004, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 2036222940, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -1309757293, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -1164351254, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: 677635994, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
-  Script: {fileID: 2036222940, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 115
-  Script: {instanceID: 0}
+  Script: {fileID: 806682216, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -1381557116, guid: 27687deae413b90448366870cb0de502, type: 3}
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Prefabs/NetworkJellyfish.prefab
