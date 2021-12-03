@@ -154,13 +154,11 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnEnable(Shape s)
 		{
-			//DebugLog.DebugWrite($"{LogName} enable shape {s.name}");
 			if (IsEnabled)
 			{
 				return;
 			}
 
-			DebugLog.DebugWrite($"{LogName}-{Name} enable", MessageType.Success);
 			IsEnabled = true;
 			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
 			{
@@ -180,7 +178,6 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable(Shape s)
 		{
-			//DebugLog.DebugWrite($"{LogName} disable shape {s.name}");
 			if (!IsEnabled)
 			{
 				return;
@@ -191,7 +188,6 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			DebugLog.DebugWrite($"{LogName}-{Name} disable", MessageType.Error);
 			IsEnabled = false;
 			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
 			{
