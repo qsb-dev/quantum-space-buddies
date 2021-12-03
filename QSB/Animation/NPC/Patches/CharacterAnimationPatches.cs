@@ -96,19 +96,26 @@ namespace QSB.Animation.NPC.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
-		public static bool HeadZoneExit(CharacterAnimController __instance)
+		public static bool HeadZoneExit(CharacterAnimController __instance, GameObject input)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
+			if (input.CompareTag("PlayerDetector"))
+			{
+				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
+				QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
+			}
+
 			return false;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneEntry))]
-		public static bool HeadZoneEntry(CharacterAnimController __instance)
+		public static bool HeadZoneEntry(CharacterAnimController __instance, GameObject input)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
+			if (input.CompareTag("PlayerDetector"))
+			{
+				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
+				QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
+			}
 			return false;
 		}
 
