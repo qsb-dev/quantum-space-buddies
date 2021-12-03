@@ -1,5 +1,6 @@
 ﻿using QuantumUNET.Components;
 using System.Collections.Generic;
+using QuantumUNET.Messages;
 using UnityEngine;
 
 namespace QuantumUNET
@@ -8,7 +9,7 @@ namespace QuantumUNET
 	{
 		internal static Dictionary<int, GameObject> guidToPrefab { get; } = new Dictionary<int, GameObject>();
 		internal static Dictionary<int, QSpawnDelegate> spawnHandlers { get; } = new Dictionary<int, QSpawnDelegate>();
-		internal static Dictionary<int, UnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<int, UnSpawnDelegate>();
+		internal static Dictionary<int, QUnSpawnDelegate> unspawnHandlers { get; } = new Dictionary<int, QUnSpawnDelegate>();
 		internal Dictionary<NetworkInstanceId, QNetworkIdentity> localObjects { get; } = new Dictionary<NetworkInstanceId, QNetworkIdentity>();
 
 		internal void Shutdown()
@@ -163,7 +164,7 @@ namespace QuantumUNET
 			unspawnHandlers.Remove(assetId);
 		}
 
-		internal static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+		internal static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, QUnSpawnDelegate unspawnHandler)
 		{
 			if (spawnHandler == null || unspawnHandler == null)
 			{
@@ -190,7 +191,7 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static void RegisterPrefab(GameObject prefab, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+		internal static void RegisterPrefab(GameObject prefab, QSpawnDelegate spawnHandler, QUnSpawnDelegate unspawnHandler)
 		{
 			var component = prefab.GetComponent<QNetworkIdentity>();
 			if (component == null)

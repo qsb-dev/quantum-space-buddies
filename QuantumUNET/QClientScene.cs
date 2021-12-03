@@ -321,11 +321,11 @@ namespace QuantumUNET
 
 		public static void RegisterPrefab(GameObject prefab) => QNetworkScene.RegisterPrefab(prefab);
 
-		public static void RegisterPrefab(GameObject prefab, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterPrefab(prefab, spawnHandler, unspawnHandler);
+		public static void RegisterPrefab(GameObject prefab, QSpawnDelegate spawnHandler, QUnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterPrefab(prefab, spawnHandler, unspawnHandler);
 
 		public static void UnregisterPrefab(GameObject prefab) => QNetworkScene.UnregisterPrefab(prefab);
 
-		public static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
+		public static void RegisterSpawnHandler(int assetId, QSpawnDelegate spawnHandler, QUnSpawnDelegate unspawnHandler) => QNetworkScene.RegisterSpawnHandler(assetId, spawnHandler, unspawnHandler);
 
 		public static void UnregisterSpawnHandler(int assetId) => QNetworkScene.UnregisterSpawnHandler(assetId);
 

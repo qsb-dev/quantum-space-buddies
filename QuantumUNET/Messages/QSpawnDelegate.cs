@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace QuantumUNET
+namespace QuantumUNET.Messages
 {
 	public delegate GameObject QSpawnDelegate(Vector3 position, int assetId);
 }
