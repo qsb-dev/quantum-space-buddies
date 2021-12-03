@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET
 {
