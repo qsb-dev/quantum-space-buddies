@@ -29,6 +29,7 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.TranslatorTool.TranslationSync;
+using QSB.TornadoSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.ZeroGCaveSync;
@@ -143,6 +144,7 @@ namespace QSB
 			gameObject.AddComponent<MeteorManager>();
 			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
+			gameObject.AddComponent<TornadoManager>();
 
 			DebugBoxManager.Init();
 
