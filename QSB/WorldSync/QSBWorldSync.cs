@@ -38,25 +38,25 @@ namespace QSB.WorldSync
 		{
 			if (unityObject == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TUnityObject:NULL", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
 			if (!QSBCore.IsInMultiplayer)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TUnityObject:{unityObject.GetType().Name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
 				return default;
 			}
 
 			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
 			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
 			if (returnObject == null)
 			{
-				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
@@ -68,25 +68,25 @@ namespace QSB.WorldSync
 		{
 			if (unityObject == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
 			if (!QSBCore.IsInMultiplayer)
 			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
 				return default;
 			}
 
 			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
 			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
 			if (returnObject == null)
 			{
-				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
