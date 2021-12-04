@@ -38,10 +38,6 @@ namespace QSB.ItemSync.WorldObjects.Items
 				{
 					InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(initialSector);
 				}
-				else
-				{
-					DebugLog.ToConsole($"Warning - InitialSector of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
-				}
 
 				if (InitialParent == null)
 				{
