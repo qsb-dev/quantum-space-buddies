@@ -23,7 +23,7 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, FragmentDamageMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

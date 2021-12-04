@@ -25,21 +25,35 @@ namespace QSB.ItemSync.WorldObjects.Items
 				return;
 			}
 
-			InitialParent = attachedObject.transform.parent;
-			InitialPosition = attachedObject.transform.localPosition;
-			InitialRotation = attachedObject.transform.localRotation;
-			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(attachedObject.GetSector());
-
-			if (InitialParent == null)
+			StartDelayedReady();
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsAdded, () =>
 			{
-				DebugLog.ToConsole($"Warning - InitialParent of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
-			}
+				FinishDelayedReady();
 
-			if (InitialParent?.GetComponent<OWItemSocket>() != null)
-			{
-				var qsbObj = (IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(InitialParent.GetComponent<OWItemSocket>());
-				InitialSocket = qsbObj;
-			}
+				InitialParent = attachedObject.transform.parent;
+				InitialPosition = attachedObject.transform.localPosition;
+				InitialRotation = attachedObject.transform.localRotation;
+				var initialSector = attachedObject.GetSector();
+				if (initialSector != null)
+				{
+					InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(initialSector);
+				}
+				else
+				{
+					DebugLog.ToConsole($"Warning - InitialSector of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
+				}
+
+				if (InitialParent == null)
+				{
+					DebugLog.ToConsole($"Warning - InitialParent of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
+				}
+
+				if (InitialParent?.GetComponent<OWItemSocket>() != null)
+				{
+					var qsbObj = (IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(InitialParent.GetComponent<OWItemSocket>());
+					InitialSocket = qsbObj;
+				}
+			});
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}
@@ -63,7 +77,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 			AttachedObject.transform.localPosition = InitialPosition;
 			AttachedObject.transform.localRotation = InitialRotation;
 			AttachedObject.transform.localScale = Vector3.one;
-			AttachedObject.SetSector(InitialSector.AttachedObject);
+			AttachedObject.SetSector(InitialSector?.AttachedObject);
 			AttachedObject.SetColliderActivation(true);
 		}
 

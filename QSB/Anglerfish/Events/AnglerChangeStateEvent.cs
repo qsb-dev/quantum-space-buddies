@@ -26,7 +26,7 @@ namespace QSB.Anglerfish.Events
 
 		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

@@ -160,7 +160,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = true;
-			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -189,7 +189,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = false;
-			if (!WorldObjectManager.AllReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}

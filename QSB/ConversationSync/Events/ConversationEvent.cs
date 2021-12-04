@@ -22,7 +22,7 @@ namespace QSB.ConversationSync.Events
 
 		public override void OnReceiveRemote(bool server, ConversationMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

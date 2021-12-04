@@ -24,7 +24,7 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, SocketStateChangeMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

@@ -62,7 +62,7 @@ namespace QSB.Utility
 
 		private void FixedUpdate()
 		{
-			if (!WorldObjectManager.AllReady || !_isReady)
+			if (!WorldObjectManager.AllObjectsReady || !_isReady)
 			{
 				return;
 			}

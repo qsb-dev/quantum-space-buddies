@@ -32,7 +32,7 @@ namespace QSB.Syncs.Sectored.Transforms
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);

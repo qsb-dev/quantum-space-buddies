@@ -30,7 +30,7 @@ namespace QSB.Animation.NPC.Patches
 			Animator ____animator,
 			CharacterDialogueTree ____dialogueTree)
 		{
-			if (!WorldObjectManager.AllReady || ConversationManager.Instance == null)
+			if (!WorldObjectManager.AllObjectsReady || ConversationManager.Instance == null)
 			{
 				return false;
 			}
@@ -178,7 +178,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(KidRockController), nameof(KidRockController.Update))]
 		public static bool UpdateReplacement(KidRockController __instance)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;
 			}

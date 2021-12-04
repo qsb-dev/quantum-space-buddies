@@ -67,7 +67,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllReady || !QSBCore.ShowLinesInDebug)
+			if (!WorldObjectManager.AllObjectsReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -99,7 +99,7 @@ namespace QSB.QuantumSync
 
 		public static Tuple<bool, List<PlayerInfo>> IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
-			if (!AllReady)
+			if (!AllObjectsReady)
 			{
 				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
@@ -146,7 +146,7 @@ namespace QSB.QuantumSync
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return Enumerable.Empty<PlayerInfo>();
 			}

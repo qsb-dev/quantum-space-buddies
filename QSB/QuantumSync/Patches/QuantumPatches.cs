@@ -38,7 +38,7 @@ namespace QSB.QuantumSync.Patches
 			ref QuantumSocket ____recentlyObscuredSocket,
 			QuantumSocket ____occupiedSocket)
 		{
-			if (WorldObjectManager.AllReady)
+			if (WorldObjectManager.AllObjectsReady)
 			{
 				var socketedWorldObject = QSBWorldSync.GetWorldFromUnity<QSBSocketedQuantumObject>(__instance);
 				if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
@@ -143,7 +143,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(SocketedQuantumObject), nameof(SocketedQuantumObject.MoveToSocket))]
 		public static void SocketedQuantumObject_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}
@@ -185,7 +185,7 @@ namespace QSB.QuantumSync.Patches
 			ref bool __result)
 		{
 			QSBQuantumShuffleObject shuffleWorldObject = default;
-			if (WorldObjectManager.AllReady)
+			if (WorldObjectManager.AllObjectsReady)
 			{
 				shuffleWorldObject = QSBWorldSync.GetWorldFromUnity<QSBQuantumShuffleObject>(__instance);
 				if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
@@ -209,7 +209,7 @@ namespace QSB.QuantumSync.Patches
 				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
 			}
 
-			if (WorldObjectManager.AllReady)
+			if (WorldObjectManager.AllObjectsReady)
 			{
 				QSBEventManager.FireEvent(
 					EventNames.QSBQuantumShuffle,
@@ -225,7 +225,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(MultiStateQuantumObject), nameof(MultiStateQuantumObject.Start))]
 		public static bool MultiStateQuantumObject_Start(MultiStateQuantumObject __instance, Sector ____sector, bool ____collapseOnStart)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;
 			}
@@ -261,7 +261,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(MultiStateQuantumObject), nameof(MultiStateQuantumObject.ChangeQuantumState))]
 		public static bool MultiStateQuantumObject_ChangeQuantumState(MultiStateQuantumObject __instance)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;
 			}
@@ -280,7 +280,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(QuantumState), nameof(QuantumState.SetVisible))]
 		public static void QuantumState_SetVisible(QuantumState __instance, bool visible)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}
