@@ -47,7 +47,7 @@ namespace QSB.Player.Events
 		private void SendWorldObjectInfo()
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
-				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));
+				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
 
 			QSBWorldSync.ShipLogFacts.ForEach(fact
 				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));
