@@ -7,6 +7,8 @@ namespace QSB.Player.Events
 {
 	public class PlayerReadyEvent : QSBEvent<ToggleMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
 		public override void CloseListener() => GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
 

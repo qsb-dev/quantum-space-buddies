@@ -6,6 +6,8 @@ namespace QSB.Tools.SignalscopeTool.Events
 {
 	public class PlayerSignalscopeEvent : QSBEvent<ToggleMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener()
 		{
 			GlobalMessenger<Signalscope>.AddListener(EventNames.EquipSignalscope, HandleEquip);

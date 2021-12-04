@@ -9,6 +9,8 @@ namespace QSB.QuantumSync.Events
 {
 	public class MoonStateChangeEvent : QSBEvent<MoonStateChangeMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener() => GlobalMessenger<int, Vector3, int>.AddListener(EventNames.QSBMoonStateChange, Handler);
 		public override void CloseListener() => GlobalMessenger<int, Vector3, int>.RemoveListener(EventNames.QSBMoonStateChange, Handler);
 
@@ -24,11 +26,6 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, MoonStateChangeMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var moon = Locator.GetQuantumMoon();
 			var wasPlayerEntangled = moon.IsPlayerEntangled();
 			var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), moon.transform);

@@ -8,6 +8,8 @@ namespace QSB.Anglerfish.Events
 {
 	public class AnglerChangeStateEvent : QSBEvent<AnglerChangeStateMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
 
@@ -26,11 +28,6 @@ namespace QSB.Anglerfish.Events
 
 		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId);
 			qsbAngler.TargetTransform = IdToTarget(message.TargetId);
 			qsbAngler.AttachedObject._localDisturbancePos = message.LocalDisturbancePos;

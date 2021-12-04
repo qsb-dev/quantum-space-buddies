@@ -7,6 +7,8 @@ namespace QSB.DeathSync.Events
 {
 	internal class StartLoopEvent : QSBEvent<PlayerMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBStartLoop, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBStartLoop, Handler);
 

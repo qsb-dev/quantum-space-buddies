@@ -6,6 +6,8 @@ namespace QSB.Player.Events
 {
 	public class PlayerInformationEvent : QSBEvent<PlayerInformationMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBPlayerInformation, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBPlayerInformation, Handler);
 

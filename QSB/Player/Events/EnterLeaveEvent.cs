@@ -10,6 +10,9 @@ namespace QSB.Player.Events
 {
 	internal class EnterLeaveEvent : QSBEvent<EnumWorldObjectMessage<EnterLeaveType>>
 	{
+		// TODO : sync the things that dont need the worldobjects some other way
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.PlayerEnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));

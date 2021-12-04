@@ -7,6 +7,8 @@ namespace QSB.MeteorSync.Events
 {
 	public class MeteorSpecialImpactEvent : QSBEvent<WorldObjectMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<QSBMeteor>.AddListener(EventNames.QSBMeteorSpecialImpact, Handler);
 
@@ -22,11 +24,6 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbMeteor = QSBWorldSync.GetWorldFromId<QSBMeteor>(message.ObjectId);
 			qsbMeteor.SpecialImpact();
 		}
