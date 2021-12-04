@@ -79,11 +79,6 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			transform.rotation = rot;
 			_relativeVelocity = relativeVelocity;
 			_relativeAngularVelocity = relativeAngularVelocity;
-
-			if (transform.position == Vector3.zero)
-			{
-				// DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
-			}
 		}
 
 		protected void SetValuesToSync()
@@ -104,11 +99,6 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-
-			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
-			{
-				return false;
-			}
 
 			var positionToSet = targetPos;
 			var rotationToSet = targetRot;

@@ -45,11 +45,6 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 			transform.position = pos;
 			transform.rotation = rot;
-
-			if (transform.position == Vector3.zero)
-			{
-				//DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
-			}
 		}
 
 		protected override bool UpdateTransform()
@@ -63,22 +58,15 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-			if (targetPos != Vector3.zero && ReferenceTransform.DecodePos(transform.position) != Vector3.zero)
+			if (UseInterpolation)
 			{
-				if (UseInterpolation)
-				{
-					AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-					AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
-				}
-				else
-				{
-					AttachedObject.transform.position = targetPos;
-					AttachedObject.transform.rotation = targetRot;
-				}
+				AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
+				AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
 			}
-			else if (targetPos == Vector3.zero)
+			else
 			{
-				DebugLog.ToConsole($"Warning - TargetPos for {LogName} was (0,0,0).", MessageType.Warning);
+				AttachedObject.transform.position = targetPos;
+				AttachedObject.transform.rotation = targetRot;
 			}
 
 			return true;
