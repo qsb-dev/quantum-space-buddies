@@ -6,9 +6,9 @@ namespace QSB.Menus
 	public interface IMenuAPI
 	{
 		// Title screen
-		GameObject TitleScreen_MakeMenuOpenButton(string name, Menu menuToOpen);
-		GameObject TitleScreen_MakeSceneLoadButton(string name, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null);
-		Button TitleScreen_MakeSimpleButton(string name);
+		GameObject TitleScreen_MakeMenuOpenButton(string name, int index, Menu menuToOpen);
+		GameObject TitleScreen_MakeSceneLoadButton(string name, int index, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null);
+		Button TitleScreen_MakeSimpleButton(string name, int index);
 		// Pause menu
 		GameObject PauseMenu_MakeMenuOpenButton(string name, Menu menuToOpen, Menu customMenu = null);
 		GameObject PauseMenu_MakeSceneLoadButton(string name, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null, Menu customMenu = null);
