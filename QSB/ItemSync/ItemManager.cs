@@ -12,14 +12,6 @@ namespace QSB.ItemSync
 		{
 			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Info);
 
-			// Items
-			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
-			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
-			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
-			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
-			QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
-			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
-
 			// Sockets
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
 			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
@@ -27,6 +19,14 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
 			QSBWorldSync.Init<QSBSlideReelSocket, SlideReelSocket>();
 			QSBWorldSync.Init<QSBSlideProjectorSocket, SlideProjectorSocket>();
+
+			// Items
+			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
+			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
+			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
+			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
+			QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
+			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
 		}
 	}
 }
