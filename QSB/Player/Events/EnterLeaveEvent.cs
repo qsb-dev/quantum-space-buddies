@@ -12,8 +12,8 @@ namespace QSB.Player.Events
 	{
 		public override void SetupListener()
 		{
-			GlobalMessenger.AddListener(EventNames.EnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
-			GlobalMessenger.AddListener(EventNames.ExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
+			GlobalMessenger.AddListener(EventNames.PlayerEnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
+			GlobalMessenger.AddListener(EventNames.PlayerExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
 			GlobalMessenger.AddListener(EventNames.QSBEnterShrine, () => Handler(EnterLeaveType.EnterShrine));
 			GlobalMessenger.AddListener(EventNames.QSBExitShrine, () => Handler(EnterLeaveType.ExitShrine));
 			GlobalMessenger<int>.AddListener(EventNames.QSBEnterPlatform, (int id) => Handler(EnterLeaveType.EnterPlatform, id));
@@ -28,8 +28,8 @@ namespace QSB.Player.Events
 
 		public override void CloseListener()
 		{
-			GlobalMessenger.RemoveListener(EventNames.EnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
-			GlobalMessenger.RemoveListener(EventNames.ExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
+			GlobalMessenger.RemoveListener(EventNames.PlayerEnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
+			GlobalMessenger.RemoveListener(EventNames.PlayerExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
 			GlobalMessenger.RemoveListener(EventNames.QSBEnterShrine, () => Handler(EnterLeaveType.EnterShrine));
 			GlobalMessenger.RemoveListener(EventNames.QSBExitShrine, () => Handler(EnterLeaveType.ExitShrine));
 			GlobalMessenger<int>.RemoveListener(EventNames.QSBEnterPlatform, (int id) => Handler(EnterLeaveType.EnterPlatform, id));

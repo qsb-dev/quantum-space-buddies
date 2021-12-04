@@ -5,8 +5,8 @@ namespace QSB.ConversationSync.Events
 {
 	public class DialogueConditionEvent : QSBEvent<DialogueConditionMessage>
 	{
-		public override void SetupListener() => GlobalMessenger<string, bool>.AddListener(EventNames.DialogueCondition, Handler);
-		public override void CloseListener() => GlobalMessenger<string, bool>.RemoveListener(EventNames.DialogueCondition, Handler);
+		public override void SetupListener() => GlobalMessenger<string, bool>.AddListener(EventNames.DialogueConditionChanged, Handler);
+		public override void CloseListener() => GlobalMessenger<string, bool>.RemoveListener(EventNames.DialogueConditionChanged, Handler);
 
 		private void Handler(string name, bool state) => SendEvent(CreateMessage(name, state));
 
