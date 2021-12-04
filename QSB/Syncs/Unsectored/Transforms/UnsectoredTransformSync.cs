@@ -28,7 +28,7 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);

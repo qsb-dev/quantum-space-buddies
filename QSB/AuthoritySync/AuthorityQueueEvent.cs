@@ -27,7 +27,7 @@ namespace QSB.AuthoritySync
 
 		private static void OnReceive(AuthorityQueueMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

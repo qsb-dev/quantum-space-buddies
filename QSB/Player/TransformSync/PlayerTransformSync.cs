@@ -86,7 +86,7 @@ namespace QSB.Player.TransformSync
 
 		protected override Component InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -249,7 +249,7 @@ namespace QSB.Player.TransformSync
 		{
 			base.OnRenderObject();
 
-			if (!WorldObjectManager.AllReady
+			if (!WorldObjectManager.AllObjectsReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null)

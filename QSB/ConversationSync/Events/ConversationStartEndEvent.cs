@@ -29,7 +29,7 @@ namespace QSB.ConversationSync.Events
 				return;
 			}
 
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

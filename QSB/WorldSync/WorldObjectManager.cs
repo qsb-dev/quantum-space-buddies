@@ -11,8 +11,15 @@ namespace QSB.WorldSync
 	{
 		private static readonly List<WorldObjectManager> _managers = new();
 
-		public static bool AllAdded { get; private set; }
-		public static bool AllReady { get; private set; }
+		/// <summary>
+		/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
+		/// </summary>
+		public static bool AllObjectsAdded { get; private set; }
+
+		/// <summary>
+		/// Set when all WorldObjects have finished running Init()
+		/// </summary>
+		public static bool AllObjectsReady { get; private set; }
 
 		public virtual void Awake()
 		{
@@ -28,14 +35,14 @@ namespace QSB.WorldSync
 
 		public static void SetNotReady()
 		{
-			AllAdded = false;
-			AllReady = false;
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
 		{
-			AllAdded = false;
-			AllReady = false;
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
 		}
 
 		public static void Rebuild(OWScene scene)
@@ -67,12 +74,13 @@ namespace QSB.WorldSync
 		{
 			_numManagersReadying = 0;
 			_numObjectsReadying = 0;
-			AllAdded = false;
-			AllReady = false;
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
 			foreach (var manager in _managers)
 			{
 				try
 				{
+					DebugLog.DebugWrite($"Rebuilding {manager.GetType().Name}", MessageType.Info);
 					manager.RebuildWorldObjects(scene);
 				}
 				catch (Exception ex)
@@ -83,11 +91,11 @@ namespace QSB.WorldSync
 
 			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
 			{
-				AllAdded = true;
+				AllObjectsAdded = true;
 				DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 				QSBCore.UnityEvents.RunWhen(() => _numObjectsReadying == 0, () =>
 				{
-					AllReady = true;
+					AllObjectsReady = true;
 					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
 				});
 			});

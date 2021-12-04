@@ -62,7 +62,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);

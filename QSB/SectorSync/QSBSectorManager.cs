@@ -22,7 +22,7 @@ namespace QSB.SectorSync
 
 		public void Invoke()
 		{
-			if (!Instance.IsReady || !AllReady)
+			if (!Instance.IsReady || !AllObjectsReady)
 			{
 				return;
 			}

@@ -23,7 +23,7 @@ namespace QSB.JellyfishSync.Events
 
 		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}
