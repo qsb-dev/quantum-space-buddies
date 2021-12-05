@@ -22,6 +22,11 @@ namespace QSB.QuantumSync.Events
 
 		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
 		{
+			if (!base.CheckMessage(isServer, message))
+			{
+				return false;
+			}
+
 			var obj = QSBWorldSync.GetWorldFromId<IQSBQuantumObject>(message.ObjectId);
 
 			// Deciding if to change the object's owner
