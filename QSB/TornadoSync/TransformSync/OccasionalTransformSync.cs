@@ -1,4 +1,6 @@
-﻿using QSB.Player;
+﻿using System.Collections.Generic;
+using System.Linq;
+using QSB.Player;
 using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
@@ -16,7 +18,7 @@ namespace QSB.TornadoSync.TransformSync
 		protected override OWRigidbody GetRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
 
 		private int _bodyIndex = -1;
-		private Sector _sector;
+		private string[] _sectors;
 		private int _refBodyIndex = -1;
 
 		public void InitBodyIndexes(OWRigidbody body, OWRigidbody refBody)
@@ -31,7 +33,8 @@ namespace QSB.TornadoSync.TransformSync
 		{
 			base.Init();
 			SetReferenceTransform(CenterOfTheUniverse.s_rigidbodies[_refBodyIndex].transform);
-			_sector = ((OWRigidbody)AttachedObject).GetComponentInChildren<Sector>();
+			_sectors = ((OWRigidbody)AttachedObject).GetComponentsInChildren<Sector>()
+				.Select(x => x.name).ToArray();
 
 			// to prevent change in rotation/angvel
 			if (!HasAuthority && AttachedObject.TryGetComponent<AlignWithDirection>(out var align))
@@ -119,18 +122,16 @@ namespace QSB.TornadoSync.TransformSync
 				return true;
 			}
 
-			// todo? also do this with the ship?
-			string playerSector = null!;
-			string thisSector = null!;
+			// todo also do this with the ship/probe. oh and orbs. yeah this really sucks
+			string playerSector = null;
 			Vector3 playerPos = default;
 			Quaternion playerRot = default;
 			Vector3 playerVel = default;
 			Vector3 playerAngVel = default;
-			if (_sector != null)
+			if (_sectors != null)
 			{
 				playerSector = QSBPlayerManager.LocalPlayer.TransformSync.ReferenceSector.Name;
-				thisSector = _sector.name;
-				if (playerSector == thisSector)
+				if (_sectors.Contains(playerSector))
 				{
 					var pos = Locator.GetPlayerBody().GetPosition();
 					playerPos = ((OWRigidbody)AttachedObject).transform.EncodePos(pos);
@@ -158,9 +159,9 @@ namespace QSB.TornadoSync.TransformSync
 			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
 			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
 
-			if (_sector != null)
+			if (_sectors != null)
 			{
-				if (playerSector == thisSector)
+				if (_sectors.Contains(playerSector))
 				{
 					var pos = ((OWRigidbody)AttachedObject).transform.DecodePos(playerPos);
 					Locator.GetPlayerBody().SetPosition(pos);
