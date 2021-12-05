@@ -1,4 +1,5 @@
-﻿using QSB.Syncs;
+﻿using QSB.Player;
+using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -15,6 +16,7 @@ namespace QSB.TornadoSync.TransformSync
 		protected override OWRigidbody GetRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
 
 		private int _bodyIndex = -1;
+		private Sector _sector;
 		private int _refBodyIndex = -1;
 
 		public void InitBodyIndexes(OWRigidbody body, OWRigidbody refBody)
@@ -23,12 +25,13 @@ namespace QSB.TornadoSync.TransformSync
 			_refBodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
 		}
 
-		// public override float GetNetworkSendInterval() => 1;
+		public override float GetNetworkSendInterval() => 1;
 
 		protected override void Init()
 		{
 			base.Init();
 			SetReferenceTransform(CenterOfTheUniverse.s_rigidbodies[_refBodyIndex].transform);
+			_sector = ((OWRigidbody)AttachedObject).GetComponentInChildren<Sector>();
 
 			// to prevent change in rotation/angvel
 			if (!HasAuthority && AttachedObject.TryGetComponent<AlignWithDirection>(out var align))
@@ -87,11 +90,6 @@ namespace QSB.TornadoSync.TransformSync
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 
-			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
-			{
-				return false;
-			}
-
 			var positionToSet = targetPos;
 			var rotationToSet = targetRot;
 
@@ -121,6 +119,27 @@ namespace QSB.TornadoSync.TransformSync
 				return true;
 			}
 
+			// todo? also do this with the ship?
+			string playerSector = null!;
+			string thisSector = null!;
+			Vector3 playerPos = default;
+			Quaternion playerRot = default;
+			Vector3 playerVel = default;
+			Vector3 playerAngVel = default;
+			if (_sector != null)
+			{
+				playerSector = QSBPlayerManager.LocalPlayer.TransformSync.ReferenceSector.Name;
+				thisSector = _sector.name;
+				if (playerSector == thisSector)
+				{
+					var pos = Locator.GetPlayerBody().GetPosition();
+					playerPos = ((OWRigidbody)AttachedObject).transform.EncodePos(pos);
+					playerRot = ((OWRigidbody)AttachedObject).transform.EncodeRot(Locator.GetPlayerBody().GetRotation());
+					playerVel = ((OWRigidbody)AttachedObject).EncodeVel(Locator.GetPlayerBody().GetVelocity(), pos);
+					playerAngVel = ((OWRigidbody)AttachedObject).EncodeAngVel(Locator.GetPlayerBody().GetAngularVelocity());
+				}
+			}
+
 			if (((OWRigidbody)AttachedObject).RunningKinematicSimulation())
 			{
 				((OWRigidbody)AttachedObject).SetPosition(positionToSet);
@@ -138,6 +157,18 @@ namespace QSB.TornadoSync.TransformSync
 
 			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
 			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+
+			if (_sector != null)
+			{
+				if (playerSector == thisSector)
+				{
+					var pos = ((OWRigidbody)AttachedObject).transform.DecodePos(playerPos);
+					Locator.GetPlayerBody().SetPosition(pos);
+					Locator.GetPlayerBody().SetRotation(((OWRigidbody)AttachedObject).transform.DecodeRot(playerRot));
+					Locator.GetPlayerBody().SetVelocity(((OWRigidbody)AttachedObject).DecodeVel(playerVel, pos));
+					Locator.GetPlayerBody().SetAngularVelocity(((OWRigidbody)AttachedObject).DecodeAngVel(playerAngVel));
+				}
+			}
 
 			return true;
 		}

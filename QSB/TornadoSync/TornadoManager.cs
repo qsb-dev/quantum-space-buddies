@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using QSB.TornadoSync.TransformSync;
+﻿using QSB.TornadoSync.TransformSync;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
