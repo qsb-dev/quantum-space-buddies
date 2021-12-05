@@ -112,6 +112,12 @@ namespace QSB.Utility
 				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
 				WriteLine(1, $"Time Remaining : {Mathf.Floor(TimeLoop.GetSecondsRemaining() / 60f)}:{Mathf.Round(TimeLoop.GetSecondsRemaining() % 60f * 100f / 100f)}");
 				WriteLine(1, $"Loop Count : {TimeLoop.GetLoopCount()}");
+				WriteLine(1, $"TimeLoop Initialized : {TimeLoop._initialized}");
+				if (TimeLoop._initialized)
+				{
+					WriteLine(1, $"TimeLoop IsTimeFlowing : {TimeLoop.IsTimeFlowing()}");
+					WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
+				}
 			}
 			#endregion
 
