@@ -13,6 +13,7 @@ namespace QSB.TornadoSync
 		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
 
+			return;
 			if (!QSBCore.IsHost)
 			{
 				return;
