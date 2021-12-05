@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using QSB.Player;
 using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
