@@ -8,6 +8,8 @@ namespace QSB.DeathSync.Events
 {
 	internal class EndLoopEvent : QSBEvent<EnumMessage<EndLoopReason>>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger<EndLoopReason>.AddListener(EventNames.QSBEndLoop, Handler);
 		public override void CloseListener() => GlobalMessenger<EndLoopReason>.RemoveListener(EventNames.QSBEndLoop, Handler);
 

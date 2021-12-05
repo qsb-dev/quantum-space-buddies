@@ -8,6 +8,8 @@ namespace QSB.Animation.Player.Events
 {
 	public class ChangeAnimTypeEvent : QSBEvent<EnumMessage<AnimationType>>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener() => GlobalMessenger<uint, AnimationType>.AddListener(EventNames.QSBChangeAnimType, Handler);
 		public override void CloseListener() => GlobalMessenger<uint, AnimationType>.RemoveListener(EventNames.QSBChangeAnimType, Handler);
 
@@ -21,7 +23,7 @@ namespace QSB.Animation.Player.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<AnimationType> message)
 		{
-			if (!WorldObjectManager.AllObjectsReady || !QSBPlayerManager.GetPlayer(message.AboutId).IsReady)
+			if (!QSBPlayerManager.GetPlayer(message.AboutId).IsReady)
 			{
 				return;
 			}

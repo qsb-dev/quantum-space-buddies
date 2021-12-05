@@ -11,6 +11,8 @@ namespace QSB.MeteorSync.Events
 	/// pain
 	public class FragmentResyncEvent : QSBEvent<FragmentResyncMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<QSBFragment>.AddListener(EventNames.QSBFragmentResync, Handler);
 
@@ -48,11 +50,6 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, FragmentResyncMessage msg)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbFragment = QSBWorldSync.GetWorldFromId<QSBFragment>(msg.ObjectId);
 			qsbFragment.AttachedObject._integrity = msg.Integrity;
 			qsbFragment.AttachedObject._origIntegrity = msg.OrigIntegrity;

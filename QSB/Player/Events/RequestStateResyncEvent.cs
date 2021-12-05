@@ -16,6 +16,8 @@ namespace QSB.Player.Events
 	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
 	public class RequestStateResyncEvent : QSBEvent<PlayerMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
 
@@ -47,7 +49,7 @@ namespace QSB.Player.Events
 		private void SendWorldObjectInfo()
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
-				=> QSBEventManager.FireEvent(EventNames.DialogueCondition, condition.Key, condition.Value));
+				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
 
 			QSBWorldSync.ShipLogFacts.ForEach(fact
 				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));

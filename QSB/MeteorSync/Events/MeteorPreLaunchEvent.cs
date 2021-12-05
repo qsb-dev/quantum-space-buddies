@@ -7,6 +7,8 @@ namespace QSB.MeteorSync.Events
 {
 	public class MeteorPreLaunchEvent : QSBEvent<WorldObjectMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<QSBMeteorLauncher>.AddListener(EventNames.QSBMeteorPreLaunch, Handler);
 
@@ -22,11 +24,6 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, WorldObjectMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromId<QSBMeteorLauncher>(message.ObjectId);
 			qsbMeteorLauncher.PreLaunchMeteor();
 		}

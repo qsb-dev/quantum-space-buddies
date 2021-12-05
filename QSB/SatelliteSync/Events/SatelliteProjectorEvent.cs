@@ -5,6 +5,8 @@ namespace QSB.SatelliteSync.Events
 {
 	internal class SatelliteProjectorEvent : QSBEvent<BoolMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.QSBEnterSatelliteCamera, () => Handler(true));

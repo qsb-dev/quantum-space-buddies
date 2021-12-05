@@ -81,7 +81,7 @@ namespace QSB.Syncs.Sectored.Transforms
 
 			var targetPos = transform.position;
 			var targetRot = transform.rotation;
-			if (targetPos != Vector3.zero && ReferenceTransform.DecodePos(transform.position) != Vector3.zero)
+			if (targetPos != Vector3.zero)
 			{
 				if (UseInterpolation)
 				{

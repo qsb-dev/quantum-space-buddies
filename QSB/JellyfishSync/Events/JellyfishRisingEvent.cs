@@ -7,6 +7,8 @@ namespace QSB.JellyfishSync.Events
 {
 	public class JellyfishRisingEvent : QSBEvent<BoolWorldObjectMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<QSBJellyfish>.AddListener(EventNames.QSBJellyfishRising, Handler);
 
@@ -23,11 +25,6 @@ namespace QSB.JellyfishSync.Events
 
 		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbJellyfish = QSBWorldSync.GetWorldFromId<QSBJellyfish>(message.ObjectId);
 			qsbJellyfish.IsRising = message.State;
 		}
