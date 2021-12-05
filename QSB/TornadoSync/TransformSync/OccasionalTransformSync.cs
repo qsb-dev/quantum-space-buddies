@@ -27,7 +27,7 @@ namespace QSB.TornadoSync.TransformSync
 			_refBodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
 		}
 
-		public override float GetNetworkSendInterval() => 1;
+		public override float GetNetworkSendInterval() => 20;
 
 		protected override void Init()
 		{
@@ -128,7 +128,7 @@ namespace QSB.TornadoSync.TransformSync
 			Quaternion playerRot = default;
 			Vector3 playerVel = default;
 			Vector3 playerAngVel = default;
-			if (_sectors != null)
+			if (_sectors.Length != 0)
 			{
 				playerSector = QSBPlayerManager.LocalPlayer.TransformSync.ReferenceSector.Name;
 				if (_sectors.Contains(playerSector))
@@ -159,7 +159,7 @@ namespace QSB.TornadoSync.TransformSync
 			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
 			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
 
-			if (_sectors != null)
+			if (_sectors.Length != 0)
 			{
 				if (_sectors.Contains(playerSector))
 				{
