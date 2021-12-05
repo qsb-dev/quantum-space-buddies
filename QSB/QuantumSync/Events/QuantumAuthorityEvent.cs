@@ -6,7 +6,7 @@ namespace QSB.QuantumSync.Events
 {
 	internal class QuantumAuthorityEvent : QSBEvent<QuantumAuthorityMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int, uint>.AddListener(EventNames.QSBQuantumAuthority, Handler);
 		public override void CloseListener() => GlobalMessenger<int, uint>.RemoveListener(EventNames.QSBQuantumAuthority, Handler);

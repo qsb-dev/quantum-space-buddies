@@ -9,7 +9,7 @@ namespace QSB.RoastingSync.Events
 {
 	internal class EnterExitRoastingEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 		{

@@ -11,7 +11,7 @@ namespace QSB.MeteorSync.Events
 	/// pain
 	public class FragmentResyncEvent : QSBEvent<FragmentResyncMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBFragment>.AddListener(EventNames.QSBFragmentResync, Handler);

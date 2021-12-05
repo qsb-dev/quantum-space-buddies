@@ -32,7 +32,7 @@ namespace QSB.Events
 		public virtual void OnReceiveRemote(bool isHost, T message) { }
 		public virtual void OnReceiveLocal(bool isHost, T message) { }
 
-		public abstract bool RequireWorldObjectsReady();
+		public abstract bool RequireWorldObjectsReady { get; }
 
 		public void SendEvent(T message)
 		{
@@ -47,7 +47,7 @@ namespace QSB.Events
 		/// </summary>
 		/// <returns>True if the message should be processed.</returns>
 		public virtual bool CheckMessage(bool isServer, T message)
-			=> !RequireWorldObjectsReady() || WorldObjectManager.AllObjectsReady;
+			=> !RequireWorldObjectsReady || WorldObjectManager.AllObjectsReady;
 
 		private void OnReceive(bool isServer, T message)
 		{

@@ -8,7 +8,7 @@ namespace QSB.Animation.Player.Events
 {
 	public class ChangeAnimTypeEvent : QSBEvent<EnumMessage<AnimationType>>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<uint, AnimationType>.AddListener(EventNames.QSBChangeAnimType, Handler);
 		public override void CloseListener() => GlobalMessenger<uint, AnimationType>.RemoveListener(EventNames.QSBChangeAnimType, Handler);

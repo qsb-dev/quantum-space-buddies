@@ -7,7 +7,7 @@ namespace QSB.MeteorSync.Events
 {
 	public class MeteorPreLaunchEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBMeteorLauncher>.AddListener(EventNames.QSBMeteorPreLaunch, Handler);

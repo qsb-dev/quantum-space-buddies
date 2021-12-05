@@ -6,7 +6,7 @@ namespace QSB.AuthoritySync
 {
 	public class AuthorityQueueEvent : QSBEvent<AuthorityQueueMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() =>
 			GlobalMessenger<QNetworkIdentity, bool>.AddListener(EventNames.QSBAuthorityQueue, Handler);

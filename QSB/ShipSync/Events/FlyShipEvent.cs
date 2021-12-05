@@ -10,7 +10,7 @@ namespace QSB.ShipSync.Events
 {
 	internal class FlyShipEvent : QSBEvent<BoolMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 		{
