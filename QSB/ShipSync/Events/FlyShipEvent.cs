@@ -10,6 +10,8 @@ namespace QSB.ShipSync.Events
 {
 	internal class FlyShipEvent : QSBEvent<BoolMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 		{
 			GlobalMessenger<OWRigidbody>.AddListener(EventNames.EnterFlightConsole, (OWRigidbody rigidbody) => Handler(true));

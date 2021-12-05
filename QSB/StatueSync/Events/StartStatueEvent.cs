@@ -7,6 +7,8 @@ namespace QSB.StatueSync.Events
 {
 	internal class StartStatueEvent : QSBEvent<StartStatueMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<Vector3, Quaternion, float>.AddListener(EventNames.QSBStartStatue, Handler);
 

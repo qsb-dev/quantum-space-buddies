@@ -4,6 +4,8 @@ namespace QSB.TimeSync.Events
 {
 	public class ServerTimeEvent : QSBEvent<ServerTimeMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger<float, int>.AddListener(EventNames.QSBServerTime, Handler);
 		public override void CloseListener() => GlobalMessenger<float, int>.RemoveListener(EventNames.QSBServerTime, Handler);
 

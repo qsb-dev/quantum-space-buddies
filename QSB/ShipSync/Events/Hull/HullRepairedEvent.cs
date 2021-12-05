@@ -7,6 +7,8 @@ namespace QSB.ShipSync.Events.Hull
 {
 	internal class HullRepairedEvent : QSBEvent<WorldObjectMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener() => GlobalMessenger<ShipHull>.AddListener(EventNames.QSBHullRepaired, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipHull>.RemoveListener(EventNames.QSBHullRepaired, Handler);
 

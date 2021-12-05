@@ -6,6 +6,7 @@ using QSB.Player;
 using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET.Components;
 
 namespace QSB.Events
@@ -31,6 +32,8 @@ namespace QSB.Events
 		public virtual void OnReceiveRemote(bool isHost, T message) { }
 		public virtual void OnReceiveLocal(bool isHost, T message) { }
 
+		public abstract bool RequireWorldObjectsReady();
+
 		public void SendEvent(T message)
 		{
 			message.FromId = QSBPlayerManager.LocalPlayerId;
@@ -43,7 +46,8 @@ namespace QSB.Events
 		/// Checks whether the message should be processed by the executing client/server.
 		/// </summary>
 		/// <returns>True if the message should be processed.</returns>
-		public virtual bool CheckMessage(bool isServer, T message) => true;
+		public virtual bool CheckMessage(bool isServer, T message)
+			=> !RequireWorldObjectsReady() || WorldObjectManager.AllObjectsReady;
 
 		private void OnReceive(bool isServer, T message)
 		{

@@ -6,6 +6,8 @@ namespace QSB.Player.Events
 {
 	public class PlayerJoinEvent : QSBEvent<PlayerJoinMessage>
 	{
+		public override bool RequireWorldObjectsReady() => false;
+
 		public override void SetupListener() => GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Handler);
 		public override void CloseListener() => GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Handler);
 

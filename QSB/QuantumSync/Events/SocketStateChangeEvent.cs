@@ -9,6 +9,8 @@ namespace QSB.QuantumSync.Events
 {
 	public class SocketStateChangeEvent : QSBEvent<SocketStateChangeMessage>
 	{
+		public override bool RequireWorldObjectsReady() => true;
+
 		public override void SetupListener() => GlobalMessenger<int, int, Quaternion>.AddListener(EventNames.QSBSocketStateChange, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int, Quaternion>.RemoveListener(EventNames.QSBSocketStateChange, Handler);
 
@@ -24,11 +26,6 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, SocketStateChangeMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var obj = QSBWorldSync.GetWorldFromId<QSBSocketedQuantumObject>(message.ObjectId);
 			if (obj.ControllingPlayer != message.FromId)
 			{
