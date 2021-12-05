@@ -19,15 +19,12 @@ namespace QSB.Menus
 		private Button HostButton;
 		private GameObject ClientButton;
 		private Button DisconnectButton;
-		private Button JoinMultiplayerGame;
 
 		private GameObject ResumeGameButton;
 		private GameObject NewGameButton;
 
-		private const int _JoinGameIndex = 1;
-		private const int _HostButtonIndex = 2;
-		private const int _ClientButtonIndex = 3;
-		private const int _DisconnectIndex = 2;
+		private const int _ClientButtonIndex = 2;
+		private const int _DisconnectIndex = 3;
 
 		public void Start()
 		{
@@ -97,6 +94,11 @@ namespace QSB.Menus
 
 		private void SetButtonActive(GameObject button, bool active)
 		{
+			if (button == null)
+			{
+				return;
+			}
+
 			DebugLog.DebugWrite($"Set {button.name} to {active}");
 			button.SetActive(active);
 			button.GetComponent<CanvasGroup>().alpha = active ? 1 : 0;
@@ -108,8 +110,6 @@ namespace QSB.Menus
 
 			HostButton = MenuApi.PauseMenu_MakeSimpleButton("MULTIPLAYER (HOST)");
 			HostButton.onClick.AddListener(Host);
-
-			ClientButton = MenuApi.PauseMenu_MakeMenuOpenButton("MULTIPLAYER (CONNECT)", PopupMenu);
 
 			DisconnectButton = MenuApi.PauseMenu_MakeSimpleButton("DISCONNECT");
 			DisconnectButton.onClick.AddListener(Disconnect);
@@ -132,16 +132,10 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			HostButton = MenuApi.TitleScreen_MakeSimpleButton("MULTIPLAYER (HOST)", _HostButtonIndex);
-			HostButton.onClick.AddListener(Host);
-
 			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("MULTIPLAYER (CONNECT)", _ClientButtonIndex, PopupMenu);
 
 			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT", _DisconnectIndex);
 			DisconnectButton.onClick.AddListener(Disconnect);
-
-			JoinMultiplayerGame = MenuApi.TitleScreen_MakeSimpleButton("JOIN MULTIPLAYER GAME", _JoinGameIndex);
-			JoinMultiplayerGame.onClick.AddListener(Join);
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
@@ -149,18 +143,15 @@ namespace QSB.Menus
 			if (QSBCore.IsInMultiplayer)
 			{
 				ClientButton.SetActive(false);
-				HostButton.gameObject.SetActive(false);
 				SetButtonActive(DisconnectButton, true);
 
 				if (QSBCore.IsHost)
 				{
-					SetButtonActive(JoinMultiplayerGame, false);
 					SetButtonActive(ResumeGameButton, true);
 					SetButtonActive(NewGameButton, true);
 				}
 				else
 				{
-					SetButtonActive(JoinMultiplayerGame, true);
 					SetButtonActive(ResumeGameButton, false);
 					SetButtonActive(NewGameButton, false);
 				}
@@ -168,7 +159,6 @@ namespace QSB.Menus
 			else
 			{
 				SetButtonActive(DisconnectButton, false);
-				SetButtonActive(JoinMultiplayerGame, false);
 				SetButtonActive(ResumeGameButton, true);
 				SetButtonActive(NewGameButton, true);
 			}
@@ -204,7 +194,6 @@ namespace QSB.Menus
 		{
 			QSBNetworkManager.Instance.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
-			SetButtonActive(JoinMultiplayerGame, false);
 			SetButtonActive(ClientButton, true);
 			SetButtonActive(HostButton, true);
 		}
@@ -216,7 +205,6 @@ namespace QSB.Menus
 			if (QSBNetworkManager.Instance.StartHost() != null)
 			{
 				SetButtonActive(DisconnectButton, true);
-				SetButtonActive(JoinMultiplayerGame, false);
 				SetButtonActive(ClientButton, false);
 				SetButtonActive(HostButton, false);
 			}
@@ -233,9 +221,7 @@ namespace QSB.Menus
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = "CONNECTING... (STOP)";
 
 			SetButtonActive(DisconnectButton, true);
-			SetButtonActive(JoinMultiplayerGame, true);
 			SetButtonActive(ClientButton, false);
-			SetButtonActive(HostButton, false);
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{
@@ -266,7 +252,7 @@ namespace QSB.Menus
 
 			DisconnectButton.gameObject.SetActive(false);
 			ClientButton.SetActive(true);
-			HostButton.gameObject.SetActive(true);
+			HostButton?.gameObject.SetActive(true);
 		}
 
 		private void OnDisconnected(NetworkError error)
@@ -285,7 +271,7 @@ namespace QSB.Menus
 
 			DisconnectButton.gameObject.SetActive(false);
 			ClientButton.SetActive(true);
-			HostButton.gameObject.SetActive(true);
+			HostButton?.gameObject.SetActive(true);
 		}
 
 		private void OnClientError(NetworkError error)
@@ -303,7 +289,7 @@ namespace QSB.Menus
 					text = "Internal QNet client error!\r\nDNS Faliure. Address was invalid or could not be resolved.";
 					DisconnectButton.gameObject.SetActive(false);
 					ClientButton.SetActive(true);
-					HostButton.gameObject.SetActive(true);
+					HostButton?.gameObject.SetActive(true);
 					break;
 				default:
 					text = $"Internal QNet client error!\n\nNetworkError:{error}";
