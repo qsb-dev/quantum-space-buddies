@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace QSB.Menus
@@ -6,6 +7,13 @@ namespace QSB.Menus
 	public interface IMenuAPI
 	{
 		// Title screen
+		[Obsolete]
+		GameObject TitleScreen_MakeMenuOpenButton(string name, Menu menuToOpen);
+		[Obsolete]
+		GameObject TitleScreen_MakeSceneLoadButton(string name, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null);
+		[Obsolete]
+		Button TitleScreen_MakeSimpleButton(string name);
+
 		GameObject TitleScreen_MakeMenuOpenButton(string name, int index, Menu menuToOpen);
 		GameObject TitleScreen_MakeSceneLoadButton(string name, int index, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null);
 		Button TitleScreen_MakeSimpleButton(string name, int index);
