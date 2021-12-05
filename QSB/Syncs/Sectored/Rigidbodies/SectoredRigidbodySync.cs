@@ -94,10 +94,20 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected void SetValuesToSync()
 		{
-			transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-			transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
-			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeVel(((OWRigidbody)AttachedObject).GetVelocity(), AttachedObject.transform.position);
-			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(((OWRigidbody)AttachedObject).GetAngularVelocity());
+			if (ReferenceTransform != null)
+			{
+				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+				_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeVel(((OWRigidbody)AttachedObject).GetVelocity(), AttachedObject.transform.position);
+				_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(((OWRigidbody)AttachedObject).GetAngularVelocity());
+			}
+			else
+			{
+				transform.position = Vector3.zero;
+				transform.rotation = Quaternion.identity;
+				_relativeVelocity = Vector3.zero;
+				_relativeAngularVelocity = Vector3.zero;
+			}
 		}
 
 		protected override bool UpdateTransform()
