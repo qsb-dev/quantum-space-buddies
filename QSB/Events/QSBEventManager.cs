@@ -20,6 +20,7 @@ using QSB.QuantumSync.Events;
 using QSB.RespawnSync.Events;
 using QSB.RoastingSync.Events;
 using QSB.SatelliteSync.Events;
+using QSB.SaveSync.Events;
 using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;
@@ -82,6 +83,8 @@ namespace QSB.Events
 				new SatelliteProjectorEvent(),
 				new SatelliteProjectorSnapshotEvent(),
 				new LaunchCodesEvent(),
+				new RequestGameStateEvent(),
+				new GameStateEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),

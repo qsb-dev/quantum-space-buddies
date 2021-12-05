@@ -1,6 +1,9 @@
-﻿using QSB.Player;
+﻿using QSB.Events;
+using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -15,6 +18,8 @@ namespace QSB.Menus
 		private PopupMenu PopupMenu;
 		private PopupMenu InfoPopup;
 		private bool _addedPauseLock;
+		private StringBuilder _nowLoadingSB;
+		protected Text _loadingText;
 
 		private Button HostButton;
 		private GameObject ClientButton;
@@ -47,6 +52,50 @@ namespace QSB.Menus
 			if (newScene == OWScene.TitleScreen)
 			{
 				MakeTitleMenus();
+			}
+		}
+
+		private void ResetStringBuilder()
+		{
+			if (_nowLoadingSB == null)
+			{
+				_nowLoadingSB = new StringBuilder();
+				return;
+			}
+			_nowLoadingSB.Length = 0;
+		}
+
+		private void Update()
+		{
+			if ((LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse) && _loadingText != null)
+			{
+				var num = LoadManager.GetAsyncLoadProgress();
+				num = num < 0.1f
+					? Mathf.InverseLerp(0f, 0.1f, num) * 0.9f
+					: 0.9f + (Mathf.InverseLerp(0.1f, 1f, num) * 0.1f);
+				ResetStringBuilder();
+				_nowLoadingSB.Append(UITextLibrary.GetString(UITextType.LoadingMessage));
+				_nowLoadingSB.Append(num.ToString("P0"));
+				_loadingText.text = _nowLoadingSB.ToString();
+			}
+		}
+
+		public void JoinGame(bool inEye, bool inSolarSystem)
+		{
+			DebugLog.DebugWrite($"Join game ineye:{inEye} inSolarSystem:{inSolarSystem}");
+			if (inEye)
+			{
+				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToBlack, 1f, false);
+				Locator.GetMenuInputModule().DisableInputs();
+			}
+			else if (inSolarSystem)
+			{
+				LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack, 1f, false);
+				Locator.GetMenuInputModule().DisableInputs();
+			}
+			else
+			{
+				DebugLog.DebugWrite("tried to join game that wasnt in solar system or eye??");
 			}
 		}
 
@@ -90,7 +139,7 @@ namespace QSB.Menus
 		}
 
 		private void SetButtonActive(Button button, bool active)
-			=> SetButtonActive(button.gameObject, active);
+			=> SetButtonActive(button?.gameObject, active);
 
 		private void SetButtonActive(GameObject button, bool active)
 		{
@@ -99,7 +148,6 @@ namespace QSB.Menus
 				return;
 			}
 
-			DebugLog.DebugWrite($"Set {button.name} to {active}");
 			button.SetActive(active);
 			button.GetComponent<CanvasGroup>().alpha = active ? 1 : 0;
 		}
@@ -116,12 +164,12 @@ namespace QSB.Menus
 
 			if (QSBCore.IsInMultiplayer)
 			{
-				ClientButton.SetActive(false);
-				HostButton.gameObject.SetActive(false);
+				SetButtonActive(HostButton, false);
 				SetButtonActive(DisconnectButton, true);
 			}
 			else
 			{
+				SetButtonActive(HostButton, true);
 				SetButtonActive(DisconnectButton, false);
 			}
 
@@ -136,6 +184,7 @@ namespace QSB.Menus
 
 			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT", _DisconnectIndex);
 			DisconnectButton.onClick.AddListener(Disconnect);
+			_loadingText = DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
@@ -147,7 +196,7 @@ namespace QSB.Menus
 
 				if (QSBCore.IsHost)
 				{
-					SetButtonActive(ResumeGameButton, true);
+					SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
 					SetButtonActive(NewGameButton, true);
 				}
 				else
@@ -159,7 +208,7 @@ namespace QSB.Menus
 			else
 			{
 				SetButtonActive(DisconnectButton, false);
-				SetButtonActive(ResumeGameButton, true);
+				SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
 				SetButtonActive(NewGameButton, true);
 			}
 
@@ -183,11 +232,6 @@ namespace QSB.Menus
 				titleAnimationController._optionsFadeDuration = small;
 				titleAnimationController._optionsFadeSpacing = small;
 			}
-		}
-
-		private void Join()
-		{
-			DebugLog.DebugWrite($"Join");
 		}
 
 		private void Disconnect()
@@ -232,10 +276,23 @@ namespace QSB.Menus
 
 		private void OnConnected()
 		{
+			DebugLog.DebugWrite($"ON CONNECTED");
+
 			var text = QSBCore.IsHost
 				? "STOP HOSTING"
 				: "DISCONNECT";
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
+
+			if (QSBCore.IsHost || !QSBCore.IsInMultiplayer)
+			{
+				return;
+			}
+
+			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null, () =>
+			{
+				DebugLog.DebugWrite($"requesting game details");
+				QSBEventManager.FireEvent(EventNames.QSBRequestGameDetails);
+			});
 		}
 
 		public void OnKicked(KickReason reason)
@@ -269,9 +326,11 @@ namespace QSB.Menus
 			};
 			OpenInfoPopup(text, "OK");
 
-			DisconnectButton.gameObject.SetActive(false);
-			ClientButton.SetActive(true);
-			HostButton?.gameObject.SetActive(true);
+			SetButtonActive(DisconnectButton, false);
+			SetButtonActive(ClientButton, true);
+			SetButtonActive(HostButton, true);
+			SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
+			SetButtonActive(NewGameButton, true);
 		}
 
 		private void OnClientError(NetworkError error)
@@ -287,9 +346,12 @@ namespace QSB.Menus
 			{
 				case NetworkError.DNSFailure:
 					text = "Internal QNet client error!\r\nDNS Faliure. Address was invalid or could not be resolved.";
-					DisconnectButton.gameObject.SetActive(false);
-					ClientButton.SetActive(true);
-					HostButton?.gameObject.SetActive(true);
+					DebugLog.DebugWrite($"dns failure");
+					SetButtonActive(DisconnectButton, false);
+					SetButtonActive(ClientButton, true);
+					SetButtonActive(HostButton, true);
+					SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
+					SetButtonActive(NewGameButton, true);
 					break;
 				default:
 					text = $"Internal QNet client error!\n\nNetworkError:{error}";
