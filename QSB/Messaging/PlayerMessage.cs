@@ -16,6 +16,17 @@ namespace QSB.Messaging
 		public uint AboutId { get; set; }
 
 		/// <summary>
+		/// The Player ID that this message is for
+		/// (only used if SendToSpecific is set)
+		/// </summary>
+		public uint ToId { get; set; }
+
+		/// <summary>
+		/// <see langword="true"/> when this message is only being sent to ToId
+		/// </summary>
+		public bool SendToSpecific { get; set; }
+
+		/// <summary>
 		/// If true, only send this message to the host of the current session 
 		/// (OnReceiveLocal/Remote is not called on any other client)
 		/// </summary>
@@ -26,6 +37,11 @@ namespace QSB.Messaging
 			FromId = reader.ReadUInt32();
 			AboutId = reader.ReadUInt32();
 			OnlySendToHost = reader.ReadBoolean();
+			SendToSpecific = reader.ReadBoolean();
+			if (SendToSpecific)
+			{
+				ToId = reader.ReadUInt32();
+			}
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -33,6 +49,11 @@ namespace QSB.Messaging
 			writer.Write(FromId);
 			writer.Write(AboutId);
 			writer.Write(OnlySendToHost);
+			writer.Write(SendToSpecific);
+			if (SendToSpecific)
+			{
+				writer.Write(ToId);
+			}
 		}
 	}
 }
