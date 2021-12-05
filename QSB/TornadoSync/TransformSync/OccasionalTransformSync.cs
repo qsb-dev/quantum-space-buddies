@@ -20,7 +20,7 @@ namespace QSB.TornadoSync.TransformSync
 		public void InitBodyIndexes(OWRigidbody body, OWRigidbody refBody)
 		{
 			_bodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(body);
-			_bodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
+			_refBodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
 		}
 
 		public override float GetNetworkSendInterval() => 1;
@@ -30,8 +30,8 @@ namespace QSB.TornadoSync.TransformSync
 			base.Init();
 			SetReferenceTransform(CenterOfTheUniverse.s_rigidbodies[_refBodyIndex].transform);
 
-			// to prevent change in vel/angvel
-			if (AttachedObject.TryGetComponent<AlignWithDirection>(out var align) && !HasAuthority)
+			// to prevent change in rotation/angvel
+			if (!HasAuthority && AttachedObject.TryGetComponent<AlignWithDirection>(out var align))
 			{
 				align.enabled = false;
 			}
@@ -54,15 +54,15 @@ namespace QSB.TornadoSync.TransformSync
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
-			{
-				return;
-			}
-
 			if (initialState)
 			{
 				_bodyIndex = reader.ReadInt32();
 				_refBodyIndex = reader.ReadInt32();
+			}
+
+			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
+			{
+				return;
 			}
 
 			_shouldUpdate = true;
