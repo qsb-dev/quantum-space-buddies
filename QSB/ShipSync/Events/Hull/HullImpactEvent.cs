@@ -6,6 +6,8 @@ namespace QSB.ShipSync.Events.Hull
 {
 	internal class HullImpactEvent : QSBEvent<HullImpactMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener() => GlobalMessenger<ShipHull, ImpactData, float>.AddListener(EventNames.QSBHullImpact, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipHull, ImpactData, float>.RemoveListener(EventNames.QSBHullImpact, Handler);
 
@@ -28,6 +30,7 @@ namespace QSB.ShipSync.Events.Hull
 
 		public override void OnReceiveRemote(bool server, HullImpactMessage message)
 		{
+			// TODO : ????????? why did i make this event??
 			var worldObject = QSBWorldSync.GetWorldFromId<QSBShipHull>(message.ObjectId);
 		}
 	}

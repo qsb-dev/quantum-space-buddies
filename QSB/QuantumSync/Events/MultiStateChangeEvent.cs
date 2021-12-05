@@ -8,6 +8,8 @@ namespace QSB.QuantumSync.Events
 {
 	public class MultiStateChangeEvent : QSBEvent<MultiStateChangeMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener() => GlobalMessenger<int, int>.AddListener(EventNames.QSBMultiStateChange, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int>.RemoveListener(EventNames.QSBMultiStateChange, Handler);
 
@@ -33,11 +35,6 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, MultiStateChangeMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbObj = QSBWorldSync.GetWorldFromId<QSBMultiStateQuantumObject>(message.ObjectId);
 			if (qsbObj.ControllingPlayer != message.FromId)
 			{

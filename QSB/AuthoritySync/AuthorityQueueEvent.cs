@@ -6,6 +6,8 @@ namespace QSB.AuthoritySync
 {
 	public class AuthorityQueueEvent : QSBEvent<AuthorityQueueMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener() =>
 			GlobalMessenger<QNetworkIdentity, bool>.AddListener(EventNames.QSBAuthorityQueue, Handler);
 
@@ -27,11 +29,6 @@ namespace QSB.AuthoritySync
 
 		private static void OnReceive(AuthorityQueueMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			message.Identity.UpdateAuthQueue(message.FromId, message.Queue);
 		}
 	}

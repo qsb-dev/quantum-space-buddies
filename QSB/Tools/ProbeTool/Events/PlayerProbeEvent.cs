@@ -6,6 +6,8 @@ namespace QSB.Tools.ProbeTool.Events
 {
 	internal class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<ProbeEvent>.AddListener(EventNames.QSBProbeEvent, Handler);
 

@@ -6,6 +6,8 @@ namespace QSB.MeteorSync.Events
 {
 	public class FragmentDamageEvent : QSBEvent<FragmentDamageMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<QSBFragment, float>.AddListener(EventNames.QSBFragmentDamage, Handler);
 
@@ -23,11 +25,6 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, FragmentDamageMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			var qsbFragment = QSBWorldSync.GetWorldFromId<QSBFragment>(message.ObjectId);
 			qsbFragment.AddDamage(message.Damage);
 		}

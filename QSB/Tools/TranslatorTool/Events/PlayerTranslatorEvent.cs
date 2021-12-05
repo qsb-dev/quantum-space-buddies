@@ -6,6 +6,8 @@ namespace QSB.Tools.TranslatorTool.Events
 {
 	public class PlayerTranslatorEvent : QSBEvent<ToggleMessage>
 	{
+		public override bool RequireWorldObjectsReady => false;
+
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.EquipTranslator, HandleEquip);

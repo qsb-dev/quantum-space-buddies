@@ -6,6 +6,8 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Events
 {
 	public class SetAsTranslatedEvent : QSBEvent<SetAsTranslatedMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener() => GlobalMessenger<NomaiTextType, int, int>.AddListener(EventNames.QSBTextTranslated, Handler);
 		public override void CloseListener() => GlobalMessenger<NomaiTextType, int, int>.RemoveListener(EventNames.QSBTextTranslated, Handler);
 
@@ -21,11 +23,6 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Events
 
 		public override void OnReceiveRemote(bool server, SetAsTranslatedMessage message)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			if (message.EnumValue == NomaiTextType.WallText)
 			{
 				var obj = QSBWorldSync.GetWorldFromId<QSBWallText>(message.ObjectId);

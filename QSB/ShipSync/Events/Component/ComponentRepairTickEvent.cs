@@ -6,6 +6,8 @@ namespace QSB.ShipSync.Events.Component
 {
 	internal class ComponentRepairTickEvent : QSBEvent<RepairTickMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener() => GlobalMessenger<ShipComponent, float>.AddListener(EventNames.QSBComponentRepairTick, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipComponent, float>.RemoveListener(EventNames.QSBComponentRepairTick, Handler);
 

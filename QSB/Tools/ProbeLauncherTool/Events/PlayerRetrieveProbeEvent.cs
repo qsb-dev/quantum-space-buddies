@@ -6,6 +6,8 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 {
 	internal class PlayerRetrieveProbeEvent : QSBEvent<BoolMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener()
 			=> GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerRetrieveProbe, Handler);
 

@@ -7,6 +7,8 @@ namespace QSB.Animation.Player.Events
 {
 	public class PlayerSuitEvent : QSBEvent<ToggleMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener()
 		{
 			GlobalMessenger.AddListener(EventNames.SuitUp, HandleSuitUp);
@@ -33,7 +35,7 @@ namespace QSB.Animation.Player.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.SuitedUp = message.ToggleValue;
 
-			if (!WorldObjectManager.AllObjectsReady || !player.IsReady)
+			if (!player.IsReady)
 			{
 				return;
 			}

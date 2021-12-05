@@ -6,6 +6,8 @@ namespace QSB.ShipSync.Events.Hull
 {
 	internal class HullChangeIntegrityEvent : QSBEvent<HullChangeIntegrityMessage>
 	{
+		public override bool RequireWorldObjectsReady => true;
+
 		public override void SetupListener() => GlobalMessenger<ShipHull, float>.AddListener(EventNames.QSBHullChangeIntegrity, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipHull, float>.RemoveListener(EventNames.QSBHullChangeIntegrity, Handler);
 
