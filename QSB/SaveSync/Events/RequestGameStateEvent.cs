@@ -24,9 +24,6 @@ namespace QSB.SaveSync.Events
 			OnlySendToHost = true
 		};
 
-		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
-		{
-			QSBEventManager.FireEvent(EventNames.QSBGameDetails);
-		}
+		public override void OnReceiveRemote(bool isHost, PlayerMessage message) => QSBEventManager.FireEvent(EventNames.QSBGameDetails, message.FromId);
 	}
 }
