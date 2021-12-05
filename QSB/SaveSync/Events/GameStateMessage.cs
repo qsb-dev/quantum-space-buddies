@@ -2,6 +2,7 @@
 using QSB.Utility;
 using QuantumUNET.Transport;
 using System;
+using System.Collections.Generic;
 
 namespace QSB.SaveSync.Events
 {
@@ -11,6 +12,7 @@ namespace QSB.SaveSync.Events
 		public bool InEye { get; set; }
 		public int LoopCount { get; set; }
 		public bool[] KnownFrequencies { get; set; }
+		public Dictionary<int, bool> KnownSignals { get; set; } = new();
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -33,6 +35,16 @@ namespace QSB.SaveSync.Events
 			{
 				KnownFrequencies[i] = reader.ReadBoolean();
 			}
+
+			// Known signals
+			var signalsLength = reader.ReadInt32();
+			KnownSignals.Clear();
+			for (var i = 0; i < signalsLength; i++)
+			{
+				var key = reader.ReadInt32();
+				var value = reader.ReadBoolean();
+				KnownSignals.Add(key, value);
+			}
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -52,6 +64,14 @@ namespace QSB.SaveSync.Events
 			foreach (var item in KnownFrequencies)
 			{
 				writer.Write(item);
+			}
+
+			// Known signals
+			writer.Write(KnownSignals.Count);
+			foreach (var item in KnownSignals)
+			{
+				writer.Write(item.Key);
+				writer.Write(item.Value);
 			}
 		}
 	}

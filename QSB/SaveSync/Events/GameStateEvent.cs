@@ -1,8 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Menus;
 using QSB.Utility;
-using System;
-using System.Linq;
 
 namespace QSB.SaveSync.Events
 {
@@ -11,18 +9,20 @@ namespace QSB.SaveSync.Events
 	{
 		public override bool RequireWorldObjectsReady => false;
 
-		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBGameDetails, Handler);
-		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBGameDetails, Handler);
+		public override void SetupListener() => GlobalMessenger<uint>.AddListener(EventNames.QSBGameDetails, Handler);
+		public override void CloseListener() => GlobalMessenger<uint>.RemoveListener(EventNames.QSBGameDetails, Handler);
 
-		private void Handler() => SendEvent(CreateMessage());
+		private void Handler(uint toId) => SendEvent(CreateMessage(toId));
 
-		private GameStateMessage CreateMessage() => new()
+		private GameStateMessage CreateMessage(uint toId) => new()
 		{
 			AboutId = LocalPlayerId,
+			ToId = toId,
 			InSolarSystem = QSBSceneManager.CurrentScene == OWScene.SolarSystem,
 			InEye = QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse,
 			LoopCount = StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount,
-			KnownFrequencies = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownFrequencies
+			KnownFrequencies = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownFrequencies,
+			KnownSignals = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownSignals
 		};
 
 		public override void OnReceiveRemote(bool isHost, GameStateMessage message)
@@ -34,7 +34,15 @@ namespace QSB.SaveSync.Events
 			{
 				DebugLog.DebugWrite($"knowsFrequency{i}:{message.KnownFrequencies[i]}");
 			}
+
 			gameSave.knownFrequencies = message.KnownFrequencies;
+
+			foreach (var item in message.KnownSignals)
+			{
+				DebugLog.DebugWrite($"knowsSignal {item.Key}:{item.Value}");
+			}
+
+			gameSave.knownSignals = message.KnownSignals;
 
 			PlayerData.SaveCurrentGame();
 
