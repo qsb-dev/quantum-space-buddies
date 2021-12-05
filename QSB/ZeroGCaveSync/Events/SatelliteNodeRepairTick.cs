@@ -7,7 +7,7 @@ namespace QSB.ZeroGCaveSync.Events
 {
 	internal class SatelliteNodeRepairTick : QSBEvent<RepairTickMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<SatelliteNode, float>.AddListener(EventNames.QSBSatelliteRepairTick, Handler);
 		public override void CloseListener() => GlobalMessenger<SatelliteNode, float>.RemoveListener(EventNames.QSBSatelliteRepairTick, Handler);

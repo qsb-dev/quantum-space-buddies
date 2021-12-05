@@ -7,7 +7,7 @@ namespace QSB.JellyfishSync.Events
 {
 	public class JellyfishRisingEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBJellyfish>.AddListener(EventNames.QSBJellyfishRising, Handler);

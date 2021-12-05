@@ -8,7 +8,7 @@ namespace QSB.Anglerfish.Events
 {
 	public class AnglerChangeStateEvent : QSBEvent<AnglerChangeStateMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);

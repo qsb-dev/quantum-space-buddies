@@ -7,7 +7,7 @@ namespace QSB.Player.Events
 {
 	internal class PlayerEntangledEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int>.AddListener(EventNames.QSBPlayerEntangle, Handler);
 		public override void CloseListener() => GlobalMessenger<int>.RemoveListener(EventNames.QSBPlayerEntangle, Handler);

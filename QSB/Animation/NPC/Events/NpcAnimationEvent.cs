@@ -6,7 +6,7 @@ namespace QSB.Animation.NPC.Events
 {
 	internal class NpcAnimationEvent : QSBEvent<NpcAnimationMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<AnimationEvent, int>.AddListener(EventNames.QSBNpcAnimEvent, Handler);
 		public override void CloseListener() => GlobalMessenger<AnimationEvent, int>.RemoveListener(EventNames.QSBNpcAnimEvent, Handler);

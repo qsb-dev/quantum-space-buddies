@@ -5,7 +5,7 @@ namespace QSB.Player.Events
 {
 	internal class LaunchCodesEvent : QSBEvent<PlayerMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBLearnLaunchCodes, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBLearnLaunchCodes, Handler);

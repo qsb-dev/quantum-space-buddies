@@ -11,7 +11,7 @@ namespace QSB.RoastingSync.Events
 {
 	internal class MarshmallowEventEvent : QSBEvent<EnumMessage<MarshmallowEventType>>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<MarshmallowEventType>.AddListener(EventNames.QSBMarshmallowEvent, Handler);
 		public override void CloseListener() => GlobalMessenger<MarshmallowEventType>.RemoveListener(EventNames.QSBMarshmallowEvent, Handler);

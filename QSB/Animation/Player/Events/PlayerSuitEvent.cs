@@ -7,7 +7,7 @@ namespace QSB.Animation.Player.Events
 {
 	public class PlayerSuitEvent : QSBEvent<ToggleMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 		{

@@ -5,7 +5,7 @@ namespace QSB.ClientServerStateSync.Events
 {
 	internal class ServerStateEvent : QSBEvent<EnumMessage<ServerState>>
 	{
-		public override bool RequireWorldObjectsReady() => false;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener()
 			=> GlobalMessenger<ServerState>.AddListener(EventNames.QSBServerState, Handler);

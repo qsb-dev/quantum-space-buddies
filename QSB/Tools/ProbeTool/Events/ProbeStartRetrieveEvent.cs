@@ -6,7 +6,7 @@ namespace QSB.Tools.ProbeTool.Events
 {
 	internal class ProbeStartRetrieveEvent : QSBEvent<FloatMessage>
 	{
-		public override bool RequireWorldObjectsReady() => true;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<float>.AddListener(EventNames.QSBProbeStartRetrieve, Handler);

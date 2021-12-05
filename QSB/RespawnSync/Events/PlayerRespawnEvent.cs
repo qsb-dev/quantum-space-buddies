@@ -7,7 +7,7 @@ namespace QSB.RespawnSync.Events
 {
 	internal class PlayerRespawnEvent : QSBEvent<PlayerMessage>
 	{
-		public override bool RequireWorldObjectsReady() => false;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener()
 			=> GlobalMessenger<uint>.AddListener(EventNames.QSBPlayerRespawn, Handler);

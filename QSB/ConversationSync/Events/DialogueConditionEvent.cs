@@ -5,7 +5,7 @@ namespace QSB.ConversationSync.Events
 {
 	public class DialogueConditionEvent : QSBEvent<DialogueConditionMessage>
 	{
-		public override bool RequireWorldObjectsReady() => false;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener() => GlobalMessenger<string, bool>.AddListener(EventNames.DialogueConditionChanged, Handler);
 		public override void CloseListener() => GlobalMessenger<string, bool>.RemoveListener(EventNames.DialogueConditionChanged, Handler);
