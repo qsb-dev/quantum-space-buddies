@@ -23,7 +23,7 @@ namespace QSB.TornadoSync.TransformSync
 			_refBodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
 		}
 
-		public override float GetNetworkSendInterval() => 1;
+		// public override float GetNetworkSendInterval() => 1;
 
 		protected override void Init()
 		{

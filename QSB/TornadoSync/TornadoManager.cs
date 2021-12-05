@@ -25,29 +25,20 @@ namespace QSB.TornadoSync
 			}
 
 			// cannon parts
-			var mainCannonPart = GameObject.Find("OrbitalProbeCannon_Body").GetAttachedOWRigidbody();
-			{
-				var transformSync = Instantiate(QSBNetworkManager.Instance.OccasionalPrefab).GetComponent<OccasionalTransformSync>();
-				transformSync.InitBodyIndexes(mainCannonPart, Locator._giantsDeep.GetOWRigidbody());
-				transformSync.gameObject.SpawnWithServerAuthority();
-			}
 			foreach (var cannonPartNames in new[]
 			{
+				"OrbitalProbeCannon_Body",
 				"CannonBarrel_Body",
-				"CannonMuzzle_Body",
-				"Debris_Body (1)",
-				"Debris_Body (2)"
+				"CannonMuzzle_Body"
 			})
 			{
 				var cannonPart = GameObject.Find(cannonPartNames).GetAttachedOWRigidbody();
 				var transformSync = Instantiate(QSBNetworkManager.Instance.OccasionalPrefab).GetComponent<OccasionalTransformSync>();
-				transformSync.InitBodyIndexes(cannonPart, mainCannonPart);
+				transformSync.InitBodyIndexes(cannonPart, Locator._giantsDeep.GetOWRigidbody());
 				transformSync.gameObject.SpawnWithServerAuthority();
 			}
 
 			// islands
-			var islandControllers = QSBWorldSync.GetWorldObjects<IslandController>().ToArray();
-			DebugLog.DebugWrite($"there are {islandControllers.Length} islandControllers");
 			foreach (var islandNames in new[]
 			{
 				"GabbroIsland_Body",
