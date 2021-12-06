@@ -1,56 +1,35 @@
-﻿using QSB.TornadoSync.TransformSync;
+﻿using QSB.Events;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
-using UnityEngine;
 
 namespace QSB.TornadoSync
 {
 	public class TornadoManager : WorldObjectManager
 	{
-		protected override void RebuildWorldObjects(OWScene scene)
-		{
+		protected override void RebuildWorldObjects(OWScene scene) =>
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
 
-			return;
-			if (!QSBCore.IsHost)
-			{
-				return;
-			}
+		public static void FireResync()
+		{
+			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
+				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
 
-			foreach (var transformSync in QSBWorldSync.GetWorldObjects<OccasionalTransformSync>())
+			// cannon
+			var cannon = Locator._orbitalProbeCannon.GetRequiredComponent<OrbitalProbeLaunchController>();
+			var gdBody = Locator._giantsDeep.GetOWRigidbody();
+			QSBEventManager.FireEvent(EventNames.QSBBodyResync, cannon.GetAttachedOWRigidbody(), gdBody);
+			foreach (var proxy in cannon._realDebrisSectorProxies)
 			{
-				QNetworkServer.Destroy(transformSync.gameObject);
+				QSBEventManager.FireEvent(EventNames.QSBBodyResync,
+					proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
-
-			// cannon parts
-			foreach (var cannonPartNames in new[]
-			{
-				"OrbitalProbeCannon_Body",
-				"CannonBarrel_Body",
-				"CannonMuzzle_Body"
-			})
-			{
-				var cannonPart = GameObject.Find(cannonPartNames).GetAttachedOWRigidbody();
-				var transformSync = Instantiate(QSBNetworkManager.Instance.OccasionalPrefab).GetComponent<OccasionalTransformSync>();
-				transformSync.InitBodyIndexes(cannonPart, Locator._giantsDeep.GetOWRigidbody());
-				transformSync.gameObject.SpawnWithServerAuthority();
-			}
+			QSBEventManager.FireEvent(EventNames.QSBBodyResync, cannon._probeBody, gdBody);
 
 			// islands
-			foreach (var islandNames in new[]
+			foreach (var island in QSBWorldSync.GetUnityObjects<IslandController>())
 			{
-				"GabbroIsland_Body",
-				"StatueIsland_Body",
-				"ConstructionYardIsland_Body",
-				"BrambleIsland_Body"
-			})
-			{
-				var island = GameObject.Find(islandNames).GetAttachedOWRigidbody();
-				var transformSync = Instantiate(QSBNetworkManager.Instance.OccasionalPrefab).GetComponent<OccasionalTransformSync>();
-				transformSync.InitBodyIndexes(island, Locator._giantsDeep.GetOWRigidbody());
-				transformSync.gameObject.SpawnWithServerAuthority();
+				QSBEventManager.FireEvent(EventNames.QSBBodyResync, island._islandBody, gdBody);
 			}
 		}
 	}
