@@ -33,14 +33,17 @@ namespace QSB.Player.Events
 			// if host, send worldobject and server states TO THE REQUESTING CLIENT
 			if (isHost)
 			{
-				PlayerMessage.ForIdOverride = message.FromId;
+				ForIdOverride = message.FromId;
 
 				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
 				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 
-				SendWorldObjectInfo();
+				if (WorldObjectManager.AllObjectsReady)
+				{
+					SendWorldObjectInfo();
+				}
 
-				PlayerMessage.ForIdOverride = uint.MaxValue;
+				ForIdOverride = uint.MaxValue;
 			}
 			// if client, send player and client states TO EVERYONE
 			else
@@ -51,6 +54,8 @@ namespace QSB.Player.Events
 
 		private void SendWorldObjectInfo()
 		{
+			DebugLog.DebugWrite("SendWorldObjectInfo...");
+
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
 

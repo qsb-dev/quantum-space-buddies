@@ -34,13 +34,20 @@ namespace QSB.Events
 
 		public abstract bool RequireWorldObjectsReady { get; }
 
-		public void SendEvent(T message)
-		{
-			message.FromId = QSBPlayerManager.LocalPlayerId;
-			QSBCore.UnityEvents.RunWhen(
-				() => PlayerTransformSync.LocalInstance != null,
-				() => _eventHandler.SendToServer(message));
-		}
+		/// used to force set ForId for every sent event
+		protected static uint ForIdOverride = uint.MaxValue;
+
+		public void SendEvent(T message) => QSBCore.UnityEvents.RunWhen(
+			() => PlayerTransformSync.LocalInstance != null,
+			() =>
+			{
+				message.FromId = LocalPlayerId;
+				if (ForIdOverride != uint.MaxValue)
+				{
+					message.ForId = ForIdOverride;
+				}
+				_eventHandler.SendToServer(message);
+			});
 
 		/// <summary>
 		/// Checks whether the message should be processed by the executing client.

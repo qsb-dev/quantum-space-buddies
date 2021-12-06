@@ -28,10 +28,6 @@ namespace QSB.Messaging
 		/// </summary>
 		public uint ForId { get; set; } = uint.MaxValue;
 
-		/// used to force set ForId.
-		/// primarily used for state resyncing, when the server needs to send a specific client a bunch of events
-		public static uint ForIdOverride = uint.MaxValue;
-
 		public override void Deserialize(QNetworkReader reader)
 		{
 			FromId = reader.ReadUInt32();
@@ -50,7 +46,7 @@ namespace QSB.Messaging
 			writer.Write(OnlySendToHost);
 			if (!OnlySendToHost)
 			{
-				writer.Write(ForIdOverride != uint.MaxValue ? ForIdOverride : ForId);
+				writer.Write(ForId);
 			}
 		}
 	}
