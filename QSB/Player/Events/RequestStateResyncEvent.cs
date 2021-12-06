@@ -30,20 +30,31 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
 		{
-			// if host, send worldobject and server states
-
-			if (isHost)
+			// send response only to the requesting client
+			ForIdOverride = message.FromId;
+			try
 			{
-				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
-				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+				// if host, send worldobject and server states
+				if (isHost)
+				{
+					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
+					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 
-				SendWorldObjectInfo();
-
-				return;
+					if (WorldObjectManager.AllObjectsReady)
+					{
+						SendWorldObjectInfo();
+					}
+				}
+				// if client, send player and client states
+				else
+				{
+					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+				}
 			}
-
-			// if client, send player and client states
-			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			finally
+			{
+				ForIdOverride = uint.MaxValue;
+			}
 		}
 
 		private void SendWorldObjectInfo()
