@@ -34,17 +34,14 @@ namespace QSB.Events
 
 		public abstract bool RequireWorldObjectsReady { get; }
 
-		/// used to force set ForId for every sent event
-		protected static uint ForIdOverride = uint.MaxValue;
-
 		public void SendEvent(T message) => QSBCore.UnityEvents.RunWhen(
 			() => PlayerTransformSync.LocalInstance != null,
 			() =>
 			{
 				message.FromId = LocalPlayerId;
-				if (ForIdOverride != uint.MaxValue)
+				if (QSBEventManager.ForIdOverride != uint.MaxValue)
 				{
-					message.ForId = ForIdOverride;
+					message.ForId = QSBEventManager.ForIdOverride;
 				}
 				_eventHandler.SendToServer(message);
 			});
