@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
@@ -48,7 +47,7 @@ namespace QSB.Messaging
 			QNetworkManager.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
 		}
 
-		public void SendToAll(T message)
+		public void SendToAllClients(T message)
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
@@ -56,6 +55,32 @@ namespace QSB.Messaging
 			}
 
 			QNetworkServer.SendToAll(_eventType, message);
+		}
+
+		public void SendToLocalClient(T message)
+		{
+			if (!QSBNetworkManager.Instance.IsReady)
+			{
+				return;
+			}
+
+			QNetworkServer.SendToClient(0, _eventType, message);
+		}
+
+		public void SendToClient(uint id, T message)
+		{
+			if (!QSBNetworkManager.Instance.IsReady)
+			{
+				return;
+			}
+
+			var conn = QNetworkServer.connections.FirstOrDefault(x => x.GetPlayerId() == id);
+			if (conn == null)
+			{
+				DebugLog.ToConsole($"SendTo unknown player! id: {id}, message: {message.GetType().Name}", OWML.Common.MessageType.Error);
+				return;
+			}
+			QNetworkServer.SendToClient(conn.connectionId, _eventType, message);
 		}
 
 		public void SendToServer(T message)

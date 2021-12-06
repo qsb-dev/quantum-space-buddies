@@ -21,11 +21,29 @@ namespace QSB.Messaging
 		/// </summary>
 		public bool OnlySendToHost { get; set; }
 
+		/// <summary>
+		/// If true, only send this message to ForId
+		/// </summary>
+		public bool OnlySendToSpecific { get; set; }
+
+		/// <summary>
+		/// The Player ID that this message is for
+		/// </summary>
+		public uint ForId { get; set; }
+
 		public override void Deserialize(QNetworkReader reader)
 		{
 			FromId = reader.ReadUInt32();
 			AboutId = reader.ReadUInt32();
 			OnlySendToHost = reader.ReadBoolean();
+			if (!OnlySendToHost)
+			{
+				OnlySendToSpecific = reader.ReadBoolean();
+				if (OnlySendToSpecific)
+				{
+					ForId = reader.ReadUInt32();
+				}
+			}
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -33,6 +51,14 @@ namespace QSB.Messaging
 			writer.Write(FromId);
 			writer.Write(AboutId);
 			writer.Write(OnlySendToHost);
+			if (!OnlySendToHost)
+			{
+				writer.Write(OnlySendToSpecific);
+				if (OnlySendToSpecific)
+				{
+					writer.Write(ForId);
+				}
+			}
 		}
 	}
 }
