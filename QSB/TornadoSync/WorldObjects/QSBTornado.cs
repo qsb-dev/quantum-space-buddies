@@ -11,17 +11,29 @@ namespace QSB.TornadoSync.WorldObjects
 			AttachedObject = attachedObject;
 		}
 
-		public void FormCollapse(bool formCollapse)
+		public bool FormState
 		{
-			if (formCollapse)
+			get => AttachedObject._tornadoRoot.activeSelf // forming or formed or collapsing
+				&& !AttachedObject._tornadoCollapsing; // and not collapsing
+			set
 			{
-				AttachedObject.StartFormation();
-				DebugLog.DebugWrite($"{LogName} form");
-			}
-			else
-			{
-				AttachedObject.StartCollapse();
-				DebugLog.DebugWrite($"{LogName} collapse");
+				if (FormState == value)
+				{
+					return;
+				}
+
+				if (value)
+				{
+					AttachedObject._tornadoCollapsing = false;
+					AttachedObject.StartFormation();
+					DebugLog.DebugWrite($"{LogName} form");
+				}
+				else
+				{
+					AttachedObject._secondsUntilFormation = 0;
+					AttachedObject.StartCollapse();
+					DebugLog.DebugWrite($"{LogName} collapse");
+				}
 			}
 		}
 	}

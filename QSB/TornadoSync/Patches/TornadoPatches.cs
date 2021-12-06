@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.Events;
-using QSB.JellyfishSync.WorldObjects;
 using QSB.Patches;
 using QSB.TornadoSync.WorldObjects;
 using QSB.WorldSync;
@@ -24,7 +22,7 @@ namespace QSB.TornadoSync.Patches
 				{
 					__instance.StartFormation();
 					var qsbTornado = QSBWorldSync.GetWorldFromUnity<QSBTornado>(__instance);
-					QSBEventManager.FireEvent(EventNames.QSBTornadoFormCollapse, qsbTornado, true);
+					QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, qsbTornado);
 					return false;
 				}
 			}
@@ -64,7 +62,7 @@ namespace QSB.TornadoSync.Patches
 			{
 				__instance.StartCollapse();
 				var qsbTornado = QSBWorldSync.GetWorldFromUnity<QSBTornado>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBTornadoFormCollapse, qsbTornado, false);
+				QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, qsbTornado);
 			}
 
 			return false;

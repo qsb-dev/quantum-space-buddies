@@ -102,6 +102,6 @@
 		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);
 		public const string QSBAuthorityQueue = nameof(QSBAuthorityQueue);
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
-		public const string QSBTornadoFormCollapse = nameof(QSBTornadoFormCollapse);
+		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
 	}
 }

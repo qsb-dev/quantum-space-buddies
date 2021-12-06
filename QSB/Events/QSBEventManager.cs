@@ -107,7 +107,7 @@ namespace QSB.Events
 				new FragmentDamageEvent(),
 				new FragmentResyncEvent(),
 				new JellyfishRisingEvent(),
-				new TornadoFormCollapseEvent(),
+				new TornadoFormStateEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

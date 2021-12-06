@@ -1,4 +1,5 @@
-﻿using OWML.Utils;
+﻿using System.Linq;
+using OWML.Utils;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
@@ -7,9 +8,9 @@ using QSB.MeteorSync.WorldObjects;
 using QSB.QuantumSync;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
+using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.Player.Events
 {
@@ -83,6 +84,9 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
 				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));
+
+			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
+				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
 		}
 	}
 }
