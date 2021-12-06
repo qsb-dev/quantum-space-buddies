@@ -15,14 +15,22 @@ namespace QSB.TornadoSync
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
 
+			var gdBody = Locator._giantsDeep.GetOWRigidbody();
 			// cannon
 			var cannon = Locator._orbitalProbeCannon.GetRequiredComponent<OrbitalProbeLaunchController>();
-			var gdBody = Locator._giantsDeep.GetOWRigidbody();
 			QSBEventManager.FireEvent(EventNames.QSBBodyResync, cannon.GetAttachedOWRigidbody(), gdBody);
-			foreach (var proxy in cannon._realDebrisSectorProxies)
+			foreach (var fake in cannon._fakeDebrisBodies)
+			{
+				if (fake)
+				{
+					QSBEventManager.FireEvent(EventNames.QSBBodyResync,
+						fake.GetAttachedOWRigidbody(), gdBody);
+				}
+			}
+			foreach (var real in cannon._realDebrisSectorProxies)
 			{
 				QSBEventManager.FireEvent(EventNames.QSBBodyResync,
-					proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
+					real.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
 			QSBEventManager.FireEvent(EventNames.QSBBodyResync, cannon._probeBody, gdBody);
 
