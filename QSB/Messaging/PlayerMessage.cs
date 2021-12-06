@@ -16,20 +16,17 @@ namespace QSB.Messaging
 		public uint AboutId { get; set; }
 
 		/// <summary>
-		/// If true, only send this message to the host of the current session 
+		/// If true, only send this message to the host of the current session
 		/// (OnReceiveLocal/Remote is not called on any other client)
 		/// </summary>
 		public bool OnlySendToHost { get; set; }
 
 		/// <summary>
-		/// If true, only send this message to ForId
+		/// The Player ID that this message is for.
+		/// By default, this is uint.MaxValue,
+		/// which means this is ignored and the message is sent to all clients
 		/// </summary>
-		public bool OnlySendToSpecific { get; set; }
-
-		/// <summary>
-		/// The Player ID that this message is for
-		/// </summary>
-		public uint ForId { get; set; }
+		public uint ForId { get; set; } = uint.MaxValue;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -38,11 +35,7 @@ namespace QSB.Messaging
 			OnlySendToHost = reader.ReadBoolean();
 			if (!OnlySendToHost)
 			{
-				OnlySendToSpecific = reader.ReadBoolean();
-				if (OnlySendToSpecific)
-				{
-					ForId = reader.ReadUInt32();
-				}
+				reader.ReadUInt32();
 			}
 		}
 
@@ -53,11 +46,7 @@ namespace QSB.Messaging
 			writer.Write(OnlySendToHost);
 			if (!OnlySendToHost)
 			{
-				writer.Write(OnlySendToSpecific);
-				if (OnlySendToSpecific)
-				{
-					writer.Write(ForId);
-				}
+				writer.Write(ForId);
 			}
 		}
 	}

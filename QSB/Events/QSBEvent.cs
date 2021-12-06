@@ -65,7 +65,7 @@ namespace QSB.Events
 				{
 					_eventHandler.SendToHost(message);
 				}
-				else if (message.OnlySendToSpecific)
+				else if (message.ForId != uint.MaxValue)
 				{
 					_eventHandler.SendTo(message.ForId, message);
 				}
