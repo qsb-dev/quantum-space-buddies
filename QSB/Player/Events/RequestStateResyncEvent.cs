@@ -32,25 +32,29 @@ namespace QSB.Player.Events
 		{
 			// send response only to the requesting client
 			ForIdOverride = message.FromId;
-
-			// if host, send worldobject and server states
-			if (isHost)
+			try
 			{
-				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
-				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
-
-				if (WorldObjectManager.AllObjectsReady)
+				// if host, send worldobject and server states
+				if (isHost)
 				{
-					SendWorldObjectInfo();
+					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
+					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+
+					if (WorldObjectManager.AllObjectsReady)
+					{
+						SendWorldObjectInfo();
+					}
+				}
+				// if client, send player and client states
+				else
+				{
+					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 				}
 			}
-			// if client, send player and client states
-			else
+			finally
 			{
-				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+				ForIdOverride = uint.MaxValue;
 			}
-
-			ForIdOverride = uint.MaxValue;
 		}
 
 		private void SendWorldObjectInfo()
