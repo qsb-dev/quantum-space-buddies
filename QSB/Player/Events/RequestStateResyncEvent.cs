@@ -32,7 +32,7 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
 		{
 			// send response only to the requesting client
-			ForIdOverride = message.FromId;
+			QSBEventManager.ForIdOverride = message.FromId;
 			try
 			{
 				// if host, send worldobject and server states
@@ -54,7 +54,7 @@ namespace QSB.Player.Events
 			}
 			finally
 			{
-				ForIdOverride = uint.MaxValue;
+				QSBEventManager.ForIdOverride = uint.MaxValue;
 			}
 		}
 
