@@ -20,9 +20,9 @@ namespace QSB.QuantumSync.Events
 			AuthorityOwner = authorityOwner
 		};
 
-		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
+		public override bool CheckMessage(QuantumAuthorityMessage message)
 		{
-			if (!base.CheckMessage(isServer, message))
+			if (!base.CheckMessage(message))
 			{
 				return false;
 			}
