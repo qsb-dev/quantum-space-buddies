@@ -55,8 +55,6 @@ namespace QSB.Player.Events
 
 		private void SendWorldObjectInfo()
 		{
-			DebugLog.DebugWrite("SendWorldObjectInfo...");
-
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
 
