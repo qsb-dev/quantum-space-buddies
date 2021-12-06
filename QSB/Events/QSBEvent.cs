@@ -63,15 +63,15 @@ namespace QSB.Events
 			{
 				if (message.OnlySendToHost)
 				{
-					_eventHandler.SendToLocalClient(message);
+					_eventHandler.SendToHost(message);
 				}
 				else if (message.OnlySendToSpecific)
 				{
-					_eventHandler.SendToClient(message.ForId, message);
+					_eventHandler.SendTo(message.ForId, message);
 				}
 				else
 				{
-					_eventHandler.SendToAllClients(message);
+					_eventHandler.SendToAll(message);
 				}
 				return;
 			}
@@ -103,14 +103,14 @@ namespace QSB.Events
 
 			try
 			{
-				if (message.FromId == QSBPlayerManager.LocalPlayerId ||
-					QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
+				if (QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
 				{
 					OnReceiveLocal(QSBCore.IsHost, message);
-					return;
 				}
-
-				OnReceiveRemote(QSBCore.IsHost, message);
+				else
+				{
+					OnReceiveRemote(QSBCore.IsHost, message);
+				}
 			}
 			catch (Exception ex)
 			{

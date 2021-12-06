@@ -31,19 +31,18 @@ namespace QSB.Player.Events
 		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
 		{
 			// if host, send worldobject and server states
-
 			if (isHost)
 			{
 				QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
 				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 
 				SendWorldObjectInfo();
-
-				return;
 			}
-
 			// if client, send player and client states
-			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			else
+			{
+				QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			}
 		}
 
 		private void SendWorldObjectInfo()

@@ -47,7 +47,7 @@ namespace QSB.Messaging
 			QNetworkManager.singleton.client.RegisterHandler(_eventType, OnClientReceiveMessageHandler);
 		}
 
-		public void SendToAllClients(T message)
+		public void SendToAll(T message)
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
@@ -57,7 +57,7 @@ namespace QSB.Messaging
 			QNetworkServer.SendToAll(_eventType, message);
 		}
 
-		public void SendToLocalClient(T message)
+		public void SendToHost(T message)
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
@@ -67,7 +67,7 @@ namespace QSB.Messaging
 			QNetworkServer.SendToClient(0, _eventType, message);
 		}
 
-		public void SendToClient(uint id, T message)
+		public void SendTo(uint id, T message)
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
