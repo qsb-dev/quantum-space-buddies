@@ -9,6 +9,7 @@ using QSB.QuantumSync;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.TornadoSync;
+using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 
@@ -96,7 +97,8 @@ namespace QSB.Player.Events
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
 				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));
 
-			TornadoManager.FireResync();
+			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
+				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
 		}
 	}
 }

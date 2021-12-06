@@ -1,44 +1,49 @@
-﻿using QSB.Events;
+﻿using QSB.TornadoSync.TransformSync;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 
 namespace QSB.TornadoSync
 {
 	public class TornadoManager : WorldObjectManager
 	{
-		protected override void RebuildWorldObjects(OWScene scene) =>
+		protected override void RebuildWorldObjects(OWScene scene)
+		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
 
-		public static void FireResync()
-		{
-			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
-				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
+			{
+				QNetworkServer.Destroy(transformSync.gameObject);
+			}
 
 			var gdBody = Locator._giantsDeep.GetOWRigidbody();
 			// cannon
 			var cannon = Locator._orbitalProbeCannon.GetRequiredComponent<OrbitalProbeLaunchController>();
-			QSBEventManager.FireEvent(EventNames.QSBBodyResync, cannon.GetAttachedOWRigidbody(), gdBody);
-			foreach (var fake in cannon._fakeDebrisBodies)
+			SpawnOccasional(cannon.GetAttachedOWRigidbody(), gdBody);
+			foreach (var proxy in cannon._realDebrisSectorProxies)
 			{
-				if (fake)
-				{
-					QSBEventManager.FireEvent(EventNames.QSBBodyResync,
-						fake.GetAttachedOWRigidbody(), gdBody);
-				}
+				SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
-			foreach (var real in cannon._realDebrisSectorProxies)
-			{
-				QSBEventManager.FireEvent(EventNames.QSBBodyResync,
-					real.transform.root.GetAttachedOWRigidbody(), gdBody);
-			}
-			QSBEventManager.FireEvent(EventNames.QSBBodyResync, cannon._probeBody, gdBody);
+			SpawnOccasional(cannon._probeBody, gdBody);
 
 			// islands
 			foreach (var island in QSBWorldSync.GetUnityObjects<IslandController>())
 			{
-				QSBEventManager.FireEvent(EventNames.QSBBodyResync, island._islandBody, gdBody);
+				SpawnOccasional(island._islandBody, gdBody);
 			}
+		}
+
+		private static void SpawnOccasional(OWRigidbody body, OWRigidbody refBody)
+		{
+			var transformSync = Instantiate(QSBNetworkManager.Instance.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
+			transformSync.InitBodyIndexes(body, refBody);
+			transformSync.gameObject.SpawnWithServerAuthority();
 		}
 	}
 }

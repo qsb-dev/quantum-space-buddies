@@ -103,6 +103,5 @@
 		public const string QSBAuthorityQueue = nameof(QSBAuthorityQueue);
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
-		public const string QSBBodyResync = nameof(QSBBodyResync);
 	}
 }

@@ -34,12 +34,6 @@ namespace QSB.TornadoSync.TransformSync
 			SetReferenceTransform(CenterOfTheUniverse.s_rigidbodies[_refBodyIndex].transform);
 			_sectors = ((OWRigidbody)AttachedObject).GetComponentsInChildren<Sector>()
 				.Select(x => x.name).ToArray();
-
-			// to prevent change in rotation/angvel
-			if (!HasAuthority && AttachedObject.TryGetComponent<AlignWithDirection>(out var align))
-			{
-				align.enabled = false;
-			}
 		}
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -73,7 +67,6 @@ namespace QSB.TornadoSync.TransformSync
 			_shouldUpdate = true;
 		}
 
-		/// replacement that handles KinematicRigidbody
 		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
@@ -140,17 +133,8 @@ namespace QSB.TornadoSync.TransformSync
 				}
 			}
 
-			if (((OWRigidbody)AttachedObject).RunningKinematicSimulation())
-			{
-				((OWRigidbody)AttachedObject).SetPosition(positionToSet);
-				((OWRigidbody)AttachedObject).SetRotation(rotationToSet);
-			}
-			else
-			{
-				// does nothing for KinematicRigidbody
-				((OWRigidbody)AttachedObject).MoveToPosition(positionToSet);
-				((OWRigidbody)AttachedObject).MoveToRotation(rotationToSet);
-			}
+			((OWRigidbody)AttachedObject).SetPosition(positionToSet);
+			((OWRigidbody)AttachedObject).SetRotation(rotationToSet);
 
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
