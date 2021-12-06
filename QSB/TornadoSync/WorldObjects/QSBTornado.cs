@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 
 namespace QSB.TornadoSync.WorldObjects
 {
@@ -26,13 +25,11 @@ namespace QSB.TornadoSync.WorldObjects
 				{
 					AttachedObject._tornadoCollapsing = false;
 					AttachedObject.StartFormation();
-					DebugLog.DebugWrite($"{LogName} form");
 				}
 				else
 				{
 					AttachedObject._secondsUntilFormation = 0;
 					AttachedObject.StartCollapse();
-					DebugLog.DebugWrite($"{LogName} collapse");
 				}
 			}
 		}
