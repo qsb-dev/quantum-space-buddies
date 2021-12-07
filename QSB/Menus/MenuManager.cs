@@ -156,7 +156,7 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			HostButton = MenuApi.PauseMenu_MakeSimpleButton("MULTIPLAYER (HOST)");
+			HostButton = MenuApi.PauseMenu_MakeSimpleButton("OPEN TO MULTIPLAYER");
 			HostButton.onClick.AddListener(Host);
 
 			DisconnectButton = MenuApi.PauseMenu_MakeSimpleButton("DISCONNECT");
@@ -180,7 +180,7 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("MULTIPLAYER (CONNECT)", _ClientButtonIndex, PopupMenu);
+			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, PopupMenu);
 
 			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT", _DisconnectIndex);
 			DisconnectButton.onClick.AddListener(Disconnect);
@@ -302,6 +302,7 @@ namespace QSB.Menus
 				KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
 				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
 				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)",
+				KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
 				KickReason.None => "Kicked from server. No reason given.",
 				_ => $"Kicked from server. KickReason:{reason}",
 			};

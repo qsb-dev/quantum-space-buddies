@@ -79,6 +79,7 @@ namespace QSB
 		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
 			? GamePlatform.Epic
 			: GamePlatform.Steam;
+		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
 		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
