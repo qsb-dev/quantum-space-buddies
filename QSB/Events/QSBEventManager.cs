@@ -228,5 +228,8 @@ namespace QSB.Events
 
 			GlobalMessenger<T, U, V, W, X, Y>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6);
 		}
+
+		/// used to force set ForId for every sent event
+		public static uint ForIdOverride = uint.MaxValue;
 	}
 }
