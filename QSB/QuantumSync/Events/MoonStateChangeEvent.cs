@@ -2,7 +2,6 @@
 using QSB.Events;
 using System.Linq;
 using System.Reflection;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Events

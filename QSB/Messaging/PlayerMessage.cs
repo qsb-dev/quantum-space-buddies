@@ -17,7 +17,7 @@ namespace QSB.Messaging
 
 		/// <summary>
 		/// If true, only send this message to the host of the current session
-		/// /// (OnReceiveLocal/Remote is not called on any other client)
+		/// (OnReceiveLocal/Remote is not called on any other client)
 		/// </summary>
 		public bool OnlySendToHost { get; set; }
 

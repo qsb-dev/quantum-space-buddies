@@ -26,7 +26,7 @@ namespace QSB.Utility.VariableSync
 					{
 						DebugLog.ToConsole($"Warning - Getter is null!", OWML.Common.MessageType.Warning);
 					}
-					
+
 					return default;
 				}
 			}

@@ -1,5 +1,4 @@
-﻿using System;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Player;
@@ -8,6 +7,7 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
+using System;
 
 namespace QSB.Events
 {

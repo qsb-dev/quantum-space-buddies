@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.Utils;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
@@ -17,6 +15,8 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 

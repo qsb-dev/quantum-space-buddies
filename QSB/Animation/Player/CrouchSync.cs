@@ -1,8 +1,6 @@
-﻿using QSB.Utility;
-using QSB.Utility.VariableSync;
+﻿using QSB.Utility.VariableSync;
 using QuantumUNET;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Animation.Player
 {

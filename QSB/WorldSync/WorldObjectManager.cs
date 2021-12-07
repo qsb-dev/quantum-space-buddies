@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.WorldSync

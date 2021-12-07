@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using OWML.Common;
 using QSB.Anglerfish.Patches;
 using QSB.Animation.NPC.Patches;
@@ -31,6 +28,9 @@ using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
 using QSB.Tools.TranslatorTool.TranslationSync.Patches;
 using QSB.Utility;
 using QSB.ZeroGCaveSync.Patches;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.Patches
 {

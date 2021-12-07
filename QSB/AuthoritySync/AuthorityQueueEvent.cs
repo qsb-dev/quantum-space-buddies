@@ -1,5 +1,4 @@
 ﻿using QSB.Events;
-using QSB.WorldSync;
 using QuantumUNET.Components;
 
 namespace QSB.AuthoritySync

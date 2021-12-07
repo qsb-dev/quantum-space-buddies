@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Anglerfish.Events;
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
@@ -36,6 +35,7 @@ using QSB.Tools.TranslatorTool.TranslationSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using QSB.ZeroGCaveSync.Events;
+using System.Collections.Generic;
 
 namespace QSB.Events
 {

@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Player;
-using QSB.WorldSync;
 
 namespace QSB.Animation.Player.Events
 {
