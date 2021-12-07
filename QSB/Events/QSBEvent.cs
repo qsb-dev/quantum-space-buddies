@@ -85,11 +85,6 @@ namespace QSB.Events
 				return;
 			}
 
-			if (message.SendToSpecific && message.ToId != LocalPlayerId)
-			{
-				return;
-			}
-
 			if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QNetworkIdentity>() == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message of type <{GetType().Name}> before localplayer was established.", MessageType.Warning);

@@ -17,7 +17,7 @@ namespace QSB.SaveSync.Events
 		private GameStateMessage CreateMessage(uint toId) => new()
 		{
 			AboutId = LocalPlayerId,
-			ToId = toId,
+			ForId = toId,
 			InSolarSystem = QSBSceneManager.CurrentScene == OWScene.SolarSystem,
 			InEye = QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse,
 			LoopCount = StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount,
