@@ -133,6 +133,11 @@ namespace QSB.Menus
 
 			OWTime.Unpause(OWTime.PauseType.System);
 			OWInput.RestorePreviousInputs();
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+			}
 		}
 
 		private void CreateCommonPopups()
@@ -307,7 +312,6 @@ namespace QSB.Menus
 
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null, () =>
 			{
-				DebugLog.DebugWrite($"requesting game details");
 				QSBEventManager.FireEvent(EventNames.QSBRequestGameDetails);
 			});
 		}
