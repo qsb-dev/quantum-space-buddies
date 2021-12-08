@@ -77,9 +77,16 @@ namespace QSB.Messaging
 			QNetworkManager.singleton.client.RegisterHandler(msgType, netMsg =>
 			{
 				var msg = netMsg.ReadMessage<Msg>();
-				if (msg.From != QSBPlayerManager.LocalPlayerId && msg.Message.ShouldReceive)
+				if (msg.Message.ShouldReceive)
 				{
-					msg.Message.OnReceiveRemote();
+					if (msg.From != QSBPlayerManager.LocalPlayerId)
+					{
+						msg.Message.OnReceiveRemote();
+					}
+					else
+					{
+						msg.Message.OnReceiveLocal();
+					}
 				}
 			});
 		}
