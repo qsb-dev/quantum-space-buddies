@@ -20,7 +20,7 @@ namespace QSB.Utility.VariableSync
 
 		public virtual void Awake()
 		{
-			QNetworkServer.instance.m_SimpleServerSimple.RegisterHandlerSafe(short.MaxValue, HandleVariable);
+			QNetworkServer.RegisterHandlerSafe(short.MaxValue, HandleVariable);
 
 			if (LocalPlayerAuthority)
 			{
