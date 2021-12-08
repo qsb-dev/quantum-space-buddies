@@ -1,5 +1,6 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 using QuantumUNET.Transport;

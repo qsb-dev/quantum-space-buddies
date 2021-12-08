@@ -2,6 +2,7 @@
 using QSB.CampfireSync.Events;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 

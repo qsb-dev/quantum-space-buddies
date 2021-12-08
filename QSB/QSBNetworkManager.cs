@@ -6,6 +6,7 @@ using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.OrbSync.TransformSync;
 using QSB.Patches;
 using QSB.Player;

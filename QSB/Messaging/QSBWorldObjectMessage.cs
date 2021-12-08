@@ -2,7 +2,7 @@
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
 	public abstract class QSBWorldObjectMessage<T> : QSBMessage where T : IWorldObject
 	{

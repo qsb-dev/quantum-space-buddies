@@ -10,7 +10,7 @@ using QuantumUNET.Components;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
 	public static class QSBMessageManager
 	{

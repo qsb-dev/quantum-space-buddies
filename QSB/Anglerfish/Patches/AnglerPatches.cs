@@ -3,6 +3,7 @@ using QSB.Anglerfish.Events;
 using QSB.Anglerfish.WorldObjects;
 using QSB.AuthoritySync;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;

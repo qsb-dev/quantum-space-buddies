@@ -1,6 +1,6 @@
 ﻿using QuantumUNET.Transport;
 
-namespace QSB.Events
+namespace QSB.Messaging
 {
 	public abstract class QSBMessage
 	{

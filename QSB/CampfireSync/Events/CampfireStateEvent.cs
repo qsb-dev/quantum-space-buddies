@@ -1,5 +1,6 @@
 ﻿using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 

@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.GeyserSync.Events;
+using QSB.Messaging;
 using QSB.WorldSync;
 using QuantumUNET;
 
