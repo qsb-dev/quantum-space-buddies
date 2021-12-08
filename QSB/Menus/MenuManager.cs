@@ -15,18 +15,23 @@ namespace QSB.Menus
 		public static MenuManager Instance;
 
 		private IMenuAPI MenuApi => QSBCore.MenuApi;
-		private PopupMenu PopupMenu;
+
+		private PopupMenu IPPopup;
 		private PopupMenu InfoPopup;
 		private bool _addedPauseLock;
+
+		// Pause menu only
+		private Button HostButton;
+		private GameObject QuitButton;
+		private GameObject DisconnectButton;
+		private PopupMenu DisconnectPopup;
 		private StringBuilder _nowLoadingSB;
 		protected Text _loadingText;
 
-		private Button HostButton;
-		private GameObject ClientButton;
-		private Button DisconnectButton;
-
+		// title screen only
 		private GameObject ResumeGameButton;
 		private GameObject NewGameButton;
+		private GameObject ClientButton;
 
 		private const int _ClientButtonIndex = 2;
 		private const int _DisconnectIndex = 3;
@@ -67,7 +72,9 @@ namespace QSB.Menus
 
 		private void Update()
 		{
-			if ((LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse) && _loadingText != null)
+			if (QSBCore.IsInMultiplayer
+				&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+				&& _loadingText != null)
 			{
 				var num = LoadManager.GetAsyncLoadProgress();
 				num = num < 0.1f
@@ -82,7 +89,6 @@ namespace QSB.Menus
 
 		public void JoinGame(bool inEye, bool inSolarSystem)
 		{
-			DebugLog.DebugWrite($"Join game ineye:{inEye} inSolarSystem:{inSolarSystem}");
 			if (inEye)
 			{
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToBlack, 1f, false);
@@ -131,8 +137,8 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			PopupMenu = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
-			PopupMenu.OnPopupConfirm += Connect;
+			IPPopup = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
+			IPPopup.OnPopupConfirm += Connect;
 
 			InfoPopup = MenuApi.MakeInfoPopup("", "");
 			InfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -145,6 +151,7 @@ namespace QSB.Menus
 		{
 			if (button == null)
 			{
+				DebugLog.DebugWrite($"Warning - Tried to set button to {active}, but it was null.", OWML.Common.MessageType.Warning);
 				return;
 			}
 
@@ -159,40 +166,51 @@ namespace QSB.Menus
 			HostButton = MenuApi.PauseMenu_MakeSimpleButton("OPEN TO MULTIPLAYER");
 			HostButton.onClick.AddListener(Host);
 
-			DisconnectButton = MenuApi.PauseMenu_MakeSimpleButton("DISCONNECT");
-			DisconnectButton.onClick.AddListener(Disconnect);
+			DisconnectPopup = MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
+			DisconnectPopup.OnPopupConfirm += Disconnect;
+
+			DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton("DISCONNECT", DisconnectPopup);
+
+			QuitButton = Resources.FindObjectsOfTypeAll<SubmitActionLoadScene>().First(x => x.name == "Button-ExitToMainMenu").gameObject;
 
 			if (QSBCore.IsInMultiplayer)
 			{
 				SetButtonActive(HostButton, false);
 				SetButtonActive(DisconnectButton, true);
+				SetButtonActive(QuitButton, false);
 			}
 			else
 			{
 				SetButtonActive(HostButton, true);
 				SetButtonActive(DisconnectButton, false);
+				SetButtonActive(QuitButton, true);
 			}
 
-			OnConnected();
+			var text = QSBCore.IsHost
+				? "STOP HOSTING"
+				: "DISCONNECT";
+			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
+
+			var popupText = QSBCore.IsHost
+				? "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu."
+				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
+			DisconnectPopup._labelText.text = popupText;
 		}
 
 		private void MakeTitleMenus()
 		{
 			CreateCommonPopups();
 
-			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, PopupMenu);
+			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, IPPopup);
 
-			DisconnectButton = MenuApi.TitleScreen_MakeSimpleButton("DISCONNECT", _DisconnectIndex);
-			DisconnectButton.onClick.AddListener(Disconnect);
-			_loadingText = DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
+			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
 
 			if (QSBCore.IsInMultiplayer)
 			{
-				ClientButton.SetActive(false);
-				SetButtonActive(DisconnectButton, true);
+				SetButtonActive(ClientButton, false);
 
 				if (QSBCore.IsHost)
 				{
@@ -207,12 +225,10 @@ namespace QSB.Menus
 			}
 			else
 			{
-				SetButtonActive(DisconnectButton, false);
+				SetButtonActive(ClientButton, true);
 				SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
 				SetButtonActive(NewGameButton, true);
 			}
-
-			OnConnected();
 
 			if (QSBCore.SkipTitleScreen)
 			{
@@ -238,34 +254,42 @@ namespace QSB.Menus
 		{
 			QSBNetworkManager.Instance.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
-			SetButtonActive(ClientButton, true);
-			SetButtonActive(HostButton, true);
+
+			Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
+			Locator.GetSceneMenuManager().pauseMenu._isPaused = false;
+
+			OWInput.RestorePreviousInputs();
+
+			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
 		}
 
 		private void Host()
 		{
-			DebugLog.DebugWrite($"Host");
-
 			if (QSBNetworkManager.Instance.StartHost() != null)
 			{
 				SetButtonActive(DisconnectButton, true);
-				SetButtonActive(ClientButton, false);
 				SetButtonActive(HostButton, false);
 			}
 			else
 			{
 				OpenInfoPopup($"Failed to start server.", "OK");
 			}
+
+			var text = QSBCore.IsHost
+				? "STOP HOSTING"
+				: "DISCONNECT";
+			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
+
+			var popupText = QSBCore.IsHost
+				? "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu."
+				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
+			DisconnectPopup._labelText.text = popupText;
 		}
 
 		private void Connect()
 		{
-			QSBNetworkManager.Instance.networkAddress = string.Concat((PopupMenu as PopupInputMenu).GetInputText().Where(c => !char.IsWhiteSpace(c)));
+			QSBNetworkManager.Instance.networkAddress = string.Concat((IPPopup as PopupInputMenu).GetInputText().Where(c => !char.IsWhiteSpace(c)));
 			QSBNetworkManager.Instance.StartClient();
-			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = "CONNECTING... (STOP)";
-
-			SetButtonActive(DisconnectButton, true);
-			SetButtonActive(ClientButton, false);
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{
@@ -276,13 +300,6 @@ namespace QSB.Menus
 
 		private void OnConnected()
 		{
-			DebugLog.DebugWrite($"ON CONNECTED");
-
-			var text = QSBCore.IsHost
-				? "STOP HOSTING"
-				: "DISCONNECT";
-			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
-
 			if (QSBCore.IsHost || !QSBCore.IsInMultiplayer)
 			{
 				return;
