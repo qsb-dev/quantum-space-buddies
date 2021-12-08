@@ -1,7 +1,6 @@
 ﻿using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Utility.VariableSync
@@ -11,12 +10,11 @@ namespace QSB.Utility.VariableSync
 		private float _lastClientSendTime;
 		private QNetworkWriter _writer;
 		private int _index;
-		protected bool _ready;
+		public bool Ready { get; protected set; }
 
 		public abstract void WriteData(QNetworkWriter writer);
 		public abstract void ReadData(QNetworkReader writer);
-
-		public bool Ready => _ready;
+		public abstract bool HasChanged();
 
 		public virtual void Awake()
 		{
@@ -29,7 +27,10 @@ namespace QSB.Utility.VariableSync
 		}
 
 		public virtual void Start()
-			=> _index = GetComponents<BaseVariableSyncer>().ToList().IndexOf(this);
+			=> _index = GetComponents<BaseVariableSyncer>().IndexOfReference(this);
+
+		public void OnDestroy()
+			=> Ready = false;
 
 		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
 		{
@@ -63,12 +64,12 @@ namespace QSB.Utility.VariableSync
 
 		private void FixedUpdate()
 		{
-			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !_ready)
+			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !Ready)
 			{
 				return;
 			}
 
-			if (GetNetworkSendInterval() != 0f)
+			if (GetNetworkSendInterval() != 0f && HasChanged())
 			{
 				SetDirtyBit(1U);
 			}
@@ -76,7 +77,7 @@ namespace QSB.Utility.VariableSync
 
 		public virtual void Update()
 		{
-			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !_ready)
+			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !Ready)
 			{
 				return;
 			}
@@ -90,8 +91,7 @@ namespace QSB.Utility.VariableSync
 
 		private void SendVariable()
 		{
-			// TODO - this sends a message, even when the value hasnt changed! this is really bad!
-			if (QClientScene.readyConnection != null)
+			if (HasChanged() && QClientScene.readyConnection != null)
 			{
 				_writer.StartMessage(short.MaxValue);
 				_writer.Write(NetId);

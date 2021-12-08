@@ -5,24 +5,21 @@ namespace QSB.Utility.VariableSync
 {
 	public class FloatVariableSyncer : BaseVariableSyncer
 	{
-		public VariableReference<float> ValueToSync { get; private set; }
+		private VariableReference<float> _ref;
+		private float _prevValue;
 
 		public void Init(Func<float> getter, Action<float> setter)
 		{
-			ValueToSync = new(this);
-			ValueToSync.Getter = getter;
-			ValueToSync.Setter = setter;
-			_ready = true;
+			_ref = new VariableReference<float>(this, getter, setter);
+			Ready = true;
 		}
-
-		public void OnDestroy()
-			=> _ready = false;
 
 		public override void WriteData(QNetworkWriter writer)
 		{
 			if (Ready)
 			{
-				writer.Write(ValueToSync.Value);
+				writer.Write(_ref.Value);
+				_prevValue = _ref.Value;
 			}
 			else
 			{
@@ -34,12 +31,14 @@ namespace QSB.Utility.VariableSync
 		{
 			if (Ready)
 			{
-				ValueToSync.Value = reader.ReadSingle();
+				_ref.Value = reader.ReadSingle();
 			}
 			else
 			{
 				reader.ReadSingle();
 			}
 		}
+
+		public override bool HasChanged() => _ref.Value != _prevValue;
 	}
 }
