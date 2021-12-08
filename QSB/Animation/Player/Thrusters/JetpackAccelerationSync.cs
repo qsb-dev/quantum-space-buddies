@@ -8,19 +8,17 @@ namespace QSB.Animation.Player.Thrusters
 	{
 		public Vector3VariableSyncer AccelerationVariableSyncer;
 		public BoolVariableSyncer ThrustingVariableSyncer;
-		public Vector3 LocalAcceleration => AccelerationVariableSyncer.ValueToSync.Value;
-		public bool IsThrusting => ThrustingVariableSyncer.ValueToSync.Value;
+		public Vector3 LocalAcceleration { get; private set; }
+		public bool IsThrusting { get; private set; }
 
-		private Vector3 _localAcceleration;
-		private bool _isThrusting;
 		private ThrusterModel _thrusterModel;
 
 		public void Init(ThrusterModel model)
 		{
 			_thrusterModel = model;
 
-			AccelerationVariableSyncer.Init(() => _localAcceleration, val => _localAcceleration = val);
-			ThrustingVariableSyncer.Init(() => _isThrusting, val => _isThrusting = val);
+			AccelerationVariableSyncer.Init(() => LocalAcceleration, val => LocalAcceleration = val);
+			ThrustingVariableSyncer.Init(() => IsThrusting, val => IsThrusting = val);
 		}
 
 		public void Update()
@@ -35,8 +33,8 @@ namespace QSB.Animation.Player.Thrusters
 		{
 			if (_thrusterModel != null)
 			{
-				AccelerationVariableSyncer.ValueToSync.Value = _thrusterModel.GetLocalAcceleration();
-				ThrustingVariableSyncer.ValueToSync.Value = _thrusterModel.IsTranslationalThrusterFiring();
+				LocalAcceleration = _thrusterModel.GetLocalAcceleration();
+				IsThrusting = _thrusterModel.IsTranslationalThrusterFiring();
 			}
 		}
 	}

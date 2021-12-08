@@ -2,23 +2,26 @@
 
 namespace QSB.Utility.VariableSync
 {
-	public class VariableReference<T>
+	public readonly struct VariableReference<T>
 	{
-		private BaseVariableSyncer _owner;
+		private readonly BaseVariableSyncer _owner;
+		private readonly Func<T> _getter;
+		private readonly Action<T> _setter;
 
-		public Func<T> Getter;
-		public Action<T> Setter;
-
-		public VariableReference(BaseVariableSyncer owner)
-			=> _owner = owner;
+		public VariableReference(BaseVariableSyncer owner, Func<T> getter, Action<T> setter)
+		{
+			_owner = owner;
+			_getter = getter;
+			_setter = setter;
+		}
 
 		public T Value
 		{
 			get
 			{
-				if (Getter != null)
+				if (_getter != null)
 				{
-					return Getter();
+					return _getter();
 				}
 				else
 				{
@@ -26,15 +29,15 @@ namespace QSB.Utility.VariableSync
 					{
 						DebugLog.ToConsole($"Warning - Getter is null!", OWML.Common.MessageType.Warning);
 					}
-					
+
 					return default;
 				}
 			}
 			set
 			{
-				if (Setter != null)
+				if (_setter != null)
 				{
-					Setter(value);
+					_setter(value);
 				}
 				else
 				{
