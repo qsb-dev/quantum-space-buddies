@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.Anglerfish.Events
 {
-	public class AnglerChangeStateMessage : EnumWorldObjectMessage<AnglerfishController.AnglerState>
+	public class AnglerChangeStateMessage_OLD : EnumWorldObjectMessage<AnglerfishController.AnglerState>
 	{
 		public uint TargetId;
 		public Vector3 LocalDisturbancePos;
