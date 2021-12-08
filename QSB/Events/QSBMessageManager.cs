@@ -47,7 +47,7 @@ namespace QSB.Events
 		public static void Init()
 		{
 			var types = typeof(QSBMessage).Assembly.GetTypes()
-				.Where(x => x != typeof(QSBMessage) && typeof(QSBMessage).IsAssignableFrom(x))
+				.Where(x => !x.IsAbstract && typeof(QSBMessage).IsAssignableFrom(x))
 				.ToArray();
 			for (var i = 0; i < types.Length; i++)
 			{
@@ -87,7 +87,8 @@ namespace QSB.Events
 		#endregion
 
 
-		public static void Send(this QSBMessage message, uint to = uint.MaxValue)
+		public static void Send<TMessage>(this TMessage message, uint to = uint.MaxValue)
+			where TMessage : QSBMessage, new()
 		{
 			QNetworkManager.singleton.client.Send(msgType, new Msg
 			{
@@ -97,16 +98,12 @@ namespace QSB.Events
 			});
 		}
 
-		public static void SendMessage<T>(this T worldObject, QSBWorldObjectMessage<T> message, uint to = uint.MaxValue)
-			where T : IWorldObject
+		public static void SendMessage<TWorldObject, TMessage>(this TWorldObject worldObject, TMessage message, uint to = uint.MaxValue)
+			where TMessage : QSBWorldObjectMessage<TWorldObject>, new()
+			where TWorldObject : IWorldObject
 		{
 			message.Id = worldObject.ObjectId;
-			QNetworkManager.singleton.client.Send(msgType, new Msg
-			{
-				From = QSBPlayerManager.LocalPlayerId,
-				To = to,
-				Message = message
-			});
+			Send(message, to);
 		}
 	}
 }
