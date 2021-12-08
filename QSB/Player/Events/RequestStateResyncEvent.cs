@@ -10,6 +10,7 @@ using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
+using QSB.CampfireSync.Events;
 
 namespace QSB.Player.Events
 {
@@ -89,8 +90,13 @@ namespace QSB.Player.Events
 				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
 			}
 
+			// QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
+			// => QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
-				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
+				=> campfire.SendMessage(new CampfireStateMessage
+				{
+					State = campfire.GetState()
+				}));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
 				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));

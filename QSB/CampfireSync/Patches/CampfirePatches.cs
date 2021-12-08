@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.CampfireSync.Events;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
 using QSB.Patches;
@@ -23,7 +24,11 @@ namespace QSB.CampfireSync.Patches
 			else
 			{
 				qsbCampfire.SetState(Campfire.State.LIT);
-				QSBEventManager.FireEvent(EventNames.QSBCampfireState, qsbCampfire.ObjectId, Campfire.State.LIT);
+				qsbCampfire.SendMessage(new CampfireStateMessage
+				{
+					State = Campfire.State.LIT
+				});
+				// QSBEventManager.FireEvent(EventNames.QSBCampfireState, qsbCampfire.ObjectId, Campfire.State.LIT);
 				Locator.GetFlashlight().TurnOff(false);
 			}
 
