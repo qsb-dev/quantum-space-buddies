@@ -28,26 +28,12 @@ namespace QSB.SaveSync.Events
 		public override void OnReceiveRemote(bool isHost, GameStateMessage message)
 		{
 			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
-			DebugLog.DebugWrite($"loopcount:{message.LoopCount}");
 			gameSave.loopCount = message.LoopCount;
-			for (var i = 0; i < message.KnownFrequencies.Length; i++)
-			{
-				DebugLog.DebugWrite($"knowsFrequency{i}:{message.KnownFrequencies[i]}");
-			}
-
 			gameSave.knownFrequencies = message.KnownFrequencies;
-
-			foreach (var item in message.KnownSignals)
-			{
-				DebugLog.DebugWrite($"knowsSignal {item.Key}:{item.Value}");
-			}
-
 			gameSave.knownSignals = message.KnownSignals;
 
 			PlayerData.SaveCurrentGame();
 
-			DebugLog.DebugWrite($"inEye:{message.InEye}");
-			DebugLog.DebugWrite($"inSolarSystem:{message.InSolarSystem}");
 			if (message.InEye != (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 				|| message.InSolarSystem != (QSBSceneManager.CurrentScene == OWScene.SolarSystem))
 			{
