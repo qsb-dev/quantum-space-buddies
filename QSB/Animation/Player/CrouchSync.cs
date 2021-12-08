@@ -1,8 +1,6 @@
-﻿using QSB.Utility;
-using QSB.Utility.VariableSync;
+﻿using QSB.Utility.VariableSync;
 using QuantumUNET;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Animation.Player
 {
@@ -46,7 +44,7 @@ namespace QSB.Animation.Player
 			}
 
 			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
-			CrouchVariableSyncer.ValueToSync.Value = jumpChargeFraction;
+			CrouchValue = jumpChargeFraction;
 		}
 
 		private void SyncRemoteCrouch()
