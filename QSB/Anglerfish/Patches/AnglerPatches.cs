@@ -24,6 +24,7 @@ namespace QSB.Anglerfish.Patches
 				__result = qsbAngler.TargetTransform.position;
 				return false;
 			}
+
 			__result = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
 
 			return false;
