@@ -27,7 +27,7 @@ namespace QSB.Player
 			if (_previousCollidingQuantumObject != collidingQuantumObject)
 			{
 				var objectIndex = (collidingQuantumObject != null)
-					? QSBWorldSync.GetIdFromTypeSubset((IQSBQuantumObject)QSBWorldSync.GetWorldFromUnity(collidingQuantumObject))
+					? QSBWorldSync.GetIdFromTypeSubset((IQSBQuantumObject)collidingQuantumObject.GetWorldObject())
 					: -1;
 
 				QSBEventManager.FireEvent(

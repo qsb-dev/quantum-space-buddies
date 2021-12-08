@@ -62,7 +62,7 @@ namespace QSB.MeteorSync.Patches
 						particleSystem.Play();
 					}
 
-					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+					var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
 					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher);
 				}
 
@@ -119,8 +119,8 @@ namespace QSB.MeteorSync.Patches
 
 			if (meteorController != null)
 			{
-				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-				var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(meteorController);
+				var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
+				var qsbMeteor = meteorController.GetWorldObject<QSBMeteor>();
 
 				qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
 				qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
@@ -145,7 +145,7 @@ namespace QSB.MeteorSync.Patches
 		public static void Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
 				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
@@ -157,7 +157,7 @@ namespace QSB.MeteorSync.Patches
 		public static void AddDamage(FragmentIntegrity __instance,
 			float damage)
 		{
-			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
+			var qsbFragment = __instance.GetWorldObject<QSBFragment>();
 			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
 		}
 
@@ -182,7 +182,7 @@ namespace QSB.MeteorSync.Patches
 				return true;
 			}
 
-			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
+			var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
 
 			if (__instance.enabled)
 			{
@@ -207,7 +207,7 @@ namespace QSB.MeteorSync.Patches
 				return true;
 			}
 
-			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
+			var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
 
 			if (!__instance._deccelerating)
 			{

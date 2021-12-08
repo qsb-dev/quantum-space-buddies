@@ -19,7 +19,7 @@ namespace QSB.JellyfishSync.Patches
 			{
 				return true;
 			}
-			var qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(__instance);
+			var qsbJellyfish = __instance.GetWorldObject<QSBJellyfish>();
 
 			if (!__instance.gameObject.activeSelf && __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
 			{
@@ -46,7 +46,7 @@ namespace QSB.JellyfishSync.Patches
 			{
 				return true;
 			}
-			var qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(__instance);
+			var qsbJellyfish = __instance.GetWorldObject<QSBJellyfish>();
 
 			var sqrMagnitude = (__instance._jellyfishBody.GetPosition() - __instance._planetBody.GetPosition()).sqrMagnitude;
 			if (qsbJellyfish.IsRising)

@@ -24,7 +24,7 @@ namespace QSB.Animation.NPC.Patches
 				__instance._animatorStateEvents.OnEnterState += __instance.OnEnterAnimatorState;
 			}
 
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance);
+			var qsbObj = __instance.GetWorldObject<QSBSolanumAnimController>();
 			var playersInHeadZone = qsbObj.GetPlayersInHeadZone();
 
 			var targetCamera = playersInHeadZone == null || playersInHeadZone.Count == 0
@@ -46,7 +46,7 @@ namespace QSB.Animation.NPC.Patches
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
+				var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
 				QSBEventManager.FireEvent(EventNames.QSBEnterNomaiHeadZone, qsbObj.ObjectId);
 			}
 
@@ -59,7 +59,7 @@ namespace QSB.Animation.NPC.Patches
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
+				var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
 				QSBEventManager.FireEvent(EventNames.QSBExitNomaiHeadZone, qsbObj.ObjectId);
 			}
 			return false;
@@ -69,7 +69,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.Update))]
 		public static bool ReplacementUpdate(NomaiConversationManager __instance)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
+			var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
 			__instance._playerInWatchVolume = qsbObj.GetPlayersInHeadZone().Any();
 
 			if (!__instance._initialized)

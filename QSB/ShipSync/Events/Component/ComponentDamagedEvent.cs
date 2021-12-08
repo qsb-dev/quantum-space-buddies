@@ -16,7 +16,7 @@ namespace QSB.ShipSync.Events.Component
 
 		private WorldObjectMessage CreateMessage(ShipComponent hull)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(hull);
+			var worldObject = hull.GetWorldObject<QSBShipComponent>();
 			return new WorldObjectMessage
 			{
 				AboutId = LocalPlayerId,

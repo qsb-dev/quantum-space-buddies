@@ -15,7 +15,7 @@ namespace QSB.ShipSync.Events.Hull
 
 		private HullImpactMessage CreateMessage(ShipHull hull, ImpactData data, float damage)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(hull);
+			var worldObject = hull.GetWorldObject<QSBShipHull>();
 			return new HullImpactMessage
 			{
 				AboutId = LocalPlayerId,

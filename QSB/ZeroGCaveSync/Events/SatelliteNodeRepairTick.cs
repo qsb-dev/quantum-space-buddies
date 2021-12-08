@@ -16,7 +16,7 @@ namespace QSB.ZeroGCaveSync.Events
 
 		private RepairTickMessage CreateMessage(SatelliteNode node, float repairFraction)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSatelliteNode>(node);
+			var worldObject = node.GetWorldObject<QSBSatelliteNode>();
 			return new RepairTickMessage
 			{
 				AboutId = LocalPlayerId,

@@ -15,7 +15,7 @@ namespace QSB.ShipSync.Events.Component
 
 		private RepairTickMessage CreateMessage(ShipComponent hull, float repairFraction)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(hull);
+			var worldObject = hull.GetWorldObject<QSBShipComponent>();
 			return new RepairTickMessage
 			{
 				AboutId = LocalPlayerId,

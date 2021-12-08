@@ -16,7 +16,7 @@ namespace QSB.ZeroGCaveSync.Events
 
 		private WorldObjectMessage CreateMessage(SatelliteNode node)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSatelliteNode>(node);
+			var worldObject = node.GetWorldObject<QSBSatelliteNode>();
 			return new WorldObjectMessage
 			{
 				AboutId = LocalPlayerId,

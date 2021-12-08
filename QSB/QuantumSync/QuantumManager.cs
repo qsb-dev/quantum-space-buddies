@@ -151,7 +151,7 @@ namespace QSB.QuantumSync
 				return Enumerable.Empty<PlayerInfo>();
 			}
 
-			var worldObj = (IQSBQuantumObject)QSBWorldSync.GetWorldFromUnity(obj);
+			var worldObj = (IQSBQuantumObject)obj.GetWorldObject();
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
 	}

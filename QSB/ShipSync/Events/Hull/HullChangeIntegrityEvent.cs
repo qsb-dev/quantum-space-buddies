@@ -15,7 +15,7 @@ namespace QSB.ShipSync.Events.Hull
 
 		private HullChangeIntegrityMessage CreateMessage(ShipHull hull, float integrity)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(hull);
+			var worldObject = hull.GetWorldObject<QSBShipHull>();
 			return new HullChangeIntegrityMessage
 			{
 				AboutId = LocalPlayerId,

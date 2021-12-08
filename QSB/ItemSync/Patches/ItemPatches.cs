@@ -20,7 +20,7 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.MoveItemToCarrySocket))]
 		public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
 		{
-			var qsbObj = (IQSBOWItem)QSBWorldSync.GetWorldFromUnity(item);
+			var qsbObj = (IQSBOWItem)item.GetWorldObject();
 			var itemId = QSBWorldSync.GetIdFromTypeSubset(qsbObj);
 			QSBPlayerManager.LocalPlayer.HeldItem = qsbObj;
 			QSBEventManager.FireEvent(EventNames.QSBMoveToCarry, itemId);
@@ -31,8 +31,8 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.SocketItem))]
 		public static bool ItemTool_SocketItem(OWItem ____heldItem, OWItemSocket socket)
 		{
-			var qsbObj = (IQSBOWItem)QSBWorldSync.GetWorldFromUnity(____heldItem);
-			var socketId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(socket));
+			var qsbObj = (IQSBOWItem)____heldItem.GetWorldObject();
+			var socketId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItemSocket)socket.GetWorldObject());
 			var itemId = QSBWorldSync.GetIdFromTypeSubset(qsbObj);
 			QSBPlayerManager.LocalPlayer.HeldItem = null;
 			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, itemId, SocketEventType.Socket);
@@ -43,9 +43,9 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.StartUnsocketItem))]
 		public static bool ItemTool_StartUnsocketItem(OWItemSocket socket)
 		{
-			var item = (IQSBOWItem)QSBWorldSync.GetWorldFromUnity(socket.GetSocketedItem());
+			var item = (IQSBOWItem)socket.GetSocketedItem().GetWorldObject();
 			QSBPlayerManager.LocalPlayer.HeldItem = item;
-			var socketId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(socket));
+			var socketId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItemSocket)socket.GetWorldObject());
 			QSBEventManager.FireEvent(EventNames.QSBSocketItem, socketId, 0, SocketEventType.StartUnsocket);
 			return true;
 		}
@@ -54,7 +54,7 @@ namespace QSB.ItemSync.Patches
 		[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.CompleteUnsocketItem))]
 		public static bool ItemTool_CompleteUnsocketItem(OWItem ____heldItem)
 		{
-			var itemId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItem)QSBWorldSync.GetWorldFromUnity(____heldItem));
+			var itemId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItem)____heldItem.GetWorldObject());
 			QSBEventManager.FireEvent(EventNames.QSBSocketItem, 0, itemId, SocketEventType.CompleteUnsocket);
 			return true;
 		}
@@ -90,7 +90,7 @@ namespace QSB.ItemSync.Patches
 			var parent = (customDropTarget == null)
 				? targetRigidbody.transform
 				: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
-			var objectId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItem)QSBWorldSync.GetWorldFromUnity(____heldItem));
+			var objectId = QSBWorldSync.GetIdFromTypeSubset((IQSBOWItem)____heldItem.GetWorldObject());
 			____heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
 			____heldItem = null;
 			QSBPlayerManager.LocalPlayer.HeldItem = null;

@@ -34,7 +34,7 @@ namespace QSB.WorldSync
 			return worldObjects[id];
 		}
 
-		public static IWorldObject GetWorldFromUnity(MonoBehaviour unityObject)
+		public static IWorldObject GetWorldObject(this MonoBehaviour unityObject)
 		{
 			if (unityObject == null)
 			{
@@ -63,7 +63,7 @@ namespace QSB.WorldSync
 			return returnObject;
 		}
 
-		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
+		public static TWorldObject GetWorldObject<TWorldObject>(this MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
 			if (unityObject == null)
@@ -92,10 +92,6 @@ namespace QSB.WorldSync
 
 			return (TWorldObject)returnObject;
 		}
-
-		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)
-			where TWorldObject : IWorldObject
-			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
 		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
 		{

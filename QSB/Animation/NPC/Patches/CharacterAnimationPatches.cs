@@ -37,7 +37,7 @@ namespace QSB.Animation.NPC.Patches
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
+			var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>(); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
 			if (____inConversation)
@@ -100,7 +100,7 @@ namespace QSB.Animation.NPC.Patches
 		{
 			if (input.CompareTag("PlayerDetector"))
 			{
-				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
+				var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>();
 				QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
 			}
 
@@ -113,7 +113,7 @@ namespace QSB.Animation.NPC.Patches
 		{
 			if (input.CompareTag("PlayerDetector"))
 			{
-				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
+				var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>();
 				QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
 			}
 			return false;

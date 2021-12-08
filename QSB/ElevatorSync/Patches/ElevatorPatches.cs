@@ -17,7 +17,7 @@ namespace QSB.ElevatorSync.Patches
 		public static void Elevator_StartLift(Elevator __instance)
 		{
 			var isGoingUp = __instance.GetValue<bool>("_goingToTheEnd");
-			var id = QSBWorldSync.GetIdFromUnity<QSBElevator>(__instance);
+			var id = __instance.GetWorldObject<QSBElevator>().ObjectId;
 			QSBEventManager.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
 		}
 	}
