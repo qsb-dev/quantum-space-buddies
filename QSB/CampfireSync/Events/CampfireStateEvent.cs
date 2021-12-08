@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
-using QuantumUNET.Transport;
 
 namespace QSB.CampfireSync.Events
 {
@@ -29,22 +28,8 @@ namespace QSB.CampfireSync.Events
 		}
 	}
 
-	public class CampfireStateMessage : QSBWorldObjectMessage<QSBCampfire>
+	public class CampfireStateMessage : QSBEnumWorldObjectMessage<QSBCampfire, Campfire.State>
 	{
-		public Campfire.State State;
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write((int)State);
-		}
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			State = (Campfire.State)reader.ReadInt32();
-		}
-
-		public override void OnReceive(bool isLocal) => WorldObject.SetState(State);
+		public override void OnReceiveRemote() => WorldObject.SetState(Value);
 	}
 }

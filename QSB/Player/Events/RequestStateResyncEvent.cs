@@ -95,7 +95,7 @@ namespace QSB.Player.Events
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> campfire.SendMessage(new CampfireStateMessage
 				{
-					State = campfire.GetState()
+					Value = campfire.GetState()
 				}));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment

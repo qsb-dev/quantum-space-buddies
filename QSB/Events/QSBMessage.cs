@@ -8,6 +8,6 @@ namespace QSB.Events
 		public abstract void Deserialize(QNetworkReader reader);
 
 		public virtual bool ShouldReceive => true;
-		public abstract void OnReceive(bool isLocal);
+		public abstract void OnReceiveRemote();
 	}
 }

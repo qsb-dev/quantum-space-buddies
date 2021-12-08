@@ -26,7 +26,7 @@ namespace QSB.CampfireSync.Patches
 				qsbCampfire.SetState(Campfire.State.LIT);
 				qsbCampfire.SendMessage(new CampfireStateMessage
 				{
-					State = Campfire.State.LIT
+					Value = Campfire.State.LIT
 				});
 				// QSBEventManager.FireEvent(EventNames.QSBCampfireState, qsbCampfire.ObjectId, Campfire.State.LIT);
 				Locator.GetFlashlight().TurnOff(false);

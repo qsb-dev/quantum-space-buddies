@@ -77,9 +77,9 @@ namespace QSB.Events
 			QNetworkManager.singleton.client.RegisterHandler(msgType, netMsg =>
 			{
 				var msg = netMsg.ReadMessage<Msg>();
-				if (msg.Message.ShouldReceive)
+				if (msg.Message.ShouldReceive && msg.From != QSBPlayerManager.LocalPlayerId)
 				{
-					msg.Message.OnReceive(msg.From == QSBPlayerManager.LocalPlayerId);
+					msg.Message.OnReceiveRemote();
 				}
 			});
 		}
@@ -87,8 +87,8 @@ namespace QSB.Events
 		#endregion
 
 
-		public static void Send<TMessage>(this TMessage message, uint to = uint.MaxValue)
-			where TMessage : QSBMessage, new()
+		public static void Send<M>(this M message, uint to = uint.MaxValue)
+			where M : QSBMessage, new()
 		{
 			QNetworkManager.singleton.client.Send(msgType, new Msg
 			{
@@ -98,9 +98,9 @@ namespace QSB.Events
 			});
 		}
 
-		public static void SendMessage<TWorldObject, TMessage>(this TWorldObject worldObject, TMessage message, uint to = uint.MaxValue)
-			where TMessage : QSBWorldObjectMessage<TWorldObject>, new()
-			where TWorldObject : IWorldObject
+		public static void SendMessage<T, M>(this T worldObject, M message, uint to = uint.MaxValue)
+			where M : QSBWorldObjectMessage<T>, new()
+			where T : IWorldObject
 		{
 			message.Id = worldObject.ObjectId;
 			Send(message, to);
