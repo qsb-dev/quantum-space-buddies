@@ -66,7 +66,7 @@ namespace QSB.Messaging
 						DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.Message.GetType().Name}", MessageType.Error);
 						return;
 					}
-					QNetworkServer.SendToClient(conn.connectionId, msgType, msg);
+					conn.Send(msgType, msg);
 				}
 				else
 				{
