@@ -27,4 +27,9 @@ namespace QSB.GeyserSync.Events
 			geyser?.SetState(message.State);
 		}
 	}
+
+	public class GeyserMessage : QSBBoolWorldObjectMessage<QSBGeyser>
+	{
+		public override void OnReceiveRemote() => WorldObject.SetState(Value);
+	}
 }

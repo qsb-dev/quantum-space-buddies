@@ -1,4 +1,5 @@
 ﻿using QSB.Events;
+using QSB.GeyserSync.Events;
 using QSB.WorldSync;
 using QuantumUNET;
 
@@ -16,9 +17,13 @@ namespace QSB.GeyserSync.WorldObjects
 
 		private void HandleEvent(bool state)
 		{
-			if (QNetworkServer.active)
+			if (QSBCore.IsHost)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBGeyserState, ObjectId, state);
+				this.SendMessage(new GeyserMessage
+				{
+					Value = state
+				});
+				// QSBEventManager.FireEvent(EventNames.QSBGeyserState, ObjectId, state);
 			}
 		}
 
