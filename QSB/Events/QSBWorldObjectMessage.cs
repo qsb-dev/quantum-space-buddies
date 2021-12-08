@@ -11,15 +11,18 @@ namespace QSB.Events
 		public override void Serialize(QNetworkWriter writer) => writer.Write(Id);
 		public override void Deserialize(QNetworkReader reader) => Id = reader.ReadInt32();
 
-		public override bool OnReceive(bool isLocal)
+		public override bool ShouldReceive
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			get
 			{
-				return false;
-			}
+				if (!WorldObjectManager.AllObjectsReady)
+				{
+					return false;
+				}
 
-			WorldObject = QSBWorldSync.GetWorldFromId<T>(Id);
-			return true;
+				WorldObject = QSBWorldSync.GetWorldFromId<T>(Id);
+				return true;
+			}
 		}
 	}
 }

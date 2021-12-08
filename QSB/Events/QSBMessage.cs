@@ -7,6 +7,7 @@ namespace QSB.Events
 		public abstract void Serialize(QNetworkWriter writer);
 		public abstract void Deserialize(QNetworkReader reader);
 
-		public abstract bool OnReceive(bool isLocal);
+		public virtual bool ShouldReceive => true;
+		public abstract void OnReceive(bool isLocal);
 	}
 }

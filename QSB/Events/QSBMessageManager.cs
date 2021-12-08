@@ -60,7 +60,7 @@ namespace QSB.Events
 				var msg = netMsg.ReadMessage<Msg>();
 				if (msg.To != uint.MaxValue)
 				{
-					var conn = QNetworkServer.connections.FirstOrDefault(x => x.GetPlayerId() == msg.To);
+					var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
 					if (conn == null)
 					{
 						DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.Message.GetType().Name}", MessageType.Error);
@@ -77,7 +77,10 @@ namespace QSB.Events
 			QNetworkManager.singleton.client.RegisterHandler(msgType, netMsg =>
 			{
 				var msg = netMsg.ReadMessage<Msg>();
-				msg.Message.OnReceive(msg.From == QSBPlayerManager.LocalPlayerId);
+				if (msg.Message.ShouldReceive)
+				{
+					msg.Message.OnReceive(msg.From == QSBPlayerManager.LocalPlayerId);
+				}
 			});
 		}
 
