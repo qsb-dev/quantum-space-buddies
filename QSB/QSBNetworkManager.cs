@@ -71,6 +71,8 @@ namespace QSB
 			spawnPrefabs.Add(JellyfishPrefab);
 
 			ConfigureNetworkManager();
+
+			QSBMessageManager.Init();
 		}
 
 		private string GetPlayerName()
