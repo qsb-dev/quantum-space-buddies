@@ -301,6 +301,11 @@ namespace QSB.Menus
 				SetButtonActive(ResumeGameButton, false);
 				SetButtonActive(NewGameButton, false);
 			}
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				SetButtonActive(QuitButton, false);
+			}
 		}
 
 		private void OnConnected()
@@ -329,9 +334,10 @@ namespace QSB.Menus
 			};
 			OpenInfoPopup(text, "OK");
 
-			DisconnectButton.gameObject.SetActive(false);
-			ClientButton.SetActive(true);
-			HostButton?.gameObject.SetActive(true);
+			SetButtonActive(DisconnectButton, false);
+			SetButtonActive(ClientButton, true);
+			SetButtonActive(HostButton, true);
+			SetButtonActive(QuitButton, true);
 		}
 
 		private void OnDisconnected(NetworkError error)
@@ -350,6 +356,7 @@ namespace QSB.Menus
 
 			SetButtonActive(DisconnectButton, false);
 			SetButtonActive(ClientButton, true);
+			SetButtonActive(QuitButton, true);
 			SetButtonActive(HostButton, true);
 			SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
 			SetButtonActive(NewGameButton, true);
@@ -374,6 +381,7 @@ namespace QSB.Menus
 					SetButtonActive(HostButton, true);
 					SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
 					SetButtonActive(NewGameButton, true);
+					SetButtonActive(QuitButton, true);
 					break;
 				default:
 					text = $"Internal QNet client error!\n\nNetworkError:{error}";
