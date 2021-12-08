@@ -58,7 +58,15 @@ namespace QSB.Messaging
 			QNetworkServer.RegisterHandler(msgType, netMsg =>
 			{
 				var msg = netMsg.ReadMessage<Msg>();
-				if (msg.To != uint.MaxValue)
+				if (msg.To == 0)
+				{
+					QNetworkServer.SendToClient(0, msgType, msg);
+				}
+				else if (msg.To == uint.MaxValue)
+				{
+					QNetworkServer.SendToAll(msgType, msg);
+				}
+				else
 				{
 					var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
 					if (conn == null)
@@ -67,10 +75,6 @@ namespace QSB.Messaging
 						return;
 					}
 					conn.Send(msgType, msg);
-				}
-				else
-				{
-					QNetworkServer.SendToAll(msgType, msg);
 				}
 			});
 
