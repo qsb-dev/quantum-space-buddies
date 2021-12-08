@@ -45,6 +45,23 @@ namespace QSB.Messaging
 		}
 	}
 
+	public abstract class QSBFloatWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
+	{
+		public float Value;
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(Value);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			Value = reader.ReadSingle();
+		}
+	}
+
 	public abstract class QSBEnumWorldObjectMessage<T, E> : QSBWorldObjectMessage<T>
 		where T : IWorldObject
 		where E : Enum
