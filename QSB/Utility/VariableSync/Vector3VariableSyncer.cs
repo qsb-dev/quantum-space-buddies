@@ -24,7 +24,7 @@ namespace QSB.Utility.VariableSync
 			}
 			else
 			{
-				writer.Write(default(float));
+				writer.Write(default(Vector3));
 			}
 		}
 
