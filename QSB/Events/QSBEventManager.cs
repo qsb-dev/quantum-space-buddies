@@ -42,11 +42,10 @@ namespace QSB.Events
 	{
 		public static bool Ready { get; private set; }
 
-		private static List<IQSBEvent> _eventList = new();
+		internal static List<IQSBEvent> _eventList = new();
 
 		public static void Init()
 		{
-			BaseQSBEvent._msgType = 0;
 			_eventList = new List<IQSBEvent>
 			{
 				// Player

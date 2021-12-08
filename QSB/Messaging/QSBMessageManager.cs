@@ -16,8 +16,6 @@ namespace QSB.Messaging
 	{
 		#region inner workings
 
-		private const short msgType = short.MaxValue - 1;
-
 		private class Msg : QMessageBase
 		{
 			public uint From;
@@ -41,6 +39,7 @@ namespace QSB.Messaging
 			}
 		}
 
+		private const short msgType = short.MaxValue - 1;
 		private static readonly List<Type> _idToType = new();
 		private static readonly Dictionary<Type, int> _typeToId = new();
 

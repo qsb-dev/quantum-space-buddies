@@ -8,14 +8,39 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
+using QuantumUNET.Transport;
 
 namespace QSB.Events
 {
-	public abstract class QSBEvent<T> : BaseQSBEvent where T : PlayerMessage, new()
+	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
 	{
+		private class Msg : QSBMessage
+		{
+			public QSBEvent<T> Event;
+			public T Message;
+
+			public override void Serialize(QNetworkWriter writer)
+			{
+				writer.Write(Event._msgType);
+				Message.Serialize(writer);
+			}
+
+			public override void Deserialize(QNetworkReader reader)
+			{
+				Event = (QSBEvent<T>)QSBEventManager._eventList[reader.ReadInt32()];
+				Message = new T();
+				Message.Deserialize(reader);
+			}
+
+			public override bool ShouldReceive => Event.CheckMessage(Message);
+			public override void OnReceiveLocal() => Event.OnReceiveLocal(QSBCore.IsHost, Message);
+			public override void OnReceiveRemote() => Event.OnReceiveRemote(QSBCore.IsHost, Message);
+		}
+
 		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
 
 		private readonly MessageHandler<T> _eventHandler;
+		private readonly int _msgType;
 
 		protected QSBEvent()
 		{
@@ -24,10 +49,15 @@ namespace QSB.Events
 				return;
 			}
 
-			_eventHandler = new MessageHandler<T>(_msgType++);
-			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
-			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
+			_msgType = QSBEventManager._eventList.Count;
+			DebugLog.DebugWrite($"{GetType().Name} msgtype = {_msgType}");
+			_eventHandler = new MessageHandler<T>(_msgType);
+			// _eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
+			// _eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
 		}
+
+		public abstract void SetupListener();
+		public abstract void CloseListener();
 
 		public virtual void OnReceiveRemote(bool isHost, T message) { }
 		public virtual void OnReceiveLocal(bool isHost, T message) { }
@@ -43,7 +73,12 @@ namespace QSB.Events
 				{
 					message.ForId = QSBEventManager.ForIdOverride;
 				}
-				_eventHandler.SendToServer(message);
+				new Msg
+				{
+					Event = this,
+					Message = message
+				}.Send(message.ForId);
+				// _eventHandler.SendToServer(message);
 			});
 
 		/// <summary>
