@@ -26,7 +26,11 @@ namespace QSB.Messaging
 			{
 				writer.Write(From);
 				writer.Write(To);
-				writer.Write(_typeToIndex[Message.GetType()]);
+				if (!_typeToIndex.TryGetValue(Message.GetType(), out var index))
+				{
+					DebugLog.ToConsole($"QSBMessageManager - unknown message type {Message.GetType()}", MessageType.Error);
+				}
+				writer.Write(index);
 				Message.Serialize(writer);
 			}
 
