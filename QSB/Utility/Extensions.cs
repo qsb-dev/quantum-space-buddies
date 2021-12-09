@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -127,6 +128,9 @@ namespace QSB.Utility
 
 			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
 		}
+
+		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
+			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
 
 		// OW
 

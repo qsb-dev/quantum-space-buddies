@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using OWML.Common;
 using QSB.Anglerfish.Events;
 using QSB.Animation.NPC.Events;
@@ -43,9 +45,11 @@ namespace QSB.Events
 		public static bool Ready { get; private set; }
 
 		internal static List<IQSBEvent> _eventList = new();
+		internal static int _msgType;
 
 		public static void Init()
 		{
+			_msgType = 0;
 			_eventList = new List<IQSBEvent>
 			{
 				// Player

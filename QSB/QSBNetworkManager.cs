@@ -72,8 +72,6 @@ namespace QSB
 			spawnPrefabs.Add(JellyfishPrefab);
 
 			ConfigureNetworkManager();
-
-			QSBMessageManager.Init();
 		}
 
 		private string GetPlayerName()
@@ -143,6 +141,7 @@ namespace QSB
 			OnClientConnected?.SafeInvoke();
 
 			QSBEventManager.Init();
+			QSBMessageManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
 			gameObject.AddComponent<ServerStateManager>();

@@ -49,7 +49,7 @@ namespace QSB.Events
 				return;
 			}
 
-			_msgType = QSBEventManager._eventList.Count;
+			_msgType = QSBEventManager._msgType++;
 			DebugLog.DebugWrite($"{GetType().Name} msgtype = {_msgType}");
 			_eventHandler = new MessageHandler<T>(_msgType);
 			// _eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);

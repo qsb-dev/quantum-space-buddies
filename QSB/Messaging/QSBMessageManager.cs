@@ -26,7 +26,7 @@ namespace QSB.Messaging
 			{
 				writer.Write(From);
 				writer.Write(To);
-				writer.Write(_typeToId[Message.GetType()]);
+				writer.Write(_typeToIndex[Message.GetType()]);
 				Message.Serialize(writer);
 			}
 
@@ -34,27 +34,27 @@ namespace QSB.Messaging
 			{
 				From = reader.ReadUInt32();
 				To = reader.ReadUInt32();
-				Message = (QSBMessage)Activator.CreateInstance(_idToType[reader.ReadInt32()]);
+				Message = (QSBMessage)Activator.CreateInstance(_types[reader.ReadInt32()]);
 				Message.Deserialize(reader);
 			}
 		}
 
 		private const short msgType = short.MaxValue - 1;
-		private static readonly List<Type> _idToType = new();
-		private static readonly Dictionary<Type, int> _typeToId = new();
+		private static readonly Type[] _types;
+		private static readonly Dictionary<Type, int> _typeToIndex = new();
+
+		static QSBMessageManager()
+		{
+			_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
+			for (var i = 0; i < _types.Length; i++)
+			{
+				_typeToIndex.Add(_types[i], i);
+			}
+		}
 
 		public static void Init()
 		{
-			var types = typeof(QSBMessage).Assembly.GetTypes()
-				.Where(x => !x.IsAbstract && typeof(QSBMessage).IsAssignableFrom(x))
-				.ToArray();
-			for (var i = 0; i < types.Length; i++)
-			{
-				_idToType.Add(types[i]);
-				_typeToId.Add(types[i], i);
-			}
-
-			QNetworkServer.RegisterHandler(msgType, netMsg =>
+			QNetworkServer.RegisterHandlerSafe(msgType, netMsg =>
 			{
 				var msg = netMsg.ReadMessage<Msg>();
 				if (msg.To == 0)
@@ -77,7 +77,7 @@ namespace QSB.Messaging
 				}
 			});
 
-			QNetworkManager.singleton.client.RegisterHandler(msgType, netMsg =>
+			QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, netMsg =>
 			{
 				var msg = netMsg.ReadMessage<Msg>();
 				if (msg.Message.ShouldReceive)
