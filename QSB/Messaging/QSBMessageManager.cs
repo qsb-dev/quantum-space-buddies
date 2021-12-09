@@ -96,7 +96,7 @@ namespace QSB.Messaging
 			{
 				if (msg.From != QSBPlayerManager.LocalPlayerId)
 				{
-					msg.Message.OnReceiveRemote();
+					msg.Message.OnReceiveRemote(msg.From);
 				}
 				else
 				{

@@ -29,7 +29,6 @@ namespace QSB.CampfireSync.Patches
 				{
 					Value = Campfire.State.LIT
 				});
-				// QSBEventManager.FireEvent(EventNames.QSBCampfireState, qsbCampfire.ObjectId, Campfire.State.LIT);
 				Locator.GetFlashlight().TurnOff(false);
 			}
 

@@ -168,7 +168,7 @@ namespace QSB.Events
 		}
 
 		public override bool ShouldReceive => Event.Invoke<bool>("CheckMessage", Message);
+		public override void OnReceiveRemote(uint from) => Event.Invoke("OnReceiveRemote", QSBCore.IsHost, Message);
 		public override void OnReceiveLocal() => Event.Invoke("OnReceiveLocal", QSBCore.IsHost, Message);
-		public override void OnReceiveRemote() => Event.Invoke("OnReceiveRemote", QSBCore.IsHost, Message);
 	}
 }

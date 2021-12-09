@@ -27,12 +27,10 @@
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
 		public const string QSBPlayerDeath = nameof(QSBPlayerDeath);
-		public const string QSBPlayerJoin = nameof(QSBPlayerJoin);
 		public const string QSBPlayerReady = nameof(QSBPlayerReady);
 		public const string QSBRequestStateResync = nameof(QSBRequestStateResync);
 		public const string QSBServerTime = nameof(QSBServerTime);
 		public const string QSBStartLift = nameof(QSBStartLift);
-		public const string QSBGeyserState = nameof(QSBGeyserState);
 		public const string QSBOrbSlot = nameof(QSBOrbSlot);
 		public const string QSBOrbUser = nameof(QSBOrbUser);
 		public const string QSBConversation = nameof(QSBConversation);
@@ -58,7 +56,6 @@
 		public const string QSBPlayerKick = nameof(QSBPlayerKick);
 		public const string QSBEnterPlatform = nameof(QSBEnterPlatform);
 		public const string QSBExitPlatform = nameof(QSBExitPlatform);
-		public const string QSBCampfireState = nameof(QSBCampfireState);
 		public const string QSBMarshmallowEvent = nameof(QSBMarshmallowEvent);
 		public const string QSBAnimTrigger = nameof(QSBAnimTrigger);
 		public const string QSBEnterNonNomaiHeadZone = nameof(QSBEnterNonNomaiHeadZone);
@@ -91,7 +88,6 @@
 		public const string QSBEnterSatelliteCamera = nameof(QSBEnterSatelliteCamera);
 		public const string QSBExitSatelliteCamera = nameof(QSBExitSatelliteCamera);
 		public const string QSBSatelliteSnapshot = nameof(QSBSatelliteSnapshot);
-		public const string QSBAnglerChangeState = nameof(QSBAnglerChangeState);
 		public const string QSBMeteorPreLaunch = nameof(QSBMeteorPreLaunch);
 		public const string QSBMeteorLaunch = nameof(QSBMeteorLaunch);
 		public const string QSBMeteorSpecialImpact = nameof(QSBMeteorSpecialImpact);

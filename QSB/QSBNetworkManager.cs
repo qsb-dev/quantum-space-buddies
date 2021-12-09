@@ -10,6 +10,7 @@ using QSB.Messaging;
 using QSB.OrbSync.TransformSync;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
@@ -160,7 +161,7 @@ namespace QSB
 			IsReady = true;
 
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, PlayerName));
+				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{

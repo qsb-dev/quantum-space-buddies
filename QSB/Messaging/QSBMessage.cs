@@ -9,8 +9,8 @@ namespace QSB.Messaging
 		public abstract void Deserialize(QNetworkReader reader);
 
 		public virtual bool ShouldReceive => true;
+		public virtual void OnReceiveRemote(uint from) { }
 		public virtual void OnReceiveLocal() { }
-		public virtual void OnReceiveRemote() { }
 	}
 
 

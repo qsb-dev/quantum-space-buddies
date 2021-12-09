@@ -72,7 +72,6 @@ namespace QSB.Anglerfish.Patches
 			{
 				qsbAngler.TargetTransform = null;
 				qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-				// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
 			return false;
@@ -95,7 +94,6 @@ namespace QSB.Anglerfish.Patches
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-						// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						return false;
 					}
 					break;
@@ -104,7 +102,6 @@ namespace QSB.Anglerfish.Patches
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-						// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						return false;
 					}
 					if ((qsbAngler.TargetTransform.position - __instance._anglerBody.GetPosition()).sqrMagnitude > __instance._escapeDistance * __instance._escapeDistance)
@@ -112,7 +109,6 @@ namespace QSB.Anglerfish.Patches
 						qsbAngler.TargetTransform = null;
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-						// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 						return false;
 					}
 					break;
@@ -123,7 +119,6 @@ namespace QSB.Anglerfish.Patches
 						{
 							__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 							qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-							// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 							return false;
 						}
 						var num = Time.time - __instance._consumeStartTime;
@@ -154,7 +149,6 @@ namespace QSB.Anglerfish.Patches
 					{
 						qsbAngler.TargetTransform = null;
 						qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-						// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					}
 					break;
 				case AnglerfishController.AnglerState.Stunned:
@@ -165,12 +159,10 @@ namespace QSB.Anglerfish.Patches
 						{
 							__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
 							qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-							// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 							return false;
 						}
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-						// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					}
 					break;
 				default:
@@ -277,7 +269,6 @@ namespace QSB.Anglerfish.Patches
 				qsbAngler.TargetTransform = attachedOWRigidbody.transform;
 				__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
 				qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-				// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 				return false;
 			}
 
@@ -305,7 +296,6 @@ namespace QSB.Anglerfish.Patches
 						__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
 					}
 					qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-					// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					return false;
 				}
 			}
@@ -317,7 +307,6 @@ namespace QSB.Anglerfish.Patches
 					__instance.ChangeState(AnglerfishController.AnglerState.Investigating);
 				}
 				qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-				// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
 			return false;
@@ -344,7 +333,6 @@ namespace QSB.Anglerfish.Patches
 				__instance._consumeStartTime = Time.time;
 				__instance.ChangeState(AnglerfishController.AnglerState.Consuming);
 				qsbAngler.SendMessage(new AnglerChangeStateMessage(qsbAngler));
-				// QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
 			return false;

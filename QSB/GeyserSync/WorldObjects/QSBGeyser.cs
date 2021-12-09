@@ -24,7 +24,6 @@ namespace QSB.GeyserSync.WorldObjects
 				{
 					Value = state
 				});
-				// QSBEventManager.FireEvent(EventNames.QSBGeyserState, ObjectId, state);
 			}
 		}
 
