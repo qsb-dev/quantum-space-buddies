@@ -3,34 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using OWML.Common;
-using QSB.Anglerfish.Patches;
-using QSB.Animation.NPC.Patches;
-using QSB.Animation.Patches;
-using QSB.CampfireSync.Patches;
-using QSB.ConversationSync.Patches;
-using QSB.DeathSync.Patches;
-using QSB.EchoesOfTheEye.LightSensorSync.Patches;
-using QSB.ElevatorSync.Patches;
-using QSB.GeyserSync.Patches;
-using QSB.Inputs.Patches;
-using QSB.ItemSync.Patches;
-using QSB.JellyfishSync.Patches;
-using QSB.LogSync.Patches;
-using QSB.MeteorSync.Patches;
-using QSB.OrbSync.Patches;
-using QSB.Player.Patches;
-using QSB.PoolSync.Patches;
-using QSB.QuantumSync.Patches;
-using QSB.RoastingSync.Patches;
-using QSB.SatelliteSync.Patches;
-using QSB.ShipSync.Patches;
-using QSB.StatueSync.Patches;
-using QSB.TimeSync.Patches;
-using QSB.Tools.ProbeLauncherTool.Patches;
-using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
-using QSB.Tools.TranslatorTool.TranslationSync.Patches;
 using QSB.Utility;
-using QSB.ZeroGCaveSync.Patches;
 
 namespace QSB.Patches
 {
@@ -39,50 +12,18 @@ namespace QSB.Patches
 		public static event Action<QSBPatchTypes> OnPatchType;
 		public static event Action<QSBPatchTypes> OnUnpatchType;
 
-		private static List<QSBPatch> _patchList = new();
-		private static List<QSBPatchTypes> _patchedTypes = new();
+		private static readonly Type[] _types = typeof(QSBPatch).GetDerivedTypes().ToArray();
+		private static readonly List<QSBPatch> _patchList = new();
+		private static readonly List<QSBPatchTypes> _patchedTypes = new();
 
 		public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new();
 
 		public static void Init()
 		{
-			_patchList = new List<QSBPatch>
+			foreach (var type in _types)
 			{
-				new ConversationPatches(),
-				new DeathPatches(),
-				new ElevatorPatches(),
-				new OrbPatches(),
-				new LogPatches(),
-				new QuantumVisibilityPatches(),
-				new ServerQuantumPatches(),
-				new ClientQuantumPatches(),
-				new FrequencyPatches(),
-				new SpiralPatches(),
-				new QuantumPatches(),
-				new ItemPatches(),
-				new StatuePatches(),
-				new GeyserPatches(),
-				new PoolPatches(),
-				new CampfirePatches(),
-				new RoastingPatches(),
-				new PlayerPatches(),
-				new PlayerAnimationPatches(),
-				new CharacterAnimationPatches(),
-				new ShipPatches(),
-				new InputPatches(),
-				new TimePatches(),
-				new MapPatches(),
-				new LauncherPatches(),
-				new SolanumPatches(),
-				new SatelliteProjectorPatches(),
-				new LightSensorPatches(),
-				new AnglerPatches(),
-				new MeteorClientPatches(),
-				new MeteorServerPatches(),
-				new JellyfishPatches(),
-				new TravelerControllerPatches(),
-				new ZeroGCavePatches()
-			};
+				_patchList.Add((QSBPatch)Activator.CreateInstance(type));
+			}
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
 			{

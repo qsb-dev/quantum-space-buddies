@@ -30,7 +30,7 @@ namespace QSB.Events
 				return;
 			}
 
-			_msgType = QSBEventManager._msgType++;
+			_msgType = QSBEventManager._eventList.Count;
 			// _eventHandler = new MessageHandler<T>(_msgType);
 			// _eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			// _eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);

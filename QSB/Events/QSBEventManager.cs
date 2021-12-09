@@ -2,41 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OWML.Common;
-using QSB.Anglerfish.Events;
-using QSB.Animation.NPC.Events;
-using QSB.Animation.Player.Events;
-using QSB.AuthoritySync;
-using QSB.CampfireSync.Events;
-using QSB.ClientServerStateSync.Events;
-using QSB.ConversationSync.Events;
-using QSB.DeathSync.Events;
-using QSB.ElevatorSync.Events;
-using QSB.GeyserSync.Events;
-using QSB.ItemSync.Events;
-using QSB.JellyfishSync.Events;
-using QSB.LogSync.Events;
-using QSB.MeteorSync.Events;
-using QSB.OrbSync.Events;
-using QSB.Player.Events;
-using QSB.QuantumSync.Events;
-using QSB.RespawnSync.Events;
-using QSB.RoastingSync.Events;
-using QSB.SatelliteSync.Events;
-using QSB.ShipSync.Events;
-using QSB.ShipSync.Events.Component;
-using QSB.ShipSync.Events.Hull;
-using QSB.StatueSync.Events;
-using QSB.TimeSync.Events;
-using QSB.Tools.FlashlightTool.Events;
-using QSB.Tools.ProbeLauncherTool.Events;
-using QSB.Tools.ProbeTool.Events;
-using QSB.Tools.SignalscopeTool.Events;
-using QSB.Tools.SignalscopeTool.FrequencySync.Events;
-using QSB.Tools.TranslatorTool.Events;
-using QSB.Tools.TranslatorTool.TranslationSync.Events;
 using QSB.Utility;
-using QSB.Utility.Events;
-using QSB.ZeroGCaveSync.Events;
 
 namespace QSB.Events
 {
@@ -44,95 +10,15 @@ namespace QSB.Events
 	{
 		public static bool Ready { get; private set; }
 
-		internal static List<IQSBEvent> _eventList = new();
-		internal static int _msgType;
+		private static readonly Type[] _types = typeof(IQSBEvent).GetDerivedTypes().ToArray();
+		internal static readonly List<IQSBEvent> _eventList = new();
 
 		public static void Init()
 		{
-			_msgType = 0;
-			_eventList = new List<IQSBEvent>
+			foreach (var type in _types)
 			{
-				// Player
-				new PlayerReadyEvent(),
-				new PlayerJoinEvent(),
-				new PlayerSuitEvent(),
-				new PlayerFlashlightEvent(),
-				new PlayerSignalscopeEvent(),
-				new PlayerTranslatorEvent(),
-				new EquipProbeLauncherEvent(),
-				new PlayerProbeEvent(),
-				new PlayerDeathEvent(),
-				new RequestStateResyncEvent(),
-				new PlayerInformationEvent(),
-				new ChangeAnimTypeEvent(),
-				new ServerTimeEvent(),
-				new PlayerEntangledEvent(),
-				new PlayerKickEvent(),
-				new EnterExitRoastingEvent(),
-				new MarshmallowEventEvent(),
-				new AnimationTriggerEvent(),
-				new PlayerRespawnEvent(),
-				new ProbeStartRetrieveEvent(),
-				new RetrieveProbeEvent(),
-				new LaunchProbeEvent(),
-				new PlayerRetrieveProbeEvent(),
-				new PlayerLaunchProbeEvent(),
-				new EndLoopEvent(),
-				new StartLoopEvent(),
-				new ServerStateEvent(),
-				new ClientStateEvent(),
-				new DebugEvent(),
-				new SatelliteProjectorEvent(),
-				new SatelliteProjectorSnapshotEvent(),
-				new LaunchCodesEvent(),
-				// World Objects
-				new ElevatorEvent(),
-				new GeyserEvent(),
-				new OrbSlotEvent(),
-				new OrbUserEvent(),
-				new SocketStateChangeEvent(),
-				new MultiStateChangeEvent(),
-				new SetAsTranslatedEvent(),
-				new QuantumShuffleEvent(),
-				new MoonStateChangeEvent(),
-				new EnterLeaveEvent(),
-				new QuantumAuthorityEvent(),
-				new DropItemEvent(),
-				new SocketItemEvent(),
-				new MoveToCarryEvent(),
-				new StartStatueEvent(),
-				new CampfireStateEvent(),
-				new AnglerChangeStateEvent(),
-				new MeteorPreLaunchEvent(),
-				new MeteorLaunchEvent(),
-				new MeteorSpecialImpactEvent(),
-				new FragmentDamageEvent(),
-				new FragmentResyncEvent(),
-				new JellyfishRisingEvent(),
-				// Conversation/dialogue/exploration
-				new ConversationEvent(),
-				new ConversationStartEndEvent(),
-				new DialogueConditionEvent(),
-				new RevealFactEvent(),
-				new IdentifyFrequencyEvent(),
-				new IdentifySignalEvent(),
-				new NpcAnimationEvent(),
-				new AuthorityQueueEvent(),
-				// Ship
-				new FlyShipEvent(),
-				new HatchEvent(),
-				new FunnelEnableEvent(),
-				new HullImpactEvent(),
-				new HullDamagedEvent(),
-				new HullChangeIntegrityEvent(),
-				new HullRepairedEvent(),
-				new HullRepairTickEvent(),
-				new ComponentDamagedEvent(),
-				new ComponentRepairedEvent(),
-				new ComponentRepairTickEvent(),
-				new SatelliteNodeRepairTick(),
-				new SatelliteNodeRepaired()
-			};
+				_eventList.Add((IQSBEvent)Activator.CreateInstance(type));
+			}
 
 			if (UnitTestDetector.IsInUnitTest)
 			{
@@ -150,7 +36,7 @@ namespace QSB.Events
 		{
 			Ready = false;
 			_eventList.ForEach(ev => ev.CloseListener());
-			_eventList = new List<IQSBEvent>();
+			_eventList.Clear();
 		}
 
 		public static void FireEvent(string eventName)

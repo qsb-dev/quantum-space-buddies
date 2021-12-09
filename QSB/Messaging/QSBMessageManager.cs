@@ -44,12 +44,11 @@ namespace QSB.Messaging
 		}
 
 		private const short msgType = short.MaxValue - 1;
-		private static readonly Type[] _types;
+		private static readonly Type[] _types = typeof(QSBMessage).GetDerivedTypes().ToArray();
 		private static readonly Dictionary<Type, int> _typeToIndex = new();
 
 		static QSBMessageManager()
 		{
-			_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
 			for (var i = 0; i < _types.Length; i++)
 			{
 				_typeToIndex.Add(_types[i], i);
