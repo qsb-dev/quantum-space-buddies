@@ -1,5 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.OrbSync.Events;
 using QSB.Utility;
 using QSB.WorldSync;
 
@@ -25,7 +27,11 @@ namespace QSB.OrbSync.WorldObjects
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBOrbSlot, ObjectId, orbId, state);
+			this.SendMessage(new OrbSlotMessage
+			{
+				OrbId = orbId,
+				SlotState = state
+			});
 		}
 
 		public void SetState(bool state, int orbId)

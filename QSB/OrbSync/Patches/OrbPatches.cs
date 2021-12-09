@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.OrbSync.Events;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -18,7 +20,10 @@ namespace QSB.OrbSync.Patches
 		{
 			if (__result)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBOrbUser, QSBWorldSync.OldOrbList.FindIndex(x => x == __instance));
+				new OrbUserMessage
+				{
+					OrbId = QSBWorldSync.OldOrbList.FindIndex(x => x == __instance)
+				}.Send();
 			}
 		}
 

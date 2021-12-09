@@ -30,8 +30,6 @@
 		public const string QSBPlayerReady = nameof(QSBPlayerReady);
 		public const string QSBServerTime = nameof(QSBServerTime);
 		public const string QSBStartLift = nameof(QSBStartLift);
-		public const string QSBOrbSlot = nameof(QSBOrbSlot);
-		public const string QSBOrbUser = nameof(QSBOrbUser);
 		public const string QSBConversation = nameof(QSBConversation);
 		public const string QSBConversationStartEnd = nameof(QSBConversationStartEnd);
 		public const string QSBChangeAnimType = nameof(QSBChangeAnimType);
