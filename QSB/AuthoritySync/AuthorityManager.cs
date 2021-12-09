@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
@@ -72,7 +72,7 @@ namespace QSB.AuthoritySync
 			}
 
 			// DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - "
-				// + $"set authority to {id}");
+			// + $"set authority to {id}");
 		}
 
 		#endregion
@@ -80,7 +80,11 @@ namespace QSB.AuthoritySync
 		#region any client
 
 		public static void FireAuthQueue(this QNetworkIdentity identity, bool queue) =>
-			QSBEventManager.FireEvent(EventNames.QSBAuthorityQueue, identity, queue);
+			new AuthorityQueueEvent
+			{
+				Identity = identity,
+				Queue = queue
+			}.Send(0);
 
 		#endregion
 	}

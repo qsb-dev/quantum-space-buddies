@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
 using QSB.AuthoritySync;
-using QSB.Events;
+using QSB.JellyfishSync.Events;
 using QSB.JellyfishSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 
@@ -55,7 +56,7 @@ namespace QSB.JellyfishSync.Patches
 				if (sqrMagnitude > __instance._upperLimit * __instance._upperLimit)
 				{
 					qsbJellyfish.IsRising = false;
-					QSBEventManager.FireEvent(EventNames.QSBJellyfishRising, qsbJellyfish);
+					qsbJellyfish.SendMessage(new JellyfishRisingMessage(qsbJellyfish));
 				}
 			}
 			else
@@ -64,7 +65,7 @@ namespace QSB.JellyfishSync.Patches
 				if (sqrMagnitude < __instance._lowerLimit * __instance._lowerLimit)
 				{
 					qsbJellyfish.IsRising = true;
-					QSBEventManager.FireEvent(EventNames.QSBJellyfishRising, qsbJellyfish);
+					qsbJellyfish.SendMessage(new JellyfishRisingMessage(qsbJellyfish));
 				}
 			}
 

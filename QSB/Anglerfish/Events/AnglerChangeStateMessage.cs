@@ -20,18 +20,18 @@ namespace QSB.Anglerfish.Events
 
 		public AnglerChangeStateMessage() { }
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			TargetId = reader.ReadUInt32();
-			LocalDisturbancePos = reader.ReadVector3();
-		}
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(TargetId);
 			writer.Write(LocalDisturbancePos);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			TargetId = reader.ReadUInt32();
+			LocalDisturbancePos = reader.ReadVector3();
 		}
 
 		public override void OnReceiveRemote(uint @from)
