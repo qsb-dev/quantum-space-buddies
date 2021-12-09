@@ -28,7 +28,6 @@
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
 		public const string QSBPlayerDeath = nameof(QSBPlayerDeath);
 		public const string QSBPlayerReady = nameof(QSBPlayerReady);
-		public const string QSBRequestStateResync = nameof(QSBRequestStateResync);
 		public const string QSBServerTime = nameof(QSBServerTime);
 		public const string QSBStartLift = nameof(QSBStartLift);
 		public const string QSBOrbSlot = nameof(QSBOrbSlot);
