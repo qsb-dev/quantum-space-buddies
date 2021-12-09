@@ -1,25 +1,21 @@
 ﻿using System.Linq;
-using OWML.Utils;
 using QSB.CampfireSync.Events;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.QuantumSync;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.Player.Events
 {
 	public class RequestStateResyncMessage : QSBMessage
 	{
-		public override void Serialize(QNetworkWriter writer) { }
-		public override void Deserialize(QNetworkReader reader) { }
-
 		public override void OnReceiveRemote(uint from)
 		{
 			// send response only to the requesting client
@@ -34,7 +30,7 @@ namespace QSB.Player.Events
 
 					if (WorldObjectManager.AllObjectsReady)
 					{
-						SendWorldObjectInfo();
+						SendWorldObjectInfo(from);
 					}
 				}
 				// if client, send player and client states
@@ -49,7 +45,7 @@ namespace QSB.Player.Events
 			}
 		}
 
-		private static void SendWorldObjectInfo()
+		private static void SendWorldObjectInfo(uint to)
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
@@ -85,10 +81,10 @@ namespace QSB.Player.Events
 				=> campfire.SendMessage(new CampfireStateMessage
 				{
 					Value = campfire.GetState()
-				}));
+				}, to));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
-				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));
+				=> fragment.SendMessage(new FragmentResyncMessage(fragment), to));
 		}
 	}
 }

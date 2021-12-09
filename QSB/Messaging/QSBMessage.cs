@@ -5,8 +5,8 @@ namespace QSB.Messaging
 {
 	public abstract class QSBMessage
 	{
-		public abstract void Serialize(QNetworkWriter writer);
-		public abstract void Deserialize(QNetworkReader reader);
+		public virtual void Serialize(QNetworkWriter writer) { }
+		public virtual void Deserialize(QNetworkReader reader) { }
 
 		public virtual bool ShouldReceive => true;
 		public virtual void OnReceiveRemote(uint from) { }

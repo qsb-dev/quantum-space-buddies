@@ -1,22 +1,10 @@
-﻿using QSB.WorldSync.Events;
-using QuantumUNET.Transport;
+﻿using QSB.Messaging;
+using QSB.MeteorSync.WorldObjects;
 
 namespace QSB.MeteorSync.Events
 {
-	public class FragmentDamageMessage : WorldObjectMessage
+	public class FragmentDamageMessage : QSBFloatWorldObjectMessage<QSBFragment>
 	{
-		public float Damage;
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Damage = reader.ReadSingle();
-		}
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Damage);
-		}
+		public override void OnReceiveRemote(uint from) => WorldObject.AddDamage(Value);
 	}
 }
