@@ -57,44 +57,56 @@ namespace QSB.Messaging
 
 		public static void Init()
 		{
-			QNetworkServer.RegisterHandlerSafe(msgType, netMsg =>
+			QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
+			QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
+		}
+
+		private static void OnServerReceive(QNetworkMessage netMsg)
+		{
+			var msg = netMsg.ReadMessage<Msg>();
+			if (msg.To == 0)
 			{
-				var msg = netMsg.ReadMessage<Msg>();
-				if (msg.To == 0)
+				QNetworkServer.SendToClient(0, msgType, msg);
+			}
+			else if (msg.To == uint.MaxValue)
+			{
+				QNetworkServer.SendToAll(msgType, msg);
+			}
+			else
+			{
+				var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
+				if (conn == null)
 				{
-					QNetworkServer.SendToClient(0, msgType, msg);
+					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.Message.GetType().Name}", MessageType.Error);
+					return;
 				}
-				else if (msg.To == uint.MaxValue)
+				conn.Send(msgType, msg);
+			}
+		}
+
+		private static void OnClientReceive(QNetworkMessage netMsg)
+		{
+			var msg = netMsg.ReadMessage<Msg>();
+			if (!msg.Message.ShouldReceive)
+			{
+				return;
+			}
+
+			try
+			{
+				if (msg.From != QSBPlayerManager.LocalPlayerId)
 				{
-					QNetworkServer.SendToAll(msgType, msg);
+					msg.Message.OnReceiveRemote();
 				}
 				else
 				{
-					var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
-					if (conn == null)
-					{
-						DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.Message.GetType().Name}", MessageType.Error);
-						return;
-					}
-					conn.Send(msgType, msg);
+					msg.Message.OnReceiveLocal();
 				}
-			});
-
-			QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, netMsg =>
+			}
+			catch (Exception ex)
 			{
-				var msg = netMsg.ReadMessage<Msg>();
-				if (msg.Message.ShouldReceive)
-				{
-					if (msg.From != QSBPlayerManager.LocalPlayerId)
-					{
-						msg.Message.OnReceiveRemote();
-					}
-					else
-					{
-						msg.Message.OnReceiveLocal();
-					}
-				}
-			});
+				DebugLog.ToConsole($"Error - Exception handling message {msg.Message.GetType().Name} : {ex}", MessageType.Error);
+			}
 		}
 
 		#endregion

@@ -56,6 +56,10 @@ namespace QSB.Events
 				{
 					message.ForId = QSBEventManager.ForIdOverride;
 				}
+				if (message.OnlySendToHost)
+				{
+					message.ForId = 0;
+				}
 				new QSBEventRelay
 				{
 					Event = this,
