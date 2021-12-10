@@ -73,7 +73,7 @@ namespace QSB.Syncs
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 		private bool _baseIsReady => QSBPlayerManager.PlayerExists(PlayerId)
 			&& Player != null
-			// && Player.IsReady
+			&& Player.IsReady
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U
 			&& WorldObjectManager.AllObjectsAdded;
