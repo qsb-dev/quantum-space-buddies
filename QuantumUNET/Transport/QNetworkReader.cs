@@ -458,7 +458,7 @@ namespace QuantumUNET.Transport
 
 		public TMsg ReadMessage<TMsg>() where TMsg : QMessageBase, new()
 		{
-			var result = Activator.CreateInstance<TMsg>();
+			var result = new TMsg();
 			result.Deserialize(this);
 			return result;
 		}

@@ -140,7 +140,7 @@ namespace QSB.WorldSync
 				.Where(x => x.gameObject.scene.name != null);
 
 		public static void Init<TWorldObject, TUnityObject>()
-			where TWorldObject : WorldObject<TUnityObject>
+			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
 			RemoveWorldObjects<TWorldObject>();
@@ -155,15 +155,10 @@ namespace QSB.WorldSync
 		}
 
 		private static TWorldObject CreateWorldObject<TWorldObject>()
-			where TWorldObject : IWorldObject
+			where TWorldObject : IWorldObject, new()
 		{
-			var worldObject = (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
+			var worldObject = new TWorldObject();
 			WorldObjects.Add(worldObject);
-			if (worldObject == null)
-			{
-				// if this happens, god help you
-				DebugLog.ToConsole($"Error - CreateWorldObject is returning a null value! This is very bad!", MessageType.Error);
-			}
 
 			return worldObject;
 		}

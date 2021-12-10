@@ -12,7 +12,7 @@ namespace QuantumUNET.Messages
 
 		public TMsg ReadMessage<TMsg>() where TMsg : QMessageBase, new()
 		{
-			var result = Activator.CreateInstance<TMsg>();
+			var result = new TMsg();
 			result.Deserialize(Reader);
 			return result;
 		}
