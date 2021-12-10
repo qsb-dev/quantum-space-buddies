@@ -89,7 +89,7 @@ namespace QSB.Player
 			player.SignalscopeEquipped = message.SignalscopeEquipped;
 			player.TranslatorEquipped = message.TranslatorEquipped;
 			player.ProbeActive = message.ProbeActive;
-			if (LocalPlayer.IsReady)
+			if (LocalPlayer.IsReady && player.IsReady)
 			{
 				player.UpdateObjectsFromStates();
 			}
