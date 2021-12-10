@@ -12,7 +12,6 @@ namespace QSB.Patches
 		public static event Action<QSBPatchTypes> OnPatchType;
 		public static event Action<QSBPatchTypes> OnUnpatchType;
 
-		private static readonly Type[] _types = typeof(QSBPatch).GetDerivedTypes().ToArray();
 		private static readonly List<QSBPatch> _patchList = new();
 		private static readonly List<QSBPatchTypes> _patchedTypes = new();
 
@@ -20,7 +19,7 @@ namespace QSB.Patches
 
 		public static void Init()
 		{
-			foreach (var type in _types)
+			foreach (var type in typeof(QSBPatch).GetDerivedTypes())
 			{
 				_patchList.Add((QSBPatch)Activator.CreateInstance(type));
 			}
