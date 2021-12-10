@@ -153,6 +153,12 @@ namespace QSB.TimeSync
 			var myTime = Time.timeSinceLevelLoad;
 			var diff = myTime - _serverTime;
 
+			if (ServerStateManager.Instance.GetServerState() is not ServerState.InSolarSystem and not ServerState.InEye)
+			{
+				DebugLog.ToConsole($"nah serverstate:{ServerStateManager.Instance.GetServerState()} (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})");
+				return;
+			}
+
 			if (diff > PauseOrFastForwardThreshold)
 			{
 				StartPausing(PauseReason.TooFarAhead);

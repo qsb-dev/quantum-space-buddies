@@ -58,6 +58,11 @@ namespace QSB.Syncs
 		{
 			get
 			{
+				if (!IsPlayerObject)
+				{
+					return uint.MaxValue;
+				}
+
 				if (NetIdentity == null)
 				{
 					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
@@ -71,9 +76,10 @@ namespace QSB.Syncs
 		}
 
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-		private bool _baseIsReady => QSBPlayerManager.PlayerExists(PlayerId)
-			&& Player != null
-			&& Player.IsReady
+		private bool _baseIsReady
+			=> (!IsPlayerObject || QSBPlayerManager.PlayerExists(PlayerId))
+			&& (!IsPlayerObject || Player != null)
+			&& (!IsPlayerObject || Player.IsReady)
 			&& NetId.Value != uint.MaxValue
 			&& NetId.Value != 0U
 			&& WorldObjectManager.AllObjectsAdded;
@@ -82,6 +88,7 @@ namespace QSB.Syncs
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
 		public abstract bool ShouldReparentAttachedObject { get; }
+		public abstract bool IsPlayerObject { get;  }
 
 		public Component AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
@@ -99,16 +106,23 @@ namespace QSB.Syncs
 
 		public virtual void Start()
 		{
-			var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
+			if (IsPlayerObject)
+			{
+				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
 				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
-			NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+				NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+			}
 
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
 			if (Player == null)
 			{
-				DebugLog.ToConsole($"Error - Player in start of {LogName} was null!", MessageType.Error);
+				if (IsPlayerObject)
+				{
+					DebugLog.ToConsole($"Error - Player in start of {LogName} was null!", MessageType.Error);
+				}
+				
 				return;
 			}
 

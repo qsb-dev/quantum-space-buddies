@@ -13,6 +13,7 @@ namespace QSB.JellyfishSync.TransformSync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;
+		public override bool IsPlayerObject => false;
 
 		private QSBJellyfish _qsbJellyfish;
 		private static readonly List<JellyfishTransformSync> _instances = new();

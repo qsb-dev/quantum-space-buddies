@@ -142,7 +142,7 @@ namespace QSB.Player
 					return null;
 				}
 
-				return CameraBody.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
+				return CameraBody?.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace QSB.Player
 					return null;
 				}
 
-				return CameraBody.transform.Find("Signalscope").GetComponent<Signalscope>();
+				return CameraBody?.transform.Find("Signalscope").GetComponent<Signalscope>();
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace QSB.Player
 					return null;
 				}
 
-				return CameraBody.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
+				return CameraBody?.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
 			}
 		}
 

@@ -17,6 +17,8 @@ namespace QSB.Player.TransformSync
 	{
 		static PlayerTransformSync() => AnimControllerPatch.Init();
 
+		public override bool IsPlayerObject => true;
+
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
 
@@ -58,18 +60,31 @@ namespace QSB.Player.TransformSync
 				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 			}
 
-			if (isInUniverse)
+			if (isInUniverse && !_isInitialized)
 			{
-				Player.IsReady = true;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+				DebugLog.DebugWrite($"Is in universe, but is not initialized! SENDING READY = FALSE");
+				Player.IsReady = false;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
-			else
+
+			if (!isInUniverse)
 			{
+				DebugLog.DebugWrite($"Is not in universe! SENDING READY = FALSE");
 				Player.IsReady = false;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
 
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+		}
+
+		protected override void Init()
+		{
+			base.Init();
+
+			DebugLog.DebugWrite($"Init! SENDING READY = TRUE");
+
+			Player.IsReady = true;
+			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 		}
 
 		protected override void OnDestroy()

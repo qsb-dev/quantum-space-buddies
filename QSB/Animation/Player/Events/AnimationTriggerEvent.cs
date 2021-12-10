@@ -27,6 +27,11 @@ namespace QSB.Animation.Player.Events
 				return;
 			}
 
+			if (animationSync.VisibleAnimator == null)
+			{
+				return;
+			}
+
 			animationSync.VisibleAnimator.SetTrigger(message.Name);
 		}
 	}

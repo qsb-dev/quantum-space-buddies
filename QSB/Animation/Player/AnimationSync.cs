@@ -187,19 +187,45 @@ namespace QSB.Animation.Player
 				DebugLog.ToConsole($"Error - Suited controller is null. ({PlayerId})", MessageType.Error);
 			}
 
+			if (_unsuitedGraphics == null)
+			{
+				DebugLog.ToConsole($"Warning - _unsuitedGraphics is null! ({PlayerId})", MessageType.Warning);
+			}
+
+			if (_suitedGraphics == null)
+			{
+				DebugLog.ToConsole($"Warning - _suitedGraphics is null! ({PlayerId})", MessageType.Warning);
+			}
+
 			RuntimeAnimatorController controller = default;
 			switch (type)
 			{
 				case AnimationType.PlayerSuited:
 					controller = _suitedAnimController;
-					_unsuitedGraphics?.SetActive(false);
-					_suitedGraphics?.SetActive(true);
+					if (_unsuitedGraphics != null)
+					{
+						_unsuitedGraphics?.SetActive(false);
+					}
+					
+					if (_suitedGraphics != null)
+					{
+						_suitedGraphics?.SetActive(true);
+					}
+					
 					break;
 
 				case AnimationType.PlayerUnsuited:
 					controller = _unsuitedAnimController;
-					_unsuitedGraphics?.SetActive(true);
-					_suitedGraphics?.SetActive(false);
+					if (_unsuitedGraphics != null)
+					{
+						_unsuitedGraphics?.SetActive(true);
+					}
+
+					if (_suitedGraphics != null)
+					{
+						_suitedGraphics?.SetActive(false);
+					}
+
 					break;
 
 				case AnimationType.Chert:
@@ -257,11 +283,15 @@ namespace QSB.Animation.Player
 			{
 				DebugLog.ToConsole($"Error - NetworkAnimator is null. ({PlayerId})", MessageType.Error);
 			}
-			else
+			else if (Mirror == null)
+			{
+				DebugLog.ToConsole($"Error - Mirror is null. ({PlayerId})", MessageType.Error);
+			}
+			else if (InvisibleAnimator != null)
 			{
 				NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
 				Mirror.RebuildFloatParams();
-				for (var i = 0; i < InvisibleAnimator?.parameterCount; i++)
+				for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
 				{
 					NetworkAnimator.SetParameterAutoSend(i, true);
 				}
