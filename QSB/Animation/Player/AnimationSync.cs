@@ -223,25 +223,48 @@ namespace QSB.Animation.Player
 					break;
 			}
 
-			InvisibleAnimator.runtimeAnimatorController = controller;
-			VisibleAnimator.runtimeAnimatorController = controller;
+			if (InvisibleAnimator == null)
+			{
+				DebugLog.ToConsole($"Error - InvisibleAnimator is null. ({PlayerId})", MessageType.Error);
+			}
+			else
+			{
+				InvisibleAnimator.runtimeAnimatorController = controller;
+			}
+
+			if (VisibleAnimator == null)
+			{
+				DebugLog.ToConsole($"Error - VisibleAnimator is null. ({PlayerId})", MessageType.Error);
+			}
+			else
+			{
+				VisibleAnimator.runtimeAnimatorController = controller;
+			}
+
 			if (type is not AnimationType.PlayerSuited and not AnimationType.PlayerUnsuited)
 			{
-				VisibleAnimator.SetTrigger("Playing");
-				InvisibleAnimator.SetTrigger("Playing");
+				VisibleAnimator?.SetTrigger("Playing");
+				InvisibleAnimator?.SetTrigger("Playing");
 			}
 			else
 			{
 				// Avoids "jumping" when exiting instrument and putting on suit
-				VisibleAnimator.SetTrigger("Grounded");
-				InvisibleAnimator.SetTrigger("Grounded");
+				VisibleAnimator?.SetTrigger("Grounded");
+				InvisibleAnimator?.SetTrigger("Grounded");
 			}
 
-			NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
-			Mirror.RebuildFloatParams();
-			for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
+			if (NetworkAnimator == null)
 			{
-				NetworkAnimator.SetParameterAutoSend(i, true);
+				DebugLog.ToConsole($"Error - NetworkAnimator is null. ({PlayerId})", MessageType.Error);
+			}
+			else
+			{
+				NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
+				Mirror.RebuildFloatParams();
+				for (var i = 0; i < InvisibleAnimator?.parameterCount; i++)
+				{
+					NetworkAnimator.SetParameterAutoSend(i, true);
+				}
 			}
 		}
 	}
