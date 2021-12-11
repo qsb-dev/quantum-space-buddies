@@ -34,7 +34,7 @@ namespace QSB.Anglerfish.Events
 			LocalDisturbancePos = reader.ReadVector3();
 		}
 
-		public override void OnReceiveRemote(uint @from)
+		public override void OnReceiveRemote()
 		{
 			WorldObject.TargetTransform = IdToTarget(TargetId);
 			WorldObject.AttachedObject._localDisturbancePos = LocalDisturbancePos;

@@ -16,10 +16,10 @@ namespace QSB.Player.Events
 {
 	public class RequestStateResyncMessage : QSBMessage
 	{
-		public override void OnReceiveRemote(uint from)
+		public override void OnReceiveRemote()
 		{
 			// send response only to the requesting client
-			QSBEventManager.ForIdOverride = from;
+			QSBEventManager.ForIdOverride = From;
 			try
 			{
 				// if host, send worldobject and server states
@@ -30,7 +30,7 @@ namespace QSB.Player.Events
 
 					if (WorldObjectManager.AllObjectsReady)
 					{
-						SendWorldObjectInfo(from);
+						SendWorldObjectInfo();
 					}
 				}
 				// if client, send player and client states
@@ -45,7 +45,7 @@ namespace QSB.Player.Events
 			}
 		}
 
-		private static void SendWorldObjectInfo(uint to)
+		private void SendWorldObjectInfo()
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
@@ -81,10 +81,10 @@ namespace QSB.Player.Events
 				=> campfire.SendMessage(new CampfireStateMessage
 				{
 					Value = campfire.GetState()
-				}, to));
+				}, From));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
-				=> fragment.SendMessage(new FragmentResyncMessage(fragment), to));
+				=> fragment.SendMessage(new FragmentResyncMessage(fragment), From));
 		}
 	}
 }

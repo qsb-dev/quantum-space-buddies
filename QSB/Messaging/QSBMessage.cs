@@ -22,7 +22,7 @@ namespace QSB.Messaging
 		}
 
 		public virtual bool ShouldReceive => true;
-		public virtual void OnReceiveRemote(uint from) { }
+		public virtual void OnReceiveRemote() { }
 		public virtual void OnReceiveLocal() { }
 	}
 

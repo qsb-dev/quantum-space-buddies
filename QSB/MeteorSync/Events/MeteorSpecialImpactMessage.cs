@@ -5,6 +5,6 @@ namespace QSB.MeteorSync.Events
 {
 	public class MeteorSpecialImpactMessage : QSBWorldObjectMessage<QSBMeteor>
 	{
-		public override void OnReceiveRemote(uint from) => WorldObject.SpecialImpact();
+		public override void OnReceiveRemote() => WorldObject.SpecialImpact();
 	}
 }

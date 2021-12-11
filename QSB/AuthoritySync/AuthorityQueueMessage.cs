@@ -25,8 +25,8 @@ namespace QSB.AuthoritySync
 			Queue = reader.ReadBoolean();
 		}
 
-		public override void OnReceiveRemote(uint from) => OnReceive(from);
-		public override void OnReceiveLocal() => OnReceive(QSBPlayerManager.LocalPlayerId);
-		private void OnReceive(uint from) => Identity.UpdateAuthQueue(from, Queue);
+		public override void OnReceiveRemote() => OnReceive();
+		public override void OnReceiveLocal() => OnReceive();
+		private void OnReceive() => Identity.UpdateAuthQueue(From, Queue);
 	}
 }

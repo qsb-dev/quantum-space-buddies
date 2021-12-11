@@ -5,6 +5,6 @@ namespace QSB.MeteorSync.Events
 {
 	public class MeteorPreLaunchMessage : QSBWorldObjectMessage<QSBMeteorLauncher>
 	{
-		public override void OnReceiveRemote(uint from) => WorldObject.PreLaunchMeteor();
+		public override void OnReceiveRemote() => WorldObject.PreLaunchMeteor();
 	}
 }

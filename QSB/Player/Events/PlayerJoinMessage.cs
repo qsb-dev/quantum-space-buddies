@@ -41,14 +41,14 @@ namespace QSB.Player.Events
 			_platform = (GamePlatform)reader.ReadInt32();
 		}
 
-		public override void OnReceiveRemote(uint from)
+		public override void OnReceiveRemote()
 		{
 			if (_qsbVersion != QSBCore.QSBVersion)
 			{
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {_playerName} connecting with wrong QSB version. (Client:{_qsbVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
-					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, from, KickReason.QSBVersionNotMatching);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, From, KickReason.QSBVersionNotMatching);
 				}
 
 				return;
@@ -59,7 +59,7 @@ namespace QSB.Player.Events
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {_playerName} connecting with wrong game version. (Client:{_gameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
-					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, from, KickReason.GameVersionNotMatching);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, From, KickReason.GameVersionNotMatching);
 				}
 
 				return;
@@ -70,11 +70,11 @@ namespace QSB.Player.Events
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {_playerName} connecting with wrong game platform. (Client:{_platform}, Server:{QSBCore.Platform})", MessageType.Error);
-					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, from, KickReason.GamePlatformNotMatching);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, From, KickReason.GamePlatformNotMatching);
 				}
 			}
 
-			var player = QSBPlayerManager.GetPlayer(from);
+			var player = QSBPlayerManager.GetPlayer(From);
 			player.Name = _playerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
 			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{_qsbVersion}, gameVersion:{_gameVersion}, platform:{_platform}", MessageType.Info);

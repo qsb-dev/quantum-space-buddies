@@ -80,7 +80,7 @@ namespace QSB.MeteorSync.Events
 			}
 		}
 
-		public override void OnReceiveRemote(uint from)
+		public override void OnReceiveRemote()
 		{
 			WorldObject.AttachedObject._integrity = _integrity;
 			WorldObject.AttachedObject._origIntegrity = _origIntegrity;

@@ -23,6 +23,6 @@ namespace QSB.OrbSync.Events
 			SlotState = reader.ReadBoolean();
 		}
 
-		public override void OnReceiveRemote(uint from) => WorldObject.SetState(SlotState, OrbId);
+		public override void OnReceiveRemote() => WorldObject.SetState(SlotState, OrbId);
 	}
 }

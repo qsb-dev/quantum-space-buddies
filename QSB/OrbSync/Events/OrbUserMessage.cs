@@ -34,7 +34,7 @@ namespace QSB.OrbSync.Events
 		{
 			if (QSBCore.IsHost)
 			{
-				HandleServer(QSBPlayerManager.LocalPlayerId);
+				HandleServer();
 			}
 			else
 			{
@@ -42,11 +42,11 @@ namespace QSB.OrbSync.Events
 			}
 		}
 
-		public override void OnReceiveRemote(uint from)
+		public override void OnReceiveRemote()
 		{
 			if (QSBCore.IsHost)
 			{
-				HandleServer(from);
+				HandleServer();
 			}
 			else
 			{
@@ -54,7 +54,7 @@ namespace QSB.OrbSync.Events
 			}
 		}
 
-		private void HandleServer(uint from)
+		private void HandleServer()
 		{
 			if (NomaiOrbTransformSync.OrbTransformSyncs == null || NomaiOrbTransformSync.OrbTransformSyncs.Count == 0)
 			{
@@ -76,7 +76,7 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			orbSync.NetIdentity.SetAuthority(from);
+			orbSync.NetIdentity.SetAuthority(From);
 			orbSync.enabled = true;
 		}
 

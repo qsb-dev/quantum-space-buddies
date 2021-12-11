@@ -31,6 +31,6 @@ namespace QSB.MeteorSync.Events
 			_launchSpeed = reader.ReadSingle();
 		}
 
-		public override void OnReceiveRemote(uint from) => WorldObject.LaunchMeteor(_meteorId, _launchSpeed);
+		public override void OnReceiveRemote() => WorldObject.LaunchMeteor(_meteorId, _launchSpeed);
 	}
 }
