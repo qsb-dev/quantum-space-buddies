@@ -91,7 +91,6 @@ namespace QSB.Player
 			player.ProbeActive = message.ProbeActive;
 			if (LocalPlayer.IsReady && player.IsReady)
 			{
-				DebugLog.DebugWrite($"{player.PlayerId} UpdateObjectsFromStates player.IsReady:{player.IsReady}, camerabody null :{player.CameraBody == null}");
 				player.UpdateObjectsFromStates();
 			}
 

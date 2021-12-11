@@ -62,14 +62,12 @@ namespace QSB.Player.TransformSync
 
 			if (isInUniverse && !_isInitialized)
 			{
-				DebugLog.DebugWrite($"Is in universe, but is not initialized! SENDING READY = FALSE");
 				Player.IsReady = false;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
 
 			if (!isInUniverse)
 			{
-				DebugLog.DebugWrite($"Is not in universe! SENDING READY = FALSE");
 				Player.IsReady = false;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
@@ -80,8 +78,6 @@ namespace QSB.Player.TransformSync
 		protected override void Init()
 		{
 			base.Init();
-
-			DebugLog.DebugWrite($"Init! SENDING READY = TRUE");
 
 			Player.IsReady = true;
 			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);

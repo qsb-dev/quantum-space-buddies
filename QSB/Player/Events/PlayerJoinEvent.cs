@@ -80,7 +80,6 @@ namespace QSB.Player.Events
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				DebugLog.DebugWrite($"Joined! SENDING READY = TRUE");
 				QSBPlayerManager.LocalPlayer.IsReady = true;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 			}

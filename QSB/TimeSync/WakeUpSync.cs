@@ -278,7 +278,6 @@ namespace QSB.TimeSync
 			{
 				if (CurrentState != State.Pausing)
 				{
-					DebugLog.DebugWrite($"Wait for other clients to be ready");
 					StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 				}
 			}
@@ -287,7 +286,6 @@ namespace QSB.TimeSync
 			{
 				if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
 				{
-					DebugLog.DebugWrite($"start of new loop!");
 					ResetTimeScale();
 				}
 			}
@@ -352,13 +350,11 @@ namespace QSB.TimeSync
 
 			if (serverState == ServerState.NotLoaded && CurrentState != State.Pausing && QSBSceneManager.IsInUniverse)
 			{
-				DebugLog.DebugWrite($"Server Not Loaded");
 				StartPausing(PauseReason.ServerNotStarted);
 			}
 
 			if (serverState == ServerState.WaitingForAllPlayersToReady && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
 			{
-				DebugLog.DebugWrite($"Awaiting Play Confirmation");
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 			}
 
@@ -369,7 +365,6 @@ namespace QSB.TimeSync
 
 			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
 			{
-				DebugLog.DebugWrite($"Wait for others to load new scene");
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 			}
 
@@ -379,7 +374,6 @@ namespace QSB.TimeSync
 			{
 				if (serverState != ServerState.NotLoaded)
 				{
-					DebugLog.DebugWrite($"Server started!");
 					ResetTimeScale();
 				}
 			}
@@ -388,7 +382,6 @@ namespace QSB.TimeSync
 			{
 				if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
 				{
-					DebugLog.DebugWrite($"start of new loop!");
 					ResetTimeScale();
 				}
 			}
@@ -397,7 +390,6 @@ namespace QSB.TimeSync
 			{
 				if (Time.timeSinceLevelLoad <= _serverTime)
 				{
-					DebugLog.DebugWrite($"Done pausing to match time!");
 					ResetTimeScale();
 				}
 			}
@@ -406,7 +398,6 @@ namespace QSB.TimeSync
 			{
 				if (Time.timeSinceLevelLoad >= _serverTime)
 				{
-					DebugLog.DebugWrite($"Done fast-forwarding to match time!");
 					ResetTimeScale();
 				}
 			}
