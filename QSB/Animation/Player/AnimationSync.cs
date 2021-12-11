@@ -269,14 +269,28 @@ namespace QSB.Animation.Player
 
 			if (type is not AnimationType.PlayerSuited and not AnimationType.PlayerUnsuited)
 			{
-				VisibleAnimator?.SetTrigger("Playing");
-				InvisibleAnimator?.SetTrigger("Playing");
+				if (VisibleAnimator != null)
+				{
+					VisibleAnimator.SetTrigger("Playing");
+				}
+				
+				if (InvisibleAnimator != null)
+				{
+					InvisibleAnimator.SetTrigger("Playing");
+				}
 			}
 			else
 			{
 				// Avoids "jumping" when exiting instrument and putting on suit
-				VisibleAnimator?.SetTrigger("Grounded");
-				InvisibleAnimator?.SetTrigger("Grounded");
+				if (VisibleAnimator != null)
+				{
+					VisibleAnimator.SetTrigger("Grounded");
+				}
+
+				if (InvisibleAnimator != null)
+				{
+					InvisibleAnimator.SetTrigger("Grounded");
+				}
 			}
 
 			if (NetworkAnimator == null)

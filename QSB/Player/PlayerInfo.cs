@@ -198,6 +198,12 @@ namespace QSB.Player
 		{
 			if (OWInput.GetInputMode() == InputMode.None)
 			{
+				// ? why is this here lmao
+				return;
+			}
+
+			if (CameraBody == null)
+			{
 				return;
 			}
 

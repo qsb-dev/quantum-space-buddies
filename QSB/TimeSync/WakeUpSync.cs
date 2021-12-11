@@ -155,7 +155,6 @@ namespace QSB.TimeSync
 
 			if (ServerStateManager.Instance.GetServerState() is not ServerState.InSolarSystem and not ServerState.InEye)
 			{
-				DebugLog.ToConsole($"nah serverstate:{ServerStateManager.Instance.GetServerState()} (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})");
 				return;
 			}
 
@@ -356,11 +355,6 @@ namespace QSB.TimeSync
 			if (serverState == ServerState.WaitingForAllPlayersToReady && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
 			{
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
-			}
-
-			if (serverState == ServerState.InSolarSystem && (clientState == ClientState.WaitingForOthersToReadyInSolarSystem || clientState == ClientState.WaitingForOthersToDieInSolarSystem))
-			{
-				DebugLog.DebugWrite($"Server is still running game normally, but this player has died from an accepted death!", MessageType.Warning);
 			}
 
 			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)

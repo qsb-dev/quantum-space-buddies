@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Events;
@@ -98,7 +99,10 @@ namespace QSB.Events
 				if (!player.IsReady
 					&& player.PlayerId != LocalPlayerId
 					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-					&& this is not PlayerInformationEvent and not PlayerReadyEvent and not RequestStateResyncEvent)
+					&& this is not PlayerInformationEvent
+						and not PlayerReadyEvent
+						and not RequestStateResyncEvent
+						and not ServerStateEvent)
 				{
 					DebugLog.ToConsole($"Warning - Got message (type:{GetType().Name}) from player {message.FromId}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
