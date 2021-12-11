@@ -98,9 +98,9 @@ namespace QSB.Events
 				if (!player.IsReady
 					&& player.PlayerId != LocalPlayerId
 					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-					&& this is not PlayerInformationEvent or PlayerReadyEvent)
+					&& this is not PlayerInformationEvent and not PlayerReadyEvent and not RequestStateResyncEvent)
 				{
-					DebugLog.ToConsole($"Warning - Got message from player {message.FromId}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Got message (type:{GetType().Name}) from player {message.FromId}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
 				}
 			}
