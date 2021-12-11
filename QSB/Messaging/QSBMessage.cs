@@ -1,10 +1,26 @@
 ﻿using System;
+using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 
 namespace QSB.Messaging
 {
-	public abstract class QSBMessage : QSBNetMsg
+	public abstract class QSBMessage : QMessageBase
 	{
+		public uint From;
+		public uint To;
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			writer.Write(From);
+			writer.Write(To);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			From = reader.ReadUInt32();
+			To = reader.ReadUInt32();
+		}
+
 		public virtual bool ShouldReceive => true;
 		public virtual void OnReceiveRemote(uint from) { }
 		public virtual void OnReceiveLocal() { }

@@ -8,7 +8,6 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
-using QuantumUNET.Transport;
 
 namespace QSB.Messaging
 {
@@ -80,13 +79,13 @@ namespace QSB.Messaging
 			var msg = _msgTypeToMsg[msgType];
 			netMsg.ReadMessage(msg);
 
-			if (!msg.ShouldReceive)
-			{
-				return;
-			}
-
 			try
 			{
+				if (!msg.ShouldReceive)
+				{
+					return;
+				}
+
 				if (msg.From != QSBPlayerManager.LocalPlayerId)
 				{
 					msg.OnReceiveRemote(msg.From);
@@ -120,24 +119,6 @@ namespace QSB.Messaging
 		{
 			message.ObjectId = worldObject.ObjectId;
 			Send(message, to);
-		}
-	}
-
-	public class QSBNetMsg : QMessageBase
-	{
-		public uint From;
-		public uint To;
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			writer.Write(From);
-			writer.Write(To);
-		}
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			From = reader.ReadUInt32();
-			To = reader.ReadUInt32();
 		}
 	}
 }
