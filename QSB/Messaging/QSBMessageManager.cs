@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using OWML.Common;
+using QSB.ClientServerStateSync;
+using QSB.Events;
 using QSB.Player;
+using QSB.Player.Events;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
@@ -84,6 +88,26 @@ namespace QSB.Messaging
 				if (!msg.ShouldReceive)
 				{
 					return;
+				}
+
+				if (PlayerTransformSync.LocalInstance == null)
+				{
+					DebugLog.ToConsole($"Warning - Tried to handle message of type <{msg.GetType().Name}> before localplayer was established.", MessageType.Warning);
+					return;
+				}
+
+				if (QSBPlayerManager.PlayerExists(msg.From))
+				{
+					var player = QSBPlayerManager.GetPlayer(msg.From);
+
+					if (!player.IsReady
+						&& player.PlayerId != QSBPlayerManager.LocalPlayerId
+						&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+						&& msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent })
+					{
+						DebugLog.ToConsole($"Warning - Got message from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+						QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+					}
 				}
 
 				if (msg.From != QSBPlayerManager.LocalPlayerId)
