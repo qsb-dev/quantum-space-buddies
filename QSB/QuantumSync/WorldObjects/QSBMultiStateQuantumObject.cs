@@ -21,17 +21,14 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init(MultiStateQuantumObject attachedObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-
 			if (QSBCore.ShowQuantumDebugBoxes)
 			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{id}\r\nstate:{CurrentState}").GetComponent<Text>();
+				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}").GetComponent<Text>();
 			}
 
-			base.Init(attachedObject, id);
+			base.Init();
 
 			StartDelayedReady();
 			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsAdded, () =>

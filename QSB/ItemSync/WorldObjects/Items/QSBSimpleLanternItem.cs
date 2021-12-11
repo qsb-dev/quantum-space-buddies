@@ -2,13 +2,6 @@
 {
 	internal class QSBSimpleLanternItem : QSBOWItem<SimpleLanternItem>
 	{
-		public override void Init(SimpleLanternItem attachedObject, int id)
-		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-			base.Init(attachedObject, id);
-		}
-
 		public override void PlaySocketAnimation()
 			=> AttachedObject.PlaySocketAnimation();
 

@@ -17,9 +17,9 @@ namespace QSB.ItemSync.WorldObjects.Items
 		public QSBSector InitialSector { get; private set; }
 		public uint HoldingPlayer { get; private set; }
 
-		public override void Init(T attachedObject, int id)
+		public override void Init()
 		{
-			if (attachedObject == null)
+			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Error - AttachedObject is null! Type:{GetType().Name}", OWML.Common.MessageType.Error);
 				return;
@@ -30,10 +30,10 @@ namespace QSB.ItemSync.WorldObjects.Items
 			{
 				FinishDelayedReady();
 
-				InitialParent = attachedObject.transform.parent;
-				InitialPosition = attachedObject.transform.localPosition;
-				InitialRotation = attachedObject.transform.localRotation;
-				var initialSector = attachedObject.GetSector();
+				InitialParent = AttachedObject.transform.parent;
+				InitialPosition = AttachedObject.transform.localPosition;
+				InitialRotation = AttachedObject.transform.localRotation;
+				var initialSector = AttachedObject.GetSector();
 				if (initialSector != null)
 				{
 					InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(initialSector);
@@ -41,7 +41,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 				if (InitialParent == null)
 				{
-					DebugLog.ToConsole($"Warning - InitialParent of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - InitialParent of {AttachedObject.name} is null!", OWML.Common.MessageType.Warning);
 				}
 
 				if (InitialParent?.GetComponent<OWItemSocket>() != null)

@@ -6,12 +6,6 @@ namespace QSB.ShipSync.WorldObjects
 {
 	internal class QSBShipComponent : WorldObject<ShipComponent>
 	{
-		public override void Init(ShipComponent component, int id)
-		{
-			ObjectId = id;
-			AttachedObject = component;
-		}
-
 		public void SetDamaged()
 		{
 			DebugLog.DebugWrite($"[S COMPONENT] {AttachedObject} Set damaged.");

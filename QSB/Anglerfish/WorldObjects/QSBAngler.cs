@@ -14,11 +14,8 @@ namespace QSB.Anglerfish.WorldObjects
 
 		private Vector3 _lastTargetPosition;
 
-		public override void Init(AnglerfishController attachedObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-
 			if (QSBCore.IsHost)
 			{
 				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab));

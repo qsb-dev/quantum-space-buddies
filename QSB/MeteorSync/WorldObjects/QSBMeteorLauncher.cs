@@ -4,12 +4,6 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 	{
-		public override void Init(MeteorLauncher attachedObject, int id)
-		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-		}
-
 		public int MeteorId;
 		public float LaunchSpeed;
 

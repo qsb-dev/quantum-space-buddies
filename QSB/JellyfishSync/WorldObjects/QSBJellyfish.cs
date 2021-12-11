@@ -11,10 +11,8 @@ namespace QSB.JellyfishSync.WorldObjects
 		public JellyfishTransformSync TransformSync;
 		private AlignWithTargetBody _alignWithTargetBody;
 
-		public override void Init(JellyfishController attachedObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
 			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
 
 			if (QSBCore.IsHost)

@@ -5,13 +5,6 @@ namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 	{
-		public override void Init(QuantumShuffleObject shuffleObject, int id)
-		{
-			ObjectId = id;
-			AttachedObject = shuffleObject;
-			base.Init(shuffleObject, id);
-		}
-
 		public void ShuffleObjects(int[] indexArray)
 		{
 			var shuffledObjects = AttachedObject.GetValue<Transform[]>("_shuffledObjects");

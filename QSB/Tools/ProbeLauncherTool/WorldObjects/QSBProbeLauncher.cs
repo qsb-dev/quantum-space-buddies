@@ -12,10 +12,8 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 		private ProbeLauncherEffects _effects;
 		private SingularityWarpEffect _probeRetrievalEffect;
 
-		public override void Init(ProbeLauncher launcher, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = launcher;
 			_probeRetrievalLength = AttachedObject.GetValue<float>("_probeRetrievalLength");
 			_preLaunchProbeProxy = AttachedObject.GetValue<GameObject>("_preLaunchProbeProxy");
 			_effects = AttachedObject.GetValue<ProbeLauncherEffects>("_effects");

@@ -13,10 +13,8 @@ namespace QSB.ElevatorSync.WorldObjects
 		private OWAudioSource _owAudioSourceLP;
 		private OWTriggerVolume _elevatorTrigger;
 
-		public override void Init(Elevator elevator, int id)
+		public override void Init()
 		{
-			AttachedObject = elevator;
-			ObjectId = id;
 			QSBCore.UnityEvents.RunWhen(() => AttachedObject._interactVolume != null, InitValues);
 		}
 

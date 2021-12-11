@@ -2,13 +2,6 @@
 {
 	internal class QSBSlideReelItem : QSBOWItem<SlideReelItem>
 	{
-		public override void Init(SlideReelItem attachedObject, int id)
-		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-			base.Init(attachedObject, id);
-		}
-
 		public override void PlaySocketAnimation()
 			=> AttachedObject.PlaySocketAnimation();
 

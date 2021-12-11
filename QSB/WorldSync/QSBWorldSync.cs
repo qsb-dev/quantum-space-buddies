@@ -149,7 +149,9 @@ namespace QSB.WorldSync
 			for (var id = 0; id < list.Count; id++)
 			{
 				var obj = CreateWorldObject<TWorldObject>();
-				obj.Init(list[id], id);
+				obj.AttachedObject = list[id];
+				obj.ObjectId = id;
+				obj.Init();
 				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
 		}

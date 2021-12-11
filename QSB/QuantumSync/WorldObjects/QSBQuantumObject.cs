@@ -24,7 +24,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init(T attachedObject, int id)
+		public override void Init()
 		{
 			var debugBundle = QSBCore.DebugAssetBundle;
 			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");

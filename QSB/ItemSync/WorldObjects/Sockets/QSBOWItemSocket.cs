@@ -6,8 +6,6 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
 		where T : OWItemSocket
 	{
-		public override void Init(T attachedObject, int id) { }
-
 		public virtual bool AcceptsItem(IQSBOWItem item)
 		{
 			var itemType = item.GetItemType();
