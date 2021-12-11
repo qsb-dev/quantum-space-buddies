@@ -73,10 +73,6 @@ namespace QSB.WorldSync
 			return (TWorldObject)returnObject;
 		}
 
-		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)
-			where TWorldObject : IWorldObject
-			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
-
 		public static void RemoveWorldObjects<TWorldObject>()
 			where TWorldObject : IWorldObject
 		{
