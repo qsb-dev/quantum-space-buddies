@@ -18,28 +18,6 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase : QNetworkTransform
 	{
-		private static readonly Dictionary<uint, Dictionary<Type, SyncBase>> _storedTransformSyncs = new();
-
-		public static T GetPlayers<T>(PlayerInfo player)
-			where T : SyncBase
-		{
-			var dictOfOwnedSyncs = _storedTransformSyncs[player.PlayerId];
-			var wantedSync = dictOfOwnedSyncs[typeof(T)];
-			if (wantedSync == default)
-			{
-				DebugLog.ToConsole($"Error -  _storedTransformSyncs does not contain type:{typeof(T)} under player {player.PlayerId}. Attempting to find manually...", MessageType.Error);
-				var allSyncs = QSBWorldSync.GetUnityObjects<T>();
-				wantedSync = allSyncs.First(x => x.Player == player);
-				if (wantedSync == default)
-				{
-					DebugLog.ToConsole($"Error -  Could not find type:{typeof(T)} for player {player.PlayerId} manually!", MessageType.Error);
-					return default;
-				}
-			}
-
-			return (T)wantedSync;
-		}
-
 		public uint AttachedNetId
 		{
 			get
@@ -76,13 +54,43 @@ namespace QSB.Syncs
 		}
 
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-		private bool _baseIsReady
-			=> (!IsPlayerObject || QSBPlayerManager.PlayerExists(PlayerId))
-			&& (!IsPlayerObject || Player != null)
-			&& (!IsPlayerObject || Player.IsReady)
-			&& NetId.Value != uint.MaxValue
-			&& NetId.Value != 0U
-			&& WorldObjectManager.AllObjectsAdded;
+
+		private bool _baseIsReady 
+		{ 
+			get
+			{
+				if (NetId.Value is uint.MaxValue or 0U)
+				{
+					return false;
+				}
+
+				if (!WorldObjectManager.AllObjectsAdded)
+				{
+					return false;
+				}
+
+				if (IsPlayerObject)
+				{
+					if (!QSBPlayerManager.PlayerExists(PlayerId))
+					{
+						return false;
+					}
+
+					if (Player == null)
+					{
+						return false;
+					}
+
+					if (!Player.IsReady && !IsLocalPlayer)
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+		}
+
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
 		public abstract bool IgnoreDisabledAttachedObject { get; }
@@ -115,24 +123,6 @@ namespace QSB.Syncs
 
 			DontDestroyOnLoad(gameObject);
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-
-			if (Player == null)
-			{
-				if (IsPlayerObject)
-				{
-					DebugLog.ToConsole($"Error - Player in start of {LogName} was null!", MessageType.Error);
-				}
-				
-				return;
-			}
-
-			if (!_storedTransformSyncs.ContainsKey(PlayerId))
-			{
-				_storedTransformSyncs.Add(PlayerId, new Dictionary<Type, SyncBase>());
-			}
-
-			var playerDict = _storedTransformSyncs[PlayerId];
-			playerDict[GetType()] = this;
 		}
 
 		protected virtual void OnDestroy()
@@ -146,14 +136,6 @@ namespace QSB.Syncs
 			}
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-
-			if (!QSBPlayerManager.PlayerExists(PlayerId))
-			{
-				return;
-			}
-
-			var playerDict = _storedTransformSyncs[PlayerId];
-			playerDict.Remove(GetType());
 		}
 
 		protected virtual void Init()
@@ -182,7 +164,6 @@ namespace QSB.Syncs
 		{
 			if (!_isInitialized && IsReady && _baseIsReady)
 			{
-
 				try
 				{
 					Init();
