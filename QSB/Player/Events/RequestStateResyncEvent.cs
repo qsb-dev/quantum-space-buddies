@@ -84,7 +84,7 @@ namespace QSB.Player.Events
 			}
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x
-				=> QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, QSBWorldSync.GetIdFromTypeSubset(x), x.ControllingPlayer));
+				=> QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, x.ObjectId, x.ControllingPlayer));
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));

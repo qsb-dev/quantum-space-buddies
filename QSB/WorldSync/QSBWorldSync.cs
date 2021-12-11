@@ -104,19 +104,6 @@ namespace QSB.WorldSync
 			where TWorldObject : IWorldObject
 			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
-		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
-		{
-			return ((IWorldObject)typeSubset).ObjectId;
-
-			var index = GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
-			if (index == -1)
-			{
-				DebugLog.ToConsole($"Warning - {((IWorldObject)typeSubset).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
-			}
-
-			return index;
-		}
-
 		public static void RemoveWorldObjects<TWorldObject>()
 		{
 			if (WorldObjects.Count == 0)
