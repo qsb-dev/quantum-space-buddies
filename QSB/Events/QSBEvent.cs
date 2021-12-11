@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using JetBrains.Annotations;
 using OWML.Utils;
 using QSB.Messaging;
@@ -13,6 +12,9 @@ namespace QSB.Events
 	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
 	{
 		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
+
+		[UsedImplicitly]
+		private Type _messageType => typeof(T);
 
 		[UsedImplicitly]
 		private readonly int _msgType;
@@ -80,7 +82,7 @@ namespace QSB.Events
 			base.Deserialize(reader);
 			var msgType = reader.ReadInt32();
 			Event = QSBEventManager._eventList[msgType];
-			var messageType = Event.GetType().BaseType!.GenericTypeArguments.Single();
+			var messageType = Event.GetValue<Type>("_messageType");
 			Message = (PlayerMessage)Activator.CreateInstance(messageType);
 			Message.Deserialize(reader);
 		}
