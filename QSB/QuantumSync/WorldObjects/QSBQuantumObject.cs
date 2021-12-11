@@ -82,11 +82,13 @@ namespace QSB.QuantumSync.WorldObjects
 				}
 			}
 
+			StartDelayedReady();
 			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
 		}
 
 		private void LateInit()
 		{
+			FinishDelayedReady();
 			foreach (var shape in GetAttachedShapes())
 			{
 				shape.OnShapeActivated += OnEnable;

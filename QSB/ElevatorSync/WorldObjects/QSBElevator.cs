@@ -15,11 +15,13 @@ namespace QSB.ElevatorSync.WorldObjects
 
 		public override void Init()
 		{
+			StartDelayedReady();
 			QSBCore.UnityEvents.RunWhen(() => AttachedObject._interactVolume != null, InitValues);
 		}
 
 		private void InitValues()
 		{
+			FinishDelayedReady();
 			_startLocalPos = AttachedObject._startLocalPos;
 			_endLocalPos = AttachedObject._endLocalPos;
 			_interactVolume = AttachedObject._interactVolume;
