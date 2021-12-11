@@ -20,9 +20,11 @@ namespace QSB.WorldSync
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
+			where TWorldObject : IWorldObject
 			=> WorldObjects.OfType<TWorldObject>();
 
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
+			where TWorldObject : IWorldObject
 		{
 			var worldObjects = GetWorldObjects<TWorldObject>().ToList();
 			if (id < 0 || id >= worldObjects.Count)
@@ -32,35 +34,6 @@ namespace QSB.WorldSync
 			}
 
 			return worldObjects[id];
-		}
-
-		public static IWorldObject GetWorldFromUnity(MonoBehaviour unityObject)
-		{
-			if (unityObject == null)
-			{
-				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
-				return default;
-			}
-
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
-				return default;
-			}
-
-			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
-			{
-				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
-				return default;
-			}
-
-			if (returnObject == null)
-			{
-				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
-				return default;
-			}
-
-			return returnObject;
 		}
 
 		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
@@ -98,17 +71,19 @@ namespace QSB.WorldSync
 			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
 		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
+			where TTypeSubset : IWorldObjectTypeSubset
 		{
 			var index = GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
 			if (index == -1)
 			{
-				DebugLog.ToConsole($"Warning - {((IWorldObject)typeSubset).Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {typeSubset.Name} doesn't exist in list of {typeof(TTypeSubset).Name} !", MessageType.Warning);
 			}
 
 			return index;
 		}
 
 		public static void RemoveWorldObjects<TWorldObject>()
+			where TWorldObject : IWorldObject
 		{
 			if (WorldObjects.Count == 0)
 			{
@@ -140,7 +115,7 @@ namespace QSB.WorldSync
 				.Where(x => x.gameObject.scene.name != null);
 
 		public static void Init<TWorldObject, TUnityObject>()
-			where TWorldObject : WorldObject<TUnityObject>
+			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
 			RemoveWorldObjects<TWorldObject>();
@@ -157,15 +132,10 @@ namespace QSB.WorldSync
 		}
 
 		private static TWorldObject CreateWorldObject<TWorldObject>()
-			where TWorldObject : IWorldObject
+			where TWorldObject : IWorldObject, new()
 		{
-			var worldObject = (TWorldObject)Activator.CreateInstance(typeof(TWorldObject));
+			var worldObject = new TWorldObject();
 			WorldObjects.Add(worldObject);
-			if (worldObject == null)
-			{
-				// if this happens, god help you
-				DebugLog.ToConsole($"Error - CreateWorldObject is returning a null value! This is very bad!", MessageType.Error);
-			}
 
 			return worldObject;
 		}

@@ -1,4 +1,4 @@
 ﻿namespace QSB.WorldSync
 {
-	public interface IWorldObjectTypeSubset { }
+	public interface IWorldObjectTypeSubset : IWorldObject { }
 }

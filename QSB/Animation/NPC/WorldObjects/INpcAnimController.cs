@@ -1,6 +1,8 @@
-﻿namespace QSB.Animation.NPC.WorldObjects
+﻿using QSB.WorldSync;
+
+namespace QSB.Animation.NPC.WorldObjects
 {
-	public interface INpcAnimController
+	public interface INpcAnimController : IWorldObjectTypeSubset
 	{
 		CharacterDialogueTree GetDialogueTree();
 		void StartConversation();
