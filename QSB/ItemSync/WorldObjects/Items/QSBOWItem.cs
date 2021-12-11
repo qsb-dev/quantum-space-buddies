@@ -46,7 +46,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 				if (InitialParent?.GetComponent<OWItemSocket>() != null)
 				{
-					var qsbObj = (IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(InitialParent.GetComponent<OWItemSocket>());
+					var qsbObj = QSBWorldSync.GetWorldFromUnity<IQSBOWItemSocket>(InitialParent.GetComponent<OWItemSocket>());
 					InitialSocket = qsbObj;
 				}
 			});
