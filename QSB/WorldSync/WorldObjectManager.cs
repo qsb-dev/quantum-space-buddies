@@ -49,14 +49,14 @@ namespace QSB.WorldSync
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready!", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready!", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.Instance.IsReady, () => Rebuild(scene));
 				return;
 			}
 
 			if (QSBPlayerManager.LocalPlayerId == uint.MaxValue)
 			{
-				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready!", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready!", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayerId != uint.MaxValue, () => Rebuild(scene));
 				return;
 			}
@@ -72,6 +72,7 @@ namespace QSB.WorldSync
 
 		private static void DoRebuild(OWScene scene)
 		{
+			QSBWorldSync.NextObjectId = 0;
 			_numManagersReadying = 0;
 			_numObjectsReadying = 0;
 			AllObjectsAdded = false;
@@ -85,7 +86,7 @@ namespace QSB.WorldSync
 				}
 				catch (Exception ex)
 				{
-					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", OWML.Common.MessageType.Error);
+					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
 				}
 			}
 

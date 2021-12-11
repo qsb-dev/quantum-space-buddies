@@ -16,6 +16,7 @@ namespace QSB.WorldSync
 		public static Dictionary<string, bool> DialogueConditions { get; } = new();
 		public static List<FactReveal> ShipLogFacts { get; } = new();
 
+		public static int NextObjectId;
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
@@ -24,14 +25,20 @@ namespace QSB.WorldSync
 
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
 		{
-			var worldObjects = GetWorldObjects<TWorldObject>().ToList();
-			if (id < 0 || id >= worldObjects.Count)
+			if (id < 0 || id >= WorldObjects.Count)
 			{
-				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {worldObjects.Count}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to find world object id {id}. Count is {WorldObjects.Count}.", MessageType.Warning);
 				return default;
 			}
 
-			return worldObjects[id];
+			var iWorldObject = WorldObjects[id];
+			if (iWorldObject is not TWorldObject worldObject)
+			{
+				DebugLog.ToConsole($"Error - World object id {id} expected {typeof(TWorldObject).Name}, but got {iWorldObject.GetType().Name}.", MessageType.Error);
+				return default;
+			}
+
+			return worldObject;
 		}
 
 		public static IWorldObject GetWorldFromUnity(MonoBehaviour unityObject)
@@ -146,11 +153,11 @@ namespace QSB.WorldSync
 			RemoveWorldObjects<TWorldObject>();
 			var list = GetUnityObjects<TUnityObject>().ToList();
 			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
-			for (var id = 0; id < list.Count; id++)
+			foreach (var unityObject in list)
 			{
 				var obj = CreateWorldObject<TWorldObject>();
-				obj.Init(list[id], id);
-				WorldObjectsToUnityObjects.Add(list[id], obj);
+				obj.Init(unityObject, NextObjectId++);
+				WorldObjectsToUnityObjects.Add(unityObject, obj);
 			}
 		}
 
