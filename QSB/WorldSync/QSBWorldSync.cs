@@ -21,9 +21,11 @@ namespace QSB.WorldSync
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
+			where TWorldObject : IWorldObject
 			=> WorldObjects.OfType<TWorldObject>();
 
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
+			where TWorldObject : IWorldObject
 		{
 			if (id < 0 || id >= WorldObjects.Count)
 			{
@@ -76,6 +78,7 @@ namespace QSB.WorldSync
 			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
 		public static void RemoveWorldObjects<TWorldObject>()
+			where TWorldObject : IWorldObject
 		{
 			if (WorldObjects.Count == 0)
 			{
