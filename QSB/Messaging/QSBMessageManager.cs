@@ -19,7 +19,7 @@ namespace QSB.Messaging
 	{
 		#region inner workings
 
-		private static readonly Dictionary<short, QSBMessage> _msgTypeToMsg = new();
+		private static readonly Dictionary<short, Type> _msgTypeToType = new();
 		private static readonly Dictionary<Type, short> _typeToMsgType = new();
 
 		static QSBMessageManager()
@@ -35,16 +35,14 @@ namespace QSB.Messaging
 						"In either case, I guess something has gone terribly wrong...", MessageType.Error);
 				}
 
-				var type = types[i];
-				var msg = (QSBMessage)Activator.CreateInstance(type);
-				_msgTypeToMsg.Add(msgType, msg);
-				_typeToMsgType.Add(type, msgType);
+				_msgTypeToType.Add(msgType, types[i]);
+				_typeToMsgType.Add(types[i], msgType);
 			}
 		}
 
 		public static void Init()
 		{
-			foreach (var msgType in _msgTypeToMsg.Keys)
+			foreach (var msgType in _msgTypeToType.Keys)
 			{
 				QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
 				QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
@@ -54,7 +52,7 @@ namespace QSB.Messaging
 		private static void OnServerReceive(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = _msgTypeToMsg[msgType];
+			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
 			if (msg.To == 0)
@@ -80,7 +78,7 @@ namespace QSB.Messaging
 		private static void OnClientReceive(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = _msgTypeToMsg[msgType];
+			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
 			try
