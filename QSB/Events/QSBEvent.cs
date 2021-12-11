@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Linq;
 using JetBrains.Annotations;
-using OWML.Common;
 using OWML.Utils;
-using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Player.Events;
 using QSB.Player.TransformSync;
-using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Components;
 using QuantumUNET.Transport;
 
 namespace QSB.Events
@@ -19,21 +14,12 @@ namespace QSB.Events
 	{
 		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
 
-		// private readonly MessageHandler<T> _eventHandler;
 		[UsedImplicitly]
 		private readonly int _msgType;
 
 		protected QSBEvent()
 		{
-			if (UnitTestDetector.IsInUnitTest)
-			{
-				return;
-			}
-
 			_msgType = QSBEventManager._eventList.Count;
-			// _eventHandler = new MessageHandler<T>(_msgType);
-			// _eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
-			// _eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
 		}
 
 		public abstract void SetupListener();
@@ -65,7 +51,6 @@ namespace QSB.Events
 					Event = this,
 					Message = message
 				}.Send(message.ForId);
-				// _eventHandler.SendToServer(message);
 			});
 
 		/// <summary>
@@ -75,75 +60,6 @@ namespace QSB.Events
 		[UsedImplicitly]
 		public virtual bool CheckMessage(T message)
 			=> !RequireWorldObjectsReady || WorldObjectManager.AllObjectsReady;
-
-		// private void OnReceive(bool isServer, T message)
-		// {
-		// 	/* Explanation :
-		// 	 * if <isServer> is true, this message has been received on the server *server*.
-		// 	 * Therefore, we don't want to do any event handling code - that should be dealt
-		// 	 * with on the server *client* and any other client. So just forward the message
-		// 	 * onto all clients. This way, the server *server* just acts as the distribution
-		// 	 * hub for all events.
-		// 	 */
-		//
-		// 	if (isServer)
-		// 	{
-		// 		if (message.OnlySendToHost)
-		// 		{
-		// 			_eventHandler.SendToHost(message);
-		// 		}
-		// 		else if (message.ForId != uint.MaxValue)
-		// 		{
-		// 			_eventHandler.SendTo(message.ForId, message);
-		// 		}
-		// 		else
-		// 		{
-		// 			_eventHandler.SendToAll(message);
-		// 		}
-		// 		return;
-		// 	}
-		//
-		// 	if (!CheckMessage(message))
-		// 	{
-		// 		return;
-		// 	}
-		//
-		// 	if (PlayerTransformSync.LocalInstance == null || PlayerTransformSync.LocalInstance.GetComponent<QNetworkIdentity>() == null)
-		// 	{
-		// 		DebugLog.ToConsole($"Warning - Tried to handle message of type <{GetType().Name}> before localplayer was established.", MessageType.Warning);
-		// 		return;
-		// 	}
-		//
-		// 	if (QSBPlayerManager.PlayerExists(message.FromId))
-		// 	{
-		// 		var player = QSBPlayerManager.GetPlayer(message.FromId);
-		//
-		// 		if (!player.IsReady
-		// 			&& player.PlayerId != LocalPlayerId
-		// 			&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-		// 			&& this is not PlayerInformationEvent or PlayerReadyEvent)
-		// 		{
-		// 			DebugLog.ToConsole($"Warning - Got message from player {message.FromId}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
-		// 			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
-		// 		}
-		// 	}
-		//
-		// 	try
-		// 	{
-		// 		if (QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
-		// 		{
-		// 			OnReceiveLocal(QSBCore.IsHost, message);
-		// 		}
-		// 		else
-		// 		{
-		// 			OnReceiveRemote(QSBCore.IsHost, message);
-		// 		}
-		// 	}
-		// 	catch (Exception ex)
-		// 	{
-		// 		DebugLog.ToConsole($"Error - Exception handling message {GetType().Name} : {ex}", MessageType.Error);
-		// 	}
-		// }
 	}
 
 	internal class QSBEventRelay : QSBMessage
