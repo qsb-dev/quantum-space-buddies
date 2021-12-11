@@ -23,20 +23,22 @@ namespace QSB.Player.Events
 
 		public PlayerJoinMessage() { }
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			_playerName = reader.ReadString();
-			_qsbVersion = reader.ReadString();
-			_gameVersion = reader.ReadString();
-			_platform = (GamePlatform)reader.ReadInt32();
-		}
-
 		public override void Serialize(QNetworkWriter writer)
 		{
+			base.Serialize(writer);
 			writer.Write(_playerName);
 			writer.Write(_qsbVersion);
 			writer.Write(_gameVersion);
 			writer.Write((int)_platform);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			_playerName = reader.ReadString();
+			_qsbVersion = reader.ReadString();
+			_gameVersion = reader.ReadString();
+			_platform = (GamePlatform)reader.ReadInt32();
 		}
 
 		public override void OnReceiveRemote(uint from)

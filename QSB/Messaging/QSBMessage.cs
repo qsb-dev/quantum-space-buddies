@@ -33,11 +33,13 @@ namespace QSB.Messaging
 
 		public override void Serialize(QNetworkWriter writer)
 		{
+			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
+			base.Deserialize(reader);
 			Value = reader.ReadBoolean();
 		}
 	}
@@ -48,11 +50,13 @@ namespace QSB.Messaging
 
 		public override void Serialize(QNetworkWriter writer)
 		{
+			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
+			base.Deserialize(reader);
 			Value = reader.ReadSingle();
 		}
 	}
@@ -63,11 +67,13 @@ namespace QSB.Messaging
 
 		public override void Serialize(QNetworkWriter writer)
 		{
+			base.Serialize(writer);
 			writer.Write((int)(object)Value);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
+			base.Deserialize(reader);
 			Value = (E)(object)reader.ReadInt32();
 		}
 	}

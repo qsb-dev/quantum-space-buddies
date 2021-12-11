@@ -13,12 +13,14 @@ namespace QSB.AuthoritySync
 
 		public override void Serialize(QNetworkWriter writer)
 		{
+			base.Serialize(writer);
 			writer.Write(Identity);
 			writer.Write(Queue);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
+			base.Deserialize(reader);
 			Identity = reader.ReadNetworkIdentity();
 			Queue = reader.ReadBoolean();
 		}

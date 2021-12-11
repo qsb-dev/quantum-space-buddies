@@ -9,8 +9,17 @@ namespace QSB.Messaging
 		public int ObjectId;
 		public T WorldObject { get; private set; }
 
-		public override void Serialize(QNetworkWriter writer) => writer.Write(ObjectId);
-		public override void Deserialize(QNetworkReader reader) => ObjectId = reader.ReadInt32();
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(ObjectId);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			ObjectId = reader.ReadInt32();
+		}
 
 		public override bool ShouldReceive
 		{

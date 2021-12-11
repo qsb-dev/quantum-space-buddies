@@ -153,6 +153,7 @@ namespace QSB.Events
 
 		public override void Serialize(QNetworkWriter writer)
 		{
+			base.Serialize(writer);
 			var msgType = Event.GetValue<int>("_msgType");
 			writer.Write(msgType);
 			Message.Serialize(writer);
@@ -160,6 +161,7 @@ namespace QSB.Events
 
 		public override void Deserialize(QNetworkReader reader)
 		{
+			base.Deserialize(reader);
 			var msgType = reader.ReadInt32();
 			Event = QSBEventManager._eventList[msgType];
 			var messageType = Event.GetType().BaseType!.GenericTypeArguments.Single();

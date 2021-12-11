@@ -15,8 +15,17 @@ namespace QSB.OrbSync.Events
 	{
 		public int OrbId;
 
-		public override void Serialize(QNetworkWriter writer) => writer.Write(OrbId);
-		public override void Deserialize(QNetworkReader reader) => OrbId = reader.ReadInt32();
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(OrbId);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			OrbId = reader.ReadInt32();
+		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
