@@ -104,21 +104,20 @@ namespace QSB.Messaging
 		#endregion
 
 
-		public static void Send<M>(this M message, uint to = uint.MaxValue)
+		public static void Send<M>(this M message)
 			where M : QSBMessage, new()
 		{
 			var msgType = _typeToMsgType[typeof(M)];
 			message.From = QSBPlayerManager.LocalPlayerId;
-			message.To = to;
 			QNetworkManager.singleton.client.Send(msgType, message);
 		}
 
-		public static void SendMessage<T, M>(this T worldObject, M message, uint to = uint.MaxValue)
+		public static void SendMessage<T, M>(this T worldObject, M message)
 			where M : QSBWorldObjectMessage<T>, new()
 			where T : IWorldObject
 		{
 			message.ObjectId = worldObject.ObjectId;
-			Send(message, to);
+			Send(message);
 		}
 	}
 }

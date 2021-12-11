@@ -50,9 +50,10 @@ namespace QSB.Events
 				}
 				new QSBEventRelay
 				{
+					To = message.ForId,
 					Event = this,
 					Message = message
-				}.Send(message.ForId);
+				}.Send();
 			});
 
 		/// <summary>

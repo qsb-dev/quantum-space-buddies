@@ -7,7 +7,7 @@ namespace QSB.Messaging
 	public abstract class QSBMessage : QMessageBase
 	{
 		public uint From;
-		public uint To;
+		public uint To = uint.MaxValue;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
