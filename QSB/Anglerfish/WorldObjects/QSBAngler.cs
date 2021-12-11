@@ -21,7 +21,9 @@ namespace QSB.Anglerfish.WorldObjects
 
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab));
+				var transformSync = Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab).GetComponent<AnglerTransformSync>();
+				transformSync.ObjectId = ObjectId;
+				QNetworkServer.Spawn(transformSync.gameObject);
 			}
 
 			StartDelayedReady();

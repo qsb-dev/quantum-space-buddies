@@ -19,7 +19,9 @@ namespace QSB.JellyfishSync.WorldObjects
 
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab));
+				var transformSync = Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab).GetComponent<JellyfishTransformSync>();
+				transformSync.ObjectId = ObjectId;
+				QNetworkServer.Spawn(transformSync.gameObject);
 			}
 
 			StartDelayedReady();

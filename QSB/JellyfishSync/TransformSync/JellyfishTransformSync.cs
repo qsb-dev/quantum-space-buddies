@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using QSB.JellyfishSync.WorldObjects;
+﻿using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
@@ -14,29 +13,17 @@ namespace QSB.JellyfishSync.TransformSync
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;
 
+		public int ObjectId = -1;
 		private QSBJellyfish _qsbJellyfish;
-		private static readonly List<JellyfishTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
 			=> _qsbJellyfish.AttachedObject._jellyfishBody;
-
-		public override void Start()
-		{
-			_instances.Add(this);
-			base.Start();
-		}
-
-		protected override void OnDestroy()
-		{
-			_instances.Remove(this);
-			base.OnDestroy();
-		}
 
 		public override float GetNetworkSendInterval() => 10;
 
 		protected override void Init()
 		{
-			_qsbJellyfish = QSBWorldSync.GetWorldFromId<QSBJellyfish>(_instances.IndexOf(this));
+			_qsbJellyfish = QSBWorldSync.GetWorldFromId<QSBJellyfish>(ObjectId);
 			_qsbJellyfish.TransformSync = this;
 
 			base.Init();
@@ -46,6 +33,11 @@ namespace QSB.JellyfishSync.TransformSync
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			base.SerializeTransform(writer, initialState);
+
+			if (initialState)
+			{
+				writer.Write(ObjectId);
+			}
 
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -62,6 +54,11 @@ namespace QSB.JellyfishSync.TransformSync
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			base.DeserializeTransform(reader, initialState);
+
+			if (initialState)
+			{
+				ObjectId = reader.ReadInt32();
+			}
 
 			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
 			{

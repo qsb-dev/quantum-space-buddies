@@ -2,7 +2,6 @@
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
@@ -12,33 +11,31 @@ namespace QSB.Anglerfish.TransformSync
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;
 
+		public int ObjectId = -1;
 		private QSBAngler _qsbAngler;
-		private static readonly List<AnglerTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
 			=> _qsbAngler.AttachedObject._anglerBody;
-
-		public override void Start()
-		{
-			_instances.Add(this);
-			base.Start();
-		}
-
-		protected override void OnDestroy()
-		{
-			_instances.Remove(this);
-			base.OnDestroy();
-		}
 
 		public override float GetNetworkSendInterval() => 1;
 
 		protected override void Init()
 		{
-			_qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(_instances.IndexOf(this));
+			_qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(ObjectId);
 			_qsbAngler.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
+		}
+
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
+		{
+			base.SerializeTransform(writer, initialState);
+
+			if (initialState)
+			{
+				writer.Write(ObjectId);
+			}
 		}
 
 		private bool _shouldUpdate;
@@ -46,6 +43,11 @@ namespace QSB.Anglerfish.TransformSync
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			base.DeserializeTransform(reader, initialState);
+
+			if (initialState)
+			{
+				ObjectId = reader.ReadInt32();
+			}
 
 			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
 			{
