@@ -6,21 +6,29 @@ namespace QSB.Messaging
 {
 	public abstract class QSBMessage : QMessageBase
 	{
+		/// set automatically when sending a message
 		public uint From;
+		/// <summary>
+		/// uint.MaxValue = send to everyone <br/>
+		/// 0 = send to host
+		/// </summary>
 		public uint To = uint.MaxValue;
 
+		/// call the base method when overriding
 		public override void Serialize(QNetworkWriter writer)
 		{
 			writer.Write(From);
 			writer.Write(To);
 		}
 
+		/// call the base method when overriding
 		public override void Deserialize(QNetworkReader reader)
 		{
 			From = reader.ReadUInt32();
 			To = reader.ReadUInt32();
 		}
 
+		/// checked before calling either OnReceive
 		public virtual bool ShouldReceive => true;
 		public virtual void OnReceiveRemote() { }
 		public virtual void OnReceiveLocal() { }
