@@ -16,54 +16,44 @@ namespace QSB.Messaging
 	{
 		#region inner workings
 
-		private class Msg : QMessageBase
-		{
-			public uint From;
-			public uint To;
-			public QSBMessage Message;
-
-			public override void Serialize(QNetworkWriter writer)
-			{
-				writer.Write(From);
-				writer.Write(To);
-				if (!_typeToIndex.TryGetValue(Message.GetType(), out var index))
-				{
-					DebugLog.ToConsole($"QSBMessageManager - unknown message type {Message.GetType()}", MessageType.Error);
-				}
-				writer.Write(index);
-				Message.Serialize(writer);
-			}
-
-			public override void Deserialize(QNetworkReader reader)
-			{
-				From = reader.ReadUInt32();
-				To = reader.ReadUInt32();
-				Message = (QSBMessage)Activator.CreateInstance(_types[reader.ReadInt32()]);
-				Message.Deserialize(reader);
-			}
-		}
-
-		private const short msgType = short.MaxValue - 1;
-		private static readonly Type[] _types = typeof(QSBMessage).GetDerivedTypes().ToArray();
-		private static readonly Dictionary<Type, int> _typeToIndex = new();
+		private static readonly Dictionary<short, QSBMessage> _msgTypeToMsg = new();
+		private static readonly Dictionary<Type, short> _typeToMsgType = new();
 
 		static QSBMessageManager()
 		{
-			for (var i = 0; i < _types.Length; i++)
+			var types = typeof(QSBMessage).GetDerivedTypes().ToArray();
+			for (var i = 0; i < types.Length; i++)
 			{
-				_typeToIndex.Add(_types[i], i);
+				var msgType = (short)(QMsgType.Highest + 1 + i);
+				if (msgType >= short.MaxValue)
+				{
+					DebugLog.ToConsole("Hey, uh, maybe don't create 32,767 events? You really should never be seeing this." +
+						"If you are, something has either gone terrible wrong or QSB somehow needs more events that classes in Outer Wilds." +
+						"In either case, I guess something has gone terribly wrong...", MessageType.Error);
+				}
+
+				var type = types[i];
+				var msg = (QSBMessage)Activator.CreateInstance(type);
+				_msgTypeToMsg.Add(msgType, msg);
+				_typeToMsgType.Add(type, msgType);
 			}
 		}
 
 		public static void Init()
 		{
-			QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
-			QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
+			foreach (var msgType in _msgTypeToMsg.Keys)
+			{
+				QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
+				QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
+			}
 		}
 
 		private static void OnServerReceive(QNetworkMessage netMsg)
 		{
-			var msg = netMsg.ReadMessage<Msg>();
+			var msgType = netMsg.MsgType;
+			var msg = _msgTypeToMsg[msgType];
+			netMsg.ReadMessage(msg);
+
 			if (msg.To == 0)
 			{
 				QNetworkServer.SendToClient(0, msgType, msg);
@@ -77,7 +67,7 @@ namespace QSB.Messaging
 				var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
 				if (conn == null)
 				{
-					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.Message.GetType().Name}", MessageType.Error);
+					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.GetType().Name}", MessageType.Error);
 					return;
 				}
 				conn.Send(msgType, msg);
@@ -86,8 +76,11 @@ namespace QSB.Messaging
 
 		private static void OnClientReceive(QNetworkMessage netMsg)
 		{
-			var msg = netMsg.ReadMessage<Msg>();
-			if (!msg.Message.ShouldReceive)
+			var msgType = netMsg.MsgType;
+			var msg = _msgTypeToMsg[msgType];
+			netMsg.ReadMessage(msg);
+
+			if (!msg.ShouldReceive)
 			{
 				return;
 			}
@@ -96,16 +89,16 @@ namespace QSB.Messaging
 			{
 				if (msg.From != QSBPlayerManager.LocalPlayerId)
 				{
-					msg.Message.OnReceiveRemote(msg.From);
+					msg.OnReceiveRemote(msg.From);
 				}
 				else
 				{
-					msg.Message.OnReceiveLocal();
+					msg.OnReceiveLocal();
 				}
 			}
 			catch (Exception ex)
 			{
-				DebugLog.ToConsole($"Error - Exception handling message {msg.Message.GetType().Name} : {ex}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Exception handling message {msg.GetType().Name} : {ex}", MessageType.Error);
 			}
 		}
 
@@ -115,12 +108,10 @@ namespace QSB.Messaging
 		public static void Send<M>(this M message, uint to = uint.MaxValue)
 			where M : QSBMessage, new()
 		{
-			QNetworkManager.singleton.client.Send(msgType, new Msg
-			{
-				From = QSBPlayerManager.LocalPlayerId,
-				To = to,
-				Message = message
-			});
+			var msgType = _typeToMsgType[typeof(M)];
+			message.From = QSBPlayerManager.LocalPlayerId;
+			message.To = to;
+			QNetworkManager.singleton.client.Send(msgType, message);
 		}
 
 		public static void SendMessage<T, M>(this T worldObject, M message, uint to = uint.MaxValue)
@@ -129,6 +120,24 @@ namespace QSB.Messaging
 		{
 			message.ObjectId = worldObject.ObjectId;
 			Send(message, to);
+		}
+	}
+
+	public class QSBNetMsg : QMessageBase
+	{
+		public uint From;
+		public uint To;
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			writer.Write(From);
+			writer.Write(To);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			From = reader.ReadUInt32();
+			To = reader.ReadUInt32();
 		}
 	}
 }

@@ -3,11 +3,8 @@ using QuantumUNET.Transport;
 
 namespace QSB.Messaging
 {
-	public abstract class QSBMessage
+	public abstract class QSBMessage : QSBNetMsg
 	{
-		public virtual void Serialize(QNetworkWriter writer) { }
-		public virtual void Deserialize(QNetworkReader reader) { }
-
 		public virtual bool ShouldReceive => true;
 		public virtual void OnReceiveRemote(uint from) { }
 		public virtual void OnReceiveLocal() { }
