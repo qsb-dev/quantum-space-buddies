@@ -106,6 +106,8 @@ namespace QSB.WorldSync
 
 		public static int GetIdFromTypeSubset<TTypeSubset>(TTypeSubset typeSubset)
 		{
+			return ((IWorldObject)typeSubset).ObjectId;
+
 			var index = GetWorldObjects<TTypeSubset>().ToList().IndexOf(typeSubset);
 			if (index == -1)
 			{

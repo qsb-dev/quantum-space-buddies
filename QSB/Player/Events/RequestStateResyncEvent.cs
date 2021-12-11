@@ -83,11 +83,8 @@ namespace QSB.Player.Events
 					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id));
 			}
 
-			var list = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
-			for (var i = 0; i < list.Count; i++)
-			{
-				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, list[i].ControllingPlayer);
-			}
+			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x
+				=> QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, QSBWorldSync.GetIdFromTypeSubset(x), x.ControllingPlayer));
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
