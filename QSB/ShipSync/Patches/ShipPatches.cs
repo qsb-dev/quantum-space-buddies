@@ -5,6 +5,7 @@ using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using QSB.ShipSync.TransformSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
@@ -206,7 +207,7 @@ namespace QSB.ShipSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.OnImpact))]
 		public static bool ShipDamageController_OnImpact()
-			=> ShipManager.Instance.HasAuthority;
+			=> ShipTransformSync.LocalInstance == null || ShipManager.Instance.HasAuthority;
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
