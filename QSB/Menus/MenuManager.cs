@@ -176,7 +176,7 @@ namespace QSB.Menus
 
 			DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton("DISCONNECT", DisconnectPopup);
 
-			QuitButton = Locator.GetSceneMenuManager().pauseMenu._exitToMainMenuAction.gameObject;
+			QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
 			if (QSBCore.IsInMultiplayer)
 			{
