@@ -9,6 +9,7 @@ namespace QSB.SaveSync.Events
 	{
 		public bool InSolarSystem { get; set; }
 		public bool InEye { get; set; }
+		public bool LaunchCodesGiven { get; set; }
 		public int LoopCount { get; set; }
 		public bool[] KnownFrequencies { get; set; }
 		public Dictionary<int, bool> KnownSignals { get; set; } = new();
@@ -16,16 +17,11 @@ namespace QSB.SaveSync.Events
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			// in solarsystem
 			InSolarSystem = reader.ReadBoolean();
-
-			// in eye
 			InEye = reader.ReadBoolean();
-
-			// Loop count
+			LaunchCodesGiven = reader.ReadBoolean();
 			LoopCount = reader.ReadInt32();
 
-			// Known Frequencies
 			var frequenciesLength = reader.ReadInt32();
 			var knownFrequencies = KnownFrequencies;
 			Array.Resize(ref knownFrequencies, frequenciesLength);
@@ -35,7 +31,6 @@ namespace QSB.SaveSync.Events
 				KnownFrequencies[i] = reader.ReadBoolean();
 			}
 
-			// Known signals
 			var signalsLength = reader.ReadInt32();
 			KnownSignals.Clear();
 			for (var i = 0; i < signalsLength; i++)
@@ -49,23 +44,17 @@ namespace QSB.SaveSync.Events
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			// in solarsystem
 			writer.Write(InSolarSystem);
-
-			// in eye
 			writer.Write(InEye);
-
-			// Loop count
+			writer.Write(LaunchCodesGiven);
 			writer.Write(LoopCount);
 
-			// Known frequencies
 			writer.Write(KnownFrequencies.Length);
 			foreach (var item in KnownFrequencies)
 			{
 				writer.Write(item);
 			}
 
-			// Known signals
 			writer.Write(KnownSignals.Count);
 			foreach (var item in KnownSignals)
 			{

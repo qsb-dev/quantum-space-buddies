@@ -20,6 +20,7 @@ namespace QSB.SaveSync.Events
 			ForId = toId,
 			InSolarSystem = QSBSceneManager.CurrentScene == OWScene.SolarSystem,
 			InEye = QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse,
+			LaunchCodesGiven = PlayerData.KnowsLaunchCodes(),
 			LoopCount = StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount,
 			KnownFrequencies = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownFrequencies,
 			KnownSignals = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownSignals
@@ -31,6 +32,8 @@ namespace QSB.SaveSync.Events
 			gameSave.loopCount = message.LoopCount;
 			gameSave.knownFrequencies = message.KnownFrequencies;
 			gameSave.knownSignals = message.KnownSignals;
+
+			PlayerData.SetPersistentCondition("LAUNCH_CODES_GIVEN", message.LaunchCodesGiven);
 
 			PlayerData.SaveCurrentGame();
 
