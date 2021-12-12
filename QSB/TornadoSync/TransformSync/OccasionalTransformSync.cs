@@ -154,6 +154,11 @@ namespace QSB.TornadoSync.TransformSync
 
 		private void QueueMove(OWRigidbody child)
 		{
+			if (!child)
+			{
+				return; // wtf
+			}
+
 			if (child.transform.parent != null)
 			{
 				// it's parented to AttachedObject or one of its children
