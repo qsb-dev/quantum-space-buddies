@@ -24,7 +24,7 @@ namespace QSB.TornadoSync.TransformSync
 		private int _bodyIndex = -1;
 		private int _refBodyIndex = -1;
 		private Sector[] _sectors;
-		private OWRigidbody[] _orbs;
+		private OWRigidbody[] _childBodies;
 
 		public void InitBodyIndexes(OWRigidbody body, OWRigidbody refBody)
 		{
@@ -41,9 +41,9 @@ namespace QSB.TornadoSync.TransformSync
 
 			_sectors = SectorManager.s_sectors
 				.Where(x => x._attachedOWRigidbody == AttachedObject).ToArray();
-			_orbs = QSBWorldSync.OldOrbList
-				.Where(x => _sectors.Contains(x._sector))
-				.Select(x => x._orbBody).ToArray();
+			_childBodies = CenterOfTheUniverse.s_rigidbodies
+				.Where(x => x._origParentBody == AttachedObject)
+				.ToArray();
 		}
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -124,9 +124,9 @@ namespace QSB.TornadoSync.TransformSync
 			{
 				QueueMove(Locator._probe._owRigidbody);
 			}
-			foreach (var orb in _orbs)
+			foreach (var child in _childBodies)
 			{
-				QueueMove(orb);
+				QueueMove(child);
 			}
 
 			var pos = ReferenceTransform.DecodePos(transform.position);
