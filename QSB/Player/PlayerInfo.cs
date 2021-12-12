@@ -142,7 +142,7 @@ namespace QSB.Player
 					return null;
 				}
 
-				return CameraBody.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
+				return CameraBody?.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace QSB.Player
 					return null;
 				}
 
-				return CameraBody.transform.Find("Signalscope").GetComponent<Signalscope>();
+				return CameraBody?.transform.Find("Signalscope").GetComponent<Signalscope>();
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace QSB.Player
 					return null;
 				}
 
-				return CameraBody.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
+				return CameraBody?.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
 			}
 		}
 
@@ -197,6 +197,12 @@ namespace QSB.Player
 		public void UpdateObjectsFromStates()
 		{
 			if (OWInput.GetInputMode() == InputMode.None)
+			{
+				// ? why is this here lmao
+				return;
+			}
+
+			if (CameraBody == null)
 			{
 				return;
 			}
@@ -225,7 +231,30 @@ namespace QSB.Player
 			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 		}
 
-		private QSBTool GetToolByType(ToolType type) => CameraBody?.GetComponentsInChildren<QSBTool>()
-				.FirstOrDefault(x => x.Type == type);
+		private QSBTool GetToolByType(ToolType type)
+		{
+			if (CameraBody == null)
+			{
+				DebugLog.ToConsole($"Warning - Tried to GetToolByType({type}) on player {PlayerId}, but CameraBody was null.", MessageType.Warning);
+				return null;
+			}
+
+			var tools = CameraBody.GetComponentsInChildren<QSBTool>();
+
+			if (tools == null || tools.Length == 0)
+			{
+				DebugLog.ToConsole($"Warning - Couldn't find any QSBTools for player {PlayerId}.", MessageType.Warning);
+				return null;
+			}
+
+			var tool = tools.FirstOrDefault(x => x.Type == type);
+
+			if (tool == null)
+			{
+				DebugLog.ToConsole($"Warning - No tool found on player {PlayerId} matching ToolType {type}.", MessageType.Warning);
+			}
+
+			return tool;
+		}
 	}
 }

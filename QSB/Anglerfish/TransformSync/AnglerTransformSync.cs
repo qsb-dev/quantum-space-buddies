@@ -11,6 +11,7 @@ namespace QSB.Anglerfish.TransformSync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;
+		public override bool IsPlayerObject => false;
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new();

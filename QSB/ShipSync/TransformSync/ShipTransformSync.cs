@@ -10,6 +10,8 @@ namespace QSB.ShipSync.TransformSync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
 
+		public override bool IsPlayerObject => false;
+
 		private const int ForcePositionAfterUpdates = 50;
 		private int _updateCount;
 
