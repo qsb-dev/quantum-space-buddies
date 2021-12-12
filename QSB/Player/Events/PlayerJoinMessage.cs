@@ -9,6 +9,7 @@ namespace QSB.Player.Events
 		public string QSBVersion { get; set; }
 		public string GameVersion { get; set; }
 		public GamePlatform Platform { get; set; }
+		public bool DlcInstalled { get; set; }
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -17,6 +18,7 @@ namespace QSB.Player.Events
 			QSBVersion = reader.ReadString();
 			GameVersion = reader.ReadString();
 			Platform = (GamePlatform)reader.ReadInt32();
+			DlcInstalled = reader.ReadBoolean();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -26,6 +28,7 @@ namespace QSB.Player.Events
 			writer.Write(QSBVersion);
 			writer.Write(GameVersion);
 			writer.Write((int)Platform);
+			writer.Write(DlcInstalled);
 		}
 	}
 }

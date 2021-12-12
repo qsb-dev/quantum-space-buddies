@@ -5,6 +5,7 @@
 		None,
 		QSBVersionNotMatching,
 		GameVersionNotMatching,
-		GamePlatformNotMatching
+		GamePlatformNotMatching,
+		DLCNotMatching
 	}
 }

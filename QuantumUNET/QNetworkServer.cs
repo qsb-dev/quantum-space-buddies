@@ -1259,7 +1259,16 @@ namespace QuantumUNET
 			if (handlers.ContainsKey(msgType) && m_LocalConnection != null)
 			{
 				var writer = new QNetworkWriter();
-				msg.Serialize(writer);
+				try
+				{
+					msg.Serialize(writer);
+				}
+				catch (Exception ex)
+				{
+					QLog.Error($"Error serializing msgId:{msgType} - {ex}");
+					return false;
+				}
+
 				var reader = new QNetworkReader(writer);
 				m_LocalConnection.InvokeHandler(msgType, reader, channelId);
 				result = true;

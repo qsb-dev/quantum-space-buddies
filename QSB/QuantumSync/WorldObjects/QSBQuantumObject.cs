@@ -112,7 +112,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public List<ShapeVisibilityTracker> GetVisibilityTrackers() 
+		public List<ShapeVisibilityTracker> GetVisibilityTrackers()
 			=> AttachedObject?._visibilityTrackers == null
 				? new()
 				: AttachedObject._visibilityTrackers.Select(x => (ShapeVisibilityTracker)x).ToList();

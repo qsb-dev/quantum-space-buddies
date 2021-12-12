@@ -15,6 +15,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 		protected override float DistanceLeeway => 10f;
 		public override bool UseInterpolation => true;
 		public override bool IgnoreDisabledAttachedObject => true;
+		public override bool IsPlayerObject => true;
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
 

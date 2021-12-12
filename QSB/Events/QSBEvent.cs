@@ -1,4 +1,3 @@
-﻿using System;
 using JetBrains.Annotations;
 using OWML.Utils;
 using QSB.Messaging;
@@ -6,6 +5,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System;
 
 namespace QSB.Events
 {

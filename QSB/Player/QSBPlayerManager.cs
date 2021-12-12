@@ -89,7 +89,7 @@ namespace QSB.Player
 			player.SignalscopeEquipped = message.SignalscopeEquipped;
 			player.TranslatorEquipped = message.TranslatorEquipped;
 			player.ProbeActive = message.ProbeActive;
-			if (LocalPlayer.IsReady)
+			if (LocalPlayer.IsReady && player.IsReady)
 			{
 				player.UpdateObjectsFromStates();
 			}
@@ -178,7 +178,7 @@ namespace QSB.Player
 				return null;
 			}
 
-			return playerList.Where(x => x.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+			return playerList.Where(x => x.IsReady && x.Body != null).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
 
 		public static IEnumerable<Tuple<PlayerInfo, IQSBOWItem>> GetPlayerCarryItems()

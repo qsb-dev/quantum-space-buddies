@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
+using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
 using QSB.OrbSync.TransformSync;
 using QSB.Patches;
@@ -14,10 +14,14 @@ using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
+using QSB.Tools.ProbeTool.TransformSync;
+using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -37,12 +41,12 @@ namespace QSB
 		public GameObject ShipPrefab { get; private set; }
 		public GameObject AnglerPrefab { get; private set; }
 		public GameObject JellyfishPrefab { get; private set; }
+		public GameObject OccasionalPrefab { get; private set; }
 		public string PlayerName { get; private set; }
 
 		private const int MaxConnections = 128;
 		private const int MaxBufferedPackets = 64;
 
-		private AssetBundle _assetBundle;
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
@@ -52,24 +56,26 @@ namespace QSB
 			Instance = this;
 
 			PlayerName = GetPlayerName();
-			_assetBundle = QSBCore.NetworkAssetBundle;
 
-			playerPrefab = _assetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
+			playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 
-			ShipPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkship.prefab");
+			ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
 			spawnPrefabs.Add(ShipPrefab);
 
-			_probePrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkprobe.prefab");
+			_probePrefab = MakeNewNetworkObject(3, "NetworkProbe", typeof(PlayerProbeSync));
 			spawnPrefabs.Add(_probePrefab);
 
-			OrbPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkorb.prefab");
+			OrbPrefab = MakeNewNetworkObject(4, "NetworkOrb", typeof(NomaiOrbTransformSync));
 			spawnPrefabs.Add(OrbPrefab);
 
-			AnglerPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkangler.prefab");
+			AnglerPrefab = MakeNewNetworkObject(5, "NetworkAngler", typeof(AnglerTransformSync));
 			spawnPrefabs.Add(AnglerPrefab);
 
-			JellyfishPrefab = _assetBundle.LoadAsset<GameObject>("assets/Prefabs/networkjellyfish.prefab");
+			JellyfishPrefab = MakeNewNetworkObject(6, "NetworkJellyfish", typeof(JellyfishTransformSync));
 			spawnPrefabs.Add(JellyfishPrefab);
+
+			OccasionalPrefab = MakeNewNetworkObject(7, "NetworkOccasional", typeof(OccasionalTransformSync));
+			spawnPrefabs.Add(OccasionalPrefab);
 
 			ConfigureNetworkManager();
 		}
@@ -89,6 +95,24 @@ namespace QSB
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				return "Player";
 			}
+		}
+
+		/// create a new network prefab from the network object prefab template.
+		/// this works by calling Unload(false) and then reloading the AssetBundle,
+		/// which makes LoadAsset give you a new resource.
+		/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
+		private static GameObject MakeNewNetworkObject(int assetId, string name, Type transformSyncType)
+		{
+			QSBCore.NetworkAssetBundle.Unload(false);
+			QSBCore.NetworkAssetBundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/network");
+
+			var template = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NetworkObject.prefab");
+			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
+				+ $"for {assetId} {name} {transformSyncType.Name}");
+			template.name = name;
+			template.GetRequiredComponent<QNetworkIdentity>().SetValue("m_AssetId", assetId);
+			template.AddComponent(transformSyncType);
+			return template;
 		}
 
 		private void ConfigureNetworkManager()

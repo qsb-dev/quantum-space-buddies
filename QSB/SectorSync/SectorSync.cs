@@ -127,7 +127,6 @@ namespace QSB.SectorSync
 			if (_sectorDetector == null || _attachedOWRigidbody == null || _targetType == TargetType.None)
 			{
 				IsReady = false;
-				DebugLog.ToConsole($"Error - SectorSync is no longer ready. Detector Null : {_sectorDetector == null}, OWRigidbody Null : {_attachedOWRigidbody == null}, None TargetType : {_targetType == TargetType.None}", MessageType.Error);
 				return null;
 			}
 

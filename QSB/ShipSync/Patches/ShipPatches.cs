@@ -3,8 +3,8 @@ using OWML.Utils;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
-using System;
 using QSB.WorldSync;
+using System;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches

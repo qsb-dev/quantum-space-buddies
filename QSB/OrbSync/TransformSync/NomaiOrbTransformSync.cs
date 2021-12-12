@@ -11,6 +11,8 @@ namespace QSB.OrbSync.TransformSync
 	{
 		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new();
 
+		public override bool IsPlayerObject => false;
+
 		private int _index => OrbTransformSyncs.IndexOf(this);
 
 		public override void OnStartClient() => OrbTransformSyncs.Add(this);

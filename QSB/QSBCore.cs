@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
 using QSB.ConversationSync;
@@ -15,6 +14,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System.Linq;
 using UnityEngine;
 
 /*
@@ -49,7 +49,7 @@ namespace QSB
 		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
-		public static AssetBundle NetworkAssetBundle { get; private set; }
+		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
@@ -60,6 +60,7 @@ namespace QSB
 		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
 			? GamePlatform.Epic
 			: GamePlatform.Steam;
+		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
 		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();

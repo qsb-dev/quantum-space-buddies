@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using QSB.JellyfishSync.WorldObjects;
+﻿using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.TransformSync
@@ -13,6 +13,7 @@ namespace QSB.JellyfishSync.TransformSync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;
+		public override bool IsPlayerObject => false;
 
 		private QSBJellyfish _qsbJellyfish;
 		private static readonly List<JellyfishTransformSync> _instances = new();
@@ -92,11 +93,6 @@ namespace QSB.JellyfishSync.TransformSync
 
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-
-			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
-			{
-				return false;
-			}
 
 			var positionToSet = targetPos;
 			var rotationToSet = targetRot;
