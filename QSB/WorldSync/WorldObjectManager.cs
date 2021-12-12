@@ -66,6 +66,7 @@ namespace QSB.WorldSync
 
 		private static void DoRebuild(OWScene scene)
 		{
+			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
 			_numManagersReadying = 0;
 			_numObjectsReadying = 0;
 			AllObjectsAdded = false;

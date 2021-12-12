@@ -118,7 +118,6 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			RemoveWorldObjects<TWorldObject>();
 			var list = GetUnityObjects<TUnityObject>().ToList();
 			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
@@ -126,7 +125,7 @@ namespace QSB.WorldSync
 				var obj = new TWorldObject
 				{
 					AttachedObject = list[id],
-					ObjectId = id
+					ObjectId = WorldObjects.Count
 				};
 				obj.Init();
 				WorldObjects.Add(obj);
