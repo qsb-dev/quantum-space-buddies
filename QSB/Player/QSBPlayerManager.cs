@@ -62,12 +62,6 @@ namespace QSB.Player
 
 		public static void AddPlayer(uint id)
 		{
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Error - Tried to create player id:{id} when not in multiplayer!", MessageType.Error);
-				return;
-			}
-
 			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
 			var player = new PlayerInfo(id);
 			PlayerList.Add(player);
