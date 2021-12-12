@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using OWML.Common;
 using QSB.Anglerfish.Patches;
 using QSB.Animation.NPC.Patches;
@@ -29,8 +26,12 @@ using QSB.TimeSync.Patches;
 using QSB.Tools.ProbeLauncherTool.Patches;
 using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
 using QSB.Tools.TranslatorTool.TranslationSync.Patches;
+using QSB.TornadoSync.Patches;
 using QSB.Utility;
 using QSB.ZeroGCaveSync.Patches;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.Patches
 {
@@ -81,7 +82,8 @@ namespace QSB.Patches
 				new MeteorServerPatches(),
 				new JellyfishPatches(),
 				new TravelerControllerPatches(),
-				new ZeroGCavePatches()
+				new ZeroGCavePatches(),
+				new TornadoPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

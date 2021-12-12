@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
 using QSB.Anglerfish;
@@ -18,7 +17,6 @@ using QSB.MeteorSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
 using QSB.RespawnSync;
@@ -29,11 +27,12 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.TranslatorTool.TranslationSync;
+using QSB.TornadoSync;
 using QSB.Utility;
-using QSB.WorldSync;
 using QSB.ZeroGCaveSync;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System.Linq;
 using UnityEngine;
 
 /*
@@ -68,7 +67,7 @@ namespace QSB
 		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
-		public static AssetBundle NetworkAssetBundle { get; private set; }
+		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
@@ -79,6 +78,7 @@ namespace QSB
 		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
 			? GamePlatform.Epic
 			: GamePlatform.Steam;
+		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
 		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
@@ -143,6 +143,7 @@ namespace QSB
 			gameObject.AddComponent<MeteorManager>();
 			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
+			gameObject.AddComponent<TornadoManager>();
 
 			DebugBoxManager.Init();
 

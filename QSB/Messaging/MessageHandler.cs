@@ -16,7 +16,7 @@ namespace QSB.Messaging
 
 		public MessageHandler(int msgType)
 		{
-			
+
 			_eventType = (short)(msgType + QMsgType.Highest + 1);
 			if (_eventType >= short.MaxValue)
 			{

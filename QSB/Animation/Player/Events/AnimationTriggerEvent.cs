@@ -1,6 +1,5 @@
 ﻿using QSB.Events;
 using QSB.Player;
-using QSB.WorldSync;
 
 namespace QSB.Animation.Player.Events
 {
@@ -24,6 +23,11 @@ namespace QSB.Animation.Player.Events
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AttachedNetId);
 			if (animationSync == null)
+			{
+				return;
+			}
+
+			if (animationSync.VisibleAnimator == null)
 			{
 				return;
 			}
