@@ -8,12 +8,6 @@ namespace QSB.Animation.NPC.WorldObjects
 	{
 		private readonly List<PlayerInfo> _playersInHeadZone = new();
 
-		public override void Init(SolanumAnimController controller, int id)
-		{
-			ObjectId = id;
-			AttachedObject = controller;
-		}
-
 		public List<PlayerInfo> GetPlayersInHeadZone()
 			=> _playersInHeadZone;
 

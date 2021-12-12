@@ -16,6 +16,7 @@ namespace QSB.JellyfishSync.TransformSync
 		public override bool IsPlayerObject => false;
 
 		private QSBJellyfish _qsbJellyfish;
+		public static readonly List<JellyfishController> Jellyfish = new();
 		private static readonly List<JellyfishTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
@@ -37,7 +38,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void Init()
 		{
-			_qsbJellyfish = QSBWorldSync.GetWorldFromId<QSBJellyfish>(_instances.IndexOf(this));
+			_qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(Jellyfish[_instances.IndexOf(this)]);
 			_qsbJellyfish.TransformSync = this;
 
 			base.Init();

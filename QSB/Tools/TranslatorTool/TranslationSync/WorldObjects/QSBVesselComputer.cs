@@ -7,12 +7,6 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBVesselComputer : WorldObject<NomaiVesselComputer>
 	{
-		public override void Init(NomaiVesselComputer computer, int id)
-		{
-			ObjectId = id;
-			AttachedObject = computer;
-		}
-
 		public void HandleSetAsTranslated(int id)
 		{
 			if (AttachedObject.IsTranslated(id))

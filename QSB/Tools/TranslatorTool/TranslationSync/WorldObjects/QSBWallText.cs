@@ -6,12 +6,6 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBWallText : WorldObject<NomaiWallText>
 	{
-		public override void Init(NomaiWallText wallText, int id)
-		{
-			ObjectId = id;
-			AttachedObject = wallText;
-		}
-
 		public void HandleSetAsTranslated(int id)
 		{
 			if (AttachedObject.IsTranslated(id))
