@@ -47,7 +47,6 @@ namespace QSB.Player
 		{
 			if (id is uint.MaxValue or 0U)
 			{
-				DebugLog.ToConsole($"Warning - GetPlayer was given bad id {id}! Stacktrace : {Environment.StackTrace}", MessageType.Warning);
 				return default;
 			}
 
