@@ -47,26 +47,32 @@ namespace QSB.Player
 		{
 			if (id is uint.MaxValue or 0U)
 			{
+				DebugLog.ToConsole($"Warning - GetPlayer was given bad id {id}! Stacktrace : {Environment.StackTrace}", MessageType.Warning);
 				return default;
 			}
 
 			var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
-			if (player != null)
+			if (player == null)
 			{
-				return player;
-			}
-
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Error - Tried to create player id:{id} when not in multiplayer! Stacktrace : {Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Player with id {id} does not exist! Stacktrace : {Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
+			return player;
+		}
+
+		public static void AddPlayer(uint id)
+		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Error - Tried to create player id:{id} when not in multiplayer!", MessageType.Error);
+				return;
+			}
+
 			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
-			player = new PlayerInfo(id);
+			var player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			OnAddPlayer?.Invoke(id);
-			return player;
 		}
 
 		public static void RemovePlayer(uint id)
