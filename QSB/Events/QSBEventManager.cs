@@ -43,6 +43,7 @@ namespace QSB.Events
 		{
 			if (!QSBCore.IsInMultiplayer)
 			{
+				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
 

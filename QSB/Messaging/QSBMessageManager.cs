@@ -69,7 +69,7 @@ namespace QSB.Messaging
 				var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
 				if (conn == null)
 				{
-					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg.GetType().Name}", MessageType.Error);
+					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg}", MessageType.Error);
 					return;
 				}
 				conn.Send(msgType, msg);
@@ -84,7 +84,7 @@ namespace QSB.Messaging
 
 			if (PlayerTransformSync.LocalInstance == null)
 			{
-				DebugLog.ToConsole($"Warning - Tried to handle message of type <{msg.GetType().Name}> before localplayer was established.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to handle message {msg} before localplayer was established.", MessageType.Warning);
 				return;
 			}
 
@@ -97,7 +97,7 @@ namespace QSB.Messaging
 					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
 					&& msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
 				{
-					DebugLog.ToConsole($"Warning - Got message (type:{msg.GetType().Name}) from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
 				}
 			}
@@ -120,7 +120,7 @@ namespace QSB.Messaging
 			}
 			catch (Exception ex)
 			{
-				DebugLog.ToConsole($"Error - Exception handling message {msg.GetType().Name} : {ex}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Exception handling message {msg} : {ex}", MessageType.Error);
 			}
 		}
 
@@ -130,6 +130,12 @@ namespace QSB.Messaging
 		public static void Send<M>(this M message)
 			where M : QSBMessage, new()
 		{
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Warning - Tried to send message {message} while not connected to/hosting server.", MessageType.Warning);
+				return;
+			}
+
 			var msgType = _typeToMsgType[typeof(M)];
 			message.From = QSBPlayerManager.LocalPlayerId;
 			QNetworkManager.singleton.client.Send(msgType, message);
