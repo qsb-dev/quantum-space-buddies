@@ -50,6 +50,7 @@ namespace QSB.Player.TransformSync
 		public override void Start()
 		{
 			base.Start();
+			QSBPlayerManager.AddPlayer(PlayerId);
 			Player.TransformSync = this;
 		}
 

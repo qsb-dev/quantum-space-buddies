@@ -5,10 +5,8 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBFragment : WorldObject<FragmentIntegrity>
 	{
-		public override void Init(FragmentIntegrity attachedObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
 			DetachableFragment = AttachedObject.GetComponent<DetachableFragment>();
 
 			if (QSBCore.IsHost)

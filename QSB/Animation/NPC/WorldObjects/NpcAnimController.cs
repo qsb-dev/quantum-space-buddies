@@ -7,12 +7,6 @@ namespace QSB.Animation.NPC.WorldObjects
 	internal abstract class NpcAnimController<T> : WorldObject<T>, INpcAnimController
 		where T : MonoBehaviour
 	{
-		public override void Init(T controller, int id)
-		{
-			ObjectId = id;
-			AttachedObject = controller;
-		}
-
 		public abstract CharacterDialogueTree GetDialogueTree();
 
 		public virtual void StartConversation()
