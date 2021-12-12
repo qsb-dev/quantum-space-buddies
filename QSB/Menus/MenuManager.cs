@@ -274,6 +274,7 @@ namespace QSB.Menus
 			{
 				SetButtonActive(DisconnectButton, true);
 				SetButtonActive(HostButton, false);
+				SetButtonActive(QuitButton, false);
 			}
 			else
 			{
