@@ -32,6 +32,7 @@ using QSB.Tools.SignalscopeTool.Events;
 using QSB.Tools.SignalscopeTool.FrequencySync.Events;
 using QSB.Tools.TranslatorTool.Events;
 using QSB.Tools.TranslatorTool.TranslationSync.Events;
+using QSB.TornadoSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
 using QSB.ZeroGCaveSync.Events;
@@ -109,6 +110,7 @@ namespace QSB.Events
 				new FragmentDamageEvent(),
 				new FragmentResyncEvent(),
 				new JellyfishRisingEvent(),
+				new TornadoFormStateEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),

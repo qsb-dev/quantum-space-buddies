@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2906651145
+CRC: 1208921857
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0fa5758f55c8803c7ba77a52ab2c9488
+    Hash: e6fb281706df372893c7d91213b2598a
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 87b5c87f221cc0cbe8c4eefab7d02419
+    Hash: 91770441465e7cb2442c311d5ad605d6
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -18,8 +18,6 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 1142416158, guid: 8929207a0d76fd54a8a2a820c652720f, type: 3}
 - Class: 114
-  Script: {fileID: 519208029, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
   Script: {fileID: -790547616, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: 806682216, guid: 27687deae413b90448366870cb0de502, type: 3}
@@ -30,17 +28,9 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1309757293, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
-  Script: {fileID: 316226861, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
   Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
-  Script: {fileID: -1381557116, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: -1937550126, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
   Script: {fileID: -749020886, guid: 27687deae413b90448366870cb0de502, type: 3}
-- Class: 114
-  Script: {fileID: -2281650, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: 677635994, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
@@ -49,10 +39,6 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Prefabs/NetworkJellyfish.prefab
-- Assets/Prefabs/NetworkProbe.prefab
+- Assets/Prefabs/NetworkObject.prefab
 - Assets/Prefabs/NETWORK_Player_Body.prefab
-- Assets/Prefabs/NetworkOrb.prefab
-- Assets/Prefabs/NetworkAngler.prefab
-- Assets/Prefabs/NetworkShip.prefab
 Dependencies: []

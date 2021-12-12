@@ -26,6 +26,7 @@ using QSB.TimeSync.Patches;
 using QSB.Tools.ProbeLauncherTool.Patches;
 using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
 using QSB.Tools.TranslatorTool.TranslationSync.Patches;
+using QSB.TornadoSync.Patches;
 using QSB.Utility;
 using QSB.ZeroGCaveSync.Patches;
 using System;
@@ -81,7 +82,8 @@ namespace QSB.Patches
 				new MeteorServerPatches(),
 				new JellyfishPatches(),
 				new TravelerControllerPatches(),
-				new ZeroGCavePatches()
+				new ZeroGCavePatches(),
+				new TornadoPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>

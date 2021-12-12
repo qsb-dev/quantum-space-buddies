@@ -94,11 +94,6 @@ namespace QSB.JellyfishSync.TransformSync
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 
-			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
-			{
-				return false;
-			}
-
 			var positionToSet = targetPos;
 			var rotationToSet = targetRot;
 
