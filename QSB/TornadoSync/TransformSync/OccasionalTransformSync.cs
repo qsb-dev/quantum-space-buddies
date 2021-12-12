@@ -13,7 +13,9 @@ namespace QSB.TornadoSync.TransformSync
 {
 	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsReady;
+		public override bool IsReady => WorldObjectManager.AllObjectsReady
+			&& _bodyIndex >= 0 && _bodyIndex < CenterOfTheUniverse.s_rigidbodies.Count
+			&& _refBodyIndex >= 0 && _refBodyIndex < CenterOfTheUniverse.s_rigidbodies.Count;
 		public override bool UseInterpolation => false;
 		public override bool IsPlayerObject => false;
 
