@@ -6,6 +6,7 @@ using QSB.Player.TransformSync;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System;
+using QSB.Utility;
 
 namespace QSB.Events
 {
@@ -44,6 +45,10 @@ namespace QSB.Events
 			}
 			if (message.OnlySendToHost)
 			{
+				if (QSBEventManager.ForIdOverride != uint.MaxValue)
+				{
+					DebugLog.ToConsole($"Warning - {typeof(T).Name} is OnlySendToHost, but we are trying to ForIdOverride!");
+				}
 				message.ForId = 0;
 			}
 			new QSBEventRelay
