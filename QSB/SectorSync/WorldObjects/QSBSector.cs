@@ -27,10 +27,8 @@ namespace QSB.SectorSync.WorldObjects
 		public Vector3 Position => Transform.position;
 		public bool IsFakeSector => AttachedObject.GetType() == typeof(FakeSector);
 
-		public override void Init(Sector sector, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = sector;
 			if (IsFakeSector)
 			{
 				QSBSectorManager.Instance.FakeSectors.Add(this);

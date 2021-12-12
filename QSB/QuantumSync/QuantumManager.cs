@@ -83,7 +83,7 @@ namespace QSB.QuantumSync
 				{
 					if (quantumObject.IsEnabled)
 					{
-						Popcron.Gizmos.Line((quantumObject as IWorldObject).ReturnObject().transform.position,
+						Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
 							QSBPlayerManager.LocalPlayer.Body.transform.position,
 							Color.magenta * 0.25f);
 					}
@@ -91,7 +91,7 @@ namespace QSB.QuantumSync
 					continue;
 				}
 
-				Popcron.Gizmos.Line((quantumObject as IWorldObject).ReturnObject().transform.position,
+				Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
 					QSBPlayerManager.GetPlayer(quantumObject.ControllingPlayer).Body.transform.position,
 					Color.magenta);
 			}
@@ -151,7 +151,7 @@ namespace QSB.QuantumSync
 				return Enumerable.Empty<PlayerInfo>();
 			}
 
-			var worldObj = (IQSBQuantumObject)QSBWorldSync.GetWorldFromUnity(obj);
+			var worldObj = QSBWorldSync.GetWorldFromUnity<IQSBQuantumObject>(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
 	}

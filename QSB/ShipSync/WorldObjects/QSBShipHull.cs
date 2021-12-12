@@ -6,12 +6,6 @@ namespace QSB.ShipSync.WorldObjects
 {
 	internal class QSBShipHull : WorldObject<ShipHull>
 	{
-		public override void Init(ShipHull hull, int id)
-		{
-			ObjectId = id;
-			AttachedObject = hull;
-		}
-
 		public void SetDamaged()
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Set damaged.");

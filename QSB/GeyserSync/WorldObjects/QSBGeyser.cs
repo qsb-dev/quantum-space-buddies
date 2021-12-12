@@ -6,10 +6,8 @@ namespace QSB.GeyserSync.WorldObjects
 {
 	public class QSBGeyser : WorldObject<GeyserController>
 	{
-		public override void Init(GeyserController geyserController, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = geyserController;
 			AttachedObject.OnGeyserActivateEvent += () => HandleEvent(true);
 			AttachedObject.OnGeyserDeactivateEvent += () => HandleEvent(false);
 		}

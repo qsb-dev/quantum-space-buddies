@@ -11,10 +11,8 @@ namespace QSB.OrbSync.WorldObjects
 
 		private bool _initialized;
 
-		public override void Init(NomaiInterfaceSlot slot, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = slot;
 			_initialized = true;
 		}
 

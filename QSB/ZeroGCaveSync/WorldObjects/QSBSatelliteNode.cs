@@ -5,12 +5,6 @@ namespace QSB.ZeroGCaveSync.WorldObjects
 {
 	internal class QSBSatelliteNode : WorldObject<SatelliteNode>
 	{
-		public override void Init(SatelliteNode component, int id)
-		{
-			ObjectId = id;
-			AttachedObject = component;
-		}
-
 		public void SetRepaired()
 		{
 			DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} Set repaired.");

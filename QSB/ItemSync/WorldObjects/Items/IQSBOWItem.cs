@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
 {
-	public interface IQSBOWItem : IWorldObjectTypeSubset
+	public interface IQSBOWItem : IWorldObject
 	{
 		ItemType GetItemType();
 		void SetColliderActivation(bool active);
