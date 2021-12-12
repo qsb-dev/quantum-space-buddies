@@ -1,9 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.OrbSync.TransformSync;
-using QSB.OrbSync.WorldObjects;
 using QSB.Player;
 using QSB.QuantumSync;
-using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
@@ -11,7 +9,6 @@ using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 namespace QSB.Utility
 {
@@ -112,6 +109,12 @@ namespace QSB.Utility
 				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
 				WriteLine(1, $"Time Remaining : {Mathf.Floor(TimeLoop.GetSecondsRemaining() / 60f)}:{Mathf.Round(TimeLoop.GetSecondsRemaining() % 60f * 100f / 100f)}");
 				WriteLine(1, $"Loop Count : {TimeLoop.GetLoopCount()}");
+				WriteLine(1, $"TimeLoop Initialized : {TimeLoop._initialized}");
+				if (TimeLoop._initialized)
+				{
+					WriteLine(1, $"TimeLoop IsTimeFlowing : {TimeLoop.IsTimeFlowing()}");
+					WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
+				}
 			}
 			#endregion
 

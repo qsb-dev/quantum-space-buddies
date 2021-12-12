@@ -16,17 +16,40 @@ namespace QSB.Player.Events
 	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
 	public class RequestStateResyncEvent : QSBEvent<PlayerMessage>
 	{
+		public static bool _waitingForEvent;
+
 		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
 
-		private void Handler() => SendEvent(CreateMessage());
+		private void Handler()
+		{
+			if (_waitingForEvent)
+			{
+				return;
+			}
+
+			_waitingForEvent = true;
+			SendEvent(CreateMessage());
+		}
 
 		private PlayerMessage CreateMessage() => new()
 		{
 			AboutId = LocalPlayerId
 		};
+
+		public override void OnReceiveLocal(bool isHost, PlayerMessage message)
+		{
+			QSBCore.UnityEvents.FireInNUpdates(() =>
+			{
+				if (_waitingForEvent)
+				{
+					DebugLog.ToConsole($"Did not receive PlayerInformationEvent in time. Setting _waitingForEvent to false.", OWML.Common.MessageType.Info);
+					_waitingForEvent = false;
+				}
+			}, 60);
+		}
 
 		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
 		{

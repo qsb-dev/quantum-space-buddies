@@ -21,7 +21,6 @@ namespace QSB.Player
 
 		public void Init(PlayerInfo player)
 		{
-			DebugLog.DebugWrite($"Init {player.PlayerId} name:{player.Name}");
 			_player = player;
 			_player.HudMarker = this;
 			_needsInitializing = true;

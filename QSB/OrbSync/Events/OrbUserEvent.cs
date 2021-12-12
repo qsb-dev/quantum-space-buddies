@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
+using System.Linq;
 
 namespace QSB.OrbSync.Events
 {

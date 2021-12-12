@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -49,25 +49,19 @@ namespace QSB.WorldSync
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
-				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready!", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready! Building when ready...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.Instance.IsReady, () => Rebuild(scene));
 				return;
 			}
 
 			if (QSBPlayerManager.LocalPlayerId == uint.MaxValue)
 			{
-				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready!", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayerId != uint.MaxValue, () => Rebuild(scene));
 				return;
 			}
 
-			if (QSBPlayerManager.LocalPlayer.IsReady)
-			{
-				DoRebuild(scene);
-				return;
-			}
-
-			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.IsReady, () => DoRebuild(scene));
+			DoRebuild(scene);
 		}
 
 		private static void DoRebuild(OWScene scene)

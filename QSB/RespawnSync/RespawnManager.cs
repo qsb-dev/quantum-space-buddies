@@ -56,6 +56,12 @@ namespace QSB.RespawnSync
 				return;
 			}
 
+			if (PlayerTransformSync.LocalInstance == null)
+			{
+				DebugLog.ToConsole($"Error - Tried to init when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);
+				return;
+			}
+
 			QSBPlayerManager.ShowAllPlayers();
 			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 			QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);

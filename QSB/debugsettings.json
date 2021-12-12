@@ -1,6 +1,6 @@
 ﻿{
   "debugMode": true,
-  "drawLines": true,
+  "drawLines": false,
   "showQuantumVisibilityObjects": false,
   "showQuantumDebugBoxes": false,
   "avoidTimeSync": false,

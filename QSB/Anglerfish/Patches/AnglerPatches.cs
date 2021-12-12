@@ -191,54 +191,54 @@ namespace QSB.Anglerfish.Patches
 					__instance.ApplyDrag(1f);
 					return false;
 				case AnglerfishController.AnglerState.Investigating:
-				{
-					var targetPos = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
-					__instance.RotateTowardsTarget(targetPos, __instance._turnSpeed, __instance._turnSpeed);
-					if (!__instance._turningInPlace)
 					{
-						__instance.MoveTowardsTarget(targetPos, __instance._investigateSpeed, __instance._acceleration);
-						return false;
+						var targetPos = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
+						__instance.RotateTowardsTarget(targetPos, __instance._turnSpeed, __instance._turnSpeed);
+						if (!__instance._turningInPlace)
+						{
+							__instance.MoveTowardsTarget(targetPos, __instance._investigateSpeed, __instance._acceleration);
+							return false;
+						}
+						break;
 					}
-					break;
-				}
 				case AnglerfishController.AnglerState.Chasing:
-				{
-					var velocity = qsbAngler.TargetVelocity;
-					var normalized = velocity.normalized;
-					var from = __instance._anglerBody.GetPosition() + __instance.transform.TransformDirection(__instance._mouthOffset) - qsbAngler.TargetTransform.position;
-					var magnitude = velocity.magnitude;
-					var num = Vector3.Angle(from, normalized);
-					var num2 = magnitude * 2f;
-					var d = num2;
-					if (num < 90f)
 					{
-						var magnitude2 = from.magnitude;
-						var num3 = magnitude2 * Mathf.Sin(num * 0.017453292f);
-						var num4 = magnitude2 * Mathf.Cos(num * 0.017453292f);
-						var magnitude3 = __instance._anglerBody.GetVelocity().magnitude;
-						var num5 = num4 / Mathf.Max(magnitude, 0.0001f);
-						var num6 = num3 / Mathf.Max(magnitude3, 0.0001f);
-						var num7 = num5 / num6;
-						if (num7 <= 1f)
+						var velocity = qsbAngler.TargetVelocity;
+						var normalized = velocity.normalized;
+						var from = __instance._anglerBody.GetPosition() + __instance.transform.TransformDirection(__instance._mouthOffset) - qsbAngler.TargetTransform.position;
+						var magnitude = velocity.magnitude;
+						var num = Vector3.Angle(from, normalized);
+						var num2 = magnitude * 2f;
+						var d = num2;
+						if (num < 90f)
 						{
-							var t = Mathf.Clamp01(num7);
-							d = Mathf.Lerp(num2, num4, t);
+							var magnitude2 = from.magnitude;
+							var num3 = magnitude2 * Mathf.Sin(num * 0.017453292f);
+							var num4 = magnitude2 * Mathf.Cos(num * 0.017453292f);
+							var magnitude3 = __instance._anglerBody.GetVelocity().magnitude;
+							var num5 = num4 / Mathf.Max(magnitude, 0.0001f);
+							var num6 = num3 / Mathf.Max(magnitude3, 0.0001f);
+							var num7 = num5 / num6;
+							if (num7 <= 1f)
+							{
+								var t = Mathf.Clamp01(num7);
+								d = Mathf.Lerp(num2, num4, t);
+							}
+							else
+							{
+								var num8 = Mathf.InverseLerp(1f, 4f, num7);
+								d = Mathf.Lerp(num4, 0f, num8 * num8);
+							}
 						}
-						else
+						__instance._targetPos = qsbAngler.TargetTransform.position + normalized * d;
+						__instance.RotateTowardsTarget(__instance._targetPos, __instance._turnSpeed, __instance._quickTurnSpeed);
+						if (!__instance._turningInPlace)
 						{
-							var num8 = Mathf.InverseLerp(1f, 4f, num7);
-							d = Mathf.Lerp(num4, 0f, num8 * num8);
+							__instance.MoveTowardsTarget(__instance._targetPos, __instance._chaseSpeed, __instance._acceleration);
+							return false;
 						}
+						break;
 					}
-					__instance._targetPos = qsbAngler.TargetTransform.position + normalized * d;
-					__instance.RotateTowardsTarget(__instance._targetPos, __instance._turnSpeed, __instance._quickTurnSpeed);
-					if (!__instance._turningInPlace)
-					{
-						__instance.MoveTowardsTarget(__instance._targetPos, __instance._chaseSpeed, __instance._acceleration);
-						return false;
-					}
-					break;
-				}
 				case AnglerfishController.AnglerState.Consuming:
 					__instance.ApplyDrag(1f);
 					return false;

@@ -40,7 +40,7 @@ namespace QSB.ElevatorSync.WorldObjects
 			if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 			{
 				SetDirection(isGoingUp);
-				
+
 				AttachedObject._attachPoint.AttachPlayer();
 
 				if (Locator.GetPlayerSuit().IsWearingSuit(true) && Locator.GetPlayerSuit().IsTrainingSuit())

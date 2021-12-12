@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.AuthoritySync
 {
@@ -72,7 +72,7 @@ namespace QSB.AuthoritySync
 			}
 
 			// DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - "
-				// + $"set authority to {id}");
+			// + $"set authority to {id}");
 		}
 
 		#endregion
