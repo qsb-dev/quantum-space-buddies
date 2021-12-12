@@ -28,6 +28,14 @@ namespace QSB.SaveSync.Events
 
 		public override void OnReceiveRemote(bool isHost, GameStateMessage message)
 		{
+			if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
+			{
+				DebugLog.ToConsole($"Error - Treid to handle GameStateEvent when not in TitleScreen!", OWML.Common.MessageType.Error);
+				return;
+			}
+
+			PlayerData.ResetGame();
+
 			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
 			gameSave.loopCount = message.LoopCount;
 			gameSave.knownFrequencies = message.KnownFrequencies;
