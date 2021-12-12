@@ -615,6 +615,8 @@ namespace QuantumUNET
 
 		public static void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => instance.m_SimpleServerSimple.RegisterHandler(msgType, handler);
 
+		public static void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) => instance.m_SimpleServerSimple.RegisterHandlerSafe(msgType, handler);
+
 		public static void UnregisterHandler(short msgType) => instance.m_SimpleServerSimple.UnregisterHandler(msgType);
 
 		public static void ClearHandlers() => instance.m_SimpleServerSimple.ClearHandlers();
@@ -1357,7 +1359,7 @@ namespace QuantumUNET
 
 		private readonly HashSet<int> m_ExternalConnections;
 
-		public readonly ServerSimpleWrapper m_SimpleServerSimple;
+		private readonly ServerSimpleWrapper m_SimpleServerSimple;
 
 		private float m_MaxDelay = 0.1f;
 

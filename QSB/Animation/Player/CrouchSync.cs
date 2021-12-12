@@ -44,7 +44,7 @@ namespace QSB.Animation.Player
 			}
 
 			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
-			CrouchVariableSyncer.ValueToSync.Value = jumpChargeFraction;
+			CrouchValue = jumpChargeFraction;
 		}
 
 		private void SyncRemoteCrouch()
