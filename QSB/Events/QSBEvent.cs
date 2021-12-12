@@ -35,26 +35,24 @@ namespace QSB.Events
 
 		public abstract bool RequireWorldObjectsReady { get; }
 
-		public void SendEvent(T message) => QSBCore.UnityEvents.RunWhen(
-			() => PlayerTransformSync.LocalInstance != null,
-			() =>
+		public void SendEvent(T message)
+		{
+			message.FromId = LocalPlayerId;
+			if (QSBEventManager.ForIdOverride != uint.MaxValue)
 			{
-				message.FromId = LocalPlayerId;
-				if (QSBEventManager.ForIdOverride != uint.MaxValue)
-				{
-					message.ForId = QSBEventManager.ForIdOverride;
-				}
-				if (message.OnlySendToHost)
-				{
-					message.ForId = 0;
-				}
-				new QSBEventRelay
-				{
-					To = message.ForId,
-					Event = this,
-					Message = message
-				}.Send();
-			});
+				message.ForId = QSBEventManager.ForIdOverride;
+			}
+			if (message.OnlySendToHost)
+			{
+				message.ForId = 0;
+			}
+			new QSBEventRelay
+			{
+				To = message.ForId,
+				Event = this,
+				Message = message
+			}.Send();
+		}
 
 		/// <summary>
 		/// Checks whether the message should be processed by the executing client.
