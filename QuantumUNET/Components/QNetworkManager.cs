@@ -37,8 +37,6 @@ namespace QuantumUNET.Components
 		private static readonly QAddPlayerMessage s_AddPlayerMessage = new();
 		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new();
 		private static readonly QErrorMessage s_ErrorMessage = new();
-		private static AsyncOperation s_LoadingSceneAsync;
-		private static QNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;
 
 		public bool customConfig { get; set; }
@@ -373,7 +371,6 @@ namespace QuantumUNET.Components
 		{
 			if (!(singleton == null))
 			{
-				s_ClientReadyConnection = null;
 				singleton.StopHost();
 				singleton = null;
 			}
