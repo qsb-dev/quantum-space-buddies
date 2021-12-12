@@ -6,8 +6,6 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
 		where T : OWItemSocket
 	{
-		public override void Init(T attachedObject, int id) { }
-
 		public virtual bool AcceptsItem(IQSBOWItem item)
 		{
 			var itemType = item.GetItemType();
@@ -19,9 +17,9 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 			=> AttachedObject.IsSocketOccupied();
 
 		public virtual bool PlaceIntoSocket(IQSBOWItem item)
-			=> AttachedObject.PlaceIntoSocket((OWItem)(item as IWorldObject).ReturnObject());
+			=> AttachedObject.PlaceIntoSocket((OWItem)item.ReturnObject());
 
 		public virtual IQSBOWItem RemoveFromSocket()
-			=> (IQSBOWItem)QSBWorldSync.GetWorldFromUnity(AttachedObject.RemoveFromSocket());
+			=> QSBWorldSync.GetWorldFromUnity<IQSBOWItem>(AttachedObject.RemoveFromSocket());
 	}
 }

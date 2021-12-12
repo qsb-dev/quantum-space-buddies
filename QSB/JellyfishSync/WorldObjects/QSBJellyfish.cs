@@ -11,12 +11,11 @@ namespace QSB.JellyfishSync.WorldObjects
 		public JellyfishTransformSync TransformSync;
 		private AlignWithTargetBody _alignWithTargetBody;
 
-		public override void Init(JellyfishController attachedObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
 			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
 
+			JellyfishTransformSync.Jellyfish.Add(AttachedObject);
 			if (QSBCore.IsHost)
 			{
 				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab));
@@ -39,6 +38,7 @@ namespace QSB.JellyfishSync.WorldObjects
 
 		public override void OnRemoval()
 		{
+			JellyfishTransformSync.Jellyfish.Remove(AttachedObject);
 			if (QSBCore.IsHost)
 			{
 				TransformSync.NetIdentity.UnregisterAuthQueue();

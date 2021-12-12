@@ -14,6 +14,7 @@ namespace QSB.Anglerfish.TransformSync
 		public override bool IsPlayerObject => false;
 
 		private QSBAngler _qsbAngler;
+		public static readonly List<AnglerfishController> Anglers = new();
 		private static readonly List<AnglerTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
@@ -35,7 +36,7 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void Init()
 		{
-			_qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(_instances.IndexOf(this));
+			_qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(Anglers[_instances.IndexOf(this)]);
 			_qsbAngler.TransformSync = this;
 
 			base.Init();
