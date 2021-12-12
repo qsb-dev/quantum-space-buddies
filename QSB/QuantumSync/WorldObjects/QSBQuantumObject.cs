@@ -173,7 +173,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
+			var id = ObjectId;
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
@@ -202,7 +202,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
+			var id = ObjectId;
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
 		}
