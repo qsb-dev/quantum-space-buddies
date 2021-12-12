@@ -26,14 +26,19 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
 			where TWorldObject : IWorldObject
 		{
-			var worldObjects = GetWorldObjects<TWorldObject>().ToList();
-			if (id < 0 || id >= worldObjects.Count)
+			if (id < 0 || id >= WorldObjects.Count)
 			{
-				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {worldObjects.Count}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {WorldObjects.Count}.", MessageType.Warning);
 				return default;
 			}
 
-			return worldObjects[id];
+			if (WorldObjects[id] is not TWorldObject worldObject)
+			{
+				DebugLog.ToConsole($"Error - {typeof(TWorldObject).Name} id {id} is actually {WorldObjects[id].GetType().Name}.", MessageType.Error);
+				return default;
+			}
+
+			return worldObject;
 		}
 
 		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
