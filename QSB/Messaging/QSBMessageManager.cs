@@ -82,31 +82,31 @@ namespace QSB.Messaging
 			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
+			if (PlayerTransformSync.LocalInstance == null)
+			{
+				DebugLog.ToConsole($"Warning - Tried to handle message of type <{msg.GetType().Name}> before localplayer was established.", MessageType.Warning);
+				return;
+			}
+
+			if (QSBPlayerManager.PlayerExists(msg.From))
+			{
+				var player = QSBPlayerManager.GetPlayer(msg.From);
+
+				if (!player.IsReady
+					&& player.PlayerId != QSBPlayerManager.LocalPlayerId
+					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+					&& msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
+				{
+					DebugLog.ToConsole($"Warning - Got message (type:{msg.GetType().Name}) from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+				}
+			}
+
 			try
 			{
 				if (!msg.ShouldReceive)
 				{
 					return;
-				}
-
-				if (PlayerTransformSync.LocalInstance == null)
-				{
-					DebugLog.ToConsole($"Warning - Tried to handle message of type <{msg.GetType().Name}> before localplayer was established.", MessageType.Warning);
-					return;
-				}
-
-				if (QSBPlayerManager.PlayerExists(msg.From))
-				{
-					var player = QSBPlayerManager.GetPlayer(msg.From);
-
-					if (!player.IsReady
-						&& player.PlayerId != QSBPlayerManager.LocalPlayerId
-						&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-						&& msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
-					{
-						DebugLog.ToConsole($"Warning - Got message (type:{msg.GetType().Name}) from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
-						QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
-					}
 				}
 
 				if (msg.From != QSBPlayerManager.LocalPlayerId)
