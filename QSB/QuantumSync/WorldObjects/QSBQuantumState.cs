@@ -6,12 +6,6 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public bool IsMeantToBeEnabled;
 
-		public override void Init(QuantumState state, int id)
-		{
-			ObjectId = id;
-			AttachedObject = state;
-		}
-
 		public void SetVisible(bool visible)
 		{
 			IsMeantToBeEnabled = visible;

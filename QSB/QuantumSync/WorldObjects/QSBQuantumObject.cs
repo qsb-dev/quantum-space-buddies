@@ -24,7 +24,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init(T attachedObject, int id)
+		public override void Init()
 		{
 			var debugBundle = QSBCore.DebugAssetBundle;
 			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
@@ -82,11 +82,13 @@ namespace QSB.QuantumSync.WorldObjects
 				}
 			}
 
+			StartDelayedReady();
 			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
 		}
 
 		private void LateInit()
 		{
+			FinishDelayedReady();
 			foreach (var shape in GetAttachedShapes())
 			{
 				shape.OnShapeActivated += OnEnable;
@@ -171,7 +173,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
+			var id = ObjectId;
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
@@ -200,7 +202,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
+			var id = ObjectId;
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
 		}

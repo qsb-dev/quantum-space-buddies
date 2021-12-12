@@ -5,14 +5,12 @@ namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBQuantumMoon : QSBQuantumObject<QuantumMoon>
 	{
-		public override void Init(QuantumMoon moonObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = moonObject;
 			ControllingPlayer = QSBCore.IsHost
 				? QSBPlayerManager.LocalPlayerId
 				: QSBPlayerManager.PlayerList.OrderBy(x => x.PlayerId).First().PlayerId;
-			base.Init(moonObject, id);
+			base.Init();
 		}
 	}
 }

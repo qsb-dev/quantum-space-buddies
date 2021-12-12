@@ -153,7 +153,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
+			var id = ownerOfThis.ObjectId;
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.StartConversation, id);
 			return true;
 		}
@@ -169,7 +169,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
+			var id = ownerOfThis.ObjectId;
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
 			return true;
 		}

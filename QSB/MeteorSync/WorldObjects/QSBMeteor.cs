@@ -5,12 +5,6 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBMeteor : WorldObject<MeteorController>
 	{
-		public override void Init(MeteorController attachedObject, int id)
-		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-		}
-
 		public static bool IsSpecialImpact(GameObject go) =>
 			go == Locator.GetPlayerCollider().gameObject || go == Locator.GetProbe()._anchor._collider.gameObject;
 
