@@ -277,7 +277,7 @@ namespace QSB
 
 		private void RemoveWorldObjects()
 		{
-			QSBWorldSync.RemoveWorldObjects<IWorldObject>();
+			QSBWorldSync.RemoveWorldObjects();
 			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
 			{
 				Destroy(platform);

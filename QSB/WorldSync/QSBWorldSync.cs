@@ -70,22 +70,18 @@ namespace QSB.WorldSync
 			where TWorldObject : IWorldObject
 			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
-		public static void RemoveWorldObjects<TWorldObject>()
-			where TWorldObject : IWorldObject
+		public static void RemoveWorldObjects()
 		{
 			if (WorldObjects.Count == 0)
 			{
-				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects of type {typeof(TWorldObject).Name}, but there are no WorldObjects!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects, but there are no WorldObjects!", MessageType.Warning);
 				return;
 			}
 
-			var itemsToRemove = WorldObjects.Where(x => x is TWorldObject);
-
-			foreach (var item in itemsToRemove)
+			foreach (var item in WorldObjects)
 			{
 				try
 				{
-					WorldObjectsToUnityObjects.Remove(item.ReturnObject());
 					item.OnRemoval();
 				}
 				catch (Exception e)
@@ -94,7 +90,8 @@ namespace QSB.WorldSync
 				}
 			}
 
-			WorldObjects.RemoveAll(x => x is TWorldObject);
+			WorldObjects.Clear();
+			WorldObjectsToUnityObjects.Clear();
 		}
 
 		public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
