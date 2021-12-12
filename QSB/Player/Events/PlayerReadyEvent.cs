@@ -49,6 +49,8 @@ namespace QSB.Player.Events
 					MessageType.Error);
 				return;
 			}
+
+			QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
 		}
 	}
 }
