@@ -123,21 +123,15 @@ namespace QSB.WorldSync
 			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
 			for (var id = 0; id < list.Count; id++)
 			{
-				var obj = CreateWorldObject<TWorldObject>();
-				obj.AttachedObject = list[id];
-				obj.ObjectId = id;
+				var obj = new TWorldObject
+				{
+					AttachedObject = list[id],
+					ObjectId = id
+				};
 				obj.Init();
+				WorldObjects.Add(obj);
 				WorldObjectsToUnityObjects.Add(list[id], obj);
 			}
-		}
-
-		private static TWorldObject CreateWorldObject<TWorldObject>()
-			where TWorldObject : IWorldObject, new()
-		{
-			var worldObject = new TWorldObject();
-			WorldObjects.Add(worldObject);
-
-			return worldObject;
 		}
 
 		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
