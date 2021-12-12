@@ -79,7 +79,7 @@ namespace QSB.WorldSync
 				}
 				catch (Exception ex)
 				{
-					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", OWML.Common.MessageType.Error);
+					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
 				}
 			}
 
