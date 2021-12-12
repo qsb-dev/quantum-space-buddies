@@ -66,7 +66,7 @@ namespace QSB.Syncs.Sectored
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s initial sector was null.", OWML.Common.MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s initial sector was null.", MessageType.Warning);
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (ReferenceSector != null && ReferenceSector.Transform != ReferenceTransform)
 				{
-					DebugLog.ToConsole($"Warning - {LogName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - {LogName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", MessageType.Warning);
 					SetReferenceTransform(ReferenceSector.Transform);
 				}
 
@@ -98,7 +98,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (sector == null)
 				{
-					DebugLog.ToConsole($"Error - {LogName} got sector of ID -1. (From waiting slot.)", OWML.Common.MessageType.Error);
+					DebugLog.ToConsole($"Error - {LogName} got sector of ID -1. (From waiting slot.)", MessageType.Error);
 					base.Update();
 					return;
 				}
@@ -150,7 +150,6 @@ namespace QSB.Syncs.Sectored
 				sectorId = reader.ReadInt32();
 				if (initialState && sectorId != -1)
 				{
-					DebugLog.DebugWrite($"{LogName} set waiting sector id:{sectorId}");
 					_sectorIdWaitingSlot = sectorId;
 				}
 
@@ -166,7 +165,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (sector == null)
 				{
-					DebugLog.ToConsole($"Error - {LogName} got sector of ID -1. (From deserializing transform.)", OWML.Common.MessageType.Error);
+					DebugLog.ToConsole($"Error - {LogName} got sector of ID -1. (From deserializing transform.)", MessageType.Error);
 					return;
 				}
 
@@ -185,7 +184,7 @@ namespace QSB.Syncs.Sectored
 				{
 					DebugLog.ToConsole($"Warning - Reference was null, but sector manager wasn't ready. " +
 						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}",
-						OWML.Common.MessageType.Warning);
+						MessageType.Warning);
 				}
 
 				DebugLog.DebugWrite($"{LogName} : Sector Manager not ready.");
@@ -209,7 +208,7 @@ namespace QSB.Syncs.Sectored
 					}
 					else
 					{
-						DebugLog.ToConsole($"Error - No closest sector found to {LogName}!", OWML.Common.MessageType.Error);
+						DebugLog.ToConsole($"Error - No closest sector found to {LogName}!", MessageType.Error);
 						return false;
 					}
 				}
