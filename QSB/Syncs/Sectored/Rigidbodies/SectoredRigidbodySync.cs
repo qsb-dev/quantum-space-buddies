@@ -123,7 +123,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return true;
 			}
 
-			if (transform.position == Vector3.zero)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
 				return false;
 			}

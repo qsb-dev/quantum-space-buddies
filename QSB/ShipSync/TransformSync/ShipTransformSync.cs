@@ -32,7 +32,7 @@ namespace QSB.ShipSync.TransformSync
 
 		private void ForcePosition()
 		{
-			if (ReferenceTransform == null)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
 				return;
 			}
@@ -67,9 +67,9 @@ namespace QSB.ShipSync.TransformSync
 				ForcePosition();
 			}
 
-			if (ReferenceTransform == null)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				return true;
+				return false;
 			}
 
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
@@ -99,7 +99,7 @@ namespace QSB.ShipSync.TransformSync
 			rigidbody._currentVelocity = newVelocity;
 		}
 
-		public override bool UseInterpolation => true;
+		public override bool UseInterpolation => false;
 		protected override float DistanceLeeway => 20f;
 	}
 }
