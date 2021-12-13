@@ -60,7 +60,7 @@ namespace QSB.Syncs.Unsectored.Transforms
 			if (UseInterpolation)
 			{
 				AttachedObject.position = SmartSmoothDamp(AttachedObject.position, targetPos);
-				AttachedObject.rotation = QuaternionHelper.SmoothDamp(AttachedObject.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				AttachedObject.rotation = SmartSmoothDamp(AttachedObject.rotation, targetRot);
 			}
 			else
 			{

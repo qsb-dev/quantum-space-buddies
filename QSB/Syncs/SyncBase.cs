@@ -104,8 +104,8 @@ namespace QSB.Syncs
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
-		protected Vector3 _positionSmoothVelocity;
-		protected Quaternion _rotationSmoothVelocity;
+		private Vector3 _positionSmoothVelocity;
+		private Quaternion _rotationSmoothVelocity;
 		protected bool _isInitialized;
 
 		protected abstract T SetAttachedObject();
@@ -244,6 +244,11 @@ namespace QSB.Syncs
 
 			_previousDistance = distance;
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+		}
+
+		protected Quaternion SmartSmoothDamp(Quaternion currentRotation, Quaternion targetRotation)
+		{
+			return QuaternionHelper.SmoothDamp(currentRotation, targetRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
 		public void SetReferenceTransform(Transform referenceTransform)

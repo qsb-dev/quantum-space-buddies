@@ -106,7 +106,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			if (UseInterpolation)
 			{
 				positionToSet = SmartSmoothDamp(AttachedObject.GetPosition(), targetPos);
-				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.GetRotation(), targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				rotationToSet = SmartSmoothDamp(AttachedObject.GetRotation(), targetRot);
 			}
 
 			var hasMoved = CustomHasMoved(

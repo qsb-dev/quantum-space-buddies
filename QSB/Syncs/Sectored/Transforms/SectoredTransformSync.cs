@@ -86,7 +86,7 @@ namespace QSB.Syncs.Sectored.Transforms
 				if (UseInterpolation)
 				{
 					AttachedObject.localPosition = SmartSmoothDamp(AttachedObject.localPosition, targetPos);
-					AttachedObject.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+					AttachedObject.localRotation = SmartSmoothDamp(AttachedObject.localRotation, targetRot);
 				}
 				else
 				{
