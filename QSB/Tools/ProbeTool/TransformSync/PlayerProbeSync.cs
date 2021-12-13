@@ -21,7 +21,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 		public override void OnStartAuthority() => LocalInstance = this;
 
-		protected override Component InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe));
 
@@ -43,7 +43,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return body;
 		}
 
-		protected override Component InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var probe = Locator.GetProbe().transform;
 

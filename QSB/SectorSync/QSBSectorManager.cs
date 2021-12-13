@@ -18,7 +18,7 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<BaseSectoredSync> SectoredSyncs = new();
+		public List<IBaseSectoredSync> SectoredSyncs = new();
 
 		public void Invoke()
 		{
@@ -29,13 +29,13 @@ namespace QSB.SectorSync
 
 			foreach (var sync in SectoredSyncs)
 			{
-				if (sync.AttachedObject == null)
+				if (sync.ReturnObject() == null)
 				{
 					continue;
 				}
 
 				if (sync.HasAuthority
-					&& sync.AttachedObject.gameObject.activeInHierarchy
+					&& sync.ReturnObject().gameObject.activeInHierarchy
 					&& sync.IsReady
 					&& sync.SectorSync.IsReady)
 				{
@@ -74,9 +74,9 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(BaseSectoredSync transformSync)
+		private void CheckTransformSyncSector(IBaseSectoredSync transformSync)
 		{
-			var attachedObject = transformSync.AttachedObject;
+			var attachedObject = transformSync.ReturnObject();
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
 			if (closestSector == default(QSBSector))
 			{

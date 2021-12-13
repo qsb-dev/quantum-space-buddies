@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Transforms
 {
-	public abstract class SectoredTransformSync : BaseSectoredSync
+	public abstract class SectoredTransformSync : BaseSectoredSync<Transform>
 	{
 		public override bool ShouldReparentAttachedObject => true;
 
-		protected abstract Component InitLocalTransform();
-		protected abstract Component InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
-		protected override Component SetAttachedObject()
+		protected override Transform SetAttachedObject()
 			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)

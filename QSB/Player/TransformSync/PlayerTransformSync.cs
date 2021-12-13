@@ -96,7 +96,7 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
-		protected override Component InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
 
@@ -127,7 +127,7 @@ namespace QSB.Player.TransformSync
 			return player;
 		}
 
-		protected override Component InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			/*
 			 * CREATE PLAYER STRUCTURE

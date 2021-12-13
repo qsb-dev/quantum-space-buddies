@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.Syncs.Unsectored.Rigidbodies
 {
-	public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
+	public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync<OWRigidbody>
 	{
 		public const float PositionMovedThreshold = 0.05f;
 		public const float AngleRotatedThreshold = 0.05f;
@@ -31,7 +31,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 		protected Vector3 _localPrevAngularVelocity;
 		protected abstract OWRigidbody GetRigidbody();
 
-		protected override Component SetAttachedObject()
+		protected override OWRigidbody SetAttachedObject()
 			=> GetRigidbody();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)

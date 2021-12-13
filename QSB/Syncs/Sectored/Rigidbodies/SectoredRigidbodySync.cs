@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Rigidbodies
 {
-	public abstract class SectoredRigidbodySync : BaseSectoredSync
+	public abstract class SectoredRigidbodySync : BaseSectoredSync<OWRigidbody>
 	{
 		public override bool ShouldReparentAttachedObject => false;
 
@@ -35,7 +35,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected abstract OWRigidbody GetRigidbody();
 
-		protected override Component SetAttachedObject()
+		protected override OWRigidbody SetAttachedObject()
 			=> GetRigidbody();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)

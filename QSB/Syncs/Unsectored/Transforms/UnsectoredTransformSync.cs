@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace QSB.Syncs.Unsectored.Transforms
 {
-	public abstract class UnsectoredTransformSync : BaseUnsectoredSync
+	public abstract class UnsectoredTransformSync : BaseUnsectoredSync<Transform>
 	{
-		protected abstract Component InitLocalTransform();
-		protected abstract Component InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
-		protected override Component SetAttachedObject()
+		protected override Transform SetAttachedObject()
 			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)

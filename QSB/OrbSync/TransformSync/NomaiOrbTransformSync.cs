@@ -72,8 +72,8 @@ namespace QSB.OrbSync.TransformSync
 			return QSBWorldSync.OldOrbList[_index].transform;
 		}
 
-		protected override Component InitLocalTransform() => GetTransform();
-		protected override Component InitRemoteTransform() => GetTransform();
+		protected override Transform InitLocalTransform() => GetTransform();
+		protected override Transform InitRemoteTransform() => GetTransform();
 
 		protected override float DistanceLeeway => 1f;
 		public override bool IsReady => WorldObjectManager.AllObjectsReady;

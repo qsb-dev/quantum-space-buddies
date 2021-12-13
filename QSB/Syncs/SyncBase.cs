@@ -5,7 +5,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace QSB.Syncs
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class SyncBase : QNetworkTransform
+	public abstract class SyncBase<T> : QNetworkTransform where T: Component
 	{
 		public uint AttachedNetId
 		{
@@ -55,8 +54,8 @@ namespace QSB.Syncs
 
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
-		private bool _baseIsReady 
-		{ 
+		private bool _baseIsReady
+		{
 			get
 			{
 				if (NetId.Value is uint.MaxValue or 0U)
@@ -98,7 +97,7 @@ namespace QSB.Syncs
 		public abstract bool ShouldReparentAttachedObject { get; }
 		public abstract bool IsPlayerObject { get;  }
 
-		public Component AttachedObject { get; set; }
+		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
 		public string LogName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
@@ -109,7 +108,7 @@ namespace QSB.Syncs
 		protected Quaternion _rotationSmoothVelocity;
 		protected bool _isInitialized;
 
-		protected abstract Component SetAttachedObject();
+		protected abstract T SetAttachedObject();
 		protected abstract bool UpdateTransform();
 
 		public virtual void Start()
