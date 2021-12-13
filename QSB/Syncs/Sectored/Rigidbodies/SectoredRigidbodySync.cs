@@ -136,8 +136,10 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 			if (UseInterpolation)
 			{
-				positionToSet = SmartSmoothDamp(AttachedObject.GetPosition(), targetPos);
-				rotationToSet = SmartSmoothDamp(AttachedObject.GetRotation(), targetRot);
+				var relPos = ReferenceTransform.EncodePos(AttachedObject.GetPosition());
+				var relRot = ReferenceTransform.EncodeRot(AttachedObject.GetRotation());
+				positionToSet = ReferenceTransform.DecodePos(SmartSmoothDamp(relPos, transform.position));
+				rotationToSet = ReferenceTransform.DecodeRot(SmartSmoothDamp(relRot, transform.rotation));
 			}
 
 			var hasMoved = CustomHasMoved(
