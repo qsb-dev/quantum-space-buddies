@@ -40,8 +40,8 @@ namespace QSB.ShipSync.TransformSync
 			var targetPos = ReferenceTransform.DecodePos(transform.position);
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 
-			((ShipBody)AttachedObject).SetPosition(targetPos);
-			((ShipBody)AttachedObject).SetRotation(targetRot);
+			AttachedObject.SetPosition(targetPos);
+			AttachedObject.SetRotation(targetRot);
 		}
 
 		protected override bool UpdateTransform()
@@ -77,8 +77,8 @@ namespace QSB.ShipSync.TransformSync
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
 
-			SetVelocity((ShipBody)AttachedObject, targetVelocity);
-			((ShipBody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+			SetVelocity(AttachedObject, targetVelocity);
+			AttachedObject.SetAngularVelocity(targetAngularVelocity);
 
 			return true;
 		}

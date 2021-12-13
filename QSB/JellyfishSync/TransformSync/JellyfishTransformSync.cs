@@ -92,18 +92,6 @@ namespace QSB.JellyfishSync.TransformSync
 
 			_shouldUpdate = false;
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-
-			var positionToSet = targetPos;
-			var rotationToSet = targetRot;
-
-			if (UseInterpolation)
-			{
-				positionToSet = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
-			}
-
 			var hasMoved = CustomHasMoved(
 				transform.position,
 				_localPrevPosition,
@@ -124,14 +112,11 @@ namespace QSB.JellyfishSync.TransformSync
 				return true;
 			}
 
-			((OWRigidbody)AttachedObject).SetPosition(positionToSet);
-			((OWRigidbody)AttachedObject).SetRotation(rotationToSet);
-
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
-
-			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
-			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+			var pos = ReferenceTransform.DecodePos(transform.position);
+			AttachedObject.SetPosition(pos);
+			AttachedObject.SetRotation(ReferenceTransform.DecodeRot(transform.rotation));
+			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, pos));
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity));
 
 			return true;
 		}
@@ -143,7 +128,7 @@ namespace QSB.JellyfishSync.TransformSync
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null
-				|| ((OWRigidbody)AttachedObject).IsSuspended())
+				|| AttachedObject.IsSuspended())
 			{
 				return;
 			}

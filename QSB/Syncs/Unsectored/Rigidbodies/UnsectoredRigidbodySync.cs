@@ -83,10 +83,10 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 		protected void SetValuesToSync()
 		{
-			transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-			transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
-			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeVel(((OWRigidbody)AttachedObject).GetVelocity(), AttachedObject.transform.position);
-			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(((OWRigidbody)AttachedObject).GetAngularVelocity());
+			transform.position = ReferenceTransform.EncodePos(AttachedObject.GetPosition());
+			transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.GetRotation());
+			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeVel(AttachedObject.GetVelocity(), AttachedObject.GetPosition());
+			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(AttachedObject.GetAngularVelocity());
 		}
 
 		protected override bool UpdateTransform()
@@ -105,8 +105,8 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 			if (UseInterpolation)
 			{
-				positionToSet = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				positionToSet = SmartSmoothDamp(AttachedObject.GetPosition(), targetPos);
+				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.GetRotation(), targetRot, ref _rotationSmoothVelocity, SmoothTime);
 			}
 
 			var hasMoved = CustomHasMoved(
@@ -129,14 +129,14 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 				return true;
 			}
 
-			((OWRigidbody)AttachedObject).MoveToPosition(positionToSet);
-			((OWRigidbody)AttachedObject).MoveToRotation(rotationToSet);
+			AttachedObject.MoveToPosition(positionToSet);
+			AttachedObject.MoveToRotation(rotationToSet);
 
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
 
-			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
-			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+			AttachedObject.SetVelocity(targetVelocity);
+			AttachedObject.SetAngularVelocity(targetAngularVelocity);
 
 			return true;
 		}

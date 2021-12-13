@@ -67,8 +67,8 @@ namespace QSB.Syncs.Sectored.Transforms
 			{
 				if (ReferenceTransform != null)
 				{
-					transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-					transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+					transform.position = ReferenceTransform.EncodePos(AttachedObject.position);
+					transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.rotation);
 				}
 				else
 				{
@@ -85,13 +85,13 @@ namespace QSB.Syncs.Sectored.Transforms
 			{
 				if (UseInterpolation)
 				{
-					AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
-					AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+					AttachedObject.localPosition = SmartSmoothDamp(AttachedObject.localPosition, targetPos);
+					AttachedObject.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
 				}
 				else
 				{
-					AttachedObject.transform.localPosition = targetPos;
-					AttachedObject.transform.localRotation = targetRot;
+					AttachedObject.localPosition = targetPos;
+					AttachedObject.localRotation = targetRot;
 				}
 			}
 

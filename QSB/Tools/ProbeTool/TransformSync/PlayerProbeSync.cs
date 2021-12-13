@@ -91,8 +91,8 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 					if (ReferenceTransform != null)
 					{
-						transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-						transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+						transform.position = ReferenceTransform.EncodePos(AttachedObject.position);
+						transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.rotation);
 					}
 					else
 					{

@@ -50,8 +50,8 @@ namespace QSB.Syncs.Unsectored.Transforms
 		{
 			if (HasAuthority)
 			{
-				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.EncodePos(AttachedObject.position);
+				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.rotation);
 				return true;
 			}
 
@@ -59,13 +59,13 @@ namespace QSB.Syncs.Unsectored.Transforms
 			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 			if (UseInterpolation)
 			{
-				AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-				AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				AttachedObject.position = SmartSmoothDamp(AttachedObject.position, targetPos);
+				AttachedObject.rotation = QuaternionHelper.SmoothDamp(AttachedObject.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
 			}
 			else
 			{
-				AttachedObject.transform.position = targetPos;
-				AttachedObject.transform.rotation = targetRot;
+				AttachedObject.position = targetPos;
+				AttachedObject.rotation = targetRot;
 			}
 
 			return true;
