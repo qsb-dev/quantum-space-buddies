@@ -77,6 +77,6 @@ namespace QSB.OrbSync.TransformSync
 
 		protected override float DistanceLeeway => 1f;
 		public override bool IsReady => WorldObjectManager.AllObjectsReady;
-		public override bool UseInterpolation => false;
+		public override bool UseInterpolation => true;
 	}
 }
