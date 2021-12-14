@@ -112,11 +112,11 @@ namespace QSB.JellyfishSync.TransformSync
 				return true;
 			}
 
-			var pos = ReferenceTransform.DecodePos(transform.position);
+			var pos = ReferenceTransform.FromRelPos(transform.position);
 			AttachedObject.SetPosition(pos);
-			AttachedObject.SetRotation(ReferenceTransform.DecodeRot(transform.rotation));
-			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, pos));
-			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity));
+			AttachedObject.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
 			return true;
 		}

@@ -1,6 +1,7 @@
 using QSB.SectorSync;
 using QSB.Syncs;
 using QSB.Syncs.Sectored.Rigidbodies;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -37,8 +38,8 @@ namespace QSB.ShipSync.TransformSync
 				return;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
+			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
 			AttachedObject.SetPosition(targetPos);
 			AttachedObject.SetRotation(targetRot);
@@ -72,10 +73,10 @@ namespace QSB.ShipSync.TransformSync
 				return false;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
 
 			SetVelocity(AttachedObject, targetVelocity);
 			AttachedObject.SetAngularVelocity(targetAngularVelocity);

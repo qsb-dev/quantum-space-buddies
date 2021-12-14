@@ -279,8 +279,8 @@ namespace QSB.Syncs
 
 			if (HasAuthority)
 			{
-				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
 			}
 		}
 
@@ -312,8 +312,8 @@ namespace QSB.Syncs
 			 * Cyan Line = Connection between Green/Yellow cube and reference transform
 			 */
 
-			Popcron.Gizmos.Cube(ReferenceTransform.DecodePos(transform.position), ReferenceTransform.DecodeRot(transform.rotation), Vector3.one / 4, Color.red);
-			Popcron.Gizmos.Line(ReferenceTransform.DecodePos(transform.position), AttachedObject.transform.position, Color.red);
+			Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 4, Color.red);
+			Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedObject.transform.position, Color.red);
 			var color = HasMoved() ? Color.green : Color.yellow;
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 4, color);
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 4, Color.magenta);

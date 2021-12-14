@@ -48,8 +48,8 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 		protected override bool UpdateTransform()
 		{
-			var relPos = ReferenceTransform.EncodePos(AttachedObject.position);
-			var relRot = ReferenceTransform.EncodeRot(AttachedObject.rotation);
+			var relPos = ReferenceTransform.ToRelPos(AttachedObject.position);
+			var relRot = ReferenceTransform.ToRelRot(AttachedObject.rotation);
 			if (HasAuthority)
 			{
 				transform.position = relPos;
@@ -59,13 +59,13 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 			if (UseInterpolation)
 			{
-				AttachedObject.position = ReferenceTransform.DecodePos(SmartSmoothDamp(relPos, transform.position));
-				AttachedObject.rotation = ReferenceTransform.DecodeRot(SmartSmoothDamp(relRot, transform.rotation));
+				AttachedObject.position = ReferenceTransform.FromRelPos(SmartSmoothDamp(relPos, transform.position));
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmartSmoothDamp(relRot, transform.rotation));
 			}
 			else
 			{
-				AttachedObject.position = ReferenceTransform.DecodePos(transform.position);
-				AttachedObject.rotation = ReferenceTransform.DecodeRot(transform.rotation);
+				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
 
 			return true;

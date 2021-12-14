@@ -5,6 +5,7 @@ using QSB.ShipSync.TransformSync;
 using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Tools.ProbeTool.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
@@ -129,11 +130,11 @@ namespace QSB.TornadoSync.TransformSync
 				QueueMove(child);
 			}
 
-			var pos = ReferenceTransform.DecodePos(transform.position);
+			var pos = ReferenceTransform.FromRelPos(transform.position);
 			AttachedObject.SetPosition(pos);
-			AttachedObject.SetRotation(ReferenceTransform.DecodeRot(transform.rotation));
-			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, pos));
-			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity));
+			AttachedObject.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
 			Move();
 
@@ -169,10 +170,10 @@ namespace QSB.TornadoSync.TransformSync
 			_toMove.Add(new MoveData
 			{
 				Child = child,
-				RelPos = AttachedObject.transform.EncodePos(pos),
-				RelRot = AttachedObject.transform.EncodeRot(child.GetRotation()),
-				RelVel = AttachedObject.EncodeVel(child.GetVelocity(), pos),
-				RelAngVel = AttachedObject.EncodeAngVel(child.GetAngularVelocity())
+				RelPos = AttachedObject.transform.ToRelPos(pos),
+				RelRot = AttachedObject.transform.ToRelRot(child.GetRotation()),
+				RelVel = AttachedObject.ToRelVel(child.GetVelocity(), pos),
+				RelAngVel = AttachedObject.ToRelAngVel(child.GetAngularVelocity())
 			});
 		}
 
@@ -180,11 +181,11 @@ namespace QSB.TornadoSync.TransformSync
 		{
 			foreach (var data in _toMove)
 			{
-				var pos = AttachedObject.transform.DecodePos(data.RelPos);
+				var pos = AttachedObject.transform.FromRelPos(data.RelPos);
 				data.Child.SetPosition(pos);
-				data.Child.SetRotation(AttachedObject.transform.DecodeRot(data.RelRot));
-				data.Child.SetVelocity(AttachedObject.DecodeVel(data.RelVel, pos));
-				data.Child.SetAngularVelocity(AttachedObject.DecodeAngVel(data.RelAngVel));
+				data.Child.SetRotation(AttachedObject.transform.FromRelRot(data.RelRot));
+				data.Child.SetVelocity(AttachedObject.FromRelVel(data.RelVel, pos));
+				data.Child.SetAngularVelocity(AttachedObject.FromRelAngVel(data.RelAngVel));
 			}
 			_toMove.Clear();
 		}
