@@ -127,5 +127,21 @@ namespace QSB.Animation.Patches
 
 			return false;
 		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.OnPlayerJump))]
+		public static bool OnPlayerJumpReplacement(PlayerAnimController __instance)
+		{
+			__instance._ungroundedTime = Time.time;
+			if (!__instance.isActiveAndEnabled)
+			{
+				return false;
+			}
+
+			__instance._animator.SetTrigger("Jump");
+			var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
+			QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "Jump");
+			return false;
+		}
 	}
 }
