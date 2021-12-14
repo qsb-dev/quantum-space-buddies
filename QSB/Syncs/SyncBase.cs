@@ -302,7 +302,7 @@ namespace QSB.Syncs
 			}
 
 			/* Red Cube = Where visible object should be
-			 * Green = Where visible object is
+			 * Green cube = Where visible object is
 			 * Magenta cube = Reference transform
 			 * Red Line = Connection between Red Cube and Green Cube
 			 * Cyan Line = Connection between Green cube and reference transform
@@ -310,8 +310,11 @@ namespace QSB.Syncs
 
 			Popcron.Gizmos.Cube(ReferenceTransform.DecodePos(transform.position), ReferenceTransform.DecodeRot(transform.rotation), Vector3.one / 8, Color.red);
 			Popcron.Gizmos.Line(ReferenceTransform.DecodePos(transform.position), AttachedObject.transform.position, Color.red);
+
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 6, Color.green);
+
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
+
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}
