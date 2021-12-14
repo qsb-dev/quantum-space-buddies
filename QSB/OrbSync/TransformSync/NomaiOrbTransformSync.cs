@@ -44,7 +44,6 @@ namespace QSB.OrbSync.TransformSync
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
-				Instances[_index] = null;
 			}
 
 			SetReferenceTransform(originalParent);

@@ -236,16 +236,11 @@ namespace QSB
 			// revert authority for orbs
 			foreach (var item in NomaiOrbTransformSync.Instances)
 			{
-				if (!item)
-				{
-					DebugLog.ToConsole($"Warning - null transform sync in NomaiOrbTransformSync.OrbTransformSyncs!", MessageType.Warning);
-					continue;
-				}
-
 				var identity = item.NetIdentity;
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+
 					item.Orb.CancelDrag();
 				}
 			}

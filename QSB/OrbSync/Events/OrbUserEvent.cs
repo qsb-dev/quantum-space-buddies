@@ -41,8 +41,8 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			var orbSync = NomaiOrbTransformSync.Instances.Where(x => x != null)
-				.FirstOrDefault(x => x.AttachedObject == OrbManager.Orbs[message.ObjectId].transform);
+			var orb = OrbManager.Orbs[message.ObjectId];
+			var orbSync = NomaiOrbTransformSync.Instances.FirstOrDefault(x => x.AttachedObject == orb.transform);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
@@ -56,22 +56,22 @@ namespace QSB.OrbSync.Events
 					orbSync.NetIdentity.SetAuthority(message.FromId);
 				}
 
-				if (!isLocal && !orbSync.Orb._isBeingDragged)
+				if (!isLocal && !orb._isBeingDragged)
 				{
-					orbSync.Orb._isBeingDragged = true;
-					orbSync.Orb._interactibleCollider.enabled = false;
-					if (orbSync.Orb._orbAudio != null)
+					orb._isBeingDragged = true;
+					orb._interactibleCollider.enabled = false;
+					if (orb._orbAudio != null)
 					{
-						orbSync.Orb._orbAudio.PlayStartDragClip();
+						orb._orbAudio.PlayStartDragClip();
 					}
 				}
 			}
 			else
 			{
-				if (!isLocal && orbSync.Orb._isBeingDragged)
+				if (!isLocal && orb._isBeingDragged)
 				{
-					orbSync.Orb._isBeingDragged = false;
-					orbSync.Orb._interactibleCollider.enabled = true;
+					orb._isBeingDragged = false;
+					orb._interactibleCollider.enabled = true;
 				}
 			}
 		}

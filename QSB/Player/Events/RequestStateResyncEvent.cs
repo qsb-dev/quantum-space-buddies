@@ -80,7 +80,7 @@ namespace QSB.Player.Events
 				// SPECIAL CASE: whoever owns the orbs sends their drag state
 				foreach (var sync in NomaiOrbTransformSync.Instances)
 				{
-					if (sync && sync.HasAuthority && sync.Orb)
+					if (sync.HasAuthority && sync.Orb)
 					{
 						QSBEventManager.FireEvent(EventNames.QSBOrbUser, OrbManager.Orbs.IndexOf(sync.Orb), sync.Orb._isBeingDragged);
 					}

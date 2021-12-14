@@ -51,7 +51,7 @@ namespace QSB.OrbSync
 				return;
 			}
 
-			var orbSync = NomaiOrbTransformSync.Instances.Where(x => x != null).FirstOrDefault(x => x.AttachedObject == affectingOrb.transform);
+			var orbSync = NomaiOrbTransformSync.Instances.FirstOrDefault(x => x.AttachedObject == affectingOrb.transform);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
