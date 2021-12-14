@@ -55,7 +55,6 @@ namespace QSB.OrbSync.Events
 				{
 					orbSync.NetIdentity.SetAuthority(message.FromId);
 				}
-				orbSync.enabled = true;
 
 				if (!isLocal && !orbSync.Orb._isBeingDragged)
 				{
@@ -75,8 +74,6 @@ namespace QSB.OrbSync.Events
 					orbSync.Orb._interactibleCollider.enabled = true;
 				}
 			}
-
-			DebugLog.DebugWrite($"orb {message.ObjectId} drag {message.State}");
 		}
 	}
 }
