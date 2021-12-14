@@ -76,13 +76,14 @@ namespace QSB.OrbSync.TransformSync
 
 		protected override bool UpdateTransform()
 		{
-			if (HasAuthority)
+			if (!base.UpdateTransform())
 			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
+				return false;
 			}
-			else
+
+			if (!HasAuthority)
 			{
-				Orb.SetTargetPosition(ReferenceTransform.FromRelPos(transform.position));
+				Orb.SetTargetPosition(AttachedObject.position);
 			}
 
 			return true;
@@ -91,7 +92,8 @@ namespace QSB.OrbSync.TransformSync
 		protected override Transform InitLocalTransform() => GetTransform();
 		protected override Transform InitRemoteTransform() => GetTransform();
 
+		protected override float DistanceLeeway => 1f;
 		public override bool IsReady => WorldObjectManager.AllObjectsReady;
-		public override bool UseInterpolation => false;
+		public override bool UseInterpolation => true;
 	}
 }

@@ -1,5 +1,4 @@
 using QSB.SectorSync;
-using QSB.Syncs;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
