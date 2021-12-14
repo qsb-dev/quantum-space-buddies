@@ -1,10 +1,8 @@
-﻿using System;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
-using QSB.WorldSync;
 using QSB.WorldSync.Events;
 using System.Linq;
 
@@ -26,58 +24,21 @@ namespace QSB.OrbSync.Events
 			State = isDragging
 		};
 
-		public override void OnReceiveLocal(bool isServer, BoolWorldObjectMessage message)
-		{
-			var orbSync = GetOrbSync(message);
-			if (orbSync == null)
-			{
-				return;
-			}
+		public override void OnReceiveLocal(bool isServer, BoolWorldObjectMessage message) => OnReceive(true, isServer, message);
+		public override void OnReceiveRemote(bool isServer, BoolWorldObjectMessage message) => OnReceive(false, isServer, message);
 
-			if (message.State)
-			{
-				if (isServer)
-				{
-					orbSync.NetIdentity.SetAuthority(message.FromId);
-				}
-				orbSync.enabled = true;
-
-				orbSync.OtherDragging = false;
-			}
-		}
-
-		public override void OnReceiveRemote(bool isServer, BoolWorldObjectMessage message)
-		{
-			var orbSync = GetOrbSync(message);
-			if (orbSync == null)
-			{
-				return;
-			}
-
-			if (message.State)
-			{
-				if (isServer)
-				{
-					orbSync.NetIdentity.SetAuthority(message.FromId);
-				}
-				orbSync.enabled = true;
-			}
-
-			orbSync.OtherDragging = message.State;
-		}
-
-		private static NomaiOrbTransformSync GetOrbSync(WorldObjectMessage message)
+		private static void OnReceive(bool isLocal, bool isServer, BoolWorldObjectMessage message)
 		{
 			if (NomaiOrbTransformSync.Instances.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty. (ID {message.ObjectId})", MessageType.Error);
-				return null;
+				return;
 			}
 
 			if (OrbManager.Orbs.Count == 0)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList is empty. (ID {message.ObjectId})", MessageType.Error);
-				return null;
+				return;
 			}
 
 			var orbSync = NomaiOrbTransformSync.Instances.Where(x => x != null)
@@ -85,8 +46,37 @@ namespace QSB.OrbSync.Events
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
+				return;
 			}
-			return orbSync;
+
+			if (message.State)
+			{
+				if (isServer)
+				{
+					orbSync.NetIdentity.SetAuthority(message.FromId);
+				}
+				orbSync.enabled = true;
+
+				if (!isLocal)
+				{
+					orbSync.Orb._isBeingDragged = true;
+					orbSync.Orb._interactibleCollider.enabled = false;
+					if (orbSync.Orb._orbAudio != null)
+					{
+						orbSync.Orb._orbAudio.PlayStartDragClip();
+					}
+				}
+			}
+			else
+			{
+				if (!isLocal)
+				{
+					orbSync.Orb._isBeingDragged = false;
+					orbSync.Orb._interactibleCollider.enabled = true;
+				}
+			}
+
+			DebugLog.DebugWrite($"orb {message.ObjectId} drag {message.State}");
 		}
 	}
 }

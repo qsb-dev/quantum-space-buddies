@@ -13,7 +13,7 @@ namespace QSB.OrbSync.TransformSync
 
 		public override bool IsPlayerObject => false;
 
-		public bool OtherDragging;
+		public NomaiInterfaceOrb Orb;
 		private int _index => Instances.IndexOf(this);
 
 		public override void OnStartClient() => Instances.Add(this);
@@ -48,6 +48,7 @@ namespace QSB.OrbSync.TransformSync
 			}
 
 			SetReferenceTransform(originalParent);
+			Orb = AttachedObject.GetRequiredComponent<NomaiInterfaceOrb>();
 		}
 
 		private Transform GetTransform()
@@ -71,6 +72,21 @@ namespace QSB.OrbSync.TransformSync
 			}
 
 			return OrbManager.Orbs[_index].transform;
+		}
+
+		protected override bool UpdateTransform()
+		{
+			if (!base.UpdateTransform())
+			{
+				return false;
+			}
+
+			if (!HasAuthority)
+			{
+				Orb.SetTargetPosition(AttachedObject.position);
+			}
+
+			return true;
 		}
 
 		protected override Transform InitLocalTransform() => GetTransform();
