@@ -8,6 +8,7 @@ using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
+using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Utility
