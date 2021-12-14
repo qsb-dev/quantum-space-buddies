@@ -15,7 +15,9 @@ namespace QSB.Tools.FlashlightTool
 			var oldComponent = flashlightRoot.GetComponent<Flashlight>();
 			var component = flashlightRoot.AddComponent<QSBFlashlight>();
 
+			component.Player = player;
 			component.Init(oldComponent);
+			
 			oldComponent.enabled = false;
 
 			flashlightRoot.transform.parent = player.CameraBody.transform;

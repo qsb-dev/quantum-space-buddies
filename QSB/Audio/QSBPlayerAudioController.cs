@@ -37,6 +37,12 @@ namespace QSB.Audio
 		public void PlayUnequipTool()
 			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorUnequip, 1f);
 
+		public void PlayTurnOnFlashlight()
+			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOn, 1f);
+
+		public void PlayTurnOffFlashlight()
+			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOff, 1f);
+
 		private OWAudioSource CreateBaseAudio(
 			string name,
 			bool loop,
