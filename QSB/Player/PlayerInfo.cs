@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
+using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
@@ -130,6 +131,7 @@ namespace QSB.Player
 		public bool SignalscopeEquipped { get; set; }
 		public bool TranslatorEquipped { get; set; }
 		public bool ProbeActive { get; set; }
+		public QSBPlayerAudioController AudioController { get; set; }
 
 		// Local only
 		public PlayerProbeLauncher LocalProbeLauncher
