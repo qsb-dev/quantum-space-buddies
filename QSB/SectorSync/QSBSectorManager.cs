@@ -76,8 +76,7 @@ namespace QSB.SectorSync
 
 		private void CheckTransformSyncSector(IBaseSectoredSync transformSync)
 		{
-			var attachedObject = transformSync.ReturnObject();
-			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
+			var closestSector = transformSync.SectorSync.GetClosestSector();
 			if (closestSector == default(QSBSector))
 			{
 				return;
