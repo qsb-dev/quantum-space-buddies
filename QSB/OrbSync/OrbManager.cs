@@ -12,7 +12,7 @@ namespace QSB.OrbSync
 {
 	public class OrbManager : WorldObjectManager
 	{
-		private List<GameObject> _orbs = new();
+		public static readonly List<NomaiInterfaceOrb> Orbs = new();
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
@@ -21,24 +21,48 @@ namespace QSB.OrbSync
 			BuildOrbs();
 		}
 
-		private void BuildOrbs()
+		private static void BuildOrbs()
 		{
-			QSBWorldSync.OldOrbList.Clear();
-			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
-			QSBWorldSync.OldOrbList = QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>().ToList();
+			Orbs.Clear();
+			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>());
 			if (QSBCore.IsHost)
 			{
-				_orbs.ForEach(x => QNetworkServer.Destroy(x));
-				_orbs.Clear();
-				foreach (var orb in QSBWorldSync.OldOrbList)
+				NomaiOrbTransformSync.Instances.ForEach(x => QNetworkServer.Destroy(x.gameObject));
+				foreach (var _ in Orbs)
 				{
-					var newOrb = Instantiate(QSBNetworkManager.Instance.OrbPrefab);
-					newOrb.SpawnWithServerAuthority();
-					_orbs.Add(newOrb);
+					Instantiate(QSBNetworkManager.Instance.OrbPrefab).SpawnWithServerAuthority();
 				}
 			}
 
-			DebugLog.DebugWrite($"Finished orb build with {QSBWorldSync.OldOrbList.Count} orbs.", MessageType.Success);
+			DebugLog.DebugWrite($"Finished orb build with {Orbs.Count} orbs.", MessageType.Success);
+		}
+
+		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
+		{
+			var slotList = QSBWorldSync.GetWorldObjects<QSBOrbSlot>().ToList();
+			if (!slotList.Any())
+			{
+				return;
+			}
+
+			var qsbSlot = slotList.FirstOrDefault(x => x.AttachedObject == slot);
+			if (qsbSlot == null)
+			{
+				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
+				return;
+			}
+
+			var orbSync = NomaiOrbTransformSync.Instances.Where(x => x != null).FirstOrDefault(x => x.AttachedObject == affectingOrb.transform);
+			if (orbSync == null)
+			{
+				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
+				return;
+			}
+
+			if (orbSync.HasAuthority)
+			{
+				qsbSlot.HandleEvent(state, Orbs.IndexOf(affectingOrb));
+			}
 		}
 	}
 }

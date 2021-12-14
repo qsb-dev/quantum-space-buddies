@@ -16,15 +16,15 @@ namespace QSB.OrbSync.Events
 		private OrbSlotMessage CreateMessage(int slotId, int orbId, bool slotState) => new()
 		{
 			AboutId = LocalPlayerId,
-			SlotId = slotId,
+			ObjectId = slotId,
 			OrbId = orbId,
 			SlotState = slotState
 		};
 
 		public override void OnReceiveRemote(bool server, OrbSlotMessage message)
 		{
-			var orbSlot = QSBWorldSync.GetWorldFromId<QSBOrbSlot>(message.SlotId);
-			orbSlot?.SetState(message.SlotState, message.OrbId);
+			var orbSlot = QSBWorldSync.GetWorldFromId<QSBOrbSlot>(message.ObjectId);
+			orbSlot.SetState(message.SlotState, message.OrbId);
 		}
 	}
 }

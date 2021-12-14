@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.OrbSync.Patches
@@ -18,7 +17,22 @@ namespace QSB.OrbSync.Patches
 		{
 			if (__result)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBOrbUser, QSBWorldSync.OldOrbList.FindIndex(x => x == __instance));
+				var index = OrbManager.Orbs.IndexOf(__instance);
+				if (index != -1)
+				{
+					QSBEventManager.FireEvent(EventNames.QSBOrbUser, index, true);
+				}
+			}
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(NomaiInterfaceOrb), nameof(NomaiInterfaceOrb.CancelDrag))]
+		public static void NomaiInterfaceOrb_CancelDrag(NomaiInterfaceOrb __instance)
+		{
+			var index = OrbManager.Orbs.IndexOf(__instance);
+			if (index != -1)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBOrbUser, index, false);
 			}
 		}
 
@@ -40,7 +54,7 @@ namespace QSB.OrbSync.Patches
 				____occupyingOrb = orb;
 				if (Time.timeSinceLevelLoad > 1f)
 				{
-					QSBWorldSync.HandleSlotStateChange(__instance, orb, true);
+					OrbManager.HandleSlotStateChange(__instance, orb, true);
 					__instance.RaiseEvent("OnSlotActivated", __instance);
 				}
 
@@ -56,7 +70,7 @@ namespace QSB.OrbSync.Patches
 
 			if (orbDistance > triggerRadius)
 			{
-				QSBWorldSync.HandleSlotStateChange(__instance, orb, false);
+				OrbManager.HandleSlotStateChange(__instance, orb, false);
 				____occupyingOrb = null;
 				__instance.RaiseEvent("OnSlotDeactivated", __instance);
 				__result = false;

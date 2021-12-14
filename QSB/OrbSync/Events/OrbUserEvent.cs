@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using System;
+using OWML.Common;
 using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.OrbSync.TransformSync;
@@ -9,94 +10,83 @@ using System.Linq;
 
 namespace QSB.OrbSync.Events
 {
-	public class OrbUserEvent : QSBEvent<WorldObjectMessage>
+	public class OrbUserEvent : QSBEvent<BoolWorldObjectMessage>
 	{
 		public override bool RequireWorldObjectsReady => true;
 
-		public override void SetupListener() => GlobalMessenger<int>.AddListener(EventNames.QSBOrbUser, Handler);
-		public override void CloseListener() => GlobalMessenger<int>.RemoveListener(EventNames.QSBOrbUser, Handler);
+		public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBOrbUser, Handler);
+		public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBOrbUser, Handler);
 
-		private void Handler(int id) => SendEvent(CreateMessage(id));
+		private void Handler(int id, bool isDragging) => SendEvent(CreateMessage(id, isDragging));
 
-		private WorldObjectMessage CreateMessage(int id) => new()
+		private BoolWorldObjectMessage CreateMessage(int id, bool isDragging) => new()
 		{
 			AboutId = LocalPlayerId,
-			ObjectId = id
+			ObjectId = id,
+			State = isDragging
 		};
 
-		public override void OnReceiveLocal(bool server, WorldObjectMessage message)
+		public override void OnReceiveLocal(bool isServer, BoolWorldObjectMessage message)
 		{
-			if (server)
+			var orbSync = GetOrbSync(message);
+			if (orbSync == null)
 			{
-				HandleServer(message);
-			}
-			else
-			{
-				HandleClient(message);
-			}
-		}
-
-		public override void OnReceiveRemote(bool server, WorldObjectMessage message)
-		{
-			if (server)
-			{
-				HandleServer(message);
-			}
-			else
-			{
-				HandleClient(message);
-			}
-		}
-
-		private static void HandleServer(WorldObjectMessage message)
-		{
-			if (NomaiOrbTransformSync.OrbTransformSyncs == null || NomaiOrbTransformSync.OrbTransformSyncs.Count == 0)
-			{
-				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
 				return;
 			}
 
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
+			if (message.State)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
+				if (isServer)
+				{
+					orbSync.NetIdentity.SetAuthority(message.FromId);
+				}
+				orbSync.enabled = true;
+
+				orbSync.OtherDragging = false;
+			}
+		}
+
+		public override void OnReceiveRemote(bool isServer, BoolWorldObjectMessage message)
+		{
+			var orbSync = GetOrbSync(message);
+			if (orbSync == null)
+			{
 				return;
 			}
 
-			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null)
-				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
+			if (message.State)
+			{
+				if (isServer)
+				{
+					orbSync.NetIdentity.SetAuthority(message.FromId);
+				}
+				orbSync.enabled = true;
+			}
+
+			orbSync.OtherDragging = message.State;
+		}
+
+		private static NomaiOrbTransformSync GetOrbSync(WorldObjectMessage message)
+		{
+			if (NomaiOrbTransformSync.Instances.Count == 0)
+			{
+				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty. (ID {message.ObjectId})", MessageType.Error);
+				return null;
+			}
+
+			if (OrbManager.Orbs.Count == 0)
+			{
+				DebugLog.ToConsole($"Error - OldOrbList is empty. (ID {message.ObjectId})", MessageType.Error);
+				return null;
+			}
+
+			var orbSync = NomaiOrbTransformSync.Instances.Where(x => x != null)
+				.FirstOrDefault(x => x.AttachedObject == OrbManager.Orbs[message.ObjectId].transform);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
-				return;
 			}
-
-			orbSync.NetIdentity.SetAuthority(message.FromId);
-			orbSync.enabled = true;
-		}
-
-		private static void HandleClient(WorldObjectMessage message)
-		{
-			if (NomaiOrbTransformSync.OrbTransformSyncs == null || NomaiOrbTransformSync.OrbTransformSyncs.Count == 0)
-			{
-				DebugLog.ToConsole($"Error - OrbTransformSyncs is empty or null. (ID {message.ObjectId})", MessageType.Error);
-				return;
-			}
-
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count == 0)
-			{
-				DebugLog.ToConsole($"Error - OldOrbList is empty or null. (ID {message.ObjectId})", MessageType.Error);
-				return;
-			}
-
-			if (!NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null).Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform))
-			{
-				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
-				return;
-			}
-
-			var orb = NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null)
-				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
-			orb.enabled = true;
+			return orbSync;
 		}
 	}
 }

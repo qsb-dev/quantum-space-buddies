@@ -1,6 +1,4 @@
 ﻿using OWML.Common;
-using QSB.OrbSync.TransformSync;
-using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,10 +9,9 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<NomaiInterfaceOrb> OldOrbList { get; set; } = new();
-		public static List<CharacterDialogueTree> OldDialogueTrees { get; set; } = new();
-		public static Dictionary<string, bool> DialogueConditions { get; } = new();
-		public static List<FactReveal> ShipLogFacts { get; } = new();
+		public static readonly List<CharacterDialogueTree> OldDialogueTrees = new();
+		public static readonly Dictionary<string, bool> DialogueConditions = new();
+		public static readonly List<FactReveal> ShipLogFacts = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
@@ -120,34 +117,6 @@ namespace QSB.WorldSync
 				obj.Init();
 				WorldObjects.Add(obj);
 				WorldObjectsToUnityObjects.Add(list[id], obj);
-			}
-		}
-
-		public static void HandleSlotStateChange(NomaiInterfaceSlot slot, NomaiInterfaceOrb affectingOrb, bool state)
-		{
-			var slotList = GetWorldObjects<QSBOrbSlot>().ToList();
-			if (!slotList.Any())
-			{
-				return;
-			}
-
-			var qsbSlot = slotList.FirstOrDefault(x => x.AttachedObject == slot);
-			if (qsbSlot == null)
-			{
-				DebugLog.ToConsole($"Error - No QSBOrbSlot found for {slot.name}!", MessageType.Error);
-				return;
-			}
-
-			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs.Where(x => x != null).FirstOrDefault(x => x.AttachedObject == affectingOrb.transform);
-			if (orbSync == null)
-			{
-				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync found for {affectingOrb.name} (For slot {slot.name})!", MessageType.Error);
-				return;
-			}
-
-			if (orbSync.HasAuthority)
-			{
-				qsbSlot.HandleEvent(state, OldOrbList.IndexOf(affectingOrb));
 			}
 		}
 

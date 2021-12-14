@@ -9,25 +9,26 @@ namespace QSB.OrbSync.TransformSync
 {
 	internal class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new();
+		public static readonly List<NomaiOrbTransformSync> Instances = new();
 
 		public override bool IsPlayerObject => false;
 
-		private int _index => OrbTransformSyncs.IndexOf(this);
+		public bool OtherDragging;
+		private int _index => Instances.IndexOf(this);
 
-		public override void OnStartClient() => OrbTransformSyncs.Add(this);
+		public override void OnStartClient() => Instances.Add(this);
 
 		protected override void OnDestroy()
 		{
-			OrbTransformSyncs.Remove(this);
+			Instances.Remove(this);
 			base.OnDestroy();
 		}
 
 		protected override void Init()
 		{
-			if (!OrbTransformSyncs.Contains(this))
+			if (!Instances.Contains(this))
 			{
-				OrbTransformSyncs.Add(this);
+				Instances.Add(this);
 			}
 
 			base.Init();
@@ -43,7 +44,7 @@ namespace QSB.OrbSync.TransformSync
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
-				OrbTransformSyncs[_index] = null;
+				Instances[_index] = null;
 			}
 
 			SetReferenceTransform(originalParent);
@@ -53,23 +54,23 @@ namespace QSB.OrbSync.TransformSync
 		{
 			if (_index == -1)
 			{
-				DebugLog.ToConsole($"Error - Index cannot be found. OrbTransformSyncs count : {OrbTransformSyncs.Count}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Index cannot be found. OrbTransformSyncs count : {Instances.Count}", MessageType.Error);
 				return null;
 			}
 
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
+			if (OrbManager.Orbs.Count <= _index)
 			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", MessageType.Error);
+				DebugLog.ToConsole($"Error - OldOrbList does not contain index {_index}.", MessageType.Error);
 				return null;
 			}
 
-			if (QSBWorldSync.OldOrbList[_index] == null)
+			if (OrbManager.Orbs[_index] == null)
 			{
 				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", MessageType.Error);
 				return null;
 			}
 
-			return QSBWorldSync.OldOrbList[_index].transform;
+			return OrbManager.Orbs[_index].transform;
 		}
 
 		protected override Transform InitLocalTransform() => GetTransform();

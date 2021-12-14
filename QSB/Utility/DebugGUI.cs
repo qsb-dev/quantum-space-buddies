@@ -119,7 +119,7 @@ namespace QSB.Utility
 			#endregion
 
 			#region Column2 - Player data
-			WriteLine(2, $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}");
+			WriteLine(2, $"OrbList count : {NomaiOrbTransformSync.Instances.Count}");
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{

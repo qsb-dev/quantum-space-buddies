@@ -134,7 +134,7 @@ namespace QSB
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.OldDialogueTrees = QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().ToList();
+				QSBWorldSync.OldDialogueTrees.AddRange(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>());
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
+			NomaiOrbTransformSync.Instances.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
 			if (WakeUpSync.LocalInstance != null)
@@ -234,7 +234,7 @@ namespace QSB
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			// revert authority for orbs
-			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
+			foreach (var item in NomaiOrbTransformSync.Instances)
 			{
 				if (!item)
 				{
