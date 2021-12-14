@@ -16,7 +16,6 @@ namespace QSB.Anglerfish.WorldObjects
 
 		public override void Init()
 		{
-			AnglerTransformSync.Anglers.Add(AttachedObject);
 			if (QSBCore.IsHost)
 			{
 				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab));
@@ -39,7 +38,6 @@ namespace QSB.Anglerfish.WorldObjects
 
 		public override void OnRemoval()
 		{
-			AnglerTransformSync.Anglers.Remove(AttachedObject);
 			if (QSBCore.IsHost)
 			{
 				TransformSync.NetIdentity.UnregisterAuthQueue();
