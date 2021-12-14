@@ -57,7 +57,7 @@ namespace QSB.OrbSync.Events
 				}
 				orbSync.enabled = true;
 
-				if (!isLocal)
+				if (!isLocal && !orbSync.Orb._isBeingDragged)
 				{
 					orbSync.Orb._isBeingDragged = true;
 					orbSync.Orb._interactibleCollider.enabled = false;
@@ -69,7 +69,7 @@ namespace QSB.OrbSync.Events
 			}
 			else
 			{
-				if (!isLocal)
+				if (!isLocal && orbSync.Orb._isBeingDragged)
 				{
 					orbSync.Orb._isBeingDragged = false;
 					orbSync.Orb._interactibleCollider.enabled = true;

@@ -25,12 +25,12 @@ namespace QSB.OrbSync.Patches
 			}
 		}
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(NomaiInterfaceOrb), nameof(NomaiInterfaceOrb.CancelDrag))]
 		public static void NomaiInterfaceOrb_CancelDrag(NomaiInterfaceOrb __instance)
 		{
 			var index = OrbManager.Orbs.IndexOf(__instance);
-			if (index != -1)
+			if (index != -1 && __instance._isBeingDragged)
 			{
 				QSBEventManager.FireEvent(EventNames.QSBOrbUser, index, false);
 			}

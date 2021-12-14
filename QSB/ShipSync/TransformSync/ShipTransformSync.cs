@@ -101,6 +101,5 @@ namespace QSB.ShipSync.TransformSync
 		}
 
 		public override bool UseInterpolation => false;
-		protected override float DistanceLeeway => 20f;
 	}
 }

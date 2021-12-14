@@ -246,6 +246,7 @@ namespace QSB
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					item.Orb.CancelDrag();
 				}
 			}
 
