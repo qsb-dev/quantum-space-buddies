@@ -14,6 +14,7 @@ namespace QSB.SectorSync
 		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> SectorList = new();
 
+		private OWRigidbody _body;
 		private SectorDetector _sectorDetector;
 		private TargetType _targetType;
 
@@ -28,7 +29,7 @@ namespace QSB.SectorSync
 			IsReady = false;
 		}
 
-		public void Init(SectorDetector detector, TargetType type)
+		public void Init(SectorDetector detector, OWRigidbody body, TargetType type)
 		{
 			if (_sectorDetector != null)
 			{
@@ -42,6 +43,7 @@ namespace QSB.SectorSync
 				return;
 			}
 
+			_body = body;
 			_sectorDetector = detector;
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
@@ -122,11 +124,11 @@ namespace QSB.SectorSync
 			}
 
 			var closest = goodSectors
-				.OrderBy(x => CalculateSectorScore(x, _sectorDetector._attachedRigidbody)).First();
+				.OrderBy(CalculateSectorScore).First();
 
 			if (useSectorList)
 			{
-				var pos = _sectorDetector._attachedRigidbody.GetPosition();
+				var pos = _body.GetPosition();
 				// if any fake sectors are *roughly* in the same place as other sectors - we want fake sectors to override other sectors
 				var fakeSector = QSBSectorManager.Instance.FakeSectors.FirstOrDefault(x =>
 					OWMath.ApproxEquals(Vector3.Distance(x.Position, pos), Vector3.Distance(closest.Position, pos), 0.01f) &&
@@ -138,11 +140,11 @@ namespace QSB.SectorSync
 			return closest;
 		}
 
-		private static float CalculateSectorScore(QSBSector sector, OWRigidbody rigidbody)
+		private float CalculateSectorScore(QSBSector sector)
 		{
-			var distance = Vector3.Distance(sector.Position, rigidbody.GetPosition()); // want to be small
+			var distance = Vector3.Distance(sector.Position, _body.GetPosition()); // want to be small
 			var radius = GetRadius(sector); // want to be small
-			var velocity = GetRelativeVelocity(sector, rigidbody); // want to be small
+			var velocity = GetRelativeVelocity(sector); // want to be small
 
 			return Mathf.Pow(distance, 2) + Mathf.Pow(radius, 2) + Mathf.Pow(velocity, 2);
 		}
@@ -166,12 +168,12 @@ namespace QSB.SectorSync
 			return 0f;
 		}
 
-		private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
+		private float GetRelativeVelocity(QSBSector sector)
 		{
 			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
-			if (sectorRigidBody != null && rigidbody != null)
+			if (sectorRigidBody != null && _body != null)
 			{
-				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
+				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(_body);
 				var relativeVelocityMagnitude = relativeVelocity.sqrMagnitude; // Remember this is squared for efficiency!
 				return relativeVelocityMagnitude;
 			}
