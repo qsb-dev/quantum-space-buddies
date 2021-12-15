@@ -1,32 +1,14 @@
-﻿using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.Audio
 {
 	public class QSBPlayerAudioController : MonoBehaviour
 	{
-		//public OWAudioSource _oneShotSource;
 		public OWAudioSource _oneShotExternalSource;
-		//public OWAudioSource _mapTrackSource;
 		public OWAudioSource _repairToolSource;
-		//public OWAudioSource _translatorSource;
-		//public OWAudioSource _damageAudioSource;
-		//public OWAudioSource _damageAudioSourceExternal;
-		//public OWAudioSource _notificationAudio;
-		//public OWAudioSource _fluidVolumeSource;
-		//public OWAudioSource _forceVolumeAudio;
-		//public OWAudioSource _oxygenLeakSource;
-		//public OWAudioSource _recorderLoopSource;
-		//public NomaiTextRevealAudioController[] _nomaiTextAudioControllers;
 
 		private void Start()
 		{
-			DebugLog.DebugWrite($"START");
 			_oneShotExternalSource = CreateBaseAudio(transform, "OneShotAudio_PlayerExternal", false, 0, 1, AudioType.None, OWAudioMixer.TrackName.Player_External, false);
 			_repairToolSource = CreateBaseAudio(transform, "RepairToolAudio", true, 128, 0.5f, AudioType.None, OWAudioMixer.TrackName.Player_External, false);
 
@@ -62,7 +44,6 @@ namespace QSB.Audio
 			OWAudioMixer.TrackName track,
 			bool randomize)
 		{
-			DebugLog.DebugWrite($"createBaseAudio {name}");
 			var go = new GameObject(name);
 			go.transform.parent = parent;
 			go.transform.localPosition = Vector3.zero;

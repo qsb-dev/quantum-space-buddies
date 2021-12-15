@@ -11,8 +11,6 @@ namespace QSB.Tools.ProbeLauncherTool
 
 		public void RetrieveProbe(bool playEffects)
 		{
-			DebugLog.DebugWrite($"{Player.PlayerId} retrieveProbe");
-
 			if (Effects._owAudioSource == null)
 			{
 				Effects._owAudioSource = Player.AudioController._repairToolSource;
@@ -28,7 +26,6 @@ namespace QSB.Tools.ProbeLauncherTool
 
 		public void LaunchProbe()
 		{
-			DebugLog.DebugWrite($"{Player.PlayerId} launchProbe");
 			PreLaunchProbeProxy.SetActive(false);
 
 			if (Effects._owAudioSource == null)
