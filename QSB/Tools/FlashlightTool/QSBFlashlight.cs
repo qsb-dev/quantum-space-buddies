@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 
 namespace QSB.Tools.FlashlightTool
 {
@@ -14,6 +15,7 @@ namespace QSB.Tools.FlashlightTool
 		private LightSourceVolume _lightSourceVolume;
 
 		public bool FlashlightOn;
+		public PlayerInfo Player;
 
 		public void Start()
 		{
@@ -73,6 +75,7 @@ namespace QSB.Tools.FlashlightTool
 			}
 
 			FlashlightOn = true;
+			Player.AudioController.PlayTurnOnFlashlight();
 			var rotation = _root.rotation;
 			_basePivot.rotation = rotation;
 			_baseRotation = rotation;
@@ -93,6 +96,7 @@ namespace QSB.Tools.FlashlightTool
 			}
 
 			FlashlightOn = false;
+			Player.AudioController.PlayTurnOffFlashlight();
 			_lightSourceVolume.SetVolumeActivation(FlashlightOn);
 		}
 

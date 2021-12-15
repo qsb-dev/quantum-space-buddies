@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 
 namespace QSB.Tools
 {
 	public class QSBTool : PlayerTool
 	{
+		public PlayerInfo Player { get; set; }
 		public ToolType Type { get; set; }
 		public GameObject ToolGameObject { get; set; }
 
@@ -43,6 +45,18 @@ namespace QSB.Tools
 			}
 
 			UnequipTool();
+		}
+
+		public override void EquipTool()
+		{
+			base.EquipTool();
+			Player.AudioController.PlayEquipTool();
+		}
+
+		public override void UnequipTool()
+		{
+			base.UnequipTool();
+			Player.AudioController.PlayUnequipTool();
 		}
 	}
 }

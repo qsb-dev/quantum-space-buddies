@@ -6,6 +6,6 @@ namespace QSB.Tools.ProbeLauncherTool
 	internal class ProbeLauncherManager : WorldObjectManager
 	{
 		protected override void RebuildWorldObjects(OWScene scene)
-			=> QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>();
+			=> QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
 	}
 }

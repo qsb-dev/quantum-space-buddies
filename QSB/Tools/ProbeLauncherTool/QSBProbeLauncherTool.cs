@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool
 {
@@ -10,6 +11,11 @@ namespace QSB.Tools.ProbeLauncherTool
 
 		public void RetrieveProbe(bool playEffects)
 		{
+			if (Effects._owAudioSource == null)
+			{
+				Effects._owAudioSource = Player.AudioController._repairToolSource;
+			}
+
 			PreLaunchProbeProxy.SetActive(true);
 			if (playEffects)
 			{
@@ -22,9 +28,13 @@ namespace QSB.Tools.ProbeLauncherTool
 		{
 			PreLaunchProbeProxy.SetActive(false);
 
+			if (Effects._owAudioSource == null)
+			{
+				Effects._owAudioSource = Player.AudioController._repairToolSource;
+			}
+
 			// TODO : make this do underwater stuff correctly
 			Effects.PlayLaunchClip(false);
-			// BUG : this plays particles on everyone's launcher...
 			Effects.PlayLaunchParticles(false);
 		}
 	}
