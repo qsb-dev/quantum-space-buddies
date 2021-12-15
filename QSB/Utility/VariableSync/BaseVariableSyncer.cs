@@ -16,7 +16,7 @@ namespace QSB.Utility.VariableSync
 		private float _lastClientSendTime;
 		private QNetworkWriter _writer;
 		private int _index;
-		private bool _initialized { get; set; }
+		private bool _initialized;
 
 		private T _prevValue;
 		public T Value { get; set; }

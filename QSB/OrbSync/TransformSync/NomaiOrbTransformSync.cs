@@ -41,7 +41,7 @@ namespace QSB.OrbSync.TransformSync
 
 			base.Init();
 
-			var origParent = _qsbOrb.AttachedObject._orbBody._origParent;
+			var origParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
 			if (origParent == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
