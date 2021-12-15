@@ -29,30 +29,61 @@ namespace QSB.OrbSync.WorldObjects
 			}
 		}
 
-		public bool IsBeingDragged
+		public void SetDragging(bool value)
 		{
-			get => AttachedObject._isBeingDragged;
-			set
+			if (value == AttachedObject._isBeingDragged)
 			{
-				if (value == IsBeingDragged)
+				return;
+			}
+
+			if (value)
+			{
+				AttachedObject._isBeingDragged = true;
+				AttachedObject._interactibleCollider.enabled = false;
+				if (AttachedObject._orbAudio != null)
 				{
-					return;
+					AttachedObject._orbAudio.PlayStartDragClip();
+				}
+			}
+			else
+			{
+				AttachedObject._isBeingDragged = false;
+				AttachedObject._interactibleCollider.enabled = true;
+			}
+		}
+
+		public void SetSlotted(int slotIndex, bool slotted)
+		{
+			var slot = AttachedObject._slots[slotIndex];
+			if (slot == AttachedObject._occupiedSlot)
+			{
+				return;
+			}
+
+			if (slotted)
+			{
+				slot._occupyingOrb = AttachedObject;
+				if (Time.timeSinceLevelLoad > 1f && !AttachedObject._orbBody.IsSuspended())
+				{
+					slot.RaiseEvent(nameof(slot.OnSlotActivated), slot);
 				}
 
-				if (value)
+				AttachedObject._occupiedSlot = slot;
+				AttachedObject._enterSlotTime = Time.time;
+				if (AttachedObject._orbAudio != null && slot.GetPlayActivationAudio())
 				{
-					AttachedObject._isBeingDragged = true;
-					AttachedObject._interactibleCollider.enabled = false;
-					if (AttachedObject._orbAudio != null)
-					{
-						AttachedObject._orbAudio.PlayStartDragClip();
-					}
+					AttachedObject._orbAudio.PlaySlotActivatedClip();
 				}
-				else
+			}
+			else
+			{
+				slot._occupyingOrb = null;
+				if (!AttachedObject._orbBody.IsSuspended())
 				{
-					AttachedObject._isBeingDragged = false;
-					AttachedObject._interactibleCollider.enabled = true;
+					slot.RaiseEvent(nameof(slot.OnSlotDeactivated), slot);
 				}
+
+				AttachedObject._occupiedSlot = null;
 			}
 		}
 	}

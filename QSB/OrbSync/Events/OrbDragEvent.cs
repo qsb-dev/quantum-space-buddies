@@ -40,7 +40,7 @@ namespace QSB.OrbSync.Events
 				qsbOrb.TransformSync.NetIdentity.SetAuthority(message.FromId);
 			}
 
-			qsbOrb.IsBeingDragged = message.State;
+			qsbOrb.SetDragging(message.State);
 		}
 	}
 }

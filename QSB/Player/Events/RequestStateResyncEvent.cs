@@ -135,9 +135,18 @@ namespace QSB.Player.Events
 		{
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				if (qsbOrb.TransformSync.HasAuthority)
+				if (!qsbOrb.TransformSync.enabled ||
+				    !qsbOrb.TransformSync.HasAuthority)
 				{
-					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, qsbOrb.IsBeingDragged);
+					continue;
+				}
+
+				QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, qsbOrb.AttachedObject._isBeingDragged);
+
+				for (var slotIndex = 0; slotIndex < qsbOrb.AttachedObject._slots.Length; slotIndex++)
+				{
+					var slot = qsbOrb.AttachedObject._slots[slotIndex];
+					QSBEventManager.FireEvent(EventNames.QSBOrbSlotted, qsbOrb, slotIndex, qsbOrb.AttachedObject._occupiedSlot == slot);
 				}
 			}
 		}

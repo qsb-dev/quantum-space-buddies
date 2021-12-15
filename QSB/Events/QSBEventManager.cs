@@ -90,6 +90,7 @@ namespace QSB.Events
 				new ElevatorEvent(),
 				new GeyserEvent(),
 				new OrbDragEvent(),
+				new OrbSlottedEvent(),
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
 				new SetAsTranslatedEvent(),
