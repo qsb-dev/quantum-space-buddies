@@ -31,10 +31,10 @@ namespace QSB.OrbSync.WorldObjects
 
 		public bool IsBeingDragged
 		{
-			get => TransformSync.enabled && AttachedObject._isBeingDragged;
+			get => AttachedObject._isBeingDragged;
 			set
 			{
-				if (!TransformSync.enabled || value == IsBeingDragged)
+				if (value == IsBeingDragged)
 				{
 					return;
 				}
@@ -53,6 +53,36 @@ namespace QSB.OrbSync.WorldObjects
 					AttachedObject._isBeingDragged = false;
 					AttachedObject._interactibleCollider.enabled = true;
 				}
+			}
+		}
+
+		public NomaiInterfaceSlot OccupiedSlot => AttachedObject._occupiedSlot;
+
+		public void SetOccupiedSlot(NomaiInterfaceSlot slot, bool playAudio)
+		{
+			if (slot == OccupiedSlot)
+			{
+				return;
+			}
+
+			if (slot)
+			{
+				AttachedObject._occupiedSlot = slot;
+				AttachedObject._enterSlotTime = Time.time;
+				if (playAudio && AttachedObject._orbAudio != null && slot.GetPlayActivationAudio())
+				{
+					AttachedObject._orbAudio.PlaySlotActivatedClip();
+				}
+
+				slot._occupyingOrb = AttachedObject;
+				slot.RaiseEvent(nameof(slot.OnSlotActivated), slot);
+			}
+			else
+			{
+				AttachedObject._occupiedSlot = null;
+
+				slot._occupyingOrb = null;
+				slot.RaiseEvent(nameof(slot.OnSlotDeactivated), slot);
 			}
 		}
 	}

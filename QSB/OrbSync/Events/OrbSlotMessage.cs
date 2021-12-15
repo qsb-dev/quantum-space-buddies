@@ -3,20 +3,23 @@ using QuantumUNET.Transport;
 
 namespace QSB.OrbSync.Events
 {
-	public class OrbSlotMessage : BoolWorldObjectMessage
+	public class OrbSlotMessage : WorldObjectMessage
 	{
-		public int OrbId { get; set; }
+		public int SlotIndex;
+		public bool PlayAudio;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			OrbId = reader.ReadInt32();
+			SlotIndex = reader.ReadInt32();
+			PlayAudio = reader.ReadBoolean();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(OrbId);
+			writer.Write(SlotIndex);
+			writer.Write(PlayAudio);
 		}
 	}
 }

@@ -2,20 +2,19 @@
 using QSB.Events;
 using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.OrbSync.Patches
 {
-	[HarmonyPatch]
+	[HarmonyPatch(typeof(NomaiInterfaceOrb))]
 	public class OrbPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		[HarmonyPostfix]
-		[HarmonyPatch(typeof(NomaiInterfaceOrb), nameof(NomaiInterfaceOrb.StartDragFromPosition))]
-		public static void NomaiInterfaceOrb_StartDragFromPosition(NomaiInterfaceOrb __instance)
+		[HarmonyPatch(nameof(NomaiInterfaceOrb.StartDragFromPosition))]
+		public static void StartDragFromPosition(NomaiInterfaceOrb __instance)
 		{
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -31,8 +30,8 @@ namespace QSB.OrbSync.Patches
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiInterfaceOrb), nameof(NomaiInterfaceOrb.CancelDrag))]
-		public static void NomaiInterfaceOrb_CancelDrag(NomaiInterfaceOrb __instance)
+		[HarmonyPatch(nameof(NomaiInterfaceOrb.CancelDrag))]
+		public static void CancelDrag(NomaiInterfaceOrb __instance)
 		{
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -44,62 +43,56 @@ namespace QSB.OrbSync.Patches
 				return;
 			}
 			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			if (!qsbOrb.TransformSync.HasAuthority)
+			{
+				return;
+			}
 			QSBEventManager.FireEvent(EventNames.QSBOrbUser, qsbOrb, false);
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiInterfaceSlot), nameof(NomaiInterfaceSlot.CheckOrbCollision))]
-		public static bool NomaiInterfaceSlot_CheckOrbCollision(NomaiInterfaceSlot __instance, ref bool __result,
-			NomaiInterfaceOrb orb)
+		[HarmonyPatch(nameof(NomaiInterfaceOrb.CheckSlotCollision))]
+		public static bool CheckSlotCollision(NomaiInterfaceOrb __instance,
+			bool playAudio)
 		{
 			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;
 			}
-			var qsbOrbSlot = QSBWorldSync.GetWorldFromUnity<QSBOrbSlot>(__instance);
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(orb);
+			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return true;
 			}
 
-			if (__instance._ignoreDraggedOrbs && orb.IsBeingDragged())
+			if (__instance._occupiedSlot == null)
 			{
-				__result = false;
-				return false;
-			}
-
-			var orbDistance = Vector3.Distance(orb.transform.position, __instance.transform.position);
-			var triggerRadius = orb.IsBeingDragged() ? __instance._exitRadius : __instance._radius;
-			if (__instance._occupyingOrb == null && orbDistance < __instance._radius)
-			{
-				__instance._occupyingOrb = orb;
-				if (Time.timeSinceLevelLoad > 1f)
+				foreach (var slot in __instance._slots)
 				{
-					__instance.RaiseEvent(nameof(__instance.OnSlotActivated), __instance);
-					QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrbSlot, qsbOrb, true);
+					if (slot != null && slot.CheckOrbCollision(__instance))
+					{
+						__instance._occupiedSlot = slot;
+						__instance._enterSlotTime = Time.time;
+						if (slot.CancelsDragOnCollision())
+						{
+							__instance.CancelDrag();
+						}
+						if (playAudio && __instance._orbAudio != null && slot.GetPlayActivationAudio())
+						{
+							__instance._orbAudio.PlaySlotActivatedClip();
+						}
+						QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, __instance._occupiedSlot, playAudio);
+						break;
+					}
 				}
-
-				__result = true;
-				return false;
 			}
-
-			if (__instance._occupyingOrb == null || __instance._occupyingOrb != orb)
+			else if ((!__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged) && !__instance._occupiedSlot.CheckOrbCollision(__instance))
 			{
-				__result = false;
-				return false;
+				__instance._occupiedSlot = null;
+				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, __instance._occupiedSlot, playAudio);
 			}
+			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);
 
-			if (orbDistance > triggerRadius)
-			{
-				__instance._occupyingOrb = null;
-				__instance.RaiseEvent(nameof(__instance.OnSlotDeactivated), __instance);
-				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrbSlot, qsbOrb, false);
-				__result = false;
-				return false;
-			}
-
-			__result = true;
 			return false;
 		}
 	}

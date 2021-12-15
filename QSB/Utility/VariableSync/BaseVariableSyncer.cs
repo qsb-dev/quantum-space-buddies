@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
@@ -24,7 +24,7 @@ namespace QSB.Utility.VariableSync
 		protected abstract void WriteValue(QNetworkWriter writer, T value);
 		protected abstract T ReadValue(QNetworkReader reader);
 
-		private bool HasChanged() => !Equals(Value, _prevValue);
+		private bool HasChanged() => !EqualityComparer<T>.Default.Equals(Value, _prevValue);
 
 		public virtual void Awake()
 		{
@@ -37,7 +37,7 @@ namespace QSB.Utility.VariableSync
 		}
 
 		public virtual void Start()
-			=> _index = Array.IndexOf(GetComponents<IBaseVariableSyncer>(), this);
+			=> _index = GetComponents<IBaseVariableSyncer>().IndexOf(this);
 
 		public void Init() => _initialized = true;
 		public void OnDestroy() => _initialized = false;

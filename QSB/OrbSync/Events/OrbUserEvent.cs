@@ -21,21 +21,26 @@ namespace QSB.OrbSync.Events
 			State = isDragging
 		};
 
-		public override void OnReceiveLocal(bool isServer, BoolWorldObjectMessage message) => OnReceive(false, isServer, message);
-		public override void OnReceiveRemote(bool isServer, BoolWorldObjectMessage message) => OnReceive(true, isServer, message);
-
-		private static void OnReceive(bool isRemote, bool isServer, BoolWorldObjectMessage message)
+		public override void OnReceiveLocal(bool isHost, BoolWorldObjectMessage message)
 		{
 			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(message.ObjectId);
 
-			if (message.State && isServer)
+			if (message.State && isHost)
 			{
 				qsbOrb.TransformSync.NetIdentity.SetAuthority(message.FromId);
 			}
-			if (isRemote)
+		}
+
+		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
+		{
+			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(message.ObjectId);
+
+			if (message.State && isHost)
 			{
-				qsbOrb.IsBeingDragged = message.State;
+				qsbOrb.TransformSync.NetIdentity.SetAuthority(message.FromId);
 			}
+
+			qsbOrb.IsBeingDragged = message.State;
 		}
 	}
 }
