@@ -136,7 +136,8 @@ namespace QSB.Player.Events
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (!qsbOrb.TransformSync.enabled ||
-				    !qsbOrb.TransformSync.HasAuthority)
+				    !qsbOrb.TransformSync.HasAuthority ||
+				    qsbOrb.AttachedObject._orbBody.IsSuspended())
 				{
 					continue;
 				}
