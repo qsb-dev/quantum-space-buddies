@@ -1,20 +1,30 @@
-﻿using QuantumUNET;
+﻿using System;
+using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.Utility.VariableSync
 {
-	public abstract class BaseVariableSyncer : QNetworkBehaviour
+	public interface IBaseVariableSyncer
+	{
+		void DeserializeValue(QNetworkReader reader);
+	}
+
+	public abstract class BaseVariableSyncer<T> : QNetworkBehaviour, IBaseVariableSyncer
 	{
 		private float _lastClientSendTime;
 		private QNetworkWriter _writer;
 		private int _index;
-		public bool Ready { get; protected set; }
+		private bool _initialized { get; set; }
 
-		public abstract void WriteData(QNetworkWriter writer);
-		public abstract void ReadData(QNetworkReader writer);
-		public abstract bool HasChanged();
+		private T _prevValue;
+		public T Value { get; set; }
+
+		protected abstract void WriteValue(QNetworkWriter writer, T value);
+		protected abstract T ReadValue(QNetworkReader reader);
+
+		private bool HasChanged() => !Equals(Value, _prevValue);
 
 		public virtual void Awake()
 		{
@@ -27,10 +37,10 @@ namespace QSB.Utility.VariableSync
 		}
 
 		public virtual void Start()
-			=> _index = GetComponents<BaseVariableSyncer>().IndexOfReference(this);
+			=> _index = Array.IndexOf(GetComponents<IBaseVariableSyncer>(), this);
 
-		public void OnDestroy()
-			=> Ready = false;
+		public void Init() => _initialized = true;
+		public void OnDestroy() => _initialized = false;
 
 		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
 		{
@@ -45,7 +55,7 @@ namespace QSB.Utility.VariableSync
 				writer.WritePackedUInt32(1U);
 			}
 
-			WriteData(writer);
+			SerializeValue(writer);
 			return true;
 		}
 
@@ -58,13 +68,38 @@ namespace QSB.Utility.VariableSync
 					return;
 				}
 
-				ReadData(reader);
+				DeserializeValue(reader);
+			}
+		}
+
+		public void SerializeValue(QNetworkWriter writer)
+		{
+			if (_initialized)
+			{
+				WriteValue(writer, Value);
+				_prevValue = Value;
+			}
+			else
+			{
+				WriteValue(writer, default);
+			}
+		}
+
+		public void DeserializeValue(QNetworkReader reader)
+		{
+			if (_initialized)
+			{
+				Value = ReadValue(reader);
+			}
+			else
+			{
+				ReadValue(reader);
 			}
 		}
 
 		private void FixedUpdate()
 		{
-			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !Ready)
+			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !_initialized)
 			{
 				return;
 			}
@@ -77,7 +112,7 @@ namespace QSB.Utility.VariableSync
 
 		public virtual void Update()
 		{
-			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !Ready)
+			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !_initialized)
 			{
 				return;
 			}
@@ -96,7 +131,7 @@ namespace QSB.Utility.VariableSync
 				_writer.StartMessage(short.MaxValue);
 				_writer.Write(NetId);
 				_writer.Write(_index);
-				WriteData(_writer);
+				SerializeValue(_writer);
 				_writer.FinishMessage();
 				QClientScene.readyConnection.SendWriter(_writer, GetNetworkChannel());
 			}
@@ -105,10 +140,10 @@ namespace QSB.Utility.VariableSync
 		public static void HandleVariable(QNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
-			var index = netMsg.Reader.ReadInt32();
 			var gameObject = QNetworkServer.FindLocalObject(networkInstanceId);
-			var components = gameObject.GetComponents<BaseVariableSyncer>();
-			components[index].ReadData(netMsg.Reader);
+			var index = netMsg.Reader.ReadInt32();
+			var component = gameObject.GetComponents<IBaseVariableSyncer>()[index];
+			component.DeserializeValue(netMsg.Reader);
 		}
 	}
 }
