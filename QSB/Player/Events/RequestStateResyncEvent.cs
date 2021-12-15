@@ -7,6 +7,7 @@ using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
 using QSB.OrbSync;
 using QSB.OrbSync.TransformSync;
+using QSB.OrbSync.WorldObjects;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
@@ -78,11 +79,11 @@ namespace QSB.Player.Events
 				}
 
 				// SPECIAL CASE: whoever owns the orbs sends their drag state
-				foreach (var sync in NomaiOrbTransformSync.Instances)
+				foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 				{
-					if (sync.HasAuthority && sync.Orb)
+					if (qsbOrb.TransformSync.HasAuthority)
 					{
-						QSBEventManager.FireEvent(EventNames.QSBOrbUser, OrbManager.Orbs.IndexOf(sync.Orb), sync.Orb._isBeingDragged);
+						QSBEventManager.FireEvent(EventNames.QSBOrbUser, qsbOrb, qsbOrb.IsBeingDragged);
 					}
 				}
 			}

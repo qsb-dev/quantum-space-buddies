@@ -21,6 +21,7 @@ using QuantumUNET;
 using QuantumUNET.Components;
 using System;
 using System.Linq;
+using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -204,7 +205,6 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			NomaiOrbTransformSync.Instances.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
 			if (WakeUpSync.LocalInstance != null)
@@ -234,14 +234,13 @@ namespace QSB
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			// revert authority for orbs
-			foreach (var item in NomaiOrbTransformSync.Instances)
+			foreach (var orb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				var identity = item.NetIdentity;
+				var identity = orb.TransformSync.NetIdentity;
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
-
-					item.Orb.CancelDrag();
+					orb.AttachedObject.CancelDrag();
 				}
 			}
 

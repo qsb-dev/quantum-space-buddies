@@ -8,6 +8,7 @@ using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
+using QSB.OrbSync;
 using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
@@ -120,7 +121,7 @@ namespace QSB.Utility
 			#endregion
 
 			#region Column2 - Player data
-			WriteLine(2, $"OrbList count : {NomaiOrbTransformSync.Instances.Count}");
+			WriteLine(2, $"OrbList count : {OrbManager.Orbs.Count}");
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{

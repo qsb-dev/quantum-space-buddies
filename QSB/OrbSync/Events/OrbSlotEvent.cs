@@ -8,23 +8,23 @@ namespace QSB.OrbSync.Events
 	{
 		public override bool RequireWorldObjectsReady => true;
 
-		public override void SetupListener() => GlobalMessenger<int, int, bool>.AddListener(EventNames.QSBOrbSlot, Handler);
-		public override void CloseListener() => GlobalMessenger<int, int, bool>.RemoveListener(EventNames.QSBOrbSlot, Handler);
+		public override void SetupListener() => GlobalMessenger<QSBOrbSlot, QSBOrb, bool>.AddListener(EventNames.QSBOrbSlot, Handler);
+		public override void CloseListener() => GlobalMessenger<QSBOrbSlot, QSBOrb, bool>.RemoveListener(EventNames.QSBOrbSlot, Handler);
 
-		private void Handler(int slotId, int orbId, bool slotState) => SendEvent(CreateMessage(slotId, orbId, slotState));
+		private void Handler(QSBOrbSlot qsbOrbSlot, QSBOrb qsbOrb, bool slotState) => SendEvent(CreateMessage(qsbOrbSlot, qsbOrb, slotState));
 
-		private OrbSlotMessage CreateMessage(int slotId, int orbId, bool slotState) => new()
+		private OrbSlotMessage CreateMessage(QSBOrbSlot qsbOrbSlot, QSBOrb qsbOrb, bool slotState) => new()
 		{
-			AboutId = LocalPlayerId,
-			ObjectId = slotId,
-			OrbId = orbId,
-			SlotState = slotState
+			ObjectId = qsbOrbSlot.ObjectId,
+			OrbId = qsbOrb.ObjectId,
+			State = slotState
 		};
 
 		public override void OnReceiveRemote(bool server, OrbSlotMessage message)
 		{
-			var orbSlot = QSBWorldSync.GetWorldFromId<QSBOrbSlot>(message.ObjectId);
-			orbSlot.SetState(message.SlotState, message.OrbId);
+			var qsbOrbSlot = QSBWorldSync.GetWorldFromId<QSBOrbSlot>(message.ObjectId);
+			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(message.OrbId);
+			qsbOrbSlot.SetState(qsbOrb, message.State);
 		}
 	}
 }

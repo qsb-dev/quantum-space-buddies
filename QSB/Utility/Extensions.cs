@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -108,6 +109,20 @@ namespace QSB.Utility
 			{
 				action(item);
 			}
+		}
+
+		public static bool IsInBounds<T>(this ICollection<T> list, int index) => index >= 0 && index < list.Count;
+
+		public static bool TryGet<T>(this IList<T> list, int index, out T element)
+		{
+			if (!list.IsInBounds(index))
+			{
+				element = default;
+				return false;
+			}
+
+			element = list[index];
+			return true;
 		}
 
 		private const BindingFlags Flags = BindingFlags.Instance
