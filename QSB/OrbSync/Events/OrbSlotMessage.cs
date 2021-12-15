@@ -6,12 +6,14 @@ namespace QSB.OrbSync.Events
 	public class OrbSlotMessage : WorldObjectMessage
 	{
 		public int SlotIndex;
+		public bool Slotted;
 		public bool PlayAudio;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			SlotIndex = reader.ReadInt32();
+			Slotted = reader.ReadBoolean();
 			PlayAudio = reader.ReadBoolean();
 		}
 
@@ -19,6 +21,7 @@ namespace QSB.OrbSync.Events
 		{
 			base.Serialize(writer);
 			writer.Write(SlotIndex);
+			writer.Write(Slotted);
 			writer.Write(PlayAudio);
 		}
 	}

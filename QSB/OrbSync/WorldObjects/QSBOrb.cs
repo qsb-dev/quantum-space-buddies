@@ -58,31 +58,31 @@ namespace QSB.OrbSync.WorldObjects
 
 		public NomaiInterfaceSlot OccupiedSlot => AttachedObject._occupiedSlot;
 
-		public void SetOccupiedSlot(NomaiInterfaceSlot slot, bool playAudio)
+		public void SetOccupiedSlot(NomaiInterfaceSlot slot, bool slotted, bool playAudio)
 		{
-			if (slot == OccupiedSlot)
+			if (slotted == OccupiedSlot)
 			{
 				return;
 			}
 
-			if (slot)
+			if (slotted)
 			{
+				slot._occupyingOrb = AttachedObject;
+				slot.RaiseEvent(nameof(slot.OnSlotActivated), slot);
+
 				AttachedObject._occupiedSlot = slot;
 				AttachedObject._enterSlotTime = Time.time;
 				if (playAudio && AttachedObject._orbAudio != null && slot.GetPlayActivationAudio())
 				{
 					AttachedObject._orbAudio.PlaySlotActivatedClip();
 				}
-
-				slot._occupyingOrb = AttachedObject;
-				slot.RaiseEvent(nameof(slot.OnSlotActivated), slot);
 			}
 			else
 			{
-				AttachedObject._occupiedSlot = null;
-
 				slot._occupyingOrb = null;
 				slot.RaiseEvent(nameof(slot.OnSlotDeactivated), slot);
+
+				AttachedObject._occupiedSlot = null;
 			}
 		}
 	}
