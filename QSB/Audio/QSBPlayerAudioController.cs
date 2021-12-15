@@ -27,8 +27,17 @@ namespace QSB.Audio
 		private void Start()
 		{
 			DebugLog.DebugWrite($"START");
-			_oneShotExternalSource = CreateBaseAudio("OneShotAudio_PlayerExternal", false, 0, 1, AudioType.None, OWAudioMixer.TrackName.Player_External, false);
-			_repairToolSource = CreateBaseAudio("RepairToolAudio", true, 128, 0.5f, AudioType.None, OWAudioMixer.TrackName.Player_External, false);
+			_oneShotExternalSource = CreateBaseAudio(transform, "OneShotAudio_PlayerExternal", false, 0, 1, AudioType.None, OWAudioMixer.TrackName.Player_External, false);
+			_repairToolSource = CreateBaseAudio(transform, "RepairToolAudio", true, 128, 0.5f, AudioType.None, OWAudioMixer.TrackName.Player_External, false);
+
+			var thrusterAudio = new GameObject("REMOTE_ThrusterAudio").transform;
+			thrusterAudio.parent = transform;
+			var jetpatchThrusterAudio = thrusterAudio.gameObject.AddComponent<QSBJetpackThrusterAudio>();
+			jetpatchThrusterAudio._rotationalSource = CreateBaseAudio(thrusterAudio, "RotationalSource", false, 0, 1, AudioType.None, OWAudioMixer.TrackName.Player, false);
+			jetpatchThrusterAudio._translationalSource = CreateBaseAudio(thrusterAudio, "TranslationalSource", true, 0, 0.1f, AudioType.PlayerSuitJetpackThrustTranslational_LP, OWAudioMixer.TrackName.Player_External, false);
+			jetpatchThrusterAudio._underwaterSource = CreateBaseAudio(thrusterAudio, "UnderwaterSource", true, 0, 0.1f, AudioType.PlayerSuitJetpackThrustUnderwater_LP, OWAudioMixer.TrackName.Player_External, false);
+			jetpatchThrusterAudio._oxygenSource = CreateBaseAudio(thrusterAudio, "OxygenPropellantSource", true, 0, 0.2f, AudioType.PlayerSuitJetpackOxygenPropellant_LP, OWAudioMixer.TrackName.Player_External, false);
+			jetpatchThrusterAudio._boostSource = CreateBaseAudio(thrusterAudio, "BoosterSource", true, 0, 0.35f, AudioType.PlayerSuitJetpackBoost, OWAudioMixer.TrackName.Player_External, false);
 		}
 
 		public void PlayEquipTool()
@@ -44,6 +53,7 @@ namespace QSB.Audio
 			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOff, 1f);
 
 		private OWAudioSource CreateBaseAudio(
+			Transform parent,
 			string name,
 			bool loop,
 			int priority,
@@ -54,7 +64,7 @@ namespace QSB.Audio
 		{
 			DebugLog.DebugWrite($"createBaseAudio {name}");
 			var go = new GameObject(name);
-			go.transform.parent = transform;
+			go.transform.parent = parent;
 			go.transform.localPosition = Vector3.zero;
 			go.transform.localScale = Vector3.one;
 
