@@ -78,13 +78,9 @@ namespace QSB.Player.Events
 					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 				}
 
-				// SPECIAL CASE: whoever owns the orbs sends their drag state
-				foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+				if (WorldObjectManager.AllObjectsReady)
 				{
-					if (qsbOrb.TransformSync.HasAuthority)
-					{
-						QSBEventManager.FireEvent(EventNames.QSBOrbUser, qsbOrb, qsbOrb.IsBeingDragged);
-					}
+					SendAuthorityObjectInfo();
 				}
 			}
 			finally
@@ -130,6 +126,20 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
+		}
+
+		/// <summary>
+		/// send info for objects we have authority over
+		/// </summary>
+		private void SendAuthorityObjectInfo()
+		{
+			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+			{
+				if (qsbOrb.TransformSync.HasAuthority)
+				{
+					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, qsbOrb.IsBeingDragged);
+				}
+			}
 		}
 	}
 }

@@ -51,21 +51,6 @@ namespace QSB.OrbSync.TransformSync
 			SetReferenceTransform(origParent);
 		}
 
-		protected override bool UpdateTransform()
-		{
-			if (!base.UpdateTransform())
-			{
-				return false;
-			}
-
-			if (!HasAuthority)
-			{
-				_qsbOrb.AttachedObject.SetTargetPosition(AttachedObject.position);
-			}
-
-			return true;
-		}
-
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
 

@@ -113,11 +113,11 @@ namespace QSB.Utility
 
 		public static int IndexOf<T>(this T[] array, T value) => Array.IndexOf(array, value);
 
-		public static bool IsInBounds<T>(this ICollection<T> list, int index) => index >= 0 && index < list.Count;
+		public static bool IsInRange<T>(this ICollection<T> list, int index) => index >= 0 && index < list.Count;
 
 		public static bool TryGet<T>(this IList<T> list, int index, out T element)
 		{
-			if (!list.IsInBounds(index))
+			if (!list.IsInRange(index))
 			{
 				element = default;
 				return false;

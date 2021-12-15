@@ -3,7 +3,6 @@ using QSB.Events;
 using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.OrbSync.Patches
 {
@@ -16,29 +15,27 @@ namespace QSB.OrbSync.Patches
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.StartDragFromPosition))]
 		public static void StartDragFromPosition(NomaiInterfaceOrb __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
 			if (!__instance._isBeingDragged)
 			{
 				return;
 			}
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return;
+			}
 			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBOrbUser, qsbOrb, true);
+			QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, true);
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CancelDrag))]
 		public static void CancelDrag(NomaiInterfaceOrb __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!__instance._isBeingDragged)
 			{
 				return;
 			}
-
-			if (!__instance._isBeingDragged)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}
@@ -47,51 +44,29 @@ namespace QSB.OrbSync.Patches
 			{
 				return;
 			}
-			QSBEventManager.FireEvent(EventNames.QSBOrbUser, qsbOrb, false);
+			QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(nameof(NomaiInterfaceOrb.CheckSlotCollision))]
-		public static bool CheckSlotCollision(NomaiInterfaceOrb __instance,
-			bool playAudio)
+		[HarmonyPatch(nameof(NomaiInterfaceOrb.MoveTowardPosition))]
+		public static bool MoveTowardPosition(NomaiInterfaceOrb __instance)
 		{
 			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;
 			}
 			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
-			if (!qsbOrb.TransformSync.HasAuthority)
+			if (qsbOrb.TransformSync.HasAuthority)
 			{
 				return true;
 			}
 
-			if (__instance._occupiedSlot == null)
+			var pointVelocity = __instance._parentBody.GetPointVelocity(__instance._orbBody.GetPosition());
+			__instance._orbBody.SetVelocity(pointVelocity);
+			if (!__instance._applyForcesWhileMoving)
 			{
-				foreach (var slot in __instance._slots)
-				{
-					if (slot != null && slot.CheckOrbCollision(__instance))
-					{
-						__instance._occupiedSlot = slot;
-						__instance._enterSlotTime = Time.time;
-						if (slot.CancelsDragOnCollision())
-						{
-							__instance.CancelDrag();
-						}
-						if (playAudio && __instance._orbAudio != null && slot.GetPlayActivationAudio())
-						{
-							__instance._orbAudio.PlaySlotActivatedClip();
-						}
-						QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, __instance._occupiedSlot, true, playAudio);
-						break;
-					}
-				}
+				__instance._forceApplier.SetApplyForces(false);
 			}
-			else if ((!__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged) && !__instance._occupiedSlot.CheckOrbCollision(__instance))
-			{
-				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, __instance._occupiedSlot, false, playAudio);
-				__instance._occupiedSlot = null;
-			}
-			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);
 
 			return false;
 		}

@@ -89,8 +89,7 @@ namespace QSB.Events
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
-				new OrbSlotEvent(),
-				new OrbUserEvent(),
+				new OrbDragEvent(),
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
 				new SetAsTranslatedEvent(),

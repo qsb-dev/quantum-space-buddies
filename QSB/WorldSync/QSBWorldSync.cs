@@ -23,7 +23,7 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
 			where TWorldObject : IWorldObject
 		{
-			if (id < 0 || id >= WorldObjects.Count)
+			if (!WorldObjects.IsInRange(id))
 			{
 				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {WorldObjects.Count}.", MessageType.Warning);
 				return default;

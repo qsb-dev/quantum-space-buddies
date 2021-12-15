@@ -6,12 +6,12 @@ using QSB.WorldSync;
 
 namespace QSB.OrbSync.Events
 {
-	public class OrbUserEvent : QSBEvent<BoolWorldObjectMessage>
+	public class OrbDragEvent : QSBEvent<BoolWorldObjectMessage>
 	{
 		public override bool RequireWorldObjectsReady => true;
 
-		public override void SetupListener() => GlobalMessenger<QSBOrb, bool>.AddListener(EventNames.QSBOrbUser, Handler);
-		public override void CloseListener() => GlobalMessenger<QSBOrb, bool>.RemoveListener(EventNames.QSBOrbUser, Handler);
+		public override void SetupListener() => GlobalMessenger<QSBOrb, bool>.AddListener(EventNames.QSBOrbDrag, Handler);
+		public override void CloseListener() => GlobalMessenger<QSBOrb, bool>.RemoveListener(EventNames.QSBOrbDrag, Handler);
 
 		private void Handler(QSBOrb qsbOrb, bool isDragging) => SendEvent(CreateMessage(qsbOrb, isDragging));
 
