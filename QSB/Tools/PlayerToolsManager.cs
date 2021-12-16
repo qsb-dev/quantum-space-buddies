@@ -1,4 +1,5 @@
-﻿using QSB.Tools.FlashlightTool;
+﻿using QSB.Player;
+using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.SignalscopeTool;
 using QSB.Tools.TranslatorTool;
@@ -19,11 +20,11 @@ namespace QSB.Tools
 		public static Material Props_HEA_Lightbulb_OFF_mat;
 		public static Material Structure_HEA_PlayerShip_Screens_mat;
 
-		public static void InitRemote(Transform playerCamera)
+		public static void InitRemote(PlayerInfo player)
 		{
 			try
 			{
-				CreateStowTransforms(playerCamera);
+				CreateStowTransforms(player.CameraBody.transform);
 
 				Props_HEA_PlayerTool_mat = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
 				Props_HEA_Lightbulb_OFF_mat = GameObject.Find("Props_HEA_Probe_Prelaunch").GetComponent<MeshRenderer>().materials[1];
@@ -48,10 +49,10 @@ namespace QSB.Tools
 				DebugLog.ToConsole($"Error when trying to find materials : {ex}", OWML.Common.MessageType.Error);
 			}
 
-			FlashlightCreator.CreateFlashlight(playerCamera);
-			SignalscopeCreator.CreateSignalscope(playerCamera);
-			ProbeLauncherCreator.CreateProbeLauncher(playerCamera);
-			TranslatorCreator.CreateTranslator(playerCamera);
+			FlashlightCreator.CreateFlashlight(player);
+			SignalscopeCreator.CreateSignalscope(player);
+			ProbeLauncherCreator.CreateProbeLauncher(player);
+			TranslatorCreator.CreateTranslator(player);
 		}
 
 		public static void InitLocal()

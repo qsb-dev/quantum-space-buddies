@@ -3,6 +3,7 @@ using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -67,23 +68,31 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 			return false;
 		}
 
-		// BUG : This plays the sound to everyone
-		// TODO : ehhhh idk about this. maybe copy each sound source so we have a 2d version (for local) and a 3d version (for remote)?
-		// this would probably be a whole qsb version on it's own
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayRetrievalClip))]
-		public static bool ProbeLauncherEffects_PlayRetrievalClip(OWAudioSource ____owAudioSource)
+		public static bool ProbeLauncherEffects_PlayRetrievalClip(ProbeLauncherEffects __instance)
 		{
-			____owAudioSource.GetAudioSource().spatialBlend = 1f;
+			if (__instance._owAudioSource == null)
+			{
+				DebugLog.ToConsole($"Error - _owAudioSource of {__instance._owAudioSource}", OWML.Common.MessageType.Error);
+				return true;
+			}
+
+			__instance._owAudioSource.GetAudioSource().spatialBlend = 1f;
 			return true;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayLaunchClip))]
-		public static bool ProbeLauncherEffects_PlayLaunchClip(OWAudioSource ____owAudioSource)
+		public static bool ProbeLauncherEffects_PlayLaunchClip(ProbeLauncherEffects __instance)
 		{
-			____owAudioSource.GetAudioSource().spatialBlend = 1f;
+			if (__instance._owAudioSource == null)
+			{
+				DebugLog.ToConsole($"Error - _owAudioSource of {__instance._owAudioSource}", OWML.Common.MessageType.Error);
+				return true;
+			}
+
+			__instance._owAudioSource.GetAudioSource().spatialBlend = 1f;
 			return true;
 		}
 	}
