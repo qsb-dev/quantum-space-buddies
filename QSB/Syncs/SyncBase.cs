@@ -314,9 +314,7 @@ namespace QSB.Syncs
 
 			Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
 			Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedObject.transform.position, Color.red);
-
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 6, Color.green);
-
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
