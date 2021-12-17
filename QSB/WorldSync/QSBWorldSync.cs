@@ -106,17 +106,33 @@ namespace QSB.WorldSync
 			where TUnityObject : MonoBehaviour
 		{
 			var list = GetUnityObjects<TUnityObject>().ToList();
-			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {list.Count} instances.", MessageType.Info);
-			for (var id = 0; id < list.Count; id++)
+			Init<TWorldObject, TUnityObject>(list);
+		}
+
+		public static void Init<TWorldObject, TUnityObject>(params Type[] typesToExclude)
+			where TWorldObject : WorldObject<TUnityObject>, new()
+			where TUnityObject : MonoBehaviour
+		{
+			var list = GetUnityObjects<TUnityObject>().Where(x => !typesToExclude.Contains(x.GetType()));
+			Init<TWorldObject, TUnityObject>(list);
+		}
+
+		private static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom)
+			where TWorldObject : WorldObject<TUnityObject>, new()
+			where TUnityObject : MonoBehaviour
+		{
+			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {listToInitFrom.Count()} instances.", MessageType.Info);
+			foreach (var item in listToInitFrom)
 			{
 				var obj = new TWorldObject
 				{
-					AttachedObject = list[id],
+					AttachedObject = item,
 					ObjectId = WorldObjects.Count
 				};
+
 				obj.Init();
 				WorldObjects.Add(obj);
-				WorldObjectsToUnityObjects.Add(list[id], obj);
+				WorldObjectsToUnityObjects.Add(item, obj);
 			}
 		}
 
