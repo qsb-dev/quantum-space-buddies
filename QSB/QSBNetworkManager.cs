@@ -233,6 +233,16 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
+			// revert authority from ship
+			if (ShipTransformSync.LocalInstance)
+			{
+				var identity = ShipTransformSync.LocalInstance.NetIdentity;
+				if (identity.ClientAuthorityOwner == conn)
+				{
+					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+				}
+			}
+
 			// stop dragging for the orbs this player was dragging
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
@@ -246,16 +256,6 @@ namespace QSB
 				{
 					qsbOrb.SetDragging(false);
 					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
-				}
-			}
-
-			// revert authority from ship
-			if (ShipTransformSync.LocalInstance)
-			{
-				var identity = ShipTransformSync.LocalInstance.NetIdentity;
-				if (identity.ClientAuthorityOwner == conn)
-				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
 			}
 

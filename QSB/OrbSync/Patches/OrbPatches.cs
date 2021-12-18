@@ -16,11 +16,11 @@ namespace QSB.OrbSync.Patches
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.StartDragFromPosition))]
 		public static void StartDragFromPosition(NomaiInterfaceOrb __instance)
 		{
-			if (!__instance._isBeingDragged)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!__instance._isBeingDragged)
 			{
 				return;
 			}
@@ -30,46 +30,23 @@ namespace QSB.OrbSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CancelDrag))]
-		public static void CancelDrag(NomaiInterfaceOrb __instance)
+		public static bool CancelDrag(NomaiInterfaceOrb __instance)
 		{
-			if (!__instance._isBeingDragged)
-			{
-				return;
-			}
 			if (!WorldObjectManager.AllObjectsReady)
 			{
-				return;
+				return true;
+			}
+			if (!__instance._isBeingDragged)
+			{
+				return false;
 			}
 			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
-				return;
+				return false;
 			}
 			QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(NomaiInterfaceOrb.MoveTowardPosition))]
-		public static bool MoveTowardPosition(NomaiInterfaceOrb __instance)
-		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return true;
-			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
-			if (qsbOrb.TransformSync.HasAuthority)
-			{
-				return true;
-			}
-
-			var pointVelocity = __instance._parentBody.GetPointVelocity(__instance._orbBody.GetPosition());
-			__instance._orbBody.SetVelocity(pointVelocity);
-			if (!__instance._applyForcesWhileMoving)
-			{
-				__instance._forceApplier.SetApplyForces(false);
-			}
-
-			return false;
+			return true;
 		}
 
 		[HarmonyPrefix]
@@ -83,7 +60,7 @@ namespace QSB.OrbSync.Patches
 			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
-				return true;
+				return false;
 			}
 
 			if (__instance._occupiedSlot == null)
@@ -114,6 +91,30 @@ namespace QSB.OrbSync.Patches
 				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, -1);
 			}
 			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);
+
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(nameof(NomaiInterfaceOrb.MoveTowardPosition))]
+		public static bool MoveTowardPosition(NomaiInterfaceOrb __instance)
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			if (qsbOrb.TransformSync.HasAuthority)
+			{
+				return true;
+			}
+
+			var pointVelocity = __instance._parentBody.GetPointVelocity(__instance._orbBody.GetPosition());
+			__instance._orbBody.SetVelocity(pointVelocity);
+			if (!__instance._applyForcesWhileMoving)
+			{
+				__instance._forceApplier.SetApplyForces(false);
+			}
 
 			return false;
 		}
