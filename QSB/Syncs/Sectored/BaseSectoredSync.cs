@@ -61,7 +61,7 @@ namespace QSB.Syncs.Sectored
 
 		private void InitSector()
 		{
-			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+			var closestSector = SectorSync.GetClosestSector();
 			if (closestSector != null)
 			{
 				SetReferenceSector(closestSector);
@@ -208,7 +208,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (SectorSync.IsReady)
 				{
-					var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+					var closestSector = SectorSync.GetClosestSector();
 					if (closestSector != null)
 					{
 						SetReferenceSector(closestSector);
