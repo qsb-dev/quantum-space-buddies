@@ -52,38 +52,41 @@ namespace QSB.OrbSync.WorldObjects
 			}
 		}
 
-		public void SetSlotted(int slotIndex, bool slotted)
+		public void SetSlot(int slotIndex)
 		{
-			var slot = AttachedObject._slots[slotIndex];
-			if (slot == AttachedObject._occupiedSlot)
+			var oldSlot = AttachedObject._occupiedSlot;
+			var newSlot = slotIndex == -1 ? null : AttachedObject._slots[slotIndex];
+			if (newSlot == oldSlot)
 			{
 				return;
 			}
 
-			if (slotted)
+			if (oldSlot)
 			{
-				slot._occupyingOrb = AttachedObject;
-				if (Time.timeSinceLevelLoad > 1f && !AttachedObject._orbBody.IsSuspended())
-				{
-					slot.RaiseEvent(nameof(slot.OnSlotActivated), slot);
-				}
-
-				AttachedObject._occupiedSlot = slot;
-				AttachedObject._enterSlotTime = Time.time;
-				if (AttachedObject._orbAudio != null && slot.GetPlayActivationAudio())
-				{
-					AttachedObject._orbAudio.PlaySlotActivatedClip();
-				}
-			}
-			else
-			{
-				slot._occupyingOrb = null;
+				oldSlot._occupyingOrb = null;
 				if (!AttachedObject._orbBody.IsSuspended())
 				{
-					slot.RaiseEvent(nameof(slot.OnSlotDeactivated), slot);
+					oldSlot.RaiseEvent(nameof(oldSlot.OnSlotDeactivated), oldSlot);
 				}
 
 				AttachedObject._occupiedSlot = null;
+			}
+
+			if (newSlot)
+			{
+				newSlot._occupyingOrb = AttachedObject;
+				if (Time.timeSinceLevelLoad > 1f && !AttachedObject._orbBody.IsSuspended())
+				{
+					newSlot.RaiseEvent(nameof(newSlot.OnSlotActivated), newSlot);
+				}
+
+				AttachedObject._occupiedSlot = newSlot;
+				AttachedObject._enterSlotTime = Time.time;
+				if (AttachedObject._orbAudio != null && newSlot.GetPlayActivationAudio())
+				{
+					AttachedObject._orbAudio.PlaySlotActivatedClip();
+				}
+
 			}
 		}
 	}

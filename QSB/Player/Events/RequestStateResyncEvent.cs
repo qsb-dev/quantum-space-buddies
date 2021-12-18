@@ -5,8 +5,6 @@ using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
-using QSB.OrbSync;
-using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Tools.TranslatorTool.TranslationSync;
@@ -136,19 +134,13 @@ namespace QSB.Player.Events
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (!qsbOrb.TransformSync.enabled ||
-				    !qsbOrb.TransformSync.HasAuthority ||
-				    qsbOrb.AttachedObject._orbBody.IsSuspended())
+				    !qsbOrb.TransformSync.HasAuthority)
 				{
 					continue;
 				}
 
 				QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, qsbOrb.AttachedObject._isBeingDragged);
-
-				for (var slotIndex = 0; slotIndex < qsbOrb.AttachedObject._slots.Length; slotIndex++)
-				{
-					var slot = qsbOrb.AttachedObject._slots[slotIndex];
-					QSBEventManager.FireEvent(EventNames.QSBOrbSlotted, qsbOrb, slotIndex, qsbOrb.AttachedObject._occupiedSlot == slot);
-				}
+				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot));
 			}
 		}
 	}

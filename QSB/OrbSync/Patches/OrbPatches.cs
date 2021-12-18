@@ -104,15 +104,15 @@ namespace QSB.OrbSync.Patches
 						{
 							__instance._orbAudio.PlaySlotActivatedClip();
 						}
-						QSBEventManager.FireEvent(EventNames.QSBOrbSlotted, qsbOrb, slotIndex, true);
+						QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, slotIndex);
 						break;
 					}
 				}
 			}
 			else if ((!__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged) && !__instance._occupiedSlot.CheckOrbCollision(__instance))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBOrbSlotted, qsbOrb, __instance._slots.IndexOf(__instance._occupiedSlot), false);
 				__instance._occupiedSlot = null;
+				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, -1);
 			}
 			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);
 

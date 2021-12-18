@@ -10,11 +10,16 @@ namespace QSB.OrbSync.TransformSync
 {
 	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		private static readonly List<NomaiOrbTransformSync> _instances = new();
-
+		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
+		public override bool UseInterpolation => true;
 		public override bool IsPlayerObject => false;
+		protected override float DistanceLeeway => 1f;
+
+		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
+		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
 
 		private QSBOrb _qsbOrb;
+		private static readonly List<NomaiOrbTransformSync> _instances = new();
 
 		public override void Start()
 		{
@@ -51,11 +56,5 @@ namespace QSB.OrbSync.TransformSync
 			SetReferenceTransform(origParent);
 		}
 
-		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
-		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
-
-		protected override float DistanceLeeway => 1f;
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => true;
 	}
 }
