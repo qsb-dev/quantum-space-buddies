@@ -124,19 +124,20 @@ namespace QSB.SectorSync
 			var closest = goodSectors
 				.OrderBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody)).First();
 
-			bool IsApproxCloseToClosestSector(QSBSector sectorToCheck)
-			{
-				var pos = _sectorDetector._attachedRigidbody.GetPosition();
-				return OWMath.ApproxEquals(Vector3.Distance(sectorToCheck.Position, pos),
-					Vector3.Distance(closest.Position, pos),
-					0.01f);
-			}
-
-			bool IsFakeSectorActive(QSBSector fakeSectorToCheck)
-				=> goodSectors.Any(x => fakeSectorToCheck.FakeSector.AttachedSector == x.AttachedObject);
-
 			if (inASector)
 			{
+				var pos = _sectorDetector._attachedRigidbody.GetPosition();
+
+				bool IsApproxCloseToClosestSector(QSBSector sectorToCheck)
+				{
+					return OWMath.ApproxEquals(Vector3.Distance(sectorToCheck.Position, pos),
+						Vector3.Distance(closest.Position, pos),
+						0.01f);
+				}
+
+				bool IsFakeSectorActive(QSBSector fakeSectorToCheck)
+					=> goodSectors.Any(x => fakeSectorToCheck.FakeSector.AttachedSector == x.AttachedObject);
+
 				var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors.FirstOrDefault(x => IsApproxCloseToClosestSector(x) && IsFakeSectorActive(x));
 				return fakeToSyncTo ?? closest;
 			}
