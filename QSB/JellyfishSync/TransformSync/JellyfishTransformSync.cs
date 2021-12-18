@@ -56,11 +56,11 @@ namespace QSB.JellyfishSync.TransformSync
 			}
 			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(!AttachedObject.IsSuspended());
+			NetIdentity.FireAuthQueue(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(true);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(false);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{

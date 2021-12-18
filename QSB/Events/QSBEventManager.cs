@@ -119,7 +119,7 @@ namespace QSB.Events
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
-				new AuthorityQueueEvent(),
+				new AuthQueueEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),
