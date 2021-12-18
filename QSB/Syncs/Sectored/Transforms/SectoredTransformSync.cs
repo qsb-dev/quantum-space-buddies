@@ -86,10 +86,8 @@ namespace QSB.Syncs.Sectored.Transforms
 
 			if (UseInterpolation)
 			{
-				var relPos = ReferenceTransform.ToRelPos(AttachedObject.position);
-				var relRot = ReferenceTransform.ToRelRot(AttachedObject.rotation);
-				AttachedObject.position = ReferenceTransform.FromRelPos(SmartSmoothDamp(relPos, transform.position));
-				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmartSmoothDamp(relRot, transform.rotation));
+				AttachedObject.position = ReferenceTransform.FromRelPos(SmoothPosition);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
 			}
 			else
 			{

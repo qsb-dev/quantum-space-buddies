@@ -94,29 +94,5 @@ namespace QSB.OrbSync.Patches
 
 			return false;
 		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(NomaiInterfaceOrb.MoveTowardPosition))]
-		public static bool MoveTowardPosition(NomaiInterfaceOrb __instance)
-		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return true;
-			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
-			if (qsbOrb.TransformSync.HasAuthority)
-			{
-				return true;
-			}
-
-			var pointVelocity = __instance._parentBody.GetPointVelocity(__instance._orbBody.GetPosition());
-			__instance._orbBody.SetVelocity(pointVelocity);
-			if (!__instance._applyForcesWhileMoving)
-			{
-				__instance._forceApplier.SetApplyForces(false);
-			}
-
-			return false;
-		}
 	}
 }

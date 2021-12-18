@@ -107,6 +107,8 @@ namespace QSB.Syncs
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 		protected bool _isInitialized;
+		protected Vector3 SmoothPosition;
+		protected Quaternion SmoothRotation;
 
 		protected abstract T SetAttachedObject();
 		protected abstract bool UpdateTransform();
@@ -215,12 +217,18 @@ namespace QSB.Syncs
 				return;
 			}
 
+			if (!HasAuthority && UseInterpolation)
+			{
+				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
+				SmoothRotation = SmartSmoothDamp(SmoothRotation, transform.rotation);
+			}
+
 			UpdateTransform();
 
 			base.Update();
 		}
 
-		protected Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
 		{
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
@@ -238,13 +246,31 @@ namespace QSB.Syncs
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
-		protected Quaternion SmartSmoothDamp(Quaternion currentRotation, Quaternion targetRotation)
+		private Quaternion SmartSmoothDamp(Quaternion currentRotation, Quaternion targetRotation)
 		{
 			return QuaternionHelper.SmoothDamp(currentRotation, targetRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
 		public void SetReferenceTransform(Transform referenceTransform)
-			=> ReferenceTransform = referenceTransform;
+		{
+			if (ReferenceTransform == referenceTransform)
+			{
+				return;
+			}
+
+			ReferenceTransform = referenceTransform;
+
+			if (HasAuthority)
+			{
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
+			}
+			else if (UseInterpolation)
+			{
+				SmoothPosition = transform.position;
+				SmoothRotation = transform.rotation;
+			}
+		}
 
 		protected virtual void OnRenderObject()
 		{
