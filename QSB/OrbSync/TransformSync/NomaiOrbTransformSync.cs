@@ -19,6 +19,7 @@ namespace QSB.OrbSync.TransformSync
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
 
+		private OWRigidbody _attachedBody;
 		private QSBOrb _qsbOrb;
 		private static readonly List<NomaiOrbTransformSync> _instances = new();
 
@@ -37,12 +38,8 @@ namespace QSB.OrbSync.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
-			var body = AttachedObject.GetAttachedOWRigidbody();
-			if (body)
-			{
-				body.OnUnsuspendOWRigidbody -= OnUnsuspend;
-				body.OnSuspendOWRigidbody -= OnSuspend;
-			}
+			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override void Init()
@@ -57,10 +54,10 @@ namespace QSB.OrbSync.TransformSync
 			_qsbOrb.TransformSync = this;
 
 			base.Init();
-			var body = AttachedObject.GetAttachedOWRigidbody();
-			SetReferenceTransform(body.GetOrigParent());
+			_attachedBody = AttachedObject.GetAttachedOWRigidbody();
+			SetReferenceTransform(_attachedBody.GetOrigParent());
 
-			if (body.GetOrigParent() == Locator.GetRootTransform())
+			if (_attachedBody.GetOrigParent() == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
@@ -71,9 +68,9 @@ namespace QSB.OrbSync.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
-			body.OnUnsuspendOWRigidbody += OnUnsuspend;
-			body.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.FireAuthQueue(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
