@@ -15,7 +15,7 @@ namespace QSB.SectorSync
 		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> FakeSectors = new();
 
-		public readonly List<BaseSectoredSync> SectoredSyncs = new();
+		public readonly List<IBaseSectoredSync> SectoredSyncs = new();
 
 		#region repeating timer
 

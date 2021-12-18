@@ -1,12 +1,11 @@
 ﻿using OWML.Common;
-using QSB.LogSync.Events;
 using QSB.Player;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Diagnostics;
+using UnityEngine;
 
 namespace QSB.Syncs.Sectored
 {
