@@ -13,9 +13,9 @@ namespace QSB.SectorSync
 	{
 		public static QSBSectorManager Instance { get; private set; }
 		public bool IsReady { get; private set; }
-		public List<QSBSector> FakeSectors = new();
+		public readonly List<QSBSector> FakeSectors = new();
 
-		public List<BaseSectoredSync> SectoredSyncs = new();
+		public readonly List<BaseSectoredSync> SectoredSyncs = new();
 
 		#region repeating timer
 
