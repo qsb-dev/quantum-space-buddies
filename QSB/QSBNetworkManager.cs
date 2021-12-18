@@ -233,14 +233,19 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			// revert authority for orbs
-			foreach (var orb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+			// stop dragging for the orbs this player was dragging
+			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				var identity = orb.TransformSync.NetIdentity;
+				if (!qsbOrb.TransformSync.enabled)
+				{
+					continue;
+				}
+
+				var identity = qsbOrb.TransformSync.NetIdentity;
 				if (identity.ClientAuthorityOwner == conn)
 				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
-					orb.AttachedObject.CancelDrag();
+					qsbOrb.SetDragging(false);
+					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
 				}
 			}
 

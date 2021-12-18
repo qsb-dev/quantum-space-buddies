@@ -82,11 +82,14 @@ namespace QSB.OrbSync.WorldObjects
 
 				AttachedObject._occupiedSlot = newSlot;
 				AttachedObject._enterSlotTime = Time.time;
+				if (newSlot.CancelsDragOnCollision())
+				{
+					AttachedObject.CancelDrag();
+				}
 				if (AttachedObject._orbAudio != null && newSlot.GetPlayActivationAudio())
 				{
 					AttachedObject._orbAudio.PlaySlotActivatedClip();
 				}
-
 			}
 		}
 	}

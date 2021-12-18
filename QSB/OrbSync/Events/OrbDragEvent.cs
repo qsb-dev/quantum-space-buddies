@@ -27,7 +27,7 @@ namespace QSB.OrbSync.Events
 
 			if (message.State && isHost)
 			{
-				qsbOrb.TransformSync.NetIdentity.SetAuthority(message.FromId);
+				qsbOrb.TransformSync.NetIdentity.UpdateAuthQueue(message.FromId, AuthQueueAction.Force);
 			}
 		}
 
@@ -37,7 +37,7 @@ namespace QSB.OrbSync.Events
 
 			if (message.State && isHost)
 			{
-				qsbOrb.TransformSync.NetIdentity.SetAuthority(message.FromId);
+				qsbOrb.TransformSync.NetIdentity.UpdateAuthQueue(message.FromId, AuthQueueAction.Force);
 			}
 
 			qsbOrb.SetDragging(message.State);

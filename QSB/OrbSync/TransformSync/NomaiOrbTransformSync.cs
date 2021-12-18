@@ -3,6 +3,7 @@ using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 
@@ -31,6 +32,13 @@ namespace QSB.OrbSync.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.UnregisterAuthQueue();
+			}
+			AttachedObject.GetAttachedOWRigidbody().OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedObject.GetAttachedOWRigidbody().OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override void Init()
@@ -47,14 +55,24 @@ namespace QSB.OrbSync.TransformSync
 			base.Init();
 
 			var origParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
+			SetReferenceTransform(origParent);
 			if (origParent == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
+				return;
 			}
 
-			SetReferenceTransform(origParent);
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.RegisterAuthQueue();
+			}
+			AttachedObject.GetAttachedOWRigidbody().OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedObject.GetAttachedOWRigidbody().OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.FireAuthQueue(AttachedObject.GetAttachedOWRigidbody().IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
 	}
 }
