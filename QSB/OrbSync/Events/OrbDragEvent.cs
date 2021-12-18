@@ -25,7 +25,7 @@ namespace QSB.OrbSync.Events
 		{
 			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(message.ObjectId);
 
-			if (message.State && isHost)
+			if (isHost && message.State)
 			{
 				qsbOrb.TransformSync.NetIdentity.UpdateAuthQueue(message.FromId, AuthQueueAction.Force);
 			}
@@ -35,7 +35,7 @@ namespace QSB.OrbSync.Events
 		{
 			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(message.ObjectId);
 
-			if (message.State && isHost)
+			if (isHost && message.State)
 			{
 				qsbOrb.TransformSync.NetIdentity.UpdateAuthQueue(message.FromId, AuthQueueAction.Force);
 			}
