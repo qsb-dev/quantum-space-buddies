@@ -129,11 +129,9 @@ namespace QSB.SectorSync
 				var pos = _sectorDetector._attachedRigidbody.GetPosition();
 
 				bool IsApproxCloseToClosestSector(QSBSector sectorToCheck)
-				{
-					return OWMath.ApproxEquals(Vector3.Distance(sectorToCheck.Position, pos),
-						Vector3.Distance(closest.Position, pos),
-						0.01f);
-				}
+					=> OWMath.ApproxEquals(Vector3.Distance(sectorToCheck.Position, pos),
+					Vector3.Distance(closest.Position, pos),
+					0.01f);
 
 				bool IsFakeSectorActive(QSBSector fakeSectorToCheck)
 					=> goodSectors.Any(x => fakeSectorToCheck.FakeSector.AttachedSector == x.AttachedObject);
