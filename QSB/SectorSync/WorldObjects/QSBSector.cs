@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -86,7 +85,7 @@ namespace QSB.SectorSync.WorldObjects
 						return false;
 					}
 
-					if (!shuttleController.GetValue<bool>("_isPlayerInside"))
+					if (!shuttleController._isPlayerInside)
 					{
 						return false;
 					}

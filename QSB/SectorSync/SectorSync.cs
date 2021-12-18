@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -48,7 +47,8 @@ namespace QSB.SectorSync
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
 
-			_attachedOWRigidbody = _sectorDetector.GetValue<OWRigidbody>("_attachedRigidbody");
+			_attachedOWRigidbody = _sectorDetector._attachedRigidbody;
+
 			if (_attachedOWRigidbody == null)
 			{
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
@@ -62,7 +62,7 @@ namespace QSB.SectorSync
 
 		private void PopulateSectorList()
 		{
-			var currentList = _sectorDetector.GetValue<List<Sector>>("_sectorList");
+			var currentList = _sectorDetector._sectorList;
 
 			SectorList.Clear();
 			foreach (var sector in currentList)
@@ -149,6 +149,7 @@ namespace QSB.SectorSync
 
 			var activeNotNullNotBlacklisted = listToCheck.Where(sector => sector.AttachedObject != null
 				&& sector.ShouldSyncTo(_targetType));
+
 			if (activeNotNullNotBlacklisted.Count() == 0)
 			{
 				return default;
@@ -157,28 +158,35 @@ namespace QSB.SectorSync
 			var ordered = activeNotNullNotBlacklisted
 				.OrderBy(sector => CalculateSectorScore(sector, trans, _attachedOWRigidbody));
 
-			// TODO : clean up this shit???
-			if (
-				numSectorsCurrentlyIn != 0 &&
-				// if any fake sectors are *roughly* in the same place as other sectors - we want fake sectors to override other sectors
-				QSBSectorManager.Instance.FakeSectors.Any(
-					x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f)
-				&& activeNotNullNotBlacklisted.Any(
-					y => y.AttachedObject == (x.AttachedObject as FakeSector).AttachedSector)))
+			var inASector = numSectorsCurrentlyIn != 0;
+
+			bool IsApproxCloseToFirstSector(QSBSector sectorToCheck)
+				=> OWMath.ApproxEquals(Vector3.Distance(sectorToCheck.Position, trans.position),
+				Vector3.Distance(ordered.FirstOrDefault().Position, trans.position),
+				0.01f);
+
+			bool IsFakeSectorActive(QSBSector sectorToCheck)
+				=> activeNotNullNotBlacklisted.Any(y => y.AttachedObject == (sectorToCheck.AttachedObject as FakeSector).AttachedSector);
+
+			var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors.FirstOrDefault(x => IsApproxCloseToFirstSector(x) && IsFakeSectorActive(x));
+
+			if (!inASector)
 			{
-				return QSBSectorManager.Instance.FakeSectors.First(x => OWMath.ApproxEquals(Vector3.Distance(x.Position, trans.position), Vector3.Distance(ordered.FirstOrDefault().Position, trans.position), 0.01f));
+				fakeToSyncTo = default;
 			}
 
-			return ordered.FirstOrDefault();
+			return fakeToSyncTo != default
+				? fakeToSyncTo
+				: ordered.FirstOrDefault();
 		}
 
 		public static float CalculateSectorScore(QSBSector sector, Transform trans, OWRigidbody rigidbody)
 		{
-			var distance = Vector3.Distance(sector.Position, trans.position); // want to be small
-			var radius = GetRadius(sector); // want to be small
-			var velocity = GetRelativeVelocity(sector, rigidbody); // want to be small
+			var distance = (sector.Position - trans.position).sqrMagnitude;
+			var radius = GetRadius(sector);
+			var velocity = GetRelativeVelocity(sector, rigidbody);
 
-			return Mathf.Pow(distance, 2) + Mathf.Pow(radius, 2) + Mathf.Pow(velocity, 2);
+			return distance + Mathf.Pow(radius, 2) + velocity;
 		}
 
 		public static float GetRadius(QSBSector sector)
@@ -206,8 +214,7 @@ namespace QSB.SectorSync
 			if (sectorRigidBody != null && rigidbody != null)
 			{
 				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
-				var relativeVelocityMagnitude = relativeVelocity.sqrMagnitude; // Remember this is squared for efficiency!
-				return relativeVelocityMagnitude;
+				return relativeVelocity.sqrMagnitude;
 			}
 
 			return 0;
