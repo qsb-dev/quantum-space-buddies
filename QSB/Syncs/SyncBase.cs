@@ -267,8 +267,8 @@ namespace QSB.Syncs
 			}
 			else if (UseInterpolation)
 			{
-				SmoothPosition = transform.position;
-				SmoothRotation = transform.rotation;
+				SmoothPosition = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				SmoothRotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
 			}
 		}
 
