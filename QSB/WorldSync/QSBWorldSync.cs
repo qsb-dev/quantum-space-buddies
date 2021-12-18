@@ -105,7 +105,7 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>().ToList();
+			var list = GetUnityObjects<TUnityObject>();
 			Init<TWorldObject, TUnityObject>(list);
 		}
 
@@ -117,7 +117,7 @@ namespace QSB.WorldSync
 			Init<TWorldObject, TUnityObject>(list);
 		}
 
-		private static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom)
+		public static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom)
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{

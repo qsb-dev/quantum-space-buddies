@@ -18,7 +18,7 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<IBaseSectoredSync> SectoredSyncs = new();
+		public readonly List<IBaseSectoredSync> SectoredSyncs = new();
 
 		public void Invoke()
 		{
