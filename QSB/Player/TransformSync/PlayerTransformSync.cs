@@ -99,7 +99,7 @@ namespace QSB.Player.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), Locator.GetPlayerBody(), TargetType.Player));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
 
 			// player body
 			var player = Locator.GetPlayerTransform();

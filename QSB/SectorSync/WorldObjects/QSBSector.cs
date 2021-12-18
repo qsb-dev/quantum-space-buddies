@@ -25,8 +25,7 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 		public Vector3 Position => Transform.position;
-		public bool IsFakeSector => AttachedObject is FakeSector;
-		public FakeSector FakeSector => (FakeSector)AttachedObject;
+		public bool IsFakeSector => AttachedObject.GetType() == typeof(FakeSector);
 
 		public override void Init()
 		{

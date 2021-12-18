@@ -2,8 +2,10 @@
 {
 	public enum TargetType
 	{
-		Player,
-		Probe,
-		Ship
+		None = 0,
+		Player = 1,
+		Probe = 2,
+		Ship = 3,
+		Other = 4
 	}
 }
