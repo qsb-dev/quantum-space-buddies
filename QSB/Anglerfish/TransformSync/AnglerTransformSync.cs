@@ -35,6 +35,8 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
+			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		public override float GetNetworkSendInterval() => 1;
@@ -51,9 +53,13 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
-			// for when you host/connect mid-game
+			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
 			NetIdentity.FireAuthQueue(!AttachedObject.IsSuspended());
 		}
+
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(true);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(false);
 
 		private bool _shouldUpdate;
 

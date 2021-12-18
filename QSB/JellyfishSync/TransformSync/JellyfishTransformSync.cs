@@ -36,6 +36,8 @@ namespace QSB.JellyfishSync.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
+			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		public override float GetNetworkSendInterval() => 10;
@@ -52,9 +54,13 @@ namespace QSB.JellyfishSync.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
-			// for when you host/connect mid-game
+			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
 			NetIdentity.FireAuthQueue(!AttachedObject.IsSuspended());
 		}
+
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(true);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(false);
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
