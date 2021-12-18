@@ -143,11 +143,9 @@ namespace QSB.Utility
 					var networkTransform = player.TransformSync;
 					var referenceSector = networkTransform.ReferenceSector;
 					var referenceTransform = networkTransform.ReferenceTransform;
-					var parent = networkTransform.AttachedObject?.transform.parent;
 
 					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
 					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
-					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}", parent == null ? Color.red : Color.white);
 				}
 			}
 			#endregion

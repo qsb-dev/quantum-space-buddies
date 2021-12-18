@@ -8,7 +8,7 @@ namespace QSB.Syncs.Sectored.Transforms
 {
 	public abstract class SectoredTransformSync : BaseSectoredSync<Transform>
 	{
-		public override bool ShouldReparentAttachedObject => true;
+		public override bool DestroyAttachedObject => true;
 
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();
@@ -79,20 +79,22 @@ namespace QSB.Syncs.Sectored.Transforms
 				return true;
 			}
 
-			var targetPos = transform.position;
-			var targetRot = transform.rotation;
-			if (targetPos != Vector3.zero)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				if (UseInterpolation)
-				{
-					AttachedObject.localPosition = SmartSmoothDamp(AttachedObject.localPosition, targetPos);
-					AttachedObject.localRotation = SmartSmoothDamp(AttachedObject.localRotation, targetRot);
-				}
-				else
-				{
-					AttachedObject.localPosition = targetPos;
-					AttachedObject.localRotation = targetRot;
-				}
+				return false;
+			}
+
+			if (UseInterpolation)
+			{
+				var relPos = ReferenceTransform.ToRelPos(AttachedObject.position);
+				var relRot = ReferenceTransform.ToRelRot(AttachedObject.rotation);
+				AttachedObject.position = ReferenceTransform.FromRelPos(SmartSmoothDamp(relPos, transform.position));
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmartSmoothDamp(relRot, transform.rotation));
+			}
+			else
+			{
+				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
 
 			return true;

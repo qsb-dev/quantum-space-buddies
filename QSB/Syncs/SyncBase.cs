@@ -94,7 +94,7 @@ namespace QSB.Syncs
 		public abstract bool UseInterpolation { get; }
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
-		public abstract bool ShouldReparentAttachedObject { get; }
+		public abstract bool DestroyAttachedObject { get; }
 		public abstract bool IsPlayerObject { get;  }
 
 		public T AttachedObject { get; set; }
@@ -126,7 +126,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnDestroy()
 		{
-			if (ShouldReparentAttachedObject)
+			if (DestroyAttachedObject)
 			{
 				if (!HasAuthority && AttachedObject != null)
 				{
@@ -145,7 +145,7 @@ namespace QSB.Syncs
 			}
 
 			// TODO : maybe make it's own option
-			if (ShouldReparentAttachedObject)
+			if (DestroyAttachedObject)
 			{
 				if (!HasAuthority && AttachedObject != null)
 				{
@@ -215,14 +215,6 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ShouldReparentAttachedObject
-				&& !HasAuthority
-				&& AttachedObject.transform.parent != ReferenceTransform)
-			{
-				DebugLog.ToConsole($"Warning : {LogName} : AttachedObject's parent is different to ReferenceTransform. Correcting...", MessageType.Warning);
-				ReparentAttachedObject(ReferenceTransform);
-			}
-
 			UpdateTransform();
 
 			base.Update();
@@ -252,48 +244,7 @@ namespace QSB.Syncs
 		}
 
 		public void SetReferenceTransform(Transform referenceTransform)
-		{
-			if (ReferenceTransform == referenceTransform)
-			{
-				return;
-			}
-
-			ReferenceTransform = referenceTransform;
-
-			if (ShouldReparentAttachedObject)
-			{
-				if (AttachedObject == null)
-				{
-					DebugLog.ToConsole($"Warning - AttachedObject was null for {LogName} when trying to set reference transform to {referenceTransform?.name}. Waiting until not null...", MessageType.Warning);
-					QSBCore.UnityEvents.RunWhen(
-						() => AttachedObject != null,
-						() => ReparentAttachedObject(referenceTransform));
-					return;
-				}
-
-				if (!HasAuthority)
-				{
-					ReparentAttachedObject(referenceTransform);
-				}
-			}
-
-			if (HasAuthority)
-			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
-			}
-		}
-
-		private void ReparentAttachedObject(Transform newParent)
-		{
-			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
-			{
-				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
-			}
-
-			AttachedObject.transform.SetParent(newParent, true);
-			AttachedObject.transform.localScale = Vector3.one;
-		}
+			=> ReferenceTransform = referenceTransform;
 
 		protected virtual void OnRenderObject()
 		{

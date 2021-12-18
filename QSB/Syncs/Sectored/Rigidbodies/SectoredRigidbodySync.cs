@@ -8,7 +8,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 {
 	public abstract class SectoredRigidbodySync : BaseSectoredSync<OWRigidbody>
 	{
-		public override bool ShouldReparentAttachedObject => false;
+		public override bool DestroyAttachedObject => false;
 
 		public const float PositionMovedThreshold = 0.05f;
 		public const float AngleRotatedThreshold = 0.05f;

@@ -7,7 +7,7 @@ namespace QSB.Syncs.Unsectored
 	{
 		public override bool IgnoreDisabledAttachedObject => false;
 		public override bool IgnoreNullReferenceTransform => false;
-		public override bool ShouldReparentAttachedObject => false;
+		public override bool DestroyAttachedObject => false;
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState) { }
 	}
