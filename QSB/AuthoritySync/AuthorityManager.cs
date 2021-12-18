@@ -22,21 +22,16 @@ namespace QSB.AuthoritySync
 		public static void UpdateAuthQueue(this QNetworkIdentity identity, uint id, AuthQueueAction action)
 		{
 			var authQueue = _authQueue[identity];
+			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
 
 			switch (action)
 			{
 				case AuthQueueAction.Add:
-					if (!authQueue.SafeAdd(id))
-					{
-						return;
-					}
+					authQueue.SafeAdd(id);
 					break;
 
 				case AuthQueueAction.Remove:
-					if (!authQueue.Remove(id))
-					{
-						return;
-					}
+					authQueue.Remove(id);
 					break;
 
 				case AuthQueueAction.Force:
@@ -46,7 +41,10 @@ namespace QSB.AuthoritySync
 			}
 
 			var newOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
-			SetAuthority(identity, newOwner);
+			if (oldOwner != newOwner)
+			{
+				SetAuthority(identity, newOwner);
+			}
 		}
 
 		/// <summary>

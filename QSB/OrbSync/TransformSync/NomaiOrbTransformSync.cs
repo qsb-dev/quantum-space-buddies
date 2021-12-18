@@ -37,8 +37,12 @@ namespace QSB.OrbSync.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
-			AttachedObject.GetAttachedOWRigidbody().OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedObject.GetAttachedOWRigidbody().OnSuspendOWRigidbody -= OnSuspend;
+			var body = AttachedObject.GetAttachedOWRigidbody();
+			if (body)
+			{
+				body.OnUnsuspendOWRigidbody -= OnUnsuspend;
+				body.OnSuspendOWRigidbody -= OnSuspend;
+			}
 		}
 
 		protected override void Init()
@@ -53,10 +57,10 @@ namespace QSB.OrbSync.TransformSync
 			_qsbOrb.TransformSync = this;
 
 			base.Init();
+			var body = AttachedObject.GetAttachedOWRigidbody();
+			SetReferenceTransform(body.GetOrigParent());
 
-			var origParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
-			SetReferenceTransform(origParent);
-			if (origParent == Locator.GetRootTransform())
+			if (body.GetOrigParent() == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
@@ -67,9 +71,9 @@ namespace QSB.OrbSync.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
-			AttachedObject.GetAttachedOWRigidbody().OnUnsuspendOWRigidbody += OnUnsuspend;
-			AttachedObject.GetAttachedOWRigidbody().OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(AttachedObject.GetAttachedOWRigidbody().IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			body.OnUnsuspendOWRigidbody += OnUnsuspend;
+			body.OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.FireAuthQueue(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
