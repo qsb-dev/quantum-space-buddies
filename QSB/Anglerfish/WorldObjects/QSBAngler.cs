@@ -1,5 +1,4 @@
 ﻿using QSB.Anglerfish.TransformSync;
-using QSB.AuthoritySync;
 using QSB.WorldSync;
 using QuantumUNET;
 using UnityEngine;
@@ -22,25 +21,13 @@ namespace QSB.Anglerfish.WorldObjects
 			}
 
 			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
-			{
-				FinishDelayedReady();
-
-				if (QSBCore.IsHost)
-				{
-					TransformSync.NetIdentity.RegisterAuthQueue();
-				}
-
-				// for when you host/connect mid-game
-				TransformSync.NetIdentity.FireAuthQueue(!AttachedObject._anglerBody.IsSuspended());
-			});
+			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
 		}
 
 		public override void OnRemoval()
 		{
 			if (QSBCore.IsHost)
 			{
-				TransformSync.NetIdentity.UnregisterAuthQueue();
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}

@@ -3,6 +3,7 @@ using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
+using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
@@ -29,6 +30,11 @@ namespace QSB.Anglerfish.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.UnregisterAuthQueue();
+			}
 		}
 
 		public override float GetNetworkSendInterval() => 1;
@@ -40,6 +46,13 @@ namespace QSB.Anglerfish.TransformSync
 
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.RegisterAuthQueue();
+			}
+			// for when you host/connect mid-game
+			NetIdentity.FireAuthQueue(!AttachedObject.IsSuspended());
 		}
 
 		private bool _shouldUpdate;
@@ -75,10 +88,10 @@ namespace QSB.Anglerfish.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null
-				|| AttachedObject.IsSuspended())
+			    || !QSBCore.ShowLinesInDebug
+			    || !IsReady
+			    || ReferenceTransform == null
+			    || AttachedObject.IsSuspended())
 			{
 				return;
 			}

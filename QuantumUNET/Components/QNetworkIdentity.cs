@@ -777,7 +777,7 @@ namespace QuantumUNET.Components
 				m_IsServer = false;
 				IsClient = false;
 				HasAuthority = false;
-				NetId = (QNetworkInstanceId)typeof(QNetworkInstanceId).GetField("Zero", System.Reflection.BindingFlags.Static).GetValue(null);
+				NetId = QNetworkInstanceId.Zero;
 				IsLocalPlayer = false;
 				ConnectionToServer = null;
 				ConnectionToClient = null;

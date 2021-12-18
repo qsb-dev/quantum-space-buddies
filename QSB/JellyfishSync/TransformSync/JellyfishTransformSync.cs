@@ -4,6 +4,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
+using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.TransformSync
@@ -30,6 +31,11 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.UnregisterAuthQueue();
+			}
 		}
 
 		public override float GetNetworkSendInterval() => 10;
@@ -41,6 +47,13 @@ namespace QSB.JellyfishSync.TransformSync
 
 			base.Init();
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.RegisterAuthQueue();
+			}
+			// for when you host/connect mid-game
+			NetIdentity.FireAuthQueue(!AttachedObject.IsSuspended());
 		}
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -123,10 +136,10 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null
-				|| AttachedObject.IsSuspended())
+			    || !QSBCore.ShowLinesInDebug
+			    || !IsReady
+			    || ReferenceTransform == null
+			    || AttachedObject.IsSuspended())
 			{
 				return;
 			}
