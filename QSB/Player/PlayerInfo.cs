@@ -121,8 +121,8 @@ namespace QSB.Player
 
 		// Misc
 		public bool IsReady { get; set; }
-		public bool IsInMoon; // MOVE : move into PlayerStates?
-		public bool IsInShrine; // MOVE : move into PlayerStates?
+		public bool IsInMoon;
+		public bool IsInShrine;
 		public IQSBQuantumObject EntangledObject;
 		public bool IsDead { get; set; }
 		public ClientState State { get; set; }

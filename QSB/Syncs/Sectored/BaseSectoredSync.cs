@@ -1,11 +1,12 @@
 ﻿using OWML.Common;
+using QSB.LogSync.Events;
 using QSB.Player;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using UnityEngine;
+using System.Diagnostics;
 
 namespace QSB.Syncs.Sectored
 {
@@ -71,7 +72,7 @@ namespace QSB.Syncs.Sectored
 
 		private void InitSector()
 		{
-			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+			var closestSector = SectorSync.GetClosestSector();
 			if (closestSector != null)
 			{
 				SetReferenceSector(closestSector);
@@ -156,6 +157,12 @@ namespace QSB.Syncs.Sectored
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
+			if (HasAuthority)
+			{
+				reader.ReadInt32();
+				return;
+			}
+
 			int sectorId;
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -212,7 +219,7 @@ namespace QSB.Syncs.Sectored
 			{
 				if (SectorSync.IsReady)
 				{
-					var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+					var closestSector = SectorSync.GetClosestSector();
 					if (closestSector != null)
 					{
 						SetReferenceSector(closestSector);
