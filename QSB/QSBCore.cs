@@ -8,6 +8,7 @@ using QSB.ConversationSync;
 using QSB.EchoesOfTheEye.AirlockSync;
 using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.ElevatorSync;
+using QSB.EyeOfTheUniverse.InstrumentSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
@@ -145,6 +146,7 @@ namespace QSB
 			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
 			gameObject.AddComponent<TornadoManager>();
+			gameObject.AddComponent<QuantumInstrumentManager>();
 
 			DebugBoxManager.Init();
 

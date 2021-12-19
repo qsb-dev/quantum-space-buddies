@@ -4,8 +4,5 @@
 	{
 		public override CharacterDialogueTree GetDialogueTree()
 			=> AttachedObject._dialogueSystem;
-
-		public override bool InConversation()
-			=> AttachedObject._talking;
 	}
 }

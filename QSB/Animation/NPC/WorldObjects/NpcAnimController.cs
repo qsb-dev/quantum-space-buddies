@@ -15,6 +15,7 @@ namespace QSB.Animation.NPC.WorldObjects
 		public virtual void EndConversation()
 			=> GetDialogueTree().RaiseEvent("OnEndConversation");
 
-		public abstract bool InConversation();
+		public virtual bool InConversation()
+			=> false;
 	}
 }

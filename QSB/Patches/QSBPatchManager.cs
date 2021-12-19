@@ -8,6 +8,7 @@ using QSB.ConversationSync.Patches;
 using QSB.DeathSync.Patches;
 using QSB.EchoesOfTheEye.LightSensorSync.Patches;
 using QSB.ElevatorSync.Patches;
+using QSB.EyeOfTheUniverse.InstrumentSync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
@@ -83,7 +84,8 @@ namespace QSB.Patches
 				new JellyfishPatches(),
 				new TravelerControllerPatches(),
 				new ZeroGCavePatches(),
-				new TornadoPatches()
+				new TornadoPatches(),
+				new QuantumInstrumentPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
