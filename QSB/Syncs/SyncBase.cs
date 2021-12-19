@@ -146,7 +146,6 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
 			}
 
-			// TODO : maybe make it's own option
 			if (DestroyAttachedObject)
 			{
 				if (!HasAuthority && AttachedObject != null)
