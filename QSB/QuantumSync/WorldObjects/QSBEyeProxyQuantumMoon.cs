@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using System.Linq;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -6,7 +7,8 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public override void Init()
 		{
-			ControllingPlayer = QSBPlayerManager.LocalPlayerId;
+			// smallest player id is the host
+			ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
 			base.Init();
 		}
 	}

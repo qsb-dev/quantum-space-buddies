@@ -7,9 +7,8 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public override void Init()
 		{
-			ControllingPlayer = QSBCore.IsHost
-				? QSBPlayerManager.LocalPlayerId
-				: QSBPlayerManager.PlayerList.OrderBy(x => x.PlayerId).First().PlayerId;
+			// smallest player id is the host
+			ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
 			base.Init();
 		}
 	}
