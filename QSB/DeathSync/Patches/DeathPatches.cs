@@ -53,13 +53,6 @@ namespace QSB.DeathSync.Patches
 			{
 				Locator.GetDeathManager().SetImpactDeathSpeed(impact.speed);
 				Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-				DebugLog.DebugWrite(string.Concat(new object[]
-				{
-				"Player killed from impact with ",
-				impact.otherCollider,
-				" attached to ",
-				impact.otherCollider.attachedRigidbody.gameObject.name
-				}));
 			}
 
 			return false;
@@ -108,7 +101,6 @@ namespace QSB.DeathSync.Patches
 				if (distanceFromShip > 8f)
 				{
 					____body.SetPosition(shipCenter);
-					DebugLog.DebugWrite("MOVE PLAYER BACK TO SHIP CENTER");
 				}
 
 				if (!____dead)
@@ -118,17 +110,6 @@ namespace QSB.DeathSync.Patches
 					{
 						____impactSpeed = a.magnitude;
 						____body.AddVelocityChange(-a);
-						DebugLog.DebugWrite("Would have killed player...");
-						//____dieNextUpdate = true;
-						DebugLog.DebugWrite(string.Concat(new object[]
-						{
-						"HIGH SPEED IMPACT: ",
-						__instance.name,
-						" hit the Ship at ",
-						____impactSpeed,
-						"m/s   Dist from ship: ",
-						distanceFromShip
-						}));
 					}
 				}
 
@@ -165,17 +146,6 @@ namespace QSB.DeathSync.Patches
 										____dieNextUpdate = true;
 									}
 
-									DebugLog.DebugWrite(string.Concat(new object[]
-									{
-									"HIGH SPEED IMPACT: ",
-									__instance.name,
-									" hit ",
-									____raycastHits[i].rigidbody.name,
-									" at ",
-									____impactSpeed,
-									"m/s   RF: ",
-									passiveReferenceFrame.GetOWRigidBody().name
-									}));
 									break;
 								}
 							}
@@ -191,22 +161,18 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
 		{
-			DebugLog.DebugWrite($"KILL PLAYER PREFIX deathtype:{deathType}");
 			if (RespawnOnDeath.Instance == null)
 			{
-				DebugLog.DebugWrite($"- RespawnOnDeath.Instance is null, allowing death.");
 				return true;
 			}
 
 			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
 			{
-				DebugLog.DebugWrite($"- DeathType {deathType} is allowed, allowing death.");
 				return true;
 			}
 
 			if (QSBPlayerManager.LocalPlayer.IsDead)
 			{
-				DebugLog.DebugWrite($"- already dead");
 				return false;
 			}
 
@@ -214,8 +180,6 @@ namespace QSB.DeathSync.Patches
 
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
 			{
-				DebugLog.DebugWrite($"- Only player left alive, allowing death.");
-				DebugLog.DebugWrite($"- sending end of loop event");
 				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
 				return true;
 			}
@@ -228,12 +192,10 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
 		{
-			DebugLog.DebugWrite($"KILL PLAYER POSTFIX deathtype:{deathType}");
 			if (!QSBPlayerManager.LocalPlayer.IsDead)
 			{
-				DebugLog.DebugWrite($"- sending death event");
+				QSBPlayerManager.LocalPlayer.IsDead = true;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
-				
 			}
 		}
 
