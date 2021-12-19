@@ -191,17 +191,34 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
 		{
+			DebugLog.DebugWrite($"KILL PLAYER PREFIX deathtype:{deathType}");
 			if (RespawnOnDeath.Instance == null)
 			{
+				DebugLog.DebugWrite($"- RespawnOnDeath.Instance is null, allowing death.");
 				return true;
 			}
 
 			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
 			{
+				DebugLog.DebugWrite($"- DeathType {deathType} is allowed, allowing death.");
 				return true;
 			}
 
-			QSBPlayerManager.LocalPlayer.IsDead = true;
+			if (QSBPlayerManager.LocalPlayer.IsDead)
+			{
+				DebugLog.DebugWrite($"- already dead");
+				return false;
+			}
+
+			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
+			{
+				DebugLog.DebugWrite($"- Only player left alive, allowing death.");
+				DebugLog.DebugWrite($"- sending end of loop event");
+				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				return true;
+			}
 
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
@@ -209,7 +226,16 @@ namespace QSB.DeathSync.Patches
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
-		public static void DeathManager_KillPlayer_Postfix(DeathType deathType) => QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
+		{
+			DebugLog.DebugWrite($"KILL PLAYER POSTFIX deathtype:{deathType}");
+			if (!QSBPlayerManager.LocalPlayer.IsDead)
+			{
+				DebugLog.DebugWrite($"- sending death event");
+				QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+				
+			}
+		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]

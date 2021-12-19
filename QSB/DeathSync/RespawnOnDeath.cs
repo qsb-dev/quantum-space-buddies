@@ -41,6 +41,7 @@ namespace QSB.DeathSync
 
 		public void Init()
 		{
+			DebugLog.DebugWrite($"INIT");
 			var playerTransform = Locator.GetPlayerTransform();
 			_playerResources = playerTransform.GetComponent<PlayerResources>();
 			_spaceSuit = Locator.GetPlayerSuit();
