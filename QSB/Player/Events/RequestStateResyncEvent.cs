@@ -12,6 +12,7 @@ using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.Player.Events
 {
@@ -113,8 +114,30 @@ namespace QSB.Player.Events
 					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id));
 			}
 
-			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x
-				=> QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, x.ObjectId, x.ControllingPlayer));
+			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
+			{
+				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, x.ObjectId, x.ControllingPlayer);
+
+				if (x is QSBQuantumMoon qsbQuantumMoon)
+				{
+					int stateIndex;
+					Vector3 onUnitSphere;
+					int orbitAngle;
+
+					var moon = qsbQuantumMoon.AttachedObject;
+					var moonBody = moon._moonBody;
+					stateIndex = moon.GetStateIndex();
+					var orbit = moon._orbits.First(y => y.GetStateIndex() == stateIndex);
+					var orbitBody = orbit.GetAttachedOWRigidbody();
+					var relPos = moonBody.GetWorldCenterOfMass() - orbitBody.GetWorldCenterOfMass();
+					var relVel = moonBody.GetVelocity() - orbitBody.GetVelocity();
+					onUnitSphere = relPos.normalized;
+					var perpendicular = Vector3.Cross(relPos, Vector3.up).normalized;
+					orbitAngle = (int)OWMath.WrapAngle(OWMath.Angle(perpendicular, relVel, relPos));
+
+					QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+				}
+			});
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
