@@ -64,10 +64,7 @@ namespace QSB.OrbSync.WorldObjects
 			if (oldSlot)
 			{
 				oldSlot._occupyingOrb = null;
-				if (!AttachedObject._orbBody.IsSuspended())
-				{
-					oldSlot.RaiseEvent(nameof(oldSlot.OnSlotDeactivated), oldSlot);
-				}
+				oldSlot.RaiseEvent(nameof(oldSlot.OnSlotDeactivated), oldSlot);
 
 				AttachedObject._occupiedSlot = null;
 			}
@@ -75,7 +72,7 @@ namespace QSB.OrbSync.WorldObjects
 			if (newSlot)
 			{
 				newSlot._occupyingOrb = AttachedObject;
-				if (Time.timeSinceLevelLoad > 1f && !AttachedObject._orbBody.IsSuspended())
+				if (Time.timeSinceLevelLoad > 1f)
 				{
 					newSlot.RaiseEvent(nameof(newSlot.OnSlotActivated), newSlot);
 				}
