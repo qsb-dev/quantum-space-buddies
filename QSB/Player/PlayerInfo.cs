@@ -15,6 +15,7 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System.Linq;
+using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Player

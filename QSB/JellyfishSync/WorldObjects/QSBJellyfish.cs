@@ -1,5 +1,4 @@
-﻿using QSB.AuthoritySync;
-using QSB.JellyfishSync.TransformSync;
+﻿using QSB.JellyfishSync.TransformSync;
 using QSB.WorldSync;
 using QuantumUNET;
 using UnityEngine;
@@ -15,33 +14,19 @@ namespace QSB.JellyfishSync.WorldObjects
 		{
 			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
 
-			JellyfishTransformSync.Jellyfish.Add(AttachedObject);
 			if (QSBCore.IsHost)
 			{
 				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab));
 			}
 
 			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, () =>
-			{
-				FinishDelayedReady();
-
-				if (QSBCore.IsHost)
-				{
-					TransformSync.NetIdentity.RegisterAuthQueue();
-				}
-
-				// for when you host/connect mid-game
-				TransformSync.NetIdentity.FireAuthQueue(!AttachedObject._jellyfishBody.IsSuspended());
-			});
+			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
 		}
 
 		public override void OnRemoval()
 		{
-			JellyfishTransformSync.Jellyfish.Remove(AttachedObject);
 			if (QSBCore.IsHost)
 			{
-				TransformSync.NetIdentity.UnregisterAuthQueue();
 				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}

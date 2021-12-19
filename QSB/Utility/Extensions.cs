@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -102,12 +103,28 @@ namespace QSB.Utility
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
 			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
 
-		public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> enumerable, Action<T> action)
+		public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
 		{
 			foreach (var item in enumerable)
 			{
 				action(item);
 			}
+		}
+
+		public static int IndexOf<T>(this T[] array, T value) => Array.IndexOf(array, value);
+
+		public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
+
+		public static bool TryGet<T>(this IList<T> list, int index, out T element)
+		{
+			if (!list.IsInRange(index))
+			{
+				element = default;
+				return false;
+			}
+
+			element = list[index];
+			return true;
 		}
 
 		private const BindingFlags Flags = BindingFlags.Instance

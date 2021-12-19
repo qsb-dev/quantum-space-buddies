@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace QSB.Syncs.Unsectored.Transforms
 {
-	public abstract class UnsectoredTransformSync : BaseUnsectoredSync
+	public abstract class UnsectoredTransformSync : BaseUnsectoredSync<Transform>
 	{
-		protected abstract Component InitLocalTransform();
-		protected abstract Component InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
-		protected override Component SetAttachedObject()
+		protected override Transform SetAttachedObject()
 			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -50,22 +50,20 @@ namespace QSB.Syncs.Unsectored.Transforms
 		{
 			if (HasAuthority)
 			{
-				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
 				return true;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
 			if (UseInterpolation)
 			{
-				AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-				AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				AttachedObject.position = ReferenceTransform.FromRelPos(SmoothPosition);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
 			}
 			else
 			{
-				AttachedObject.transform.position = targetPos;
-				AttachedObject.transform.rotation = targetRot;
+				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
 
 			return true;

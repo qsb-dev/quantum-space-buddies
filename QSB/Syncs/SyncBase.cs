@@ -5,7 +5,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace QSB.Syncs
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class SyncBase : QNetworkTransform
+	public abstract class SyncBase<T> : QNetworkTransform where T: Component
 	{
 		public uint AttachedNetId
 		{
@@ -55,8 +54,8 @@ namespace QSB.Syncs
 
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
-		private bool _baseIsReady 
-		{ 
+		private bool _baseIsReady
+		{
 			get
 			{
 				if (NetId.Value is uint.MaxValue or 0U)
@@ -95,21 +94,23 @@ namespace QSB.Syncs
 		public abstract bool UseInterpolation { get; }
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
-		public abstract bool ShouldReparentAttachedObject { get; }
+		public abstract bool DestroyAttachedObject { get; }
 		public abstract bool IsPlayerObject { get;  }
 
-		public Component AttachedObject { get; set; }
+		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
 		public string LogName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
-		protected Vector3 _positionSmoothVelocity;
-		protected Quaternion _rotationSmoothVelocity;
+		private Vector3 _positionSmoothVelocity;
+		private Quaternion _rotationSmoothVelocity;
 		protected bool _isInitialized;
+		protected Vector3 SmoothPosition;
+		protected Quaternion SmoothRotation;
 
-		protected abstract Component SetAttachedObject();
+		protected abstract T SetAttachedObject();
 		protected abstract bool UpdateTransform();
 
 		public virtual void Start()
@@ -127,7 +128,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnDestroy()
 		{
-			if (ShouldReparentAttachedObject)
+			if (DestroyAttachedObject)
 			{
 				if (!HasAuthority && AttachedObject != null)
 				{
@@ -145,8 +146,7 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
 			}
 
-			// TODO : maybe make it's own option
-			if (ShouldReparentAttachedObject)
+			if (DestroyAttachedObject)
 			{
 				if (!HasAuthority && AttachedObject != null)
 				{
@@ -216,12 +216,10 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ShouldReparentAttachedObject
-				&& !HasAuthority
-				&& AttachedObject.transform.parent != ReferenceTransform)
+			if (!HasAuthority && UseInterpolation)
 			{
-				DebugLog.ToConsole($"Warning : {LogName} : AttachedObject's parent is different to ReferenceTransform. Correcting...", MessageType.Warning);
-				ReparentAttachedObject(ReferenceTransform);
+				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
+				SmoothRotation = SmartSmoothDamp(SmoothRotation, transform.rotation);
 			}
 
 			UpdateTransform();
@@ -229,7 +227,7 @@ namespace QSB.Syncs
 			base.Update();
 		}
 
-		protected Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
 		{
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
@@ -247,6 +245,11 @@ namespace QSB.Syncs
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
+		private Quaternion SmartSmoothDamp(Quaternion currentRotation, Quaternion targetRotation)
+		{
+			return QuaternionHelper.SmoothDamp(currentRotation, targetRotation, ref _rotationSmoothVelocity, SmoothTime);
+		}
+
 		public void SetReferenceTransform(Transform referenceTransform)
 		{
 			if (ReferenceTransform == referenceTransform)
@@ -256,39 +259,16 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (ShouldReparentAttachedObject)
-			{
-				if (AttachedObject == null)
-				{
-					DebugLog.ToConsole($"Warning - AttachedObject was null for {LogName} when trying to set reference transform to {referenceTransform?.name}. Waiting until not null...", MessageType.Warning);
-					QSBCore.UnityEvents.RunWhen(
-						() => AttachedObject != null,
-						() => ReparentAttachedObject(referenceTransform));
-					return;
-				}
-
-				if (!HasAuthority)
-				{
-					ReparentAttachedObject(referenceTransform);
-				}
-			}
-
 			if (HasAuthority)
 			{
-				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
 			}
-		}
-
-		private void ReparentAttachedObject(Transform newParent)
-		{
-			if (AttachedObject.transform.parent != null && AttachedObject.transform.parent.GetComponent<Sector>() == null)
+			else if (UseInterpolation)
 			{
-				DebugLog.ToConsole($"Warning - Trying to reparent AttachedObject {AttachedObject.name} which wasnt attached to sector!", MessageType.Warning);
+				SmoothPosition = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				SmoothRotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
 			}
-
-			AttachedObject.transform.SetParent(newParent, true);
-			AttachedObject.transform.localScale = Vector3.one;
 		}
 
 		protected virtual void OnRenderObject()
@@ -308,13 +288,10 @@ namespace QSB.Syncs
 			 * Cyan Line = Connection between Green cube and reference transform
 			 */
 
-			Popcron.Gizmos.Cube(ReferenceTransform.DecodePos(transform.position), ReferenceTransform.DecodeRot(transform.rotation), Vector3.one / 8, Color.red);
-			Popcron.Gizmos.Line(ReferenceTransform.DecodePos(transform.position), AttachedObject.transform.position, Color.red);
-
+			Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
+			Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedObject.transform.position, Color.red);
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 6, Color.green);
-
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
-
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}

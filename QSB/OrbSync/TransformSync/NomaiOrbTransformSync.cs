@@ -3,80 +3,77 @@ using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using QSB.AuthoritySync;
+using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	internal class NomaiOrbTransformSync : UnsectoredTransformSync
+	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		public static List<NomaiOrbTransformSync> OrbTransformSyncs = new();
-
+		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
+		public override bool UseInterpolation => true;
 		public override bool IsPlayerObject => false;
+		protected override float DistanceLeeway => 1f;
 
-		private int _index => OrbTransformSyncs.IndexOf(this);
+		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
+		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
 
-		public override void OnStartClient() => OrbTransformSyncs.Add(this);
+		private OWRigidbody _attachedBody;
+		private QSBOrb _qsbOrb;
+		private static readonly List<NomaiOrbTransformSync> _instances = new();
+
+		public override void Start()
+		{
+			_instances.Add(this);
+			base.Start();
+		}
 
 		protected override void OnDestroy()
 		{
-			OrbTransformSyncs.Remove(this);
+			_instances.Remove(this);
 			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.UnregisterAuthQueue();
+			}
+			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override void Init()
 		{
-			if (!OrbTransformSyncs.Contains(this))
+			var index = _instances.IndexOf(this);
+			if (!OrbManager.Orbs.TryGet(index, out var orb))
 			{
-				OrbTransformSyncs.Add(this);
-			}
-
-			base.Init();
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Error - Trying to init orb with null AttachedObject.", MessageType.Error);
+				DebugLog.ToConsole($"Error - No orb at index {index}.", MessageType.Error);
 				return;
 			}
+			_qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(orb);
+			_qsbOrb.TransformSync = this;
 
-			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
-			if (originalParent == Locator.GetRootTransform())
+			base.Init();
+			_attachedBody = AttachedObject.GetAttachedOWRigidbody();
+			SetReferenceTransform(_attachedBody.GetOrigParent());
+
+			if (_attachedBody.GetOrigParent() == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
-				OrbTransformSyncs[_index] = null;
+				return;
 			}
 
-			SetReferenceTransform(originalParent);
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.RegisterAuthQueue();
+			}
+			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.FireAuthQueue(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private Transform GetTransform()
-		{
-			if (_index == -1)
-			{
-				DebugLog.ToConsole($"Error - Index cannot be found. OrbTransformSyncs count : {OrbTransformSyncs.Count}", MessageType.Error);
-				return null;
-			}
-
-			if (QSBWorldSync.OldOrbList == null || QSBWorldSync.OldOrbList.Count <= _index)
-			{
-				DebugLog.ToConsole($"Error - OldOrbList is null or does not contain index {_index}.", MessageType.Error);
-				return null;
-			}
-
-			if (QSBWorldSync.OldOrbList[_index] == null)
-			{
-				DebugLog.ToConsole($"Error - OldOrbList index {_index} is null.", MessageType.Error);
-				return null;
-			}
-
-			return QSBWorldSync.OldOrbList[_index].transform;
-		}
-
-		protected override Component InitLocalTransform() => GetTransform();
-		protected override Component InitRemoteTransform() => GetTransform();
-
-		protected override float DistanceLeeway => 1f;
-		public override bool IsReady => WorldObjectManager.AllObjectsReady;
-		public override bool UseInterpolation => false;
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
 	}
 }

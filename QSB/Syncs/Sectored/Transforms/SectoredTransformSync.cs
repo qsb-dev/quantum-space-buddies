@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Transforms
 {
-	public abstract class SectoredTransformSync : BaseSectoredSync
+	public abstract class SectoredTransformSync : BaseSectoredSync<Transform>
 	{
-		public override bool ShouldReparentAttachedObject => true;
+		public override bool DestroyAttachedObject => true;
 
-		protected abstract Component InitLocalTransform();
-		protected abstract Component InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
-		protected override Component SetAttachedObject()
+		protected override Transform SetAttachedObject()
 			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -67,8 +67,8 @@ namespace QSB.Syncs.Sectored.Transforms
 			{
 				if (ReferenceTransform != null)
 				{
-					transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-					transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+					transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
+					transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
 				}
 				else
 				{
@@ -79,20 +79,20 @@ namespace QSB.Syncs.Sectored.Transforms
 				return true;
 			}
 
-			var targetPos = transform.position;
-			var targetRot = transform.rotation;
-			if (targetPos != Vector3.zero)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				if (UseInterpolation)
-				{
-					AttachedObject.transform.localPosition = SmartSmoothDamp(AttachedObject.transform.localPosition, targetPos);
-					AttachedObject.transform.localRotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.localRotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
-				}
-				else
-				{
-					AttachedObject.transform.localPosition = targetPos;
-					AttachedObject.transform.localRotation = targetRot;
-				}
+				return false;
+			}
+
+			if (UseInterpolation)
+			{
+				AttachedObject.position = ReferenceTransform.FromRelPos(SmoothPosition);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
+			}
+			else
+			{
+				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
 
 			return true;
