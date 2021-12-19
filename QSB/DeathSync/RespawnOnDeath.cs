@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -41,6 +40,7 @@ namespace QSB.DeathSync
 
 		public void Init()
 		{
+			DebugLog.DebugWrite($"INIT");
 			var playerTransform = Locator.GetPlayerTransform();
 			_playerResources = playerTransform.GetComponent<PlayerResources>();
 			_spaceSuit = Locator.GetPlayerSuit();
@@ -57,14 +57,6 @@ namespace QSB.DeathSync
 			{
 				DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
 				Init();
-			}
-
-			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-
-			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
-			{
-				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
-				return;
 			}
 
 			RespawnManager.Instance.TriggerRespawnMap();
@@ -94,31 +86,19 @@ namespace QSB.DeathSync
 			_playerSpawnPoint.AddObjectToTriggerVolumes(_fluidDetector.gameObject);
 			_playerSpawnPoint.OnSpawnPlayer();
 
-			_playerResources.SetValue("_isSuffocating", false);
+			_playerResources._isSuffocating = false;
 			_playerResources.DebugRefillResources();
 			_spaceSuit.RemoveSuit(true);
 
 			foreach (var pickupVolume in _suitPickupVolumes)
 			{
-				var containsSuit = pickupVolume.GetValue<bool>("_containsSuit");
-				var allowReturn = pickupVolume.GetValue<bool>("_allowSuitReturn");
-
-				if (!containsSuit && allowReturn)
+				if (!pickupVolume._containsSuit && pickupVolume._allowSuitReturn)
 				{
-
-					var interactVolume = pickupVolume.GetValue<MultipleInteractionVolume>("_interactVolume");
-					var pickupSuitIndex = pickupVolume.GetValue<int>("_pickupSuitCommandIndex");
-
-					pickupVolume.SetValue("_containsSuit", true);
-					interactVolume.ChangePrompt(UITextType.SuitUpPrompt, pickupSuitIndex);
-
-					var suitGeometry = pickupVolume.GetValue<GameObject>("_suitGeometry");
-					var suitCollider = pickupVolume.GetValue<OWCollider>("_suitOWCollider");
-					var toolGeometries = pickupVolume.GetValue<GameObject[]>("_toolGeometry");
-
-					suitGeometry.SetActive(true);
-					suitCollider.SetActivation(true);
-					foreach (var geo in toolGeometries)
+					pickupVolume._containsSuit = true;
+					pickupVolume._interactVolume.ChangePrompt(UITextType.SuitUpPrompt, pickupVolume._pickupSuitCommandIndex);
+					pickupVolume._suitGeometry.SetActive(true);
+					pickupVolume._suitOWCollider.SetActivation(true);
+					foreach (var geo in pickupVolume._toolGeometry)
 					{
 						geo.SetActive(true);
 					}
@@ -128,7 +108,7 @@ namespace QSB.DeathSync
 
 		private SpawnPoint GetSpawnPoint()
 		{
-			var spawnList = _playerSpawner.GetValue<SpawnPoint[]>("_spawnList");
+			var spawnList = _playerSpawner._spawnList;
 			if (spawnList == null)
 			{
 				DebugLog.ToConsole($"Warning - _spawnList was null for player spawner!", MessageType.Warning);
