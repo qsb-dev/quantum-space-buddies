@@ -120,6 +120,7 @@ namespace QSB.Events
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
 				new AuthQueueEvent(),
+				new EnterRemoteDialogueEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),

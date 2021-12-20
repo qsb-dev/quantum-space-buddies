@@ -114,7 +114,6 @@ namespace QSB
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
@@ -144,6 +143,7 @@ namespace QSB
 			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
 			gameObject.AddComponent<TornadoManager>();
+			gameObject.AddComponent<ConversationManager>();
 
 			DebugBoxManager.Init();
 
