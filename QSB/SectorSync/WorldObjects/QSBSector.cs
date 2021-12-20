@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -25,12 +24,11 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 		public Vector3 Position => Transform.position;
-		public bool IsFakeSector => AttachedObject.GetType() == typeof(FakeSector);
+		public bool IsFakeSector => AttachedObject is FakeSector;
+		public FakeSector FakeSector => (FakeSector)AttachedObject;
 
-		public override void Init(Sector sector, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = sector;
 			if (IsFakeSector)
 			{
 				QSBSectorManager.Instance.FakeSectors.Add(this);
@@ -88,7 +86,7 @@ namespace QSB.SectorSync.WorldObjects
 						return false;
 					}
 
-					if (!shuttleController.GetValue<bool>("_isPlayerInside"))
+					if (!shuttleController._isPlayerInside)
 					{
 						return false;
 					}

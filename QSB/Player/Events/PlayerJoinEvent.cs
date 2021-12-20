@@ -6,7 +6,7 @@ namespace QSB.Player.Events
 {
 	public class PlayerJoinEvent : QSBEvent<PlayerJoinMessage>
 	{
-		public override EventType Type => EventType.PlayerJoin;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener() => GlobalMessenger<string>.AddListener(EventNames.QSBPlayerJoin, Handler);
 		public override void CloseListener() => GlobalMessenger<string>.RemoveListener(EventNames.QSBPlayerJoin, Handler);
@@ -19,7 +19,8 @@ namespace QSB.Player.Events
 			PlayerName = name,
 			QSBVersion = QSBCore.QSBVersion,
 			GameVersion = QSBCore.GameVersion,
-			Platform = QSBCore.Platform
+			Platform = QSBCore.Platform,
+			DlcInstalled = QSBCore.DLCInstalled
 		};
 
 		public override void OnReceiveRemote(bool server, PlayerJoinMessage message)
@@ -51,6 +52,15 @@ namespace QSB.Player.Events
 				if (server)
 				{
 					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong game platform. (Client:{message.Platform}, Server:{QSBCore.Platform})", MessageType.Error);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.DLCNotMatching);
+				}
+			}
+
+			if (message.DlcInstalled != QSBCore.DLCInstalled)
+			{
+				if (server)
+				{
+					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong DLC installation state. (Client:{message.DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
 					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GamePlatformNotMatching);
 				}
 			}
@@ -58,7 +68,7 @@ namespace QSB.Player.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.Name = message.PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
-			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{message.QSBVersion}, gameVersion:{message.GameVersion}, platform:{message.Platform}", MessageType.Info);
+			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{message.QSBVersion}, gameVersion:{message.GameVersion}, platform:{message.Platform}. dlcInstalled:{message.DlcInstalled}", MessageType.Info);
 		}
 
 		public override void OnReceiveLocal(bool server, PlayerJoinMessage message)

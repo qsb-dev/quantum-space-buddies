@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters
@@ -81,11 +82,11 @@ namespace QSB.Animation.Player.Thrusters
 			_light.enabled = _currentScale > 0f;
 		}
 
-		private float GetThrustFraction() => Vector3.Dot(_attachedPlayer.JetpackAcceleration.LocalAcceleration, _thrusterFilter);
+		private float GetThrustFraction() => Vector3.Dot(_attachedPlayer.JetpackAcceleration.AccelerationVariableSyncer.Value, _thrusterFilter);
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.ShowLinesInDebug)
+			if (!WorldObjectManager.AllObjectsReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

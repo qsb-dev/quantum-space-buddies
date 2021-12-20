@@ -1,18 +1,19 @@
 ﻿using OWML.Common;
 using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET.Components;
 using System;
 
 namespace QSB.Events
 {
-	public abstract class QSBEvent<T> : IQSBEvent where T : PlayerMessage, new()
+	public abstract class QSBEvent<T> : BaseQSBEvent where T : PlayerMessage, new()
 	{
-		public abstract EventType Type { get; }
 		public uint LocalPlayerId => QSBPlayerManager.LocalPlayerId;
 
 		private readonly MessageHandler<T> _eventHandler;
@@ -24,30 +25,34 @@ namespace QSB.Events
 				return;
 			}
 
-			_eventHandler = new MessageHandler<T>(Type);
+			_eventHandler = new MessageHandler<T>(_msgType++);
 			_eventHandler.OnClientReceiveMessage += message => OnReceive(false, message);
 			_eventHandler.OnServerReceiveMessage += message => OnReceive(true, message);
 		}
 
-		public abstract void SetupListener();
-		public abstract void CloseListener();
-
 		public virtual void OnReceiveRemote(bool isHost, T message) { }
 		public virtual void OnReceiveLocal(bool isHost, T message) { }
 
-		public void SendEvent(T message)
-		{
-			message.FromId = QSBPlayerManager.LocalPlayerId;
-			QSBCore.UnityEvents.RunWhen(
-				() => PlayerTransformSync.LocalInstance != null,
-				() => _eventHandler.SendToServer(message));
-		}
+		public abstract bool RequireWorldObjectsReady { get; }
+
+		public void SendEvent(T message) => QSBCore.UnityEvents.RunWhen(
+			() => PlayerTransformSync.LocalInstance != null,
+			() =>
+			{
+				message.FromId = LocalPlayerId;
+				if (QSBEventManager.ForIdOverride != uint.MaxValue)
+				{
+					message.ForId = QSBEventManager.ForIdOverride;
+				}
+				_eventHandler.SendToServer(message);
+			});
 
 		/// <summary>
-		/// Checks whether the message should be processed by the executing client/server.
+		/// Checks whether the message should be processed by the executing client.
 		/// </summary>
 		/// <returns>True if the message should be processed.</returns>
-		public virtual bool CheckMessage(bool isServer, T message) => true;
+		public virtual bool CheckMessage(T message)
+			=> !RequireWorldObjectsReady || WorldObjectManager.AllObjectsReady;
 
 		private void OnReceive(bool isServer, T message)
 		{
@@ -59,18 +64,24 @@ namespace QSB.Events
 			 * hub for all events.
 			 */
 
-			if (!CheckMessage(isServer, message))
-			{
-				return;
-			}
-
 			if (isServer)
 			{
-				_eventHandler.SendToAll(message);
+				if (message.OnlySendToHost)
+				{
+					_eventHandler.SendToHost(message);
+				}
+				else if (message.ForId != uint.MaxValue)
+				{
+					_eventHandler.SendTo(message.ForId, message);
+				}
+				else
+				{
+					_eventHandler.SendToAll(message);
+				}
 				return;
 			}
 
-			if (message.OnlySendToHost && !QSBCore.IsHost)
+			if (!CheckMessage(message))
 			{
 				return;
 			}
@@ -87,24 +98,27 @@ namespace QSB.Events
 
 				if (!player.IsReady
 					&& player.PlayerId != LocalPlayerId
-					&& (player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem)
-					&& (message is not PlayerInformationEvent or PlayerReadyEvent))
+					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+					&& this is not PlayerInformationEvent
+						and not PlayerReadyEvent
+						and not RequestStateResyncEvent
+						and not ServerStateEvent)
 				{
-					DebugLog.ToConsole($"Warning - Got message from player {message.FromId}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Got message (type:{GetType().Name}) from player {message.FromId}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
 				}
 			}
 
 			try
 			{
-				if (message.FromId == QSBPlayerManager.LocalPlayerId ||
-				QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
+				if (QSBPlayerManager.IsBelongingToLocalPlayer(message.FromId))
 				{
 					OnReceiveLocal(QSBCore.IsHost, message);
-					return;
 				}
-
-				OnReceiveRemote(QSBCore.IsHost, message);
+				else
+				{
+					OnReceiveRemote(QSBCore.IsHost, message);
+				}
 			}
 			catch (Exception ex)
 			{

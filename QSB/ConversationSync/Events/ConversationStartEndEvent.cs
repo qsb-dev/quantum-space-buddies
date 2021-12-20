@@ -8,7 +8,7 @@ namespace QSB.ConversationSync.Events
 {
 	public class ConversationStartEndEvent : QSBEvent<ConversationStartEndMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.ConversationStartEnd;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int, uint, bool>.AddListener(EventNames.QSBConversationStartEnd, Handler);
 		public override void CloseListener() => GlobalMessenger<int, uint, bool>.RemoveListener(EventNames.QSBConversationStartEnd, Handler);
@@ -28,11 +28,6 @@ namespace QSB.ConversationSync.Events
 			if (message.TreeId == -1)
 			{
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
-				return;
-			}
-
-			if (!QSBCore.WorldObjectsReady)
-			{
 				return;
 			}
 

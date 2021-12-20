@@ -16,14 +16,14 @@ namespace QuantumUNET
 		public QNetworkClient()
 		{
 			m_MsgBuffer = new byte[65535];
-			m_MsgReader = new NetworkReader(m_MsgBuffer);
+			m_MsgReader = new QNetworkReader(m_MsgBuffer);
 			AddClient(this);
 		}
 
 		public QNetworkClient(QNetworkConnection conn)
 		{
 			m_MsgBuffer = new byte[65535];
-			m_MsgReader = new NetworkReader(m_MsgBuffer);
+			m_MsgReader = new QNetworkReader(m_MsgBuffer);
 			AddClient(this);
 			SetActive(true);
 			m_Connection = conn;
@@ -60,7 +60,7 @@ namespace QuantumUNET
 		private readonly QNetworkMessageHandlers m_MessageHandlers = new();
 		protected QNetworkConnection m_Connection;
 		private readonly byte[] m_MsgBuffer;
-		private readonly NetworkReader m_MsgReader;
+		private readonly QNetworkReader m_MsgReader;
 		protected ConnectState m_AsyncConnect = ConnectState.None;
 		private string m_RequestedServerHost = "";
 

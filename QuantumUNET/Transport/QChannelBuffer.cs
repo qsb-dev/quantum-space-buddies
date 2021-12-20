@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Transport
 {
@@ -88,14 +87,14 @@ namespace QuantumUNET.Transport
 			_disposed = true;
 		}
 
-		public bool SetOption(ChannelOption option, int value)
+		public bool SetOption(QChannelOption option, int value)
 		{
 			bool result;
-			if (option != ChannelOption.MaxPendingBuffers)
+			if (option != QChannelOption.MaxPendingBuffers)
 			{
-				if (option != ChannelOption.AllowFragmentation)
+				if (option != QChannelOption.AllowFragmentation)
 				{
-					if (option != ChannelOption.MaxPacketSize)
+					if (option != QChannelOption.MaxPacketSize)
 					{
 						result = false;
 					}

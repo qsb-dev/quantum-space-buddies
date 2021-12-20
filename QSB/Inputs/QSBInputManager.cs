@@ -58,7 +58,6 @@ namespace QSB.Inputs
 
 		public void SetInputsEnabled(bool enabled)
 		{
-			DebugLog.DebugWrite($"INPUTS ENABLED? : {enabled}");
 			InputsEnabled = enabled;
 		}
 	}

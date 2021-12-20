@@ -5,7 +5,7 @@ namespace QSB.Player.Events
 {
 	internal class LaunchCodesEvent : QSBEvent<PlayerMessage>
 	{
-		public override EventType Type => EventType.LaunchCodes;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBLearnLaunchCodes, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBLearnLaunchCodes, Handler);
@@ -24,7 +24,7 @@ namespace QSB.Player.Events
 			{
 				flag = true;
 			}
-			else if (PlayerData._currentGameSave.GetPersistentCondition("LAUNCH_CODES_GIVEN"))
+			else if (!PlayerData._currentGameSave.GetPersistentCondition("LAUNCH_CODES_GIVEN"))
 			{
 				flag = true;
 			}

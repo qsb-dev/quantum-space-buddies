@@ -18,7 +18,7 @@ namespace QuantumUNET
 
 		public List<QPlayerController> PlayerControllers { get; } = new List<QPlayerController>();
 
-		public HashSet<NetworkInstanceId> ClientOwnedObjects { get; private set; }
+		public HashSet<QNetworkInstanceId> ClientOwnedObjects { get; private set; }
 
 		public bool isConnected => hostId != -1;
 
@@ -95,7 +95,7 @@ namespace QuantumUNET
 
 		private static bool IsReliableQoS(QosType qos) => qos is QosType.Reliable or QosType.ReliableFragmented or QosType.ReliableSequenced or QosType.ReliableStateUpdate;
 
-		public bool SetChannelOption(int channelId, ChannelOption option, int value) => m_Channels != null && channelId >= 0 && channelId < m_Channels.Length && m_Channels[channelId].SetOption(option, value);
+		public bool SetChannelOption(int channelId, QChannelOption option, int value) => m_Channels != null && channelId >= 0 && channelId < m_Channels.Length && m_Channels[channelId].SetOption(option, value);
 
 		public void Disconnect()
 		{
@@ -386,7 +386,7 @@ namespace QuantumUNET
 		{
 			if (ClientOwnedObjects == null)
 			{
-				ClientOwnedObjects = new HashSet<NetworkInstanceId>();
+				ClientOwnedObjects = new HashSet<QNetworkInstanceId>();
 			}
 
 			ClientOwnedObjects.Add(obj.NetId);

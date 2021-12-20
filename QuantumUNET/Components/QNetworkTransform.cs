@@ -2,7 +2,6 @@
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Components
 {
@@ -128,7 +127,6 @@ namespace QuantumUNET.Components
 				|| Quaternion.Angle(transform.rotation, _prevRotation) > 1E-05f;
 		}
 
-		[Client]
 		private void SendTransform()
 		{
 			if (HasMoved() && QClientScene.readyConnection != null)
@@ -136,8 +134,6 @@ namespace QuantumUNET.Components
 				_localTransformWriter.StartMessage(QMsgType.LocalPlayerTransform);
 				_localTransformWriter.Write(NetId);
 				SerializeTransform(_localTransformWriter, false);
-				_prevPosition = transform.position;
-				_prevRotation = transform.rotation;
 				_localTransformWriter.FinishMessage();
 
 				QClientScene.readyConnection.SendWriter(_localTransformWriter, GetNetworkChannel());

@@ -51,22 +51,21 @@ namespace QSB.Player
 			}
 
 			var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
-			if (player != null)
+			if (player == null)
 			{
-				return player;
-			}
-
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Error - Tried to create player id:{id} when not in multiplayer! Stacktrace : {Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - Player with id {id} does not exist! Stacktrace : {Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
+			return player;
+		}
+
+		public static void AddPlayer(uint id)
+		{
 			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
-			player = new PlayerInfo(id);
+			var player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			OnAddPlayer?.Invoke(id);
-			return player;
 		}
 
 		public static void RemovePlayer(uint id)
@@ -89,7 +88,7 @@ namespace QSB.Player
 			player.SignalscopeEquipped = message.SignalscopeEquipped;
 			player.TranslatorEquipped = message.TranslatorEquipped;
 			player.ProbeActive = message.ProbeActive;
-			if (LocalPlayer.IsReady)
+			if (LocalPlayer.IsReady && player.IsReady)
 			{
 				player.UpdateObjectsFromStates();
 			}
@@ -178,7 +177,7 @@ namespace QSB.Player
 				return null;
 			}
 
-			return playerList.Where(x => x.IsReady).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+			return playerList.Where(x => x.IsReady && x.Body != null).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
 
 		public static IEnumerable<Tuple<PlayerInfo, IQSBOWItem>> GetPlayerCarryItems()

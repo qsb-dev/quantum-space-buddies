@@ -11,7 +11,7 @@ namespace QSB.RoastingSync.Events
 {
 	internal class MarshmallowEventEvent : QSBEvent<EnumMessage<MarshmallowEventType>>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.MarshmallowEvent;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<MarshmallowEventType>.AddListener(EventNames.QSBMarshmallowEvent, Handler);
 		public override void CloseListener() => GlobalMessenger<MarshmallowEventType>.RemoveListener(EventNames.QSBMarshmallowEvent, Handler);
@@ -26,11 +26,6 @@ namespace QSB.RoastingSync.Events
 
 		public override void OnReceiveRemote(bool server, EnumMessage<MarshmallowEventType> message)
 		{
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			var marshmallow = QSBPlayerManager.GetPlayer(message.AboutId).Marshmallow;
 			if (marshmallow == null)
 			{

@@ -17,29 +17,39 @@ namespace QSB.ItemSync.WorldObjects.Items
 		public QSBSector InitialSector { get; private set; }
 		public uint HoldingPlayer { get; private set; }
 
-		public override void Init(T attachedObject, int id)
+		public override void Init()
 		{
-			if (attachedObject == null)
+			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Error - AttachedObject is null! Type:{GetType().Name}", OWML.Common.MessageType.Error);
 				return;
 			}
 
-			InitialParent = attachedObject.transform.parent;
-			InitialPosition = attachedObject.transform.localPosition;
-			InitialRotation = attachedObject.transform.localRotation;
-			InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(attachedObject.GetSector());
-
-			if (InitialParent == null)
+			StartDelayedReady();
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsAdded, () =>
 			{
-				DebugLog.ToConsole($"Warning - InitialParent of {attachedObject.name} is null!", OWML.Common.MessageType.Warning);
-			}
+				FinishDelayedReady();
 
-			if (InitialParent?.GetComponent<OWItemSocket>() != null)
-			{
-				var qsbObj = (IQSBOWItemSocket)QSBWorldSync.GetWorldFromUnity(InitialParent.GetComponent<OWItemSocket>());
-				InitialSocket = qsbObj;
-			}
+				InitialParent = AttachedObject.transform.parent;
+				InitialPosition = AttachedObject.transform.localPosition;
+				InitialRotation = AttachedObject.transform.localRotation;
+				var initialSector = AttachedObject.GetSector();
+				if (initialSector != null)
+				{
+					InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(initialSector);
+				}
+
+				if (InitialParent == null)
+				{
+					DebugLog.ToConsole($"Warning - InitialParent of {AttachedObject.name} is null!", OWML.Common.MessageType.Warning);
+				}
+
+				if (InitialParent?.GetComponent<OWItemSocket>() != null)
+				{
+					var qsbObj = QSBWorldSync.GetWorldFromUnity<IQSBOWItemSocket>(InitialParent.GetComponent<OWItemSocket>());
+					InitialSocket = qsbObj;
+				}
+			});
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}
@@ -63,7 +73,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 			AttachedObject.transform.localPosition = InitialPosition;
 			AttachedObject.transform.localRotation = InitialRotation;
 			AttachedObject.transform.localScale = Vector3.one;
-			AttachedObject.SetSector(InitialSector.AttachedObject);
+			AttachedObject.SetSector(InitialSector?.AttachedObject);
 			AttachedObject.SetColliderActivation(true);
 		}
 

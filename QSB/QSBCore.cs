@@ -11,12 +11,12 @@ using QSB.ElevatorSync;
 using QSB.GeyserSync;
 using QSB.Inputs;
 using QSB.ItemSync;
+using QSB.JellyfishSync;
 using QSB.Menus;
 using QSB.MeteorSync;
 using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.QuantumSync;
 using QSB.RespawnSync;
@@ -27,8 +27,9 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.TranslatorTool.TranslationSync;
+using QSB.TornadoSync;
 using QSB.Utility;
-using QSB.WorldSync;
+using QSB.ZeroGCaveSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
@@ -37,6 +38,7 @@ using UnityEngine;
 /*
 	Copyright (C) 2020 - 2021
 			Henry Pointer (_nebula / misternebula),
+			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
 			Ricardo Lopes (Raicuparta)
 
@@ -66,11 +68,10 @@ namespace QSB
 		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
-		public static AssetBundle NetworkAssetBundle { get; private set; }
+		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
-		public static bool WorldObjectsReady => WorldObjectManager.AllReady && IsInMultiplayer && PlayerTransformSync.LocalInstance != null;
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
@@ -78,6 +79,7 @@ namespace QSB
 		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
 			? GamePlatform.Epic
 			: GamePlatform.Steam;
+		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
 		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
@@ -112,10 +114,8 @@ namespace QSB
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
-			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
 			gameObject.AddComponent<MenuManager>();
@@ -140,6 +140,10 @@ namespace QSB
 			gameObject.AddComponent<AirlockManager>();
 			gameObject.AddComponent<AnglerManager>();
 			gameObject.AddComponent<MeteorManager>();
+			gameObject.AddComponent<JellyfishManager>();
+			gameObject.AddComponent<ZeroGCaveManager>();
+			gameObject.AddComponent<TornadoManager>();
+			gameObject.AddComponent<ConversationManager>();
 
 			DebugBoxManager.Init();
 

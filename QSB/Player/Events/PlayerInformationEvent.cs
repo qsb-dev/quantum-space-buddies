@@ -6,7 +6,7 @@ namespace QSB.Player.Events
 {
 	public class PlayerInformationEvent : QSBEvent<PlayerInformationMessage>
 	{
-		public override EventType Type => EventType.PlayerInformation;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBPlayerInformation, Handler);
 		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBPlayerInformation, Handler);
@@ -29,7 +29,7 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveRemote(bool server, PlayerInformationMessage message)
 		{
-			DebugLog.DebugWrite($"Received playerstate of player ID {message.AboutId}", MessageType.Info);
+			RequestStateResyncEvent._waitingForEvent = false;
 			if (QSBPlayerManager.PlayerExists(message.AboutId))
 			{
 				QSBPlayerManager.HandleFullStateMessage(message);

@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects.Sockets
 {
-	public interface IQSBOWItemSocket : IWorldObjectTypeSubset
+	public interface IQSBOWItemSocket : IWorldObject
 	{
 		bool AcceptsItem(IQSBOWItem item);
 		bool IsSocketOccupied();

@@ -16,7 +16,7 @@ namespace QuantumUNET
 		private QNetworkServer()
 		{
 			NetworkTransport.Init();
-			m_RemoveList = new HashSet<NetworkInstanceId>();
+			m_RemoveList = new HashSet<QNetworkInstanceId>();
 			m_ExternalConnections = new HashSet<int>();
 			m_NetworkScene = new QNetworkScene();
 			m_SimpleServerSimple = new ServerSimpleWrapper(this);
@@ -34,7 +34,7 @@ namespace QuantumUNET
 
 		public static HostTopology hostTopology => instance.m_SimpleServerSimple.hostTopology;
 
-		public static Dictionary<NetworkInstanceId, QNetworkIdentity> objects => instance.m_NetworkScene.localObjects;
+		public static Dictionary<QNetworkInstanceId, QNetworkIdentity> objects => instance.m_NetworkScene.localObjects;
 
 		public static bool dontListen { get; set; }
 
@@ -193,7 +193,7 @@ namespace QuantumUNET
 			m_SimpleServerSimple.RemoveConnectionAtIndex(0);
 		}
 
-		internal void SetLocalObjectOnServer(NetworkInstanceId netId, GameObject obj)
+		internal void SetLocalObjectOnServer(QNetworkInstanceId netId, GameObject obj)
 		{
 			QLog.Debug($"SetLocalObjectOnServer {netId} {obj}");
 			m_NetworkScene.SetLocalObject(netId, obj, false, true);
@@ -614,6 +614,8 @@ namespace QuantumUNET
 		}
 
 		public static void RegisterHandler(short msgType, QNetworkMessageDelegate handler) => instance.m_SimpleServerSimple.RegisterHandler(msgType, handler);
+
+		public static void RegisterHandlerSafe(short msgType, QNetworkMessageDelegate handler) => instance.m_SimpleServerSimple.RegisterHandlerSafe(msgType, handler);
 
 		public static void UnregisterHandler(short msgType) => instance.m_SimpleServerSimple.UnregisterHandler(msgType);
 
@@ -1061,7 +1063,7 @@ namespace QuantumUNET
 			{
 				if (conn.ClientOwnedObjects != null)
 				{
-					var hashSet = new HashSet<NetworkInstanceId>(conn.ClientOwnedObjects);
+					var hashSet = new HashSet<QNetworkInstanceId>(conn.ClientOwnedObjects);
 					foreach (var gameObject in hashSet.Select(FindLocalObject).Where(gameObject => gameObject != null))
 					{
 						DestroyObject(gameObject);
@@ -1257,7 +1259,16 @@ namespace QuantumUNET
 			if (handlers.ContainsKey(msgType) && m_LocalConnection != null)
 			{
 				var writer = new QNetworkWriter();
-				msg.Serialize(writer);
+				try
+				{
+					msg.Serialize(writer);
+				}
+				catch (Exception ex)
+				{
+					QLog.Error($"Error serializing msgId:{msgType} - {ex}");
+					return false;
+				}
+
 				var reader = new QNetworkReader(writer);
 				m_LocalConnection.InvokeHandler(msgType, reader, channelId);
 				result = true;
@@ -1271,7 +1282,7 @@ namespace QuantumUNET
 			return result;
 		}
 
-		public static GameObject FindLocalObject(NetworkInstanceId netId) => instance.m_NetworkScene.FindLocalObject(netId);
+		public static GameObject FindLocalObject(QNetworkInstanceId netId) => instance.m_NetworkScene.FindLocalObject(netId);
 
 		private static bool ValidateSceneObject(QNetworkIdentity netId) => netId.gameObject.hideFlags != HideFlags.NotEditable && netId.gameObject.hideFlags != HideFlags.HideAndDontSave && !netId.SceneId.IsEmpty();
 
@@ -1348,11 +1359,11 @@ namespace QuantumUNET
 
 		private readonly HashSet<int> m_ExternalConnections;
 
-		public readonly ServerSimpleWrapper m_SimpleServerSimple;
+		private readonly ServerSimpleWrapper m_SimpleServerSimple;
 
 		private float m_MaxDelay = 0.1f;
 
-		private readonly HashSet<NetworkInstanceId> m_RemoveList;
+		private readonly HashSet<QNetworkInstanceId> m_RemoveList;
 
 		private int m_RemoveListCount;
 

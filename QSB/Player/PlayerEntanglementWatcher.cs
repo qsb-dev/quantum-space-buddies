@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
 using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -17,17 +18,22 @@ namespace QSB.Player
 				return;
 			}
 
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return;
+			}
+
 			var controller = Locator.GetPlayerController();
 			if (controller == null)
 			{
 				return;
 			}
 
-			var collidingQuantumObject = controller.GetValue<QuantumObject>("_collidingQuantumObject");
+			var collidingQuantumObject = controller._collidingQuantumObject;
 			if (_previousCollidingQuantumObject != collidingQuantumObject)
 			{
 				var objectIndex = (collidingQuantumObject != null)
-					? QSBWorldSync.GetIdFromTypeSubset((IQSBQuantumObject)QSBWorldSync.GetWorldFromUnity(collidingQuantumObject))
+					? QSBWorldSync.GetWorldFromUnity<IQSBQuantumObject>(collidingQuantumObject).ObjectId
 					: -1;
 
 				QSBEventManager.FireEvent(

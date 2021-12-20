@@ -7,7 +7,7 @@ namespace QSB.Player.Events
 {
 	public class PlayerReadyEvent : QSBEvent<ToggleMessage>
 	{
-		public override EventType Type => EventType.PlayerReady;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener() => GlobalMessenger<bool>.AddListener(EventNames.QSBPlayerReady, Handler);
 		public override void CloseListener() => GlobalMessenger<bool>.RemoveListener(EventNames.QSBPlayerReady, Handler);
@@ -34,14 +34,14 @@ namespace QSB.Player.Events
 
 		private static void HandleServer(ToggleMessage message)
 		{
-			DebugLog.DebugWrite($"[SERVER] Get ready event from {message.FromId}", MessageType.Success);
+			DebugLog.DebugWrite($"[SERVER] Get ready event from {message.FromId} (ready = {message.ToggleValue})", MessageType.Success);
 			QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
 			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 		}
 
 		private void HandleClient(ToggleMessage message)
 		{
-			DebugLog.DebugWrite($"[CLIENT] Get ready event from {message.FromId}", MessageType.Success);
+			DebugLog.DebugWrite($"[CLIENT] Get ready event from {message.FromId} (ready = {message.ToggleValue})", MessageType.Success);
 			if (!QSBPlayerManager.PlayerExists(message.FromId))
 			{
 				DebugLog.ToConsole(
@@ -49,6 +49,8 @@ namespace QSB.Player.Events
 					MessageType.Error);
 				return;
 			}
+
+			QSBPlayerManager.GetPlayer(message.AboutId).IsReady = message.ToggleValue;
 		}
 	}
 }

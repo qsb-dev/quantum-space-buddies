@@ -7,7 +7,7 @@ namespace QSB.GeyserSync.Events
 {
 	public class GeyserEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override EventType Type => EventType.Geyser;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int, bool>.AddListener(EventNames.QSBGeyserState, Handler);
 		public override void CloseListener() => GlobalMessenger<int, bool>.RemoveListener(EventNames.QSBGeyserState, Handler);
@@ -23,11 +23,6 @@ namespace QSB.GeyserSync.Events
 
 		public override void OnReceiveRemote(bool isHost, BoolWorldObjectMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			var geyser = QSBWorldSync.GetWorldFromId<QSBGeyser>(message.ObjectId);
 			geyser?.SetState(message.State);
 		}

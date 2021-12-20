@@ -1,6 +1,5 @@
 ﻿using QSB.Utility.VariableSync;
 using QuantumUNET;
-using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters
 {
@@ -8,19 +7,15 @@ namespace QSB.Animation.Player.Thrusters
 	{
 		public Vector3VariableSyncer AccelerationVariableSyncer;
 		public BoolVariableSyncer ThrustingVariableSyncer;
-		public Vector3 LocalAcceleration => AccelerationVariableSyncer.ValueToSync.Value;
-		public bool IsThrusting => ThrustingVariableSyncer.ValueToSync.Value;
 
-		private Vector3 _localAcceleration;
-		private bool _isThrusting;
 		private ThrusterModel _thrusterModel;
 
 		public void Init(ThrusterModel model)
 		{
 			_thrusterModel = model;
 
-			AccelerationVariableSyncer.Init(() => _localAcceleration, val => _localAcceleration = val);
-			ThrustingVariableSyncer.Init(() => _isThrusting, val => _isThrusting = val);
+			AccelerationVariableSyncer.Init();
+			ThrustingVariableSyncer.Init();
 		}
 
 		public void Update()
@@ -35,8 +30,8 @@ namespace QSB.Animation.Player.Thrusters
 		{
 			if (_thrusterModel != null)
 			{
-				AccelerationVariableSyncer.ValueToSync.Value = _thrusterModel.GetLocalAcceleration();
-				ThrustingVariableSyncer.ValueToSync.Value = _thrusterModel.IsTranslationalThrusterFiring();
+				AccelerationVariableSyncer.Value = _thrusterModel.GetLocalAcceleration();
+				ThrustingVariableSyncer.Value = _thrusterModel.IsTranslationalThrusterFiring();
 			}
 		}
 	}

@@ -187,19 +187,45 @@ namespace QSB.Animation.Player
 				DebugLog.ToConsole($"Error - Suited controller is null. ({PlayerId})", MessageType.Error);
 			}
 
+			if (_unsuitedGraphics == null)
+			{
+				DebugLog.ToConsole($"Warning - _unsuitedGraphics is null! ({PlayerId})", MessageType.Warning);
+			}
+
+			if (_suitedGraphics == null)
+			{
+				DebugLog.ToConsole($"Warning - _suitedGraphics is null! ({PlayerId})", MessageType.Warning);
+			}
+
 			RuntimeAnimatorController controller = default;
 			switch (type)
 			{
 				case AnimationType.PlayerSuited:
 					controller = _suitedAnimController;
-					_unsuitedGraphics?.SetActive(false);
-					_suitedGraphics?.SetActive(true);
+					if (_unsuitedGraphics != null)
+					{
+						_unsuitedGraphics?.SetActive(false);
+					}
+					
+					if (_suitedGraphics != null)
+					{
+						_suitedGraphics?.SetActive(true);
+					}
+					
 					break;
 
 				case AnimationType.PlayerUnsuited:
 					controller = _unsuitedAnimController;
-					_unsuitedGraphics?.SetActive(true);
-					_suitedGraphics?.SetActive(false);
+					if (_unsuitedGraphics != null)
+					{
+						_unsuitedGraphics?.SetActive(true);
+					}
+
+					if (_suitedGraphics != null)
+					{
+						_suitedGraphics?.SetActive(false);
+					}
+
 					break;
 
 				case AnimationType.Chert:
@@ -223,25 +249,66 @@ namespace QSB.Animation.Player
 					break;
 			}
 
-			InvisibleAnimator.runtimeAnimatorController = controller;
-			VisibleAnimator.runtimeAnimatorController = controller;
+			if (InvisibleAnimator == null)
+			{
+				DebugLog.ToConsole($"Error - InvisibleAnimator is null. ({PlayerId})", MessageType.Error);
+			}
+			else
+			{
+				InvisibleAnimator.runtimeAnimatorController = controller;
+			}
+
+			if (VisibleAnimator == null)
+			{
+				DebugLog.ToConsole($"Error - VisibleAnimator is null. ({PlayerId})", MessageType.Error);
+			}
+			else
+			{
+				VisibleAnimator.runtimeAnimatorController = controller;
+			}
+
 			if (type is not AnimationType.PlayerSuited and not AnimationType.PlayerUnsuited)
 			{
-				VisibleAnimator.SetTrigger("Playing");
-				InvisibleAnimator.SetTrigger("Playing");
+				if (VisibleAnimator != null)
+				{
+					VisibleAnimator.SetTrigger("Playing");
+				}
+				
+				if (InvisibleAnimator != null)
+				{
+					InvisibleAnimator.SetTrigger("Playing");
+				}
 			}
 			else
 			{
 				// Avoids "jumping" when exiting instrument and putting on suit
-				VisibleAnimator.SetTrigger("Grounded");
-				InvisibleAnimator.SetTrigger("Grounded");
+				if (VisibleAnimator != null)
+				{
+					VisibleAnimator.SetTrigger("Grounded");
+				}
+
+				if (InvisibleAnimator != null)
+				{
+					InvisibleAnimator.SetTrigger("Grounded");
+				}
 			}
 
-			NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
-			Mirror.RebuildFloatParams();
-			for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
+			if (NetworkAnimator == null)
 			{
-				NetworkAnimator.SetParameterAutoSend(i, true);
+				DebugLog.ToConsole($"Error - NetworkAnimator is null. ({PlayerId})", MessageType.Error);
+			}
+			else if (Mirror == null)
+			{
+				DebugLog.ToConsole($"Error - Mirror is null. ({PlayerId})", MessageType.Error);
+			}
+			else if (InvisibleAnimator != null)
+			{
+				NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
+				Mirror.RebuildFloatParams();
+				for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
+				{
+					NetworkAnimator.SetParameterAutoSend(i, true);
+				}
 			}
 		}
 	}

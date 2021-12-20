@@ -42,19 +42,26 @@ namespace QSB.Animation.NPC.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnEnterWatchVolume))]
-		public static bool EnterWatchZone(NomaiConversationManager __instance)
+		public static bool EnterWatchZone(NomaiConversationManager __instance, GameObject hitObj)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
-			QSBEventManager.FireEvent(EventNames.QSBEnterNomaiHeadZone, qsbObj.ObjectId);
+			if (hitObj.CompareTag("PlayerDetector"))
+			{
+				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
+				QSBEventManager.FireEvent(EventNames.QSBEnterNomaiHeadZone, qsbObj.ObjectId);
+			}
+
 			return false;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnExitWatchVolume))]
-		public static bool ExitWatchZone(NomaiConversationManager __instance)
+		public static bool ExitWatchZone(NomaiConversationManager __instance, GameObject hitObj)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
-			QSBEventManager.FireEvent(EventNames.QSBExitNomaiHeadZone, qsbObj.ObjectId);
+			if (hitObj.CompareTag("PlayerDetector"))
+			{
+				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
+				QSBEventManager.FireEvent(EventNames.QSBExitNomaiHeadZone, qsbObj.ObjectId);
+			}
 			return false;
 		}
 

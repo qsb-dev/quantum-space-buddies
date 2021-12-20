@@ -5,7 +5,7 @@ namespace QSB.LogSync.Events
 {
 	public class RevealFactEvent : QSBEvent<RevealFactMessage>
 	{
-		public override EventType Type => EventType.RevealFact;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<string, bool, bool>.AddListener(EventNames.QSBRevealFact, Handler);
 		public override void CloseListener() => GlobalMessenger<string, bool, bool>.RemoveListener(EventNames.QSBRevealFact, Handler);
@@ -35,7 +35,7 @@ namespace QSB.LogSync.Events
 				QSBWorldSync.AddFactReveal(message.FactId, message.SaveGame, message.ShowNotification);
 			}
 
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}

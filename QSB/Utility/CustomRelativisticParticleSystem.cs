@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -61,7 +62,7 @@ namespace QSB.Utility
 
 		private void FixedUpdate()
 		{
-			if (!QSBCore.WorldObjectsReady || !_isReady)
+			if (!WorldObjectManager.AllObjectsReady || !_isReady)
 			{
 				return;
 			}

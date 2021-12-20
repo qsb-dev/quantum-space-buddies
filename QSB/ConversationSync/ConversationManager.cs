@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.ConversationSync.WorldObjects;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 
 namespace QSB.ConversationSync
 {
-	public class ConversationManager : MonoBehaviour
+	public class ConversationManager : WorldObjectManager
 	{
 		public static ConversationManager Instance { get; private set; }
 		public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();
@@ -32,6 +33,9 @@ namespace QSB.ConversationSync
 			_boxPrefab.GetComponent<Text>().font = font;
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
+
+		protected override void RebuildWorldObjects(OWScene scene)
+			=> QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 		{

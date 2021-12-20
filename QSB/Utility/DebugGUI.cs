@@ -8,6 +8,8 @@ using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
+using QSB.OrbSync;
+using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -85,7 +87,7 @@ namespace QSB.Utility
 
 			#region Column1 - Server data
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
-			WriteLine(1, $"HasWokenUp : {QSBCore.WorldObjectsReady}");
+			WriteLine(1, $"HasWokenUp : {WorldObjectManager.AllObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
 			{
 				WriteLine(1, $"Server State : {ServerStateManager.Instance.GetServerState()}");
@@ -109,11 +111,17 @@ namespace QSB.Utility
 				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
 				WriteLine(1, $"Time Remaining : {Mathf.Floor(TimeLoop.GetSecondsRemaining() / 60f)}:{Mathf.Round(TimeLoop.GetSecondsRemaining() % 60f * 100f / 100f)}");
 				WriteLine(1, $"Loop Count : {TimeLoop.GetLoopCount()}");
+				WriteLine(1, $"TimeLoop Initialized : {TimeLoop._initialized}");
+				if (TimeLoop._initialized)
+				{
+					WriteLine(1, $"TimeLoop IsTimeFlowing : {TimeLoop.IsTimeFlowing()}");
+					WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
+				}
 			}
 			#endregion
 
 			#region Column2 - Player data
-			WriteLine(2, $"OrbList count : {NomaiOrbTransformSync.OrbTransformSyncs.Count}");
+			WriteLine(2, $"OrbList count : {OrbManager.Orbs.Count}");
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
@@ -130,16 +138,14 @@ namespace QSB.Utility
 				WriteLine(2, $"Ready : {player.IsReady}");
 				WriteLine(2, $"Suited Up : {player.SuitedUp}");
 
-				if (player.IsReady && QSBCore.WorldObjectsReady)
+				if (player.IsReady && WorldObjectManager.AllObjectsReady)
 				{
 					var networkTransform = player.TransformSync;
 					var referenceSector = networkTransform.ReferenceSector;
 					var referenceTransform = networkTransform.ReferenceTransform;
-					var parent = networkTransform.AttachedObject?.transform.parent;
 
 					WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
 					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
-					WriteLine(2, $" - Parent : {(parent == null ? "NULL" : parent.name)}", parent == null ? Color.red : Color.white);
 				}
 			}
 			#endregion
@@ -210,6 +216,28 @@ namespace QSB.Utility
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
 					if (quantumObject is not IWorldObject qsbObj)
+					{
+						WriteLine(4, $"NULL QSBOBJ", Color.red);
+					}
+					else
+					{
+						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
+					}
+				}
+			}
+
+			WriteLine(4, $"");
+			WriteLine(4, $"Enabled QuantumObjects :");
+			foreach (var qo in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
+			{
+				if (qo.ControllingPlayer != 0)
+				{
+					continue;
+				}
+
+				if (qo.IsEnabled)
+				{
+					if (qo is not IWorldObject qsbObj)
 					{
 						WriteLine(4, $"NULL QSBOBJ", Color.red);
 					}

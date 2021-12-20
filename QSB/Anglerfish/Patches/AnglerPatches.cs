@@ -1,9 +1,10 @@
 ﻿using HarmonyLib;
 using QSB.Anglerfish.WorldObjects;
+using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.Patches;
+using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using UnityEngine;
 
 namespace QSB.Anglerfish.Patches
@@ -17,14 +18,14 @@ namespace QSB.Anglerfish.Patches
 		public static bool GetTargetPosition(AnglerfishController __instance, ref Vector3 __result)
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-			if (qsbAngler == null || qsbAngler.TransformSync == null)
+
+			if (qsbAngler.TargetTransform != null)
 			{
+				__result = qsbAngler.TargetTransform.position;
 				return false;
 			}
 
-			__result = qsbAngler.TargetTransform != null
-				? qsbAngler.TargetTransform.position
-				: __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
+			__result = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
 
 			return false;
 		}
@@ -35,17 +36,12 @@ namespace QSB.Anglerfish.Patches
 			SectorDetector sectorDetector)
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-			if (qsbAngler == null || qsbAngler.TransformSync == null)
-			{
-				return false;
-			}
 
-			if (!(qsbAngler.TargetTransform != null) || !(sectorDetector.GetAttachedOWRigidbody().transform == qsbAngler.TargetTransform))
+			if (qsbAngler.TargetTransform != null && sectorDetector.GetAttachedOWRigidbody().transform == qsbAngler.TargetTransform)
 			{
-				return false;
+				qsbAngler.TargetTransform = null;
+				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
-
-			qsbAngler.TargetTransform = null;
 
 			return false;
 		}
@@ -54,113 +50,92 @@ namespace QSB.Anglerfish.Patches
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateState))]
 		public static bool UpdateState(AnglerfishController __instance)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-			if (qsbAngler == null || qsbAngler.TransformSync == null)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
-				return false;
+				return true;
 			}
+			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
 
 			switch (__instance._currentState)
 			{
 				case AnglerfishController.AnglerState.Investigating:
-					if ((__instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos) - __instance._anglerBody.GetPosition()).sqrMagnitude >= __instance._arrivalDistance * (double)__instance._arrivalDistance)
+					if ((__instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos) - __instance._anglerBody.GetPosition()).sqrMagnitude < __instance._arrivalDistance * __instance._arrivalDistance)
 					{
-						break;
+						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+						return false;
 					}
-
-					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
-					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
-
 				case AnglerfishController.AnglerState.Chasing:
 					if (qsbAngler.TargetTransform == null)
 					{
 						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
-						break;
+						return false;
 					}
-
-					if ((qsbAngler.TargetTransform.position - __instance._anglerBody.GetPosition()).sqrMagnitude <= __instance._escapeDistance * (double)__instance._escapeDistance)
+					if ((qsbAngler.TargetTransform.position - __instance._anglerBody.GetPosition()).sqrMagnitude > __instance._escapeDistance * __instance._escapeDistance)
 					{
-						break;
+						qsbAngler.TargetTransform = null;
+						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+						return false;
 					}
-
-					qsbAngler.TargetTransform = null;
-					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
-					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
-
 				case AnglerfishController.AnglerState.Consuming:
-					if (__instance._consumeComplete)
+					if (!__instance._consumeComplete)
 					{
-						break;
+						if (qsbAngler.TargetTransform == null)
+						{
+							__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
+							QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+							return false;
+						}
+						var num = Time.time - __instance._consumeStartTime;
+						if (qsbAngler.TargetTransform.CompareTag("Player") && num > __instance._consumeDeathDelay)
+						{
+							Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
+							__instance._consumeComplete = true;
+							return false;
+						}
+						if (qsbAngler.TargetTransform.CompareTag("Ship"))
+						{
+							if (num > __instance._consumeShipCrushDelay)
+							{
+								qsbAngler.TargetTransform.GetComponentInChildren<ShipDamageController>().TriggerSystemFailure();
+							}
+							if (num > __instance._consumeDeathDelay)
+							{
+								if (PlayerState.IsInsideShip())
+								{
+									Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
+								}
+								__instance._consumeComplete = true;
+								return false;
+							}
+						}
 					}
-
-					if (qsbAngler.TargetTransform == null)
-					{
-						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
-						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
-						break;
-					}
-
-					var num = Time.time - __instance._consumeStartTime;
-					if (qsbAngler.TargetTransform.CompareTag("Player") && num > (double)__instance._consumeDeathDelay)
-					{
-						qsbAngler.TargetTransform = null;
-						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
-						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
-						__instance.ApplyDrag(1f);
-
-						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
-						__instance._consumeComplete = true;
-						break;
-					}
-
-					if (!qsbAngler.TargetTransform.CompareTag("Ship"))
-					{
-						break;
-					}
-
-					if (num > (double)__instance._consumeShipCrushDelay)
-					{
-						qsbAngler.TargetTransform.GetComponentInChildren<ShipDamageController>().TriggerSystemFailure();
-					}
-
-					if (num <= (double)__instance._consumeDeathDelay)
-					{
-						break;
-					}
-
-					if (PlayerState.IsInsideShip())
+					else
 					{
 						qsbAngler.TargetTransform = null;
-						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
-						__instance.ApplyDrag(1f);
-
-						Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 					}
-
-					__instance._consumeComplete = true;
 					break;
-
 				case AnglerfishController.AnglerState.Stunned:
 					__instance._stunTimer -= Time.deltaTime;
-					if (__instance._stunTimer > 0.0)
+					if (__instance._stunTimer <= 0f)
 					{
-						break;
-					}
-
-					if (qsbAngler.TargetTransform != null)
-					{
-						__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
+						if (qsbAngler.TargetTransform != null)
+						{
+							__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
+							QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+							return false;
+						}
+						__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
 						QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
-						break;
 					}
-
-					__instance.ChangeState(AnglerfishController.AnglerState.Lurking);
-					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 					break;
+				default:
+					return false;
 			}
 
 			return false;
@@ -170,80 +145,79 @@ namespace QSB.Anglerfish.Patches
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateMovement))]
 		public static bool UpdateMovement(AnglerfishController __instance)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-			if (qsbAngler == null || qsbAngler.TransformSync == null)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
-				return false;
+				return true;
 			}
+			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			qsbAngler.UpdateTargetVelocity();
 
-			qsbAngler.FixedUpdate();
-
-			if (__instance._anglerBody.GetVelocity().sqrMagnitude > (double)Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))
+			if (__instance._anglerBody.GetVelocity().sqrMagnitude > Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))
 			{
 				__instance.ApplyDrag(10f);
 			}
-
 			switch (__instance._currentState)
 			{
 				case AnglerfishController.AnglerState.Lurking:
 					__instance.ApplyDrag(1f);
-					break;
-
+					return false;
 				case AnglerfishController.AnglerState.Investigating:
-					var targetPos = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
-					__instance.RotateTowardsTarget(targetPos, __instance._turnSpeed, __instance._turnSpeed);
-					if (__instance._turningInPlace)
 					{
+						var targetPos = __instance._brambleBody.transform.TransformPoint(__instance._localDisturbancePos);
+						__instance.RotateTowardsTarget(targetPos, __instance._turnSpeed, __instance._turnSpeed);
+						if (!__instance._turningInPlace)
+						{
+							__instance.MoveTowardsTarget(targetPos, __instance._investigateSpeed, __instance._acceleration);
+							return false;
+						}
 						break;
 					}
-
-					__instance.MoveTowardsTarget(targetPos, __instance._investigateSpeed, __instance._acceleration);
-					break;
-
 				case AnglerfishController.AnglerState.Chasing:
-					var velocity = qsbAngler.TargetVelocity;
-					var normalized = velocity.normalized;
-					var from = __instance._anglerBody.GetPosition() + __instance.transform.TransformDirection(__instance._mouthOffset) - qsbAngler.TargetTransform.position;
-					var magnitude1 = velocity.magnitude;
-					var num1 = Vector3.Angle(from, normalized);
-					var a = magnitude1 * 2f;
-					var num2 = a;
-					if (num1 < 90.0)
 					{
-						var magnitude2 = (double)from.magnitude;
-						var num3 = (float)magnitude2 * Mathf.Sin(num1 * ((float)Math.PI / 180f));
-						var num4 = (float)magnitude2 * Mathf.Cos(num1 * ((float)Math.PI / 180f));
-						var magnitude3 = __instance._anglerBody.GetVelocity().magnitude;
-						var num5 = num4 / Mathf.Max(magnitude1, 0.0001f) / (num3 / Mathf.Max(magnitude3, 0.0001f));
-						if (num5 <= 1.0)
+						var velocity = qsbAngler.TargetVelocity;
+						var normalized = velocity.normalized;
+						var from = __instance._anglerBody.GetPosition() + __instance.transform.TransformDirection(__instance._mouthOffset) - qsbAngler.TargetTransform.position;
+						var magnitude = velocity.magnitude;
+						var num = Vector3.Angle(from, normalized);
+						var num2 = magnitude * 2f;
+						var d = num2;
+						if (num < 90f)
 						{
-							var t = Mathf.Clamp01(num5);
-							num2 = Mathf.Lerp(a, num4, t);
+							var magnitude2 = from.magnitude;
+							var num3 = magnitude2 * Mathf.Sin(num * 0.017453292f);
+							var num4 = magnitude2 * Mathf.Cos(num * 0.017453292f);
+							var magnitude3 = __instance._anglerBody.GetVelocity().magnitude;
+							var num5 = num4 / Mathf.Max(magnitude, 0.0001f);
+							var num6 = num3 / Mathf.Max(magnitude3, 0.0001f);
+							var num7 = num5 / num6;
+							if (num7 <= 1f)
+							{
+								var t = Mathf.Clamp01(num7);
+								d = Mathf.Lerp(num2, num4, t);
+							}
+							else
+							{
+								var num8 = Mathf.InverseLerp(1f, 4f, num7);
+								d = Mathf.Lerp(num4, 0f, num8 * num8);
+							}
 						}
-						else
+						__instance._targetPos = qsbAngler.TargetTransform.position + normalized * d;
+						__instance.RotateTowardsTarget(__instance._targetPos, __instance._turnSpeed, __instance._quickTurnSpeed);
+						if (!__instance._turningInPlace)
 						{
-							var num6 = Mathf.InverseLerp(1f, 4f, num5);
-							num2 = Mathf.Lerp(num4, 0.0f, num6 * num6);
+							__instance.MoveTowardsTarget(__instance._targetPos, __instance._chaseSpeed, __instance._acceleration);
+							return false;
 						}
-					}
-
-					__instance._targetPos = qsbAngler.TargetTransform.position + (normalized * num2);
-					__instance.RotateTowardsTarget(__instance._targetPos, __instance._turnSpeed, __instance._quickTurnSpeed);
-					if (__instance._turningInPlace)
-					{
 						break;
 					}
-
-					__instance.MoveTowardsTarget(__instance._targetPos, __instance._chaseSpeed, __instance._acceleration);
-					break;
-
 				case AnglerfishController.AnglerState.Consuming:
 					__instance.ApplyDrag(1f);
-					break;
-
+					return false;
 				case AnglerfishController.AnglerState.Stunned:
 					__instance.ApplyDrag(0.5f);
 					break;
+				default:
+					return false;
 			}
 
 			return false;
@@ -255,19 +229,16 @@ namespace QSB.Anglerfish.Patches
 			ImpactData impact)
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-			if (qsbAngler == null || qsbAngler.TransformSync == null)
-			{
-				return false;
-			}
 
-			var attachedOwRigidbody = impact.otherCollider.GetAttachedOWRigidbody();
-			if ((attachedOwRigidbody.CompareTag("Player") || attachedOwRigidbody.CompareTag("Ship"))
+			var attachedOWRigidbody = impact.otherCollider.GetAttachedOWRigidbody();
+			if ((attachedOWRigidbody.CompareTag("Player") || attachedOWRigidbody.CompareTag("Ship"))
 				&& __instance._currentState != AnglerfishController.AnglerState.Consuming
 				&& __instance._currentState != AnglerfishController.AnglerState.Stunned)
 			{
-				qsbAngler.TargetTransform = attachedOwRigidbody.transform;
+				qsbAngler.TargetTransform = attachedOWRigidbody.transform;
 				__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
 				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+				return false;
 			}
 
 			return false;
@@ -279,48 +250,31 @@ namespace QSB.Anglerfish.Patches
 			NoiseMaker noiseMaker)
 		{
 			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-			if (qsbAngler == null || qsbAngler.TransformSync == null)
+
+			if (__instance._currentState is AnglerfishController.AnglerState.Consuming or AnglerfishController.AnglerState.Stunned)
 			{
 				return false;
 			}
-
-			if (__instance._currentState is AnglerfishController.AnglerState.Consuming
-				or AnglerfishController.AnglerState.Stunned)
+			if ((noiseMaker.GetNoiseOrigin() - __instance.transform.position).sqrMagnitude < __instance._pursueDistance * __instance._pursueDistance)
 			{
-				return false;
+				if (qsbAngler.TargetTransform != noiseMaker.GetAttachedBody().transform)
+				{
+					qsbAngler.TargetTransform = noiseMaker.GetAttachedBody().transform;
+					if (__instance._currentState != AnglerfishController.AnglerState.Chasing)
+					{
+						__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
+					}
+					QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
+					return false;
+				}
 			}
-
-			if ((noiseMaker.GetNoiseOrigin() - __instance.transform.position).sqrMagnitude < __instance._pursueDistance * (double)__instance._pursueDistance)
+			else if (__instance._currentState is AnglerfishController.AnglerState.Lurking or AnglerfishController.AnglerState.Investigating)
 			{
-				if (!(qsbAngler.TargetTransform != noiseMaker.GetAttachedBody().transform))
-				{
-					return false;
-				}
-
-				qsbAngler.TargetTransform = noiseMaker.GetAttachedBody().transform;
-				if (__instance._currentState == AnglerfishController.AnglerState.Chasing)
-				{
-					return false;
-				}
-
-				__instance.ChangeState(AnglerfishController.AnglerState.Chasing);
-				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
-			}
-			else
-			{
-				if (__instance._currentState is not AnglerfishController.AnglerState.Lurking
-					and not AnglerfishController.AnglerState.Investigating)
-				{
-					return false;
-				}
-
 				__instance._localDisturbancePos = __instance._brambleBody.transform.InverseTransformPoint(noiseMaker.GetNoiseOrigin());
-				if (__instance._currentState == AnglerfishController.AnglerState.Investigating)
+				if (__instance._currentState != AnglerfishController.AnglerState.Investigating)
 				{
-					return false;
+					__instance.ChangeState(AnglerfishController.AnglerState.Investigating);
 				}
-
-				__instance.ChangeState(AnglerfishController.AnglerState.Investigating);
 				QSBEventManager.FireEvent(EventNames.QSBAnglerChangeState, qsbAngler);
 			}
 
@@ -336,20 +290,14 @@ namespace QSB.Anglerfish.Patches
 
 			if (__instance._currentState == AnglerfishController.AnglerState.Consuming)
 			{
-				if (qsbAngler.TargetTransform.CompareTag("Player") || !caughtBody.CompareTag("Player"))
+				if (!qsbAngler.TargetTransform.CompareTag("Player") && caughtBody.CompareTag("Player"))
 				{
-					return false;
+					Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
 				}
-
-				Locator.GetDeathManager().KillPlayer(DeathType.Digestion);
+				return false;
 			}
-			else
+			if (caughtBody.CompareTag("Player") || caughtBody.CompareTag("Ship"))
 			{
-				if (!caughtBody.CompareTag("Player") && !caughtBody.CompareTag("Ship"))
-				{
-					return false;
-				}
-
 				qsbAngler.TargetTransform = caughtBody.transform;
 				__instance._consumeStartTime = Time.time;
 				__instance.ChangeState(AnglerfishController.AnglerState.Consuming);

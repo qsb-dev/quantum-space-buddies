@@ -6,7 +6,8 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Events
 {
 	public class IdentifySignalEvent : QSBEvent<EnumMessage<SignalName>>
 	{
-		public override EventType Type => EventType.IdentifySignal;
+		// TODO : fix this with save-sync
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<SignalName>.AddListener(EventNames.QSBIdentifySignal, Handler);
 		public override void CloseListener() => GlobalMessenger<SignalName>.RemoveListener(EventNames.QSBIdentifySignal, Handler);

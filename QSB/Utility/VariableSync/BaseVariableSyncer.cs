@@ -1,25 +1,34 @@
-﻿using QuantumUNET;
+﻿using System.Collections.Generic;
+using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.Utility.VariableSync
 {
-	public abstract class BaseVariableSyncer : QNetworkBehaviour
+	public interface IBaseVariableSyncer
+	{
+		void DeserializeValue(QNetworkReader reader);
+	}
+
+	public abstract class BaseVariableSyncer<T> : QNetworkBehaviour, IBaseVariableSyncer
 	{
 		private float _lastClientSendTime;
 		private QNetworkWriter _writer;
 		private int _index;
-		protected bool _ready;
+		private bool _initialized;
 
-		public abstract void WriteData(QNetworkWriter writer);
-		public abstract void ReadData(QNetworkReader writer);
+		private T _prevValue;
+		public T Value { get; set; }
+
+		protected abstract void WriteValue(QNetworkWriter writer, T value);
+		protected abstract T ReadValue(QNetworkReader reader);
+
+		private bool HasChanged() => !EqualityComparer<T>.Default.Equals(Value, _prevValue);
 
 		public virtual void Awake()
 		{
-			QNetworkServer.instance.m_SimpleServerSimple.RegisterHandlerSafe((short)QSB.Events.EventType.VariableSync, HandleVariable);
+			QNetworkServer.RegisterHandlerSafe(short.MaxValue, HandleVariable);
 
 			if (LocalPlayerAuthority)
 			{
@@ -28,7 +37,10 @@ namespace QSB.Utility.VariableSync
 		}
 
 		public virtual void Start()
-			=> _index = GetComponents<BaseVariableSyncer>().ToList().IndexOf(this);
+			=> _index = GetComponents<IBaseVariableSyncer>().IndexOf(this);
+
+		public void Init() => _initialized = true;
+		public void OnDestroy() => _initialized = false;
 
 		public override bool OnSerialize(QNetworkWriter writer, bool initialState)
 		{
@@ -43,7 +55,7 @@ namespace QSB.Utility.VariableSync
 				writer.WritePackedUInt32(1U);
 			}
 
-			WriteData(writer);
+			SerializeValue(writer);
 			return true;
 		}
 
@@ -56,18 +68,43 @@ namespace QSB.Utility.VariableSync
 					return;
 				}
 
-				ReadData(reader);
+				DeserializeValue(reader);
+			}
+		}
+
+		public void SerializeValue(QNetworkWriter writer)
+		{
+			if (_initialized)
+			{
+				WriteValue(writer, Value);
+				_prevValue = Value;
+			}
+			else
+			{
+				WriteValue(writer, default);
+			}
+		}
+
+		public void DeserializeValue(QNetworkReader reader)
+		{
+			if (_initialized)
+			{
+				Value = ReadValue(reader);
+			}
+			else
+			{
+				ReadValue(reader);
 			}
 		}
 
 		private void FixedUpdate()
 		{
-			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !_ready)
+			if (!IsServer || SyncVarDirtyBits != 0U || !QNetworkServer.active || !_initialized)
 			{
 				return;
 			}
 
-			if (GetNetworkSendInterval() != 0f)
+			if (GetNetworkSendInterval() != 0f && HasChanged())
 			{
 				SetDirtyBit(1U);
 			}
@@ -75,7 +112,7 @@ namespace QSB.Utility.VariableSync
 
 		public virtual void Update()
 		{
-			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !_ready)
+			if (!HasAuthority || !LocalPlayerAuthority || QNetworkServer.active || !_initialized)
 			{
 				return;
 			}
@@ -87,16 +124,14 @@ namespace QSB.Utility.VariableSync
 			}
 		}
 
-		[Client]
 		private void SendVariable()
 		{
-			// TODO - this sends a message, even when the value hasnt changed! this is really bad!
-			if (QClientScene.readyConnection != null)
+			if (HasChanged() && QClientScene.readyConnection != null)
 			{
-				_writer.StartMessage((short)QSB.Events.EventType.VariableSync);
+				_writer.StartMessage(short.MaxValue);
 				_writer.Write(NetId);
 				_writer.Write(_index);
-				WriteData(_writer);
+				SerializeValue(_writer);
 				_writer.FinishMessage();
 				QClientScene.readyConnection.SendWriter(_writer, GetNetworkChannel());
 			}
@@ -105,10 +140,10 @@ namespace QSB.Utility.VariableSync
 		public static void HandleVariable(QNetworkMessage netMsg)
 		{
 			var networkInstanceId = netMsg.Reader.ReadNetworkId();
-			var index = netMsg.Reader.ReadInt32();
 			var gameObject = QNetworkServer.FindLocalObject(networkInstanceId);
-			var components = gameObject.GetComponents<BaseVariableSyncer>();
-			components[index].ReadData(netMsg.Reader);
+			var index = netMsg.Reader.ReadInt32();
+			var component = gameObject.GetComponents<IBaseVariableSyncer>()[index];
+			component.DeserializeValue(netMsg.Reader);
 		}
 	}
 }

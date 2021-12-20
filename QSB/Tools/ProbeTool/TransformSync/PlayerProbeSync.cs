@@ -15,14 +15,15 @@ namespace QSB.Tools.ProbeTool.TransformSync
 		protected override float DistanceLeeway => 10f;
 		public override bool UseInterpolation => true;
 		public override bool IgnoreDisabledAttachedObject => true;
+		public override bool IsPlayerObject => true;
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
 		public override void OnStartAuthority() => LocalInstance = this;
 
-		protected override Component InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe));
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
@@ -42,7 +43,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return body;
 		}
 
-		protected override Component InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			var probe = Locator.GetProbe().transform;
 
@@ -90,8 +91,8 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 					if (ReferenceTransform != null)
 					{
-						transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-						transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+						transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
+						transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
 					}
 					else
 					{

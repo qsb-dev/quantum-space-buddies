@@ -18,7 +18,7 @@ namespace QuantumUNET
 		public ReadOnlyCollection<QNetworkConnection> connections { get; }
 		public Dictionary<short, QNetworkMessageDelegate> handlers => m_MessageHandlers.GetHandlers();
 		public byte[] messageBuffer { get; private set; }
-		public NetworkReader messageReader { get; private set; }
+		public QNetworkReader messageReader { get; private set; }
 		public Type networkConnectionClass { get; private set; } = typeof(QNetworkConnection);
 
 		public void SetNetworkConnectionClass<T>()
@@ -32,7 +32,7 @@ namespace QuantumUNET
 				m_Initialized = true;
 				NetworkTransport.Init();
 				messageBuffer = new byte[65535];
-				messageReader = new NetworkReader(messageBuffer);
+				messageReader = new QNetworkReader(messageBuffer);
 				if (hostTopology == null)
 				{
 					var connectionConfig = new ConnectionConfig();

@@ -1,7 +1,8 @@
-﻿using OWML.Utils;
+﻿using QSB.DeathSync;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,9 @@ namespace QSB.RespawnSync
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
-				Init(QSBSceneManager.CurrentScene, true);
+				QSBCore.UnityEvents.RunWhen(
+					() => PlayerTransformSync.LocalInstance != null,
+					() => Init(QSBSceneManager.CurrentScene, true));
 			}
 		}
 
@@ -50,6 +53,12 @@ namespace QSB.RespawnSync
 		{
 			if (!QSBCore.IsInMultiplayer)
 			{
+				return;
+			}
+
+			if (PlayerTransformSync.LocalInstance == null)
+			{
+				DebugLog.ToConsole($"Error - Tried to init when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);
 				return;
 			}
 
@@ -96,7 +105,6 @@ namespace QSB.RespawnSync
 				multiInteract._interactRange = 1.5f;
 
 				_qsbRecoveryPoint.AddComponent<ShipRecoveryPoint>();
-
 				_qsbRecoveryPoint.AddComponent<RespawnHUDMarker>();
 			}
 
@@ -117,7 +125,7 @@ namespace QSB.RespawnSync
 			var playerSpawner = FindObjectOfType<PlayerSpawner>();
 			playerSpawner.DebugWarp(playerSpawner.GetSpawnPoint(SpawnLocation.Ship));
 
-			mapController.GetType().GetAnyMethod("ExitMapView").Invoke(mapController, null);
+			mapController.ExitMapView();
 
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
 			cameraEffectController.OpenEyes(1f, false);
@@ -125,19 +133,24 @@ namespace QSB.RespawnSync
 
 		public void OnPlayerDeath(PlayerInfo player)
 		{
-			DebugLog.DebugWrite($"ON PLAYER DEATH");
-
 			if (_playersPendingRespawn.Contains(player))
 			{
 				DebugLog.ToConsole($"Warning - Received death message for player who is already in _playersPendingRespawn!", OWML.Common.MessageType.Warning);
 				return;
 			}
 
-			DebugLog.DebugWrite($"set player to be dead");
 			player.IsDead = true;
 
 			_playersPendingRespawn.Add(player);
 			UpdateRespawnNotification();
+
+			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				return;
+			}
 
 			QSBPlayerManager.ChangePlayerVisibility(player.PlayerId, false);
 		}

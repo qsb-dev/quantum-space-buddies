@@ -30,7 +30,7 @@ namespace QSB.Animation.NPC.Patches
 			Animator ____animator,
 			CharacterDialogueTree ____dialogueTree)
 		{
-			if (!WorldObjectManager.AllReady || ConversationManager.Instance == null)
+			if (!WorldObjectManager.AllObjectsReady || ConversationManager.Instance == null)
 			{
 				return false;
 			}
@@ -96,19 +96,26 @@ namespace QSB.Animation.NPC.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
-		public static bool HeadZoneExit(CharacterAnimController __instance)
+		public static bool HeadZoneExit(CharacterAnimController __instance, GameObject input)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
+			if (input.CompareTag("PlayerDetector"))
+			{
+				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
+				QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
+			}
+
 			return false;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneEntry))]
-		public static bool HeadZoneEntry(CharacterAnimController __instance)
+		public static bool HeadZoneEntry(CharacterAnimController __instance, GameObject input)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
+			if (input.CompareTag("PlayerDetector"))
+			{
+				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
+				QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
+			}
 			return false;
 		}
 
@@ -146,7 +153,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
+			var id = ownerOfThis.ObjectId;
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.StartConversation, id);
 			return true;
 		}
@@ -162,7 +169,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset(ownerOfThis);
+			var id = ownerOfThis.ObjectId;
 			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
 			return true;
 		}
@@ -171,7 +178,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(KidRockController), nameof(KidRockController.Update))]
 		public static bool UpdateReplacement(KidRockController __instance)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;
 			}

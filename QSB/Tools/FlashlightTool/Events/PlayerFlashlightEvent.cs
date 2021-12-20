@@ -6,7 +6,7 @@ namespace QSB.Tools.FlashlightTool.Events
 {
 	public class PlayerFlashlightEvent : QSBEvent<ToggleMessage>
 	{
-		public override EventType Type => EventType.FlashlightActiveChange;
+		public override bool RequireWorldObjectsReady => false;
 
 		public override void SetupListener()
 		{

@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
@@ -20,15 +19,12 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			foreach (var shape in GetAttachedShapes())
 			{
-				shape.OnShapeActivated -= (Shape s)
-					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnEnable(s));
-
-				shape.OnShapeDeactivated -= (Shape s)
-					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
+				shape.OnShapeActivated -= OnEnable;
+				shape.OnShapeDeactivated -= OnDisable;
 			}
 		}
 
-		public override void Init(T attachedObject, int id)
+		public override void Init()
 		{
 			var debugBundle = QSBCore.DebugAssetBundle;
 			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
@@ -56,13 +52,6 @@ namespace QSB.QuantumSync.WorldObjects
 				{
 					break;
 				}
-				// Firing next update to give time for shapes to actually be disabled
-
-				shape.OnShapeActivated += (Shape s)
-					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnEnable(s));
-
-				shape.OnShapeDeactivated += (Shape s)
-					=> QSBCore.UnityEvents.FireOnNextUpdate(() => OnDisable(s));
 
 				if (QSBCore.ShowQuantumVisibilityObjects)
 				{
@@ -93,25 +82,51 @@ namespace QSB.QuantumSync.WorldObjects
 				}
 			}
 
-			if (GetAttachedShapes().Any(x => !x.enabled || !x.active))
+			StartDelayedReady();
+			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
+		}
+
+		private void LateInit()
+		{
+			FinishDelayedReady();
+			foreach (var shape in GetAttachedShapes())
+			{
+				shape.OnShapeActivated += OnEnable;
+				shape.OnShapeDeactivated += OnDisable;
+			}
+
+			var attachedShapes = GetAttachedShapes();
+
+			if (attachedShapes.Count == 0)
+			{
+				IsEnabled = false;
+				return;
+			}
+
+			if (attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active))
+			{
+				IsEnabled = true;
+			}
+			else
 			{
 				ControllingPlayer = 0u;
 				IsEnabled = false;
 			}
-			else
-			{
-				IsEnabled = true;
-			}
 		}
 
-		private List<Shape> GetAttachedShapes()
+		public List<ShapeVisibilityTracker> GetVisibilityTrackers()
+			=> AttachedObject?._visibilityTrackers == null
+				? new()
+				: AttachedObject._visibilityTrackers.Select(x => (ShapeVisibilityTracker)x).ToList();
+
+		public List<Shape> GetAttachedShapes()
 		{
 			if (AttachedObject == null)
 			{
 				return new List<Shape>();
 			}
 
-			var visibilityTrackers = AttachedObject.GetValue<VisibilityTracker[]>("_visibilityTrackers");
+			var visibilityTrackers = AttachedObject._visibilityTrackers;
 			if (visibilityTrackers == null || visibilityTrackers.Length == 0)
 			{
 				return new List<Shape>();
@@ -124,9 +139,15 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			var totalShapes = new List<Shape>();
-			foreach (var tracker in visibilityTrackers)
+			foreach (ShapeVisibilityTracker tracker in visibilityTrackers)
 			{
-				var shapes = tracker.GetValue<Shape[]>("_shapes");
+				if (tracker == null)
+				{
+					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {LogName} is null!", MessageType.Warning);
+					continue;
+				}
+
+				var shapes = tracker._shapes;
 				totalShapes.AddRange(shapes);
 			}
 
@@ -135,8 +156,13 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnEnable(Shape s)
 		{
+			if (IsEnabled)
+			{
+				return;
+			}
+
 			IsEnabled = true;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -147,7 +173,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
+			var id = ObjectId;
 			// no one is controlling this object right now, request authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
 		}
@@ -165,7 +191,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = false;
-			if (!QSBCore.WorldObjectsReady && !QSBCore.IsHost)
+			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -176,7 +202,7 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = QSBWorldSync.GetIdFromTypeSubset<IQSBQuantumObject>(this);
+			var id = ObjectId;
 			// send event to other players that we're releasing authority
 			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
 		}

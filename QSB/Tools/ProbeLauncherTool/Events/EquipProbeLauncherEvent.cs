@@ -7,9 +7,9 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 {
 	public class EquipProbeLauncherEvent : QSBEvent<ToggleMessage>
 	{
-		private bool _nonPlayerLauncherEquipped;
+		public override bool RequireWorldObjectsReady => false;
 
-		public override EventType Type => EventType.ProbeLauncherActiveChange;
+		private bool _nonPlayerLauncherEquipped;
 
 		public override void SetupListener()
 		{

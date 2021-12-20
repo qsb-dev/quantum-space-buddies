@@ -1,6 +1,6 @@
 using QSB.SectorSync;
-using QSB.Syncs;
 using QSB.Syncs.Sectored.Rigidbodies;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -9,6 +9,8 @@ namespace QSB.ShipSync.TransformSync
 	public class ShipTransformSync : SectoredRigidbodySync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
+
+		public override bool IsPlayerObject => false;
 
 		private const int ForcePositionAfterUpdates = 50;
 		private int _updateCount;
@@ -24,22 +26,22 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override OWRigidbody GetRigidbody()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship));
 			return Locator.GetShipBody();
 		}
 
 		private void ForcePosition()
 		{
-			if (ReferenceTransform == null)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
 				return;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
+			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-			((ShipBody)AttachedObject).SetPosition(targetPos);
-			((ShipBody)AttachedObject).SetRotation(targetRot);
+			AttachedObject.SetPosition(targetPos);
+			AttachedObject.SetRotation(targetRot);
 		}
 
 		protected override bool UpdateTransform()
@@ -65,18 +67,18 @@ namespace QSB.ShipSync.TransformSync
 				ForcePosition();
 			}
 
-			if (ReferenceTransform == null)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				return true;
+				return false;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
 
-			SetVelocity((ShipBody)AttachedObject, targetVelocity);
-			((ShipBody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+			SetVelocity(AttachedObject, targetVelocity);
+			AttachedObject.SetAngularVelocity(targetAngularVelocity);
 
 			return true;
 		}
@@ -97,7 +99,6 @@ namespace QSB.ShipSync.TransformSync
 			rigidbody._currentVelocity = newVelocity;
 		}
 
-		public override bool UseInterpolation => true;
-		protected override float DistanceLeeway => 20f;
+		public override bool UseInterpolation => false;
 	}
 }

@@ -3,13 +3,12 @@ using QSB.Events;
 using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
-using EventType = QSB.Events.EventType;
 
 namespace QSB.Anglerfish.Events
 {
 	public class AnglerChangeStateEvent : QSBEvent<AnglerChangeStateMessage>
 	{
-		public override EventType Type => EventType.AnglerChangeState;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBAngler>.AddListener(EventNames.QSBAnglerChangeState, Handler);
@@ -27,23 +26,9 @@ namespace QSB.Anglerfish.Events
 			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos
 		};
 
-		public override void OnReceiveLocal(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
-		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message) => OnReceive(isHost, message);
-
-		private static void OnReceive(bool isHost, AnglerChangeStateMessage message)
+		public override void OnReceiveRemote(bool isHost, AnglerChangeStateMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			var qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(message.ObjectId);
-
-			if (isHost)
-			{
-				qsbAngler.TransferAuthority(message.FromId);
-			}
-
 			qsbAngler.TargetTransform = IdToTarget(message.TargetId);
 			qsbAngler.AttachedObject._localDisturbancePos = message.LocalDisturbancePos;
 			qsbAngler.AttachedObject.ChangeState(message.EnumValue);

@@ -5,7 +5,7 @@ namespace QSB.SatelliteSync.Events
 {
 	internal class SatelliteProjectorEvent : QSBEvent<BoolMessage>
 	{
-		public override EventType Type => EventType.SatelliteProjector;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 		{

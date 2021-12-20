@@ -7,7 +7,7 @@ namespace QSB.Tools.ProbeLauncherTool.Events
 {
 	internal class LaunchProbeEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override EventType Type => EventType.LaunchProbe;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBProbeLauncher>.AddListener(EventNames.QSBLaunchProbe, Handler);

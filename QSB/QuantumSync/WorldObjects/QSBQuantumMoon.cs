@@ -1,15 +1,15 @@
 ﻿using QSB.Player;
+using System.Linq;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBQuantumMoon : QSBQuantumObject<QuantumMoon>
 	{
-		public override void Init(QuantumMoon moonObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = moonObject;
-			ControllingPlayer = QSBPlayerManager.LocalPlayerId;
-			base.Init(moonObject, id);
+			// smallest player id is the host
+			ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
+			base.Init();
 		}
 	}
 }

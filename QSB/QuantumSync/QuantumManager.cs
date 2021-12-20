@@ -67,7 +67,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.WorldObjectsReady || !QSBCore.ShowLinesInDebug)
+			if (!WorldObjectManager.AllObjectsReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -81,10 +81,17 @@ namespace QSB.QuantumSync
 			{
 				if (quantumObject.ControllingPlayer == 0)
 				{
+					if (quantumObject.IsEnabled)
+					{
+						Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
+							QSBPlayerManager.LocalPlayer.Body.transform.position,
+							Color.magenta * 0.25f);
+					}
+
 					continue;
 				}
 
-				Popcron.Gizmos.Line((quantumObject as IWorldObject).ReturnObject().transform.position,
+				Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
 					QSBPlayerManager.GetPlayer(quantumObject.ControllingPlayer).Body.transform.position,
 					Color.magenta);
 			}
@@ -92,7 +99,7 @@ namespace QSB.QuantumSync
 
 		public static Tuple<bool, List<PlayerInfo>> IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
-			if (!AllReady)
+			if (!AllObjectsReady)
 			{
 				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
@@ -139,12 +146,12 @@ namespace QSB.QuantumSync
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return Enumerable.Empty<PlayerInfo>();
 			}
 
-			var worldObj = (IQSBQuantumObject)QSBWorldSync.GetWorldFromUnity(obj);
+			var worldObj = QSBWorldSync.GetWorldFromUnity<IQSBQuantumObject>(obj);
 			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 		}
 	}

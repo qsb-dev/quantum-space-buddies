@@ -5,7 +5,7 @@ namespace QSB.SatelliteSync.Events
 {
 	internal class SatelliteProjectorSnapshotEvent : QSBEvent<BoolMessage>
 	{
-		public override EventType Type => EventType.SatelliteProjectorSnapshot;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<bool>.AddListener(EventNames.QSBSatelliteSnapshot, (bool forward) => Handler(forward));
 

@@ -53,13 +53,6 @@ namespace QSB.DeathSync.Patches
 			{
 				Locator.GetDeathManager().SetImpactDeathSpeed(impact.speed);
 				Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-				DebugLog.DebugWrite(string.Concat(new object[]
-				{
-				"Player killed from impact with ",
-				impact.otherCollider,
-				" attached to ",
-				impact.otherCollider.attachedRigidbody.gameObject.name
-				}));
 			}
 
 			return false;
@@ -108,7 +101,6 @@ namespace QSB.DeathSync.Patches
 				if (distanceFromShip > 8f)
 				{
 					____body.SetPosition(shipCenter);
-					DebugLog.DebugWrite("MOVE PLAYER BACK TO SHIP CENTER");
 				}
 
 				if (!____dead)
@@ -118,17 +110,6 @@ namespace QSB.DeathSync.Patches
 					{
 						____impactSpeed = a.magnitude;
 						____body.AddVelocityChange(-a);
-						DebugLog.DebugWrite("Would have killed player...");
-						//____dieNextUpdate = true;
-						DebugLog.DebugWrite(string.Concat(new object[]
-						{
-						"HIGH SPEED IMPACT: ",
-						__instance.name,
-						" hit the Ship at ",
-						____impactSpeed,
-						"m/s   Dist from ship: ",
-						distanceFromShip
-						}));
 					}
 				}
 
@@ -165,17 +146,6 @@ namespace QSB.DeathSync.Patches
 										____dieNextUpdate = true;
 									}
 
-									DebugLog.DebugWrite(string.Concat(new object[]
-									{
-									"HIGH SPEED IMPACT: ",
-									__instance.name,
-									" hit ",
-									____raycastHits[i].rigidbody.name,
-									" at ",
-									____impactSpeed,
-									"m/s   RF: ",
-									passiveReferenceFrame.GetOWRigidBody().name
-									}));
 									break;
 								}
 							}
@@ -201,7 +171,18 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
-			QSBPlayerManager.LocalPlayer.IsDead = true;
+			if (QSBPlayerManager.LocalPlayer.IsDead)
+			{
+				return false;
+			}
+
+			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
+			{
+				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				return true;
+			}
 
 			RespawnOnDeath.Instance.ResetPlayer();
 			return false;
@@ -209,7 +190,14 @@ namespace QSB.DeathSync.Patches
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
-		public static void DeathManager_KillPlayer_Postfix(DeathType deathType) => QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
+		{
+			if (!QSBPlayerManager.LocalPlayer.IsDead)
+			{
+				QSBPlayerManager.LocalPlayer.IsDead = true;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+			}
+		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]

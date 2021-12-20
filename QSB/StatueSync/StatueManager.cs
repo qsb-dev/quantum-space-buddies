@@ -1,4 +1,6 @@
 ﻿using QSB.Player;
+using QSB.Player.TransformSync;
+using QSB.Utility;
 using System.Collections;
 using UnityEngine;
 
@@ -22,6 +24,12 @@ namespace QSB.StatueSync
 		{
 			if (!QSBCore.IsInMultiplayer)
 			{
+				return;
+			}
+
+			if (PlayerTransformSync.LocalInstance == null)
+			{
+				DebugLog.ToConsole($"Error - Tried to run OnUniverseSceneLoaded when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);
 				return;
 			}
 

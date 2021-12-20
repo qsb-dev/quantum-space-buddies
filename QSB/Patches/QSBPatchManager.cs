@@ -11,6 +11,7 @@ using QSB.ElevatorSync.Patches;
 using QSB.GeyserSync.Patches;
 using QSB.Inputs.Patches;
 using QSB.ItemSync.Patches;
+using QSB.JellyfishSync.Patches;
 using QSB.LogSync.Patches;
 using QSB.MeteorSync.Patches;
 using QSB.OrbSync.Patches;
@@ -25,7 +26,9 @@ using QSB.TimeSync.Patches;
 using QSB.Tools.ProbeLauncherTool.Patches;
 using QSB.Tools.SignalscopeTool.FrequencySync.Patches;
 using QSB.Tools.TranslatorTool.TranslationSync.Patches;
+using QSB.TornadoSync.Patches;
 using QSB.Utility;
+using QSB.ZeroGCaveSync.Patches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,15 +80,26 @@ namespace QSB.Patches
 				new AnglerPatches(),
 				new MeteorClientPatches(),
 				new MeteorServerPatches(),
-				new TravelerControllerPatches()
+				new JellyfishPatches(),
+				new TravelerControllerPatches(),
+				new ZeroGCavePatches(),
+				new TornadoPatches()
 			};
 
 			TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
 			{
-				{ QSBPatchTypes.OnClientConnect, new Harmony("QSB.Client") },
-				{ QSBPatchTypes.OnServerClientConnect, new Harmony("QSB.Server") },
-				{ QSBPatchTypes.OnNonServerClientConnect, new Harmony("QSB.NonServer") },
-				{ QSBPatchTypes.RespawnTime, new Harmony("QSB.Death") }
+				{
+					QSBPatchTypes.OnClientConnect, new Harmony("QSB.Client")
+				},
+				{
+					QSBPatchTypes.OnServerClientConnect, new Harmony("QSB.Server")
+				},
+				{
+					QSBPatchTypes.OnNonServerClientConnect, new Harmony("QSB.NonServer")
+				},
+				{
+					QSBPatchTypes.RespawnTime, new Harmony("QSB.Death")
+				}
 			};
 
 			DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
@@ -107,13 +121,13 @@ namespace QSB.Patches
 				try
 				{
 					patch.DoPatches(TypeToInstance[type]);
-					_patchedTypes.Add(type);
 				}
 				catch (Exception ex)
 				{
 					DebugLog.ToConsole($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
 				}
 			}
+			_patchedTypes.Add(type);
 		}
 
 		public static void DoUnpatchType(QSBPatchTypes type)

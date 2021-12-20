@@ -1,12 +1,13 @@
 ﻿using QSB.Events;
 using QSB.Player;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events
 {
 	internal class QuantumAuthorityEvent : QSBEvent<QuantumAuthorityMessage>
 	{
-		public override EventType Type => EventType.QuantumAuthority;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int, uint>.AddListener(EventNames.QSBQuantumAuthority, Handler);
 		public override void CloseListener() => GlobalMessenger<int, uint>.RemoveListener(EventNames.QSBQuantumAuthority, Handler);
@@ -20,9 +21,9 @@ namespace QSB.QuantumSync.Events
 			AuthorityOwner = authorityOwner
 		};
 
-		public override bool CheckMessage(bool isServer, QuantumAuthorityMessage message)
+		public override bool CheckMessage(QuantumAuthorityMessage message)
 		{
-			if (!WorldObjectManager.AllReady)
+			if (!base.CheckMessage(message))
 			{
 				return false;
 			}

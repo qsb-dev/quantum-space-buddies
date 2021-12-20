@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Animation.Player;
+using QSB.Audio;
 using QSB.Events;
 using QSB.Instruments;
 using QSB.RoastingSync;
@@ -16,6 +17,8 @@ namespace QSB.Player.TransformSync
 	public class PlayerTransformSync : SectoredTransformSync
 	{
 		static PlayerTransformSync() => AnimControllerPatch.Init();
+
+		public override bool IsPlayerObject => true;
 
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
@@ -48,6 +51,7 @@ namespace QSB.Player.TransformSync
 		public override void Start()
 		{
 			base.Start();
+			QSBPlayerManager.AddPlayer(PlayerId);
 			Player.TransformSync = this;
 		}
 
@@ -58,18 +62,27 @@ namespace QSB.Player.TransformSync
 				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 			}
 
-			if (isInUniverse)
+			if (isInUniverse && !_isInitialized)
 			{
-				Player.IsReady = true;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+				Player.IsReady = false;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
-			else
+
+			if (!isInUniverse)
 			{
 				Player.IsReady = false;
 				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
 			}
 
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+		}
+
+		protected override void Init()
+		{
+			base.Init();
+
+			Player.IsReady = true;
+			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
 		}
 
 		protected override void OnDestroy()
@@ -84,9 +97,9 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
-		protected override Component InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -115,7 +128,7 @@ namespace QSB.Player.TransformSync
 			return player;
 		}
 
-		protected override Component InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			/*
 			 * CREATE PLAYER STRUCTURE
@@ -161,11 +174,11 @@ namespace QSB.Player.TransformSync
 
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
+			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
+
 			/*
 			 * SET UP PLAYER CAMERA
 			 */
-
-			PlayerToolsManager.InitRemote(REMOTE_PlayerCamera.transform);
 
 			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
 			camera.enabled = false;
@@ -176,6 +189,8 @@ namespace QSB.Player.TransformSync
 			Player.Camera = owcamera;
 			Player.CameraBody = REMOTE_PlayerCamera;
 			_visibleCameraRoot = REMOTE_PlayerCamera.transform;
+
+			PlayerToolsManager.InitRemote(Player);
 
 			/*
 			 * SET UP ROASTING STICK
@@ -249,7 +264,7 @@ namespace QSB.Player.TransformSync
 		{
 			base.OnRenderObject();
 
-			if (!QSBCore.WorldObjectsReady
+			if (!WorldObjectManager.AllObjectsReady
 				|| !QSBCore.ShowLinesInDebug
 				|| !IsReady
 				|| ReferenceTransform == null)

@@ -9,7 +9,7 @@ namespace QSB.RoastingSync.Events
 {
 	internal class EnterExitRoastingEvent : QSBEvent<BoolWorldObjectMessage>
 	{
-		public override EventType Type => EventType.Roasting;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 		{
@@ -44,11 +44,6 @@ namespace QSB.RoastingSync.Events
 
 		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			if (message.State && message.ObjectId == -1)
 			{
 				DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", OWML.Common.MessageType.Error);

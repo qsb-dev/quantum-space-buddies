@@ -11,7 +11,7 @@ namespace QSB.MeteorSync.Events
 	/// pain
 	public class FragmentResyncEvent : QSBEvent<FragmentResyncMessage>
 	{
-		public override EventType Type => EventType.FragmentResync;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener()
 			=> GlobalMessenger<QSBFragment>.AddListener(EventNames.QSBFragmentResync, Handler);
@@ -39,10 +39,10 @@ namespace QSB.MeteorSync.Events
 				var body = qsbFragment.Body;
 				var refBody = qsbFragment.RefBody;
 				var pos = body.GetPosition();
-				msg.Pos = refBody.transform.EncodePos(pos);
-				msg.Rot = refBody.transform.EncodeRot(body.GetRotation());
-				msg.Vel = refBody.EncodeVel(body.GetVelocity(), pos);
-				msg.AngVel = refBody.EncodeAngVel(body.GetAngularVelocity());
+				msg.Pos = refBody.transform.ToRelPos(pos);
+				msg.Rot = refBody.transform.ToRelRot(body.GetRotation());
+				msg.Vel = refBody.ToRelVel(body.GetVelocity(), pos);
+				msg.AngVel = refBody.ToRelAngVel(body.GetAngularVelocity());
 			}
 
 			return msg;
@@ -50,11 +50,6 @@ namespace QSB.MeteorSync.Events
 
 		public override void OnReceiveRemote(bool isHost, FragmentResyncMessage msg)
 		{
-			if (!MeteorManager.Ready)
-			{
-				return;
-			}
-
 			var qsbFragment = QSBWorldSync.GetWorldFromId<QSBFragment>(msg.ObjectId);
 			qsbFragment.AttachedObject._integrity = msg.Integrity;
 			qsbFragment.AttachedObject._origIntegrity = msg.OrigIntegrity;
@@ -105,11 +100,11 @@ namespace QSB.MeteorSync.Events
 					}
 
 					var refBody = qsbFragment.RefBody;
-					var pos = refBody.transform.DecodePos(msg.Pos);
+					var pos = refBody.transform.FromRelPos(msg.Pos);
 					body.SetPosition(pos);
-					body.SetRotation(refBody.transform.DecodeRot(msg.Rot));
-					body.SetVelocity(refBody.DecodeVel(msg.Vel, pos));
-					body.SetAngularVelocity(refBody.DecodeAngVel(msg.AngVel));
+					body.SetRotation(refBody.transform.FromRelRot(msg.Rot));
+					body.SetVelocity(refBody.FromRelVel(msg.Vel, pos));
+					body.SetAngularVelocity(refBody.FromRelAngVel(msg.AngVel));
 				});
 			}
 			else if (!msg.IsDetached && qsbFragment.IsDetached)

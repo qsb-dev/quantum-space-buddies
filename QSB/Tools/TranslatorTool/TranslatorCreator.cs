@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -8,7 +9,7 @@ namespace QSB.Tools.TranslatorTool
 	{
 		private static readonly Vector3 TranslatorScale = new(0.75f, 0.75f, 0.75f);
 
-		internal static void CreateTranslator(Transform cameraBody)
+		internal static void CreateTranslator(PlayerInfo player)
 		{
 			var NomaiTranslatorProp = GameObject.Find("NomaiTranslatorProp");
 
@@ -51,7 +52,8 @@ namespace QSB.Tools.TranslatorTool
 			tool.ArrivalDegrees = 5f;
 			tool.Type = ToolType.Translator;
 			tool.ToolGameObject = REMOTE_TranslatorGroup.gameObject;
-			tool.RaycastTransform = cameraBody;
+			tool.Player = player;
+			tool.RaycastTransform = player.CameraBody.transform;
 			Object.Destroy(oldTranslator);
 
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Screen").material = PlayerToolsManager.Structure_HEA_PlayerShip_Screens_mat;
@@ -65,7 +67,7 @@ namespace QSB.Tools.TranslatorTool
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Button_R").material = PlayerToolsManager.Props_HEA_Lightbulb_mat;
 			PlayerToolsManager.GetRenderer(REMOTE_NomaiTranslatorProp, "Props_HEA_Translator_Button_R").shadowCastingMode = ShadowCastingMode.On;
 
-			REMOTE_NomaiTranslatorProp.transform.parent = cameraBody;
+			REMOTE_NomaiTranslatorProp.transform.parent = player.CameraBody.transform;
 			REMOTE_NomaiTranslatorProp.transform.localPosition = Vector3.zero;
 			REMOTE_NomaiTranslatorProp.transform.localScale = TranslatorScale;
 			QSBCore.UnityEvents.FireInNUpdates(() => REMOTE_NomaiTranslatorProp.SetActive(true), 5);

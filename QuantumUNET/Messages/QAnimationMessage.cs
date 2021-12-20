@@ -1,11 +1,10 @@
 ﻿using QuantumUNET.Transport;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QAnimationMessage : QMessageBase
 	{
-		public NetworkInstanceId netId;
+		public QNetworkInstanceId netId;
 		public int stateHash;
 		public float normalizedTime;
 		public byte[] parameters;

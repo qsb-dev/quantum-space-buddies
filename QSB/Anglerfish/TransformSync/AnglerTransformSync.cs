@@ -3,14 +3,16 @@ using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
+using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => QSBCore.WorldObjectsReady;
+		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;
+		public override bool IsPlayerObject => false;
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new();
@@ -28,24 +30,48 @@ namespace QSB.Anglerfish.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.UnregisterAuthQueue();
+			}
+			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		public override float GetNetworkSendInterval() => 1;
 
 		protected override void Init()
 		{
-			_qsbAngler = QSBWorldSync.GetWorldFromId<QSBAngler>(_instances.IndexOf(this));
+			_qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(AnglerManager.Anglers[_instances.IndexOf(this)]);
 			_qsbAngler.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.RegisterAuthQueue();
+			}
+			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.FireAuthQueue(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
+
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
 
 		private bool _shouldUpdate;
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
 			base.DeserializeTransform(reader, initialState);
+
+			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
+			{
+				return;
+			}
+
 			_shouldUpdate = true;
 		}
 
@@ -67,17 +93,32 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			base.OnRenderObject();
-
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
+			if (!WorldObjectManager.AllObjectsReady
+			    || !QSBCore.ShowLinesInDebug
+			    || !IsReady
+			    || ReferenceTransform == null
+			    || AttachedObject.IsSuspended())
 			{
 				return;
 			}
 
-			Popcron.Gizmos.Line(AttachedObject.transform.position, _qsbAngler.AttachedObject.GetTargetPosition(), Color.white);
+			base.OnRenderObject();
+
+			Popcron.Gizmos.Sphere(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._arrivalDistance, Color.blue);
+			Popcron.Gizmos.Sphere(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._pursueDistance, Color.red);
+			Popcron.Gizmos.Sphere(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._escapeDistance, Color.yellow);
+			Popcron.Gizmos.Sphere(AttachedObject.GetPosition()
+				+ AttachedObject.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
+
+			if (_qsbAngler.TargetTransform != null)
+			{
+				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, AttachedObject.GetPosition(), Color.gray);
+				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, _qsbAngler.TargetTransform.position + _qsbAngler.TargetVelocity, Color.green);
+				Popcron.Gizmos.Line(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._targetPos, Color.red);
+				Popcron.Gizmos.Sphere(_qsbAngler.AttachedObject._targetPos, 5, Color.red);
+			}
+
+			// Popcron.Gizmos.Line(AttachedObject.GetPosition(), _qsbAngler.AttachedObject.GetTargetPosition(), Color.white);
 		}
 	}
 }

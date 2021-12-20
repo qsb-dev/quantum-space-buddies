@@ -21,27 +21,27 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init(MultiStateQuantumObject attachedObject, int id)
+		public override void Init()
 		{
-			ObjectId = id;
-			AttachedObject = attachedObject;
-
 			if (QSBCore.ShowQuantumDebugBoxes)
 			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{id}\r\nstate:{CurrentState}").GetComponent<Text>();
+				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}").GetComponent<Text>();
 			}
 
-			base.Init(attachedObject, id);
-		}
+			base.Init();
 
-		public override void PostInit()
-		{
-			QuantumStates = AttachedObject._states.ToList().Select(x => QSBWorldSync.GetWorldFromUnity<QSBQuantumState>(x)).ToList();
-
-			if (QuantumStates.Any(x => x == null))
+			StartDelayedReady();
+			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsAdded, () =>
 			{
-				DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
-			}
+				FinishDelayedReady();
+
+				QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldFromUnity<QSBQuantumState>).ToList();
+
+				if (QuantumStates.Any(x => x == null))
+				{
+					DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
+				}
+			});
 		}
 
 		public void ChangeState(int newStateIndex)

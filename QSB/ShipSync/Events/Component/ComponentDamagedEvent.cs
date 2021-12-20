@@ -7,7 +7,7 @@ namespace QSB.ShipSync.Events.Component
 {
 	internal class ComponentDamagedEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override EventType Type => EventType.ComponentDamaged;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<ShipComponent>.AddListener(EventNames.QSBComponentDamaged, Handler);
 		public override void CloseListener() => GlobalMessenger<ShipComponent>.RemoveListener(EventNames.QSBComponentDamaged, Handler);

@@ -1,5 +1,6 @@
 ﻿using QuantumUNET.Logging;
 using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,8 +37,6 @@ namespace QuantumUNET.Components
 		private static readonly QAddPlayerMessage s_AddPlayerMessage = new();
 		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new();
 		private static readonly QErrorMessage s_ErrorMessage = new();
-		private static AsyncOperation s_LoadingSceneAsync;
-		private static QNetworkConnection s_ClientReadyConnection;
 		private static string s_Address;
 
 		public bool customConfig { get; set; }
@@ -372,7 +371,6 @@ namespace QuantumUNET.Components
 		{
 			if (!(singleton == null))
 			{
-				s_ClientReadyConnection = null;
 				singleton.StopHost();
 				singleton = null;
 			}
@@ -386,7 +384,7 @@ namespace QuantumUNET.Components
 			{
 				for (var i = 0; i < QNetworkServer.numChannels; i++)
 				{
-					netMsg.Connection.SetChannelOption(i, ChannelOption.MaxPendingBuffers, m_MaxBufferedPackets);
+					netMsg.Connection.SetChannelOption(i, QChannelOption.MaxPendingBuffers, m_MaxBufferedPackets);
 				}
 			}
 
@@ -394,7 +392,7 @@ namespace QuantumUNET.Components
 			{
 				for (var j = 0; j < QNetworkServer.numChannels; j++)
 				{
-					netMsg.Connection.SetChannelOption(j, ChannelOption.AllowFragmentation, 0);
+					netMsg.Connection.SetChannelOption(j, QChannelOption.AllowFragmentation, 0);
 				}
 			}
 
@@ -419,7 +417,7 @@ namespace QuantumUNET.Components
 			netMsg.ReadMessage(s_AddPlayerMessage);
 			if (s_AddPlayerMessage.msgSize != 0)
 			{
-				var extraMessageReader = new NetworkReader(s_AddPlayerMessage.msgData);
+				var extraMessageReader = new QNetworkReader(s_AddPlayerMessage.msgData);
 				OnServerAddPlayer(netMsg.Connection, s_AddPlayerMessage.playerControllerId, extraMessageReader);
 			}
 			else
@@ -496,7 +494,7 @@ namespace QuantumUNET.Components
 			QNetworkServer.SetClientReady(conn);
 		}
 
-		public virtual void OnServerAddPlayer(QNetworkConnection conn, short playerControllerId, NetworkReader extraMessageReader) => OnServerAddPlayerInternal(conn, playerControllerId);
+		public virtual void OnServerAddPlayer(QNetworkConnection conn, short playerControllerId, QNetworkReader extraMessageReader) => OnServerAddPlayerInternal(conn, playerControllerId);
 
 		public virtual void OnServerAddPlayer(QNetworkConnection conn, short playerControllerId) => OnServerAddPlayerInternal(conn, playerControllerId);
 

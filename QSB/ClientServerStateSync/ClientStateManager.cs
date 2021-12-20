@@ -22,6 +22,12 @@ namespace QSB.ClientServerStateSync
 			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => QSBEventManager.FireEvent(EventNames.QSBClientState, ForceGetCurrentState()));
 		}
 
+		public void FireChangeClientStateEvent(ClientState newState)
+		{
+			ChangeClientState(newState);
+			QSBEventManager.FireEvent(EventNames.QSBClientState, newState);
+		}
+
 		public void ChangeClientState(ClientState newState)
 		{
 			if (QSBPlayerManager.LocalPlayer.State == newState)
@@ -124,7 +130,7 @@ namespace QSB.ClientServerStateSync
 				}
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBClientState, newState);
+			FireChangeClientStateEvent(newState);
 		}
 
 		public void OnDeath()
@@ -132,7 +138,7 @@ namespace QSB.ClientServerStateSync
 			var currentScene = QSBSceneManager.CurrentScene;
 			if (currentScene == OWScene.SolarSystem)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.DeadInSolarSystem);
+				FireChangeClientStateEvent(ClientState.DeadInSolarSystem);
 			}
 			else if (currentScene == OWScene.EyeOfTheUniverse)
 			{
@@ -151,7 +157,7 @@ namespace QSB.ClientServerStateSync
 			if (currentScene == OWScene.SolarSystem)
 			{
 				DebugLog.DebugWrite($"RESPAWN!");
-				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
+				FireChangeClientStateEvent(ClientState.AliveInSolarSystem);
 			}
 			else
 			{

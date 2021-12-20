@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace QSB.Tools.ProbeLauncherTool
@@ -7,7 +8,7 @@ namespace QSB.Tools.ProbeLauncherTool
 	{
 		private static readonly Vector3 ProbeLauncherOffset = new(0.5745087f, -0.26f, 0.4453125f);
 
-		internal static void CreateProbeLauncher(Transform cameraBody)
+		internal static void CreateProbeLauncher(PlayerInfo player)
 		{
 			var ProbeLauncher = GameObject.Find("PlayerCamera/ProbeLauncher");
 
@@ -29,7 +30,7 @@ namespace QSB.Tools.ProbeLauncherTool
 			var effects = REMOTE_ProbeLauncher.AddComponent<ProbeLauncherEffects>();
 			effects._launchParticles = REMOTE_LaunchParticleEffect.GetComponent<ParticleSystem>();
 			effects._underwaterLaunchParticles = REMOTE_LaunchParticleEffect_Underwater.GetComponent<ParticleSystem>();
-			effects._owAudioSource = ProbeLauncher.GetComponent<ProbeLauncherEffects>()._owAudioSource;
+			effects._owAudioSource = player.AudioController._repairToolSource;
 
 			var recallEffect = REMOTE_Props_HEA_ProbeLauncher.Find("RecallEffect");
 
@@ -71,11 +72,12 @@ namespace QSB.Tools.ProbeLauncherTool
 			tool.ArrivalDegrees = 5f;
 			tool.Type = ToolType.ProbeLauncher;
 			tool.ToolGameObject = REMOTE_Props_HEA_ProbeLauncher.gameObject;
+			tool.Player = player;
 			tool.PreLaunchProbeProxy = preLaunchProbe.gameObject;
 			tool.ProbeRetrievalEffect = recallEffect.GetComponent<SingularityWarpEffect>();
 			tool.Effects = effects;
 
-			REMOTE_ProbeLauncher.transform.parent = cameraBody;
+			REMOTE_ProbeLauncher.transform.parent = player.CameraBody.transform;
 			REMOTE_ProbeLauncher.transform.localPosition = ProbeLauncherOffset;
 
 			//QSBCore.UnityEvents.FireInNUpdates(() => REMOTE_ProbeLauncher.SetActive(true), 5);

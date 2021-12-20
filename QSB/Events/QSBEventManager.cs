@@ -2,6 +2,7 @@
 using QSB.Anglerfish.Events;
 using QSB.Animation.NPC.Events;
 using QSB.Animation.Player.Events;
+using QSB.AuthoritySync;
 using QSB.CampfireSync.Events;
 using QSB.ClientServerStateSync.Events;
 using QSB.ConversationSync.Events;
@@ -9,6 +10,7 @@ using QSB.DeathSync.Events;
 using QSB.ElevatorSync.Events;
 using QSB.GeyserSync.Events;
 using QSB.ItemSync.Events;
+using QSB.JellyfishSync.Events;
 using QSB.LogSync.Events;
 using QSB.MeteorSync.Events;
 using QSB.OrbSync.Events;
@@ -17,6 +19,7 @@ using QSB.QuantumSync.Events;
 using QSB.RespawnSync.Events;
 using QSB.RoastingSync.Events;
 using QSB.SatelliteSync.Events;
+using QSB.SaveSync.Events;
 using QSB.ShipSync.Events;
 using QSB.ShipSync.Events.Component;
 using QSB.ShipSync.Events.Hull;
@@ -29,11 +32,11 @@ using QSB.Tools.SignalscopeTool.Events;
 using QSB.Tools.SignalscopeTool.FrequencySync.Events;
 using QSB.Tools.TranslatorTool.Events;
 using QSB.Tools.TranslatorTool.TranslationSync.Events;
+using QSB.TornadoSync.Events;
 using QSB.Utility;
 using QSB.Utility.Events;
+using QSB.ZeroGCaveSync.Events;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QSB.Events
 {
@@ -45,6 +48,7 @@ namespace QSB.Events
 
 		public static void Init()
 		{
+			BaseQSBEvent._msgType = 0;
 			_eventList = new List<IQSBEvent>
 			{
 				// Player
@@ -80,11 +84,13 @@ namespace QSB.Events
 				new SatelliteProjectorEvent(),
 				new SatelliteProjectorSnapshotEvent(),
 				new LaunchCodesEvent(),
+				new RequestGameStateEvent(),
+				new GameStateEvent(),
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
+				new OrbDragEvent(),
 				new OrbSlotEvent(),
-				new OrbUserEvent(),
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
 				new SetAsTranslatedEvent(),
@@ -103,6 +109,8 @@ namespace QSB.Events
 				new MeteorSpecialImpactEvent(),
 				new FragmentDamageEvent(),
 				new FragmentResyncEvent(),
+				new JellyfishRisingEvent(),
+				new TornadoFormStateEvent(),
 				// Conversation/dialogue/exploration
 				new ConversationEvent(),
 				new ConversationStartEndEvent(),
@@ -111,6 +119,8 @@ namespace QSB.Events
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
+				new AuthQueueEvent(),
+				new EnterRemoteDialogueEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),
@@ -122,7 +132,9 @@ namespace QSB.Events
 				new HullRepairTickEvent(),
 				new ComponentDamagedEvent(),
 				new ComponentRepairedEvent(),
-				new ComponentRepairTickEvent()
+				new ComponentRepairTickEvent(),
+				new SatelliteNodeRepairTick(),
+				new SatelliteNodeRepaired()
 			};
 
 			if (UnitTestDetector.IsInUnitTest)
@@ -131,26 +143,6 @@ namespace QSB.Events
 			}
 
 			_eventList.ForEach(ev => ev.SetupListener());
-
-			var duplicates = _eventList
-				.GroupBy(qsbEvent => qsbEvent.Type)
-				.Where(group => group.Count() > 1);
-
-			if (duplicates.Count() != 0)
-			{
-				var totalSb = new StringBuilder();
-				foreach (var group in duplicates)
-				{
-					totalSb.Append($"{group.Key}\r\n");
-					foreach (var qsbEvent in group)
-					{
-						totalSb.Append($"- {qsbEvent.GetType().Name}\r\n");
-					}
-				}
-
-				DebugLog.ToConsole($"Error - These QSBEvents handle the same EventType!\r\n{totalSb}", MessageType.Error);
-				return;
-			}
 
 			Ready = true;
 
@@ -239,5 +231,8 @@ namespace QSB.Events
 
 			GlobalMessenger<T, U, V, W, X, Y>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6);
 		}
+
+		/// used to force set ForId for every sent event
+		public static uint ForIdOverride = uint.MaxValue;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 
@@ -7,7 +8,7 @@ namespace QSB.Player.Events
 {
 	internal class PlayerEntangledEvent : QSBEvent<WorldObjectMessage>
 	{
-		public override EventType Type => EventType.PlayerEntangle;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int>.AddListener(EventNames.QSBPlayerEntangle, Handler);
 		public override void CloseListener() => GlobalMessenger<int>.RemoveListener(EventNames.QSBPlayerEntangle, Handler);

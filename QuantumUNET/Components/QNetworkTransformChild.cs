@@ -2,7 +2,6 @@
 using QuantumUNET.Transport;
 using System;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Components
 {
@@ -234,7 +233,6 @@ namespace QuantumUNET.Components
 			return result;
 		}
 
-		[Client]
 		private void SendTransform()
 		{
 			if (HasMoved() && QClientScene.readyConnection != null)

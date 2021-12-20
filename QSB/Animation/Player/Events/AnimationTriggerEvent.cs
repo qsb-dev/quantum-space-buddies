@@ -5,7 +5,7 @@ namespace QSB.Animation.Player.Events
 {
 	internal class AnimationTriggerEvent : QSBEvent<AnimationTriggerMessage>
 	{
-		public override EventType Type => EventType.AnimTrigger;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<uint, string>.AddListener(EventNames.QSBAnimTrigger, Handler);
 		public override void CloseListener() => GlobalMessenger<uint, string>.RemoveListener(EventNames.QSBAnimTrigger, Handler);
@@ -22,7 +22,12 @@ namespace QSB.Animation.Player.Events
 		public override void OnReceiveRemote(bool server, AnimationTriggerMessage message)
 		{
 			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(message.AttachedNetId);
-			if (!QSBCore.WorldObjectsReady || animationSync == null)
+			if (animationSync == null)
+			{
+				return;
+			}
+
+			if (animationSync.VisibleAnimator == null)
 			{
 				return;
 			}

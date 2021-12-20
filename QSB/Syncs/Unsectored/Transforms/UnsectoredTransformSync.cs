@@ -1,16 +1,16 @@
-﻿using OWML.Common;
-using QSB.Utility;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.Syncs.Unsectored.Transforms
 {
-	public abstract class UnsectoredTransformSync : BaseUnsectoredSync
+	public abstract class UnsectoredTransformSync : BaseUnsectoredSync<Transform>
 	{
-		protected abstract Component InitLocalTransform();
-		protected abstract Component InitRemoteTransform();
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
 
-		protected override Component SetAttachedObject()
+		protected override Transform SetAttachedObject()
 			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -27,7 +27,7 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);
@@ -44,40 +44,26 @@ namespace QSB.Syncs.Unsectored.Transforms
 
 			transform.position = pos;
 			transform.rotation = rot;
-
-			if (transform.position == Vector3.zero)
-			{
-				//DebugLog.ToConsole($"Warning - {_logName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
-			}
 		}
 
 		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
-				transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-				transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
 				return true;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-			if (targetPos != Vector3.zero && ReferenceTransform.DecodePos(transform.position) != Vector3.zero)
+			if (UseInterpolation)
 			{
-				if (UseInterpolation)
-				{
-					AttachedObject.transform.position = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-					AttachedObject.transform.rotation = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
-				}
-				else
-				{
-					AttachedObject.transform.position = targetPos;
-					AttachedObject.transform.rotation = targetRot;
-				}
+				AttachedObject.position = ReferenceTransform.FromRelPos(SmoothPosition);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
 			}
-			else if (targetPos == Vector3.zero)
+			else
 			{
-				DebugLog.ToConsole($"Warning - TargetPos for {LogName} was (0,0,0).", MessageType.Warning);
+				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
+				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
 
 			return true;

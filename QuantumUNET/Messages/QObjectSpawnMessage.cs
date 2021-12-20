@@ -1,12 +1,11 @@
 ﻿using QuantumUNET.Transport;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QuantumUNET.Messages
 {
 	internal class QObjectSpawnMessage : QMessageBase
 	{
-		public NetworkInstanceId NetId;
+		public QNetworkInstanceId NetId;
 		public int assetId;
 		public Vector3 Position;
 		public byte[] Payload;

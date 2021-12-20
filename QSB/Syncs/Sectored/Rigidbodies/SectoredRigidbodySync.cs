@@ -1,13 +1,14 @@
 ﻿using OWML.Common;
 using QSB.Utility;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Rigidbodies
 {
-	public abstract class SectoredRigidbodySync : BaseSectoredSync
+	public abstract class SectoredRigidbodySync : BaseSectoredSync<OWRigidbody>
 	{
-		public override bool ShouldReparentAttachedObject => false;
+		public override bool DestroyAttachedObject => false;
 
 		public const float PositionMovedThreshold = 0.05f;
 		public const float AngleRotatedThreshold = 0.05f;
@@ -34,7 +35,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected abstract OWRigidbody GetRigidbody();
 
-		protected override Component SetAttachedObject()
+		protected override OWRigidbody SetAttachedObject()
 			=> GetRigidbody();
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
@@ -61,7 +62,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 		{
 			base.DeserializeTransform(reader, initialState);
 
-			if (!QSBCore.WorldObjectsReady)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				reader.ReadVector3();
 				DeserializeRotation(reader);
@@ -93,10 +94,20 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected void SetValuesToSync()
 		{
-			transform.position = ReferenceTransform.EncodePos(AttachedObject.transform.position);
-			transform.rotation = ReferenceTransform.EncodeRot(AttachedObject.transform.rotation);
-			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeVel(((OWRigidbody)AttachedObject).GetVelocity(), AttachedObject.transform.position);
-			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().EncodeAngVel(((OWRigidbody)AttachedObject).GetAngularVelocity());
+			if (ReferenceTransform != null)
+			{
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.GetPosition());
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.GetRotation());
+				_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelVel(AttachedObject.GetVelocity(), AttachedObject.GetPosition());
+				_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelAngVel(AttachedObject.GetAngularVelocity());
+			}
+			else
+			{
+				transform.position = Vector3.zero;
+				transform.rotation = Quaternion.identity;
+				_relativeVelocity = Vector3.zero;
+				_relativeAngularVelocity = Vector3.zero;
+			}
 		}
 
 		protected override bool UpdateTransform()
@@ -112,21 +123,21 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return true;
 			}
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-
-			if (targetPos == Vector3.zero || transform.position == Vector3.zero)
+			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
 				return false;
 			}
+
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
+			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
 			var positionToSet = targetPos;
 			var rotationToSet = targetRot;
 
 			if (UseInterpolation)
 			{
-				positionToSet = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
+				positionToSet = ReferenceTransform.FromRelPos(SmoothPosition);
+				rotationToSet = ReferenceTransform.FromRelRot(SmoothRotation);
 			}
 
 			var hasMoved = CustomHasMoved(
@@ -149,14 +160,14 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 				return true;
 			}
 
-			((OWRigidbody)AttachedObject).MoveToPosition(positionToSet);
-			((OWRigidbody)AttachedObject).MoveToRotation(rotationToSet);
+			AttachedObject.MoveToPosition(positionToSet);
+			AttachedObject.MoveToRotation(rotationToSet);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
 
-			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
-			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+			AttachedObject.SetVelocity(targetVelocity);
+			AttachedObject.SetAngularVelocity(targetAngularVelocity);
 
 			return true;
 		}

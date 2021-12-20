@@ -6,7 +6,7 @@ namespace QSB.QuantumSync.Events
 {
 	public class QuantumShuffleEvent : QSBEvent<QuantumShuffleMessage>
 	{
-		public override QSB.Events.EventType Type => QSB.Events.EventType.QuantumShuffle;
+		public override bool RequireWorldObjectsReady => true;
 
 		public override void SetupListener() => GlobalMessenger<int, int[]>.AddListener(EventNames.QSBQuantumShuffle, Handler);
 		public override void CloseListener() => GlobalMessenger<int, int[]>.RemoveListener(EventNames.QSBQuantumShuffle, Handler);
@@ -22,11 +22,6 @@ namespace QSB.QuantumSync.Events
 
 		public override void OnReceiveRemote(bool server, QuantumShuffleMessage message)
 		{
-			if (!QSBCore.WorldObjectsReady)
-			{
-				return;
-			}
-
 			var obj = QSBWorldSync.GetWorldFromId<QSBQuantumShuffleObject>(message.ObjectId);
 			obj.ShuffleObjects(message.IndexArray);
 		}

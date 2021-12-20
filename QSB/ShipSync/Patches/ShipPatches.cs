@@ -3,7 +3,9 @@ using OWML.Utils;
 using QSB.Events;
 using QSB.Patches;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
+using QSB.ShipSync.TransformSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
@@ -62,7 +64,7 @@ namespace QSB.ShipSync.Patches
 		public static bool InteractZone_UpdateInteractVolume(InteractZone __instance)
 		{
 			/* Angle for interaction with the ship hatch
-			 *  
+			 *
 			 *  \  80°  / - If in ship
 			 *   \     /
 			 *    \   /
@@ -70,10 +72,10 @@ namespace QSB.ShipSync.Patches
 			 *    /   \
 			 *   /     \
 			 *  / 280°  \ - If not in ship
-			 *  
+			 *
 			 */
 
-			if (!QSBCore.WorldObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
+			if (!WorldObjectManager.AllObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
 			{
 				return true;
 			}
@@ -205,7 +207,7 @@ namespace QSB.ShipSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.OnImpact))]
 		public static bool ShipDamageController_OnImpact()
-			=> ShipManager.Instance.HasAuthority;
+			=> ShipTransformSync.LocalInstance == null || ShipManager.Instance.HasAuthority;
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
