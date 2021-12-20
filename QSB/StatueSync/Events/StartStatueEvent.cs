@@ -33,7 +33,7 @@ namespace QSB.StatueSync.Events
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InStatueCutscene);
+			ServerStateManager.Instance.FireChangeServerStateEvent(ServerState.InStatueCutscene);
 		}
 
 		public override void OnReceiveRemote(bool server, StartStatueMessage message)
@@ -45,7 +45,7 @@ namespace QSB.StatueSync.Events
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.InStatueCutscene);
+			ServerStateManager.Instance.FireChangeServerStateEvent(ServerState.InStatueCutscene);
 		}
 	}
 }

@@ -295,7 +295,7 @@ namespace QSB.TimeSync
 				{
 					//?
 					DebugLog.ToConsole($"Warning - Server waiting for players to die, but players waiting for ready signal! Assume players correct.", MessageType.Warning);
-					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToReady);
+					ServerStateManager.Instance.FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToReady);
 				}
 			}
 

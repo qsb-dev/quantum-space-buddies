@@ -27,16 +27,16 @@ namespace QSB.DeathSync.Events
 			DebugLog.DebugWrite($" ~~~ LOOP START ~~~");
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInSolarSystem);
+				ClientStateManager.Instance.FireChangeClientStateEvent(ClientState.AliveInSolarSystem);
 			}
 			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.AliveInEye);
+				ClientStateManager.Instance.FireChangeClientStateEvent(ClientState.AliveInEye);
 			}
 			else
 			{
 				DebugLog.ToConsole($"Error - Got StartLoop event when not in universe!", OWML.Common.MessageType.Error);
-				QSBEventManager.FireEvent(EventNames.QSBClientState, ClientState.NotLoaded);
+				ClientStateManager.Instance.FireChangeClientStateEvent(ClientState.NotLoaded);
 			}
 		}
 	}

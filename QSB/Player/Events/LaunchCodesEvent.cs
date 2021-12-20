@@ -24,7 +24,7 @@ namespace QSB.Player.Events
 			{
 				flag = true;
 			}
-			else if (PlayerData._currentGameSave.GetPersistentCondition("LAUNCH_CODES_GIVEN"))
+			else if (!PlayerData._currentGameSave.GetPersistentCondition("LAUNCH_CODES_GIVEN"))
 			{
 				flag = true;
 			}

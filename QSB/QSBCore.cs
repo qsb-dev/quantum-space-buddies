@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
-using QSB.ConversationSync;
 using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
@@ -96,7 +95,6 @@ namespace QSB
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();

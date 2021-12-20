@@ -15,7 +15,11 @@ Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses t
 
 QNet code adapted in part from Unity Technologies' UNET.
 
-Copyright (C) 2020 - 2021 : Henry Pointer (_nebula or misternebula) - Aleksander Waage (AmazingAlek) - Ricardo Lopes (Raicuparta)
+Copyright (C) 2020 - 2021 : 
+- Henry Pointer (_nebula or misternebula)
+- Will Corby (JohnCorby)
+- Aleksander Waage (AmazingAlek)
+- Ricardo Lopes (Raicuparta)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
