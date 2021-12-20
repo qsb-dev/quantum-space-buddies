@@ -56,13 +56,13 @@ namespace QSB.Messaging
 			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
-			if (msg.To == 0)
-			{
-				QNetworkServer.SendToClient(0, msgType, msg);
-			}
-			else if (msg.To == uint.MaxValue)
+			if (msg.To == uint.MaxValue)
 			{
 				QNetworkServer.SendToAll(msgType, msg);
+			}
+			else if (msg.To == 0)
+			{
+				OnReceive(msg);
 			}
 			else
 			{
@@ -82,6 +82,11 @@ namespace QSB.Messaging
 			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
+			OnReceive(msg);
+		}
+
+		private static void OnReceive(QSBMessage msg)
+		{
 			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message {msg} before localplayer was established.", MessageType.Warning);
@@ -93,9 +98,9 @@ namespace QSB.Messaging
 				var player = QSBPlayerManager.GetPlayer(msg.From);
 
 				if (!player.IsReady
-					&& player.PlayerId != QSBPlayerManager.LocalPlayerId
-					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-					&& msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
+				    && player.PlayerId != QSBPlayerManager.LocalPlayerId
+				    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+				    && msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
 				{
 					DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
@@ -127,26 +132,26 @@ namespace QSB.Messaging
 		#endregion
 
 
-		public static void Send<M>(this M message)
+		public static void Send<M>(this M msg)
 			where M : QSBMessage, new()
 		{
 			if (!QSBCore.IsInMultiplayer)
 			{
-				DebugLog.ToConsole($"Warning - Tried to send message {message} while not connected to/hosting server.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to send message {msg} while not connected to/hosting server.", MessageType.Warning);
 				return;
 			}
 
+			msg.From = QSBPlayerManager.LocalPlayerId;
 			var msgType = _typeToMsgType[typeof(M)];
-			message.From = QSBPlayerManager.LocalPlayerId;
-			QNetworkManager.singleton.client.Send(msgType, message);
+			QNetworkManager.singleton.client.Send(msgType, msg);
 		}
 
-		public static void SendMessage<T, M>(this T worldObject, M message)
-			where M : QSBWorldObjectMessage<T>, new()
+		public static void SendMessage<T, M>(this T worldObject, M msg)
 			where T : IWorldObject
+			where M : QSBWorldObjectMessage<T>, new()
 		{
-			message.ObjectId = worldObject.ObjectId;
-			Send(message);
+			msg.ObjectId = worldObject.ObjectId;
+			Send(msg);
 		}
 	}
 }
