@@ -20,7 +20,7 @@ using UnityEngine;
 /*
 	Copyright (C) 2020 - 2021
 			Henry Pointer (_nebula / misternebula),
-			John Corby (JohnCorby),
+			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
 			Ricardo Lopes (Raicuparta)
 
