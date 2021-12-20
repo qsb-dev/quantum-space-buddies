@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.SectorSync
 {
-	public class QSBSectorManager : WorldObjectManager, IRepeating
+	public class QSBSectorManager : WorldObjectManager
 	{
 		public static QSBSectorManager Instance { get; private set; }
 		public bool IsReady { get; private set; }
