@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
 using QSB.Animation.Player;
+using QSB.Audio;
 using QSB.Events;
 using QSB.Instruments;
 using QSB.RoastingSync;
@@ -96,7 +97,7 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
-		protected override Component InitLocalTransform()
+		protected override Transform InitLocalTransform()
 		{
 			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
 
@@ -127,7 +128,7 @@ namespace QSB.Player.TransformSync
 			return player;
 		}
 
-		protected override Component InitRemoteTransform()
+		protected override Transform InitRemoteTransform()
 		{
 			/*
 			 * CREATE PLAYER STRUCTURE
@@ -173,11 +174,11 @@ namespace QSB.Player.TransformSync
 
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 
+			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
+
 			/*
 			 * SET UP PLAYER CAMERA
 			 */
-
-			PlayerToolsManager.InitRemote(REMOTE_PlayerCamera.transform);
 
 			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
 			camera.enabled = false;
@@ -188,6 +189,8 @@ namespace QSB.Player.TransformSync
 			Player.Camera = owcamera;
 			Player.CameraBody = REMOTE_PlayerCamera;
 			_visibleCameraRoot = REMOTE_PlayerCamera.transform;
+
+			PlayerToolsManager.InitRemote(Player);
 
 			/*
 			 * SET UP ROASTING STICK

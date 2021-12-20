@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace QSB.Tools.SignalscopeTool
@@ -7,7 +8,7 @@ namespace QSB.Tools.SignalscopeTool
 	{
 		private static readonly Vector3 SignalscopeScale = new(1.5f, 1.5f, 1.5f);
 
-		internal static void CreateSignalscope(Transform cameraBody)
+		internal static void CreateSignalscope(PlayerInfo player)
 		{
 			var signalscopeRoot = Object.Instantiate(GameObject.Find("Signalscope"));
 			signalscopeRoot.name = "REMOTE_Signalscope";
@@ -26,12 +27,13 @@ namespace QSB.Tools.SignalscopeTool
 			tool.ArrivalDegrees = 5f;
 			tool.Type = ToolType.Signalscope;
 			tool.ToolGameObject = Props_HEA_Signalscope.gameObject;
+			tool.Player = player;
 			oldSignalscope.enabled = false;
 
 			Props_HEA_Signalscope.GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
 			Props_HEA_Signalscope.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
 
-			signalscopeRoot.transform.parent = cameraBody;
+			signalscopeRoot.transform.parent = player.CameraBody.transform;
 			signalscopeRoot.transform.localPosition = Vector3.zero;
 			signalscopeRoot.transform.localScale = SignalscopeScale;
 			signalscopeRoot.SetActive(true);

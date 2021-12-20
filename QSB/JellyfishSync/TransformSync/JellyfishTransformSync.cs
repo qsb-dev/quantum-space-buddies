@@ -1,10 +1,10 @@
 ﻿using QSB.JellyfishSync.WorldObjects;
-using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
+using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.TransformSync
@@ -16,7 +16,6 @@ namespace QSB.JellyfishSync.TransformSync
 		public override bool IsPlayerObject => false;
 
 		private QSBJellyfish _qsbJellyfish;
-		public static readonly List<JellyfishController> Jellyfish = new();
 		private static readonly List<JellyfishTransformSync> _instances = new();
 
 		protected override OWRigidbody GetRigidbody()
@@ -32,18 +31,36 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.UnregisterAuthQueue();
+			}
+			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		public override float GetNetworkSendInterval() => 10;
 
 		protected override void Init()
 		{
-			_qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(Jellyfish[_instances.IndexOf(this)]);
+			_qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(JellyfishManager.Jellyfish[_instances.IndexOf(this)]);
 			_qsbJellyfish.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
+
+			if (QSBCore.IsHost)
+			{
+				NetIdentity.RegisterAuthQueue();
+			}
+			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.FireAuthQueue(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
+
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
@@ -92,18 +109,6 @@ namespace QSB.JellyfishSync.TransformSync
 
 			_shouldUpdate = false;
 
-			var targetPos = ReferenceTransform.DecodePos(transform.position);
-			var targetRot = ReferenceTransform.DecodeRot(transform.rotation);
-
-			var positionToSet = targetPos;
-			var rotationToSet = targetRot;
-
-			if (UseInterpolation)
-			{
-				positionToSet = SmartSmoothDamp(AttachedObject.transform.position, targetPos);
-				rotationToSet = QuaternionHelper.SmoothDamp(AttachedObject.transform.rotation, targetRot, ref _rotationSmoothVelocity, SmoothTime);
-			}
-
 			var hasMoved = CustomHasMoved(
 				transform.position,
 				_localPrevPosition,
@@ -124,14 +129,11 @@ namespace QSB.JellyfishSync.TransformSync
 				return true;
 			}
 
-			((OWRigidbody)AttachedObject).SetPosition(positionToSet);
-			((OWRigidbody)AttachedObject).SetRotation(rotationToSet);
-
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().DecodeAngVel(_relativeAngularVelocity);
-
-			((OWRigidbody)AttachedObject).SetVelocity(targetVelocity);
-			((OWRigidbody)AttachedObject).SetAngularVelocity(targetAngularVelocity);
+			var pos = ReferenceTransform.FromRelPos(transform.position);
+			AttachedObject.SetPosition(pos);
+			AttachedObject.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
 			return true;
 		}
@@ -140,10 +142,10 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null
-				|| ((OWRigidbody)AttachedObject).IsSuspended())
+			    || !QSBCore.ShowLinesInDebug
+			    || !IsReady
+			    || ReferenceTransform == null
+			    || AttachedObject.IsSuspended())
 			{
 				return;
 			}

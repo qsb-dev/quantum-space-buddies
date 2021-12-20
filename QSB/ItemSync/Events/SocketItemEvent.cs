@@ -30,16 +30,21 @@ namespace QSB.ItemSync.Events
 
 		public override void OnReceiveRemote(bool server, SocketItemMessage message)
 		{
-			var socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
-			var itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
+			IQSBOWItemSocket socketWorldObject;
+			IQSBOWItem itemWorldObject;
 			var player = QSBPlayerManager.GetPlayer(message.FromId);
 			player.HeldItem = null;
 			switch (message.SocketType)
 			{
 				case SocketEventType.Socket:
+					socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
+					itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
+
 					socketWorldObject.PlaceIntoSocket(itemWorldObject);
 					return;
 				case SocketEventType.StartUnsocket:
+					socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(message.SocketId);
+
 					if (!socketWorldObject.IsSocketOccupied())
 					{
 						DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{socketWorldObject.Name}");
@@ -49,6 +54,8 @@ namespace QSB.ItemSync.Events
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketEventType.CompleteUnsocket:
+					itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(message.ItemId);
+
 					itemWorldObject.OnCompleteUnsocket();
 					return;
 			}

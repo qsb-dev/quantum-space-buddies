@@ -12,33 +12,6 @@ namespace QSB.JellyfishSync.Patches
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(JellyfishController), nameof(JellyfishController.OnSectorOccupantsUpdated))]
-		public static bool OnSectorOccupantsUpdated(JellyfishController __instance)
-		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return true;
-			}
-			var qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(__instance);
-
-			if (!__instance.gameObject.activeSelf && __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
-			{
-				__instance.gameObject.SetActive(true);
-				__instance._jellyfishBody.Unsuspend();
-				qsbJellyfish.TransformSync.NetIdentity.FireAuthQueue(true);
-				return false;
-			}
-			if (__instance.gameObject.activeSelf && !__instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
-			{
-				__instance._jellyfishBody.Suspend();
-				__instance.gameObject.SetActive(false);
-				qsbJellyfish.TransformSync.NetIdentity.FireAuthQueue(false);
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(JellyfishController), nameof(JellyfishController.FixedUpdate))]
 		public static bool FixedUpdate(JellyfishController __instance)
 		{

@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
 using QSB.Animation.Player.Thrusters;
+using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
@@ -14,6 +15,7 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System.Linq;
+using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Player
@@ -119,8 +121,8 @@ namespace QSB.Player
 
 		// Misc
 		public bool IsReady { get; set; }
-		public bool IsInMoon; // MOVE : move into PlayerStates?
-		public bool IsInShrine; // MOVE : move into PlayerStates?
+		public bool IsInMoon;
+		public bool IsInShrine;
 		public IQSBQuantumObject EntangledObject;
 		public bool IsDead { get; set; }
 		public ClientState State { get; set; }
@@ -130,6 +132,7 @@ namespace QSB.Player
 		public bool SignalscopeEquipped { get; set; }
 		public bool TranslatorEquipped { get; set; }
 		public bool ProbeActive { get; set; }
+		public QSBPlayerAudioController AudioController { get; set; }
 
 		// Local only
 		public PlayerProbeLauncher LocalProbeLauncher

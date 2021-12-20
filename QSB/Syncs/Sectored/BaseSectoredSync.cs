@@ -5,14 +5,26 @@ using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using UnityEngine;
 
 namespace QSB.Syncs.Sectored
 {
-	public abstract class BaseSectoredSync : SyncBase
+	public interface IBaseSectoredSync
+	{
+		Component ReturnObject();
+		bool HasAuthority { get; }
+		bool IsReady { get; }
+		SectorSync.SectorSync SectorSync { get; }
+		QSBSector ReferenceSector { get; }
+		void SetReferenceSector(QSBSector closestSector);
+	}
+
+	public abstract class BaseSectoredSync<T> : SyncBase<T>, IBaseSectoredSync where T : Component
 	{
 		public override bool IgnoreDisabledAttachedObject => false;
 		public override bool IgnoreNullReferenceTransform => true;
 
+		public Component ReturnObject() => AttachedObject;
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 
@@ -59,7 +71,7 @@ namespace QSB.Syncs.Sectored
 
 		private void InitSector()
 		{
-			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+			var closestSector = SectorSync.GetClosestSector();
 			if (closestSector != null)
 			{
 				SetReferenceSector(closestSector);
@@ -144,6 +156,12 @@ namespace QSB.Syncs.Sectored
 
 		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
+			if (HasAuthority)
+			{
+				reader.ReadInt32();
+				return;
+			}
+
 			int sectorId;
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -200,10 +218,10 @@ namespace QSB.Syncs.Sectored
 			{
 				if (SectorSync.IsReady)
 				{
-					var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
+					var closestSector = SectorSync.GetClosestSector();
 					if (closestSector != null)
 					{
-						SetReferenceTransform(closestSector.Transform);
+						SetReferenceSector(closestSector);
 						return true;
 					}
 					else

@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
 

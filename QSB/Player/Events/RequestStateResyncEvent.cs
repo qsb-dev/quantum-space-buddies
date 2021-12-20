@@ -5,10 +5,10 @@ using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
-using QSB.QuantumSync;
+using QSB.OrbSync.WorldObjects;
+using QSB.QuantumSync.WorldObjects;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
-using QSB.TornadoSync;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -75,6 +75,11 @@ namespace QSB.Player.Events
 				{
 					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 				}
+
+				if (WorldObjectManager.AllObjectsReady)
+				{
+					SendAuthorityObjectInfo();
+				}
 			}
 			finally
 			{
@@ -119,6 +124,24 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
+		}
+
+		/// <summary>
+		/// send info for objects we have authority over
+		/// </summary>
+		private void SendAuthorityObjectInfo()
+		{
+			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+			{
+				if (!qsbOrb.TransformSync.enabled ||
+				    !qsbOrb.TransformSync.HasAuthority)
+				{
+					continue;
+				}
+
+				QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, qsbOrb.AttachedObject._isBeingDragged);
+				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot));
+			}
 		}
 	}
 }

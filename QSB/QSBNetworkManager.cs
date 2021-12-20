@@ -22,6 +22,7 @@ using QuantumUNET;
 using QuantumUNET.Components;
 using System;
 using System.Linq;
+using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -135,7 +136,7 @@ namespace QSB
 			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
 			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.OldDialogueTrees = QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().ToList();
+				QSBWorldSync.OldDialogueTrees.AddRange(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>());
 			}
 		}
 
@@ -206,7 +207,6 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			NomaiOrbTransformSync.OrbTransformSyncs.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
 
 			if (WakeUpSync.LocalInstance != null)
@@ -235,22 +235,6 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			// revert authority for orbs
-			foreach (var item in NomaiOrbTransformSync.OrbTransformSyncs)
-			{
-				if (!item)
-				{
-					DebugLog.ToConsole($"Warning - null transform sync in NomaiOrbTransformSync.OrbTransformSyncs!", MessageType.Warning);
-					continue;
-				}
-
-				var identity = item.NetIdentity;
-				if (identity.ClientAuthorityOwner == conn)
-				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
-				}
-			}
-
 			// revert authority from ship
 			if (ShipTransformSync.LocalInstance)
 			{
@@ -258,6 +242,22 @@ namespace QSB
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+				}
+			}
+
+			// stop dragging for the orbs this player was dragging
+			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+			{
+				if (!qsbOrb.TransformSync.enabled)
+				{
+					continue;
+				}
+
+				var identity = qsbOrb.TransformSync.NetIdentity;
+				if (identity.ClientAuthorityOwner == conn)
+				{
+					qsbOrb.SetDragging(false);
+					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
 				}
 			}
 

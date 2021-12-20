@@ -1,5 +1,6 @@
 ﻿using QSB.Events;
 using QSB.Player;
+using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 
 namespace QSB.QuantumSync.Events
