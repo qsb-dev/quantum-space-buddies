@@ -62,7 +62,7 @@ namespace QSB.Player.Events
 				// if host, send worldobject and server states
 				if (isHost)
 				{
-					QSBEventManager.FireEvent(EventNames.QSBServerState, ServerStateManager.Instance.GetServerState());
+					ServerStateManager.Instance.FireChangeServerStateEvent(ServerStateManager.Instance.GetServerState());
 					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
 
 					if (WorldObjectManager.AllObjectsReady)
