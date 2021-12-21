@@ -76,8 +76,6 @@ namespace QSB.WorldSync
 			DoRebuild(scene);
 		}
 
-		internal static WorldObjectManager _currentRebuildingManager;
-
 		private static void DoRebuild(OWScene scene)
 		{
 			QSBWorldSync.RemoveWorldObjects();
@@ -95,7 +93,6 @@ namespace QSB.WorldSync
 						continue;
 				}
 
-				_currentRebuildingManager = manager;
 				try
 				{
 					DebugLog.DebugWrite($"Rebuilding {manager.GetType().Name}", MessageType.Info);
@@ -105,7 +102,6 @@ namespace QSB.WorldSync
 				{
 					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
 				}
-				_currentRebuildingManager = null;
 			}
 
 			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>

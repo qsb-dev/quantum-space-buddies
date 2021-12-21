@@ -126,7 +126,6 @@ namespace QSB.WorldSync
 			{
 				var obj = new TWorldObject
 				{
-					WorldObjectType = WorldObjectManager._currentRebuildingManager.WorldObjectType,
 					AttachedObject = item,
 					ObjectId = WorldObjects.Count
 				};

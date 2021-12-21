@@ -6,7 +6,6 @@ namespace QSB.WorldSync
 	public abstract class WorldObject<T> : IWorldObject
 		where T : MonoBehaviour
 	{
-		public WorldObjectType WorldObjectType { get; init; }
 		public int ObjectId { get; init; }
 		public T AttachedObject { get; init; }
 		public string Name => AttachedObject == null ? "<NullObject!>" : AttachedObject.name;
