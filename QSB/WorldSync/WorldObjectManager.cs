@@ -91,6 +91,7 @@ namespace QSB.WorldSync
 				{
 					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
 					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+						DebugLog.DebugWrite($"skipping {manager.GetType().Name} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
 						continue;
 				}
 
