@@ -15,7 +15,7 @@ namespace QSB.MeteorSync
 			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.s_lateInitializers.Count == 0, () =>
 			{
 				FinishDelayedReady();
-				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().FirstOrDefault();
+				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 				QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 				QSBWorldSync.Init<QSBMeteor, MeteorController>();
 				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();

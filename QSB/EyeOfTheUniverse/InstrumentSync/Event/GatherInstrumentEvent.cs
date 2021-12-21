@@ -1,5 +1,4 @@
-﻿using OWML.Common.Menus;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
 using QSB.WorldSync;
 using QSB.WorldSync.Events;
