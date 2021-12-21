@@ -145,6 +145,9 @@ namespace QSB.Utility
 			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
 		}
 
+		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
+			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
+
 		// OW
 
 		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)

@@ -6,6 +6,7 @@ using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Events;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Messaging;
 using QSB.OrbSync.TransformSync;
 using QSB.Patches;
 using QSB.Player;
@@ -165,6 +166,7 @@ namespace QSB
 			OnClientConnected?.SafeInvoke();
 
 			QSBEventManager.Init();
+			QSBMessageManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
 			gameObject.AddComponent<ServerStateManager>();

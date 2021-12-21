@@ -1,35 +1,16 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
-using QSB.Anglerfish;
-using QSB.Animation.NPC;
-using QSB.CampfireSync;
-using QSB.ConversationSync;
-using QSB.EchoesOfTheEye.AirlockSync;
-using QSB.EchoesOfTheEye.LightSensorSync;
-using QSB.ElevatorSync;
-using QSB.GeyserSync;
 using QSB.Inputs;
-using QSB.ItemSync;
-using QSB.JellyfishSync;
 using QSB.Menus;
-using QSB.MeteorSync;
-using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.PoolSync;
-using QSB.QuantumSync;
 using QSB.RespawnSync;
 using QSB.SatelliteSync;
-using QSB.SectorSync;
-using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
-using QSB.Tools.ProbeLauncherTool;
-using QSB.Tools.TranslatorTool.TranslationSync;
-using QSB.TornadoSync;
 using QSB.Utility;
-using QSB.ZeroGCaveSync;
+using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
@@ -121,29 +102,13 @@ namespace QSB
 			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
 			gameObject.AddComponent<SatelliteProjectorManager>();
+			gameObject.AddComponent<StatueManager>();
 
 			// WorldObject managers
-			gameObject.AddComponent<QuantumManager>();
-			gameObject.AddComponent<SpiralManager>();
-			gameObject.AddComponent<ElevatorManager>();
-			gameObject.AddComponent<GeyserManager>();
-			gameObject.AddComponent<OrbManager>();
-			gameObject.AddComponent<QSBSectorManager>();
-			gameObject.AddComponent<ItemManager>();
-			gameObject.AddComponent<StatueManager>();
-			gameObject.AddComponent<PoolManager>();
-			gameObject.AddComponent<CampfireManager>();
-			gameObject.AddComponent<CharacterAnimManager>();
-			gameObject.AddComponent<ShipManager>();
-			gameObject.AddComponent<ProbeLauncherManager>();
-			gameObject.AddComponent<LightSensorManager>();
-			gameObject.AddComponent<AirlockManager>();
-			gameObject.AddComponent<AnglerManager>();
-			gameObject.AddComponent<MeteorManager>();
-			gameObject.AddComponent<JellyfishManager>();
-			gameObject.AddComponent<ZeroGCaveManager>();
-			gameObject.AddComponent<TornadoManager>();
-			gameObject.AddComponent<ConversationManager>();
+			foreach (var type in typeof(WorldObjectManager).GetDerivedTypes())
+			{
+				gameObject.AddComponent(type);
+			}
 
 			DebugBoxManager.Init();
 
