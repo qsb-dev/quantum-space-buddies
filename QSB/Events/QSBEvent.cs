@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using OWML.Utils;
 using QSB.Messaging;
 using QSB.Player;
@@ -90,9 +90,9 @@ namespace QSB.Events
 			Message.Deserialize(reader);
 		}
 
-		public override bool ShouldReceive => Event.Invoke<bool>("CheckMessage", Message);
-		public override void OnReceiveRemote() => Event.Invoke("OnReceiveRemote", QSBCore.IsHost, Message);
-		public override void OnReceiveLocal() => Event.Invoke("OnReceiveLocal", QSBCore.IsHost, Message);
+		protected override bool ShouldReceive => Event.Invoke<bool>("CheckMessage", Message);
+		protected override void OnReceiveRemote() => Event.Invoke("OnReceiveRemote", QSBCore.IsHost, Message);
+		protected override void OnReceiveLocal() => Event.Invoke("OnReceiveLocal", QSBCore.IsHost, Message);
 
 		public override string ToString() => Event.GetType().Name;
 	}

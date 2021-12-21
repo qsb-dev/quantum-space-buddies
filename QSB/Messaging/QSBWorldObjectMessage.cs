@@ -21,7 +21,7 @@ namespace QSB.Messaging
 			ObjectId = reader.ReadInt32();
 		}
 
-		public override bool ShouldReceive
+		protected override bool ShouldReceive
 		{
 			get
 			{
