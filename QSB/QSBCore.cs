@@ -122,6 +122,7 @@ namespace QSB
 			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
 			gameObject.AddComponent<SatelliteProjectorManager>();
+			gameObject.AddComponent<StatueManager>();
 
 			// WorldObject managers
 			gameObject.AddComponent<QuantumManager>();
@@ -131,7 +132,6 @@ namespace QSB
 			gameObject.AddComponent<OrbManager>();
 			gameObject.AddComponent<QSBSectorManager>();
 			gameObject.AddComponent<ItemManager>();
-			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<PoolManager>();
 			gameObject.AddComponent<CampfireManager>();
 			gameObject.AddComponent<CharacterAnimManager>();
