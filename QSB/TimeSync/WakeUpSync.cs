@@ -273,7 +273,7 @@ namespace QSB.TimeSync
 			var serverState = ServerStateManager.Instance.GetServerState();
 			var clientState = QSBPlayerManager.LocalPlayer.State;
 
-			if (serverState == ServerState.WaitingForAllPlayersToReady && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToReady && clientState == ClientState.WaitingForOthersToBeReady)
 			{
 				if (CurrentState != State.Pausing)
 				{
@@ -289,7 +289,7 @@ namespace QSB.TimeSync
 				}
 			}
 
-			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToBeReady)
 			{
 				if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
 				{
@@ -352,12 +352,12 @@ namespace QSB.TimeSync
 				StartPausing(PauseReason.ServerNotStarted);
 			}
 
-			if (serverState == ServerState.WaitingForAllPlayersToReady && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToReady && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToBeReady)
 			{
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 			}
 
-			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToReadyInSolarSystem)
+			if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToBeReady)
 			{
 				StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 			}

@@ -64,7 +64,7 @@ namespace QSB.ClientServerStateSync
 						if (oldScene == OWScene.SolarSystem)
 						{
 							// reloading scene
-							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							newState = ClientState.WaitingForOthersToBeReady;
 						}
 						else
 						{
@@ -98,21 +98,21 @@ namespace QSB.ClientServerStateSync
 					case OWScene.SolarSystem:
 						if (serverState == ServerState.WaitingForAllPlayersToDie)
 						{
-							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							newState = ClientState.WaitingForOthersToBeReady;
 							break;
 						}
 
 						if (oldScene == OWScene.SolarSystem)
 						{
 							// reloading scene
-							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							newState = ClientState.WaitingForOthersToBeReady;
 						}
 						else
 						{
 							// loading in from title screen
 							if (serverState == ServerState.WaitingForAllPlayersToReady)
 							{
-								newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+								newState = ClientState.WaitingForOthersToBeReady;
 							}
 							else
 							{
@@ -122,7 +122,7 @@ namespace QSB.ClientServerStateSync
 
 						break;
 					case OWScene.EyeOfTheUniverse:
-						newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+						newState = ClientState.WaitingForOthersToBeReady;
 						break;
 					default:
 						newState = ClientState.NotLoaded;
