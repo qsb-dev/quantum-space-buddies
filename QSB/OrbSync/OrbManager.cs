@@ -6,7 +6,7 @@ namespace QSB.OrbSync
 {
 	public class OrbManager : WorldObjectManager
 	{
-		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		public static readonly List<NomaiInterfaceOrb> Orbs = new();
 
