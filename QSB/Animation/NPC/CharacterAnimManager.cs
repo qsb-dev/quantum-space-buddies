@@ -1,11 +1,11 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.Animation.NPC
 {
 	internal class CharacterAnimManager : WorldObjectManager
 	{
+		// im assuming this is used in the eye as well
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		protected override void RebuildWorldObjects(OWScene scene)
