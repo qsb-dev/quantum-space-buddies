@@ -25,7 +25,9 @@ namespace QSB.Messaging
 
 		static QSBMessageManager()
 		{
-			var types = typeof(QSBMessageRaw).GetDerivedTypes().ToArray();
+			var types = typeof(QSBMessageRaw).GetDerivedTypes()
+				.Concat(typeof(QSBMessage).GetDerivedTypes())
+				.ToArray();
 			for (var i = 0; i < types.Length; i++)
 			{
 				var msgType = (short)(QMsgType.Highest + 1 + i);
@@ -43,83 +45,106 @@ namespace QSB.Messaging
 
 		public static void Init()
 		{
-			foreach (var msgType in _msgTypeToType.Keys)
+			foreach (var (msgType, type) in _msgTypeToType)
 			{
-				QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
-				QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
+				if (typeof(QSBMessageRaw).IsAssignableFrom(type))
+				{
+					QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceiveRaw);
+					QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceiveRaw);
+				}
+				else
+				{
+					QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
+					QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
+				}
 			}
 		}
 
-		private static void OnServerReceive(QNetworkMessage netMsg)
+		private static void OnServerReceiveRaw(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
 			var msg = (QSBMessageRaw)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
-			if (msg is QSBMessage m)
+			QNetworkServer.SendToAll(msgType, msg);
+		}
+
+		private static void OnClientReceiveRaw(QNetworkMessage netMsg)
+		{
+			var msgType = netMsg.MsgType;
+			var msg = (QSBMessageRaw)Activator.CreateInstance(_msgTypeToType[msgType]);
+			netMsg.ReadMessage(msg);
+
+			msg.OnReceive();
+		}
+
+		private static void OnServerReceive(QNetworkMessage netMsg)
+		{
+			var msgType = netMsg.MsgType;
+			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
+			netMsg.ReadMessage(msg);
+
+			if (msg.To == uint.MaxValue)
 			{
-				if (m.To == uint.MaxValue)
-				{
-					QNetworkServer.SendToAll(msgType, m);
-				}
-				else if (m.To == 0)
-				{
-					OnReceive(m);
-				}
-				else
-				{
-					var conn = QNetworkServer.connections.FirstOrDefault(x => m.To == x.GetPlayerId());
-					if (conn == null)
-					{
-						DebugLog.ToConsole($"SendTo unknown player! id: {m.To}, message: {m}", MessageType.Error);
-						return;
-					}
-					conn.Send(msgType, m);
-				}
+				QNetworkServer.SendToAll(msgType, msg);
+			}
+			else if (msg.To == 0)
+			{
+				QNetworkServer.localConnection.Send(msgType, msg);
 			}
 			else
 			{
-				QNetworkServer.SendToAll(msgType, msg);
+				var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
+				if (conn == null)
+				{
+					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg}", MessageType.Error);
+					return;
+				}
+				conn.Send(msgType, msg);
 			}
 		}
 
 		private static void OnClientReceive(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = (QSBMessageRaw)Activator.CreateInstance(_msgTypeToType[msgType]);
+			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
-			OnReceive(msg);
-		}
-
-		private static void OnReceive(QSBMessageRaw msg)
-		{
 			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message {msg} before local player was established.", MessageType.Warning);
 				return;
 			}
 
-			if (msg is QSBMessage m)
+			if (QSBPlayerManager.PlayerExists(msg.From))
 			{
-				if (QSBPlayerManager.PlayerExists(m.From))
-				{
-					var player = QSBPlayerManager.GetPlayer(m.From);
+				var player = QSBPlayerManager.GetPlayer(msg.From);
 
-					if (!player.IsReady
-					    && player.PlayerId != QSBPlayerManager.LocalPlayerId
-					    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-					    && m is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
-					{
-						DebugLog.ToConsole($"Warning - Got message {m} from player {m.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
-						QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
-					}
+				if (!player.IsReady
+				    && player.PlayerId != QSBPlayerManager.LocalPlayerId
+				    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+				    && msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
+				{
+					DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
 				}
 			}
 
 			try
 			{
-				msg.OnReceive();
+				if (!msg.ShouldReceive)
+				{
+					return;
+				}
+
+				if (msg.From != QSBPlayerManager.LocalPlayerId)
+				{
+					msg.OnReceiveRemote();
+				}
+				else
+				{
+					msg.OnReceiveLocal();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -130,8 +155,15 @@ namespace QSB.Messaging
 		#endregion
 
 
-		public static void Send<M>(this M msg)
+		public static void SendRaw<M>(this M msg)
 			where M : QSBMessageRaw, new()
+		{
+			var msgType = _typeToMsgType[typeof(M)];
+			QNetworkManager.singleton.client.Send(msgType, msg);
+		}
+
+		public static void Send<M>(this M msg)
+			where M : QSBMessage, new()
 		{
 			if (PlayerTransformSync.LocalInstance == null)
 			{
@@ -139,11 +171,7 @@ namespace QSB.Messaging
 				return;
 			}
 
-			if (msg is QSBMessage m)
-			{
-				m.From = QSBPlayerManager.LocalPlayerId;
-			}
-
+			msg.From = QSBPlayerManager.LocalPlayerId;
 			var msgType = _typeToMsgType[typeof(M)];
 			QNetworkManager.singleton.client.Send(msgType, msg);
 		}
@@ -158,7 +186,8 @@ namespace QSB.Messaging
 	}
 
 	/// <summary>
-	/// message that will be sent to every client
+	/// message that will be sent to every client. <br/>
+	/// no checks are performed on the message. it is just sent and received.
 	/// </summary>
 	public abstract class QSBMessageRaw : QMessageBase
 	{
