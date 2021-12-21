@@ -1,10 +1,11 @@
 ﻿using System;
 using QSB.Player;
+using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 
 namespace QSB.Messaging
 {
-	public abstract class QSBMessage : QSBMessageRaw
+	public abstract class QSBMessage : QMessageBase
 	{
 		/// set automatically when sending a message
 		public uint From;
@@ -28,25 +29,10 @@ namespace QSB.Messaging
 			To = reader.ReadUInt32();
 		}
 
-		public sealed override void OnReceive()
-		{
-			if (ShouldReceive)
-			{
-				if (From != QSBPlayerManager.LocalPlayerId)
-				{
-					OnReceiveRemote();
-				}
-				else
-				{
-					OnReceiveLocal();
-				}
-			}
-		}
-
 		/// checked before calling either OnReceive
-		protected virtual bool ShouldReceive => true;
-		protected virtual void OnReceiveRemote() { }
-		protected virtual void OnReceiveLocal() { }
+		public virtual bool ShouldReceive => true;
+		public virtual void OnReceiveRemote() { }
+		public virtual void OnReceiveLocal() { }
 	}
 
 
