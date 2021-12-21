@@ -7,6 +7,13 @@ using UnityEngine;
 
 namespace QSB.WorldSync
 {
+	public enum WorldObjectType
+	{
+		Both,
+		SolarSystem,
+		Eye
+	}
+
 	public abstract class WorldObjectManager : MonoBehaviour
 	{
 		private static readonly List<WorldObjectManager> _managers = new();
@@ -20,6 +27,11 @@ namespace QSB.WorldSync
 		/// Set when all WorldObjects have finished running Init()
 		/// </summary>
 		public static bool AllObjectsReady { get; private set; }
+
+		/// <summary>
+		/// when the scene does not match the type, this manager will not build its world objects
+		/// </summary>
+		public abstract WorldObjectType WorldObjectType { get; }
 
 		public virtual void Awake()
 		{
@@ -64,6 +76,8 @@ namespace QSB.WorldSync
 			DoRebuild(scene);
 		}
 
+		internal static WorldObjectManager _currentRebuildingManager;
+
 		private static void DoRebuild(OWScene scene)
 		{
 			QSBWorldSync.RemoveWorldObjects();
@@ -73,6 +87,14 @@ namespace QSB.WorldSync
 			AllObjectsReady = false;
 			foreach (var manager in _managers)
 			{
+				switch (manager.WorldObjectType)
+				{
+					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+						continue;
+				}
+
+				_currentRebuildingManager = manager;
 				try
 				{
 					DebugLog.DebugWrite($"Rebuilding {manager.GetType().Name}", MessageType.Info);
@@ -82,6 +104,7 @@ namespace QSB.WorldSync
 				{
 					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
 				}
+				_currentRebuildingManager = null;
 			}
 
 			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>

@@ -35,6 +35,14 @@ namespace QSB.WorldSync
 				return default;
 			}
 
+			switch (worldObject.WorldObjectType)
+			{
+				case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+				case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+					DebugLog.ToConsole($"Error - Tried to get {typeof(TWorldObject).Name} with world object type {worldObject.WorldObjectType} in wrong scene {QSBSceneManager.CurrentScene}!", MessageType.Error);
+					return default;
+			}
+
 			return worldObject;
 		}
 
@@ -53,19 +61,27 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
+			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var worldObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
-			if (returnObject == null)
+			if (worldObject == null)
 			{
 				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
-			return (TWorldObject)returnObject;
+			switch (worldObject.WorldObjectType)
+			{
+				case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+				case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+					DebugLog.ToConsole($"Error - Tried to get {typeof(TWorldObject).Name} with world object type {worldObject.WorldObjectType} in wrong scene {QSBSceneManager.CurrentScene}!", MessageType.Error);
+					return default;
+			}
+
+			return (TWorldObject)worldObject;
 		}
 
 		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)
@@ -126,6 +142,7 @@ namespace QSB.WorldSync
 			{
 				var obj = new TWorldObject
 				{
+					WorldObjectType = WorldObjectManager._currentRebuildingManager.WorldObjectType,
 					AttachedObject = item,
 					ObjectId = WorldObjects.Count
 				};
