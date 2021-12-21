@@ -22,7 +22,7 @@ namespace QuantumUNET
 			m_SimpleServerSimple = new ServerSimpleWrapper(this);
 		}
 
-		public static List<QNetworkConnection> localConnections => instance.m_LocalConnectionsFakeList;
+		public static QNetworkConnection localConnection => instance.m_LocalConnection;
 
 		public static int listenPort => instance.m_SimpleServerSimple.listenPort;
 
@@ -151,7 +151,7 @@ namespace QuantumUNET
 		internal int AddLocalClient(QLocalClient localClient)
 		{
 			int result;
-			if (m_LocalConnectionsFakeList.Count != 0)
+			if (m_LocalConnection != null)
 			{
 				QLog.Error("Local Connection already exists");
 				result = -1;
@@ -163,7 +163,6 @@ namespace QuantumUNET
 					connectionId = 0
 				};
 				m_SimpleServerSimple.SetConnectionAtIndex(m_LocalConnection);
-				m_LocalConnectionsFakeList.Add(m_LocalConnection);
 				m_LocalConnection.InvokeHandlerNoData(32);
 				result = 0;
 			}
@@ -171,17 +170,8 @@ namespace QuantumUNET
 			return result;
 		}
 
-		internal void RemoveLocalClient(QNetworkConnection localClientConnection)
+		internal void RemoveLocalClient()
 		{
-			for (var i = 0; i < m_LocalConnectionsFakeList.Count; i++)
-			{
-				if (m_LocalConnectionsFakeList[i].connectionId == localClientConnection.connectionId)
-				{
-					m_LocalConnectionsFakeList.RemoveAt(i);
-					break;
-				}
-			}
-
 			if (m_LocalConnection != null)
 			{
 				m_LocalConnection.Disconnect();
@@ -1350,8 +1340,6 @@ namespace QuantumUNET
 		private static readonly object s_Sync = new UnityEngine.Object();
 
 		private bool m_LocalClientActive;
-
-		private readonly List<QNetworkConnection> m_LocalConnectionsFakeList = new();
 
 		private QULocalConnectionToClient m_LocalConnection;
 

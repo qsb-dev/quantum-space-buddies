@@ -17,7 +17,7 @@ namespace QuantumUNET
 			}
 
 			m_AsyncConnect = ConnectState.Disconnected;
-			m_LocalServer.RemoveLocalClient(m_Connection);
+			m_LocalServer.RemoveLocalClient();
 		}
 
 		internal void InternalConnectLocalServer(bool generateConnectMsg)

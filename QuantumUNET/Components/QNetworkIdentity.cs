@@ -631,14 +631,12 @@ namespace QuantumUNET.Components
 							}
 						}
 
-						foreach (var networkConnection2 in QNetworkServer.localConnections)
+						var networkConnection2 = QNetworkServer.localConnection;
+						if (networkConnection2 != null)
 						{
-							if (networkConnection2 != null)
+							if (networkConnection2.isReady)
 							{
-								if (networkConnection2.isReady)
-								{
-									AddObserver(networkConnection2);
-								}
+								AddObserver(networkConnection2);
 							}
 						}
 					}
@@ -674,12 +672,10 @@ namespace QuantumUNET.Components
 
 					if (initialize)
 					{
-						foreach (var connection in QNetworkServer.localConnections)
+						var connection = QNetworkServer.localConnection;
+						if (!hashSet.Contains(connection))
 						{
-							if (!hashSet.Contains(connection))
-							{
-								OnSetLocalVisibility(false);
-							}
+							OnSetLocalVisibility(false);
 						}
 					}
 
