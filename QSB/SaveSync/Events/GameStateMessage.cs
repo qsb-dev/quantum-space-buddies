@@ -7,8 +7,6 @@ namespace QSB.SaveSync.Events
 {
 	internal class GameStateMessage : PlayerMessage
 	{
-		public bool InSolarSystem { get; set; }
-		public bool InEye { get; set; }
 		public bool WarpedToTheEye { get; set; }
 		public float SecondsRemainingOnWarp { get; set; }
 		public bool LaunchCodesGiven { get; set; }
@@ -19,8 +17,6 @@ namespace QSB.SaveSync.Events
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			InSolarSystem = reader.ReadBoolean();
-			InEye = reader.ReadBoolean();
 			WarpedToTheEye = reader.ReadBoolean();
 			SecondsRemainingOnWarp = reader.ReadSingle();
 			LaunchCodesGiven = reader.ReadBoolean();
@@ -48,8 +44,6 @@ namespace QSB.SaveSync.Events
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(InSolarSystem);
-			writer.Write(InEye);
 			writer.Write(WarpedToTheEye);
 			writer.Write(SecondsRemainingOnWarp);
 			writer.Write(LaunchCodesGiven);

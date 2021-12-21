@@ -21,8 +21,6 @@ namespace QSB.SaveSync.Events
 			{
 				AboutId = LocalPlayerId,
 				ForId = toId,
-				InSolarSystem = QSBSceneManager.CurrentScene == OWScene.SolarSystem,
-				InEye = QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse,
 				WarpedToTheEye = gameSave.warpedToTheEye,
 				SecondsRemainingOnWarp = gameSave.secondsRemainingOnWarp,
 				LaunchCodesGiven = PlayerData.KnowsLaunchCodes(),
@@ -53,11 +51,7 @@ namespace QSB.SaveSync.Events
 
 			PlayerData.SaveCurrentGame();
 
-			if (message.InEye != (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
-				|| message.InSolarSystem != (QSBSceneManager.CurrentScene == OWScene.SolarSystem))
-			{
-				MenuManager.Instance.JoinGame(message.InEye, message.InSolarSystem);
-			}
+			MenuManager.Instance.JoinGame(message.WarpedToTheEye);
 		}
 	}
 }
