@@ -72,7 +72,7 @@ namespace QSB.Utility
 				{
 					var playerBody = Locator.GetPlayerBody();
 					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
-					var parentBody = otherPlayer.Body.GetAttachedOWRigidbody(true);
+					var parentBody = otherPlayer.TransformSync?.ReferenceSector?.AttachedObject?.GetOWRigidbody();
 					if (parentBody != null)
 					{
 						playerBody.SetVelocity(parentBody.GetVelocity());

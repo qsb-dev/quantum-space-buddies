@@ -30,12 +30,17 @@ namespace QSB.DeathSync.Events
 			switch (message.EnumValue)
 			{
 				case EndLoopReason.AllPlayersDead:
+					if (ServerStateManager.Instance.GetServerState() == ServerState.WaitingForAllPlayersToDie)
+					{
+						break;
+					}
+
 					QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
 
 					Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
 					if (QSBCore.IsHost)
 					{
-						QSBEventManager.FireEvent(EventNames.QSBServerState, ServerState.WaitingForAllPlayersToDie);
+						ServerStateManager.Instance.FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToDie);
 					}
 
 					break;

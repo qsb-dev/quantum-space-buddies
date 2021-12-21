@@ -34,7 +34,7 @@
 		public const string QSBStartLift = nameof(QSBStartLift);
 		public const string QSBGeyserState = nameof(QSBGeyserState);
 		public const string QSBOrbSlot = nameof(QSBOrbSlot);
-		public const string QSBOrbUser = nameof(QSBOrbUser);
+		public const string QSBOrbDrag = nameof(QSBOrbDrag);
 		public const string QSBConversation = nameof(QSBConversation);
 		public const string QSBConversationStartEnd = nameof(QSBConversationStartEnd);
 		public const string QSBChangeAnimType = nameof(QSBChangeAnimType);
@@ -100,11 +100,12 @@
 		public const string QSBLearnLaunchCodes = nameof(QSBLearnLaunchCodes);
 		public const string QSBSatelliteRepairTick = nameof(QSBSatelliteRepairTick);
 		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);
-		public const string QSBAuthorityQueue = nameof(QSBAuthorityQueue);
+		public const string QSBAuthQueue = nameof(QSBAuthQueue);
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
 		public const string QSBRequestGameDetails = nameof(QSBRequestGameDetails);
 		public const string QSBGameDetails = nameof(QSBGameDetails);
+		public const string QSBEnterRemoteDialogue = nameof(QSBEnterRemoteDialogue);
 		public const string QSBGatherInstrument = nameof(QSBGatherInstrument);
 	}
 }

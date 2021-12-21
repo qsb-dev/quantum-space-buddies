@@ -39,7 +39,7 @@ using UnityEngine;
 /*
 	Copyright (C) 2020 - 2021
 			Henry Pointer (_nebula / misternebula),
-			John Corby (JohnCorby),
+			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
 			Ricardo Lopes (Raicuparta)
 
@@ -115,10 +115,8 @@ namespace QSB
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
-			gameObject.AddComponent<RepeatingManager>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
 			gameObject.AddComponent<MenuManager>();
@@ -146,6 +144,7 @@ namespace QSB
 			gameObject.AddComponent<JellyfishManager>();
 			gameObject.AddComponent<ZeroGCaveManager>();
 			gameObject.AddComponent<TornadoManager>();
+			gameObject.AddComponent<ConversationManager>();
 			gameObject.AddComponent<QuantumInstrumentManager>();
 
 			DebugBoxManager.Init();

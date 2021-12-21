@@ -11,41 +11,50 @@ namespace QSB.AuthoritySync
 	{
 		#region host only
 
+		/// <summary>
 		/// whoever is first gets authority
+		/// </summary>
 		private static readonly Dictionary<QNetworkIdentity, List<uint>> _authQueue = new();
 
 		public static void RegisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
 		public static void UnregisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Remove(identity);
 
-		public static void UpdateAuthQueue(this QNetworkIdentity identity, uint id, bool queue)
+		public static void UpdateAuthQueue(this QNetworkIdentity identity, uint id, AuthQueueAction action)
 		{
 			var authQueue = _authQueue[identity];
+			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
 
-			var oldAuthority = authQueue.Contains(id);
-			if (queue == oldAuthority)
+			switch (action)
 			{
-				return;
-			}
+				case AuthQueueAction.Add:
+					authQueue.SafeAdd(id);
+					break;
 
-			if (queue)
-			{
-				authQueue.Add(id);
-			}
-			else
-			{
-				authQueue.Remove(id);
+				case AuthQueueAction.Remove:
+					authQueue.Remove(id);
+					break;
+
+				case AuthQueueAction.Force:
+					authQueue.Remove(id);
+					authQueue.Insert(0, id);
+					break;
 			}
 
 			var newOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
-			SetAuthority(identity, newOwner);
+			if (oldOwner != newOwner)
+			{
+				SetAuthority(identity, newOwner);
+			}
 		}
 
+		/// <summary>
 		/// transfer authority to a different client
+		/// </summary>
 		public static void OnDisconnect(uint id)
 		{
 			foreach (var identity in _authQueue.Keys)
 			{
-				identity.UpdateAuthQueue(id, false);
+				identity.UpdateAuthQueue(id, AuthQueueAction.Remove);
 			}
 		}
 
@@ -79,8 +88,8 @@ namespace QSB.AuthoritySync
 
 		#region any client
 
-		public static void FireAuthQueue(this QNetworkIdentity identity, bool queue) =>
-			QSBEventManager.FireEvent(EventNames.QSBAuthorityQueue, identity, queue);
+		public static void FireAuthQueue(this QNetworkIdentity identity, AuthQueueAction action) =>
+			QSBEventManager.FireEvent(EventNames.QSBAuthQueue, identity, action);
 
 		#endregion
 	}

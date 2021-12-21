@@ -134,8 +134,6 @@ namespace QuantumUNET.Components
 				_localTransformWriter.StartMessage(QMsgType.LocalPlayerTransform);
 				_localTransformWriter.Write(NetId);
 				SerializeTransform(_localTransformWriter, false);
-				_prevPosition = transform.position;
-				_prevRotation = transform.rotation;
 				_localTransformWriter.FinishMessage();
 
 				QClientScene.readyConnection.SendWriter(_localTransformWriter, GetNetworkChannel());

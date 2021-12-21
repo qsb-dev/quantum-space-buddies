@@ -90,8 +90,8 @@ namespace QSB.Events
 				// World Objects
 				new ElevatorEvent(),
 				new GeyserEvent(),
+				new OrbDragEvent(),
 				new OrbSlotEvent(),
-				new OrbUserEvent(),
 				new SocketStateChangeEvent(),
 				new MultiStateChangeEvent(),
 				new SetAsTranslatedEvent(),
@@ -121,7 +121,8 @@ namespace QSB.Events
 				new IdentifyFrequencyEvent(),
 				new IdentifySignalEvent(),
 				new NpcAnimationEvent(),
-				new AuthorityQueueEvent(),
+				new AuthQueueEvent(),
+				new EnterRemoteDialogueEvent(),
 				// Ship
 				new FlyShipEvent(),
 				new HatchEvent(),

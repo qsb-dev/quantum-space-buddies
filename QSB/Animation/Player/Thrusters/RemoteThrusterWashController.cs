@@ -58,7 +58,7 @@ namespace QSB.Animation.Player.Thrusters
 
 			RaycastHit hitInfo = default;
 			var aboveSurface = false;
-			var emissionThrusterScale = _emissionThrusterScale.Evaluate(_attachedPlayer.JetpackAcceleration.LocalAcceleration.y);
+			var emissionThrusterScale = _emissionThrusterScale.Evaluate(_attachedPlayer.JetpackAcceleration.AccelerationVariableSyncer.Value.y);
 			if (emissionThrusterScale > 0f)
 			{
 				aboveSurface = Physics.Raycast(transform.position, transform.forward, out hitInfo, _raycastDistance, OWLayerMask.physicalMask);

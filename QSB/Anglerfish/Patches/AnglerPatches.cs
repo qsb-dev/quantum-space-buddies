@@ -31,35 +31,6 @@ namespace QSB.Anglerfish.Patches
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnSectorOccupantsUpdated))]
-		public static bool OnSectorOccupantsUpdated(AnglerfishController __instance)
-		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return true;
-			}
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
-
-			if (!__instance.gameObject.activeSelf && __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
-			{
-				__instance.gameObject.SetActive(true);
-				__instance._anglerBody.Unsuspend();
-				__instance.RaiseEvent(nameof(__instance.OnAnglerUnsuspended), __instance._currentState);
-				qsbAngler.TransformSync.NetIdentity.FireAuthQueue(true);
-				return false;
-			}
-			if (__instance.gameObject.activeSelf && !__instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe | DynamicOccupant.Ship))
-			{
-				__instance._anglerBody.Suspend();
-				__instance.gameObject.SetActive(false);
-				__instance.RaiseEvent(nameof(__instance.OnAnglerSuspended), __instance._currentState);
-				qsbAngler.TransformSync.NetIdentity.FireAuthQueue(false);
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.OnSectorOccupantRemoved))]
 		public static bool OnSectorOccupantRemoved(AnglerfishController __instance,
 			SectorDetector sectorDetector)

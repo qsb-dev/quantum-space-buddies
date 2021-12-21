@@ -1,10 +1,13 @@
 ﻿using HarmonyLib;
 using OWML.Common;
+using QSB.ConversationSync.WorldObjects;
+using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace QSB.ConversationSync.Patches
 {
@@ -73,6 +76,76 @@ namespace QSB.ConversationSync.Patches
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
 			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, key));
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(RemoteDialogueTrigger), nameof(RemoteDialogueTrigger.ConversationTriggered))]
+		public static bool ConversationTriggeredReplacement(RemoteDialogueTrigger __instance, ref bool __result, out RemoteDialogueTrigger.RemoteDialogueCondition dialogue)
+		{
+			dialogue = default;
+			var maxValue = int.MaxValue;
+			var num = -1;
+			var sharedInstance = DialogueConditionManager.SharedInstance;
+			for (var i = 0; i < __instance._listDialogues.Length; i++)
+			{
+				if (!__instance._activatedDialogues[i])
+				{
+					var flag = true;
+					var flag2 = false;
+					if (__instance._listDialogues[i].prereqConditions.Length == 0)
+					{
+						flag2 = true;
+					}
+
+					for (int j = 0; j < __instance._listDialogues[i].prereqConditions.Length; j++)
+					{
+						if (sharedInstance.GetConditionState(__instance._listDialogues[i].prereqConditions[j]))
+						{
+							flag2 = true;
+						}
+						else
+						{
+							flag = false;
+						}
+					}
+
+					bool flag3 = false;
+					RemoteDialogueTrigger.MultiConditionType prereqConditionType = __instance._listDialogues[i].prereqConditionType;
+					if (prereqConditionType != RemoteDialogueTrigger.MultiConditionType.OR)
+					{
+						if (prereqConditionType == RemoteDialogueTrigger.MultiConditionType.AND && flag)
+						{
+							flag3 = true;
+						}
+					}
+					else if (flag2)
+					{
+						flag3 = true;
+					}
+
+					if (flag3 && __instance._listDialogues[i].priority < maxValue)
+					{
+						dialogue = __instance._listDialogues[i];
+						num = i;
+					}
+				}
+			}
+
+			if (num == -1)
+			{
+				__result = false;
+				return false;
+			}
+
+			__instance._activatedDialogues[num] = true;
+
+			QSBEventManager.FireEvent(EventNames.QSBEnterRemoteDialogue,
+				QSBWorldSync.GetWorldFromUnity<QSBRemoteDialogueTrigger>(__instance),
+				num,
+				__instance._listDialogues.IndexOf(dialogue));
+
+			__result = true;
+			return false;
 		}
 	}
 }
