@@ -122,7 +122,14 @@ namespace QSB.ClientServerStateSync
 
 						break;
 					case OWScene.EyeOfTheUniverse:
-						newState = ClientState.WaitingForOthersToBeReady;
+						if (serverState == ServerState.WaitingForAllPlayersToReady)
+						{
+							newState = ClientState.WaitingForOthersToBeReady;
+						}
+						else
+						{
+							newState = ClientState.AliveInEye;
+						}
 						break;
 					default:
 						newState = ClientState.NotLoaded;
