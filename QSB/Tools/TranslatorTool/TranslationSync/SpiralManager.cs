@@ -5,7 +5,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync
 {
 	internal class SpiralManager : WorldObjectManager
 	{
-		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
