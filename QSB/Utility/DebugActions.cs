@@ -39,6 +39,45 @@ namespace QSB.Utility
 				return;
 			}
 
+			/*
+			 * 1 - Warp to first player
+			 * 2 - Set time flowing
+			 * 3 -
+			 * 4 - Damage ship electricals
+			 * 5 - Trigger supernova
+			 * 6 -
+			 * 7 - Warp to vessel
+			 * 8 - Place warp core into vessel
+			 * 9 - Load eye scene
+			 * 0 -
+			 */
+
+			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
+			{
+				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x.PlayerId != QSBPlayerManager.LocalPlayerId);
+				if (otherPlayer != null && otherPlayer.Body != null)
+				{
+					var playerBody = Locator.GetPlayerBody();
+					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
+					var parentBody = otherPlayer.TransformSync?.ReferenceSector?.AttachedObject?.GetOWRigidbody();
+					if (parentBody != null)
+					{
+						playerBody.SetVelocity(parentBody.GetVelocity());
+						playerBody.SetAngularVelocity(parentBody.GetAngularVelocity());
+					}
+					else
+					{
+						playerBody.SetVelocity(Vector3.zero);
+						playerBody.SetAngularVelocity(Vector3.zero);
+					}
+				}
+			}
+
+			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
+			{
+				TimeLoop._isTimeFlowing = true;
+			}
+
 			if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
 			{
 				DamageShipElectricalSystem();
@@ -63,27 +102,6 @@ namespace QSB.Utility
 			{
 				PlayerData.SaveWarpedToTheEye(60);
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
-			}
-
-			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
-			{
-				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x.PlayerId != QSBPlayerManager.LocalPlayerId);
-				if (otherPlayer != null && otherPlayer.Body != null)
-				{
-					var playerBody = Locator.GetPlayerBody();
-					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
-					var parentBody = otherPlayer.TransformSync?.ReferenceSector?.AttachedObject?.GetOWRigidbody();
-					if (parentBody != null)
-					{
-						playerBody.SetVelocity(parentBody.GetVelocity());
-						playerBody.SetAngularVelocity(parentBody.GetAngularVelocity());
-					}
-					else
-					{
-						playerBody.SetVelocity(Vector3.zero);
-						playerBody.SetAngularVelocity(Vector3.zero);
-					}
-				}
 			}
 		}
 	}
