@@ -9,6 +9,8 @@ namespace QSB.SaveSync.Events
 	{
 		public bool InSolarSystem { get; set; }
 		public bool InEye { get; set; }
+		public bool WarpedToTheEye { get; set; }
+		public float SecondsRemainingOnWarp { get; set; }
 		public bool LaunchCodesGiven { get; set; }
 		public int LoopCount { get; set; }
 		public bool[] KnownFrequencies { get; set; }
@@ -19,6 +21,8 @@ namespace QSB.SaveSync.Events
 			base.Deserialize(reader);
 			InSolarSystem = reader.ReadBoolean();
 			InEye = reader.ReadBoolean();
+			WarpedToTheEye = reader.ReadBoolean();
+			SecondsRemainingOnWarp = reader.ReadSingle();
 			LaunchCodesGiven = reader.ReadBoolean();
 			LoopCount = reader.ReadInt32();
 
@@ -46,6 +50,8 @@ namespace QSB.SaveSync.Events
 			base.Serialize(writer);
 			writer.Write(InSolarSystem);
 			writer.Write(InEye);
+			writer.Write(WarpedToTheEye);
+			writer.Write(SecondsRemainingOnWarp);
 			writer.Write(LaunchCodesGiven);
 			writer.Write(LoopCount);
 

@@ -6,8 +6,8 @@ namespace QSB.WorldSync
 	public abstract class WorldObject<T> : IWorldObject
 		where T : MonoBehaviour
 	{
-		public int ObjectId { get; set; }
-		public T AttachedObject { get; set; }
+		public int ObjectId { get; init; }
+		public T AttachedObject { get; init; }
 		public string Name => AttachedObject == null ? "<NullObject!>" : AttachedObject.name;
 		public string LogName => $"{QSBPlayerManager.LocalPlayerId}.{ObjectId}:{GetType().Name}";
 

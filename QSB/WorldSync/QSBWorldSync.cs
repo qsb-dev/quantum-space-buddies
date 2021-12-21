@@ -53,19 +53,19 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var returnObject))
+			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var worldObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
-			if (returnObject == null)
+			if (worldObject == null)
 			{
 				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
-			return (TWorldObject)returnObject;
+			return (TWorldObject)worldObject;
 		}
 
 		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)

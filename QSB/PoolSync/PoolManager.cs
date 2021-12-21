@@ -4,6 +4,8 @@ namespace QSB.PoolSync
 {
 	internal class PoolManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			foreach (var streaming in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraStreaming>())

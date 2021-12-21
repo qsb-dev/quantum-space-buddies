@@ -128,7 +128,7 @@ namespace QSB.ClientServerStateSync
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
 				if (QSBPlayerManager.PlayerList.All(x
-					=> x.State is ClientState.WaitingForOthersToReadyInSolarSystem
+					=> x.State is ClientState.WaitingForOthersToBeReady
 					or ClientState.AliveInSolarSystem
 					or ClientState.AliveInEye))
 				{

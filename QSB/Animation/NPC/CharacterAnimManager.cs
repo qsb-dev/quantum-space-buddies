@@ -1,11 +1,13 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.Animation.NPC
 {
 	internal class CharacterAnimManager : WorldObjectManager
 	{
+		// im assuming this is used in the eye as well
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
@@ -13,6 +15,7 @@ namespace QSB.Animation.NPC
 			QSBWorldSync.Init<QSBSolanumController, NomaiConversationManager>();
 			QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>();
 			QSBWorldSync.Init<QSBHearthianRecorderEffects, HearthianRecorderEffects>();
+			QSBWorldSync.Init<QSBTravelerEyeController, TravelerEyeController>();
 
 			//MOVE : this is the wrong place to put this... move it to Conversations?
 			QSBWorldSync.OldDialogueTrees.Clear();

@@ -7,8 +7,8 @@
 		AliveInSolarSystem,
 		DeadInSolarSystem,
 		AliveInEye,
-		WaitingForOthersToDieInSolarSystem,
-		WaitingForOthersToReadyInSolarSystem,
+		WaitingForOthersToDie,
+		WaitingForOthersToBeReady,
 		WatchingLongCredits,
 		WatchingShortCredits
 	}

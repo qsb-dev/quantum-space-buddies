@@ -106,5 +106,6 @@
 		public const string QSBRequestGameDetails = nameof(QSBRequestGameDetails);
 		public const string QSBGameDetails = nameof(QSBGameDetails);
 		public const string QSBEnterRemoteDialogue = nameof(QSBEnterRemoteDialogue);
+		public const string QSBGatherInstrument = nameof(QSBGatherInstrument);
 	}
 }

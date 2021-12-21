@@ -14,6 +14,8 @@ namespace QSB.QuantumSync
 {
 	internal class QuantumManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+
 		public static QuantumShrine Shrine { get; private set; }
 		public static QuantumManager Instance { get; private set; }
 
