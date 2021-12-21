@@ -14,17 +14,23 @@ namespace QSB.SaveSync.Events
 
 		private void Handler(uint toId) => SendEvent(CreateMessage(toId));
 
-		private GameStateMessage CreateMessage(uint toId) => new()
+		private GameStateMessage CreateMessage(uint toId)
 		{
-			AboutId = LocalPlayerId,
-			ForId = toId,
-			InSolarSystem = QSBSceneManager.CurrentScene == OWScene.SolarSystem,
-			InEye = QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse,
-			LaunchCodesGiven = PlayerData.KnowsLaunchCodes(),
-			LoopCount = StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount,
-			KnownFrequencies = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownFrequencies,
-			KnownSignals = StandaloneProfileManager.SharedInstance.currentProfileGameSave.knownSignals
-		};
+			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			return new()
+			{
+				AboutId = LocalPlayerId,
+				ForId = toId,
+				InSolarSystem = QSBSceneManager.CurrentScene == OWScene.SolarSystem,
+				InEye = QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse,
+				WarpedToTheEye = gameSave.warpedToTheEye,
+				SecondsRemainingOnWarp = gameSave.secondsRemainingOnWarp,
+				LaunchCodesGiven = PlayerData.KnowsLaunchCodes(),
+				LoopCount = gameSave.loopCount,
+				KnownFrequencies = gameSave.knownFrequencies,
+				KnownSignals = gameSave.knownSignals,
+			};
+		}
 
 		public override void OnReceiveRemote(bool isHost, GameStateMessage message)
 		{
@@ -40,6 +46,8 @@ namespace QSB.SaveSync.Events
 			gameSave.loopCount = message.LoopCount;
 			gameSave.knownFrequencies = message.KnownFrequencies;
 			gameSave.knownSignals = message.KnownSignals;
+			gameSave.warpedToTheEye = message.WarpedToTheEye;
+			gameSave.secondsRemainingOnWarp = message.SecondsRemainingOnWarp;
 
 			PlayerData.SetPersistentCondition("LAUNCH_CODES_GIVEN", message.LaunchCodesGiven);
 
