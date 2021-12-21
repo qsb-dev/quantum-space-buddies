@@ -14,6 +14,8 @@ namespace QSB.ShipSync
 {
 	internal class ShipManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		public static ShipManager Instance;
 
 		public InteractZone HatchInteractZone;

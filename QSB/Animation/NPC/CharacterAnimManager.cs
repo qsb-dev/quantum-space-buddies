@@ -6,6 +6,8 @@ namespace QSB.Animation.NPC
 {
 	internal class CharacterAnimManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();

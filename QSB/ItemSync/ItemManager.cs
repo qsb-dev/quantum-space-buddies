@@ -8,6 +8,8 @@ namespace QSB.ItemSync
 {
 	internal class ItemManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Info);

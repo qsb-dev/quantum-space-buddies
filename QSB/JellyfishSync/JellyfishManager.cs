@@ -6,6 +6,8 @@ namespace QSB.JellyfishSync
 {
 	public class JellyfishManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		public static readonly List<JellyfishController> Jellyfish = new();
 
 		protected override void RebuildWorldObjects(OWScene scene)
