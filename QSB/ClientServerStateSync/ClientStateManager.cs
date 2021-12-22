@@ -30,7 +30,7 @@ namespace QSB.ClientServerStateSync
 
 		public void ChangeClientState(ClientState newState)
 		{
-			if (QSBPlayerManager.LocalPlayer.State == newState)
+			if (PlayerTransformSync.LocalInstance == null || QSBPlayerManager.LocalPlayer.State == newState)
 			{
 				return;
 			}

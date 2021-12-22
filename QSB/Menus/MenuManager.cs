@@ -87,21 +87,17 @@ namespace QSB.Menus
 			}
 		}
 
-		public void JoinGame(bool inEye, bool inSolarSystem)
+		public void JoinGame(bool inEye)
 		{
 			if (inEye)
 			{
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToBlack, 1f, false);
 				Locator.GetMenuInputModule().DisableInputs();
 			}
-			else if (inSolarSystem)
+			else
 			{
 				LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack, 1f, false);
 				Locator.GetMenuInputModule().DisableInputs();
-			}
-			else
-			{
-				DebugLog.DebugWrite("tried to join game that wasnt in solar system or eye??");
 			}
 		}
 
