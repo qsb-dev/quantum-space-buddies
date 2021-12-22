@@ -6,6 +6,7 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
 using QSB.OrbSync.WorldObjects;
+using QSB.QuantumSync.Events;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
@@ -116,7 +117,10 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
 			{
-				QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, x.ObjectId, x.ControllingPlayer);
+				x.SendMessage(new QuantumAuthorityMessage
+				{
+					AuthorityOwner = x.ControllingPlayer
+				});
 
 				if (x is QSBQuantumMoon qsbQuantumMoon)
 				{

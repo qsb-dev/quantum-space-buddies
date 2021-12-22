@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
-using QSB.Events;
+using QSB.Messaging;
+using QSB.QuantumSync.Events;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
@@ -55,14 +56,14 @@ namespace QSB.QuantumSync
 				return;
 			}
 
-			var quantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ToList();
-			for (var i = 0; i < quantumObjects.Count; i++)
+			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 			{
-				var obj = quantumObjects[i];
 				if (obj.ControllingPlayer == playerId)
 				{
-					var idToSend = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u;
-					QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, i, idToSend);
+					obj.SendMessage(new QuantumAuthorityMessage
+					{
+						AuthorityOwner = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u
+					});
 				}
 			}
 		}

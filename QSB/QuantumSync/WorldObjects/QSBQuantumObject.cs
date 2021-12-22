@@ -5,6 +5,8 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using QSB.Messaging;
+using QSB.QuantumSync.Events;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
@@ -173,9 +175,11 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = ObjectId;
 			// no one is controlling this object right now, request authority
-			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage
+			{
+				AuthorityOwner = QSBPlayerManager.LocalPlayerId
+			});
 		}
 
 		private void OnDisable(Shape s)
@@ -204,7 +208,10 @@ namespace QSB.QuantumSync.WorldObjects
 
 			var id = ObjectId;
 			// send event to other players that we're releasing authority
-			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage
+			{
+				AuthorityOwner = 0u
+			});
 		}
 	}
 }
