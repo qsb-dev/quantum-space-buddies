@@ -35,6 +35,11 @@ namespace QSB
 			{
 				OnUniverseSceneLoaded?.SafeInvoke(oldScene, newScene);
 			}
+
+			if (newScene == OWScene.TitleScreen && QSBCore.IsInMultiplayer)
+			{
+				QSBNetworkManager.Instance.StopHost();
+			}
 		}
 
 		private static bool InUniverse(OWScene scene) =>
