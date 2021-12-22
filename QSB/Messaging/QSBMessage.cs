@@ -10,7 +10,7 @@ namespace QSB.Messaging
 		/// set automatically when sending a message
 		public uint From;
 		/// <summary>
-		/// uint.MaxValue = send to everyone <br/>
+		/// (default) uint.MaxValue = send to everyone <br/>
 		/// 0 = send to host
 		/// </summary>
 		public uint To = uint.MaxValue;

@@ -1,24 +1,31 @@
 ﻿using QSB.Messaging;
-using QuantumUNET.Components;
+using QSB.WorldSync;
+using QuantumUNET;
 using QuantumUNET.Transport;
 
 namespace QSB.AuthoritySync
 {
-	public class AuthQueueMessage : EnumMessage<AuthQueueAction>
+	public class AuthQueueMessage : QSBEnumMessage<AuthQueueAction>
 	{
-		public QNetworkIdentity Identity;
+		public QNetworkInstanceId NetId;
+
+		public AuthQueueMessage() => To = 0;
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Identity = reader.ReadNetworkIdentity();
+			NetId = reader.ReadNetworkId();
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(Identity);
+			writer.Write(NetId);
 		}
+
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override void OnReceiveLocal() => QNetworkServer.objects[NetId].UpdateAuthQueue(From, Value);
+		public override void OnReceiveRemote() => QNetworkServer.objects[NetId].UpdateAuthQueue(From, Value);
 	}
 
 	public enum AuthQueueAction

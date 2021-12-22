@@ -100,7 +100,6 @@
 		public const string QSBLearnLaunchCodes = nameof(QSBLearnLaunchCodes);
 		public const string QSBSatelliteRepairTick = nameof(QSBSatelliteRepairTick);
 		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);
-		public const string QSBAuthQueue = nameof(QSBAuthQueue);
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
 		public const string QSBRequestGameDetails = nameof(QSBRequestGameDetails);
