@@ -162,6 +162,13 @@ namespace QSB.Messaging
 			QNetworkManager.singleton.client.Send(msgType, msg);
 		}
 
+		public static void ServerSendRaw<M>(this M msg, QNetworkConnection conn)
+			where M : QSBMessageRaw, new()
+		{
+			var msgType = _typeToMsgType[typeof(M)];
+			conn.Send(msgType, msg);
+		}
+
 		public static void Send<M>(this M msg)
 			where M : QSBMessage, new()
 		{
