@@ -111,10 +111,7 @@ namespace QSB.Player.Events
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
 			{
-				x.SendMessage(new QuantumAuthorityMessage
-				{
-					AuthorityOwner = x.ControllingPlayer
-				});
+				x.SendMessage(new QuantumAuthorityMessage(x.ControllingPlayer));
 
 				if (x is QSBQuantumMoon qsbQuantumMoon)
 				{

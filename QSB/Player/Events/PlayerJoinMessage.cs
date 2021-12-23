@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;

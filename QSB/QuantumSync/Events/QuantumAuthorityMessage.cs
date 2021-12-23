@@ -7,18 +7,22 @@ namespace QSB.QuantumSync.Events
 {
 	public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject>
 	{
-		public uint AuthorityOwner;
+		private uint AuthorityOwner;
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			AuthorityOwner = reader.ReadUInt32();
-		}
+		public QuantumAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
+
+		public QuantumAuthorityMessage() {}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(AuthorityOwner);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			AuthorityOwner = reader.ReadUInt32();
 		}
 
 		public override bool ShouldReceive

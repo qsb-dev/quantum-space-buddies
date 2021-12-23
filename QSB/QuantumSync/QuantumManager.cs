@@ -18,12 +18,10 @@ namespace QSB.QuantumSync
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		public static QuantumShrine Shrine { get; private set; }
-		public static QuantumManager Instance { get; private set; }
 
 		public override void Awake()
 		{
 			base.Awake();
-			Instance = this;
 			QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 		}
 
@@ -60,10 +58,7 @@ namespace QSB.QuantumSync
 			{
 				if (obj.ControllingPlayer == playerId)
 				{
-					obj.SendMessage(new QuantumAuthorityMessage
-					{
-						AuthorityOwner = obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u
-					});
+					obj.SendMessage(new QuantumAuthorityMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u));
 				}
 			}
 		}
@@ -131,7 +126,10 @@ namespace QSB.QuantumSync
 					continue;
 				}
 
-				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
+				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[]
+				{
+					player.Camera.GetFrustumPlanes()
+				});
 				if (isInFrustum)
 				{
 					playersWhoCanSee.Add(player);
@@ -143,9 +141,9 @@ namespace QSB.QuantumSync
 		}
 
 		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
-				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
-				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
-					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
+			&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
+			&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
+				.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{

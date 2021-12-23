@@ -176,10 +176,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			// no one is controlling this object right now, request authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage
-			{
-				AuthorityOwner = QSBPlayerManager.LocalPlayerId
-			});
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 		}
 
 		private void OnDisable(Shape s)
@@ -208,10 +205,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 			var id = ObjectId;
 			// send event to other players that we're releasing authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage
-			{
-				AuthorityOwner = 0u
-			});
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
 		}
 	}
 }
