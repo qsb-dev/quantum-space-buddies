@@ -5,6 +5,8 @@ using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility;
 using System.Linq;
+using QSB.DeathSync.Events;
+using QSB.Messaging;
 using UnityEngine;
 
 namespace QSB.DeathSync.Patches
@@ -195,7 +197,7 @@ namespace QSB.DeathSync.Patches
 			if (!QSBPlayerManager.LocalPlayer.IsDead)
 			{
 				QSBPlayerManager.LocalPlayer.IsDead = true;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+				new PlayerDeathMessage(deathType).Send();
 			}
 		}
 

@@ -1,5 +1,7 @@
 ﻿using OWML.Utils;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.Player.Events;
 using QSB.QuantumSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
@@ -32,13 +34,11 @@ namespace QSB.Player
 			var collidingQuantumObject = controller._collidingQuantumObject;
 			if (_previousCollidingQuantumObject != collidingQuantumObject)
 			{
-				var objectIndex = (collidingQuantumObject != null)
+				var objectId = collidingQuantumObject != null
 					? QSBWorldSync.GetWorldFromUnity<IQSBQuantumObject>(collidingQuantumObject).ObjectId
 					: -1;
 
-				QSBEventManager.FireEvent(
-					EventNames.QSBPlayerEntangle,
-					objectIndex);
+				new PlayerEntangledMessage(objectId).Send();
 				_previousCollidingQuantumObject = collidingQuantumObject;
 			}
 		}

@@ -26,7 +26,6 @@
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
-		public const string QSBPlayerDeath = nameof(QSBPlayerDeath);
 		public const string QSBServerTime = nameof(QSBServerTime);
 		public const string QSBStartLift = nameof(QSBStartLift);
 		public const string QSBGeyserState = nameof(QSBGeyserState);
@@ -45,7 +44,6 @@
 		public const string QSBTextTranslated = nameof(QSBTextTranslated);
 		public const string QSBEnterShrine = nameof(QSBEnterShrine);
 		public const string QSBExitShrine = nameof(QSBExitShrine);
-		public const string QSBPlayerEntangle = nameof(QSBPlayerEntangle);
 		public const string QSBDropItem = nameof(QSBDropItem);
 		public const string QSBSocketItem = nameof(QSBSocketItem);
 		public const string QSBMoveToCarry = nameof(QSBMoveToCarry);
