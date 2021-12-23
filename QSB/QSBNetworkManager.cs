@@ -21,8 +21,8 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System;
-using System.Linq;
 using QSB.OrbSync.WorldObjects;
+using QSB.Player.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -185,7 +185,7 @@ namespace QSB
 			IsReady = true;
 
 			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, PlayerName));
+				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{

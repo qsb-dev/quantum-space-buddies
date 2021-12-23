@@ -10,6 +10,8 @@ using QSB.Tools;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
+using QSB.Messaging;
+using QSB.Player.Events;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
@@ -65,13 +67,19 @@ namespace QSB.Player.TransformSync
 			if (isInUniverse && !_isInitialized)
 			{
 				Player.IsReady = false;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+				new PlayerReadyMessage
+				{
+					Value = false
+				}.Send();
 			}
 
 			if (!isInUniverse)
 			{
 				Player.IsReady = false;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+				new PlayerReadyMessage
+				{
+					Value = false
+				}.Send();
 			}
 
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
@@ -82,7 +90,10 @@ namespace QSB.Player.TransformSync
 			base.Init();
 
 			Player.IsReady = true;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			new PlayerReadyMessage
+			{
+				Value = true
+			}.Send();
 		}
 
 		protected override void OnDestroy()
@@ -265,9 +276,9 @@ namespace QSB.Player.TransformSync
 			base.OnRenderObject();
 
 			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
+			    || !QSBCore.ShowLinesInDebug
+			    || !IsReady
+			    || ReferenceTransform == null)
 			{
 				return;
 			}
