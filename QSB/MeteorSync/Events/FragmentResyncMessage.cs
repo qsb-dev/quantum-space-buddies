@@ -23,19 +23,19 @@ namespace QSB.MeteorSync.Events
 		private Vector3 Vel;
 		private Vector3 AngVel;
 
-		public FragmentResyncMessage()
+		public FragmentResyncMessage(QSBFragment qsbFragment)
 		{
-			Integrity = WorldObject.AttachedObject._integrity;
-			OrigIntegrity = WorldObject.AttachedObject._origIntegrity;
-			LeashLength = WorldObject.LeashLength;
-			IsDetached = WorldObject.IsDetached;
+			Integrity = qsbFragment.AttachedObject._integrity;
+			OrigIntegrity = qsbFragment.AttachedObject._origIntegrity;
+			LeashLength = qsbFragment.LeashLength;
+			IsDetached = qsbFragment.IsDetached;
 
 			if (IsDetached)
 			{
-				IsThruWhiteHole = WorldObject.IsThruWhiteHole;
+				IsThruWhiteHole = qsbFragment.IsThruWhiteHole;
 
-				var body = WorldObject.Body;
-				var refBody = WorldObject.RefBody;
+				var body = qsbFragment.Body;
+				var refBody = qsbFragment.RefBody;
 				var pos = body.GetPosition();
 				Pos = refBody.transform.ToRelPos(pos);
 				Rot = refBody.transform.ToRelRot(body.GetRotation());
@@ -43,6 +43,8 @@ namespace QSB.MeteorSync.Events
 				AngVel = refBody.ToRelAngVel(body.GetAngularVelocity());
 			}
 		}
+
+		public FragmentResyncMessage() { }
 
 		public override void Serialize(QNetworkWriter writer)
 		{

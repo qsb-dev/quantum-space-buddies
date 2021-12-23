@@ -1,12 +1,21 @@
-﻿using QSB.WorldSync.Events;
+﻿using QSB.Messaging;
+using QSB.MeteorSync.WorldObjects;
 using QuantumUNET.Transport;
 
 namespace QSB.MeteorSync.Events
 {
-	public class MeteorLaunchMessage : WorldObjectMessage
+	public class MeteorLaunchMessage : QSBWorldObjectMessage<QSBMeteorLauncher>
 	{
-		public int MeteorId;
-		public float LaunchSpeed;
+		private int MeteorId;
+		private float LaunchSpeed;
+
+		public MeteorLaunchMessage(QSBMeteorLauncher qsbMeteorLauncher)
+		{
+			MeteorId = qsbMeteorLauncher.MeteorId;
+			LaunchSpeed = qsbMeteorLauncher.LaunchSpeed;
+		}
+
+		public MeteorLaunchMessage() { }
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -21,5 +30,7 @@ namespace QSB.MeteorSync.Events
 			writer.Write(MeteorId);
 			writer.Write(LaunchSpeed);
 		}
+
+		public override void OnReceiveRemote() => WorldObject.LaunchMeteor(MeteorId, LaunchSpeed);
 	}
 }

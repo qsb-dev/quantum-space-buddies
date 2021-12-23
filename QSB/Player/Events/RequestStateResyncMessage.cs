@@ -139,7 +139,7 @@ namespace QSB.Player.Events
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
-				=> fragment.SendMessage(new FragmentResyncMessage()));
+				=> fragment.SendMessage(new FragmentResyncMessage(fragment)));
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));

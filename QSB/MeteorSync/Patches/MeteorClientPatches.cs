@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using OWML.Common;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
@@ -101,7 +103,7 @@ namespace QSB.MeteorSync.Patches
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
+				qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
 			}
 
 			return false;

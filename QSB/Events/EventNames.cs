@@ -78,10 +78,6 @@
 		public const string QSBExitSatelliteCamera = nameof(QSBExitSatelliteCamera);
 		public const string QSBSatelliteSnapshot = nameof(QSBSatelliteSnapshot);
 		public const string QSBAnglerChangeState = nameof(QSBAnglerChangeState);
-		public const string QSBMeteorPreLaunch = nameof(QSBMeteorPreLaunch);
-		public const string QSBMeteorLaunch = nameof(QSBMeteorLaunch);
-		public const string QSBMeteorSpecialImpact = nameof(QSBMeteorSpecialImpact);
-		public const string QSBFragmentDamage = nameof(QSBFragmentDamage);
 		public const string QSBLearnLaunchCodes = nameof(QSBLearnLaunchCodes);
 		public const string QSBSatelliteRepairTick = nameof(QSBSatelliteRepairTick);
 		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);

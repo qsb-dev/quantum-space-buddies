@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -63,7 +65,7 @@ namespace QSB.MeteorSync.Patches
 					}
 
 					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-					QSBEventManager.FireEvent(EventNames.QSBMeteorPreLaunch, qsbMeteorLauncher);
+					qsbMeteorLauncher.SendMessage(new MeteorPreLaunchMessage());
 				}
 
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
@@ -134,7 +136,7 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
 
-				QSBEventManager.FireEvent(EventNames.QSBMeteorLaunch, qsbMeteorLauncher);
+				qsbMeteorLauncher.SendMessage(new MeteorLaunchMessage(qsbMeteorLauncher));
 			}
 
 			return false;
@@ -148,7 +150,7 @@ namespace QSB.MeteorSync.Patches
 			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBMeteorSpecialImpact, qsbMeteor);
+				qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
 			}
 		}
 
@@ -158,7 +160,7 @@ namespace QSB.MeteorSync.Patches
 			float damage)
 		{
 			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBFragmentDamage, qsbFragment, damage);
+			qsbFragment.SendMessage(new FragmentDamageMessage(damage));
 		}
 
 		[HarmonyPrefix]
