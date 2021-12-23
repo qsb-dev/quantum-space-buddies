@@ -1,28 +1,14 @@
 ﻿using QSB.ClientServerStateSync;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 
 namespace QSB.DeathSync.Events
 {
-	internal class StartLoopEvent : QSBEvent<PlayerMessage>
+	internal class StartLoopMessage : QSBMessage
 	{
-		public override bool RequireWorldObjectsReady => false;
+		public override void OnReceiveLocal() => OnReceiveRemote();
 
-		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBStartLoop, Handler);
-		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBStartLoop, Handler);
-
-		private void Handler() => SendEvent(CreateMessage());
-
-		private PlayerMessage CreateMessage() => new()
-		{
-			AboutId = LocalPlayerId
-		};
-
-		public override void OnReceiveLocal(bool server, PlayerMessage message)
-			=> OnReceiveRemote(server, message);
-
-		public override void OnReceiveRemote(bool server, PlayerMessage message)
+		public override void OnReceiveRemote()
 		{
 			DebugLog.DebugWrite($" ~~~ LOOP START ~~~");
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)

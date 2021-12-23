@@ -6,6 +6,7 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using QSB.DeathSync.Events;
 using QSB.Messaging;
 using QSB.RespawnSync.Events;
 using UnityEngine;
@@ -150,7 +151,7 @@ namespace QSB.RespawnSync
 
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				new EndLoopMessage().Send();
 				return;
 			}
 

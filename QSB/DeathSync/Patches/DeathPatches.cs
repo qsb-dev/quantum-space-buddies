@@ -182,7 +182,7 @@ namespace QSB.DeathSync.Patches
 
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				new EndLoopMessage().Send();
 				return true;
 			}
 

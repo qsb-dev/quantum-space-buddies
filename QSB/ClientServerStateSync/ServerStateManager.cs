@@ -4,6 +4,7 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using QSB.ClientServerStateSync.Events;
+using QSB.DeathSync.Events;
 using QSB.Messaging;
 using UnityEngine;
 
@@ -136,7 +137,7 @@ namespace QSB.ClientServerStateSync
 					or ClientState.AliveInEye))
 				{
 					DebugLog.DebugWrite($"All ready!!");
-					QSBEventManager.FireEvent(EventNames.QSBStartLoop);
+					new StartLoopMessage().Send();
 					if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 					{
 						SendChangeServerStateMessage(ServerState.InSolarSystem);
