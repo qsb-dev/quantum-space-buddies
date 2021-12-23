@@ -68,7 +68,6 @@
 		public const string QSBEnterSatelliteCamera = nameof(QSBEnterSatelliteCamera);
 		public const string QSBExitSatelliteCamera = nameof(QSBExitSatelliteCamera);
 		public const string QSBSatelliteSnapshot = nameof(QSBSatelliteSnapshot);
-		public const string QSBAnglerChangeState = nameof(QSBAnglerChangeState);
 		public const string QSBSatelliteRepairTick = nameof(QSBSatelliteRepairTick);
 		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
