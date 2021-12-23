@@ -3,6 +3,8 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
+using QSB.ClientServerStateSync.Events;
+using QSB.Messaging;
 using UnityEngine;
 
 namespace QSB.ClientServerStateSync
@@ -30,13 +32,14 @@ namespace QSB.ClientServerStateSync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			GlobalMessenger.AddListener("TriggerSupernova", OnTriggerSupernova);
 
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => QSBEventManager.FireEvent(EventNames.QSBServerState, ForceGetCurrentState()));
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+				() => new ServerStateMessage(ForceGetCurrentState()).Send());
 		}
 
 		public void FireChangeServerStateEvent(ServerState newState)
 		{
 			ChangeServerState(newState);
-			QSBEventManager.FireEvent(EventNames.QSBServerState, newState);
+			new ServerStateMessage(newState).Send();
 		}
 
 		public void ChangeServerState(ServerState newState)

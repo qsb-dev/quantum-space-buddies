@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
@@ -19,13 +20,14 @@ namespace QSB.ClientServerStateSync
 		private void Start()
 		{
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => QSBEventManager.FireEvent(EventNames.QSBClientState, ForceGetCurrentState()));
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+				() => new ClientStateMessage(ForceGetCurrentState()).Send());
 		}
 
 		public void FireChangeClientStateEvent(ClientState newState)
 		{
 			ChangeClientState(newState);
-			QSBEventManager.FireEvent(EventNames.QSBClientState, newState);
+			new ClientStateMessage(newState).Send();
 		}
 
 		public void ChangeClientState(ClientState newState)

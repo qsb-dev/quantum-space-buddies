@@ -77,8 +77,6 @@
 		public const string QSBPlayerLaunchProbe = nameof(QSBPlayerLaunchProbe);
 		public const string QSBEndLoop = nameof(QSBEndLoop);
 		public const string QSBStartLoop = nameof(QSBStartLoop);
-		public const string QSBServerState = nameof(QSBServerState);
-		public const string QSBClientState = nameof(QSBClientState);
 		public const string QSBDebugEvent = nameof(QSBDebugEvent);
 		public const string QSBEnterNomaiHeadZone = nameof(QSBEnterNomaiHeadZone);
 		public const string QSBExitNomaiHeadZone = nameof(QSBExitNomaiHeadZone);
