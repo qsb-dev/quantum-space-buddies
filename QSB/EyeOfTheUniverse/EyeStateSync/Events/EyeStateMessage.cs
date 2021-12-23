@@ -19,7 +19,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Events
 		}
 
 
-		public EyeStateMessage(EyeState state) => Value = state;
+		private EyeStateMessage(EyeState state) => Value = state;
 
 		public EyeStateMessage() { }
 
