@@ -65,7 +65,6 @@
 		public const string QSBComponentDamaged = nameof(QSBComponentDamaged);
 		public const string QSBComponentRepaired = nameof(QSBComponentRepaired);
 		public const string QSBComponentRepairTick = nameof(QSBComponentRepairTick);
-		public const string QSBPlayerRespawn = nameof(QSBPlayerRespawn);
 		public const string QSBProbeEvent = nameof(QSBProbeEvent);
 		public const string QSBProbeStartRetrieve = nameof(QSBProbeStartRetrieve);
 		public const string QSBRetrieveProbe = nameof(QSBRetrieveProbe);

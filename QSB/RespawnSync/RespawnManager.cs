@@ -6,6 +6,8 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using QSB.Messaging;
+using QSB.RespawnSync.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -174,7 +176,7 @@ namespace QSB.RespawnSync
 		public void RespawnSomePlayer()
 		{
 			var playerToRespawn = _playersPendingRespawn.First();
-			QSBEventManager.FireEvent(EventNames.QSBPlayerRespawn, playerToRespawn.PlayerId);
+			new PlayerRespawnMessage(playerToRespawn.PlayerId).Send();
 		}
 
 		private void UpdateRespawnNotification()
