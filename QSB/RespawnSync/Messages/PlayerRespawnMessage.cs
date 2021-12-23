@@ -3,7 +3,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QuantumUNET.Transport;
 
-namespace QSB.RespawnSync.Events
+namespace QSB.RespawnSync.Messages
 {
 	internal class PlayerRespawnMessage : QSBMessage
 	{

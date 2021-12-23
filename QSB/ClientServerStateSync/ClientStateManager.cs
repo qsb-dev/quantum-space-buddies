@@ -1,4 +1,4 @@
-﻿using QSB.ClientServerStateSync.Events;
+﻿using QSB.ClientServerStateSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;

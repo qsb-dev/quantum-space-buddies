@@ -1,6 +1,4 @@
-﻿using QSB.DeathSync;
-using QSB.Events;
-using QSB.Patches;
+﻿using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
@@ -8,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QSB.DeathSync.Messages;
 using QSB.Messaging;
-using QSB.RespawnSync.Events;
+using QSB.RespawnSync.Messages;
 using UnityEngine;
 using UnityEngine.Networking;
 

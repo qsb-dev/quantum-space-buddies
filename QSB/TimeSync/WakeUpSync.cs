@@ -10,7 +10,7 @@ using QuantumUNET;
 using System;
 using QSB.Messaging;
 using QSB.Player.Messages;
-using QSB.TimeSync.Events;
+using QSB.TimeSync.Messages;
 using UnityEngine;
 
 namespace QSB.TimeSync

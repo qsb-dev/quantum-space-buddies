@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using OWML.Common;
 using QSB.ClientServerStateSync;
-using QSB.ClientServerStateSync.Events;
+using QSB.ClientServerStateSync.Messages;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;

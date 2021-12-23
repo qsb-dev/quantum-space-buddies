@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using QuantumUNET.Transport;
 
-namespace QSB.TimeSync.Events
+namespace QSB.TimeSync.Messages
 {
 	public class ServerTimeMessage : QSBMessage
 	{

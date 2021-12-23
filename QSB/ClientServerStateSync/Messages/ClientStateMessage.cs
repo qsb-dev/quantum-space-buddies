@@ -3,7 +3,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 
-namespace QSB.ClientServerStateSync.Events
+namespace QSB.ClientServerStateSync.Messages
 {
 	internal class ClientStateMessage : QSBEnumMessage<ClientState>
 	{

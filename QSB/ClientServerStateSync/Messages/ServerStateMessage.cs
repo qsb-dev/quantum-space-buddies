@@ -1,6 +1,6 @@
 ﻿using QSB.Messaging;
 
-namespace QSB.ClientServerStateSync.Events
+namespace QSB.ClientServerStateSync.Messages
 {
 	internal class ServerStateMessage : QSBEnumMessage<ServerState>
 	{
