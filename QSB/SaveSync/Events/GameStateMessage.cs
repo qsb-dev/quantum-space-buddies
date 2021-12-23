@@ -1,18 +1,21 @@
-﻿using QSB.Messaging;
-using QuantumUNET.Transport;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using QSB.Menus;
+using QSB.Messaging;
+using QSB.Utility;
+using QuantumUNET.Transport;
 
 namespace QSB.SaveSync.Events
 {
-	internal class GameStateMessage : PlayerMessage
+	// only to be sent from host
+	internal class GameStateMessage : QSBMessage
 	{
-		public bool WarpedToTheEye { get; set; }
-		public float SecondsRemainingOnWarp { get; set; }
-		public bool LaunchCodesGiven { get; set; }
-		public int LoopCount { get; set; }
-		public bool[] KnownFrequencies { get; set; }
-		public Dictionary<int, bool> KnownSignals { get; set; } = new();
+		private bool WarpedToTheEye;
+		private float SecondsRemainingOnWarp;
+		private bool LaunchCodesGiven;
+		private int LoopCount;
+		private bool[] KnownFrequencies;
+		private readonly Dictionary<int, bool> KnownSignals = new();
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -56,11 +59,50 @@ namespace QSB.SaveSync.Events
 			}
 
 			writer.Write(KnownSignals.Count);
-			foreach (var item in KnownSignals)
+			foreach (var (key, value) in KnownSignals)
 			{
-				writer.Write(item.Key);
-				writer.Write(item.Value);
+				writer.Write(key);
+				writer.Write(value);
 			}
+		}
+
+
+		public GameStateMessage(uint toId)
+		{
+			To = toId;
+			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			WarpedToTheEye = gameSave.warpedToTheEye;
+			SecondsRemainingOnWarp = gameSave.secondsRemainingOnWarp;
+			LaunchCodesGiven = PlayerData.KnowsLaunchCodes();
+			LoopCount = gameSave.loopCount;
+			KnownFrequencies = gameSave.knownFrequencies;
+			KnownSignals = gameSave.knownSignals;
+		}
+
+		public GameStateMessage() { }
+
+		public override void OnReceiveRemote()
+		{
+			if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
+			{
+				DebugLog.ToConsole($"Error - Treid to handle GameStateEvent when not in TitleScreen!", OWML.Common.MessageType.Error);
+				return;
+			}
+
+			PlayerData.ResetGame();
+
+			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			gameSave.loopCount = LoopCount;
+			gameSave.knownFrequencies = KnownFrequencies;
+			gameSave.knownSignals = KnownSignals;
+			gameSave.warpedToTheEye = WarpedToTheEye;
+			gameSave.secondsRemainingOnWarp = SecondsRemainingOnWarp;
+
+			PlayerData.SetPersistentCondition("LAUNCH_CODES_GIVEN", LaunchCodesGiven);
+
+			PlayerData.SaveCurrentGame();
+
+			MenuManager.Instance.JoinGame(WarpedToTheEye);
 		}
 	}
 }

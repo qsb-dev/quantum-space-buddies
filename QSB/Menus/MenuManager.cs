@@ -4,6 +4,8 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using System.Text;
+using QSB.Messaging;
+using QSB.SaveSync.Events;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -73,8 +75,8 @@ namespace QSB.Menus
 		private void Update()
 		{
 			if (QSBCore.IsInMultiplayer
-				&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
-				&& _loadingText != null)
+			    && (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+			    && _loadingText != null)
 			{
 				var num = LoadManager.GetAsyncLoadProgress();
 				num = num < 0.1f
@@ -312,10 +314,8 @@ namespace QSB.Menus
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null, () =>
-			{
-				QSBEventManager.FireEvent(EventNames.QSBRequestGameDetails);
-			});
+			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				() => new RequestGameStateMessage().Send());
 		}
 
 		public void OnKicked(KickReason reason)

@@ -88,8 +88,6 @@
 		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
-		public const string QSBRequestGameDetails = nameof(QSBRequestGameDetails);
-		public const string QSBGameDetails = nameof(QSBGameDetails);
 		public const string QSBEnterRemoteDialogue = nameof(QSBEnterRemoteDialogue);
 		public const string QSBGatherInstrument = nameof(QSBGatherInstrument);
 	}
