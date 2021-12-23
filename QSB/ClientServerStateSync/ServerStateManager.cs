@@ -94,23 +94,19 @@ namespace QSB.ClientServerStateSync
 
 		private void OnTriggerSupernova()
 		{
-			FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToDie);
-		}
-
-		private ServerState ForceGetCurrentState()
-		{
-			var currentScene = LoadManager.GetCurrentScene();
-
-			switch (currentScene)
+			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
-				case OWScene.SolarSystem:
-					return ServerState.InSolarSystem;
-				case OWScene.EyeOfTheUniverse:
-					return ServerState.InEye;
-				default:
-					return ServerState.NotLoaded;
+				FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToDie);
 			}
 		}
+
+		private static ServerState ForceGetCurrentState()
+			=> QSBSceneManager.CurrentScene switch
+			{
+				OWScene.SolarSystem => ServerState.InSolarSystem,
+				OWScene.EyeOfTheUniverse => ServerState.InEye,
+				_ => ServerState.NotLoaded
+			};
 
 		private void Update()
 		{
@@ -128,9 +124,9 @@ namespace QSB.ClientServerStateSync
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
 				if (QSBPlayerManager.PlayerList.All(x
-					=> x.State is ClientState.WaitingForOthersToBeReady
-					or ClientState.AliveInSolarSystem
-					or ClientState.AliveInEye))
+					    => x.State is ClientState.WaitingForOthersToBeReady
+						    or ClientState.AliveInSolarSystem
+						    or ClientState.AliveInEye))
 				{
 					DebugLog.DebugWrite($"All ready!!");
 					QSBEventManager.FireEvent(EventNames.QSBStartLoop);
