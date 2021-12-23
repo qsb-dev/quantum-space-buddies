@@ -3,13 +3,34 @@ using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
 using System.Linq;
+using QuantumUNET.Transport;
 
 namespace QSB.Player.Events
 {
 	// sent by the server only
 	internal class PlayerKickMessage : QSBEnumMessage<KickReason>
 	{
-		public uint PlayerId;
+		private uint PlayerId;
+
+		public PlayerKickMessage(uint playerId, KickReason reason)
+		{
+			PlayerId = playerId;
+			Value = reason;
+		}
+
+		public PlayerKickMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(PlayerId);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			PlayerId = reader.ReadUInt32();
+		}
 
 		public override void OnReceiveLocal()
 		{

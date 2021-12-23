@@ -1,5 +1,4 @@
 ﻿using System;
-using QSB.Player;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
 
@@ -8,7 +7,7 @@ namespace QSB.Messaging
 	public abstract class QSBMessage : QMessageBase
 	{
 		/// set automatically when sending a message
-		public uint From;
+		internal uint From;
 		/// <summary>
 		/// (default) uint.MaxValue = send to everyone <br/>
 		/// 0 = send to host
@@ -38,7 +37,7 @@ namespace QSB.Messaging
 
 	public abstract class QSBBoolMessage : QSBMessage
 	{
-		public bool Value;
+		protected bool Value;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -55,7 +54,7 @@ namespace QSB.Messaging
 
 	public abstract class QSBFloatMessage : QSBMessage
 	{
-		public float Value;
+		protected float Value;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -72,7 +71,7 @@ namespace QSB.Messaging
 
 	public abstract class QSBEnumMessage<E> : QSBMessage where E : Enum
 	{
-		public E Value;
+		protected E Value;
 
 		public override void Serialize(QNetworkWriter writer)
 		{

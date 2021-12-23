@@ -7,9 +7,16 @@ namespace QSB.AuthoritySync
 {
 	public class AuthQueueMessage : QSBEnumMessage<AuthQueueAction>
 	{
-		public QNetworkInstanceId NetId;
+		private QNetworkInstanceId NetId;
 
-		public AuthQueueMessage() => To = 0;
+		public AuthQueueMessage(QNetworkInstanceId netId, AuthQueueAction action)
+		{
+			To = 0;
+			NetId = netId;
+			Value = action;
+		}
+
+		public AuthQueueMessage() { }
 
 		public override void Deserialize(QNetworkReader reader)
 		{

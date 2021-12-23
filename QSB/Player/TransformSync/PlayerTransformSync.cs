@@ -67,19 +67,13 @@ namespace QSB.Player.TransformSync
 			if (isInUniverse && !_isInitialized)
 			{
 				Player.IsReady = false;
-				new PlayerReadyMessage
-				{
-					Value = false
-				}.Send();
+				new PlayerReadyMessage(false).Send();
 			}
 
 			if (!isInUniverse)
 			{
 				Player.IsReady = false;
-				new PlayerReadyMessage
-				{
-					Value = false
-				}.Send();
+				new PlayerReadyMessage(false).Send();
 			}
 
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
@@ -90,10 +84,7 @@ namespace QSB.Player.TransformSync
 			base.Init();
 
 			Player.IsReady = true;
-			new PlayerReadyMessage
-			{
-				Value = true
-			}.Send();
+			new PlayerReadyMessage(true).Send();
 		}
 
 		protected override void OnDestroy()

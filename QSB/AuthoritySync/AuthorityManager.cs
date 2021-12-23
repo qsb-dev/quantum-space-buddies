@@ -89,11 +89,7 @@ namespace QSB.AuthoritySync
 		#region any client
 
 		public static void FireAuthQueue(this QNetworkIdentity identity, AuthQueueAction action) =>
-			new AuthQueueMessage
-			{
-				NetId = identity.NetId,
-				Value = action
-			}.Send();
+			new AuthQueueMessage(identity.NetId, action).Send();
 
 		#endregion
 	}

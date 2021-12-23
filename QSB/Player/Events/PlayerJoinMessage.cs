@@ -8,11 +8,11 @@ namespace QSB.Player.Events
 {
 	public class PlayerJoinMessage : QSBMessage
 	{
-		public string PlayerName;
-		public string QSBVersion;
-		public string GameVersion;
-		public GamePlatform Platform;
-		public bool DlcInstalled;
+		private string PlayerName;
+		private string QSBVersion;
+		private string GameVersion;
+		private GamePlatform Platform;
+		private bool DlcInstalled;
 
 		public PlayerJoinMessage(string name)
 		{
@@ -52,11 +52,7 @@ namespace QSB.Player.Events
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
-					new PlayerKickMessage
-					{
-						PlayerId = From,
-						Value = KickReason.QSBVersionNotMatching
-					}.Send();
+					new PlayerKickMessage(From, KickReason.QSBVersionNotMatching).Send();
 				}
 
 				return;
@@ -67,11 +63,7 @@ namespace QSB.Player.Events
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game version. (Client:{GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
-					new PlayerKickMessage
-					{
-						PlayerId = From,
-						Value = KickReason.GameVersionNotMatching
-					}.Send();
+					new PlayerKickMessage(From, KickReason.GameVersionNotMatching).Send();
 				}
 
 				return;
@@ -82,11 +74,7 @@ namespace QSB.Player.Events
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game platform. (Client:{Platform}, Server:{QSBCore.Platform})", MessageType.Error);
-					new PlayerKickMessage
-					{
-						PlayerId = From,
-						Value = KickReason.DLCNotMatching
-					}.Send();
+					new PlayerKickMessage(From, KickReason.DLCNotMatching).Send();
 				}
 			}
 
@@ -95,11 +83,7 @@ namespace QSB.Player.Events
 				if (QSBCore.IsHost)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
-					new PlayerKickMessage
-					{
-						PlayerId = From,
-						Value = KickReason.GamePlatformNotMatching
-					}.Send();
+					new PlayerKickMessage(From, KickReason.GamePlatformNotMatching).Send();
 				}
 			}
 
@@ -118,10 +102,7 @@ namespace QSB.Player.Events
 			if (QSBSceneManager.IsInUniverse)
 			{
 				player.IsReady = true;
-				new PlayerReadyMessage
-				{
-					Value = true
-				}.Send();
+				new PlayerReadyMessage(true).Send();
 			}
 		}
 	}

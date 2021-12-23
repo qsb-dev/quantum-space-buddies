@@ -7,6 +7,10 @@ namespace QSB.Player.Events
 {
 	public class PlayerReadyMessage : QSBBoolMessage
 	{
+		public PlayerReadyMessage(bool ready) => Value = ready;
+
+		public PlayerReadyMessage() { }
+
 		public override void OnReceiveRemote()
 		{
 			if (QSBCore.IsHost)
