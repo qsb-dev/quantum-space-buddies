@@ -187,6 +187,7 @@ namespace QSB.Messaging
 			where M : QSBWorldObjectMessage<T>, new()
 		{
 			msg.ObjectId = worldObject.ObjectId;
+			msg.WorldObject = worldObject;
 			Send(msg);
 		}
 	}

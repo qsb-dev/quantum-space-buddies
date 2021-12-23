@@ -4,6 +4,7 @@ using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.Events;
 using QSB.Messaging;
+using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
 using QSB.OrbSync.WorldObjects;
 using QSB.QuantumSync.Events;
@@ -138,7 +139,7 @@ namespace QSB.Player.Events
 				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
-				=> QSBEventManager.FireEvent(EventNames.QSBFragmentResync, fragment));
+				=> fragment.SendMessage(new FragmentResyncMessage()));
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));

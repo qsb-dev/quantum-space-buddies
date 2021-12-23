@@ -7,7 +7,7 @@ namespace QSB.Messaging
 	public abstract class QSBWorldObjectMessage<T> : QSBMessage where T : IWorldObject
 	{
 		internal int ObjectId;
-		protected T WorldObject { get; private set; }
+		internal T WorldObject;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
