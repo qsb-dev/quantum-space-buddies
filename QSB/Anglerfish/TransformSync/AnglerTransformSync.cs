@@ -55,11 +55,11 @@ namespace QSB.Anglerfish.TransformSync
 			}
 			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
 		private bool _shouldUpdate;
 

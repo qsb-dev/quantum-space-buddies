@@ -40,7 +40,7 @@ namespace QSB.DeathSync.Events
 					Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
 					if (QSBCore.IsHost)
 					{
-						ServerStateManager.Instance.FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToDie);
+						ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToDie);
 					}
 
 					break;

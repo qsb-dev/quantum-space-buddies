@@ -70,10 +70,10 @@ namespace QSB.OrbSync.TransformSync
 			}
 			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			NetIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 	}
 }

@@ -126,10 +126,7 @@ namespace QSB.QuantumSync
 					continue;
 				}
 
-				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[]
-				{
-					player.Camera.GetFrustumPlanes()
-				});
+				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
 				if (isInFrustum)
 				{
 					playersWhoCanSee.Add(player);

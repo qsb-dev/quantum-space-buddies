@@ -24,7 +24,7 @@ namespace QSB.ClientServerStateSync
 				() => new ClientStateMessage(ForceGetCurrentState()).Send());
 		}
 
-		public void FireChangeClientStateEvent(ClientState newState)
+		public void SendChangeClientStateMessage(ClientState newState)
 		{
 			ChangeClientState(newState);
 			new ClientStateMessage(newState).Send();
@@ -139,7 +139,7 @@ namespace QSB.ClientServerStateSync
 				}
 			}
 
-			FireChangeClientStateEvent(newState);
+			SendChangeClientStateMessage(newState);
 		}
 
 		public void OnDeath()
@@ -147,7 +147,7 @@ namespace QSB.ClientServerStateSync
 			var currentScene = QSBSceneManager.CurrentScene;
 			if (currentScene == OWScene.SolarSystem)
 			{
-				FireChangeClientStateEvent(ClientState.DeadInSolarSystem);
+				SendChangeClientStateMessage(ClientState.DeadInSolarSystem);
 			}
 			else if (currentScene == OWScene.EyeOfTheUniverse)
 			{
@@ -166,7 +166,7 @@ namespace QSB.ClientServerStateSync
 			if (currentScene == OWScene.SolarSystem)
 			{
 				DebugLog.DebugWrite($"RESPAWN!");
-				FireChangeClientStateEvent(ClientState.AliveInSolarSystem);
+				SendChangeClientStateMessage(ClientState.AliveInSolarSystem);
 			}
 			else
 			{
