@@ -45,7 +45,7 @@ namespace QSB.Utility
 		{
 			if (connection == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.\r\n{Environment.StackTrace}", MessageType.Error);
 				return uint.MaxValue;
 			}
 

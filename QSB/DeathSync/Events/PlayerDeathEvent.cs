@@ -34,7 +34,10 @@ namespace QSB.DeathSync.Events
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			var playerName = player.Name;
 			var deathMessage = Necronomicon.GetPhrase(message.EnumValue, message.NecronomiconIndex);
-			DebugLog.ToAll(string.Format(deathMessage, playerName));
+			if (deathMessage != string.Empty)
+			{
+				DebugLog.ToAll(string.Format(deathMessage, playerName));
+			}
 
 			RespawnManager.Instance.OnPlayerDeath(player);
 		}

@@ -133,6 +133,7 @@ namespace QSB.Utility
 
 				WriteLine(2, $"{player.PlayerId}.{player.Name}");
 				WriteLine(2, $"State : {player.State}");
+				WriteLine(2, $"Eye State : {player.EyeState}");
 				WriteLine(2, $"Dead : {player.IsDead}");
 				WriteLine(2, $"Visible : {player.Visible}");
 				WriteLine(2, $"Ready : {player.IsReady}");
@@ -158,7 +159,15 @@ namespace QSB.Utility
 				var instance = ShipTransformSync.LocalInstance;
 				if (QSBCore.IsHost)
 				{
-					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
+					var currentOwner = instance.NetIdentity.ClientAuthorityOwner;
+					if (currentOwner == null)
+					{
+						WriteLine(3, $"Current Owner : NULL");
+					}
+					else
+					{
+						WriteLine(3, $"Current Owner : {currentOwner.GetPlayerId()}");
+					}
 				}
 
 				var sector = instance.ReferenceSector;
