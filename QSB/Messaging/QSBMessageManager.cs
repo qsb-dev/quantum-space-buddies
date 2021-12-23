@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Events;
@@ -39,6 +40,9 @@ namespace QSB.Messaging
 
 				_msgTypeToType.Add(msgType, types[i]);
 				_typeToMsgType.Add(types[i], msgType);
+
+				// call static constructor of message if needed
+				RuntimeHelpers.RunClassConstructor(types[i].TypeHandle);
 			}
 		}
 
