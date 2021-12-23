@@ -11,7 +11,6 @@ using QuantumUNET.Transport;
 
 namespace QSB.Player.Messages
 {
-	// TODO: maybe one day split this up into multiple messages
 	internal class EnterLeaveMessage : QSBEnumMessage<EnterLeaveType>
 	{
 		static EnterLeaveMessage()
