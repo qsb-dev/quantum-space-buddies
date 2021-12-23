@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player.Events;
 
 namespace QSB.Player.Patches
 {
@@ -44,7 +46,7 @@ namespace QSB.Player.Patches
 				DialogueConditionManager.SharedInstance.SetConditionState("SCIENTIST_3", true);
 				PlayerData._currentGameSave.SetPersistentCondition("LAUNCH_CODES_GIVEN", true);
 				GlobalMessenger.FireEvent("LearnLaunchCodes");
-				QSBEventManager.FireEvent(EventNames.QSBLearnLaunchCodes);
+				new LaunchCodesMessage().Send();
 			}
 
 			return false;
