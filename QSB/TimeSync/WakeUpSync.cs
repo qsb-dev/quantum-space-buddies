@@ -6,10 +6,11 @@ using QSB.Events;
 using QSB.Inputs;
 using QSB.Player;
 using QSB.Player.Events;
-using QSB.TimeSync.Events;
 using QSB.Utility;
 using QuantumUNET;
 using System;
+using QSB.Messaging;
+using QSB.TimeSync.Events;
 using UnityEngine;
 
 namespace QSB.TimeSync
@@ -130,12 +131,12 @@ namespace QSB.TimeSync
 		}
 
 		private void SendServerTime()
-			=> QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, PlayerData.LoadLoopCount());
+			=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount()).Send();
 
-		public void OnClientReceiveMessage(ServerTimeMessage message)
+		public void OnClientReceiveMessage(float time, int count)
 		{
-			_serverTime = message.ServerTime;
-			_serverLoopCount = message.LoopCount;
+			_serverTime = time;
+			_serverLoopCount = count;
 		}
 
 		private void WakeUpOrSleep()

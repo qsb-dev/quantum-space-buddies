@@ -3,10 +3,25 @@ using QuantumUNET.Transport;
 
 namespace QSB.TimeSync.Events
 {
-	public class ServerTimeMessage : PlayerMessage
+	public class ServerTimeMessage : QSBMessage
 	{
-		public float ServerTime { get; set; }
-		public int LoopCount { get; set; }
+		private float ServerTime;
+		private int LoopCount;
+
+		public ServerTimeMessage(float time, int count)
+		{
+			ServerTime = time;
+			LoopCount = count;
+		}
+
+		public ServerTimeMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(ServerTime);
+			writer.Write(LoopCount);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -15,11 +30,7 @@ namespace QSB.TimeSync.Events
 			LoopCount = reader.ReadInt16();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(ServerTime);
-			writer.Write(LoopCount);
-		}
+		public override void OnReceiveRemote()
+			=> WakeUpSync.LocalInstance.OnClientReceiveMessage(ServerTime, LoopCount);
 	}
 }
