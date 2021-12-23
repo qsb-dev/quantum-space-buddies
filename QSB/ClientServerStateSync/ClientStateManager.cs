@@ -172,19 +172,15 @@ namespace QSB.ClientServerStateSync
 			}
 		}
 
-		private ClientState ForceGetCurrentState()
-		{
-			var currentScene = LoadManager.GetCurrentScene();
-
-			return currentScene switch
+		private static ClientState ForceGetCurrentState()
+			=> QSBSceneManager.CurrentScene switch
 			{
 				OWScene.TitleScreen => ClientState.InTitleScreen,
 				OWScene.Credits_Fast => ClientState.WatchingShortCredits,
 				OWScene.Credits_Final or OWScene.PostCreditsScene => ClientState.WatchingLongCredits,
 				OWScene.SolarSystem => ClientState.AliveInSolarSystem,
 				OWScene.EyeOfTheUniverse => ClientState.AliveInEye,
-				_ => ClientState.NotLoaded,
+				_ => ClientState.NotLoaded
 			};
-		}
 	}
 }
