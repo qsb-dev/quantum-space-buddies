@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Messaging;
-using QSB.OrbSync.Events;
+using QSB.OrbSync.Messages;
 using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
 using QSB.WorldSync;

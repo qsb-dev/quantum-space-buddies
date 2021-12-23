@@ -1,6 +1,6 @@
 ﻿using QSB.Messaging;
 
-namespace QSB.SaveSync.Events
+namespace QSB.SaveSync.Messages
 {
 	// always sent to host
 	internal class RequestGameStateMessage : QSBMessage

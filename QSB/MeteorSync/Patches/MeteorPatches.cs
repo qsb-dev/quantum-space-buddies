@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using QSB.Events;
 using QSB.Messaging;
-using QSB.MeteorSync.Events;
+using QSB.MeteorSync.Messages;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;

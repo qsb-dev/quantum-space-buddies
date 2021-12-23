@@ -5,7 +5,7 @@ using QSB.Utility;
 using System.Linq;
 using System.Text;
 using QSB.Messaging;
-using QSB.SaveSync.Events;
+using QSB.SaveSync.Messages;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;

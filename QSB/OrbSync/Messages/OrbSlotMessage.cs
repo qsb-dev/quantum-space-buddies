@@ -2,7 +2,7 @@
 using QSB.OrbSync.WorldObjects;
 using QuantumUNET.Transport;
 
-namespace QSB.OrbSync.Events
+namespace QSB.OrbSync.Messages
 {
 	public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb>
 	{

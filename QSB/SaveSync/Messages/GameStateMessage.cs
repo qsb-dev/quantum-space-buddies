@@ -5,7 +5,7 @@ using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
 
-namespace QSB.SaveSync.Events
+namespace QSB.SaveSync.Messages
 {
 	// only to be sent from host
 	internal class GameStateMessage : QSBMessage

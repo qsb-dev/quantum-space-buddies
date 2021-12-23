@@ -5,7 +5,7 @@ using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility;
 using System.Linq;
-using QSB.DeathSync.Events;
+using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using UnityEngine;
 

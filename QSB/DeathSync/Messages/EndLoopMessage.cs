@@ -3,7 +3,7 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
 
-namespace QSB.DeathSync.Events
+namespace QSB.DeathSync.Messages
 {
 	// when all players die
 	internal class EndLoopMessage : QSBMessage

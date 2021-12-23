@@ -4,7 +4,7 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using QSB.ClientServerStateSync.Events;
-using QSB.DeathSync.Events;
+using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using UnityEngine;
 

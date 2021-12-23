@@ -6,7 +6,7 @@ using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 
-namespace QSB.MeteorSync.Events
+namespace QSB.MeteorSync.Messages
 {
 	/// called when we request a resync on client join
 	/// pain

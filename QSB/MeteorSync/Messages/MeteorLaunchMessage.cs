@@ -2,7 +2,7 @@
 using QSB.MeteorSync.WorldObjects;
 using QuantumUNET.Transport;
 
-namespace QSB.MeteorSync.Events
+namespace QSB.MeteorSync.Messages
 {
 	public class MeteorLaunchMessage : QSBWorldObjectMessage<QSBMeteorLauncher>
 	{

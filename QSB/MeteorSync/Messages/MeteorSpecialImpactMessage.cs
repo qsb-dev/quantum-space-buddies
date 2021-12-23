@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
 
-namespace QSB.MeteorSync.Events
+namespace QSB.MeteorSync.Messages
 {
 	public class MeteorSpecialImpactMessage : QSBWorldObjectMessage<QSBMeteor>
 	{

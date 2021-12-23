@@ -5,7 +5,7 @@ using QSB.RespawnSync;
 using QSB.Utility;
 using QuantumUNET.Transport;
 
-namespace QSB.DeathSync.Events
+namespace QSB.DeathSync.Messages
 {
 	public class PlayerDeathMessage : QSBEnumMessage<DeathType>
 	{

@@ -3,7 +3,7 @@ using QSB.Messaging;
 using QSB.OrbSync.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.OrbSync.Events
+namespace QSB.OrbSync.Messages
 {
 	public class OrbDragMessage : QSBBoolWorldObjectMessage<QSBOrb>
 	{

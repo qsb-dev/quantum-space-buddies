@@ -2,7 +2,7 @@
 using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.DeathSync.Events
+namespace QSB.DeathSync.Messages
 {
 	internal class StartLoopMessage : QSBMessage
 	{
