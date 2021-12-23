@@ -18,14 +18,6 @@ namespace QSB.Player.Messages
 		{
 			GlobalMessenger.AddListener(EventNames.PlayerEnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
 			GlobalMessenger.AddListener(EventNames.PlayerExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
-			// GlobalMessenger.AddListener(EventNames.QSBEnterShrine, () => Handler(EnterLeaveType.EnterShrine));
-			// GlobalMessenger.AddListener(EventNames.QSBExitShrine, () => Handler(EnterLeaveType.ExitShrine));
-			// GlobalMessenger<int>.AddListener(EventNames.QSBEnterPlatform, id => Handler(EnterLeaveType.EnterPlatform, id));
-			// GlobalMessenger<int>.AddListener(EventNames.QSBExitPlatform, id => Handler(EnterLeaveType.ExitPlatform, id));
-			// GlobalMessenger<int>.AddListener(EventNames.QSBEnterNonNomaiHeadZone, id => Handler(EnterLeaveType.EnterNonNomaiHeadZone, id));
-			// GlobalMessenger<int>.AddListener(EventNames.QSBExitNonNomaiHeadZone, id => Handler(EnterLeaveType.ExitNonNomaiHeadZone, id));
-			// GlobalMessenger<int>.AddListener(EventNames.QSBEnterNomaiHeadZone, id => Handler(EnterLeaveType.EnterNomaiHeadZone, id));
-			// GlobalMessenger<int>.AddListener(EventNames.QSBExitNomaiHeadZone, id => Handler(EnterLeaveType.ExitNomaiHeadZone, id));
 			GlobalMessenger.AddListener(EventNames.EnterShip, () => Handler(EnterLeaveType.EnterShip));
 			GlobalMessenger.AddListener(EventNames.ExitShip, () => Handler(EnterLeaveType.ExitShip));
 		}
