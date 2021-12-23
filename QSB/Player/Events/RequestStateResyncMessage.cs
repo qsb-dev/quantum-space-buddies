@@ -18,16 +18,15 @@ using UnityEngine;
 namespace QSB.Player.Events
 {
 	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
-	public class RequestStateResyncEvent : QSBEvent<PlayerMessage>
+	public class RequestStateResyncMessage : QSBMessage
 	{
-		public static bool _waitingForEvent;
+		/// <summary>
+		/// set to true when we send this, and false when we receive a player info message back. <br/>
+		/// this prevents message spam a bit.
+		/// </summary>
+		internal static bool _waitingForEvent;
 
-		public override bool RequireWorldObjectsReady => false;
-
-		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBRequestStateResync, Handler);
-		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBRequestStateResync, Handler);
-
-		private void Handler()
+		public void Send()
 		{
 			if (_waitingForEvent)
 			{
@@ -35,15 +34,10 @@ namespace QSB.Player.Events
 			}
 
 			_waitingForEvent = true;
-			SendEvent(CreateMessage());
+			QSBMessageManager.Send(this);
 		}
 
-		private PlayerMessage CreateMessage() => new()
-		{
-			AboutId = LocalPlayerId
-		};
-
-		public override void OnReceiveLocal(bool isHost, PlayerMessage message)
+		public override void OnReceiveLocal()
 		{
 			QSBCore.UnityEvents.FireInNUpdates(() =>
 			{
@@ -55,14 +49,14 @@ namespace QSB.Player.Events
 			}, 60);
 		}
 
-		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
+		public override void OnReceiveRemote()
 		{
 			// send response only to the requesting client
-			QSBEventManager.ForIdOverride = message.FromId;
+			QSBEventManager.ForIdOverride = From;
 			try
 			{
 				// if host, send worldobject and server states
-				if (isHost)
+				if (QSBCore.IsHost)
 				{
 					ServerStateManager.Instance.FireChangeServerStateEvent(ServerStateManager.Instance.GetServerState());
 					new PlayerInformationMessage().Send();
@@ -89,7 +83,7 @@ namespace QSB.Player.Events
 			}
 		}
 
-		private void SendWorldObjectInfo()
+		private static void SendWorldObjectInfo()
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
 				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
@@ -156,7 +150,7 @@ namespace QSB.Player.Events
 		/// <summary>
 		/// send info for objects we have authority over
 		/// </summary>
-		private void SendAuthorityObjectInfo()
+		private static void SendAuthorityObjectInfo()
 		{
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{

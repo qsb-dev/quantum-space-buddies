@@ -125,7 +125,7 @@ namespace QSB.Player.TransformSync
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
 
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 
 			return player;
 		}

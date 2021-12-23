@@ -63,7 +63,7 @@ namespace QSB.Player.Events
 
 		public override void OnReceiveRemote()
 		{
-			RequestStateResyncEvent._waitingForEvent = false;
+			RequestStateResyncMessage._waitingForEvent = false;
 			if (QSBPlayerManager.PlayerExists(From))
 			{
 				var player = QSBPlayerManager.GetPlayer(From);

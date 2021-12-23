@@ -5,6 +5,7 @@ using QSB.DeathSync;
 using QSB.Events;
 using QSB.Inputs;
 using QSB.Player;
+using QSB.Player.Events;
 using QSB.TimeSync.Events;
 using QSB.Utility;
 using QuantumUNET;
@@ -112,7 +113,7 @@ namespace QSB.TimeSync
 
 		private void Init()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
 			gameObject.GetAddComponent<PreserveTimeScale>();
 			if (IsServer)
@@ -228,7 +229,7 @@ namespace QSB.TimeSync
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 			RespawnOnDeath.Instance.Init();
 
 			QSBInputManager.Instance.SetInputsEnabled(true);
