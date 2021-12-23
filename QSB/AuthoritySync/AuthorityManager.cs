@@ -18,7 +18,6 @@ namespace QSB.AuthoritySync
 		private static readonly Dictionary<QNetworkIdentity, List<uint>> _authQueue = new();
 
 		public static void RegisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
-
 		public static void UnregisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Remove(identity);
 
 		public static void UpdateAuthQueue(this QNetworkIdentity identity, uint id, AuthQueueAction action)
