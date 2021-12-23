@@ -1,0 +1,36 @@
+﻿using QSB.AuthoritySync;
+using QSB.Messaging;
+using QSB.OrbSync.WorldObjects;
+using QSB.WorldSync;
+
+namespace QSB.OrbSync.Events
+{
+	public class OrbDragMessage : QSBBoolWorldObjectMessage<QSBOrb>
+	{
+		public OrbDragMessage(bool isDragging) => Value = isDragging;
+
+		public OrbDragMessage() { }
+
+		public override void OnReceiveLocal()
+		{
+			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(ObjectId);
+
+			if (QSBCore.IsHost && Value)
+			{
+				qsbOrb.TransformSync.NetIdentity.UpdateAuthQueue(From, AuthQueueAction.Force);
+			}
+		}
+
+		public override void OnReceiveRemote()
+		{
+			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(ObjectId);
+
+			if (QSBCore.IsHost && Value)
+			{
+				qsbOrb.TransformSync.NetIdentity.UpdateAuthQueue(From, AuthQueueAction.Force);
+			}
+
+			qsbOrb.SetDragging(Value);
+		}
+	}
+}

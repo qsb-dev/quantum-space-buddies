@@ -12,16 +12,16 @@ namespace QSB.MeteorSync.Events
 
 		public FragmentDamageMessage() { }
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Damage = reader.ReadSingle();
-		}
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Damage);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			Damage = reader.ReadSingle();
 		}
 
 		public override void OnReceiveRemote() => WorldObject.AddDamage(Damage);

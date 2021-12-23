@@ -39,15 +39,15 @@ namespace QSB.AuthoritySync
 	public enum AuthQueueAction
 	{
 		/// <summary>
-		/// add identity to the queue
+		/// add id to the queue
 		/// </summary>
 		Add,
 		/// <summary>
-		/// remove identity from the queue
+		/// remove id from the queue
 		/// </summary>
 		Remove,
 		/// <summary>
-		/// add identity to the queue and force it to the front
+		/// add id to the queue and force it to the front
 		/// </summary>
 		Force
 	}

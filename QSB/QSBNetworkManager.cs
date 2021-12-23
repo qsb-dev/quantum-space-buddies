@@ -21,6 +21,7 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System;
+using QSB.OrbSync.Events;
 using QSB.OrbSync.WorldObjects;
 using QSB.Player.Events;
 using UnityEngine;
@@ -257,7 +258,7 @@ namespace QSB
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					qsbOrb.SetDragging(false);
-					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
+					qsbOrb.SendMessage(new OrbDragMessage(false));
 				}
 			}
 
@@ -277,7 +278,7 @@ namespace QSB
 			base.OnStopServer();
 		}
 
-		private void RemoveWorldObjects()
+		private static void RemoveWorldObjects()
 		{
 			QSBWorldSync.RemoveWorldObjects();
 			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())

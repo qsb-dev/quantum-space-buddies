@@ -17,18 +17,18 @@ namespace QSB.MeteorSync.Events
 
 		public MeteorLaunchMessage() { }
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			MeteorId = reader.ReadInt32();
-			LaunchSpeed = reader.ReadSingle();
-		}
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(MeteorId);
 			writer.Write(LaunchSpeed);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			MeteorId = reader.ReadInt32();
+			LaunchSpeed = reader.ReadSingle();
 		}
 
 		public override void OnReceiveRemote() => WorldObject.LaunchMeteor(MeteorId, LaunchSpeed);

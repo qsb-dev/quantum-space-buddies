@@ -28,8 +28,6 @@
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
 		public const string QSBStartLift = nameof(QSBStartLift);
 		public const string QSBGeyserState = nameof(QSBGeyserState);
-		public const string QSBOrbSlot = nameof(QSBOrbSlot);
-		public const string QSBOrbDrag = nameof(QSBOrbDrag);
 		public const string QSBConversation = nameof(QSBConversation);
 		public const string QSBConversationStartEnd = nameof(QSBConversationStartEnd);
 		public const string QSBChangeAnimType = nameof(QSBChangeAnimType);

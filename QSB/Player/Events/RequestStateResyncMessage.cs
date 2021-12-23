@@ -6,6 +6,7 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.MeteorSync.Events;
 using QSB.MeteorSync.WorldObjects;
+using QSB.OrbSync.Events;
 using QSB.OrbSync.WorldObjects;
 using QSB.QuantumSync.Events;
 using QSB.QuantumSync.WorldObjects;
@@ -158,8 +159,8 @@ namespace QSB.Player.Events
 					continue;
 				}
 
-				QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, qsbOrb.AttachedObject._isBeingDragged);
-				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot));
+				qsbOrb.SendMessage(new OrbDragMessage(qsbOrb.AttachedObject._isBeingDragged));
+				qsbOrb.SendMessage(new OrbSlotMessage(qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot)));
 			}
 		}
 	}

@@ -1,11 +1,22 @@
-﻿using QSB.WorldSync.Events;
+﻿using QSB.Messaging;
+using QSB.OrbSync.WorldObjects;
 using QuantumUNET.Transport;
 
 namespace QSB.OrbSync.Events
 {
-	public class OrbSlotMessage : WorldObjectMessage
+	public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb>
 	{
-		public int SlotIndex;
+		private int SlotIndex;
+
+		public OrbSlotMessage(int slotIndex) => SlotIndex = slotIndex;
+
+		public OrbSlotMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(SlotIndex);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -13,10 +24,6 @@ namespace QSB.OrbSync.Events
 			SlotIndex = reader.ReadInt32();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(SlotIndex);
-		}
+		public override void OnReceiveRemote() => WorldObject.SetSlot(SlotIndex);
 	}
 }
