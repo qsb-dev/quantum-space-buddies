@@ -120,6 +120,7 @@ namespace QSB.Player
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Misc
+		// CLEANUP : this file is very messy. especially this bit
 		public bool IsReady { get; set; }
 		public bool IsInMoon;
 		public bool IsInShrine;
@@ -133,6 +134,7 @@ namespace QSB.Player
 		public bool TranslatorEquipped { get; set; }
 		public bool ProbeActive { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
+		public EyeState EyeState { get; set; }
 
 		// Local only
 		public PlayerProbeLauncher LocalProbeLauncher

@@ -1,0 +1,10 @@
+﻿<DialogueTree>
+	<NameField>SIGN</NameField>
+	<DialogueNode>
+		<Name>Sign</Name>
+		<EntryCondition>DEFAULT</EntryCondition>
+		<Dialogue>
+			<Page>It's not yet time.\\nEveryone should be here to witness this.</Page>
+		</Dialogue>
+	</DialogueNode>
+</DialogueTree>

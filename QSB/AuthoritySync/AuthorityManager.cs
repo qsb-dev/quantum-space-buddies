@@ -2,6 +2,7 @@
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,11 +17,36 @@ namespace QSB.AuthoritySync
 		/// </summary>
 		private static readonly Dictionary<QNetworkIdentity, List<uint>> _authQueue = new();
 
-		public static void RegisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
+		private static readonly List<Tuple<QNetworkIdentity, uint, AuthQueueAction>> _waitingQueue = new();
+
+		public static void RegisterAuthQueue(this QNetworkIdentity identity)
+		{
+			_authQueue.Add(identity, new List<uint>());
+
+			if (_waitingQueue.Any(x => x.Item1 == identity))
+			{
+				if (_waitingQueue.Count(x => x.Item1 == identity) > 1)
+				{
+					DebugLog.ToConsole($"Warning - There are multiple queued actions for {identity.NetId.Value}. Picking the first one.", OWML.Common.MessageType.Warning);
+				}
+
+				var tuple = _waitingQueue.First(x => x.Item1 == identity);
+				identity.UpdateAuthQueue(tuple.Item2, tuple.Item3);
+				_waitingQueue.Remove(tuple);
+			}
+		}
+		
 		public static void UnregisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Remove(identity);
 
 		public static void UpdateAuthQueue(this QNetworkIdentity identity, uint id, AuthQueueAction action)
 		{
+			if (!_authQueue.ContainsKey(identity))
+			{
+				DebugLog.ToConsole($"Error - Auth queue does not contain identity {identity.NetId.Value}. Adding to wait list.", OWML.Common.MessageType.Error);
+				_waitingQueue.Add(new Tuple<QNetworkIdentity, uint, AuthQueueAction>(identity, id, action));
+				return;
+			}
+
 			var authQueue = _authQueue[identity];
 			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
 
