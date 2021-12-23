@@ -23,6 +23,7 @@
 		public const string ExitFlightConsole = nameof(ExitFlightConsole);
 		public const string EnterShip = nameof(EnterShip);
 		public const string ExitShip = nameof(ExitShip);
+		public const string EyeStateChanged = nameof(EyeStateChanged);
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
@@ -83,5 +84,6 @@
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
 		public const string QSBEnterRemoteDialogue = nameof(QSBEnterRemoteDialogue);
 		public const string QSBGatherInstrument = nameof(QSBGatherInstrument);
+		public const string QSBZoomOut = nameof(QSBZoomOut);
 	}
 }

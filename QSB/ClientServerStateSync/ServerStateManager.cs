@@ -98,7 +98,10 @@ namespace QSB.ClientServerStateSync
 
 		private void OnTriggerSupernova()
 		{
-			SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToDie);
+			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			{
+				SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToDie);
+			}
 		}
 
 		private ServerState ForceGetCurrentState()

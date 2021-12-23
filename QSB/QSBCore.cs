@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
+using QSB.EyeOfTheUniverse.GalaxyMap;
 using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
@@ -53,6 +54,7 @@ namespace QSB
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
+		public static AssetBundle TextAssetsBundle { get; private set; }
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
@@ -83,6 +85,7 @@ namespace QSB
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
+			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
 			DebugSettings = ModHelper.Storage.Load<DebugSettings>("debugsettings.json");
 
@@ -103,6 +106,7 @@ namespace QSB
 			gameObject.AddComponent<RespawnManager>();
 			gameObject.AddComponent<SatelliteProjectorManager>();
 			gameObject.AddComponent<StatueManager>();
+			gameObject.AddComponent<GalaxyMapManager>();
 
 			// WorldObject managers
 			foreach (var type in typeof(WorldObjectManager).GetDerivedTypes())
