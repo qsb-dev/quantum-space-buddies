@@ -55,10 +55,7 @@ namespace QSB.QuantumSync.Events
 			if (WorldObject.ControllingPlayer == 00 && WorldObject.IsEnabled)
 			{
 				// object has no owner, but is still active for this player. request ownership
-				WorldObject.SendMessage(new QuantumAuthorityMessage
-				{
-					AuthorityOwner = QSBPlayerManager.LocalPlayerId
-				});
+				WorldObject.SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 			}
 		}
 	}
