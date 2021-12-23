@@ -47,9 +47,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 				CurrentPage++;
 			}
 
-			var key = Name + _listPagesToDisplay[CurrentPage];
-			//mainText = TextTranslation.Translate(key).Trim();
-			mainText = _listPagesToDisplay[CurrentPage];
+			mainText = _listPagesToDisplay[CurrentPage].Trim();
 			if (!HasNext())
 			{
 				for (var i = 0; i < ListDialogueOptions.Count; i++)

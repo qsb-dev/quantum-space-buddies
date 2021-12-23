@@ -1,13 +1,6 @@
-﻿using QSB.Audio;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.EyeOfTheUniverse.EyeStateSync.Events
 {
@@ -28,13 +21,11 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Events
 
 		public override void OnReceiveLocal(bool isHost, EnumMessage<EyeState> message)
 		{
-			DebugLog.DebugWrite($"LOCAL set eye state to {message.EnumValue}");
 			QSBPlayerManager.LocalPlayer.EyeState = message.EnumValue;
 		}
 
 		public override void OnReceiveRemote(bool isHost, EnumMessage<EyeState> message)
 		{
-			DebugLog.DebugWrite($"{message.AboutId} set eye state to {message.EnumValue}");
 			var player = QSBPlayerManager.GetPlayer(message.AboutId);
 			player.EyeState = message.EnumValue;
 		}

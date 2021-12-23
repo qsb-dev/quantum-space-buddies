@@ -2,7 +2,6 @@
 using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using System.Linq;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap.Patches
@@ -16,7 +15,6 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap.Patches
 		public static bool OnPressInteractPrefix()
 		{
 			var allInObservatory = QSBPlayerManager.PlayerList.All(x => x.EyeState == EyeState.Observatory);
-			DebugLog.DebugWrite($"Prefix - all players in observatory = {allInObservatory}");
 
 			if (!allInObservatory)
 			{

@@ -1,7 +1,4 @@
-﻿using Epic.OnlineServices;
-using QSB.Utility;
-using QSB.WorldSync;
-using System;
+﻿using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -25,8 +22,6 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			{
 				return;
 			}
-
-			DebugLog.DebugWrite($"Create character dialogue tree!");
 
 			var mapController = QSBWorldSync.GetUnityObjects<GalaxyMapController>().First();
 			var map = mapController._interactVolume.gameObject;
