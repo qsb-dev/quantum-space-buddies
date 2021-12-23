@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using OWML.Common;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.Player.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
@@ -382,7 +384,7 @@ namespace QSB.QuantumSync.Patches
 				____isPlayerInside = true;
 				____fading = true;
 				____exteriorLightController.FadeTo(0f, 1f);
-				QSBEventManager.FireEvent(EventNames.QSBEnterShrine);
+				new EnterLeaveMessage(EnterLeaveType.EnterShrine).Send();
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
@@ -406,7 +408,7 @@ namespace QSB.QuantumSync.Patches
 				____isPlayerInside = false;
 				____fading = true;
 				____exteriorLightController.FadeTo(1f, 1f);
-				QSBEventManager.FireEvent(EventNames.QSBExitShrine);
+				new EnterLeaveMessage(EnterLeaveType.ExitShrine).Send();
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{

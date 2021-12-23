@@ -3,6 +3,8 @@ using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
 using QSB.Events;
+using QSB.Messaging;
+using QSB.Player.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
@@ -101,7 +103,7 @@ namespace QSB.Animation.NPC.Patches
 			if (input.CompareTag("PlayerDetector"))
 			{
 				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
+				new EnterLeaveMessage(EnterLeaveType.ExitNonNomaiHeadZone, qsbObj.ObjectId).Send();
 			}
 
 			return false;
@@ -114,7 +116,7 @@ namespace QSB.Animation.NPC.Patches
 			if (input.CompareTag("PlayerDetector"))
 			{
 				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
+				new EnterLeaveMessage(EnterLeaveType.EnterNonNomaiHeadZone, qsbObj.ObjectId).Send();
 			}
 			return false;
 		}

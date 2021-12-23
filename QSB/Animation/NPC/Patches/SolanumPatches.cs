@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Animation.NPC.WorldObjects;
-using QSB.Events;
+using QSB.Messaging;
+using QSB.Player.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.WorldSync;
@@ -47,7 +48,7 @@ namespace QSB.Animation.NPC.Patches
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
 				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
-				QSBEventManager.FireEvent(EventNames.QSBEnterNomaiHeadZone, qsbObj.ObjectId);
+				new EnterLeaveMessage(EnterLeaveType.EnterNomaiHeadZone, qsbObj.ObjectId).Send();
 			}
 
 			return false;
@@ -60,7 +61,7 @@ namespace QSB.Animation.NPC.Patches
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
 				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBSolanumAnimController>(__instance._solanumAnimController);
-				QSBEventManager.FireEvent(EventNames.QSBExitNomaiHeadZone, qsbObj.ObjectId);
+				new EnterLeaveMessage(EnterLeaveType.ExitNomaiHeadZone, qsbObj.ObjectId).Send();
 			}
 			return false;
 		}

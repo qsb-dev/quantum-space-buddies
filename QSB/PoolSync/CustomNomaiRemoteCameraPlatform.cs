@@ -6,6 +6,8 @@ using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using QSB.Messaging;
+using QSB.Player.Events;
 using UnityEngine;
 
 namespace QSB.PoolSync
@@ -382,7 +384,7 @@ namespace QSB.PoolSync
 		{
 			if (_wasLocalInBounds)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+				new EnterLeaveMessage(EnterLeaveType.ExitPlatform, CustomPlatformList.IndexOf(this)).Send();
 			}
 
 			if (_slavePlatform == null)
@@ -459,7 +461,7 @@ namespace QSB.PoolSync
 
 		private void SwitchToRemoteCamera()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBEnterPlatform, CustomPlatformList.IndexOf(this));
+			new EnterLeaveMessage(EnterLeaveType.EnterPlatform, CustomPlatformList.IndexOf(this)).Send();
 			GlobalMessenger.FireEvent("EnterNomaiRemoteCamera");
 			_slavePlatform.RevealFactID();
 			_slavePlatform._ownedCamera.Activate(this, _playerCamera);
@@ -528,7 +530,7 @@ namespace QSB.PoolSync
 				_slavePlatform._darkZone.RemovePlayerFromZone(true);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+			new EnterLeaveMessage(EnterLeaveType.ExitPlatform, CustomPlatformList.IndexOf(this)).Send();
 			GlobalMessenger.FireEvent("ExitNomaiRemoteCamera");
 			_slavePlatform._ownedCamera.Deactivate();
 			_slavePlatform._ownedCamera.SetImageEffectFade(0f);
@@ -610,7 +612,7 @@ namespace QSB.PoolSync
 		private void OnLeaveBounds()
 		{
 			DisconnectCamera();
-			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+			new EnterLeaveMessage(EnterLeaveType.ExitPlatform, CustomPlatformList.IndexOf(this)).Send();
 			if (_anyoneStillOnPlatform)
 			{
 				return;
