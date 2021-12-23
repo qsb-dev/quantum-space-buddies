@@ -3,7 +3,7 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	// almost a world object message, but supports null (-1) as well
 	internal class PlayerEntangledMessage : QSBMessage

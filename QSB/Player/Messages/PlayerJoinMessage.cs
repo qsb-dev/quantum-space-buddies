@@ -3,7 +3,7 @@ using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	public class PlayerJoinMessage : QSBMessage
 	{

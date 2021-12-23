@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	internal class LaunchCodesMessage : QSBMessage
 	{

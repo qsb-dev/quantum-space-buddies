@@ -2,7 +2,7 @@
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player.Events;
+using QSB.Player.Messages;
 
 namespace QSB.Player.Patches
 {

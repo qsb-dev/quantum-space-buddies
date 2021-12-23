@@ -11,7 +11,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using QSB.Messaging;
-using QSB.Player.Events;
+using QSB.Player.Messages;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync

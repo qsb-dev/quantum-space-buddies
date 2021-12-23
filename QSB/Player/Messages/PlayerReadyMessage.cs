@@ -1,9 +1,8 @@
 ﻿using OWML.Common;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	public class PlayerReadyMessage : QSBBoolMessage
 	{

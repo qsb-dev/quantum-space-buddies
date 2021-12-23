@@ -1,13 +1,12 @@
 ﻿using OWML.Common;
 using OWML.Utils;
 using QSB.Animation.Player;
-using QSB.Events;
 using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using QSB.Messaging;
-using QSB.Player.Events;
+using QSB.Player.Messages;
 using UnityEngine;
 
 namespace QSB.PoolSync

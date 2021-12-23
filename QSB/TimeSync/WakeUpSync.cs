@@ -5,11 +5,11 @@ using QSB.DeathSync;
 using QSB.Events;
 using QSB.Inputs;
 using QSB.Player;
-using QSB.Player.Events;
 using QSB.Utility;
 using QuantumUNET;
 using System;
 using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.TimeSync.Events;
 using UnityEngine;
 

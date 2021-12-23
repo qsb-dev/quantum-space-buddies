@@ -17,7 +17,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server infomation
 	public class RequestStateResyncMessage : QSBMessage

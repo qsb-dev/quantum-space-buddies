@@ -4,12 +4,12 @@ using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
 using QSB.Events;
 using QSB.Messaging;
-using QSB.Player.Events;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
+using QSB.Player.Messages;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches

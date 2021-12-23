@@ -23,7 +23,7 @@ using QuantumUNET.Components;
 using System;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.WorldObjects;
-using QSB.Player.Events;
+using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.Networking;
 

@@ -6,7 +6,7 @@ using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Events;
 using QSB.Player;
-using QSB.Player.Events;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;

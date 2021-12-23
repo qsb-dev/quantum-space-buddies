@@ -9,7 +9,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	// TODO: maybe one day split this up into multiple messages
 	internal class EnterLeaveMessage : QSBEnumMessage<EnterLeaveType>

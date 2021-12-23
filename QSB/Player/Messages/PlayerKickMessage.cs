@@ -1,11 +1,11 @@
-﻿using QSB.Menus;
+﻿using System.Linq;
+using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
-using System.Linq;
 using QuantumUNET.Transport;
 
-namespace QSB.Player.Events
+namespace QSB.Player.Messages
 {
 	// sent by the server only
 	internal class PlayerKickMessage : QSBEnumMessage<KickReason>
