@@ -4,10 +4,10 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.Events;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.TransformSync;
-using QSB.QuantumSync;
+using QSB.Messaging;
+using QSB.Player.Events;
 using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Tools.FlashlightTool;
@@ -231,7 +231,7 @@ namespace QSB.Player
 				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit(true);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			new PlayerInformationMessage().Send();
 		}
 
 		private QSBTool GetToolByType(ToolType type)

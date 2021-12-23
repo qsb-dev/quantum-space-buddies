@@ -65,7 +65,7 @@ namespace QSB.Player.Events
 				if (isHost)
 				{
 					ServerStateManager.Instance.FireChangeServerStateEvent(ServerStateManager.Instance.GetServerState());
-					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+					new PlayerInformationMessage().Send();
 
 					if (WorldObjectManager.AllObjectsReady)
 					{
@@ -75,7 +75,7 @@ namespace QSB.Player.Events
 				// if client, send player and client states
 				else
 				{
-					QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+					new PlayerInformationMessage().Send();
 				}
 
 				if (WorldObjectManager.AllObjectsReady)

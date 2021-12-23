@@ -36,7 +36,6 @@
 		public const string QSBConversation = nameof(QSBConversation);
 		public const string QSBConversationStartEnd = nameof(QSBConversationStartEnd);
 		public const string QSBChangeAnimType = nameof(QSBChangeAnimType);
-		public const string QSBPlayerInformation = nameof(QSBPlayerInformation);
 		public const string QSBRevealFact = nameof(QSBRevealFact);
 		public const string QSBSocketStateChange = nameof(QSBSocketStateChange);
 		public const string QSBMultiStateChange = nameof(QSBMultiStateChange);

@@ -5,6 +5,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.AuthoritySync
 {
+	// always sent to host
 	public class AuthQueueMessage : QSBEnumMessage<AuthQueueAction>
 	{
 		private QNetworkInstanceId NetId;

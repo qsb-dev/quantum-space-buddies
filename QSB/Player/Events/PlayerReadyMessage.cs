@@ -27,7 +27,7 @@ namespace QSB.Player.Events
 		{
 			DebugLog.DebugWrite($"[SERVER] Get ready event from {From} (ready = {Value})", MessageType.Success);
 			QSBPlayerManager.GetPlayer(From).IsReady = Value;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			new PlayerInformationMessage().Send();
 		}
 
 		private void HandleClient()

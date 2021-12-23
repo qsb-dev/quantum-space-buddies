@@ -123,7 +123,8 @@ namespace QSB.Messaging
 				if (!player.IsReady
 				    && player.PlayerId != QSBPlayerManager.LocalPlayerId
 				    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-				    && msg is not QSBEventRelay { Event: PlayerInformationEvent or RequestStateResyncEvent or ServerStateEvent }
+				    && msg is not QSBEventRelay { Event: RequestStateResyncEvent or ServerStateEvent }
+					    and not PlayerInformationMessage
 					    and not PlayerReadyMessage)
 				{
 					DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
