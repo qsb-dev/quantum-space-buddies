@@ -72,6 +72,5 @@
 		public const string QSBJellyfishRising = nameof(QSBJellyfishRising);
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
 		public const string QSBEnterRemoteDialogue = nameof(QSBEnterRemoteDialogue);
-		public const string QSBGatherInstrument = nameof(QSBGatherInstrument);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.EyeOfTheUniverse.InstrumentSync.Messages;
 using QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 
@@ -13,6 +14,6 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.Gather))]
 		public static void Gather(QuantumInstrument __instance)
-			=> QSBEventManager.FireEvent(EventNames.QSBGatherInstrument, QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance));
+			=> QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance).SendMessage(new GatherInstrumentMessage());
 	}
 }

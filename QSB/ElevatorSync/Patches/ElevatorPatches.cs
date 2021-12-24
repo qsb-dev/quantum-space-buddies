@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
-using OWML.Utils;
 using QSB.ElevatorSync.Messages;
 using QSB.ElevatorSync.WorldObjects;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;

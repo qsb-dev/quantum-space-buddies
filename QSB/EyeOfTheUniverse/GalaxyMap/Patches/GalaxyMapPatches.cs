@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using QSB.Events;
 using QSB.EyeOfTheUniverse.GalaxyMap.Messages;
 using QSB.Messaging;
 using QSB.Patches;
