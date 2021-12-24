@@ -2,6 +2,7 @@
 using OWML.Utils;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
+using QSB.ConversationSync.Events;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
@@ -88,7 +89,7 @@ namespace QSB.Player.Messages
 		private static void SendWorldObjectInfo()
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
-				=> QSBEventManager.FireEvent(EventNames.DialogueConditionChanged, condition.Key, condition.Value));
+				=> new DialogueConditionMessage(condition.Key, condition.Value).Send());
 
 			QSBWorldSync.ShipLogFacts.ForEach(fact
 				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));

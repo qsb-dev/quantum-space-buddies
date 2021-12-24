@@ -1,12 +1,40 @@
-﻿using QSB.Messaging;
+﻿using QSB.Events;
+using QSB.Messaging;
+using QSB.Player.TransformSync;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 
 namespace QSB.ConversationSync.Events
 {
-	public class DialogueConditionMessage : PlayerMessage
+	public class DialogueConditionMessage : QSBMessage
 	{
-		public string ConditionName { get; set; }
-		public bool ConditionState { get; set; }
+		static DialogueConditionMessage() => GlobalMessenger<string, bool>.AddListener(EventNames.DialogueConditionChanged, Handler);
+
+		private static void Handler(string name, bool state)
+		{
+			if (PlayerTransformSync.LocalInstance != null)
+			{
+				new DialogueConditionMessage(name, state).Send();
+			}
+		}
+
+		private string ConditionName;
+		private bool ConditionState;
+
+		public DialogueConditionMessage(string name, bool state)
+		{
+			ConditionName = name;
+			ConditionState = state;
+		}
+
+		public DialogueConditionMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(ConditionName);
+			writer.Write(ConditionState);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -15,11 +43,22 @@ namespace QSB.ConversationSync.Events
 			ConditionState = reader.ReadBoolean();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void OnReceiveRemote()
 		{
-			base.Serialize(writer);
-			writer.Write(ConditionName);
-			writer.Write(ConditionState);
+			if (QSBCore.IsHost)
+			{
+				QSBWorldSync.SetDialogueCondition(ConditionName, ConditionState);
+			}
+
+			DialogueConditionManager.SharedInstance.SetConditionState(ConditionName, ConditionState);
+		}
+
+		public override void OnReceiveLocal()
+		{
+			if (QSBCore.IsHost)
+			{
+				QSBWorldSync.SetDialogueCondition(ConditionName, ConditionState);
+			}
 		}
 	}
 }
