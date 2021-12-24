@@ -6,7 +6,9 @@ namespace QSB.Messaging
 {
 	public abstract class QSBMessage : QMessageBase
 	{
-		/// set automatically when sending a message
+		/// <summary>
+		/// set automatically by Send
+		/// </summary>
 		internal uint From;
 		/// <summary>
 		/// (default) uint.MaxValue = send to everyone <br/>
