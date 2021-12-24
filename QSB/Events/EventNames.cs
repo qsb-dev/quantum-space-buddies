@@ -73,6 +73,5 @@
 		public const string QSBTornadoFormState = nameof(QSBTornadoFormState);
 		public const string QSBEnterRemoteDialogue = nameof(QSBEnterRemoteDialogue);
 		public const string QSBGatherInstrument = nameof(QSBGatherInstrument);
-		public const string QSBZoomOut = nameof(QSBZoomOut);
 	}
 }

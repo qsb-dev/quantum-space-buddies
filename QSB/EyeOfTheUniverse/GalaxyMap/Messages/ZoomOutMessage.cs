@@ -1,25 +1,14 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.WorldSync;
 using System.Linq;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap.Messages
 {
-	internal class ZoomOutEvent : QSBEvent<PlayerMessage>
+	internal class ZoomOutMessage : QSBMessage
 	{
-		public override bool RequireWorldObjectsReady => true;
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
-		public override void SetupListener() => GlobalMessenger.AddListener(EventNames.QSBZoomOut, Handler);
-		public override void CloseListener() => GlobalMessenger.RemoveListener(EventNames.QSBZoomOut, Handler);
-
-		private void Handler() => SendEvent(CreateMessage());
-
-		private PlayerMessage CreateMessage() => new()
-		{
-			AboutId = LocalPlayerId
-		};
-
-		public override void OnReceiveRemote(bool isHost, PlayerMessage message)
+		public override void OnReceiveRemote()
 		{
 			var controller = QSBWorldSync.GetUnityObjects<GalaxyMapController>().First();
 			controller.enabled = true;
