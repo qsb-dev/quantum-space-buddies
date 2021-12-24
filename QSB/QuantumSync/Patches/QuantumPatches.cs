@@ -452,7 +452,7 @@ namespace QSB.QuantumSync.Patches
 						____isPlayerInside = true;
 						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
 						Locator.GetShipLogManager().RevealFact(____revealFactID, true, true);
-						QSBEventManager.FireEvent("PlayerEnterQuantumMoon");
+						QSBEventManager.FireEvent(EventNames.PlayerEnterQuantumMoon);
 					}
 					else
 					{
@@ -474,7 +474,7 @@ namespace QSB.QuantumSync.Patches
 						}
 
 						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
-						QSBEventManager.FireEvent("PlayerExitQuantumMoon");
+						QSBEventManager.FireEvent(EventNames.PlayerExitQuantumMoon);
 					}
 					else
 					{

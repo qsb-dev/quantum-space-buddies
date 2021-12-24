@@ -23,7 +23,7 @@ namespace QSB.Player.Messages
 
 		private static void Handler(EnterLeaveType type, int objectId = -1)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				new EnterLeaveMessage(type, objectId).Send();
 			}

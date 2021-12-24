@@ -15,7 +15,7 @@ namespace QSB.Tools.FlashlightTool.Messages
 
 		private static void Handle(bool on)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				new PlayerFlashlightMessage(on).Send();
 			}

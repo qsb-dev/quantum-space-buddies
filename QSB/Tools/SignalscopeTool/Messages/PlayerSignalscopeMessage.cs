@@ -15,7 +15,7 @@ namespace QSB.Tools.SignalscopeTool.Messages
 
 		private static void Handle(bool equipped)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				new PlayerSignalscopeMessage(equipped).Send();
 			}

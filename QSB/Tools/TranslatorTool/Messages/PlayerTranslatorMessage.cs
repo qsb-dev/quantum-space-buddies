@@ -15,7 +15,7 @@ namespace QSB.Tools.TranslatorTool.Messages
 
 		private static void Handle(bool equipped)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				new PlayerTranslatorMessage(equipped).Send();
 			}

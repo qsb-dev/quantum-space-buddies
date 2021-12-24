@@ -12,7 +12,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 		private static void Handler(EyeState state)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				new EyeStateMessage(state).Send();
 			}

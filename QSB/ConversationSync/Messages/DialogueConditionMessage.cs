@@ -12,7 +12,7 @@ namespace QSB.ConversationSync.Messages
 
 		private static void Handler(string name, bool state)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				new DialogueConditionMessage(name, state).Send();
 			}

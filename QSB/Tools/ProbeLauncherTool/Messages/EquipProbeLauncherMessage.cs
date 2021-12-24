@@ -18,7 +18,7 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 
 		private static void Handle(ProbeLauncher launcher, bool equipped)
 		{
-			if (PlayerTransformSync.LocalInstance != null)
+			if (PlayerTransformSync.LocalInstance)
 			{
 				if (launcher != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
 				{
