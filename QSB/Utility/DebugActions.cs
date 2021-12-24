@@ -2,8 +2,8 @@
 using QSB.Events;
 using QSB.Player;
 using QSB.ShipSync;
-using QSB.Utility.Events;
 using System.Linq;
+using QSB.Utility.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

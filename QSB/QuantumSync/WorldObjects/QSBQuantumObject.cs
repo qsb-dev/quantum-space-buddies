@@ -6,7 +6,7 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using QSB.Messaging;
-using QSB.QuantumSync.Events;
+using QSB.QuantumSync.Messages;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
