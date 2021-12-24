@@ -6,10 +6,10 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
-using QSB.Player.Messages;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches

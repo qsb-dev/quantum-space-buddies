@@ -1,6 +1,6 @@
-﻿using System;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System;
 
 namespace QSB.Messaging
 {

@@ -1,10 +1,10 @@
 ﻿using OWML.Common;
+using QSB.AuthoritySync;
+using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
-using QSB.AuthoritySync;
-using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync

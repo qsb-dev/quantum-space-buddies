@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using QSB.Menus;
+﻿using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Transport;
+using System.Linq;
 
 namespace QSB.Player.Messages
 {

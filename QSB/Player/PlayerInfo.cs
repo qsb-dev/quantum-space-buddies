@@ -5,8 +5,10 @@ using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ItemSync.WorldObjects.Items;
-using QSB.Player.TransformSync;
 using QSB.Messaging;
+using QSB.Player.Messages;
+using QSB.Player.TransformSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Tools.FlashlightTool;
@@ -14,8 +16,6 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System.Linq;
-using QSB.Player.Messages;
-using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Player

@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Reflection;
-using OWML.Utils;
+﻿using OWML.Utils;
 using QSB.Events;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Messages

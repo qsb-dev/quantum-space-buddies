@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using QuantumUNET;
+﻿using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.Utility.VariableSync

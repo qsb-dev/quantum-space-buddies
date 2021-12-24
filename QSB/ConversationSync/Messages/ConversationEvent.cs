@@ -1,7 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Player;
 using QSB.WorldSync;
+using System.Text.RegularExpressions;
 
 namespace QSB.ConversationSync.Messages
 {

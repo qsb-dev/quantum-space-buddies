@@ -1,11 +1,8 @@
 ﻿using HarmonyLib;
 using QSB.Anglerfish.Messages;
 using QSB.Anglerfish.WorldObjects;
-using QSB.AuthoritySync;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 

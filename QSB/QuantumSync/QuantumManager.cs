@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using QSB.QuantumSync.Messages;
 using UnityEngine;
 
 namespace QSB.QuantumSync

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using QSB.WorldSync.Events;
+﻿using QSB.WorldSync.Events;
 using QuantumUNET.Transport;
+using System;
+using System.Linq;
 
 namespace QSB.QuantumSync.Messages
 {

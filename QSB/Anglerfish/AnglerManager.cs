@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using QSB.Anglerfish.WorldObjects;
+﻿using QSB.Anglerfish.WorldObjects;
 using QSB.WorldSync;
+using System.Collections.Generic;
 
 namespace QSB.Anglerfish
 {

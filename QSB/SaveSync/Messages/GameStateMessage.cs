@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using QSB.Menus;
+﻿using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
+using System;
+using System.Collections.Generic;
 
 namespace QSB.SaveSync.Messages
 {

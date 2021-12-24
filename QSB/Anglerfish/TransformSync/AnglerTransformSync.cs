@@ -1,9 +1,9 @@
 ﻿using QSB.Anglerfish.WorldObjects;
+using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
-using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync

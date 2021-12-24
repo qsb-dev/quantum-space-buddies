@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.Events;
 using QSB.JellyfishSync.WorldObjects;
 using QSB.Patches;

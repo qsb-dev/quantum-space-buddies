@@ -1,9 +1,9 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.QuantumSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Reflection;
-using QSB.QuantumSync.Messages;
 using UnityEngine;
 using UnityEngine.UI;
 

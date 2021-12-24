@@ -2,10 +2,10 @@
 using OWML.Utils;
 using QSB.Events;
 using QSB.Patches;
+using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using QSB.ShipSync.TransformSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches

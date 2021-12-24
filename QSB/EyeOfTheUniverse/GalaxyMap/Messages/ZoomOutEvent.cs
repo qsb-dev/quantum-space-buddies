@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using QSB.Events;
+﻿using QSB.Events;
 using QSB.Messaging;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap.Messages
 {

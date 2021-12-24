@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using OWML.Utils;
+﻿using OWML.Utils;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.RoastingSync.Messages

@@ -2,10 +2,10 @@
 using OWML.Utils;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System;
-using QSB.Utility;
 
 namespace QSB.Events
 {

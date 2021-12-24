@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
 using QSB.Player;
@@ -13,6 +9,10 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace QSB.Messaging
 {

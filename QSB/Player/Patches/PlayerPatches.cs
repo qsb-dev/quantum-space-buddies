@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player.Messages;

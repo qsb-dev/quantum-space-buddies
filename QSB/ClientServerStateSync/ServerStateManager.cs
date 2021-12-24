@@ -1,11 +1,10 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync.Messages;
+using QSB.DeathSync.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using System.Linq;
-using QSB.ClientServerStateSync.Messages;
-using QSB.DeathSync.Messages;
-using QSB.Messaging;
 using UnityEngine;
 
 namespace QSB.ClientServerStateSync

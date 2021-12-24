@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using OWML.Utils;
+﻿using OWML.Utils;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ConversationSync.Messages;
@@ -16,6 +15,7 @@ using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Player.Messages

@@ -1,8 +1,9 @@
 ﻿using OWML.Utils;
 using QSB.Animation.Player;
 using QSB.Audio;
-using QSB.Events;
 using QSB.Instruments;
+using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.RoastingSync;
 using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
@@ -10,8 +11,6 @@ using QSB.Tools;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
-using QSB.Messaging;
-using QSB.Player.Messages;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
