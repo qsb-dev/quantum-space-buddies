@@ -107,6 +107,8 @@ namespace QSB.Tools.ProbeTool
 						break;
 					}
 
+					Destroy(gameObject);
+
 					OnProbeDestroyed();
 					break;
 				case ProbeEvent.Invalid:
