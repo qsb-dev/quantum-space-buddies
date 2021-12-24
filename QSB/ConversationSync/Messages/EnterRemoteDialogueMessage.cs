@@ -1,12 +1,28 @@
-﻿using QSB.WorldSync.Events;
+﻿using QSB.ConversationSync.WorldObjects;
+using QSB.Messaging;
 using QuantumUNET.Transport;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class EnterRemoteDialogueMessage : WorldObjectMessage
+	internal class EnterRemoteDialogueMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger>
 	{
-		public int ActivatedDialogueIndex { get; set; }
-		public int ListDialoguesIndex { get; set; }
+		private int ActivatedDialogueIndex;
+		private int ListDialoguesIndex;
+
+		public EnterRemoteDialogueMessage(int activatedIndex, int listIndex)
+		{
+			ActivatedDialogueIndex = activatedIndex;
+			ListDialoguesIndex = listIndex;
+		}
+
+		public EnterRemoteDialogueMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(ActivatedDialogueIndex);
+			writer.Write(ListDialoguesIndex);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -15,11 +31,7 @@ namespace QSB.ConversationSync.Messages
 			ListDialoguesIndex = reader.ReadInt32();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(ActivatedDialogueIndex);
-			writer.Write(ListDialoguesIndex);
-		}
+		public override void OnReceiveRemote()
+			=> WorldObject.RemoteEnterDialogue(ActivatedDialogueIndex, ListDialoguesIndex);
 	}
 }

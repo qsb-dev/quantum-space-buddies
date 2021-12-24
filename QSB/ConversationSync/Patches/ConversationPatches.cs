@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
 using OWML.Common;
+using QSB.ConversationSync.Messages;
 using QSB.ConversationSync.WorldObjects;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
@@ -138,10 +139,8 @@ namespace QSB.ConversationSync.Patches
 
 			__instance._activatedDialogues[num] = true;
 
-			QSBEventManager.FireEvent(EventNames.QSBEnterRemoteDialogue,
-				QSBWorldSync.GetWorldFromUnity<QSBRemoteDialogueTrigger>(__instance),
-				num,
-				__instance._listDialogues.IndexOf(dialogue));
+			QSBWorldSync.GetWorldFromUnity<QSBRemoteDialogueTrigger>(__instance)
+				.SendMessage(new EnterRemoteDialogueMessage(num, __instance._listDialogues.IndexOf(dialogue)));
 
 			__result = true;
 			return false;
