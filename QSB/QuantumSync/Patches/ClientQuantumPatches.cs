@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
-using System.Reflection;
 
 namespace QSB.QuantumSync.Patches
 {
@@ -12,11 +11,16 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.Start))]
 		public static void QuantumMoon_Start(QuantumMoon __instance)
-			=> __instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
+			=> __instance.SetSurfaceState(-1);
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.ChangeQuantumState))]
 		public static bool QuantumMoon_ChangeQuantumState()
+			=> false;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(EyeProxyQuantumMoon), nameof(EyeProxyQuantumMoon.ChangeQuantumState))]
+		public static bool EyeProxyQuantumMoon_ChangeQuantumState()
 			=> false;
 	}
 }

@@ -32,11 +32,7 @@ namespace QSB.QuantumSync.Patches
 		public static bool SocketedQuantumObject_ChangeQuantumState(
 			SocketedQuantumObject __instance,
 			ref bool __result,
-			bool skipInstantVisibilityCheck,
-			List<QuantumSocket> ____childSockets,
-			List<QuantumSocket> ____socketList,
-			ref QuantumSocket ____recentlyObscuredSocket,
-			QuantumSocket ____occupiedSocket)
+			bool skipInstantVisibilityCheck)
 		{
 			if (WorldObjectManager.AllObjectsReady)
 			{
@@ -47,7 +43,7 @@ namespace QSB.QuantumSync.Patches
 				}
 			}
 
-			foreach (var socket in ____childSockets)
+			foreach (var socket in __instance._childSockets)
 			{
 				if (socket.IsOccupied())
 				{
@@ -56,7 +52,7 @@ namespace QSB.QuantumSync.Patches
 				}
 			}
 
-			if (____socketList.Count <= 1)
+			if (__instance._socketList.Count <= 1)
 			{
 				DebugLog.ToConsole($"Error - Not enough quantum sockets in list for {__instance.name}!", MessageType.Error);
 				__result = false;
@@ -64,7 +60,7 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			var list = new List<QuantumSocket>();
-			foreach (var socket in ____socketList)
+			foreach (var socket in __instance._socketList)
 			{
 				if (!socket.IsOccupied() && socket.IsActive())
 				{
@@ -78,19 +74,19 @@ namespace QSB.QuantumSync.Patches
 				return false;
 			}
 
-			if (____recentlyObscuredSocket != null)
+			if (__instance._recentlyObscuredSocket != null)
 			{
-				__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____recentlyObscuredSocket });
-				____recentlyObscuredSocket = null;
+				__instance.MoveToSocket(__instance._recentlyObscuredSocket);
+				__instance._recentlyObscuredSocket = null;
 				__result = true;
 				return false;
 			}
 
-			var occupiedSocket = ____occupiedSocket;
+			var occupiedSocket = __instance._occupiedSocket;
 			for (var i = 0; i < 20; i++)
 			{
-				var index = UnityEngine.Random.Range(0, list.Count);
-				__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { list[index] });
+				var index = Random.Range(0, list.Count);
+				__instance.MoveToSocket(list[index]);
 				if (skipInstantVisibilityCheck)
 				{
 					__result = true;
@@ -98,7 +94,7 @@ namespace QSB.QuantumSync.Patches
 				}
 
 				bool socketNotSuitable;
-				var isSocketIlluminated = (bool)__instance.GetType().GetMethod("CheckIllumination", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+				var isSocketIlluminated = __instance.CheckIllumination();
 
 				var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
 				if (playersEntangled.Count() != 0)
@@ -108,7 +104,7 @@ namespace QSB.QuantumSync.Patches
 				}
 				else
 				{
-					var checkVisInstant = (bool)__instance.GetType().GetMethod("CheckVisibilityInstantly", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null);
+					var checkVisInstant = __instance.CheckVisibilityInstantly();
 					if (isSocketIlluminated)
 					{
 						// socket not suitable if object is visible
@@ -134,7 +130,7 @@ namespace QSB.QuantumSync.Patches
 				}
 			}
 
-			__instance.GetType().GetMethod("MoveToSocket", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { occupiedSocket });
+			__instance.MoveToSocket(occupiedSocket);
 			__result = false;
 			return false;
 		}
@@ -179,9 +175,6 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(QuantumShuffleObject), nameof(QuantumShuffleObject.ChangeQuantumState))]
 		public static bool QuantumShuffleObject_ChangeQuantumState(
 			QuantumShuffleObject __instance,
-			ref List<int> ____indexList,
-			ref Vector3[] ____localPositions,
-			ref Transform[] ____shuffledObjects,
 			ref bool __result)
 		{
 			QSBQuantumShuffleObject shuffleWorldObject = default;
@@ -194,19 +187,19 @@ namespace QSB.QuantumSync.Patches
 				}
 			}
 
-			____indexList.Clear();
-			____indexList = Enumerable.Range(0, ____localPositions.Length).ToList();
-			for (var i = 0; i < ____indexList.Count; ++i)
+			__instance._indexList.Clear();
+			__instance._indexList = Enumerable.Range(0, __instance._localPositions.Length).ToList();
+			for (var i = 0; i < __instance._indexList.Count; ++i)
 			{
-				var random = UnityEngine.Random.Range(i, ____indexList.Count);
-				var temp = ____indexList[i];
-				____indexList[i] = ____indexList[random];
-				____indexList[random] = temp;
+				var random = Random.Range(i, __instance._indexList.Count);
+				var temp = __instance._indexList[i];
+				__instance._indexList[i] = __instance._indexList[random];
+				__instance._indexList[random] = temp;
 			}
 
-			for (var j = 0; j < ____shuffledObjects.Length; j++)
+			for (var j = 0; j < __instance._shuffledObjects.Length; j++)
 			{
-				____shuffledObjects[j].localPosition = ____localPositions[____indexList[j]];
+				__instance._shuffledObjects[j].localPosition = __instance._localPositions[__instance._indexList[j]];
 			}
 
 			if (WorldObjectManager.AllObjectsReady)
@@ -214,7 +207,7 @@ namespace QSB.QuantumSync.Patches
 				QSBEventManager.FireEvent(
 					EventNames.QSBQuantumShuffle,
 					shuffleWorldObject.ObjectId,
-					____indexList.ToArray());
+					__instance._indexList.ToArray());
 				__result = true;
 			}
 
@@ -223,7 +216,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MultiStateQuantumObject), nameof(MultiStateQuantumObject.Start))]
-		public static bool MultiStateQuantumObject_Start(MultiStateQuantumObject __instance, Sector ____sector, bool ____collapseOnStart)
+		public static bool MultiStateQuantumObject_Start(MultiStateQuantumObject __instance)
 		{
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -244,12 +237,12 @@ namespace QSB.QuantumSync.Patches
 				}
 			}
 
-			if (____sector == null)
+			if (__instance._sector == null)
 			{
 				__instance.CheckEnabled();
 			}
 
-			if (____collapseOnStart)
+			if (__instance._collapseOnStart)
 			{
 				__instance.Collapse(true);
 			}
@@ -313,9 +306,9 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.IsPlayerInDarkness))]
-		public static bool QuantumShrine_IsPlayerInDarkness(ref bool __result, Light[] ____lamps, float ____fadeFraction, bool ____isProbeInside, NomaiGateway ____gate)
+		public static bool QuantumShrine_IsPlayerInDarkness(QuantumShrine __instance, ref bool __result)
 		{
-			foreach (var lamp in ____lamps)
+			foreach (var lamp in __instance._lamps)
 			{
 				if (lamp.intensity > 0f)
 				{
@@ -353,8 +346,8 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			// BUG : make this *really* check for all players - check other probes and other jetpacks!
-			__result = ____gate.GetOpenFraction() == 0f
-				&& !____isProbeInside
+			__result = __instance._gate.GetOpenFraction() == 0f
+				&& !__instance._isProbeInside
 				&& Locator.GetThrusterLightTracker().GetLightRange() <= 0f;
 			return false;
 		}
@@ -371,22 +364,19 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnEntry))]
 		public static bool QuantumShrine_OnEntry(
-			GameObject hitObj,
-			ref bool ____isPlayerInside,
-			ref bool ____fading,
-			OWLightController ____exteriorLightController,
-			ref bool ____isProbeInside)
+			QuantumShrine __instance,
+			GameObject hitObj)
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				____isPlayerInside = true;
-				____fading = true;
-				____exteriorLightController.FadeTo(0f, 1f);
+				__instance._isPlayerInside = true;
+				__instance._fading = true;
+				__instance._exteriorLightController.FadeTo(0f, 1f);
 				QSBEventManager.FireEvent(EventNames.QSBEnterShrine);
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
-				____isProbeInside = true;
+				__instance._isProbeInside = true;
 			}
 
 			return false;
@@ -395,22 +385,19 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnExit))]
 		public static bool QuantumShrine_OnExit(
-			GameObject hitObj,
-			ref bool ____isPlayerInside,
-			ref bool ____fading,
-			OWLightController ____exteriorLightController,
-			ref bool ____isProbeInside)
+			QuantumShrine __instance,
+			GameObject hitObj)
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				____isPlayerInside = false;
-				____fading = true;
-				____exteriorLightController.FadeTo(1f, 1f);
+				__instance._isPlayerInside = false;
+				__instance._fading = true;
+				__instance._exteriorLightController.FadeTo(1f, 1f);
 				QSBEventManager.FireEvent(EventNames.QSBExitShrine);
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
-				____isProbeInside = false;
+				__instance._isProbeInside = false;
 			}
 
 			return false;
@@ -418,68 +405,52 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.CheckPlayerFogProximity))]
-		public static bool QuantumMoon_CheckPlayerFogProximity(
-			QuantumMoon __instance,
-			int ____stateIndex,
-			float ____eyeStateFogOffset,
-			ref bool ____isPlayerInside,
-			float ____fogRadius,
-			float ____fogThickness,
-			float ____fogRolloffDistance,
-			string ____revealFactID,
-			OWRigidbody ____moonBody,
-			bool ____hasSunCollapsed,
-			Transform ____vortexReturnPivot,
-			OWAudioSource ____vortexAudio,
-			ref int ____collapseToIndex,
-			VisibilityTracker ____visibilityTracker,
-			QuantumFogEffectBubbleController ____playerFogBubble,
-			QuantumFogEffectBubbleController ____shipLandingCamFogBubble)
+		public static bool QuantumMoon_CheckPlayerFogProximity(QuantumMoon __instance)
 		{
 			var playerDistance = Vector3.Distance(__instance.transform.position, Locator.GetPlayerCamera().transform.position);
-			var fogOffset = (____stateIndex != 5) ? 0f : ____eyeStateFogOffset;
-			var distanceFromFog = playerDistance - (____fogRadius + fogOffset);
+			var fogOffset = (__instance._stateIndex != 5) ? 0f : __instance._eyeStateFogOffset;
+			var distanceFromFog = playerDistance - (__instance._fogRadius + fogOffset);
 			var fogAlpha = 0f;
-			if (!____isPlayerInside)
+			if (!__instance._isPlayerInside)
 			{
-				fogAlpha = Mathf.InverseLerp(____fogThickness + ____fogRolloffDistance, ____fogThickness, distanceFromFog);
+				fogAlpha = Mathf.InverseLerp(__instance._fogThickness + __instance._fogRolloffDistance, __instance._fogThickness, distanceFromFog);
 				if (distanceFromFog < 0f)
 				{
-					if ((bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) || QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true).Item1)
+					if (__instance.IsLockedByProbeSnapshot() || QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).Item1)
 					{
-						____isPlayerInside = true;
-						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { ____stateIndex });
-						Locator.GetShipLogManager().RevealFact(____revealFactID, true, true);
+						__instance._isPlayerInside = true;
+						__instance.SetSurfaceState(__instance._stateIndex);
+						Locator.GetShipLogManager().RevealFact(__instance._revealFactID, true, true);
 						QSBEventManager.FireEvent("PlayerEnterQuantumMoon");
 					}
 					else
 					{
-						__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+						__instance.Collapse(true);
 					}
 				}
 			}
-			else if (____isPlayerInside)
+			else if (__instance._isPlayerInside)
 			{
-				fogAlpha = Mathf.InverseLerp(-____fogThickness - ____fogRolloffDistance, -____fogThickness, distanceFromFog);
+				fogAlpha = Mathf.InverseLerp(-__instance._fogThickness - __instance._fogRolloffDistance, -__instance._fogThickness, distanceFromFog);
 				if (distanceFromFog >= 0f)
 				{
-					if (____stateIndex != 5)
+					if (__instance._stateIndex != 5)
 					{
-						____isPlayerInside = false;
-						if (!(bool)__instance.GetType().GetMethod("IsLockedByProbeSnapshot", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, null) && !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)____visibilityTracker, true).Item1)
+						__instance._isPlayerInside = false;
+						if (!__instance.IsLockedByProbeSnapshot() && !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).Item1)
 						{
-							__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+							__instance.Collapse(true);
 						}
 
-						__instance.GetType().GetMethod("SetSurfaceState", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { -1 });
+						__instance.SetSurfaceState(-1);
 						QSBEventManager.FireEvent("PlayerExitQuantumMoon");
 					}
 					else
 					{
 						var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
-						Locator.GetPlayerBody().SetVelocity(____moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - (vector.normalized * 5f));
+						Locator.GetPlayerBody().SetVelocity(__instance._moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - (vector.normalized * 5f));
 						var d = 80f;
-						Locator.GetPlayerBody().SetPosition(__instance.transform.position + (____vortexReturnPivot.up * d));
+						Locator.GetPlayerBody().SetPosition(__instance.transform.position + (__instance._vortexReturnPivot.up * d));
 						if (!Physics.autoSyncTransforms)
 						{
 							Physics.SyncTransforms();
@@ -487,15 +458,15 @@ namespace QSB.QuantumSync.Patches
 
 						var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
 						component.SetDegreesY(component.GetMinDegreesY());
-						____vortexAudio.SetLocalVolume(0f);
-						____collapseToIndex = 1;
-						__instance.GetType().GetMethod("Collapse", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { true });
+						__instance._vortexAudio.SetLocalVolume(0f);
+						__instance._collapseToIndex = 1;
+						__instance.Collapse(true);
 					}
 				}
 			}
 
-			____playerFogBubble.SetFogAlpha(fogAlpha);
-			____shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
+			__instance._playerFogBubble.SetFogAlpha(fogAlpha);
+			__instance._shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
 			return false;
 		}
 	}
