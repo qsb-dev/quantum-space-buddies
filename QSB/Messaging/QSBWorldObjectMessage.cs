@@ -27,6 +27,9 @@ namespace QSB.Messaging
 			ObjectId = reader.ReadInt32();
 		}
 
+		/// <summary>
+		/// sets WorldObject using ObjectId
+		/// </summary>
 		public override bool ShouldReceive
 		{
 			get

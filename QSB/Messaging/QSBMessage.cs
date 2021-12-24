@@ -16,21 +16,27 @@ namespace QSB.Messaging
 		/// </summary>
 		public uint To = uint.MaxValue;
 
+		/// <summary>
 		/// call the base method when overriding
+		/// </summary>
 		public override void Serialize(QNetworkWriter writer)
 		{
 			writer.Write(From);
 			writer.Write(To);
 		}
 
+		/// <summary>
 		/// call the base method when overriding
+		/// </summary>
 		public override void Deserialize(QNetworkReader reader)
 		{
 			From = reader.ReadUInt32();
 			To = reader.ReadUInt32();
 		}
 
+		/// <summary>
 		/// checked before calling either OnReceive
+		/// </summary>
 		public virtual bool ShouldReceive => true;
 		public virtual void OnReceiveRemote() { }
 		public virtual void OnReceiveLocal() { }
