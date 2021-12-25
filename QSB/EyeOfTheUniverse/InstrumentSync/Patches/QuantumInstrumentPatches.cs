@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.EyeOfTheUniverse.InstrumentSync.Messages;
 using QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.OnPressInteract))]
 		public static void OnPressInteract(QuantumInstrument __instance)
-			=> QSBEventManager.FireEvent(EventNames.QSBGatherInstrument, QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance));
+			=> QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance).SendMessage(new GatherInstrumentMessage());
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.Update))]
@@ -30,7 +31,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.All))
 					{
 						__instance.Gather();
-						QSBEventManager.FireEvent(EventNames.QSBGatherInstrument, QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance));
+						QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance).SendMessage(new GatherInstrumentMessage());
 						Locator.GetPromptManager().RemoveScreenPrompt(__instance._scopeGatherPrompt);
 					}
 				}

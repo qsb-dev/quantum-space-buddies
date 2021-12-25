@@ -1,14 +1,15 @@
 ﻿using HarmonyLib;
 using OWML.Common;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Patches
@@ -372,7 +373,7 @@ namespace QSB.QuantumSync.Patches
 				__instance._isPlayerInside = true;
 				__instance._fading = true;
 				__instance._exteriorLightController.FadeTo(0f, 1f);
-				QSBEventManager.FireEvent(EventNames.QSBEnterShrine);
+				new EnterLeaveMessage(EnterLeaveType.EnterShrine).Send();
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
@@ -393,7 +394,7 @@ namespace QSB.QuantumSync.Patches
 				__instance._isPlayerInside = false;
 				__instance._fading = true;
 				__instance._exteriorLightController.FadeTo(1f, 1f);
-				QSBEventManager.FireEvent(EventNames.QSBExitShrine);
+				new EnterLeaveMessage(EnterLeaveType.ExitShrine).Send();
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
@@ -421,7 +422,7 @@ namespace QSB.QuantumSync.Patches
 						__instance._isPlayerInside = true;
 						__instance.SetSurfaceState(__instance._stateIndex);
 						Locator.GetShipLogManager().RevealFact(__instance._revealFactID, true, true);
-						QSBEventManager.FireEvent("PlayerEnterQuantumMoon");
+						QSBEventManager.FireEvent(EventNames.PlayerEnterQuantumMoon);
 					}
 					else
 					{
@@ -443,7 +444,7 @@ namespace QSB.QuantumSync.Patches
 						}
 
 						__instance.SetSurfaceState(-1);
-						QSBEventManager.FireEvent("PlayerExitQuantumMoon");
+						QSBEventManager.FireEvent(EventNames.PlayerExitQuantumMoon);
 					}
 					else
 					{
