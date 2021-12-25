@@ -3,7 +3,7 @@ using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.QuantumSync.Events;
+using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;

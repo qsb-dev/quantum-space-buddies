@@ -5,7 +5,7 @@ using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 
-namespace QSB.QuantumSync.Events
+namespace QSB.QuantumSync.Messages
 {
 	internal class EyeProxyMoonStateChangeMessage : QSBWorldObjectMessage<QSBEyeProxyQuantumMoon>
 	{
