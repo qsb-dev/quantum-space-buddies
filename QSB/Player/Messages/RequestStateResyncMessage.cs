@@ -12,6 +12,7 @@ using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Tools.TranslatorTool.TranslationSync;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
+using QSB.TornadoSync.Messages;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -144,7 +145,7 @@ namespace QSB.Player.Messages
 				=> fragment.SendMessage(new FragmentResyncMessage(fragment)));
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
-				=> QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, tornado));
+				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState)));
 		}
 
 		/// <summary>
