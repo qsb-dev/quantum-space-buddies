@@ -59,6 +59,5 @@
 		public const string QSBPlayerRetrieveProbe = nameof(QSBPlayerRetrieveProbe);
 		public const string QSBLaunchProbe = nameof(QSBLaunchProbe);
 		public const string QSBPlayerLaunchProbe = nameof(QSBPlayerLaunchProbe);
-		public const string QSBDebugEvent = nameof(QSBDebugEvent);
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace QSB.Utility.Messages
 {
-	public enum DebugEventEnum
+	public enum DebugMessageEnum
 	{
 		TriggerSupernova
 	}

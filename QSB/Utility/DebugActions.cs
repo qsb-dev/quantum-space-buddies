@@ -1,5 +1,5 @@
 ﻿using OWML.Utils;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
@@ -85,7 +85,7 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBDebugEvent, DebugEventEnum.TriggerSupernova);
+				new DebugMessage(DebugMessageEnum.TriggerSupernova).Send();
 			}
 
 			if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)
