@@ -216,11 +216,9 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
-		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
-		{
-			QSBEventManager.FireEvent(EventNames.QSBComponentRepairTick, __instance, ____repairFraction);
-			return;
-		}
+		public static void ShipComponent_RepairTick(ShipComponent __instance) =>
+			QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(__instance)
+				.SendMessage(new ComponentRepairTickMessage(__instance._repairFraction));
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipHull), nameof(ShipHull.RepairTick))]
@@ -232,13 +230,15 @@ namespace QSB.ShipSync.Patches
 			}
 
 			____integrity = Mathf.Min(____integrity + (Time.deltaTime / ____repairTime), 1f);
-			QSBEventManager.FireEvent(EventNames.QSBHullRepairTick, __instance, ____integrity);
+			var qsbShipHull = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance);
+			qsbShipHull
+				.SendMessage(new HullRepairTickMessage(____integrity));
 
 			if (____integrity >= 1f)
 			{
 				____damaged = false;
 				__instance.RaiseEvent("OnRepaired", __instance);
-				QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance)
+				qsbShipHull
 					.SendMessage(new HullRepairedMessage());
 			}
 

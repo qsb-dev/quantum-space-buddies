@@ -1,22 +1,23 @@
-﻿using QSB.WorldSync.Events;
+﻿using QSB.Messaging;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 
 namespace QSB.ShipSync.Messages
 {
-	internal class RepairTickMessage : WorldObjectMessage
+	internal abstract class RepairTickMessage<T> : QSBWorldObjectMessage<T> where T: IWorldObject
 	{
-		public float RepairNumber;
+		protected float RepairFraction;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(RepairNumber);
+			writer.Write(RepairFraction);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			RepairNumber = reader.ReadSingle();
+			RepairFraction = reader.ReadSingle();
 		}
 	}
 }

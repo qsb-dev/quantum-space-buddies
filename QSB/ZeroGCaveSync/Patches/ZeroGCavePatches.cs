@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
@@ -25,9 +24,10 @@ namespace QSB.ZeroGCaveSync.Patches
 			}
 
 			__instance._repairFraction = Mathf.Clamp01(__instance._repairFraction + (Time.deltaTime / __instance._repairTime));
+			var qsbSatelliteNode = QSBWorldSync.GetWorldFromUnity<QSBSatelliteNode>(__instance);
 			if (__instance._repairFraction >= 1f)
 			{
-				QSBWorldSync.GetWorldFromUnity<QSBSatelliteNode>(__instance)
+				qsbSatelliteNode
 					.SendMessage(new SatelliteNodeRepairedMessage());
 				__instance._damaged = false;
 				var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
@@ -61,7 +61,8 @@ namespace QSB.ZeroGCaveSync.Patches
 				__instance._damageEffect.SetEffectBlend(1f - __instance._repairFraction);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBSatelliteRepairTick, __instance, __instance._repairFraction);
+			qsbSatelliteNode
+				.SendMessage(new SatelliteNodeRepairTickMessage(__instance._repairFraction));
 			return false;
 		}
 	}
