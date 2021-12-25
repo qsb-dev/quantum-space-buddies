@@ -52,10 +52,8 @@
 		public const string QSBHullImpact = nameof(QSBHullImpact);
 		public const string QSBHullDamaged = nameof(QSBHullDamaged);
 		public const string QSBHullChangeIntegrity = nameof(QSBHullChangeIntegrity);
-		public const string QSBHullRepaired = nameof(QSBHullRepaired);
 		public const string QSBHullRepairTick = nameof(QSBHullRepairTick);
 		public const string QSBComponentDamaged = nameof(QSBComponentDamaged);
-		public const string QSBComponentRepaired = nameof(QSBComponentRepaired);
 		public const string QSBComponentRepairTick = nameof(QSBComponentRepairTick);
 		public const string QSBProbeEvent = nameof(QSBProbeEvent);
 		public const string QSBProbeStartRetrieve = nameof(QSBProbeStartRetrieve);
@@ -68,6 +66,5 @@
 		public const string QSBExitSatelliteCamera = nameof(QSBExitSatelliteCamera);
 		public const string QSBSatelliteSnapshot = nameof(QSBSatelliteSnapshot);
 		public const string QSBSatelliteRepairTick = nameof(QSBSatelliteRepairTick);
-		public const string QSBSatelliteRepaired = nameof(QSBSatelliteRepairTick);
 	}
 }

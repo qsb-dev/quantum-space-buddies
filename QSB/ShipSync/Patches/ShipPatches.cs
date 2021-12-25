@@ -1,8 +1,12 @@
 ﻿using HarmonyLib;
 using OWML.Utils;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.ShipSync.Messages.Component;
+using QSB.ShipSync.Messages.Hull;
 using QSB.ShipSync.TransformSync;
+using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -140,7 +144,8 @@ namespace QSB.ShipSync.Patches
 				__instance._repairFraction = 1f;
 				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
 				__instance.RaiseEvent("OnRepaired", __instance);
-				QSBEventManager.FireEvent(EventNames.QSBComponentRepaired, __instance);
+				QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(__instance)
+					.SendMessage(new ComponentRepairedMessage());
 			}
 
 			__instance.GetType().GetAnyMethod("UpdateColliderState").Invoke(__instance, null);
@@ -233,7 +238,8 @@ namespace QSB.ShipSync.Patches
 			{
 				____damaged = false;
 				__instance.RaiseEvent("OnRepaired", __instance);
-				QSBEventManager.FireEvent(EventNames.QSBHullRepaired, __instance);
+				QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance)
+					.SendMessage(new HullRepairedMessage());
 			}
 
 			if (____damageEffect != null)
