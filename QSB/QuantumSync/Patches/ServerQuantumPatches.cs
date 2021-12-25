@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -227,7 +226,7 @@ namespace QSB.QuantumSync.Patches
 					: (__instance._stateSkipCounts[k] + 1);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+			new MoonStateChangeMessage(stateIndex, onUnitSphere, orbitAngle).Send();
 		}
 
 		private static void DealWithNewPosition(QuantumMoon __instance)

@@ -33,7 +33,6 @@
 		public const string QSBSocketStateChange = nameof(QSBSocketStateChange);
 		public const string QSBMultiStateChange = nameof(QSBMultiStateChange);
 		public const string QSBQuantumShuffle = nameof(QSBQuantumShuffle);
-		public const string QSBMoonStateChange = nameof(QSBMoonStateChange);
 		public const string QSBIdentifyFrequency = nameof(QSBIdentifyFrequency);
 		public const string QSBIdentifySignal = nameof(QSBIdentifySignal);
 		public const string QSBDropItem = nameof(QSBDropItem);
