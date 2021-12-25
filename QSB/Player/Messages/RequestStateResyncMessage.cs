@@ -60,35 +60,26 @@ namespace QSB.Player.Messages
 
 		public override void OnReceiveRemote()
 		{
-			// send response only to the requesting client
-			QSBEventManager.ForIdOverride = From;
-			try
+			// if host, send worldobject and server states
+			if (QSBCore.IsHost)
 			{
-				// if host, send worldobject and server states
-				if (QSBCore.IsHost)
-				{
-					ServerStateManager.Instance.SendChangeServerStateMessage(ServerStateManager.Instance.GetServerState());
-					new PlayerInformationMessage().Send();
-
-					if (WorldObjectManager.AllObjectsReady)
-					{
-						SendWorldObjectInfo();
-					}
-				}
-				// if client, send player and client states
-				else
-				{
-					new PlayerInformationMessage().Send();
-				}
+				ServerStateManager.Instance.SendChangeServerStateMessage(ServerStateManager.Instance.GetServerState());
+				new PlayerInformationMessage().Send();
 
 				if (WorldObjectManager.AllObjectsReady)
 				{
-					SendAuthorityObjectInfo();
+					SendWorldObjectInfo();
 				}
 			}
-			finally
+			// if client, send player and client states
+			else
 			{
-				QSBEventManager.ForIdOverride = uint.MaxValue;
+				new PlayerInformationMessage().Send();
+			}
+
+			if (WorldObjectManager.AllObjectsReady)
+			{
+				SendAuthorityObjectInfo();
 			}
 		}
 
@@ -157,7 +148,7 @@ namespace QSB.Player.Messages
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (!qsbOrb.TransformSync.enabled ||
-				    !qsbOrb.TransformSync.HasAuthority)
+					!qsbOrb.TransformSync.HasAuthority)
 				{
 					continue;
 				}

@@ -93,30 +93,5 @@ namespace QSB.Events
 
 			GlobalMessenger<T, U, V, W>.FireEvent(eventName, arg1, arg2, arg3, arg4);
 		}
-
-		public static void FireEvent<T, U, V, W, X>(string eventName, T arg1, U arg2, V arg3, W arg4, X arg5)
-		{
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
-				return;
-			}
-
-			GlobalMessenger<T, U, V, W, X>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5);
-		}
-
-		public static void FireEvent<T, U, V, W, X, Y>(string eventName, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6)
-		{
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Warning - Tried to send event {eventName} while not connected to/hosting server.", MessageType.Warning);
-				return;
-			}
-
-			GlobalMessenger<T, U, V, W, X, Y>.FireEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6);
-		}
-
-		/// used to force set ForId for every sent event
-		public static uint ForIdOverride = uint.MaxValue;
 	}
 }

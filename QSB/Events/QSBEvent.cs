@@ -2,7 +2,6 @@
 using OWML.Utils;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System;
@@ -38,16 +37,8 @@ namespace QSB.Events
 		public void SendEvent(T message)
 		{
 			message.FromId = LocalPlayerId;
-			if (QSBEventManager.ForIdOverride != uint.MaxValue)
-			{
-				message.ForId = QSBEventManager.ForIdOverride;
-			}
 			if (message.OnlySendToHost)
 			{
-				if (QSBEventManager.ForIdOverride != uint.MaxValue)
-				{
-					DebugLog.ToConsole($"Warning - {typeof(T).Name} is OnlySendToHost, but we are trying to ForIdOverride!");
-				}
 				message.ForId = 0;
 			}
 			new QSBEventRelay
