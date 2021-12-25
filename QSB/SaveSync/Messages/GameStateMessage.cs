@@ -85,7 +85,7 @@ namespace QSB.SaveSync.Messages
 		{
 			if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 			{
-				DebugLog.ToConsole($"Error - Treid to handle GameStateEvent when not in TitleScreen!", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Tried to handle GameStateEvent when not in TitleScreen!", OWML.Common.MessageType.Error);
 				return;
 			}
 
