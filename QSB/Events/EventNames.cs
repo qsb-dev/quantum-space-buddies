@@ -60,8 +60,5 @@
 		public const string QSBLaunchProbe = nameof(QSBLaunchProbe);
 		public const string QSBPlayerLaunchProbe = nameof(QSBPlayerLaunchProbe);
 		public const string QSBDebugEvent = nameof(QSBDebugEvent);
-		public const string QSBEnterSatelliteCamera = nameof(QSBEnterSatelliteCamera);
-		public const string QSBExitSatelliteCamera = nameof(QSBExitSatelliteCamera);
-		public const string QSBSatelliteSnapshot = nameof(QSBSatelliteSnapshot);
 	}
 }
