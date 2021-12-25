@@ -3,6 +3,7 @@ using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ConversationSync.Messages;
 using QSB.Events;
+using QSB.LogSync.Messages;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
 using QSB.MeteorSync.WorldObjects;
@@ -93,7 +94,7 @@ namespace QSB.Player.Messages
 				=> new DialogueConditionMessage(condition.Key, condition.Value).Send());
 
 			QSBWorldSync.ShipLogFacts.ForEach(fact
-				=> QSBEventManager.FireEvent(EventNames.QSBRevealFact, fact.Id, fact.SaveGame, false));
+				=> new RevealFactMessage(fact.Id, fact.SaveGame, false).Send());
 
 			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{

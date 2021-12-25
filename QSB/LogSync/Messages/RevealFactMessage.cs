@@ -1,13 +1,31 @@
 ﻿using QSB.Messaging;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 
 namespace QSB.LogSync.Messages
 {
-	public class RevealFactMessage : PlayerMessage
+	public class RevealFactMessage : QSBMessage
 	{
-		public string FactId { get; set; }
-		public bool SaveGame { get; set; }
-		public bool ShowNotification { get; set; }
+		private string FactId;
+		private bool SaveGame;
+		private bool ShowNotification;
+
+		public RevealFactMessage(string id, bool saveGame, bool showNotification)
+		{
+			FactId = id;
+			SaveGame = saveGame;
+			ShowNotification = showNotification;
+		}
+
+		public RevealFactMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(FactId);
+			writer.Write(SaveGame);
+			writer.Write(ShowNotification);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -17,12 +35,29 @@ namespace QSB.LogSync.Messages
 			ShowNotification = reader.ReadBoolean();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+
+		public override void OnReceiveLocal()
 		{
-			base.Serialize(writer);
-			writer.Write(FactId);
-			writer.Write(SaveGame);
-			writer.Write(ShowNotification);
+			if (QSBCore.IsHost)
+			{
+				QSBWorldSync.AddFactReveal(FactId, SaveGame, ShowNotification);
+			}
+		}
+
+		public override void OnReceiveRemote()
+		{
+			if (QSBCore.IsHost)
+			{
+				QSBWorldSync.AddFactReveal(FactId, SaveGame, ShowNotification);
+			}
+
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return;
+			}
+
+			Locator.GetShipLogManager().RevealFact(FactId, SaveGame, ShowNotification);
 		}
 	}
 }

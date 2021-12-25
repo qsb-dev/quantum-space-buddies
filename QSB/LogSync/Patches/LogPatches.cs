@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.LogSync.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 
 namespace QSB.LogSync.Patches
@@ -18,7 +19,7 @@ namespace QSB.LogSync.Patches
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBRevealFact, id, saveGame, showNotification);
+			new RevealFactMessage(id, saveGame, showNotification).Send();
 		}
 	}
 }
