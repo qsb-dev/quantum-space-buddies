@@ -31,6 +31,9 @@ namespace QSB.Player.Messages
 		/// </summary>
 		internal static bool _waitingForEvent;
 
+		/// <summary>
+		/// used instead of QSBMessageManager.Send to do the extra check
+		/// </summary>
 		public void Send()
 		{
 			if (_waitingForEvent)
