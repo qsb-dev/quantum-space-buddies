@@ -1,7 +1,12 @@
 ﻿using HarmonyLib;
 using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.QuantumSync.Events;
+using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +16,37 @@ namespace QSB.QuantumSync.Patches
 	public class ServerQuantumPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(EyeProxyQuantumMoon), nameof(EyeProxyQuantumMoon.ChangeQuantumState))]
+		public static bool EyeProxyQuantumMoon_ChangeQuantumState(EyeProxyQuantumMoon __instance, ref bool __result, bool skipInstantVisibilityCheck)
+		{
+			if (TimeLoop.GetSecondsRemaining() > 0f && Random.value > 0.3f)
+			{
+				__instance._moonStateRoot.SetActive(false);
+				DebugLog.DebugWrite($"Disable");
+				new EyeProxyMoonStateChangeMessage(QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>(__instance), false, -1f).Send();
+				__result = true;
+				return false;
+			}
+
+			__instance._moonStateRoot.SetActive(true);
+			for (var i = 0; i < 20; i++)
+			{
+				var angle = Random.Range(0f, 360f);
+				__instance.transform.localEulerAngles = new Vector3(0f, angle, 0f);
+				if (skipInstantVisibilityCheck || !__instance.CheckVisibilityInstantly())
+				{
+					DebugLog.DebugWrite($"Send active angle:{angle}");
+					new EyeProxyMoonStateChangeMessage(QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>(__instance), true, angle).Send();
+					__result = true;
+					return false;
+				}
+			}
+
+			__result = true;
+			return false;
+		}
 
 		/*
 		 * This patch used to be different, but that one completely broke Solanum's NomaiTextLines.
