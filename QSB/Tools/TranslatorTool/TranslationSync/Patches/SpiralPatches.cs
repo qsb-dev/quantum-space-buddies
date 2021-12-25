@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.Tools.TranslatorTool.TranslationSync.Messages;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 
@@ -20,11 +21,8 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 				return true;
 			}
 
-			QSBEventManager.FireEvent(
-					EventNames.QSBTextTranslated,
-					NomaiTextType.WallText,
-					QSBWorldSync.GetIdFromUnity<QSBWallText>(__instance),
-					id);
+			QSBWorldSync.GetWorldFromUnity<QSBWallText>(__instance)
+				.SendMessage(new WallTextTranslatedMessage(id));
 			return true;
 		}
 
@@ -37,11 +35,8 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 				return true;
 			}
 
-			QSBEventManager.FireEvent(
-					EventNames.QSBTextTranslated,
-					NomaiTextType.Computer,
-					QSBWorldSync.GetIdFromUnity<QSBComputer>(__instance),
-					id);
+			QSBWorldSync.GetWorldFromUnity<QSBComputer>(__instance)
+				.SendMessage(new ComputerTranslatedMessage(id));
 			return true;
 		}
 
@@ -54,11 +49,8 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 				return true;
 			}
 
-			QSBEventManager.FireEvent(
-					EventNames.QSBTextTranslated,
-					NomaiTextType.VesselComputer,
-					QSBWorldSync.GetIdFromUnity<QSBVesselComputer>(__instance),
-					id);
+			QSBWorldSync.GetWorldFromUnity<QSBVesselComputer>(__instance)
+				.SendMessage(new VesselComputerTranslatedMessage(id));
 			return true;
 		}
 	}

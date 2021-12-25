@@ -36,7 +36,6 @@
 		public const string QSBMoonStateChange = nameof(QSBMoonStateChange);
 		public const string QSBIdentifyFrequency = nameof(QSBIdentifyFrequency);
 		public const string QSBIdentifySignal = nameof(QSBIdentifySignal);
-		public const string QSBTextTranslated = nameof(QSBTextTranslated);
 		public const string QSBDropItem = nameof(QSBDropItem);
 		public const string QSBSocketItem = nameof(QSBSocketItem);
 		public const string QSBMoveToCarry = nameof(QSBMoveToCarry);

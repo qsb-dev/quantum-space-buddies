@@ -11,7 +11,7 @@ using QSB.OrbSync.Messages;
 using QSB.OrbSync.WorldObjects;
 using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Tools.TranslatorTool.TranslationSync;
+using QSB.Tools.TranslatorTool.TranslationSync.Messages;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.TornadoSync.Messages;
 using QSB.TornadoSync.WorldObjects;
@@ -99,19 +99,19 @@ namespace QSB.Player.Messages
 			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				wallText.GetTranslatedIds().ForEach(id
-					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.WallText, wallText.ObjectId, id));
+					=> wallText.SendMessage(new WallTextTranslatedMessage(id)));
 			}
 
 			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				computer.GetTranslatedIds().ForEach(id
-					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.Computer, computer.ObjectId, id));
+					=> computer.SendMessage(new ComputerTranslatedMessage(id)));
 			}
 
 			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				vesselComputer.GetTranslatedIds().ForEach(id
-					=> QSBEventManager.FireEvent(EventNames.QSBTextTranslated, NomaiTextType.VesselComputer, vesselComputer.ObjectId, id));
+					=> vesselComputer.SendMessage(new VesselComputerTranslatedMessage(id)));
 			}
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
