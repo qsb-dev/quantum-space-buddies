@@ -2,8 +2,8 @@
 using QSB.CampfireSync.Messages;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Messages;
 using QSB.ConversationSync.Messages;
-using QSB.Events;
 using QSB.LogSync.Messages;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
@@ -63,8 +63,8 @@ namespace QSB.Player.Messages
 			// if host, send worldobject and server states
 			if (QSBCore.IsHost)
 			{
-				ServerStateManager.Instance.SendChangeServerStateMessage(ServerStateManager.Instance.GetServerState());
-				new PlayerInformationMessage().Send();
+				new ServerStateMessage(ServerStateManager.Instance.GetServerState()) { To = From }.Send();
+				new PlayerInformationMessage { To = From }.Send();
 
 				if (WorldObjectManager.AllObjectsReady)
 				{
@@ -83,30 +83,30 @@ namespace QSB.Player.Messages
 			}
 		}
 
-		private static void SendWorldObjectInfo()
+		private void SendWorldObjectInfo()
 		{
 			QSBWorldSync.DialogueConditions.ForEach(condition
-				=> new DialogueConditionMessage(condition.Key, condition.Value).Send());
+				=> new DialogueConditionMessage(condition.Key, condition.Value) { To = From }.Send());
 
 			QSBWorldSync.ShipLogFacts.ForEach(fact
-				=> new RevealFactMessage(fact.Id, fact.SaveGame, false).Send());
+				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = From }.Send());
 
 			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				wallText.GetTranslatedIds().ForEach(id
-					=> wallText.SendMessage(new WallTextTranslatedMessage(id)));
+					=> wallText.SendMessage(new WallTextTranslatedMessage(id) { To = From }));
 			}
 
 			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				computer.GetTranslatedIds().ForEach(id
-					=> computer.SendMessage(new ComputerTranslatedMessage(id)));
+					=> computer.SendMessage(new ComputerTranslatedMessage(id) { To = From }));
 			}
 
 			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
 			{
 				vesselComputer.GetTranslatedIds().ForEach(id
-					=> vesselComputer.SendMessage(new VesselComputerTranslatedMessage(id)));
+					=> vesselComputer.SendMessage(new VesselComputerTranslatedMessage(id) { To = From }));
 			}
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
@@ -126,24 +126,24 @@ namespace QSB.Player.Messages
 					var perpendicular = Vector3.Cross(relPos, Vector3.up).normalized;
 					var orbitAngle = (int)OWMath.WrapAngle(OWMath.Angle(perpendicular, relVel, relPos));
 
-					new MoonStateChangeMessage(stateIndex, onUnitSphere, orbitAngle).Send();
+					new MoonStateChangeMessage(stateIndex, onUnitSphere, orbitAngle) { To = From }.Send();
 				}
 			});
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
-				=> campfire.SendMessage(new CampfireStateMessage(campfire.GetState())));
+				=> campfire.SendMessage(new CampfireStateMessage(campfire.GetState()) { To = From }));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
-				=> fragment.SendMessage(new FragmentResyncMessage(fragment)));
+				=> fragment.SendMessage(new FragmentResyncMessage(fragment) { To = From }));
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
-				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState)));
+				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState) { To = From }));
 		}
 
 		/// <summary>
 		/// send info for objects we have authority over
 		/// </summary>
-		private static void SendAuthorityObjectInfo()
+		private void SendAuthorityObjectInfo()
 		{
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
@@ -153,8 +153,8 @@ namespace QSB.Player.Messages
 					continue;
 				}
 
-				qsbOrb.SendMessage(new OrbDragMessage(qsbOrb.AttachedObject._isBeingDragged));
-				qsbOrb.SendMessage(new OrbSlotMessage(qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot)));
+				qsbOrb.SendMessage(new OrbDragMessage(qsbOrb.AttachedObject._isBeingDragged) { To = From });
+				qsbOrb.SendMessage(new OrbSlotMessage(qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot)) { To = From });
 			}
 		}
 	}
