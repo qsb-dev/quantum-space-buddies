@@ -12,21 +12,13 @@ namespace QSB.QuantumSync.Messages
 		private bool Active;
 		private float Angle;
 
-		public EyeProxyMoonStateChangeMessage(QSBEyeProxyQuantumMoon moon, bool active, float angle)
+		public EyeProxyMoonStateChangeMessage(bool active, float angle)
 		{
-			ObjectId = moon.ObjectId;
 			Active = active;
 			Angle = angle;
 		}
 
 		public EyeProxyMoonStateChangeMessage() { }
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Active = reader.ReadBoolean();
-			Angle = reader.ReadSingle();
-		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -35,14 +27,20 @@ namespace QSB.QuantumSync.Messages
 			writer.Write(Angle);
 		}
 
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			Active = reader.ReadBoolean();
+			Angle = reader.ReadSingle();
+		}
+
 		public override void OnReceiveRemote()
 		{
 			DebugLog.DebugWrite($"Get moon state active:{Active} angle:{Angle}");
-			var moon = QSBWorldSync.GetWorldFromId<QSBEyeProxyQuantumMoon>(ObjectId);
-			moon.AttachedObject._moonStateRoot.SetActive(Active);
+			WorldObject.AttachedObject._moonStateRoot.SetActive(Active);
 			if (Angle != -1f)
 			{
-				moon.AttachedObject.transform.localEulerAngles = new Vector3(0f, Angle, 0f);
+				WorldObject.AttachedObject.transform.localEulerAngles = new Vector3(0f, Angle, 0f);
 			}
 		}
 	}
