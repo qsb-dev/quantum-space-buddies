@@ -40,7 +40,6 @@
 		public const string QSBSocketItem = nameof(QSBSocketItem);
 		public const string QSBMoveToCarry = nameof(QSBMoveToCarry);
 		public const string QSBStartStatue = nameof(QSBStartStatue);
-		public const string QSBCampfireState = nameof(QSBCampfireState);
 		public const string QSBMarshmallowEvent = nameof(QSBMarshmallowEvent);
 		public const string QSBAnimTrigger = nameof(QSBAnimTrigger);
 		public const string QSBNpcAnimEvent = nameof(QSBNpcAnimEvent);

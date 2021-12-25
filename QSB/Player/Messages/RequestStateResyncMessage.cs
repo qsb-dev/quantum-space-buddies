@@ -1,4 +1,5 @@
 ﻿using OWML.Utils;
+using QSB.CampfireSync.Messages;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ConversationSync.Messages;
@@ -143,7 +144,7 @@ namespace QSB.Player.Messages
 			});
 
 			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
-				=> QSBEventManager.FireEvent(EventNames.QSBCampfireState, campfire.ObjectId, campfire.GetState()));
+				=> campfire.SendMessage(new CampfireStateMessage(campfire.GetState())));
 
 			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
 				=> fragment.SendMessage(new FragmentResyncMessage(fragment)));
