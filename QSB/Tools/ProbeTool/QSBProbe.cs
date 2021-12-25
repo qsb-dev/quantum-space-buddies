@@ -101,13 +101,13 @@ namespace QSB.Tools.ProbeTool
 					OnRetrieveProbe();
 					break;
 				case ProbeEvent.Destroy:
+					Destroy(gameObject);
+
 					if (OnProbeDestroyed == null)
 					{
 						DebugLog.ToConsole($"Warning - OnProbeDestroyed is null!", OWML.Common.MessageType.Warning);
 						break;
 					}
-
-					Destroy(gameObject);
 
 					OnProbeDestroyed();
 					break;
