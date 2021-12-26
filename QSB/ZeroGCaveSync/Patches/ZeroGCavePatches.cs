@@ -24,7 +24,7 @@ namespace QSB.ZeroGCaveSync.Patches
 			}
 
 			__instance._repairFraction = Mathf.Clamp01(__instance._repairFraction + (Time.deltaTime / __instance._repairTime));
-			var qsbSatelliteNode = QSBWorldSync.GetWorldFromUnity<QSBSatelliteNode>(__instance);
+			var qsbSatelliteNode = __instance.GetWorldObject<QSBSatelliteNode>();
 			if (__instance._repairFraction >= 1f)
 			{
 				qsbSatelliteNode

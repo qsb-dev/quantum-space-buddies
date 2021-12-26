@@ -16,7 +16,7 @@ namespace QSB.Anglerfish.Patches
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.GetTargetPosition))]
 		public static bool GetTargetPosition(AnglerfishController __instance, ref Vector3 __result)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 
 			if (qsbAngler.TargetTransform != null)
 			{
@@ -34,7 +34,7 @@ namespace QSB.Anglerfish.Patches
 		public static bool OnSectorOccupantRemoved(AnglerfishController __instance,
 			SectorDetector sectorDetector)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 
 			if (qsbAngler.TargetTransform != null && sectorDetector.GetAttachedOWRigidbody().transform == qsbAngler.TargetTransform)
 			{
@@ -53,7 +53,7 @@ namespace QSB.Anglerfish.Patches
 			{
 				return true;
 			}
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 
 			switch (__instance._currentState)
 			{
@@ -148,7 +148,7 @@ namespace QSB.Anglerfish.Patches
 			{
 				return true;
 			}
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 			qsbAngler.UpdateTargetVelocity();
 
 			if (__instance._anglerBody.GetVelocity().sqrMagnitude > Mathf.Pow(__instance._chaseSpeed * 1.5f, 2f))
@@ -227,7 +227,7 @@ namespace QSB.Anglerfish.Patches
 		public static bool OnImpact(AnglerfishController __instance,
 			ImpactData impact)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 
 			var attachedOWRigidbody = impact.otherCollider.GetAttachedOWRigidbody();
 			if ((attachedOWRigidbody.CompareTag("Player") || attachedOWRigidbody.CompareTag("Ship"))
@@ -248,7 +248,7 @@ namespace QSB.Anglerfish.Patches
 		public static bool OnClosestAudibleNoise(AnglerfishController __instance,
 			NoiseMaker noiseMaker)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 
 			if (__instance._currentState is AnglerfishController.AnglerState.Consuming or AnglerfishController.AnglerState.Stunned)
 			{
@@ -285,7 +285,7 @@ namespace QSB.Anglerfish.Patches
 		public static bool OnCaughtObject(AnglerfishController __instance,
 			OWRigidbody caughtBody)
 		{
-			var qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(__instance);
+			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 
 			if (__instance._currentState == AnglerfishController.AnglerState.Consuming)
 			{

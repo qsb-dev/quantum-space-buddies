@@ -21,7 +21,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 				return true;
 			}
 
-			QSBWorldSync.GetWorldFromUnity<QSBWallText>(__instance)
+			__instance.GetWorldObject<QSBWallText>()
 				.SendMessage(new WallTextTranslatedMessage(id));
 			return true;
 		}
@@ -35,7 +35,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 				return true;
 			}
 
-			QSBWorldSync.GetWorldFromUnity<QSBComputer>(__instance)
+			__instance.GetWorldObject<QSBComputer>()
 				.SendMessage(new ComputerTranslatedMessage(id));
 			return true;
 		}
@@ -49,7 +49,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 				return true;
 			}
 
-			QSBWorldSync.GetWorldFromUnity<QSBVesselComputer>(__instance)
+			__instance.GetWorldObject<QSBVesselComputer>()
 				.SendMessage(new VesselComputerTranslatedMessage(id));
 			return true;
 		}

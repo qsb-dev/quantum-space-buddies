@@ -36,7 +36,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 				var initialSector = AttachedObject.GetSector();
 				if (initialSector != null)
 				{
-					InitialSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(initialSector);
+					InitialSector = initialSector.GetWorldObject<QSBSector>();
 				}
 
 				if (InitialParent == null)
@@ -46,7 +46,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 				if (InitialParent?.GetComponent<OWItemSocket>() != null)
 				{
-					var qsbObj = QSBWorldSync.GetWorldFromUnity<IQSBOWItemSocket>(InitialParent.GetComponent<OWItemSocket>());
+					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<IQSBOWItemSocket>();
 					InitialSocket = qsbObj;
 				}
 			});

@@ -118,7 +118,7 @@ namespace QSB.ShipSync.Patches
 				return false;
 			}
 
-			var qsbShipComponent = QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(__instance);
+			var qsbShipComponent = __instance.GetWorldObject<QSBShipComponent>();
 			if (damaged)
 			{
 				__instance._damaged = true;
@@ -163,7 +163,7 @@ namespace QSB.ShipSync.Patches
 					}
 
 					____integrity = Mathf.Max(____integrity - damage, 0f);
-					var qsbShipHull = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance);
+					var qsbShipHull = __instance.GetWorldObject<QSBShipHull>();
 					if (!____damaged)
 					{
 						____damaged = true;
@@ -210,7 +210,7 @@ namespace QSB.ShipSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
 		public static void ShipComponent_RepairTick(ShipComponent __instance) =>
-			QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(__instance)
+			__instance.GetWorldObject<QSBShipComponent>()
 				.SendMessage(new ComponentRepairTickMessage(__instance._repairFraction));
 
 		[HarmonyPrefix]
@@ -223,7 +223,7 @@ namespace QSB.ShipSync.Patches
 			}
 
 			____integrity = Mathf.Min(____integrity + (Time.deltaTime / ____repairTime), 1f);
-			var qsbShipHull = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance);
+			var qsbShipHull = __instance.GetWorldObject<QSBShipHull>();
 			qsbShipHull
 				.SendMessage(new HullRepairTickMessage(____integrity));
 

@@ -25,7 +25,7 @@ namespace QSB.OrbSync.Patches
 			{
 				return;
 			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			qsbOrb.SendMessage(new OrbDragMessage(true));
 		}
 
@@ -41,7 +41,7 @@ namespace QSB.OrbSync.Patches
 			{
 				return false;
 			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;
@@ -58,7 +58,7 @@ namespace QSB.OrbSync.Patches
 			{
 				return true;
 			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;

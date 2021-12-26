@@ -20,25 +20,25 @@ namespace QSB.WorldSync
 			where TWorldObject : IWorldObject
 			=> WorldObjects.OfType<TWorldObject>();
 
-		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
+		public static TWorldObject GetWorldObject<TWorldObject>(this int objectId)
 			where TWorldObject : IWorldObject
 		{
-			if (!WorldObjects.IsInRange(id))
+			if (!WorldObjects.IsInRange(objectId))
 			{
-				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {WorldObjects.Count}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {objectId}. Count is {WorldObjects.Count}.", MessageType.Warning);
 				return default;
 			}
 
-			if (WorldObjects[id] is not TWorldObject worldObject)
+			if (WorldObjects[objectId] is not TWorldObject worldObject)
 			{
-				DebugLog.ToConsole($"Error - {typeof(TWorldObject).Name} id {id} is actually {WorldObjects[id].GetType().Name}.", MessageType.Error);
+				DebugLog.ToConsole($"Error - {typeof(TWorldObject).Name} id {objectId} is actually {WorldObjects[objectId].GetType().Name}.", MessageType.Error);
 				return default;
 			}
 
 			return worldObject;
 		}
 
-		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
+		public static TWorldObject GetWorldObject<TWorldObject>(this MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
 			if (unityObject == null)

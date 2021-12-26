@@ -82,7 +82,7 @@ namespace QSB.MeteorSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var qsbFragment = QSBWorldSync.GetWorldFromId<QSBFragment>(ObjectId);
+			var qsbFragment = ObjectId.GetWorldObject<QSBFragment>();
 			qsbFragment.AttachedObject._integrity = Integrity;
 			qsbFragment.AttachedObject._origIntegrity = OrigIntegrity;
 			qsbFragment.LeashLength = LeashLength;

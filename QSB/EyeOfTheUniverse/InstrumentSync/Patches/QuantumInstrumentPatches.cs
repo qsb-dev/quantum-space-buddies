@@ -15,7 +15,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.OnPressInteract))]
 		public static void OnPressInteract(QuantumInstrument __instance)
-			=> QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance).SendMessage(new GatherInstrumentMessage());
+			=> __instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.Update))]
@@ -31,7 +31,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.All))
 					{
 						__instance.Gather();
-						QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance).SendMessage(new GatherInstrumentMessage());
+						__instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
 						Locator.GetPromptManager().RemoveScreenPrompt(__instance._scopeGatherPrompt);
 					}
 				}

@@ -22,7 +22,7 @@ namespace QSB.Animation.NPC.Messages
 
 		public override void OnReceiveRemote(bool server, NpcAnimationMessage message)
 		{
-			var qsbObj = QSBWorldSync.GetWorldFromId<INpcAnimController>(message.AnimControllerIndex);
+			var qsbObj = message.AnimControllerIndex.GetWorldObject<INpcAnimController>();
 			switch (message.AnimationEvent)
 			{
 				case AnimationEvent.StartConversation:

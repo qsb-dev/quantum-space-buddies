@@ -68,7 +68,7 @@ namespace QSB.MeteorSync.Patches
 						particleSystem.Play();
 					}
 
-					var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+					var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
 					qsbMeteorLauncher.SendMessage(new MeteorPreLaunchMessage());
 				}
 
@@ -125,8 +125,8 @@ namespace QSB.MeteorSync.Patches
 
 			if (meteorController != null)
 			{
-				var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
-				var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(meteorController);
+				var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
+				var qsbMeteor = meteorController.GetWorldObject<QSBMeteor>();
 
 				qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
 				qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
@@ -151,7 +151,7 @@ namespace QSB.MeteorSync.Patches
 		public static void Impact(MeteorController __instance,
 			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 		{
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
 				qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
@@ -163,7 +163,7 @@ namespace QSB.MeteorSync.Patches
 		public static void AddDamage(FragmentIntegrity __instance,
 			float damage)
 		{
-			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance);
+			var qsbFragment = __instance.GetWorldObject<QSBFragment>();
 			qsbFragment.SendMessage(new FragmentDamageMessage(damage));
 		}
 	}
@@ -185,14 +185,14 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
 		public static bool LaunchMeteor(MeteorLauncher __instance)
 		{
-			var qsbMeteorLauncher = QSBWorldSync.GetWorldFromUnity<QSBMeteorLauncher>(__instance);
+			var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
 
 			MeteorController meteorController = null;
 			QSBMeteor qsbMeteor;
 
 			bool MeteorMatches(MeteorController x)
 			{
-				qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(x);
+				qsbMeteor = x.GetWorldObject<QSBMeteor>();
 				return qsbMeteor.ObjectId == qsbMeteorLauncher.MeteorId;
 			}
 
@@ -261,7 +261,7 @@ namespace QSB.MeteorSync.Patches
 			__instance._hasImpacted = true;
 			__instance._impactTime = Time.time;
 
-			var qsbMeteor = QSBWorldSync.GetWorldFromUnity<QSBMeteor>(__instance);
+			var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
 			if (QSBMeteor.IsSpecialImpact(hitObject))
 			{
 				qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
@@ -300,7 +300,7 @@ namespace QSB.MeteorSync.Patches
 				return true;
 			}
 
-			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
+			var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
 
 			if (__instance.enabled)
 			{
@@ -325,7 +325,7 @@ namespace QSB.MeteorSync.Patches
 				return true;
 			}
 
-			var qsbFragment = QSBWorldSync.GetWorldFromUnity<QSBFragment>(__instance._detachableFragment._fragmentIntegrity);
+			var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
 
 			if (!__instance._deccelerating)
 			{

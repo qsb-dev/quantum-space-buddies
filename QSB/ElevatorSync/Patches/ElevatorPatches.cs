@@ -17,7 +17,7 @@ namespace QSB.ElevatorSync.Patches
 		public static void Elevator_StartLift(Elevator __instance)
 		{
 			var isGoingUp = __instance._goingToTheEnd;
-			var qsbElevator = QSBWorldSync.GetWorldFromUnity<QSBElevator>(__instance);
+			var qsbElevator = __instance.GetWorldObject<QSBElevator>();
 			qsbElevator.SendMessage(new ElevatorMessage(isGoingUp));
 		}
 	}

@@ -24,7 +24,7 @@ namespace QSB.QuantumSync.Patches
 			{
 				__instance._moonStateRoot.SetActive(false);
 				DebugLog.DebugWrite($"Disable");
-				QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>(__instance).SendMessage(new EyeProxyMoonStateChangeMessage(false, -1f));
+				__instance.GetWorldObject<QSBEyeProxyQuantumMoon>().SendMessage(new EyeProxyMoonStateChangeMessage(false, -1f));
 				__result = true;
 				return false;
 			}
@@ -37,7 +37,7 @@ namespace QSB.QuantumSync.Patches
 				if (skipInstantVisibilityCheck || !__instance.CheckVisibilityInstantly())
 				{
 					DebugLog.DebugWrite($"Send active angle:{angle}");
-					QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>(__instance).SendMessage(new EyeProxyMoonStateChangeMessage(true, angle));
+					__instance.GetWorldObject<QSBEyeProxyQuantumMoon>().SendMessage(new EyeProxyMoonStateChangeMessage(true, angle));
 					__result = true;
 					return false;
 				}

@@ -47,13 +47,13 @@ namespace QSB.ItemSync.Messages
 			switch (Value)
 			{
 				case SocketMessageType.Socket:
-					socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(SocketId);
-					itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(ItemId);
+					socketWorldObject = SocketId.GetWorldObject<IQSBOWItemSocket>();
+					itemWorldObject = ItemId.GetWorldObject<IQSBOWItem>();
 
 					socketWorldObject.PlaceIntoSocket(itemWorldObject);
 					return;
 				case SocketMessageType.StartUnsocket:
-					socketWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItemSocket>(SocketId);
+					socketWorldObject = SocketId.GetWorldObject<IQSBOWItemSocket>();
 
 					if (!socketWorldObject.IsSocketOccupied())
 					{
@@ -64,7 +64,7 @@ namespace QSB.ItemSync.Messages
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketMessageType.CompleteUnsocket:
-					itemWorldObject = QSBWorldSync.GetWorldFromId<IQSBOWItem>(ItemId);
+					itemWorldObject = ItemId.GetWorldObject<IQSBOWItem>();
 
 					itemWorldObject.OnCompleteUnsocket();
 					return;

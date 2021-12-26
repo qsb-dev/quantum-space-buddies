@@ -44,7 +44,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void Init()
 		{
-			_qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(JellyfishManager.Jellyfish[_instances.IndexOf(this)]);
+			_qsbJellyfish = JellyfishManager.Jellyfish[_instances.IndexOf(this)].GetWorldObject<QSBJellyfish>();
 			_qsbJellyfish.TransformSync = this;
 
 			base.Init();

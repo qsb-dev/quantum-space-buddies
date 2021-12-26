@@ -18,7 +18,7 @@ namespace QSB.ItemSync.Messages
 		{
 			Position = position;
 			Normal = normal;
-			SectorId = QSBWorldSync.GetWorldFromUnity<QSBSector>(sector).ObjectId;
+			SectorId = sector.GetWorldObject<QSBSector>().ObjectId;
 		}
 
 		public DropItemMessage() { }
@@ -41,7 +41,7 @@ namespace QSB.ItemSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var sector = QSBWorldSync.GetWorldFromId<QSBSector>(SectorId).AttachedObject;
+			var sector = SectorId.GetWorldObject<QSBSector>().AttachedObject;
 			WorldObject.DropItem(Position, Normal, sector);
 
 			var player = QSBPlayerManager.GetPlayer(From);

@@ -35,7 +35,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				FinishDelayedReady();
 
-				QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldFromUnity<QSBQuantumState>).ToList();
+				QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldObject<QSBQuantumState>).ToList();
 
 				if (QuantumStates.Any(x => x == null))
 				{

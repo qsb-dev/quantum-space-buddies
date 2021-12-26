@@ -139,7 +139,7 @@ namespace QSB.ConversationSync.Patches
 
 			__instance._activatedDialogues[num] = true;
 
-			QSBWorldSync.GetWorldFromUnity<QSBRemoteDialogueTrigger>(__instance)
+			__instance.GetWorldObject<QSBRemoteDialogueTrigger>()
 				.SendMessage(new EnterRemoteDialogueMessage(num, __instance._listDialogues.IndexOf(dialogue)));
 
 			__result = true;

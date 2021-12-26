@@ -39,7 +39,7 @@ namespace QSB.Messaging
 					return false;
 				}
 
-				WorldObject = QSBWorldSync.GetWorldFromId<T>(ObjectId);
+				WorldObject = ObjectId.GetWorldObject<T>();
 				return true;
 			}
 		}

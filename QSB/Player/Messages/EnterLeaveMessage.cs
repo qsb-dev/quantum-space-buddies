@@ -82,16 +82,16 @@ namespace QSB.Player.Messages
 						.OnRemotePlayerExit(From);
 					break;
 				case EnterLeaveType.EnterNonNomaiHeadZone:
-					QSBWorldSync.GetWorldFromId<QSBCharacterAnimController>(ObjectId).AddPlayerToHeadZone(player);
+					ObjectId.GetWorldObject<QSBCharacterAnimController>().AddPlayerToHeadZone(player);
 					break;
 				case EnterLeaveType.ExitNonNomaiHeadZone:
-					QSBWorldSync.GetWorldFromId<QSBCharacterAnimController>(ObjectId).RemovePlayerFromHeadZone(player);
+					ObjectId.GetWorldObject<QSBCharacterAnimController>().RemovePlayerFromHeadZone(player);
 					break;
 				case EnterLeaveType.EnterNomaiHeadZone:
-					QSBWorldSync.GetWorldFromId<QSBSolanumAnimController>(ObjectId).AddPlayerToHeadZone(player);
+					ObjectId.GetWorldObject<QSBSolanumAnimController>().AddPlayerToHeadZone(player);
 					break;
 				case EnterLeaveType.ExitNomaiHeadZone:
-					QSBWorldSync.GetWorldFromId<QSBSolanumAnimController>(ObjectId).RemovePlayerFromHeadZone(player);
+					ObjectId.GetWorldObject<QSBSolanumAnimController>().RemovePlayerFromHeadZone(player);
 					break;
 				case EnterLeaveType.EnterShip:
 					ShipManager.Instance.AddPlayerToShip(player);

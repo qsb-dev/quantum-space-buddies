@@ -13,7 +13,7 @@ namespace QSB.OrbSync.Messages
 
 		public override void OnReceiveLocal()
 		{
-			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(ObjectId);
+			var qsbOrb = ObjectId.GetWorldObject<QSBOrb>();
 
 			if (QSBCore.IsHost && Value)
 			{
@@ -23,7 +23,7 @@ namespace QSB.OrbSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var qsbOrb = QSBWorldSync.GetWorldFromId<QSBOrb>(ObjectId);
+			var qsbOrb = ObjectId.GetWorldObject<QSBOrb>();
 
 			if (QSBCore.IsHost && Value)
 			{

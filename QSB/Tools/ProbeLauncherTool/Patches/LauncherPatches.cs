@@ -54,7 +54,7 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 
 				if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
 				{
-					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, QSBWorldSync.GetWorldFromUnity<QSBProbeLauncher>(__instance), playEffects);
+					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, __instance.GetWorldObject<QSBProbeLauncher>(), playEffects);
 				}
 				else
 				{

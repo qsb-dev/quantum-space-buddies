@@ -22,7 +22,7 @@ namespace QSB.TornadoSync.Patches
 				if (__instance._secondsUntilFormation < 0f)
 				{
 					__instance.StartFormation();
-					var qsbTornado = QSBWorldSync.GetWorldFromUnity<QSBTornado>(__instance);
+					var qsbTornado = __instance.GetWorldObject<QSBTornado>();
 					qsbTornado.SendMessage(new TornadoFormStateMessage(qsbTornado.FormState));
 					return false;
 				}
@@ -62,7 +62,7 @@ namespace QSB.TornadoSync.Patches
 			if (QSBCore.IsHost && hitObject.GetComponentInParent<OWRigidbody>().GetMass() > 50f)
 			{
 				__instance.StartCollapse();
-				var qsbTornado = QSBWorldSync.GetWorldFromUnity<QSBTornado>(__instance);
+				var qsbTornado = __instance.GetWorldObject<QSBTornado>();
 				qsbTornado.SendMessage(new TornadoFormStateMessage(qsbTornado.FormState));
 			}
 

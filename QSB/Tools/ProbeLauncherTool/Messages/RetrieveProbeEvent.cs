@@ -26,7 +26,7 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 
 		public override void OnReceiveRemote(bool server, BoolWorldObjectMessage message)
 		{
-			var worldObject = QSBWorldSync.GetWorldFromId<QSBProbeLauncher>(message.ObjectId);
+			var worldObject = message.ObjectId.GetWorldObject<QSBProbeLauncher>();
 			worldObject.RetrieveProbe(message.State);
 		}
 	}

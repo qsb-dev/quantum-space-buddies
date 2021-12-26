@@ -20,6 +20,6 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 			=> AttachedObject.PlaceIntoSocket((OWItem)item.ReturnObject());
 
 		public virtual IQSBOWItem RemoveFromSocket()
-			=> QSBWorldSync.GetWorldFromUnity<IQSBOWItem>(AttachedObject.RemoveFromSocket());
+			=> AttachedObject.RemoveFromSocket().GetWorldObject<IQSBOWItem>();
 	}
 }

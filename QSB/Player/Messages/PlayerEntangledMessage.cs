@@ -25,7 +25,7 @@ namespace QSB.Player.Messages
 				return;
 			}
 
-			var quantumObject = QSBWorldSync.GetWorldFromId<IQSBQuantumObject>(ObjectId);
+			var quantumObject = ObjectId.GetWorldObject<IQSBQuantumObject>();
 			player.EntangledObject = quantumObject;
 		}
 
@@ -38,7 +38,7 @@ namespace QSB.Player.Messages
 				return;
 			}
 
-			var quantumObject = QSBWorldSync.GetWorldFromId<IQSBQuantumObject>(ObjectId);
+			var quantumObject = ObjectId.GetWorldObject<IQSBQuantumObject>();
 			player.EntangledObject = quantumObject;
 		}
 

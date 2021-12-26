@@ -43,7 +43,7 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void Init()
 		{
-			_qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(AnglerManager.Anglers[_instances.IndexOf(this)]);
+			_qsbAngler = AnglerManager.Anglers[_instances.IndexOf(this)].GetWorldObject<QSBAngler>();
 			_qsbAngler.TransformSync = this;
 
 			base.Init();

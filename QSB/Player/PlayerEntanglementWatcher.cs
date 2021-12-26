@@ -32,7 +32,7 @@ namespace QSB.Player
 			if (_previousCollidingQuantumObject != collidingQuantumObject)
 			{
 				var objectId = collidingQuantumObject != null
-					? QSBWorldSync.GetWorldFromUnity<IQSBQuantumObject>(collidingQuantumObject).ObjectId
+					? collidingQuantumObject.GetWorldObject<IQSBQuantumObject>().ObjectId
 					: -1;
 
 				new PlayerEntangledMessage(objectId).Send();

@@ -24,7 +24,7 @@ namespace QSB.RoastingSync.Messages
 				return;
 			}
 
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCampfire>(campfire);
+			var qsbObj = campfire.GetWorldObject<QSBCampfire>();
 			new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
 		}
 
@@ -63,7 +63,7 @@ namespace QSB.RoastingSync.Messages
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.RoastingStick.SetActive(Value);
 			player.Campfire = Value
-				? QSBWorldSync.GetWorldFromId<QSBCampfire>(ObjectId)
+				? ObjectId.GetWorldObject<QSBCampfire>()
 				: null;
 		}
 	}

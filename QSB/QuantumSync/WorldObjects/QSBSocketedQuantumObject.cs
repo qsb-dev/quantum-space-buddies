@@ -31,7 +31,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
 		{
-			var qsbSocket = QSBWorldSync.GetWorldFromId<QSBQuantumSocket>(socketId);
+			var qsbSocket = socketId.GetWorldObject<QSBQuantumSocket>();
 			if (qsbSocket == null)
 			{
 				DebugLog.ToConsole($"Couldn't find socket id {socketId}", MessageType.Error);

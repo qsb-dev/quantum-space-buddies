@@ -50,7 +50,7 @@ namespace QSB.OrbSync.TransformSync
 				DebugLog.ToConsole($"Error - No orb at index {index}.", MessageType.Error);
 				return;
 			}
-			_qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(orb);
+			_qsbOrb = orb.GetWorldObject<QSBOrb>();
 			_qsbOrb.TransformSync = this;
 
 			base.Init();
