@@ -13,7 +13,8 @@ namespace QSB.Utility
 {
 	public static class Extensions
 	{
-		// UNITY
+		#region UNITY
+
 		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
 
 		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
@@ -41,7 +42,10 @@ namespace QSB.Utility
 		public static Transform InstantiateInactive(this Transform original) =>
 			original.gameObject.InstantiateInactive().transform;
 
-		// QNET
+		#endregion
+
+		#region QNET
+
 		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
 			if (connection == null)
@@ -85,7 +89,10 @@ namespace QSB.Utility
 			QNetworkServer.SpawnWithClientAuthority(go, QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
 		}
 
-		// C#
+		#endregion
+
+		#region C#
+
 		public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
 		{
 			foreach (var del in multicast.GetInvocationList())
@@ -174,9 +181,13 @@ namespace QSB.Utility
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
 
-		// OW
+		#endregion
+
+		#region OW
 
 		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)
 			=> baseBody.GetAngularVelocity() - relativeBody.GetAngularVelocity();
+
+		#endregion
 	}
 }
