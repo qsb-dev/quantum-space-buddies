@@ -3,6 +3,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
+using System;
 using UnityEngine;
 
 namespace QSB.ClientServerStateSync
@@ -23,6 +24,9 @@ namespace QSB.ClientServerStateSync
 			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
 				() => new ClientStateMessage(ForceGetCurrentState()).Send());
 		}
+
+		private void OnDestroy() =>
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
 		public void SendChangeClientStateMessage(ClientState newState)
 		{

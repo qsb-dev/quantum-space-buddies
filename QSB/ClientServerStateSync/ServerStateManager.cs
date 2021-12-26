@@ -4,6 +4,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -34,6 +35,12 @@ namespace QSB.ClientServerStateSync
 
 			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
 				() => new ServerStateMessage(ForceGetCurrentState()).Send());
+		}
+
+		private void OnDestroy()
+		{
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			GlobalMessenger.RemoveListener("TriggerSupernova", OnTriggerSupernova);
 		}
 
 		public void SendChangeServerStateMessage(ServerState newState)
