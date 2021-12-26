@@ -1,7 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
-using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 

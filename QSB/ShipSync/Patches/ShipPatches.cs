@@ -9,7 +9,6 @@ using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
