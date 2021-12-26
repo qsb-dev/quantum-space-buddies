@@ -5,7 +5,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync.Messages
 {
-	internal abstract class SetAsTranslatedMessage<T> : QSBWorldObjectMessage<T> where T: IWorldObject
+	internal abstract class SetAsTranslatedMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
 		protected int TextId;
 

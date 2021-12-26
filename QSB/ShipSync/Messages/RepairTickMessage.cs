@@ -4,7 +4,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.ShipSync.Messages
 {
-	internal abstract class RepairTickMessage<T> : QSBWorldObjectMessage<T> where T: IWorldObject
+	internal abstract class RepairTickMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
 		protected float RepairFraction;
 
