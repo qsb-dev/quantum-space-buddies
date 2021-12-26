@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
+using QSB.ConversationSync.Messages;
 using QSB.ConversationSync.WorldObjects;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -48,7 +49,7 @@ namespace QSB.ConversationSync
 		}
 
 		public void SendPlayerOption(string text) =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
+			new ConversationMessage((int)QSBPlayerManager.LocalPlayerId, text, ConversationType.Player).Send();
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -58,14 +59,14 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
+			new ConversationMessage(id, text, ConversationType.Character).Send();
 		}
 
 		public void CloseBoxPlayer() =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
+			new ConversationMessage((int)QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer).Send();
 
 		public void CloseBoxCharacter(int id) =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+			new ConversationMessage(id, "", ConversationType.CloseCharacter).Send();
 
 		public void SendConvState(int charId, bool state)
 		{
@@ -75,7 +76,7 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
+			new ConversationStartEndMessage(charId, QSBPlayerManager.LocalPlayerId, state).Send();
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)
