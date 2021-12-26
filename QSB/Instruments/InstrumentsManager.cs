@@ -1,7 +1,8 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
-using QSB.Events;
+using QSB.Animation.Player.Messages;
 using QSB.Instruments.QSBCamera;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using UnityEngine;
@@ -119,7 +120,7 @@ namespace QSB.Instruments
 
 		public void SwitchToType(AnimationType type)
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, QSBPlayerManager.LocalPlayerId, type);
+			new ChangeAnimTypeMessage(QSBPlayerManager.LocalPlayerId, type).Send();
 			QSBPlayerManager.LocalPlayer.AnimationSync.SetAnimationType(type);
 			CheckInstrumentProps(type);
 		}

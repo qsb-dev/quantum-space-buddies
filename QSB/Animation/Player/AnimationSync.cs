@@ -1,7 +1,8 @@
 ﻿using OWML.Common;
 using OWML.Utils;
+using QSB.Animation.Player.Messages;
 using QSB.Animation.Player.Thrusters;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET.Components;
@@ -143,13 +144,13 @@ namespace QSB.Animation.Player
 
 		private void SuitUp()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerSuited);
+			new ChangeAnimTypeMessage(PlayerId, AnimationType.PlayerSuited).Send();
 			SetAnimationType(AnimationType.PlayerSuited);
 		}
 
 		private void SuitDown()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerUnsuited);
+			new ChangeAnimTypeMessage(PlayerId, AnimationType.PlayerUnsuited).Send();
 			SetAnimationType(AnimationType.PlayerUnsuited);
 		}
 
@@ -206,12 +207,12 @@ namespace QSB.Animation.Player
 					{
 						_unsuitedGraphics?.SetActive(false);
 					}
-					
+
 					if (_suitedGraphics != null)
 					{
 						_suitedGraphics?.SetActive(true);
 					}
-					
+
 					break;
 
 				case AnimationType.PlayerUnsuited:
@@ -273,7 +274,7 @@ namespace QSB.Animation.Player
 				{
 					VisibleAnimator.SetTrigger("Playing");
 				}
-				
+
 				if (InvisibleAnimator != null)
 				{
 					InvisibleAnimator.SetTrigger("Playing");
