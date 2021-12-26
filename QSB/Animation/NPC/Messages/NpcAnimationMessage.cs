@@ -4,9 +4,9 @@ using QSB.WorldSync;
 
 namespace QSB.Animation.NPC.Messages
 {
-	internal class NpcAnimationMessage : QSBEnumWorldObjectMessage<INpcAnimController, AnimationEvent>
+	internal class NpcAnimationMessage : QSBBoolWorldObjectMessage<INpcAnimController>
 	{
-		public NpcAnimationMessage(AnimationEvent animationEvent) => Value = animationEvent;
+		public NpcAnimationMessage(bool start) => Value = start;
 
 		public NpcAnimationMessage() { }
 
@@ -14,14 +14,13 @@ namespace QSB.Animation.NPC.Messages
 
 		public override void OnReceiveRemote()
 		{
-			switch (Value)
+			if (Value)
 			{
-				case AnimationEvent.StartConversation:
-					WorldObject.StartConversation();
-					break;
-				case AnimationEvent.EndConversation:
-					WorldObject.EndConversation();
-					break;
+				WorldObject.StartConversation();
+			}
+			else
+			{
+				WorldObject.EndConversation();
 			}
 		}
 	}

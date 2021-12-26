@@ -155,7 +155,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			ownerOfThis.SendMessage(new NpcAnimationMessage(AnimationEvent.StartConversation));
+			ownerOfThis.SendMessage(new NpcAnimationMessage(true));
 			return true;
 		}
 
@@ -170,7 +170,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			ownerOfThis.SendMessage(new NpcAnimationMessage(AnimationEvent.EndConversation));
+			ownerOfThis.SendMessage(new NpcAnimationMessage(false));
 			return true;
 		}
 
