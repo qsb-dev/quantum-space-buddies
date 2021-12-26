@@ -27,9 +27,6 @@
 
 		// Custom event names -- change if you want! These can be anything, as long as both
 		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
-		public const string QSBSocketStateChange = nameof(QSBSocketStateChange);
-		public const string QSBMultiStateChange = nameof(QSBMultiStateChange);
-		public const string QSBQuantumShuffle = nameof(QSBQuantumShuffle);
 		public const string QSBDropItem = nameof(QSBDropItem);
 		public const string QSBSocketItem = nameof(QSBSocketItem);
 		public const string QSBMoveToCarry = nameof(QSBMoveToCarry);

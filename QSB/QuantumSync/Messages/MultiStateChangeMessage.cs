@@ -1,11 +1,24 @@
-﻿using QSB.WorldSync.Events;
+﻿using OWML.Common;
+using QSB.Messaging;
+using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Messages
 {
-	public class MultiStateChangeMessage : WorldObjectMessage
+	internal class MultiStateChangeMessage : QSBWorldObjectMessage<QSBMultiStateQuantumObject>
 	{
-		public int StateIndex { get; set; }
+		private int StateIndex;
+
+		public MultiStateChangeMessage(int stateIndex) => StateIndex = stateIndex;
+
+		public MultiStateChangeMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(StateIndex);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -13,10 +26,25 @@ namespace QSB.QuantumSync.Messages
 			StateIndex = reader.ReadInt32();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void OnReceiveLocal()
 		{
-			base.Serialize(writer);
-			writer.Write(StateIndex);
+			if (!QSBCore.ShowQuantumDebugBoxes)
+			{
+				return;
+			}
+
+			WorldObject.DebugBoxText.text = StateIndex.ToString();
+		}
+
+		public override void OnReceiveRemote()
+		{
+			if (WorldObject.ControllingPlayer != From)
+			{
+				DebugLog.ToConsole($"Error - Got MultiStateChangeEvent for {WorldObject.Name} from {From}, but it's currently controlled by {WorldObject.ControllingPlayer}!", MessageType.Error);
+				return;
+			}
+
+			WorldObject.ChangeState(StateIndex);
 		}
 	}
 }

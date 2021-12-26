@@ -1,19 +1,18 @@
-﻿using QSB.WorldSync.Events;
+﻿using QSB.Messaging;
+using QSB.QuantumSync.WorldObjects;
 using QuantumUNET.Transport;
 using System;
 using System.Linq;
 
 namespace QSB.QuantumSync.Messages
 {
-	public class QuantumShuffleMessage : WorldObjectMessage
+	internal class QuantumShuffleMessage : QSBWorldObjectMessage<QSBQuantumShuffleObject>
 	{
-		public int[] IndexArray { get; set; }
+		private int[] IndexArray;
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			IndexArray = Array.ConvertAll(reader.ReadBytesAndSize(), Convert.ToInt32);
-		}
+		public QuantumShuffleMessage(int[] indexArray) => IndexArray = indexArray;
+
+		public QuantumShuffleMessage() { }
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -21,5 +20,13 @@ namespace QSB.QuantumSync.Messages
 			var temp = IndexArray.Select(x => (byte)x).ToArray();
 			writer.WriteBytesAndSize(temp, temp.Length);
 		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			IndexArray = Array.ConvertAll(reader.ReadBytesAndSize(), Convert.ToInt32);
+		}
+
+		public override void OnReceiveRemote() => WorldObject.ShuffleObjects(IndexArray);
 	}
 }

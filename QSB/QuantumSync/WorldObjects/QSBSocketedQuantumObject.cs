@@ -1,9 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Player;
-using QSB.QuantumSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,19 +29,19 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public void MoveToSocket(SocketStateChangeMessage message)
+		public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
 		{
-			var qsbSocket = QSBWorldSync.GetWorldFromId<QSBQuantumSocket>(message.SocketId);
+			var qsbSocket = QSBWorldSync.GetWorldFromId<QSBQuantumSocket>(socketId);
 			if (qsbSocket == null)
 			{
-				DebugLog.ToConsole($"Couldn't find socket id {message.SocketId}", MessageType.Error);
+				DebugLog.ToConsole($"Couldn't find socket id {socketId}", MessageType.Error);
 				return;
 			}
 
 			var socket = qsbSocket.AttachedObject;
 			if (socket == null)
 			{
-				DebugLog.ToConsole($"QSBSocket id {message.SocketId} has no attached socket.", MessageType.Error);
+				DebugLog.ToConsole($"QSBSocket id {socketId} has no attached socket.", MessageType.Error);
 				return;
 			}
 
@@ -51,7 +49,7 @@ namespace QSB.QuantumSync.WorldObjects
 			var component = Locator.GetPlayerTransform().GetComponent<OWRigidbody>();
 			var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), AttachedObject.transform);
 
-			AttachedObject.GetType().GetMethod("MoveToSocket", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(AttachedObject, new object[] { socket });
+			AttachedObject.MoveToSocket(socket);
 
 			if (wasEntangled)
 			{
@@ -60,11 +58,11 @@ namespace QSB.QuantumSync.WorldObjects
 
 			if (QuantumManager.Shrine != AttachedObject)
 			{
-				AttachedObject.transform.localRotation = message.LocalRotation;
+				AttachedObject.transform.localRotation = localRotation;
 			}
 			else
 			{
-				var playerToShrine = QSBPlayerManager.GetPlayer(message.FromId).Body.transform.position - AttachedObject.transform.position;
+				var playerToShrine = QSBPlayerManager.GetPlayer(playerId).Body.transform.position - AttachedObject.transform.position;
 				var projectOnPlace = Vector3.ProjectOnPlane(playerToShrine, AttachedObject.transform.up);
 				var angle = OWMath.Angle(AttachedObject.transform.forward, projectOnPlace, AttachedObject.transform.up);
 				angle = OWMath.RoundToNearestMultiple(angle, 120f);

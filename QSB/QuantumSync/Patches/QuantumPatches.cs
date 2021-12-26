@@ -5,6 +5,7 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
+using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -165,11 +166,9 @@ namespace QSB.QuantumSync.Patches
 				return;
 			}
 
-			QSBEventManager.FireEvent(
-					EventNames.QSBSocketStateChange,
-					objectWorldObject.ObjectId,
-					socketWorldObject.ObjectId,
-					__instance.transform.localRotation);
+			objectWorldObject.SendMessage(new SocketStateChangeMessage(
+				socketWorldObject.ObjectId,
+				__instance.transform.localRotation));
 		}
 
 		[HarmonyPrefix]
@@ -205,10 +204,7 @@ namespace QSB.QuantumSync.Patches
 
 			if (WorldObjectManager.AllObjectsReady)
 			{
-				QSBEventManager.FireEvent(
-					EventNames.QSBQuantumShuffle,
-					shuffleWorldObject.ObjectId,
-					__instance._indexList.ToArray());
+				shuffleWorldObject.SendMessage(new QuantumShuffleMessage(__instance._indexList.ToArray()));
 				__result = true;
 			}
 
@@ -299,10 +295,7 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			var stateIndex = owner.QuantumStates.IndexOf(stateObject);
-			QSBEventManager.FireEvent(
-					EventNames.QSBMultiStateChange,
-					owner.ObjectId,
-					stateIndex);
+			owner.SendMessage(new MultiStateChangeMessage(stateIndex));
 		}
 
 		[HarmonyPrefix]
@@ -422,7 +415,7 @@ namespace QSB.QuantumSync.Patches
 						__instance._isPlayerInside = true;
 						__instance.SetSurfaceState(__instance._stateIndex);
 						Locator.GetShipLogManager().RevealFact(__instance._revealFactID, true, true);
-						QSBEventManager.FireEvent(EventNames.PlayerEnterQuantumMoon);
+						GlobalMessenger.FireEvent(EventNames.PlayerEnterQuantumMoon);
 					}
 					else
 					{
@@ -444,7 +437,7 @@ namespace QSB.QuantumSync.Patches
 						}
 
 						__instance.SetSurfaceState(-1);
-						QSBEventManager.FireEvent(EventNames.PlayerExitQuantumMoon);
+						GlobalMessenger.FireEvent(EventNames.PlayerExitQuantumMoon);
 					}
 					else
 					{

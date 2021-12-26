@@ -1,13 +1,31 @@
-﻿using QSB.WorldSync.Events;
+﻿using OWML.Common;
+using QSB.Messaging;
+using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Messages
 {
-	public class SocketStateChangeMessage : WorldObjectMessage
+	internal class SocketStateChangeMessage : QSBWorldObjectMessage<QSBSocketedQuantumObject>
 	{
-		public int SocketId { get; set; }
-		public Quaternion LocalRotation { get; set; }
+		private int SocketId;
+		private Quaternion LocalRotation;
+
+		public SocketStateChangeMessage(int socketId, Quaternion localRotation)
+		{
+			SocketId = socketId;
+			LocalRotation = localRotation;
+		}
+
+		public SocketStateChangeMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(SocketId);
+			writer.Write(LocalRotation);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -16,11 +34,15 @@ namespace QSB.QuantumSync.Messages
 			LocalRotation = reader.ReadQuaternion();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void OnReceiveRemote()
 		{
-			base.Serialize(writer);
-			writer.Write(SocketId);
-			writer.Write(LocalRotation);
+			if (WorldObject.ControllingPlayer != From)
+			{
+				DebugLog.ToConsole($"Error - Got SocketStateChangeEvent for {WorldObject.Name} from {From}, but it's currently controlled by {WorldObject.ControllingPlayer}!", MessageType.Error);
+				return;
+			}
+
+			WorldObject.MoveToSocket(From, SocketId, LocalRotation);
 		}
 	}
 }
