@@ -6,7 +6,7 @@ using QSB.Player;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Animation.Patches
+namespace QSB.Animation.Player.Patches
 {
 	[HarmonyPatch]
 	internal class PlayerAnimationPatches : QSBPatch
