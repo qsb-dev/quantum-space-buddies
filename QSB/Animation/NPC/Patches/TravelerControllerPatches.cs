@@ -34,20 +34,6 @@ namespace QSB.Animation.NPC.Patches
 
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(GabbroTravelerController), nameof(GabbroTravelerController.StartConversation))]
-		public static bool StartConversation(GabbroTravelerController __instance)
-		{
-			if (__instance._animator.enabled)
-			{
-				__instance._animator.CrossFadeInFixedTime("Gabbro_Talking", 1.8f);
-				__instance._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Talking", 1.8f);
-			}
-			Locator.GetTravelerAudioManager().StopTravelerAudio(__instance);
-
-			return false;
-		}
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(TravelerController), nameof(TravelerController.StartConversation))]
 		public static bool StartConversation(TravelerController __instance)
 		{
@@ -57,6 +43,20 @@ namespace QSB.Animation.NPC.Patches
 					? __instance._animator.GetNextAnimatorStateInfo(0).fullPathHash
 					: __instance._animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 				__instance._animator.SetTrigger("Talking");
+			}
+			Locator.GetTravelerAudioManager().StopTravelerAudio(__instance);
+
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(GabbroTravelerController), nameof(GabbroTravelerController.StartConversation))]
+		public static bool StartConversation(GabbroTravelerController __instance)
+		{
+			if (__instance._animator.enabled)
+			{
+				__instance._animator.CrossFadeInFixedTime("Gabbro_Talking", 1.8f);
+				__instance._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Talking", 1.8f);
 			}
 			Locator.GetTravelerAudioManager().StopTravelerAudio(__instance);
 
@@ -96,8 +96,8 @@ namespace QSB.Animation.NPC.Patches
 			if (DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_REMINDER") || DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION"))
 			{
 				var conditionState = DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION");
-				DialogueConditionManager.SharedInstance.SetConditionState("MAP_PROMPT_REMINDER", false);
-				DialogueConditionManager.SharedInstance.SetConditionState("MAP_PROMPT_ATTENTION", false);
+				DialogueConditionManager.SharedInstance.SetConditionState("MAP_PROMPT_REMINDER");
+				DialogueConditionManager.SharedInstance.SetConditionState("MAP_PROMPT_ATTENTION");
 				GlobalMessenger<bool>.FireEvent("TriggerMapPromptReminder", conditionState);
 			}
 
