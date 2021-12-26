@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 
@@ -9,8 +8,8 @@ namespace QSB.Tools.TranslatorTool.Messages
 	{
 		static PlayerTranslatorMessage()
 		{
-			GlobalMessenger.AddListener(EventNames.EquipTranslator, () => Handle(true));
-			GlobalMessenger.AddListener(EventNames.UnequipTranslator, () => Handle(false));
+			GlobalMessenger.AddListener(OWEvents.EquipTranslator, () => Handle(true));
+			GlobalMessenger.AddListener(OWEvents.UnequipTranslator, () => Handle(false));
 		}
 
 		private static void Handle(bool equipped)

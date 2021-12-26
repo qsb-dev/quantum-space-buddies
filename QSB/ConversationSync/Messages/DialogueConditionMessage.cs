@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
@@ -8,7 +7,7 @@ namespace QSB.ConversationSync.Messages
 {
 	public class DialogueConditionMessage : QSBMessage
 	{
-		static DialogueConditionMessage() => GlobalMessenger<string, bool>.AddListener(EventNames.DialogueConditionChanged, Handler);
+		static DialogueConditionMessage() => GlobalMessenger<string, bool>.AddListener(OWEvents.DialogueConditionChanged, Handler);
 
 		private static void Handler(string name, bool state)
 		{

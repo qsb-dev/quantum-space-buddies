@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.CampfireSync.WorldObjects;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
@@ -13,8 +12,8 @@ namespace QSB.RoastingSync.Messages
 	{
 		static EnterExitRoastingMessage()
 		{
-			GlobalMessenger<Campfire>.AddListener(EventNames.EnterRoastingMode, campfire => Handler(campfire, true));
-			GlobalMessenger.AddListener(EventNames.ExitRoastingMode, () => Handler(null, false));
+			GlobalMessenger<Campfire>.AddListener(OWEvents.EnterRoastingMode, campfire => Handler(campfire, true));
+			GlobalMessenger.AddListener(OWEvents.ExitRoastingMode, () => Handler(null, false));
 		}
 
 		private static void Handler(Campfire campfire, bool roasting)

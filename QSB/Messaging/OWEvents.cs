@@ -1,8 +1,13 @@
-﻿namespace QSB.Events
+﻿namespace QSB.Messaging
 {
-	public static class EventNames
+	/// <summary>
+	/// global messenger events built into outer wilds
+	/// that are also listened to with network messages.
+	/// <para/>
+	/// don't change unless they change in-game!
+	/// </summary>
+	public static class OWEvents
 	{
-		// Built into Outer Wilds -- don't change unless they change in-game!
 		public const string TurnOnFlashlight = nameof(TurnOnFlashlight);
 		public const string TurnOffFlashlight = nameof(TurnOffFlashlight);
 		public const string ProbeLauncherEquipped = nameof(ProbeLauncherEquipped);

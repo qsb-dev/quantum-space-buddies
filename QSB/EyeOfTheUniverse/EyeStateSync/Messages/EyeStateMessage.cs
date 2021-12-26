@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
@@ -8,7 +7,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 {
 	internal class EyeStateMessage : QSBEnumMessage<EyeState>
 	{
-		static EyeStateMessage() => GlobalMessenger<EyeState>.AddListener(EventNames.EyeStateChanged, Handler);
+		static EyeStateMessage() => GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, Handler);
 
 		private static void Handler(EyeState state)
 		{

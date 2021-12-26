@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
@@ -15,10 +14,10 @@ namespace QSB.Player.Messages
 	{
 		static EnterLeaveMessage()
 		{
-			GlobalMessenger.AddListener(EventNames.PlayerEnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
-			GlobalMessenger.AddListener(EventNames.PlayerExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
-			GlobalMessenger.AddListener(EventNames.EnterShip, () => Handler(EnterLeaveType.EnterShip));
-			GlobalMessenger.AddListener(EventNames.ExitShip, () => Handler(EnterLeaveType.ExitShip));
+			GlobalMessenger.AddListener(OWEvents.PlayerEnterQuantumMoon, () => Handler(EnterLeaveType.EnterMoon));
+			GlobalMessenger.AddListener(OWEvents.PlayerExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
+			GlobalMessenger.AddListener(OWEvents.EnterShip, () => Handler(EnterLeaveType.EnterShip));
+			GlobalMessenger.AddListener(OWEvents.ExitShip, () => Handler(EnterLeaveType.ExitShip));
 		}
 
 		private static void Handler(EnterLeaveType type, int objectId = -1)

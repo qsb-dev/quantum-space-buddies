@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -415,7 +414,7 @@ namespace QSB.QuantumSync.Patches
 						__instance._isPlayerInside = true;
 						__instance.SetSurfaceState(__instance._stateIndex);
 						Locator.GetShipLogManager().RevealFact(__instance._revealFactID, true, true);
-						GlobalMessenger.FireEvent(EventNames.PlayerEnterQuantumMoon);
+						GlobalMessenger.FireEvent(OWEvents.PlayerEnterQuantumMoon);
 					}
 					else
 					{
@@ -437,7 +436,7 @@ namespace QSB.QuantumSync.Patches
 						}
 
 						__instance.SetSurfaceState(-1);
-						GlobalMessenger.FireEvent(EventNames.PlayerExitQuantumMoon);
+						GlobalMessenger.FireEvent(OWEvents.PlayerExitQuantumMoon);
 					}
 					else
 					{

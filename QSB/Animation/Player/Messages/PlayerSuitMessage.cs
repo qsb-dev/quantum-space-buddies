@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 
@@ -9,8 +8,8 @@ namespace QSB.Animation.Player.Messages
 	{
 		static PlayerSuitMessage()
 		{
-			GlobalMessenger.AddListener(EventNames.SuitUp, () => Handle(true));
-			GlobalMessenger.AddListener(EventNames.RemoveSuit, () => Handle(false));
+			GlobalMessenger.AddListener(OWEvents.SuitUp, () => Handle(true));
+			GlobalMessenger.AddListener(OWEvents.RemoveSuit, () => Handle(false));
 		}
 
 		private static void Handle(bool on)

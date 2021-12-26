@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -11,8 +10,8 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 	{
 		static EquipProbeLauncherMessage()
 		{
-			GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherEquipped, launcher => Handle(launcher, true));
-			GlobalMessenger<ProbeLauncher>.AddListener(EventNames.ProbeLauncherUnequipped, launcher => Handle(launcher, false));
+			GlobalMessenger<ProbeLauncher>.AddListener(OWEvents.ProbeLauncherEquipped, launcher => Handle(launcher, true));
+			GlobalMessenger<ProbeLauncher>.AddListener(OWEvents.ProbeLauncherUnequipped, launcher => Handle(launcher, false));
 		}
 
 		private static bool _nonPlayerLauncherEquipped;

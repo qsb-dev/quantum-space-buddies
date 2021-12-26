@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.LogSync;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;

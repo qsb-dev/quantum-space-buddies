@@ -1,5 +1,4 @@
 ﻿using QSB.AuthoritySync;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -13,8 +12,8 @@ namespace QSB.ShipSync.Messages
 	{
 		static FlyShipMessage()
 		{
-			GlobalMessenger<OWRigidbody>.AddListener(EventNames.EnterFlightConsole, _ => Handler(true));
-			GlobalMessenger.AddListener(EventNames.ExitFlightConsole, () => Handler(false));
+			GlobalMessenger<OWRigidbody>.AddListener(OWEvents.EnterFlightConsole, _ => Handler(true));
+			GlobalMessenger.AddListener(OWEvents.ExitFlightConsole, () => Handler(false));
 		}
 
 		private static void Handler(bool flying)

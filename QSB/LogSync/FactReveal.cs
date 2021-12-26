@@ -1,4 +1,4 @@
-﻿namespace QSB.WorldSync
+﻿namespace QSB.LogSync
 {
 	public struct FactReveal
 	{

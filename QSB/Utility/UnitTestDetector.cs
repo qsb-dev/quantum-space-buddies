@@ -5,11 +5,11 @@ namespace QSB.Utility
 {
 	public static class UnitTestDetector
 	{
-		public static bool IsInUnitTest { get; private set; }
+		public static readonly bool IsInUnitTest;
 
 		static UnitTestDetector()
 		{
-			var testAssemblyName = "Microsoft.VisualStudio.TestPlatform.TestFramework";
+			const string testAssemblyName = "Microsoft.VisualStudio.TestPlatform.TestFramework";
 			IsInUnitTest = AppDomain.CurrentDomain.GetAssemblies()
 				.Any(a => a.FullName.StartsWith(testAssemblyName));
 		}

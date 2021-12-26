@@ -2,7 +2,6 @@
 using OWML.Utils;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
-using QSB.Events;
 using QSB.Inputs;
 using QSB.Messaging;
 using QSB.Player;
@@ -68,7 +67,7 @@ namespace QSB.TimeSync
 
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+			GlobalMessenger.AddListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
 		public float GetTimeDifference()
@@ -91,7 +90,7 @@ namespace QSB.TimeSync
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
+			GlobalMessenger.RemoveListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)

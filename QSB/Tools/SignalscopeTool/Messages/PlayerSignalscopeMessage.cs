@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 
@@ -9,8 +8,8 @@ namespace QSB.Tools.SignalscopeTool.Messages
 	{
 		static PlayerSignalscopeMessage()
 		{
-			GlobalMessenger<Signalscope>.AddListener(EventNames.EquipSignalscope, _ => Handle(true));
-			GlobalMessenger.AddListener(EventNames.UnequipSignalscope, () => Handle(false));
+			GlobalMessenger<Signalscope>.AddListener(OWEvents.EquipSignalscope, _ => Handle(true));
+			GlobalMessenger.AddListener(OWEvents.UnequipSignalscope, () => Handle(false));
 		}
 
 		private static void Handle(bool equipped)

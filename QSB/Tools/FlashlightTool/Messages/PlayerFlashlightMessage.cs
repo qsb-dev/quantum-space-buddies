@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 
@@ -9,8 +8,8 @@ namespace QSB.Tools.FlashlightTool.Messages
 	{
 		static PlayerFlashlightMessage()
 		{
-			GlobalMessenger.AddListener(EventNames.TurnOnFlashlight, () => Handle(true));
-			GlobalMessenger.AddListener(EventNames.TurnOffFlashlight, () => Handle(false));
+			GlobalMessenger.AddListener(OWEvents.TurnOnFlashlight, () => Handle(true));
+			GlobalMessenger.AddListener(OWEvents.TurnOffFlashlight, () => Handle(false));
 		}
 
 		private static void Handle(bool on)
