@@ -1,4 +1,6 @@
-﻿using QSB.Messaging;
+﻿using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
+using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
@@ -6,31 +8,44 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Messages
 {
-	public class DropItemMessage : PlayerMessage
+	internal class DropItemMessage : QSBWorldObjectMessage<IQSBOWItem>
 	{
-		public int ObjectId { get; set; }
-		public Vector3 Position { get; set; }
-		public Vector3 Normal { get; set; }
-		public Sector Sector { get; set; }
+		private Vector3 Position;
+		private Vector3 Normal;
+		private int SectorId;
 
-		public override void Deserialize(QNetworkReader reader)
+		public DropItemMessage(Vector3 position, Vector3 normal, Sector sector)
 		{
-			base.Deserialize(reader);
-			ObjectId = reader.ReadInt32();
-			Position = reader.ReadVector3();
-			Normal = reader.ReadVector3();
-			var sectorId = reader.ReadInt32();
-			Sector = QSBWorldSync.GetWorldFromId<QSBSector>(sectorId).AttachedObject;
+			Position = position;
+			Normal = normal;
+			SectorId = QSBWorldSync.GetWorldFromUnity<QSBSector>(sector).ObjectId;
 		}
+
+		public DropItemMessage() { }
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(ObjectId);
 			writer.Write(Position);
 			writer.Write(Normal);
-			var qsbSector = QSBWorldSync.GetWorldFromUnity<QSBSector>(Sector);
-			writer.Write(qsbSector.ObjectId);
+			writer.Write(SectorId);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			Position = reader.ReadVector3();
+			Normal = reader.ReadVector3();
+			SectorId = reader.ReadInt32();
+		}
+
+		public override void OnReceiveRemote()
+		{
+			var sector = QSBWorldSync.GetWorldFromId<QSBSector>(SectorId).AttachedObject;
+			WorldObject.DropItem(Position, Normal, sector);
+
+			var player = QSBPlayerManager.GetPlayer(From);
+			player.HeldItem = WorldObject;
 		}
 	}
 }

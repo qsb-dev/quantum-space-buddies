@@ -1,6 +1,6 @@
 ﻿namespace QSB.ItemSync
 {
-	public enum SocketEventType
+	public enum SocketMessageType
 	{
 		StartUnsocket,
 		CompleteUnsocket,
