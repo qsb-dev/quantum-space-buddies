@@ -63,10 +63,10 @@ namespace QSB.ConversationSync
 		}
 
 		public void CloseBoxPlayer() =>
-			new ConversationMessage(ConversationType.ClosePlayer, (int)QSBPlayerManager.LocalPlayerId, "").Send();
+			new ConversationMessage(ConversationType.ClosePlayer, (int)QSBPlayerManager.LocalPlayerId).Send();
 
 		public void CloseBoxCharacter(int id) =>
-			new ConversationMessage(ConversationType.CloseCharacter, id, "").Send();
+			new ConversationMessage(ConversationType.CloseCharacter, id).Send();
 
 		public void SendConvState(int charId, bool state)
 		{

@@ -8,14 +8,23 @@ namespace QSB.ConversationSync.Messages
 {
 	public class ConversationMessage : QSBEnumMessage<ConversationType>
 	{
+		/// <summary>
+		/// character (tree) id or player id
+		/// </summary>
 		private int Id;
+		/// <summary>
+		/// used only for character and player type
+		/// </summary>
 		private string Message;
 
-		public ConversationMessage(ConversationType type, int id, string message)
+		public ConversationMessage(ConversationType type, int id, string message = default)
 		{
 			Value = type;
 			Id = id;
-			Message = message;
+			if (Value is ConversationType.Character or ConversationType.Player)
+			{
+				Message = message;
+			}
 		}
 
 		public ConversationMessage() { }
@@ -24,14 +33,20 @@ namespace QSB.ConversationSync.Messages
 		{
 			base.Serialize(writer);
 			writer.Write(Id);
-			writer.Write(Message);
+			if (Value is ConversationType.Character or ConversationType.Player)
+			{
+				writer.Write(Message);
+			}
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			Id = reader.ReadInt32();
-			Message = reader.ReadString();
+			if (Value is ConversationType.Character or ConversationType.Player)
+			{
+				Message = reader.ReadString();
+			}
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
