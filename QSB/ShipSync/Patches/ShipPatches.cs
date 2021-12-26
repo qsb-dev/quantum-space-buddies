@@ -130,13 +130,15 @@ namespace QSB.ShipSync.Patches
 				return false;
 			}
 
+			var qsbShipComponent = QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(__instance);
 			if (damaged)
 			{
 				__instance._damaged = true;
 				__instance._repairFraction = 0f;
 				__instance.GetType().GetAnyMethod("OnComponentDamaged").Invoke(__instance, null);
 				__instance.RaiseEvent("OnDamaged", __instance);
-				QSBEventManager.FireEvent(EventNames.QSBComponentDamaged, __instance);
+				qsbShipComponent
+					.SendMessage(new ComponentDamagedMessage());
 			}
 			else
 			{
@@ -144,7 +146,7 @@ namespace QSB.ShipSync.Patches
 				__instance._repairFraction = 1f;
 				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
 				__instance.RaiseEvent("OnRepaired", __instance);
-				QSBWorldSync.GetWorldFromUnity<QSBShipComponent>(__instance)
+				qsbShipComponent
 					.SendMessage(new ComponentRepairedMessage());
 			}
 
@@ -177,7 +179,9 @@ namespace QSB.ShipSync.Patches
 					{
 						____damaged = true;
 						__instance.RaiseEvent("OnDamaged", __instance);
-						QSBEventManager.FireEvent(EventNames.QSBHullDamaged, __instance);
+
+						QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance)
+							.SendMessage(new HullDamagedMessage());
 					}
 
 					if (____damageEffect != null)
