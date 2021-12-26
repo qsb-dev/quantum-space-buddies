@@ -59,10 +59,6 @@ namespace QSB.ShipSync.Patches
 			return false;
 		}
 
-		[HarmonyReversePatch]
-		[HarmonyPatch(typeof(SingleInteractionVolume), nameof(SingleInteractionVolume.UpdateInteractVolume))]
-		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance) => throw new NotImplementedException();
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(InteractZone), nameof(InteractZone.UpdateInteractVolume))]
 		public static bool InteractZone_UpdateInteractVolume(InteractZone __instance)
@@ -90,33 +86,25 @@ namespace QSB.ShipSync.Patches
 				? angle <= 80
 				: angle >= 280;
 
-			SingleInteractionVolume_UpdateInteractVolume_Stub(__instance);
+			__instance.InvokeBase(nameof(InteractZone.UpdateInteractVolume));
 
 			return false;
 		}
-
-		[HarmonyReversePatch]
-		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnEnterShip))]
-		public static void ShipComponent_OnEnterShip_Stub(object instance) => throw new NotImplementedException();
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnEnterShip))]
 		public static bool ShipElectricalComponent_OnEnterShip(ShipElectricalComponent __instance)
 		{
-			ShipComponent_OnEnterShip_Stub(__instance);
+			__instance.InvokeBase(nameof(ShipElectricalComponent.OnEnterShip));
 
 			return false;
 		}
-
-		[HarmonyReversePatch]
-		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnExitShip))]
-		public static void ShipComponent_OnExitShip_Stub(object instance) => throw new NotImplementedException();
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnExitShip))]
 		public static bool ShipElectricalComponent_OnExitShip(ShipElectricalComponent __instance)
 		{
-			ShipComponent_OnExitShip_Stub(__instance);
+			__instance.InvokeBase(nameof(ShipElectricalComponent.OnExitShip));
 
 			return false;
 		}

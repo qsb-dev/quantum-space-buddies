@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.Utility
 {
@@ -32,7 +33,7 @@ namespace QSB.Utility
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
 			original.SetActive(false);
-			var copy = UnityEngine.Object.Instantiate(original);
+			var copy = Object.Instantiate(original);
 			original.SetActive(true);
 			return copy;
 		}
@@ -127,22 +128,47 @@ namespace QSB.Utility
 			return true;
 		}
 
-		private const BindingFlags Flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
-
 		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
 			if (typeof(T)
-				.GetField(eventName, Flags)?
+				.GetField(eventName, BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| BindingFlags.NonPublic
+					| BindingFlags.DeclaredOnly)?
 				.GetValue(instance) is not MulticastDelegate multiDelegate)
 			{
 				return;
 			}
 
 			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
+		}
+
+		/// <summary>
+		/// get base.name in obj and invoke it with args
+		/// </summary>
+		public static void InvokeBase(this object obj, string name, params object[] args)
+			=> InvokeBase<object>(obj, name, args);
+
+		/// <summary>
+		/// get base.name in obj and invoke it with args
+		/// </summary>
+		public static TResult InvokeBase<TResult>(this object obj, string name, params object[] args)
+		{
+			const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+			var argTypes = args.Select(x => x.GetType()).ToArray();
+
+			var baseType = obj.GetType();
+			var baseMethod = default(MethodInfo);
+			while (baseMethod == null)
+			{
+				baseType = baseType.BaseType;
+				baseMethod = baseType!.GetMethod(name, flags, null, argTypes, null);
+			}
+
+			var ptr = baseMethod.MethodHandle.GetFunctionPointer();
+			var dl = (Delegate)Activator.CreateInstance(typeof(Delegate), obj, ptr);
+			return (TResult)dl.DynamicInvoke(args);
 		}
 
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
