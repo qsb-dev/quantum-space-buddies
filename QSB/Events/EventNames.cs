@@ -41,8 +41,6 @@
 		public const string QSBNpcAnimEvent = nameof(QSBNpcAnimEvent);
 		public const string QSBHatchState = nameof(QSBHatchState);
 		public const string QSBEnableFunnel = nameof(QSBEnableFunnel);
-		public const string QSBHullImpact = nameof(QSBHullImpact);
-		public const string QSBHullChangeIntegrity = nameof(QSBHullChangeIntegrity);
 		public const string QSBProbeEvent = nameof(QSBProbeEvent);
 		public const string QSBProbeStartRetrieve = nameof(QSBProbeStartRetrieve);
 		public const string QSBRetrieveProbe = nameof(QSBRetrieveProbe);

@@ -1,22 +1,14 @@
-﻿using QSB.WorldSync.Events;
-using QuantumUNET.Transport;
+﻿using QSB.Messaging;
+using QSB.ShipSync.WorldObjects;
 
 namespace QSB.ShipSync.Messages.Hull
 {
-	public class HullChangeIntegrityMessage : WorldObjectMessage
+	internal class HullChangeIntegrityMessage : QSBFloatWorldObjectMessage<QSBShipHull>
 	{
-		public float Integrity { get; set; }
+		public HullChangeIntegrityMessage(float integrity) => Value = integrity;
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Integrity = reader.ReadSingle();
-		}
+		public HullChangeIntegrityMessage() { }
 
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Integrity);
-		}
+		public override void OnReceiveRemote() => WorldObject.ChangeIntegrity(Value);
 	}
 }

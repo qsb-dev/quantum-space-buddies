@@ -175,12 +175,13 @@ namespace QSB.ShipSync.Patches
 					}
 
 					____integrity = Mathf.Max(____integrity - damage, 0f);
+					var qsbShipHull = QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance);
 					if (!____damaged)
 					{
 						____damaged = true;
 						__instance.RaiseEvent("OnDamaged", __instance);
 
-						QSBWorldSync.GetWorldFromUnity<QSBShipHull>(__instance)
+						qsbShipHull
 							.SendMessage(new HullDamagedMessage());
 					}
 
@@ -189,7 +190,8 @@ namespace QSB.ShipSync.Patches
 						____damageEffect.SetEffectBlend(1f - ____integrity);
 					}
 
-					QSBEventManager.FireEvent(EventNames.QSBHullChangeIntegrity, __instance, ____integrity);
+					qsbShipHull
+						.SendMessage(new HullChangeIntegrityMessage(____integrity));
 				}
 
 				foreach (var component in ____components)
@@ -204,7 +206,6 @@ namespace QSB.ShipSync.Patches
 				}
 
 				__instance.RaiseEvent("OnImpact", ____dominantImpact, damage);
-				QSBEventManager.FireEvent(EventNames.QSBHullImpact, __instance, ____dominantImpact, damage);
 
 				____dominantImpact = null;
 			}
