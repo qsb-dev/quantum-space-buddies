@@ -4,6 +4,5 @@
 	{
 		public string Id;
 		public bool SaveGame;
-		public bool ShowNotification;
 	}
 }

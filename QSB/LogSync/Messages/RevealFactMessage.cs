@@ -41,7 +41,7 @@ namespace QSB.LogSync.Messages
 		{
 			if (QSBCore.IsHost)
 			{
-				QSBWorldSync.AddFactReveal(FactId, SaveGame, ShowNotification);
+				QSBWorldSync.AddFactReveal(FactId, SaveGame);
 			}
 		}
 
@@ -49,7 +49,7 @@ namespace QSB.LogSync.Messages
 		{
 			if (QSBCore.IsHost)
 			{
-				QSBWorldSync.AddFactReveal(FactId, SaveGame, ShowNotification);
+				QSBWorldSync.AddFactReveal(FactId, SaveGame);
 			}
 
 			if (!WorldObjectManager.AllObjectsReady)

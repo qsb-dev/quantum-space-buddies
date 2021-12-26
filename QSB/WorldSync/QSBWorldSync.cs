@@ -144,7 +144,7 @@ namespace QSB.WorldSync
 			DialogueConditions[name] = state;
 		}
 
-		public static void AddFactReveal(string id, bool saveGame, bool showNotification)
+		public static void AddFactReveal(string id, bool saveGame)
 		{
 			if (!QSBCore.IsHost)
 			{
@@ -160,8 +160,7 @@ namespace QSB.WorldSync
 			ShipLogFacts.Add(new FactReveal
 			{
 				Id = id,
-				SaveGame = saveGame,
-				ShowNotification = showNotification
+				SaveGame = saveGame
 			});
 		}
 	}
