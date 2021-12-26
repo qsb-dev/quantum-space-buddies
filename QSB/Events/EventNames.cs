@@ -39,8 +39,6 @@
 		public const string QSBMarshmallowEvent = nameof(QSBMarshmallowEvent);
 		public const string QSBAnimTrigger = nameof(QSBAnimTrigger);
 		public const string QSBNpcAnimEvent = nameof(QSBNpcAnimEvent);
-		public const string QSBHatchState = nameof(QSBHatchState);
-		public const string QSBEnableFunnel = nameof(QSBEnableFunnel);
 		public const string QSBProbeEvent = nameof(QSBProbeEvent);
 		public const string QSBProbeStartRetrieve = nameof(QSBProbeStartRetrieve);
 		public const string QSBRetrieveProbe = nameof(QSBRetrieveProbe);

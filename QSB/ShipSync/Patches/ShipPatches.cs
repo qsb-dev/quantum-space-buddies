@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using OWML.Utils;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.ShipSync.Messages;
 using QSB.ShipSync.Messages.Component;
 using QSB.ShipSync.Messages.Hull;
 using QSB.ShipSync.TransformSync;
@@ -26,10 +26,10 @@ namespace QSB.ShipSync.Patches
 			if (!PlayerState.IsInsideShip())
 			{
 				ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
-				QSBEventManager.FireEvent(EventNames.QSBEnableFunnel);
+				new FunnelEnableMessage().Send();
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBHatchState, true);
+			new HatchMessage(true).Send();
 			return true;
 		}
 
@@ -39,7 +39,7 @@ namespace QSB.ShipSync.Patches
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
+				new HatchMessage(false).Send();
 			}
 
 			return true;
@@ -53,7 +53,7 @@ namespace QSB.ShipSync.Patches
 			{
 				ShipManager.Instance.HatchController.Invoke("CloseHatch");
 				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
-				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
+				new HatchMessage(false).Send();
 			}
 
 			return false;
