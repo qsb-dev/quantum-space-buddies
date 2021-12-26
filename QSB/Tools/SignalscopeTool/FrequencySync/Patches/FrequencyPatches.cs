@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.Tools.SignalscopeTool.FrequencySync.Messages;
 
 namespace QSB.Tools.SignalscopeTool.FrequencySync.Patches
 {
@@ -12,11 +13,11 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(AudioSignal), nameof(AudioSignal.IdentifyFrequency))]
 		public static void IdentifyFrequencyEvent(SignalFrequency ____frequency)
-			=> QSBEventManager.FireEvent(EventNames.QSBIdentifyFrequency, ____frequency);
+			=> new IdentifyFrequencyMessage(____frequency).Send();
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(AudioSignal), nameof(AudioSignal.IdentifySignal))]
 		public static void IdentifySignalEvent(SignalName ____name)
-			=> QSBEventManager.FireEvent(EventNames.QSBIdentifySignal, ____name);
+			=> new IdentifySignalMessage(____name).Send();
 	}
 }
