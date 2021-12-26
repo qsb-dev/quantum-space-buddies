@@ -4,7 +4,6 @@ using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
-using QSB.Events;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
 using QSB.OrbSync.Messages;
@@ -166,7 +165,6 @@ namespace QSB
 
 			OnClientConnected?.SafeInvoke();
 
-			QSBEventManager.Init();
 			QSBMessageManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
@@ -185,12 +183,12 @@ namespace QSB
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
-			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{
-				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
 					() => new RequestStateResyncMessage().Send());
 			}
 
@@ -204,7 +202,6 @@ namespace QSB
 			Destroy(GetComponent<RespawnOnDeath>());
 			Destroy(GetComponent<ServerStateManager>());
 			Destroy(GetComponent<ClientStateManager>());
-			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
@@ -271,7 +268,6 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
 			Destroy(GetComponent<RespawnOnDeath>());
-			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 

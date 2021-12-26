@@ -1,5 +1,4 @@
-﻿using QSB.Events;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
@@ -314,7 +313,7 @@ namespace QSB.Menus
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new RequestGameStateMessage().Send());
 		}
 
