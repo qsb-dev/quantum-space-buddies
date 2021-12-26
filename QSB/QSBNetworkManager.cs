@@ -205,7 +205,9 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
+			QSBWorldSync.DialogueConditions.Clear();
 			QSBWorldSync.OldDialogueTrees.Clear();
+			QSBWorldSync.ShipLogFacts.Clear();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
