@@ -9,16 +9,16 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Messages
 	{
 		protected int TextId;
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			TextId = reader.ReadInt32();
-		}
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(TextId);
+		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			TextId = reader.ReadInt32();
 		}
 	}
 

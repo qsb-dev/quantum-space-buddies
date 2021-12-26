@@ -5,11 +5,11 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages
 {
 	public class IdentifyFrequencyMessage : QSBEnumMessage<SignalFrequency>
 	{
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
-
 		public IdentifyFrequencyMessage(SignalFrequency frequency) => Value = frequency;
 
 		public IdentifyFrequencyMessage() { }
+
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

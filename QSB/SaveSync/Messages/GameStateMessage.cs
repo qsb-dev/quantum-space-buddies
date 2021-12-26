@@ -17,6 +17,28 @@ namespace QSB.SaveSync.Messages
 		private bool[] KnownFrequencies;
 		private readonly Dictionary<int, bool> KnownSignals = new();
 
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(WarpedToTheEye);
+			writer.Write(SecondsRemainingOnWarp);
+			writer.Write(LaunchCodesGiven);
+			writer.Write(LoopCount);
+
+			writer.Write(KnownFrequencies.Length);
+			foreach (var item in KnownFrequencies)
+			{
+				writer.Write(item);
+			}
+
+			writer.Write(KnownSignals.Count);
+			foreach (var (key, value) in KnownSignals)
+			{
+				writer.Write(key);
+				writer.Write(value);
+			}
+		}
+
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
@@ -41,28 +63,6 @@ namespace QSB.SaveSync.Messages
 				var key = reader.ReadInt32();
 				var value = reader.ReadBoolean();
 				KnownSignals.Add(key, value);
-			}
-		}
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(WarpedToTheEye);
-			writer.Write(SecondsRemainingOnWarp);
-			writer.Write(LaunchCodesGiven);
-			writer.Write(LoopCount);
-
-			writer.Write(KnownFrequencies.Length);
-			foreach (var item in KnownFrequencies)
-			{
-				writer.Write(item);
-			}
-
-			writer.Write(KnownSignals.Count);
-			foreach (var (key, value) in KnownSignals)
-			{
-				writer.Write(key);
-				writer.Write(value);
 			}
 		}
 
