@@ -11,7 +11,7 @@ namespace QSB.Messaging
 		/// </summary>
 		internal int ObjectId;
 		/// <summary>
-		/// set automatically when receiving
+		/// set automatically by ShouldReceive
 		/// </summary>
 		protected T WorldObject { get; private set; }
 
@@ -27,9 +27,6 @@ namespace QSB.Messaging
 			ObjectId = reader.ReadInt32();
 		}
 
-		/// <summary>
-		/// sets WorldObject using ObjectId
-		/// </summary>
 		public override bool ShouldReceive
 		{
 			get

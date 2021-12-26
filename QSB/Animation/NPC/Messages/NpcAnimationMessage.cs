@@ -1,6 +1,5 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.Messaging;
-using QSB.WorldSync;
 
 namespace QSB.Animation.NPC.Messages
 {
@@ -9,8 +8,6 @@ namespace QSB.Animation.NPC.Messages
 		public NpcAnimationMessage(bool start) => Value = start;
 
 		public NpcAnimationMessage() { }
-
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
