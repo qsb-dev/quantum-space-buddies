@@ -1,25 +1,28 @@
-﻿using QSB.Messaging;
-using QuantumUNET.Transport;
+﻿using QSB.Animation.NPC.WorldObjects;
+using QSB.Messaging;
+using QSB.WorldSync;
 
 namespace QSB.Animation.NPC.Messages
 {
-	internal class NpcAnimationMessage : PlayerMessage
+	internal class NpcAnimationMessage : QSBEnumWorldObjectMessage<INpcAnimController, AnimationEvent>
 	{
-		public AnimationEvent AnimationEvent { get; set; }
-		public int AnimControllerIndex { get; set; }
+		public NpcAnimationMessage(AnimationEvent animationEvent) => Value = animationEvent;
 
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			AnimationEvent = (AnimationEvent)reader.ReadInt32();
-			AnimControllerIndex = reader.ReadInt32();
-		}
+		public NpcAnimationMessage() { }
 
-		public override void Serialize(QNetworkWriter writer)
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+
+		public override void OnReceiveRemote()
 		{
-			base.Serialize(writer);
-			writer.Write((int)AnimationEvent);
-			writer.Write(AnimControllerIndex);
+			switch (Value)
+			{
+				case AnimationEvent.StartConversation:
+					WorldObject.StartConversation();
+					break;
+				case AnimationEvent.EndConversation:
+					WorldObject.EndConversation();
+					break;
+			}
 		}
 	}
 }

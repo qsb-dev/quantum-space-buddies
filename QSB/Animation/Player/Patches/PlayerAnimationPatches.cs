@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Animation.Player.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
@@ -77,12 +78,12 @@ namespace QSB.Animation.Patches
 				if (____justTookFallDamage)
 				{
 					____animator.SetTrigger("LandHard");
-					QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "LandHard");
+					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "LandHard").Send();
 				}
 				else
 				{
 					____animator.SetTrigger("Land");
-					QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "Land");
+					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Land").Send();
 				}
 			}
 
@@ -140,7 +141,7 @@ namespace QSB.Animation.Patches
 
 			__instance._animator.SetTrigger("Jump");
 			var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
-			QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "Jump");
+			new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Jump").Send();
 			return false;
 		}
 	}

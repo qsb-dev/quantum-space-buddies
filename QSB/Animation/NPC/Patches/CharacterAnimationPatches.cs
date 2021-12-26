@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using OWML.Common;
+using QSB.Animation.NPC.Messages;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -155,8 +155,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = ownerOfThis.ObjectId;
-			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.StartConversation, id);
+			ownerOfThis.SendMessage(new NpcAnimationMessage(AnimationEvent.StartConversation));
 			return true;
 		}
 
@@ -171,8 +170,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = ownerOfThis.ObjectId;
-			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
+			ownerOfThis.SendMessage(new NpcAnimationMessage(AnimationEvent.EndConversation));
 			return true;
 		}
 

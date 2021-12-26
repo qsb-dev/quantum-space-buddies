@@ -1,12 +1,29 @@
 ﻿using QSB.Messaging;
+using QSB.Player;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 
 namespace QSB.Animation.Player.Messages
 {
-	public class AnimationTriggerMessage : PlayerMessage
+	internal class AnimationTriggerMessage : QSBMessage
 	{
-		public uint AttachedNetId { get; set; }
-		public string Name { get; set; }
+		private uint AttachedNetId;
+		private string Name;
+
+		public AnimationTriggerMessage(uint attachedNetId, string name)
+		{
+			AttachedNetId = attachedNetId;
+			Name = name;
+		}
+
+		public AnimationTriggerMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(AttachedNetId);
+			writer.Write(Name);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -15,11 +32,22 @@ namespace QSB.Animation.Player.Messages
 			Name = reader.ReadString();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+
+		public override void OnReceiveRemote()
 		{
-			base.Serialize(writer);
-			writer.Write(AttachedNetId);
-			writer.Write(Name);
+			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(AttachedNetId);
+			if (animationSync == null)
+			{
+				return;
+			}
+
+			if (animationSync.VisibleAnimator == null)
+			{
+				return;
+			}
+
+			animationSync.VisibleAnimator.SetTrigger(Name);
 		}
 	}
 }
