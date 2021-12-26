@@ -24,14 +24,5 @@
 		public const string EnterShip = nameof(EnterShip);
 		public const string ExitShip = nameof(ExitShip);
 		public const string EyeStateChanged = nameof(EyeStateChanged);
-
-		// Custom event names -- change if you want! These can be anything, as long as both
-		// sides of the GlobalMessenger (fireevent and addlistener) reference the same thing.
-		public const string QSBProbeEvent = nameof(QSBProbeEvent);
-		public const string QSBProbeStartRetrieve = nameof(QSBProbeStartRetrieve);
-		public const string QSBRetrieveProbe = nameof(QSBRetrieveProbe);
-		public const string QSBPlayerRetrieveProbe = nameof(QSBPlayerRetrieveProbe);
-		public const string QSBLaunchProbe = nameof(QSBLaunchProbe);
-		public const string QSBPlayerLaunchProbe = nameof(QSBPlayerLaunchProbe);
 	}
 }

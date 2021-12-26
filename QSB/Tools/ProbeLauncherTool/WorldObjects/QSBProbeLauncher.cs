@@ -1,5 +1,6 @@
 ﻿using OWML.Utils;
-using QSB.Events;
+using QSB.Messaging;
+using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -19,8 +20,14 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 			_effects = AttachedObject.GetValue<ProbeLauncherEffects>("_effects");
 			_probeRetrievalEffect = AttachedObject.GetValue<SingularityWarpEffect>("_probeRetrievalEffect");
 
-			AttachedObject.OnLaunchProbe += (SurveyorProbe probe) => QSBEventManager.FireEvent(EventNames.QSBLaunchProbe, this);
+			AttachedObject.OnLaunchProbe += OnLaunchProbe;
 		}
+
+		public override void OnRemoval() =>
+			AttachedObject.OnLaunchProbe -= OnLaunchProbe;
+
+		private void OnLaunchProbe(SurveyorProbe probe) =>
+			this.SendMessage(new LaunchProbeMessage());
 
 		public void RetrieveProbe(bool playEffects)
 		{

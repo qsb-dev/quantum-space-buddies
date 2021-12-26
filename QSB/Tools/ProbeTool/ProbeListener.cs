@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.Messaging;
+using QSB.Tools.ProbeTool.Messages;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeTool
@@ -33,22 +34,22 @@ namespace QSB.Tools.ProbeTool
 			_attachedProbe.OnStartRetrieveProbe -= OnStartRetrieveProbe;
 		}
 
-		private void OnLaunchProbe()
-			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Launch);
+		private static void OnLaunchProbe()
+			=> new PlayerProbeMessage(ProbeEvent.Launch).Send();
 
-		private void OnAnchorProbe()
-			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Anchor);
+		private static void OnAnchorProbe()
+			=> new PlayerProbeMessage(ProbeEvent.Anchor).Send();
 
-		private void OnUnanchorProbe()
-			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Unanchor);
+		private static void OnUnanchorProbe()
+			=> new PlayerProbeMessage(ProbeEvent.Unanchor).Send();
 
-		private void OnRetrieveProbe()
-			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Retrieve);
+		private static void OnRetrieveProbe()
+			=> new PlayerProbeMessage(ProbeEvent.Retrieve).Send();
 
-		private void OnProbeDestroyed()
-			=> QSBEventManager.FireEvent(EventNames.QSBProbeEvent, ProbeEvent.Destroy);
+		private static void OnProbeDestroyed()
+			=> new PlayerProbeMessage(ProbeEvent.Destroy).Send();
 
-		private void OnStartRetrieveProbe(float length)
-			=> QSBEventManager.FireEvent(EventNames.QSBProbeStartRetrieve, length);
+		private static void OnStartRetrieveProbe(float length)
+			=> new ProbeStartRetrieveMessage(length).Send();
 	}
 }

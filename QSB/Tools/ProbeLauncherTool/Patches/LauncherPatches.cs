@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -38,8 +39,8 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 			{
 				if (____activeProbe.IsLaunched() && TimelineObliterationController.IsParadoxProbeActive() && !forcedRetrieval)
 				{
-					var data = new NotificationData(____notificationFilter, UITextLibrary.GetString(UITextType.NotificationMultProbe), 3f, true);
-					NotificationManager.SharedInstance.PostNotification(data, false);
+					var data = new NotificationData(____notificationFilter, UITextLibrary.GetString(UITextType.NotificationMultProbe), 3f);
+					NotificationManager.SharedInstance.PostNotification(data);
 					Locator.GetPlayerAudioController().PlayNegativeUISound();
 					return false;
 				}
@@ -54,11 +55,12 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 
 				if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
 				{
-					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, __instance.GetWorldObject<QSBProbeLauncher>(), playEffects);
+					__instance.GetWorldObject<QSBProbeLauncher>()
+						.SendMessage(new RetrieveProbeMessage(playEffects));
 				}
 				else
 				{
-					QSBEventManager.FireEvent(EventNames.QSBPlayerRetrieveProbe, playEffects);
+					new PlayerRetrieveProbeMessage(playEffects).Send();
 				}
 
 				____activeProbe.Retrieve(____probeRetrievalLength);
