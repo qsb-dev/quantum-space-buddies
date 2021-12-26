@@ -1,14 +1,33 @@
-﻿using QSB.Messaging;
+﻿using QSB.ClientServerStateSync;
+using QSB.Messaging;
+using QSB.WorldSync;
 using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.StatueSync.Messages
 {
-	public class StartStatueMessage : PlayerMessage
+	internal class StartStatueMessage : QSBMessage
 	{
-		public Vector3 PlayerPosition { get; set; }
-		public Quaternion PlayerRotation { get; set; }
-		public float CameraDegrees { get; set; }
+		private Vector3 PlayerPosition;
+		private Quaternion PlayerRotation;
+		private float CameraDegrees;
+
+		public StartStatueMessage(Vector3 position, Quaternion rotation, float degrees)
+		{
+			PlayerPosition = position;
+			PlayerRotation = rotation;
+			CameraDegrees = degrees;
+		}
+
+		public StartStatueMessage() { }
+
+		public override void Serialize(QNetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(PlayerPosition);
+			writer.Write(PlayerRotation);
+			writer.Write(CameraDegrees);
+		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
@@ -18,12 +37,25 @@ namespace QSB.StatueSync.Messages
 			CameraDegrees = reader.ReadSingle();
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+
+		public override void OnReceiveLocal()
 		{
-			base.Serialize(writer);
-			writer.Write(PlayerPosition);
-			writer.Write(PlayerRotation);
-			writer.Write(CameraDegrees);
+			if (QSBCore.IsHost)
+			{
+				ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.InStatueCutscene);
+			}
+		}
+
+		public override void OnReceiveRemote()
+		{
+			if (QSBCore.IsHost)
+			{
+				ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.InStatueCutscene);
+			}
+
+			StatueManager.Instance.BeginSequence(PlayerPosition, PlayerRotation, CameraDegrees);
 		}
 	}
 }

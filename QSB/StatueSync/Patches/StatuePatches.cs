@@ -1,7 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.StatueSync.Messages;
 using UnityEngine;
 
 namespace QSB.StatueSync.Patches
@@ -27,11 +28,11 @@ namespace QSB.StatueSync.Patches
 
 			var playerBody = Locator.GetPlayerBody().transform;
 			var timberHearth = Locator.GetAstroObject(AstroObject.Name.TimberHearth).transform;
-			QSBEventManager.FireEvent(
-				EventNames.QSBStartStatue,
+			new StartStatueMessage(
 				timberHearth.InverseTransformPoint(playerBody.position),
 				Quaternion.Inverse(timberHearth.rotation) * playerBody.rotation,
-				Locator.GetPlayerCamera().GetComponent<PlayerCameraController>().GetDegreesY());
+				Locator.GetPlayerCamera().GetComponent<PlayerCameraController>().GetDegreesY()
+			).Send();
 			QSBPlayerManager.HideAllPlayers();
 			return true;
 		}
