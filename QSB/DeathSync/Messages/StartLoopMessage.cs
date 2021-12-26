@@ -1,4 +1,5 @@
-﻿using QSB.ClientServerStateSync;
+﻿using OWML.Common;
+using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Utility;
 
@@ -21,7 +22,7 @@ namespace QSB.DeathSync.Messages
 			}
 			else
 			{
-				DebugLog.ToConsole($"Error - Got StartLoop event when not in universe!", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Got StartLoop event when not in universe!", MessageType.Error);
 				ClientStateManager.Instance.SendChangeClientStateMessage(ClientState.NotLoaded);
 			}
 		}

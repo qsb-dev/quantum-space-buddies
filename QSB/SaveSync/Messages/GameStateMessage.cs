@@ -1,4 +1,5 @@
-﻿using QSB.Menus;
+﻿using OWML.Common;
+using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
@@ -85,7 +86,7 @@ namespace QSB.SaveSync.Messages
 		{
 			if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 			{
-				DebugLog.ToConsole($"Error - Tried to handle GameStateEvent when not in TitleScreen!", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Tried to handle GameStateEvent when not in TitleScreen!", MessageType.Error);
 				return;
 			}
 

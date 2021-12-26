@@ -34,12 +34,13 @@ namespace QSB.Animation.Player.Messages
 
 		public override void OnReceiveRemote()
 		{
-			if (!QSBPlayerManager.GetPlayer(PlayerId).IsReady)
+			var player = QSBPlayerManager.GetPlayer(PlayerId);
+			if (!player.IsReady)
 			{
 				return;
 			}
 
-			QSBPlayerManager.GetPlayer(PlayerId).AnimationSync.SetAnimationType(Value);
+			player.AnimationSync.SetAnimationType(Value);
 			QSBPlayerManager.GetSyncObject<InstrumentsManager>(PlayerId).CheckInstrumentProps(Value);
 		}
 	}

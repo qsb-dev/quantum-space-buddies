@@ -1,6 +1,6 @@
 ﻿namespace QSB.RoastingSync
 {
-	public enum MarshmallowEventType
+	public enum MarshmallowMessageType
 	{
 		Toss,
 		Burn,

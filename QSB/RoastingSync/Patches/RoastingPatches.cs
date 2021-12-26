@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.RoastingSync.Messages;
 using UnityEngine;
 
 namespace QSB.RoastingSync.Patches
@@ -14,7 +15,7 @@ namespace QSB.RoastingSync.Patches
 		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.SpawnMallow))]
 		public static bool Marshmallow_SpawnMallow()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Replace);
+			new MarshmallowEventMessage(MarshmallowMessageType.Replace).Send();
 			return true;
 		}
 
@@ -34,7 +35,7 @@ namespace QSB.RoastingSync.Patches
 				____initBurnTime = Time.time;
 				____mallowState = Marshmallow.MallowState.Burning;
 				____audioController.PlayMarshmallowCatchFire();
-				QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Burn);
+				new MarshmallowEventMessage(MarshmallowMessageType.Burn).Send();
 			}
 
 			return false;
@@ -50,7 +51,7 @@ namespace QSB.RoastingSync.Patches
 			{
 				____initShrivelTime = Time.time;
 				____mallowState = Marshmallow.MallowState.Shriveling;
-				QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Shrivel);
+				new MarshmallowEventMessage(MarshmallowMessageType.Shrivel).Send();
 			}
 
 			return false;
@@ -70,7 +71,7 @@ namespace QSB.RoastingSync.Patches
 			____mallowRenderer.enabled = false;
 			____mallowState = Marshmallow.MallowState.Gone;
 			__instance.enabled = false;
-			QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Remove);
+			new MarshmallowEventMessage(MarshmallowMessageType.Remove).Send();
 			return false;
 		}
 
@@ -103,13 +104,13 @@ namespace QSB.RoastingSync.Patches
 						{
 							____marshmallow.Remove();
 							Locator.GetPlayerAudioController().PlayMarshmallowToss();
-							var spawnedMarshmallow = UnityEngine.Object.Instantiate<GameObject>(____mallowBodyPrefab, ____stickTransform.position, ____stickTransform.rotation);
+							var spawnedMarshmallow = Object.Instantiate(____mallowBodyPrefab, ____stickTransform.position, ____stickTransform.rotation);
 							var rigidbody = spawnedMarshmallow.GetComponent<OWRigidbody>();
-							rigidbody.SetVelocity(____campfire.GetAttachedOWRigidbody(false).GetPointVelocity(____stickTransform.position) + (____stickTransform.forward * 3f));
+							rigidbody.SetVelocity(____campfire.GetAttachedOWRigidbody().GetPointVelocity(____stickTransform.position) + ____stickTransform.forward * 3f);
 							rigidbody.SetAngularVelocity(____stickTransform.right * 10f);
 							var burntColor = ____marshmallow.GetBurntColor();
 							spawnedMarshmallow.GetComponentInChildren<MeshRenderer>().material.color = burntColor;
-							QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Toss);
+							new MarshmallowEventMessage(MarshmallowMessageType.Toss).Send();
 						}
 					}
 
@@ -125,7 +126,7 @@ namespace QSB.RoastingSync.Patches
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting))
 					{
 						____marshmallow.Extinguish();
-						QSBEventManager.FireEvent(EventNames.QSBMarshmallowEvent, MarshmallowEventType.Extinguish);
+						new MarshmallowEventMessage(MarshmallowMessageType.Extinguish).Send();
 					}
 				}
 				else if (____marshmallow.GetState() == Marshmallow.MallowState.Gone)

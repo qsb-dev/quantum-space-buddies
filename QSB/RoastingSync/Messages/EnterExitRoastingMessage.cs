@@ -1,4 +1,5 @@
-﻿using QSB.CampfireSync.WorldObjects;
+﻿using OWML.Common;
+using QSB.CampfireSync.WorldObjects;
 using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
@@ -56,7 +57,7 @@ namespace QSB.RoastingSync.Messages
 		{
 			if (Value && ObjectId == -1)
 			{
-				DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", MessageType.Error);
 				return;
 			}
 

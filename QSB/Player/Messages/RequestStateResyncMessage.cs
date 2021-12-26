@@ -1,4 +1,5 @@
-﻿using OWML.Utils;
+﻿using OWML.Common;
+using OWML.Utils;
 using QSB.CampfireSync.Messages;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
@@ -52,7 +53,7 @@ namespace QSB.Player.Messages
 			{
 				if (_waitingForEvent)
 				{
-					DebugLog.ToConsole($"Did not receive PlayerInformationEvent in time. Setting _waitingForEvent to false.", OWML.Common.MessageType.Info);
+					DebugLog.ToConsole($"Did not receive PlayerInformationEvent in time. Setting _waitingForEvent to false.", MessageType.Info);
 					_waitingForEvent = false;
 				}
 			}, 60);

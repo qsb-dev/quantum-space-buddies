@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using OWML.Common;
+using QSB.Events;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -28,7 +29,7 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 
 				if (_nonPlayerLauncherEquipped)
 				{
-					DebugLog.ToConsole($"Warning - Trying to equip/unequip player launcher whilst non player launcher is still equipped?", OWML.Common.MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Trying to equip/unequip player launcher whilst non player launcher is still equipped?", MessageType.Warning);
 					return;
 				}
 

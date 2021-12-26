@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace QSB.ConversationSync.Messages
 {
@@ -57,11 +58,11 @@ namespace QSB.ConversationSync.Messages
 					}
 
 					var tree = QSBWorldSync.OldDialogueTrees[Id];
-					UnityEngine.Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
+					Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;
 
 				case ConversationType.ClosePlayer:
-					UnityEngine.Object.Destroy(QSBPlayerManager.GetPlayer((uint)Id).CurrentDialogueBox);
+					Object.Destroy(QSBPlayerManager.GetPlayer((uint)Id).CurrentDialogueBox);
 					break;
 			}
 		}
