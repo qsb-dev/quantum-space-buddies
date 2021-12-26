@@ -75,7 +75,7 @@ namespace QSB.Player.Messages
 			// if client, send player and client states
 			else
 			{
-				new PlayerInformationMessage().Send();
+				new PlayerInformationMessage { To = From }.Send();
 			}
 
 			if (WorldObjectManager.AllObjectsReady)
@@ -112,7 +112,7 @@ namespace QSB.Player.Messages
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
 			{
-				x.SendMessage(new QuantumAuthorityMessage(x.ControllingPlayer));
+				x.SendMessage(new QuantumAuthorityMessage(x.ControllingPlayer) { To = From });
 
 				if (x is QSBQuantumMoon qsbQuantumMoon)
 				{
