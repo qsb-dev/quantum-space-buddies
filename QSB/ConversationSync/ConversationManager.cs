@@ -49,7 +49,7 @@ namespace QSB.ConversationSync
 		}
 
 		public void SendPlayerOption(string text) =>
-			new ConversationMessage((int)QSBPlayerManager.LocalPlayerId, text, ConversationType.Player).Send();
+			new ConversationMessage(ConversationType.Player, (int)QSBPlayerManager.LocalPlayerId, text).Send();
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -59,14 +59,14 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			new ConversationMessage(id, text, ConversationType.Character).Send();
+			new ConversationMessage(ConversationType.Character, id, text).Send();
 		}
 
 		public void CloseBoxPlayer() =>
-			new ConversationMessage((int)QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer).Send();
+			new ConversationMessage(ConversationType.ClosePlayer, (int)QSBPlayerManager.LocalPlayerId, "").Send();
 
 		public void CloseBoxCharacter(int id) =>
-			new ConversationMessage(id, "", ConversationType.CloseCharacter).Send();
+			new ConversationMessage(ConversationType.CloseCharacter, id, "").Send();
 
 		public void SendConvState(int charId, bool state)
 		{

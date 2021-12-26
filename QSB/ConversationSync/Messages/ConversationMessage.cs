@@ -11,11 +11,11 @@ namespace QSB.ConversationSync.Messages
 		private int Id;
 		private string Message;
 
-		public ConversationMessage(int id, string message, ConversationType type)
+		public ConversationMessage(ConversationType type, int id, string message)
 		{
+			Value = type;
 			Id = id;
 			Message = message;
-			Value = type;
 		}
 
 		public ConversationMessage() { }
