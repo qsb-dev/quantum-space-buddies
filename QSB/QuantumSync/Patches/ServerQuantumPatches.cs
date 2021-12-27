@@ -4,7 +4,6 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -20,11 +19,16 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(EyeProxyQuantumMoon), nameof(EyeProxyQuantumMoon.ChangeQuantumState))]
 		public static bool EyeProxyQuantumMoon_ChangeQuantumState(EyeProxyQuantumMoon __instance, ref bool __result, bool skipInstantVisibilityCheck)
 		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+
+			var qsbEyeProxyQuantumMoon = __instance.GetWorldObject<QSBEyeProxyQuantumMoon>();
 			if (TimeLoop.GetSecondsRemaining() > 0f && Random.value > 0.3f)
 			{
 				__instance._moonStateRoot.SetActive(false);
-				DebugLog.DebugWrite($"Disable");
-				__instance.GetWorldObject<QSBEyeProxyQuantumMoon>().SendMessage(new EyeProxyMoonStateChangeMessage(false, -1f));
+				qsbEyeProxyQuantumMoon.SendMessage(new EyeProxyMoonStateChangeMessage(false, -1f));
 				__result = true;
 				return false;
 			}
@@ -36,8 +40,7 @@ namespace QSB.QuantumSync.Patches
 				__instance.transform.localEulerAngles = new Vector3(0f, angle, 0f);
 				if (skipInstantVisibilityCheck || !__instance.CheckVisibilityInstantly())
 				{
-					DebugLog.DebugWrite($"Send active angle:{angle}");
-					__instance.GetWorldObject<QSBEyeProxyQuantumMoon>().SendMessage(new EyeProxyMoonStateChangeMessage(true, angle));
+					qsbEyeProxyQuantumMoon.SendMessage(new EyeProxyMoonStateChangeMessage(true, angle));
 					__result = true;
 					return false;
 				}
