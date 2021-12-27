@@ -17,19 +17,6 @@ namespace QSB.Utility
 	{
 		#region UNITY
 
-		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
-
-		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
-
-		private static void SetVisibility(GameObject gameObject, bool isVisible)
-		{
-			var renderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-			foreach (var renderer in renderers)
-			{
-				renderer.enabled = isVisible;
-			}
-		}
-
 		public static Quaternion TransformRotation(this Transform transform, Quaternion localRotation)
 			=> transform.rotation * localRotation;
 
@@ -105,7 +92,7 @@ namespace QSB.Utility
 				}
 				catch (TargetInvocationException ex)
 				{
-					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException!.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 		}
@@ -192,13 +179,6 @@ namespace QSB.Utility
 
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
-
-		#endregion
-
-		#region OW
-
-		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)
-			=> baseBody.GetAngularVelocity() - relativeBody.GetAngularVelocity();
 
 		#endregion
 	}
