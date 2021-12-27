@@ -73,9 +73,14 @@ namespace QSB.Utility
 				}
 			}
 
-			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
+			if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
 			{
 				TimeLoop._isTimeFlowing = true;
+			}
+
+			if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
+			{
+				Destroy(Locator.GetProbe().gameObject);
 			}
 
 			if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
