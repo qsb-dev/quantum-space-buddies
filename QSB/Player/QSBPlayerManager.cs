@@ -24,12 +24,6 @@ namespace QSB.Player
 					return uint.MaxValue;
 				}
 
-				if (localInstance.NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
-					return uint.MaxValue;
-				}
-
 				return localInstance.NetIdentity.NetId.Value;
 			}
 		}
@@ -38,13 +32,13 @@ namespace QSB.Player
 		public static Action<uint> OnAddPlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
-		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
+		public static readonly List<PlayerInfo> PlayerList = new();
 
 		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (id is uint.MaxValue or 0U)
+			if (id is uint.MaxValue or 0)
 			{
 				return default;
 			}
@@ -74,7 +68,7 @@ namespace QSB.Player
 		}
 
 		public static bool PlayerExists(uint id) =>
-			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
+			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
 
 		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
 			PlayerSyncObjects.OfType<T>().Where(x => x != null);
