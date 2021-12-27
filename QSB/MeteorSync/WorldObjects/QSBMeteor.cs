@@ -6,7 +6,7 @@ namespace QSB.MeteorSync.WorldObjects
 	public class QSBMeteor : WorldObject<MeteorController>
 	{
 		public static bool IsSpecialImpact(GameObject go) =>
-			go == Locator.GetPlayerCollider().gameObject || go == Locator.GetProbe()._anchor._collider.gameObject;
+			go == Locator.GetPlayerCollider().gameObject || (Locator.GetProbe() != null && go == Locator.GetProbe()._anchor._collider.gameObject);
 
 		public void SpecialImpact()
 		{
