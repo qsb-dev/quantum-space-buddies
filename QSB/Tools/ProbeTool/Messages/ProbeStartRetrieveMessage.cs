@@ -6,9 +6,9 @@ namespace QSB.Tools.ProbeTool.Messages
 {
 	internal class ProbeStartRetrieveMessage : QSBFloatMessage
 	{
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
-
 		public ProbeStartRetrieveMessage(float duration) => Value = duration;
+
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

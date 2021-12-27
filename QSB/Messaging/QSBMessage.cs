@@ -41,8 +41,8 @@ namespace QSB.Messaging
 		/// checked before calling either OnReceive
 		/// </summary>
 		public virtual bool ShouldReceive => true;
-		public virtual void OnReceiveRemote() { }
 		public virtual void OnReceiveLocal() { }
+		public virtual void OnReceiveRemote() { }
 
 		public override string ToString() => GetType().Name;
 	}
