@@ -4,9 +4,9 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeTool.Messages
 {
-	internal class PlayerProbeMessage : QSBEnumMessage<ProbeEvent>
+	internal class PlayerProbeEventMessage : QSBEnumMessage<ProbeEvent>
 	{
-		public PlayerProbeMessage(ProbeEvent probeEvent) => Value = probeEvent;
+		public PlayerProbeEventMessage(ProbeEvent probeEvent) => Value = probeEvent;
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 

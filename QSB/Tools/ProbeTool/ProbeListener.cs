@@ -35,19 +35,19 @@ namespace QSB.Tools.ProbeTool
 		}
 
 		private static void OnLaunchProbe()
-			=> new PlayerProbeMessage(ProbeEvent.Launch).Send();
+			=> new PlayerProbeEventMessage(ProbeEvent.Launch).Send();
 
 		private static void OnAnchorProbe()
-			=> new PlayerProbeMessage(ProbeEvent.Anchor).Send();
+			=> new PlayerProbeEventMessage(ProbeEvent.Anchor).Send();
 
 		private static void OnUnanchorProbe()
-			=> new PlayerProbeMessage(ProbeEvent.Unanchor).Send();
+			=> new PlayerProbeEventMessage(ProbeEvent.Unanchor).Send();
 
 		private static void OnRetrieveProbe()
-			=> new PlayerProbeMessage(ProbeEvent.Retrieve).Send();
+			=> new PlayerProbeEventMessage(ProbeEvent.Retrieve).Send();
 
 		private static void OnProbeDestroyed()
-			=> new PlayerProbeMessage(ProbeEvent.Destroy).Send();
+			=> new PlayerProbeEventMessage(ProbeEvent.Destroy).Send();
 
 		private static void OnStartRetrieveProbe(float length)
 			=> new ProbeStartRetrieveMessage(length).Send();
