@@ -50,9 +50,7 @@ namespace QSB.QuantumSync.Patches
 			__result = QSBPlayerManager.GetPlayersWithCameras()
 					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), ____renderer.bounds))
 				&& (!____checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
-					.Any(x => !(bool)__instance.GetType()
-					.GetMethod("IsOccludedFromPosition", BindingFlags.NonPublic | BindingFlags.Instance)
-					.Invoke(__instance, new object[] { x.Camera.transform.position })));
+					.Any(x => !__instance.IsOccludedFromPosition(x.Camera.transform.position)));
 			return false;
 		}
 

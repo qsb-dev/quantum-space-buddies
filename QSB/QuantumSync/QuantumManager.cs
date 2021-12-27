@@ -114,8 +114,6 @@ namespace QSB.QuantumSync
 				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
 
-			var frustumMethod = tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance);
-
 			var playersWhoCanSee = new List<PlayerInfo>();
 			var foundPlayers = false;
 			foreach (var player in playersWithCameras)
@@ -126,7 +124,7 @@ namespace QSB.QuantumSync
 					continue;
 				}
 
-				var isInFrustum = (bool)frustumMethod.Invoke(tracker, new object[] { player.Camera.GetFrustumPlanes() });
+				var isInFrustum = tracker.IsInFrustum(player.Camera.GetFrustumPlanes());
 				if (isInFrustum)
 				{
 					playersWhoCanSee.Add(player);
@@ -144,7 +142,7 @@ namespace QSB.QuantumSync
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!AllObjectsReady)
 			{
 				return Enumerable.Empty<PlayerInfo>();
 			}
