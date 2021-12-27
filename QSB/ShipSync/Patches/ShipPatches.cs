@@ -122,7 +122,7 @@ namespace QSB.ShipSync.Patches
 			{
 				__instance._damaged = true;
 				__instance._repairFraction = 0f;
-				__instance.GetType().GetAnyMethod("OnComponentDamaged").Invoke(__instance, null);
+				__instance.OnComponentDamaged();
 				__instance.RaiseEvent("OnDamaged", __instance);
 				qsbShipComponent
 					.SendMessage(new ComponentDamagedMessage());
@@ -131,13 +131,13 @@ namespace QSB.ShipSync.Patches
 			{
 				__instance._damaged = false;
 				__instance._repairFraction = 1f;
-				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
+				__instance.OnComponentRepaired();
 				__instance.RaiseEvent("OnRepaired", __instance);
 				qsbShipComponent
 					.SendMessage(new ComponentRepairedMessage());
 			}
 
-			__instance.GetType().GetAnyMethod("UpdateColliderState").Invoke(__instance, null);
+			__instance.UpdateColliderState();
 			if (__instance._damageEffect)
 			{
 				__instance._damageEffect.SetEffectBlend(1f - __instance._repairFraction);
