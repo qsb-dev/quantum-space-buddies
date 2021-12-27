@@ -100,8 +100,14 @@ namespace QSB.Utility
 			}
 		}
 
-		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
-			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
+		{
+			var mappedValue = ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+
+			return clamp
+				? Mathf.Clamp(mappedValue, outputTo, outputFrom)
+				: mappedValue;
+		}
 
 		public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
 		{
