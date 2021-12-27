@@ -53,7 +53,7 @@ namespace QSB.ZeroGCaveSync.Patches
 					__instance._lanternEmissiveRenderer.sharedMaterials = __instance._lanternMaterials;
 				}
 
-				__instance.RaiseEvent("OnRepaired", __instance);
+				__instance.RaiseEvent(nameof(__instance.OnRepaired), __instance);
 			}
 
 			if (__instance._damageEffect != null)

@@ -16,12 +16,12 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(Shape), nameof(Shape.OnEnable))]
 		public static void Shape_OnEnable(Shape __instance)
-			=> __instance.RaiseEvent("OnShapeActivated", __instance);
+			=> __instance.RaiseEvent(nameof(__instance.OnShapeActivated), __instance);
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(Shape), nameof(Shape.OnDisable))]
 		public static void Shape_OnDisable(Shape __instance)
-			=> __instance.RaiseEvent("OnShapeDeactivated", __instance);
+			=> __instance.RaiseEvent(nameof(__instance.OnShapeDeactivated), __instance);
 
 		// ShapeVisibilityTracker patches
 

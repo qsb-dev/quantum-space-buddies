@@ -93,24 +93,24 @@ namespace QSB.Animation.Player.Patches
 				if (!____leftFootGrounded && leftFootLift < 0.333f)
 				{
 					____leftFootGrounded = true;
-					__instance.RaiseEvent("OnLeftFootGrounded");
+					__instance.RaiseEvent(nameof(__instance.OnLeftFootGrounded));
 				}
 				else if (____leftFootGrounded && leftFootLift > 0.666f)
 				{
 					____leftFootGrounded = false;
-					__instance.RaiseEvent("OnLeftFootLift");
+					__instance.RaiseEvent(nameof(__instance.OnLeftFootLift));
 				}
 
 				var rightFootLift = ____animator.GetFloat("RightFootLift");
 				if (!____rightFootGrounded && rightFootLift < 0.333f)
 				{
 					____rightFootGrounded = true;
-					__instance.RaiseEvent("OnRightFootGrounded");
+					__instance.RaiseEvent(nameof(__instance.OnRightFootGrounded));
 				}
 				else if (____rightFootGrounded && rightFootLift > 0.666f)
 				{
 					____rightFootGrounded = false;
-					__instance.RaiseEvent("OnRightFootLift");
+					__instance.RaiseEvent(nameof(__instance.OnRightFootLift));
 				}
 			}
 

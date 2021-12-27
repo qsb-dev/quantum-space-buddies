@@ -123,7 +123,7 @@ namespace QSB.ShipSync.Patches
 				__instance._damaged = true;
 				__instance._repairFraction = 0f;
 				__instance.OnComponentDamaged();
-				__instance.RaiseEvent("OnDamaged", __instance);
+				__instance.RaiseEvent(nameof(__instance.OnDamaged), __instance);
 				qsbShipComponent
 					.SendMessage(new ComponentDamagedMessage());
 			}
@@ -132,7 +132,7 @@ namespace QSB.ShipSync.Patches
 				__instance._damaged = false;
 				__instance._repairFraction = 1f;
 				__instance.OnComponentRepaired();
-				__instance.RaiseEvent("OnRepaired", __instance);
+				__instance.RaiseEvent(nameof(__instance.OnRepaired), __instance);
 				qsbShipComponent
 					.SendMessage(new ComponentRepairedMessage());
 			}
@@ -166,7 +166,7 @@ namespace QSB.ShipSync.Patches
 					if (!____damaged)
 					{
 						____damaged = true;
-						__instance.RaiseEvent("OnDamaged", __instance);
+						__instance.RaiseEvent(nameof(__instance.OnDamaged), __instance);
 
 						qsbShipHull
 							.SendMessage(new HullDamagedMessage());
@@ -192,7 +192,7 @@ namespace QSB.ShipSync.Patches
 					}
 				}
 
-				__instance.RaiseEvent("OnImpact", ____dominantImpact, damage);
+				__instance.RaiseEvent(nameof(__instance.OnImpact), ____dominantImpact, damage);
 
 				____dominantImpact = null;
 			}
@@ -229,7 +229,7 @@ namespace QSB.ShipSync.Patches
 			if (____integrity >= 1f)
 			{
 				____damaged = false;
-				__instance.RaiseEvent("OnRepaired", __instance);
+				__instance.RaiseEvent(nameof(__instance.OnRepaired), __instance);
 				qsbShipHull
 					.SendMessage(new HullRepairedMessage());
 			}

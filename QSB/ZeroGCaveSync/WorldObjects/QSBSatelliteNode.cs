@@ -32,7 +32,7 @@ namespace QSB.ZeroGCaveSync.WorldObjects
 				AttachedObject._lanternEmissiveRenderer.sharedMaterials = AttachedObject._lanternMaterials;
 			}
 
-			AttachedObject.RaiseEvent("OnRepaired", AttachedObject);
+			AttachedObject.RaiseEvent(nameof(AttachedObject.OnRepaired), AttachedObject);
 		}
 
 		public void RepairTick(float repairFraction)
