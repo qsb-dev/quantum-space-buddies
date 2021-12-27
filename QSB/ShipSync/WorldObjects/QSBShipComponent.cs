@@ -14,7 +14,7 @@ namespace QSB.ShipSync.WorldObjects
 			AttachedObject.GetType().GetAnyMethod("OnComponentDamaged").Invoke(AttachedObject, null);
 			AttachedObject.RaiseEvent("OnDamaged", AttachedObject);
 			AttachedObject.GetType().GetAnyMethod("UpdateColliderState").Invoke(AttachedObject, null);
-			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
+			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f);
 		}
 
@@ -26,14 +26,14 @@ namespace QSB.ShipSync.WorldObjects
 			AttachedObject.GetType().GetAnyMethod("OnComponentRepaired").Invoke(AttachedObject, null);
 			AttachedObject.RaiseEvent("OnRepaired", AttachedObject);
 			AttachedObject.GetType().GetAnyMethod("UpdateColliderState").Invoke(AttachedObject, null);
-			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
+			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(0f);
 		}
 
 		public void RepairTick(float repairFraction)
 		{
 			AttachedObject.SetValue("_repairFraction", repairFraction);
-			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
+			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f - repairFraction);
 		}
 	}

@@ -6,7 +6,7 @@ namespace QSB.PoolSync
 	{
 		public CustomNomaiRemoteCameraPlatform _remoteCameraPlatform
 		{
-			get => _oldStreaming.GetValue<NomaiRemoteCameraPlatform>("_remoteCameraPlatform").GetComponent<CustomNomaiRemoteCameraPlatform>();
+			get => _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
 			set => _oldStreaming.SetValue("_remoteCameraPlatform", value.GetComponent<NomaiRemoteCameraStreaming>());
 		}
 		private StreamingGroup _streamingGroup;

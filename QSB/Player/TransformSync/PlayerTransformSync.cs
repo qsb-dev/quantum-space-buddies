@@ -216,12 +216,12 @@ namespace QSB.Player.TransformSync
 
 			// Create new marshmallow
 			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
-			newMarshmallow._fireRenderer = oldMarshmallow.GetValue<MeshRenderer>("_fireRenderer");
-			newMarshmallow._smokeParticles = oldMarshmallow.GetValue<ParticleSystem>("_smokeParticles");
-			newMarshmallow._mallowRenderer = oldMarshmallow.GetValue<MeshRenderer>("_mallowRenderer");
-			newMarshmallow._rawColor = oldMarshmallow.GetValue<Color>("_rawColor");
-			newMarshmallow._toastedColor = oldMarshmallow.GetValue<Color>("_toastedColor");
-			newMarshmallow._burntColor = oldMarshmallow.GetValue<Color>("_burntColor");
+			newMarshmallow._fireRenderer = oldMarshmallow._fireRenderer;
+			newMarshmallow._smokeParticles = oldMarshmallow._smokeParticles;
+			newMarshmallow._mallowRenderer = oldMarshmallow._mallowRenderer;
+			newMarshmallow._rawColor = oldMarshmallow._rawColor;
+			newMarshmallow._toastedColor = oldMarshmallow._toastedColor;
+			newMarshmallow._burntColor = oldMarshmallow._burntColor;
 			Destroy(oldMarshmallow);
 
 			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;

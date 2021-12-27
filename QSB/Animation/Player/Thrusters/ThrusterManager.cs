@@ -45,8 +45,8 @@ namespace QSB.Animation.Player.Thrusters
 			foreach (var controller in existingControllers)
 			{
 				var gameObject = controller.gameObject;
-				var oldThruster = controller.GetValue<Thruster>("_thruster");
-				var oldLight = controller.GetValue<Light>("_light");
+				var oldThruster = controller._thruster;
+				var oldLight = controller._light;
 				var localPos = oldThruster switch
 				{
 					Thruster.Up_RightThruster or Thruster.Up_LeftThruster => new Vector3(0, 0, 3),
@@ -55,9 +55,9 @@ namespace QSB.Animation.Player.Thrusters
 				};
 				oldLight.transform.localPosition = localPos;
 
-				var oldAnimCurve = controller.GetValue<AnimationCurve>("_scaleByThrust");
-				var oldScaleSpring = controller.GetValue<DampedSpring>("_scaleSpring");
-				var oldScalar = controller.GetValue<float>("_belowMaxThrustScalar");
+				var oldAnimCurve = controller._scaleByThrust;
+				var oldScaleSpring = controller._scaleSpring;
+				var oldScalar = controller._belowMaxThrustScalar;
 				var oldBase = oldLight.range;
 				Object.Destroy(controller);
 				var newObj = gameObject.AddComponent<RemoteThrusterFlameController>();
@@ -82,9 +82,9 @@ namespace QSB.Animation.Player.Thrusters
 		private static void CreateThrusterWashController(GameObject root, PlayerInfo player)
 		{
 			var old = root.GetComponent<ThrusterWashController>();
-			var oldDistanceScale = old.GetValue<AnimationCurve>("_emissionDistanceScale");
-			var oldThrusterScale = old.GetValue<AnimationCurve>("_emissionThrusterScale");
-			var defaultParticleSystem = old.GetValue<ParticleSystem>("_defaultParticleSystem");
+			var oldDistanceScale = old._emissionDistanceScale;
+			var oldThrusterScale = old._emissionThrusterScale;
+			var defaultParticleSystem = old._defaultParticleSystem;
 
 			Object.Destroy(old);
 

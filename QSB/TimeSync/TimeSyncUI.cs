@@ -33,8 +33,8 @@ namespace QSB.TimeSync
 		{
 			_isSetUp = true;
 			var obj = QSBWorldSync.GetUnityObjects<SleepTimerUI>().First();
-			_canvas = obj.GetValue<Canvas>("_canvas");
-			_text = obj.GetValue<Text>("_text");
+			_canvas = obj._canvas;
+			_text = obj._text;
 			_canvas.enabled = false;
 		}
 

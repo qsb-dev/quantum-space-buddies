@@ -19,7 +19,7 @@ namespace QSB.Animation.Player
 				ev == OWML.Common.Events.BeforeStart &&
 				SuitedAnimController == null)
 			{
-				SuitedAnimController = playerAnimController.GetValue<RuntimeAnimatorController>("_baseAnimController");
+				SuitedAnimController = playerAnimController._baseAnimController;
 			}
 		}
 	}

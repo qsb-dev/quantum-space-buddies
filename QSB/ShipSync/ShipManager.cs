@@ -115,8 +115,8 @@ namespace QSB.ShipSync
 
 		private void UpdateElectricalComponent()
 		{
-			var electricalSystem = ShipElectricalComponent.GetValue<ElectricalSystem>("_electricalSystem");
-			var damaged = ShipElectricalComponent.GetValue<bool>("_damaged");
+			var electricalSystem = ShipElectricalComponent._electricalSystem;
+			var damaged = ShipElectricalComponent._damaged;
 
 			if (_playersInShip.Count == 0)
 			{

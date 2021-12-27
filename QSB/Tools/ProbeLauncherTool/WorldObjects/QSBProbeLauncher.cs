@@ -15,10 +15,10 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 
 		public override void Init()
 		{
-			_probeRetrievalLength = AttachedObject.GetValue<float>("_probeRetrievalLength");
-			_preLaunchProbeProxy = AttachedObject.GetValue<GameObject>("_preLaunchProbeProxy");
-			_effects = AttachedObject.GetValue<ProbeLauncherEffects>("_effects");
-			_probeRetrievalEffect = AttachedObject.GetValue<SingularityWarpEffect>("_probeRetrievalEffect");
+			_probeRetrievalLength = AttachedObject._probeRetrievalLength;
+			_preLaunchProbeProxy = AttachedObject._preLaunchProbeProxy;
+			_effects = AttachedObject._effects;
+			_probeRetrievalEffect = AttachedObject._probeRetrievalEffect;
 
 			AttachedObject.OnLaunchProbe += OnLaunchProbe;
 		}

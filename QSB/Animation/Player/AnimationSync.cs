@@ -85,9 +85,9 @@ namespace QSB.Animation.Player
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
 			_suitedAnimController = AnimControllerPatch.SuitedAnimController;
-			_unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
-			_suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
-			_unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
+			_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
+			_suitedGraphics = playerAnimController._suitedGroup;
+			_unsuitedGraphics = playerAnimController._unsuitedGroup;
 		}
 
 		public void InitLocal(Transform body)
@@ -113,7 +113,7 @@ namespace QSB.Animation.Player
 			playerAnimController.SetValue("_unsuitedAnimOverride", null);
 			playerAnimController.SetValue("_rightArmHidden", false);
 
-			var rightArmObjects = playerAnimController.GetValue<GameObject[]>("_rightArmObjects").ToList();
+			var rightArmObjects = playerAnimController._rightArmObjects.ToList();
 			rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
 
 			body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;

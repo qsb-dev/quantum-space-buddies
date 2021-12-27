@@ -84,7 +84,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 					var probeLauncher = Player.LocalProbeLauncher;
 					// TODO : make this sync to the *active* probe launcher's _launcherTransform
-					var launcherTransform = probeLauncher.GetValue<Transform>("_launcherTransform");
+					var launcherTransform = probeLauncher._launcherTransform;
 					probeOWRigidbody.SetPosition(launcherTransform.position);
 					probeOWRigidbody.SetRotation(launcherTransform.rotation);
 
