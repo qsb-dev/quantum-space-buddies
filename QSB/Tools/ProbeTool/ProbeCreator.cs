@@ -27,6 +27,7 @@ namespace QSB.Tools.ProbeTool
 			// ProbeDetector
 			//Object.Destroy(newProbe.Find("ProbeDetector").gameObject);
 			var probeDetector = newProbe.Find("ProbeDetector").gameObject;
+			probeDetector.tag = "Untagged";
 			Object.Destroy(probeDetector.GetComponent<ForceApplier>());
 			Object.Destroy(probeDetector.GetComponent<ProbeFluidDetector>());
 			Object.Destroy(probeDetector.GetComponent<SectorDetector>());
