@@ -7,7 +7,6 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 
 namespace QSB.ConversationSync.Patches
 {
@@ -54,7 +53,7 @@ namespace QSB.ConversationSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.InputDialogueOption))]
-		public static bool CharacterDialogueTree_InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
+		public static bool CharacterDialogueTree_InputDialogueOption(CharacterDialogueTree __instance, int optionIndex)
 		{
 			if (optionIndex < 0)
 			{
@@ -63,16 +62,16 @@ namespace QSB.ConversationSync.Patches
 				return true;
 			}
 
-			var selectedOption = ____currentDialogueBox.OptionFromUIIndex(optionIndex);
+			var selectedOption = __instance._currentDialogueBox.OptionFromUIIndex(optionIndex);
 			ConversationManager.Instance.SendPlayerOption(selectedOption.Text);
 			return true;
 		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(DialogueNode), nameof(DialogueNode.GetNextPage))]
-		public static void DialogueNode_GetNextPage(string ____name, List<string> ____listPagesToDisplay, int ____currentPage)
+		public static void DialogueNode_GetNextPage(DialogueNode __instance)
 		{
-			var key = ____name + ____listPagesToDisplay[____currentPage];
+			var key = __instance._name + __instance._listPagesToDisplay[__instance._currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
 			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, key));

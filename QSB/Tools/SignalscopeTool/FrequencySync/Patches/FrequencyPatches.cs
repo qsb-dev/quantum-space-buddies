@@ -12,12 +12,12 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Patches
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(AudioSignal), nameof(AudioSignal.IdentifyFrequency))]
-		public static void IdentifyFrequencyEvent(SignalFrequency ____frequency)
-			=> new IdentifyFrequencyMessage(____frequency).Send();
+		public static void IdentifyFrequencyEvent(AudioSignal __instance)
+			=> new IdentifyFrequencyMessage(__instance._frequency).Send();
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(AudioSignal), nameof(AudioSignal.IdentifySignal))]
-		public static void IdentifySignalEvent(SignalName ____name)
-			=> new IdentifySignalMessage(____name).Send();
+		public static void IdentifySignalEvent(AudioSignal __instance)
+			=> new IdentifySignalMessage(__instance._name).Send();
 	}
 }

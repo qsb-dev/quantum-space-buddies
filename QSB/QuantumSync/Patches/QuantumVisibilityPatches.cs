@@ -44,11 +44,11 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(RendererVisibilityTracker), nameof(RendererVisibilityTracker.IsVisibleUsingCameraFrustum))]
-		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result, Renderer ____renderer, bool ____checkFrustumOcclusion)
+		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result)
 		{
 			__result = QSBPlayerManager.GetPlayersWithCameras()
-					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), ____renderer.bounds))
-				&& (!____checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
+					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), __instance._renderer.bounds))
+				&& (!__instance._checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
 					.Any(x => !__instance.IsOccludedFromPosition(x.Camera.transform.position)));
 			return false;
 		}
@@ -57,50 +57,50 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(VisibilityObject), nameof(VisibilityObject.CheckIllumination))]
-		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, ref bool __result, bool ____checkIllumination, Vector3 ____localIlluminationOffset, float ____illuminationRadius, Light[] ____lightSources)
+		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, ref bool __result)
 		{
-			if (!____checkIllumination)
+			if (!__instance._checkIllumination)
 			{
 				__result = true;
 				return false;
 			}
 
-			var point = __instance.transform.TransformPoint(____localIlluminationOffset);
+			var point = __instance.transform.TransformPoint(__instance._localIlluminationOffset);
 			var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
 			var localFlashlight = tupleFlashlights.Item1;
 			var playerFlashlights = tupleFlashlights.Item2;
 
 			// local player flashlight
-			if (localFlashlight.CheckIlluminationAtPoint(point, ____illuminationRadius))
+			if (localFlashlight.CheckIlluminationAtPoint(point, __instance._illuminationRadius))
 			{
 				__result = true;
 				return false;
 			}
 
 			// all other player flashlights
-			if (playerFlashlights.Any(x => x.CheckIlluminationAtPoint(point, ____illuminationRadius)))
+			if (playerFlashlights.Any(x => x.CheckIlluminationAtPoint(point, __instance._illuminationRadius)))
 			{
 				__result = true;
 				return false;
 			}
 
 			// BUG : Implement checking for other probes!
-			if (Locator.GetProbe() != null && Locator.GetProbe().IsLaunched() && Locator.GetProbe().CheckIlluminationAtPoint(point, ____illuminationRadius))
+			if (Locator.GetProbe() != null && Locator.GetProbe().IsLaunched() && Locator.GetProbe().CheckIlluminationAtPoint(point, __instance._illuminationRadius))
 			{
 				__result = true;
 				return false;
 			}
 
 			// BUG : Implement checking for other player's thrusters!
-			if (Locator.GetThrusterLightTracker().CheckIlluminationAtPoint(point, ____illuminationRadius))
+			if (Locator.GetThrusterLightTracker().CheckIlluminationAtPoint(point, __instance._illuminationRadius))
 			{
 				__result = true;
 				return false;
 			}
 
-			if (____lightSources != null)
+			if (__instance._lightSources != null)
 			{
-				foreach (var light in ____lightSources)
+				foreach (var light in __instance._lightSources)
 				{
 					if (light.intensity > 0f && light.range > 0f)
 					{

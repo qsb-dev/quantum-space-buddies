@@ -14,14 +14,14 @@ namespace QSB.StatueSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MemoryUplinkTrigger), nameof(MemoryUplinkTrigger.Update))]
-		public static bool MemoryUplinkTrigger_Update(bool ____waitForPlayerGrounded)
+		public static bool MemoryUplinkTrigger_Update(MemoryUplinkTrigger __instance)
 		{
 			if (StatueManager.Instance.HasStartedStatueLocally)
 			{
 				return true;
 			}
 
-			if (!____waitForPlayerGrounded || !Locator.GetPlayerController().IsGrounded())
+			if (!__instance._waitForPlayerGrounded || !Locator.GetPlayerController().IsGrounded())
 			{
 				return true;
 			}

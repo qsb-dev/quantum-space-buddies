@@ -22,19 +22,16 @@ namespace QSB.RoastingSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.Burn))]
 		public static bool Marshmallow_Burn(
-			ref Marshmallow.MallowState ____mallowState,
-			MeshRenderer ____fireRenderer,
-			ref float ____toastedFraction,
-			ref float ____initBurnTime,
-			PlayerAudioController ____audioController)
+			Marshmallow __instance
+			)
 		{
-			if (____mallowState == Marshmallow.MallowState.Default)
+			if (__instance._mallowState == Marshmallow.MallowState.Default)
 			{
-				____fireRenderer.enabled = true;
-				____toastedFraction = 1f;
-				____initBurnTime = Time.time;
-				____mallowState = Marshmallow.MallowState.Burning;
-				____audioController.PlayMarshmallowCatchFire();
+				__instance._fireRenderer.enabled = true;
+				__instance._toastedFraction = 1f;
+				__instance._initBurnTime = Time.time;
+				__instance._mallowState = Marshmallow.MallowState.Burning;
+				__instance._audioController.PlayMarshmallowCatchFire();
 				new MarshmallowEventMessage(MarshmallowMessageType.Burn).Send();
 			}
 
@@ -44,13 +41,13 @@ namespace QSB.RoastingSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.Shrivel))]
 		public static bool Marshmallow_Shrivel(
-			ref Marshmallow.MallowState ____mallowState,
-			ref float ____initShrivelTime)
+			Marshmallow __instance
+			)
 		{
-			if (____mallowState == Marshmallow.MallowState.Burning)
+			if (__instance._mallowState == Marshmallow.MallowState.Burning)
 			{
-				____initShrivelTime = Time.time;
-				____mallowState = Marshmallow.MallowState.Shriveling;
+				__instance._initShrivelTime = Time.time;
+				__instance._mallowState = Marshmallow.MallowState.Shriveling;
 				new MarshmallowEventMessage(MarshmallowMessageType.Shrivel).Send();
 			}
 
@@ -60,16 +57,12 @@ namespace QSB.RoastingSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(Marshmallow), nameof(Marshmallow.RemoveMallow))]
 		public static bool Marshmallow_RemoveMallow(
-			ParticleSystem ____smokeParticles,
-			MeshRenderer ____fireRenderer,
-			MeshRenderer ____mallowRenderer,
-			ref Marshmallow.MallowState ____mallowState,
 			Marshmallow __instance)
 		{
-			____smokeParticles.Stop();
-			____fireRenderer.enabled = false;
-			____mallowRenderer.enabled = false;
-			____mallowState = Marshmallow.MallowState.Gone;
+			__instance._smokeParticles.Stop();
+			__instance._fireRenderer.enabled = false;
+			__instance._mallowRenderer.enabled = false;
+			__instance._mallowState = Marshmallow.MallowState.Gone;
 			__instance.enabled = false;
 			new MarshmallowEventMessage(MarshmallowMessageType.Remove).Send();
 			return false;
@@ -78,82 +71,75 @@ namespace QSB.RoastingSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(RoastingStickController), nameof(RoastingStickController.UpdateMarshmallowInput))]
 		public static bool RoastingStickController_UpdateMarshmallowInput(
-			float ____extendFraction,
-			Marshmallow ____marshmallow,
-			GameObject ____mallowBodyPrefab,
-			Transform ____stickTransform,
-			Campfire ____campfire,
-			ref string ____promptText,
-			ScreenPrompt ____mallowPrompt,
-			ref bool ____showMallowPrompt,
-			ref bool ____showRemovePrompt)
+			RoastingStickController __instance
+			)
 		{
 			var changePromptText = false;
 			var showRemovePrompt = false;
 			var text = string.Empty;
-			if (____extendFraction == 0f)
+			if (__instance._extendFraction == 0f)
 			{
-				if (____marshmallow.IsEdible())
+				if (__instance._marshmallow.IsEdible())
 				{
 					text = UITextLibrary.GetString(UITextType.RoastingEatPrompt);
 					changePromptText = true;
-					if (____marshmallow.IsBurned())
+					if (__instance._marshmallow.IsBurned())
 					{
 						showRemovePrompt = true;
 						if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Roasting))
 						{
-							____marshmallow.Remove();
+							__instance._marshmallow.Remove();
 							Locator.GetPlayerAudioController().PlayMarshmallowToss();
-							var spawnedMarshmallow = Object.Instantiate(____mallowBodyPrefab, ____stickTransform.position, ____stickTransform.rotation);
+							var spawnedMarshmallow = Object.Instantiate(__instance._mallowBodyPrefab, __instance._stickTransform.position, __instance._stickTransform.rotation);
 							var rigidbody = spawnedMarshmallow.GetComponent<OWRigidbody>();
-							rigidbody.SetVelocity(____campfire.GetAttachedOWRigidbody().GetPointVelocity(____stickTransform.position) + ____stickTransform.forward * 3f);
-							rigidbody.SetAngularVelocity(____stickTransform.right * 10f);
-							var burntColor = ____marshmallow.GetBurntColor();
+							rigidbody.SetVelocity(__instance._campfire.GetAttachedOWRigidbody().GetPointVelocity(__instance._stickTransform.position) + __instance._stickTransform.forward * 3f);
+							rigidbody.SetAngularVelocity(__instance._stickTransform.right * 10f);
+							var burntColor = __instance._marshmallow.GetBurntColor();
 							spawnedMarshmallow.GetComponentInChildren<MeshRenderer>().material.color = burntColor;
 							new MarshmallowEventMessage(MarshmallowMessageType.Toss).Send();
 						}
 					}
 
-					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting) && ____marshmallow.IsEdible())
+					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting) && __instance._marshmallow.IsEdible())
 					{
-						____marshmallow.Eat();
+						__instance._marshmallow.Eat();
 					}
 				}
-				else if (____marshmallow.GetState() == Marshmallow.MallowState.Burning)
+				else if (__instance._marshmallow.GetState() == Marshmallow.MallowState.Burning)
 				{
 					text = UITextLibrary.GetString(UITextType.RoastingExtinguishPrompt);
 					changePromptText = true;
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting))
 					{
-						____marshmallow.Extinguish();
+						__instance._marshmallow.Extinguish();
 						new MarshmallowEventMessage(MarshmallowMessageType.Extinguish).Send();
 					}
 				}
-				else if (____marshmallow.GetState() == Marshmallow.MallowState.Gone)
+				else if (__instance._marshmallow.GetState() == Marshmallow.MallowState.Gone)
 				{
 					text = UITextLibrary.GetString(UITextType.RoastingReplacePrompt);
 					changePromptText = true;
 					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Roasting))
 					{
-						____marshmallow.SpawnMallow(true);
+						__instance._marshmallow.SpawnMallow(true);
 					}
 				}
 
-				if (changePromptText && ____promptText != text)
+				if (changePromptText && __instance._promptText != text)
 				{
-					____promptText = text;
-					____mallowPrompt.SetText(____promptText);
+					__instance._promptText = text;
+					__instance._mallowPrompt.SetText(__instance._promptText);
 				}
 
 				if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Roasting))
 				{
-					____campfire.StopRoasting();
+					__instance._campfire.StopRoasting();
 					return false;
 				}
 			}
 
-			____showMallowPrompt = changePromptText;
-			____showRemovePrompt = showRemovePrompt;
+			__instance._showMallowPrompt = changePromptText;
+			__instance._showRemovePrompt = showRemovePrompt;
 
 			return false;
 		}
