@@ -83,7 +83,7 @@ namespace QSB.Animation.Player
 			}
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
-			_suitedAnimController = AnimControllerPatch.SuitedAnimController;
+			_suitedAnimController = playerAnimController._baseAnimController;
 			_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
 			_suitedGraphics = playerAnimController._suitedGroup;
 			_unsuitedGraphics = playerAnimController._unsuitedGroup;

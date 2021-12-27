@@ -16,8 +16,6 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SectoredTransformSync
 	{
-		static PlayerTransformSync() => AnimControllerPatch.Init();
-
 		public override bool IsPlayerObject => true;
 
 		private Transform _visibleCameraRoot;
