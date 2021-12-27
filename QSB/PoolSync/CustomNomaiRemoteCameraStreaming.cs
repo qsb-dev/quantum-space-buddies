@@ -2,8 +2,7 @@
 {
 	internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 	{
-		private CustomNomaiRemoteCameraPlatform _remoteCameraPlatform =>
-			_oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
+		private CustomNomaiRemoteCameraPlatform _remoteCameraPlatform;
 		private StreamingGroup _streamingGroup;
 		private NomaiRemoteCameraStreaming _oldStreaming;
 		private bool _hasLoadedAssets;
@@ -12,6 +11,7 @@
 		{
 			base.Awake();
 			_oldStreaming = GetComponent<NomaiRemoteCameraStreaming>();
+			_remoteCameraPlatform = _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
 			SetSector(_oldStreaming.GetSector());
 		}
 
