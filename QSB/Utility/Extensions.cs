@@ -1,10 +1,12 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -163,18 +165,28 @@ namespace QSB.Utility
 		public static TResult InvokeBase<TResult>(this object obj, string name, params object[] args)
 		{
 			const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-			var argTypes = args.Select(x => x.GetType()).ToArray();
+			var argTypes = args.Select(x => x?.GetType() ?? typeof(object)).ToArray();
 
 			var baseType = obj.GetType();
 			var baseMethod = default(MethodInfo);
 			while (baseMethod == null)
 			{
 				baseType = baseType.BaseType;
-				baseMethod = baseType!.GetMethod(name, flags, null, argTypes, null);
+				if (baseType == null)
+				{
+					throw new MissingMethodException("can't find method "
+						+ $"{obj.GetType()}.base.{name}"
+						+ $"({argTypes.Join()})");
+				}
+				baseMethod = baseType.GetMethod(name, flags, null, argTypes, null);
 			}
 
+			Array.Resize(ref argTypes, argTypes.Length + 1);
+			argTypes[argTypes.Length - 1] = baseMethod.ReturnType;
+			var dlType = Expression.GetDelegateType(argTypes);
+
 			var ptr = baseMethod.MethodHandle.GetFunctionPointer();
-			var dl = (Delegate)Activator.CreateInstance(typeof(Delegate), obj, ptr);
+			var dl = (Delegate)Activator.CreateInstance(dlType, obj, ptr);
 			return (TResult)dl.DynamicInvoke(args);
 		}
 
