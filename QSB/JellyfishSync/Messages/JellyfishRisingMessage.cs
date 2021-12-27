@@ -7,8 +7,6 @@ namespace QSB.JellyfishSync.Messages
 	{
 		public JellyfishRisingMessage(bool isRising) => Value = isRising;
 
-		public JellyfishRisingMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.IsRising = Value;
 
 	}

@@ -36,8 +36,6 @@ namespace QSB.RoastingSync.Messages
 			Value = roasting;
 		}
 
-		public EnterExitRoastingMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

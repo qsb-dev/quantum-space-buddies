@@ -25,21 +25,18 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Messages
 	internal class WallTextTranslatedMessage : SetAsTranslatedMessage<QSBWallText>
 	{
 		public WallTextTranslatedMessage(int textId) => TextId = textId;
-		public WallTextTranslatedMessage() { }
 		public override void OnReceiveRemote() => WorldObject.HandleSetAsTranslated(TextId);
 	}
 
 	internal class ComputerTranslatedMessage : SetAsTranslatedMessage<QSBComputer>
 	{
 		public ComputerTranslatedMessage(int textId) => TextId = textId;
-		public ComputerTranslatedMessage() { }
 		public override void OnReceiveRemote() => WorldObject.HandleSetAsTranslated(TextId);
 	}
 
 	internal class VesselComputerTranslatedMessage : SetAsTranslatedMessage<QSBVesselComputer>
 	{
 		public VesselComputerTranslatedMessage(int textId) => TextId = textId;
-		public VesselComputerTranslatedMessage() { }
 		public override void OnReceiveRemote() => WorldObject.HandleSetAsTranslated(TextId);
 	}
 }

@@ -22,8 +22,6 @@ namespace QSB.Tools.SignalscopeTool.Messages
 
 		private PlayerSignalscopeMessage(bool equipped) => Value = equipped;
 
-		public PlayerSignalscopeMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);

@@ -7,8 +7,6 @@ namespace QSB.MeteorSync.Messages
 	{
 		public FragmentDamageMessage(float damage) => Value = damage;
 
-		public FragmentDamageMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.AddDamage(Value);
 	}
 }

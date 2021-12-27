@@ -12,8 +12,6 @@ namespace QSB.QuantumSync.Messages
 
 		public QuantumShuffleMessage(int[] indexArray) => IndexArray = indexArray;
 
-		public QuantumShuffleMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

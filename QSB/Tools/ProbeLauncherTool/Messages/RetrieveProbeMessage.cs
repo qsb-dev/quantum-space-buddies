@@ -7,8 +7,6 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 	{
 		public RetrieveProbeMessage(bool state) => Value = state;
 
-		public RetrieveProbeMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.RetrieveProbe(Value);
 	}
 }

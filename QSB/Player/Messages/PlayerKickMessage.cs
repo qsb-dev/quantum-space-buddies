@@ -18,8 +18,6 @@ namespace QSB.Player.Messages
 			Value = reason;
 		}
 
-		public PlayerKickMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

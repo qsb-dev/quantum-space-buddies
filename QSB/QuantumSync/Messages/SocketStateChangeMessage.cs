@@ -18,8 +18,6 @@ namespace QSB.QuantumSync.Messages
 			LocalRotation = localRotation;
 		}
 
-		public SocketStateChangeMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

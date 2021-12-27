@@ -80,8 +80,6 @@ namespace QSB.SaveSync.Messages
 			KnownSignals = gameSave.knownSignals;
 		}
 
-		public GameStateMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)

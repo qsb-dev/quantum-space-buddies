@@ -26,8 +26,6 @@ namespace QSB.ShipSync.Messages
 
 		public FlyShipMessage(bool flying) => Value = flying;
 
-		public FlyShipMessage() { }
-
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveLocal() => SetCurrentFlyer(From, Value);

@@ -16,8 +16,6 @@ namespace QSB.Animation.Player.Messages
 			Value = type;
 		}
 
-		public ChangeAnimTypeMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

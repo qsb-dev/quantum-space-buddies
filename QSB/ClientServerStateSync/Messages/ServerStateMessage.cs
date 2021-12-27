@@ -6,8 +6,6 @@ namespace QSB.ClientServerStateSync.Messages
 	{
 		public ServerStateMessage(ServerState state) => Value = state;
 
-		public ServerStateMessage() { }
-
 		public override void OnReceiveLocal() => OnReceiveRemote();
 		public override void OnReceiveRemote()
 			=> ServerStateManager.Instance.ChangeServerState(Value);

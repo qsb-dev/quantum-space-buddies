@@ -22,8 +22,6 @@ namespace QSB.Tools.FlashlightTool.Messages
 
 		private PlayerFlashlightMessage(bool on) => Value = on;
 
-		public PlayerFlashlightMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);

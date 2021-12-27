@@ -22,8 +22,6 @@ namespace QSB.Player.Messages
 			DlcInstalled = QSBCore.DLCInstalled;
 		}
 
-		public PlayerJoinMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

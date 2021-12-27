@@ -10,8 +10,6 @@ namespace QSB.OrbSync.Messages
 
 		public OrbSlotMessage(int slotIndex) => SlotIndex = slotIndex;
 
-		public OrbSlotMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

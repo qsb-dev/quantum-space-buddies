@@ -14,8 +14,6 @@ namespace QSB.TimeSync.Messages
 			LoopCount = count;
 		}
 
-		public ServerTimeMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

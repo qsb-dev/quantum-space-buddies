@@ -7,8 +7,6 @@ namespace QSB.CampfireSync.Messages
 	{
 		public CampfireStateMessage(Campfire.State state) => Value = state;
 
-		public CampfireStateMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.SetState(Value);
 	}
 }

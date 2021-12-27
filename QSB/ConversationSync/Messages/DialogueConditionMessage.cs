@@ -26,8 +26,6 @@ namespace QSB.ConversationSync.Messages
 			ConditionState = state;
 		}
 
-		public DialogueConditionMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

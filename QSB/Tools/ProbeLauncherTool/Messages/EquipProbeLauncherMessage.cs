@@ -38,8 +38,6 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 
 		private EquipProbeLauncherMessage(bool equipped) => Value = equipped;
 
-		public EquipProbeLauncherMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);

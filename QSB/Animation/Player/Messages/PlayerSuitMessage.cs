@@ -22,8 +22,6 @@ namespace QSB.Animation.Player.Messages
 
 		private PlayerSuitMessage(bool on) => Value = on;
 
-		public PlayerSuitMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);

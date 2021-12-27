@@ -20,8 +20,6 @@ namespace QSB.ItemSync.Messages
 			ItemId = itemId;
 		}
 
-		public SocketItemMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

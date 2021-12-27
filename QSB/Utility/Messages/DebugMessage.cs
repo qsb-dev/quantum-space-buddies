@@ -6,8 +6,6 @@ namespace QSB.Utility.Messages
 	{
 		public DebugMessage(DebugMessageEnum type) => Value = type;
 
-		public DebugMessage() { }
-
 		public override void OnReceiveLocal() => OnReceiveRemote();
 
 		public override void OnReceiveRemote()

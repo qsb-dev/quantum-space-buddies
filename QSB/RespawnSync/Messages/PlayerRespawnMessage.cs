@@ -11,8 +11,6 @@ namespace QSB.RespawnSync.Messages
 
 		public PlayerRespawnMessage(uint playerId) => PlayerId = playerId;
 
-		public PlayerRespawnMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

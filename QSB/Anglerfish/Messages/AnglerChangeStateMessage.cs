@@ -18,8 +18,6 @@ namespace QSB.Anglerfish.Messages
 			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos;
 		}
 
-		public AnglerChangeStateMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

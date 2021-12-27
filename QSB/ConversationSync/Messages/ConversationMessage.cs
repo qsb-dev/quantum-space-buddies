@@ -19,8 +19,6 @@ namespace QSB.ConversationSync.Messages
 			Message = message;
 		}
 
-		public ConversationMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

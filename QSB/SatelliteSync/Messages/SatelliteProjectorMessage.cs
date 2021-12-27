@@ -6,8 +6,6 @@ namespace QSB.SatelliteSync.Messages
 	{
 		public SatelliteProjectorMessage(bool usingProjector) => Value = usingProjector;
 
-		public SatelliteProjectorMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			if (Value)

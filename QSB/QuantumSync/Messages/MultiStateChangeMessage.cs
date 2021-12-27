@@ -12,8 +12,6 @@ namespace QSB.QuantumSync.Messages
 
 		public MultiStateChangeMessage(int stateIndex) => StateIndex = stateIndex;
 
-		public MultiStateChangeMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

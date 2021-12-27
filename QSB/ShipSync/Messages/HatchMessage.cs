@@ -7,8 +7,6 @@ namespace QSB.ShipSync.Messages
 	{
 		public HatchMessage(bool open) => Value = open;
 
-		public HatchMessage() { }
-
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveRemote()

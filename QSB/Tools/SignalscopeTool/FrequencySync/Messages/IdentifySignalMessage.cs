@@ -7,8 +7,6 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages
 	{
 		public IdentifySignalMessage(SignalName name) => Value = name;
 
-		public IdentifySignalMessage() { }
-
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveRemote()

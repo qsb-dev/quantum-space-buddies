@@ -6,8 +6,6 @@ namespace QSB.SatelliteSync.Messages
 	{
 		public SatelliteProjectorSnapshotMessage(bool forward) => Value = forward;
 
-		public SatelliteProjectorSnapshotMessage() { }
-
 		public override void OnReceiveRemote() => SatelliteProjectorManager.Instance.RemoteTakeSnapshot(Value);
 	}
 }

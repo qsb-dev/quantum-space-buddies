@@ -21,8 +21,6 @@ namespace QSB.ItemSync.Messages
 			SectorId = sector.GetWorldObject<QSBSector>().ObjectId;
 		}
 
-		public DropItemMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

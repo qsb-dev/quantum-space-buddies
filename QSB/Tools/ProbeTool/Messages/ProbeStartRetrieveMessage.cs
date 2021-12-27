@@ -10,8 +10,6 @@ namespace QSB.Tools.ProbeTool.Messages
 
 		public ProbeStartRetrieveMessage(float duration) => Value = duration;
 
-		public ProbeStartRetrieveMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);

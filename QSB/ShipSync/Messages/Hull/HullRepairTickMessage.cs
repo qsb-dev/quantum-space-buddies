@@ -7,8 +7,6 @@ namespace QSB.ShipSync.Messages.Hull
 	{
 		public HullRepairTickMessage(float repairFraction) => Value = repairFraction;
 
-		public HullRepairTickMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.RepairTick(Value);
 	}
 }

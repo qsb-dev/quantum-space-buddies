@@ -19,8 +19,6 @@ namespace QSB.QuantumSync.Messages
 			OrbitAngle = orbitAngle;
 		}
 
-		public MoonStateChangeMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

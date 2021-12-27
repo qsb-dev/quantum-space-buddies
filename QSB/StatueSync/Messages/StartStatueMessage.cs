@@ -19,8 +19,6 @@ namespace QSB.StatueSync.Messages
 			CameraDegrees = degrees;
 		}
 
-		public StartStatueMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

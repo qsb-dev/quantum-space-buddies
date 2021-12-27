@@ -17,8 +17,6 @@ namespace QSB.LogSync.Messages
 			ShowNotification = showNotification;
 		}
 
-		public RevealFactMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

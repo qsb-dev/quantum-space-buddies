@@ -15,8 +15,6 @@ namespace QSB.MeteorSync.Messages
 			LaunchSpeed = qsbMeteorLauncher.LaunchSpeed;
 		}
 
-		public MeteorLaunchMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

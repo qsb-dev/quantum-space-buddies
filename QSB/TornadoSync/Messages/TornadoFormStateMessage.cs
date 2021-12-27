@@ -7,8 +7,6 @@ namespace QSB.TornadoSync.Messages
 	{
 		public TornadoFormStateMessage(bool formState) => Value = formState;
 
-		public TornadoFormStateMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.FormState = Value;
 	}
 }

@@ -22,8 +22,6 @@ namespace QSB.Tools.TranslatorTool.Messages
 
 		private PlayerTranslatorMessage(bool equipped) => Value = equipped;
 
-		public PlayerTranslatorMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);

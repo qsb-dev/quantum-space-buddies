@@ -9,8 +9,6 @@ namespace QSB.ClientServerStateSync.Messages
 	{
 		public ClientStateMessage(ClientState state) => Value = state;
 
-		public ClientStateMessage() { }
-
 		public override void OnReceiveLocal()
 			=> ClientStateManager.Instance.ChangeClientState(Value);
 

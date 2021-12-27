@@ -7,8 +7,6 @@ namespace QSB.ElevatorSync.Messages
 	{
 		public ElevatorMessage(bool isGoingUp) => Value = isGoingUp;
 
-		public ElevatorMessage() { }
-
 		public override void OnReceiveRemote() => WorldObject.RemoteCall(Value);
 	}
 }

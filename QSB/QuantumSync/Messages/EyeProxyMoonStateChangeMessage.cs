@@ -17,8 +17,6 @@ namespace QSB.QuantumSync.Messages
 			Angle = angle;
 		}
 
-		public EyeProxyMoonStateChangeMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

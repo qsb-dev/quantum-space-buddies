@@ -44,8 +44,6 @@ namespace QSB.MeteorSync.Messages
 			}
 		}
 
-		public FragmentResyncMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

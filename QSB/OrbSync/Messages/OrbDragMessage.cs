@@ -9,8 +9,6 @@ namespace QSB.OrbSync.Messages
 	{
 		public OrbDragMessage(bool isDragging) => Value = isDragging;
 
-		public OrbDragMessage() { }
-
 		public override void OnReceiveLocal()
 		{
 			var qsbOrb = ObjectId.GetWorldObject<QSBOrb>();

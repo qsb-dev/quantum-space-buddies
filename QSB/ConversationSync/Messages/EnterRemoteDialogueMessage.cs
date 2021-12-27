@@ -15,8 +15,6 @@ namespace QSB.ConversationSync.Messages
 			ListDialoguesIndex = listIndex;
 		}
 
-		public EnterRemoteDialogueMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

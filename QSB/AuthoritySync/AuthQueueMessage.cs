@@ -19,8 +19,6 @@ namespace QSB.AuthoritySync
 			Value = action;
 		}
 
-		public AuthQueueMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

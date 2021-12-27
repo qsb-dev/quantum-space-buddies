@@ -8,8 +8,6 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 	{
 		public PlayerRetrieveProbeMessage(bool playEffects) => Value = playEffects;
 
-		public PlayerRetrieveProbeMessage() { }
-
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveRemote()

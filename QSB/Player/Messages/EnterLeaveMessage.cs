@@ -37,8 +37,6 @@ namespace QSB.Player.Messages
 			ObjectId = objectId;
 		}
 
-		public EnterLeaveMessage() { }
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);

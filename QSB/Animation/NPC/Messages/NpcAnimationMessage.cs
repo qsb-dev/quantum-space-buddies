@@ -7,8 +7,6 @@ namespace QSB.Animation.NPC.Messages
 	{
 		public NpcAnimationMessage(bool start) => Value = start;
 
-		public NpcAnimationMessage() { }
-
 		public override void OnReceiveRemote()
 		{
 			if (Value)
