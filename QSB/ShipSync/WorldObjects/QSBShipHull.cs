@@ -9,15 +9,15 @@ namespace QSB.ShipSync.WorldObjects
 		public void SetDamaged()
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Set damaged.");
-			AttachedObject.SetValue("_damaged", true);
-			AttachedObject.RaiseEvent("OnDamaged", AttachedObject);
+			AttachedObject._damaged = true;
+			AttachedObject.RaiseEvent(nameof(AttachedObject.OnDamaged), AttachedObject);
 		}
 
 		public void SetRepaired()
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Set repaired.");
-			AttachedObject.SetValue("_damaged", false);
-			AttachedObject.RaiseEvent("OnRepaired", AttachedObject);
+			AttachedObject._damaged = false;
+			AttachedObject.RaiseEvent(nameof(AttachedObject.OnRepaired), AttachedObject);
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(0f);
 		}
@@ -25,14 +25,14 @@ namespace QSB.ShipSync.WorldObjects
 		public void ChangeIntegrity(float newIntegrity)
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Change integrity to {newIntegrity}.");
-			AttachedObject.SetValue("_integrity", newIntegrity);
+			AttachedObject._integrity = newIntegrity;
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f - newIntegrity);
 		}
 
 		public void RepairTick(float integrity)
 		{
-			AttachedObject.SetValue("_integrity", integrity);
+			AttachedObject._integrity = integrity;
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f - integrity);
 		}

@@ -9,11 +9,11 @@ namespace QSB.ShipSync.WorldObjects
 		public void SetDamaged()
 		{
 			DebugLog.DebugWrite($"[S COMPONENT] {AttachedObject} Set damaged.");
-			AttachedObject.SetValue("_damaged", true);
-			AttachedObject.SetValue("_repairFraction", 0f);
-			AttachedObject.GetType().GetAnyMethod("OnComponentDamaged").Invoke(AttachedObject, null);
-			AttachedObject.RaiseEvent("OnDamaged", AttachedObject);
-			AttachedObject.GetType().GetAnyMethod("UpdateColliderState").Invoke(AttachedObject, null);
+			AttachedObject._damaged = true;
+			AttachedObject._repairFraction = 0f;
+			AttachedObject.OnComponentDamaged();
+			AttachedObject.RaiseEvent(nameof(AttachedObject.OnDamaged), AttachedObject);
+			AttachedObject.UpdateColliderState();
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f);
 		}
@@ -21,18 +21,18 @@ namespace QSB.ShipSync.WorldObjects
 		public void SetRepaired()
 		{
 			DebugLog.DebugWrite($"[S COMPONENT] {AttachedObject} Set repaired.");
-			AttachedObject.SetValue("_damaged", false);
-			AttachedObject.SetValue("_repairFraction", 1f);
-			AttachedObject.GetType().GetAnyMethod("OnComponentRepaired").Invoke(AttachedObject, null);
-			AttachedObject.RaiseEvent("OnRepaired", AttachedObject);
-			AttachedObject.GetType().GetAnyMethod("UpdateColliderState").Invoke(AttachedObject, null);
+			AttachedObject._damaged = false;
+			AttachedObject._repairFraction = 1f;
+			AttachedObject.OnComponentRepaired();
+			AttachedObject.RaiseEvent(nameof(AttachedObject.OnRepaired), AttachedObject);
+			AttachedObject.UpdateColliderState();
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(0f);
 		}
 
 		public void RepairTick(float repairFraction)
 		{
-			AttachedObject.SetValue("_repairFraction", repairFraction);
+			AttachedObject._repairFraction = repairFraction;
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f - repairFraction);
 		}

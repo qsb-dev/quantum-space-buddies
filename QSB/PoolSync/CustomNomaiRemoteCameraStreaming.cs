@@ -4,11 +4,8 @@ namespace QSB.PoolSync
 {
 	internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 	{
-		public CustomNomaiRemoteCameraPlatform _remoteCameraPlatform
-		{
-			get => _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
-			set => _oldStreaming.SetValue("_remoteCameraPlatform", value.GetComponent<NomaiRemoteCameraStreaming>());
-		}
+		private CustomNomaiRemoteCameraPlatform _remoteCameraPlatform =>
+			_oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
 		private StreamingGroup _streamingGroup;
 		private NomaiRemoteCameraStreaming _oldStreaming;
 		private bool _hasLoadedAssets;

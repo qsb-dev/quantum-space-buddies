@@ -107,11 +107,11 @@ namespace QSB.Animation.Player
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
 			playerAnimController.enabled = false;
 
-			playerAnimController.SetValue("_suitedGroup", new GameObject());
-			playerAnimController.SetValue("_unsuitedGroup", new GameObject());
-			playerAnimController.SetValue("_baseAnimController", null);
-			playerAnimController.SetValue("_unsuitedAnimOverride", null);
-			playerAnimController.SetValue("_rightArmHidden", false);
+			playerAnimController._suitedGroup = new GameObject();
+			playerAnimController._unsuitedGroup = new GameObject();
+			playerAnimController._baseAnimController = null;
+			playerAnimController._unsuitedAnimOverride = null;
+			playerAnimController._rightArmHidden = false;
 
 			var rightArmObjects = playerAnimController._rightArmObjects.ToList();
 			rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));

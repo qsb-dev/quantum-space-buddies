@@ -14,6 +14,7 @@ namespace QSB.QuantumSync.WorldObjects
 		public override void Init()
 		{
 			base.Init();
+			AttachedObject._randomYRotation = false;
 			if (QSBCore.ShowQuantumDebugBoxes)
 			{
 				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Socketed\r\nid:{ObjectId}").GetComponent<Text>();

@@ -111,7 +111,7 @@ namespace QSB
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<QNetworkIdentity>().SetValue("m_AssetId", assetId);
+			template.GetRequiredComponent<QNetworkIdentity>().m_AssetId = assetId;
 			template.AddComponent(transformSyncType);
 			return template;
 		}
@@ -124,7 +124,8 @@ namespace QSB
 			customConfig = true;
 			connectionConfig.AddChannel(QosType.Reliable);
 			connectionConfig.AddChannel(QosType.Unreliable);
-			this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
+
+			m_MaxBufferedPackets = MaxBufferedPackets;
 			channels.Add(QosType.Reliable);
 			channels.Add(QosType.Unreliable);
 

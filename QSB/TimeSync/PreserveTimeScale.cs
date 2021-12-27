@@ -19,7 +19,7 @@ namespace QSB.TimeSync
 			var campfires = FindObjectsOfType<Campfire>();
 			foreach (var campfire in campfires)
 			{
-				campfire.SetValue("_canSleepHere", false); // Stop players from sleeping at campfires
+				campfire._canSleepHere = false; // Stop players from sleeping at campfires
 			}
 		}
 	}
