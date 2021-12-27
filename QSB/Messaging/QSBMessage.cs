@@ -27,6 +27,9 @@ namespace QSB.Messaging
 
 		/// <summary>
 		/// call the base method when overriding
+		/// <para/>
+		/// note: no constructor is called before this,
+		/// so fields won't be initialized.
 		/// </summary>
 		public override void Deserialize(QNetworkReader reader)
 		{
