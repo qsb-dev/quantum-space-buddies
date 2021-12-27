@@ -14,7 +14,7 @@ namespace QSB.MeteorSync
 		{
 			// wait for all late initializers (which includes meteor launchers) to finish
 			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.s_lateInitializers.Count == 0, () =>
+			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.isDoneInitializing, () =>
 			{
 				FinishDelayedReady();
 				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();

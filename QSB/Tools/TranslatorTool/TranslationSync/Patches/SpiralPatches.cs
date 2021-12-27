@@ -7,51 +7,25 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 {
-	[HarmonyPatch]
 	internal class SpiralPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiWallText), nameof(NomaiWallText.SetAsTranslated))]
-		public static bool NomaiWallText_SetAsTranslated(NomaiWallText __instance, int id)
+		[HarmonyPatch(typeof(NomaiText), nameof(NomaiText.SetAsTranslated))]
+		public static void SetAsTranslated(NomaiText __instance, int id)
 		{
+			if (__instance is GhostWallText)
+			{
+				return;
+			}
 			if (__instance.IsTranslated(id))
 			{
-				return true;
+				return;
 			}
 
-			__instance.GetWorldObject<QSBWallText>()
-				.SendMessage(new WallTextTranslatedMessage(id));
-			return true;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiComputer), nameof(NomaiWallText.SetAsTranslated))]
-		public static bool NomaiComputer_SetAsTranslated(NomaiComputer __instance, int id)
-		{
-			if (__instance.IsTranslated(id))
-			{
-				return true;
-			}
-
-			__instance.GetWorldObject<QSBComputer>()
-				.SendMessage(new ComputerTranslatedMessage(id));
-			return true;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiVesselComputer), nameof(NomaiWallText.SetAsTranslated))]
-		public static bool NomaiVesselComputer_SetAsTranslated(NomaiVesselComputer __instance, int id)
-		{
-			if (__instance.IsTranslated(id))
-			{
-				return true;
-			}
-
-			__instance.GetWorldObject<QSBVesselComputer>()
-				.SendMessage(new VesselComputerTranslatedMessage(id));
-			return true;
+			__instance.GetWorldObject<QSBNomaiText>()
+				.SendMessage(new SetAsTranslatedMessage(id));
 		}
 	}
 }

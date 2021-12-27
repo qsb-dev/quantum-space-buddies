@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.CampfireSync.Messages;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
@@ -92,22 +91,10 @@ namespace QSB.Player.Messages
 			QSBWorldSync.ShipLogFacts.ForEach(fact
 				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = From }.Send());
 
-			foreach (var wallText in QSBWorldSync.GetWorldObjects<QSBWallText>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
+			foreach (var text in QSBWorldSync.GetWorldObjects<QSBNomaiText>())
 			{
-				wallText.GetTranslatedIds().ForEach(id
-					=> wallText.SendMessage(new WallTextTranslatedMessage(id) { To = From }));
-			}
-
-			foreach (var computer in QSBWorldSync.GetWorldObjects<QSBComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
-			{
-				computer.GetTranslatedIds().ForEach(id
-					=> computer.SendMessage(new ComputerTranslatedMessage(id) { To = From }));
-			}
-
-			foreach (var vesselComputer in QSBWorldSync.GetWorldObjects<QSBVesselComputer>().Where(x => x.AttachedObject.GetValue<bool>("_initialized") && x.AttachedObject.GetNumTextBlocks() > 0))
-			{
-				vesselComputer.GetTranslatedIds().ForEach(id
-					=> vesselComputer.SendMessage(new VesselComputerTranslatedMessage(id) { To = From }));
+				text.GetTranslatedIds().ForEach(id =>
+					text.SendMessage(new SetAsTranslatedMessage(id) { To = From }));
 			}
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
