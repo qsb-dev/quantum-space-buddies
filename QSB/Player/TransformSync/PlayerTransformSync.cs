@@ -282,7 +282,8 @@ namespace QSB.Player.TransformSync
 		}
 
 		public override bool IsReady
-			=> Locator.GetPlayerTransform() != null;
+			=> AttachedObject != null
+			|| Locator.GetPlayerTransform() != null;
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

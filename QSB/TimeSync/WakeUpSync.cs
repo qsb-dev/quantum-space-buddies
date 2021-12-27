@@ -412,7 +412,7 @@ namespace QSB.TimeSync
 				return;
 			}
 
-			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds);
+			var mappedTimescale = diff.Map(-PauseOrFastForwardThreshold, PauseOrFastForwardThreshold, 1 + TimescaleBounds, 1 - TimescaleBounds, true);
 			if (mappedTimescale > 100f)
 			{
 				DebugLog.ToConsole($"Warning - CheckTimeDifference() returned over 100 - should have switched into fast-forward!", MessageType.Warning);

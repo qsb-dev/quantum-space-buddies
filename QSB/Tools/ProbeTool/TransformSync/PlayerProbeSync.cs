@@ -111,6 +111,6 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return true;
 		}
 
-		public override bool IsReady => Locator.GetProbe() != null;
+		public override bool IsReady => AttachedObject != null || Locator.GetProbe() != null;
 	}
 }
