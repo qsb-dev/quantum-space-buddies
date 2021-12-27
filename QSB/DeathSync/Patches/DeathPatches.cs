@@ -91,7 +91,7 @@ namespace QSB.DeathSync.Patches
 				}
 				else if (__instance.gameObject.CompareTag("Ship"))
 				{
-					__instance.GetComponent<ShipDamageController>().Explode(false);
+					__instance.GetComponent<ShipDamageController>().Explode();
 				}
 			}
 

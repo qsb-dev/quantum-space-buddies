@@ -413,7 +413,7 @@ namespace QSB.QuantumSync.Patches
 					{
 						__instance._isPlayerInside = true;
 						__instance.SetSurfaceState(__instance._stateIndex);
-						Locator.GetShipLogManager().RevealFact(__instance._revealFactID, true, true);
+						Locator.GetShipLogManager().RevealFact(__instance._revealFactID);
 						GlobalMessenger.FireEvent(OWEvents.PlayerEnterQuantumMoon);
 					}
 					else

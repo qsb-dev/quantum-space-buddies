@@ -60,7 +60,7 @@ namespace QSB.Animation.Player.Patches
 			var lastGroundBody = ____playerController.GetLastGroundBody();
 			if (!isGrounded && !isAttached && !isInZeroG && lastGroundBody != null)
 			{
-				freefallMagnitude = (____playerController.GetAttachedOWRigidbody(false).GetVelocity() - lastGroundBody.GetPointVelocity(____playerController.transform.position)).magnitude;
+				freefallMagnitude = (____playerController.GetAttachedOWRigidbody().GetVelocity() - lastGroundBody.GetPointVelocity(____playerController.transform.position)).magnitude;
 				timeInFreefall = Time.time - ____ungroundedTime;
 			}
 

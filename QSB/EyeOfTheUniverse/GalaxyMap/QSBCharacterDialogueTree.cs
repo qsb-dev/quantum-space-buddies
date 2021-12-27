@@ -82,7 +82,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 		{
 			if (_currentDialogueBox != null && OWInput.GetInputMode() == InputMode.Dialogue)
 			{
-				if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.enter2, InputMode.All))
+				if (OWInput.IsNewlyPressed(InputLibrary.interact) || OWInput.IsNewlyPressed(InputLibrary.cancel) || OWInput.IsNewlyPressed(InputLibrary.enter) || OWInput.IsNewlyPressed(InputLibrary.enter2))
 				{
 					if (!_currentDialogueBox.AreTextEffectsComplete())
 					{
@@ -104,13 +104,13 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 				}
 				else
 				{
-					if (OWInput.IsNewlyPressed(InputLibrary.down, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.down2, InputMode.All))
+					if (OWInput.IsNewlyPressed(InputLibrary.down) || OWInput.IsNewlyPressed(InputLibrary.down2))
 					{
 						_currentDialogueBox.OnDownPressed();
 						return;
 					}
 
-					if (OWInput.IsNewlyPressed(InputLibrary.up, InputMode.All) || OWInput.IsNewlyPressed(InputLibrary.up2, InputMode.All))
+					if (OWInput.IsNewlyPressed(InputLibrary.up) || OWInput.IsNewlyPressed(InputLibrary.up2))
 					{
 						_currentDialogueBox.OnUpPressed();
 					}
@@ -180,7 +180,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 							dialogueNode.ListEntryCondition.Add(xelement5.Value);
 							if (!sharedInstance.ConditionExists(xelement5.Value))
 							{
-								sharedInstance.AddCondition(xelement5.Value, false);
+								sharedInstance.AddCondition(xelement5.Value);
 							}
 						}
 					}
@@ -256,7 +256,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 									dialogueOption.ConditionRequirement = xelement13.Element("RequiredCondition").Value;
 									if (!sharedInstance.ConditionExists(dialogueOption.ConditionRequirement))
 									{
-										sharedInstance.AddCondition(dialogueOption.ConditionRequirement, false);
+										sharedInstance.AddCondition(dialogueOption.ConditionRequirement);
 									}
 								}
 
@@ -270,7 +270,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 									dialogueOption.CancelledRequirement = xelement13.Element("CancelledCondition").Value;
 									if (!sharedInstance.ConditionExists(dialogueOption.CancelledRequirement))
 									{
-										sharedInstance.AddCondition(dialogueOption.CancelledRequirement, false);
+										sharedInstance.AddCondition(dialogueOption.CancelledRequirement);
 									}
 								}
 
@@ -289,7 +289,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 									dialogueOption.ConditionToSet = xelement13.Element("ConditionToSet").Value;
 									if (!sharedInstance.ConditionExists(dialogueOption.ConditionToSet))
 									{
-										sharedInstance.AddCondition(dialogueOption.ConditionToSet, false);
+										sharedInstance.AddCondition(dialogueOption.ConditionToSet);
 									}
 								}
 
@@ -298,7 +298,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 									dialogueOption.ConditionToCancel = xelement13.Element("ConditionToCancel").Value;
 									if (!sharedInstance.ConditionExists(dialogueOption.ConditionToCancel))
 									{
-										sharedInstance.AddCondition(dialogueOption.ConditionToCancel, false);
+										sharedInstance.AddCondition(dialogueOption.ConditionToCancel);
 									}
 								}
 
@@ -368,12 +368,12 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			_currentDialogueBox = DisplayDialogueBox2();
 			if (_attentionPoint != null && !PlayerState.InZeroG())
 			{
-				Locator.GetPlayerTransform().GetRequiredComponent<PlayerLockOnTargeting>().LockOn(_attentionPoint, _attentionPointOffset, 2f, false, 1f);
+				Locator.GetPlayerTransform().GetRequiredComponent<PlayerLockOnTargeting>().LockOn(_attentionPoint, _attentionPointOffset, 2f);
 			}
 
 			if (PlayerState.InZeroG() && !_timeFrozen)
 			{
-				Locator.GetPlayerBody().GetComponent<Autopilot>().StartMatchVelocity(this.GetAttachedOWRigidbody(false).GetReferenceFrame(), false);
+				Locator.GetPlayerBody().GetComponent<Autopilot>().StartMatchVelocity(this.GetAttachedOWRigidbody().GetReferenceFrame());
 			}
 		}
 
@@ -497,7 +497,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 
 			if (selectedOption.ConditionToCancel != string.Empty)
 			{
-				DialogueConditionManager.SharedInstance.SetConditionState(selectedOption.ConditionToCancel, false);
+				DialogueConditionManager.SharedInstance.SetConditionState(selectedOption.ConditionToCancel);
 			}
 
 			if (selectedOption.TargetName == string.Empty)

@@ -28,7 +28,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 					&& Vector3.Angle(__instance.transform.position - Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward) < 1f)
 				{
 					__instance._scopeGatherPrompt.SetVisibility(true);
-					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.All))
+					if (OWInput.IsNewlyPressed(InputLibrary.interact))
 					{
 						__instance.Gather();
 						__instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());

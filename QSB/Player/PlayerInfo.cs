@@ -230,7 +230,7 @@ namespace QSB.Player
 			else
 			{
 				FlashlightActive = Locator.GetFlashlight()._flashlightOn;
-				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit(true);
+				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit();
 			}
 
 			new PlayerInformationMessage().Send();

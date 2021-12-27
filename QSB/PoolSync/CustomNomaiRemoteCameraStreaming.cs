@@ -37,8 +37,8 @@
 				{
 					_hasLoadedAssets = true;
 					_streamingGroup = StreamingGroup.GetStreamingGroup(NomaiRemoteCameraStreaming.NomaiRemoteCameraPlatformIDToSceneName(stone.GetRemoteCameraID()));
-					_streamingGroup.RequestRequiredAssets(0);
-					_streamingGroup.RequestGeneralAssets(0);
+					_streamingGroup.RequestRequiredAssets();
+					_streamingGroup.RequestGeneralAssets();
 				}
 			}
 		}

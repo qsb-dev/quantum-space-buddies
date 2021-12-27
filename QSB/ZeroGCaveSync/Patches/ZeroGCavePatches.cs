@@ -31,7 +31,7 @@ namespace QSB.ZeroGCaveSync.Patches
 					.SendMessage(new SatelliteNodeRepairedMessage());
 				__instance._damaged = false;
 				var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
-				if (component.GetReferenceFrame(true) == __instance._rfVolume.GetReferenceFrame())
+				if (component.GetReferenceFrame() == __instance._rfVolume.GetReferenceFrame())
 				{
 					component.UntargetReferenceFrame();
 				}

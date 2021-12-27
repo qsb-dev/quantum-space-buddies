@@ -201,7 +201,7 @@ namespace QSB.PoolSync
 						_slavePlatform.UpdateRendererFade();
 						SwitchToRemoteCamera();
 						_hologramGroup.SetActive(true);
-						_ambientAudioSource.FadeIn(3f, true, false, 1f);
+						_ambientAudioSource.FadeIn(3f, true);
 						Locator.GetAudioMixer().MixRemoteCameraPlatform(_fadeInLength);
 						_cameraState = CameraState.Connecting_FadeOut;
 					}
@@ -538,7 +538,7 @@ namespace QSB.PoolSync
 		{
 			if (_dataPointID.Length > 0)
 			{
-				Locator.GetShipLogManager().RevealFact(_dataPointID, true, true);
+				Locator.GetShipLogManager().RevealFact(_dataPointID);
 			}
 		}
 
@@ -562,7 +562,7 @@ namespace QSB.PoolSync
 				_cameraState = CameraState.Connecting_FadeIn;
 			}
 
-			_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraEntry, 1f);
+			_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraEntry);
 			enabled = true;
 		}
 
@@ -584,8 +584,8 @@ namespace QSB.PoolSync
 			else
 			{
 				_cameraState = CameraState.Disconnecting_FadeIn;
-				_ambientAudioSource.FadeOut(0.5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
-				_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraExit, 1f);
+				_ambientAudioSource.FadeOut(0.5f);
+				_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraExit);
 				Locator.GetAudioMixer().UnmixRemoteCameraPlatform(_fadeOutLength);
 			}
 		}

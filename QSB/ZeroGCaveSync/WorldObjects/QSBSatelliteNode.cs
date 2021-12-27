@@ -10,7 +10,7 @@ namespace QSB.ZeroGCaveSync.WorldObjects
 			DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} Set repaired.");
 			AttachedObject._damaged = false;
 			var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
-			if (component.GetReferenceFrame(true) == AttachedObject._rfVolume.GetReferenceFrame())
+			if (component.GetReferenceFrame() == AttachedObject._rfVolume.GetReferenceFrame())
 			{
 				component.UntargetReferenceFrame();
 			}

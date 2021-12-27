@@ -35,7 +35,7 @@ namespace QSB.Tools.ProbeTool
 			_probe.OnStartRetrieveProbe -= OnStartRetrieve;
 		}
 
-		private void OnLaunch() => _flightLoopAudio.FadeIn(0.1f, true, true, 1f);
+		private void OnLaunch() => _flightLoopAudio.FadeIn(0.1f, true, true);
 
 		private void OnAnchor()
 		{
@@ -49,14 +49,14 @@ namespace QSB.Tools.ProbeTool
 			//{
 			_anchorParticles.Play();
 			//}
-			_flightLoopAudio.FadeOut(0.5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
-			_anchorAudio.PlayOneShot(AudioType.ToolProbeAttach, 1f);
+			_flightLoopAudio.FadeOut(0.5f);
+			_anchorAudio.PlayOneShot(AudioType.ToolProbeAttach);
 		}
 
 		private void OnUnanchor()
-			=> _flightLoopAudio.FadeIn(0.5f, false, false, 1f);
+			=> _flightLoopAudio.FadeIn(0.5f);
 
 		private void OnStartRetrieve(float retrieveLength)
-			=> _flightLoopAudio.FadeOut(retrieveLength, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
+			=> _flightLoopAudio.FadeOut(retrieveLength);
 	}
 }

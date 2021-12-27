@@ -238,7 +238,7 @@ namespace QSB.QuantumSync.Patches
 			else
 			{
 				__instance.SetSurfaceState(-1);
-				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5, 2f);
+				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5);
 			}
 
 			__instance._referenceFrameVolume.gameObject.SetActive(__instance._stateIndex != 5);

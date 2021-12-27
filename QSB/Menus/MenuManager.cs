@@ -133,7 +133,7 @@ namespace QSB.Menus
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 			}
 		}
 
@@ -262,7 +262,7 @@ namespace QSB.Menus
 
 			OWInput.RestorePreviousInputs();
 
-			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 		}
 
 		private void Host()

@@ -129,7 +129,7 @@ namespace QSB.RespawnSync
 			mapController.ExitMapView();
 
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
-			cameraEffectController.OpenEyes(1f, false);
+			cameraEffectController.OpenEyes(1f);
 		}
 
 		public void OnPlayerDeath(PlayerInfo player)

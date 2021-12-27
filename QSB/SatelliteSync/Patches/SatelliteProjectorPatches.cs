@@ -44,7 +44,7 @@ namespace QSB.SatelliteSync.Patches
 				return false;
 			}
 
-			if (OWInput.IsNewlyPressed(InputLibrary.toolActionPrimary, InputMode.All))
+			if (OWInput.IsNewlyPressed(InputLibrary.toolActionPrimary))
 			{
 				new SatelliteProjectorSnapshotMessage(true).Send();
 				__instance._satelliteCamera.transform.localEulerAngles = __instance._initCamLocalRot;
@@ -52,7 +52,7 @@ namespace QSB.SatelliteSync.Patches
 				return false;
 			}
 
-			if (__instance._allowRearview && OWInput.IsNewlyPressed(InputLibrary.toolActionSecondary, InputMode.All))
+			if (__instance._allowRearview && OWInput.IsNewlyPressed(InputLibrary.toolActionSecondary))
 			{
 				new SatelliteProjectorSnapshotMessage(false).Send();
 				__instance._satelliteCamera.transform.localEulerAngles = __instance._initCamLocalRot + new Vector3(0f, 180f, 0f);
@@ -60,7 +60,7 @@ namespace QSB.SatelliteSync.Patches
 				return false;
 			}
 
-			if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.All))
+			if (OWInput.IsNewlyPressed(InputLibrary.cancel))
 			{
 				__instance.TurnOffProjector();
 			}
