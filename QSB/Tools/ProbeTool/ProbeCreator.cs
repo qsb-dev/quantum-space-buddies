@@ -27,9 +27,15 @@ namespace QSB.Tools.ProbeTool
 			// ProbeDetector
 			//Object.Destroy(newProbe.Find("ProbeDetector").gameObject);
 			var probeDetector = newProbe.Find("ProbeDetector").gameObject;
+			probeDetector.tag = "Untagged";
 			Object.Destroy(probeDetector.GetComponent<ForceApplier>());
 			Object.Destroy(probeDetector.GetComponent<ProbeFluidDetector>());
+			Object.Destroy(probeDetector.GetComponent<SectorDetector>());
 			Object.Destroy(probeDetector.GetComponent<AlignmentForceDetector>());
+			Object.Destroy(probeDetector.GetComponent<OxygenDetector>());
+			Object.Destroy(probeDetector.GetComponent<RulesetDetector>());
+			Object.Destroy(probeDetector.GetComponent<ProbeDestructionDetector>());
+			Object.Destroy(probeDetector.GetComponent<VisionDetector>());
 
 			// CameraPivot
 			var cameraPivot = newProbe.Find("CameraPivot");
