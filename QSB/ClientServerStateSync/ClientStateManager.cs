@@ -3,7 +3,6 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using System;
 using UnityEngine;
 
 namespace QSB.ClientServerStateSync

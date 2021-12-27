@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Animation.Player;
+﻿using QSB.Animation.Player;
 using QSB.Audio;
 using QSB.Instruments;
 using QSB.Messaging;

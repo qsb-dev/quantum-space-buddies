@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using OWML.Utils;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.ShipSync.Messages;
@@ -50,7 +49,7 @@ namespace QSB.ShipSync.Patches
 		{
 			if (!__instance._isPlayerInShip && __instance._functional && hitCollider.CompareTag("PlayerDetector") && !ShipManager.Instance.HatchController._hatchObject.activeSelf)
 			{
-				ShipManager.Instance.HatchController.Invoke("CloseHatch");
+				ShipManager.Instance.HatchController.CloseHatch();
 				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
 				new HatchMessage(false).Send();
 			}

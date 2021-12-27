@@ -1,7 +1,4 @@
-﻿using OWML.Utils;
-using UnityEngine;
-
-namespace QSB.QuantumSync.WorldObjects
+﻿namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 	{

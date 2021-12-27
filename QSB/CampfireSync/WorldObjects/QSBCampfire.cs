@@ -1,5 +1,4 @@
 ﻿using QSB.WorldSync;
-using System.Reflection;
 
 namespace QSB.CampfireSync.WorldObjects
 {

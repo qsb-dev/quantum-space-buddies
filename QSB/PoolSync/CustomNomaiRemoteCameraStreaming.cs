@@ -1,6 +1,4 @@
-﻿using OWML.Utils;
-
-namespace QSB.PoolSync
+﻿namespace QSB.PoolSync
 {
 	internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 	{

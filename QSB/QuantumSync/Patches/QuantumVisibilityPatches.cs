@@ -3,7 +3,6 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Patches

@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Inputs;
@@ -241,7 +240,7 @@ namespace QSB.TimeSync
 		}
 
 		private void WakeUp()
-			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().Invoke("WakeUp");
+			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().WakeUp();
 
 		public void Update()
 		{
