@@ -3,12 +3,13 @@ using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
-using System;
 using System.Collections.Generic;
 
 namespace QSB.SaveSync.Messages
 {
-	// only to be sent from host
+	/// <summary>
+	/// always sent by host
+	/// </summary>
 	internal class GameStateMessage : QSBMessage
 	{
 		private bool WarpedToTheEye;
@@ -16,7 +17,19 @@ namespace QSB.SaveSync.Messages
 		private bool LaunchCodesGiven;
 		private int LoopCount;
 		private bool[] KnownFrequencies;
-		private readonly Dictionary<int, bool> KnownSignals = new();
+		private Dictionary<int, bool> KnownSignals;
+
+		public GameStateMessage(uint toId)
+		{
+			To = toId;
+			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			WarpedToTheEye = gameSave.warpedToTheEye;
+			SecondsRemainingOnWarp = gameSave.secondsRemainingOnWarp;
+			LaunchCodesGiven = PlayerData.KnowsLaunchCodes();
+			LoopCount = gameSave.loopCount;
+			KnownFrequencies = gameSave.knownFrequencies;
+			KnownSignals = gameSave.knownSignals;
+		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -49,35 +62,20 @@ namespace QSB.SaveSync.Messages
 			LoopCount = reader.ReadInt32();
 
 			var frequenciesLength = reader.ReadInt32();
-			var knownFrequencies = KnownFrequencies;
-			Array.Resize(ref knownFrequencies, frequenciesLength);
-			KnownFrequencies = knownFrequencies;
+			KnownFrequencies = new bool[frequenciesLength];
 			for (var i = 0; i < frequenciesLength; i++)
 			{
 				KnownFrequencies[i] = reader.ReadBoolean();
 			}
 
 			var signalsLength = reader.ReadInt32();
-			KnownSignals.Clear();
+			KnownSignals = new Dictionary<int, bool>(signalsLength);
 			for (var i = 0; i < signalsLength; i++)
 			{
 				var key = reader.ReadInt32();
 				var value = reader.ReadBoolean();
 				KnownSignals.Add(key, value);
 			}
-		}
-
-
-		public GameStateMessage(uint toId)
-		{
-			To = toId;
-			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
-			WarpedToTheEye = gameSave.warpedToTheEye;
-			SecondsRemainingOnWarp = gameSave.secondsRemainingOnWarp;
-			LaunchCodesGiven = PlayerData.KnowsLaunchCodes();
-			LoopCount = gameSave.loopCount;
-			KnownFrequencies = gameSave.knownFrequencies;
-			KnownSignals = gameSave.knownSignals;
 		}
 
 		public override void OnReceiveRemote()

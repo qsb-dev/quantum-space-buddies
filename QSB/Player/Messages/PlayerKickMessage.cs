@@ -7,7 +7,9 @@ using System.Linq;
 
 namespace QSB.Player.Messages
 {
-	// sent by the server only
+	/// <summary>
+	/// always sent by host
+	/// </summary>
 	internal class PlayerKickMessage : QSBEnumMessage<KickReason>
 	{
 		private uint PlayerId;

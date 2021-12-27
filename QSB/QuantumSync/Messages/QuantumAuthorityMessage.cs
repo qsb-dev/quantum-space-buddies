@@ -11,8 +11,6 @@ namespace QSB.QuantumSync.Messages
 
 		public QuantumAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
 
-		public QuantumAuthorityMessage() {}
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
