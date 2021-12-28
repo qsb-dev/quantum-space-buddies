@@ -24,7 +24,7 @@ namespace QSB.Player
 					return uint.MaxValue;
 				}
 
-				return localInstance.NetIdentity.NetId.Value;
+				return localInstance.NetId.Value;
 			}
 		}
 
@@ -33,8 +33,6 @@ namespace QSB.Player
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new();
-
-		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
@@ -53,30 +51,11 @@ namespace QSB.Player
 			return player;
 		}
 
-		public static void AddPlayer(uint id)
-		{
-			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
-			PlayerList.Add(new PlayerInfo(id));
-		}
-
-		public static void RemovePlayer(uint id)
-		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
-			PlayerList.RemoveAll(x => x.PlayerId == id);
-		}
-
 		public static bool PlayerExists(uint id) =>
 			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
 
-		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
-			PlayerSyncObjects.OfType<T>().Where(x => x != null);
-
 		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
-			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.PlayerId == id);
-
-		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
-
-		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
+			GetPlayer(id).TransformSync.GetComponent<T>();
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
