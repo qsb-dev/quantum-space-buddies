@@ -146,7 +146,7 @@ namespace Mirror.Weaver
             }),
             ref WeavingFailed);
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // [InitializeOnLoadMethod]
             // 'UnityEditor' is not available in builds.
             // we can only import this attribute if we are in an Editor assembly.
