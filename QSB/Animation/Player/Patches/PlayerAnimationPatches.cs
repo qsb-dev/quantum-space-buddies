@@ -62,15 +62,16 @@ namespace QSB.Animation.Player.Patches
 			__instance._animator.SetBool("UsingJetpack", isInZeroG && PlayerState.IsWearingSuit());
 			if (__instance._justBecameGrounded)
 			{
+				var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
 				if (__instance._justTookFallDamage)
 				{
 					__instance._animator.SetTrigger("LandHard");
-					new AnimationTriggerMessage(QSBPlayerManager.LocalPlayerId, "LandHard").Send();
+					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "LandHard").Send();
 				}
 				else
 				{
 					__instance._animator.SetTrigger("Land");
-					new AnimationTriggerMessage(QSBPlayerManager.LocalPlayerId, "Land").Send();
+					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Land").Send();
 				}
 			}
 
@@ -127,7 +128,8 @@ namespace QSB.Animation.Player.Patches
 			}
 
 			__instance._animator.SetTrigger("Jump");
-			new AnimationTriggerMessage(QSBPlayerManager.LocalPlayerId, "Jump").Send();
+			var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
+			new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Jump").Send();
 			return false;
 		}
 	}

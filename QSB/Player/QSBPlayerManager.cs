@@ -24,19 +24,27 @@ namespace QSB.Player
 					return uint.MaxValue;
 				}
 
-				return localInstance.NetId.Value;
+				if (localInstance.NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return localInstance.NetIdentity.NetId.Value;
 			}
 		}
 
-		public static Action<uint> OnAddPlayer;
 		public static Action<uint> OnRemovePlayer;
+		public static Action<uint> OnAddPlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
-		public static List<PlayerInfo> PlayerList { get; } = new();
+		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
+
+		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (id is uint.MaxValue or 0)
+			if (id is uint.MaxValue or 0U)
 			{
 				return default;
 			}
@@ -51,8 +59,32 @@ namespace QSB.Player
 			return player;
 		}
 
+		public static void AddPlayer(uint id)
+		{
+			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
+			var player = new PlayerInfo(id);
+			PlayerList.Add(player);
+			OnAddPlayer?.Invoke(id);
+		}
+
+		public static void RemovePlayer(uint id)
+		{
+			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
+			PlayerList.RemoveAll(x => x.PlayerId == id);
+		}
+
 		public static bool PlayerExists(uint id) =>
-			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
+			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
+
+		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
+			PlayerSyncObjects.OfType<T>().Where(x => x != null);
+
+		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
+			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
+
+		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
+
+		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{

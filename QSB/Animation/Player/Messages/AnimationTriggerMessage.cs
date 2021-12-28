@@ -7,26 +7,26 @@ namespace QSB.Animation.Player.Messages
 {
 	internal class AnimationTriggerMessage : QSBMessage
 	{
-		private uint PlayerId;
+		private uint AttachedNetId;
 		private string Name;
 
-		public AnimationTriggerMessage(uint playerId, string name)
+		public AnimationTriggerMessage(uint attachedNetId, string name)
 		{
-			PlayerId = playerId;
+			AttachedNetId = attachedNetId;
 			Name = name;
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(PlayerId);
+			writer.Write(AttachedNetId);
 			writer.Write(Name);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			PlayerId = reader.ReadUInt32();
+			AttachedNetId = reader.ReadUInt32();
 			Name = reader.ReadString();
 		}
 
@@ -34,7 +34,7 @@ namespace QSB.Animation.Player.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var animationSync = QSBPlayerManager.GetPlayer(PlayerId).AnimationSync;
+			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(AttachedNetId);
 			if (animationSync == null)
 			{
 				return;

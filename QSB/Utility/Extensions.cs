@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,21 @@ namespace QSB.Utility
 				return uint.MaxValue;
 			}
 
-			return playerController.UnetView.NetId.Value;
+			var go = playerController.Gameobject;
+			if (go == null)
+			{
+				DebugLog.ToConsole($"Error - GameObject of {playerController.UnetView.NetId.Value} is null.", MessageType.Error);
+				return uint.MaxValue;
+			}
+
+			var controller = go.GetComponent<PlayerTransformSync>();
+			if (controller == null)
+			{
+				DebugLog.ToConsole($"Error - No PlayerTransformSync found on {go.name}", MessageType.Error);
+				return uint.MaxValue;
+			}
+
+			return controller.NetId.Value;
 		}
 
 		public static void SpawnWithServerAuthority(this GameObject go)

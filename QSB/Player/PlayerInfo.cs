@@ -4,7 +4,6 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.Instruments;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
@@ -24,9 +23,9 @@ namespace QSB.Player
 	public class PlayerInfo
 	{
 		public uint PlayerId { get; }
-		public PlayerTransformSync TransformSync { get; }
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
+		public PlayerTransformSync TransformSync { get; set; }
 
 		// Body Objects
 		public OWCamera Camera
@@ -115,8 +114,7 @@ namespace QSB.Player
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
-		public AnimationSync AnimationSync => TransformSync.GetComponent<AnimationSync>();
-		public InstrumentsManager InstrumentsManager => TransformSync.GetComponent<InstrumentsManager>();
+		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType is not AnimationType.PlayerSuited
 			and not AnimationType.PlayerUnsuited;
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
@@ -195,10 +193,9 @@ namespace QSB.Player
 			}
 		}
 
-		public PlayerInfo(PlayerTransformSync transformSync)
+		public PlayerInfo(uint id)
 		{
-			PlayerId = transformSync.NetId.Value;
-			TransformSync = transformSync;
+			PlayerId = id;
 			CurrentCharacterDialogueTreeId = -1;
 		}
 
@@ -219,7 +216,8 @@ namespace QSB.Player
 			Translator?.ChangeEquipState(TranslatorEquipped);
 			ProbeLauncher?.ChangeEquipState(ProbeLauncherEquipped);
 			Signalscope?.ChangeEquipState(SignalscopeEquipped);
-			AnimationSync.SetSuitState(SuitedUp);
+			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
+				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(SuitedUp));
 		}
 
 		public void UpdateStatesFromObjects()

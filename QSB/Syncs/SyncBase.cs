@@ -17,14 +17,48 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
-		public uint PlayerId { get; private set; } = uint.MaxValue;
+		public uint AttachedNetId
+		{
+			get
+			{
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.NetId.Value;
+			}
+		}
+
+		public uint PlayerId
+		{
+			get
+			{
+				if (!IsPlayerObject)
+				{
+					return uint.MaxValue;
+				}
+
+				if (NetIdentity == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
+					return uint.MaxValue;
+				}
+
+				return NetIdentity.RootIdentity != null
+					? NetIdentity.RootIdentity.NetId.Value
+					: AttachedNetId;
+			}
+		}
+
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		private bool _baseIsReady
 		{
 			get
 			{
-				if (NetId.Value is uint.MaxValue or 0)
+				if (NetId.Value is uint.MaxValue or 0U)
 				{
 					return false;
 				}
@@ -41,7 +75,12 @@ namespace QSB.Syncs
 						return false;
 					}
 
-					if (!IsLocalPlayer && !Player.IsReady)
+					if (Player == null)
+					{
+						return false;
+					}
+
+					if (!Player.IsReady && !IsLocalPlayer)
 					{
 						return false;
 					}
@@ -56,7 +95,7 @@ namespace QSB.Syncs
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
 		public abstract bool DestroyAttachedObject { get; }
-		public abstract bool IsPlayerObject { get; }
+		public abstract bool IsPlayerObject { get;  }
 
 		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
@@ -79,12 +118,9 @@ namespace QSB.Syncs
 		{
 			if (IsPlayerObject)
 			{
-				// get player objects spawned before this object (or is this one)
-				// and use the most recently spawned one
-				PlayerId = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
-					.Select(x => x.NetId.Value)
-					.Where(x => x <= NetId.Value)
-					.Max();
+				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
+				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
+				NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 			}
 
 			DontDestroyOnLoad(gameObject);
