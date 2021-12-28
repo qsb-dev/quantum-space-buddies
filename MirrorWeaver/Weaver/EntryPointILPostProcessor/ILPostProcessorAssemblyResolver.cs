@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Mono.CecilX;
+using Mono.Cecil;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
 
 namespace Mirror.Weaver

@@ -6,7 +6,7 @@
 // we need this custom reflection importer to fix that.
 using System.Linq;
 using System.Reflection;
-using Mono.CecilX;
+using Mono.Cecil;
 
 namespace Mirror.Weaver
 {

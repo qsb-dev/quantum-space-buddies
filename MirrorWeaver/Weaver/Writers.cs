@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Mono.CecilX;
-using Mono.CecilX.Cil;
-// to use Mono.CecilX.Rocks here, we need to 'override references' in the
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+// to use Mono.Cecil.Rocks here, we need to 'override references' in the
 // Unity.Mirror.CodeGen assembly definition file in the Editor, and add CecilX.Rocks.
 // otherwise we get an unknown import exception.
-using Mono.CecilX.Rocks;
+using Mono.Cecil.Rocks;
 
 namespace Mirror.Weaver
 {

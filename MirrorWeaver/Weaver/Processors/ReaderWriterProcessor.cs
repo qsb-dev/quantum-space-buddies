@@ -1,8 +1,8 @@
 // finds all readers and writers and register them
 using System.Linq;
-using Mono.CecilX;
-using Mono.CecilX.Cil;
-using Mono.CecilX.Rocks;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using UnityEngine;
 
 namespace Mirror.Weaver

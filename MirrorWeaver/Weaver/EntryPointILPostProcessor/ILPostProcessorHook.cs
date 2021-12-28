@@ -6,11 +6,11 @@
 // https://forum.unity.com/threads/how-does-unity-do-codegen-and-why-cant-i-do-it-myself.853867/#post-5646937
 using System.IO;
 using System.Linq;
-// to use Mono.CecilX here, we need to 'override references' in the
+// to use Mono.Cecil here, we need to 'override references' in the
 // Unity.Mirror.CodeGen assembly definition file in the Editor, and add CecilX.
 // otherwise we get a reflection exception with 'file not found: CecilX'.
-using Mono.CecilX;
-using Mono.CecilX.Cil;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
 // IMPORTANT: 'using UnityEngine' does not work in here.
 // Unity gives "(0,0): error System.Security.SecurityException: ECall methods must be packaged into a system module."
@@ -45,7 +45,7 @@ namespace Mirror.Weaver
         {
             // compiledAssembly.References are file paths:
             //   Library/Bee/artifacts/200b0aE.dag/Mirror.CompilerSymbols.dll
-            //   Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.dll
+            //   Assets/Mirror/Plugins/Mono.Cecil/Mono.Cecil.dll
             //   /Applications/Unity/Hub/Editor/2021.2.0b6_apple_silicon/Unity.app/Contents/NetStandard/ref/2.1.0/netstandard.dll
             //
             // log them to see:
@@ -68,7 +68,7 @@ namespace Mirror.Weaver
             using (ILPostProcessorAssemblyResolver asmResolver = new ILPostProcessorAssemblyResolver(compiledAssembly, Log))
             {
                 // we need to load symbols. otherwise we get:
-                // "(0,0): error Mono.CecilX.Cil.SymbolsNotFoundException: No symbol found for file: "
+                // "(0,0): error Mono.Cecil.Cil.SymbolsNotFoundException: No symbol found for file: "
                 using (MemoryStream symbols = new MemoryStream(compiledAssembly.InMemoryAssembly.PdbData))
                 {
                     ReaderParameters readerParameters = new ReaderParameters{
