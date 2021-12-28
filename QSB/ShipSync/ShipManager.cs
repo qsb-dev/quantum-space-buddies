@@ -91,8 +91,8 @@ namespace QSB.ShipSync
 				Instantiate(QSBNetworkManager.Instance.ShipPrefab).SpawnWithServerAuthority();
 			}
 
-			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();
-			QSBWorldSync.Init<QSBShipHull, ShipHull>();
+			QSBWorldSync.Init<QSBShipComponent, ShipComponent>(this);
+			QSBWorldSync.Init<QSBShipHull, ShipHull>(this);
 		}
 
 		public void AddPlayerToShip(PlayerInfo player)

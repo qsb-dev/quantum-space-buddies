@@ -33,13 +33,13 @@ namespace QSB.QuantumSync
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Info);
-			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
-			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
-			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();
-			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>();
-			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
-			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
-			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
+			QSBWorldSync.Init<QSBQuantumState, QuantumState>(this);
+			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>(this);
+			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>(this);
+			QSBWorldSync.Init<QSBQuantumSocket, QuantumSocket>(this);
+			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>(this);
+			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>(this);
+			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>(this);
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
@@ -64,7 +64,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllObjectsReady || !QSBCore.ShowLinesInDebug)
+			if (!AllObjectsReady || !QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}

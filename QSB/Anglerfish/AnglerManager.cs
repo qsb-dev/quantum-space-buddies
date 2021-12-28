@@ -14,7 +14,7 @@ namespace QSB.Anglerfish
 		{
 			Anglers.Clear();
 			Anglers.AddRange(QSBWorldSync.GetUnityObjects<AnglerfishController>());
-			QSBWorldSync.Init<QSBAngler, AnglerfishController>(Anglers);
+			QSBWorldSync.Init<QSBAngler, AnglerfishController>(Anglers, this);
 		}
 	}
 }

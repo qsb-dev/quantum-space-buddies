@@ -24,16 +24,6 @@ namespace QSB.QuantumSync.Messages
 			StateIndex = reader.ReadInt32();
 		}
 
-		public override void OnReceiveLocal()
-		{
-			if (!QSBCore.ShowQuantumDebugBoxes)
-			{
-				return;
-			}
-
-			WorldObject.DebugBoxText.text = StateIndex.ToString();
-		}
-
 		public override void OnReceiveRemote()
 		{
 			if (WorldObject.ControllingPlayer != From)

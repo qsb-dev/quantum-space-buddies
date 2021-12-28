@@ -8,12 +8,15 @@ namespace QSB.WorldSync
 	{
 		public int ObjectId { get; init; }
 		public T AttachedObject { get; init; }
+		public WorldObjectManager Manager { get; init; }
 		public string Name => AttachedObject == null ? "<NullObject!>" : AttachedObject.name;
 		public string LogName => $"{QSBPlayerManager.LocalPlayerId}.{ObjectId}:{GetType().Name}";
 
 		public virtual void Init() { }
 		public virtual void OnRemoval() { }
 		public MonoBehaviour ReturnObject() => AttachedObject;
+		public virtual bool ShouldDisplayLabel() => true;
+		public virtual string ReturnLabel() => LogName;
 
 		/// indicates that this won't become ready immediately
 		protected void StartDelayedReady() => WorldObjectManager._numObjectsReadying++;

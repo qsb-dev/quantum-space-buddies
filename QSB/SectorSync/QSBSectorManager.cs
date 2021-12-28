@@ -89,7 +89,7 @@ namespace QSB.SectorSync
 				}
 			}
 
-			QSBWorldSync.Init<QSBSector, Sector>();
+			QSBWorldSync.Init<QSBSector, Sector>(this);
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 

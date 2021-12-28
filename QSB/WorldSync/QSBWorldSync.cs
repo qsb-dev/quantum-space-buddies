@@ -82,6 +82,7 @@ namespace QSB.WorldSync
 				try
 				{
 					item.OnRemoval();
+					item.Manager.UnregisterWorldObject(item);
 				}
 				catch (Exception e)
 				{
@@ -98,23 +99,23 @@ namespace QSB.WorldSync
 			=> Resources.FindObjectsOfTypeAll<TUnityObject>()
 				.Where(x => x.gameObject.scene.name != null);
 
-		public static void Init<TWorldObject, TUnityObject>()
+		public static void Init<TWorldObject, TUnityObject>(WorldObjectManager owner)
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
 			var list = GetUnityObjects<TUnityObject>();
-			Init<TWorldObject, TUnityObject>(list);
+			Init<TWorldObject, TUnityObject>(list, owner);
 		}
 
-		public static void Init<TWorldObject, TUnityObject>(params Type[] typesToExclude)
+		public static void Init<TWorldObject, TUnityObject>(WorldObjectManager owner, params Type[] typesToExclude)
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
 			var list = GetUnityObjects<TUnityObject>().Where(x => !typesToExclude.Contains(x.GetType()));
-			Init<TWorldObject, TUnityObject>(list);
+			Init<TWorldObject, TUnityObject>(list, owner);
 		}
 
-		public static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom)
+		public static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom, WorldObjectManager owner)
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
@@ -124,12 +125,14 @@ namespace QSB.WorldSync
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,
-					ObjectId = WorldObjects.Count
+					ObjectId = WorldObjects.Count,
+					Manager = owner
 				};
 
 				obj.Init();
 				WorldObjects.Add(obj);
 				WorldObjectsToUnityObjects.Add(item, obj);
+				owner.RegisterWorldObject(obj);
 			}
 		}
 

@@ -12,7 +12,7 @@ namespace QSB.TornadoSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			QSBWorldSync.Init<QSBTornado, TornadoController>();
+			QSBWorldSync.Init<QSBTornado, TornadoController>(this);
 
 			if (!QSBCore.IsHost)
 			{

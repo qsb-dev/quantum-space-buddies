@@ -10,12 +10,12 @@ namespace QSB.Animation.NPC
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
-			QSBWorldSync.Init<QSBTravelerController, TravelerController>();
-			QSBWorldSync.Init<QSBSolanumController, NomaiConversationManager>();
-			QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>();
-			QSBWorldSync.Init<QSBHearthianRecorderEffects, HearthianRecorderEffects>();
-			QSBWorldSync.Init<QSBTravelerEyeController, TravelerEyeController>();
+			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>(this);
+			QSBWorldSync.Init<QSBTravelerController, TravelerController>(this);
+			QSBWorldSync.Init<QSBSolanumController, NomaiConversationManager>(this);
+			QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>(this);
+			QSBWorldSync.Init<QSBHearthianRecorderEffects, HearthianRecorderEffects>(this);
+			QSBWorldSync.Init<QSBTravelerEyeController, TravelerEyeController>(this);
 
 			//MOVE : this is the wrong place to put this... move it to Conversations?
 			QSBWorldSync.OldDialogueTrees.Clear();

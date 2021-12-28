@@ -24,11 +24,15 @@ namespace QSB.Utility
 		private float column3Offset = 10f;
 		private const float Column4 = Column3 + FixedWidth;
 		private float column4Offset = 10f;
+		private const int MaxLabelSize = 15;
+		private const float MaxLabelDistance = 250;
 
-		private GUIStyle guiStyle = new()
+		private GUIStyle guiGUIStyle = new()
 		{
 			fontSize = 9
 		};
+
+		private static GUIStyle labelGUIStyle = new();
 
 		private void WriteLine(int collumnID, string text)
 		{
@@ -58,14 +62,14 @@ namespace QSB.Utility
 					break;
 			}
 
-			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiStyle);
+			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiGUIStyle);
 		}
 
 		private void WriteLine(int collumnID, string text, Color color)
 		{
-			guiStyle.normal.textColor = color;
+			guiGUIStyle.normal.textColor = color;
 			WriteLine(collumnID, text);
-			guiStyle.normal.textColor = Color.white;
+			guiGUIStyle.normal.textColor = Color.white;
 		}
 
 		public void OnGUI()
@@ -75,7 +79,7 @@ namespace QSB.Utility
 				return;
 			}
 
-			guiStyle.normal.textColor = Color.white;
+			guiGUIStyle.normal.textColor = Color.white;
 			GUI.contentColor = Color.white;
 
 			column1Offset = 10f;
@@ -255,6 +259,85 @@ namespace QSB.Utility
 				}
 			}
 			#endregion
+		}
+
+		public static void DrawLabel(Transform obj, string label)
+		{
+			if (!QSBCore.ShowDebugLabels)
+			{
+				return;
+			}
+
+			var camera = Locator.GetPlayerCamera();
+
+			if (camera == null)
+			{
+				return;
+			}
+
+			if (obj == null)
+			{
+				return;
+			}
+
+			labelGUIStyle.normal.textColor = Color.white;
+			GUI.contentColor = Color.white;
+
+			var cheapDistance = (camera.transform.position - obj.transform.position).sqrMagnitude;
+
+			if (cheapDistance < 0)
+			{
+				return;
+			}
+
+			if (cheapDistance > MaxLabelDistance * MaxLabelDistance)
+			{
+				return;
+			}
+
+			var screenPosition = camera.WorldToScreenPoint(obj.position);
+			var distance = screenPosition.z;
+
+			if (distance < 0)
+			{
+				return;
+			}
+
+			if (distance > MaxLabelDistance)
+			{
+				return;
+			}
+
+			if (screenPosition.x < 0 || screenPosition.x > Screen.width)
+			{
+				return;
+			}
+
+			if (screenPosition.y < 0 || screenPosition.y > Screen.height)
+			{
+				return;
+			}
+
+			var mappedFontSize = distance.Map(0, MaxLabelDistance, MaxLabelSize, 0, true);
+
+			if ((int)mappedFontSize <= 0)
+			{
+				return;
+			}
+
+			if ((int)mappedFontSize >= MaxLabelSize)
+			{
+				return;
+			}
+
+			labelGUIStyle.fontSize = (int)mappedFontSize;
+
+			var rect = GUILayoutUtility.GetRect(new GUIContent(label), labelGUIStyle);
+			rect.x = screenPosition.x;
+			rect.y = Screen.height - screenPosition.y;
+
+			// WorldToScreenPoint's (0,0) is at screen bottom left, GUI's (0,0) is at screen top left. grrrr
+			GUI.Label(rect, label, labelGUIStyle);
 		}
 	}
 }

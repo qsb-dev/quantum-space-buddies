@@ -33,6 +33,8 @@ namespace QSB.WorldSync
 		/// </summary>
 		public abstract WorldObjectType WorldObjectType { get; }
 
+		private List<IWorldObject> _worldObjects = new List<IWorldObject>();
+
 		public virtual void Awake()
 		{
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -56,6 +58,9 @@ namespace QSB.WorldSync
 			AllObjectsAdded = false;
 			AllObjectsReady = false;
 		}
+
+		public void RegisterWorldObject(IWorldObject obj) => _worldObjects.Add(obj);
+		public void UnregisterWorldObject(IWorldObject obj) => _worldObjects.Remove(obj);
 
 		public static void Rebuild(OWScene scene)
 		{
@@ -126,5 +131,18 @@ namespace QSB.WorldSync
 
 		/// indicates that this is now ready
 		protected void FinishDelayedReady() => _numManagersReadying--;
+
+		private void OnGUI()
+		{
+			if (!QSBCore.ShowDebugLabels)
+			{
+				return;
+			}
+
+			foreach (var obj in _worldObjects)
+			{
+				DebugGUI.DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
+			}
+		}
 	}
 }

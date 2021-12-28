@@ -104,7 +104,6 @@ namespace QSB.Syncs
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
-		protected const int MaxLabelSize = 15;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 		protected bool _isInitialized;
@@ -298,37 +297,10 @@ namespace QSB.Syncs
 
 		void OnGUI()
 		{
-			GUIStyle guiStyle = new();
-			guiStyle.normal.textColor = Color.white;
-			GUI.contentColor = Color.white;
-
-			if (Locator.GetPlayerCamera() == null)
+			if (AttachedObject != null)
 			{
-				return;
+				DebugGUI.DrawLabel(AttachedObject.transform, LogName);
 			}
-
-			if (AttachedObject == null)
-			{
-				return;
-			}
-
-			var screenPosition = Locator.GetPlayerCamera().WorldToScreenPoint(AttachedObject.transform.position);
-			var distance = screenPosition.z;
-			var mappedFontSize = distance.Map(0, 250, MaxLabelSize, 0, true);
-			guiStyle.fontSize = (int)mappedFontSize;
-
-			if ((int)mappedFontSize <= 0)
-			{
-				return;
-			}
-
-			if ((int)mappedFontSize >= MaxLabelSize)
-			{
-				return;
-			}
-
-			// WorldToScreenPoint's (0,0) is at screen bottom left, GUI's (0,0) is at screen top left. grrrr
-			GUI.Label(new Rect(screenPosition.x, Screen.height - screenPosition.y, 100f, 20f), LogName, guiStyle);
 		}
 	}
 }

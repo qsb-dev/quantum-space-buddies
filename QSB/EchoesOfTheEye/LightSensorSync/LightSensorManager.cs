@@ -8,6 +8,6 @@ namespace QSB.EchoesOfTheEye.LightSensorSync
 		// see AirlockManager question
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
+		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>(this);
 	}
 }
