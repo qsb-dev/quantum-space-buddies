@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyTitle>MirrorWeaver</AssemblyTitle>
+        <Product>MirrorWeaver</Product>
+        <ProjectGuid>{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}</ProjectGuid>
+        <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile" />
+    </ItemGroup>
+</Project>
