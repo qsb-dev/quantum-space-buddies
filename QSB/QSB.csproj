@@ -14,10 +14,11 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <PropertyGroup>
-        <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
+        <PostBuildEvent Condition="Exists($(GameDir))">
             :: weave qsb
-            
-            
+            "$(OutputPath)\MirrorWeaver" "$(OutputPath)\QSB.dll" "$(GameDir)"
+        </PostBuildEvent>
+        <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
             :: copy output to unity project
             copy /y "$(OutputPath)" "$(UnityAssetsDir)"
             :: copy game assembly to unity project
@@ -68,6 +69,7 @@
     <ItemGroup>
         <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile"/>
         <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj"/>
+        <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj"/>
         <PackageReference Include="HarmonyX" Version="2.*" IncludeAssets="compile"/>
         <PackageReference Include="OWML" Version="2.*" IncludeAssets="compile"/>
     </ItemGroup>

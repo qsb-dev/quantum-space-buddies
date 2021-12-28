@@ -5,7 +5,7 @@ using System.IO;
 
 namespace MirrorWeaver
 {
-	internal class ConsoleLogger : Logger
+	public class ConsoleLogger : Logger
 	{
 		public void Warning(string message) => Warning(message, null);
 
@@ -26,6 +26,11 @@ namespace MirrorWeaver
 		}
 	}
 
+	public class AssemblyResolver : BaseAssemblyResolver
+	{
+		public AssemblyResolver(string managedDir) => AddSearchDirectory(managedDir);
+	}
+
 	public static class Program
 	{
 		public static void Main(string[] args)
@@ -34,16 +39,23 @@ namespace MirrorWeaver
 			var weaver = new Weaver(log);
 
 			var qsbDll = args[0];
-			if (!File.Exists(qsbDll))
+			var gameDir = args[1];
+			var managedDir = Path.Combine(gameDir, "OuterWilds_Data", "Managed");
+			// var weavedQsbDll = $"{qsbDll}.weaved.dll";
+			// Console.WriteLine($"{qsbDll} => {weavedQsbDll}");
+
+			var assembly = AssemblyDefinition.ReadAssembly(qsbDll);
+			var resolver = new DefaultAssemblyResolver();
+			// resolver.AddSearchDirectory(Path.GetDirectoryName(qsbDll));
+			// resolver.AddSearchDirectory(managedDir);
+
+			var result = weaver.Weave(assembly, resolver, out _);
+			if (!result)
 			{
-				throw new Exception($"qsb dll could not be located at {qsbDll}!");
+				throw new Exception("weaving failed");
 			}
 
-			Console.WriteLine("Start weaving process.");
-			var assembly = AssemblyDefinition.ReadAssembly(qsbDll);
-			weaver.Weave(assembly, new DefaultAssemblyResolver(), out var modified);
-			assembly.Write(new WriterParameters { WriteSymbols = true });
-			Console.WriteLine($"Finish weaving process. modified = {modified}");
+			assembly.Write(qsbDll, new WriterParameters { WriteSymbols = true });
 		}
 	}
 }
