@@ -25,7 +25,7 @@ namespace QSB.Utility
 		private const float Column4 = Column3 + FixedWidth;
 		private float column4Offset = 10f;
 		private const int MaxLabelSize = 15;
-		private const float MaxLabelDistance = 250;
+		private const float MaxLabelDistance = 150;
 
 		private GUIStyle guiGUIStyle = new()
 		{
@@ -283,12 +283,14 @@ namespace QSB.Utility
 			labelGUIStyle.normal.textColor = Color.white;
 			GUI.contentColor = Color.white;
 
-			var cheapDistance = (camera.transform.position - obj.transform.position).sqrMagnitude;
+			var difference = obj.transform.position - camera.transform.position;
 
-			if (cheapDistance < 0)
+			if (Vector3.Dot(difference.normalized, camera.transform.forward) < 0)
 			{
 				return;
 			}
+
+			var cheapDistance = difference.sqrMagnitude;
 
 			if (cheapDistance > MaxLabelDistance * MaxLabelDistance)
 			{
@@ -298,7 +300,7 @@ namespace QSB.Utility
 			var screenPosition = camera.WorldToScreenPoint(obj.position);
 			var distance = screenPosition.z;
 
-			if (distance < 0)
+			if (distance <= 0.05f)
 			{
 				return;
 			}
@@ -325,7 +327,7 @@ namespace QSB.Utility
 				return;
 			}
 
-			if ((int)mappedFontSize >= MaxLabelSize)
+			if ((int)mappedFontSize > MaxLabelSize)
 			{
 				return;
 			}
