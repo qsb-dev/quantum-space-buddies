@@ -17,7 +17,7 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
-		public uint PlayerId => IsPlayerObject ? NetIdentity.PlayerIdentity.NetId.Value : uint.MaxValue;
+		public uint PlayerId { get; private set; } = uint.MaxValue;
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
 		private bool _baseIsReady
@@ -79,10 +79,12 @@ namespace QSB.Syncs
 		{
 			if (IsPlayerObject)
 			{
-				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
-					.Where(x => x.NetId.Value <= NetId.Value)
-					.OrderBy(x => x.NetId.Value).Last();
-				NetIdentity.PlayerIdentity = lowestBound.NetIdentity;
+				// get player objects spawned before this object (or is this one)
+				// and use the most recently spawned one
+				PlayerId = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
+					.Select(x => x.NetId.Value)
+					.Where(x => x <= NetId.Value)
+					.Max();
 			}
 
 			DontDestroyOnLoad(gameObject);

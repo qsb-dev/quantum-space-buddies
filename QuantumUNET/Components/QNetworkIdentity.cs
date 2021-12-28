@@ -21,7 +21,6 @@ namespace QuantumUNET.Components
 		public short PlayerControllerId { get; private set; } = -1;
 		public QNetworkConnection ConnectionToServer { get; private set; }
 		public QNetworkConnection ConnectionToClient { get; private set; }
-		public QNetworkIdentity PlayerIdentity { get; set; }
 
 		public bool ServerOnly
 		{
