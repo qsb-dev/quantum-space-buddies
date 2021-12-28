@@ -66,12 +66,12 @@ namespace QSB.Animation.Player.Patches
 				if (__instance._justTookFallDamage)
 				{
 					__instance._animator.SetTrigger("LandHard");
-					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "LandHard").Send();
+					new AnimationTriggerMessage(playerAnimationSync.PlayerId, "LandHard").Send();
 				}
 				else
 				{
 					__instance._animator.SetTrigger("Land");
-					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Land").Send();
+					new AnimationTriggerMessage(playerAnimationSync.PlayerId, "Land").Send();
 				}
 			}
 
@@ -129,7 +129,7 @@ namespace QSB.Animation.Player.Patches
 
 			__instance._animator.SetTrigger("Jump");
 			var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
-			new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Jump").Send();
+			new AnimationTriggerMessage(playerAnimationSync.PlayerId, "Jump").Send();
 			return false;
 		}
 	}

@@ -4,7 +4,6 @@ namespace QSB.Player
 {
 	public abstract class PlayerSyncObject : QNetworkBehaviour
 	{
-		public uint AttachedNetId => PlayerId;
 		public uint PlayerId => NetIdentity.PlayerIdentity.NetId.Value;
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 
