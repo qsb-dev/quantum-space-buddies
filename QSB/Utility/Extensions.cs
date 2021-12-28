@@ -7,24 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.Utility
 {
 	public static class Extensions
 	{
-		// UNITY
-		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
-
-		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
-
-		private static void SetVisibility(GameObject gameObject, bool isVisible)
-		{
-			var renderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-			foreach (var renderer in renderers)
-			{
-				renderer.enabled = isVisible;
-			}
-		}
+		#region UNITY
 
 		public static Quaternion TransformRotation(this Transform transform, Quaternion localRotation)
 			=> transform.rotation * localRotation;
@@ -32,7 +21,7 @@ namespace QSB.Utility
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
 			original.SetActive(false);
-			var copy = UnityEngine.Object.Instantiate(original);
+			var copy = Object.Instantiate(original);
 			original.SetActive(true);
 			return copy;
 		}
@@ -40,7 +29,10 @@ namespace QSB.Utility
 		public static Transform InstantiateInactive(this Transform original) =>
 			original.gameObject.InstantiateInactive().transform;
 
-		// QNET
+		#endregion
+
+		#region QNET
+
 		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
 			if (connection == null)
@@ -84,7 +76,10 @@ namespace QSB.Utility
 			QNetworkServer.SpawnWithClientAuthority(go, QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
 		}
 
-		// C#
+		#endregion
+
+		#region C#
+
 		public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
 		{
 			foreach (var del in multicast.GetInvocationList())
@@ -95,7 +90,7 @@ namespace QSB.Utility
 				}
 				catch (TargetInvocationException ex)
 				{
-					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException!.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 		}
@@ -133,16 +128,15 @@ namespace QSB.Utility
 			return true;
 		}
 
-		private const BindingFlags Flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
-
 		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
+			const BindingFlags flags = BindingFlags.Instance
+				| BindingFlags.Static
+				| BindingFlags.Public
+				| BindingFlags.NonPublic
+				| BindingFlags.DeclaredOnly;
 			if (typeof(T)
-				.GetField(eventName, Flags)?
+				.GetField(eventName, flags)?
 				.GetValue(instance) is not MulticastDelegate multiDelegate)
 			{
 				return;
@@ -154,9 +148,6 @@ namespace QSB.Utility
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
 
-		// OW
-
-		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)
-			=> baseBody.GetAngularVelocity() - relativeBody.GetAngularVelocity();
+		#endregion
 	}
 }

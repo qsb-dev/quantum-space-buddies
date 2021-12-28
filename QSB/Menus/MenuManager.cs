@@ -1,6 +1,7 @@
-﻿using QSB.Events;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.SaveSync.Messages;
 using QSB.Utility;
 using System.Linq;
 using System.Text;
@@ -73,8 +74,8 @@ namespace QSB.Menus
 		private void Update()
 		{
 			if (QSBCore.IsInMultiplayer
-				&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
-				&& _loadingText != null)
+			    && (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+			    && _loadingText != null)
 			{
 				var num = LoadManager.GetAsyncLoadProgress();
 				num = num < 0.1f
@@ -132,7 +133,7 @@ namespace QSB.Menus
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 			}
 		}
 
@@ -261,7 +262,7 @@ namespace QSB.Menus
 
 			OWInput.RestorePreviousInputs();
 
-			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 		}
 
 		private void Host()
@@ -312,10 +313,8 @@ namespace QSB.Menus
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null, () =>
-			{
-				QSBEventManager.FireEvent(EventNames.QSBRequestGameDetails);
-			});
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+				() => new RequestGameStateMessage().Send());
 		}
 
 		public void OnKicked(KickReason reason)

@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.ItemSync.WorldObjects.Items;
-using QSB.Player.Events;
 using QSB.Player.TransformSync;
 using QSB.Tools.FlashlightTool;
 using QSB.Utility;
@@ -77,25 +76,6 @@ namespace QSB.Player
 		public static bool PlayerExists(uint id) =>
 			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
 
-		public static void HandleFullStateMessage(PlayerInformationMessage message)
-		{
-			var player = GetPlayer(message.AboutId);
-			player.Name = message.PlayerName;
-			player.IsReady = message.IsReady;
-			player.FlashlightActive = message.FlashlightActive;
-			player.SuitedUp = message.SuitedUp;
-			player.ProbeLauncherEquipped = message.ProbeLauncherEquipped;
-			player.SignalscopeEquipped = message.SignalscopeEquipped;
-			player.TranslatorEquipped = message.TranslatorEquipped;
-			player.ProbeActive = message.ProbeActive;
-			if (LocalPlayer.IsReady && player.IsReady)
-			{
-				player.UpdateObjectsFromStates();
-			}
-
-			player.State = message.ClientState;
-		}
-
 		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
 			PlayerSyncObjects.OfType<T>().Where(x => x != null);
 
@@ -105,9 +85,6 @@ namespace QSB.Player
 		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
 
 		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
-
-		public static bool IsBelongingToLocalPlayer(uint id) => id == LocalPlayerId ||
-				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{

@@ -1,8 +1,9 @@
-﻿using QSB.DeathSync;
-using QSB.Events;
+﻿using QSB.DeathSync.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.RespawnSync.Messages;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,7 +129,7 @@ namespace QSB.RespawnSync
 			mapController.ExitMapView();
 
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
-			cameraEffectController.OpenEyes(1f, false);
+			cameraEffectController.OpenEyes(1f);
 		}
 
 		public void OnPlayerDeath(PlayerInfo player)
@@ -148,7 +149,7 @@ namespace QSB.RespawnSync
 
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				new EndLoopMessage().Send();
 				return;
 			}
 
@@ -174,7 +175,7 @@ namespace QSB.RespawnSync
 		public void RespawnSomePlayer()
 		{
 			var playerToRespawn = _playersPendingRespawn.First();
-			QSBEventManager.FireEvent(EventNames.QSBPlayerRespawn, playerToRespawn.PlayerId);
+			new PlayerRespawnMessage(playerToRespawn.PlayerId).Send();
 		}
 
 		private void UpdateRespawnNotification()

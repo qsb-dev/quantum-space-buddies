@@ -43,9 +43,9 @@ namespace QSB.ElevatorSync.WorldObjects
 
 				AttachedObject._attachPoint.AttachPlayer();
 
-				if (Locator.GetPlayerSuit().IsWearingSuit(true) && Locator.GetPlayerSuit().IsTrainingSuit())
+				if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
 				{
-					Locator.GetPlayerSuit().RemoveSuit(false);
+					Locator.GetPlayerSuit().RemoveSuit();
 				}
 
 				RemoteStartLift();

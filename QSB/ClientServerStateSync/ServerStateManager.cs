@@ -1,4 +1,6 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync.Messages;
+using QSB.DeathSync.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
@@ -30,13 +32,20 @@ namespace QSB.ClientServerStateSync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			GlobalMessenger.AddListener("TriggerSupernova", OnTriggerSupernova);
 
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => QSBEventManager.FireEvent(EventNames.QSBServerState, ForceGetCurrentState()));
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+				() => new ServerStateMessage(ForceGetCurrentState()).Send());
 		}
 
-		public void FireChangeServerStateEvent(ServerState newState)
+		private void OnDestroy()
+		{
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			GlobalMessenger.RemoveListener("TriggerSupernova", OnTriggerSupernova);
+		}
+
+		public void SendChangeServerStateMessage(ServerState newState)
 		{
 			ChangeServerState(newState);
-			QSBEventManager.FireEvent(EventNames.QSBServerState, newState);
+			new ServerStateMessage(newState).Send();
 		}
 
 		public void ChangeServerState(ServerState newState)
@@ -60,34 +69,34 @@ namespace QSB.ClientServerStateSync
 				case OWScene.Credits_Fast:
 				case OWScene.Credits_Final:
 				case OWScene.PostCreditsScene:
-					FireChangeServerStateEvent(ServerState.Credits);
+					SendChangeServerStateMessage(ServerState.Credits);
 					break;
 
 				case OWScene.TitleScreen:
-					FireChangeServerStateEvent(ServerState.NotLoaded);
+					SendChangeServerStateMessage(ServerState.NotLoaded);
 					break;
 
 				case OWScene.SolarSystem:
 					if (oldScene == OWScene.SolarSystem)
 					{
-						FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToReady);
+						SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToReady);
 					}
 					else
 					{
-						FireChangeServerStateEvent(ServerState.InSolarSystem);
+						SendChangeServerStateMessage(ServerState.InSolarSystem);
 					}
 
 					break;
 
 				case OWScene.EyeOfTheUniverse:
-					FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToReady);
+					SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToReady);
 					break;
 
 				case OWScene.None:
 				case OWScene.Undefined:
 				default:
 					DebugLog.ToConsole($"Warning - newScene is {newScene}!", OWML.Common.MessageType.Warning);
-					FireChangeServerStateEvent(ServerState.NotLoaded);
+					SendChangeServerStateMessage(ServerState.NotLoaded);
 					break;
 			}
 		}
@@ -96,17 +105,24 @@ namespace QSB.ClientServerStateSync
 		{
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
-				FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToDie);
+				SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToDie);
 			}
 		}
 
-		private static ServerState ForceGetCurrentState()
-			=> QSBSceneManager.CurrentScene switch
+		private ServerState ForceGetCurrentState()
+		{
+			var currentScene = LoadManager.GetCurrentScene();
+
+			switch (currentScene)
 			{
-				OWScene.SolarSystem => ServerState.InSolarSystem,
-				OWScene.EyeOfTheUniverse => ServerState.InEye,
-				_ => ServerState.NotLoaded
-			};
+				case OWScene.SolarSystem:
+					return ServerState.InSolarSystem;
+				case OWScene.EyeOfTheUniverse:
+					return ServerState.InEye;
+				default:
+					return ServerState.NotLoaded;
+			}
+		}
 
 		private void Update()
 		{
@@ -124,24 +140,24 @@ namespace QSB.ClientServerStateSync
 			if (_currentState == ServerState.WaitingForAllPlayersToReady)
 			{
 				if (QSBPlayerManager.PlayerList.All(x
-					    => x.State is ClientState.WaitingForOthersToBeReady
-						    or ClientState.AliveInSolarSystem
-						    or ClientState.AliveInEye))
+					=> x.State is ClientState.WaitingForOthersToBeReady
+						or ClientState.AliveInSolarSystem
+						or ClientState.AliveInEye))
 				{
 					DebugLog.DebugWrite($"All ready!!");
-					QSBEventManager.FireEvent(EventNames.QSBStartLoop);
+					new StartLoopMessage().Send();
 					if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 					{
-						FireChangeServerStateEvent(ServerState.InSolarSystem);
+						SendChangeServerStateMessage(ServerState.InSolarSystem);
 					}
 					else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 					{
-						FireChangeServerStateEvent(ServerState.InEye);
+						SendChangeServerStateMessage(ServerState.InEye);
 					}
 					else
 					{
 						DebugLog.ToConsole($"Error - All players were ready in non-universe scene!?", OWML.Common.MessageType.Error);
-						FireChangeServerStateEvent(ServerState.NotLoaded);
+						SendChangeServerStateMessage(ServerState.NotLoaded);
 					}
 
 					_blockNextCheck = true;

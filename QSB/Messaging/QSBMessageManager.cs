@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.ClientServerStateSync;
-using QSB.ClientServerStateSync.Events;
-using QSB.Events;
+using QSB.ClientServerStateSync.Messages;
 using QSB.Player;
-using QSB.Player.Events;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using QuantumUNET.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace QSB.Messaging
 {
@@ -40,6 +41,9 @@ namespace QSB.Messaging
 
 				_msgTypeToType.Add(msgType, types[i]);
 				_typeToMsgType.Add(types[i], msgType);
+
+				// call static constructor of message if needed
+				RuntimeHelpers.RunClassConstructor(types[i].TypeHandle);
 			}
 		}
 
@@ -63,7 +67,7 @@ namespace QSB.Messaging
 		private static void OnServerReceiveRaw(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = (QSBMessageRaw)Activator.CreateInstance(_msgTypeToType[msgType]);
+			var msg = (QSBMessageRaw)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
 			QNetworkServer.SendToAll(msgType, msg);
@@ -72,7 +76,7 @@ namespace QSB.Messaging
 		private static void OnClientReceiveRaw(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = (QSBMessageRaw)Activator.CreateInstance(_msgTypeToType[msgType]);
+			var msg = (QSBMessageRaw)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
 			msg.OnReceive();
@@ -81,7 +85,7 @@ namespace QSB.Messaging
 		private static void OnServerReceive(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
+			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
 			if (msg.To == uint.MaxValue)
@@ -107,7 +111,7 @@ namespace QSB.Messaging
 		private static void OnClientReceive(QNetworkMessage netMsg)
 		{
 			var msgType = netMsg.MsgType;
-			var msg = (QSBMessage)Activator.CreateInstance(_msgTypeToType[msgType]);
+			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
 			netMsg.ReadMessage(msg);
 
 			if (PlayerTransformSync.LocalInstance == null)
@@ -121,12 +125,12 @@ namespace QSB.Messaging
 				var player = QSBPlayerManager.GetPlayer(msg.From);
 
 				if (!player.IsReady
-				    && player.PlayerId != QSBPlayerManager.LocalPlayerId
-				    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-				    && msg is not QSBEventRelay { Event: PlayerInformationEvent or PlayerReadyEvent or RequestStateResyncEvent or ServerStateEvent })
+					&& player.PlayerId != QSBPlayerManager.LocalPlayerId
+					&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+					&& msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
 				{
 					DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
-					QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+					new RequestStateResyncMessage().Send();
 				}
 			}
 
@@ -156,14 +160,21 @@ namespace QSB.Messaging
 
 
 		public static void SendRaw<M>(this M msg)
-			where M : QSBMessageRaw, new()
+			where M : QSBMessageRaw
 		{
 			var msgType = _typeToMsgType[typeof(M)];
 			QNetworkManager.singleton.client.Send(msgType, msg);
 		}
 
+		public static void ServerSendRaw<M>(this M msg, QNetworkConnection conn)
+			where M : QSBMessageRaw
+		{
+			var msgType = _typeToMsgType[typeof(M)];
+			conn.Send(msgType, msg);
+		}
+
 		public static void Send<M>(this M msg)
-			where M : QSBMessage, new()
+			where M : QSBMessage
 		{
 			if (PlayerTransformSync.LocalInstance == null)
 			{
@@ -178,7 +189,7 @@ namespace QSB.Messaging
 
 		public static void SendMessage<T, M>(this T worldObject, M msg)
 			where T : IWorldObject
-			where M : QSBWorldObjectMessage<T>, new()
+			where M : QSBWorldObjectMessage<T>
 		{
 			msg.ObjectId = worldObject.ObjectId;
 			Send(msg);

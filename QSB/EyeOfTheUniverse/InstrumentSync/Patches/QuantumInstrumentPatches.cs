@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.EyeOfTheUniverse.InstrumentSync.Messages;
 using QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.OnPressInteract))]
 		public static void OnPressInteract(QuantumInstrument __instance)
-			=> QSBEventManager.FireEvent(EventNames.QSBGatherInstrument, QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance));
+			=> __instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.Update))]
@@ -27,10 +28,10 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 					&& Vector3.Angle(__instance.transform.position - Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward) < 1f)
 				{
 					__instance._scopeGatherPrompt.SetVisibility(true);
-					if (OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.All))
+					if (OWInput.IsNewlyPressed(InputLibrary.interact))
 					{
 						__instance.Gather();
-						QSBEventManager.FireEvent(EventNames.QSBGatherInstrument, QSBWorldSync.GetWorldFromUnity<QSBQuantumInstrument>(__instance));
+						__instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
 						Locator.GetPromptManager().RemoveScreenPrompt(__instance._scopeGatherPrompt);
 					}
 				}

@@ -1,15 +1,13 @@
 ﻿using QSB.ClientServerStateSync;
-using QSB.OrbSync.TransformSync;
+using QSB.OrbSync;
 using QSB.Player;
-using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
-using QSB.OrbSync;
-using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Utility

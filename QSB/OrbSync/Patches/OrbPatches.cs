@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
+using QSB.OrbSync.Messages;
 using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -24,8 +25,8 @@ namespace QSB.OrbSync.Patches
 			{
 				return;
 			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, true);
+			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
+			qsbOrb.SendMessage(new OrbDragMessage(true));
 		}
 
 		[HarmonyPrefix]
@@ -40,12 +41,12 @@ namespace QSB.OrbSync.Patches
 			{
 				return false;
 			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;
 			}
-			QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
+			qsbOrb.SendMessage(new OrbDragMessage(false));
 			return true;
 		}
 
@@ -57,7 +58,7 @@ namespace QSB.OrbSync.Patches
 			{
 				return true;
 			}
-			var qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(__instance);
+			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;
@@ -80,7 +81,7 @@ namespace QSB.OrbSync.Patches
 						{
 							__instance._orbAudio.PlaySlotActivatedClip();
 						}
-						QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, slotIndex);
+						qsbOrb.SendMessage(new OrbSlotMessage(slotIndex));
 						break;
 					}
 				}
@@ -88,7 +89,7 @@ namespace QSB.OrbSync.Patches
 			else if ((!__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged) && !__instance._occupiedSlot.CheckOrbCollision(__instance))
 			{
 				__instance._occupiedSlot = null;
-				QSBEventManager.FireEvent(EventNames.QSBOrbSlot, qsbOrb, -1);
+				qsbOrb.SendMessage(new OrbSlotMessage(-1));
 			}
 			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);
 

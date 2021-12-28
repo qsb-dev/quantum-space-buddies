@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using QSB.JellyfishSync.WorldObjects;
+﻿using QSB.JellyfishSync.WorldObjects;
 using QSB.WorldSync;
+using System.Collections.Generic;
 
 namespace QSB.JellyfishSync
 {

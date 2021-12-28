@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.LogSync;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -20,25 +21,25 @@ namespace QSB.WorldSync
 			where TWorldObject : IWorldObject
 			=> WorldObjects.OfType<TWorldObject>();
 
-		public static TWorldObject GetWorldFromId<TWorldObject>(int id)
+		public static TWorldObject GetWorldObject<TWorldObject>(this int objectId)
 			where TWorldObject : IWorldObject
 		{
-			if (!WorldObjects.IsInRange(id))
+			if (!WorldObjects.IsInRange(objectId))
 			{
-				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {id}. Count is {WorldObjects.Count}.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {objectId}. Count is {WorldObjects.Count}.", MessageType.Warning);
 				return default;
 			}
 
-			if (WorldObjects[id] is not TWorldObject worldObject)
+			if (WorldObjects[objectId] is not TWorldObject worldObject)
 			{
-				DebugLog.ToConsole($"Error - {typeof(TWorldObject).Name} id {id} is actually {WorldObjects[id].GetType().Name}.", MessageType.Error);
+				DebugLog.ToConsole($"Error - {typeof(TWorldObject).Name} id {objectId} is actually {WorldObjects[objectId].GetType().Name}.", MessageType.Error);
 				return default;
 			}
 
 			return worldObject;
 		}
 
-		public static TWorldObject GetWorldFromUnity<TWorldObject>(MonoBehaviour unityObject)
+		public static TWorldObject GetWorldObject<TWorldObject>(this MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
 			if (unityObject == null)
@@ -67,10 +68,6 @@ namespace QSB.WorldSync
 
 			return (TWorldObject)worldObject;
 		}
-
-		public static int GetIdFromUnity<TWorldObject>(MonoBehaviour unityObject)
-			where TWorldObject : IWorldObject
-			=> GetWorldFromUnity<TWorldObject>(unityObject).ObjectId;
 
 		public static void RemoveWorldObjects()
 		{
@@ -147,7 +144,7 @@ namespace QSB.WorldSync
 			DialogueConditions[name] = state;
 		}
 
-		public static void AddFactReveal(string id, bool saveGame, bool showNotification)
+		public static void AddFactReveal(string id, bool saveGame)
 		{
 			if (!QSBCore.IsHost)
 			{
@@ -163,8 +160,7 @@ namespace QSB.WorldSync
 			ShipLogFacts.Add(new FactReveal
 			{
 				Id = id,
-				SaveGame = saveGame,
-				ShowNotification = showNotification
+				SaveGame = saveGame
 			});
 		}
 	}

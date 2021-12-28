@@ -65,7 +65,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 									var position = Locator.GetPlayerCamera().transform.position;
 									var to = __instance.transform.position - position;
 									if (Vector3.Angle(Locator.GetPlayerCamera().transform.forward, to) <= __instance._maxSpotHalfAngle
-										&& !__instance.CheckOcclusion(position, vector, sensorWorldDir, true))
+										&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
 									{
 										__instance._illuminated = true;
 									}
@@ -77,7 +77,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 									var position = player.Camera.transform.position;
 									var to = __instance.transform.position - position;
 									if (Vector3.Angle(player.Camera.transform.forward, to) <= __instance._maxSpotHalfAngle
-										&& !__instance.CheckOcclusion(position, vector, sensorWorldDir, true))
+										&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
 									{
 										__instance._illuminated = true;
 									}
@@ -92,7 +92,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 									&& probe.IsLaunched()
 									&& !probe.IsRetrieving()
 									&& probe.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
-									&& !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir, true))
+									&& !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
 								{
 									__instance._illuminated = true;
 								}
@@ -110,7 +110,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 								if (dreamLanternController.IsLit()
 									&& dreamLanternController.IsFocused(__instance._lanternFocusThreshold)
 									&& dreamLanternController.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
-									&& !__instance.CheckOcclusion(dreamLanternController.GetLightPosition(), vector, sensorWorldDir, true))
+									&& !__instance.CheckOcclusion(dreamLanternController.GetLightPosition(), vector, sensorWorldDir))
 								{
 									__instance._illuminatingDreamLanternList.Add(dreamLanternController);
 									__instance._illuminated = true;

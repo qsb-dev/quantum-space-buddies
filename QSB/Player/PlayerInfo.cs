@@ -4,10 +4,11 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.Events;
 using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
-using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Tools.FlashlightTool;
@@ -15,7 +16,6 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System.Linq;
-using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Player
@@ -230,10 +230,10 @@ namespace QSB.Player
 			else
 			{
 				FlashlightActive = Locator.GetFlashlight()._flashlightOn;
-				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit(true);
+				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit();
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			new PlayerInformationMessage().Send();
 		}
 
 		private QSBTool GetToolByType(ToolType type)

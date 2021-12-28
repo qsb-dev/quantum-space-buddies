@@ -1,7 +1,10 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
+using QSB.WorldSync;
+using QSB.ZeroGCaveSync.Messages;
+using QSB.ZeroGCaveSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.ZeroGCaveSync.Patches
@@ -21,12 +24,14 @@ namespace QSB.ZeroGCaveSync.Patches
 			}
 
 			__instance._repairFraction = Mathf.Clamp01(__instance._repairFraction + (Time.deltaTime / __instance._repairTime));
+			var qsbSatelliteNode = __instance.GetWorldObject<QSBSatelliteNode>();
 			if (__instance._repairFraction >= 1f)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBSatelliteRepaired, __instance);
+				qsbSatelliteNode
+					.SendMessage(new SatelliteNodeRepairedMessage());
 				__instance._damaged = false;
 				var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
-				if (component.GetReferenceFrame(true) == __instance._rfVolume.GetReferenceFrame())
+				if (component.GetReferenceFrame() == __instance._rfVolume.GetReferenceFrame())
 				{
 					component.UntargetReferenceFrame();
 				}
@@ -48,7 +53,7 @@ namespace QSB.ZeroGCaveSync.Patches
 					__instance._lanternEmissiveRenderer.sharedMaterials = __instance._lanternMaterials;
 				}
 
-				__instance.RaiseEvent("OnRepaired", __instance);
+				__instance.RaiseEvent(nameof(__instance.OnRepaired), __instance);
 			}
 
 			if (__instance._damageEffect != null)
@@ -56,7 +61,8 @@ namespace QSB.ZeroGCaveSync.Patches
 				__instance._damageEffect.SetEffectBlend(1f - __instance._repairFraction);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBSatelliteRepairTick, __instance, __instance._repairFraction);
+			qsbSatelliteNode
+				.SendMessage(new SatelliteNodeRepairTickMessage(__instance._repairFraction));
 			return false;
 		}
 	}

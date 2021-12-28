@@ -1,8 +1,8 @@
-﻿using OWML.Utils;
-using QSB.Animation.Player;
+﻿using QSB.Animation.Player;
 using QSB.Audio;
-using QSB.Events;
 using QSB.Instruments;
+using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.RoastingSync;
 using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
@@ -16,8 +16,6 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SectoredTransformSync
 	{
-		static PlayerTransformSync() => AnimControllerPatch.Init();
-
 		public override bool IsPlayerObject => true;
 
 		private Transform _visibleCameraRoot;
@@ -65,13 +63,13 @@ namespace QSB.Player.TransformSync
 			if (isInUniverse && !_isInitialized)
 			{
 				Player.IsReady = false;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+				new PlayerReadyMessage(false).Send();
 			}
 
 			if (!isInUniverse)
 			{
 				Player.IsReady = false;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+				new PlayerReadyMessage(false).Send();
 			}
 
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
@@ -82,7 +80,7 @@ namespace QSB.Player.TransformSync
 			base.Init();
 
 			Player.IsReady = true;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			new PlayerReadyMessage(true).Send();
 		}
 
 		protected override void OnDestroy()
@@ -123,7 +121,7 @@ namespace QSB.Player.TransformSync
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
 
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 
 			return player;
 		}
@@ -215,12 +213,12 @@ namespace QSB.Player.TransformSync
 
 			// Create new marshmallow
 			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
-			newMarshmallow._fireRenderer = oldMarshmallow.GetValue<MeshRenderer>("_fireRenderer");
-			newMarshmallow._smokeParticles = oldMarshmallow.GetValue<ParticleSystem>("_smokeParticles");
-			newMarshmallow._mallowRenderer = oldMarshmallow.GetValue<MeshRenderer>("_mallowRenderer");
-			newMarshmallow._rawColor = oldMarshmallow.GetValue<Color>("_rawColor");
-			newMarshmallow._toastedColor = oldMarshmallow.GetValue<Color>("_toastedColor");
-			newMarshmallow._burntColor = oldMarshmallow.GetValue<Color>("_burntColor");
+			newMarshmallow._fireRenderer = oldMarshmallow._fireRenderer;
+			newMarshmallow._smokeParticles = oldMarshmallow._smokeParticles;
+			newMarshmallow._mallowRenderer = oldMarshmallow._mallowRenderer;
+			newMarshmallow._rawColor = oldMarshmallow._rawColor;
+			newMarshmallow._toastedColor = oldMarshmallow._toastedColor;
+			newMarshmallow._burntColor = oldMarshmallow._burntColor;
 			Destroy(oldMarshmallow);
 
 			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
@@ -265,9 +263,9 @@ namespace QSB.Player.TransformSync
 			base.OnRenderObject();
 
 			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
+			    || !QSBCore.ShowLinesInDebug
+			    || !IsReady
+			    || ReferenceTransform == null)
 			{
 				return;
 			}

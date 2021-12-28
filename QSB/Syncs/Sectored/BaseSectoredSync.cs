@@ -104,7 +104,7 @@ namespace QSB.Syncs.Sectored
 
 			var sector = _sectorIdWaitingSlot == -1
 				? null
-				: QSBWorldSync.GetWorldFromId<QSBSector>(_sectorIdWaitingSlot);
+				: _sectorIdWaitingSlot.GetWorldObject<QSBSector>();
 
 			if (sector != ReferenceSector)
 			{
@@ -177,7 +177,7 @@ namespace QSB.Syncs.Sectored
 			sectorId = reader.ReadInt32();
 			var sector = sectorId == -1
 				? null
-				: QSBWorldSync.GetWorldFromId<QSBSector>(sectorId);
+				: sectorId.GetWorldObject<QSBSector>();
 
 			if (sector != ReferenceSector)
 			{

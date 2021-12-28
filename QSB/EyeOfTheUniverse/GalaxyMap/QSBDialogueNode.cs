@@ -149,12 +149,12 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			if (PersistentConditionToDisable != string.Empty)
 			{
 				PlayerData.SetPersistentCondition(PersistentConditionToDisable, false);
-				sharedInstance.SetConditionState(PersistentConditionToDisable, false);
+				sharedInstance.SetConditionState(PersistentConditionToDisable);
 			}
 
 			for (var j = 0; j < DBEntriesToSet.Length; j++)
 			{
-				Locator.GetShipLogManager().RevealFact(DBEntriesToSet[j], true, true);
+				Locator.GetShipLogManager().RevealFact(DBEntriesToSet[j]);
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 ﻿using QSB.Anglerfish.WorldObjects;
+using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
-using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
@@ -43,7 +43,7 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void Init()
 		{
-			_qsbAngler = QSBWorldSync.GetWorldFromUnity<QSBAngler>(AnglerManager.Anglers[_instances.IndexOf(this)]);
+			_qsbAngler = AnglerManager.Anglers[_instances.IndexOf(this)].GetWorldObject<QSBAngler>();
 			_qsbAngler.TransformSync = this;
 
 			base.Init();
@@ -55,11 +55,11 @@ namespace QSB.Anglerfish.TransformSync
 			}
 			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
 		private bool _shouldUpdate;
 

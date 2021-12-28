@@ -1,11 +1,11 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
-using QSB.Events;
 using QSB.Inputs;
+using QSB.Messaging;
 using QSB.Player;
-using QSB.TimeSync.Events;
+using QSB.Player.Messages;
+using QSB.TimeSync.Messages;
 using QSB.Utility;
 using QuantumUNET;
 using System;
@@ -66,7 +66,7 @@ namespace QSB.TimeSync
 
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-			GlobalMessenger.AddListener(EventNames.WakeUp, OnWakeUp);
+			GlobalMessenger.AddListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
 		public float GetTimeDifference()
@@ -89,7 +89,7 @@ namespace QSB.TimeSync
 		public void OnDestroy()
 		{
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			GlobalMessenger.RemoveListener(EventNames.WakeUp, OnWakeUp);
+			GlobalMessenger.RemoveListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
@@ -112,7 +112,7 @@ namespace QSB.TimeSync
 
 		private void Init()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
 			gameObject.GetAddComponent<PreserveTimeScale>();
 			if (IsServer)
@@ -129,12 +129,12 @@ namespace QSB.TimeSync
 		}
 
 		private void SendServerTime()
-			=> QSBEventManager.FireEvent(EventNames.QSBServerTime, _serverTime, PlayerData.LoadLoopCount());
+			=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount()).Send();
 
-		public void OnClientReceiveMessage(ServerTimeMessage message)
+		public void OnClientReceiveMessage(float time, int count)
 		{
-			_serverTime = message.ServerTime;
-			_serverLoopCount = message.LoopCount;
+			_serverTime = time;
+			_serverLoopCount = count;
 		}
 
 		private void WakeUpOrSleep()
@@ -228,7 +228,7 @@ namespace QSB.TimeSync
 			Physics.SyncTransforms();
 			SpinnerUI.Hide();
 			TimeSyncUI.Stop();
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 			RespawnOnDeath.Instance.Init();
 
 			QSBInputManager.Instance.SetInputsEnabled(true);
@@ -240,7 +240,7 @@ namespace QSB.TimeSync
 		}
 
 		private void WakeUp()
-			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().Invoke("WakeUp");
+			=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().WakeUp();
 
 		public void Update()
 		{
@@ -295,7 +295,7 @@ namespace QSB.TimeSync
 				{
 					//?
 					DebugLog.ToConsole($"Warning - Server waiting for players to die, but players waiting for ready signal! Assume players correct.", MessageType.Warning);
-					ServerStateManager.Instance.FireChangeServerStateEvent(ServerState.WaitingForAllPlayersToReady);
+					ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToReady);
 				}
 			}
 

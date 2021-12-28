@@ -1,4 +1,4 @@
-﻿using QSB.Events;
+﻿using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
@@ -88,8 +88,8 @@ namespace QSB.AuthoritySync
 
 		#region any client
 
-		public static void FireAuthQueue(this QNetworkIdentity identity, AuthQueueAction action) =>
-			QSBEventManager.FireEvent(EventNames.QSBAuthQueue, identity, action);
+		public static void SendAuthQueueMessage(this QNetworkIdentity identity, AuthQueueAction action) =>
+			new AuthQueueMessage(identity.NetId, action).Send();
 
 		#endregion
 	}

@@ -1,10 +1,10 @@
 ﻿using OWML.Common;
+using QSB.AuthoritySync;
+using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
-using QSB.AuthoritySync;
-using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
@@ -50,7 +50,7 @@ namespace QSB.OrbSync.TransformSync
 				DebugLog.ToConsole($"Error - No orb at index {index}.", MessageType.Error);
 				return;
 			}
-			_qsbOrb = QSBWorldSync.GetWorldFromUnity<QSBOrb>(orb);
+			_qsbOrb = orb.GetWorldObject<QSBOrb>();
 			_qsbOrb.TransformSync = this;
 
 			base.Init();
@@ -70,10 +70,10 @@ namespace QSB.OrbSync.TransformSync
 			}
 			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			NetIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 	}
 }

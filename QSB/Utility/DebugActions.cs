@@ -1,8 +1,7 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync;
-using QSB.Utility.Events;
+using QSB.Utility.Messages;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,7 +24,7 @@ namespace QSB.Utility
 			var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
 			var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
 			socket.PlaceIntoSocket(warpCore);
-			var bridgeVolume = FindObjectOfType<VesselWarpController>().GetValue<OWTriggerVolume>("_bridgeVolume");
+			var bridgeVolume = FindObjectOfType<VesselWarpController>()._bridgeVolume;
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
@@ -90,7 +89,7 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBDebugEvent, DebugEventEnum.TriggerSupernova);
+				new DebugMessage(DebugMessageEnum.TriggerSupernova).Send();
 			}
 
 			if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)

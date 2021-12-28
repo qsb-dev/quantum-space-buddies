@@ -74,11 +74,11 @@ namespace QSB.SatelliteSync
 
 			if (Projector._fadeLight != null)
 			{
-				Projector._fadeLight.StartFade(0f, 2f, 0f);
+				Projector._fadeLight.StartFade(0f, 2f);
 			}
 
-			var audioClip = Projector._oneShotSource.PlayOneShot(AudioType.TH_ProjectorActivate, 1f);
-			Projector._loopingSource.FadeIn(audioClip.length, false, false, 1f);
+			var audioClip = Projector._oneShotSource.PlayOneShot(AudioType.TH_ProjectorActivate);
+			Projector._loopingSource.FadeIn(audioClip.length);
 		}
 
 		public void RemoteExit()
@@ -96,11 +96,11 @@ namespace QSB.SatelliteSync
 
 			if (Projector._fadeLight != null)
 			{
-				Projector._fadeLight.StartFade(Projector._initLightIntensity, 2f, 0f);
+				Projector._fadeLight.StartFade(Projector._initLightIntensity, 2f);
 			}
 
-			var audioClip = Projector._oneShotSource.PlayOneShot(AudioType.TH_ProjectorStop, 1f);
-			Projector._loopingSource.FadeOut(audioClip.length, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
+			var audioClip = Projector._oneShotSource.PlayOneShot(AudioType.TH_ProjectorStop);
+			Projector._loopingSource.FadeOut(audioClip.length);
 		}
 
 		public void RemoteTakeSnapshot(bool forward)

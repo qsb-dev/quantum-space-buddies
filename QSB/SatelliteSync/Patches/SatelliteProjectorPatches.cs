@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.SatelliteSync.Messages;
 using UnityEngine;
 
 namespace QSB.SatelliteSync.Patches
@@ -22,7 +23,7 @@ namespace QSB.SatelliteSync.Patches
 		[HarmonyPatch(typeof(SatelliteSnapshotController), nameof(SatelliteSnapshotController.OnPressInteract))]
 		public static bool UseProjector()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBEnterSatelliteCamera);
+			new SatelliteProjectorMessage(true).Send();
 			return true;
 		}
 
@@ -30,7 +31,7 @@ namespace QSB.SatelliteSync.Patches
 		[HarmonyPatch(typeof(SatelliteSnapshotController), nameof(SatelliteSnapshotController.TurnOffProjector))]
 		public static bool LeaveProjector()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBExitSatelliteCamera);
+			new SatelliteProjectorMessage(false).Send();
 			return true;
 		}
 
@@ -43,23 +44,23 @@ namespace QSB.SatelliteSync.Patches
 				return false;
 			}
 
-			if (OWInput.IsNewlyPressed(InputLibrary.toolActionPrimary, InputMode.All))
+			if (OWInput.IsNewlyPressed(InputLibrary.toolActionPrimary))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBSatelliteSnapshot, true);
+				new SatelliteProjectorSnapshotMessage(true).Send();
 				__instance._satelliteCamera.transform.localEulerAngles = __instance._initCamLocalRot;
 				__instance.RenderSnapshot();
 				return false;
 			}
 
-			if (__instance._allowRearview && OWInput.IsNewlyPressed(InputLibrary.toolActionSecondary, InputMode.All))
+			if (__instance._allowRearview && OWInput.IsNewlyPressed(InputLibrary.toolActionSecondary))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBSatelliteSnapshot, false);
+				new SatelliteProjectorSnapshotMessage(false).Send();
 				__instance._satelliteCamera.transform.localEulerAngles = __instance._initCamLocalRot + new Vector3(0f, 180f, 0f);
 				__instance.RenderSnapshot();
 				return false;
 			}
 
-			if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.All))
+			if (OWInput.IsNewlyPressed(InputLibrary.cancel))
 			{
 				__instance.TurnOffProjector();
 			}

@@ -1,11 +1,12 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Animation.Player.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Animation.Patches
+namespace QSB.Animation.Player.Patches
 {
 	[HarmonyPatch]
 	internal class PlayerAnimationPatches : QSBPatch
@@ -15,28 +16,16 @@ namespace QSB.Animation.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
 		public static bool LateUpdateReplacement(
-				PlayerAnimController __instance,
-				PlayerCharacterController ____playerController,
-				ThrusterModel ____playerJetpack,
-				ref float ____ungroundedTime,
-				Animator ____animator,
-				ref bool ____justBecameGrounded,
-				ref bool ____justTookFallDamage,
-				ref bool ____leftFootGrounded,
-				ref bool ____rightFootGrounded,
-				ref bool ____rightArmHidden,
-				GameObject[] ____rightArmObjects,
-				int ____defaultLayer,
-				int ____probeOnlyLayer)
+				PlayerAnimController __instance)
 		{
-			var isGrounded = ____playerController.IsGrounded();
+			var isGrounded = __instance._playerController.IsGrounded();
 			var isAttached = PlayerState.IsAttached();
 			var isInZeroG = PlayerState.InZeroG();
-			var isFlying = ____playerJetpack.GetLocalAcceleration().y > 0f;
+			var isFlying = __instance._playerJetpack.GetLocalAcceleration().y > 0f;
 			var movementVector = Vector3.zero;
 			if (!isAttached)
 			{
-				movementVector = ____playerController.GetRelativeGroundVelocity();
+				movementVector = __instance._playerController.GetRelativeGroundVelocity();
 			}
 
 			if (Mathf.Abs(movementVector.x) < 0.05f)
@@ -51,77 +40,77 @@ namespace QSB.Animation.Patches
 
 			if (isFlying)
 			{
-				____ungroundedTime = Time.time;
+				__instance._ungroundedTime = Time.time;
 			}
 
 			var freefallMagnitude = 0f;
 			var timeInFreefall = 0f;
-			var lastGroundBody = ____playerController.GetLastGroundBody();
+			var lastGroundBody = __instance._playerController.GetLastGroundBody();
 			if (!isGrounded && !isAttached && !isInZeroG && lastGroundBody != null)
 			{
-				freefallMagnitude = (____playerController.GetAttachedOWRigidbody(false).GetVelocity() - lastGroundBody.GetPointVelocity(____playerController.transform.position)).magnitude;
-				timeInFreefall = Time.time - ____ungroundedTime;
+				freefallMagnitude = (__instance._playerController.GetAttachedOWRigidbody().GetVelocity() - lastGroundBody.GetPointVelocity(__instance._playerController.transform.position)).magnitude;
+				timeInFreefall = Time.time - __instance._ungroundedTime;
 			}
 
-			____animator.SetFloat("RunSpeedX", movementVector.x / 3f);
-			____animator.SetFloat("RunSpeedY", movementVector.z / 3f);
-			____animator.SetFloat("TurnSpeed", ____playerController.GetTurning());
-			____animator.SetBool("Grounded", isGrounded || isAttached || PlayerState.IsRecentlyDetached());
-			____animator.SetLayerWeight(1, ____playerController.GetJumpCrouchFraction());
-			____animator.SetFloat("FreefallSpeed", freefallMagnitude / 15f * (timeInFreefall / 3f));
-			____animator.SetBool("InZeroG", isInZeroG || isFlying);
-			____animator.SetBool("UsingJetpack", isInZeroG && PlayerState.IsWearingSuit());
-			if (____justBecameGrounded)
+			__instance._animator.SetFloat("RunSpeedX", movementVector.x / 3f);
+			__instance._animator.SetFloat("RunSpeedY", movementVector.z / 3f);
+			__instance._animator.SetFloat("TurnSpeed", __instance._playerController.GetTurning());
+			__instance._animator.SetBool("Grounded", isGrounded || isAttached || PlayerState.IsRecentlyDetached());
+			__instance._animator.SetLayerWeight(1, __instance._playerController.GetJumpCrouchFraction());
+			__instance._animator.SetFloat("FreefallSpeed", freefallMagnitude / 15f * (timeInFreefall / 3f));
+			__instance._animator.SetBool("InZeroG", isInZeroG || isFlying);
+			__instance._animator.SetBool("UsingJetpack", isInZeroG && PlayerState.IsWearingSuit());
+			if (__instance._justBecameGrounded)
 			{
 				var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
-				if (____justTookFallDamage)
+				if (__instance._justTookFallDamage)
 				{
-					____animator.SetTrigger("LandHard");
-					QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "LandHard");
+					__instance._animator.SetTrigger("LandHard");
+					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "LandHard").Send();
 				}
 				else
 				{
-					____animator.SetTrigger("Land");
-					QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "Land");
+					__instance._animator.SetTrigger("Land");
+					new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Land").Send();
 				}
 			}
 
 			if (isGrounded)
 			{
-				var leftFootLift = ____animator.GetFloat("LeftFootLift");
-				if (!____leftFootGrounded && leftFootLift < 0.333f)
+				var leftFootLift = __instance._animator.GetFloat("LeftFootLift");
+				if (!__instance._leftFootGrounded && leftFootLift < 0.333f)
 				{
-					____leftFootGrounded = true;
-					__instance.RaiseEvent("OnLeftFootGrounded");
+					__instance._leftFootGrounded = true;
+					__instance.RaiseEvent(nameof(__instance.OnLeftFootGrounded));
 				}
-				else if (____leftFootGrounded && leftFootLift > 0.666f)
+				else if (__instance._leftFootGrounded && leftFootLift > 0.666f)
 				{
-					____leftFootGrounded = false;
-					__instance.RaiseEvent("OnLeftFootLift");
+					__instance._leftFootGrounded = false;
+					__instance.RaiseEvent(nameof(__instance.OnLeftFootLift));
 				}
 
-				var rightFootLift = ____animator.GetFloat("RightFootLift");
-				if (!____rightFootGrounded && rightFootLift < 0.333f)
+				var rightFootLift = __instance._animator.GetFloat("RightFootLift");
+				if (!__instance._rightFootGrounded && rightFootLift < 0.333f)
 				{
-					____rightFootGrounded = true;
-					__instance.RaiseEvent("OnRightFootGrounded");
+					__instance._rightFootGrounded = true;
+					__instance.RaiseEvent(nameof(__instance.OnRightFootGrounded));
 				}
-				else if (____rightFootGrounded && rightFootLift > 0.666f)
+				else if (__instance._rightFootGrounded && rightFootLift > 0.666f)
 				{
-					____rightFootGrounded = false;
-					__instance.RaiseEvent("OnRightFootLift");
+					__instance._rightFootGrounded = false;
+					__instance.RaiseEvent(nameof(__instance.OnRightFootLift));
 				}
 			}
 
-			____justBecameGrounded = false;
-			____justTookFallDamage = false;
+			__instance._justBecameGrounded = false;
+			__instance._justTookFallDamage = false;
 			var usingTool = Locator.GetToolModeSwapper().GetToolMode() != ToolMode.None;
-			if ((usingTool && !____rightArmHidden) || (!usingTool && ____rightArmHidden))
+			if ((usingTool && !__instance._rightArmHidden) || (!usingTool && __instance._rightArmHidden))
 			{
-				____rightArmHidden = usingTool;
-				for (var i = 0; i < ____rightArmObjects.Length; i++)
+				__instance._rightArmHidden = usingTool;
+				for (var i = 0; i < __instance._rightArmObjects.Length; i++)
 				{
-					____rightArmObjects[i].layer = (!____rightArmHidden) ? ____defaultLayer : ____probeOnlyLayer;
+					__instance._rightArmObjects[i].layer = (!__instance._rightArmHidden) ? __instance._defaultLayer : __instance._probeOnlyLayer;
 				}
 			}
 
@@ -140,7 +129,7 @@ namespace QSB.Animation.Patches
 
 			__instance._animator.SetTrigger("Jump");
 			var playerAnimationSync = QSBPlayerManager.LocalPlayer.AnimationSync;
-			QSBEventManager.FireEvent(EventNames.QSBAnimTrigger, playerAnimationSync.AttachedNetId, "Jump");
+			new AnimationTriggerMessage(playerAnimationSync.AttachedNetId, "Jump").Send();
 			return false;
 		}
 	}

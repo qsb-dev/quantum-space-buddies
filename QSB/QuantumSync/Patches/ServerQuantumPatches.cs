@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
-using QSB.Events;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.QuantumSync.Events;
+using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -21,11 +19,16 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(EyeProxyQuantumMoon), nameof(EyeProxyQuantumMoon.ChangeQuantumState))]
 		public static bool EyeProxyQuantumMoon_ChangeQuantumState(EyeProxyQuantumMoon __instance, ref bool __result, bool skipInstantVisibilityCheck)
 		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+
+			var qsbEyeProxyQuantumMoon = __instance.GetWorldObject<QSBEyeProxyQuantumMoon>();
 			if (TimeLoop.GetSecondsRemaining() > 0f && Random.value > 0.3f)
 			{
 				__instance._moonStateRoot.SetActive(false);
-				DebugLog.DebugWrite($"Disable");
-				new EyeProxyMoonStateChangeMessage(QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>(__instance), false, -1f).Send();
+				qsbEyeProxyQuantumMoon.SendMessage(new EyeProxyMoonStateChangeMessage(false, -1f));
 				__result = true;
 				return false;
 			}
@@ -37,8 +40,7 @@ namespace QSB.QuantumSync.Patches
 				__instance.transform.localEulerAngles = new Vector3(0f, angle, 0f);
 				if (skipInstantVisibilityCheck || !__instance.CheckVisibilityInstantly())
 				{
-					DebugLog.DebugWrite($"Send active angle:{angle}");
-					new EyeProxyMoonStateChangeMessage(QSBWorldSync.GetWorldFromUnity<QSBEyeProxyQuantumMoon>(__instance), true, angle).Send();
+					qsbEyeProxyQuantumMoon.SendMessage(new EyeProxyMoonStateChangeMessage(true, angle));
 					__result = true;
 					return false;
 				}
@@ -227,7 +229,7 @@ namespace QSB.QuantumSync.Patches
 					: (__instance._stateSkipCounts[k] + 1);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+			new MoonStateChangeMessage(stateIndex, onUnitSphere, orbitAngle).Send();
 		}
 
 		private static void DealWithNewPosition(QuantumMoon __instance)
@@ -239,7 +241,7 @@ namespace QSB.QuantumSync.Patches
 			else
 			{
 				__instance.SetSurfaceState(-1);
-				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5, 2f);
+				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5);
 			}
 
 			__instance._referenceFrameVolume.gameObject.SetActive(__instance._stateIndex != 5);

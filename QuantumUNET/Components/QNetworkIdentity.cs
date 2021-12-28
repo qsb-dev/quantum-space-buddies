@@ -794,7 +794,7 @@ namespace QuantumUNET.Components
 		private QNetworkSceneId m_SceneId;
 
 		[SerializeField]
-		private int m_AssetId;
+		public int m_AssetId;
 
 		[SerializeField]
 		private bool m_ServerOnly;

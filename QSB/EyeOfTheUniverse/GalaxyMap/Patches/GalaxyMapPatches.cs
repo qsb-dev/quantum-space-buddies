@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.EyeOfTheUniverse.GalaxyMap.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap.Patches
 		{
 			if (QSBPlayerManager.PlayerList.All(x => x.EyeState == EyeState.Observatory))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBZoomOut);
+				new ZoomOutMessage().Send();
 			}
 		}
 	}

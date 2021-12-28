@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using OWML.Common;
 using QSB.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.Patches
 {

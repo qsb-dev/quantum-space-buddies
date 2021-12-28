@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 
 namespace QSB.ConversationSync.WorldObjects
 {

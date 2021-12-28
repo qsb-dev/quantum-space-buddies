@@ -1,13 +1,19 @@
-﻿using System;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System;
 
 namespace QSB.Messaging
 {
 	public abstract class QSBWorldObjectMessage<T> : QSBMessage where T : IWorldObject
 	{
-		public int ObjectId;
-		public T WorldObject { get; private set; }
+		/// <summary>
+		/// set automatically by SendMessage
+		/// </summary>
+		internal int ObjectId;
+		/// <summary>
+		/// set automatically by ShouldReceive
+		/// </summary>
+		protected T WorldObject { get; private set; }
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -30,7 +36,7 @@ namespace QSB.Messaging
 					return false;
 				}
 
-				WorldObject = QSBWorldSync.GetWorldFromId<T>(ObjectId);
+				WorldObject = ObjectId.GetWorldObject<T>();
 				return true;
 			}
 		}
@@ -39,7 +45,7 @@ namespace QSB.Messaging
 
 	public abstract class QSBBoolWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
-		public bool Value;
+		protected bool Value;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -56,7 +62,7 @@ namespace QSB.Messaging
 
 	public abstract class QSBFloatWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
-		public float Value;
+		protected float Value;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -75,7 +81,7 @@ namespace QSB.Messaging
 		where T : IWorldObject
 		where E : Enum
 	{
-		public E Value;
+		protected E Value;
 
 		public override void Serialize(QNetworkWriter writer)
 		{

@@ -32,7 +32,7 @@ namespace QuantumUNET.Components
 
 		private ConnectionConfig m_ConnectionConfig;
 		private GlobalConfig m_GlobalConfig;
-		private readonly int m_MaxBufferedPackets = 16;
+		public int m_MaxBufferedPackets = 16;
 		private readonly bool m_AllowFragmentation = true;
 		private static readonly QAddPlayerMessage s_AddPlayerMessage = new();
 		private static readonly QRemovePlayerMessage s_RemovePlayerMessage = new();

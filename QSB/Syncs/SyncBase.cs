@@ -15,7 +15,7 @@ namespace QSB.Syncs
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class SyncBase<T> : QNetworkTransform where T: Component
+	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
 		public uint AttachedNetId
 		{

@@ -12,151 +12,86 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MapController), nameof(MapController.EnterMapView))]
 		public static bool MapController_EnterMapView(
-			MapController __instance,
-			ref bool ____isMapMode,
-			OWAudioSource ____audioSource,
-			MapMarkerManager ____mapMarkerManager,
-			OWCamera ____mapCamera,
-			OWCamera ____activeCam,
-			MeshRenderer ____gridRenderer,
-			ref Transform ____targetTransform,
-			ref bool ____lockedToTargetTransform,
-			ref Vector3 ____position,
-			ref float ____yaw,
-			ref float ____pitch,
-			ref float ____zoom,
-			ref float ____targetZoom,
-			ref bool ____interpPosition,
-			ref bool ____interpPitch,
-			ref bool ____interpZoom,
-			ref bool ____framingPlayer,
-			ref float ____lockTimer,
-			float ____defaultYawAngle,
-			float ____initialPitchAngle,
-			float ____initialZoomDist,
-			float ____defaultZoomDist,
-			float ____lockOnMoveLength,
-			ref float ____gridOverrideSize,
-			ref bool ____gridOverride,
-			ref float ____gridTimer,
-			ref float ____revealLength,
-			ReferenceFrame ____currentRFrame,
-			float ____gridLockOnLength,
-			ref float ____revealTimer
+			MapController __instance
 			)
 		{
-			if (____isMapMode)
+			if (__instance._isMapMode)
 			{
 				return false;
 			}
 
-			____mapMarkerManager.SetVisible(true);
+			__instance._mapMarkerManager.SetVisible(true);
 			GlobalMessenger.FireEvent("EnterMapView");
-			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", ____mapCamera);
-			if (____audioSource.isPlaying)
+			GlobalMessenger<OWCamera>.FireEvent("SwitchActiveCamera", __instance._mapCamera);
+			if (__instance._audioSource.isPlaying)
 			{
-				____audioSource.Stop();
-				____audioSource.SetLocalVolume(1f);
-				____audioSource.Play();
+				__instance._audioSource.Stop();
+				__instance._audioSource.SetLocalVolume(1f);
+				__instance._audioSource.Play();
 			}
 			else
 			{
-				____audioSource.SetLocalVolume(1f);
-				____audioSource.Play();
+				__instance._audioSource.SetLocalVolume(1f);
+				__instance._audioSource.Play();
 			}
 
 			Locator.GetAudioMixer().MixMap();
-			____activeCam.enabled = false;
-			____mapCamera.enabled = true;
-			____gridRenderer.enabled = false;
-			____targetTransform = null;
-			____lockedToTargetTransform = false;
-			____position = RespawnOnDeath.Instance.DeathPositionWorld - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
-			____position.y = 0f;
-			____yaw = ____defaultYawAngle;
-			____pitch = ____initialPitchAngle;
-			____zoom = ____initialZoomDist;
-			____targetZoom = ____defaultZoomDist;
+			__instance._activeCam.enabled = false;
+			__instance._mapCamera.enabled = true;
+			__instance._gridRenderer.enabled = false;
+			__instance._targetTransform = null;
+			__instance._lockedToTargetTransform = false;
+			__instance._position = RespawnOnDeath.Instance.DeathPositionWorld - Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+			__instance._position.y = 0f;
+			__instance._yaw = __instance._defaultYawAngle;
+			__instance._pitch = __instance._initialPitchAngle;
+			__instance._zoom = __instance._initialZoomDist;
+			__instance._targetZoom = __instance._defaultZoomDist;
 			__instance.transform.rotation = Quaternion.LookRotation(-RespawnOnDeath.Instance.DeathPlayerUpVector, RespawnOnDeath.Instance.DeathPlayerForwardVector);
 			__instance.transform.position = RespawnOnDeath.Instance.DeathPositionWorld;
-			____interpPosition = true;
-			____interpPitch = true;
-			____interpZoom = true;
-			____framingPlayer = ____lockedToTargetTransform;
-			____lockTimer = ____lockOnMoveLength;
-			____gridOverrideSize = (____currentRFrame == null) ? 0f : ____currentRFrame.GetAutopilotArrivalDistance();
-			____gridOverride = ____gridOverrideSize > 0f;
-			____gridTimer = (!____gridOverride) ? 0f : ____gridLockOnLength;
-			____revealLength = 20f;
-			____revealTimer = 0f;
-			____isMapMode = true;
+			__instance._interpPosition = true;
+			__instance._interpPitch = true;
+			__instance._interpZoom = true;
+			__instance._framingPlayer = __instance._lockedToTargetTransform;
+			__instance._lockTimer = __instance._lockOnMoveLength;
+			__instance._gridOverrideSize = (__instance._currentRFrame == null) ? 0f : __instance._currentRFrame.GetAutopilotArrivalDistance();
+			__instance._gridOverride = __instance._gridOverrideSize > 0f;
+			__instance._gridTimer = (!__instance._gridOverride) ? 0f : __instance._gridLockOnLength;
+			__instance._revealLength = 20f;
+			__instance._revealTimer = 0f;
+			__instance._isMapMode = true;
 			return false;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MapController), nameof(MapController.LateUpdate))]
 		public static bool MapController_LateUpdate(
-			MapController __instance,
-			ref float ____observatoryRevealTwist,
-			ref float ____defaultPitchAngle,
-			ref float ____initialPitchAngle,
-			OWCamera ____mapCamera,
-			ref float ____lockTimer,
-			ref float ____revealTimer,
-			float ____lockOnMoveLength,
-			float ____revealLength,
-			ref bool ____screenPromptsVisible,
-			bool ____isPaused,
-			ScreenPrompt ____closePrompt,
-			ScreenPrompt ____panPrompt,
-			ScreenPrompt ____rotatePrompt,
-			ScreenPrompt ____zoomPrompt,
-			ref bool ____lockedToTargetTransform,
-			ref bool ____interpPosition,
-			ref bool ____interpPitch,
-			ref bool ____interpZoom,
-			OWCamera ____activeCam,
-			ref Vector3 ____position,
-			float ____panSpeed,
-			ref float ____zoom,
-			float ____maxPanDistance,
-			float ____yawSpeed,
-			ref float ____yaw,
-			float ____pitchSpeed,
-			ref float ____pitch,
-			float ____minPitchAngle,
-			float ____maxPitchAngle,
-			ref float ____targetZoom,
-			float ____minZoomDistance,
-			float ____maxZoomDistance,
-			float ____initialZoomDist,
-			float ____zoomSpeed,
-			float ____observatoryRevealDist
+			MapController __instance
 			)
 		{
-			____lockTimer = Mathf.Min(____lockTimer + Time.deltaTime, ____lockOnMoveLength);
-			____revealTimer = Mathf.Min(____revealTimer + Time.deltaTime, ____revealLength);
+			__instance._lockTimer = Mathf.Min(__instance._lockTimer + Time.deltaTime, __instance._lockOnMoveLength);
+			__instance._revealTimer = Mathf.Min(__instance._revealTimer + Time.deltaTime, __instance._revealLength);
 
-			var revealFraction = Mathf.Clamp01(____revealTimer / ____revealLength);
+			var revealFraction = Mathf.Clamp01(__instance._revealTimer / __instance._revealLength);
 			var smoothedRevealFraction = Mathf.SmoothStep(0f, 1f, revealFraction);
 
-			var canInteractWith = ____revealTimer > 18f;
+			var canInteractWith = __instance._revealTimer > 18f;
 
-			if (____screenPromptsVisible && ____isPaused)
+			if (__instance._screenPromptsVisible && __instance._isPaused)
 			{
-				____closePrompt.SetVisibility(false);
-				____panPrompt.SetVisibility(false);
-				____rotatePrompt.SetVisibility(false);
-				____zoomPrompt.SetVisibility(false);
-				____screenPromptsVisible = false;
+				__instance._closePrompt.SetVisibility(false);
+				__instance._panPrompt.SetVisibility(false);
+				__instance._rotatePrompt.SetVisibility(false);
+				__instance._zoomPrompt.SetVisibility(false);
+				__instance._screenPromptsVisible = false;
 			}
-			else if (!____screenPromptsVisible && canInteractWith && !____isPaused)
+			else if (!__instance._screenPromptsVisible && canInteractWith && !__instance._isPaused)
 			{
-				____closePrompt.SetVisibility(false);
-				____panPrompt.SetVisibility(true);
-				____rotatePrompt.SetVisibility(true);
-				____zoomPrompt.SetVisibility(true);
-				____screenPromptsVisible = true;
+				__instance._closePrompt.SetVisibility(false);
+				__instance._panPrompt.SetVisibility(true);
+				__instance._rotatePrompt.SetVisibility(true);
+				__instance._zoomPrompt.SetVisibility(true);
+				__instance._screenPromptsVisible = true;
 			}
 
 			var XZinput = Vector2.zero;
@@ -164,61 +99,61 @@ namespace QSB.DeathSync.Patches
 			var zoomInput = 0f;
 			if (canInteractWith)
 			{
-				XZinput = OWInput.GetAxisValue(InputLibrary.moveXZ, InputMode.All);
+				XZinput = OWInput.GetAxisValue(InputLibrary.moveXZ);
 				lookInput = InputLibrary.look.GetAxisValue(false);
-				zoomInput = OWInput.GetValue(InputLibrary.mapZoomIn, InputMode.All) - OWInput.GetValue(InputLibrary.mapZoomOut, InputMode.All);
+				zoomInput = OWInput.GetValue(InputLibrary.mapZoomIn) - OWInput.GetValue(InputLibrary.mapZoomOut);
 				lookInput.y *= -1f;
 				zoomInput *= -1f;
 			}
 
-			____lockedToTargetTransform &= XZinput.sqrMagnitude < 0.01f;
-			____interpPosition &= XZinput.sqrMagnitude < 0.01f;
-			____interpPitch &= Mathf.Abs(lookInput.y) < 0.1f;
-			____interpZoom &= Mathf.Abs(zoomInput) < 0.1f;
+			__instance._lockedToTargetTransform &= XZinput.sqrMagnitude < 0.01f;
+			__instance._interpPosition &= XZinput.sqrMagnitude < 0.01f;
+			__instance._interpPitch &= Mathf.Abs(lookInput.y) < 0.1f;
+			__instance._interpZoom &= Mathf.Abs(zoomInput) < 0.1f;
 
-			if (____interpPosition)
+			if (__instance._interpPosition)
 			{
-				var a = ____activeCam.transform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
+				var a = __instance._activeCam.transform.position - Locator.GetCenterOfTheUniverse().GetOffsetPosition();
 				var b = Vector3.zero;
-				____position = Vector3.Lerp(a, b, smoothedRevealFraction);
+				__instance._position = Vector3.Lerp(a, b, smoothedRevealFraction);
 			}
 			else
 			{
 				var normalized = Vector3.Scale(__instance.transform.forward + __instance.transform.up, new Vector3(1f, 0f, 1f)).normalized;
 				var a2 = (__instance.transform.right * XZinput.x) + (normalized * XZinput.y);
-				____position += a2 * ____panSpeed * ____zoom * Time.deltaTime;
-				____position.y = 0f;
-				if (____position.sqrMagnitude > ____maxPanDistance * ____maxPanDistance)
+				__instance._position += a2 * __instance._panSpeed * __instance._zoom * Time.deltaTime;
+				__instance._position.y = 0f;
+				if (__instance._position.sqrMagnitude > __instance._maxPanDistance * __instance._maxPanDistance)
 				{
-					____position = ____position.normalized * ____maxPanDistance;
+					__instance._position = __instance._position.normalized * __instance._maxPanDistance;
 				}
 			}
 
-			____yaw += lookInput.x * ____yawSpeed * Time.deltaTime;
-			____yaw = OWMath.WrapAngle(____yaw);
-			if (____interpPitch)
+			__instance._yaw += lookInput.x * __instance._yawSpeed * Time.deltaTime;
+			__instance._yaw = OWMath.WrapAngle(__instance._yaw);
+			if (__instance._interpPitch)
 			{
-				____pitch = Mathf.Lerp(____initialPitchAngle, ____defaultPitchAngle, smoothedRevealFraction);
+				__instance._pitch = Mathf.Lerp(__instance._initialPitchAngle, __instance._defaultPitchAngle, smoothedRevealFraction);
 			}
 			else
 			{
-				____pitch += lookInput.y * ____pitchSpeed * Time.deltaTime;
-				____pitch = Mathf.Clamp(____pitch, ____minPitchAngle, ____maxPitchAngle);
+				__instance._pitch += lookInput.y * __instance._pitchSpeed * Time.deltaTime;
+				__instance._pitch = Mathf.Clamp(__instance._pitch, __instance._minPitchAngle, __instance._maxPitchAngle);
 			}
 
-			if (____interpZoom)
+			if (__instance._interpZoom)
 			{
-				____zoom = Mathf.Lerp(____initialZoomDist, ____targetZoom, smoothedRevealFraction);
+				__instance._zoom = Mathf.Lerp(__instance._initialZoomDist, __instance._targetZoom, smoothedRevealFraction);
 			}
 			else
 			{
-				____zoom += zoomInput * ____zoomSpeed * Time.deltaTime;
-				____zoom = Mathf.Clamp(____zoom, ____minZoomDistance, ____maxZoomDistance);
+				__instance._zoom += zoomInput * __instance._zoomSpeed * Time.deltaTime;
+				__instance._zoom = Mathf.Clamp(__instance._zoom, __instance._minZoomDistance, __instance._maxZoomDistance);
 			}
 
-			____mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, smoothedRevealFraction);
+			__instance._mapCamera.nearClipPlane = Mathf.Lerp(0.1f, 1f, smoothedRevealFraction);
 
-			var finalRotation = Quaternion.Euler(____pitch, ____yaw, 0f);
+			var finalRotation = Quaternion.Euler(__instance._pitch, __instance._yaw, 0f);
 
 			var num4 = revealFraction * (2f - revealFraction);
 
@@ -229,15 +164,15 @@ namespace QSB.DeathSync.Patches
 
 			// Get starting position - distance above player
 			var startingPosition = RespawnOnDeath.Instance.DeathPositionWorld;
-			startingPosition += RespawnOnDeath.Instance.DeathPlayerUpVector * num5 * ____observatoryRevealDist;
+			startingPosition += RespawnOnDeath.Instance.DeathPlayerUpVector * num5 * __instance._observatoryRevealDist;
 
 			// Lerp to final rotation
 			__instance.transform.rotation = Quaternion.Lerp(lookingDownAtPlayer, finalRotation, num5);
 
 			// Lerp reveal twist
-			__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(____observatoryRevealTwist, 0f, num4), Vector3.forward);
+			__instance.transform.rotation *= Quaternion.AngleAxis(Mathf.Lerp(__instance._observatoryRevealTwist, 0f, num4), Vector3.forward);
 
-			var endPosition = ____position + (-__instance.transform.forward * ____zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
+			var endPosition = __instance._position + (-__instance.transform.forward * __instance._zoom) + Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().GetPosition();
 
 			// Lerp to final position
 			__instance.transform.position = Vector3.Lerp(startingPosition, endPosition, num5);

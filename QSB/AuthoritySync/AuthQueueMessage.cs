@@ -1,38 +1,53 @@
 ﻿using QSB.Messaging;
-using QuantumUNET.Components;
+using QSB.WorldSync;
+using QuantumUNET;
 using QuantumUNET.Transport;
 
 namespace QSB.AuthoritySync
 {
-	public class AuthQueueMessage : EnumMessage<AuthQueueAction>
+	/// <summary>
+	/// always sent to host
+	/// </summary>
+	public class AuthQueueMessage : QSBEnumMessage<AuthQueueAction>
 	{
-		public QNetworkIdentity Identity;
+		private QNetworkInstanceId NetId;
 
-		public override void Deserialize(QNetworkReader reader)
+		public AuthQueueMessage(QNetworkInstanceId netId, AuthQueueAction action)
 		{
-			base.Deserialize(reader);
-			Identity = reader.ReadNetworkIdentity();
+			To = 0;
+			NetId = netId;
+			Value = action;
 		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(Identity);
+			writer.Write(NetId);
 		}
+
+		public override void Deserialize(QNetworkReader reader)
+		{
+			base.Deserialize(reader);
+			NetId = reader.ReadNetworkId();
+		}
+
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override void OnReceiveLocal() => OnReceiveRemote();
+		public override void OnReceiveRemote() => QNetworkServer.objects[NetId].UpdateAuthQueue(From, Value);
 	}
 
 	public enum AuthQueueAction
 	{
 		/// <summary>
-		/// add identity to the queue
+		/// add player to the queue
 		/// </summary>
 		Add,
 		/// <summary>
-		/// remove identity from the queue
+		/// remove player from the queue
 		/// </summary>
 		Remove,
 		/// <summary>
-		/// add identity to the queue and force it to the front
+		/// add player to the queue and force them to the front
 		/// </summary>
 		Force
 	}
