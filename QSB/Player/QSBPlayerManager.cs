@@ -54,9 +54,6 @@ namespace QSB.Player
 		public static bool PlayerExists(uint id) =>
 			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
 
-		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
-			GetPlayer(id).TransformSync.GetComponent<T>();
-
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();

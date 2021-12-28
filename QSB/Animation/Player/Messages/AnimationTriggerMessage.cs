@@ -34,7 +34,7 @@ namespace QSB.Animation.Player.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var animationSync = QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
+			var animationSync = QSBPlayerManager.GetPlayer(PlayerId).AnimationSync;
 			if (animationSync == null)
 			{
 				return;

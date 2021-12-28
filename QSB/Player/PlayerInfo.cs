@@ -219,9 +219,7 @@ namespace QSB.Player
 			Translator?.ChangeEquipState(TranslatorEquipped);
 			ProbeLauncher?.ChangeEquipState(ProbeLauncherEquipped);
 			Signalscope?.ChangeEquipState(SignalscopeEquipped);
-
-			QSBCore.UnityEvents.RunWhen(() => AnimationSync != null,
-				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(SuitedUp));
+			AnimationSync.SetSuitState(SuitedUp);
 		}
 
 		public void UpdateStatesFromObjects()
