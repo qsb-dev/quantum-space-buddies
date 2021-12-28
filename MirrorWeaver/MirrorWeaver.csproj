@@ -14,8 +14,8 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Mono.Cecil" Version="0.11.4"/>
-        <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile"/>
-        <ProjectReference Include="..\Mirror\Mirror.csproj"/>
+        <PackageReference Include="Mono.Cecil" Version="0.11.4" />
+        <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile" />
+        <ProjectReference Include="..\Mirror\Mirror.csproj" />
     </ItemGroup>
 </Project>
