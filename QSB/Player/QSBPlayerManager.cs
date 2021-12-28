@@ -28,8 +28,8 @@ namespace QSB.Player
 			}
 		}
 
-		public static Action<uint> OnRemovePlayer;
 		public static Action<uint> OnAddPlayer;
+		public static Action<uint> OnRemovePlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static List<PlayerInfo> PlayerList { get; } = new();
@@ -56,9 +56,7 @@ namespace QSB.Player
 		public static void AddPlayer(uint id)
 		{
 			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
-			var player = new PlayerInfo(id);
-			PlayerList.Add(player);
-			OnAddPlayer?.Invoke(id);
+			PlayerList.Add(new PlayerInfo(id));
 		}
 
 		public static void RemovePlayer(uint id)

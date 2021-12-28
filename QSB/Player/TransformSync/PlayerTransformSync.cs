@@ -51,6 +51,7 @@ namespace QSB.Player.TransformSync
 			base.Start();
 			QSBPlayerManager.AddPlayer(PlayerId);
 			Player.TransformSync = this;
+			QSBPlayerManager.OnAddPlayer?.Invoke(PlayerId);
 		}
 
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
@@ -88,11 +89,8 @@ namespace QSB.Player.TransformSync
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
 			base.OnDestroy();
-			if (QSBPlayerManager.PlayerExists(PlayerId))
-			{
-				Player.HudMarker?.Remove();
-				QSBPlayerManager.RemovePlayer(PlayerId);
-			}
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.RemovePlayer(PlayerId);
 		}
 
 		protected override Transform InitLocalTransform()

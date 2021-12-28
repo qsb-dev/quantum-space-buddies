@@ -21,8 +21,7 @@ namespace QuantumUNET.Components
 		public short PlayerControllerId { get; private set; } = -1;
 		public QNetworkConnection ConnectionToServer { get; private set; }
 		public QNetworkConnection ConnectionToClient { get; private set; }
-		public QNetworkIdentity RootIdentity { get; private set; }
-		public List<QNetworkIdentity> SubIdentities { get; private set; } = new List<QNetworkIdentity>();
+		public QNetworkIdentity PlayerIdentity { get; set; }
 
 		public bool ServerOnly
 		{
@@ -38,23 +37,6 @@ namespace QuantumUNET.Components
 
 		public QNetworkBehaviour[] GetNetworkBehaviours()
 			=> m_NetworkBehaviours;
-
-		public void SetRootIdentity(QNetworkIdentity newRoot)
-		{
-			if (RootIdentity != null)
-			{
-				RootIdentity.RemoveSubIdentity(this);
-			}
-
-			RootIdentity = newRoot;
-			RootIdentity.AddSubIndentity(this);
-		}
-
-		internal void AddSubIndentity(QNetworkIdentity identityToAdd)
-			=> SubIdentities.Add(identityToAdd);
-
-		internal void RemoveSubIdentity(QNetworkIdentity identityToRemove)
-			=> SubIdentities.Remove(identityToRemove);
 
 		internal void SetDynamicAssetId(int newAssetId)
 		{
