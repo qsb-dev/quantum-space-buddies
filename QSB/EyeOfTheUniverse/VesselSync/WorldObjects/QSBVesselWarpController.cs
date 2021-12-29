@@ -18,7 +18,6 @@ namespace QSB.EyeOfTheUniverse.VesselSync.WorldObjects
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				DebugLog.DebugWrite($"On entry");
 				new EnterLeaveMessage(Player.EnterLeaveType.EnterVesselCage).Send();
 			}
 		}
@@ -27,7 +26,6 @@ namespace QSB.EyeOfTheUniverse.VesselSync.WorldObjects
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				DebugLog.DebugWrite($"On exit");
 				new EnterLeaveMessage(Player.EnterLeaveType.ExitVesselCage).Send();
 			}
 		}

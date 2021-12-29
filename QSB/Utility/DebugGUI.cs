@@ -272,6 +272,16 @@ namespace QSB.Utility
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
 			{
+				if (obj == null)
+				{
+					return;
+				}
+
+				if (obj.ReturnObject() == null)
+				{
+					return;
+				}
+
 				if (obj.ShouldDisplayLabel())
 				{
 					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
