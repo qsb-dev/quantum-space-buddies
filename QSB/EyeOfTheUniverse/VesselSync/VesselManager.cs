@@ -11,7 +11,7 @@ namespace QSB.EyeOfTheUniverse.VesselSync
 	{
 		public static VesselManager Instance { get; private set; }
 
-		private List<PlayerInfo> _playersInCage;
+		private List<PlayerInfo> _playersInCage = new();
 		private QSBVesselWarpController _warpController;
 
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
