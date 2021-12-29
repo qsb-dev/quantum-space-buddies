@@ -14,7 +14,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync
 			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.isDoneInitializing, () =>
 			{
 				FinishDelayedReady();
-				QSBWorldSync.Init<QSBNomaiText, NomaiText>(this, typeof(GhostWallText));
+				QSBWorldSync.Init<QSBNomaiText, NomaiText>(typeof(GhostWallText));
 			});
 		}
 	}

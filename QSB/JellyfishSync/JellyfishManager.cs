@@ -14,7 +14,7 @@ namespace QSB.JellyfishSync
 		{
 			Jellyfish.Clear();
 			Jellyfish.AddRange(QSBWorldSync.GetUnityObjects<JellyfishController>());
-			QSBWorldSync.Init<QSBJellyfish, JellyfishController>(Jellyfish, this);
+			QSBWorldSync.Init<QSBJellyfish, JellyfishController>(Jellyfish);
 		}
 	}
 }

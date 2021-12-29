@@ -14,7 +14,7 @@ namespace QSB.OrbSync
 		{
 			Orbs.Clear();
 			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>());
-			QSBWorldSync.Init<QSBOrb, NomaiInterfaceOrb>(Orbs, this);
+			QSBWorldSync.Init<QSBOrb, NomaiInterfaceOrb>(Orbs);
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace QSB.ConversationSync
 		}
 
 		protected override void RebuildWorldObjects(OWScene scene)
-			=> QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>(this);
+			=> QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 		{

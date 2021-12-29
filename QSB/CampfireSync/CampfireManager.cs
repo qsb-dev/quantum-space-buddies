@@ -8,6 +8,6 @@ namespace QSB.CampfireSync
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		protected override void RebuildWorldObjects(OWScene scene)
-			=> QSBWorldSync.Init<QSBCampfire, Campfire>(this);
+			=> QSBWorldSync.Init<QSBCampfire, Campfire>();
 	}
 }

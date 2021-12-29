@@ -8,6 +8,6 @@ namespace QSB.EchoesOfTheEye.AirlockSync
 		// is this used in the prisoner sequence in the eye?
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>(this);
+		protected override void RebuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>();
 	}
 }

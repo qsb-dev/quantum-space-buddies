@@ -8,6 +8,6 @@ namespace QSB.ZeroGCaveSync
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
 		protected override void RebuildWorldObjects(OWScene scene)
-			=> QSBWorldSync.Init<QSBSatelliteNode, SatelliteNode>(this);
+			=> QSBWorldSync.Init<QSBSatelliteNode, SatelliteNode>();
 	}
 }
