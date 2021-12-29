@@ -93,10 +93,10 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllObjectsReady
-			    || !QSBCore.ShowLinesInDebug
+			if (!QSBCore.ShowLinesInDebug
+			    || !WorldObjectManager.AllObjectsReady
 			    || !IsReady
-			    || ReferenceTransform == null
+			    || AttachedObject == null
 			    || AttachedObject.IsSuspended())
 			{
 				return;

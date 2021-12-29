@@ -31,13 +31,16 @@ namespace QSB.Utility
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-		public void Update()
+		private void Awake()
 		{
 			if (!QSBCore.DebugMode)
 			{
-				return;
+				Destroy(this);
 			}
+		}
 
+		public void Update()
+		{
 			/*
 			 * 1 - Warp to first player
 			 * 2 - Set time flowing

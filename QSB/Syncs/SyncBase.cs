@@ -273,9 +273,10 @@ namespace QSB.Syncs
 
 		protected virtual void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
+			if (!QSBCore.ShowLinesInDebug
+				|| !WorldObjectManager.AllObjectsReady
 				|| !IsReady
+				|| AttachedObject == null
 				|| ReferenceTransform == null)
 			{
 				return;
@@ -297,6 +298,11 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
+			if (!QSBCore.ShowDebugLabels)
+			{
+				return;
+			}
+
 			if (AttachedObject != null)
 			{
 				DebugGUI.DrawLabel(AttachedObject.transform, LogName);

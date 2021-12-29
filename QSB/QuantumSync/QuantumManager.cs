@@ -64,7 +64,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!AllObjectsReady || !QSBCore.ShowLinesInDebug)
+			if (!QSBCore.ShowLinesInDebug || !AllObjectsReady)
 			{
 				return;
 			}

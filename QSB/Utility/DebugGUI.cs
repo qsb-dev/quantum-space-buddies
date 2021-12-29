@@ -30,7 +30,16 @@ namespace QSB.Utility
 		private readonly GUIStyle guiGUIStyle = new();
 		private static readonly GUIStyle labelGUIStyle = new();
 
-		private void Awake() => guiGUIStyle.fontSize = 9;
+		private void Awake()
+		{
+			if (!QSBCore.DebugMode)
+			{
+				Destroy(this);
+				return;
+			}
+
+			guiGUIStyle.fontSize = 9;
+		}
 
 		private void WriteLine(int columnID, string text)
 		{
@@ -72,11 +81,6 @@ namespace QSB.Utility
 
 		public void OnGUI()
 		{
-			if (!QSBCore.DebugMode)
-			{
-				return;
-			}
-
 			guiGUIStyle.normal.textColor = Color.white;
 			GUI.contentColor = Color.white;
 
@@ -247,11 +251,6 @@ namespace QSB.Utility
 
 		public static void DrawLabel(Transform obj, string label)
 		{
-			if (!QSBCore.ShowDebugLabels)
-			{
-				return;
-			}
-
 			var camera = Locator.GetPlayerCamera();
 
 			if (camera == null)
