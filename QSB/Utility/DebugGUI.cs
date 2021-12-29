@@ -226,14 +226,7 @@ namespace QSB.Utility
 
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
-					if (quantumObject is not IWorldObject qsbObj)
-					{
-						WriteLine(4, $"NULL QSBOBJ", Color.red);
-					}
-					else
-					{
-						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
-					}
+					WriteLine(4, $"{quantumObject.Name} ({quantumObject.ObjectId})");
 				}
 			}
 
@@ -248,14 +241,7 @@ namespace QSB.Utility
 
 				if (qo.IsEnabled)
 				{
-					if (qo is not IWorldObject qsbObj)
-					{
-						WriteLine(4, $"NULL QSBOBJ", Color.red);
-					}
-					else
-					{
-						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
-					}
+					WriteLine(4, $"{qo.Name} ({qo.ObjectId})");
 				}
 			}
 			#endregion
