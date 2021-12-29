@@ -95,7 +95,7 @@ namespace QSB.Syncs
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
 		public abstract bool DestroyAttachedObject { get; }
-		public abstract bool IsPlayerObject { get;  }
+		public abstract bool IsPlayerObject { get; }
 
 		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
@@ -118,7 +118,7 @@ namespace QSB.Syncs
 			if (IsPlayerObject)
 			{
 				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
-				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
+					.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
 				NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
 			}
 
