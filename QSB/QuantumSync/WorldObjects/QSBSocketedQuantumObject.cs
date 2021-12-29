@@ -20,7 +20,7 @@ namespace QSB.QuantumSync.WorldObjects
 			var socket = AttachedObject.GetCurrentSocket();
 			if (socket != null)
 			{
-				var socketObj = QSBWorldSync.GetWorldObject<QSBQuantumSocket>(socket);
+				var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
 				return $"{LogName}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
 			}
 			else

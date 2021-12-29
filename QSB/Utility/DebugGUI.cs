@@ -27,18 +27,18 @@ namespace QSB.Utility
 		private const int MaxLabelSize = 15;
 		private const float MaxLabelDistance = 150;
 
-		private GUIStyle guiGUIStyle = new()
+		private readonly GUIStyle guiGUIStyle = new()
 		{
 			fontSize = 9
 		};
 
-		private static GUIStyle labelGUIStyle = new();
+		private static readonly GUIStyle labelGUIStyle = new();
 
-		private void WriteLine(int collumnID, string text)
+		private void WriteLine(int columnID, string text)
 		{
 			var currentOffset = 0f;
 			var x = 0f;
-			switch (collumnID)
+			switch (columnID)
 			{
 				case 1:
 					x = Column1;
@@ -65,10 +65,10 @@ namespace QSB.Utility
 			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiGUIStyle);
 		}
 
-		private void WriteLine(int collumnID, string text, Color color)
+		private void WriteLine(int columnID, string text, Color color)
 		{
 			guiGUIStyle.normal.textColor = color;
-			WriteLine(collumnID, text);
+			WriteLine(columnID, text);
 			guiGUIStyle.normal.textColor = Color.white;
 		}
 
@@ -320,25 +320,25 @@ namespace QSB.Utility
 				return;
 			}
 
-			var mappedFontSize = distance.Map(0, MaxLabelDistance, MaxLabelSize, 0, true);
+			var mappedFontSize = (int)distance.Map(0, MaxLabelDistance, MaxLabelSize, 0, true);
 
-			if ((int)mappedFontSize <= 0)
+			if (mappedFontSize <= 0)
 			{
 				return;
 			}
 
-			if ((int)mappedFontSize > MaxLabelSize)
+			if (mappedFontSize > MaxLabelSize)
 			{
 				return;
 			}
 
-			labelGUIStyle.fontSize = (int)mappedFontSize;
+			labelGUIStyle.fontSize = mappedFontSize;
 
 			var rect = GUILayoutUtility.GetRect(new GUIContent(label), labelGUIStyle);
 			rect.x = screenPosition.x;
+			// WorldToScreenPoint's (0,0) is at screen bottom left, GUI's (0,0) is at screen top left. grrrr
 			rect.y = Screen.height - screenPosition.y;
 
-			// WorldToScreenPoint's (0,0) is at screen bottom left, GUI's (0,0) is at screen top left. grrrr
 			GUI.Label(rect, label, labelGUIStyle);
 		}
 	}

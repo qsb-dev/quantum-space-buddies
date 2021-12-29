@@ -295,7 +295,7 @@ namespace QSB.Syncs
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 
-		void OnGUI()
+		private void OnGUI()
 		{
 			if (AttachedObject != null)
 			{
