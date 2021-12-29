@@ -71,7 +71,8 @@ namespace QSB.Utility.Messages
 			var refBody = qsbSector.AttachedObject.GetOWRigidbody();
 
 			var pos = refBody.transform.FromRelPos(RelPos);
-			body.WarpToPositionRotation(pos, refBody.transform.FromRelRot(RelRot));
+			body.SetPosition(pos);
+			body.SetRotation(refBody.transform.FromRelRot(RelRot));
 			Locator.GetPlayerCameraController().SetDegreesY(DegreesY);
 			body.SetVelocity(refBody.FromRelVel(RelVel, pos));
 			body.SetAngularVelocity(refBody.FromRelAngVel(RelAngVel));
