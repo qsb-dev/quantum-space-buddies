@@ -126,21 +126,5 @@ namespace QSB.WorldSync
 
 		/// indicates that this is now ready
 		protected void FinishDelayedReady() => _numManagersReadying--;
-
-		private void OnGUI()
-		{
-			if (!QSBCore.ShowDebugLabels)
-			{
-				return;
-			}
-
-			foreach (var obj in QSBWorldSync.GetWorldObjects())
-			{
-				if (obj.ShouldDisplayLabel())
-				{
-					DebugGUI.DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
-				}
-			}
-		}
 	}
 }

@@ -247,6 +247,24 @@ namespace QSB.Utility
 				}
 			}
 			#endregion
+
+			DrawWorldObjectLabels();
+		}
+
+		private static void DrawWorldObjectLabels()
+		{
+			if (!QSBCore.ShowDebugLabels)
+			{
+				return;
+			}
+
+			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			{
+				if (obj.ShouldDisplayLabel())
+				{
+					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
+				}
+			}
 		}
 
 		public static void DrawLabel(Transform obj, string label)
