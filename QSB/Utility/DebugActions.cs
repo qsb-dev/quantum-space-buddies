@@ -42,7 +42,7 @@ namespace QSB.Utility
 		public void Update()
 		{
 			/*
-			 * 1 - Warp to first player
+			 * 1 - Warp to first non local player
 			 * 2 - Set time flowing
 			 * 3 - Destroy probe
 			 * 4 - Damage ship electricals
