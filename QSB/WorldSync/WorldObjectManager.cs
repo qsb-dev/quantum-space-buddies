@@ -141,7 +141,7 @@ namespace QSB.WorldSync
 
 			foreach (var obj in _worldObjects)
 			{
-				if (obj.ShouldDisplayLabel())
+				if (obj.ShouldDisplayLabel)
 				{
 					DebugGUI.DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
 				}
