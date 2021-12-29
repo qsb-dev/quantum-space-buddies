@@ -9,7 +9,7 @@ namespace QSB.WorldSync
 
 		void OnRemoval();
 		MonoBehaviour ReturnObject();
-		bool ShouldDisplayLabel { get; }
+		bool ShouldDisplayLabel();
 		string ReturnLabel();
 	}
 }
