@@ -26,6 +26,15 @@ namespace QSB.Player
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
 		public PlayerTransformSync TransformSync { get; set; }
+		public ClientState State { get; set; }
+		public EyeState EyeState { get; set; }
+		public bool IsDead { get; set; }
+		public bool Visible { get; set; } = true;
+		public bool IsReady { get; set; }
+		public bool IsInMoon { get; set; }
+		public bool IsInShrine { get; set; }
+		public IQSBQuantumObject EntangledObject { get; set; }
+		public QSBPlayerAudioController AudioController { get; set; }
 
 		// Body Objects
 		public OWCamera Camera
@@ -52,6 +61,7 @@ namespace QSB.Player
 		private OWCamera _camera;
 
 		public GameObject CameraBody { get; set; }
+
 		public GameObject Body
 		{
 			get
@@ -76,23 +86,11 @@ namespace QSB.Player
 		private GameObject _body;
 
 		public GameObject RoastingStick { get; set; }
-		public bool Visible { get; set; } = true;
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight
-		{
-			get
-			{
-				if (CameraBody == null)
-				{
-					return null;
-				}
-
-				return CameraBody.GetComponentInChildren<QSBFlashlight>();
-			}
-		}
+		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
@@ -108,6 +106,12 @@ namespace QSB.Player
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 		public IQSBOWItem HeldItem { get; set; }
+		public bool FlashlightActive { get; set; }
+		public bool SuitedUp { get; set; }
+		public bool ProbeLauncherEquipped { get; set; }
+		public bool SignalscopeEquipped { get; set; }
+		public bool TranslatorEquipped { get; set; }
+		public bool ProbeActive { get; set; }
 
 		// Conversation
 		public int CurrentCharacterDialogueTreeId { get; set; }
@@ -115,26 +119,10 @@ namespace QSB.Player
 
 		// Animation
 		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
-		public bool PlayingInstrument => AnimationSync.CurrentType is not AnimationType.PlayerSuited
+		public bool PlayingInstrument => AnimationSync.CurrentType
+			is not AnimationType.PlayerSuited
 			and not AnimationType.PlayerUnsuited;
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
-
-		// Misc
-		// CLEANUP : this file is very messy. especially this bit
-		public bool IsReady { get; set; }
-		public bool IsInMoon;
-		public bool IsInShrine;
-		public IQSBQuantumObject EntangledObject;
-		public bool IsDead { get; set; }
-		public ClientState State { get; set; }
-		public bool FlashlightActive { get; set; }
-		public bool SuitedUp { get; set; }
-		public bool ProbeLauncherEquipped { get; set; }
-		public bool SignalscopeEquipped { get; set; }
-		public bool TranslatorEquipped { get; set; }
-		public bool ProbeActive { get; set; }
-		public QSBPlayerAudioController AudioController { get; set; }
-		public EyeState EyeState { get; set; }
 
 		// Local only
 		public PlayerProbeLauncher LocalProbeLauncher
