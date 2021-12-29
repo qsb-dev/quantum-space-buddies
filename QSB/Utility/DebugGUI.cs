@@ -27,12 +27,10 @@ namespace QSB.Utility
 		private const int MaxLabelSize = 15;
 		private const float MaxLabelDistance = 150;
 
-		private readonly GUIStyle guiGUIStyle = new()
-		{
-			fontSize = 9
-		};
-
+		private readonly GUIStyle guiGUIStyle = new();
 		private static readonly GUIStyle labelGUIStyle = new();
+
+		private void Awake() => guiGUIStyle.fontSize = 9;
 
 		private void WriteLine(int columnID, string text)
 		{
