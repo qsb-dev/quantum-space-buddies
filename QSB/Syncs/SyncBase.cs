@@ -298,7 +298,8 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.ShowDebugLabels)
+			if (!QSBCore.ShowDebugLabels ||
+				Event.current.type != EventType.Repaint)
 			{
 				return;
 			}

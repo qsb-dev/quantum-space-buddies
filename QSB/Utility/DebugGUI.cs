@@ -69,7 +69,7 @@ namespace QSB.Utility
 					break;
 			}
 
-			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiGUIStyle);
+			GUI.Label(new Rect(x, currentOffset, 0, 0), text, guiGUIStyle);
 		}
 
 		private void WriteLine(int columnID, string text, Color color)
@@ -81,6 +81,11 @@ namespace QSB.Utility
 
 		public void OnGUI()
 		{
+			if (Event.current.type != EventType.Repaint)
+			{
+				return;
+			}
+
 			guiGUIStyle.normal.textColor = Color.white;
 			GUI.contentColor = Color.white;
 
@@ -90,6 +95,7 @@ namespace QSB.Utility
 			column4Offset = 10f;
 
 			#region Column1 - Server data
+
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			WriteLine(1, $"HasWokenUp : {WorldObjectManager.AllObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
@@ -122,9 +128,11 @@ namespace QSB.Utility
 					WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
 				}
 			}
+
 			#endregion
 
 			#region Column2 - Player data
+
 			WriteLine(2, $"OrbList count : {OrbManager.Orbs.Count}");
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
@@ -153,6 +161,7 @@ namespace QSB.Utility
 					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
 				}
 			}
+
 			#endregion
 
 			#region Column3 - Ship data
@@ -211,9 +220,11 @@ namespace QSB.Utility
 					WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
 				}
 			}
+
 			#endregion
 
 			#region Column4 - Quantum Object Possesion
+
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
 				if (player == null)
@@ -246,6 +257,7 @@ namespace QSB.Utility
 					WriteLine(4, $"{qo.Name} ({qo.ObjectId})");
 				}
 			}
+
 			#endregion
 
 			DrawWorldObjectLabels();
@@ -335,12 +347,9 @@ namespace QSB.Utility
 
 			labelGUIStyle.fontSize = mappedFontSize;
 
-			var rect = GUILayoutUtility.GetRect(new GUIContent(label), labelGUIStyle);
-			rect.x = screenPosition.x;
 			// WorldToScreenPoint's (0,0) is at screen bottom left, GUI's (0,0) is at screen top left. grrrr
-			rect.y = Screen.height - screenPosition.y;
-
-			GUI.Label(rect, label, labelGUIStyle);
+			screenPosition.y = Screen.height - screenPosition.y;
+			GUI.Label(new Rect(screenPosition, Vector2.zero), label, labelGUIStyle);
 		}
 	}
 }
