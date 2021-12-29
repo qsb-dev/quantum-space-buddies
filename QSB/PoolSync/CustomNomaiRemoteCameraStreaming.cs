@@ -11,12 +11,14 @@
 		{
 			base.Awake();
 			_oldStreaming = GetComponent<NomaiRemoteCameraStreaming>();
-			_remoteCameraPlatform = _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
 			SetSector(_oldStreaming.GetSector());
 		}
 
 		private void Start()
-			=> enabled = false;
+		{
+			_remoteCameraPlatform = _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
+			enabled = false;
+		}
 
 		private void FixedUpdate()
 		{
