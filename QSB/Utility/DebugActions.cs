@@ -56,22 +56,10 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
 			{
-				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x.PlayerId != QSBPlayerManager.LocalPlayerId);
-				if (otherPlayer != null && otherPlayer.Body != null)
+				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x != QSBPlayerManager.LocalPlayer);
+				if (otherPlayer != null)
 				{
-					var playerBody = Locator.GetPlayerBody();
-					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
-					var parentBody = otherPlayer.TransformSync?.ReferenceSector?.AttachedObject?.GetOWRigidbody();
-					if (parentBody != null)
-					{
-						playerBody.SetVelocity(parentBody.GetVelocity());
-						playerBody.SetAngularVelocity(parentBody.GetAngularVelocity());
-					}
-					else
-					{
-						playerBody.SetVelocity(Vector3.zero);
-						playerBody.SetAngularVelocity(Vector3.zero);
-					}
+					new DebugRequestTeleportInfoMessage(otherPlayer.PlayerId).Send();
 				}
 			}
 
@@ -92,7 +80,7 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
 			{
-				new DebugMessage(DebugMessageEnum.TriggerSupernova).Send();
+				new DebugTriggerSupernovaMessage().Send();
 			}
 
 			if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)

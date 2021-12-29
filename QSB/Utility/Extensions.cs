@@ -73,7 +73,7 @@ namespace QSB.Utility
 				return;
 			}
 
-			QNetworkServer.SpawnWithClientAuthority(go, QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
+			QNetworkServer.SpawnWithClientAuthority(go, QNetworkServer.localConnection);
 		}
 
 		#endregion
