@@ -17,6 +17,9 @@ namespace QSB.Utility
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
 			playerBody.SetVelocity(spawnPoint.GetPointVelocity());
+			var bridgeVolume = FindObjectOfType<VesselWarpController>()._bridgeVolume;
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
 		private void InsertWarpCore()
@@ -24,9 +27,6 @@ namespace QSB.Utility
 			var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
 			var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
 			socket.PlaceIntoSocket(warpCore);
-			var bridgeVolume = FindObjectOfType<VesselWarpController>()._bridgeVolume;
-			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
-			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
