@@ -47,7 +47,7 @@ namespace QSB
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
-		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
+		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
@@ -113,8 +113,6 @@ namespace QSB
 			{
 				gameObject.AddComponent(type);
 			}
-
-			DebugBoxManager.Init();
 
 			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 

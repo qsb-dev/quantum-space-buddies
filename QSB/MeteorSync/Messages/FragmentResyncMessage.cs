@@ -18,10 +18,10 @@ namespace QSB.MeteorSync.Messages
 		private bool IsDetached;
 
 		private bool IsThruWhiteHole;
-		private Vector3 Pos;
-		private Quaternion Rot;
-		private Vector3 Vel;
-		private Vector3 AngVel;
+		private Vector3 RelPos;
+		private Quaternion RelRot;
+		private Vector3 RelVel;
+		private Vector3 RelAngVel;
 
 		public FragmentResyncMessage(QSBFragment qsbFragment)
 		{
@@ -37,10 +37,10 @@ namespace QSB.MeteorSync.Messages
 				var body = qsbFragment.Body;
 				var refBody = qsbFragment.RefBody;
 				var pos = body.GetPosition();
-				Pos = refBody.transform.ToRelPos(pos);
-				Rot = refBody.transform.ToRelRot(body.GetRotation());
-				Vel = refBody.ToRelVel(body.GetVelocity(), pos);
-				AngVel = refBody.ToRelAngVel(body.GetAngularVelocity());
+				RelPos = refBody.transform.ToRelPos(pos);
+				RelRot = refBody.transform.ToRelRot(body.GetRotation());
+				RelVel = refBody.ToRelVel(body.GetVelocity(), pos);
+				RelAngVel = refBody.ToRelAngVel(body.GetAngularVelocity());
 			}
 		}
 
@@ -54,10 +54,10 @@ namespace QSB.MeteorSync.Messages
 			if (IsDetached)
 			{
 				writer.Write(IsThruWhiteHole);
-				writer.Write(Pos);
-				writer.Write(Rot);
-				writer.Write(Vel);
-				writer.Write(AngVel);
+				writer.Write(RelPos);
+				writer.Write(RelRot);
+				writer.Write(RelVel);
+				writer.Write(RelAngVel);
 			}
 		}
 
@@ -71,10 +71,10 @@ namespace QSB.MeteorSync.Messages
 			if (IsDetached)
 			{
 				IsThruWhiteHole = reader.ReadBoolean();
-				Pos = reader.ReadVector3();
-				Rot = reader.ReadQuaternion();
-				Vel = reader.ReadVector3();
-				AngVel = reader.ReadVector3();
+				RelPos = reader.ReadVector3();
+				RelRot = reader.ReadQuaternion();
+				RelVel = reader.ReadVector3();
+				RelAngVel = reader.ReadVector3();
 			}
 		}
 
@@ -130,11 +130,11 @@ namespace QSB.MeteorSync.Messages
 					}
 
 					var refBody = qsbFragment.RefBody;
-					var pos = refBody.transform.FromRelPos(Pos);
+					var pos = refBody.transform.FromRelPos(RelPos);
 					body.SetPosition(pos);
-					body.SetRotation(refBody.transform.FromRelRot(Rot));
-					body.SetVelocity(refBody.FromRelVel(Vel, pos));
-					body.SetAngularVelocity(refBody.FromRelAngVel(AngVel));
+					body.SetRotation(refBody.transform.FromRelRot(RelRot));
+					body.SetVelocity(refBody.FromRelVel(RelVel, pos));
+					body.SetAngularVelocity(refBody.FromRelAngVel(RelAngVel));
 				});
 			}
 			else if (!IsDetached && qsbFragment.IsDetached)

@@ -88,6 +88,7 @@ namespace QSB.RoastingSync.Patches
 						showRemovePrompt = true;
 						if (OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Roasting))
 						{
+							InputLibrary.cancel.ConsumeInput();
 							__instance._marshmallow.Remove();
 							Locator.GetPlayerAudioController().PlayMarshmallowToss();
 							var spawnedMarshmallow = Object.Instantiate(__instance._mallowBodyPrefab, __instance._stickTransform.position, __instance._stickTransform.rotation);

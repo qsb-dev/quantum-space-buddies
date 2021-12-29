@@ -141,9 +141,10 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllObjectsReady
-			    || !QSBCore.ShowLinesInDebug
+			if (!QSBCore.ShowLinesInDebug
+			    || !WorldObjectManager.AllObjectsReady
 			    || !IsReady
+			    || AttachedObject == null
 			    || ReferenceTransform == null
 			    || AttachedObject.IsSuspended())
 			{

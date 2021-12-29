@@ -13,8 +13,8 @@ namespace QSB.Utility
 		[JsonProperty("showQuantumVisibilityObjects")]
 		public bool ShowQuantumVisibilityObjects { get; set; } = false;
 
-		[JsonProperty("showQuantumDebugBoxes")]
-		public bool ShowQuantumDebugBoxes { get; set; } = false;
+		[JsonProperty("showDebugLabels")]
+		public bool ShowDebugLabels { get; set; } = false;
 
 		[JsonProperty("avoidTimeSync")]
 		public bool AvoidTimeSync { get; set; } = false;

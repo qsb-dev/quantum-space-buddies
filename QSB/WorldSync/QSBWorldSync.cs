@@ -17,6 +17,8 @@ namespace QSB.WorldSync
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
+		public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
+
 		public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 			where TWorldObject : IWorldObject
 			=> WorldObjects.OfType<TWorldObject>();
@@ -124,7 +126,7 @@ namespace QSB.WorldSync
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,
-					ObjectId = WorldObjects.Count
+					ObjectId = WorldObjects.Count,
 				};
 
 				obj.Init();
