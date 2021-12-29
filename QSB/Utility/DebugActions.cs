@@ -44,7 +44,7 @@ namespace QSB.Utility
 			/*
 			 * 1 - Warp to first player
 			 * 2 - Set time flowing
-			 * 3 -
+			 * 3 - Destroy probe
 			 * 4 - Damage ship electricals
 			 * 5 - Trigger supernova
 			 * 6 -
