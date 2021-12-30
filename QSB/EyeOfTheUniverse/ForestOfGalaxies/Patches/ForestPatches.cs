@@ -19,7 +19,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 		{
 			if (Locator.GetFlashlight().IsFlashlightOn() || QSBPlayerManager.PlayerList.Any(x => x.FlashlightActive))
 			{
-				foreach (var player in QSBPlayerManager.PlayerList)
+				foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.FlashlightActive))
 				{
 					var vector = player.Body.transform.position - worldPosition;
 					vector.y = 0f;
@@ -36,7 +36,9 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 			{
 				foreach (var player in QSBPlayerManager.PlayerList)
 				{
-					if (player == QSBPlayerManager.LocalPlayer)
+					if (player == QSBPlayerManager.LocalPlayer
+						&& Locator.GetProbe() != null
+						&& Locator.GetProbe().IsAnchored())
 					{
 						var vector = Locator.GetProbe().transform.position - worldPosition;
 						vector.y = 0f;
@@ -46,7 +48,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 							return false;
 						}
 					}
-					else
+					else if (player.Probe != null && player.Probe.IsAnchored())
 					{
 						var vector = player.ProbeBody.transform.position - worldPosition;
 						vector.y = 0f;
@@ -59,7 +61,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 				}
 			}
 
-			__result = true;
+			__result = false;
 			return false;
 		}
 
