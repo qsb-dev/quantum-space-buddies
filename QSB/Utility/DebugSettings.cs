@@ -21,5 +21,8 @@ namespace QSB.Utility
 
 		[JsonProperty("skipTitleScreen")]
 		public bool SkipTitleScreen { get; set; } = false;
+
+		[JsonProperty("greySkybox")]
+		public bool GreySkybox { get; set; } = false;
 	}
 }

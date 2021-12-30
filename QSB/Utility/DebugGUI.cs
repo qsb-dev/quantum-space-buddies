@@ -272,11 +272,6 @@ namespace QSB.Utility
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
 			{
-				if (obj == null)
-				{
-					return;
-				}
-
 				if (obj.ReturnObject() == null)
 				{
 					return;
