@@ -75,7 +75,7 @@ namespace QSB.Player.Messages
 					return;
 				}
 
-				if (QSBPlayerManager.PlayerList.Any(x => x.EyeState > EyeState.Observatory))
+				if (QSBPlayerManager.PlayerList.Any(x => x.EyeState > EyeState.WarpedToSurface))
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
 					new PlayerKickMessage(From, KickReason.InEye).Send();
