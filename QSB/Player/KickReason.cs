@@ -6,6 +6,7 @@
 		QSBVersionNotMatching,
 		GameVersionNotMatching,
 		GamePlatformNotMatching,
-		DLCNotMatching
+		DLCNotMatching,
+		InEye
 	}
 }

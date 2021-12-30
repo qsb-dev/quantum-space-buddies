@@ -2,6 +2,7 @@
 using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
+using System.Linq;
 
 namespace QSB.Player.Messages
 {
@@ -44,43 +45,41 @@ namespace QSB.Player.Messages
 
 		public override void OnReceiveRemote()
 		{
-			if (QSBVersion != QSBCore.QSBVersion)
+			if (QSBCore.IsHost)
 			{
-				if (QSBCore.IsHost)
+				if (QSBVersion != QSBCore.QSBVersion)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
 					new PlayerKickMessage(From, KickReason.QSBVersionNotMatching).Send();
+					return;
 				}
 
-				return;
-			}
-
-			if (GameVersion != QSBCore.GameVersion)
-			{
-				if (QSBCore.IsHost)
+				if (GameVersion != QSBCore.GameVersion)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game version. (Client:{GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
 					new PlayerKickMessage(From, KickReason.GameVersionNotMatching).Send();
+					return;
 				}
 
-				return;
-			}
-
-			if (Platform != QSBCore.Platform)
-			{
-				if (QSBCore.IsHost)
+				if (Platform != QSBCore.Platform)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game platform. (Client:{Platform}, Server:{QSBCore.Platform})", MessageType.Error);
 					new PlayerKickMessage(From, KickReason.DLCNotMatching).Send();
+					return;
 				}
-			}
 
-			if (DlcInstalled != QSBCore.DLCInstalled)
-			{
-				if (QSBCore.IsHost)
+				if (DlcInstalled != QSBCore.DLCInstalled)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
 					new PlayerKickMessage(From, KickReason.GamePlatformNotMatching).Send();
+					return;
+				}
+
+				if (QSBPlayerManager.PlayerList.Any(x => x.EyeState > EyeState.Observatory))
+				{
+					DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
+					new PlayerKickMessage(From, KickReason.InEye).Send();
+					return;
 				}
 			}
 
