@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.Menus;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
@@ -25,12 +26,14 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 		public override void OnReceiveLocal()
 		{
 			QSBPlayerManager.LocalPlayer.EyeState = Value;
+			MenuManager.Instance.OnEyeStateChange(Value);
 		}
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.EyeState = Value;
+			MenuManager.Instance.OnEyeStateChange(Value);
 		}
 	}
 }

@@ -199,6 +199,14 @@ namespace QSB.Menus
 			DisconnectPopup._labelText.text = popupText;
 		}
 
+		public void OnEyeStateChange(EyeState state)
+		{
+			if (state >= EyeState.IntoTheVortex)
+			{
+				SetButtonActive(HostButton, false);
+			}
+		}
+
 		private void MakeTitleMenus()
 		{
 			CreateCommonPopups();
