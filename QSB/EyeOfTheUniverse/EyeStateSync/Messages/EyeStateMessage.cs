@@ -12,6 +12,8 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 		private static void Handler(EyeState state)
 		{
+			MenuManager.Instance.OnEyeStateChange(state);
+
 			if (PlayerTransformSync.LocalInstance)
 			{
 				new EyeStateMessage(state).Send();
@@ -26,14 +28,12 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 		public override void OnReceiveLocal()
 		{
 			QSBPlayerManager.LocalPlayer.EyeState = Value;
-			MenuManager.Instance.OnEyeStateChange(Value);
 		}
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.EyeState = Value;
-			MenuManager.Instance.OnEyeStateChange(Value);
 		}
 	}
 }
