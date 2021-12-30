@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
+using QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -57,6 +60,27 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 			}
 
 			__result = true;
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MiniGalaxyController), nameof(MiniGalaxyController.KillGalaxies))]
+		public static bool KillGalaxiesReplacement(MiniGalaxyController __instance)
+		{
+			var num = 60f;
+			__instance._galaxies = __instance.GetComponentsInChildren<MiniGalaxy>(true);
+			var delayList = new List<float>();
+			for (var i = 0; i < __instance._galaxies.Length; i++)
+			{
+				var rnd = Random.Range(30f, num);
+				delayList.Add(rnd);
+				__instance._galaxies[i].DieAfterSeconds(rnd, true, AudioType.EyeGalaxyBlowAway);
+			}
+			new KillGalaxiesMessage(delayList).Send();
+
+			__instance._forestIsDarkTime = Time.time + num + 5f;
+			__instance.enabled = true;
+
 			return false;
 		}
 	}
