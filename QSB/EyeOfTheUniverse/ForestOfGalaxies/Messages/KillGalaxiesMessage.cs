@@ -9,7 +9,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 {
 	internal class KillGalaxiesMessage : QSBMessage
 	{
-		private List<float> _deathDelays = new();
+		private List<float> _deathDelays;
 
 		public KillGalaxiesMessage(List<float> deathDelays) => _deathDelays = deathDelays;
 
@@ -29,7 +29,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 		{
 			base.Deserialize(reader);
 			var length = reader.ReadInt32();
-			_deathDelays = new List<float>();
+			_deathDelays = new List<float>(length);
 			for (var i = 0; i < length; i++)
 			{
 				_deathDelays.Add(reader.ReadSingle());
