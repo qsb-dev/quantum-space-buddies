@@ -1,11 +1,8 @@
 ﻿using HarmonyLib;
+using QSB.EyeOfTheUniverse.CosmicInflation.Messages;
+using QSB.Messaging;
 using QSB.Patches;
-using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.CosmicInflation.Patches
 {
@@ -14,11 +11,18 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation.Patches
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(CosmicInflationController), nameof(CosmicInflationController.StartCollapse))]
-		public static bool StartCollapse(CosmicInflationController __instance)
+		[HarmonyPatch(typeof(CosmicInflationController), nameof(CosmicInflationController.OnEnterFogSphere))]
+		public static bool OnEnterFogSphere(CosmicInflationController __instance, GameObject obj)
 		{
-			DebugLog.DebugWrite($"Start Collapse");
-			return true;
+			if (obj.CompareTag("PlayerCameraDetector") && __instance._state == CosmicInflationController.State.ReadyToCollapse)
+			{
+				__instance._smokeSphereTrigger.SetTriggerActivation(false);
+				__instance._probeDestroyTrigger.SetTriggerActivation(false);
+				__instance.StartCollapse();
+				new EnterFogSphereMessage().Send();
+			}
+
+			return false;
 		}
 	}
 }
