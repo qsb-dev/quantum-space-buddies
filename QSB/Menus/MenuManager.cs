@@ -49,6 +49,15 @@ namespace QSB.Menus
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
 		{
+			if (newScene == OWScene.EyeOfTheUniverse)
+			{
+				GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
+			}
+			else
+			{
+				GlobalMessenger<EyeState>.RemoveListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
+			}
+
 			if (isUniverse)
 			{
 				InitPauseMenus();
@@ -199,7 +208,7 @@ namespace QSB.Menus
 			DisconnectPopup._labelText.text = popupText;
 		}
 
-		public void OnEyeStateChange(EyeState state)
+		private void OnEyeStateChanged(EyeState state)
 		{
 			if (state >= EyeState.IntoTheVortex)
 			{

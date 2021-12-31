@@ -12,8 +12,6 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 		private static void Handler(EyeState state)
 		{
-			MenuManager.Instance.OnEyeStateChange(state);
-
 			if (PlayerTransformSync.LocalInstance)
 			{
 				new EyeStateMessage(state).Send();
