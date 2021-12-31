@@ -22,7 +22,6 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 
 			controller._warpFlickerActivated = true;
 			controller._warpTime = Time.time + 0.5f;
-			GlobalMessenger<float, float>.FireEvent(OWEvents.FlickerOffAndOn, 0.5f, 0.5f);
 		}
 	}
 }
