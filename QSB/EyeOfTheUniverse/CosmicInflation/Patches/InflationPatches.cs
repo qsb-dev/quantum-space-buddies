@@ -14,6 +14,8 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation.Patches
 		[HarmonyPatch(typeof(CosmicInflationController), nameof(CosmicInflationController.OnEnterFogSphere))]
 		public static bool OnEnterFogSphere(CosmicInflationController __instance, GameObject obj)
 		{
+			return true; // remove this patch later lol
+
 			if (obj.CompareTag("PlayerCameraDetector") && __instance._state == CosmicInflationController.State.ReadyToCollapse)
 			{
 				__instance._smokeSphereTrigger.SetTriggerActivation(false);

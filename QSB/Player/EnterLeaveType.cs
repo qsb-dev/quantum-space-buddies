@@ -15,6 +15,7 @@
 		EnterNomaiHeadZone = 10,
 		ExitNomaiHeadZone = 11,
 		EnterVesselCage = 12,
-		ExitVesselCage = 13
+		ExitVesselCage = 13,
+		EnterCosmicFog = 14,
 	}
 }

@@ -24,6 +24,8 @@ namespace QSB.EyeOfTheUniverse.VesselSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
+			_playersInCage.Clear();
+
 			if (_warpController != null)
 			{
 				_warpController._cageTrigger.OnEntry -= OnEntry;
