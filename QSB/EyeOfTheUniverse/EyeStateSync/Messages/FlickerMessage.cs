@@ -1,5 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.Player.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System;
@@ -28,6 +29,8 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 		{
 			_offDuration = offDuration;
 			_onDuration = onDuration;
+
+			DebugLog.DebugWrite($"LOCAL flicker {offDuration} {onDuration}");
 		}
 
 		public override void Serialize(QNetworkWriter writer)
@@ -48,6 +51,8 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 		public override void OnReceiveRemote()
 		{
+			DebugLog.DebugWrite($"REMOTE flicker from {From} {_offDuration} {_onDuration}");
+
 			// manually fire callbacks
 			var eventTable = GlobalMessenger<float, float>.eventTable;
 			lock (eventTable)
