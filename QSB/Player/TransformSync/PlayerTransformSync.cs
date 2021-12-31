@@ -11,6 +11,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace QSB.Player.TransformSync
 {
@@ -167,11 +168,9 @@ namespace QSB.Player.TransformSync
 			GetComponent<AnimationSync>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
 			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Player_Body.transform);
 
-			var marker = REMOTE_Player_Body.AddComponent<PlayerHUDMarker>();
-			marker.Init(Player);
-
+			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-
+			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
 
 			/*

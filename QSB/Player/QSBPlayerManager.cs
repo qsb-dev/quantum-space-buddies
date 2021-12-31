@@ -114,27 +114,10 @@ namespace QSB.Player
 			=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 		public static void ShowAllPlayers()
-			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, true));
+			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
 
 		public static void HideAllPlayers()
-			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => ChangePlayerVisibility(x.PlayerId, false));
-
-		public static void ChangePlayerVisibility(uint playerId, bool visible)
-		{
-			var player = GetPlayer(playerId);
-			player.Visible = visible;
-
-			if (player.Body == null)
-			{
-				DebugLog.ToConsole($"Warning - Player {playerId} has a null player model!", MessageType.Warning);
-				return;
-			}
-
-			foreach (var renderer in player.Body.GetComponentsInChildren<Renderer>())
-			{
-				renderer.enabled = visible;
-			}
-		}
+			=> PlayerList.Where(x => x != LocalPlayer).ToList().ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
 				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
