@@ -69,18 +69,17 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 		[HarmonyPatch(typeof(MiniGalaxyController), nameof(MiniGalaxyController.KillGalaxies))]
 		public static bool KillGalaxiesReplacement(MiniGalaxyController __instance)
 		{
-			var num = 60f;
+			const float delay = 60f;
 			__instance._galaxies = __instance.GetComponentsInChildren<MiniGalaxy>(true);
 			var delayList = new List<float>();
-			for (var i = 0; i < __instance._galaxies.Length; i++)
+			foreach (var galaxy in __instance._galaxies)
 			{
-				var rnd = Random.Range(30f, num);
+				var rnd = Random.Range(30f, delay);
 				delayList.Add(rnd);
-				__instance._galaxies[i].DieAfterSeconds(rnd, true, AudioType.EyeGalaxyBlowAway);
+				galaxy.DieAfterSeconds(rnd, true, AudioType.EyeGalaxyBlowAway);
 			}
 			new KillGalaxiesMessage(delayList).Send();
-
-			__instance._forestIsDarkTime = Time.time + num + 5f;
+			__instance._forestIsDarkTime = Time.time + delay + 5f;
 			__instance.enabled = true;
 
 			return false;

@@ -13,8 +13,6 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 
 		public KillGalaxiesMessage(List<float> deathDelays) => _deathDelays = deathDelays;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
-
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
@@ -36,23 +34,24 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 			}
 		}
 
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+
 		public override void OnReceiveRemote()
 		{
 			var galaxyController = QSBWorldSync.GetUnityObjects<MiniGalaxyController>().First();
 
 			galaxyController._killTrigger.OnEntry -= galaxyController.OnEnterKillTrigger;
-			galaxyController._galaxies = galaxyController.GetComponentsInChildren<MiniGalaxy>(true);
 
+			galaxyController._galaxies = galaxyController.GetComponentsInChildren<MiniGalaxy>(true);
 			for (var i = 0; i < galaxyController._galaxies.Length; i++)
 			{
 				galaxyController._galaxies[i].DieAfterSeconds(_deathDelays[i], true, AudioType.EyeGalaxyBlowAway);
 			}
-
 			galaxyController._forestIsDarkTime = Time.time + 65f;
 			galaxyController.enabled = true;
 
 			galaxyController._musicSource.SetLocalVolume(0f);
-			galaxyController._musicSource.FadeIn(5f, false, false, 1f);
+			galaxyController._musicSource.FadeIn(5f);
 		}
 	}
 }
