@@ -84,5 +84,33 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 
 			return false;
 		}
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PlayerCloneController), nameof(PlayerCloneController.FixedUpdate))]
+		public static bool CloneFixedUpdate(PlayerCloneController __instance)
+		{
+			var playerTransform = Locator.GetPlayerTransform();
+			var vector = __instance.transform.parent.InverseTransformPoint(playerTransform.position);
+			var b = __instance._localMirrorPos - vector;
+			var position = __instance._localMirrorPos + b;
+			position.y = vector.y;
+			__instance.transform.position = __instance.transform.parent.TransformPoint(position);
+			var normalized = (__instance.transform.position - playerTransform.position).normalized;
+			var forward = Vector3.Reflect(playerTransform.forward, normalized);
+			var upwards = Vector3.Reflect(playerTransform.up, normalized);
+			__instance.transform.rotation = Quaternion.LookRotation(forward, upwards);
+			var num = Vector3.Distance(__instance.transform.position, playerTransform.position);
+			if (!__instance._warpFlickerActivated && num < 10f)
+			{
+				__instance._warpFlickerActivated = true;
+				__instance._warpTime = Time.time + 0.5f;
+				GlobalMessenger<float, float>.FireEvent(OWEvents.FlickerOffAndOn, 0.5f, 0.5f);
+				new WarpFlickerActivateMessage().Send();
+			}
+			if (__instance._warpPlayerNextFrame)
+			{
+				__instance.WarpPlayerToCampfire();
+			}
+			return false;
+		}
 	}
 }
