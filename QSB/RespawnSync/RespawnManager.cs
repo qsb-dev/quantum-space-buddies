@@ -153,7 +153,7 @@ namespace QSB.RespawnSync
 				return;
 			}
 
-			player.DitheringAnimator.SetVisible(false, 0.5f);
+			player.DitheringAnimator.SetVisible(false, 1);
 		}
 
 		public void OnPlayerRespawn(PlayerInfo player)
@@ -169,7 +169,7 @@ namespace QSB.RespawnSync
 			_playersPendingRespawn.Remove(player);
 			UpdateRespawnNotification();
 
-			player.DitheringAnimator.SetVisible(true, 0.5f);
+			player.DitheringAnimator.SetVisible(true, 1);
 		}
 
 		public void RespawnSomePlayer()
