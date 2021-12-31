@@ -144,11 +144,13 @@ namespace QSB.DeathSync
 		};
 
 		public static string GetPhrase(DeathType deathType, int index)
-			=> !Darkhold.ContainsKey(deathType)
-				? string.Empty
-				: Darkhold[deathType][index];
+			=> Darkhold.ContainsKey(deathType)
+				? Darkhold[deathType][index]
+				: null;
 
 		public static int GetRandomIndex(DeathType deathType)
-			=> new Random().Next(0, Darkhold[deathType].Length);
+			=> Darkhold.ContainsKey(deathType)
+				? new Random().Next(0, Darkhold[deathType].Length)
+				: -1;
 	}
 }
