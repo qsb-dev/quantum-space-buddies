@@ -17,7 +17,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 
 		public override void OnReceiveRemote()
 		{
-			DebugLog.DebugWrite("REMOTE player clone flicker from {From");
+			DebugLog.DebugWrite($"REMOTE player clone flicker from {From}");
 			var controller = QSBWorldSync.GetUnityObjects<PlayerCloneController>().First();
 
 			controller._warpFlickerActivated = true;

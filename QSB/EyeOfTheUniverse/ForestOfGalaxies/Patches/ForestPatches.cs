@@ -84,6 +84,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 
 			return false;
 		}
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerCloneController), nameof(PlayerCloneController.FixedUpdate))]
 		public static bool CloneFixedUpdate(PlayerCloneController __instance)

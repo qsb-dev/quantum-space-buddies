@@ -4,7 +4,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
