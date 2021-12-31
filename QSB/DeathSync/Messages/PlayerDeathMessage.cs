@@ -11,7 +11,11 @@ namespace QSB.DeathSync.Messages
 	{
 		private int NecronomiconIndex;
 
-		public PlayerDeathMessage(DeathType type) => NecronomiconIndex = Necronomicon.GetRandomIndex(type);
+		public PlayerDeathMessage(DeathType type)
+		{
+			Value = type;
+			NecronomiconIndex = Necronomicon.GetRandomIndex(type);
+		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
