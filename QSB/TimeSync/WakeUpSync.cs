@@ -257,7 +257,7 @@ namespace QSB.TimeSync
 
 			if (EyeDisable)
 			{
-				ResetTimeScale();
+				OnDisconnect();
 				enabled = false;
 			}
 		}
