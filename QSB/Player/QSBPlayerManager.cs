@@ -120,10 +120,10 @@ namespace QSB.Player
 			=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 		public static void ShowAllPlayers()
-			=> PlayerList.Where(x => x != LocalPlayer && x.DitheringAnimator != null).ToList().ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
+			=> PlayerList.Where(x => x != LocalPlayer && x.DitheringAnimator != null).ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
 
 		public static void HideAllPlayers()
-			=> PlayerList.Where(x => x != LocalPlayer && x.DitheringAnimator != null).ToList().ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
+			=> PlayerList.Where(x => x != LocalPlayer && x.DitheringAnimator != null).ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
 				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
