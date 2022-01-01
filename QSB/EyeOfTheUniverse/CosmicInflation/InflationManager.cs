@@ -1,6 +1,7 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Messages;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,14 +29,11 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 		{
 			_playersInFog.Remove(QSBPlayerManager.GetPlayer(id));
 
-			// wait 1 frame since that's when player list will actually be updated
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			// count - 1 because this happens right before player is actually removed
+			if (_playersInFog.Count == QSBPlayerManager.PlayerList.Count - 1)
 			{
-				if (_playersInFog.Count == QSBPlayerManager.PlayerList.Count)
-				{
-					StartCollapse();
-				}
-			});
+				StartCollapse();
+			}
 		}
 
 		protected override void RebuildWorldObjects(OWScene scene)
@@ -48,7 +46,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 			}
 
 			_controller = FindObjectOfType<CosmicInflationController>();
-			_controller._smokeSphereTrigger.OnEntry += _controller.OnEnterFogSphere;
+			_controller._smokeSphereTrigger.OnEntry -= _controller.OnEnterFogSphere;
 
 			_controller._smokeSphereTrigger.OnEntry += OnEntry;
 		}
@@ -62,6 +60,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 				new EnterLeaveMessage(EnterLeaveType.EnterCosmicFog).Send();
 
 				// the pausing and stuff happens here
+				DebugLog.DebugWrite("TODO: pause and wait for other players to enter");
 			}
 		}
 
@@ -79,6 +78,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 		private void StartCollapse()
 		{
 			// the actual collapsing happens here
+			DebugLog.DebugWrite("TODO: fog sphere collapse");
 		}
 	}
 }
