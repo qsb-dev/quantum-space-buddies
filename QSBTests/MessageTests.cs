@@ -34,7 +34,9 @@ namespace QSBTests
 				foreach (var field in fields)
 				{
 					if (!field.Eq(fromField) && !field.Eq(toField) && !field.Eq(objectIdField))
+					{
 						constructor.CheckUses(field, Util.UseType.Store);
+					}
 					serialize.CheckUses(field, Util.UseType.Load);
 					deserialize.CheckUses(field, Util.UseType.Store);
 				}
@@ -51,7 +53,19 @@ namespace QSBTests
 			a.DeclaringType.Name == b.DeclaringType.Name &&
 			a.Name == b.Name;
 
-		public enum UseType { Store, Load }
+		public static bool IsOp<T>(this Instruction instruction, OpCode opCode, out T operand)
+		{
+			if (instruction.OpCode == opCode)
+			{
+				operand = (T)instruction.Operand;
+				return true;
+			}
+
+			operand = default;
+			return false;
+		}
+
+		public enum UseType { Store, Load };
 
 		public static void CheckUses(this MethodDefinition method, FieldReference field, UseType useType)
 		{
@@ -63,19 +77,29 @@ namespace QSBTests
 
 			while (true)
 			{
-				var stored = method.Body.Instructions.Any(x =>
-					x.OpCode == opCode &&
-					field.Eq((FieldReference)x.Operand)
+				var il = method.Body.Instructions;
+				var uses = il.Any(x =>
+					x.IsOp(opCode, out FieldReference f) &&
+					f.Eq(field)
 				);
-				if (stored) return;
+				if (uses)
+				{
+					return;
+				}
 
 				var baseMethod = method.GetBaseMethod();
-				if (baseMethod.Eq(method)) break;
-				var callsBase = method.Body.Instructions.Any(x =>
-					x.OpCode == OpCodes.Call &&
-					baseMethod.Eq((MethodReference)x.Operand)
+				if (baseMethod.Eq(method))
+				{
+					break;
+				}
+				var callBase = il.Any(x =>
+					x.IsOp(OpCodes.Call, out MethodReference m) &&
+					m.Eq(baseMethod)
 				);
-				if (!callsBase) break;
+				if (!callBase)
+				{
+					break;
+				}
 				method = baseMethod;
 			}
 
