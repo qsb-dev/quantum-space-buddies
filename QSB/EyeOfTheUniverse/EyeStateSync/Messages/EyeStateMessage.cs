@@ -29,8 +29,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 			if (Value >= EyeState.ForestIsDark)
 			{
-				WakeUpSync.LocalInstance.ResetTimeScale();
-				WakeUpSync.LocalInstance.enabled = false;
+				WakeUpSync.LocalInstance.EyeDisable = true;
 			}
 		}
 
@@ -41,8 +40,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 			if (Value >= EyeState.ForestIsDark)
 			{
-				WakeUpSync.LocalInstance.ResetTimeScale();
-				WakeUpSync.LocalInstance.enabled = false;
+				WakeUpSync.LocalInstance.EyeDisable = true;
 			}
 		}
 	}

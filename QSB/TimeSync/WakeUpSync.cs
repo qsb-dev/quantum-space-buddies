@@ -34,6 +34,8 @@ namespace QSB.TimeSync
 		private int _serverLoopCount;
 		private bool _hasWokenUp;
 
+		public bool EyeDisable;
+
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		public void OnDisconnect()
@@ -215,7 +217,7 @@ namespace QSB.TimeSync
 			TimeSyncUI.Start(TimeSyncType.Pausing, reason);
 		}
 
-		public void ResetTimeScale()
+		private void ResetTimeScale()
 		{
 			OWTime.SetTimeScale(1f);
 			OWTime.SetMaxDeltaTime(0.06666667f);
@@ -251,6 +253,12 @@ namespace QSB.TimeSync
 			else if (IsLocalPlayer && !QSBCore.AvoidTimeSync)
 			{
 				UpdateClient();
+			}
+
+			if (EyeDisable)
+			{
+				ResetTimeScale();
+				enabled = false;
 			}
 		}
 
