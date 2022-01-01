@@ -35,6 +35,7 @@ namespace QSB.Player
 		public bool IsInShrine { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
+		public DitheringAnimator DitheringAnimator { get; set; }
 
 		// Body Objects
 		public OWCamera Camera
