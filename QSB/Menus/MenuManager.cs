@@ -311,7 +311,12 @@ namespace QSB.Menus
 
 		private void Connect()
 		{
-			QSBNetworkManager.Instance.networkAddress = string.Concat((IPPopup as PopupInputMenu).GetInputText().Where(c => !char.IsWhiteSpace(c)));
+			var address = string.Concat(((PopupInputMenu)IPPopup).GetInputText().Where(c => !char.IsWhiteSpace(c)));
+			if (address.Length == 0)
+			{
+				address = QSBCore.DefaultServerIP;
+			}
+			QSBNetworkManager.Instance.networkAddress = address;
 			QSBNetworkManager.Instance.StartClient();
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
