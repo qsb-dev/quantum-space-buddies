@@ -35,6 +35,7 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
+
 			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
@@ -53,6 +54,7 @@ namespace QSB.Anglerfish.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
+
 			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
 			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);

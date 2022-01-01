@@ -32,7 +32,6 @@ namespace QSB.JellyfishSync.WorldObjects
 			}
 		}
 
-
 		public bool IsRising
 		{
 			get => AttachedObject._isRising;

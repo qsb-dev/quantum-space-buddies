@@ -105,6 +105,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 				_controller._playerPostCollapseSocket = _controller._altPlayerPostCollapseSocket;
 				_controller._altTravelerToHidePostCollapse.SetActive(false);
 			}
+
 			Locator.GetPlayerBody().SetPosition(_controller._playerPostCollapseSocket.position);
 			Locator.GetPlayerBody().SetRotation(_controller._playerPostCollapseSocket.rotation);
 			Locator.GetPlayerBody().SetVelocity(-_controller._playerPostCollapseSocket.forward);

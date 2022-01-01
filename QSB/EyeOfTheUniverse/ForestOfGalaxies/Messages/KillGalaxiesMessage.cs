@@ -47,6 +47,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 			{
 				galaxyController._galaxies[i].DieAfterSeconds(_deathDelays[i], true, AudioType.EyeGalaxyBlowAway);
 			}
+
 			galaxyController._forestIsDarkTime = Time.time + 65f;
 			galaxyController.enabled = true;
 

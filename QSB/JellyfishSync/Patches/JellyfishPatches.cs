@@ -19,6 +19,7 @@ namespace QSB.JellyfishSync.Patches
 			{
 				return true;
 			}
+
 			var qsbJellyfish = __instance.GetWorldObject<QSBJellyfish>();
 
 			var sqrMagnitude = (__instance._jellyfishBody.GetPosition() - __instance._planetBody.GetPosition()).sqrMagnitude;

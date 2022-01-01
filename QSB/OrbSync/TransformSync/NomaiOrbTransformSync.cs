@@ -38,6 +38,7 @@ namespace QSB.OrbSync.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
+
 			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
 		}
@@ -50,6 +51,7 @@ namespace QSB.OrbSync.TransformSync
 				DebugLog.ToConsole($"Error - No orb at index {index}.", MessageType.Error);
 				return;
 			}
+
 			_qsbOrb = orb.GetWorldObject<QSBOrb>();
 			_qsbOrb.TransformSync = this;
 
@@ -68,6 +70,7 @@ namespace QSB.OrbSync.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
+
 			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
 			NetIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);

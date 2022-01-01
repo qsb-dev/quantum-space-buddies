@@ -63,6 +63,7 @@ namespace QSB.Animation.NPC.Patches
 				var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
 				new EnterLeaveMessage(EnterLeaveType.ExitNomaiHeadZone, qsbObj.ObjectId).Send();
 			}
+
 			return false;
 		}
 

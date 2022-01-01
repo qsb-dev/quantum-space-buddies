@@ -56,7 +56,6 @@ namespace QSB.EyeOfTheUniverse.VesselSync
 			}
 		}
 
-
 		public void Enter(PlayerInfo player)
 		{
 			_playersInCage.Add(player);

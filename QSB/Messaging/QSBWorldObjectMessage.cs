@@ -42,7 +42,6 @@ namespace QSB.Messaging
 		}
 	}
 
-
 	public abstract class QSBBoolWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
 		protected bool Value;
