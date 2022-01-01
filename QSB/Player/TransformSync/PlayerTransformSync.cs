@@ -11,7 +11,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
 namespace QSB.Player.TransformSync
 {
