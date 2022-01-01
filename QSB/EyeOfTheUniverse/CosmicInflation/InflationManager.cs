@@ -60,11 +60,13 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 				_controller._probeDestroyTrigger.SetTriggerActivation(false);
 				new EnterLeaveMessage(EnterLeaveType.EnterCosmicFog).Send();
 
-				DebugLog.DebugWrite("pause and wait for other players to enter");
+				DebugLog.DebugWrite("pause, disable input, wait for other players to enter");
+				
 				ReticleController.Hide();
 				Locator.GetFlashlight().TurnOff(false);
 				Locator.GetPromptManager().SetPromptsVisible(false);
 				OWInput.ChangeInputMode(InputMode.None);
+				
 				OWTime.SetTimeScale(0);
 			}
 		}
@@ -75,7 +77,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 
 			if (player != QSBPlayerManager.LocalPlayer)
 			{
-				DebugLog.DebugWrite($"fade player {player}");
+				DebugLog.DebugWrite($"fade out player {player}");
 				player.DitheringAnimator.SetVisible(false, 3);
 			}
 
@@ -87,8 +89,30 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 
 		private void StartCollapse()
 		{
-			// the actual collapsing happens here
-			DebugLog.DebugWrite("fog sphere collapse");
+			DebugLog.DebugWrite("unpause, fade in everyone, fog sphere collapse");
+			
+			OWTime.SetTimeScale(1);
+			_playersInFog.ForEach(x => x.DitheringAnimator.SetVisible(true, 3));
+
+			_controller._state = CosmicInflationController.State.Collapsing;
+			_controller._stateChangeTime = Time.time;
+			_controller._collapseStartPos = _controller._possibilitySphereRoot.localPosition;
+			_controller._smokeSphereTrigger.SetTriggerActivation(false);
+			_controller._inflationLight.FadeTo(1f, 1f);
+			_controller._possibilitySphereController.OnCollapse();
+			if (_controller._campsiteController.GetUseAltPostCollapseSocket())
+			{
+				_controller._playerPostCollapseSocket = _controller._altPlayerPostCollapseSocket;
+				_controller._altTravelerToHidePostCollapse.SetActive(false);
+			}
+			Locator.GetPlayerBody().SetPosition(_controller._playerPostCollapseSocket.position);
+			Locator.GetPlayerBody().SetRotation(_controller._playerPostCollapseSocket.rotation);
+			Locator.GetPlayerBody().SetVelocity(-_controller._playerPostCollapseSocket.forward);
+			Locator.GetPlayerTransform().GetRequiredComponent<PlayerLockOnTargeting>().LockOn(_controller._possibilitySphereRoot, 2f);
+			foreach (var particles in _controller._smokeSphereParticles)
+			{
+				particles.Stop();
+			}
 		}
 	}
 }
