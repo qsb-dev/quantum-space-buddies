@@ -4,6 +4,7 @@ using QSB.Player.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.CosmicInflation
@@ -45,7 +46,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 				_controller._smokeSphereTrigger.OnEntry -= OnEntry;
 			}
 
-			_controller = FindObjectOfType<CosmicInflationController>();
+			_controller = QSBWorldSync.GetUnityObjects<CosmicInflationController>().First();
 			_controller._smokeSphereTrigger.OnEntry -= _controller.OnEnterFogSphere;
 
 			_controller._smokeSphereTrigger.OnEntry += OnEntry;
