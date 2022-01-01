@@ -77,7 +77,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 
 			if (player != QSBPlayerManager.LocalPlayer)
 			{
-				DebugLog.DebugWrite($"fade out player {player}");
+				DebugLog.DebugWrite($"fade out player {player.PlayerId}");
 				player.DitheringAnimator.SetVisible(false, 3);
 			}
 
@@ -92,7 +92,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 			DebugLog.DebugWrite("unpause, fade in everyone, fog sphere collapse");
 			
 			OWTime.SetTimeScale(1);
-			_playersInFog.ForEach(x => x.DitheringAnimator.SetVisible(true, 3));
+			QSBPlayerManager.ShowAllPlayers();
 
 			_controller._state = CosmicInflationController.State.Collapsing;
 			_controller._stateChangeTime = Time.time;
