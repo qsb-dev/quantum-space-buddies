@@ -215,7 +215,7 @@ namespace QSB.TimeSync
 			TimeSyncUI.Start(TimeSyncType.Pausing, reason);
 		}
 
-		private void ResetTimeScale()
+		public void ResetTimeScale()
 		{
 			OWTime.SetTimeScale(1f);
 			OWTime.SetMaxDeltaTime(0.06666667f);
