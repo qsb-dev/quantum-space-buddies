@@ -33,7 +33,6 @@ namespace QSB.QuantumSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			DebugLog.DebugWrite($"Get moon state active:{Active} angle:{Angle}");
 			WorldObject.AttachedObject._moonStateRoot.SetActive(Active);
 			if (Angle != -1f)
 			{

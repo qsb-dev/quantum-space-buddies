@@ -105,7 +105,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 				__instance._warpFlickerActivated = true;
 				__instance._warpTime = Time.time + 0.5f;
 				GlobalMessenger<float, float>.FireEvent(OWEvents.FlickerOffAndOn, 0.5f, 0.5f);
-				new WarpFlickerActivateMessage().Send();
+				new EyeCloneSeenMessage().Send();
 			}
 			if (__instance._warpPlayerNextFrame)
 			{
