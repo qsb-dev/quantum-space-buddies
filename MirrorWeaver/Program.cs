@@ -2,6 +2,7 @@
 using Mono.Cecil;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace MirrorWeaver
 {
@@ -26,36 +27,50 @@ namespace MirrorWeaver
 		}
 	}
 
-	public class AssemblyResolver : BaseAssemblyResolver
-	{
-		public AssemblyResolver(string managedDir) => AddSearchDirectory(managedDir);
-	}
-
 	public static class Program
 	{
 		public static void Main(string[] args)
 		{
+			var qsbDll = Path.GetFullPath(args[0]);
+			var gameDir = Path.GetFullPath(args[1]);
+
+			var qsbDir = Path.GetDirectoryName(qsbDll)!;
+			var managedDir = Path.Combine(gameDir, "OuterWilds_Data", "Managed");
+
+			AppDomain.CurrentDomain.AssemblyResolve += (_, eventArgs) =>
+			{
+				var name = new AssemblyName(eventArgs.Name).Name + ".dll";
+
+				var path = Path.Combine(qsbDir, name);
+				if (File.Exists(path))
+				{
+					return Assembly.LoadFile(path);
+				}
+
+				path = Path.Combine(managedDir, name);
+				if (File.Exists(path))
+				{
+					return Assembly.LoadFile(path);
+				}
+
+				return null;
+			};
+
+			var resolver = new DefaultAssemblyResolver();
+			resolver.AddSearchDirectory(qsbDir);
+			resolver.AddSearchDirectory(managedDir);
+			var assembly = AssemblyDefinition.ReadAssembly(qsbDll, new ReaderParameters
+			{
+				ReadWrite = true,
+				ReadSymbols = true,
+				AssemblyResolver = resolver
+			});
+
 			var log = new ConsoleLogger();
 			var weaver = new Weaver(log);
+			weaver.Weave(assembly, resolver, out _);
 
-			var qsbDll = args[0];
-			var gameDir = args[1];
-			var managedDir = Path.Combine(gameDir, "OuterWilds_Data", "Managed");
-			// var weavedQsbDll = $"{qsbDll}.weaved.dll";
-			// Console.WriteLine($"{qsbDll} => {weavedQsbDll}");
-
-			var assembly = AssemblyDefinition.ReadAssembly(qsbDll);
-			var resolver = new DefaultAssemblyResolver();
-			// resolver.AddSearchDirectory(Path.GetDirectoryName(qsbDll));
-			// resolver.AddSearchDirectory(managedDir);
-
-			var result = weaver.Weave(assembly, resolver, out _);
-			if (!result)
-			{
-				throw new Exception("weaving failed");
-			}
-
-			assembly.Write(qsbDll, new WriterParameters { WriteSymbols = true });
+			assembly.Write(new WriterParameters { WriteSymbols = true });
 		}
 	}
 }

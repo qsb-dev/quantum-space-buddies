@@ -14,11 +14,10 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <PropertyGroup>
-        <PostBuildEvent Condition="Exists($(GameDir))">
+        <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
             :: weave qsb
             "$(OutputPath)\MirrorWeaver" "$(OutputPath)\QSB.dll" "$(GameDir)"
-        </PostBuildEvent>
-        <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
+
             :: copy output to unity project
             copy /y "$(OutputPath)" "$(UnityAssetsDir)"
             :: copy game assembly to unity project
