@@ -14,6 +14,8 @@ namespace QSB.WorldSync
 		public virtual void Init() { }
 		public virtual void OnRemoval() { }
 		public MonoBehaviour ReturnObject() => AttachedObject;
+		public virtual bool ShouldDisplayLabel() => true;
+		public virtual string ReturnLabel() => LogName;
 
 		/// indicates that this won't become ready immediately
 		protected void StartDelayedReady() => WorldObjectManager._numObjectsReadying++;

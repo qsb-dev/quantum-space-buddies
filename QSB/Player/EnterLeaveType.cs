@@ -13,6 +13,8 @@
 		EnterShip = 8,
 		ExitShip = 9,
 		EnterNomaiHeadZone = 10,
-		ExitNomaiHeadZone = 11
+		ExitNomaiHeadZone = 11,
+		EnterVesselCage = 12,
+		ExitVesselCage = 13
 	}
 }

@@ -204,11 +204,14 @@ namespace QSB.Menus
 			CreateCommonPopups();
 
 			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, IPPopup);
+			var loadEye = MenuApi.TitleScreen_MakeSceneLoadButton("debug load eye", _ClientButtonIndex + 1, SubmitActionLoadScene.LoadableScenes.EYE);
 
 			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
+
+			SetButtonActive(loadEye, QSBCore.DebugMode);
 
 			if (QSBCore.IsInMultiplayer)
 			{
@@ -325,6 +328,7 @@ namespace QSB.Menus
 				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
 				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)",
 				KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
+				KickReason.InEye => "Server refused connection as game has progressed too far.",
 				KickReason.None => "Kicked from server. No reason given.",
 				_ => $"Kicked from server. KickReason:{reason}",
 			};

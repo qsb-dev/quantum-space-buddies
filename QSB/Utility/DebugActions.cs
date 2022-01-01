@@ -17,6 +17,9 @@ namespace QSB.Utility
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
 			playerBody.SetVelocity(spawnPoint.GetPointVelocity());
+			var bridgeVolume = FindObjectOfType<VesselWarpController>()._bridgeVolume;
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
 		private void InsertWarpCore()
@@ -24,24 +27,24 @@ namespace QSB.Utility
 			var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
 			var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
 			socket.PlaceIntoSocket(warpCore);
-			var bridgeVolume = FindObjectOfType<VesselWarpController>()._bridgeVolume;
-			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
-			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-		public void Update()
+		private void Awake()
 		{
 			if (!QSBCore.DebugMode)
 			{
-				return;
+				Destroy(this);
 			}
+		}
 
+		public void Update()
+		{
 			/*
-			 * 1 - Warp to first player
+			 * 1 - Warp to first non local player
 			 * 2 - Set time flowing
-			 * 3 -
+			 * 3 - Destroy probe
 			 * 4 - Damage ship electricals
 			 * 5 - Trigger supernova
 			 * 6 -
@@ -53,22 +56,10 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
 			{
-				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x.PlayerId != QSBPlayerManager.LocalPlayerId);
-				if (otherPlayer != null && otherPlayer.Body != null)
+				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x != QSBPlayerManager.LocalPlayer);
+				if (otherPlayer != null)
 				{
-					var playerBody = Locator.GetPlayerBody();
-					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
-					var parentBody = otherPlayer.TransformSync?.ReferenceSector?.AttachedObject?.GetOWRigidbody();
-					if (parentBody != null)
-					{
-						playerBody.SetVelocity(parentBody.GetVelocity());
-						playerBody.SetAngularVelocity(parentBody.GetAngularVelocity());
-					}
-					else
-					{
-						playerBody.SetVelocity(Vector3.zero);
-						playerBody.SetAngularVelocity(Vector3.zero);
-					}
+					new DebugRequestTeleportInfoMessage(otherPlayer.PlayerId).Send();
 				}
 			}
 
@@ -89,7 +80,7 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
 			{
-				new DebugMessage(DebugMessageEnum.TriggerSupernova).Send();
+				new DebugTriggerSupernovaMessage().Send();
 			}
 
 			if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)

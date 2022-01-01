@@ -2,31 +2,30 @@
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
-		public Text DebugBoxText;
-
 		public override void Init()
 		{
 			base.Init();
 			AttachedObject._randomYRotation = false;
-			if (QSBCore.ShowQuantumDebugBoxes)
-			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Socketed\r\nid:{ObjectId}").GetComponent<Text>();
-			}
 		}
 
-		public override void OnRemoval()
+		public override string ReturnLabel()
 		{
-			base.OnRemoval();
-			if (DebugBoxText != null)
+			var socket = AttachedObject.GetCurrentSocket();
+			if (socket != null)
 			{
-				Object.Destroy(DebugBoxText.gameObject);
+				var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
+				return $"{LogName}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
+			}
+			else
+			{
+				return $"{LogName}{Environment.NewLine}SocketId:NULL";
 			}
 		}
 

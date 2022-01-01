@@ -1,33 +1,18 @@
 ﻿using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObject>
 	{
 		public List<QSBQuantumState> QuantumStates { get; private set; }
-		public Text DebugBoxText;
 		public int CurrentState => AttachedObject._stateIndex;
-
-		public override void OnRemoval()
-		{
-			base.OnRemoval();
-			if (DebugBoxText != null)
-			{
-				UnityEngine.Object.Destroy(DebugBoxText.gameObject);
-			}
-		}
 
 		public override void Init()
 		{
-			if (QSBCore.ShowQuantumDebugBoxes)
-			{
-				DebugBoxText = DebugBoxManager.CreateBox(AttachedObject.transform, 0, $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}").GetComponent<Text>();
-			}
-
 			base.Init();
 
 			StartDelayedReady();
@@ -44,6 +29,9 @@ namespace QSB.QuantumSync.WorldObjects
 			});
 		}
 
+		public override string ReturnLabel()
+			=> $"{LogName}{Environment.NewLine}StateIndex:{AttachedObject._stateIndex}";
+
 		public void ChangeState(int newStateIndex)
 		{
 			if (CurrentState != -1)
@@ -53,10 +41,6 @@ namespace QSB.QuantumSync.WorldObjects
 
 			QuantumStates[newStateIndex].SetVisible(true);
 			AttachedObject._stateIndex = newStateIndex;
-			if (QSBCore.ShowQuantumDebugBoxes)
-			{
-				DebugBoxText.text = $"Multistate\r\nid:{ObjectId}\r\nstate:{CurrentState}";
-			}
 		}
 	}
 }

@@ -47,9 +47,10 @@ namespace QSB
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
-		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
+		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
+		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -107,14 +108,13 @@ namespace QSB
 			gameObject.AddComponent<SatelliteProjectorManager>();
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<GalaxyMapManager>();
+			gameObject.AddComponent<DebugCameraSettings>();
 
 			// WorldObject managers
 			foreach (var type in typeof(WorldObjectManager).GetDerivedTypes())
 			{
 				gameObject.AddComponent(type);
 			}
-
-			DebugBoxManager.Init();
 
 			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 

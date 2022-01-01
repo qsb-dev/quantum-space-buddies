@@ -25,6 +25,8 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
+		public override bool ShouldDisplayLabel() => ControllingPlayer != 0;
+
 		public override void Init()
 		{
 			var debugBundle = QSBCore.DebugAssetBundle;

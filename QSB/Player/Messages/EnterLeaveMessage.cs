@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
+using QSB.EyeOfTheUniverse.VesselSync;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
@@ -95,6 +96,12 @@ namespace QSB.Player.Messages
 					break;
 				case EnterLeaveType.ExitShip:
 					ShipManager.Instance.RemovePlayerFromShip(player);
+					break;
+				case EnterLeaveType.EnterVesselCage:
+					VesselManager.Instance.Enter(player);
+					break;
+				case EnterLeaveType.ExitVesselCage:
+					VesselManager.Instance.Exit(player);
 					break;
 				default:
 					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Value}", MessageType.Warning);
