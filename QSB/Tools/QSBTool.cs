@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -7,7 +8,20 @@ namespace QSB.Tools
 	{
 		public PlayerInfo Player { get; set; }
 		public ToolType Type { get; set; }
-		public GameObject ToolGameObject { get; set; }
+		public GameObject ToolGameObject
+		{
+			get => _toolGameObject;
+
+			set
+			{
+				_toolGameObject = value;
+				QSBCore.UnityEvents.FireInNUpdates(
+					() => DitheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>(),
+					5);
+			}
+		}
+		private GameObject _toolGameObject;
+		public DitheringAnimator DitheringAnimator { get; set; }
 
 		public DampedSpringQuat MoveSpring
 		{
@@ -33,8 +47,23 @@ namespace QSB.Tools
 			set => _arrivalDegrees = value;
 		}
 
+		protected bool _isDitheringOut;
+
+		public override void Start()
+		{
+			base.Start();
+			ToolGameObject?.SetActive(false);
+		}
+
 		public virtual void OnEnable() => ToolGameObject?.SetActive(true);
-		public virtual void OnDisable() => ToolGameObject?.SetActive(false);
+
+		public virtual void OnDisable()
+		{
+			if (!_isDitheringOut)
+			{
+				ToolGameObject?.SetActive(false);
+			}
+		}
 
 		public void ChangeEquipState(bool equipState)
 		{
@@ -50,13 +79,34 @@ namespace QSB.Tools
 		public override void EquipTool()
 		{
 			base.EquipTool();
+
+			if (DitheringAnimator != null && DitheringAnimator._renderers != null)
+			{
+				ToolGameObject?.SetActive(true);
+				DitheringAnimator.SetVisible(true, 5f);
+			}
+			
 			Player.AudioController.PlayEquipTool();
 		}
 
 		public override void UnequipTool()
 		{
 			base.UnequipTool();
+
+			if (DitheringAnimator != null && DitheringAnimator._renderers != null)
+			{
+				_isDitheringOut = true;
+				DitheringAnimator.SetVisible(false, 5f);
+				QSBCore.UnityEvents.RunWhen(() => DitheringAnimator._visibleFraction == 0, FinishDitherOut);
+			}
+
 			Player.AudioController.PlayUnequipTool();
+		}
+
+		public virtual void FinishDitherOut()
+		{
+			ToolGameObject?.SetActive(false);
+			_isDitheringOut = false;
 		}
 	}
 }

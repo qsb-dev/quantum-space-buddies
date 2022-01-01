@@ -153,7 +153,14 @@ namespace QSB.RespawnSync
 				return;
 			}
 
-			player.DitheringAnimator.SetVisible(false, 1);
+			if (player.DitheringAnimator != null)
+			{
+				player.DitheringAnimator.SetVisible(false, 1);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
+			}
 		}
 
 		public void OnPlayerRespawn(PlayerInfo player)
@@ -169,7 +176,14 @@ namespace QSB.RespawnSync
 			_playersPendingRespawn.Remove(player);
 			UpdateRespawnNotification();
 
-			player.DitheringAnimator.SetVisible(true, 1);
+			if (player.DitheringAnimator != null)
+			{
+				player.DitheringAnimator.SetVisible(true, 1);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
+			}
 		}
 
 		public void RespawnSomePlayer()
