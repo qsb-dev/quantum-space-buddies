@@ -60,15 +60,24 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 				_controller._probeDestroyTrigger.SetTriggerActivation(false);
 				new EnterLeaveMessage(EnterLeaveType.EnterCosmicFog).Send();
 
-				// the pausing and stuff happens here
-				DebugLog.DebugWrite("TODO: pause and wait for other players to enter");
+				DebugLog.DebugWrite("pause and wait for other players to enter");
+				ReticleController.Hide();
+				Locator.GetFlashlight().TurnOff(false);
+				Locator.GetPromptManager().SetPromptsVisible(false);
+				OWInput.ChangeInputMode(InputMode.None);
+				OWTime.SetTimeScale(0);
 			}
 		}
-
 
 		public void Enter(PlayerInfo player)
 		{
 			_playersInFog.Add(player);
+
+			if (player != QSBPlayerManager.LocalPlayer)
+			{
+				DebugLog.DebugWrite($"fade player {player}");
+				player.DitheringAnimator.SetVisible(false, 3);
+			}
 
 			if (_playersInFog.Count == QSBPlayerManager.PlayerList.Count)
 			{
@@ -79,7 +88,7 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 		private void StartCollapse()
 		{
 			// the actual collapsing happens here
-			DebugLog.DebugWrite("TODO: fog sphere collapse");
+			DebugLog.DebugWrite("fog sphere collapse");
 		}
 	}
 }
