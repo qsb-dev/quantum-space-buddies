@@ -20,7 +20,6 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 			}
 		}
 
-
 		private float _offDuration;
 		private float _onDuration;
 
@@ -57,6 +56,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 				{
 					throw new InvalidOperationException("GlobalMessenger does not support recursive FireEvent calls to the same eventType.");
 				}
+
 				eventData.isInvoking = true;
 				eventData.temp.AddRange(eventData.callbacks);
 				foreach (var callback in eventData.temp)
@@ -76,6 +76,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 						Debug.LogException(exception);
 					}
 				}
+
 				eventData.temp.Clear();
 				eventData.isInvoking = false;
 			}

@@ -78,6 +78,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 				delayList.Add(rnd);
 				galaxy.DieAfterSeconds(rnd, true, AudioType.EyeGalaxyBlowAway);
 			}
+
 			new KillGalaxiesMessage(delayList).Send();
 			__instance._forestIsDarkTime = Time.time + delay + 5f;
 			__instance.enabled = true;
@@ -107,10 +108,12 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 				GlobalMessenger<float, float>.FireEvent(OWEvents.FlickerOffAndOn, 0.5f, 0.5f);
 				new EyeCloneSeenMessage().Send();
 			}
+
 			if (__instance._warpPlayerNextFrame)
 			{
 				__instance.WarpPlayerToCampfire();
 			}
+
 			return false;
 		}
 	}

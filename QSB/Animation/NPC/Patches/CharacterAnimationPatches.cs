@@ -110,6 +110,7 @@ namespace QSB.Animation.NPC.Patches
 				var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>();
 				new EnterLeaveMessage(EnterLeaveType.EnterNonNomaiHeadZone, qsbObj.ObjectId).Send();
 			}
+
 			return false;
 		}
 

@@ -22,7 +22,6 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 		private DialogueBoxVer2 _currentDialogueBox;
 		private bool _wasFlashlightOn;
 		private bool _timeFrozen;
-		private bool _isRecording;
 
 		private const string SIGN_NAME = "SIGN";
 		private const string RECORDING_NAME = "RECORDING";
@@ -356,7 +355,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 
 			Locator.GetToolModeSwapper().UnequipTool();
 			GlobalMessenger.FireEvent("EnterConversation");
-			Locator.GetPlayerAudioController().PlayDialogueEnter(_isRecording);
+			Locator.GetPlayerAudioController().PlayDialogueEnter();
 			_wasFlashlightOn = Locator.GetFlashlight().IsFlashlightOn();
 			if (_wasFlashlightOn && _turnOffFlashlight)
 			{
@@ -394,7 +393,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			_interactVolume.ResetInteraction();
 			Locator.GetPlayerTransform().GetRequiredComponent<PlayerLockOnTargeting>().BreakLock();
 			GlobalMessenger.FireEvent("ExitConversation");
-			Locator.GetPlayerAudioController().PlayDialogueExit(_isRecording);
+			Locator.GetPlayerAudioController().PlayDialogueExit();
 			if (_wasFlashlightOn && _turnOffFlashlight && _turnOnFlashlight)
 			{
 				Locator.GetFlashlight().TurnOn(false);

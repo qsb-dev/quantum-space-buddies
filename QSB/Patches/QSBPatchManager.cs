@@ -65,6 +65,7 @@ namespace QSB.Patches
 					DebugLog.ToConsole($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
 				}
 			}
+
 			_patchedTypes.Add(type);
 		}
 

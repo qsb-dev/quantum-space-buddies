@@ -30,7 +30,6 @@ namespace QSB.Player.Messages
 			}
 		}
 
-
 		private int ObjectId;
 
 		public EnterLeaveMessage(EnterLeaveType type, int objectId = -1)

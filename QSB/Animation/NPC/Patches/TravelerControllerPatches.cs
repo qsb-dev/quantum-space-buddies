@@ -32,7 +32,6 @@ namespace QSB.Animation.NPC.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(TravelerController), nameof(TravelerController.StartConversation))]
 		public static bool StartConversation(TravelerController __instance)
@@ -44,6 +43,7 @@ namespace QSB.Animation.NPC.Patches
 					: __instance._animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 				__instance._animator.SetTrigger("Talking");
 			}
+
 			Locator.GetTravelerAudioManager().StopTravelerAudio(__instance);
 
 			return false;
@@ -58,6 +58,7 @@ namespace QSB.Animation.NPC.Patches
 				__instance._animator.CrossFadeInFixedTime("Gabbro_Talking", 1.8f);
 				__instance._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Talking", 1.8f);
 			}
+
 			Locator.GetTravelerAudioManager().StopTravelerAudio(__instance);
 
 			return false;
@@ -78,6 +79,7 @@ namespace QSB.Animation.NPC.Patches
 					__instance._animator.SetTrigger("Playing");
 				}
 			}
+
 			Locator.GetTravelerAudioManager().PlayTravelerAudio(__instance, audioDelay);
 
 			return false;
@@ -92,6 +94,7 @@ namespace QSB.Animation.NPC.Patches
 				__instance._animator.CrossFadeInFixedTime("Gabbro_Playing", audioDelay, -1, -audioDelay);
 				__instance._hammockAnimator.CrossFadeInFixedTime("GabbroHammock_Playing", audioDelay, -1, -audioDelay);
 			}
+
 			Locator.GetTravelerAudioManager().PlayTravelerAudio(__instance, audioDelay);
 			if (DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_REMINDER") || DialogueConditionManager.SharedInstance.GetConditionState("MAP_PROMPT_ATTENTION"))
 			{

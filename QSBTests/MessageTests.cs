@@ -37,6 +37,7 @@ namespace QSBTests
 					{
 						constructor.CheckUses(field, Util.UseType.Store);
 					}
+
 					serialize.CheckUses(field, Util.UseType.Load);
 					deserialize.CheckUses(field, Util.UseType.Store);
 				}
@@ -73,6 +74,7 @@ namespace QSBTests
 			{
 				UseType.Store => OpCodes.Stfld,
 				UseType.Load => OpCodes.Ldfld,
+				_ => throw new System.NotImplementedException(),
 			};
 
 			while (true)
@@ -92,6 +94,7 @@ namespace QSBTests
 				{
 					break;
 				}
+
 				var callBase = il.Any(x =>
 					x.IsOp(OpCodes.Call, out MethodReference m) &&
 					m.Eq(baseMethod)
@@ -100,6 +103,7 @@ namespace QSBTests
 				{
 					break;
 				}
+
 				method = baseMethod;
 			}
 

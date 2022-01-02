@@ -104,6 +104,7 @@ namespace QSB.Messaging
 					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg}", MessageType.Error);
 					return;
 				}
+
 				conn.Send(msgType, msg);
 			}
 		}
@@ -157,7 +158,6 @@ namespace QSB.Messaging
 		}
 
 		#endregion
-
 
 		public static void SendRaw<M>(this M msg)
 			where M : QSBMessageRaw

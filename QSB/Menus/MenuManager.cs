@@ -77,6 +77,7 @@ namespace QSB.Menus
 				_nowLoadingSB = new StringBuilder();
 				return;
 			}
+
 			_nowLoadingSB.Length = 0;
 		}
 
@@ -316,6 +317,7 @@ namespace QSB.Menus
 			{
 				address = QSBCore.DefaultServerIP;
 			}
+
 			QSBNetworkManager.Instance.networkAddress = address;
 			QSBNetworkManager.Instance.StartClient();
 
