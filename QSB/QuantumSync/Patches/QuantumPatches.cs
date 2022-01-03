@@ -23,12 +23,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.IsLockedByPlayerContact))]
 		public static bool QuantumObject_IsLockedByPlayerContact(ref bool __result, QuantumObject __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return true;
-			}
-
-			var playersEntangled = QuantumManager.GetEntangledPlayers(__instance.GetWorldObject<IQSBQuantumObject>());
+			var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
 			__result = playersEntangled.Count() != 0 && __instance.IsIlluminated();
 			return false;
 		}
@@ -40,15 +35,13 @@ namespace QSB.QuantumSync.Patches
 			ref bool __result,
 			bool skipInstantVisibilityCheck)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (WorldObjectManager.AllObjectsReady)
 			{
-				return true;
-			}
-
-			var socketedQuantumObject = __instance.GetWorldObject<QSBSocketedQuantumObject>();
-			if (socketedQuantumObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
-			{
-				return false;
+				var socketedWorldObject = __instance.GetWorldObject<QSBSocketedQuantumObject>();
+				if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+				{
+					return false;
+				}
 			}
 
 			foreach (var socket in __instance._childSockets)
@@ -104,7 +97,7 @@ namespace QSB.QuantumSync.Patches
 				bool socketNotSuitable;
 				var isSocketIlluminated = __instance.CheckIllumination();
 
-				var playersEntangled = QuantumManager.GetEntangledPlayers(socketedQuantumObject);
+				var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
 				if (playersEntangled.Count() != 0)
 				{
 					// socket not suitable if illuminated
@@ -183,15 +176,14 @@ namespace QSB.QuantumSync.Patches
 			QuantumShuffleObject __instance,
 			ref bool __result)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			QSBQuantumShuffleObject shuffleWorldObject = default;
+			if (WorldObjectManager.AllObjectsReady)
 			{
-				return true;
-			}
-
-			var shuffleWorldObject = __instance.GetWorldObject<QSBQuantumShuffleObject>();
-			if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
-			{
-				return false;
+				shuffleWorldObject = __instance.GetWorldObject<QSBQuantumShuffleObject>();
+				if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+				{
+					return false;
+				}
 			}
 
 			__instance._indexList.Clear();
@@ -209,8 +201,11 @@ namespace QSB.QuantumSync.Patches
 				__instance._shuffledObjects[j].localPosition = __instance._localPositions[__instance._indexList[j]];
 			}
 
-			shuffleWorldObject.SendMessage(new QuantumShuffleMessage(__instance._indexList.ToArray()));
-			__result = true;
+			if (WorldObjectManager.AllObjectsReady)
+			{
+				shuffleWorldObject.SendMessage(new QuantumShuffleMessage(__instance._indexList.ToArray()));
+				__result = true;
+			}
 
 			return false;
 		}
@@ -225,7 +220,7 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			var qsbObj = __instance.GetWorldObject<QSBMultiStateQuantumObject>();
-			if (qsbObj.ControllingPlayer == uint.MaxValue)
+			if (qsbObj.ControllingPlayer == 0)
 			{
 				return true;
 			}
@@ -261,7 +256,7 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			var qsbObj = __instance.GetWorldObject<QSBMultiStateQuantumObject>();
-			if (qsbObj.ControllingPlayer == uint.MaxValue && qsbObj.CurrentState == -1)
+			if (qsbObj.ControllingPlayer == 0 && qsbObj.CurrentState == -1)
 			{
 				return true;
 			}
@@ -336,8 +331,8 @@ namespace QSB.QuantumSync.Patches
 			}
 
 			if (QSBPlayerManager.LocalPlayer != null
-			    && QSBPlayerManager.LocalPlayer.IsInShrine
-			    && PlayerState.IsFlashlightOn())
+				&& QSBPlayerManager.LocalPlayer.IsInShrine
+				&& PlayerState.IsFlashlightOn())
 			{
 				__result = false;
 				return false;

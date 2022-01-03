@@ -13,7 +13,7 @@ namespace QSB.QuantumSync.WorldObjects
 	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		where T : QuantumObject
 	{
-		public uint ControllingPlayer { get; set; } = uint.MaxValue;
+		public uint ControllingPlayer { get; set; }
 		public bool IsEnabled { get; set; }
 
 		public override void OnRemoval()
@@ -25,7 +25,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override bool ShouldDisplayLabel() => ControllingPlayer != uint.MaxValue;
+		public override bool ShouldDisplayLabel() => ControllingPlayer != 0;
 
 		public override void Init()
 		{
@@ -60,7 +60,7 @@ namespace QSB.QuantumSync.WorldObjects
 				{
 					if (shape is BoxShape boxShape)
 					{
-						var newCube = Object.Instantiate(cube);
+						var newCube = UnityEngine.Object.Instantiate(cube);
 						newCube.transform.parent = shape.transform;
 						newCube.transform.localPosition = Vector3.zero;
 						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -68,7 +68,7 @@ namespace QSB.QuantumSync.WorldObjects
 					}
 					else if (shape is SphereShape sphereShape)
 					{
-						var newSphere = Object.Instantiate(sphere);
+						var newSphere = UnityEngine.Object.Instantiate(sphere);
 						newSphere.transform.parent = shape.transform;
 						newSphere.transform.localPosition = Vector3.zero;
 						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -92,23 +92,28 @@ namespace QSB.QuantumSync.WorldObjects
 		private void LateInit()
 		{
 			FinishDelayedReady();
-			var attachedShapes = GetAttachedShapes();
-			foreach (var shape in attachedShapes)
+			foreach (var shape in GetAttachedShapes())
 			{
 				shape.OnShapeActivated += OnEnable;
 				shape.OnShapeDeactivated += OnDisable;
 			}
 
-			var enable = attachedShapes.Count != 0 &&
-				attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active);
+			var attachedShapes = GetAttachedShapes();
 
-			if (enable)
+			if (attachedShapes.Count == 0)
 			{
-				OnEnable(null);
+				IsEnabled = false;
+				return;
+			}
+
+			if (attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active))
+			{
+				IsEnabled = true;
 			}
 			else
 			{
-				OnDisable(null);
+				ControllingPlayer = 0u;
+				IsEnabled = false;
 			}
 		}
 
@@ -160,15 +165,19 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = true;
+			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+			{
+				return;
+			}
 
-			if (ControllingPlayer != uint.MaxValue)
+			if (ControllingPlayer != 0)
 			{
 				// controlled by another player, dont care that we activate it
 				return;
 			}
 
 			// no one is controlling this object right now, request authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId, false));
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 		}
 
 		private void OnDisable(Shape s)
@@ -184,6 +193,10 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = false;
+			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+			{
+				return;
+			}
 
 			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
 			{
@@ -191,8 +204,9 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
+			var id = ObjectId;
 			// send event to other players that we're releasing authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(uint.MaxValue, false));
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
 		}
 	}
 }
