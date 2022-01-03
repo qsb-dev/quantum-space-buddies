@@ -34,8 +34,6 @@ namespace QSB.TimeSync
 		private int _serverLoopCount;
 		private bool _hasWokenUp;
 
-		public bool EyeDisable;
-
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		public void OnDisconnect()
@@ -253,12 +251,6 @@ namespace QSB.TimeSync
 			else if (IsLocalPlayer && !QSBCore.AvoidTimeSync)
 			{
 				UpdateClient();
-			}
-
-			if (EyeDisable)
-			{
-				OnDisconnect();
-				enabled = false;
 			}
 		}
 

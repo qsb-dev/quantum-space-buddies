@@ -30,11 +30,14 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 		{
 			_playersInFog.Remove(QSBPlayerManager.GetPlayer(id));
 
-			// count - 1 because this happens right before player is actually removed
-			if (_playersInFog.Count == QSBPlayerManager.PlayerList.Count - 1)
+			// wait 1 frame for player to be removed
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
 			{
-				StartCollapse();
-			}
+				if (QSBCore.IsInMultiplayer && _playersInFog.Count == QSBPlayerManager.PlayerList.Count)
+				{
+					StartCollapse();
+				}
+			});
 		}
 
 		protected override void RebuildWorldObjects(OWScene scene)
@@ -60,14 +63,18 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 				_controller._probeDestroyTrigger.SetTriggerActivation(false);
 				new EnterLeaveMessage(EnterLeaveType.EnterCosmicFog).Send();
 
-				DebugLog.DebugWrite("pause, disable input, wait for other players to enter");
-				
+				DebugLog.DebugWrite("disable input, wait for other players to enter");
+
+				var repelVolume = (WhiteHoleFluidVolume)_controller._repelVolume;
+				repelVolume._flowSpeed = -repelVolume._flowSpeed;
+				repelVolume._massiveFlowSpeed = -repelVolume._massiveFlowSpeed;
+				repelVolume.SetVolumeActivation(true);
+				QSBPlayerManager.HideAllPlayers();
+
 				ReticleController.Hide();
 				Locator.GetFlashlight().TurnOff(false);
 				Locator.GetPromptManager().SetPromptsVisible(false);
 				OWInput.ChangeInputMode(InputMode.None);
-				
-				OWTime.SetTimeScale(0);
 			}
 		}
 
@@ -89,9 +96,10 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 
 		private void StartCollapse()
 		{
-			DebugLog.DebugWrite("unpause, fade in everyone, fog sphere collapse");
-			
-			OWTime.SetTimeScale(1);
+			DebugLog.DebugWrite("fade in everyone, fog sphere collapse");
+
+			var repelVolume = (WhiteHoleFluidVolume)_controller._repelVolume;
+			repelVolume.SetVolumeActivation(false);
 			QSBPlayerManager.ShowAllPlayers();
 
 			_controller._state = CosmicInflationController.State.Collapsing;

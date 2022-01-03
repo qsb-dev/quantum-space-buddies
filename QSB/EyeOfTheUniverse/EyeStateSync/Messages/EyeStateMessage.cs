@@ -1,7 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
-using QSB.TimeSync;
 using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
@@ -25,22 +24,12 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 		public override void OnReceiveLocal()
 		{
 			QSBPlayerManager.LocalPlayer.EyeState = Value;
-
-			if (Value >= EyeState.ForestIsDark)
-			{
-				WakeUpSync.LocalInstance.EyeDisable = true;
-			}
 		}
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.EyeState = Value;
-
-			if (Value >= EyeState.ForestIsDark)
-			{
-				WakeUpSync.LocalInstance.EyeDisable = true;
-			}
 		}
 	}
 }
