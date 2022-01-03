@@ -60,7 +60,7 @@ namespace QSB.QuantumSync.WorldObjects
 				{
 					if (shape is BoxShape boxShape)
 					{
-						var newCube = UnityEngine.Object.Instantiate(cube);
+						var newCube = Object.Instantiate(cube);
 						newCube.transform.parent = shape.transform;
 						newCube.transform.localPosition = Vector3.zero;
 						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -68,7 +68,7 @@ namespace QSB.QuantumSync.WorldObjects
 					}
 					else if (shape is SphereShape sphereShape)
 					{
-						var newSphere = UnityEngine.Object.Instantiate(sphere);
+						var newSphere = Object.Instantiate(sphere);
 						newSphere.transform.parent = shape.transform;
 						newSphere.transform.localPosition = Vector3.zero;
 						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -204,7 +204,6 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = ObjectId;
 			// send event to other players that we're releasing authority
 			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
 		}
