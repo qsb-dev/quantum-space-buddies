@@ -4,6 +4,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using QSB.Messaging;
 using QSB.Utility;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -74,7 +75,7 @@ namespace QSBTests
 			{
 				UseType.Store => OpCodes.Stfld,
 				UseType.Load => OpCodes.Ldfld,
-				_ => throw new System.NotImplementedException(),
+				_ => throw new ArgumentOutOfRangeException(nameof(useType), useType, null)
 			};
 
 			while (true)
@@ -95,11 +96,11 @@ namespace QSBTests
 					break;
 				}
 
-				var callBase = il.Any(x =>
+				var callsBase = il.Any(x =>
 					x.IsOp(OpCodes.Call, out MethodReference m) &&
 					m.Eq(baseMethod)
 				);
-				if (!callBase)
+				if (!callsBase)
 				{
 					break;
 				}
