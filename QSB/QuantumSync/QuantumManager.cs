@@ -57,7 +57,7 @@ namespace QSB.QuantumSync
 			{
 				if (obj.ControllingPlayer == playerId)
 				{
-					obj.SendMessage(new QuantumAuthorityMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u));
+					obj.SendMessage(new QuantumAuthorityMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : uint.MaxValue, false));
 				}
 			}
 		}
@@ -76,7 +76,7 @@ namespace QSB.QuantumSync
 
 			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 			{
-				if (quantumObject.ControllingPlayer == 0)
+				if (quantumObject.ControllingPlayer == uint.MaxValue)
 				{
 					if (quantumObject.IsEnabled)
 					{
@@ -139,15 +139,7 @@ namespace QSB.QuantumSync
 			&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 				.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 
-		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
-		{
-			if (!AllObjectsReady)
-			{
-				return Enumerable.Empty<PlayerInfo>();
-			}
-
-			var worldObj = obj.GetWorldObject<IQSBQuantumObject>();
-			return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
-		}
+		public static IEnumerable<PlayerInfo> GetEntangledPlayers(IQSBQuantumObject obj) =>
+			QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == obj);
 	}
 }

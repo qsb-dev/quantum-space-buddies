@@ -99,7 +99,7 @@ namespace QSB.Player.Messages
 
 			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
 			{
-				x.SendMessage(new QuantumAuthorityMessage(x.ControllingPlayer) { To = From });
+				x.SendMessage(new QuantumAuthorityMessage(x.ControllingPlayer, true) { To = From });
 
 				if (x is QSBQuantumMoon qsbQuantumMoon)
 				{

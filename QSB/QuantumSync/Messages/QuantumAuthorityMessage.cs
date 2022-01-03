@@ -7,20 +7,32 @@ namespace QSB.QuantumSync.Messages
 {
 	public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject>
 	{
-		private uint AuthorityOwner;
+		private uint ControllingPlayer;
+		/// <summary>
+		/// if true, force sets controlling player,
+		/// without checking current controlling player
+		/// or checking for other potential controllers
+		/// </summary>
+		private bool Force;
 
-		public QuantumAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
+		public QuantumAuthorityMessage(uint controllingPlayer, bool force)
+		{
+			ControllingPlayer = controllingPlayer;
+			Force = force;
+		}
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(AuthorityOwner);
+			writer.Write(ControllingPlayer);
+			writer.Write(Force);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			AuthorityOwner = reader.ReadUInt32();
+			ControllingPlayer = reader.ReadUInt32();
+			Force = reader.ReadBoolean();
 		}
 
 		public override bool ShouldReceive
@@ -32,28 +44,34 @@ namespace QSB.QuantumSync.Messages
 					return false;
 				}
 
-				// Deciding if to change the object's owner
-				//		  Message
-				//	   | = 0 | > 0 |
-				// = 0 | No  | Yes |
-				// > 0 | Yes | No  |
-				// if Obj==Message then No
-				// Obj
+				if (WorldObject.ControllingPlayer == ControllingPlayer)
+				{
+					return false;
+				}
 
-				return (WorldObject.ControllingPlayer == 0 || AuthorityOwner == 0)
-					&& WorldObject.ControllingPlayer != AuthorityOwner;
+				if (Force)
+				{
+					return true;
+				}
+
+				if (ControllingPlayer == uint.MaxValue)
+				{
+					return true;
+				}
+
+				return WorldObject.ControllingPlayer == uint.MaxValue;
 			}
 		}
 
-		public override void OnReceiveLocal() => WorldObject.ControllingPlayer = AuthorityOwner;
+		public override void OnReceiveLocal() => WorldObject.ControllingPlayer = ControllingPlayer;
 
 		public override void OnReceiveRemote()
 		{
-			WorldObject.ControllingPlayer = AuthorityOwner;
-			if (WorldObject.ControllingPlayer == 00 && WorldObject.IsEnabled)
+			WorldObject.ControllingPlayer = ControllingPlayer;
+			if (!Force && ControllingPlayer == uint.MaxValue && WorldObject.IsEnabled)
 			{
 				// object has no owner, but is still active for this player. request ownership
-				WorldObject.SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
+				WorldObject.SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId, false));
 			}
 		}
 	}

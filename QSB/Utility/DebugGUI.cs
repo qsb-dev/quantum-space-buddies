@@ -247,7 +247,7 @@ namespace QSB.Utility
 			WriteLine(4, $"Enabled QuantumObjects :");
 			foreach (var qo in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 			{
-				if (qo.ControllingPlayer != 0)
+				if (qo.ControllingPlayer != uint.MaxValue)
 				{
 					continue;
 				}
