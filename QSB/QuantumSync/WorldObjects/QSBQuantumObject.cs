@@ -7,6 +7,7 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -29,35 +30,35 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void Init()
 		{
-			var debugBundle = QSBCore.DebugAssetBundle;
-			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
-			var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
-			var capsule = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
-
-			if (cube == null)
+			if (QSBCore.ShowQuantumVisibilityObjects)
 			{
-				DebugLog.DebugWrite($"CUBE IS NULL");
-			}
+				var debugBundle = QSBCore.DebugAssetBundle;
+				var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
+				var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
+				var capsule = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
 
-			if (sphere == null)
-			{
-				DebugLog.DebugWrite($"SPHERE IS NULL");
-			}
-
-			if (capsule == null)
-			{
-				DebugLog.DebugWrite($"CAPSULE IS NULL");
-			}
-
-			foreach (var shape in GetAttachedShapes())
-			{
-				if (shape == null)
+				if (cube == null)
 				{
-					break;
+					DebugLog.DebugWrite($"CUBE IS NULL");
 				}
 
-				if (QSBCore.ShowQuantumVisibilityObjects)
+				if (sphere == null)
 				{
+					DebugLog.DebugWrite($"SPHERE IS NULL");
+				}
+
+				if (capsule == null)
+				{
+					DebugLog.DebugWrite($"CAPSULE IS NULL");
+				}
+
+				foreach (var shape in GetAttachedShapes())
+				{
+					if (shape == null)
+					{
+						continue;
+					}
+
 					if (shape is BoxShape boxShape)
 					{
 						var newCube = Object.Instantiate(cube);
@@ -92,18 +93,17 @@ namespace QSB.QuantumSync.WorldObjects
 		private void LateInit()
 		{
 			FinishDelayedReady();
-			foreach (var shape in GetAttachedShapes())
-			{
-				shape.OnShapeActivated += OnEnable;
-				shape.OnShapeDeactivated += OnDisable;
-			}
-
 			var attachedShapes = GetAttachedShapes();
-
 			if (attachedShapes.Count == 0)
 			{
 				IsEnabled = false;
 				return;
+			}
+
+			foreach (var shape in attachedShapes)
+			{
+				shape.OnShapeActivated += OnEnable;
+				shape.OnShapeDeactivated += OnDisable;
 			}
 
 			if (attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active))
