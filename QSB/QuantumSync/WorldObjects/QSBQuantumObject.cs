@@ -54,11 +54,6 @@ namespace QSB.QuantumSync.WorldObjects
 
 				foreach (var shape in GetAttachedShapes())
 				{
-					if (shape == null)
-					{
-						continue;
-					}
-
 					if (shape is BoxShape boxShape)
 					{
 						var newCube = Object.Instantiate(cube);
@@ -151,7 +146,7 @@ namespace QSB.QuantumSync.WorldObjects
 				}
 
 				var shapes = tracker._shapes;
-				totalShapes.AddRange(shapes);
+				totalShapes.AddRange(shapes.Where(x => x != null));
 			}
 
 			return totalShapes;
