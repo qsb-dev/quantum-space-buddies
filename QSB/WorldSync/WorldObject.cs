@@ -14,9 +14,8 @@ namespace QSB.WorldSync
 		public virtual void Init() { }
 		public virtual void OnRemoval() { }
 		public MonoBehaviour ReturnObject() => AttachedObject;
-		public virtual bool ShouldDisplayLabel() => (bool)(AttachedObject?.gameObject.activeInHierarchy);
+		public virtual bool ShouldDisplayDebug() => AttachedObject != null && AttachedObject.gameObject.activeInHierarchy;
 		public virtual string ReturnLabel() => LogName;
-		public virtual bool ShouldDisplayLines() => ShouldDisplayLabel();
 		public virtual void DisplayLines() { }
 
 		/// indicates that this won't become ready immediately

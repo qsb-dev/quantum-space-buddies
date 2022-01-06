@@ -263,10 +263,7 @@ namespace QSB.Utility
 			DrawWorldObjectLabels();
 		}
 
-		public void OnRenderObject()
-		{
-			DrawWorldObjectLines();
-		}
+		public void OnRenderObject() => DrawWorldObjectLines();
 
 		private static void DrawWorldObjectLabels()
 		{
@@ -282,7 +279,7 @@ namespace QSB.Utility
 					return;
 				}
 
-				if (obj.ShouldDisplayLabel())
+				if (obj.ShouldDisplayDebug())
 				{
 					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
 				}
@@ -303,7 +300,7 @@ namespace QSB.Utility
 					return;
 				}
 
-				if (obj.ShouldDisplayLines())
+				if (obj.ShouldDisplayDebug())
 				{
 					obj.DisplayLines();
 				}

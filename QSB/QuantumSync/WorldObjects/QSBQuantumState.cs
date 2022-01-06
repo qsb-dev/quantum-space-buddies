@@ -12,6 +12,6 @@ namespace QSB.QuantumSync.WorldObjects
 			AttachedObject.SetVisible(visible);
 		}
 
-		public override bool ShouldDisplayLabel() => false;
+		public override bool ShouldDisplayDebug() => false;
 	}
 }
