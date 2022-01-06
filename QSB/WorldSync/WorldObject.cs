@@ -16,6 +16,8 @@ namespace QSB.WorldSync
 		public MonoBehaviour ReturnObject() => AttachedObject;
 		public virtual bool ShouldDisplayLabel() => (bool)(AttachedObject?.gameObject.activeInHierarchy);
 		public virtual string ReturnLabel() => LogName;
+		public virtual bool ShouldDisplayLines() => ShouldDisplayLabel();
+		public virtual void DisplayLines() { }
 
 		/// indicates that this won't become ready immediately
 		protected void StartDelayedReady() => WorldObjectManager._numObjectsReadying++;

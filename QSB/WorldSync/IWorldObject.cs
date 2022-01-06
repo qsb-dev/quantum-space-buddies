@@ -11,5 +11,7 @@ namespace QSB.WorldSync
 		MonoBehaviour ReturnObject();
 		bool ShouldDisplayLabel();
 		string ReturnLabel();
+		bool ShouldDisplayLines();
+		void DisplayLines();
 	}
 }

@@ -64,7 +64,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug || !AllObjectsReady)
+			if (!QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -72,25 +72,6 @@ namespace QSB.QuantumSync
 			if (Shrine != null)
 			{
 				Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta);
-			}
-
-			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
-			{
-				if (quantumObject.ControllingPlayer == 0)
-				{
-					if (quantumObject.IsEnabled)
-					{
-						Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
-							QSBPlayerManager.LocalPlayer.Body.transform.position,
-							Color.magenta * 0.25f);
-					}
-
-					continue;
-				}
-
-				Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
-					QSBPlayerManager.GetPlayer(quantumObject.ControllingPlayer).Body.transform.position,
-					Color.magenta);
 			}
 		}
 

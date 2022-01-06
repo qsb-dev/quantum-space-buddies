@@ -28,6 +28,8 @@ namespace QSB.ElevatorSync.WorldObjects
 			_owAudioSourceOneShot = AttachedObject._owAudioSourceOneShot;
 			_owAudioSourceLP = AttachedObject._owAudioSourceLP;
 
+			// BUG : This won't work for the log lift! need to make a different trigger for that
+
 			var boxShape = AttachedObject.gameObject.AddComponent<BoxShape>();
 			boxShape.center = new Vector3(0, 1.75f, 0.25f);
 			boxShape.size = new Vector3(3, 3.5f, 3);
@@ -73,6 +75,12 @@ namespace QSB.ElevatorSync.WorldObjects
 			_owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
 			_owAudioSourceLP.FadeIn(0.5f);
 			_interactVolume.DisableInteraction();
+		}
+
+		public override void DisplayLines()
+		{
+			var boxShape = AttachedObject.gameObject.GetComponent<BoxShape>();
+			Popcron.Gizmos.Cube(AttachedObject.transform.position + boxShape.center, AttachedObject.transform.rotation, boxShape.size);
 		}
 	}
 }

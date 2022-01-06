@@ -209,5 +209,24 @@ namespace QSB.QuantumSync.WorldObjects
 				// send event to other players that we're releasing authority
 				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
 			});
+
+		public override void DisplayLines()
+		{
+			if (ControllingPlayer == 0)
+			{
+				if (IsEnabled)
+				{
+					Popcron.Gizmos.Line(AttachedObject.transform.position,
+						QSBPlayerManager.LocalPlayer.Body.transform.position,
+						Color.magenta * 0.25f);
+				}
+
+				return;
+			}
+
+			Popcron.Gizmos.Line(AttachedObject.transform.position,
+				QSBPlayerManager.GetPlayer(ControllingPlayer).Body.transform.position,
+				Color.magenta);
+		}
 	}
 }
