@@ -205,20 +205,53 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void DisplayLines()
 		{
+			if (AttachedObject == null)
+			{
+				return;
+			}
+
+			var localPlayer = QSBPlayerManager.LocalPlayer;
+
+			if (localPlayer == null)
+			{
+				return;
+			}
+
+			var body = localPlayer.Body;
+
+			if (body == null)
+			{
+				return;
+			}
+
 			if (ControllingPlayer == 0)
 			{
 				if (IsEnabled)
 				{
 					Popcron.Gizmos.Line(AttachedObject.transform.position,
-						QSBPlayerManager.LocalPlayer.Body.transform.position,
+						body.transform.position,
 						Color.magenta * 0.25f);
 				}
 
 				return;
 			}
 
+			var player = QSBPlayerManager.GetPlayer(ControllingPlayer);
+
+			if (player == null)
+			{
+				return;
+			}
+
+			var playerBody = player.Body;
+			
+			if (playerBody == null)
+			{
+				return;
+			}
+
 			Popcron.Gizmos.Line(AttachedObject.transform.position,
-				QSBPlayerManager.GetPlayer(ControllingPlayer).Body.transform.position,
+				playerBody.transform.position,
 				Color.magenta);
 		}
 	}
