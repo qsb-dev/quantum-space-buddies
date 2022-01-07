@@ -6,8 +6,5 @@ namespace QSB.Player
 	{
 		public uint PlayerId => NetId.Value;
 		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
-		protected virtual void Start() => QSBPlayerManager.AddSyncObject(this);
-		protected virtual void OnDestroy() => QSBPlayerManager.RemoveSyncObject(this);
 	}
 }

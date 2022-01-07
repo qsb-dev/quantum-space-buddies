@@ -34,8 +34,6 @@ namespace QSB.Player
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static readonly List<PlayerInfo> PlayerList = new();
 
-		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
-
 		public static PlayerInfo GetPlayer(uint id)
 		{
 			if (id is uint.MaxValue or 0)
@@ -55,16 +53,6 @@ namespace QSB.Player
 
 		public static bool PlayerExists(uint id) =>
 			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
-
-		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
-			PlayerSyncObjects.OfType<T>().Where(x => x != null);
-
-		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
-			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.PlayerId == id);
-
-		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
-
-		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
