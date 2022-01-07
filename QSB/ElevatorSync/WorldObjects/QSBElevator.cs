@@ -30,7 +30,7 @@ namespace QSB.ElevatorSync.WorldObjects
 
 			// BUG : This won't work for the log lift! need to make a different trigger for that
 
-			var boxShape = AttachedObject.gameObject.AddComponent<BoxShape>();
+			var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
 			boxShape.center = new Vector3(0, 1.75f, 0.25f);
 			boxShape.size = new Vector3(3, 3.5f, 3);
 
@@ -79,8 +79,13 @@ namespace QSB.ElevatorSync.WorldObjects
 
 		public override void DisplayLines()
 		{
-			var boxShape = AttachedObject.gameObject.GetComponent<BoxShape>();
-			Popcron.Gizmos.Cube(AttachedObject.transform.position + boxShape.center, AttachedObject.transform.rotation, boxShape.size);
+			var boxShape = (BoxShape)_elevatorTrigger._shape;
+			Popcron.Gizmos.Cube(
+				ShapeUtil.Box.CalcWorldSpaceCenter(boxShape),
+				boxShape.transform.rotation,
+				ShapeUtil.Box.CalcWorldSpaceSize(boxShape),
+				_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()) ? Color.green : Color.white
+			);
 		}
 	}
 }

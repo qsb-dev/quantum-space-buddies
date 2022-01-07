@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Player;
 using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
