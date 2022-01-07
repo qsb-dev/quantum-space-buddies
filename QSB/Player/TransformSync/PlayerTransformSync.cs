@@ -1,7 +1,5 @@
 ﻿using OWML.Common;
-using QSB.Animation.Player;
 using QSB.Audio;
-using QSB.Instruments;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.RoastingSync;
@@ -50,7 +48,7 @@ namespace QSB.Player.TransformSync
 		public override void Start()
 		{
 			var player = new PlayerInfo(this);
-			QSBPlayerManager.PlayerList.Add(player);
+			QSBPlayerManager.PlayerList.SafeAdd(player);
 			base.Start();
 			QSBPlayerManager.OnAddPlayer?.Invoke(PlayerId);
 			DebugLog.DebugWrite($"Create Player : id<{PlayerId}>", MessageType.Info);
@@ -92,7 +90,7 @@ namespace QSB.Player.TransformSync
 			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
 			base.OnDestroy();
 			Player.HudMarker?.Remove();
-			QSBPlayerManager.PlayerList.RemoveAll(x => x.PlayerId == PlayerId);
+			QSBPlayerManager.PlayerList.Remove(Player);
 			DebugLog.DebugWrite($"Remove Player : id<{PlayerId}>", MessageType.Info);
 		}
 
@@ -103,8 +101,8 @@ namespace QSB.Player.TransformSync
 			// player body
 			var player = Locator.GetPlayerTransform();
 			var playerModel = player.Find("Traveller_HEA_Player_v2");
-			GetComponent<AnimationSync>().InitLocal(playerModel);
-			GetComponent<InstrumentsManager>().InitLocal(player);
+			Player.AnimationSync.InitLocal(playerModel);
+			Player.InstrumentsManager.InitLocal(player);
 			Player.Body = player.gameObject;
 
 			// camera
@@ -165,8 +163,8 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = REMOTE_Player_Body;
 
-			GetComponent<AnimationSync>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
-			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Player_Body.transform);
+			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2);
+			Player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
 
 			var marker = REMOTE_Player_Body.AddComponent<PlayerHUDMarker>();
 			marker.Init(Player);
