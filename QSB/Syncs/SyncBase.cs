@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
@@ -17,48 +16,16 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
-		public uint AttachedNetId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.NetId.Value;
-			}
-		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (!IsPlayerObject)
-				{
-					return uint.MaxValue;
-				}
-
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
+		/// <summary>
+		/// valid if IsPlayerObject, otherwise null
+		/// </summary>
+		public PlayerInfo Player { get; private set; }
 
 		private bool _baseIsReady
 		{
 			get
 			{
-				if (NetId.Value is uint.MaxValue or 0U)
+				if (NetId.Value is uint.MaxValue or 0)
 				{
 					return false;
 				}
@@ -70,16 +37,6 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!QSBPlayerManager.PlayerExists(PlayerId))
-					{
-						return false;
-					}
-
-					if (Player == null)
-					{
-						return false;
-					}
-
 					if (!Player.IsReady && !IsLocalPlayer)
 					{
 						return false;
@@ -100,7 +57,7 @@ namespace QSB.Syncs
 		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		public string LogName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
+		public string LogName => $"{(IsPlayerObject ? Player.PlayerId : "<non player object>")}.{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
@@ -117,9 +74,11 @@ namespace QSB.Syncs
 		{
 			if (IsPlayerObject)
 			{
-				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
-					.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
-				NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+				// get player objects spawned before this object (or is this one)
+				// and use the closest one
+				Player = QSBPlayerManager.PlayerList
+					.Where(x => x.PlayerId <= NetId.Value)
+					.OrderBy(x => x.PlayerId).Last();
 			}
 
 			DontDestroyOnLoad(gameObject);
