@@ -53,20 +53,6 @@ namespace QSB.Player
 			return player;
 		}
 
-		public static void AddPlayer(uint id)
-		{
-			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
-			var player = new PlayerInfo(id);
-			PlayerList.Add(player);
-			OnAddPlayer?.Invoke(id);
-		}
-
-		public static void RemovePlayer(uint id)
-		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
-			PlayerList.RemoveAll(x => x.PlayerId == id);
-		}
-
 		public static bool PlayerExists(uint id) =>
 			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
 
