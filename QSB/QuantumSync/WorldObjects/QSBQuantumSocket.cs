@@ -4,6 +4,6 @@ namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBQuantumSocket : WorldObject<QuantumSocket>
 	{
-		public override bool ShouldDisplayLabel() => false;
+		public override bool ShouldDisplayDebug() => false;
 	}
 }
