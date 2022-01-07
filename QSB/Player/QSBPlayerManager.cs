@@ -12,45 +12,37 @@ namespace QSB.Player
 {
 	public static class QSBPlayerManager
 	{
-		public static uint LocalPlayerId
+		public static PlayerInfo LocalPlayer
 		{
 			get
 			{
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null." +
+					DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
 						$"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
-					return uint.MaxValue;
+					return null;
 				}
 
-				if (localInstance.NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance's QNetworkIdentity is null.", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return localInstance.NetIdentity.NetId.Value;
+				return localInstance.Player;
 			}
 		}
+		public static uint LocalPlayerId => LocalPlayer.PlayerId;
 
-		/// <summary>
-		/// called right before player is removed
-		/// </summary>
-		public static Action<uint> OnRemovePlayer;
 		/// <summary>
 		/// called right after player is added
 		/// </summary>
 		public static Action<uint> OnAddPlayer;
+		/// <summary>
+		/// called right before player is removed
+		/// </summary>
+		public static Action<uint> OnRemovePlayer;
 
-		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
-		public static List<PlayerInfo> PlayerList { get; } = new List<PlayerInfo>();
-
-		private static readonly List<PlayerSyncObject> PlayerSyncObjects = new();
+		public static readonly List<PlayerInfo> PlayerList = new();
 
 		public static PlayerInfo GetPlayer(uint id)
 		{
-			if (id is uint.MaxValue or 0U)
+			if (id is uint.MaxValue or 0)
 			{
 				return default;
 			}
@@ -65,39 +57,15 @@ namespace QSB.Player
 			return player;
 		}
 
-		public static void AddPlayer(uint id)
-		{
-			DebugLog.DebugWrite($"Create Player : id<{id}>", MessageType.Info);
-			var player = new PlayerInfo(id);
-			PlayerList.Add(player);
-			OnAddPlayer?.Invoke(id);
-		}
-
-		public static void RemovePlayer(uint id)
-		{
-			DebugLog.DebugWrite($"Remove Player : id<{id}>", MessageType.Info);
-			PlayerList.RemoveAll(x => x.PlayerId == id);
-		}
-
 		public static bool PlayerExists(uint id) =>
-			id != uint.MaxValue && PlayerList.Any(x => x.PlayerId == id);
-
-		public static IEnumerable<T> GetSyncObjects<T>() where T : PlayerSyncObject =>
-			PlayerSyncObjects.OfType<T>().Where(x => x != null);
-
-		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
-			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
-
-		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
-
-		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
+			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 			if (includeLocalCamera
-				&& LocalPlayer != default
-				&& LocalPlayer.Camera != null)
+			    && LocalPlayer != default
+			    && LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
 			}

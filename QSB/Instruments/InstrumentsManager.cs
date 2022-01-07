@@ -36,9 +36,8 @@ namespace QSB.Instruments
 			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
-		protected override void OnDestroy()
+		protected void OnDestroy()
 		{
-			base.OnDestroy();
 			if (!IsLocalPlayer)
 			{
 				return;

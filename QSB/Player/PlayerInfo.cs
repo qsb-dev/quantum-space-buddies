@@ -4,6 +4,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
+using QSB.Instruments;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
@@ -22,10 +23,15 @@ namespace QSB.Player
 {
 	public class PlayerInfo
 	{
+		/// <summary>
+		/// the player transform sync's net id
+		/// </summary>
 		public uint PlayerId { get; }
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
-		public PlayerTransformSync TransformSync { get; set; }
+		public PlayerTransformSync TransformSync { get; }
+		public AnimationSync AnimationSync { get; }
+		public InstrumentsManager InstrumentsManager { get; }
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
@@ -115,11 +121,10 @@ namespace QSB.Player
 		public bool ProbeActive { get; set; }
 
 		// Conversation
-		public int CurrentCharacterDialogueTreeId { get; set; }
+		public int CurrentCharacterDialogueTreeId { get; set; } = -1;
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
-		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
 		public bool PlayingInstrument => AnimationSync.CurrentType
 			is not AnimationType.PlayerSuited
 			and not AnimationType.PlayerUnsuited;
@@ -182,10 +187,12 @@ namespace QSB.Player
 			}
 		}
 
-		public PlayerInfo(uint id)
+		public PlayerInfo(PlayerTransformSync transformSync)
 		{
-			PlayerId = id;
-			CurrentCharacterDialogueTreeId = -1;
+			PlayerId = transformSync.NetId.Value;
+			TransformSync = transformSync;
+			AnimationSync = transformSync.GetComponent<AnimationSync>();
+			InstrumentsManager = transformSync.GetComponent<InstrumentsManager>();
 		}
 
 		public void UpdateObjectsFromStates()
@@ -205,8 +212,7 @@ namespace QSB.Player
 			Translator?.ChangeEquipState(TranslatorEquipped);
 			ProbeLauncher?.ChangeEquipState(ProbeLauncherEquipped);
 			Signalscope?.ChangeEquipState(SignalscopeEquipped);
-			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
-				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(SuitedUp));
+			AnimationSync.SetSuitState(SuitedUp);
 		}
 
 		public void UpdateStatesFromObjects()
