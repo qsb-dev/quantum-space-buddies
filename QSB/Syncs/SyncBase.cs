@@ -57,7 +57,7 @@ namespace QSB.Syncs
 		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		public string LogName => $"{(IsPlayerObject ? Player.PlayerId : "<NonPlayer>")}.{NetId.Value}:{GetType().Name}";
+		public string LogName => $"{(IsPlayerObject ? Player.PlayerId : "<non player object>")}.{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
