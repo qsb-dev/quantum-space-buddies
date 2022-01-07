@@ -16,7 +16,7 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
-		protected PlayerInfo Player { get; private set; }
+		public PlayerInfo Player { get; private set; }
 		protected uint PlayerId => Player.PlayerId;
 
 		private bool _baseIsReady

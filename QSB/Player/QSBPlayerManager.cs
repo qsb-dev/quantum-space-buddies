@@ -12,26 +12,26 @@ namespace QSB.Player
 {
 	public static class QSBPlayerManager
 	{
-		public static uint LocalPlayerId
+		public static PlayerInfo LocalPlayer
 		{
 			get
 			{
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null." +
+					DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
 						$"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
-					return uint.MaxValue;
+					return null;
 				}
 
-				return localInstance.NetIdentity.NetId.Value;
+				return localInstance.Player;
 			}
 		}
+		public static uint LocalPlayerId => LocalPlayer.PlayerId;
 
 		public static Action<uint> OnAddPlayer;
 		public static Action<uint> OnRemovePlayer;
 
-		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static readonly List<PlayerInfo> PlayerList = new();
 
 		public static PlayerInfo GetPlayer(uint id)
@@ -58,8 +58,8 @@ namespace QSB.Player
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 			if (includeLocalCamera
-				&& LocalPlayer != default
-				&& LocalPlayer.Camera != null)
+			    && LocalPlayer != default
+			    && LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
 			}
