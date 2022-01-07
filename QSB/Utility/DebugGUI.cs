@@ -137,12 +137,6 @@ namespace QSB.Utility
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				if (player == null)
-				{
-					WriteLine(2, $"NULL PLAYER", Color.red);
-					continue;
-				}
-
 				WriteLine(2, $"{player.PlayerId}.{player.Name}");
 				WriteLine(2, $"State : {player.State}");
 				WriteLine(2, $"Eye State : {player.EyeState}");
@@ -227,12 +221,6 @@ namespace QSB.Utility
 
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				if (player == null)
-				{
-					WriteLine(4, $"- NULL PLAYER", Color.red);
-					continue;
-				}
-
 				WriteLine(4, $"- {player.PlayerId}.{player.Name}");
 				var allQuantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 				var ownedQuantumObjects = allQuantumObjects.Where(x => x.ControllingPlayer == player.PlayerId);

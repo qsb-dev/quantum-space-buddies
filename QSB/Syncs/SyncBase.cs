@@ -17,7 +17,7 @@ namespace QSB.Syncs
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
 		/// <summary>
-		/// only valid for player objects
+		/// valid if IsPlayerObject, otherwise null
 		/// </summary>
 		public PlayerInfo Player { get; private set; }
 
@@ -37,11 +37,6 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (Player == null)
-					{
-						return false;
-					}
-
 					if (!Player.IsReady && !IsLocalPlayer)
 					{
 						return false;
