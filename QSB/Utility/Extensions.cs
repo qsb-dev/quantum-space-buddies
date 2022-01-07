@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Player;
 using QuantumUNET;
 using System;
 using System.Collections.Generic;
