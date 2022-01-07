@@ -127,12 +127,13 @@ namespace QSB.Syncs.Sectored
 		{
 			if (IsPlayerObject)
 			{
-				if (!QSBPlayerManager.PlayerExists(PlayerId))
+				if (Player == null)
 				{
 					writer.Write(-1);
 					return;
 				}
-				else if (!Player.IsReady)
+
+				if (!Player.IsReady)
 				{
 					writer.Write(-1);
 					return;

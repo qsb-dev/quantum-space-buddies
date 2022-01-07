@@ -16,8 +16,10 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
+		/// <summary>
+		/// only valid for player objects
+		/// </summary>
 		public PlayerInfo Player { get; private set; }
-		protected uint PlayerId => Player.PlayerId;
 
 		private bool _baseIsReady
 		{
@@ -60,7 +62,7 @@ namespace QSB.Syncs
 		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		public string LogName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
+		public string LogName => $"{(IsPlayerObject ? Player.PlayerId : "<NonPlayer>")}.{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
