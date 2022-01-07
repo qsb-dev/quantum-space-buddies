@@ -82,7 +82,6 @@ namespace QSB.Syncs
 				Player = QSBPlayerManager.PlayerList
 					.Where(x => x.PlayerId <= NetId.Value)
 					.OrderBy(x => x.PlayerId).Last();
-				NetIdentity.SetRootIdentity(Player.TransformSync.NetIdentity);
 			}
 
 			DontDestroyOnLoad(gameObject);

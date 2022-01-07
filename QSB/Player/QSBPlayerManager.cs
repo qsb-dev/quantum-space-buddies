@@ -60,7 +60,7 @@ namespace QSB.Player
 			PlayerSyncObjects.OfType<T>().Where(x => x != null);
 
 		public static T GetSyncObject<T>(uint id) where T : PlayerSyncObject =>
-			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.AttachedNetId == id);
+			GetSyncObjects<T>().FirstOrDefault(x => x != null && x.PlayerId == id);
 
 		public static void AddSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Add(obj);
 
