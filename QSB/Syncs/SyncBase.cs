@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
@@ -17,48 +16,14 @@ namespace QSB.Syncs
 
 	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
-		public uint AttachedNetId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.NetId.Value;
-			}
-		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (!IsPlayerObject)
-				{
-					return uint.MaxValue;
-				}
-
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
+		public PlayerInfo Player { get; private set; }
+		public uint PlayerId => Player.PlayerId;
 
 		private bool _baseIsReady
 		{
 			get
 			{
-				if (NetId.Value is uint.MaxValue or 0U)
+				if (NetId.Value is uint.MaxValue or 0)
 				{
 					return false;
 				}
@@ -70,11 +35,6 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!QSBPlayerManager.PlayerExists(PlayerId))
-					{
-						return false;
-					}
-
 					if (Player == null)
 					{
 						return false;
@@ -117,9 +77,12 @@ namespace QSB.Syncs
 		{
 			if (IsPlayerObject)
 			{
-				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
-					.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
-				NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+				// get player objects spawned before this object (or is this one)
+				// and use the closest one
+				Player = QSBPlayerManager.PlayerList
+					.Where(x => x.PlayerId <= NetId.Value)
+					.OrderBy(x => x.PlayerId).Last();
+				NetIdentity.SetRootIdentity(Player.TransformSync.NetIdentity);
 			}
 
 			DontDestroyOnLoad(gameObject);

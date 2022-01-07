@@ -23,6 +23,9 @@ namespace QSB.Player
 {
 	public class PlayerInfo
 	{
+		/// <summary>
+		/// the player transform sync's net id
+		/// </summary>
 		public uint PlayerId { get; }
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
