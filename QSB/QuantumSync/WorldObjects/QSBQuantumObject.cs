@@ -205,11 +205,6 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void DisplayLines()
 		{
-			if (QSBPlayerManager.LocalPlayer.Body == null)
-			{
-				return;
-			}
-
 			if (ControllingPlayer == 0)
 			{
 				if (IsEnabled)
