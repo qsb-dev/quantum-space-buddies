@@ -28,8 +28,8 @@ namespace QSB.Player
 			}
 		}
 
-		public static Action<uint> OnRemovePlayer;
 		public static Action<uint> OnAddPlayer;
+		public static Action<uint> OnRemovePlayer;
 
 		public static PlayerInfo LocalPlayer => GetPlayer(LocalPlayerId);
 		public static readonly List<PlayerInfo> PlayerList = new();
