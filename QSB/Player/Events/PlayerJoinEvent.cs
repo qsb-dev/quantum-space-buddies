@@ -52,7 +52,7 @@ namespace QSB.Player.Events
 				if (server)
 				{
 					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong game platform. (Client:{message.Platform}, Server:{QSBCore.Platform})", MessageType.Error);
-					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.DLCNotMatching);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GamePlatformNotMatching);
 				}
 			}
 
@@ -61,7 +61,7 @@ namespace QSB.Player.Events
 				if (server)
 				{
 					DebugLog.ToConsole($"Error - Client {message.PlayerName} connecting with wrong DLC installation state. (Client:{message.DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
-					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.GamePlatformNotMatching);
+					QSBEventManager.FireEvent(EventNames.QSBPlayerKick, message.AboutId, KickReason.DLCNotMatching);
 				}
 			}
 
