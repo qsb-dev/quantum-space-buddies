@@ -143,8 +143,9 @@ namespace QSB.QuantumSync.WorldObjects
 					continue;
 				}
 
-				var shapes = tracker._shapes;
-				totalShapes.AddRange(shapes.Where(x => x != null));
+				// if the tracker is not active, this won't have been set, so just do it ourselves
+				tracker._shapes ??= tracker.GetComponents<Shape>();
+				totalShapes.AddRange(tracker._shapes.Where(x => x != null));
 			}
 
 			return totalShapes;

@@ -40,6 +40,7 @@ namespace QSB.QuantumSync
 			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
 			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
+			QSBWorldSync.Init<QSBQuantumSkeletonTower, QuantumSkeletonTower>();
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
