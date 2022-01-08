@@ -15,7 +15,8 @@ namespace QSB.EyeOfTheUniverse.VesselSync
 		private readonly List<PlayerInfo> _playersInCage = new();
 		private VesselWarpController _warpController;
 
-		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+		// cage trigger is null in the eye
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
 		public override void Awake()
 		{
