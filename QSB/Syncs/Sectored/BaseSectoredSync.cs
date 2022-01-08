@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Player;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
@@ -127,6 +126,13 @@ namespace QSB.Syncs.Sectored
 		{
 			if (IsPlayerObject)
 			{
+				if (Player == null)
+				{
+					// happens once right when you start hosting
+					writer.Write(-1);
+					return;
+				}
+
 				if (!Player.IsReady)
 				{
 					writer.Write(-1);
