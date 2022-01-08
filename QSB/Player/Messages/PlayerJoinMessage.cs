@@ -64,14 +64,14 @@ namespace QSB.Player.Messages
 				if (Platform != QSBCore.Platform)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game platform. (Client:{Platform}, Server:{QSBCore.Platform})", MessageType.Error);
-					new PlayerKickMessage(From, KickReason.DLCNotMatching).Send();
+					new PlayerKickMessage(From, KickReason.GamePlatformNotMatching).Send();
 					return;
 				}
 
 				if (DlcInstalled != QSBCore.DLCInstalled)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
-					new PlayerKickMessage(From, KickReason.GamePlatformNotMatching).Send();
+					new PlayerKickMessage(From, KickReason.DLCNotMatching).Send();
 					return;
 				}
 
