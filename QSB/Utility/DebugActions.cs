@@ -51,7 +51,7 @@ namespace QSB.Utility
 			 * 7 - Warp to vessel
 			 * 8 - Place warp core into vessel
 			 * 9 - Load eye scene
-			 * 0 - Load solar system scene
+			 * 0 -
 			 */
 
 			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
@@ -95,15 +95,17 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)
 			{
-				PlayerData.SaveWarpedToTheEye(60);
-				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
-			}
-
-			if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
-			{
-				PlayerData._currentGameSave.warpedToTheEye = false;
-				PlayerData.SaveCurrentGame();
-				LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack);
+				if (Keyboard.current[Key.LeftShift].isPressed)
+				{
+					PlayerData._currentGameSave.warpedToTheEye = false;
+					PlayerData.SaveCurrentGame();
+					LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack);
+				}
+				else
+				{
+					PlayerData.SaveWarpedToTheEye(60);
+					LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
+				}
 			}
 		}
 	}
