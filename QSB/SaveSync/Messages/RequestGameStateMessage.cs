@@ -1,5 +1,7 @@
-﻿using QSB.Messaging;
-using QSB.Utility;
+﻿using QSB.ConversationSync.Messages;
+using QSB.ConversationSync.Patches;
+using QSB.Messaging;
+using System.Linq;
 
 namespace QSB.SaveSync.Messages
 {
@@ -12,8 +14,6 @@ namespace QSB.SaveSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			DebugLog.DebugWrite($"GET REQUEST FOR GAME STATE");
-
 			new GameStateMessage(From).Send();
 
 			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
@@ -22,6 +22,13 @@ namespace QSB.SaveSync.Messages
 			foreach (var item in factSaves)
 			{
 				new ShipLogFactSaveMessage(item.Value).Send();
+			}
+
+			var dictConditions = gameSave.dictConditions;
+			var dictConditionsToSend = dictConditions.Where(x => ConversationPatches.PersistentConditionsToSync.Contains(x.Key));
+			foreach (var item in dictConditionsToSend)
+			{
+				new PersistentConditionMessage(item.Key, item.Value).Send();
 			}
 		}
 	}

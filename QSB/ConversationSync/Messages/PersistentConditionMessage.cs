@@ -35,16 +35,12 @@ namespace QSB.ConversationSync.Messages
 			_conditionState = reader.ReadBoolean();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
-
 		public override void OnReceiveRemote()
 		{
 			if (QSBCore.IsHost)
 			{
 				QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
 			}
-
-			DebugLog.DebugWrite($"Got persistentcondition {_conditionName} value:{_conditionState}");
 
 			var gameSave = PlayerData._currentGameSave;
 			if (gameSave.dictConditions.ContainsKey(_conditionName))

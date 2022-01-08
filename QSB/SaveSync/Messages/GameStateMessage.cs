@@ -35,8 +35,6 @@ namespace QSB.SaveSync.Messages
 
 		public override void Serialize(QNetworkWriter writer)
 		{
-			DebugLog.DebugWrite($"SERIALIZE");
-
 			base.Serialize(writer);
 			writer.Write(WarpedToTheEye);
 			writer.Write(SecondsRemainingOnWarp);

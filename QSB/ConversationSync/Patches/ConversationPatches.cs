@@ -167,10 +167,9 @@ namespace QSB.ConversationSync.Patches
 		[HarmonyPatch(typeof(GameSave), nameof(GameSave.SetPersistentCondition))]
 		public static void SetPersistentCondition(string condition, bool state)
 		{
-			DebugLog.DebugWrite($"LOCAL Set persistentcondition condition:{condition} state:{state}");
 			if (PersistentConditionsToSync.Contains(condition))
 			{
-				DebugLog.DebugWrite($" - should be synced!");
+				new PersistentConditionMessage(condition, state).Send();
 			}
 		}
 	}
