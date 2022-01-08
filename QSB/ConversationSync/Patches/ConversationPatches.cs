@@ -26,6 +26,14 @@ namespace QSB.ConversationSync.Patches
 		};
 
 		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DialogueConditionManager), nameof(DialogueConditionManager.SetConditionState))]
+		public static bool SetConditionState(string conditionName, bool conditionState)
+		{
+			new DialogueConditionMessage(conditionName, conditionState).Send();
+			return true;
+		}
+
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.StartConversation))]
 		public static void CharacterDialogueTree_StartConversation(CharacterDialogueTree __instance)
 		{
