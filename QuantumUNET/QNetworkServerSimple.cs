@@ -153,10 +153,6 @@ namespace QuantumUNET
 				do
 				{
 					networkEventType = NetworkTransport.ReceiveFromHost(serverHostId, out var connectionId, out var channelId, messageBuffer, messageBuffer.Length, out var receivedSize, out var b);
-					if (networkEventType != NetworkEventType.Nothing)
-					{
-						Debug.Log($"Server event: host={serverHostId} event={networkEventType} error={b}");
-					}
 
 					switch (networkEventType)
 					{
