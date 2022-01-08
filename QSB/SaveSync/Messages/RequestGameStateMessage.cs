@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Utility;
 
 namespace QSB.SaveSync.Messages
 {
@@ -9,6 +10,19 @@ namespace QSB.SaveSync.Messages
 	{
 		public RequestGameStateMessage() => To = 0;
 
-		public override void OnReceiveRemote() => new GameStateMessage(From).Send();
+		public override void OnReceiveRemote()
+		{
+			DebugLog.DebugWrite($"GET REQUEST FOR GAME STATE");
+
+			new GameStateMessage(From).Send();
+
+			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+
+			var factSaves = gameSave.shipLogFactSaves;
+			foreach (var item in factSaves)
+			{
+				new ShipLogFactSaveMessage(item.Value).Send();
+			}
+		}
 	}
 }

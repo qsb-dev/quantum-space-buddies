@@ -4,6 +4,7 @@ using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.SaveSync.Messages
 {
@@ -31,8 +32,11 @@ namespace QSB.SaveSync.Messages
 			KnownSignals = gameSave.knownSignals;
 		}
 
+
 		public override void Serialize(QNetworkWriter writer)
 		{
+			DebugLog.DebugWrite($"SERIALIZE");
+
 			base.Serialize(writer);
 			writer.Write(WarpedToTheEye);
 			writer.Write(SecondsRemainingOnWarp);
@@ -46,10 +50,10 @@ namespace QSB.SaveSync.Messages
 			}
 
 			writer.Write(KnownSignals.Count);
-			foreach (var (key, value) in KnownSignals)
+			foreach (var (name, discovered) in KnownSignals)
 			{
-				writer.Write(key);
-				writer.Write(value);
+				writer.Write(name);
+				writer.Write(discovered);
 			}
 		}
 

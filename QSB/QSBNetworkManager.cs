@@ -174,6 +174,7 @@ namespace QSB
 			if (QSBSceneManager.IsInUniverse)
 			{
 				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
+				QSBWorldSync.Init();
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -205,9 +206,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.DialogueConditions.Clear();
-			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.ShipLogFacts.Clear();
+			QSBWorldSync.Reset();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
