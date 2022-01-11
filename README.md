@@ -110,9 +110,11 @@ So really there's nothing we can do about this. I disabled damage by impact insi
 
 #### What's the difference between QSB and Outer Wilds Online?
 
+TL;DR - QSB is multiplayer co-op, Outer Wilds Online is multiplayer not not co-op.
+
 QSB is a fully synced game. The other players are actually there in the world, and can affect things. The loop starts/ends at the same time for everyone, and you share ship logs / signal discoveries.
 
-Outer Wilds Online is not multiplayer. The other players cannot affect your game, and do not contribute to anything in your save. The loop is entirely per-player.
+Outer Wilds Online is easier to set up, but much more basic in its features. The other players cannot affect your game, and do not contribute to anything in your save. The loop is entirely per-player.
 
 #### Why would someone make this mod? Seems like a lot of effort for no reward.
 
