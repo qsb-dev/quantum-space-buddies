@@ -7,7 +7,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace QSB.ConversationSync.Patches
 {
@@ -16,8 +16,8 @@ namespace QSB.ConversationSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		public static List<string> PersistentConditionsToSync => new()
-		{ 
+		public static readonly string[] PersistentConditionsToSync =
+		{
 			"MET_SOLANUM",
 			"MET_PRISONER",
 			"TALKED_TO_GABBRO",
