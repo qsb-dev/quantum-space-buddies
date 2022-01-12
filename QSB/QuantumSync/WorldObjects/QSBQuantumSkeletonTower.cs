@@ -6,12 +6,12 @@
 			+ $"{AttachedObject._index} {AttachedObject._waitForPlayerToLookAtTower}\n"
 			+ $"{AttachedObject._waitForFlicker} {AttachedObject._flickering}";
 
-		public void MoveSkeleton(int pointingIndex, int towerIndex)
+		public void MoveSkeleton(int index)
 		{
-			AttachedObject._pointingSkeletons[pointingIndex].gameObject.SetActive(false);
+			AttachedObject._pointingSkeletons[index].gameObject.SetActive(false);
 
-			AttachedObject._towerSkeletons[towerIndex].SetActive(true);
-			AttachedObject._index = towerIndex + 1;
+			AttachedObject._towerSkeletons[AttachedObject._index].SetActive(true);
+			AttachedObject._index++;
 			AttachedObject._waitForPlayerToLookAtTower = true;
 		}
 	}

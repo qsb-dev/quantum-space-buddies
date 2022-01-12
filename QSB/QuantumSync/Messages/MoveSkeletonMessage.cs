@@ -6,28 +6,22 @@ namespace QSB.QuantumSync.Messages
 {
 	internal class MoveSkeletonMessage : QSBWorldObjectMessage<QSBQuantumSkeletonTower>
 	{
-		private int _pointingIndex, _towerIndex;
+		private int _index;
 
-		public MoveSkeletonMessage(int pointingIndex, int towerIndex)
-		{
-			_pointingIndex = pointingIndex;
-			_towerIndex = towerIndex;
-		}
+		public MoveSkeletonMessage(int index) => _index = index;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(_pointingIndex);
-			writer.Write(_towerIndex);
+			writer.Write(_index);
 		}
 
 		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			_pointingIndex = reader.ReadInt32();
-			_towerIndex = reader.ReadInt32();
+			_index = reader.ReadInt32();
 		}
 
-		public override void OnReceiveRemote() => WorldObject.MoveSkeleton(_pointingIndex, _towerIndex);
+		public override void OnReceiveRemote() => WorldObject.MoveSkeleton(_index);
 	}
 }

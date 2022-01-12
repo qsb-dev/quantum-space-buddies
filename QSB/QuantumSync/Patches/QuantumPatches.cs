@@ -499,26 +499,20 @@ namespace QSB.QuantumSync.Patches
 
 			if (__instance._index < __instance._towerSkeletons.Length)
 			{
-				var pointingIndex = -1;
 				for (var i = 0; i < __instance._pointingSkeletons.Length; i++)
 				{
 					if (__instance._pointingSkeletons[i].gameObject.activeInHierarchy &&
 					    (!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
 					{
 						__instance._pointingSkeletons[i].gameObject.SetActive(false);
-						pointingIndex = i;
-						break;
-					}
-				}
 
-				if (pointingIndex != -1)
-				{
-					qsbQuantumSkeletonTower.SendMessage(new MoveSkeletonMessage(pointingIndex, __instance._index));
-					__instance._towerSkeletons[__instance._index].SetActive(true);
-					__instance._index++;
-					__instance._waitForPlayerToLookAtTower = true;
-					__result = true;
-					return false;
+						__instance._towerSkeletons[__instance._index].SetActive(true);
+						__instance._index++;
+						__instance._waitForPlayerToLookAtTower = true;
+						qsbQuantumSkeletonTower.SendMessage(new MoveSkeletonMessage(i));
+						__result = true;
+						return false;
+					}
 				}
 			}
 
