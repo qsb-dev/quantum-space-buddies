@@ -249,6 +249,7 @@ namespace QSB
 			{
 				if (qsbOrb.TransformSync == null)
 				{
+					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 
@@ -258,12 +259,6 @@ namespace QSB
 				}
 
 				var identity = qsbOrb.TransformSync.NetIdentity;
-
-				if (identity == null)
-				{
-					continue;
-				}
-
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					qsbOrb.SetDragging(false);

@@ -4,7 +4,6 @@ using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace QSB.SaveSync.Messages
 {
