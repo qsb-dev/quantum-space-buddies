@@ -14,11 +14,21 @@ namespace QSB.QuantumSync.WorldObjects
 	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		where T : QuantumObject
 	{
+		/// <summary>
+		/// whether the controlling player is always the host <br/>
+		/// also means this object is considered always enabled
+		/// </summary>
+		protected virtual bool HostControls => false;
 		public uint ControllingPlayer { get; set; }
-		public bool IsEnabled { get; set; }
+		public bool IsEnabled { get; private set; }
 
 		public override void OnRemoval()
 		{
+			if (HostControls)
+			{
+				return;
+			}
+
 			foreach (var shape in GetAttachedShapes())
 			{
 				shape.OnShapeActivated -= OnEnable;
@@ -86,6 +96,15 @@ namespace QSB.QuantumSync.WorldObjects
 		private void LateInit()
 		{
 			FinishDelayedReady();
+
+			if (HostControls)
+			{
+				// smallest player id is the host
+				ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
+				IsEnabled = true;
+				return;
+			}
+
 			var attachedShapes = GetAttachedShapes();
 			if (attachedShapes.Count == 0)
 			{
@@ -109,11 +128,6 @@ namespace QSB.QuantumSync.WorldObjects
 				IsEnabled = false;
 			}
 		}
-
-		public List<ShapeVisibilityTracker> GetVisibilityTrackers()
-			=> AttachedObject?._visibilityTrackers == null
-				? new()
-				: AttachedObject._visibilityTrackers.Select(x => (ShapeVisibilityTracker)x).ToList();
 
 		public List<Shape> GetAttachedShapes()
 		{
@@ -150,6 +164,8 @@ namespace QSB.QuantumSync.WorldObjects
 
 			return totalShapes;
 		}
+
+		public void SetIsQuantum(bool isQuantum) => AttachedObject.SetIsQuantum(isQuantum);
 
 		private void OnEnable(Shape s)
 		{
@@ -245,7 +261,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			var playerBody = player.Body;
-			
+
 			if (playerBody == null)
 			{
 				return;
