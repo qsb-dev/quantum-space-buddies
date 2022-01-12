@@ -47,7 +47,7 @@ namespace QSB.Utility
 			 * 3 - Destroy probe
 			 * 4 - Damage ship electricals
 			 * 5 - Trigger supernova
-			 * 6 -
+			 * 6 - Set MET_SOLANUM
 			 * 7 - Warp to vessel
 			 * 8 - Place warp core into vessel
 			 * 9 - Load eye scene
@@ -81,6 +81,14 @@ namespace QSB.Utility
 			if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
 			{
 				new DebugTriggerSupernovaMessage().Send();
+			}
+
+			if (Keyboard.current[Key.Numpad6].wasPressedThisFrame)
+			{
+				PlayerData.SetPersistentCondition("MET_SOLANUM", true);
+				PlayerData.SetPersistentCondition("MET_PRISONER", true);
+				DialogueConditionManager.SharedInstance.SetConditionState("MET_SOLANUM", true);
+				DialogueConditionManager.SharedInstance.SetConditionState("MET_PRISONER", true);
 			}
 
 			if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)
