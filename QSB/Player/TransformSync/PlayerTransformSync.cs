@@ -50,7 +50,7 @@ namespace QSB.Player.TransformSync
 			var player = new PlayerInfo(this);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
 			base.Start();
-			QSBPlayerManager.OnAddPlayer?.Invoke(Player.PlayerId);
+			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
@@ -87,7 +87,7 @@ namespace QSB.Player.TransformSync
 		protected override void OnDestroy()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
-			QSBPlayerManager.OnRemovePlayer?.Invoke(Player.PlayerId);
+			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
 			base.OnDestroy();
 			Player.HudMarker?.Remove();
 			QSBPlayerManager.PlayerList.Remove(Player);

@@ -23,7 +23,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 			base.Awake();
 			Instance = this;
 
-			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+			// QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}
 
 		private static void OnPlayerLeave(uint obj)

@@ -26,9 +26,9 @@ namespace QSB.EyeOfTheUniverse.CosmicInflation
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}
 
-		private void OnPlayerLeave(uint id)
+		private void OnPlayerLeave(PlayerInfo player)
 		{
-			_playersInFog.Remove(QSBPlayerManager.GetPlayer(id));
+			_playersInFog.Remove(player);
 
 			// wait 1 frame for player to be removed
 			QSBCore.UnityEvents.FireOnNextUpdate(() =>

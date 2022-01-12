@@ -32,11 +32,11 @@ namespace QSB.Player
 		/// <summary>
 		/// called right after player is added
 		/// </summary>
-		public static Action<uint> OnAddPlayer;
+		public static Action<PlayerInfo> OnAddPlayer;
 		/// <summary>
 		/// called right before player is removed
 		/// </summary>
-		public static Action<uint> OnRemovePlayer;
+		public static Action<PlayerInfo> OnRemovePlayer;
 
 		public static readonly List<PlayerInfo> PlayerList = new();
 

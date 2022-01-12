@@ -47,7 +47,7 @@ namespace QSB.QuantumSync
 			}
 		}
 
-		public void PlayerLeave(uint playerId)
+		public void PlayerLeave(PlayerInfo player)
 		{
 			if (!QSBCore.IsHost)
 			{
@@ -56,7 +56,7 @@ namespace QSB.QuantumSync
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 			{
-				if (obj.ControllingPlayer == playerId)
+				if (obj.ControllingPlayer == player.PlayerId)
 				{
 					obj.SendMessage(new QuantumAuthorityMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u));
 				}
