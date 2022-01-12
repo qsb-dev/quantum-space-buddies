@@ -169,6 +169,12 @@ namespace QSB.Player.TransformSync
 			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
+			// get inactive renderers too
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+				Player.DitheringAnimator._renderers = Player.DitheringAnimator
+					.GetComponentsInChildren<Renderer>(true)
+					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
+					.ToArray());
 			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
 
 			/*
