@@ -17,5 +17,7 @@
 		EnterVesselCage = 12,
 		ExitVesselCage = 13,
 		EnterCosmicFog = 14,
+		EnterMaskZone = 15,
+		ExitMaskZone = 16,
 	}
 }

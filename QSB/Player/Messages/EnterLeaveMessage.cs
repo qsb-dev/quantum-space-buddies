@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.EyeOfTheUniverse.CosmicInflation;
+using QSB.EyeOfTheUniverse.MaskSync;
 using QSB.EyeOfTheUniverse.VesselSync;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -105,6 +106,12 @@ namespace QSB.Player.Messages
 					break;
 				case EnterLeaveType.EnterCosmicFog:
 					InflationManager.Instance.Enter(player);
+					break;
+				case EnterLeaveType.EnterMaskZone:
+					MaskManager.Instance.Enter(player);
+					break;
+				case EnterLeaveType.ExitMaskZone:
+					MaskManager.Instance.Exit(player);
 					break;
 				default:
 					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Value}", MessageType.Warning);
