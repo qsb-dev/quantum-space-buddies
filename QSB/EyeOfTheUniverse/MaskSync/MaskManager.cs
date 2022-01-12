@@ -1,6 +1,7 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Messages;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,14 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 		{
 			base.Awake();
 			Instance = this;
+
+			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+		}
+
+		private static void OnPlayerLeave(uint obj)
+		{
+			// bug this probably throws nre
+			new EnterLeaveMessage(EnterLeaveType.ExitMaskZone).Send();
 		}
 
 		protected override void RebuildWorldObjects(OWScene scene)
@@ -59,6 +68,8 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 
 		public void Enter(PlayerInfo player)
 		{
+			DebugLog.DebugWrite($"{player} enter mask zone");
+
 			if (_playersInZone.Count == 0)
 			{
 				_controller._whiteSphere.SetActive(true);
@@ -74,6 +85,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 		public void Exit(PlayerInfo player)
 		{
 			_playersInZone.Remove(player);
+			DebugLog.DebugWrite($"{player} exit mask zone");
 
 			if (_playersInZone.Count == 0 && !_controller._shuttle.HasLaunched())
 			{
