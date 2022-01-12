@@ -90,7 +90,7 @@ namespace QSB.TimeSync
 			var text = "";
 			switch (_currentType)
 			{
-				case TimeSyncType.Fastforwarding:
+				case TimeSyncType.FastForwarding:
 					switch ((FastForwardReason)_currentReason)
 					{
 						case FastForwardReason.TooFarBehind:
