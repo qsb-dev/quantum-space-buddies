@@ -475,5 +475,56 @@ namespace QSB.QuantumSync.Patches
 			__instance._shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
 			return false;
 		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(QuantumSkeletonTower), nameof(QuantumSkeletonTower.ChangeQuantumState))]
+		public static bool QuantumSkeletonTower_ChangeQuantumState(QuantumSkeletonTower __instance, ref bool __result)
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+
+			var qsbQuantumSkeletonTower = __instance.GetWorldObject<QSBQuantumSkeletonTower>();
+			if (qsbQuantumSkeletonTower.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			{
+				return false;
+			}
+
+			if (__instance._waitForPlayerToLookAtTower)
+			{
+				__result = false;
+				return false;
+			}
+
+			if (__instance._index < __instance._towerSkeletons.Length)
+			{
+				var pointingIndex = -1;
+				for (var i = 0; i < __instance._pointingSkeletons.Length; i++)
+				{
+					if (__instance._pointingSkeletons[i].gameObject.activeInHierarchy &&
+					    (!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
+					{
+						__instance._pointingSkeletons[i].gameObject.SetActive(false);
+						pointingIndex = i;
+						break;
+					}
+				}
+
+				if (pointingIndex != -1)
+				{
+					qsbQuantumSkeletonTower.SendMessage(new MoveSkeletonMessage(pointingIndex, __instance._index));
+					__instance._towerSkeletons[__instance._index].SetActive(true);
+					__instance._index++;
+					__instance._waitForPlayerToLookAtTower = true;
+					__result = true;
+					return false;
+				}
+			}
+
+			__result = false;
+			return false;
+		}
+
 	}
 }
