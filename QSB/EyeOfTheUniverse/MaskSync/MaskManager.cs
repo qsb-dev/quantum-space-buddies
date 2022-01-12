@@ -1,7 +1,7 @@
-﻿using QSB.Messaging;
+﻿using QSB.EyeOfTheUniverse.EyeStateSync.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Messages;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,8 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 
 		private readonly List<PlayerInfo> _playersInZone = new();
 		private MaskZoneController _controller;
+		private bool _flickering;
+		private float _flickerOutTime;
 
 		public override WorldObjectType WorldObjectType => WorldObjectType.Eye;
 
@@ -70,8 +72,6 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 
 		public void Enter(PlayerInfo player)
 		{
-			DebugLog.DebugWrite($"{player.PlayerId} enter mask zone");
-
 			if (_playersInZone.Count == 0)
 			{
 				_controller._whiteSphere.SetActive(true);
@@ -86,8 +86,6 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 
 		public void Exit(PlayerInfo player)
 		{
-			DebugLog.DebugWrite($"{player.PlayerId} exit mask zone");
-
 			_playersInZone.Remove(player);
 
 			if (_playersInZone.Count == 0 && !_controller._shuttle.HasLaunched())
@@ -97,6 +95,25 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 				_controller._groundSignal.SetSignalActivation(true);
 				_controller._skySignal.SetSignalActivation(false);
 				_controller.enabled = false;
+			}
+		}
+
+		public void FlickerOutShuttle()
+		{
+			FlickerMessage.IgnoreNextMessage = true;
+			GlobalMessenger<float, float>.FireEvent("FlickerOffAndOn", 0.5f, 0.5f);
+			_flickerOutTime = Time.time + 0.5f;
+			_flickering = true;
+		}
+
+		private void Update()
+		{
+			if (_flickering && Time.time > _flickerOutTime)
+			{
+				var controller = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
+				controller._shuttleObject.SetActive(false);
+				_flickering = false;
+				_flickerOutTime = 0f;
 			}
 		}
 	}

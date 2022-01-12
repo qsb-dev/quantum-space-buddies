@@ -157,12 +157,20 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			if (!AttachedObject.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				base.Update();
+				return;
+			}
+			else
+			{
+				if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
+				{
+					DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				}
 			}
 
-			if (!AttachedObject.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
+			if (ReferenceTransform == Locator.GetRootTransform())
 			{
 				base.Update();
 				return;
