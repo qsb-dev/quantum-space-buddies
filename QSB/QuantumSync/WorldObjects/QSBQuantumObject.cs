@@ -165,7 +165,7 @@ namespace QSB.QuantumSync.WorldObjects
 			return totalShapes;
 		}
 
-		public void SetIsQuantum(bool isQuantum) => AttachedObject.SetIsQuantum(isQuantum);
+		public void SetIsQuantum(bool isQuantum) => AttachedObject._isQuantum = isQuantum;
 
 		private void OnEnable(Shape s)
 		{

@@ -28,17 +28,14 @@ namespace QSB.QuantumSync.Patches
 			return false;
 		}
 
-		[HarmonyPrefix]
+		[HarmonyPostfix]
 		[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.SetIsQuantum))]
-		public static bool QuantumObject_SetIsQuantum(QuantumObject __instance)
+		public static void QuantumObject_SetIsQuantum(QuantumObject __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (WorldObjectManager.AllObjectsReady)
 			{
-				return true;
+				__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
 			}
-
-			__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
-			return false;
 		}
 
 		[HarmonyPrefix]
