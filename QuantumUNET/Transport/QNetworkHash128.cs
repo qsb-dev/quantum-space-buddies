@@ -66,6 +66,7 @@ namespace QuantumUNET.Transport
 			{
 				result = 0;
 			}
+
 			return result;
 		}
 
@@ -79,8 +80,10 @@ namespace QuantumUNET.Transport
 				{
 					str += "0";
 				}
+
 				text = str + text;
 			}
+
 			QNetworkHash128 result;
 			result.i0 = (byte)(HexToNumber(text[0]) * 16 + HexToNumber(text[1]));
 			result.i1 = (byte)(HexToNumber(text[2]) * 16 + HexToNumber(text[3]));

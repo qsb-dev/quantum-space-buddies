@@ -35,7 +35,6 @@ namespace QSB.StatueSync.Messages
 			CameraDegrees = reader.ReadSingle();
 		}
 
-
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void OnReceiveLocal()

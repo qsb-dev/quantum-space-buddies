@@ -19,6 +19,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 			{
 				return;
 			}
+
 			if (__instance.IsTranslated(id))
 			{
 				return;

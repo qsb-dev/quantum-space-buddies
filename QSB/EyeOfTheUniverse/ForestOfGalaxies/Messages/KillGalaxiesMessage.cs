@@ -9,11 +9,9 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 {
 	internal class KillGalaxiesMessage : QSBMessage
 	{
-		private List<float> _deathDelays = new();
+		private List<float> _deathDelays;
 
 		public KillGalaxiesMessage(List<float> deathDelays) => _deathDelays = deathDelays;
-
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -29,20 +27,22 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 		{
 			base.Deserialize(reader);
 			var length = reader.ReadInt32();
-			_deathDelays = new List<float>();
+			_deathDelays = new List<float>(length);
 			for (var i = 0; i < length; i++)
 			{
 				_deathDelays.Add(reader.ReadSingle());
 			}
 		}
 
+		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+
 		public override void OnReceiveRemote()
 		{
 			var galaxyController = QSBWorldSync.GetUnityObjects<MiniGalaxyController>().First();
 
 			galaxyController._killTrigger.OnEntry -= galaxyController.OnEnterKillTrigger;
-			galaxyController._galaxies = galaxyController.GetComponentsInChildren<MiniGalaxy>(true);
 
+			galaxyController._galaxies = galaxyController.GetComponentsInChildren<MiniGalaxy>(true);
 			for (var i = 0; i < galaxyController._galaxies.Length; i++)
 			{
 				galaxyController._galaxies[i].DieAfterSeconds(_deathDelays[i], true, AudioType.EyeGalaxyBlowAway);
@@ -52,7 +52,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 			galaxyController.enabled = true;
 
 			galaxyController._musicSource.SetLocalVolume(0f);
-			galaxyController._musicSource.FadeIn(5f, false, false, 1f);
+			galaxyController._musicSource.FadeIn(5f);
 		}
 	}
 }

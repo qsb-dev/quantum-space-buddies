@@ -35,12 +35,13 @@ namespace QSB.Player
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
-		public bool Visible { get; set; } = true;
+		public bool Visible => DitheringAnimator != null && DitheringAnimator._visible;
 		public bool IsReady { get; set; }
 		public bool IsInMoon { get; set; }
 		public bool IsInShrine { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
+		public DitheringAnimator DitheringAnimator { get; set; }
 
 		// Body Objects
 		public OWCamera Camera

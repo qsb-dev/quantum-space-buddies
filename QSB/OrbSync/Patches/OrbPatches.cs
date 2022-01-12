@@ -21,10 +21,12 @@ namespace QSB.OrbSync.Patches
 			{
 				return;
 			}
+
 			if (!__instance._isBeingDragged)
 			{
 				return;
 			}
+
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			qsbOrb.SendMessage(new OrbDragMessage(true));
 		}
@@ -37,15 +39,18 @@ namespace QSB.OrbSync.Patches
 			{
 				return true;
 			}
+
 			if (!__instance._isBeingDragged)
 			{
 				return false;
 			}
+
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;
 			}
+
 			qsbOrb.SendMessage(new OrbDragMessage(false));
 			return true;
 		}
@@ -58,6 +63,7 @@ namespace QSB.OrbSync.Patches
 			{
 				return true;
 			}
+
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 			if (!qsbOrb.TransformSync.HasAuthority)
 			{
@@ -77,10 +83,12 @@ namespace QSB.OrbSync.Patches
 						{
 							__instance.CancelDrag();
 						}
+
 						if (__instance._orbAudio != null && slot.GetPlayActivationAudio())
 						{
 							__instance._orbAudio.PlaySlotActivatedClip();
 						}
+
 						qsbOrb.SendMessage(new OrbSlotMessage(slotIndex));
 						break;
 					}
@@ -91,6 +99,7 @@ namespace QSB.OrbSync.Patches
 				__instance._occupiedSlot = null;
 				qsbOrb.SendMessage(new OrbSlotMessage(-1));
 			}
+
 			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);
 
 			return false;

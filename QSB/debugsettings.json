@@ -4,5 +4,6 @@
   "showQuantumVisibilityObjects": false,
   "showDebugLabels": true,
   "avoidTimeSync": false,
-  "skipTitleScreen": true
+  "skipTitleScreen": true,
+  "greySkybox": false
 }

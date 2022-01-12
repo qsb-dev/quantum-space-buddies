@@ -60,7 +60,7 @@ namespace QSB.QuantumSync.WorldObjects
 				{
 					if (shape is BoxShape boxShape)
 					{
-						var newCube = UnityEngine.Object.Instantiate(cube);
+						var newCube = Object.Instantiate(cube);
 						newCube.transform.parent = shape.transform;
 						newCube.transform.localPosition = Vector3.zero;
 						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -68,7 +68,7 @@ namespace QSB.QuantumSync.WorldObjects
 					}
 					else if (shape is SphereShape sphereShape)
 					{
-						var newSphere = UnityEngine.Object.Instantiate(sphere);
+						var newSphere = Object.Instantiate(sphere);
 						newSphere.transform.parent = shape.transform;
 						newSphere.transform.localPosition = Vector3.zero;
 						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -180,33 +180,34 @@ namespace QSB.QuantumSync.WorldObjects
 			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 		}
 
-		private void OnDisable(Shape s)
-		{
-			if (!IsEnabled)
+		private void OnDisable(Shape s) =>
+			// we wait a frame here in case the shapes get disabled as we switch from 1 visibility tracker to another
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
 			{
-				return;
-			}
+				if (!IsEnabled)
+				{
+					return;
+				}
 
-			if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
-			{
-				return;
-			}
+				if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
+				{
+					return;
+				}
 
-			IsEnabled = false;
-			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
-			{
-				return;
-			}
+				IsEnabled = false;
+				if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+				{
+					return;
+				}
 
-			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
-			{
-				// not being controlled by us, don't care if we leave area
-				return;
-			}
+				if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+				{
+					// not being controlled by us, don't care if we leave area
+					return;
+				}
 
-			var id = ObjectId;
-			// send event to other players that we're releasing authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
-		}
+				// send event to other players that we're releasing authority
+				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
+			});
 	}
 }

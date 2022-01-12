@@ -168,7 +168,6 @@ namespace QSB.MeteorSync.Patches
 		}
 	}
 
-
 	/// <summary>
 	/// client only
 	/// </summary>
@@ -271,7 +270,6 @@ namespace QSB.MeteorSync.Patches
 		}
 	}
 
-
 	/// <summary>
 	/// both server and client
 	/// </summary>
@@ -320,6 +318,7 @@ namespace QSB.MeteorSync.Patches
 			{
 				return true;
 			}
+
 			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return true;

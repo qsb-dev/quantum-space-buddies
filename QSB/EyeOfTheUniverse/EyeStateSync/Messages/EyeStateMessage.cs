@@ -17,7 +17,6 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 			}
 		}
 
-
 		private EyeStateMessage(EyeState state) => Value = state;
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

@@ -37,6 +37,7 @@ namespace QSB.TornadoSync.Patches
 				{
 					__instance.UpdateFormation();
 				}
+
 				if (__instance._isSectorOccupied)
 				{
 					__instance.UpdateAnimation();
@@ -52,7 +53,6 @@ namespace QSB.TornadoSync.Patches
 
 			return false;
 		}
-
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(TornadoController), nameof(TornadoController.OnEnterCollapseTrigger))]
