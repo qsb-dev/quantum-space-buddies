@@ -29,6 +29,19 @@ namespace QSB.QuantumSync.Patches
 		}
 
 		[HarmonyPrefix]
+		[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.SetIsQuantum))]
+		public static bool QuantumObject_SetIsQuantum(QuantumObject __instance)
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+
+			__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
+			return false;
+		}
+
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(SocketedQuantumObject), nameof(SocketedQuantumObject.ChangeQuantumState))]
 		public static bool SocketedQuantumObject_ChangeQuantumState(
 			SocketedQuantumObject __instance,
