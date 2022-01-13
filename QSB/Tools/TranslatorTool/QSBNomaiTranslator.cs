@@ -25,7 +25,12 @@ namespace QSB.Tools.TranslatorTool
 		}
 
 		public override void OnDisable()
-			=> _translatorProp.OnFinishUnequipAnimation();
+		{
+			if (!_isDitheringOut)
+			{
+				_translatorProp.OnFinishUnequipAnimation();
+			}
+		}
 
 		public override void EquipTool()
 		{
@@ -37,6 +42,12 @@ namespace QSB.Tools.TranslatorTool
 		{
 			base.UnequipTool();
 			_translatorProp.OnUnequipTool();
+		}
+
+		public override void FinishDitherOut()
+		{
+			base.FinishDitherOut();
+			_translatorProp.OnFinishUnequipAnimation();
 		}
 
 		public override void Update()

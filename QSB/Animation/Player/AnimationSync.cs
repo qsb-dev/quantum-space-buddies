@@ -41,9 +41,8 @@ namespace QSB.Animation.Player
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
-		protected override void OnDestroy()
+		protected void OnDestroy()
 		{
-			base.OnDestroy();
 			Destroy(InvisibleAnimator);
 			Destroy(NetworkAnimator);
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;

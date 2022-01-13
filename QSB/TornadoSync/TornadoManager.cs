@@ -32,6 +32,7 @@ namespace QSB.TornadoSync
 			{
 				SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
+
 			SpawnOccasional(cannon._probeBody, gdBody);
 
 			// islands

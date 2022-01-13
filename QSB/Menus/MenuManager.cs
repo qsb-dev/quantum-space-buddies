@@ -49,6 +49,15 @@ namespace QSB.Menus
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
 		{
+			if (newScene == OWScene.EyeOfTheUniverse)
+			{
+				GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
+			}
+			else
+			{
+				GlobalMessenger<EyeState>.RemoveListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
+			}
+
 			if (isUniverse)
 			{
 				InitPauseMenus();
@@ -68,6 +77,7 @@ namespace QSB.Menus
 				_nowLoadingSB = new StringBuilder();
 				return;
 			}
+
 			_nowLoadingSB.Length = 0;
 		}
 
@@ -199,6 +209,14 @@ namespace QSB.Menus
 			DisconnectPopup._labelText.text = popupText;
 		}
 
+		private void OnEyeStateChanged(EyeState state)
+		{
+			if (state >= EyeState.IntoTheVortex)
+			{
+				SetButtonActive(HostButton, false);
+			}
+		}
+
 		private void MakeTitleMenus()
 		{
 			CreateCommonPopups();
@@ -294,7 +312,13 @@ namespace QSB.Menus
 
 		private void Connect()
 		{
-			QSBNetworkManager.Instance.networkAddress = string.Concat((IPPopup as PopupInputMenu).GetInputText().Where(c => !char.IsWhiteSpace(c)));
+			var address = string.Concat(((PopupInputMenu)IPPopup).GetInputText().Where(c => !char.IsWhiteSpace(c)));
+			if (address.Length == 0)
+			{
+				address = QSBCore.DefaultServerIP;
+			}
+
+			QSBNetworkManager.Instance.networkAddress = address;
 			QSBNetworkManager.Instance.StartClient();
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)

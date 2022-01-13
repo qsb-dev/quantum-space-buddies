@@ -1,5 +1,4 @@
-﻿using QSB.Instruments;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
@@ -39,7 +38,7 @@ namespace QSB.Animation.Player.Messages
 			}
 
 			player.AnimationSync.SetAnimationType(Value);
-			QSBPlayerManager.GetSyncObject<InstrumentsManager>(PlayerId).CheckInstrumentProps(Value);
+			player.InstrumentsManager.CheckInstrumentProps(Value);
 		}
 	}
 }

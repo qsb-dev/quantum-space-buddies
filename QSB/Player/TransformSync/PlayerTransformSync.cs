@@ -1,6 +1,5 @@
-﻿using QSB.Animation.Player;
+﻿using OWML.Common;
 using QSB.Audio;
-using QSB.Instruments;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.RoastingSync;
@@ -48,9 +47,11 @@ namespace QSB.Player.TransformSync
 
 		public override void Start()
 		{
+			var player = new PlayerInfo(this);
+			QSBPlayerManager.PlayerList.SafeAdd(player);
 			base.Start();
-			QSBPlayerManager.AddPlayer(PlayerId);
-			Player.TransformSync = this;
+			QSBPlayerManager.OnAddPlayer?.Invoke(Player.PlayerId);
+			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
@@ -86,13 +87,11 @@ namespace QSB.Player.TransformSync
 		protected override void OnDestroy()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
-			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
+			QSBPlayerManager.OnRemovePlayer?.Invoke(Player.PlayerId);
 			base.OnDestroy();
-			if (QSBPlayerManager.PlayerExists(PlayerId))
-			{
-				Player.HudMarker?.Remove();
-				QSBPlayerManager.RemovePlayer(PlayerId);
-			}
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.PlayerList.Remove(Player);
+			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
 		protected override Transform InitLocalTransform()
@@ -102,8 +101,8 @@ namespace QSB.Player.TransformSync
 			// player body
 			var player = Locator.GetPlayerTransform();
 			var playerModel = player.Find("Traveller_HEA_Player_v2");
-			GetComponent<AnimationSync>().InitLocal(playerModel);
-			GetComponent<InstrumentsManager>().InitLocal(player);
+			Player.AnimationSync.InitLocal(playerModel);
+			Player.InstrumentsManager.InitLocal(player);
 			Player.Body = player.gameObject;
 
 			// camera
@@ -164,14 +163,12 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = REMOTE_Player_Body;
 
-			GetComponent<AnimationSync>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
-			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Player_Body.transform);
+			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2);
+			Player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
 
-			var marker = REMOTE_Player_Body.AddComponent<PlayerHUDMarker>();
-			marker.Init(Player);
-
+			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-
+			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
 
 			/*

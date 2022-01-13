@@ -47,7 +47,6 @@ namespace QSB.Messaging
 		public override string ToString() => GetType().Name;
 	}
 
-
 	public abstract class QSBBoolMessage : QSBMessage
 	{
 		protected bool Value;

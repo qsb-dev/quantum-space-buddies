@@ -135,6 +135,7 @@ namespace QSB.ClientServerStateSync
 						{
 							newState = ClientState.AliveInEye;
 						}
+
 						break;
 					default:
 						newState = ClientState.NotLoaded;

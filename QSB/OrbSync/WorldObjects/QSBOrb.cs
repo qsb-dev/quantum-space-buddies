@@ -83,6 +83,7 @@ namespace QSB.OrbSync.WorldObjects
 				{
 					AttachedObject.CancelDrag();
 				}
+
 				if (AttachedObject._orbAudio != null && newSlot.GetPlayActivationAudio())
 				{
 					AttachedObject._orbAudio.PlaySlotActivatedClip();

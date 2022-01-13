@@ -26,23 +26,14 @@ namespace QSB.Tools
 			{
 				CreateStowTransforms(player.CameraBody.transform);
 
-				Props_HEA_PlayerTool_mat = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
-				Props_HEA_Lightbulb_OFF_mat = GameObject.Find("Props_HEA_Probe_Prelaunch").GetComponent<MeshRenderer>().materials[1];
+				var surfaceData = Locator.GetSurfaceManager()._surfaceLookupAsset;
+				var metal = surfaceData.surfaceTypeGroups[15].materials;
+				var glass = surfaceData.surfaceTypeGroups[19].materials;
 
-				if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
-				{
-					Structure_HEA_PlayerShip_Screens_mat = GameObject.Find("ProbeScreen (1)/ProbeScreenPivot/ProbeScreen").GetComponent<MeshRenderer>().materials[2];
-					Props_HEA_Lightbulb_mat = GameObject.Find("Props_HEA_Lantern (10)/Lantern_Lamp").GetComponent<MeshRenderer>().materials[0];
-					Props_HEA_Lightbulb_OFF_mat = GameObject.Find("NomaiResearchExhibit/Props_HEA_Probe_STATIC").GetComponent<MeshRenderer>().materials[1];
-				}
-				else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
-				{
-					Props_HEA_Lightbulb_mat = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
-
-					// BUG : uhhhhh fuckin' uhhhhhhhh (find a material)
-					Props_HEA_Lightbulb_OFF_mat = null;
-					Structure_HEA_PlayerShip_Screens_mat = null;
-				}
+				Props_HEA_PlayerTool_mat = metal[27];
+				Props_HEA_Lightbulb_mat = glass[47];
+				Props_HEA_Lightbulb_OFF_mat = glass[48];
+				Structure_HEA_PlayerShip_Screens_mat = glass[41];
 			}
 			catch (Exception ex)
 			{

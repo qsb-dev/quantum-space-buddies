@@ -3,6 +3,7 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.VesselSync
@@ -24,13 +25,15 @@ namespace QSB.EyeOfTheUniverse.VesselSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
+			_playersInCage.Clear();
+
 			if (_warpController != null)
 			{
 				_warpController._cageTrigger.OnEntry -= OnEntry;
 				_warpController._cageTrigger.OnExit -= OnExit;
 			}
 
-			_warpController = FindObjectOfType<VesselWarpController>();
+			_warpController = QSBWorldSync.GetUnityObjects<VesselWarpController>().First();
 			_warpController._cageTrigger.OnExit -= _warpController.OnExitCageTrigger;
 
 			_warpController._cageTrigger.OnEntry += OnEntry;
@@ -52,7 +55,6 @@ namespace QSB.EyeOfTheUniverse.VesselSync
 				new EnterLeaveMessage(EnterLeaveType.ExitVesselCage).Send();
 			}
 		}
-
 
 		public void Enter(PlayerInfo player)
 		{

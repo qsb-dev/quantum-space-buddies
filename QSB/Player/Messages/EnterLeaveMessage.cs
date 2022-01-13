@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
+using QSB.EyeOfTheUniverse.CosmicInflation;
 using QSB.EyeOfTheUniverse.VesselSync;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -28,7 +29,6 @@ namespace QSB.Player.Messages
 				new EnterLeaveMessage(type, objectId).Send();
 			}
 		}
-
 
 		private int ObjectId;
 
@@ -102,6 +102,9 @@ namespace QSB.Player.Messages
 					break;
 				case EnterLeaveType.ExitVesselCage:
 					VesselManager.Instance.Exit(player);
+					break;
+				case EnterLeaveType.EnterCosmicFog:
+					InflationManager.Instance.Enter(player);
 					break;
 				default:
 					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Value}", MessageType.Warning);

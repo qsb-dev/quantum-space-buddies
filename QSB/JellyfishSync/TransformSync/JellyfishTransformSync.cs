@@ -36,6 +36,7 @@ namespace QSB.JellyfishSync.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
+
 			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
@@ -54,6 +55,7 @@ namespace QSB.JellyfishSync.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
+
 			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
 			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
@@ -137,7 +139,6 @@ namespace QSB.JellyfishSync.TransformSync
 
 			return true;
 		}
-
 
 		protected override void OnRenderObject()
 		{

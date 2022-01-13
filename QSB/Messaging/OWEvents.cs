@@ -29,5 +29,6 @@
 		public const string EnterShip = nameof(EnterShip);
 		public const string ExitShip = nameof(ExitShip);
 		public const string EyeStateChanged = nameof(EyeStateChanged);
+		public const string FlickerOffAndOn = nameof(FlickerOffAndOn);
 	}
 }
