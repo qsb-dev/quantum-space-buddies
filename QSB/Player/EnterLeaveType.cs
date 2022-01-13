@@ -4,8 +4,6 @@
 	{
 		EnterMoon,
 		ExitMoon,
-		EnterShrine,
-		ExitShrine,
 		EnterPlatform,
 		ExitPlatform,
 		EnterShip,

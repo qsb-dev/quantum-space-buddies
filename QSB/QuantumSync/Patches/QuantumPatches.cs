@@ -3,7 +3,6 @@ using OWML.Common;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.Messages;
 using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
@@ -375,7 +374,6 @@ namespace QSB.QuantumSync.Patches
 				__instance._isPlayerInside = true;
 				__instance._fading = true;
 				__instance._exteriorLightController.FadeTo(0f, 1f);
-				new EnterLeaveMessage(EnterLeaveType.EnterShrine).Send();
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
@@ -396,7 +394,6 @@ namespace QSB.QuantumSync.Patches
 				__instance._isPlayerInside = false;
 				__instance._fading = true;
 				__instance._exteriorLightController.FadeTo(1f, 1f);
-				new EnterLeaveMessage(EnterLeaveType.ExitShrine).Send();
 			}
 			else if (hitObj.CompareTag("ProbeDetector"))
 			{
