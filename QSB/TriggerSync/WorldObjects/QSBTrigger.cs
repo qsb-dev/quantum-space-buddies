@@ -5,6 +5,7 @@ using QSB.TriggerSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
@@ -24,10 +25,12 @@ namespace QSB.TriggerSync.WorldObjects
 
 		public List<PlayerInfo> Occupants { get; } = new();
 
+		protected virtual string CompareTag => "PlayerDetector";
+
 		public override void Init()
 		{
-			AttachedObject.OnEntry += OnLocalEnter;
-			AttachedObject.OnExit += OnLocalExit;
+			AttachedObject.OnEntry += OnEnterEvent;
+			AttachedObject.OnExit += OnExitEvent;
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
@@ -37,32 +40,32 @@ namespace QSB.TriggerSync.WorldObjects
 				{
 					DebugLog.DebugWrite($"{LogName} _trackedObjects == null", MessageType.Warning);
 				}
-				else if (AttachedObject.IsTrackingObject(Locator.GetPlayerDetector()))
+				else if (AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
 				{
-					OnLocalEnter(Locator.GetPlayerDetector());
+					((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
 				}
 			});
 		}
 
 		public override void OnRemoval()
 		{
-			AttachedObject.OnEntry -= OnLocalEnter;
-			AttachedObject.OnExit -= OnLocalExit;
+			AttachedObject.OnEntry -= OnEnterEvent;
+			AttachedObject.OnExit -= OnExitEvent;
 
 			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		}
 
-		private void OnLocalEnter(GameObject hitObj)
+		protected void OnEnterEvent(GameObject hitObj)
 		{
-			if (hitObj.CompareTag("PlayerDetector"))
+			if (hitObj.CompareTag(CompareTag))
 			{
 				((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
 			}
 		}
 
-		private void OnLocalExit(GameObject hitObj)
+		protected void OnExitEvent(GameObject hitObj)
 		{
-			if (hitObj.CompareTag("PlayerDetector"))
+			if (hitObj.CompareTag(CompareTag) || hitObj.CompareTag("PlayerCameraDetector"))
 			{
 				((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
 			}
@@ -100,8 +103,14 @@ namespace QSB.TriggerSync.WorldObjects
 			OnExit(player);
 		}
 
+		/// <summary>
+		/// called when a player enters this trigger
+		/// </summary>
 		protected virtual void OnEnter(PlayerInfo player) { }
 
+		/// <summary>
+		/// called when a player exits this trigger or leaves the game
+		/// </summary>
 		protected virtual void OnExit(PlayerInfo player) { }
 	}
 }

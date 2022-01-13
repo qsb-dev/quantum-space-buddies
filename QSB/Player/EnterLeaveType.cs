@@ -10,7 +10,6 @@
 		ExitShip,
 		EnterVesselCage,
 		ExitVesselCage,
-		EnterCosmicFog,
 		EnterMaskZone,
 		ExitMaskZone
 	}

@@ -11,10 +11,10 @@ namespace QSB.TriggerSync
 		{
 			QSBWorldSync.Init<QSBCharacterTrigger, CharacterAnimController>(x => x.playerTrackingZone);
 			QSBWorldSync.Init<QSBSolanumTrigger, NomaiConversationManager>(x => x._watchPlayerVolume);
-			QSBWorldSync.Init<QSBVesselCageTrigger, VesselWarpController>(x => x._cageTrigger);
 			QSBWorldSync.Init<QSBShrineTrigger, QuantumShrine>(x => x._triggerVolume);
-			QSBWorldSync.Init<QSBMaskZoneTrigger, MaskZoneController>(x => x._maskZoneTrigger);
+			QSBWorldSync.Init<QSBVesselCageTrigger, VesselWarpController>(x => x._cageTrigger);
 			QSBWorldSync.Init<QSBInflationTrigger, CosmicInflationController>(x => x._smokeSphereTrigger);
+			QSBWorldSync.Init<QSBMaskZoneTrigger, MaskZoneController>(x => x._maskZoneTrigger);
 		}
 	}
 }
