@@ -1,5 +1,5 @@
-﻿using QSB.EyeOfTheUniverse.VesselSync;
-using QSB.Player;
+﻿using QSB.Player;
+using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
 {
@@ -11,8 +11,17 @@ namespace QSB.TriggerSync.WorldObjects
 			AttachedObject.OnExit -= TriggerOwner.OnExitCageTrigger;
 		}
 
-		protected override void OnEnter(PlayerInfo player) => VesselManager.Instance.Enter(player);
-
-		protected override void OnExit(PlayerInfo player) => VesselManager.Instance.Exit(player);
+		protected override void OnExit(PlayerInfo player)
+		{
+			if (Occupants.Count == 0 && TriggerOwner._hasPower)
+			{
+				TriggerOwner._cageClosed = true;
+				TriggerOwner._cageAnimator.TranslateToLocalPosition(new Vector3(0f, -8.1f, 0f), 5f);
+				TriggerOwner._cageAnimator.RotateToLocalEulerAngles(new Vector3(0f, 180f, 0f), 5f);
+				TriggerOwner._cageAnimator.OnTranslationComplete -= TriggerOwner.OnCageAnimationComplete;
+				TriggerOwner._cageAnimator.OnTranslationComplete += TriggerOwner.OnCageAnimationComplete;
+				TriggerOwner._cageLoopingAudio.FadeIn(1f);
+			}
+		}
 	}
 }

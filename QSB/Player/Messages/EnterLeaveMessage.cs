@@ -1,8 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Animation.NPC.WorldObjects;
-using QSB.EyeOfTheUniverse.CosmicInflation;
-using QSB.EyeOfTheUniverse.MaskSync;
-using QSB.EyeOfTheUniverse.VesselSync;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;

@@ -8,8 +8,6 @@
 		ExitPlatform,
 		EnterShip,
 		ExitShip,
-		EnterVesselCage,
-		ExitVesselCage,
 		EnterMaskZone,
 		ExitMaskZone
 	}
