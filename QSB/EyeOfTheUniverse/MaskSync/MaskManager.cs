@@ -1,4 +1,5 @@
 ﻿using QSB.EyeOfTheUniverse.EyeStateSync.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 		public static void FlickerOutShuttle()
 		{
 			FlickerMessage.IgnoreNextMessage = true;
-			GlobalMessenger<float, float>.FireEvent("FlickerOffAndOn", 0.5f, 0.5f);
+			GlobalMessenger<float, float>.FireEvent(OWEvents.FlickerOffAndOn, 0.5f, 0.5f);
 			_flickerOutTime = Time.time + 0.5f;
 			_flickering = true;
 		}
