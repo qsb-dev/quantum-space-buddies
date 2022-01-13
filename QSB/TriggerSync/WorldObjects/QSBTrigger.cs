@@ -65,7 +65,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		protected void OnExitEvent(GameObject hitObj)
 		{
-			if (hitObj.CompareTag(CompareTag) || hitObj.CompareTag("PlayerCameraDetector"))
+			if (hitObj.CompareTag(CompareTag))
 			{
 				((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
 			}
