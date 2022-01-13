@@ -14,9 +14,9 @@ namespace QSB.TriggerSync.WorldObjects
 		}
 
 		protected override void OnEnter(PlayerInfo player)
-			=> TriggerOwner.GetWorldObject<QSBSolanumAnimController>().AddPlayerToHeadZone(player);
+			=> TriggerOwner._solanumAnimController.GetWorldObject<QSBSolanumAnimController>().AddPlayerToHeadZone(player);
 
 		protected override void OnExit(PlayerInfo player)
-			=> TriggerOwner.GetWorldObject<QSBSolanumAnimController>().RemovePlayerFromHeadZone(player);
+			=> TriggerOwner._solanumAnimController.GetWorldObject<QSBSolanumAnimController>().RemovePlayerFromHeadZone(player);
 	}
 }
