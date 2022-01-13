@@ -3,7 +3,7 @@ using QSB.Player;
 
 namespace QSB.TriggerSync
 {
-	public class TriggerMessage : QSBBoolWorldObjectMessage<QSBTrigger>
+	public class TriggerMessage : QSBBoolWorldObjectMessage<IQSBTrigger>
 	{
 		public TriggerMessage(bool entered) => Value = entered;
 

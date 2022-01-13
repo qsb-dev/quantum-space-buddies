@@ -8,9 +8,20 @@ using UnityEngine;
 
 namespace QSB.TriggerSync
 {
-	public abstract class QSBTrigger : WorldObject<OWTriggerVolume>
+	public interface IQSBTrigger : IWorldObject
 	{
-		public readonly List<PlayerInfo> Players = new();
+		List<PlayerInfo> Players { get; }
+
+		void Enter(PlayerInfo player);
+
+		void Exit(PlayerInfo player);
+	}
+
+	public abstract class QSBTrigger<TO> : WorldObject<OWTriggerVolume>, IQSBTrigger
+	{
+		public TO TriggerOwner { get; init; }
+
+		public List<PlayerInfo> Players { get; } = new();
 
 		public override void Init()
 		{
@@ -27,7 +38,7 @@ namespace QSB.TriggerSync
 				}
 				else if (AttachedObject._trackedObjects.Contains(Locator.GetPlayerDetector()))
 				{
-					this.SendMessage(new TriggerMessage(true));
+					((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
 				}
 			});
 		}
@@ -52,7 +63,7 @@ namespace QSB.TriggerSync
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				this.SendMessage(new TriggerMessage(true));
+				((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
 			}
 		}
 
@@ -60,7 +71,7 @@ namespace QSB.TriggerSync
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				this.SendMessage(new TriggerMessage(false));
+				((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
 			}
 		}
 
@@ -87,19 +98,19 @@ namespace QSB.TriggerSync
 		}
 	}
 
-	public class QSBCharacterTrigger : QSBTrigger
+	public class QSBCharacterTrigger : QSBTrigger<CharacterAnimController>
 	{
 	}
 
-	public class QSBSolanumTrigger : QSBTrigger
+	public class QSBSolanumTrigger : QSBTrigger<NomaiConversationManager>
 	{
 	}
 
-	public class QSBVesselCageTrigger : QSBTrigger
+	public class QSBVesselCageTrigger : QSBTrigger<VesselWarpController>
 	{
 	}
 
-	public class QSBMaskZoneTrigger : QSBTrigger
+	public class QSBMaskZoneTrigger : QSBTrigger<MaskZoneController>
 	{
 	}
 }

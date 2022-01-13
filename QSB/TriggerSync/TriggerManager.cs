@@ -1,5 +1,4 @@
 ﻿using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.TriggerSync
 {
@@ -9,26 +8,10 @@ namespace QSB.TriggerSync
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			QSBWorldSync.Init<QSBCharacterTrigger, OWTriggerVolume>(
-				QSBWorldSync.GetUnityObjects<CharacterAnimController>()
-					.Where(x => x.playerTrackingZone)
-					.Select(x => x.playerTrackingZone)
-			);
-
-			QSBWorldSync.Init<QSBSolanumTrigger, OWTriggerVolume>(
-				QSBWorldSync.GetUnityObjects<NomaiConversationManager>()
-					.Select(x => x._watchPlayerVolume)
-			);
-
-			QSBWorldSync.Init<QSBVesselCageTrigger, OWTriggerVolume>(
-				QSBWorldSync.GetUnityObjects<VesselWarpController>()
-					.Select(x => x._cageTrigger)
-			);
-
-			QSBWorldSync.Init<QSBMaskZoneTrigger, OWTriggerVolume>(
-				QSBWorldSync.GetUnityObjects<MaskZoneController>()
-					.Select(x => x._maskZoneTrigger)
-			);
+			QSBWorldSync.Init<QSBCharacterTrigger, CharacterAnimController>(x => x.playerTrackingZone);
+			QSBWorldSync.Init<QSBSolanumTrigger, NomaiConversationManager>(x => x._watchPlayerVolume);
+			QSBWorldSync.Init<QSBVesselCageTrigger, VesselWarpController>(x => x._cageTrigger);
+			QSBWorldSync.Init<QSBMaskZoneTrigger, MaskZoneController>(x => x._maskZoneTrigger);
 		}
 	}
 }

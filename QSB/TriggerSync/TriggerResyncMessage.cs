@@ -10,7 +10,7 @@ namespace QSB.TriggerSync
 	/// <summary>
 	/// always sent by host
 	/// </summary>
-	public class TriggerResyncMessage : QSBWorldObjectMessage<QSBTrigger>
+	public class TriggerResyncMessage : QSBWorldObjectMessage<IQSBTrigger>
 	{
 		private uint[] _playerIds;
 

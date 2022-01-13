@@ -128,7 +128,7 @@ namespace QSB.Player.Messages
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState) { To = From }));
 
-			QSBWorldSync.GetWorldObjects<QSBTrigger>().ForEach(trigger
+			QSBWorldSync.GetWorldObjects<IQSBTrigger>().ForEach(trigger
 				=> trigger.SendMessage(new TriggerResyncMessage(trigger.Players)));
 		}
 
