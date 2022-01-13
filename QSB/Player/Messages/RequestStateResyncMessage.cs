@@ -130,7 +130,7 @@ namespace QSB.Player.Messages
 				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState) { To = From }));
 
 			QSBWorldSync.GetWorldObjects<IQSBTrigger>().ForEach(trigger
-				=> trigger.SendMessage(new TriggerResyncMessage(trigger.Players)));
+				=> trigger.SendMessage(new TriggerResyncMessage(trigger.Occupants)));
 		}
 
 		/// <summary>

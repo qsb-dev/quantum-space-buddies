@@ -11,7 +11,7 @@ namespace QSB.TriggerSync.WorldObjects
 {
 	public interface IQSBTrigger : IWorldObject
 	{
-		List<PlayerInfo> Players { get; }
+		List<PlayerInfo> Occupants { get; }
 
 		void Enter(PlayerInfo player);
 
@@ -22,7 +22,7 @@ namespace QSB.TriggerSync.WorldObjects
 	{
 		public TO TriggerOwner { get; init; }
 
-		public List<PlayerInfo> Players { get; } = new();
+		public List<PlayerInfo> Occupants { get; } = new();
 
 		public override void Init()
 		{
@@ -70,7 +70,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		private void OnPlayerLeave(PlayerInfo player)
 		{
-			if (Players.Contains(player))
+			if (Occupants.Contains(player))
 			{
 				Exit(player);
 			}
@@ -78,7 +78,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		public void Enter(PlayerInfo player)
 		{
-			if (!Players.SafeAdd(player))
+			if (!Occupants.SafeAdd(player))
 			{
 				DebugLog.DebugWrite($"{LogName} + {player.PlayerId}", MessageType.Warning);
 				return;
@@ -90,7 +90,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		public void Exit(PlayerInfo player)
 		{
-			if (!Players.QuickRemove(player))
+			if (!Occupants.QuickRemove(player))
 			{
 				DebugLog.DebugWrite($"{LogName} - {player.PlayerId}", MessageType.Warning);
 				return;
@@ -100,8 +100,8 @@ namespace QSB.TriggerSync.WorldObjects
 			OnExit(player);
 		}
 
-		protected abstract void OnEnter(PlayerInfo player);
+		protected virtual void OnEnter(PlayerInfo player) { }
 
-		protected abstract void OnExit(PlayerInfo player);
+		protected virtual void OnExit(PlayerInfo player) { }
 	}
 }

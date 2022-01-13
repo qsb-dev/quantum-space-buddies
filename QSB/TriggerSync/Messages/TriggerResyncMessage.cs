@@ -15,8 +15,8 @@ namespace QSB.TriggerSync.Messages
 	{
 		private uint[] _playerIds;
 
-		public TriggerResyncMessage(IEnumerable<PlayerInfo> players) =>
-			_playerIds = players.Select(x => x.PlayerId).ToArray();
+		public TriggerResyncMessage(IEnumerable<PlayerInfo> occupants) =>
+			_playerIds = occupants.Select(x => x.PlayerId).ToArray();
 
 		public override void Serialize(QNetworkWriter writer)
 		{
@@ -37,13 +37,13 @@ namespace QSB.TriggerSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var serverPlayers = _playerIds.Select(QSBPlayerManager.GetPlayer).ToList();
-			foreach (var added in serverPlayers.Except(WorldObject.Players))
+			var serverOccupants = _playerIds.Select(QSBPlayerManager.GetPlayer).ToList();
+			foreach (var added in serverOccupants.Except(WorldObject.Occupants))
 			{
 				WorldObject.Enter(added);
 			}
 
-			foreach (var removed in WorldObject.Players.Except(serverPlayers))
+			foreach (var removed in WorldObject.Occupants.Except(serverOccupants))
 			{
 				WorldObject.Exit(removed);
 			}
