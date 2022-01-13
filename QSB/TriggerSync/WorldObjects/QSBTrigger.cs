@@ -1,8 +1,6 @@
-﻿using OWML.Common;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.TriggerSync.Messages;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +34,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () =>
 			{
-				if (AttachedObject._trackedObjects == null)
-				{
-					DebugLog.DebugWrite($"{LogName} _trackedObjects == null", MessageType.Warning);
-				}
-				else if (AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
+				if (AttachedObject._trackedObjects != null && AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
 				{
 					((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
 				}
@@ -83,11 +77,9 @@ namespace QSB.TriggerSync.WorldObjects
 		{
 			if (!Occupants.SafeAdd(player))
 			{
-				DebugLog.DebugWrite($"{LogName} + {player.PlayerId}", MessageType.Warning);
 				return;
 			}
 
-			DebugLog.DebugWrite($"{LogName} + {player.PlayerId}");
 			OnEnter(player);
 		}
 
@@ -95,11 +87,9 @@ namespace QSB.TriggerSync.WorldObjects
 		{
 			if (!Occupants.QuickRemove(player))
 			{
-				DebugLog.DebugWrite($"{LogName} - {player.PlayerId}", MessageType.Warning);
 				return;
 			}
 
-			DebugLog.DebugWrite($"{LogName} - {player.PlayerId}");
 			OnExit(player);
 		}
 
