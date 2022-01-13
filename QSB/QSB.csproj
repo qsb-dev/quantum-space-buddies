@@ -66,11 +66,11 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="OuterWildsGameLibs" Version="*" IncludeAssets="compile"/>
-        <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj"/>
-        <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj"/>
-        <PackageReference Include="HarmonyX" Version="2.*" IncludeAssets="compile"/>
-        <PackageReference Include="OWML" Version="2.*" IncludeAssets="compile"/>
+        <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
+        <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj" />
+        <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" />
+        <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
+        <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
     </ItemGroup>
     <ItemGroup>
         <None Update="AssetBundles\*">
