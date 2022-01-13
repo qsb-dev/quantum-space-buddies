@@ -8,7 +8,5 @@
 		ExitPlatform,
 		EnterShip,
 		ExitShip,
-		EnterMaskZone,
-		ExitMaskZone
 	}
 }
