@@ -364,46 +364,6 @@ namespace QSB.QuantumSync.Patches
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnEntry))]
-		public static bool QuantumShrine_OnEntry(
-			QuantumShrine __instance,
-			GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				__instance._isPlayerInside = true;
-				__instance._fading = true;
-				__instance._exteriorLightController.FadeTo(0f, 1f);
-			}
-			else if (hitObj.CompareTag("ProbeDetector"))
-			{
-				__instance._isProbeInside = true;
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnExit))]
-		public static bool QuantumShrine_OnExit(
-			QuantumShrine __instance,
-			GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				__instance._isPlayerInside = false;
-				__instance._fading = true;
-				__instance._exteriorLightController.FadeTo(1f, 1f);
-			}
-			else if (hitObj.CompareTag("ProbeDetector"))
-			{
-				__instance._isProbeInside = false;
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.CheckPlayerFogProximity))]
 		public static bool QuantumMoon_CheckPlayerFogProximity(QuantumMoon __instance)
 		{
