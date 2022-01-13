@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.TriggerSync.WorldObjects;
+using QSB.WorldSync;
 
 namespace QSB.TriggerSync
 {

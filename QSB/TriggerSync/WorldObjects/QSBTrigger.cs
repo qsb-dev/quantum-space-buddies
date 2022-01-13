@@ -1,12 +1,13 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.TriggerSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace QSB.TriggerSync
+namespace QSB.TriggerSync.WorldObjects
 {
 	public interface IQSBTrigger : IWorldObject
 	{
@@ -96,21 +97,5 @@ namespace QSB.TriggerSync
 
 			DebugLog.DebugWrite($"{LogName} - {player.PlayerId}");
 		}
-	}
-
-	public class QSBCharacterTrigger : QSBTrigger<CharacterAnimController>
-	{
-	}
-
-	public class QSBSolanumTrigger : QSBTrigger<NomaiConversationManager>
-	{
-	}
-
-	public class QSBVesselCageTrigger : QSBTrigger<VesselWarpController>
-	{
-	}
-
-	public class QSBMaskZoneTrigger : QSBTrigger<MaskZoneController>
-	{
 	}
 }

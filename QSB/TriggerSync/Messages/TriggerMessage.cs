@@ -1,7 +1,8 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
+using QSB.TriggerSync.WorldObjects;
 
-namespace QSB.TriggerSync
+namespace QSB.TriggerSync.Messages
 {
 	public class TriggerMessage : QSBBoolWorldObjectMessage<IQSBTrigger>
 	{

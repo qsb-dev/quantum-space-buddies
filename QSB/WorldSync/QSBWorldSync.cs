@@ -2,6 +2,7 @@
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
 using QSB.TriggerSync;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;

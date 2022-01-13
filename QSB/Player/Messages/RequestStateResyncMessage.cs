@@ -17,6 +17,8 @@ using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.TornadoSync.Messages;
 using QSB.TornadoSync.WorldObjects;
 using QSB.TriggerSync;
+using QSB.TriggerSync.Messages;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;

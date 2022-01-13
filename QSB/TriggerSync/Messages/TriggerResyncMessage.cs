@@ -1,11 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QSB.TriggerSync
+namespace QSB.TriggerSync.Messages
 {
 	/// <summary>
 	/// always sent by host
