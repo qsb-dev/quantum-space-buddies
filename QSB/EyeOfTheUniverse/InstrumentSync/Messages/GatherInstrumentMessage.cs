@@ -5,6 +5,6 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.Messages
 {
 	internal class GatherInstrumentMessage : QSBWorldObjectMessage<QSBQuantumInstrument>
 	{
-		public override void OnReceiveRemote() => WorldObject.AttachedObject.Gather();
+		public override void OnReceiveRemote() => WorldObject.Gather();
 	}
 }
