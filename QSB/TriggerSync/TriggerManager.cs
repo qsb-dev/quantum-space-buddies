@@ -1,6 +1,4 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 using System.Linq;
 
 namespace QSB.TriggerSync
@@ -9,24 +7,28 @@ namespace QSB.TriggerSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		private static TriggerLink[] _triggerLinks;
-
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			_triggerLinks?.ForEach(x => x.Dispose());
-			_triggerLinks = QSBWorldSync.GetUnityObjects<OWTriggerVolume>()
-				.Select((x, i) => new TriggerLink(i, x))
-				.ToArray();
-		}
+			QSBWorldSync.Init<QSBCharacterTrigger, OWTriggerVolume>(
+				QSBWorldSync.GetUnityObjects<CharacterAnimController>()
+					.Where(x => x.playerTrackingZone)
+					.Select(x => x.playerTrackingZone)
+			);
 
-		public static TriggerLink GetTriggerLink(int id)
-		{
-			if (!_triggerLinks.TryGet(id, out var triggerLink))
-			{
-				DebugLog.ToConsole($"no trigger link with id {id}", MessageType.Error);
-			}
+			QSBWorldSync.Init<QSBSolanumTrigger, OWTriggerVolume>(
+				QSBWorldSync.GetUnityObjects<NomaiConversationManager>()
+					.Select(x => x._watchPlayerVolume)
+			);
 
-			return triggerLink;
+			QSBWorldSync.Init<QSBVesselCageTrigger, OWTriggerVolume>(
+				QSBWorldSync.GetUnityObjects<VesselWarpController>()
+					.Select(x => x._cageTrigger)
+			);
+
+			QSBWorldSync.Init<QSBMaskZoneTrigger, OWTriggerVolume>(
+				QSBWorldSync.GetUnityObjects<MaskZoneController>()
+					.Select(x => x._maskZoneTrigger)
+			);
 		}
 	}
 }
