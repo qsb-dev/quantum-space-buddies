@@ -26,8 +26,8 @@ namespace QSB.TriggerSync.WorldObjects
 
 		public override void Init()
 		{
-			AttachedObject.OnEntry += OnEntry;
-			AttachedObject.OnExit += OnExit;
+			AttachedObject.OnEntry += OnLocalEnter;
+			AttachedObject.OnExit += OnLocalExit;
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
@@ -35,32 +35,24 @@ namespace QSB.TriggerSync.WorldObjects
 			{
 				if (AttachedObject._trackedObjects == null)
 				{
-					DebugLog.DebugWrite($"{LogName} tracked objects == null", MessageType.Warning);
+					DebugLog.DebugWrite($"{LogName} _trackedObjects == null", MessageType.Warning);
 				}
-				else if (AttachedObject._trackedObjects.Contains(Locator.GetPlayerDetector()))
+				else if (AttachedObject.IsTrackingObject(Locator.GetPlayerDetector()))
 				{
-					((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
+					OnLocalEnter(Locator.GetPlayerDetector());
 				}
 			});
 		}
 
 		public override void OnRemoval()
 		{
-			AttachedObject.OnEntry -= OnEntry;
-			AttachedObject.OnExit -= OnExit;
+			AttachedObject.OnEntry -= OnLocalEnter;
+			AttachedObject.OnExit -= OnLocalExit;
 
 			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		}
 
-		private void OnPlayerLeave(PlayerInfo player)
-		{
-			if (Players.Contains(player))
-			{
-				Exit(player);
-			}
-		}
-
-		private void OnEntry(GameObject hitObj)
+		private void OnLocalEnter(GameObject hitObj)
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
@@ -68,11 +60,19 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 		}
 
-		private void OnExit(GameObject hitObj)
+		private void OnLocalExit(GameObject hitObj)
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
 				((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
+			}
+		}
+
+		private void OnPlayerLeave(PlayerInfo player)
+		{
+			if (Players.Contains(player))
+			{
+				Exit(player);
 			}
 		}
 
@@ -100,8 +100,8 @@ namespace QSB.TriggerSync.WorldObjects
 			OnExit(player);
 		}
 
-		protected virtual void OnEnter(PlayerInfo player) { }
+		protected abstract void OnEnter(PlayerInfo player);
 
-		protected virtual void OnExit(PlayerInfo player) { }
+		protected abstract void OnExit(PlayerInfo player);
 	}
 }

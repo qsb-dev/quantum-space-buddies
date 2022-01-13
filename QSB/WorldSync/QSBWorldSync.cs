@@ -1,7 +1,6 @@
 ﻿using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
-using QSB.TriggerSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
@@ -169,7 +168,7 @@ namespace QSB.WorldSync
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,
-					ObjectId = WorldObjects.Count,
+					ObjectId = WorldObjects.Count
 				};
 
 				obj.Init();
