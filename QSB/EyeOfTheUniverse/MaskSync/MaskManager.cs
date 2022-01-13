@@ -1,5 +1,7 @@
 ﻿using QSB.EyeOfTheUniverse.EyeStateSync.Messages;
 using QSB.Messaging;
+using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -25,6 +27,9 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 			GlobalMessenger<float, float>.FireEvent(OWEvents.FlickerOffAndOn, 0.5f, 0.5f);
 			_flickerOutTime = Time.time + 0.5f;
 			_flickering = true;
+
+			// hide all players in shuttle
+			QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x => x.DitheringAnimator.SetVisibleImmediate(false));
 		}
 
 		private void Update()

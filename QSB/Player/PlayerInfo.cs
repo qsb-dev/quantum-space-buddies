@@ -39,6 +39,7 @@ namespace QSB.Player
 		public bool IsReady { get; set; }
 		public bool IsInMoon { get; set; }
 		public bool IsInShrine { get; set; }
+		public bool IsInEyeShuttle { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
 		public DitheringAnimator DitheringAnimator { get; set; }
