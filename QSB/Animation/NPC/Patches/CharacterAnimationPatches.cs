@@ -26,11 +26,17 @@ namespace QSB.Animation.NPC.Patches
 		{
 			if (!WorldObjectManager.AllObjectsReady || ConversationManager.Instance == null)
 			{
-				return false;
+				return true;
 			}
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(__instance._dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
+
+			if (__instance.playerTrackingZone == null)
+			{
+				return true;
+			}
+
 			var qsbObj = __instance.playerTrackingZone.GetWorldObject<QSBCharacterTrigger>(); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
