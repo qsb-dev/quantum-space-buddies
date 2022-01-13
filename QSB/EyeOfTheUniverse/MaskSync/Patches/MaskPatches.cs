@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
-using QSB.Utility;
 
 namespace QSB.EyeOfTheUniverse.MaskSync.Patches
 {
@@ -17,7 +16,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync.Patches
 				return true;
 			}
 
-			MaskManager.Instance.FlickerOutShuttle();
+			MaskManager.FlickerOutShuttle();
 			__instance.enabled = false;
 
 			return false;

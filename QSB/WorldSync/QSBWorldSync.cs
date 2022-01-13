@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -167,7 +168,29 @@ namespace QSB.WorldSync
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,
+					ObjectId = WorldObjects.Count
+				};
+
+				obj.Init();
+				WorldObjects.Add(obj);
+				WorldObjectsToUnityObjects.Add(item, obj);
+			}
+		}
+
+		public static void Init<TWorldObject, TUnityObject>(Func<TUnityObject, OWTriggerVolume> triggerSelector)
+			where TWorldObject : QSBTrigger<TUnityObject>, new()
+			where TUnityObject : MonoBehaviour
+		{
+			var list = GetUnityObjects<TUnityObject>()
+				.Select(x => (triggerSelector(x), x))
+				.Where(x => x.Item1);
+			foreach (var (item, owner) in list)
+			{
+				var obj = new TWorldObject
+				{
+					AttachedObject = item,
 					ObjectId = WorldObjects.Count,
+					TriggerOwner = owner
 				};
 
 				obj.Init();

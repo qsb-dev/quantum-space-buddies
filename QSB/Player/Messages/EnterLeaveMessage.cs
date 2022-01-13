@@ -1,8 +1,4 @@
 ﻿using OWML.Common;
-using QSB.Animation.NPC.WorldObjects;
-using QSB.EyeOfTheUniverse.CosmicInflation;
-using QSB.EyeOfTheUniverse.MaskSync;
-using QSB.EyeOfTheUniverse.VesselSync;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
@@ -66,12 +62,6 @@ namespace QSB.Player.Messages
 				case EnterLeaveType.ExitMoon:
 					player.IsInMoon = false;
 					break;
-				case EnterLeaveType.EnterShrine:
-					player.IsInShrine = true;
-					break;
-				case EnterLeaveType.ExitShrine:
-					player.IsInShrine = false;
-					break;
 				case EnterLeaveType.EnterPlatform:
 					CustomNomaiRemoteCameraPlatform.CustomPlatformList[ObjectId]
 						.OnRemotePlayerEnter(From);
@@ -80,38 +70,11 @@ namespace QSB.Player.Messages
 					CustomNomaiRemoteCameraPlatform.CustomPlatformList[ObjectId]
 						.OnRemotePlayerExit(From);
 					break;
-				case EnterLeaveType.EnterNonNomaiHeadZone:
-					ObjectId.GetWorldObject<QSBCharacterAnimController>().AddPlayerToHeadZone(player);
-					break;
-				case EnterLeaveType.ExitNonNomaiHeadZone:
-					ObjectId.GetWorldObject<QSBCharacterAnimController>().RemovePlayerFromHeadZone(player);
-					break;
-				case EnterLeaveType.EnterNomaiHeadZone:
-					ObjectId.GetWorldObject<QSBSolanumAnimController>().AddPlayerToHeadZone(player);
-					break;
-				case EnterLeaveType.ExitNomaiHeadZone:
-					ObjectId.GetWorldObject<QSBSolanumAnimController>().RemovePlayerFromHeadZone(player);
-					break;
 				case EnterLeaveType.EnterShip:
 					ShipManager.Instance.AddPlayerToShip(player);
 					break;
 				case EnterLeaveType.ExitShip:
 					ShipManager.Instance.RemovePlayerFromShip(player);
-					break;
-				case EnterLeaveType.EnterVesselCage:
-					VesselManager.Instance.Enter(player);
-					break;
-				case EnterLeaveType.ExitVesselCage:
-					VesselManager.Instance.Exit(player);
-					break;
-				case EnterLeaveType.EnterCosmicFog:
-					InflationManager.Instance.Enter(player);
-					break;
-				case EnterLeaveType.EnterMaskZone:
-					MaskManager.Instance.Enter(player);
-					break;
-				case EnterLeaveType.ExitMaskZone:
-					MaskManager.Instance.Exit(player);
 					break;
 				default:
 					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Value}", MessageType.Warning);

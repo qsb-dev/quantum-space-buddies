@@ -3,7 +3,6 @@ using OWML.Common;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.Messages;
 using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
@@ -362,48 +361,6 @@ namespace QSB.QuantumSync.Patches
 			var shrineWorldObject = __instance.GetWorldObject<QSBSocketedQuantumObject>();
 			var isInControl = shrineWorldObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId;
 			return isInControl;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnEntry))]
-		public static bool QuantumShrine_OnEntry(
-			QuantumShrine __instance,
-			GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				__instance._isPlayerInside = true;
-				__instance._fading = true;
-				__instance._exteriorLightController.FadeTo(0f, 1f);
-				new EnterLeaveMessage(EnterLeaveType.EnterShrine).Send();
-			}
-			else if (hitObj.CompareTag("ProbeDetector"))
-			{
-				__instance._isProbeInside = true;
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnExit))]
-		public static bool QuantumShrine_OnExit(
-			QuantumShrine __instance,
-			GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				__instance._isPlayerInside = false;
-				__instance._fading = true;
-				__instance._exteriorLightController.FadeTo(1f, 1f);
-				new EnterLeaveMessage(EnterLeaveType.ExitShrine).Send();
-			}
-			else if (hitObj.CompareTag("ProbeDetector"))
-			{
-				__instance._isProbeInside = false;
-			}
-
-			return false;
 		}
 
 		[HarmonyPrefix]

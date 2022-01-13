@@ -6,7 +6,7 @@ using QSB.ConversationSync;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.Messages;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace QSB.Animation.NPC.Patches
 
 			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(__instance._dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
-			var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>(); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
+			var qsbObj = __instance.playerTrackingZone.GetWorldObject<QSBCharacterTrigger>(); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
 			if (__instance._inConversation)
@@ -48,9 +48,9 @@ namespace QSB.Animation.NPC.Patches
 						: player;
 				}
 			}
-			else if (!__instance.lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // IDEA : maybe this would be more fun if characters looked between players at random times? :P
+			else if (!__instance.lookOnlyWhenTalking && qsbObj.Occupants.Count != 0) // IDEA : maybe this would be more fun if characters looked between players at random times? :P
 			{
-				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
+				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.Occupants, __instance.transform.position);
 			}
 			else if (QSBPlayerManager.PlayerList.Count != 0)
 			{
@@ -65,16 +65,16 @@ namespace QSB.Animation.NPC.Patches
 			if (__instance.lookOnlyWhenTalking)
 			{
 				if (!__instance._inConversation
-					|| qsbObj.GetPlayersInHeadZone().Count == 0
-					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
+					|| qsbObj.Occupants.Count == 0
+					|| !qsbObj.Occupants.Contains(playerToUse))
 				{
 					targetWeight *= 0;
 				}
 			}
 			else
 			{
-				if (qsbObj.GetPlayersInHeadZone().Count == 0
-					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
+				if (qsbObj.Occupants.Count == 0
+					|| !qsbObj.Occupants.Contains(playerToUse))
 				{
 					targetWeight *= 0;
 				}
@@ -86,32 +86,6 @@ namespace QSB.Animation.NPC.Patches
 			__instance._animator.SetLookAtWeight(__instance._currentLookWeight);
 			return false;
 
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
-		public static bool HeadZoneExit(CharacterAnimController __instance, GameObject input)
-		{
-			if (input.CompareTag("PlayerDetector"))
-			{
-				var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>();
-				new EnterLeaveMessage(EnterLeaveType.ExitNonNomaiHeadZone, qsbObj.ObjectId).Send();
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneEntry))]
-		public static bool HeadZoneEntry(CharacterAnimController __instance, GameObject input)
-		{
-			if (input.CompareTag("PlayerDetector"))
-			{
-				var qsbObj = __instance.GetWorldObject<QSBCharacterAnimController>();
-				new EnterLeaveMessage(EnterLeaveType.EnterNonNomaiHeadZone, qsbObj.ObjectId).Send();
-			}
-
-			return false;
 		}
 
 		[HarmonyPrefix]
