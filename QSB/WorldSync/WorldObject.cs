@@ -9,7 +9,7 @@ namespace QSB.WorldSync
 		public int ObjectId { get; init; }
 		public T AttachedObject { get; init; }
 		public string Name => AttachedObject == null ? "<NullObject!>" : AttachedObject.name;
-		public string LogName => $"{QSBPlayerManager.LocalPlayerId}.{ObjectId}:{GetType().Name}";
+		public string LogName => $"{QSBPlayerManager.LocalPlayerId}.{ObjectId}:{GetType().Name} ({Name})";
 
 		public virtual void Init() { }
 		public virtual void OnRemoval() { }
