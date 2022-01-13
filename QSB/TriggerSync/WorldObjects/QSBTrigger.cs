@@ -85,6 +85,7 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 
 			DebugLog.DebugWrite($"{LogName} + {player.PlayerId}");
+			OnEnter(player);
 		}
 
 		public void Exit(PlayerInfo player)
@@ -96,6 +97,11 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 
 			DebugLog.DebugWrite($"{LogName} - {player.PlayerId}");
+			OnExit(player);
 		}
+
+		protected virtual void OnEnter(PlayerInfo player) { }
+
+		protected virtual void OnExit(PlayerInfo player) { }
 	}
 }

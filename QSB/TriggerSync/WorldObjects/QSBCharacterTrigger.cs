@@ -1,4 +1,8 @@
-﻿namespace QSB.TriggerSync.WorldObjects
+﻿using QSB.Animation.NPC.WorldObjects;
+using QSB.Player;
+using QSB.WorldSync;
+
+namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBCharacterTrigger : QSBTrigger<CharacterAnimController>
 	{
@@ -9,11 +13,10 @@
 			AttachedObject.OnExit -= TriggerOwner.OnZoneExit;
 		}
 
-		public override void OnRemoval()
-		{
-			base.OnRemoval();
-			AttachedObject.OnEntry += TriggerOwner.OnZoneEntry;
-			AttachedObject.OnExit += TriggerOwner.OnZoneExit;
-		}
+		protected override void OnEnter(PlayerInfo player)
+			=> TriggerOwner.GetWorldObject<QSBCharacterAnimController>().AddPlayerToHeadZone(player);
+
+		protected override void OnExit(PlayerInfo player)
+			=> TriggerOwner.GetWorldObject<QSBCharacterAnimController>().RemovePlayerFromHeadZone(player);
 	}
 }

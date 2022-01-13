@@ -1,4 +1,8 @@
-﻿namespace QSB.TriggerSync.WorldObjects
+﻿using QSB.Animation.NPC.WorldObjects;
+using QSB.Player;
+using QSB.WorldSync;
+
+namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBSolanumTrigger : QSBTrigger<NomaiConversationManager>
 	{
@@ -9,11 +13,10 @@
 			AttachedObject.OnExit -= TriggerOwner.OnExitWatchVolume;
 		}
 
-		public override void OnRemoval()
-		{
-			base.OnRemoval();
-			AttachedObject.OnEntry += TriggerOwner.OnEnterWatchVolume;
-			AttachedObject.OnExit += TriggerOwner.OnExitWatchVolume;
-		}
+		protected override void OnEnter(PlayerInfo player)
+			=> TriggerOwner.GetWorldObject<QSBSolanumAnimController>().AddPlayerToHeadZone(player);
+
+		protected override void OnExit(PlayerInfo player)
+			=> TriggerOwner.GetWorldObject<QSBSolanumAnimController>().RemovePlayerFromHeadZone(player);
 	}
 }

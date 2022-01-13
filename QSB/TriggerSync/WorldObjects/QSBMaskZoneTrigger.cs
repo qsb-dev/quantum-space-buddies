@@ -1,4 +1,7 @@
-﻿namespace QSB.TriggerSync.WorldObjects
+﻿using QSB.EyeOfTheUniverse.MaskSync;
+using QSB.Player;
+
+namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBMaskZoneTrigger : QSBTrigger<MaskZoneController>
 	{
@@ -9,11 +12,8 @@
 			AttachedObject.OnExit -= TriggerOwner.OnExitMaskZone;
 		}
 
-		public override void OnRemoval()
-		{
-			base.OnRemoval();
-			AttachedObject.OnEntry += TriggerOwner.OnEnterMaskZone;
-			AttachedObject.OnExit += TriggerOwner.OnExitMaskZone;
-		}
+		protected override void OnEnter(PlayerInfo player) => MaskManager.Instance.Enter(player);
+
+		protected override void OnExit(PlayerInfo player) => MaskManager.Instance.Exit(player);
 	}
 }
