@@ -1,6 +1,5 @@
 ﻿using QSB.EyeOfTheUniverse.EyeStateSync.Messages;
 using QSB.Messaging;
-using QSB.Player;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -12,15 +11,12 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 		private static bool _flickering;
 		private static float _flickerOutTime;
 
-		public void Awake() => QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+		public void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
-		private static void OnPlayerLeave(PlayerInfo player)
+		private static void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
 		{
-			if (player == QSBPlayerManager.LocalPlayer)
-			{
-				_flickering = false;
-				_flickerOutTime = 0f;
-			}
+			_flickering = false;
+			_flickerOutTime = 0f;
 		}
 
 		public static void FlickerOutShuttle()
