@@ -5,6 +5,7 @@
         <Product>Quantum Space Buddies</Product>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
         <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
+        <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
@@ -16,7 +17,7 @@
     <PropertyGroup>
         <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
             :: weave qsb
-            "$(OutputPath)\MirrorWeaver" "$(OutputPath)\QSB.dll" "$(GameDir)"
+            "$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver" "$(OutputPath)\QSB.dll" "$(GameDir)"
 
             :: copy output to unity project
             copy /y "$(OutputPath)" "$(UnityAssetsDir)"
@@ -68,7 +69,7 @@
     <ItemGroup>
         <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
         <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj" />
-        <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" />
+        <ProjectReference Include="..\Mirror\Mirror.csproj" />
         <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
         <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
     </ItemGroup>
