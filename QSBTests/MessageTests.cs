@@ -42,8 +42,8 @@ namespace QSBTests
 						constructor.CheckUses(field, Util.UseType.Store);
 					}
 
-					serialize.CheckUses(field, Util.UseType.Load);
-					deserialize.CheckUses(field, Util.UseType.Store);
+					// serialize.CheckUses(field, Util.UseType.Load);
+					// deserialize.CheckUses(field, Util.UseType.Store);
 				}
 			}
 		}
