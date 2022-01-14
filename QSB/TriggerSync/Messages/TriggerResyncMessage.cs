@@ -1,8 +1,8 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
-using QuantumUNET.Transport;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,20 +18,20 @@ namespace QSB.TriggerSync.Messages
 		public TriggerResyncMessage(IEnumerable<PlayerInfo> occupants) =>
 			_playerIds = occupants.Select(x => x.PlayerId).ToArray();
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(_playerIds.Length);
 			_playerIds.ForEach(writer.Write);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			_playerIds = new uint[reader.ReadInt32()];
+			_playerIds = new uint[reader.ReadInt()];
 			for (var i = 0; i < _playerIds.Length; i++)
 			{
-				_playerIds[i] = reader.ReadUInt32();
+				_playerIds[i] = reader.ReadUInt();
 			}
 		}
 
