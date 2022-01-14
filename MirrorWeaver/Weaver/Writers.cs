@@ -276,7 +276,7 @@ namespace Mirror.Weaver
                             continue;
 
                         // todo does this even work?
-                        Log.Error($"write using {method}", klass);
+                        Log.Error($"! write using {method}", klass);
                         worker.Emit(OpCodes.Ldarg_1); // the klass
                         worker.Emit(OpCodes.Ldarg_0); // the writer
                         worker.Emit(OpCodes.Callvirt, method);
@@ -307,6 +307,7 @@ namespace Mirror.Weaver
                 worker.Emit(OpCodes.Ldarg_0);
                 worker.Emit(OpCodes.Ldarg_1);
                 worker.Emit(OpCodes.Ldfld, fieldRef);
+                Log.Error($"! write field {field}", variable);
                 worker.Emit(OpCodes.Call, writeFunc);
             }
 
