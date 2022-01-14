@@ -315,13 +315,19 @@ namespace Mirror.Weaver
                 MethodDefinition ctor = Resolvers.ResolveDefaultPublicCtor(variable);
                 if (ctor == null)
                 {
-                    // Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
-                    // WeavingFailed = true;
-                    // return;
-                    var anyCtor = td.Methods.First(m => m.IsConstructor);
-                    ctor = new MethodDefinition(anyCtor.Name, anyCtor.Attributes, anyCtor.ReturnType);
-                    ctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-                    td.Methods.Add(ctor);
+                    if (td.IsQSBMessageType())
+                    {
+                        var anyCtor = td.Methods.First(m => m.IsConstructor);
+                        ctor = new MethodDefinition(anyCtor.Name, anyCtor.Attributes, anyCtor.ReturnType);
+                        ctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+                        td.Methods.Add(ctor);
+                    }
+                    else
+                    {
+                        Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
+                        WeavingFailed = true;
+                        return;
+                    }
                 }
 
                 MethodReference ctorRef = assembly.MainModule.ImportReference(ctor);
