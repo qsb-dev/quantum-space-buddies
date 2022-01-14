@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Messages
