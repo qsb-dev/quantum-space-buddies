@@ -196,6 +196,9 @@ namespace QSB.Messaging
 	/// </summary>
 	public abstract class QSBMessageRaw : NetworkMessage
 	{
+		public virtual void Serialize(NetworkWriter writer) { }
+		public virtual void Deserialize(NetworkReader reader) { }
+
 		public abstract void OnReceive();
 		public override string ToString() => GetType().Name;
 	}

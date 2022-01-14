@@ -269,7 +269,8 @@ namespace Mirror.Weaver
                 GenerateNullCheck(worker, ref WeavingFailed);
 
             CreateNew(variable, worker, td, ref WeavingFailed);
-            ReadAllFields(variable, worker, ref WeavingFailed);
+            if (!ReadFromDeserialize(td, worker))
+                ReadAllFields(variable, worker, ref WeavingFailed);
 
             worker.Emit(OpCodes.Ldloc_0);
             worker.Emit(OpCodes.Ret);
@@ -317,12 +318,10 @@ namespace Mirror.Weaver
                     // Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
                     // WeavingFailed = true;
                     // return;
-                    var resolvedVariable = variable.Resolve();
-                    var anyCtor = resolvedVariable.Methods.First(m => m.IsConstructor);
+                    var anyCtor = td.Methods.First(m => m.IsConstructor);
                     ctor = new MethodDefinition(anyCtor.Name, anyCtor.Attributes, anyCtor.ReturnType);
-                    var ctorWorker = ctor.Body.GetILProcessor();
-                    ctorWorker.Emit(OpCodes.Ret);
-                    resolvedVariable.Methods.Add(ctor);
+                    ctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+                    td.Methods.Add(ctor);
                 }
 
                 MethodReference ctorRef = assembly.MainModule.ImportReference(ctor);
@@ -330,6 +329,42 @@ namespace Mirror.Weaver
                 worker.Emit(OpCodes.Newobj, ctorRef);
                 worker.Emit(OpCodes.Stloc_0);
             }
+        }
+
+        // try to use Deserialize if this is a message
+        bool ReadFromDeserialize(TypeDefinition klass, ILProcessor worker)
+        {
+            if (!klass.IsDerivedFrom<NetworkMessage>())
+                return false;
+
+            foreach (var method in klass.Methods)
+            {
+                if (method.Name != "Deserialize")
+                    continue;
+
+                if (method.Parameters.Count != 1)
+                    continue;
+
+                if (!method.Parameters[0].ParameterType.Is<NetworkWriter>())
+                    continue;
+
+                if (!method.ReturnType.Is(typeof(void)))
+                    continue;
+
+                if (method.HasGenericParameters)
+                    continue;
+
+                // todo does this even work?
+                Log.Error($"read using {method}", klass);
+                // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
+                var opcode = klass.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;
+                worker.Emit(opcode, 0); // the klass
+                worker.Emit(OpCodes.Ldarg_0); // the reader
+                worker.Emit(OpCodes.Callvirt, method);
+                return true;
+            }
+
+            return false;
         }
 
         void ReadAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)

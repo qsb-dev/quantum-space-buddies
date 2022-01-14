@@ -216,8 +216,9 @@ namespace Mirror.Weaver
             if (!variable.Resolve().IsValueType)
                 WriteNullCheck(worker, ref WeavingFailed);
 
-            if (!WriteAllFields(variable, worker, ref WeavingFailed))
-                return null;
+            if (!WriteFromSerialize(variable.Resolve(), worker))
+                if (!WriteAllFields(variable, worker, ref WeavingFailed))
+                    return null;
 
             worker.Emit(OpCodes.Ret);
             return writerFunc;
@@ -245,6 +246,40 @@ namespace Mirror.Weaver
             worker.Emit(OpCodes.Ldarg_0);
             worker.Emit(OpCodes.Ldc_I4_1);
             worker.Emit(OpCodes.Call, GetWriteFunc(weaverTypes.Import<bool>(), ref WeavingFailed));
+        }
+
+        // try to use Serialize if this is a message
+        bool WriteFromSerialize(TypeDefinition klass, ILProcessor worker)
+        {
+            if (!klass.IsDerivedFrom<NetworkMessage>())
+                return false;
+
+            foreach (var method in klass.Methods)
+            {
+                if (method.Name != "Serialize")
+                    continue;
+
+                if (method.Parameters.Count != 1)
+                    continue;
+
+                if (!method.Parameters[0].ParameterType.Is<NetworkReader>())
+                    continue;
+
+                if (!method.ReturnType.Is(typeof(void)))
+                    continue;
+
+                if (method.HasGenericParameters)
+                    continue;
+
+                // todo does this even work?
+                Log.Error($"write using {method}", klass);
+                worker.Emit(OpCodes.Ldarg_1); // the klass
+                worker.Emit(OpCodes.Ldarg_0); // the writer
+                worker.Emit(OpCodes.Callvirt, method);
+                return true;
+            }
+
+            return false;
         }
 
         // Find all fields in type and write them
