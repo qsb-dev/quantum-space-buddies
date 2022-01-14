@@ -27,9 +27,11 @@ namespace QSB
 			if (QSBCore.IsInMultiplayer && universe)
 			{
 				// So objects have time to be deleted, made, whatever
-				QSBCore.UnityEvents.FireOnNextUpdate(() => WorldObjectManager.Rebuild(newScene));
-
-				QSBWorldSync.Init();
+				QSBCore.UnityEvents.FireOnNextUpdate(() =>
+				{
+					WorldObjectManager.Rebuild(newScene);
+					QSBWorldSync.Init();
+				});
 			}
 
 			OnSceneLoaded?.SafeInvoke(oldScene, newScene, universe);
