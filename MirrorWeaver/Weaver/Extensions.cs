@@ -221,7 +221,10 @@ namespace Mirror.Weaver
             {
                 foreach (FieldDefinition field in typeDefinition.Fields)
                 {
-                    if (field.IsStatic || field.IsPrivate)
+                    if (field.IsStatic)
+                        continue;
+
+                    if (field.HasCustomAttribute<System.Runtime.CompilerServices.CompilerGeneratedAttribute>())
                         continue;
 
                     if (field.IsNotSerialized)

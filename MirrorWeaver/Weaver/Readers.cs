@@ -314,7 +314,7 @@ namespace Mirror.Weaver
                 MethodDefinition ctor = Resolvers.ResolveDefaultPublicCtor(variable);
                 if (ctor == null)
                 {
-                    Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
+                    // Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
                     // WeavingFailed = true;
                     // return;
                     var resolvedVariable = variable.Resolve();
@@ -323,7 +323,6 @@ namespace Mirror.Weaver
                     var ctorWorker = ctor.Body.GetILProcessor();
                     ctorWorker.Emit(OpCodes.Ret);
                     resolvedVariable.Methods.Add(ctor);
-                    Log.Warning("created empty default ctor", variable);
                 }
 
                 MethodReference ctorRef = assembly.MainModule.ImportReference(ctor);
