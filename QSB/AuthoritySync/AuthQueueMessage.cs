@@ -22,13 +22,13 @@ namespace QSB.AuthoritySync
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(NetId.Value);
+			writer.Write(NetId);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			NetId = new QNetworkInstanceId(reader.Read<uint>());
+			NetId = reader.Read<QNetworkInstanceId>();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
