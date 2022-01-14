@@ -236,7 +236,7 @@ namespace Mirror.Weaver
                     }
                     else
                     {
-                        if (field.IsStatic || field.IsPrivate)
+                        if (field.IsStatic || !field.IsPublic)
                             continue;
                     }
 
