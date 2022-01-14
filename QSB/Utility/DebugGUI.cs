@@ -251,6 +251,8 @@ namespace QSB.Utility
 			DrawWorldObjectLabels();
 		}
 
+		public void OnRenderObject() => DrawWorldObjectLines();
+
 		private static void DrawWorldObjectLabels()
 		{
 			if (!QSBCore.ShowDebugLabels)
@@ -265,9 +267,30 @@ namespace QSB.Utility
 					return;
 				}
 
-				if (obj.ShouldDisplayLabel())
+				if (obj.ShouldDisplayDebug())
 				{
 					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
+				}
+			}
+		}
+
+		private static void DrawWorldObjectLines()
+		{
+			if (!QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			{
+				if (obj.ReturnObject() == null)
+				{
+					return;
+				}
+
+				if (obj.ShouldDisplayDebug())
+				{
+					obj.DisplayLines();
 				}
 			}
 		}

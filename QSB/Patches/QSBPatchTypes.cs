@@ -2,9 +2,9 @@
 {
 	public enum QSBPatchTypes
 	{
-		OnClientConnect = 0,
-		OnNonServerClientConnect = 1,
-		OnServerClientConnect = 2,
-		RespawnTime = 3
+		OnClientConnect,
+		OnNonServerClientConnect,
+		OnServerClientConnect,
+		RespawnTime
 	}
 }

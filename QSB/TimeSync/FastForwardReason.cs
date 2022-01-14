@@ -2,7 +2,6 @@
 {
 	public enum FastForwardReason
 	{
-		None,
 		TooFarBehind
 	}
 }

@@ -50,7 +50,7 @@ namespace QSB.Player.TransformSync
 			var player = new PlayerInfo(this);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
 			base.Start();
-			QSBPlayerManager.OnAddPlayer?.Invoke(Player.PlayerId);
+			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
@@ -87,7 +87,7 @@ namespace QSB.Player.TransformSync
 		protected override void OnDestroy()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
-			QSBPlayerManager.OnRemovePlayer?.Invoke(Player.PlayerId);
+			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
 			base.OnDestroy();
 			Player.HudMarker?.Remove();
 			QSBPlayerManager.PlayerList.Remove(Player);
@@ -169,6 +169,12 @@ namespace QSB.Player.TransformSync
 			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
+			// get inactive renderers too
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+				Player.DitheringAnimator._renderers = Player.DitheringAnimator
+					.GetComponentsInChildren<Renderer>(true)
+					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
+					.ToArray());
 			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
 
 			/*

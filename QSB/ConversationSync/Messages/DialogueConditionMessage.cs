@@ -1,22 +1,11 @@
-﻿using Mirror;
+using Mirror;
 using QSB.Messaging;
-using QSB.Player.TransformSync;
 using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages
 {
 	public class DialogueConditionMessage : QSBMessage
 	{
-		static DialogueConditionMessage() => GlobalMessenger<string, bool>.AddListener(OWEvents.DialogueConditionChanged, Handler);
-
-		private static void Handler(string name, bool state)
-		{
-			if (PlayerTransformSync.LocalInstance)
-			{
-				new DialogueConditionMessage(name, state).Send();
-			}
-		}
-
 		private string ConditionName;
 		private bool ConditionState;
 
@@ -47,7 +36,32 @@ namespace QSB.ConversationSync.Messages
 				QSBWorldSync.SetDialogueCondition(ConditionName, ConditionState);
 			}
 
-			DialogueConditionManager.SharedInstance.SetConditionState(ConditionName, ConditionState);
+			var sharedInstance = DialogueConditionManager.SharedInstance;
+
+			var flag = true;
+			if (sharedInstance.ConditionExists(ConditionName))
+			{
+				if (sharedInstance._dictConditions[ConditionName] == ConditionState)
+				{
+					flag = false;
+				}
+
+				sharedInstance._dictConditions[ConditionName] = ConditionState;
+			}
+			else
+			{
+				sharedInstance.AddCondition(ConditionName, ConditionState);
+			}
+
+			if (flag)
+			{
+				GlobalMessenger<string, bool>.FireEvent("DialogueConditionChanged", ConditionName, ConditionState);
+			}
+
+			if (ConditionName == "LAUNCH_CODES_GIVEN")
+			{
+				PlayerData.LearnLaunchCodes();
+			}
 		}
 
 		public override void OnReceiveLocal()

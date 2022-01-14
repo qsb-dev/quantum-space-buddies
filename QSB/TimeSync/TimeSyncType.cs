@@ -2,8 +2,8 @@
 {
 	public enum TimeSyncType
 	{
-		None = 0,
-		Pausing = 1,
-		Fastforwarding = 2
+		None,
+		Pausing,
+		FastForwarding
 	}
 }

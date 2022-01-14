@@ -8,7 +8,6 @@ using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
@@ -60,7 +59,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(SingleInteractionVolume), nameof(SingleInteractionVolume.UpdateInteractVolume))]
-		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance) => throw new NotImplementedException();
+		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance) { }
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(InteractZone), nameof(InteractZone.UpdateInteractVolume))]
@@ -96,7 +95,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnEnterShip))]
-		public static void ShipComponent_OnEnterShip_Stub(object instance) => throw new NotImplementedException();
+		public static void ShipComponent_OnEnterShip_Stub(object instance) { }
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnEnterShip))]
@@ -109,7 +108,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnExitShip))]
-		public static void ShipComponent_OnExitShip_Stub(object instance) => throw new NotImplementedException();
+		public static void ShipComponent_OnExitShip_Stub(object instance) { }
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnExitShip))]

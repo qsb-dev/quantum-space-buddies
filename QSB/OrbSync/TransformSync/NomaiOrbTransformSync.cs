@@ -59,12 +59,14 @@ namespace QSB.OrbSync.TransformSync
 			_attachedBody = AttachedObject.GetAttachedOWRigidbody();
 			SetReferenceTransform(_attachedBody.GetOrigParent());
 
+			/*
 			if (_attachedBody.GetOrigParent() == Locator.GetRootTransform())
 			{
 				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
 				enabled = false;
 				return;
 			}
+			*/
 
 			if (QSBCore.IsHost)
 			{

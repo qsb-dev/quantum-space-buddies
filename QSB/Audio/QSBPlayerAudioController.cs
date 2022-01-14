@@ -45,6 +45,7 @@ namespace QSB.Audio
 			bool randomize)
 		{
 			var go = new GameObject(name);
+			go.SetActive(false);
 			go.transform.parent = parent;
 			go.transform.localPosition = Vector3.zero;
 			go.transform.localScale = Vector3.one;
@@ -65,6 +66,8 @@ namespace QSB.Audio
 			owAudioSource._clipSelectionOnPlay = OWAudioSource.ClipSelectionOnPlay.RANDOM;
 			owAudioSource._track = track;
 			owAudioSource._randomizePlayheadOnAwake = randomize;
+
+			go.SetActive(true);
 
 			return owAudioSource;
 		}

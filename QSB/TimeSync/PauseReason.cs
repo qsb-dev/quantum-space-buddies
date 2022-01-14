@@ -2,7 +2,6 @@
 {
 	public enum PauseReason
 	{
-		None,
 		TooFarAhead,
 		ServerNotStarted,
 		WaitingForAllPlayersToDie,

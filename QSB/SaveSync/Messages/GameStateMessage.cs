@@ -31,6 +31,7 @@ namespace QSB.SaveSync.Messages
 			KnownSignals = gameSave.knownSignals;
 		}
 
+
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
@@ -46,10 +47,10 @@ namespace QSB.SaveSync.Messages
 			}
 
 			writer.Write(KnownSignals.Count);
-			foreach (var (key, value) in KnownSignals)
+			foreach (var (name, discovered) in KnownSignals)
 			{
-				writer.Write(key);
-				writer.Write(value);
+				writer.Write(name);
+				writer.Write(discovered);
 			}
 		}
 

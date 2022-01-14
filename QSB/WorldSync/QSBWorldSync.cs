@@ -1,5 +1,7 @@
 ﻿using OWML.Common;
+using QSB.ConversationSync.Patches;
 using QSB.LogSync;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -10,12 +12,52 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static readonly List<CharacterDialogueTree> OldDialogueTrees = new();
-		public static readonly Dictionary<string, bool> DialogueConditions = new();
-		public static readonly List<FactReveal> ShipLogFacts = new();
+		public static List<CharacterDialogueTree> OldDialogueTrees { get; private set; } = new();
+		public static Dictionary<string, bool> DialogueConditions { get; private set; } = new();
+		public static Dictionary<string, bool> PersistentConditions { get; private set; } = new();
+		public static List<FactReveal> ShipLogFacts { get; private set; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
+
+		public static void Init()
+		{
+			DebugLog.DebugWrite($"Init QSBWorldSync", MessageType.Info);
+
+			OldDialogueTrees.Clear();
+			OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>());
+
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			DebugLog.DebugWrite($"DIALOGUE CONDITIONS :");
+			DialogueConditions = (Dictionary<string, bool>)DialogueConditionManager.SharedInstance._dictConditions;
+			foreach (var item in DialogueConditions)
+			{
+				DebugLog.DebugWrite($"- {item.Key}, {item.Value}");
+			}
+
+			DebugLog.DebugWrite($"PERSISTENT CONDITIONS :");
+			var dictConditions = PlayerData._currentGameSave.dictConditions;
+			var syncedConditions = dictConditions.Where(x => ConversationPatches.PersistentConditionsToSync.Contains(x.Key));
+			PersistentConditions = syncedConditions.ToDictionary(x => x.Key, x => x.Value);
+			foreach (var item in PersistentConditions)
+			{
+				DebugLog.DebugWrite($"- {item.Key}, {item.Value}");
+			}
+		}
+
+		public static void Reset()
+		{
+			DebugLog.DebugWrite($"Reset QSBWorldSync", MessageType.Info);
+
+			OldDialogueTrees.Clear();
+			DialogueConditions.Clear();
+			PersistentConditions.Clear();
+			ShipLogFacts.Clear();
+		}
 
 		public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
 
@@ -126,7 +168,29 @@ namespace QSB.WorldSync
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,
+					ObjectId = WorldObjects.Count
+				};
+
+				obj.Init();
+				WorldObjects.Add(obj);
+				WorldObjectsToUnityObjects.Add(item, obj);
+			}
+		}
+
+		public static void Init<TWorldObject, TUnityObject>(Func<TUnityObject, OWTriggerVolume> triggerSelector)
+			where TWorldObject : QSBTrigger<TUnityObject>, new()
+			where TUnityObject : MonoBehaviour
+		{
+			var list = GetUnityObjects<TUnityObject>()
+				.Select(x => (triggerSelector(x), x))
+				.Where(x => x.Item1);
+			foreach (var (item, owner) in list)
+			{
+				var obj = new TWorldObject
+				{
+					AttachedObject = item,
 					ObjectId = WorldObjects.Count,
+					TriggerOwner = owner
 				};
 
 				obj.Init();
@@ -139,11 +203,22 @@ namespace QSB.WorldSync
 		{
 			if (!QSBCore.IsHost)
 			{
-				DebugLog.ToConsole("Warning - Cannot write to condition dict when not server!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Cannot write to dialogue condition dict when not server!", MessageType.Warning);
 				return;
 			}
 
 			DialogueConditions[name] = state;
+		}
+
+		public static void SetPersistentCondition(string name, bool state)
+		{
+			if (!QSBCore.IsHost)
+			{
+				DebugLog.ToConsole("Warning - Cannot write to persistent condition dict when not server!", MessageType.Warning);
+				return;
+			}
+
+			PersistentConditions[name] = state;
 		}
 
 		public static void AddFactReveal(string id, bool saveGame)

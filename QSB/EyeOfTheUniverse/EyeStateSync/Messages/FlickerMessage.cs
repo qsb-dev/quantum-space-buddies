@@ -9,10 +9,18 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 {
 	internal class FlickerMessage : QSBMessage
 	{
+		public static bool IgnoreNextMessage;
+
 		static FlickerMessage() => GlobalMessenger<float, float>.AddListener(OWEvents.FlickerOffAndOn, Handler);
 
 		private static void Handler(float offDuration, float onDuration)
 		{
+			if (IgnoreNextMessage)
+			{
+				IgnoreNextMessage = false;
+				return;
+			}
+
 			if (PlayerTransformSync.LocalInstance)
 			{
 				new FlickerMessage(offDuration, onDuration).Send();

@@ -174,6 +174,7 @@ namespace QSB
 			if (QSBSceneManager.IsInUniverse)
 			{
 				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
+				QSBWorldSync.Init();
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -205,9 +206,7 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.DialogueConditions.Clear();
-			QSBWorldSync.OldDialogueTrees.Clear();
-			QSBWorldSync.ShipLogFacts.Clear();
+			QSBWorldSync.Reset();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -236,10 +235,10 @@ namespace QSB
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			// revert authority from ship
-			if (ShipTransformSync.LocalInstance)
+			if (ShipTransformSync.LocalInstance != null)
 			{
 				var identity = ShipTransformSync.LocalInstance.NetIdentity;
-				if (identity.ClientAuthorityOwner == conn)
+				if (identity != null && identity.ClientAuthorityOwner == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
@@ -248,6 +247,12 @@ namespace QSB
 			// stop dragging for the orbs this player was dragging
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
+				if (qsbOrb.TransformSync == null)
+				{
+					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
+					continue;
+				}
+
 				if (!qsbOrb.TransformSync.enabled)
 				{
 					continue;
