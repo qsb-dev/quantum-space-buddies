@@ -68,7 +68,10 @@ namespace MirrorWeaver
 
 			var log = new ConsoleLogger();
 			var weaver = new Weaver(log);
-			weaver.Weave(assembly, resolver, out _);
+			if (!weaver.Weave(assembly, resolver, out _))
+			{
+				throw new Exception("weaving failed");
+			}
 
 			assembly.Write(new WriterParameters { WriteSymbols = true });
 		}
