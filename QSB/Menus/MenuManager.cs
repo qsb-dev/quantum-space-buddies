@@ -5,6 +5,7 @@ using QSB.SaveSync.Messages;
 using QSB.Utility;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -151,6 +152,7 @@ namespace QSB.Menus
 		{
 			IPPopup = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
+			IPPopup.OnPopupValidate += Validate;
 
 			InfoPopup = MenuApi.MakeInfoPopup("", "");
 			InfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -306,13 +308,16 @@ namespace QSB.Menus
 			DisconnectPopup._labelText.text = popupText;
 		}
 
+		private bool Validate()
+		{
+			var inputText = ((PopupInputMenu)IPPopup).GetInputText();
+			var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
+			return inputText == "localhost" || regex.Match(inputText).Success;
+		}
+
 		private void Connect()
 		{
-			var address = string.Concat(((PopupInputMenu)IPPopup).GetInputText().Where(c => !char.IsWhiteSpace(c)));
-			if (address.Length == 0)
-			{
-				address = QSBCore.DefaultServerIP;
-			}
+			var address = ((PopupInputMenu)IPPopup).GetInputText();
 
 			QSBNetworkManager.Instance.networkAddress = address;
 			QSBNetworkManager.Instance.StartClient();
