@@ -6,6 +6,8 @@ using Mono.Cecil.Cil;
 // Unity.Mirror.CodeGen assembly definition file in the Editor, and add CecilX.Rocks.
 // otherwise we get an unknown import exception.
 using Mono.Cecil.Rocks;
+using Mono.Collections.Generic;
+using System.Linq;
 
 namespace Mirror.Weaver
 {
@@ -313,8 +315,15 @@ namespace Mirror.Weaver
                 if (ctor == null)
                 {
                     Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
-                    WeavingFailed = true;
-                    return;
+                    // WeavingFailed = true;
+                    // return;
+                    var resolvedVariable = variable.Resolve();
+                    var anyCtor = resolvedVariable.Methods.First(m => m.IsConstructor);
+                    ctor = new MethodDefinition(anyCtor.Name, anyCtor.Attributes, anyCtor.ReturnType);
+                    var ctorWorker = ctor.Body.GetILProcessor();
+                    ctorWorker.Emit(OpCodes.Ret);
+                    resolvedVariable.Methods.Add(ctor);
+                    Log.Warning("created empty default ctor", variable);
                 }
 
                 MethodReference ctorRef = assembly.MainModule.ImportReference(ctor);
