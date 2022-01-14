@@ -2,6 +2,7 @@
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
 using QSB.EyeOfTheUniverse.GalaxyMap;
+using QSB.EyeOfTheUniverse.MaskSync;
 using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
@@ -109,6 +110,7 @@ namespace QSB
 			gameObject.AddComponent<StatueManager>();
 			gameObject.AddComponent<GalaxyMapManager>();
 			gameObject.AddComponent<DebugCameraSettings>();
+			gameObject.AddComponent<MaskManager>();
 
 			// WorldObject managers
 			foreach (var type in typeof(WorldObjectManager).GetDerivedTypes())

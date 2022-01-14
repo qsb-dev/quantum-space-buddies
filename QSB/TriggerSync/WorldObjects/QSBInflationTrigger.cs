@@ -1,0 +1,98 @@
+﻿using QSB.Player;
+using QSB.Utility;
+using UnityEngine;
+
+namespace QSB.TriggerSync.WorldObjects
+{
+	public class QSBInflationTrigger : QSBTrigger<CosmicInflationController>
+	{
+		protected override string CompareTag => "PlayerCameraDetector";
+
+		public override void Init()
+		{
+			base.Init();
+			AttachedObject.OnEntry -= TriggerOwner.OnEnterFogSphere;
+		}
+
+		protected override void OnEnter(PlayerInfo player)
+		{
+			if (TriggerOwner._state != CosmicInflationController.State.ReadyToCollapse)
+			{
+				return;
+			}
+
+			if (player == QSBPlayerManager.LocalPlayer)
+			{
+				AttachedObject.OnEntry -= OnEnterEvent;
+
+				AttachedObject.SetTriggerActivation(false);
+				TriggerOwner._probeDestroyTrigger.SetTriggerActivation(false);
+
+				DebugLog.DebugWrite("disable input, wait for other players to enter");
+
+				var repelVolume = (WhiteHoleFluidVolume)TriggerOwner._repelVolume;
+				repelVolume._flowSpeed = -repelVolume._flowSpeed;
+				repelVolume._massiveFlowSpeed = -repelVolume._massiveFlowSpeed;
+				repelVolume.SetVolumeActivation(true);
+				QSBPlayerManager.HideAllPlayers();
+
+				ReticleController.Hide();
+				Locator.GetFlashlight().TurnOff(false);
+				Locator.GetPromptManager().SetPromptsVisible(false);
+				OWInput.ChangeInputMode(InputMode.None);
+			}
+			else
+			{
+				DebugLog.DebugWrite($"fade out player {player.PlayerId}");
+				player.DitheringAnimator.SetVisible(false, 3);
+			}
+
+			if (Occupants.Count == QSBPlayerManager.PlayerList.Count)
+			{
+				StartCollapse();
+			}
+		}
+
+		protected override void OnExit(PlayerInfo player)
+		{
+			// wait 1 frame for player to be removed
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			{
+				if (QSBCore.IsInMultiplayer && Occupants.Count == QSBPlayerManager.PlayerList.Count)
+				{
+					StartCollapse();
+				}
+			});
+		}
+
+		private void StartCollapse()
+		{
+			DebugLog.DebugWrite("fade in everyone, fog sphere collapse");
+
+			var repelVolume = (WhiteHoleFluidVolume)TriggerOwner._repelVolume;
+			repelVolume.SetVolumeActivation(false);
+			QSBPlayerManager.ShowAllPlayers();
+
+			TriggerOwner._state = CosmicInflationController.State.Collapsing;
+			TriggerOwner._stateChangeTime = Time.time;
+			TriggerOwner._collapseStartPos = TriggerOwner._possibilitySphereRoot.localPosition;
+			AttachedObject.SetTriggerActivation(false);
+			TriggerOwner._inflationLight.FadeTo(1f, 1f);
+			TriggerOwner._possibilitySphereController.OnCollapse();
+			if (TriggerOwner._campsiteController.GetUseAltPostCollapseSocket())
+			{
+				TriggerOwner._playerPostCollapseSocket = TriggerOwner._altPlayerPostCollapseSocket;
+				TriggerOwner._altTravelerToHidePostCollapse.SetActive(false);
+			}
+
+			Locator.GetPlayerBody().SetPosition(TriggerOwner._playerPostCollapseSocket.position);
+			Locator.GetPlayerBody().SetRotation(TriggerOwner._playerPostCollapseSocket.rotation);
+			Locator.GetPlayerBody().SetVelocity(-TriggerOwner._playerPostCollapseSocket.forward);
+			Locator.GetPlayerTransform().GetRequiredComponent<PlayerLockOnTargeting>().LockOn(TriggerOwner._possibilitySphereRoot, 2f);
+			foreach (var particles in TriggerOwner._smokeSphereParticles)
+			{
+				particles.Stop();
+			}
+		}
+	}
+}

@@ -7,6 +7,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.ConversationSync.Patches
 {
@@ -14,6 +15,23 @@ namespace QSB.ConversationSync.Patches
 	public class ConversationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+		public static readonly string[] PersistentConditionsToSync =
+		{
+			"MET_SOLANUM",
+			"MET_PRISONER",
+			"TALKED_TO_GABBRO",
+			"GABBRO_MERGE_TRIGGERED",
+			"KNOWS_MEDITATION"
+		};
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DialogueConditionManager), nameof(DialogueConditionManager.SetConditionState))]
+		public static bool SetConditionState(string conditionName, bool conditionState)
+		{
+			new DialogueConditionMessage(conditionName, conditionState).Send();
+			return true;
+		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.StartConversation))]
@@ -143,6 +161,16 @@ namespace QSB.ConversationSync.Patches
 
 			__result = true;
 			return false;
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(GameSave), nameof(GameSave.SetPersistentCondition))]
+		public static void SetPersistentCondition(string condition, bool state)
+		{
+			if (PersistentConditionsToSync.Contains(condition))
+			{
+				new PersistentConditionMessage(condition, state).Send();
+			}
 		}
 	}
 }

@@ -16,6 +16,8 @@ using QSB.Tools.TranslatorTool.TranslationSync.Messages;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.TornadoSync.Messages;
 using QSB.TornadoSync.WorldObjects;
+using QSB.TriggerSync.Messages;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -126,6 +128,9 @@ namespace QSB.Player.Messages
 
 			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
 				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState) { To = From }));
+
+			QSBWorldSync.GetWorldObjects<IQSBTrigger>().ForEach(trigger
+				=> trigger.SendMessage(new TriggerResyncMessage(trigger.Occupants) { To = From }));
 		}
 
 		/// <summary>

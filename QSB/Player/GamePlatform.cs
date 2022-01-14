@@ -2,7 +2,6 @@
 {
 	public enum GamePlatform
 	{
-		None,
 		Steam,
 		Epic
 	}

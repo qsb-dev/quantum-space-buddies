@@ -56,9 +56,9 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 		public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
-		private void OnPlayerLeave(uint player)
+		private void OnPlayerLeave(PlayerInfo player)
 		{
-			if (HoldingPlayer != player)
+			if (HoldingPlayer != player.PlayerId)
 			{
 				return;
 			}

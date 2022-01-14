@@ -40,13 +40,14 @@ namespace QSB.QuantumSync
 			QSBWorldSync.Init<QSBQuantumShuffleObject, QuantumShuffleObject>();
 			QSBWorldSync.Init<QSBQuantumMoon, QuantumMoon>();
 			QSBWorldSync.Init<QSBEyeProxyQuantumMoon, EyeProxyQuantumMoon>();
+			QSBWorldSync.Init<QSBQuantumSkeletonTower, QuantumSkeletonTower>();
 			if (scene == OWScene.SolarSystem)
 			{
 				Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
 			}
 		}
 
-		public void PlayerLeave(uint playerId)
+		public void PlayerLeave(PlayerInfo player)
 		{
 			if (!QSBCore.IsHost)
 			{
@@ -55,7 +56,7 @@ namespace QSB.QuantumSync
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 			{
-				if (obj.ControllingPlayer == playerId)
+				if (obj.ControllingPlayer == player.PlayerId)
 				{
 					obj.SendMessage(new QuantumAuthorityMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u));
 				}
@@ -64,7 +65,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug || !AllObjectsReady)
+			if (!QSBCore.ShowLinesInDebug)
 			{
 				return;
 			}
@@ -72,25 +73,6 @@ namespace QSB.QuantumSync
 			if (Shrine != null)
 			{
 				Popcron.Gizmos.Sphere(Shrine.transform.position, 10f, Color.magenta);
-			}
-
-			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
-			{
-				if (quantumObject.ControllingPlayer == 0)
-				{
-					if (quantumObject.IsEnabled)
-					{
-						Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
-							QSBPlayerManager.LocalPlayer.Body.transform.position,
-							Color.magenta * 0.25f);
-					}
-
-					continue;
-				}
-
-				Popcron.Gizmos.Line(quantumObject.ReturnObject().transform.position,
-					QSBPlayerManager.GetPlayer(quantumObject.ControllingPlayer).Body.transform.position,
-					Color.magenta);
 			}
 		}
 

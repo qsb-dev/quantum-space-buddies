@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -66,10 +67,10 @@ namespace QSB.WorldSync
 				return;
 			}
 
-			if (QSBPlayerManager.LocalPlayerId == uint.MaxValue)
+			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
-				QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayerId != uint.MaxValue, () => Rebuild(scene));
+				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => Rebuild(scene));
 				return;
 			}
 

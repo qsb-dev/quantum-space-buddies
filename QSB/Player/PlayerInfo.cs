@@ -39,6 +39,7 @@ namespace QSB.Player
 		public bool IsReady { get; set; }
 		public bool IsInMoon { get; set; }
 		public bool IsInShrine { get; set; }
+		public bool IsInEyeShuttle { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
 		public DitheringAnimator DitheringAnimator { get; set; }
@@ -97,7 +98,7 @@ namespace QSB.Player
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight => CameraBody?.GetComponentInChildren<QSBFlashlight>();
+		public QSBFlashlight FlashLight => CameraBody == null ? null : CameraBody.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);

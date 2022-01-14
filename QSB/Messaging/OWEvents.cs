@@ -19,7 +19,6 @@
 		public const string EquipTranslator = nameof(EquipTranslator);
 		public const string UnequipTranslator = nameof(UnequipTranslator);
 		public const string WakeUp = nameof(WakeUp);
-		public const string DialogueConditionChanged = nameof(DialogueConditionChanged);
 		public const string PlayerEnterQuantumMoon = nameof(PlayerEnterQuantumMoon);
 		public const string PlayerExitQuantumMoon = nameof(PlayerExitQuantumMoon);
 		public const string EnterRoastingMode = nameof(EnterRoastingMode);

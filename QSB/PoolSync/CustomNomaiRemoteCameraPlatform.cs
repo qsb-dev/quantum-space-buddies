@@ -673,14 +673,13 @@ namespace QSB.PoolSync
 
 		public bool IsPlatformActive() => _platformActive;
 
-		public void OnRemovePlayer(uint id)
+		public void OnRemovePlayer(PlayerInfo player)
 		{
-			if (id == QSBPlayerManager.LocalPlayerId)
+			if (player == QSBPlayerManager.LocalPlayer)
 			{
 				return;
 			}
 
-			var player = QSBPlayerManager.GetPlayer(id);
 			if (!_playerToHologram.Any(x => x.Key == player))
 			{
 				return;
@@ -689,7 +688,7 @@ namespace QSB.PoolSync
 			var hologram = _playerToHologram.First(x => x.Key == player).Value;
 			if (hologram.activeSelf)
 			{
-				OnRemotePlayerExit(id);
+				OnRemotePlayerExit(player.PlayerId);
 			}
 
 			_playerToHologram.Remove(player);

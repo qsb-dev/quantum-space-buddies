@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Animation.NPC.WorldObjects;
-using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.Messages;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +24,7 @@ namespace QSB.Animation.NPC.Patches
 			}
 
 			var qsbObj = __instance.GetWorldObject<QSBSolanumAnimController>();
-			var playersInHeadZone = qsbObj.GetPlayersInHeadZone();
+			var playersInHeadZone = qsbObj.Trigger.Occupants;
 
 			var targetCamera = playersInHeadZone == null || playersInHeadZone.Count == 0
 				? __instance._playerCameraTransform
@@ -42,37 +40,11 @@ namespace QSB.Animation.NPC.Patches
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnEnterWatchVolume))]
-		public static bool EnterWatchZone(NomaiConversationManager __instance, GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
-				new EnterLeaveMessage(EnterLeaveType.EnterNomaiHeadZone, qsbObj.ObjectId).Send();
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.OnExitWatchVolume))]
-		public static bool ExitWatchZone(NomaiConversationManager __instance, GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
-				new EnterLeaveMessage(EnterLeaveType.ExitNomaiHeadZone, qsbObj.ObjectId).Send();
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.Update))]
 		public static bool ReplacementUpdate(NomaiConversationManager __instance)
 		{
 			var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
-			__instance._playerInWatchVolume = qsbObj.GetPlayersInHeadZone().Any();
+			__instance._playerInWatchVolume = qsbObj.Trigger.Occupants.Any();
 
 			if (!__instance._initialized)
 			{

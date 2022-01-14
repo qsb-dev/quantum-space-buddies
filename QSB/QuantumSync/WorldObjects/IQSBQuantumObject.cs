@@ -6,9 +6,10 @@ namespace QSB.QuantumSync.WorldObjects
 	public interface IQSBQuantumObject : IWorldObject
 	{
 		uint ControllingPlayer { get; set; }
-		bool IsEnabled { get; set; }
+		bool IsEnabled { get; }
 
-		List<ShapeVisibilityTracker> GetVisibilityTrackers();
 		List<Shape> GetAttachedShapes();
+
+		void SetIsQuantum(bool isQuantum);
 	}
 }

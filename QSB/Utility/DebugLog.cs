@@ -37,6 +37,6 @@ namespace QSB.Utility
 		private static string GetCallingType(StackTrace frame) =>
 			frame.GetFrames()!
 				.Select(x => x.GetMethod().DeclaringType!.Name)
-				.First(x => x == nameof(DebugLog));
+				.First(x => x != nameof(DebugLog));
 	}
 }

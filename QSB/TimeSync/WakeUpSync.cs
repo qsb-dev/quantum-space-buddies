@@ -192,7 +192,7 @@ namespace QSB.TimeSync
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
-			TimeSyncUI.Start(TimeSyncType.Fastforwarding, FastForwardReason.TooFarBehind);
+			TimeSyncUI.Start(TimeSyncType.FastForwarding, FastForwardReason.TooFarBehind);
 		}
 
 		private void StartPausing(PauseReason reason)

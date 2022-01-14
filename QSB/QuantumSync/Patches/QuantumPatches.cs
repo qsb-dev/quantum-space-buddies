@@ -3,7 +3,6 @@ using OWML.Common;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Player.Messages;
 using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
@@ -26,6 +25,16 @@ namespace QSB.QuantumSync.Patches
 			var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
 			__result = playersEntangled.Count() != 0 && __instance.IsIlluminated();
 			return false;
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.SetIsQuantum))]
+		public static void QuantumObject_SetIsQuantum(QuantumObject __instance)
+		{
+			if (WorldObjectManager.AllObjectsReady)
+			{
+				__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
+			}
 		}
 
 		[HarmonyPrefix]
@@ -355,48 +364,6 @@ namespace QSB.QuantumSync.Patches
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnEntry))]
-		public static bool QuantumShrine_OnEntry(
-			QuantumShrine __instance,
-			GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				__instance._isPlayerInside = true;
-				__instance._fading = true;
-				__instance._exteriorLightController.FadeTo(0f, 1f);
-				new EnterLeaveMessage(EnterLeaveType.EnterShrine).Send();
-			}
-			else if (hitObj.CompareTag("ProbeDetector"))
-			{
-				__instance._isProbeInside = true;
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.OnExit))]
-		public static bool QuantumShrine_OnExit(
-			QuantumShrine __instance,
-			GameObject hitObj)
-		{
-			if (hitObj.CompareTag("PlayerDetector"))
-			{
-				__instance._isPlayerInside = false;
-				__instance._fading = true;
-				__instance._exteriorLightController.FadeTo(1f, 1f);
-				new EnterLeaveMessage(EnterLeaveType.ExitShrine).Send();
-			}
-			else if (hitObj.CompareTag("ProbeDetector"))
-			{
-				__instance._isProbeInside = false;
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.CheckPlayerFogProximity))]
 		public static bool QuantumMoon_CheckPlayerFogProximity(QuantumMoon __instance)
 		{
@@ -462,5 +429,50 @@ namespace QSB.QuantumSync.Patches
 			__instance._shipLandingCamFogBubble.SetFogAlpha(fogAlpha);
 			return false;
 		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(QuantumSkeletonTower), nameof(QuantumSkeletonTower.ChangeQuantumState))]
+		public static bool QuantumSkeletonTower_ChangeQuantumState(QuantumSkeletonTower __instance, ref bool __result)
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+
+			var qsbQuantumSkeletonTower = __instance.GetWorldObject<QSBQuantumSkeletonTower>();
+			if (qsbQuantumSkeletonTower.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			{
+				return false;
+			}
+
+			if (__instance._waitForPlayerToLookAtTower)
+			{
+				__result = false;
+				return false;
+			}
+
+			if (__instance._index < __instance._towerSkeletons.Length)
+			{
+				for (var i = 0; i < __instance._pointingSkeletons.Length; i++)
+				{
+					if (__instance._pointingSkeletons[i].gameObject.activeInHierarchy &&
+					    (!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
+					{
+						__instance._pointingSkeletons[i].gameObject.SetActive(false);
+
+						__instance._towerSkeletons[__instance._index].SetActive(true);
+						__instance._index++;
+						__instance._waitForPlayerToLookAtTower = true;
+						qsbQuantumSkeletonTower.SendMessage(new MoveSkeletonMessage(i));
+						__result = true;
+						return false;
+					}
+				}
+			}
+
+			__result = false;
+			return false;
+		}
+
 	}
 }
