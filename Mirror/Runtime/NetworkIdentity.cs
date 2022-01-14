@@ -162,11 +162,6 @@ namespace Mirror
         // get all NetworkBehaviour components
         public NetworkBehaviour[] NetworkBehaviours { get; private set; }
 
-#pragma warning disable 618
-        [Obsolete("Network Visibility has been deprecated. Use Global Interest Management instead.")]
-        public NetworkVisibility visibility { get; private set; }
-#pragma warning restore 618
-
         // current visibility
         //
         // Default = use interest management
@@ -256,7 +251,7 @@ namespace Mirror
 
         // RuntimeInitializeOnLoadMethod -> fast playmode without domain reload
         // internal so it can be called from NetworkServer & NetworkClient
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         internal static void ResetStatics()
         {
             nextNetworkId = 1;
@@ -326,11 +321,6 @@ namespace Mirror
             // no one can overwrite it because NetworkIdentity is sealed.
             // => doing it here is the fastest and easiest solution.
             InitializeNetworkBehaviours();
-
-            // initialize visibility component. only call GetComponent once.
-#pragma warning disable 618
-            visibility = GetComponent<NetworkVisibility>();
-#pragma warning restore 618
 
             if (hasSpawned)
             {
@@ -843,13 +833,6 @@ namespace Mirror
                 }
             }
         }
-
-        // interest management /////////////////////////////////////////////////
-        // obsoletes to still support ProximityChecker while transitioning to
-        // global Interest Management
-        // Deprecated 2021-02-17
-        [Obsolete("Use NetworkServer.RebuildObservers(identity, initialize) instead.")]
-        public void RebuildObservers(bool initialize) => NetworkServer.RebuildObservers(this, initialize);
 
         // vis2k: readstring bug prevention: https://github.com/vis2k/Mirror/issues/2617
         // -> OnSerialize writes length,componentData,length,componentData,...

@@ -117,14 +117,14 @@ namespace Mirror
             {
                 RegisterHandler<ObjectDestroyMessage>(OnHostClientObjectDestroy);
                 RegisterHandler<ObjectHideMessage>(OnHostClientObjectHide);
-                RegisterHandler<NetworkPongMessage>(msg => {}, false);
+                RegisterHandler<NetworkPongMessage>(_ => {}, false);
                 RegisterHandler<SpawnMessage>(OnHostClientSpawn);
                 // host mode doesn't need spawning
-                RegisterHandler<ObjectSpawnStartedMessage>(msg => {});
+                RegisterHandler<ObjectSpawnStartedMessage>(_ => {});
                 // host mode doesn't need spawning
-                RegisterHandler<ObjectSpawnFinishedMessage>(msg => {});
+                RegisterHandler<ObjectSpawnFinishedMessage>(_ => {});
                 // host mode doesn't need state updates
-                RegisterHandler<EntityStateMessage>(msg => {});
+                RegisterHandler<EntityStateMessage>(_ => {});
             }
             else
             {
@@ -1198,12 +1198,7 @@ namespace Mirror
             if (spawned.TryGetValue(message.netId, out NetworkIdentity localObject) &&
                 localObject != null)
             {
-                // obsolete legacy system support (for now)
-#pragma warning disable 618
-                if (localObject.visibility != null)
-                    localObject.visibility.OnSetHostVisibility(false);
-#pragma warning restore 618
-                else if (aoi != null)
+                if (aoi != null)
                     aoi.SetHostVisibility(localObject, false);
             }
         }
@@ -1224,12 +1219,7 @@ namespace Mirror
                 localObject.NotifyAuthority();
                 localObject.OnStartClient();
 
-                // obsolete legacy system support (for now)
-#pragma warning disable 618
-                if (localObject.visibility != null)
-                    localObject.visibility.OnSetHostVisibility(true);
-#pragma warning restore 618
-                else if (aoi != null)
+                if (aoi != null)
                     aoi.SetHostVisibility(localObject, true);
 
                 CheckForLocalPlayer(localObject);
@@ -1428,7 +1418,7 @@ namespace Mirror
 
         /// <summary>Shutdown the client.</summary>
         // RuntimeInitializeOnLoadMethod -> fast playmode without domain reload
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Shutdown()
         {
             //Debug.Log("Shutting down client.");
