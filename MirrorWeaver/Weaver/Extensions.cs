@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
-using QSB.Messaging;
 
 namespace Mirror.Weaver
 {
@@ -209,8 +208,21 @@ namespace Mirror.Weaver
             return null;
         }
 
-        public static bool IsQSBMessageType(this TypeDefinition typeDefinition) =>
-            typeDefinition.IsDerivedFrom<QSBMessage>() || typeDefinition.IsDerivedFrom<QSBMessageRaw>();
+        public static bool IsQSBMessageType(this TypeDefinition td)
+        {
+            if (!td.IsClass) return false;
+            while (true)
+            {
+                var parent = td.BaseType;
+                if (parent == null) return false;
+
+                if (parent.FullName is "QSB.Messaging.QSBMessage" or "QSB.Messaging.QSBMessageRaw")
+                    return true;
+
+                if (!parent.CanBeResolved()) return false;
+                td = parent.Resolve();
+            }
+        }
 
         // Finds public fields in type and base type
         public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeReference variable)
