@@ -41,7 +41,7 @@ namespace Mirror
         }
 
         internal static void OnSend<T>(T message, int channel, int bytes, int count)
-            where T : NetworkMessage
+            where T : struct, NetworkMessage
         {
             if (count > 0 && OutMessageEvent != null)
             {
@@ -51,7 +51,7 @@ namespace Mirror
         }
 
         internal static void OnReceive<T>(T message, int channel, int bytes)
-            where T : NetworkMessage
+            where T : struct, NetworkMessage
         {
             if (InMessageEvent != null)
             {

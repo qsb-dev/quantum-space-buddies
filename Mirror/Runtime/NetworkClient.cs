@@ -424,7 +424,7 @@ namespace Mirror
         // send ////////////////////////////////////////////////////////////////
         /// <summary>Send a NetworkMessage to the server over the given channel.</summary>
         public static void Send<T>(T message, int channelId = Channels.Reliable)
-            where T : NetworkMessage
+            where T : struct, NetworkMessage
         {
             if (connection != null)
             {
@@ -452,16 +452,6 @@ namespace Mirror
             // it's not needed on client. it's always NetworkClient.connection.
             void HandlerWrapped(NetworkConnection _, T value) => handler(value);
             handlers[msgType] = MessagePacking.WrapHandler((Action<NetworkConnection, T>) HandlerWrapped, requireAuthentication);
-        }
-
-        public static void RegisterHandlerOnce<T>(Action<T> handler)
-            where T : NetworkMessage
-        {
-            var msgType = MessagePacking.GetId<T>();
-            if (!handlers.ContainsKey(msgType))
-            {
-                handlers[msgType] = MessagePacking.WrapHandler((NetworkConnection _, T msg) => handler(msg), true);
-            }
         }
 
         /// <summary>Replace a handler for a particular message type. Should require authentication by default.</summary>

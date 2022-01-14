@@ -6,8 +6,6 @@ using Mono.Cecil.Cil;
 // Unity.Mirror.CodeGen assembly definition file in the Editor, and add CecilX.Rocks.
 // otherwise we get an unknown import exception.
 using Mono.Cecil.Rocks;
-using Mono.Collections.Generic;
-using System.Linq;
 
 namespace Mirror.Weaver
 {
@@ -269,8 +267,7 @@ namespace Mirror.Weaver
                 GenerateNullCheck(worker, ref WeavingFailed);
 
             CreateNew(variable, worker, td, ref WeavingFailed);
-            if (!ReadFromDeserialize(td, worker))
-                ReadAllFields(variable, worker, ref WeavingFailed);
+            ReadAllFields(variable, worker, ref WeavingFailed);
 
             worker.Emit(OpCodes.Ldloc_0);
             worker.Emit(OpCodes.Ret);
@@ -315,19 +312,9 @@ namespace Mirror.Weaver
                 MethodDefinition ctor = Resolvers.ResolveDefaultPublicCtor(variable);
                 if (ctor == null)
                 {
-                    if (td.IsQSBMessageType())
-                    {
-                        var anyCtor = td.Methods.First(m => m.IsConstructor);
-                        ctor = new MethodDefinition(anyCtor.Name, anyCtor.Attributes, anyCtor.ReturnType);
-                        ctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-                        td.Methods.Add(ctor);
-                    }
-                    else
-                    {
-                        Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
-                        WeavingFailed = true;
-                        return;
-                    }
+                    Log.Error($"{variable.Name} can't be deserialized because it has no default constructor. Don't use {variable.Name} in [SyncVar]s, Rpcs, Cmds, etc.", variable);
+                    WeavingFailed = true;
+                    return;
                 }
 
                 MethodReference ctorRef = assembly.MainModule.ImportReference(ctor);
@@ -335,52 +322,6 @@ namespace Mirror.Weaver
                 worker.Emit(OpCodes.Newobj, ctorRef);
                 worker.Emit(OpCodes.Stloc_0);
             }
-        }
-
-        // try to use Deserialize if this is a message
-        bool ReadFromDeserialize(TypeDefinition klass, ILProcessor worker)
-        {
-            if (!klass.IsQSBMessageType())
-                return false;
-
-            var toSearch = klass;
-            while (toSearch != null)
-            {
-                if (toSearch.HasMethods)
-                {
-                    foreach (var method in toSearch.Methods)
-                    {
-                        if (method.Name != "Deserialize")
-                            continue;
-
-                        if (method.Parameters.Count != 1)
-                            continue;
-
-                        if (!method.Parameters[0].ParameterType.Is<NetworkReader>())
-                            continue;
-
-                        if (!method.ReturnType.Is(typeof(void)))
-                            continue;
-
-                        if (method.HasGenericParameters)
-                            continue;
-
-                        // todo does this even work?
-                        // Log.Error($"! read using {method}", klass);
-                        // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
-                        var opcode = klass.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;
-                        worker.Emit(opcode, 0); // the klass
-                        worker.Emit(OpCodes.Ldarg_0); // the reader
-                        worker.Emit(OpCodes.Callvirt, method);
-                        return true;
-                    }
-                }
-
-                // Could not find the method in this class, try the parent
-                toSearch = toSearch.BaseType?.Resolve();
-            }
-
-            return false;
         }
 
         void ReadAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)
@@ -394,7 +335,6 @@ namespace Mirror.Weaver
                 if (readFunc != null)
                 {
                     worker.Emit(OpCodes.Ldarg_0);
-                    // Log.Error($"! read field {field}", variable);
                     worker.Emit(OpCodes.Call, readFunc);
                 }
                 else

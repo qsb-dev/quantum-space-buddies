@@ -22,7 +22,7 @@ namespace Mirror
             - HeaderSize
             - Batcher.HeaderSize;
 
-        public static ushort GetId<T>() where T : NetworkMessage
+        public static ushort GetId<T>() where T : struct, NetworkMessage
         {
             // paul: 16 bits is enough to avoid collisions
             //  - keeps the message size small
@@ -34,7 +34,7 @@ namespace Mirror
         // -> NetworkWriter passed as arg so that we can use .ToArraySegment
         //    and do an allocation free send before recycling it.
         public static void Pack<T>(T message, NetworkWriter writer)
-            where T : NetworkMessage
+            where T : struct, NetworkMessage
         {
             ushort msgType = GetId<T>();
             writer.WriteUShort(msgType);
@@ -64,7 +64,7 @@ namespace Mirror
 
         // version for handlers with channelId
         internal static NetworkMessageDelegate WrapHandler<T, C>(Action<C, T, int> handler, bool requireAuthentication)
-            where T : NetworkMessage
+            where T : struct, NetworkMessage
             where C : NetworkConnection
             => (conn, reader, channelId) =>
         {
@@ -129,7 +129,7 @@ namespace Mirror
         // TODO obsolete this some day to always use the channelId version.
         //      all handlers in this version are wrapped with 1 extra action.
         internal static NetworkMessageDelegate WrapHandler<T, C>(Action<C, T> handler, bool requireAuthentication)
-            where T : NetworkMessage
+            where T : struct, NetworkMessage
             where C : NetworkConnection
         {
             // wrap action as channelId version, call original

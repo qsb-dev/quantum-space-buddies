@@ -208,22 +208,6 @@ namespace Mirror.Weaver
             return null;
         }
 
-        public static bool IsQSBMessageType(this TypeDefinition td)
-        {
-            if (!td.IsClass) return false;
-            while (true)
-            {
-                var parent = td.BaseType;
-                if (parent == null) return false;
-
-                if (parent.FullName is "QSB.Messaging.QSBMessage" or "QSB.Messaging.QSBMessageRaw")
-                    return true;
-
-                if (!parent.CanBeResolved()) return false;
-                td = parent.Resolve();
-            }
-        }
-
         // Finds public fields in type and base type
         public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeReference variable)
         {
@@ -233,24 +217,12 @@ namespace Mirror.Weaver
         // Finds public fields in type and base type
         public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeDefinition typeDefinition)
         {
-            var isQSBMessageType = typeDefinition.IsQSBMessageType();
             while (typeDefinition != null)
             {
                 foreach (FieldDefinition field in typeDefinition.Fields)
                 {
-                    if (isQSBMessageType)
-                    {
-                        if (field.IsStatic)
-                            continue;
-
-                        if (field.HasCustomAttribute<System.Runtime.CompilerServices.CompilerGeneratedAttribute>())
-                            continue;
-                    }
-                    else
-                    {
-                        if (field.IsStatic || !field.IsPublic)
-                            continue;
-                    }
+                    if (field.IsStatic || field.IsPrivate)
+                        continue;
 
                     if (field.IsNotSerialized)
                         continue;
