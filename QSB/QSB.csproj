@@ -15,11 +15,11 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
+    <Target Name="weave qsb" BeforeTargets="PostBuildEvent" Condition="Exists($(GameDir))">
+        <Exec Command='"$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver" "$(OutputPath)\QSB.dll" "$(GameDir)"' />
+    </Target>
     <PropertyGroup>
         <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
-            :: weave qsb
-            "$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver" "$(OutputPath)\QSB.dll" "$(GameDir)"
-
             :: copy output to unity project
             copy /y "$(OutputPath)" "$(UnityAssetsDir)"
             :: copy game assembly to unity project

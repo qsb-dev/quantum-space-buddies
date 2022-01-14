@@ -70,7 +70,7 @@ namespace MirrorWeaver
 			var weaver = new Weaver(log);
 			if (!weaver.Weave(assembly, resolver, out _))
 			{
-				throw new Exception("weaving failed");
+				Environment.Exit(1);
 			}
 
 			assembly.Write(new WriterParameters { WriteSymbols = true });
