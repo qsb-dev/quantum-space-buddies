@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using OWML.Common;
-using OWML.Utils;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
 using QSB.Player;
@@ -9,10 +8,10 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace QSB.Messaging
 {
@@ -20,93 +19,36 @@ namespace QSB.Messaging
 	{
 		#region inner workings
 
-		private static readonly Type[] _types;
+		internal static readonly Type[] _types;
+		private static readonly Dictionary<Type, ushort> _typeToId = new();
 
 		static QSBMessageManager()
 		{
-			_types = typeof(QSBMessageRaw).GetDerivedTypes()
-				.Concat(typeof(QSBMessage).GetDerivedTypes())
-				.ToArray();
-			foreach (var type in _types)
+			_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
+			for (ushort i = 0; i < _types.Length; i++)
 			{
+				_typeToId.Add(_types[i], i);
 				// call static constructor of message if needed
-				RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+				RuntimeHelpers.RunClassConstructor(_types[i].TypeHandle);
 			}
 		}
 
 		public static void Init()
 		{
-			DebugLog.DebugWrite("REGISTERING MESSAGES");
-
-			var NetworkServer_RegisterHandlerOnce = typeof(NetworkServer).GetAnyMethod(nameof(NetworkServer.RegisterHandlerOnce));
-			var NetworkClient_RegisterHandlerOnce = typeof(NetworkClient).GetAnyMethod(nameof(NetworkClient.RegisterHandlerOnce));
-			var OnServerReceiveRaw = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnServerReceiveRaw));
-			var OnClientReceiveRaw = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnClientReceiveRaw));
-			var OnServerReceive = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnServerReceive));
-			var OnClientReceive = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnClientReceive));
-
-			foreach (var type in _types)
-			{
-				MethodInfo OnServerReceive2;
-				MethodInfo OnClientReceive2;
-
-				if (typeof(QSBMessageRaw).IsAssignableFrom(type))
-				{
-					OnServerReceive2 = OnServerReceiveRaw;
-					OnClientReceive2 = OnClientReceiveRaw;
-				}
-				else
-				{
-					OnServerReceive2 = OnServerReceive;
-					OnClientReceive2 = OnClientReceive;
-				}
-
-				var OnServerReceive3 = OnServerReceive2.MakeGenericMethod(type);
-				var OnClientReceive3 = OnClientReceive2.MakeGenericMethod(type);
-
-				var serverHandler = OnServerReceive3.CreateDelegate(
-					Expression.GetDelegateType(
-						OnServerReceive3.GetParameters()
-							.Select(x => x.ParameterType)
-							.Append(OnServerReceive3.ReturnType)
-							.ToArray()
-					)
-				);
-				var clientHandler = OnClientReceive3.CreateDelegate(
-					Expression.GetDelegateType(
-						OnClientReceive3.GetParameters()
-							.Select(x => x.ParameterType)
-							.Append(OnServerReceive3.ReturnType)
-							.ToArray()
-					)
-				);
-				NetworkServer_RegisterHandlerOnce.MakeGenericMethod(type).Invoke(null, new object[] { serverHandler });
-				NetworkClient_RegisterHandlerOnce.MakeGenericMethod(type).Invoke(null, new object[] { clientHandler });
-			}
+			NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
+			NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper.Msg));
 		}
 
-		private static void OnServerReceiveRaw<T>(T msg)
-			where T : QSBMessageRaw
+		private static void OnServerReceive(Wrapper wrapper)
 		{
-			NetworkServer.SendToAll(msg);
-		}
-
-		private static void OnClientReceiveRaw<T>(T msg)
-			where T : QSBMessageRaw
-		{
-			msg.OnReceive();
-		}
-
-		private static void OnServerReceive<T>(T msg)
-			where T : QSBMessage
-		{
+			var msg = wrapper.Msg;
 			if (msg.To == uint.MaxValue)
 			{
-				NetworkServer.SendToAll(msg);
+				NetworkServer.SendToAll(wrapper);
 			}
 			else if (msg.To == 0)
 			{
-				NetworkServer.localConnection.Send(msg);
+				NetworkServer.localConnection.Send(wrapper);
 			}
 			else
 			{
@@ -117,12 +59,11 @@ namespace QSB.Messaging
 					return;
 				}
 
-				conn.Send(msg);
+				conn.Send(wrapper);
 			}
 		}
 
-		private static void OnClientReceive<T>(T msg)
-			where T : QSBMessage
+		private static void OnClientReceive(QSBMessage msg)
 		{
 			if (PlayerTransformSync.LocalInstance == null)
 			{
@@ -168,18 +109,6 @@ namespace QSB.Messaging
 
 		#endregion
 
-		public static void SendRaw<M>(this M msg)
-			where M : QSBMessageRaw
-		{
-			NetworkClient.Send(msg);
-		}
-
-		public static void ServerSendRaw<M>(this M msg, NetworkConnectionToClient conn)
-			where M : QSBMessageRaw
-		{
-			conn.Send(msg);
-		}
-
 		public static void Send<M>(this M msg)
 			where M : QSBMessage
 		{
@@ -190,7 +119,11 @@ namespace QSB.Messaging
 			}
 
 			msg.From = QSBPlayerManager.LocalPlayerId;
-			NetworkClient.Send(msg);
+			NetworkClient.Send(new Wrapper
+			{
+				Id = _typeToId[msg.GetType()],
+				Msg = msg
+			});
 		}
 
 		public static void SendMessage<T, M>(this T worldObject, M msg)
@@ -202,16 +135,27 @@ namespace QSB.Messaging
 		}
 	}
 
-	/// <summary>
-	/// message that will be sent to every client. <br/>
-	/// no checks are performed on the message. it is just sent and received.
-	/// </summary>
-	public abstract class QSBMessageRaw : NetworkMessage
+	internal struct Wrapper : NetworkMessage
 	{
-		public virtual void Serialize(NetworkWriter writer) { }
-		public virtual void Deserialize(NetworkReader reader) { }
+		internal ushort Id;
+		internal QSBMessage Msg;
+	}
 
-		public abstract void OnReceive();
-		public override string ToString() => GetType().Name;
+	internal static class ReaderWriterExtensions
+	{
+		private static Wrapper ReadWrapper(this NetworkReader reader)
+		{
+			var wrapper = new Wrapper();
+			wrapper.Id = reader.ReadUShort();
+			wrapper.Msg = (QSBMessage)FormatterServices.GetUninitializedObject(QSBMessageManager._types[wrapper.Id]);
+			wrapper.Msg.Deserialize(reader);
+			return wrapper;
+		}
+
+		private static void WriteWrapper(this NetworkWriter writer, Wrapper wrapper)
+		{
+			writer.Write(wrapper.Id);
+			wrapper.Msg.Serialize(writer);
+		}
 	}
 }

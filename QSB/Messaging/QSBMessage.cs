@@ -3,7 +3,7 @@ using System;
 
 namespace QSB.Messaging
 {
-	public abstract class QSBMessage : NetworkMessage
+	public abstract class QSBMessage
 	{
 		/// <summary>
 		/// set automatically by Send
