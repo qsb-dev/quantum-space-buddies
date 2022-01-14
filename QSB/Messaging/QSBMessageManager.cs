@@ -38,8 +38,8 @@ namespace QSB.Messaging
 		{
 			DebugLog.DebugWrite("REGISTERING MESSAGES");
 
-			var NetworkServer_RegisterHandlerSafe = typeof(NetworkServer).GetAnyMethod(nameof(NetworkServer.RegisterHandlerSafe));
-			var NetworkClient_RegisterHandlerSafe = typeof(NetworkClient).GetAnyMethod(nameof(NetworkClient.RegisterHandlerSafe));
+			var NetworkServer_RegisterHandlerOnce = typeof(NetworkServer).GetAnyMethod(nameof(NetworkServer.RegisterHandlerOnce));
+			var NetworkClient_RegisterHandlerOnce = typeof(NetworkClient).GetAnyMethod(nameof(NetworkClient.RegisterHandlerOnce));
 			var OnServerReceiveRaw = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnServerReceiveRaw));
 			var OnClientReceiveRaw = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnClientReceiveRaw));
 			var OnServerReceive = typeof(QSBMessageManager).GetAnyMethod(nameof(QSBMessageManager.OnServerReceive));
@@ -80,8 +80,8 @@ namespace QSB.Messaging
 							.ToArray()
 					)
 				);
-				NetworkServer_RegisterHandlerSafe.MakeGenericMethod(type).Invoke(null, new object[] { serverHandler });
-				NetworkClient_RegisterHandlerSafe.MakeGenericMethod(type).Invoke(null, new object[] { clientHandler });
+				NetworkServer_RegisterHandlerOnce.MakeGenericMethod(type).Invoke(null, new object[] { serverHandler });
+				NetworkClient_RegisterHandlerOnce.MakeGenericMethod(type).Invoke(null, new object[] { clientHandler });
 			}
 		}
 

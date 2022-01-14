@@ -454,7 +454,7 @@ namespace Mirror
             handlers[msgType] = MessagePacking.WrapHandler((Action<NetworkConnection, T>) HandlerWrapped, requireAuthentication);
         }
 
-        public static void RegisterHandlerSafe<T>(Action<T> handler)
+        public static void RegisterHandlerOnce<T>(Action<T> handler)
             where T : NetworkMessage
         {
             var msgType = MessagePacking.GetId<T>();
