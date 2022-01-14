@@ -261,7 +261,7 @@ namespace Mirror
         // send ////////////////////////////////////////////////////////////////
         /// <summary>Send a message to all clients, even those that haven't joined the world yet (non ready)</summary>
         public static void SendToAll<T>(T message, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
-            where T : struct, NetworkMessage
+            where T : NetworkMessage
         {
             if (!active)
             {
@@ -614,6 +614,16 @@ namespace Mirror
                 Debug.LogWarning($"NetworkServer.RegisterHandler replacing handler for {typeof(T).FullName}, id={msgType}. If replacement is intentional, use ReplaceHandler instead to avoid this warning.");
             }
             handlers[msgType] = MessagePacking.WrapHandler(handler, requireAuthentication);
+        }
+
+        public static void RegisterHandlerSafe<T>(Action<T> handler)
+            where T : NetworkMessage
+        {
+            var msgType = MessagePacking.GetId<T>();
+            if (!handlers.ContainsKey(msgType))
+            {
+                handlers[msgType] = MessagePacking.WrapHandler((NetworkConnection _, T msg) => handler(msg), true);
+            }
         }
 
         /// <summary>Replace a handler for message type T. Most should require authentication.</summary>

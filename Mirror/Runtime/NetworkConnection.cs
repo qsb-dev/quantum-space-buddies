@@ -125,7 +125,7 @@ namespace Mirror
         // Send stage one: NetworkMessage<T>
         /// <summary>Send a NetworkMessage to this connection over the given channel.</summary>
         public void Send<T>(T message, int channelId = Channels.Reliable)
-            where T : struct, NetworkMessage
+            where T : NetworkMessage
         {
             using (PooledNetworkWriter writer = NetworkWriterPool.GetWriter())
             {

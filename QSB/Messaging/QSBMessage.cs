@@ -1,10 +1,10 @@
-﻿using QuantumUNET.Messages;
+﻿using Mirror;
 using QuantumUNET.Transport;
 using System;
 
 namespace QSB.Messaging
 {
-	public abstract class QSBMessage : QMessageBase
+	public abstract class QSBMessage : NetworkMessage
 	{
 		/// <summary>
 		/// set automatically by Send
@@ -19,7 +19,7 @@ namespace QSB.Messaging
 		/// <summary>
 		/// call the base method when overriding
 		/// </summary>
-		public override void Serialize(QNetworkWriter writer)
+		public virtual void Serialize(QNetworkWriter writer)
 		{
 			writer.Write(From);
 			writer.Write(To);
@@ -31,7 +31,7 @@ namespace QSB.Messaging
 		/// note: no constructor is called before this,
 		/// so fields won't be initialized.
 		/// </summary>
-		public override void Deserialize(QNetworkReader reader)
+		public virtual void Deserialize(QNetworkReader reader)
 		{
 			From = reader.ReadUInt32();
 			To = reader.ReadUInt32();
