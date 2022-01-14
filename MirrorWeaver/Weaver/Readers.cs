@@ -334,7 +334,7 @@ namespace Mirror.Weaver
         // try to use Deserialize if this is a message
         bool ReadFromDeserialize(TypeDefinition klass, ILProcessor worker)
         {
-            if (!klass.ImplementsInterface<NetworkMessage>())
+            if (!klass.IsQSBMessageType())
                 return false;
 
             var toSearch = klass;
@@ -360,7 +360,7 @@ namespace Mirror.Weaver
                             continue;
 
                         // todo does this even work?
-                        Log.Error($"! read using {method}", klass);
+                        // Log.Error($"! read using {method}", klass);
                         // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
                         var opcode = klass.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;
                         worker.Emit(opcode, 0); // the klass
@@ -388,7 +388,7 @@ namespace Mirror.Weaver
                 if (readFunc != null)
                 {
                     worker.Emit(OpCodes.Ldarg_0);
-                    Log.Error($"! read field {field}", variable);
+                    // Log.Error($"! read field {field}", variable);
                     worker.Emit(OpCodes.Call, readFunc);
                 }
                 else
