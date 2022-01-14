@@ -334,34 +334,44 @@ namespace Mirror.Weaver
         // try to use Deserialize if this is a message
         bool ReadFromDeserialize(TypeDefinition klass, ILProcessor worker)
         {
-            if (!klass.IsDerivedFrom<NetworkMessage>())
+            if (!klass.ImplementsInterface<NetworkMessage>())
                 return false;
 
-            foreach (var method in klass.Methods)
+            var toSearch = klass;
+            while (toSearch != null)
             {
-                if (method.Name != "Deserialize")
-                    continue;
+                if (toSearch.HasMethods)
+                {
+                    foreach (var method in toSearch.Methods)
+                    {
+                        if (method.Name != "Deserialize")
+                            continue;
 
-                if (method.Parameters.Count != 1)
-                    continue;
+                        if (method.Parameters.Count != 1)
+                            continue;
 
-                if (!method.Parameters[0].ParameterType.Is<NetworkWriter>())
-                    continue;
+                        if (!method.Parameters[0].ParameterType.Is<NetworkReader>())
+                            continue;
 
-                if (!method.ReturnType.Is(typeof(void)))
-                    continue;
+                        if (!method.ReturnType.Is(typeof(void)))
+                            continue;
 
-                if (method.HasGenericParameters)
-                    continue;
+                        if (method.HasGenericParameters)
+                            continue;
 
-                // todo does this even work?
-                Log.Error($"read using {method}", klass);
-                // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
-                var opcode = klass.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;
-                worker.Emit(opcode, 0); // the klass
-                worker.Emit(OpCodes.Ldarg_0); // the reader
-                worker.Emit(OpCodes.Callvirt, method);
-                return true;
+                        // todo does this even work?
+                        Log.Error($"read using {method}", klass);
+                        // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
+                        var opcode = klass.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;
+                        worker.Emit(opcode, 0); // the klass
+                        worker.Emit(OpCodes.Ldarg_0); // the reader
+                        worker.Emit(OpCodes.Callvirt, method);
+                        return true;
+                    }
+                }
+
+                // Could not find the method in this class, try the parent
+                toSearch = toSearch.BaseType?.Resolve();
             }
 
             return false;

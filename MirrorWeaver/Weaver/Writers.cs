@@ -251,32 +251,41 @@ namespace Mirror.Weaver
         // try to use Serialize if this is a message
         bool WriteFromSerialize(TypeDefinition klass, ILProcessor worker)
         {
-            if (!klass.IsDerivedFrom<NetworkMessage>())
+            if (!klass.ImplementsInterface<NetworkMessage>())
                 return false;
 
-            foreach (var method in klass.Methods)
-            {
-                if (method.Name != "Serialize")
-                    continue;
+            var toSearch = klass;
+            while (toSearch != null) {
+                if (toSearch.HasMethods)
+                {
+                    foreach (var method in toSearch.Methods)
+                    {
+                        if (method.Name != "Serialize")
+                            continue;
 
-                if (method.Parameters.Count != 1)
-                    continue;
+                        if (method.Parameters.Count != 1)
+                            continue;
 
-                if (!method.Parameters[0].ParameterType.Is<NetworkReader>())
-                    continue;
+                        if (!method.Parameters[0].ParameterType.Is<NetworkWriter>())
+                            continue;
 
-                if (!method.ReturnType.Is(typeof(void)))
-                    continue;
+                        if (!method.ReturnType.Is(typeof(void)))
+                            continue;
 
-                if (method.HasGenericParameters)
-                    continue;
+                        if (method.HasGenericParameters)
+                            continue;
 
-                // todo does this even work?
-                Log.Error($"write using {method}", klass);
-                worker.Emit(OpCodes.Ldarg_1); // the klass
-                worker.Emit(OpCodes.Ldarg_0); // the writer
-                worker.Emit(OpCodes.Callvirt, method);
-                return true;
+                        // todo does this even work?
+                        Log.Error($"write using {method}", klass);
+                        worker.Emit(OpCodes.Ldarg_1); // the klass
+                        worker.Emit(OpCodes.Ldarg_0); // the writer
+                        worker.Emit(OpCodes.Callvirt, method);
+                        return true;
+                    }
+                }
+
+                // Could not find the method in this class, try the parent
+                toSearch = toSearch.BaseType?.Resolve();
             }
 
             return false;

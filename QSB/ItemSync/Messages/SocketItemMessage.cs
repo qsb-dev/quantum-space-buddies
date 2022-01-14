@@ -1,10 +1,10 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using Mirror;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.ItemSync.Messages
 {
@@ -20,18 +20,18 @@ namespace QSB.ItemSync.Messages
 			ItemId = itemId;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(SocketId);
 			writer.Write(ItemId);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			SocketId = reader.ReadInt32();
-			ItemId = reader.ReadInt32();
+			SocketId = reader.Read<int>();
+			ItemId = reader.Read<int>();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

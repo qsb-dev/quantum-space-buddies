@@ -1,5 +1,5 @@
-﻿using QSB.Messaging;
-using QuantumUNET.Transport;
+﻿using Mirror;
+using QSB.Messaging;
 
 namespace QSB.TimeSync.Messages
 {
@@ -14,18 +14,18 @@ namespace QSB.TimeSync.Messages
 			LoopCount = count;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ServerTime);
 			writer.Write(LoopCount);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ServerTime = reader.ReadSingle();
-			LoopCount = reader.ReadInt16();
+			ServerTime = reader.Read<float>();
+			LoopCount = reader.Read<int>();
 		}
 
 		public override void OnReceiveRemote()

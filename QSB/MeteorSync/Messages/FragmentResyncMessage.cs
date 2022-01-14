@@ -1,9 +1,9 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.MeteorSync.Messages
@@ -44,7 +44,7 @@ namespace QSB.MeteorSync.Messages
 			}
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Integrity);
@@ -61,16 +61,16 @@ namespace QSB.MeteorSync.Messages
 			}
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Integrity = reader.ReadSingle();
-			OrigIntegrity = reader.ReadSingle();
-			LeashLength = reader.ReadSingle();
-			IsDetached = reader.ReadBoolean();
+			Integrity = reader.Read<float>();
+			OrigIntegrity = reader.Read<float>();
+			LeashLength = reader.Read<float>();
+			IsDetached = reader.Read<bool>();
 			if (IsDetached)
 			{
-				IsThruWhiteHole = reader.ReadBoolean();
+				IsThruWhiteHole = reader.Read<bool>();
 				RelPos = reader.ReadVector3();
 				RelRot = reader.ReadQuaternion();
 				RelVel = reader.ReadVector3();

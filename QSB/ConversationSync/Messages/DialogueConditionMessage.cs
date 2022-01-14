@@ -1,7 +1,7 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.ConversationSync.Messages
 {
@@ -26,18 +26,18 @@ namespace QSB.ConversationSync.Messages
 			ConditionState = state;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ConditionName);
 			writer.Write(ConditionState);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			ConditionName = reader.ReadString();
-			ConditionState = reader.ReadBoolean();
+			ConditionState = reader.Read<bool>();
 		}
 
 		public override void OnReceiveRemote()

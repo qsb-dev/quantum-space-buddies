@@ -1,6 +1,6 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
-using QuantumUNET.Transport;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync.Messages
 {
@@ -10,16 +10,16 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.Messages
 
 		public SetAsTranslatedMessage(int textId) => TextId = textId;
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(TextId);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			TextId = reader.ReadInt32();
+			TextId = reader.Read<int>();
 		}
 
 		public override void OnReceiveRemote() => WorldObject.SetAsTranslated(TextId);

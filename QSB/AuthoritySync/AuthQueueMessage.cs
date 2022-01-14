@@ -1,7 +1,7 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.WorldSync;
 using QuantumUNET;
-using QuantumUNET.Transport;
 
 namespace QSB.AuthoritySync
 {
@@ -19,16 +19,16 @@ namespace QSB.AuthoritySync
 			Value = action;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(NetId);
+			writer.Write(NetId.Value);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			NetId = reader.ReadNetworkId();
+			NetId = new QNetworkInstanceId(reader.Read<uint>());
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

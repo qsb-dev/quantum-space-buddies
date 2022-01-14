@@ -1,7 +1,7 @@
-﻿using QSB.ClientServerStateSync;
+﻿using Mirror;
+using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Player;
-using QuantumUNET.Transport;
 
 namespace QSB.RespawnSync.Messages
 {
@@ -11,16 +11,16 @@ namespace QSB.RespawnSync.Messages
 
 		public PlayerRespawnMessage(uint playerId) => PlayerId = playerId;
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerId);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			PlayerId = reader.ReadUInt32();
+			PlayerId = reader.Read<uint>();
 		}
 
 		public override void OnReceiveLocal() => OnReceiveRemote();
