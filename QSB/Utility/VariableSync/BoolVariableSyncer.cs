@@ -11,18 +11,9 @@ namespace QSB.Utility.VariableSync
 		public bool Value;
 
 		protected override bool HasChanged() => Value != _prevValue;
-
-		protected override void Serialize(NetworkWriter writer)
-		{
-			_prevValue = Value;
-			writer.Write(Value);
-		}
-
-		protected override void Deserialize(NetworkReader reader)
-		{
-			_prevValue = Value;
-			Value = reader.Read<bool>();
-		}
+		protected override void UpdatePrevValue() => _prevValue = Value;
+		protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
+		protected override void Deserialize(NetworkReader reader) => Value = reader.Read<bool>();
 	}
 
 	public class BoolVariableSyncer : BaseVariableSyncer<bool>

@@ -10,11 +10,12 @@ namespace QSB.Utility.VariableSync
 {
 	public abstract class BaseVariableSyncer2 : NetworkBehaviour
 	{
-		private const float _sendInterval = 0.050f;
+		private const float _sendInterval = 0.1f;
 
 		private double _lastSendTime;
 
 		protected abstract bool HasChanged();
+		protected abstract void UpdatePrevValue();
 		protected abstract void Serialize(NetworkWriter writer);
 		protected abstract void Deserialize(NetworkReader reader);
 
@@ -42,6 +43,7 @@ namespace QSB.Utility.VariableSync
 					return;
 				}
 
+				UpdatePrevValue();
 				using (var writer = NetworkWriterPool.GetWriter())
 				{
 					Serialize(writer);
@@ -58,6 +60,7 @@ namespace QSB.Utility.VariableSync
 		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
 		private void RpcSetValue(ArraySegment<byte> value)
 		{
+			UpdatePrevValue();
 			using var reader = NetworkReaderPool.GetReader(value);
 			Deserialize(reader);
 		}
