@@ -20,6 +20,7 @@ namespace QSB.Utility
 			var changed = base.OnSerialize(writer, initialState);
 			if (initialState && isServer)
 			{
+				UpdatePrevData();
 				Serialize(writer, true);
 			}
 
@@ -35,8 +36,6 @@ namespace QSB.Utility
 				Deserialize(reader, true);
 			}
 		}
-
-		protected virtual void Awake() => UpdatePrevData();
 
 		protected virtual void Update()
 		{
