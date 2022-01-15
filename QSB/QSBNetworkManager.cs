@@ -261,7 +261,7 @@ namespace QSB
 				}
 			}
 
-			AuthorityManager.OnDisconnect(conn.GetPlayerId());
+			AuthorityManager.OnDisconnect(conn);
 
 			base.OnServerDisconnect(conn);
 		}
