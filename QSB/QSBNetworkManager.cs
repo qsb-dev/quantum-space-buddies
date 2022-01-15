@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using kcp2k;
+using Mirror;
 using OWML.Common;
 using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
@@ -51,6 +52,7 @@ namespace QSB
 
 		public override void Awake()
 		{
+			transport = gameObject.AddComponent<KcpTransport>();
 			base.Awake();
 
 			PlayerName = GetPlayerName();
