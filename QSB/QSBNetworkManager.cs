@@ -56,7 +56,7 @@ namespace QSB
 			PlayerName = GetPlayerName();
 
 			playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
-			playerPrefab.GetRequiredComponent<NetworkIdentity>().assetId = new Guid(BitConverter.GetBytes(1));
+			playerPrefab.GetRequiredComponent<NetworkIdentity>().assetId = 1.ToGuid();
 
 			ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
 			spawnPrefabs.Add(ShipPrefab);
@@ -109,7 +109,7 @@ namespace QSB
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<NetworkIdentity>().assetId = new Guid(BitConverter.GetBytes(assetId));
+			template.GetRequiredComponent<NetworkIdentity>().assetId = assetId.ToGuid();
 			template.AddComponent(transformSyncType);
 			return template;
 		}

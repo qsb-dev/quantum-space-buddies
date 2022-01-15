@@ -143,9 +143,9 @@ namespace QSB
 			}
 		}
 
-		public void Update() =>
-			// TODO MIRROR NetworkIdentity.UNetStaticUpdate();
-			throw new System.NotImplementedException();
+		// TODO MIRROR
+		// public void Update() =>
+		// 	NetworkIdentity.UNetStaticUpdate();
 
 		public override void Configure(IModConfig config)
 		{
