@@ -143,10 +143,6 @@ namespace QSB
 			}
 		}
 
-		// TODO MIRROR
-		// public void Update() =>
-		// 	NetworkIdentity.UNetStaticUpdate();
-
 		public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
