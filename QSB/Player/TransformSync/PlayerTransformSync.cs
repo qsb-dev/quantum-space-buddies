@@ -20,6 +20,7 @@ namespace QSB.Player.TransformSync
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
 
+		// todo? stick root might be the thing that moves instead of roasting system. one of them doesn't, i just don't know which
 		private Transform _visibleRoastingSystem;
 		private Transform _networkRoastingSystem => gameObject.transform.GetChild(1);
 		private Transform _networkStickRoot => _networkRoastingSystem.GetChild(0);
@@ -273,6 +274,7 @@ namespace QSB.Player.TransformSync
 				return;
 			}
 
+			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickPivot.position), ReferenceTransform.TransformRotation(_networkStickPivot.rotation), Vector3.one / 4, Color.red);
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickTip.position), ReferenceTransform.TransformRotation(_networkStickTip.rotation), Vector3.one / 4, Color.red);
