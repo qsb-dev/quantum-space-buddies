@@ -1,69 +1,14 @@
-﻿using Mirror;
-using QuantumUNET;
+﻿using QuantumUNET;
 using QuantumUNET.Messages;
 using QuantumUNET.Transport;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.Utility.VariableSync
 {
-	public abstract class BaseVariableSyncer2 : NetworkBehaviour
+	public abstract class BaseVariableSyncer2 : QSBNetworkBehaviour
 	{
-		private const float _sendInterval = 0.1f;
-
-		private double _lastSendTime;
-
-		protected abstract bool HasChanged();
-		protected abstract void UpdatePrevValue();
-		protected abstract void Serialize(NetworkWriter writer);
-		protected abstract void Deserialize(NetworkReader reader);
-
-		private void Update()
-		{
-			if (!isClient)
-			{
-				return;
-			}
-
-			if (!hasAuthority)
-			{
-				return;
-			}
-
-			if (!NetworkClient.ready)
-			{
-				return;
-			}
-
-			if (NetworkTime.localTime >= _lastSendTime + _sendInterval)
-			{
-				if (!HasChanged())
-				{
-					return;
-				}
-
-				UpdatePrevValue();
-				using (var writer = NetworkWriterPool.GetWriter())
-				{
-					Serialize(writer);
-					CmdSetValue(writer.ToArraySegment());
-				}
-
-				_lastSendTime = NetworkTime.localTime;
-			}
-		}
-
-		[Command(channel = Channels.Unreliable, requiresAuthority = true)]
-		private void CmdSetValue(ArraySegment<byte> value) => RpcSetValue(value);
-
-		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
-		private void RpcSetValue(ArraySegment<byte> value)
-		{
-			UpdatePrevValue();
-			using var reader = NetworkReaderPool.GetReader(value);
-			Deserialize(reader);
-		}
+		protected override float SendInterval => 0.1f;
 	}
 
 	public interface IBaseVariableSyncer

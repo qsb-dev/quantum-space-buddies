@@ -12,9 +12,9 @@ namespace QSB.Utility.VariableSync
 		public Vector3 Value;
 
 		protected override bool HasChanged() => Value != _prevValue;
-		protected override void UpdatePrevValue() => _prevValue = Value;
-		protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
-		protected override void Deserialize(NetworkReader reader) => Value = reader.Read<Vector3>();
+		protected override void UpdatePrevData() => _prevValue = Value;
+		protected override void Serialize(NetworkWriter writer, bool initialState) => writer.Write(Value);
+		protected override void Deserialize(NetworkReader reader, bool initialState) => Value = reader.Read<Vector3>();
 	}
 
 	public class Vector3VariableSyncer : BaseVariableSyncer<Vector3>
