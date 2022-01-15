@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.JellyfishSync.TransformSync
 {
-	public class JellyfishTransformSync : UnsectoredRigidbodySync2
+	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;

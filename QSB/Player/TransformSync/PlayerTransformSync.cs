@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace QSB.Player.TransformSync
 {
-	public class PlayerTransformSync : SectoredTransformSync2
+	public class PlayerTransformSync : SectoredTransformSync
 	{
 		public override bool IsPlayerObject => true;
 

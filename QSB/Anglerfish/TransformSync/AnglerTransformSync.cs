@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync
 {
-	public class AnglerTransformSync : UnsectoredRigidbodySync2
+	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => false;

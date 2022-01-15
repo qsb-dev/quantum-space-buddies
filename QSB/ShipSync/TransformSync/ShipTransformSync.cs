@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
 {
-	public class ShipTransformSync : SectoredRigidbodySync2
+	public class ShipTransformSync : SectoredRigidbodySync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
 

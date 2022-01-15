@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool.TransformSync
 {
-	public class PlayerProbeSync : SectoredTransformSync2
+	public class PlayerProbeSync : SectoredTransformSync
 	{
 		protected override float DistanceLeeway => 10f;
 		public override bool UseInterpolation => true;

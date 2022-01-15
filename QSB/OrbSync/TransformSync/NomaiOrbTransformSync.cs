@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
-	public class NomaiOrbTransformSync : UnsectoredTransformSync2
+	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		public override bool UseInterpolation => true;

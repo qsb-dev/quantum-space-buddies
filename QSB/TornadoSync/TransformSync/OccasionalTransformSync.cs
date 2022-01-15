@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.TornadoSync.TransformSync
 {
-	public class OccasionalTransformSync : UnsectoredRigidbodySync2
+	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsReady
 			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_bodyIndex)
