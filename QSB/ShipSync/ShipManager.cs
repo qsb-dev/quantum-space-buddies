@@ -23,7 +23,7 @@ namespace QSB.ShipSync
 		public ShipCockpitController CockpitController;
 		public ShipElectricalComponent ShipElectricalComponent;
 		public bool HasAuthority
-			=> ShipTransformSync.LocalInstance.HasAuthority;
+			=> ShipTransformSync.LocalInstance.hasAuthority;
 		public uint CurrentFlyer
 		{
 			get => _currentFlyer;

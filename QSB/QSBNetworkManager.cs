@@ -235,9 +235,9 @@ namespace QSB
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			// revert authority from ship
-			if (ShipTransformSync2.LocalInstance != null)
+			if (ShipTransformSync.LocalInstance != null)
 			{
-				var identity = ShipTransformSync2.LocalInstance.netIdentity;
+				var identity = ShipTransformSync.LocalInstance.netIdentity;
 				if (identity != null && identity.connectionToClient == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
