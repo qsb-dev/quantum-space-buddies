@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Utility;
 using QuantumUNET;
 using QuantumUNET.Components;
@@ -7,6 +8,89 @@ using System.Linq;
 
 namespace QSB.AuthoritySync
 {
+	public static class AuthorityManager2
+	{
+		#region host only
+
+		/// <summary>
+		/// whoever is first gets authority
+		/// </summary>
+		private static readonly Dictionary<NetworkIdentity, List<uint>> _authQueue = new();
+
+		public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
+		public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
+
+		public static void UpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
+		{
+			var authQueue = _authQueue[identity];
+			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
+
+			switch (action)
+			{
+				case AuthQueueAction.Add:
+					authQueue.SafeAdd(id);
+					break;
+
+				case AuthQueueAction.Remove:
+					authQueue.Remove(id);
+					break;
+
+				case AuthQueueAction.Force:
+					authQueue.Remove(id);
+					authQueue.Insert(0, id);
+					break;
+			}
+
+			var newOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
+			if (oldOwner != newOwner)
+			{
+				SetAuthority(identity, newOwner);
+			}
+		}
+
+		/// <summary>
+		/// transfer authority to a different client
+		/// </summary>
+		public static void OnDisconnect(uint id)
+		{
+			foreach (var identity in _authQueue.Keys)
+			{
+				identity.UpdateAuthQueue(id, AuthQueueAction.Remove);
+			}
+		}
+
+		public static void SetAuthority(this NetworkIdentity identity, uint id)
+		{
+			var oldConn = identity.connectionToClient;
+			var newConn = id != uint.MaxValue
+				? NetworkServer.connections.Values.First(x => x.GetPlayerId() == id)
+				: null;
+
+			if (oldConn == newConn)
+			{
+				return;
+			}
+
+			identity.RemoveClientAuthority();
+
+			if (newConn != null)
+			{
+				identity.AssignClientAuthority(newConn);
+			}
+
+			// DebugLog.DebugWrite($"{identity.NetId}:{identity.gameObject.name} - "
+			// + $"set authority to {id}");
+		}
+
+		#endregion
+
+		#region any client
+
+		public static void SendAuthQueueMessage(this NetworkIdentity identity, AuthQueueAction action) =>
+			new AuthQueueMessage(identity.netId, action).Send();
+
+		#endregion
+	}
 	public static class AuthorityManager
 	{
 		#region host only
@@ -89,7 +173,8 @@ namespace QSB.AuthoritySync
 		#region any client
 
 		public static void SendAuthQueueMessage(this QNetworkIdentity identity, AuthQueueAction action) =>
-			new AuthQueueMessage(identity.NetId, action).Send();
+			// todo REMOVE new AuthQueueMessage(identity.NetId, action).Send();
+			throw new System.NotImplementedException();
 
 		#endregion
 	}

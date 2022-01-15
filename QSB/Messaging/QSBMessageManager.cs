@@ -52,7 +52,7 @@ namespace QSB.Messaging
 			}
 			else
 			{
-				var conn = NetworkServer.connections.Values.FirstOrDefault(x => msg.To == x.identity.netId);
+				var conn = NetworkServer.connections.Values.FirstOrDefault(x => msg.To == x.GetPlayerId());
 				if (conn == null)
 				{
 					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg}", MessageType.Error);

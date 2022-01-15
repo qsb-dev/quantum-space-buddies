@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QuantumUNET;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,9 @@ namespace QSB.Utility
 
 		#endregion
 
-		#region QNET
+		#region MIRROR
+
+		public static uint GetPlayerId(this NetworkConnection conn) => conn.identity.netId;
 
 		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
@@ -48,6 +51,8 @@ namespace QSB.Utility
 
 			return playerController.UnetView.NetId.Value;
 		}
+
+		public static void SpawnWithServerAuthority2(this GameObject go) => NetworkServer.Spawn(go, NetworkServer.localConnection);
 
 		public static void SpawnWithServerAuthority(this GameObject go)
 		{
