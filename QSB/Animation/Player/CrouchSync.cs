@@ -20,8 +20,6 @@ namespace QSB.Animation.Player
 		{
 			_playerController = playerController;
 			_bodyAnim = bodyAnim;
-
-			CrouchVariableSyncer.Init();
 		}
 
 		public void Update()

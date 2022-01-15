@@ -13,9 +13,6 @@ namespace QSB.Animation.Player.Thrusters
 		public void Init(ThrusterModel model)
 		{
 			_thrusterModel = model;
-
-			AccelerationVariableSyncer.Init();
-			ThrustingVariableSyncer.Init();
 		}
 
 		public void Update()
