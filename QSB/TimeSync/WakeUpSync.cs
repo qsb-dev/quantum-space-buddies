@@ -114,8 +114,7 @@ namespace QSB.TimeSync
 		{
 			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
-			gameObject.GetAddComponent<PreserveTimeScale>();
-			netIdentity.InitializeNetworkBehaviours();
+			gameObject.GetRequiredComponent<PreserveTimeScale>();
 			if (isServer)
 			{
 				SendServerTime();

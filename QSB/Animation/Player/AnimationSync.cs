@@ -34,12 +34,8 @@ namespace QSB.Animation.Player
 
 		protected void Awake()
 		{
-			InvisibleAnimator = gameObject.AddComponent<Animator>();
-			gameObject.SetActive(false);
-			NetworkAnimator = gameObject.AddComponent<NetworkAnimator>();
-			NetworkAnimator.animator = InvisibleAnimator;
-			gameObject.SetActive(true);
-			netIdentity.InitializeNetworkBehaviours();
+			InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
+			NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 			NetworkAnimator.enabled = false;
 
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
