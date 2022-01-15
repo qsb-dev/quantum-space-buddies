@@ -68,7 +68,6 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
-    <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj" />
     <ProjectReference Include="..\Mirror\Mirror.csproj" />
     <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />

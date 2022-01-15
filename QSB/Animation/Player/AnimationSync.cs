@@ -1,10 +1,10 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Animation.Player.Messages;
 using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
 
@@ -29,12 +29,12 @@ namespace QSB.Animation.Player
 		public AnimationType CurrentType { get; set; }
 		public Animator VisibleAnimator { get; private set; }
 		public Animator InvisibleAnimator { get; private set; }
-		public QNetworkAnimator NetworkAnimator { get; private set; }
+		public NetworkAnimator NetworkAnimator { get; private set; }
 
 		protected void Awake()
 		{
 			InvisibleAnimator = gameObject.AddComponent<Animator>();
-			NetworkAnimator = gameObject.AddComponent<QNetworkAnimator>();
+			NetworkAnimator = gameObject.AddComponent<NetworkAnimator>();
 			NetworkAnimator.enabled = false;
 			NetworkAnimator.animator = InvisibleAnimator;
 
@@ -76,10 +76,10 @@ namespace QSB.Animation.Player
 				Mirror.Init(InvisibleAnimator, VisibleAnimator);
 			}
 
-			for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
-			{
-				NetworkAnimator.SetParameterAutoSend(i, true);
-			}
+			// for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
+			// {
+			// 	NetworkAnimator.SetParameterAutoSend(i, true);
+			// }
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
 			_suitedAnimController = playerAnimController._baseAnimController;
@@ -304,10 +304,10 @@ namespace QSB.Animation.Player
 			{
 				NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
 				Mirror.RebuildFloatParams();
-				for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
-				{
-					NetworkAnimator.SetParameterAutoSend(i, true);
-				}
+				// for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
+				// {
+				// 	NetworkAnimator.SetParameterAutoSend(i, true);
+				// }
 			}
 		}
 	}
