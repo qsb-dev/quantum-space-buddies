@@ -43,9 +43,9 @@ namespace QSB.Menus
 			Instance = this;
 			MakeTitleMenus();
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
-			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
-			QSBNetworkManager.Instance.OnClientErrorThrown += OnClientError;
+			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
+			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
+			QSBNetworkManager.singleton.OnClientErrorThrown += OnClientError;
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
@@ -273,7 +273,7 @@ namespace QSB.Menus
 
 		private void Disconnect()
 		{
-			QSBNetworkManager.Instance.StopHost();
+			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
 			Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
@@ -286,7 +286,7 @@ namespace QSB.Menus
 
 		private void Host()
 		{
-			QSBNetworkManager.Instance.StartHost();
+			QSBNetworkManager.singleton.StartHost();
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(HostButton, false);
 			SetButtonActive(QuitButton, false);
@@ -313,8 +313,8 @@ namespace QSB.Menus
 		{
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
 
-			QSBNetworkManager.Instance.networkAddress = address;
-			QSBNetworkManager.Instance.StartClient();
+			QSBNetworkManager.singleton.networkAddress = address;
+			QSBNetworkManager.singleton.StartClient();
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{

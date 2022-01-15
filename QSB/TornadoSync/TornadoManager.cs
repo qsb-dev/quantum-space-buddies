@@ -44,7 +44,7 @@ namespace QSB.TornadoSync
 
 		private static void SpawnOccasional(OWRigidbody body, OWRigidbody refBody)
 		{
-			var transformSync = Instantiate(QSBNetworkManager.Instance.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
+			var transformSync = Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
 			transformSync.InitBodyIndexes(body, refBody);
 			transformSync.gameObject.SpawnWithServerAuthority();
 		}

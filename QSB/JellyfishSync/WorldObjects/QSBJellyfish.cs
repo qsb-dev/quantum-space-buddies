@@ -17,7 +17,7 @@ namespace QSB.JellyfishSync.WorldObjects
 
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab).SpawnWithServerAuthority();
+				Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab).SpawnWithServerAuthority();
 			}
 
 			StartDelayedReady();

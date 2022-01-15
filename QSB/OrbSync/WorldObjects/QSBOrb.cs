@@ -14,7 +14,7 @@ namespace QSB.OrbSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.OrbPrefab).SpawnWithServerAuthority();
+				Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab).SpawnWithServerAuthority();
 			}
 
 			StartDelayedReady();

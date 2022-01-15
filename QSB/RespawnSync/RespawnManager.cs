@@ -30,8 +30,8 @@ namespace QSB.RespawnSync
 				=> QSBCore.UnityEvents.RunWhen(
 					() => Locator.GetMarkerManager() != null,
 					() => Init(newScene, inUniverse));
-			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
-			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
+			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
+			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
 		}
 
 		private void OnConnected()

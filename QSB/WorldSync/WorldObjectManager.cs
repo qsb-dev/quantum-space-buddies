@@ -60,10 +60,10 @@ namespace QSB.WorldSync
 
 		public static void Rebuild(OWScene scene)
 		{
-			if (!QSBNetworkManager.Instance.IsReady)
+			if (!QSBNetworkManager.singleton.IsReady)
 			{
 				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready! Building when ready...", MessageType.Warning);
-				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.Instance.IsReady, () => Rebuild(scene));
+				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.singleton.IsReady, () => Rebuild(scene));
 				return;
 			}
 

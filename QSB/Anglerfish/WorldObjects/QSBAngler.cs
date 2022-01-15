@@ -18,7 +18,7 @@ namespace QSB.Anglerfish.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.AnglerPrefab).SpawnWithServerAuthority();
+				Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab).SpawnWithServerAuthority();
 			}
 
 			StartDelayedReady();

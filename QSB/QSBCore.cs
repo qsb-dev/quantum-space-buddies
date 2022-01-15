@@ -151,7 +151,7 @@ namespace QSB
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 			Port = config.GetSettingsValue<int>("port");
-			if (QSBNetworkManager.Instance != null)
+			if (QSBNetworkManager.singleton != null)
 			{
 				// todo QSBNetworkManager.Instance.networkPort = Port;
 			}
