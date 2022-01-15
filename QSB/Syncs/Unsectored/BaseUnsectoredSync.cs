@@ -9,5 +9,6 @@ namespace QSB.Syncs.Unsectored
 		public override bool DestroyAttachedObject => false;
 
 		protected override void Serialize(NetworkWriter writer, bool initialState) { }
+		protected override void Deserialize(NetworkReader reader, bool initialState) { }
 	}
 }
