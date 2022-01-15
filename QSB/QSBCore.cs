@@ -57,7 +57,7 @@ namespace QSB
 		public static AssetBundle DebugAssetBundle { get; private set; }
 		public static AssetBundle TextAssetsBundle { get; private set; }
 		public static bool IsHost => NetworkServer.active;
-		public static bool IsInMultiplayer => NetworkManager.singleton.isNetworkActive;
+		public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
 		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")

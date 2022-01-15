@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace QSB.Animation.Player
 {
+
 	public class AnimationSync : PlayerSyncObject
 	{
 		private RuntimeAnimatorController _suitedAnimController;
@@ -33,10 +34,10 @@ namespace QSB.Animation.Player
 
 		protected void Awake()
 		{
-			InvisibleAnimator = gameObject.AddComponent<Animator>();
-			NetworkAnimator = gameObject.AddComponent<NetworkAnimator>();
+			InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
+			NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 			NetworkAnimator.enabled = false;
-			NetworkAnimator.animator = InvisibleAnimator;
+			// NetworkAnimator.animator = InvisibleAnimator;
 
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
