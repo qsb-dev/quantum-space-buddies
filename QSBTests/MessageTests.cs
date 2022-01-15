@@ -29,9 +29,7 @@ namespace QSBTests
 				var fields = type.GetFields(Util.Flags)
 					.Select(x => module.ImportReference(x));
 
-				var constructors = type.GetConstructors(Util.Flags);
-				var constructor_ = constructors.Length > 1 ? constructors.Single(x => x.GetParameters().Length != 0) : constructors[0];
-				var constructor = module.ImportReference(constructor_).Resolve();
+				var constructor = module.ImportReference(type.GetConstructors(Util.Flags).Single()).Resolve();
 				var serialize = module.ImportReference(type.GetMethod("Serialize", Util.Flags)).Resolve();
 				var deserialize = module.ImportReference(type.GetMethod("Deserialize", Util.Flags)).Resolve();
 
