@@ -15,6 +15,7 @@ namespace QSB.TriggerSync
 			QSBWorldSync.Init<QSBVesselCageTrigger, VesselWarpController>(x => x._cageTrigger);
 			QSBWorldSync.Init<QSBInflationTrigger, CosmicInflationController>(x => x._smokeSphereTrigger);
 			QSBWorldSync.Init<QSBMaskZoneTrigger, MaskZoneController>(x => x._maskZoneTrigger);
+			QSBWorldSync.Init<QSBEyeShuttleTrigger, EyeShuttleController>(x => x._shuttleVolume);
 		}
 	}
 }
