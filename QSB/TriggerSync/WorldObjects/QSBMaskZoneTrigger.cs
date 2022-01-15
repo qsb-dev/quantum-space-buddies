@@ -13,7 +13,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		protected override void OnEnter(PlayerInfo player)
 		{
-			if (Occupants.Count == 1)
+			if (Occupants.Count == 1 && !TriggerOwner._shuttle.HasLaunched())
 			{
 				TriggerOwner._whiteSphere.SetActive(true);
 				TriggerOwner._groundSignal.SetSignalActivation(false);
