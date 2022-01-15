@@ -81,14 +81,18 @@ namespace Mirror
             lastIntParameters = new int[parameters.Length];
             lastFloatParameters = new float[parameters.Length];
             lastBoolParameters = new bool[parameters.Length];
-
-            animationHash = new int[animator.layerCount];
-            transitionHash = new int[animator.layerCount];
-            layerWeight = new float[animator.layerCount];
         }
 
         void FixedUpdate()
         {
+            // QSB: move array init here since layerCount will not be 0
+            if (animationHash == null)
+            {
+                animationHash = new int[animator.layerCount];
+                transitionHash = new int[animator.layerCount];
+                layerWeight = new float[animator.layerCount];
+            }
+
             if (!SendMessagesAllowed)
                 return;
 

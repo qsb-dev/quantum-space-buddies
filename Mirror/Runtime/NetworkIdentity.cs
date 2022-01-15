@@ -295,7 +295,7 @@ namespace Mirror
         // NetworkBehaviour components are initialized in Awake once.
         // Changing them at runtime would get client & server out of sync.
         // BUT internal so tests can add them after creating the NetworkIdentity
-        internal void InitializeNetworkBehaviours()
+        public void InitializeNetworkBehaviours()
         {
             // Get all NetworkBehaviours
             // (never null. GetComponents returns [] if none found)
