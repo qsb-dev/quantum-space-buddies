@@ -153,7 +153,7 @@ namespace QSB
 			Port = config.GetSettingsValue<int>("port");
 			if (QSBNetworkManager.Instance != null)
 			{
-				QSBNetworkManager.Instance.networkPort = Port;
+				// todo QSBNetworkManager.Instance.networkPort = Port;
 			}
 		}
 	}

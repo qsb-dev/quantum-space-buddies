@@ -286,16 +286,10 @@ namespace QSB.Menus
 
 		private void Host()
 		{
-			if (QSBNetworkManager.Instance.StartHost() != null)
-			{
-				SetButtonActive(DisconnectButton, true);
-				SetButtonActive(HostButton, false);
-				SetButtonActive(QuitButton, false);
-			}
-			else
-			{
-				OpenInfoPopup($"Failed to start server.", "OK");
-			}
+			QSBNetworkManager.Instance.StartHost();
+			SetButtonActive(DisconnectButton, true);
+			SetButtonActive(HostButton, false);
+			SetButtonActive(QuitButton, false);
 
 			var text = QSBCore.IsHost
 				? "STOP HOSTING"
