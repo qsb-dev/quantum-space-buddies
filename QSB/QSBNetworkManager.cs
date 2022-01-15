@@ -1,6 +1,7 @@
 ﻿using kcp2k;
 using Mirror;
 using OWML.Common;
+using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
@@ -22,6 +23,7 @@ using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -52,6 +54,9 @@ namespace QSB
 
 		public override void Awake()
 		{
+			NetworkLoop.RuntimeInitializeOnLoad();
+			Assembly.GetExecutingAssembly().GetType("Mirror.GeneratedNetworkCode").Invoke<object>("InitReadWriters");
+
 			transport = gameObject.AddComponent<KcpTransport>();
 			base.Awake();
 
