@@ -8,7 +8,7 @@ namespace QSB.Anglerfish.WorldObjects
 {
 	public class QSBAngler : WorldObject<AnglerfishController>
 	{
-		public AnglerTransformSync TransformSync;
+		public AnglerTransformSync2 TransformSync;
 		public Transform TargetTransform;
 		public Vector3 TargetVelocity { get; private set; }
 

@@ -253,17 +253,13 @@ namespace QSB
 					continue;
 				}
 
-				if (!qsbOrb.TransformSync.enabled)
-				{
-					continue;
-				}
-
-				var identity = qsbOrb.TransformSync.NetIdentity;
-				if (identity.ClientAuthorityOwner == conn)
-				{
-					qsbOrb.SetDragging(false);
-					qsbOrb.SendMessage(new OrbDragMessage(false));
-				}
+				var identity = qsbOrb.TransformSync.netIdentity;
+				// todo
+				// if (identity.connectionToClient == conn)
+				// {
+				// 	qsbOrb.SetDragging(false);
+				// 	qsbOrb.SendMessage(new OrbDragMessage(false));
+				// }
 			}
 
 			AuthorityManager.OnDisconnect(conn.GetPlayerId());

@@ -53,7 +53,7 @@ namespace QSB.OrbSync.TransformSync
 			}
 
 			_qsbOrb = orb.GetWorldObject<QSBOrb>();
-			// todo _qsbOrb.TransformSync = this;
+			_qsbOrb.TransformSync = this;
 
 			base.Init();
 			_attachedBody = AttachedTransform.GetAttachedOWRigidbody();
@@ -125,7 +125,7 @@ namespace QSB.OrbSync.TransformSync
 			}
 
 			_qsbOrb = orb.GetWorldObject<QSBOrb>();
-			_qsbOrb.TransformSync = this;
+			// _qsbOrb.TransformSync = this;
 
 			base.Init();
 			_attachedBody = AttachedObject.GetAttachedOWRigidbody();

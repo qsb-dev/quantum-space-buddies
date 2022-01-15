@@ -47,7 +47,7 @@ namespace QSB.Anglerfish.TransformSync
 		protected override void Init()
 		{
 			_qsbAngler = AnglerManager.Anglers[_instances.IndexOf(this)].GetWorldObject<QSBAngler>();
-			// todo _qsbAngler.TransformSync = this;
+			_qsbAngler.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
@@ -162,7 +162,7 @@ namespace QSB.Anglerfish.TransformSync
 		protected override void Init()
 		{
 			_qsbAngler = AnglerManager.Anglers[_instances.IndexOf(this)].GetWorldObject<QSBAngler>();
-			_qsbAngler.TransformSync = this;
+			// _qsbAngler.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);

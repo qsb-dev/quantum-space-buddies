@@ -48,7 +48,7 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void Init()
 		{
 			_qsbJellyfish = JellyfishManager.Jellyfish[_instances.IndexOf(this)].GetWorldObject<QSBJellyfish>();
-			// todo _qsbJellyfish.TransformSync = this;
+			_qsbJellyfish.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
@@ -202,7 +202,7 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void Init()
 		{
 			_qsbJellyfish = JellyfishManager.Jellyfish[_instances.IndexOf(this)].GetWorldObject<QSBJellyfish>();
-			_qsbJellyfish.TransformSync = this;
+			// _qsbJellyfish.TransformSync = this;
 
 			base.Init();
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);

@@ -91,6 +91,7 @@ namespace QSB.AuthoritySync
 
 		#endregion
 	}
+
 	public static class AuthorityManager
 	{
 		#region host only
@@ -173,7 +174,6 @@ namespace QSB.AuthoritySync
 		#region any client
 
 		public static void SendAuthQueueMessage(this QNetworkIdentity identity, AuthQueueAction action) =>
-			// todo REMOVE new AuthQueueMessage(identity.NetId, action).Send();
 			throw new System.NotImplementedException();
 
 		#endregion
