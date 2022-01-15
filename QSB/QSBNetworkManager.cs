@@ -56,6 +56,7 @@ namespace QSB
 			PlayerName = GetPlayerName();
 
 			playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
+			playerPrefab.GetRequiredComponent<NetworkIdentity>().assetId = new Guid(BitConverter.GetBytes(1));
 
 			ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
 			spawnPrefabs.Add(ShipPrefab);
