@@ -2,7 +2,6 @@
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
-using QuantumUNET;
 using System.Linq;
 
 namespace QSB.Player.Messages
@@ -43,7 +42,7 @@ namespace QSB.Player.Messages
 		}
 
 		private void KickPlayer()
-			=> QNetworkServer.connections.First(x => PlayerId == x.GetPlayerId()).Disconnect();
+			=> NetworkServer.connections.Values.First(x => PlayerId == x.GetPlayerId()).Disconnect();
 
 		public override void OnReceiveRemote()
 		{

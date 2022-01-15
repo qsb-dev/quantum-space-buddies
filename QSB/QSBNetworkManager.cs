@@ -20,7 +20,6 @@ using QSB.Tools.ProbeTool.TransformSync;
 using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using System;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -177,7 +176,7 @@ namespace QSB
 				QSBWorldSync.Init();
 			}
 
-			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
@@ -215,7 +214,7 @@ namespace QSB
 
 			if (_everConnected)
 			{
-				var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+				var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 				QSBPatchManager.DoUnpatchType(specificType);
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}

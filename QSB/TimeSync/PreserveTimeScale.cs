@@ -1,8 +1,8 @@
-﻿using QuantumUNET;
+﻿using Mirror;
 
 namespace QSB.TimeSync
 {
-	public class PreserveTimeScale : QNetworkBehaviour
+	public class PreserveTimeScale : NetworkBehaviour
 	{
 		public void Start()
 		{
@@ -10,7 +10,7 @@ namespace QSB.TimeSync
 			//QSBCore.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
 
 			// Allow server to sleep at campfires
-			if (IsServer)
+			if (isServer)
 			{
 				return;
 			}

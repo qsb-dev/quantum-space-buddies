@@ -1,7 +1,7 @@
-﻿using QSB.Anglerfish.TransformSync;
+﻿using Mirror;
+using QSB.Anglerfish.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.Anglerfish.WorldObjects
@@ -29,7 +29,7 @@ namespace QSB.Anglerfish.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Destroy(TransformSync.gameObject);
+				NetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
 

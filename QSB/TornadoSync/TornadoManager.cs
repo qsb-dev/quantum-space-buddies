@@ -1,8 +1,8 @@
-﻿using QSB.TornadoSync.TransformSync;
+﻿using Mirror;
+using QSB.TornadoSync.TransformSync;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 
 namespace QSB.TornadoSync
 {
@@ -21,7 +21,7 @@ namespace QSB.TornadoSync
 
 			foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
 			{
-				QNetworkServer.Destroy(transformSync.gameObject);
+				NetworkServer.Destroy(transformSync.gameObject);
 			}
 
 			var gdBody = Locator._giantsDeep.GetOWRigidbody();

@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using OWML.Common;
-using QuantumUNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,24 +33,6 @@ namespace QSB.Utility
 
 		public static uint GetPlayerId(this NetworkConnection conn) =>
 			conn.identity.netId;
-
-		public static uint GetPlayerId(this QNetworkConnection connection)
-		{
-			if (connection == null)
-			{
-				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.\r\n{Environment.StackTrace}", MessageType.Error);
-				return uint.MaxValue;
-			}
-
-			var playerController = connection.PlayerControllers.FirstOrDefault();
-			if (playerController == null)
-			{
-				DebugLog.ToConsole($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
-				return uint.MaxValue;
-			}
-
-			return playerController.UnetView.NetId.Value;
-		}
 
 		public static void SpawnWithServerAuthority(this GameObject go) =>
 			NetworkServer.Spawn(go, NetworkServer.localConnection);

@@ -67,7 +67,7 @@ namespace QSB.Animation.Player
 			NetworkAnimator.enabled = true;
 			VisibleAnimator = body.GetComponent<Animator>();
 			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
-			if (IsLocalPlayer)
+			if (isLocalPlayer)
 			{
 				Mirror.Init(VisibleAnimator, InvisibleAnimator);
 			}
@@ -130,7 +130,7 @@ namespace QSB.Animation.Player
 		private void InitAccelerationSync()
 		{
 			Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
-			var thrusterModel = HasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
+			var thrusterModel = hasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
 			Player.JetpackAcceleration.Init(thrusterModel);
 		}
 

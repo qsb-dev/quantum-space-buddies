@@ -1,7 +1,7 @@
-﻿using QSB.GeyserSync.Messages;
+﻿using Mirror;
+using QSB.GeyserSync.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
-using QuantumUNET;
 
 namespace QSB.GeyserSync.WorldObjects
 {
@@ -15,7 +15,7 @@ namespace QSB.GeyserSync.WorldObjects
 
 		private void HandleEvent(bool state)
 		{
-			if (QNetworkServer.active)
+			if (QSBCore.IsHost)
 			{
 				this.SendMessage(new GeyserMessage(state));
 			}
