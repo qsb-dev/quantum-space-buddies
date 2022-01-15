@@ -8,7 +8,7 @@ namespace QSB.JellyfishSync.WorldObjects
 {
 	public class QSBJellyfish : WorldObject<JellyfishController>
 	{
-		public JellyfishTransformSync2 TransformSync;
+		public JellyfishTransformSync TransformSync;
 		private AlignWithTargetBody _alignWithTargetBody;
 
 		public override void Init()

@@ -29,7 +29,7 @@ namespace QSB
 {
 	public class QSBNetworkManager : NetworkManager
 	{
-		public static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
+		public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 		public event Action OnNetworkManagerReady;
 		public event Action OnClientConnected;

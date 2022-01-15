@@ -8,7 +8,7 @@ namespace QSB.OrbSync.WorldObjects
 {
 	public class QSBOrb : WorldObject<NomaiInterfaceOrb>
 	{
-		public NomaiOrbTransformSync2 TransformSync;
+		public NomaiOrbTransformSync TransformSync;
 
 		public override void Init()
 		{
