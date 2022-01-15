@@ -117,9 +117,9 @@ namespace QSB
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
-			// todo networkPort = QSBCore.Port;
+			// TODO MIRROR networkPort = QSBCore.Port;
 			maxConnections = MaxConnections;
-			// todo?
+			// TODO MIRROR?
 			// customConfig = true;
 			// connectionConfig.AddChannel(QosType.Reliable);
 			// connectionConfig.AddChannel(QosType.Unreliable);
@@ -156,7 +156,7 @@ namespace QSB
 		}
 
 		public override void OnClientError(Exception exception)
-			=> OnClientErrorThrown?.SafeInvoke(default(NetworkError) /*todo bruh*/);
+			=> OnClientErrorThrown?.SafeInvoke(default(NetworkError) /*TODO MIRROR bruh*/);
 
 		public override void OnClientConnect() // Called on the client when connecting to a server
 		{
@@ -227,7 +227,7 @@ namespace QSB
 		public override void OnClientDisconnect()
 		{
 			base.OnClientDisconnect();
-			OnClientDisconnected?.SafeInvoke(default(NetworkError) /*todo bruh*/);
+			OnClientDisconnected?.SafeInvoke(default(NetworkError) /*TODO MIRROR bruh*/);
 		}
 
 		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
