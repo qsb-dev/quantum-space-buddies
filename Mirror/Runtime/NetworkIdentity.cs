@@ -213,7 +213,7 @@ namespace Mirror
                 // we would use 'new Guid("")'
                 return string.IsNullOrWhiteSpace(m_AssetId) ? Guid.Empty : new Guid(m_AssetId);
             }
-            internal set
+            set
             {
                 string newAssetIdString = value == Guid.Empty ? string.Empty : value.ToString("N");
                 string oldAssetIdString = m_AssetId;
