@@ -22,8 +22,6 @@ namespace QSB.ShipSync
 		public ShipTractorBeamSwitch ShipTractorBeam;
 		public ShipCockpitController CockpitController;
 		public ShipElectricalComponent ShipElectricalComponent;
-		public bool HasAuthority
-			=> ShipTransformSync.LocalInstance.hasAuthority;
 		public uint CurrentFlyer
 		{
 			get => _currentFlyer;

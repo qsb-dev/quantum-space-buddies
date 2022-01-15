@@ -215,7 +215,7 @@ namespace QSB.ShipSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.OnImpact))]
 		public static bool ShipDamageController_OnImpact()
-			=> ShipTransformSync.LocalInstance == null || ShipManager.Instance.HasAuthority;
+			=> ShipTransformSync.LocalInstance == null || ShipTransformSync.LocalInstance.hasAuthority;
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
