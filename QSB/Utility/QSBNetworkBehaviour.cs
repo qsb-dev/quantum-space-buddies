@@ -6,7 +6,7 @@ namespace QSB.Utility
 	public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	{
 		protected virtual float SendInterval => 0.1f;
-		protected virtual bool Unreliable => true;
+		protected virtual bool UseReliableRpc => false;
 
 		private double _lastSendTime;
 
@@ -68,28 +68,28 @@ namespace QSB.Utility
 				Serialize(writer, false);
 
 				var data = writer.ToArraySegment();
-				if (Unreliable)
-				{
-					CmdSendDataUnreliable(data);
-				}
-				else
+				if (UseReliableRpc)
 				{
 					CmdSendDataReliable(data);
 				}
+				else
+				{
+					CmdSendDataUnreliable(data);
+				}
 			}
 		}
-
-		[Command(channel = Channels.Unreliable, requiresAuthority = true)]
-		private void CmdSendDataUnreliable(ArraySegment<byte> data) => RpcSendDataUnreliable(data);
-
-		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
-		private void RpcSendDataUnreliable(ArraySegment<byte> data) => OnData(data);
 
 		[Command(channel = Channels.Reliable, requiresAuthority = true)]
 		private void CmdSendDataReliable(ArraySegment<byte> data) => RpcSendDataReliable(data);
 
 		[ClientRpc(channel = Channels.Reliable, includeOwner = false)]
 		private void RpcSendDataReliable(ArraySegment<byte> data) => OnData(data);
+
+		[Command(channel = Channels.Unreliable, requiresAuthority = true)]
+		private void CmdSendDataUnreliable(ArraySegment<byte> data) => RpcSendDataUnreliable(data);
+
+		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
+		private void RpcSendDataUnreliable(ArraySegment<byte> data) => OnData(data);
 
 		private void OnData(ArraySegment<byte> data)
 		{
