@@ -9,6 +9,78 @@ using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync
 {
+	public class NomaiOrbTransformSync2 : UnsectoredTransformSync2
+	{
+		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
+		public override bool UseInterpolation => true;
+		public override bool IsPlayerObject => false;
+		protected override float DistanceLeeway => 1f;
+
+		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
+		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
+
+		private OWRigidbody _attachedBody;
+		private QSBOrb _qsbOrb;
+		private static readonly List<NomaiOrbTransformSync2> _instances = new();
+
+		public override void Start()
+		{
+			_instances.Add(this);
+			base.Start();
+		}
+
+		protected override void OnDestroy()
+		{
+			_instances.Remove(this);
+			base.OnDestroy();
+
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
+		}
+
+		protected override void Init()
+		{
+			var index = _instances.IndexOf(this);
+			if (!OrbManager.Orbs.TryGet(index, out var orb))
+			{
+				DebugLog.ToConsole($"Error - No orb at index {index}.", MessageType.Error);
+				return;
+			}
+
+			_qsbOrb = orb.GetWorldObject<QSBOrb>();
+			// todo _qsbOrb.TransformSync = this;
+
+			base.Init();
+			_attachedBody = AttachedTransform.GetAttachedOWRigidbody();
+			SetReferenceTransform(_attachedBody.GetOrigParent());
+
+			/*
+			if (_attachedBody.GetOrigParent() == Locator.GetRootTransform())
+			{
+				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
+				enabled = false;
+				return;
+			}
+			*/
+
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue();
+			}
+
+			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
+			netIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		}
+
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+	}
 	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
 		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
