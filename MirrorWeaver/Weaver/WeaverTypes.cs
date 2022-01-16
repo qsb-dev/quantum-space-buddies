@@ -1,6 +1,5 @@
 using System;
 using Mono.Cecil;
-using UnityEditor;
 using UnityEngine;
 
 namespace Mirror.Weaver
@@ -145,17 +144,6 @@ namespace Mirror.Weaver
                        md.HasGenericParameters;
             }),
             ref WeavingFailed);
-
-#if UNITY_EDITOR
-            // [InitializeOnLoadMethod]
-            // 'UnityEditor' is not available in builds.
-            // we can only import this attribute if we are in an Editor assembly.
-            if (Helpers.IsEditorAssembly(assembly))
-            {
-                TypeReference initializeOnLoadMethodAttributeRef = Import(typeof(InitializeOnLoadMethodAttribute));
-                initializeOnLoadMethodAttribute = initializeOnLoadMethodAttributeRef.Resolve();
-            }
-#endif
 
             // [RuntimeInitializeOnLoadMethod]
             TypeReference runtimeInitializeOnLoadMethodAttributeRef = Import(typeof(RuntimeInitializeOnLoadMethodAttribute));

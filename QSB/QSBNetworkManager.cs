@@ -23,6 +23,7 @@ using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -54,8 +55,13 @@ namespace QSB
 
 		public override void Awake()
 		{
-			NetworkLoop.RuntimeInitializeOnLoad();
-			Assembly.GetExecutingAssembly().GetType("Mirror.GeneratedNetworkCode").Invoke<object>("InitReadWriters");
+			AppDomain.CurrentDomain.GetAssemblies()
+				.Where(x => x.GetName().Name.StartsWith("Mirror"))
+				.Append(typeof(QSBNetworkManager).Assembly)
+				.SelectMany(x => x.GetTypes())
+				.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+				.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
+				.ForEach(x => x.Invoke(null, null));
 
 			transport = gameObject.AddComponent<KcpTransport>();
 			base.Awake();
@@ -63,7 +69,7 @@ namespace QSB
 			PlayerName = GetPlayerName();
 
 			playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
-			playerPrefab.GetRequiredComponent<NetworkIdentity>().assetId = 1.ToGuid();
+			playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
 
 			ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
 			spawnPrefabs.Add(ShipPrefab);
@@ -116,7 +122,7 @@ namespace QSB
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<NetworkIdentity>().assetId = assetId.ToGuid();
+			template.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
 			template.AddComponent(transformSyncType);
 			return template;
 		}

@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
+using OWML.Utils;
 using QSB.Animation.Player.Messages;
 using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
@@ -73,7 +74,7 @@ namespace QSB.Animation.Player
 			}
 
 			NetworkAnimator.enabled = true;
-			NetworkAnimator.Awake();
+			NetworkAnimator.Invoke("Awake");
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
 			_suitedAnimController = playerAnimController._baseAnimController;
@@ -296,7 +297,7 @@ namespace QSB.Animation.Player
 			}
 
 			Mirror.RebuildFloatParams();
-			NetworkAnimator.Awake();
+			NetworkAnimator.Invoke("Awake");
 		}
 	}
 }
