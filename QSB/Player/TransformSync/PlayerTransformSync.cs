@@ -15,7 +15,7 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SectoredTransformSync
 	{
-		public override bool IsPlayerObject => true;
+		protected override bool IsPlayerObject => true;
 
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
@@ -267,8 +267,7 @@ namespace QSB.Player.TransformSync
 			base.OnRenderObject();
 
 			if (!QSBCore.ShowLinesInDebug
-				|| !WorldObjectManager.AllObjectsReady
-				|| !IsReady
+				|| !IsInitialized
 				|| ReferenceTransform == null)
 			{
 				return;
@@ -286,12 +285,12 @@ namespace QSB.Player.TransformSync
 			Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 		}
 
-		public override bool IsReady
+		protected override bool IsReady
 			=> AttachedTransform != null
 				|| Locator.GetPlayerTransform() != null;
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
-		public override bool UseInterpolation => true;
+		protected override bool UseInterpolation => true;
 	}
 }

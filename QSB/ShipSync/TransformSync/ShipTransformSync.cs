@@ -10,12 +10,12 @@ namespace QSB.ShipSync.TransformSync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
 
-		public override bool IsPlayerObject => false;
+		protected override bool IsPlayerObject => false;
 
 		private const int ForcePositionAfterUpdates = 50;
 		private int _updateCount;
 
-		public override bool IsReady
+		protected override bool IsReady
 			=> Locator.GetShipBody() != null;
 
 		public override void Start()
@@ -94,6 +94,6 @@ namespace QSB.ShipSync.TransformSync
 			rigidbody._currentVelocity = newVelocity;
 		}
 
-		public override bool UseInterpolation => false;
+		protected override bool UseInterpolation => false;
 	}
 }

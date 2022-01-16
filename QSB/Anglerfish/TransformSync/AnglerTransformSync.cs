@@ -10,9 +10,9 @@ namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => false;
-		public override bool IsPlayerObject => false;
+		protected override bool IsReady => WorldObjectManager.AllObjectsAdded;
+		protected override bool UseInterpolation => false;
+		protected override bool IsPlayerObject => false;
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new();
@@ -97,8 +97,7 @@ namespace QSB.Anglerfish.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !WorldObjectManager.AllObjectsReady
-				|| !IsReady
+				|| !IsInitialized
 				|| AttachedRigidbody == null
 				|| AttachedRigidbody.IsSuspended())
 			{

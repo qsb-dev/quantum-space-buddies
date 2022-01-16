@@ -13,11 +13,11 @@ namespace QSB.TornadoSync.TransformSync
 {
 	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsReady
+		protected override bool IsReady => WorldObjectManager.AllObjectsReady
 			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_bodyIndex)
 			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_refBodyIndex);
-		public override bool UseInterpolation => false;
-		public override bool IsPlayerObject => false;
+		protected override bool UseInterpolation => false;
+		protected override bool IsPlayerObject => false;
 
 		protected override OWRigidbody InitAttachedRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
 

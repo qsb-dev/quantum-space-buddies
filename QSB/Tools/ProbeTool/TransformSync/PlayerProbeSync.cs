@@ -11,9 +11,9 @@ namespace QSB.Tools.ProbeTool.TransformSync
 	public class PlayerProbeSync : SectoredTransformSync
 	{
 		protected override float DistanceLeeway => 10f;
-		public override bool UseInterpolation => true;
-		public override bool AllowDisabledAttachedObject => true;
-		public override bool IsPlayerObject => true;
+		protected override bool UseInterpolation => true;
+		protected override bool AllowDisabledAttachedObject => true;
+		protected override bool IsPlayerObject => true;
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
@@ -111,6 +111,6 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return true;
 		}
 
-		public override bool IsReady => AttachedTransform != null || Locator.GetProbe() != null;
+		protected override bool IsReady => AttachedTransform != null || Locator.GetProbe() != null;
 	}
 }

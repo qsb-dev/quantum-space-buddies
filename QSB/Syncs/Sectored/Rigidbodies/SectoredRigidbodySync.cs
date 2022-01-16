@@ -7,7 +7,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 {
 	public abstract class SectoredRigidbodySync : BaseSectoredSync
 	{
-		public override bool DestroyAttachedObject => false;
+		protected override bool DestroyAttachedObject => false;
 
 		public const float PositionMovedThreshold = 0.05f;
 		public const float AngleRotatedThreshold = 0.05f;

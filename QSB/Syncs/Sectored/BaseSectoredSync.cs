@@ -9,8 +9,8 @@ namespace QSB.Syncs.Sectored
 {
 	public abstract class BaseSectoredSync : SyncBase
 	{
-		public override bool AllowDisabledAttachedObject => false;
-		public override bool AllowNullReferenceTransform => true;
+		protected override bool AllowDisabledAttachedObject => false;
+		protected override bool AllowNullReferenceTransform => true;
 
 		public QSBSector ReferenceSector { get; private set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
@@ -36,18 +36,6 @@ namespace QSB.Syncs.Sectored
 		{
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 			SetReferenceSector(null);
-		}
-
-		protected override void Update()
-		{
-			if (ReferenceSector != null && ReferenceSector.Transform != ReferenceTransform)
-			{
-				DebugLog.ToConsole($"Warning - {LogName} : ReferenceSector.Transform was different to ReferenceTransform. Correcting...", MessageType.Warning);
-				SetReferenceTransform(ReferenceSector.Transform);
-			}
-
-			// todo all the check in base
-			base.Update();
 		}
 
 		protected override void Serialize(NetworkWriter writer)

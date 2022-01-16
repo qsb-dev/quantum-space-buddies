@@ -11,9 +11,9 @@ namespace QSB.JellyfishSync.TransformSync
 {
 	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => false;
-		public override bool IsPlayerObject => false;
+		protected override bool IsReady => WorldObjectManager.AllObjectsAdded;
+		protected override bool UseInterpolation => false;
+		protected override bool IsPlayerObject => false;
 
 		private QSBJellyfish _qsbJellyfish;
 		private static readonly List<JellyfishTransformSync> _instances = new();
@@ -144,8 +144,7 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !WorldObjectManager.AllObjectsReady
-				|| !IsReady
+				|| !IsInitialized
 				|| AttachedRigidbody == null
 				|| ReferenceTransform == null
 				|| AttachedRigidbody.IsSuspended())

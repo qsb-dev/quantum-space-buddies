@@ -11,9 +11,9 @@ namespace QSB.OrbSync.TransformSync
 {
 	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => true;
-		public override bool IsPlayerObject => false;
+		protected override bool IsReady => WorldObjectManager.AllObjectsAdded;
+		protected override bool UseInterpolation => true;
+		protected override bool IsPlayerObject => false;
 		protected override float DistanceLeeway => 1f;
 
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;

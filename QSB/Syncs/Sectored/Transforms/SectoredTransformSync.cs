@@ -8,7 +8,7 @@ namespace QSB.Syncs.Sectored.Transforms
 {
 	public abstract class SectoredTransformSync : BaseSectoredSync
 	{
-		public override bool DestroyAttachedObject => true;
+		protected override bool DestroyAttachedObject => true;
 
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();

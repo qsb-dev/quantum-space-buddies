@@ -46,12 +46,13 @@ namespace QSB.Syncs
 			}
 		}
 
-		public abstract bool IsReady { get; }
-		public abstract bool UseInterpolation { get; }
-		public abstract bool AllowDisabledAttachedObject { get; }
-		public abstract bool AllowNullReferenceTransform { get; }
-		public abstract bool DestroyAttachedObject { get; }
-		public abstract bool IsPlayerObject { get; }
+		protected abstract bool IsReady { get; }
+		protected abstract bool UseInterpolation { get; }
+		protected abstract bool AllowDisabledAttachedObject { get; }
+		protected abstract bool AllowNullReferenceTransform { get; }
+		protected abstract bool DestroyAttachedObject { get; }
+		protected abstract bool IsPlayerObject { get; }
+		protected virtual bool OnlyUpdateOnDeserialize => false;
 
 		public Transform AttachedTransform { get; private set; }
 		public Transform ReferenceTransform { get; private set; }
@@ -69,6 +70,8 @@ namespace QSB.Syncs
 		protected Quaternion SmoothRotation;
 
 		protected abstract Transform InitAttachedTransform();
+		// protected abstract bool GetFromAttached();
+		// protected abstract bool ApplyToAttached();
 		protected abstract bool UpdateTransform();
 
 		public virtual void Start()
@@ -114,7 +117,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
 
-		protected override void Update()
+		protected sealed override void Update()
 		{
 			if (!IsInitialized && IsReady && _baseIsReady)
 			{
