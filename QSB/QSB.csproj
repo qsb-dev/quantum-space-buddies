@@ -69,6 +69,7 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
+    <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
     <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
