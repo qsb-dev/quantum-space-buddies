@@ -2,8 +2,8 @@
 {
 	public abstract class BaseUnsectoredSync : SyncBase
 	{
-		public override bool IgnoreDisabledAttachedObject => false;
-		public override bool IgnoreNullReferenceTransform => false;
+		public override bool AllowDisabledAttachedObject => false;
+		public override bool AllowNullReferenceTransform => false;
 		public override bool DestroyAttachedObject => false;
 	}
 }

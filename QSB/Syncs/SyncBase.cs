@@ -48,8 +48,8 @@ namespace QSB.Syncs
 
 		public abstract bool IsReady { get; }
 		public abstract bool UseInterpolation { get; }
-		public abstract bool IgnoreDisabledAttachedObject { get; }
-		public abstract bool IgnoreNullReferenceTransform { get; }
+		public abstract bool AllowDisabledAttachedObject { get; }
+		public abstract bool AllowNullReferenceTransform { get; }
 		public abstract bool DestroyAttachedObject { get; }
 		public abstract bool IsPlayerObject { get; }
 
@@ -146,12 +146,12 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (!AttachedTransform.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
+			if (!AttachedTransform.gameObject.activeInHierarchy && !AllowDisabledAttachedObject)
 			{
 				return;
 			}
 
-			if (ReferenceTransform == null && !IgnoreNullReferenceTransform)
+			if (ReferenceTransform == null && !AllowNullReferenceTransform)
 			{
 				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 				return;

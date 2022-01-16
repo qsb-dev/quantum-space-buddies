@@ -9,8 +9,8 @@ namespace QSB.Syncs.Sectored
 {
 	public abstract class BaseSectoredSync : SyncBase
 	{
-		public override bool IgnoreDisabledAttachedObject => false;
-		public override bool IgnoreNullReferenceTransform => true;
+		public override bool AllowDisabledAttachedObject => false;
+		public override bool AllowNullReferenceTransform => true;
 
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
