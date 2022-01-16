@@ -3,6 +3,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 	{
 		private static bool _flickering;
 		private static float _flickerOutTime;
+
+		public static List<PlayerInfo> WentOnSolanumsWildRide = new();
 
 		public void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
