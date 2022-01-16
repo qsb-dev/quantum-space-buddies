@@ -1,11 +1,13 @@
 ﻿using HarmonyLib;
-using OWML.Utils;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.ShipSync.Messages;
+using QSB.ShipSync.Messages.Component;
+using QSB.ShipSync.Messages.Hull;
+using QSB.ShipSync.TransformSync;
+using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using QSB.ShipSync.TransformSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches
@@ -22,10 +24,10 @@ namespace QSB.ShipSync.Patches
 			if (!PlayerState.IsInsideShip())
 			{
 				ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
-				QSBEventManager.FireEvent(EventNames.QSBEnableFunnel);
+				new FunnelEnableMessage().Send();
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBHatchState, true);
+			new HatchMessage(true).Send();
 			return true;
 		}
 
@@ -35,7 +37,7 @@ namespace QSB.ShipSync.Patches
 		{
 			if (hitObj.CompareTag("PlayerDetector"))
 			{
-				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
+				new HatchMessage(false).Send();
 			}
 
 			return true;
@@ -47,9 +49,9 @@ namespace QSB.ShipSync.Patches
 		{
 			if (!__instance._isPlayerInShip && __instance._functional && hitCollider.CompareTag("PlayerDetector") && !ShipManager.Instance.HatchController._hatchObject.activeSelf)
 			{
-				ShipManager.Instance.HatchController.Invoke("CloseHatch");
+				ShipManager.Instance.HatchController.CloseHatch();
 				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
-				QSBEventManager.FireEvent(EventNames.QSBHatchState, false);
+				new HatchMessage(false).Send();
 			}
 
 			return false;
@@ -57,7 +59,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(SingleInteractionVolume), nameof(SingleInteractionVolume.UpdateInteractVolume))]
-		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance) => throw new NotImplementedException();
+		public static void SingleInteractionVolume_UpdateInteractVolume_Stub(object instance) { }
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(InteractZone), nameof(InteractZone.UpdateInteractVolume))]
@@ -93,7 +95,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnEnterShip))]
-		public static void ShipComponent_OnEnterShip_Stub(object instance) => throw new NotImplementedException();
+		public static void ShipComponent_OnEnterShip_Stub(object instance) { }
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnEnterShip))]
@@ -106,7 +108,7 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.OnExitShip))]
-		public static void ShipComponent_OnExitShip_Stub(object instance) => throw new NotImplementedException();
+		public static void ShipComponent_OnExitShip_Stub(object instance) { }
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipElectricalComponent), nameof(ShipElectricalComponent.OnExitShip))]
@@ -126,24 +128,27 @@ namespace QSB.ShipSync.Patches
 				return false;
 			}
 
+			var qsbShipComponent = __instance.GetWorldObject<QSBShipComponent>();
 			if (damaged)
 			{
 				__instance._damaged = true;
 				__instance._repairFraction = 0f;
-				__instance.GetType().GetAnyMethod("OnComponentDamaged").Invoke(__instance, null);
-				__instance.RaiseEvent("OnDamaged", __instance);
-				QSBEventManager.FireEvent(EventNames.QSBComponentDamaged, __instance);
+				__instance.OnComponentDamaged();
+				__instance.RaiseEvent(nameof(__instance.OnDamaged), __instance);
+				qsbShipComponent
+					.SendMessage(new ComponentDamagedMessage());
 			}
 			else
 			{
 				__instance._damaged = false;
 				__instance._repairFraction = 1f;
-				__instance.GetType().GetAnyMethod("OnComponentRepaired").Invoke(__instance, null);
-				__instance.RaiseEvent("OnRepaired", __instance);
-				QSBEventManager.FireEvent(EventNames.QSBComponentRepaired, __instance);
+				__instance.OnComponentRepaired();
+				__instance.RaiseEvent(nameof(__instance.OnRepaired), __instance);
+				qsbShipComponent
+					.SendMessage(new ComponentRepairedMessage());
 			}
 
-			__instance.GetType().GetAnyMethod("UpdateColliderState").Invoke(__instance, null);
+			__instance.UpdateColliderState();
 			if (__instance._damageEffect)
 			{
 				__instance._damageEffect.SetEffectBlend(1f - __instance._repairFraction);
@@ -154,50 +159,53 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipHull), nameof(ShipHull.FixedUpdate))]
-		public static bool ShipHull_FixedUpdate(ShipHull __instance, ref ImpactData ____dominantImpact, ref float ____integrity, ref bool ____damaged, DamageEffect ____damageEffect, ShipComponent[] ____components)
+		public static bool ShipHull_FixedUpdate(ShipHull __instance)
 		{
-			if (____dominantImpact != null)
+			if (__instance._dominantImpact != null)
 			{
-				var damage = Mathf.InverseLerp(30f, 200f, ____dominantImpact.speed);
+				var damage = Mathf.InverseLerp(30f, 200f, __instance._dominantImpact.speed);
 				if (damage > 0f)
 				{
 					var num2 = 0.15f;
-					if (damage < num2 && ____integrity > 1f - num2)
+					if (damage < num2 && __instance._integrity > 1f - num2)
 					{
 						damage = num2;
 					}
 
-					____integrity = Mathf.Max(____integrity - damage, 0f);
-					if (!____damaged)
+					__instance._integrity = Mathf.Max(__instance._integrity - damage, 0f);
+					var qsbShipHull = __instance.GetWorldObject<QSBShipHull>();
+					if (!__instance._damaged)
 					{
-						____damaged = true;
-						__instance.RaiseEvent("OnDamaged", __instance);
-						QSBEventManager.FireEvent(EventNames.QSBHullDamaged, __instance);
+						__instance._damaged = true;
+						__instance.RaiseEvent(nameof(__instance.OnDamaged), __instance);
+
+						qsbShipHull
+							.SendMessage(new HullDamagedMessage());
 					}
 
-					if (____damageEffect != null)
+					if (__instance._damageEffect != null)
 					{
-						____damageEffect.SetEffectBlend(1f - ____integrity);
+						__instance._damageEffect.SetEffectBlend(1f - __instance._integrity);
 					}
 
-					QSBEventManager.FireEvent(EventNames.QSBHullChangeIntegrity, __instance, ____integrity);
+					qsbShipHull
+						.SendMessage(new HullChangeIntegrityMessage(__instance._integrity));
 				}
 
-				foreach (var component in ____components)
+				foreach (var component in __instance._components)
 				{
 					if (!(component == null) && !component.isDamaged)
 					{
-						if (component.ApplyImpact(____dominantImpact))
+						if (component.ApplyImpact(__instance._dominantImpact))
 						{
 							break;
 						}
 					}
 				}
 
-				__instance.RaiseEvent("OnImpact", ____dominantImpact, damage);
-				QSBEventManager.FireEvent(EventNames.QSBHullImpact, __instance, ____dominantImpact, damage);
+				__instance.RaiseEvent(nameof(__instance.OnImpact), __instance._dominantImpact, damage);
 
-				____dominantImpact = null;
+				__instance._dominantImpact = null;
 			}
 
 			__instance.enabled = false;
@@ -211,34 +219,35 @@ namespace QSB.ShipSync.Patches
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
-		public static void ShipComponent_RepairTick(ShipComponent __instance, float ____repairFraction)
-		{
-			QSBEventManager.FireEvent(EventNames.QSBComponentRepairTick, __instance, ____repairFraction);
-			return;
-		}
+		public static void ShipComponent_RepairTick(ShipComponent __instance) =>
+			__instance.GetWorldObject<QSBShipComponent>()
+				.SendMessage(new ComponentRepairTickMessage(__instance._repairFraction));
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipHull), nameof(ShipHull.RepairTick))]
-		public static bool ShipHull_RepairTick(ShipHull __instance, ref float ____integrity, ref bool ____damaged, DamageEffect ____damageEffect, float ____repairTime)
+		public static bool ShipHull_RepairTick(ShipHull __instance)
 		{
-			if (!____damaged)
+			if (!__instance._damaged)
 			{
 				return false;
 			}
 
-			____integrity = Mathf.Min(____integrity + (Time.deltaTime / ____repairTime), 1f);
-			QSBEventManager.FireEvent(EventNames.QSBHullRepairTick, __instance, ____integrity);
+			__instance._integrity = Mathf.Min(__instance._integrity + (Time.deltaTime / __instance._repairTime), 1f);
+			var qsbShipHull = __instance.GetWorldObject<QSBShipHull>();
+			qsbShipHull
+				.SendMessage(new HullRepairTickMessage(__instance._integrity));
 
-			if (____integrity >= 1f)
+			if (__instance._integrity >= 1f)
 			{
-				____damaged = false;
-				__instance.RaiseEvent("OnRepaired", __instance);
-				QSBEventManager.FireEvent(EventNames.QSBHullRepaired, __instance);
+				__instance._damaged = false;
+				__instance.RaiseEvent(nameof(__instance.OnRepaired), __instance);
+				qsbShipHull
+					.SendMessage(new HullRepairedMessage());
 			}
 
-			if (____damageEffect != null)
+			if (__instance._damageEffect != null)
 			{
-				____damageEffect.SetEffectBlend(1f - ____integrity);
+				__instance._damageEffect.SetEffectBlend(1f - __instance._integrity);
 			}
 
 			return false;

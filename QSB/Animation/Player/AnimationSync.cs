@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
-using OWML.Utils;
+using QSB.Animation.Player.Messages;
 using QSB.Animation.Player.Thrusters;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QuantumUNET.Components;
@@ -41,9 +41,8 @@ namespace QSB.Animation.Player
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
-		protected override void OnDestroy()
+		protected void OnDestroy()
 		{
-			base.OnDestroy();
 			Destroy(InvisibleAnimator);
 			Destroy(NetworkAnimator);
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
@@ -83,10 +82,10 @@ namespace QSB.Animation.Player
 			}
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
-			_suitedAnimController = AnimControllerPatch.SuitedAnimController;
-			_unsuitedAnimController = playerAnimController.GetValue<AnimatorOverrideController>("_unsuitedAnimOverride");
-			_suitedGraphics = playerAnimController.GetValue<GameObject>("_suitedGroup");
-			_unsuitedGraphics = playerAnimController.GetValue<GameObject>("_unsuitedGroup");
+			_suitedAnimController = playerAnimController._baseAnimController;
+			_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
+			_suitedGraphics = playerAnimController._suitedGroup;
+			_unsuitedGraphics = playerAnimController._unsuitedGroup;
 		}
 
 		public void InitLocal(Transform body)
@@ -106,13 +105,13 @@ namespace QSB.Animation.Player
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
 			playerAnimController.enabled = false;
 
-			playerAnimController.SetValue("_suitedGroup", new GameObject());
-			playerAnimController.SetValue("_unsuitedGroup", new GameObject());
-			playerAnimController.SetValue("_baseAnimController", null);
-			playerAnimController.SetValue("_unsuitedAnimOverride", null);
-			playerAnimController.SetValue("_rightArmHidden", false);
+			playerAnimController._suitedGroup = new GameObject();
+			playerAnimController._unsuitedGroup = new GameObject();
+			playerAnimController._baseAnimController = null;
+			playerAnimController._unsuitedAnimOverride = null;
+			playerAnimController._rightArmHidden = false;
 
-			var rightArmObjects = playerAnimController.GetValue<GameObject[]>("_rightArmObjects").ToList();
+			var rightArmObjects = playerAnimController._rightArmObjects.ToList();
 			rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
 
 			body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
@@ -143,13 +142,13 @@ namespace QSB.Animation.Player
 
 		private void SuitUp()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerSuited);
+			new ChangeAnimTypeMessage(PlayerId, AnimationType.PlayerSuited).Send();
 			SetAnimationType(AnimationType.PlayerSuited);
 		}
 
 		private void SuitDown()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBChangeAnimType, PlayerId, AnimationType.PlayerUnsuited);
+			new ChangeAnimTypeMessage(PlayerId, AnimationType.PlayerUnsuited).Send();
 			SetAnimationType(AnimationType.PlayerUnsuited);
 		}
 
@@ -206,12 +205,12 @@ namespace QSB.Animation.Player
 					{
 						_unsuitedGraphics?.SetActive(false);
 					}
-					
+
 					if (_suitedGraphics != null)
 					{
 						_suitedGraphics?.SetActive(true);
 					}
-					
+
 					break;
 
 				case AnimationType.PlayerUnsuited:
@@ -273,7 +272,7 @@ namespace QSB.Animation.Player
 				{
 					VisibleAnimator.SetTrigger("Playing");
 				}
-				
+
 				if (InvisibleAnimator != null)
 				{
 					InvisibleAnimator.SetTrigger("Playing");

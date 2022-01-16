@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.Messaging;
+using QSB.Tools.ProbeLauncherTool.Messages;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool
@@ -13,6 +14,10 @@ namespace QSB.Tools.ProbeLauncherTool
 			_attachedLauncher.OnLaunchProbe += OnLaunchProbe;
 		}
 
-		private void OnLaunchProbe(SurveyorProbe probe) => QSBEventManager.FireEvent(EventNames.QSBPlayerLaunchProbe);
+		private void OnDestroy() =>
+			_attachedLauncher.OnLaunchProbe -= OnLaunchProbe;
+
+		private static void OnLaunchProbe(SurveyorProbe probe) =>
+			new PlayerLaunchProbeMessage().Send();
 	}
 }

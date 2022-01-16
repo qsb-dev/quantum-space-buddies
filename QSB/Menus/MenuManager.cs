@@ -1,9 +1,11 @@
-﻿using QSB.Events;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.SaveSync.Messages;
 using QSB.Utility;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -48,6 +50,15 @@ namespace QSB.Menus
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
 		{
+			if (newScene == OWScene.EyeOfTheUniverse)
+			{
+				GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
+			}
+			else
+			{
+				GlobalMessenger<EyeState>.RemoveListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
+			}
+
 			if (isUniverse)
 			{
 				InitPauseMenus();
@@ -67,14 +78,15 @@ namespace QSB.Menus
 				_nowLoadingSB = new StringBuilder();
 				return;
 			}
+
 			_nowLoadingSB.Length = 0;
 		}
 
 		private void Update()
 		{
 			if (QSBCore.IsInMultiplayer
-				&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
-				&& _loadingText != null)
+			    && (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+			    && _loadingText != null)
 			{
 				var num = LoadManager.GetAsyncLoadProgress();
 				num = num < 0.1f
@@ -87,21 +99,17 @@ namespace QSB.Menus
 			}
 		}
 
-		public void JoinGame(bool inEye, bool inSolarSystem)
+		public void JoinGame(bool inEye)
 		{
 			if (inEye)
 			{
 				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToBlack, 1f, false);
 				Locator.GetMenuInputModule().DisableInputs();
 			}
-			else if (inSolarSystem)
+			else
 			{
 				LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack, 1f, false);
 				Locator.GetMenuInputModule().DisableInputs();
-			}
-			else
-			{
-				DebugLog.DebugWrite("tried to join game that wasnt in solar system or eye??");
 			}
 		}
 
@@ -136,7 +144,7 @@ namespace QSB.Menus
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 			}
 		}
 
@@ -144,6 +152,7 @@ namespace QSB.Menus
 		{
 			IPPopup = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
+			IPPopup.OnPopupValidate += Validate;
 
 			InfoPopup = MenuApi.MakeInfoPopup("", "");
 			InfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -202,12 +211,19 @@ namespace QSB.Menus
 			DisconnectPopup._labelText.text = popupText;
 		}
 
+		private void OnEyeStateChanged(EyeState state)
+		{
+			if (state >= EyeState.IntoTheVortex)
+			{
+				SetButtonActive(HostButton, false);
+			}
+		}
+
 		private void MakeTitleMenus()
 		{
 			CreateCommonPopups();
 
 			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, IPPopup);
-
 			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
@@ -265,7 +281,7 @@ namespace QSB.Menus
 
 			OWInput.RestorePreviousInputs();
 
-			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f, true);
+			LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 		}
 
 		private void Host()
@@ -292,9 +308,18 @@ namespace QSB.Menus
 			DisconnectPopup._labelText.text = popupText;
 		}
 
+		private bool Validate()
+		{
+			var inputText = ((PopupInputMenu)IPPopup).GetInputText();
+			var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
+			return inputText == "localhost" || regex.Match(inputText).Success;
+		}
+
 		private void Connect()
 		{
-			QSBNetworkManager.Instance.networkAddress = string.Concat((IPPopup as PopupInputMenu).GetInputText().Where(c => !char.IsWhiteSpace(c)));
+			var address = ((PopupInputMenu)IPPopup).GetInputText();
+
+			QSBNetworkManager.Instance.networkAddress = address;
 			QSBNetworkManager.Instance.StartClient();
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
@@ -316,10 +341,8 @@ namespace QSB.Menus
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null, () =>
-			{
-				QSBEventManager.FireEvent(EventNames.QSBRequestGameDetails);
-			});
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+				() => new RequestGameStateMessage().Send());
 		}
 
 		public void OnKicked(KickReason reason)
@@ -330,6 +353,7 @@ namespace QSB.Menus
 				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
 				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)",
 				KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
+				KickReason.InEye => "Server refused connection as game has progressed too far.",
 				KickReason.None => "Kicked from server. No reason given.",
 				_ => $"Kicked from server. KickReason:{reason}",
 			};

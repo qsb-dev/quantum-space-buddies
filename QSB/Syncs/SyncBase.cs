@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Components;
@@ -15,50 +14,18 @@ namespace QSB.Syncs
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class SyncBase<T> : QNetworkTransform where T: Component
+	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
-		public uint AttachedNetId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.NetId.Value;
-			}
-		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (!IsPlayerObject)
-				{
-					return uint.MaxValue;
-				}
-
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
+		/// <summary>
+		/// valid if IsPlayerObject, otherwise null
+		/// </summary>
+		public PlayerInfo Player { get; private set; }
 
 		private bool _baseIsReady
 		{
 			get
 			{
-				if (NetId.Value is uint.MaxValue or 0U)
+				if (NetId.Value is uint.MaxValue or 0)
 				{
 					return false;
 				}
@@ -70,16 +37,6 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!QSBPlayerManager.PlayerExists(PlayerId))
-					{
-						return false;
-					}
-
-					if (Player == null)
-					{
-						return false;
-					}
-
 					if (!Player.IsReady && !IsLocalPlayer)
 					{
 						return false;
@@ -95,12 +52,12 @@ namespace QSB.Syncs
 		public abstract bool IgnoreDisabledAttachedObject { get; }
 		public abstract bool IgnoreNullReferenceTransform { get; }
 		public abstract bool DestroyAttachedObject { get; }
-		public abstract bool IsPlayerObject { get;  }
+		public abstract bool IsPlayerObject { get; }
 
 		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		public string LogName => $"{PlayerId}.{NetId.Value}:{GetType().Name}";
+		public string LogName => (IsPlayerObject ? $"{Player?.PlayerId}." : string.Empty) + $"{NetId.Value}:{GetType().Name}";
 		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
@@ -117,9 +74,11 @@ namespace QSB.Syncs
 		{
 			if (IsPlayerObject)
 			{
-				var lowestBound = QSBWorldSync.GetUnityObjects<PlayerTransformSync>()
-				.Where(x => x.NetId.Value <= NetId.Value).OrderBy(x => x.NetId.Value).Last();
-				NetIdentity.SetRootIdentity(lowestBound.NetIdentity);
+				// get player objects spawned before this object (or is this one)
+				// and use the closest one
+				Player = QSBPlayerManager.PlayerList
+					.Where(x => x.PlayerId <= NetId.Value)
+					.OrderBy(x => x.PlayerId).Last();
 			}
 
 			DontDestroyOnLoad(gameObject);
@@ -198,12 +157,20 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			if (!AttachedObject.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				base.Update();
+				return;
+			}
+			else
+			{
+				if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
+				{
+					DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				}
 			}
 
-			if (!AttachedObject.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
+			if (ReferenceTransform == Locator.GetRootTransform())
 			{
 				base.Update();
 				return;
@@ -273,9 +240,10 @@ namespace QSB.Syncs
 
 		protected virtual void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
+			if (!QSBCore.ShowLinesInDebug
+				|| !WorldObjectManager.AllObjectsReady
 				|| !IsReady
+				|| AttachedObject == null
 				|| ReferenceTransform == null)
 			{
 				return;
@@ -293,6 +261,20 @@ namespace QSB.Syncs
 			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 6, Color.green);
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
 			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
+		}
+
+		private void OnGUI()
+		{
+			if (!QSBCore.ShowDebugLabels ||
+				Event.current.type != EventType.Repaint)
+			{
+				return;
+			}
+
+			if (AttachedObject != null)
+			{
+				DebugGUI.DrawLabel(AttachedObject.transform, LogName);
+			}
 		}
 	}
 }

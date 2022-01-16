@@ -1,4 +1,5 @@
-﻿using QSB.Events;
+﻿using QSB.ClientServerStateSync.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
@@ -19,18 +20,22 @@ namespace QSB.ClientServerStateSync
 		private void Start()
 		{
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null, () => QSBEventManager.FireEvent(EventNames.QSBClientState, ForceGetCurrentState()));
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+				() => new ClientStateMessage(ForceGetCurrentState()).Send());
 		}
 
-		public void FireChangeClientStateEvent(ClientState newState)
+		private void OnDestroy() =>
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+
+		public void SendChangeClientStateMessage(ClientState newState)
 		{
 			ChangeClientState(newState);
-			QSBEventManager.FireEvent(EventNames.QSBClientState, newState);
+			new ClientStateMessage(newState).Send();
 		}
 
 		public void ChangeClientState(ClientState newState)
 		{
-			if (QSBPlayerManager.LocalPlayer.State == newState)
+			if (PlayerTransformSync.LocalInstance == null || QSBPlayerManager.LocalPlayer.State == newState)
 			{
 				return;
 			}
@@ -64,7 +69,7 @@ namespace QSB.ClientServerStateSync
 						if (oldScene == OWScene.SolarSystem)
 						{
 							// reloading scene
-							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							newState = ClientState.WaitingForOthersToBeReady;
 						}
 						else
 						{
@@ -98,21 +103,21 @@ namespace QSB.ClientServerStateSync
 					case OWScene.SolarSystem:
 						if (serverState == ServerState.WaitingForAllPlayersToDie)
 						{
-							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							newState = ClientState.WaitingForOthersToBeReady;
 							break;
 						}
 
 						if (oldScene == OWScene.SolarSystem)
 						{
 							// reloading scene
-							newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+							newState = ClientState.WaitingForOthersToBeReady;
 						}
 						else
 						{
 							// loading in from title screen
 							if (serverState == ServerState.WaitingForAllPlayersToReady)
 							{
-								newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+								newState = ClientState.WaitingForOthersToBeReady;
 							}
 							else
 							{
@@ -122,7 +127,15 @@ namespace QSB.ClientServerStateSync
 
 						break;
 					case OWScene.EyeOfTheUniverse:
-						newState = ClientState.WaitingForOthersToReadyInSolarSystem;
+						if (serverState == ServerState.WaitingForAllPlayersToReady)
+						{
+							newState = ClientState.WaitingForOthersToBeReady;
+						}
+						else
+						{
+							newState = ClientState.AliveInEye;
+						}
+
 						break;
 					default:
 						newState = ClientState.NotLoaded;
@@ -130,7 +143,7 @@ namespace QSB.ClientServerStateSync
 				}
 			}
 
-			FireChangeClientStateEvent(newState);
+			SendChangeClientStateMessage(newState);
 		}
 
 		public void OnDeath()
@@ -138,7 +151,7 @@ namespace QSB.ClientServerStateSync
 			var currentScene = QSBSceneManager.CurrentScene;
 			if (currentScene == OWScene.SolarSystem)
 			{
-				FireChangeClientStateEvent(ClientState.DeadInSolarSystem);
+				SendChangeClientStateMessage(ClientState.DeadInSolarSystem);
 			}
 			else if (currentScene == OWScene.EyeOfTheUniverse)
 			{
@@ -157,7 +170,7 @@ namespace QSB.ClientServerStateSync
 			if (currentScene == OWScene.SolarSystem)
 			{
 				DebugLog.DebugWrite($"RESPAWN!");
-				FireChangeClientStateEvent(ClientState.AliveInSolarSystem);
+				SendChangeClientStateMessage(ClientState.AliveInSolarSystem);
 			}
 			else
 			{
@@ -165,19 +178,15 @@ namespace QSB.ClientServerStateSync
 			}
 		}
 
-		private ClientState ForceGetCurrentState()
-		{
-			var currentScene = LoadManager.GetCurrentScene();
-
-			return currentScene switch
+		private static ClientState ForceGetCurrentState()
+			=> QSBSceneManager.CurrentScene switch
 			{
 				OWScene.TitleScreen => ClientState.InTitleScreen,
 				OWScene.Credits_Fast => ClientState.WatchingShortCredits,
 				OWScene.Credits_Final or OWScene.PostCreditsScene => ClientState.WatchingLongCredits,
 				OWScene.SolarSystem => ClientState.AliveInSolarSystem,
 				OWScene.EyeOfTheUniverse => ClientState.AliveInEye,
-				_ => ClientState.NotLoaded,
+				_ => ClientState.NotLoaded
 			};
-		}
 	}
 }

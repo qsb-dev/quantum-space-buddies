@@ -1,22 +1,34 @@
 ﻿using OWML.Common;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
+using QSB.QuantumSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		where T : QuantumObject
 	{
+		/// <summary>
+		/// whether the controlling player is always the host <br/>
+		/// also means this object is considered always enabled
+		/// </summary>
+		protected virtual bool HostControls => false;
 		public uint ControllingPlayer { get; set; }
-		public bool IsEnabled { get; set; }
+		public bool IsEnabled { get; private set; }
 
 		public override void OnRemoval()
 		{
+			if (HostControls)
+			{
+				return;
+			}
+
 			foreach (var shape in GetAttachedShapes())
 			{
 				shape.OnShapeActivated -= OnEnable;
@@ -26,38 +38,33 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void Init()
 		{
-			var debugBundle = QSBCore.DebugAssetBundle;
-			var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
-			var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
-			var capsule = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
-
-			if (cube == null)
+			if (QSBCore.ShowQuantumVisibilityObjects)
 			{
-				DebugLog.DebugWrite($"CUBE IS NULL");
-			}
+				var debugBundle = QSBCore.DebugAssetBundle;
+				var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
+				var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
+				var capsule = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
 
-			if (sphere == null)
-			{
-				DebugLog.DebugWrite($"SPHERE IS NULL");
-			}
-
-			if (capsule == null)
-			{
-				DebugLog.DebugWrite($"CAPSULE IS NULL");
-			}
-
-			foreach (var shape in GetAttachedShapes())
-			{
-				if (shape == null)
+				if (cube == null)
 				{
-					break;
+					DebugLog.DebugWrite($"CUBE IS NULL");
 				}
 
-				if (QSBCore.ShowQuantumVisibilityObjects)
+				if (sphere == null)
+				{
+					DebugLog.DebugWrite($"SPHERE IS NULL");
+				}
+
+				if (capsule == null)
+				{
+					DebugLog.DebugWrite($"CAPSULE IS NULL");
+				}
+
+				foreach (var shape in GetAttachedShapes())
 				{
 					if (shape is BoxShape boxShape)
 					{
-						var newCube = UnityEngine.Object.Instantiate(cube);
+						var newCube = Object.Instantiate(cube);
 						newCube.transform.parent = shape.transform;
 						newCube.transform.localPosition = Vector3.zero;
 						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -65,7 +72,7 @@ namespace QSB.QuantumSync.WorldObjects
 					}
 					else if (shape is SphereShape sphereShape)
 					{
-						var newSphere = UnityEngine.Object.Instantiate(sphere);
+						var newSphere = Object.Instantiate(sphere);
 						newSphere.transform.parent = shape.transform;
 						newSphere.transform.localPosition = Vector3.zero;
 						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -89,18 +96,26 @@ namespace QSB.QuantumSync.WorldObjects
 		private void LateInit()
 		{
 			FinishDelayedReady();
-			foreach (var shape in GetAttachedShapes())
+
+			if (HostControls)
 			{
-				shape.OnShapeActivated += OnEnable;
-				shape.OnShapeDeactivated += OnDisable;
+				// smallest player id is the host
+				ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
+				IsEnabled = true;
+				return;
 			}
 
 			var attachedShapes = GetAttachedShapes();
-
 			if (attachedShapes.Count == 0)
 			{
 				IsEnabled = false;
 				return;
+			}
+
+			foreach (var shape in attachedShapes)
+			{
+				shape.OnShapeActivated += OnEnable;
+				shape.OnShapeDeactivated += OnDisable;
 			}
 
 			if (attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active))
@@ -113,11 +128,6 @@ namespace QSB.QuantumSync.WorldObjects
 				IsEnabled = false;
 			}
 		}
-
-		public List<ShapeVisibilityTracker> GetVisibilityTrackers()
-			=> AttachedObject?._visibilityTrackers == null
-				? new()
-				: AttachedObject._visibilityTrackers.Select(x => (ShapeVisibilityTracker)x).ToList();
 
 		public List<Shape> GetAttachedShapes()
 		{
@@ -147,12 +157,15 @@ namespace QSB.QuantumSync.WorldObjects
 					continue;
 				}
 
-				var shapes = tracker._shapes;
-				totalShapes.AddRange(shapes);
+				// if the tracker is not active, this won't have been set, so just do it ourselves
+				tracker._shapes ??= tracker.GetComponents<Shape>();
+				totalShapes.AddRange(tracker._shapes.Where(x => x != null));
 			}
 
 			return totalShapes;
 		}
+
+		public void SetIsQuantum(bool isQuantum) => AttachedObject._isQuantum = isQuantum;
 
 		private void OnEnable(Shape s)
 		{
@@ -173,38 +186,90 @@ namespace QSB.QuantumSync.WorldObjects
 				return;
 			}
 
-			var id = ObjectId;
 			// no one is controlling this object right now, request authority
-			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, QSBPlayerManager.LocalPlayerId);
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 		}
 
-		private void OnDisable(Shape s)
+		private void OnDisable(Shape s) =>
+			// we wait a frame here in case the shapes get disabled as we switch from 1 visibility tracker to another
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			{
+				if (!IsEnabled)
+				{
+					return;
+				}
+
+				if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
+				{
+					return;
+				}
+
+				IsEnabled = false;
+				if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+				{
+					return;
+				}
+
+				if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+				{
+					// not being controlled by us, don't care if we leave area
+					return;
+				}
+
+				// send event to other players that we're releasing authority
+				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
+			});
+
+		public override void DisplayLines()
 		{
-			if (!IsEnabled)
+			if (AttachedObject == null)
 			{
 				return;
 			}
 
-			if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
+			var localPlayer = QSBPlayerManager.LocalPlayer;
+
+			if (localPlayer == null)
 			{
 				return;
 			}
 
-			IsEnabled = false;
-			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+			var body = localPlayer.Body;
+
+			if (body == null)
 			{
 				return;
 			}
 
-			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
+			if (ControllingPlayer == 0)
 			{
-				// not being controlled by us, don't care if we leave area
+				if (IsEnabled)
+				{
+					Popcron.Gizmos.Line(AttachedObject.transform.position,
+						body.transform.position,
+						Color.magenta * 0.25f);
+				}
+
 				return;
 			}
 
-			var id = ObjectId;
-			// send event to other players that we're releasing authority
-			QSBEventManager.FireEvent(EventNames.QSBQuantumAuthority, id, 0u);
+			var player = QSBPlayerManager.GetPlayer(ControllingPlayer);
+
+			if (player == null)
+			{
+				return;
+			}
+
+			var playerBody = player.Body;
+
+			if (playerBody == null)
+			{
+				return;
+			}
+
+			Popcron.Gizmos.Line(AttachedObject.transform.position,
+				playerBody.transform.position,
+				Color.magenta);
 		}
 	}
 }

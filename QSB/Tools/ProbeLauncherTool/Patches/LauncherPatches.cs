@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.Patches
 {
@@ -19,50 +19,44 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 		public static bool ProbeLauncher_RetrieveProbe(
 			ProbeLauncher __instance,
 			bool playEffects,
-			bool forcedRetrieval,
-			ref bool ____isRetrieving,
-			SurveyorProbe ____activeProbe,
-			NotificationTarget ____notificationFilter,
-			GameObject ____preLaunchProbeProxy,
-			ProbeLauncherEffects ____effects,
-			SingularityWarpEffect ____probeRetrievalEffect,
-			float ____probeRetrievalLength)
+			bool forcedRetrieval)
 		{
 
-			if (____isRetrieving)
+			if (__instance._isRetrieving)
 			{
 				return false;
 			}
 
-			if (____activeProbe != null)
+			if (__instance._activeProbe != null)
 			{
-				if (____activeProbe.IsLaunched() && TimelineObliterationController.IsParadoxProbeActive() && !forcedRetrieval)
+				if (__instance._activeProbe.IsLaunched() && TimelineObliterationController.IsParadoxProbeActive() && !forcedRetrieval)
 				{
-					var data = new NotificationData(____notificationFilter, UITextLibrary.GetString(UITextType.NotificationMultProbe), 3f, true);
-					NotificationManager.SharedInstance.PostNotification(data, false);
+					var data = new NotificationData(__instance._notificationFilter, UITextLibrary.GetString(UITextType.NotificationMultProbe), 3f);
+					NotificationManager.SharedInstance.PostNotification(data);
 					Locator.GetPlayerAudioController().PlayNegativeUISound();
 					return false;
 				}
 
-				____activeProbe.GetRotatingCamera().ResetRotation();
-				____preLaunchProbeProxy.SetActive(true);
+				__instance._activeProbe.GetRotatingCamera().ResetRotation();
+				__instance._preLaunchProbeProxy.SetActive(true);
 				if (playEffects)
 				{
-					____effects.PlayRetrievalClip();
-					____probeRetrievalEffect.WarpObjectIn(____probeRetrievalLength);
+					__instance._effects.PlayRetrievalClip();
+					__instance._probeRetrievalEffect.WarpObjectIn(__instance._probeRetrievalLength);
 				}
 
 				if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
 				{
-					QSBEventManager.FireEvent(EventNames.QSBRetrieveProbe, QSBWorldSync.GetWorldFromUnity<QSBProbeLauncher>(__instance), playEffects);
+					__instance.GetWorldObject<QSBProbeLauncher>()
+						.SendMessage(new RetrieveProbeMessage(playEffects));
 				}
 				else
 				{
-					QSBEventManager.FireEvent(EventNames.QSBPlayerRetrieveProbe, playEffects);
+					new PlayerRetrieveProbeMessage(playEffects).Send();
 				}
 
-				____activeProbe.Retrieve(____probeRetrievalLength);
-				____isRetrieving = true;
+				__instance._activeProbe.Retrieve(__instance._probeRetrievalLength);
+				__instance._isRetrieving = true;
 			}
 
 			return false;

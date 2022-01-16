@@ -1,8 +1,8 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Animation.Player;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
+using QSB.Player.Messages;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,27 +19,27 @@ namespace QSB.PoolSync
 		private static int s_propID_WaveScale;
 		private static int s_propID_Ripple2Position;
 		private static int s_propID_Ripple2Params;
-		public string _dataPointID => _oldPlatform.GetValue<string>("_dataPointID");
-		public Sector _visualSector => _oldPlatform.GetValue<Sector>("_visualSector");
-		public Sector _visualSector2 => _oldPlatform.GetValue<Sector>("_visualSector2");
-		public Shape _connectionBounds => _oldPlatform.GetValue<Shape>("_connectionBounds");
-		public MeshRenderer _poolRenderer => _oldPlatform.GetValue<MeshRenderer>("_poolRenderer");
-		public float _poolFillLength => _oldPlatform.GetValue<float>("_poolFillLength");
-		public float _poolEmptyLength => _oldPlatform.GetValue<float>("_poolEmptyLength");
-		public AnimationCurve _poolHeightCurve => _oldPlatform.GetValue<AnimationCurve>("_poolHeightCurve");
-		public AnimationCurve _poolMaskCurve => _oldPlatform.GetValue<AnimationCurve>("_poolMaskCurve");
-		public AnimationCurve _poolWaveHeightCurve => _oldPlatform.GetValue<AnimationCurve>("_poolWaveHeightCurve");
-		public Renderer[] _transitionRenderers => _oldPlatform.GetValue<Renderer[]>("_transitionRenderers");
-		public PedestalAnimator _transitionPedestalAnimator => _oldPlatform.GetValue<PedestalAnimator>("_transitionPedestalAnimator");
-		public GameObject _transitionStone => _oldPlatform.GetValue<GameObject>("_transitionStone");
-		public GameObject _hologramGroup => _oldPlatform.GetValue<GameObject>("_hologramGroup");
-		public Transform _playerHologram => _oldPlatform.GetValue<Transform>("_playerHologram");
-		public Transform _stoneHologram => _oldPlatform.GetValue<Transform>("_stoneHologram");
-		public float _fadeInLength => _oldPlatform.GetValue<float>("_fadeInLength");
-		public float _fadeOutLength => _oldPlatform.GetValue<float>("_fadeOutLength");
-		public OWAudioSource _ambientAudioSource => _oldPlatform.GetValue<OWAudioSource>("_ambientAudioSource");
-		public OWAudioSource _oneShotAudioSource => _oldPlatform.GetValue<OWAudioSource>("_oneShotAudioSource");
-		public DarkZone _darkZone => _oldPlatform.GetValue<DarkZone>("_darkZone");
+		public string _dataPointID => _oldPlatform._dataPointID;
+		public Sector _visualSector => _oldPlatform._visualSector;
+		public Sector _visualSector2 => _oldPlatform._visualSector2;
+		public Shape _connectionBounds => _oldPlatform._connectionBounds;
+		public MeshRenderer _poolRenderer => _oldPlatform._poolRenderer;
+		public float _poolFillLength => _oldPlatform._poolFillLength;
+		public float _poolEmptyLength => _oldPlatform._poolEmptyLength;
+		public AnimationCurve _poolHeightCurve => _oldPlatform._poolHeightCurve;
+		public AnimationCurve _poolMaskCurve => _oldPlatform._poolMaskCurve;
+		public AnimationCurve _poolWaveHeightCurve => _oldPlatform._poolWaveHeightCurve;
+		public Renderer[] _transitionRenderers => _oldPlatform._transitionRenderers;
+		public PedestalAnimator _transitionPedestalAnimator => _oldPlatform._transitionPedestalAnimator;
+		public GameObject _transitionStone => _oldPlatform._transitionStone;
+		public GameObject _hologramGroup => _oldPlatform._hologramGroup;
+		public Transform _playerHologram => _oldPlatform._playerHologram;
+		public Transform _stoneHologram => _oldPlatform._stoneHologram;
+		public float _fadeInLength => _oldPlatform._fadeInLength;
+		public float _fadeOutLength => _oldPlatform._fadeOutLength;
+		public OWAudioSource _ambientAudioSource => _oldPlatform._ambientAudioSource;
+		public OWAudioSource _oneShotAudioSource => _oldPlatform._oneShotAudioSource;
+		public DarkZone _darkZone => _oldPlatform._darkZone;
 		private OWCamera _playerCamera;
 		private CustomNomaiRemoteCamera _ownedCamera;
 		private SharedStoneSocket _socket;
@@ -60,8 +60,8 @@ namespace QSB.PoolSync
 		private void Awake()
 		{
 			_oldPlatform = GetComponent<NomaiRemoteCameraPlatform>();
-			_id = _oldPlatform.GetValue<NomaiRemoteCameraPlatform.ID>("_id");
-			_sharedStone = _oldPlatform.GetValue<SharedStone>("_sharedStone");
+			_id = _oldPlatform._id;
+			_sharedStone = _oldPlatform._sharedStone;
 			_ownedCamera = GetComponentInChildren<CustomNomaiRemoteCamera>();
 			_alreadyOccupiedSectors = new List<Sector>(16);
 			_cameraState = CameraState.Disconnected;
@@ -201,7 +201,7 @@ namespace QSB.PoolSync
 						_slavePlatform.UpdateRendererFade();
 						SwitchToRemoteCamera();
 						_hologramGroup.SetActive(true);
-						_ambientAudioSource.FadeIn(3f, true, false, 1f);
+						_ambientAudioSource.FadeIn(3f, true);
 						Locator.GetAudioMixer().MixRemoteCameraPlatform(_fadeInLength);
 						_cameraState = CameraState.Connecting_FadeOut;
 					}
@@ -382,7 +382,7 @@ namespace QSB.PoolSync
 		{
 			if (_wasLocalInBounds)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+				new EnterLeaveMessage(EnterLeaveType.ExitPlatform, CustomPlatformList.IndexOf(this)).Send();
 			}
 
 			if (_slavePlatform == null)
@@ -459,7 +459,7 @@ namespace QSB.PoolSync
 
 		private void SwitchToRemoteCamera()
 		{
-			QSBEventManager.FireEvent(EventNames.QSBEnterPlatform, CustomPlatformList.IndexOf(this));
+			new EnterLeaveMessage(EnterLeaveType.EnterPlatform, CustomPlatformList.IndexOf(this)).Send();
 			GlobalMessenger.FireEvent("EnterNomaiRemoteCamera");
 			_slavePlatform.RevealFactID();
 			_slavePlatform._ownedCamera.Activate(this, _playerCamera);
@@ -528,7 +528,7 @@ namespace QSB.PoolSync
 				_slavePlatform._darkZone.RemovePlayerFromZone(true);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+			new EnterLeaveMessage(EnterLeaveType.ExitPlatform, CustomPlatformList.IndexOf(this)).Send();
 			GlobalMessenger.FireEvent("ExitNomaiRemoteCamera");
 			_slavePlatform._ownedCamera.Deactivate();
 			_slavePlatform._ownedCamera.SetImageEffectFade(0f);
@@ -538,7 +538,7 @@ namespace QSB.PoolSync
 		{
 			if (_dataPointID.Length > 0)
 			{
-				Locator.GetShipLogManager().RevealFact(_dataPointID, true, true);
+				Locator.GetShipLogManager().RevealFact(_dataPointID);
 			}
 		}
 
@@ -562,7 +562,7 @@ namespace QSB.PoolSync
 				_cameraState = CameraState.Connecting_FadeIn;
 			}
 
-			_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraEntry, 1f);
+			_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraEntry);
 			enabled = true;
 		}
 
@@ -584,8 +584,8 @@ namespace QSB.PoolSync
 			else
 			{
 				_cameraState = CameraState.Disconnecting_FadeIn;
-				_ambientAudioSource.FadeOut(0.5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
-				_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraExit, 1f);
+				_ambientAudioSource.FadeOut(0.5f);
+				_oneShotAudioSource.PlayOneShot(AudioType.NomaiRemoteCameraExit);
 				Locator.GetAudioMixer().UnmixRemoteCameraPlatform(_fadeOutLength);
 			}
 		}
@@ -610,7 +610,7 @@ namespace QSB.PoolSync
 		private void OnLeaveBounds()
 		{
 			DisconnectCamera();
-			QSBEventManager.FireEvent(EventNames.QSBExitPlatform, CustomPlatformList.IndexOf(this));
+			new EnterLeaveMessage(EnterLeaveType.ExitPlatform, CustomPlatformList.IndexOf(this)).Send();
 			if (_anyoneStillOnPlatform)
 			{
 				return;
@@ -673,14 +673,13 @@ namespace QSB.PoolSync
 
 		public bool IsPlatformActive() => _platformActive;
 
-		public void OnRemovePlayer(uint id)
+		public void OnRemovePlayer(PlayerInfo player)
 		{
-			if (id == QSBPlayerManager.LocalPlayerId)
+			if (player == QSBPlayerManager.LocalPlayer)
 			{
 				return;
 			}
 
-			var player = QSBPlayerManager.GetPlayer(id);
 			if (!_playerToHologram.Any(x => x.Key == player))
 			{
 				return;
@@ -689,7 +688,7 @@ namespace QSB.PoolSync
 			var hologram = _playerToHologram.First(x => x.Key == player).Value;
 			if (hologram.activeSelf)
 			{
-				OnRemotePlayerExit(id);
+				OnRemotePlayerExit(player.PlayerId);
 			}
 
 			_playerToHologram.Remove(player);

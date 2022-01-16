@@ -8,6 +8,8 @@ namespace QSB.TornadoSync
 {
 	public class TornadoManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
@@ -30,6 +32,7 @@ namespace QSB.TornadoSync
 			{
 				SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
+
 			SpawnOccasional(cannon._probeBody, gdBody);
 
 			// islands

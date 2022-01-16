@@ -21,6 +21,7 @@ namespace QSB.Tools.ProbeTool
 		private SingularityWarpEffect _warpEffect;
 		private bool _isRetrieving;
 		private PlayerInfo _owner;
+		private bool _anchored;
 
 		public RulesetDetector GetRulesetDetector()
 			=> _rulesetDetector;
@@ -56,6 +57,9 @@ namespace QSB.Tools.ProbeTool
 		public bool IsLaunched()
 			=> gameObject.activeSelf;
 
+		public bool IsAnchored()
+			=> IsLaunched() && _anchored;
+
 		public void HandleEvent(ProbeEvent probeEvent)
 		{
 			if (_owner == null)
@@ -67,19 +71,23 @@ namespace QSB.Tools.ProbeTool
 			switch (probeEvent)
 			{
 				case ProbeEvent.Launch:
+					_anchored = false;
+
+					gameObject.SetActive(true);
+					transform.position = _owner.ProbeLauncher.transform.position;
+					transform.rotation = _owner.ProbeLauncher.transform.rotation;
+
 					if (OnLaunchProbe == null)
 					{
 						DebugLog.ToConsole($"Warning - OnLaunchProbe is null!", OWML.Common.MessageType.Warning);
 						break;
 					}
 
-					gameObject.SetActive(true);
-					transform.position = _owner.ProbeLauncher.transform.position;
-					transform.rotation = _owner.ProbeLauncher.transform.rotation;
-
 					OnLaunchProbe();
 					break;
 				case ProbeEvent.Anchor:
+					_anchored = true;
+
 					if (OnAnchorProbe == null)
 					{
 						DebugLog.ToConsole($"Warning - OnAnchorProbe is null!", OWML.Common.MessageType.Warning);
@@ -89,9 +97,11 @@ namespace QSB.Tools.ProbeTool
 					OnAnchorProbe();
 					break;
 				case ProbeEvent.Unanchor:
+					_anchored = false;
 					OnUnanchorProbe();
 					break;
 				case ProbeEvent.Retrieve:
+					_anchored = false;
 					if (OnRetrieveProbe == null)
 					{
 						DebugLog.ToConsole($"Warning - OnRetrieveProbe is null!", OWML.Common.MessageType.Warning);
@@ -101,6 +111,9 @@ namespace QSB.Tools.ProbeTool
 					OnRetrieveProbe();
 					break;
 				case ProbeEvent.Destroy:
+					_anchored = false;
+					Destroy(gameObject);
+
 					if (OnProbeDestroyed == null)
 					{
 						DebugLog.ToConsole($"Warning - OnProbeDestroyed is null!", OWML.Common.MessageType.Warning);

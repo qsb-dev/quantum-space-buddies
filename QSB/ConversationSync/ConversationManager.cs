@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
+using QSB.ConversationSync.Messages;
 using QSB.ConversationSync.WorldObjects;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -13,6 +14,8 @@ namespace QSB.ConversationSync
 {
 	public class ConversationManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+
 		public static ConversationManager Instance { get; private set; }
 		public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();
 
@@ -46,7 +49,7 @@ namespace QSB.ConversationSync
 		}
 
 		public void SendPlayerOption(string text) =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, text, ConversationType.Player);
+			new ConversationMessage(ConversationType.Player, (int)QSBPlayerManager.LocalPlayerId, text).Send();
 
 		public void SendCharacterDialogue(int id, string text)
 		{
@@ -56,14 +59,14 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, text, ConversationType.Character);
+			new ConversationMessage(ConversationType.Character, id, text).Send();
 		}
 
 		public void CloseBoxPlayer() =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, QSBPlayerManager.LocalPlayerId, "", ConversationType.ClosePlayer);
+			new ConversationMessage(ConversationType.ClosePlayer, (int)QSBPlayerManager.LocalPlayerId).Send();
 
 		public void CloseBoxCharacter(int id) =>
-			QSBEventManager.FireEvent(EventNames.QSBConversation, (uint)id, "", ConversationType.CloseCharacter);
+			new ConversationMessage(ConversationType.CloseCharacter, id).Send();
 
 		public void SendConvState(int charId, bool state)
 		{
@@ -73,7 +76,7 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBConversationStartEnd, charId, QSBPlayerManager.LocalPlayerId, state);
+			new ConversationStartEndMessage(charId, QSBPlayerManager.LocalPlayerId, state).Send();
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)

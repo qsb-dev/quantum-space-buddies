@@ -25,7 +25,12 @@ namespace QSB.Tools.TranslatorTool
 		}
 
 		public override void OnDisable()
-			=> _translatorProp.OnFinishUnequipAnimation();
+		{
+			if (!_isDitheringOut)
+			{
+				_translatorProp.OnFinishUnequipAnimation();
+			}
+		}
 
 		public override void EquipTool()
 		{
@@ -37,6 +42,12 @@ namespace QSB.Tools.TranslatorTool
 		{
 			base.UnequipTool();
 			_translatorProp.OnUnequipTool();
+		}
+
+		public override void FinishDitherOut()
+		{
+			base.FinishDitherOut();
+			_translatorProp.OnFinishUnequipAnimation();
 		}
 
 		public override void Update()
@@ -72,9 +83,9 @@ namespace QSB.Tools.TranslatorTool
 			{
 				tooCloseToTarget = num < _currentNomaiText.GetMinimumReadableDistance();
 
-				if (_currentNomaiText is NomaiWallText)
+				if (_currentNomaiText is NomaiWallText nomaiWallText)
 				{
-					var nomaiTextLine = (_currentNomaiText as NomaiWallText).GetClosestTextLineByCenter(raycastHit.point);
+					var nomaiTextLine = nomaiWallText.GetClosestTextLineByCenter(raycastHit.point);
 					if (_lastLineLocked)
 					{
 						var distToCenter = _lastHighlightedTextLine.GetDistToCenter(raycastHit.point);
@@ -119,27 +130,26 @@ namespace QSB.Tools.TranslatorTool
 						_lastLineLocked = false;
 					}
 				}
-				else if (_currentNomaiText is NomaiComputer)
+				else if (_currentNomaiText is NomaiComputer nomaiComputer)
 				{
-					var closestRing = (_currentNomaiText as NomaiComputer).GetClosestRing(raycastHit.point, out var num2);
+					var closestRing = nomaiComputer.GetClosestRing(raycastHit.point, out var num2);
 					if (closestRing)
 					{
 						distToClosestTextCenter = Mathf.Min(num2 * 2f, 1f);
 						_translatorProp.SetNomaiComputerRing(closestRing);
 					}
 				}
-				else if (_currentNomaiText is NomaiVesselComputer)
+				else if (_currentNomaiText is NomaiVesselComputer nomaiVesselComputer)
 				{
-					var closestRing2 = (_currentNomaiText as NomaiVesselComputer).GetClosestRing(raycastHit.point, out var num3);
+					var closestRing2 = nomaiVesselComputer.GetClosestRing(raycastHit.point, out var num3);
 					if (closestRing2)
 					{
 						distToClosestTextCenter = Mathf.Min(num3 * 2f, 1f);
 						_translatorProp.SetNomaiVesselComputerRing(closestRing2);
 					}
 				}
-				else if (_currentNomaiText is GhostWallText)
+				else if (_currentNomaiText is GhostWallText ghostWallText)
 				{
-					var ghostWallText = _currentNomaiText as GhostWallText;
 					_translatorProp.SetNomaiTextLine(ghostWallText.GetTextLine());
 				}
 			}

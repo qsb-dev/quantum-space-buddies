@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
-using OWML.Utils;
+using QSB.ElevatorSync.Messages;
 using QSB.ElevatorSync.WorldObjects;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 
@@ -16,9 +16,9 @@ namespace QSB.ElevatorSync.Patches
 		[HarmonyPatch(typeof(Elevator), nameof(Elevator.StartLift))]
 		public static void Elevator_StartLift(Elevator __instance)
 		{
-			var isGoingUp = __instance.GetValue<bool>("_goingToTheEnd");
-			var id = QSBWorldSync.GetIdFromUnity<QSBElevator>(__instance);
-			QSBEventManager.FireEvent(EventNames.QSBStartLift, id, isGoingUp);
+			var isGoingUp = __instance._goingToTheEnd;
+			var qsbElevator = __instance.GetWorldObject<QSBElevator>();
+			qsbElevator.SendMessage(new ElevatorMessage(isGoingUp));
 		}
 	}
 }

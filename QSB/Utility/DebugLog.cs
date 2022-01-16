@@ -34,10 +34,9 @@ namespace QSB.Utility
 			}
 		}
 
-		private static string GetCallingType(StackTrace frame)
-		{
-			var stackFrame = frame.GetFrames().First(x => x.GetMethod().DeclaringType.Name != "DebugLog");
-			return stackFrame.GetMethod().DeclaringType.Name;
-		}
+		private static string GetCallingType(StackTrace frame) =>
+			frame.GetFrames()!
+				.Select(x => x.GetMethod().DeclaringType!.Name)
+				.First(x => x != nameof(DebugLog));
 	}
 }

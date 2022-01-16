@@ -1,7 +1,10 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.QuantumSync.Messages;
+using QSB.QuantumSync.WorldObjects;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +14,41 @@ namespace QSB.QuantumSync.Patches
 	public class ServerQuantumPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(EyeProxyQuantumMoon), nameof(EyeProxyQuantumMoon.ChangeQuantumState))]
+		public static bool EyeProxyQuantumMoon_ChangeQuantumState(EyeProxyQuantumMoon __instance, ref bool __result, bool skipInstantVisibilityCheck)
+		{
+			if (!WorldObjectManager.AllObjectsReady)
+			{
+				return true;
+			}
+
+			var qsbEyeProxyQuantumMoon = __instance.GetWorldObject<QSBEyeProxyQuantumMoon>();
+			if (TimeLoop.GetSecondsRemaining() > 0f && Random.value > 0.3f)
+			{
+				__instance._moonStateRoot.SetActive(false);
+				qsbEyeProxyQuantumMoon.SendMessage(new EyeProxyMoonStateChangeMessage(false, -1f));
+				__result = true;
+				return false;
+			}
+
+			__instance._moonStateRoot.SetActive(true);
+			for (var i = 0; i < 20; i++)
+			{
+				var angle = Random.Range(0f, 360f);
+				__instance.transform.localEulerAngles = new Vector3(0f, angle, 0f);
+				if (skipInstantVisibilityCheck || !__instance.CheckVisibilityInstantly())
+				{
+					qsbEyeProxyQuantumMoon.SendMessage(new EyeProxyMoonStateChangeMessage(true, angle));
+					__result = true;
+					return false;
+				}
+			}
+
+			__result = true;
+			return false;
+		}
 
 		/*
 		 * This patch used to be different, but that one completely broke Solanum's NomaiTextLines.
@@ -191,7 +229,7 @@ namespace QSB.QuantumSync.Patches
 					: (__instance._stateSkipCounts[k] + 1);
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBMoonStateChange, stateIndex, onUnitSphere, orbitAngle);
+			new MoonStateChangeMessage(stateIndex, onUnitSphere, orbitAngle).Send();
 		}
 
 		private static void DealWithNewPosition(QuantumMoon __instance)
@@ -203,7 +241,7 @@ namespace QSB.QuantumSync.Patches
 			else
 			{
 				__instance.SetSurfaceState(-1);
-				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5, 2f);
+				__instance._quantumSignal.SetSignalActivation(__instance._stateIndex != 5);
 			}
 
 			__instance._referenceFrameVolume.gameObject.SetActive(__instance._stateIndex != 5);

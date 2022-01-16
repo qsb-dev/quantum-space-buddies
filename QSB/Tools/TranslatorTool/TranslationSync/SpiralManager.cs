@@ -5,11 +5,17 @@ namespace QSB.Tools.TranslatorTool.TranslationSync
 {
 	internal class SpiralManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
-			QSBWorldSync.Init<QSBWallText, NomaiWallText>();
-			QSBWorldSync.Init<QSBComputer, NomaiComputer>();
-			QSBWorldSync.Init<QSBVesselComputer, NomaiVesselComputer>();
+			// wait for all late initializers (which includes nomai text) to finish
+			StartDelayedReady();
+			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.isDoneInitializing, () =>
+			{
+				FinishDelayedReady();
+				QSBWorldSync.Init<QSBNomaiText, NomaiText>(typeof(GhostWallText));
+			});
 		}
 	}
 }

@@ -1,7 +1,5 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.SectorSync;
-using QSB.Syncs;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
@@ -85,7 +83,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 					var probeLauncher = Player.LocalProbeLauncher;
 					// TODO : make this sync to the *active* probe launcher's _launcherTransform
-					var launcherTransform = probeLauncher.GetValue<Transform>("_launcherTransform");
+					var launcherTransform = probeLauncher._launcherTransform;
 					probeOWRigidbody.SetPosition(launcherTransform.position);
 					probeOWRigidbody.SetRotation(launcherTransform.rotation);
 
@@ -113,6 +111,6 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return true;
 		}
 
-		public override bool IsReady => Locator.GetProbe() != null;
+		public override bool IsReady => AttachedObject != null || Locator.GetProbe() != null;
 	}
 }

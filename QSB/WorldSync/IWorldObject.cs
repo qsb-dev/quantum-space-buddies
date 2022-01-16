@@ -9,5 +9,8 @@ namespace QSB.WorldSync
 
 		void OnRemoval();
 		MonoBehaviour ReturnObject();
+		bool ShouldDisplayDebug();
+		string ReturnLabel();
+		void DisplayLines();
 	}
 }

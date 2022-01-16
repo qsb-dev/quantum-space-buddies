@@ -10,11 +10,12 @@ namespace QSB.Animation.NPC.WorldObjects
 		public abstract CharacterDialogueTree GetDialogueTree();
 
 		public virtual void StartConversation()
-			=> GetDialogueTree().RaiseEvent("OnStartConversation");
+			=> GetDialogueTree().RaiseEvent(nameof(CharacterDialogueTree.OnStartConversation));
 
 		public virtual void EndConversation()
-			=> GetDialogueTree().RaiseEvent("OnEndConversation");
+			=> GetDialogueTree().RaiseEvent(nameof(CharacterDialogueTree.OnEndConversation));
 
-		public abstract bool InConversation();
+		public virtual bool InConversation()
+			=> false;
 	}
 }

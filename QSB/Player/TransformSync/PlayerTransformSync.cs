@@ -1,8 +1,7 @@
-﻿using OWML.Utils;
-using QSB.Animation.Player;
+﻿using OWML.Common;
 using QSB.Audio;
-using QSB.Events;
-using QSB.Instruments;
+using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.RoastingSync;
 using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
@@ -16,8 +15,6 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SectoredTransformSync
 	{
-		static PlayerTransformSync() => AnimControllerPatch.Init();
-
 		public override bool IsPlayerObject => true;
 
 		private Transform _visibleCameraRoot;
@@ -50,9 +47,11 @@ namespace QSB.Player.TransformSync
 
 		public override void Start()
 		{
+			var player = new PlayerInfo(this);
+			QSBPlayerManager.PlayerList.SafeAdd(player);
 			base.Start();
-			QSBPlayerManager.AddPlayer(PlayerId);
-			Player.TransformSync = this;
+			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
+			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
@@ -65,13 +64,13 @@ namespace QSB.Player.TransformSync
 			if (isInUniverse && !_isInitialized)
 			{
 				Player.IsReady = false;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+				new PlayerReadyMessage(false).Send();
 			}
 
 			if (!isInUniverse)
 			{
 				Player.IsReady = false;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, false);
+				new PlayerReadyMessage(false).Send();
 			}
 
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
@@ -82,19 +81,17 @@ namespace QSB.Player.TransformSync
 			base.Init();
 
 			Player.IsReady = true;
-			QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			new PlayerReadyMessage(true).Send();
 		}
 
 		protected override void OnDestroy()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
-			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
+			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
 			base.OnDestroy();
-			if (QSBPlayerManager.PlayerExists(PlayerId))
-			{
-				Player.HudMarker?.Remove();
-				QSBPlayerManager.RemovePlayer(PlayerId);
-			}
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.PlayerList.Remove(Player);
+			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
 		protected override Transform InitLocalTransform()
@@ -104,8 +101,8 @@ namespace QSB.Player.TransformSync
 			// player body
 			var player = Locator.GetPlayerTransform();
 			var playerModel = player.Find("Traveller_HEA_Player_v2");
-			GetComponent<AnimationSync>().InitLocal(playerModel);
-			GetComponent<InstrumentsManager>().InitLocal(player);
+			Player.AnimationSync.InitLocal(playerModel);
+			Player.InstrumentsManager.InitLocal(player);
 			Player.Body = player.gameObject;
 
 			// camera
@@ -123,7 +120,7 @@ namespace QSB.Player.TransformSync
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
 
-			QSBEventManager.FireEvent(EventNames.QSBRequestStateResync);
+			new RequestStateResyncMessage().Send();
 
 			return player;
 		}
@@ -166,14 +163,18 @@ namespace QSB.Player.TransformSync
 
 			Player.Body = REMOTE_Player_Body;
 
-			GetComponent<AnimationSync>().InitRemote(REMOTE_Traveller_HEA_Player_v2);
-			GetComponent<InstrumentsManager>().InitRemote(REMOTE_Player_Body.transform);
+			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2);
+			Player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
 
-			var marker = REMOTE_Player_Body.AddComponent<PlayerHUDMarker>();
-			marker.Init(Player);
-
+			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-
+			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
+			// get inactive renderers too
+			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+				Player.DitheringAnimator._renderers = Player.DitheringAnimator
+					.GetComponentsInChildren<Renderer>(true)
+					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
+					.ToArray());
 			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
 
 			/*
@@ -215,12 +216,12 @@ namespace QSB.Player.TransformSync
 
 			// Create new marshmallow
 			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
-			newMarshmallow._fireRenderer = oldMarshmallow.GetValue<MeshRenderer>("_fireRenderer");
-			newMarshmallow._smokeParticles = oldMarshmallow.GetValue<ParticleSystem>("_smokeParticles");
-			newMarshmallow._mallowRenderer = oldMarshmallow.GetValue<MeshRenderer>("_mallowRenderer");
-			newMarshmallow._rawColor = oldMarshmallow.GetValue<Color>("_rawColor");
-			newMarshmallow._toastedColor = oldMarshmallow.GetValue<Color>("_toastedColor");
-			newMarshmallow._burntColor = oldMarshmallow.GetValue<Color>("_burntColor");
+			newMarshmallow._fireRenderer = oldMarshmallow._fireRenderer;
+			newMarshmallow._smokeParticles = oldMarshmallow._smokeParticles;
+			newMarshmallow._mallowRenderer = oldMarshmallow._mallowRenderer;
+			newMarshmallow._rawColor = oldMarshmallow._rawColor;
+			newMarshmallow._toastedColor = oldMarshmallow._toastedColor;
+			newMarshmallow._burntColor = oldMarshmallow._burntColor;
 			Destroy(oldMarshmallow);
 
 			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
@@ -264,10 +265,10 @@ namespace QSB.Player.TransformSync
 		{
 			base.OnRenderObject();
 
-			if (!WorldObjectManager.AllObjectsReady
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
+			if (!QSBCore.ShowLinesInDebug
+			    || !WorldObjectManager.AllObjectsReady
+			    || !IsReady
+			    || ReferenceTransform == null)
 			{
 				return;
 			}
@@ -284,7 +285,8 @@ namespace QSB.Player.TransformSync
 		}
 
 		public override bool IsReady
-			=> Locator.GetPlayerTransform() != null;
+			=> AttachedObject != null
+			|| Locator.GetPlayerTransform() != null;
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

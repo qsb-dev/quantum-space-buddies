@@ -23,16 +23,16 @@ namespace QSB.Audio
 		}
 
 		public void PlayEquipTool()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorEquip, 1f);
+			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorEquip);
 
 		public void PlayUnequipTool()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorUnequip, 1f);
+			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorUnequip);
 
 		public void PlayTurnOnFlashlight()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOn, 1f);
+			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOn);
 
 		public void PlayTurnOffFlashlight()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOff, 1f);
+			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOff);
 
 		private OWAudioSource CreateBaseAudio(
 			Transform parent,
@@ -45,6 +45,7 @@ namespace QSB.Audio
 			bool randomize)
 		{
 			var go = new GameObject(name);
+			go.SetActive(false);
 			go.transform.parent = parent;
 			go.transform.localPosition = Vector3.zero;
 			go.transform.localScale = Vector3.one;
@@ -65,6 +66,8 @@ namespace QSB.Audio
 			owAudioSource._clipSelectionOnPlay = OWAudioSource.ClipSelectionOnPlay.RANDOM;
 			owAudioSource._track = track;
 			owAudioSource._randomizePlayheadOnAwake = randomize;
+
+			go.SetActive(true);
 
 			return owAudioSource;
 		}

@@ -81,16 +81,6 @@ namespace QSB.DeathSync
 				}
 			},
 			{
-				DeathType.BigBang,
-				new[] // End of the game
-				{
-					// TODO : maybe don't show these?
-					"{0} sacrificed themself for the universe",
-					"{0} knows the true meaning of sacrifice",
-					"{0} won at the cost of their life"
-				}
-			},
-			{
 				DeathType.Crushed,
 				new[] // Crushed in sand
 				{
@@ -102,15 +92,6 @@ namespace QSB.DeathSync
 					"{0} went swimming in the sand",
 					"{0} underestimated the danger of sand",
 					"{0} died due to being crushed"
-				}
-			},
-			{
-				DeathType.TimeLoop,
-				new[] // Escaping the supernova
-				{
-					"{0} ran out of time",
-					"{0} lost track of time",
-					"{0} watched the sun go kaboom"
 				}
 			},
 			{
@@ -163,11 +144,13 @@ namespace QSB.DeathSync
 		};
 
 		public static string GetPhrase(DeathType deathType, int index)
-			=> !Darkhold.ContainsKey(deathType)
-				? Darkhold[DeathType.Default][index]
-				: Darkhold[deathType][index];
+			=> Darkhold.ContainsKey(deathType)
+				? Darkhold[deathType][index]
+				: null;
 
 		public static int GetRandomIndex(DeathType deathType)
-			=> new Random().Next(0, Darkhold[deathType].Length);
+			=> Darkhold.ContainsKey(deathType)
+				? new Random().Next(0, Darkhold[deathType].Length)
+				: -1;
 	}
 }

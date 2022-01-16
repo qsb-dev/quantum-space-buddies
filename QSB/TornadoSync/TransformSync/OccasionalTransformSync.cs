@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using QSB.Player.TransformSync;
+﻿using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
-using QSB.Syncs;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.TornadoSync.TransformSync
@@ -117,14 +116,17 @@ namespace QSB.TornadoSync.TransformSync
 			{
 				QueueMove(Locator._playerBody);
 			}
+
 			if (_sectors.Contains(ShipTransformSync.LocalInstance?.ReferenceSector?.AttachedObject))
 			{
 				QueueMove(Locator._shipBody);
 			}
+
 			if (_sectors.Contains(PlayerProbeSync.LocalInstance?.ReferenceSector?.AttachedObject))
 			{
 				QueueMove(Locator._probe._owRigidbody);
 			}
+
 			foreach (var child in _childBodies)
 			{
 				QueueMove(child);
@@ -140,7 +142,6 @@ namespace QSB.TornadoSync.TransformSync
 
 			return true;
 		}
-
 
 		private readonly List<MoveData> _toMove = new();
 
@@ -187,6 +188,7 @@ namespace QSB.TornadoSync.TransformSync
 				data.Child.SetVelocity(AttachedObject.FromRelVel(data.RelVel, pos));
 				data.Child.SetAngularVelocity(AttachedObject.FromRelAngVel(data.RelAngVel));
 			}
+
 			_toMove.Clear();
 		}
 	}

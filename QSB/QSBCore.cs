@@ -1,35 +1,18 @@
 ﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
-using QSB.Anglerfish;
-using QSB.Animation.NPC;
-using QSB.CampfireSync;
-using QSB.ConversationSync;
-using QSB.EchoesOfTheEye.AirlockSync;
-using QSB.EchoesOfTheEye.LightSensorSync;
-using QSB.ElevatorSync;
-using QSB.GeyserSync;
+using QSB.EyeOfTheUniverse.GalaxyMap;
+using QSB.EyeOfTheUniverse.MaskSync;
 using QSB.Inputs;
-using QSB.ItemSync;
-using QSB.JellyfishSync;
 using QSB.Menus;
-using QSB.MeteorSync;
-using QSB.OrbSync;
 using QSB.Patches;
 using QSB.Player;
-using QSB.PoolSync;
-using QSB.QuantumSync;
 using QSB.RespawnSync;
 using QSB.SatelliteSync;
-using QSB.SectorSync;
-using QSB.ShipSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
-using QSB.Tools.ProbeLauncherTool;
-using QSB.Tools.TranslatorTool.TranslationSync;
-using QSB.TornadoSync;
 using QSB.Utility;
-using QSB.ZeroGCaveSync;
+using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System.Linq;
@@ -65,13 +48,15 @@ namespace QSB
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
-		public static bool ShowQuantumDebugBoxes => DebugMode && DebugSettings.ShowQuantumDebugBoxes;
+		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
+		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
+		public static AssetBundle TextAssetsBundle { get; private set; }
 		public static bool IsHost => QNetworkServer.active;
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
@@ -102,6 +87,7 @@ namespace QSB
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
 			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
+			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
 			DebugSettings = ModHelper.Storage.Load<DebugSettings>("debugsettings.json");
 
@@ -121,31 +107,16 @@ namespace QSB
 			gameObject.AddComponent<MenuManager>();
 			gameObject.AddComponent<RespawnManager>();
 			gameObject.AddComponent<SatelliteProjectorManager>();
+			gameObject.AddComponent<StatueManager>();
+			gameObject.AddComponent<GalaxyMapManager>();
+			gameObject.AddComponent<DebugCameraSettings>();
+			gameObject.AddComponent<MaskManager>();
 
 			// WorldObject managers
-			gameObject.AddComponent<QuantumManager>();
-			gameObject.AddComponent<SpiralManager>();
-			gameObject.AddComponent<ElevatorManager>();
-			gameObject.AddComponent<GeyserManager>();
-			gameObject.AddComponent<OrbManager>();
-			gameObject.AddComponent<QSBSectorManager>();
-			gameObject.AddComponent<ItemManager>();
-			gameObject.AddComponent<StatueManager>();
-			gameObject.AddComponent<PoolManager>();
-			gameObject.AddComponent<CampfireManager>();
-			gameObject.AddComponent<CharacterAnimManager>();
-			gameObject.AddComponent<ShipManager>();
-			gameObject.AddComponent<ProbeLauncherManager>();
-			gameObject.AddComponent<LightSensorManager>();
-			gameObject.AddComponent<AirlockManager>();
-			gameObject.AddComponent<AnglerManager>();
-			gameObject.AddComponent<MeteorManager>();
-			gameObject.AddComponent<JellyfishManager>();
-			gameObject.AddComponent<ZeroGCaveManager>();
-			gameObject.AddComponent<TornadoManager>();
-			gameObject.AddComponent<ConversationManager>();
-
-			DebugBoxManager.Init();
+			foreach (var type in typeof(WorldObjectManager).GetDerivedTypes())
+			{
+				gameObject.AddComponent(type);
+			}
 
 			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 

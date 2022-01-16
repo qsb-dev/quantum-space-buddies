@@ -1,5 +1,5 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Messaging;
+using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -14,13 +14,19 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 
 		public override void Init()
 		{
-			_probeRetrievalLength = AttachedObject.GetValue<float>("_probeRetrievalLength");
-			_preLaunchProbeProxy = AttachedObject.GetValue<GameObject>("_preLaunchProbeProxy");
-			_effects = AttachedObject.GetValue<ProbeLauncherEffects>("_effects");
-			_probeRetrievalEffect = AttachedObject.GetValue<SingularityWarpEffect>("_probeRetrievalEffect");
+			_probeRetrievalLength = AttachedObject._probeRetrievalLength;
+			_preLaunchProbeProxy = AttachedObject._preLaunchProbeProxy;
+			_effects = AttachedObject._effects;
+			_probeRetrievalEffect = AttachedObject._probeRetrievalEffect;
 
-			AttachedObject.OnLaunchProbe += (SurveyorProbe probe) => QSBEventManager.FireEvent(EventNames.QSBLaunchProbe, this);
+			AttachedObject.OnLaunchProbe += OnLaunchProbe;
 		}
+
+		public override void OnRemoval() =>
+			AttachedObject.OnLaunchProbe -= OnLaunchProbe;
+
+		private void OnLaunchProbe(SurveyorProbe probe) =>
+			this.SendMessage(new LaunchProbeMessage());
 
 		public void RetrieveProbe(bool playEffects)
 		{

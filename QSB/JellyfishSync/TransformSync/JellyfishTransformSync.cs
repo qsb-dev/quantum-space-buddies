@@ -1,10 +1,10 @@
-﻿using QSB.JellyfishSync.WorldObjects;
+﻿using QSB.AuthoritySync;
+using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 using System.Collections.Generic;
-using QSB.AuthoritySync;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.TransformSync
@@ -36,6 +36,7 @@ namespace QSB.JellyfishSync.TransformSync
 			{
 				NetIdentity.UnregisterAuthQueue();
 			}
+
 			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
@@ -44,7 +45,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void Init()
 		{
-			_qsbJellyfish = QSBWorldSync.GetWorldFromUnity<QSBJellyfish>(JellyfishManager.Jellyfish[_instances.IndexOf(this)]);
+			_qsbJellyfish = JellyfishManager.Jellyfish[_instances.IndexOf(this)].GetWorldObject<QSBJellyfish>();
 			_qsbJellyfish.TransformSync = this;
 
 			base.Init();
@@ -54,13 +55,14 @@ namespace QSB.JellyfishSync.TransformSync
 			{
 				NetIdentity.RegisterAuthQueue();
 			}
+
 			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.FireAuthQueue(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.FireAuthQueue(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
 		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
@@ -138,12 +140,12 @@ namespace QSB.JellyfishSync.TransformSync
 			return true;
 		}
 
-
 		protected override void OnRenderObject()
 		{
-			if (!WorldObjectManager.AllObjectsReady
-			    || !QSBCore.ShowLinesInDebug
+			if (!QSBCore.ShowLinesInDebug
+			    || !WorldObjectManager.AllObjectsReady
 			    || !IsReady
+			    || AttachedObject == null
 			    || ReferenceTransform == null
 			    || AttachedObject.IsSuspended())
 			{

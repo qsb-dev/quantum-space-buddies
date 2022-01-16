@@ -1,13 +1,13 @@
 ﻿using HarmonyLib;
 using OWML.Common;
+using QSB.ConversationSync.Messages;
 using QSB.ConversationSync.WorldObjects;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 namespace QSB.ConversationSync.Patches
 {
@@ -15,6 +15,23 @@ namespace QSB.ConversationSync.Patches
 	public class ConversationPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+		public static readonly string[] PersistentConditionsToSync =
+		{
+			"MET_SOLANUM",
+			"MET_PRISONER",
+			"TALKED_TO_GABBRO",
+			"GABBRO_MERGE_TRIGGERED",
+			"KNOWS_MEDITATION"
+		};
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DialogueConditionManager), nameof(DialogueConditionManager.SetConditionState))]
+		public static bool SetConditionState(string conditionName, bool conditionState)
+		{
+			new DialogueConditionMessage(conditionName, conditionState).Send();
+			return true;
+		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.StartConversation))]
@@ -54,7 +71,7 @@ namespace QSB.ConversationSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.InputDialogueOption))]
-		public static bool CharacterDialogueTree_InputDialogueOption(int optionIndex, DialogueBoxVer2 ____currentDialogueBox)
+		public static bool CharacterDialogueTree_InputDialogueOption(CharacterDialogueTree __instance, int optionIndex)
 		{
 			if (optionIndex < 0)
 			{
@@ -63,16 +80,16 @@ namespace QSB.ConversationSync.Patches
 				return true;
 			}
 
-			var selectedOption = ____currentDialogueBox.OptionFromUIIndex(optionIndex);
+			var selectedOption = __instance._currentDialogueBox.OptionFromUIIndex(optionIndex);
 			ConversationManager.Instance.SendPlayerOption(selectedOption.Text);
 			return true;
 		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(DialogueNode), nameof(DialogueNode.GetNextPage))]
-		public static void DialogueNode_GetNextPage(string ____name, List<string> ____listPagesToDisplay, int ____currentPage)
+		public static void DialogueNode_GetNextPage(DialogueNode __instance)
 		{
-			var key = ____name + ____listPagesToDisplay[____currentPage];
+			var key = __instance._name + __instance._listPagesToDisplay[__instance._currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
 			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, key));
@@ -139,13 +156,21 @@ namespace QSB.ConversationSync.Patches
 
 			__instance._activatedDialogues[num] = true;
 
-			QSBEventManager.FireEvent(EventNames.QSBEnterRemoteDialogue,
-				QSBWorldSync.GetWorldFromUnity<QSBRemoteDialogueTrigger>(__instance),
-				num,
-				__instance._listDialogues.IndexOf(dialogue));
+			__instance.GetWorldObject<QSBRemoteDialogueTrigger>()
+				.SendMessage(new EnterRemoteDialogueMessage(num, __instance._listDialogues.IndexOf(dialogue)));
 
 			__result = true;
 			return false;
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(GameSave), nameof(GameSave.SetPersistentCondition))]
+		public static void SetPersistentCondition(string condition, bool state)
+		{
+			if (PersistentConditionsToSync.Contains(condition))
+			{
+				new PersistentConditionMessage(condition, state).Send();
+			}
 		}
 	}
 }

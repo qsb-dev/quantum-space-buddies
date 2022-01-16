@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.DeathSync.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync;
@@ -40,7 +41,7 @@ namespace QSB.DeathSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
-		public static bool PlayerResources_OnImpact(ImpactData impact, PlayerResources __instance, float ____currentHealth)
+		public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact)
 		{
 			if (PlayerState.IsInsideShip())
 			{
@@ -49,7 +50,7 @@ namespace QSB.DeathSync.Patches
 
 			var speed = Mathf.Clamp01((impact.speed - __instance.GetMinImpactSpeed()) / (__instance.GetMaxImpactSpeed() - __instance.GetMinImpactSpeed()));
 			var tookDamage = __instance.ApplyInstantDamage(100f * speed, InstantDamageType.Impact);
-			if (tookDamage && ____currentHealth <= 0f && !PlayerState.IsDead())
+			if (tookDamage && __instance._currentHealth <= 0f && !PlayerState.IsDead())
 			{
 				Locator.GetDeathManager().SetImpactDeathSpeed(impact.speed);
 				Locator.GetDeathManager().KillPlayer(DeathType.Impact);
@@ -61,73 +62,63 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
 		public static bool HighSpeedImpactSensor_FixedUpdate(
-			HighSpeedImpactSensor __instance,
-			bool ____isPlayer,
-			ref bool ____dead,
-			ref bool ____dieNextUpdate,
-			OWRigidbody ____body,
-			ref float ____impactSpeed,
-			float ____sqrCheckSpeedThreshold,
-			RaycastHit[] ____raycastHits,
-			SectorDetector ____sectorDetector,
-			float ____radius,
-			Vector3 ____localOffset
+			HighSpeedImpactSensor __instance
 			)
 		{
-			if (____isPlayer && (PlayerState.IsAttached() || PlayerState.IsInsideShuttle() || PlayerState.UsingNomaiRemoteCamera()))
+			if (__instance._isPlayer && (PlayerState.IsAttached() || PlayerState.IsInsideShuttle() || PlayerState.UsingNomaiRemoteCamera()))
 			{
 				return false;
 			}
 
-			if (____dieNextUpdate && !____dead)
+			if (__instance._dieNextUpdate && !__instance._dead)
 			{
-				____dead = true;
-				____dieNextUpdate = false;
+				__instance._dead = true;
+				__instance._dieNextUpdate = false;
 				if (__instance.gameObject.CompareTag("Player"))
 				{
-					Locator.GetDeathManager().SetImpactDeathSpeed(____impactSpeed);
+					Locator.GetDeathManager().SetImpactDeathSpeed(__instance._impactSpeed);
 					Locator.GetDeathManager().KillPlayer(DeathType.Impact);
 				}
 				else if (__instance.gameObject.CompareTag("Ship"))
 				{
-					__instance.GetComponent<ShipDamageController>().Explode(false);
+					__instance.GetComponent<ShipDamageController>().Explode();
 				}
 			}
 
-			if (____isPlayer && PlayerState.IsInsideShip())
+			if (__instance._isPlayer && PlayerState.IsInsideShip())
 			{
 				var shipCenter = Locator.GetShipTransform().position + (Locator.GetShipTransform().up * 2f);
-				var distanceFromShip = Vector3.Distance(____body.GetPosition(), shipCenter);
+				var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
 				if (distanceFromShip > 8f)
 				{
-					____body.SetPosition(shipCenter);
+					__instance._body.SetPosition(shipCenter);
 				}
 
-				if (!____dead)
+				if (!__instance._dead)
 				{
-					var a = ____body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(____body.GetPosition());
-					if (a.sqrMagnitude > ____sqrCheckSpeedThreshold)
+					var a = __instance._body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(__instance._body.GetPosition());
+					if (a.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
 					{
-						____impactSpeed = a.magnitude;
-						____body.AddVelocityChange(-a);
+						__instance._impactSpeed = a.magnitude;
+						__instance._body.AddVelocityChange(-a);
 					}
 				}
 
 				return false;
 			}
 
-			var passiveReferenceFrame = ____sectorDetector.GetPassiveReferenceFrame();
-			if (!____dead && passiveReferenceFrame != null)
+			var passiveReferenceFrame = __instance._sectorDetector.GetPassiveReferenceFrame();
+			if (!__instance._dead && passiveReferenceFrame != null)
 			{
-				var relativeVelocity = ____body.GetVelocity() - passiveReferenceFrame.GetOWRigidBody().GetPointVelocity(____body.GetPosition());
-				if (relativeVelocity.sqrMagnitude > ____sqrCheckSpeedThreshold)
+				var relativeVelocity = __instance._body.GetVelocity() - passiveReferenceFrame.GetOWRigidBody().GetPointVelocity(__instance._body.GetPosition());
+				if (relativeVelocity.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
 				{
-					var hitCount = Physics.RaycastNonAlloc(__instance.transform.TransformPoint(____localOffset), relativeVelocity, ____raycastHits, (relativeVelocity.magnitude * Time.deltaTime) + ____radius, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
+					var hitCount = Physics.RaycastNonAlloc(__instance.transform.TransformPoint(__instance._localOffset), relativeVelocity, __instance._raycastHits, (relativeVelocity.magnitude * Time.deltaTime) + __instance._radius, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
 					for (var i = 0; i < hitCount; i++)
 					{
-						if (____raycastHits[i].rigidbody.mass > 10f && !____raycastHits[i].rigidbody.Equals(____body.GetRigidbody()))
+						if (__instance._raycastHits[i].rigidbody.mass > 10f && !__instance._raycastHits[i].rigidbody.Equals(__instance._body.GetRigidbody()))
 						{
-							var owRigidbody = ____raycastHits[i].rigidbody.GetComponent<OWRigidbody>();
+							var owRigidbody = __instance._raycastHits[i].rigidbody.GetComponent<OWRigidbody>();
 							if (owRigidbody == null)
 							{
 								DebugLog.ToConsole("Rigidbody does not have attached OWRigidbody!!!", OWML.Common.MessageType.Error);
@@ -135,15 +126,15 @@ namespace QSB.DeathSync.Patches
 							}
 							else
 							{
-								relativeVelocity = ____body.GetVelocity() - owRigidbody.GetPointVelocity(____body.GetPosition());
-								var a2 = Vector3.Project(relativeVelocity, ____raycastHits[i].normal);
-								if (a2.sqrMagnitude > ____sqrCheckSpeedThreshold)
+								relativeVelocity = __instance._body.GetVelocity() - owRigidbody.GetPointVelocity(__instance._body.GetPosition());
+								var a2 = Vector3.Project(relativeVelocity, __instance._raycastHits[i].normal);
+								if (a2.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
 								{
-									____body.AddVelocityChange(-a2);
-									____impactSpeed = a2.magnitude;
+									__instance._body.AddVelocityChange(-a2);
+									__instance._impactSpeed = a2.magnitude;
 									if (!PlayerState.IsInsideTheEye())
 									{
-										____dieNextUpdate = true;
+										__instance._dieNextUpdate = true;
 									}
 
 									break;
@@ -180,7 +171,7 @@ namespace QSB.DeathSync.Patches
 
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				new EndLoopMessage().Send();
 				return true;
 			}
 
@@ -195,18 +186,18 @@ namespace QSB.DeathSync.Patches
 			if (!QSBPlayerManager.LocalPlayer.IsDead)
 			{
 				QSBPlayerManager.LocalPlayer.IsDead = true;
-				QSBEventManager.FireEvent(EventNames.QSBPlayerDeath, deathType);
+				new PlayerDeathMessage(deathType).Send();
 			}
 		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]
-		public static void ShipDamageController_Awake(ref bool ____exploded)
-			=> ____exploded = true;
+		public static void ShipDamageController_Awake(ShipDamageController __instance)
+			=> __instance._exploded = true;
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]
-		public static bool DestructionVolume_VanishShip(DeathType ____deathType)
+		public static bool DestructionVolume_VanishShip(DestructionVolume __instance)
 		{
 			if (RespawnOnDeath.Instance == null)
 			{
@@ -220,7 +211,7 @@ namespace QSB.DeathSync.Patches
 
 			if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
 			{
-				Locator.GetDeathManager().KillPlayer(____deathType);
+				Locator.GetDeathManager().KillPlayer(__instance._deathType);
 			}
 
 			return true;

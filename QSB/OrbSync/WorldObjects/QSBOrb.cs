@@ -14,7 +14,7 @@ namespace QSB.OrbSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.Instance.OrbPrefab));
+				Object.Instantiate(QSBNetworkManager.Instance.OrbPrefab).SpawnWithServerAuthority();
 			}
 
 			StartDelayedReady();
@@ -83,6 +83,7 @@ namespace QSB.OrbSync.WorldObjects
 				{
 					AttachedObject.CancelDrag();
 				}
+
 				if (AttachedObject._orbAudio != null && newSlot.GetPlayActivationAudio())
 				{
 					AttachedObject._orbAudio.PlaySlotActivatedClip();

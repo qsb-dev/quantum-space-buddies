@@ -1,10 +1,12 @@
 ﻿using HarmonyLib;
 using OWML.Common;
+using QSB.Animation.NPC.Messages;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -20,27 +22,25 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnAnimatorIK))]
 		public static bool AnimatorIKReplacement(
-			CharacterAnimController __instance,
-			float ___headTrackingWeight,
-			bool ___lookOnlyWhenTalking,
-			bool ____inConversation,
-			ref float ____currentLookWeight,
-			ref Vector3 ____currentLookTarget,
-			DampedSpring3D ___lookSpring,
-			Animator ____animator,
-			CharacterDialogueTree ____dialogueTree)
+			CharacterAnimController __instance)
 		{
 			if (!WorldObjectManager.AllObjectsReady || ConversationManager.Instance == null)
 			{
-				return false;
+				return true;
 			}
 
-			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(____dialogueTree);
+			var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(__instance._dialogueTree);
 			var player = QSBPlayerManager.GetPlayer(playerId);
-			var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
+
+			if (__instance.playerTrackingZone == null)
+			{
+				return true;
+			}
+
+			var qsbObj = __instance.playerTrackingZone.GetWorldObject<QSBCharacterTrigger>(); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
 
 			PlayerInfo playerToUse = null;
-			if (____inConversation)
+			if (__instance._inConversation)
 			{
 				if (playerId == uint.MaxValue)
 				{
@@ -54,9 +54,9 @@ namespace QSB.Animation.NPC.Patches
 						: player;
 				}
 			}
-			else if (!___lookOnlyWhenTalking && qsbObj.GetPlayersInHeadZone().Count != 0) // IDEA : maybe this would be more fun if characters looked between players at random times? :P
+			else if (!__instance.lookOnlyWhenTalking && qsbObj.Occupants.Count != 0) // IDEA : maybe this would be more fun if characters looked between players at random times? :P
 			{
-				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.GetPlayersInHeadZone(), __instance.transform.position);
+				playerToUse = QSBPlayerManager.GetClosestPlayerToWorldPoint(qsbObj.Occupants, __instance.transform.position);
 			}
 			else if (QSBPlayerManager.PlayerList.Count != 0)
 			{
@@ -64,59 +64,34 @@ namespace QSB.Animation.NPC.Patches
 			}
 
 			var localPosition = playerToUse != null
-				? ____animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position)
+				? __instance._animator.transform.InverseTransformPoint(playerToUse.CameraBody.transform.position)
 				: Vector3.zero;
 
-			var targetWeight = ___headTrackingWeight;
-			if (___lookOnlyWhenTalking)
+			var targetWeight = __instance.headTrackingWeight;
+			if (__instance.lookOnlyWhenTalking)
 			{
-				if (!____inConversation
-					|| qsbObj.GetPlayersInHeadZone().Count == 0
-					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
+				if (!__instance._inConversation
+					|| qsbObj.Occupants.Count == 0
+					|| !qsbObj.Occupants.Contains(playerToUse))
 				{
 					targetWeight *= 0;
 				}
 			}
 			else
 			{
-				if (qsbObj.GetPlayersInHeadZone().Count == 0
-					|| !qsbObj.GetPlayersInHeadZone().Contains(playerToUse))
+				if (qsbObj.Occupants.Count == 0
+					|| !qsbObj.Occupants.Contains(playerToUse))
 				{
 					targetWeight *= 0;
 				}
 			}
 
-			____currentLookWeight = Mathf.Lerp(____currentLookWeight, targetWeight, Time.deltaTime * 2f);
-			____currentLookTarget = ___lookSpring.Update(____currentLookTarget, localPosition, Time.deltaTime);
-			____animator.SetLookAtPosition(____animator.transform.TransformPoint(____currentLookTarget));
-			____animator.SetLookAtWeight(____currentLookWeight);
+			__instance._currentLookWeight = Mathf.Lerp(__instance._currentLookWeight, targetWeight, Time.deltaTime * 2f);
+			__instance._currentLookTarget = __instance.lookSpring.Update(__instance._currentLookTarget, localPosition, Time.deltaTime);
+			__instance._animator.SetLookAtPosition(__instance._animator.transform.TransformPoint(__instance._currentLookTarget));
+			__instance._animator.SetLookAtWeight(__instance._currentLookWeight);
 			return false;
 
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneExit))]
-		public static bool HeadZoneExit(CharacterAnimController __instance, GameObject input)
-		{
-			if (input.CompareTag("PlayerDetector"))
-			{
-				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBExitNonNomaiHeadZone, qsbObj.ObjectId);
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(CharacterAnimController), nameof(CharacterAnimController.OnZoneEntry))]
-		public static bool HeadZoneEntry(CharacterAnimController __instance, GameObject input)
-		{
-			if (input.CompareTag("PlayerDetector"))
-			{
-				var qsbObj = QSBWorldSync.GetWorldFromUnity<QSBCharacterAnimController>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBEnterNonNomaiHeadZone, qsbObj.ObjectId);
-			}
-			return false;
 		}
 
 		[HarmonyPrefix]
@@ -153,8 +128,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = ownerOfThis.ObjectId;
-			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.StartConversation, id);
+			ownerOfThis.SendMessage(new NpcAnimationMessage(true));
 			return true;
 		}
 
@@ -169,8 +143,7 @@ namespace QSB.Animation.NPC.Patches
 				return true;
 			}
 
-			var id = ownerOfThis.ObjectId;
-			QSBEventManager.FireEvent(EventNames.QSBNpcAnimEvent, AnimationEvent.EndConversation, id);
+			ownerOfThis.SendMessage(new NpcAnimationMessage(false));
 			return true;
 		}
 

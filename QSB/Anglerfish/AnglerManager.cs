@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using QSB.Anglerfish.WorldObjects;
+﻿using QSB.Anglerfish.WorldObjects;
 using QSB.WorldSync;
+using System.Collections.Generic;
 
 namespace QSB.Anglerfish
 {
 	public class AnglerManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		public static readonly List<AnglerfishController> Anglers = new();
 
 		protected override void RebuildWorldObjects(OWScene scene)

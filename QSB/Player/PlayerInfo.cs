@@ -4,10 +4,12 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.Events;
+using QSB.Instruments;
 using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
-using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Tools.FlashlightTool;
@@ -15,17 +17,32 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System.Linq;
-using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Player
 {
 	public class PlayerInfo
 	{
+		/// <summary>
+		/// the player transform sync's net id
+		/// </summary>
 		public uint PlayerId { get; }
 		public string Name { get; set; }
 		public PlayerHUDMarker HudMarker { get; set; }
-		public PlayerTransformSync TransformSync { get; set; }
+		public PlayerTransformSync TransformSync { get; }
+		public AnimationSync AnimationSync { get; }
+		public InstrumentsManager InstrumentsManager { get; }
+		public ClientState State { get; set; }
+		public EyeState EyeState { get; set; }
+		public bool IsDead { get; set; }
+		public bool Visible => DitheringAnimator != null && DitheringAnimator._visible;
+		public bool IsReady { get; set; }
+		public bool IsInMoon { get; set; }
+		public bool IsInShrine { get; set; }
+		public bool IsInEyeShuttle { get; set; }
+		public IQSBQuantumObject EntangledObject { get; set; }
+		public QSBPlayerAudioController AudioController { get; set; }
+		public DitheringAnimator DitheringAnimator { get; set; }
 
 		// Body Objects
 		public OWCamera Camera
@@ -52,6 +69,7 @@ namespace QSB.Player
 		private OWCamera _camera;
 
 		public GameObject CameraBody { get; set; }
+
 		public GameObject Body
 		{
 			get
@@ -76,23 +94,11 @@ namespace QSB.Player
 		private GameObject _body;
 
 		public GameObject RoastingStick { get; set; }
-		public bool Visible { get; set; } = true;
 
 		// Tools
 		public GameObject ProbeBody { get; set; }
 		public QSBProbe Probe { get; set; }
-		public QSBFlashlight FlashLight
-		{
-			get
-			{
-				if (CameraBody == null)
-				{
-					return null;
-				}
-
-				return CameraBody.GetComponentInChildren<QSBFlashlight>();
-			}
-		}
+		public QSBFlashlight FlashLight => CameraBody == null ? null : CameraBody.GetComponentInChildren<QSBFlashlight>();
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
@@ -108,31 +114,22 @@ namespace QSB.Player
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 		public IQSBOWItem HeldItem { get; set; }
-
-		// Conversation
-		public int CurrentCharacterDialogueTreeId { get; set; }
-		public GameObject CurrentDialogueBox { get; set; }
-
-		// Animation
-		public AnimationSync AnimationSync => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId);
-		public bool PlayingInstrument => AnimationSync.CurrentType is not AnimationType.PlayerSuited
-			and not AnimationType.PlayerUnsuited;
-		public JetpackAccelerationSync JetpackAcceleration { get; set; }
-
-		// Misc
-		public bool IsReady { get; set; }
-		public bool IsInMoon;
-		public bool IsInShrine;
-		public IQSBQuantumObject EntangledObject;
-		public bool IsDead { get; set; }
-		public ClientState State { get; set; }
 		public bool FlashlightActive { get; set; }
 		public bool SuitedUp { get; set; }
 		public bool ProbeLauncherEquipped { get; set; }
 		public bool SignalscopeEquipped { get; set; }
 		public bool TranslatorEquipped { get; set; }
 		public bool ProbeActive { get; set; }
-		public QSBPlayerAudioController AudioController { get; set; }
+
+		// Conversation
+		public int CurrentCharacterDialogueTreeId { get; set; } = -1;
+		public GameObject CurrentDialogueBox { get; set; }
+
+		// Animation
+		public bool PlayingInstrument => AnimationSync.CurrentType
+			is not AnimationType.PlayerSuited
+			and not AnimationType.PlayerUnsuited;
+		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Local only
 		public PlayerProbeLauncher LocalProbeLauncher
@@ -191,10 +188,12 @@ namespace QSB.Player
 			}
 		}
 
-		public PlayerInfo(uint id)
+		public PlayerInfo(PlayerTransformSync transformSync)
 		{
-			PlayerId = id;
-			CurrentCharacterDialogueTreeId = -1;
+			PlayerId = transformSync.NetId.Value;
+			TransformSync = transformSync;
+			AnimationSync = transformSync.GetComponent<AnimationSync>();
+			InstrumentsManager = transformSync.GetComponent<InstrumentsManager>();
 		}
 
 		public void UpdateObjectsFromStates()
@@ -214,8 +213,7 @@ namespace QSB.Player
 			Translator?.ChangeEquipState(TranslatorEquipped);
 			ProbeLauncher?.ChangeEquipState(ProbeLauncherEquipped);
 			Signalscope?.ChangeEquipState(SignalscopeEquipped);
-			QSBCore.UnityEvents.RunWhen(() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId) != null,
-				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(SuitedUp));
+			AnimationSync.SetSuitState(SuitedUp);
 		}
 
 		public void UpdateStatesFromObjects()
@@ -228,10 +226,10 @@ namespace QSB.Player
 			else
 			{
 				FlashlightActive = Locator.GetFlashlight()._flashlightOn;
-				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit(true);
+				SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit();
 			}
 
-			QSBEventManager.FireEvent(EventNames.QSBPlayerInformation);
+			new PlayerInformationMessage().Send();
 		}
 
 		private QSBTool GetToolByType(ToolType type)

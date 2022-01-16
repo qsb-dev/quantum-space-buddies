@@ -6,13 +6,15 @@ namespace QSB.MeteorSync
 {
 	public class MeteorManager : WorldObjectManager
 	{
+		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
 		public static WhiteHoleVolume WhiteHoleVolume;
 
 		protected override void RebuildWorldObjects(OWScene scene)
 		{
 			// wait for all late initializers (which includes meteor launchers) to finish
 			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.s_lateInitializers.Count == 0, () =>
+			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.isDoneInitializing, () =>
 			{
 				FinishDelayedReady();
 				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();

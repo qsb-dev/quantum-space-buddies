@@ -1,8 +1,9 @@
-﻿using QSB.DeathSync;
-using QSB.Events;
+﻿using QSB.DeathSync.Messages;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.RespawnSync.Messages;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,7 +129,7 @@ namespace QSB.RespawnSync
 			mapController.ExitMapView();
 
 			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
-			cameraEffectController.OpenEyes(1f, false);
+			cameraEffectController.OpenEyes(1f);
 		}
 
 		public void OnPlayerDeath(PlayerInfo player)
@@ -148,11 +149,18 @@ namespace QSB.RespawnSync
 
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBEndLoop, EndLoopReason.AllPlayersDead);
+				new EndLoopMessage().Send();
 				return;
 			}
 
-			QSBPlayerManager.ChangePlayerVisibility(player.PlayerId, false);
+			if (player.DitheringAnimator != null)
+			{
+				player.DitheringAnimator.SetVisible(false, 1);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
+			}
 		}
 
 		public void OnPlayerRespawn(PlayerInfo player)
@@ -168,13 +176,20 @@ namespace QSB.RespawnSync
 			_playersPendingRespawn.Remove(player);
 			UpdateRespawnNotification();
 
-			QSBPlayerManager.ChangePlayerVisibility(player.PlayerId, true);
+			if (player.DitheringAnimator != null)
+			{
+				player.DitheringAnimator.SetVisible(true, 1);
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
+			}
 		}
 
 		public void RespawnSomePlayer()
 		{
 			var playerToRespawn = _playersPendingRespawn.First();
-			QSBEventManager.FireEvent(EventNames.QSBPlayerRespawn, playerToRespawn.PlayerId);
+			new PlayerRespawnMessage(playerToRespawn.PlayerId).Send();
 		}
 
 		private void UpdateRespawnNotification()

@@ -1,8 +1,7 @@
-﻿using OWML.Utils;
-using QSB.Events;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync;
-using QSB.Utility.Events;
+using QSB.Utility.Messages;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,6 +17,9 @@ namespace QSB.Utility
 			var playerBody = Locator.GetPlayerBody();
 			playerBody.WarpToPositionRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
 			playerBody.SetVelocity(spawnPoint.GetPointVelocity());
+			var bridgeVolume = FindObjectOfType<VesselWarpController>()._bridgeVolume;
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
+			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
 		private void InsertWarpCore()
@@ -25,18 +27,50 @@ namespace QSB.Utility
 			var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
 			var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
 			socket.PlaceIntoSocket(warpCore);
-			var bridgeVolume = FindObjectOfType<VesselWarpController>().GetValue<OWTriggerVolume>("_bridgeVolume");
-			bridgeVolume.AddObjectToVolume(Locator.GetPlayerDetector());
-			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-		public void Update()
+		private void Awake()
 		{
 			if (!QSBCore.DebugMode)
 			{
-				return;
+				Destroy(this);
+			}
+		}
+
+		public void Update()
+		{
+			/*
+			 * 1 - Warp to first non local player
+			 * 2 - Set time flowing
+			 * 3 - Destroy probe
+			 * 4 - Damage ship electricals
+			 * 5 - Trigger supernova
+			 * 6 - Set MET_SOLANUM
+			 * 7 - Warp to vessel
+			 * 8 - Place warp core into vessel
+			 * 9 - Load eye scene
+			 * 0 -
+			 */
+
+			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
+			{
+				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x != QSBPlayerManager.LocalPlayer);
+				if (otherPlayer != null)
+				{
+					new DebugRequestTeleportInfoMessage(otherPlayer.PlayerId).Send();
+				}
+			}
+
+			if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
+			{
+				TimeLoop._isTimeFlowing = true;
+			}
+
+			if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
+			{
+				Destroy(Locator.GetProbe().gameObject);
 			}
 
 			if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
@@ -46,7 +80,15 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
 			{
-				QSBEventManager.FireEvent(EventNames.QSBDebugEvent, DebugEventEnum.TriggerSupernova);
+				new DebugTriggerSupernovaMessage().Send();
+			}
+
+			if (Keyboard.current[Key.Numpad6].wasPressedThisFrame)
+			{
+				PlayerData.SetPersistentCondition("MET_SOLANUM", true);
+				PlayerData.SetPersistentCondition("MET_PRISONER", true);
+				DialogueConditionManager.SharedInstance.SetConditionState("MET_SOLANUM", true);
+				DialogueConditionManager.SharedInstance.SetConditionState("MET_PRISONER", true);
 			}
 
 			if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)
@@ -61,28 +103,16 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)
 			{
-				PlayerData.SaveWarpedToTheEye(60);
-				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
-			}
-
-			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
-			{
-				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x.PlayerId != QSBPlayerManager.LocalPlayerId);
-				if (otherPlayer != null && otherPlayer.Body != null)
+				if (Keyboard.current[Key.LeftShift].isPressed)
 				{
-					var playerBody = Locator.GetPlayerBody();
-					playerBody.WarpToPositionRotation(otherPlayer.Body.transform.position, otherPlayer.Body.transform.rotation);
-					var parentBody = otherPlayer.TransformSync?.ReferenceSector?.AttachedObject?.GetOWRigidbody();
-					if (parentBody != null)
-					{
-						playerBody.SetVelocity(parentBody.GetVelocity());
-						playerBody.SetAngularVelocity(parentBody.GetAngularVelocity());
-					}
-					else
-					{
-						playerBody.SetVelocity(Vector3.zero);
-						playerBody.SetAngularVelocity(Vector3.zero);
-					}
+					PlayerData._currentGameSave.warpedToTheEye = false;
+					PlayerData.SaveCurrentGame();
+					LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack);
+				}
+				else
+				{
+					PlayerData.SaveWarpedToTheEye(60);
+					LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
 				}
 			}
 		}

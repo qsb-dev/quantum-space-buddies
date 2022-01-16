@@ -1,5 +1,4 @@
-﻿using OWML.Utils;
-using QSB.Utility;
+﻿using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
@@ -33,8 +32,8 @@ namespace QSB.TimeSync
 		{
 			_isSetUp = true;
 			var obj = QSBWorldSync.GetUnityObjects<SleepTimerUI>().First();
-			_canvas = obj.GetValue<Canvas>("_canvas");
-			_text = obj.GetValue<Text>("_text");
+			_canvas = obj._canvas;
+			_text = obj._text;
 			_canvas.enabled = false;
 		}
 
@@ -91,7 +90,7 @@ namespace QSB.TimeSync
 			var text = "";
 			switch (_currentType)
 			{
-				case TimeSyncType.Fastforwarding:
+				case TimeSyncType.FastForwarding:
 					switch ((FastForwardReason)_currentReason)
 					{
 						case FastForwardReason.TooFarBehind:

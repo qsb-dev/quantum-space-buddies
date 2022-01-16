@@ -1,15 +1,13 @@
 ﻿using QSB.ClientServerStateSync;
-using QSB.OrbSync.TransformSync;
+using QSB.OrbSync;
 using QSB.Player;
-using QSB.QuantumSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
 using System.Linq;
-using QSB.OrbSync;
-using QSB.QuantumSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.Utility
@@ -26,17 +24,28 @@ namespace QSB.Utility
 		private float column3Offset = 10f;
 		private const float Column4 = Column3 + FixedWidth;
 		private float column4Offset = 10f;
+		private const int MaxLabelSize = 15;
+		private const float MaxLabelDistance = 150;
 
-		private GUIStyle guiStyle = new()
+		private readonly GUIStyle guiGUIStyle = new();
+		private static readonly GUIStyle labelGUIStyle = new();
+
+		private void Awake()
 		{
-			fontSize = 9
-		};
+			if (!QSBCore.DebugMode)
+			{
+				Destroy(this);
+				return;
+			}
 
-		private void WriteLine(int collumnID, string text)
+			guiGUIStyle.fontSize = 9;
+		}
+
+		private void WriteLine(int columnID, string text)
 		{
 			var currentOffset = 0f;
 			var x = 0f;
-			switch (collumnID)
+			switch (columnID)
 			{
 				case 1:
 					x = Column1;
@@ -60,24 +69,24 @@ namespace QSB.Utility
 					break;
 			}
 
-			GUI.Label(new Rect(x, currentOffset, FixedWidth, 20f), text, guiStyle);
+			GUI.Label(new Rect(x, currentOffset, 0, 0), text, guiGUIStyle);
 		}
 
-		private void WriteLine(int collumnID, string text, Color color)
+		private void WriteLine(int columnID, string text, Color color)
 		{
-			guiStyle.normal.textColor = color;
-			WriteLine(collumnID, text);
-			guiStyle.normal.textColor = Color.white;
+			guiGUIStyle.normal.textColor = color;
+			WriteLine(columnID, text);
+			guiGUIStyle.normal.textColor = Color.white;
 		}
 
 		public void OnGUI()
 		{
-			if (!QSBCore.DebugMode)
+			if (Event.current.type != EventType.Repaint)
 			{
 				return;
 			}
 
-			guiStyle.normal.textColor = Color.white;
+			guiGUIStyle.normal.textColor = Color.white;
 			GUI.contentColor = Color.white;
 
 			column1Offset = 10f;
@@ -86,6 +95,7 @@ namespace QSB.Utility
 			column4Offset = 10f;
 
 			#region Column1 - Server data
+
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			WriteLine(1, $"HasWokenUp : {WorldObjectManager.AllObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
@@ -118,21 +128,18 @@ namespace QSB.Utility
 					WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
 				}
 			}
+
 			#endregion
 
 			#region Column2 - Player data
+
 			WriteLine(2, $"OrbList count : {OrbManager.Orbs.Count}");
 			WriteLine(2, $"Player data :");
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				if (player == null)
-				{
-					WriteLine(2, $"NULL PLAYER", Color.red);
-					continue;
-				}
-
 				WriteLine(2, $"{player.PlayerId}.{player.Name}");
 				WriteLine(2, $"State : {player.State}");
+				WriteLine(2, $"Eye State : {player.EyeState}");
 				WriteLine(2, $"Dead : {player.IsDead}");
 				WriteLine(2, $"Visible : {player.Visible}");
 				WriteLine(2, $"Ready : {player.IsReady}");
@@ -148,6 +155,7 @@ namespace QSB.Utility
 					WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
 				}
 			}
+
 			#endregion
 
 			#region Column3 - Ship data
@@ -158,7 +166,15 @@ namespace QSB.Utility
 				var instance = ShipTransformSync.LocalInstance;
 				if (QSBCore.IsHost)
 				{
-					WriteLine(3, $"Current Owner : {instance.NetIdentity.ClientAuthorityOwner.GetPlayerId()}");
+					var currentOwner = instance.NetIdentity.ClientAuthorityOwner;
+					if (currentOwner == null)
+					{
+						WriteLine(3, $"Current Owner : NULL");
+					}
+					else
+					{
+						WriteLine(3, $"Current Owner : {currentOwner.GetPlayerId()}");
+					}
 				}
 
 				var sector = instance.ReferenceSector;
@@ -198,31 +214,20 @@ namespace QSB.Utility
 					WriteLine(3, $"- {hull.AttachedObject.name}, Integrity:{hull.AttachedObject.integrity}");
 				}
 			}
+
 			#endregion
 
 			#region Column4 - Quantum Object Possesion
+
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
-				if (player == null)
-				{
-					WriteLine(4, $"- NULL PLAYER", Color.red);
-					continue;
-				}
-
 				WriteLine(4, $"- {player.PlayerId}.{player.Name}");
 				var allQuantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 				var ownedQuantumObjects = allQuantumObjects.Where(x => x.ControllingPlayer == player.PlayerId);
 
 				foreach (var quantumObject in ownedQuantumObjects)
 				{
-					if (quantumObject is not IWorldObject qsbObj)
-					{
-						WriteLine(4, $"NULL QSBOBJ", Color.red);
-					}
-					else
-					{
-						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
-					}
+					WriteLine(4, $"{quantumObject.Name} ({quantumObject.ObjectId})");
 				}
 			}
 
@@ -237,17 +242,130 @@ namespace QSB.Utility
 
 				if (qo.IsEnabled)
 				{
-					if (qo is not IWorldObject qsbObj)
-					{
-						WriteLine(4, $"NULL QSBOBJ", Color.red);
-					}
-					else
-					{
-						WriteLine(4, $"{qsbObj.Name} ({qsbObj.ObjectId})");
-					}
+					WriteLine(4, $"{qo.Name} ({qo.ObjectId})");
 				}
 			}
+
 			#endregion
+
+			DrawWorldObjectLabels();
+		}
+
+		public void OnRenderObject() => DrawWorldObjectLines();
+
+		private static void DrawWorldObjectLabels()
+		{
+			if (!QSBCore.ShowDebugLabels)
+			{
+				return;
+			}
+
+			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			{
+				if (obj.ReturnObject() == null)
+				{
+					return;
+				}
+
+				if (obj.ShouldDisplayDebug())
+				{
+					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
+				}
+			}
+		}
+
+		private static void DrawWorldObjectLines()
+		{
+			if (!QSBCore.ShowLinesInDebug)
+			{
+				return;
+			}
+
+			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			{
+				if (obj.ReturnObject() == null)
+				{
+					return;
+				}
+
+				if (obj.ShouldDisplayDebug())
+				{
+					obj.DisplayLines();
+				}
+			}
+		}
+
+		public static void DrawLabel(Transform obj, string label)
+		{
+			var camera = Locator.GetPlayerCamera();
+
+			if (camera == null)
+			{
+				return;
+			}
+
+			if (obj == null)
+			{
+				return;
+			}
+
+			labelGUIStyle.normal.textColor = Color.white;
+			GUI.contentColor = Color.white;
+
+			var difference = obj.transform.position - camera.transform.position;
+
+			if (Vector3.Dot(difference.normalized, camera.transform.forward) < 0)
+			{
+				return;
+			}
+
+			var cheapDistance = difference.sqrMagnitude;
+
+			if (cheapDistance > MaxLabelDistance * MaxLabelDistance)
+			{
+				return;
+			}
+
+			var screenPosition = camera.WorldToScreenPoint(obj.position);
+			var distance = screenPosition.z;
+
+			if (distance <= 0.05f)
+			{
+				return;
+			}
+
+			if (distance > MaxLabelDistance)
+			{
+				return;
+			}
+
+			if (screenPosition.x < 0 || screenPosition.x > Screen.width)
+			{
+				return;
+			}
+
+			if (screenPosition.y < 0 || screenPosition.y > Screen.height)
+			{
+				return;
+			}
+
+			var mappedFontSize = (int)distance.Map(0, MaxLabelDistance, MaxLabelSize, 0, true);
+
+			if (mappedFontSize <= 0)
+			{
+				return;
+			}
+
+			if (mappedFontSize > MaxLabelSize)
+			{
+				return;
+			}
+
+			labelGUIStyle.fontSize = mappedFontSize;
+
+			// WorldToScreenPoint's (0,0) is at screen bottom left, GUI's (0,0) is at screen top left. grrrr
+			screenPosition.y = Screen.height - screenPosition.y;
+			GUI.Label(new Rect(screenPosition, Vector2.zero), label, labelGUIStyle);
 		}
 	}
 }

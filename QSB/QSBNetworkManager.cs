@@ -1,14 +1,16 @@
 ﻿using OWML.Common;
-using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
-using QSB.Events;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Messaging;
+using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
+using QSB.OrbSync.WorldObjects;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
@@ -20,8 +22,6 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System;
-using System.Linq;
-using QSB.OrbSync.WorldObjects;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -110,7 +110,7 @@ namespace QSB
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<QNetworkIdentity>().SetValue("m_AssetId", assetId);
+			template.GetRequiredComponent<QNetworkIdentity>().m_AssetId = assetId;
 			template.AddComponent(transformSyncType);
 			return template;
 		}
@@ -123,7 +123,8 @@ namespace QSB
 			customConfig = true;
 			connectionConfig.AddChannel(QosType.Reliable);
 			connectionConfig.AddChannel(QosType.Unreliable);
-			this.SetValue("m_MaxBufferedPackets", MaxBufferedPackets);
+
+			m_MaxBufferedPackets = MaxBufferedPackets;
 			channels.Add(QosType.Reliable);
 			channels.Add(QosType.Unreliable);
 
@@ -164,7 +165,7 @@ namespace QSB
 
 			OnClientConnected?.SafeInvoke();
 
-			QSBEventManager.Init();
+			QSBMessageManager.Init();
 
 			gameObject.AddComponent<RespawnOnDeath>();
 			gameObject.AddComponent<ServerStateManager>();
@@ -173,6 +174,7 @@ namespace QSB
 			if (QSBSceneManager.IsInUniverse)
 			{
 				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
+				QSBWorldSync.Init();
 			}
 
 			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -182,13 +184,13 @@ namespace QSB
 			OnNetworkManagerReady?.SafeInvoke();
 			IsReady = true;
 
-			QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-				() => QSBEventManager.FireEvent(EventNames.QSBPlayerJoin, PlayerName));
+			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{
-				QSBCore.UnityEvents.RunWhen(() => QSBEventManager.Ready && PlayerTransformSync.LocalInstance != null,
-					() => QSBEventManager.FireEvent(EventNames.QSBRequestStateResync));
+				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+					() => new RequestStateResyncMessage().Send());
 			}
 
 			_everConnected = true;
@@ -201,11 +203,10 @@ namespace QSB
 			Destroy(GetComponent<RespawnOnDeath>());
 			Destroy(GetComponent<ServerStateManager>());
 			Destroy(GetComponent<ClientStateManager>());
-			QSBEventManager.Reset();
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			RemoveWorldObjects();
-			QSBWorldSync.OldDialogueTrees.Clear();
+			QSBWorldSync.Reset();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -234,10 +235,10 @@ namespace QSB
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			// revert authority from ship
-			if (ShipTransformSync.LocalInstance)
+			if (ShipTransformSync.LocalInstance != null)
 			{
 				var identity = ShipTransformSync.LocalInstance.NetIdentity;
-				if (identity.ClientAuthorityOwner == conn)
+				if (identity != null && identity.ClientAuthorityOwner == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
@@ -246,6 +247,12 @@ namespace QSB
 			// stop dragging for the orbs this player was dragging
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
+				if (qsbOrb.TransformSync == null)
+				{
+					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
+					continue;
+				}
+
 				if (!qsbOrb.TransformSync.enabled)
 				{
 					continue;
@@ -255,7 +262,7 @@ namespace QSB
 				if (identity.ClientAuthorityOwner == conn)
 				{
 					qsbOrb.SetDragging(false);
-					QSBEventManager.FireEvent(EventNames.QSBOrbDrag, qsbOrb, false);
+					qsbOrb.SendMessage(new OrbDragMessage(false));
 				}
 			}
 
@@ -268,14 +275,13 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnStopServer", MessageType.Info);
 			Destroy(GetComponent<RespawnOnDeath>());
-			QSBEventManager.Reset();
 			DebugLog.ToConsole("Server stopped!", MessageType.Info);
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			base.OnStopServer();
 		}
 
-		private void RemoveWorldObjects()
+		private static void RemoveWorldObjects()
 		{
 			QSBWorldSync.RemoveWorldObjects();
 			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())

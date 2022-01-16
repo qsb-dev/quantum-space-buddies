@@ -1,30 +1,17 @@
 ﻿using OWML.Common;
-using QSB.Player;
-using QSB.Player.TransformSync;
 using QuantumUNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.Utility
 {
 	public static class Extensions
 	{
-		// UNITY
-		public static void Show(this GameObject gameObject) => SetVisibility(gameObject, true);
-
-		public static void Hide(this GameObject gameObject) => SetVisibility(gameObject, false);
-
-		private static void SetVisibility(GameObject gameObject, bool isVisible)
-		{
-			var renderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-			foreach (var renderer in renderers)
-			{
-				renderer.enabled = isVisible;
-			}
-		}
+		#region UNITY
 
 		public static Quaternion TransformRotation(this Transform transform, Quaternion localRotation)
 			=> transform.rotation * localRotation;
@@ -32,7 +19,7 @@ namespace QSB.Utility
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
 			original.SetActive(false);
-			var copy = UnityEngine.Object.Instantiate(original);
+			var copy = Object.Instantiate(original);
 			original.SetActive(true);
 			return copy;
 		}
@@ -40,37 +27,26 @@ namespace QSB.Utility
 		public static Transform InstantiateInactive(this Transform original) =>
 			original.gameObject.InstantiateInactive().transform;
 
-		// QNET
+		#endregion
+
+		#region QNET
+
 		public static uint GetPlayerId(this QNetworkConnection connection)
 		{
 			if (connection == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.\r\n{Environment.StackTrace}", MessageType.Error);
 				return uint.MaxValue;
 			}
 
-			var playerController = connection.PlayerControllers[0];
+			var playerController = connection.PlayerControllers.FirstOrDefault();
 			if (playerController == null)
 			{
 				DebugLog.ToConsole($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
 				return uint.MaxValue;
 			}
 
-			var go = playerController.Gameobject;
-			if (go == null)
-			{
-				DebugLog.ToConsole($"Error - GameObject of {playerController.UnetView.NetId.Value} is null.", MessageType.Error);
-				return uint.MaxValue;
-			}
-
-			var controller = go.GetComponent<PlayerTransformSync>();
-			if (controller == null)
-			{
-				DebugLog.ToConsole($"Error - No PlayerTransformSync found on {go.name}", MessageType.Error);
-				return uint.MaxValue;
-			}
-
-			return controller.NetId.Value;
+			return playerController.UnetView.NetId.Value;
 		}
 
 		public static void SpawnWithServerAuthority(this GameObject go)
@@ -81,10 +57,13 @@ namespace QSB.Utility
 				return;
 			}
 
-			QNetworkServer.SpawnWithClientAuthority(go, QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
+			QNetworkServer.SpawnWithClientAuthority(go, QNetworkServer.localConnection);
 		}
 
-		// C#
+		#endregion
+
+		#region C#
+
 		public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
 		{
 			foreach (var del in multicast.GetInvocationList())
@@ -95,13 +74,19 @@ namespace QSB.Utility
 				}
 				catch (TargetInvocationException ex)
 				{
-					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException!.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
 				}
 			}
 		}
 
-		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
-			=> ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
+		{
+			var mappedValue = ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+
+			return clamp
+				? Mathf.Clamp(mappedValue, outputTo, outputFrom)
+				: mappedValue;
+		}
 
 		public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
 		{
@@ -127,16 +112,15 @@ namespace QSB.Utility
 			return true;
 		}
 
-		private const BindingFlags Flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
-
 		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
+			const BindingFlags flags = BindingFlags.Instance
+				| BindingFlags.Static
+				| BindingFlags.Public
+				| BindingFlags.NonPublic
+				| BindingFlags.DeclaredOnly;
 			if (typeof(T)
-				.GetField(eventName, Flags)?
+				.GetField(eventName, flags)?
 				.GetValue(instance) is not MulticastDelegate multiDelegate)
 			{
 				return;
@@ -145,9 +129,9 @@ namespace QSB.Utility
 			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
 		}
 
-		// OW
+		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
+			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
 
-		public static Vector3 GetRelativeAngularVelocity(this OWRigidbody baseBody, OWRigidbody relativeBody)
-			=> baseBody.GetAngularVelocity() - relativeBody.GetAngularVelocity();
+		#endregion
 	}
 }

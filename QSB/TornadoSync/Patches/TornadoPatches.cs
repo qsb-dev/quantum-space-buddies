@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
-using QSB.Events;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.TornadoSync.Messages;
 using QSB.TornadoSync.WorldObjects;
 using QSB.WorldSync;
 using UnityEngine;
@@ -21,8 +22,8 @@ namespace QSB.TornadoSync.Patches
 				if (__instance._secondsUntilFormation < 0f)
 				{
 					__instance.StartFormation();
-					var qsbTornado = QSBWorldSync.GetWorldFromUnity<QSBTornado>(__instance);
-					QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, qsbTornado);
+					var qsbTornado = __instance.GetWorldObject<QSBTornado>();
+					qsbTornado.SendMessage(new TornadoFormStateMessage(qsbTornado.FormState));
 					return false;
 				}
 			}
@@ -36,6 +37,7 @@ namespace QSB.TornadoSync.Patches
 				{
 					__instance.UpdateFormation();
 				}
+
 				if (__instance._isSectorOccupied)
 				{
 					__instance.UpdateAnimation();
@@ -52,7 +54,6 @@ namespace QSB.TornadoSync.Patches
 			return false;
 		}
 
-
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(TornadoController), nameof(TornadoController.OnEnterCollapseTrigger))]
 		public static bool OnEnterCollapseTrigger(TornadoController __instance,
@@ -61,8 +62,8 @@ namespace QSB.TornadoSync.Patches
 			if (QSBCore.IsHost && hitObject.GetComponentInParent<OWRigidbody>().GetMass() > 50f)
 			{
 				__instance.StartCollapse();
-				var qsbTornado = QSBWorldSync.GetWorldFromUnity<QSBTornado>(__instance);
-				QSBEventManager.FireEvent(EventNames.QSBTornadoFormState, qsbTornado);
+				var qsbTornado = __instance.GetWorldObject<QSBTornado>();
+				qsbTornado.SendMessage(new TornadoFormStateMessage(qsbTornado.FormState));
 			}
 
 			return false;
