@@ -36,6 +36,11 @@ namespace QSB.Menus
 		private const int _ClientButtonIndex = 2;
 		private const int _DisconnectIndex = 3;
 
+		private const string OpenString = "OPEN TO MULTIPLAYER";
+		private const string ConnectString = "CONNECT TO MULTIPLAYER";
+		private const string DisconnectString = "DISCONNECT";
+		private const string StopHostingString = "STOP HOSTING";
+
 		public void Start()
 		{
 			Instance = this;
@@ -147,7 +152,7 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			IPPopup = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
+			IPPopup = MenuApi.MakeInputFieldPopup("Steam ID", "Steam ID", "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 			IPPopup.OnPopupValidate += Validate;
 
@@ -174,13 +179,13 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			HostButton = MenuApi.PauseMenu_MakeSimpleButton("OPEN TO MULTIPLAYER");
+			HostButton = MenuApi.PauseMenu_MakeSimpleButton(OpenString);
 			HostButton.onClick.AddListener(Host);
 
 			DisconnectPopup = MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
 			DisconnectPopup.OnPopupConfirm += Disconnect;
 
-			DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton("DISCONNECT", DisconnectPopup);
+			DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton(DisconnectString, DisconnectPopup);
 
 			QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
@@ -198,8 +203,8 @@ namespace QSB.Menus
 			}
 
 			var text = QSBCore.IsHost
-				? "STOP HOSTING"
-				: "DISCONNECT";
+				? StopHostingString
+				: DisconnectString;
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 
 			var popupText = QSBCore.IsHost
@@ -220,7 +225,7 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, IPPopup);
+			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
 			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
@@ -290,8 +295,8 @@ namespace QSB.Menus
 			SetButtonActive(QuitButton, false);
 
 			var text = QSBCore.IsHost
-				? "STOP HOSTING"
-				: "DISCONNECT";
+				? StopHostingString
+				: DisconnectString;
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 
 			var popupText = QSBCore.IsHost
