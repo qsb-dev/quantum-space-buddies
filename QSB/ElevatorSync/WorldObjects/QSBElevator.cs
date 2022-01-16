@@ -77,6 +77,8 @@ namespace QSB.ElevatorSync.WorldObjects
 			_interactVolume.DisableInteraction();
 		}
 
+		public override bool ShouldDisplayDebug() => base.ShouldDisplayDebug() && _elevatorTrigger;
+
 		public override void DisplayLines()
 		{
 			var boxShape = (BoxShape)_elevatorTrigger._shape;
