@@ -2,8 +2,8 @@
   "debugMode": true,
   "drawLines": false,
   "showQuantumVisibilityObjects": false,
-  "showDebugLabels": true,
+  "showDebugLabels": false,
   "avoidTimeSync": false,
-  "skipTitleScreen": true,
+  "skipTitleScreen": false,
   "greySkybox": false
 }
