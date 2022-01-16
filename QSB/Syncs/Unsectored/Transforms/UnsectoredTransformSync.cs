@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Syncs.Unsectored.Transforms
@@ -16,7 +15,6 @@ namespace QSB.Syncs.Unsectored.Transforms
 		protected override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-
 			writer.Write(transform.position);
 			writer.Write(transform.rotation);
 		}
@@ -24,17 +22,8 @@ namespace QSB.Syncs.Unsectored.Transforms
 		protected override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-
-			var pos = reader.ReadVector3();
-			var rot = reader.ReadQuaternion();
-
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
-			transform.position = pos;
-			transform.rotation = rot;
+			transform.position = reader.ReadVector3();
+			transform.rotation = reader.ReadQuaternion();
 		}
 
 		protected override bool UpdateTransform()

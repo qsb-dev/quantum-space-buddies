@@ -19,7 +19,7 @@ namespace QSB.TornadoSync.TransformSync
 		public override bool UseInterpolation => false;
 		public override bool IsPlayerObject => false;
 
-		protected override OWRigidbody GetRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
+		protected override OWRigidbody InitAttachedRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
 
 		private int _bodyIndex = -1;
 		private int _refBodyIndex = -1;

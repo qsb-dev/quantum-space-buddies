@@ -112,6 +112,8 @@ namespace QSB.Syncs.Sectored
 
 		protected override void Serialize(NetworkWriter writer)
 		{
+			base.Serialize(writer);
+
 			if (IsPlayerObject)
 			{
 				if (Player == null)
@@ -145,6 +147,8 @@ namespace QSB.Syncs.Sectored
 
 		protected override void Deserialize(NetworkReader reader)
 		{
+			base.Deserialize(reader);
+
 			int sectorId;
 			if (!WorldObjectManager.AllObjectsReady)
 			{

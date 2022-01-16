@@ -16,32 +16,13 @@ namespace QSB.Syncs.Sectored.Transforms
 		protected override Transform InitAttachedTransform()
 			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
-		protected override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-
-			writer.Write(transform.position);
-			writer.Write(transform.rotation);
-		}
-
 		protected override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 
-			var pos = reader.ReadVector3();
-			var rot = reader.ReadQuaternion();
-
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
-			transform.position = pos;
-			transform.rotation = rot;
-
 			if (transform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)!", MessageType.Warning);
 			}
 		}
 

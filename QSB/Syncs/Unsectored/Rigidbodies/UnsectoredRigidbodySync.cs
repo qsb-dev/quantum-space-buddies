@@ -32,18 +32,17 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 		public OWRigidbody AttachedRigidbody { get; set; }
 
-		protected abstract OWRigidbody GetRigidbody();
+		protected abstract OWRigidbody InitAttachedRigidbody();
 
 		protected override Transform InitAttachedTransform()
 		{
-			AttachedRigidbody = GetRigidbody();
+			AttachedRigidbody = InitAttachedRigidbody();
 			return AttachedRigidbody.transform;
 		}
 
 		protected override void UpdatePrevData()
 		{
-			_prevPosition = transform.position;
-			_prevRotation = transform.rotation;
+			base.UpdatePrevData();
 			_prevVelocity = _relativeVelocity;
 			_prevAngularVelocity = _relativeAngularVelocity;
 		}
@@ -51,9 +50,6 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 		protected override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-
-			writer.Write(transform.position);
-			writer.Write(transform.rotation);
 			writer.Write(_relativeVelocity);
 			writer.Write(_relativeAngularVelocity);
 		}
@@ -61,21 +57,8 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 		protected override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-
-			var pos = reader.ReadVector3();
-			var rot = reader.ReadQuaternion();
-			var relativeVelocity = reader.ReadVector3();
-			var relativeAngularVelocity = reader.ReadVector3();
-
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
-			transform.position = pos;
-			transform.rotation = rot;
-			_relativeVelocity = relativeVelocity;
-			_relativeAngularVelocity = relativeAngularVelocity;
+			_relativeVelocity = reader.ReadVector3();
+			_relativeAngularVelocity = reader.ReadVector3();
 		}
 
 		protected void SetValuesToSync()

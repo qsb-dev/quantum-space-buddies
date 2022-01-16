@@ -18,7 +18,7 @@ namespace QSB.JellyfishSync.TransformSync
 		private QSBJellyfish _qsbJellyfish;
 		private static readonly List<JellyfishTransformSync> _instances = new();
 
-		protected override OWRigidbody GetRigidbody()
+		protected override OWRigidbody InitAttachedRigidbody()
 			=> _qsbJellyfish.AttachedObject._jellyfishBody;
 
 		public override void Start()

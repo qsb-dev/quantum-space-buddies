@@ -24,7 +24,7 @@ namespace QSB.ShipSync.TransformSync
 			LocalInstance = this;
 		}
 
-		protected override OWRigidbody GetRigidbody()
+		protected override OWRigidbody InitAttachedRigidbody()
 		{
 			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship));
 			return Locator.GetShipBody();

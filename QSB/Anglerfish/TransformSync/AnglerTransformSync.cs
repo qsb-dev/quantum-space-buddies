@@ -17,7 +17,7 @@ namespace QSB.Anglerfish.TransformSync
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new();
 
-		protected override OWRigidbody GetRigidbody()
+		protected override OWRigidbody InitAttachedRigidbody()
 			=> _qsbAngler.AttachedObject._anglerBody;
 
 		public override void Start()
