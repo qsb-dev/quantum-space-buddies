@@ -110,7 +110,7 @@ namespace QSB.Syncs.Sectored
 			base.Update();
 		}
 
-		protected override void Serialize(NetworkWriter writer, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
 			if (IsPlayerObject)
 			{
@@ -143,13 +143,13 @@ namespace QSB.Syncs.Sectored
 			}
 		}
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
 			int sectorId;
 			if (!WorldObjectManager.AllObjectsReady)
 			{
 				sectorId = reader.ReadInt();
-				if (initialState && sectorId != -1)
+				if (sectorId != -1)
 				{
 					_sectorIdWaitingSlot = sectorId;
 				}

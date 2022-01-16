@@ -66,9 +66,9 @@ namespace QSB.Anglerfish.TransformSync
 
 		private bool _shouldUpdate;
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
+			base.Deserialize(reader);
 
 			if (!WorldObjectManager.AllObjectsReady)
 			{

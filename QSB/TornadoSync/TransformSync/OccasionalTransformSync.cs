@@ -47,28 +47,23 @@ namespace QSB.TornadoSync.TransformSync
 				.ToArray();
 		}
 
-		protected override void Serialize(NetworkWriter writer, bool initialState)
+		protected override void SerializeInitial(NetworkWriter writer)
 		{
-			base.Serialize(writer, initialState);
+			writer.Write(_bodyIndex);
+			writer.Write(_refBodyIndex);
+		}
 
-			if (initialState)
-			{
-				writer.Write(_bodyIndex);
-				writer.Write(_refBodyIndex);
-			}
+		protected override void DeserializeInitial(NetworkReader reader)
+		{
+			_bodyIndex = reader.ReadInt();
+			_refBodyIndex = reader.ReadInt();
 		}
 
 		private bool _shouldUpdate;
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
-
-			if (initialState)
-			{
-				_bodyIndex = reader.ReadInt();
-				_refBodyIndex = reader.ReadInt();
-			}
+			base.Deserialize(reader);
 
 			if (!WorldObjectManager.AllObjectsReady)
 			{

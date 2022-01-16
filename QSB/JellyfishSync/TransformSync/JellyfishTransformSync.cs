@@ -65,9 +65,9 @@ namespace QSB.JellyfishSync.TransformSync
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
 		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
-		protected override void Serialize(NetworkWriter writer, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
-			base.Serialize(writer, initialState);
+			base.Serialize(writer);
 
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -81,9 +81,9 @@ namespace QSB.JellyfishSync.TransformSync
 
 		private bool _shouldUpdate;
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
+			base.Deserialize(reader);
 
 			if (!WorldObjectManager.AllObjectsReady)
 			{

@@ -51,9 +51,9 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			_prevAngularVelocity = _relativeAngularVelocity;
 		}
 
-		protected override void Serialize(NetworkWriter writer, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
-			base.Serialize(writer, initialState);
+			base.Serialize(writer);
 
 			writer.Write(transform.position);
 			writer.Write(transform.rotation);
@@ -61,9 +61,9 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			writer.Write(_relativeAngularVelocity);
 		}
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
+			base.Deserialize(reader);
 
 			var pos = reader.ReadVector3();
 			var rot = reader.ReadQuaternion();

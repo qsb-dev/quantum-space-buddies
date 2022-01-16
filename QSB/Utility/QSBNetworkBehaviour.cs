@@ -10,18 +10,15 @@ namespace QSB.Utility
 
 		private double _lastSendTime;
 
-		protected abstract bool HasChanged();
-		protected abstract void UpdatePrevData();
-		protected abstract void Serialize(NetworkWriter writer, bool initialState);
-		protected abstract void Deserialize(NetworkReader reader, bool initialState);
+		protected virtual void SerializeInitial(NetworkWriter writer) { }
+		protected virtual void DeserializeInitial(NetworkReader reader) { }
 
 		public override bool OnSerialize(NetworkWriter writer, bool initialState)
 		{
 			var changed = base.OnSerialize(writer, initialState);
 			if (initialState && isServer)
 			{
-				Serialize(writer, true);
-				UpdatePrevData();
+				SerializeInitial(writer);
 			}
 
 			return changed;
@@ -32,10 +29,14 @@ namespace QSB.Utility
 			base.OnDeserialize(reader, initialState);
 			if (initialState && !isServer)
 			{
-				UpdatePrevData();
-				Deserialize(reader, true);
+				DeserializeInitial(reader);
 			}
 		}
+
+		protected abstract bool HasChanged();
+		protected abstract void UpdatePrevData();
+		protected abstract void Serialize(NetworkWriter writer);
+		protected abstract void Deserialize(NetworkReader reader);
 
 		protected virtual void Update()
 		{
@@ -64,7 +65,7 @@ namespace QSB.Utility
 				}
 
 				using var writer = NetworkWriterPool.GetWriter();
-				Serialize(writer, false);
+				Serialize(writer);
 				UpdatePrevData();
 
 				var data = writer.ToArraySegment();
@@ -95,7 +96,7 @@ namespace QSB.Utility
 		{
 			using var reader = NetworkReaderPool.GetReader(data);
 			UpdatePrevData();
-			Deserialize(reader, false);
+			Deserialize(reader);
 		}
 	}
 }
