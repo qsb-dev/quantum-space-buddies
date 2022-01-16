@@ -9,7 +9,6 @@ namespace QSB.Tools.ProbeTool.TransformSync
 {
 	public class PlayerProbeSync : SectoredTransformSync
 	{
-		protected override float DistanceLeeway => 10f;
 		protected override bool UseInterpolation => true;
 		protected override bool AllowDisabledAttachedObject => true;
 		protected override bool IsPlayerObject => true;

@@ -58,10 +58,6 @@ namespace QSB.Syncs
 		public Transform ReferenceTransform { get; private set; }
 
 		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty) + $"{netId}:{GetType().Name}";
-		protected virtual float DistanceLeeway => 5f;
-		protected virtual float AngleLeeway => 5f;
-		private float _previousDistance;
-		private float _previousAngle;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
@@ -181,8 +177,8 @@ namespace QSB.Syncs
 
 			if (UseInterpolation)
 			{
-				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
-				SmoothRotation = SmartSmoothDamp(SmoothRotation, transform.rotation);
+				SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 			}
 
 			if (hasAuthority)
@@ -203,32 +199,6 @@ namespace QSB.Syncs
 			}
 
 			base.Update();
-		}
-
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
-			{
-				_previousDistance = distance;
-				return targetPosition;
-			}
-
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
-		}
-
-		private Quaternion SmartSmoothDamp(Quaternion currentRotation, Quaternion targetRotation)
-		{
-			var angle = Quaternion.Angle(currentRotation, targetRotation);
-			if (angle > _previousAngle + AngleLeeway)
-			{
-				_previousAngle = angle;
-				return targetRotation;
-			}
-
-			_previousAngle = angle;
-			return QuaternionHelper.SmoothDamp(currentRotation, targetRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
 		public void SetReferenceTransform(Transform referenceTransform)
