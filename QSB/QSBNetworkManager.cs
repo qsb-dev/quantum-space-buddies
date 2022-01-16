@@ -131,20 +131,18 @@ namespace QSB
 			return template;
 		}
 
+		private void Update()
+		{
+			_lastTransportError = null;
+		}
+
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
 			Port = QSBCore.Port;
 			maxConnections = MaxConnections;
 
-			kcp2k.Log.Info = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s);
-				if (s == "KCP: received disconnect message")
-				{
-					_lastTransportError = s;
-				}
-			};
+			kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);
 			kcp2k.Log.Warning = s =>
 			{
 				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
@@ -257,9 +255,12 @@ namespace QSB
 				_lastTransportError = null;
 				_intentionalDisconnect = false;
 			}
+			else if (_lastTransportError == null)
+			{
+				_lastTransportError = "host disconnected";
+			}
 
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
-			_lastTransportError = null;
 		}
 
 		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
