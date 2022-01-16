@@ -129,21 +129,17 @@ namespace QSB.Syncs
 				catch (Exception ex)
 				{
 					DebugLog.ToConsole($"Exception when initializing {name} : {ex}", MessageType.Error);
+					return;
 				}
-
-				base.Update();
-				return;
 			}
 			else if (_isInitialized && (!IsReady || !_baseIsReady))
 			{
 				_isInitialized = false;
-				base.Update();
 				return;
 			}
 
 			if (!_isInitialized)
 			{
-				base.Update();
 				return;
 			}
 
@@ -151,33 +147,27 @@ namespace QSB.Syncs
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
 				_isInitialized = false;
-				base.Update();
 				return;
 			}
 
 			if (!AttachedTransform.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
 			{
-				base.Update();
 				return;
 			}
-			else
+
+			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
 			{
-				if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
-				{
-					DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-				}
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 			}
 
 			if (ReferenceTransform == Locator.GetRootTransform())
 			{
-				base.Update();
 				return;
 			}
 
 			if (ReferenceTransform == null && !IgnoreNullReferenceTransform)
 			{
 				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-				base.Update();
 				return;
 			}
 
@@ -188,7 +178,6 @@ namespace QSB.Syncs
 			}
 
 			UpdateTransform();
-
 			base.Update();
 		}
 
