@@ -17,9 +17,24 @@ namespace QSB.Syncs
 	public abstract class SyncBase : QSBNetworkTransform
 	{
 		/// <summary>
-		/// valid if IsPlayerObject, otherwise null
+		/// valid if IsPlayerObject, otherwise null <br/>
 		/// </summary>
-		public PlayerInfo Player { get; private set; }
+		public PlayerInfo Player
+		{
+			get
+			{
+				if (_player == null)
+				{
+					DebugLog.ToConsole("Error - trying to get SyncBase.Player before Start has been called! "
+						+ "this really should not be happening!\n"
+						+ $"{Environment.StackTrace}");
+				}
+
+				return _player;
+			}
+			private set => _player = value;
+		}
+		private PlayerInfo _player;
 
 		private bool _baseIsReady
 		{
@@ -115,6 +130,7 @@ namespace QSB.Syncs
 		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
 
 		private bool _shouldApply;
+
 		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
 			base.Deserialize(reader, initialState);
@@ -187,17 +203,10 @@ namespace QSB.Syncs
 			{
 				GetFromAttached();
 			}
-			else
+			else if (!OnlyApplyOnDeserialize || _shouldApply)
 			{
-				if (OnlyApplyOnDeserialize && _shouldApply)
-				{
-					_shouldApply = false;
-					ApplyToAttached();
-				}
-				else
-				{
-					ApplyToAttached();
-				}
+				_shouldApply = false;
+				ApplyToAttached();
 			}
 
 			base.Update();
