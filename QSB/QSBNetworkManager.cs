@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -50,10 +51,6 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
-		public int Port
-		{
-			set => ((kcp2k.KcpTransport)transport).Port = (ushort)value;
-		}
 		private string _lastTransportError;
 		internal bool _intentionalDisconnect;
 
@@ -67,7 +64,14 @@ namespace QSB
 				.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
 				.ForEach(x => x.Invoke(null, null));
 
-			transport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			gameObject.SetActive(false);
+
+			var fizzy = gameObject.AddComponent<FizzyFacepunch>();
+			fizzy.SteamAppID = "753640";
+			transport = fizzy;
+
+			gameObject.SetActive(true);
+
 			base.Awake();
 
 			PlayerName = GetPlayerName();
@@ -139,7 +143,6 @@ namespace QSB
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
-			Port = QSBCore.Port;
 			maxConnections = MaxConnections;
 
 			kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);

@@ -302,9 +302,10 @@ namespace QSB.Menus
 
 		private bool Validate()
 		{
-			var inputText = ((PopupInputMenu)IPPopup).GetInputText();
-			var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
-			return inputText == "localhost" || regex.Match(inputText).Success;
+			//var inputText = ((PopupInputMenu)IPPopup).GetInputText();
+			//var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
+			//return inputText == "localhost" || regex.Match(inputText).Success;
+			return ((PopupInputMenu)IPPopup).GetInputText() != "";
 		}
 
 		private void Connect()

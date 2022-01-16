@@ -43,7 +43,6 @@ namespace QSB
 		public static IModHelper Helper { get; private set; }
 		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
-		public static int Port { get; private set; }
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
@@ -146,11 +145,6 @@ namespace QSB
 		public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-			Port = config.GetSettingsValue<int>("port");
-			if (QSBNetworkManager.singleton != null)
-			{
-				QSBNetworkManager.singleton.Port = Port;
-			}
 		}
 	}
 }
