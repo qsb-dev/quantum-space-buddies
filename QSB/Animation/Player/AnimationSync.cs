@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace QSB.Animation.Player
 {
-
 	public class AnimationSync : PlayerSyncObject
 	{
 		private RuntimeAnimatorController _suitedAnimController;
@@ -43,8 +42,6 @@ namespace QSB.Animation.Player
 
 		protected void OnDestroy()
 		{
-			Destroy(InvisibleAnimator);
-			Destroy(NetworkAnimator);
 			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 		}
 
@@ -64,7 +61,6 @@ namespace QSB.Animation.Player
 				LoadControllers();
 			}
 
-			NetworkAnimator.enabled = true;
 			VisibleAnimator = body.GetComponent<Animator>();
 			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
 			if (isLocalPlayer)
@@ -76,10 +72,8 @@ namespace QSB.Animation.Player
 				Mirror.Init(InvisibleAnimator, VisibleAnimator);
 			}
 
-			// for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
-			// {
-			// 	NetworkAnimator.SetParameterAutoSend(i, true);
-			// }
+			NetworkAnimator.enabled = true;
+			NetworkAnimator.Awake();
 
 			var playerAnimController = body.GetComponent<PlayerAnimController>();
 			_suitedAnimController = playerAnimController._baseAnimController;
@@ -300,15 +294,9 @@ namespace QSB.Animation.Player
 			{
 				DebugLog.ToConsole($"Error - Mirror is null. ({PlayerId})", MessageType.Error);
 			}
-			else if (InvisibleAnimator != null)
-			{
-				NetworkAnimator.animator = InvisibleAnimator; // Probably not needed.
-				Mirror.RebuildFloatParams();
-				// for (var i = 0; i < InvisibleAnimator.parameterCount; i++)
-				// {
-				// 	NetworkAnimator.SetParameterAutoSend(i, true);
-				// }
-			}
+
+			Mirror.RebuildFloatParams();
+			NetworkAnimator.Awake();
 		}
 	}
 }
