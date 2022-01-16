@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.Anglerfish.WorldObjects;
+﻿using QSB.Anglerfish.WorldObjects;
 using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
@@ -12,7 +11,7 @@ namespace QSB.Anglerfish.TransformSync
 	{
 		protected override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		protected override bool UseInterpolation => false;
-		protected override bool IsPlayerObject => false;
+		protected override bool OnlyApplyOnDeserialize => true;
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new();
@@ -63,36 +62,6 @@ namespace QSB.Anglerfish.TransformSync
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
 		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
-
-		private bool _shouldUpdate;
-
-		protected override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
-			_shouldUpdate = true;
-		}
-
-		protected override bool UpdateTransform()
-		{
-			if (hasAuthority)
-			{
-				return base.UpdateTransform();
-			}
-
-			if (!_shouldUpdate)
-			{
-				return false;
-			}
-
-			_shouldUpdate = false;
-			return base.UpdateTransform();
-		}
 
 		protected override void OnRenderObject()
 		{

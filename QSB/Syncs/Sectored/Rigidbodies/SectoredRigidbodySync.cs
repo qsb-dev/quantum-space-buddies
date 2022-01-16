@@ -9,15 +9,15 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 	{
 		protected override bool DestroyAttachedObject => false;
 
-		public const float PositionMovedThreshold = 0.05f;
-		public const float AngleRotatedThreshold = 0.05f;
-		public const float VelocityChangeThreshold = 0.05f;
-		public const float AngVelocityChangeThreshold = 0.05f;
+		private const float PositionMovedThreshold = 0.05f;
+		private const float AngleRotatedThreshold = 0.05f;
+		private const float VelocityChangeThreshold = 0.05f;
+		private const float AngVelocityChangeThreshold = 0.05f;
 
 		protected Vector3 _relativeVelocity;
 		protected Vector3 _relativeAngularVelocity;
-		protected Vector3 _prevVelocity;
-		protected Vector3 _prevAngularVelocity;
+		private Vector3 _prevVelocity;
+		private Vector3 _prevAngularVelocity;
 
 		public OWRigidbody AttachedRigidbody { get; private set; }
 
@@ -55,7 +55,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			}
 		}
 
-		protected void SetValuesToSync()
+		protected override void GetFromAttached()
 		{
 			if (ReferenceTransform != null)
 			{
@@ -73,17 +73,11 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			}
 		}
 
-		protected override bool UpdateTransform()
+		protected override void ApplyToAttached()
 		{
-			if (hasAuthority)
-			{
-				SetValuesToSync();
-				return true;
-			}
-
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				return false;
+				return;
 			}
 
 			var targetPos = ReferenceTransform.FromRelPos(transform.position);
@@ -106,52 +100,26 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 			AttachedRigidbody.SetVelocity(targetVelocity);
 			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
-
-			return true;
 		}
 
 		protected override bool HasChanged()
-			=> CustomHasMoved(
-				transform.position,
-				_prevPosition,
-				transform.rotation,
-				_prevRotation,
-				_relativeVelocity,
-				_prevVelocity,
-				_relativeAngularVelocity,
-				_prevAngularVelocity);
-
-		// OPTIMIZE : optimize by using sqrMagnitude
-		private bool CustomHasMoved(
-			Vector3 newPosition,
-			Vector3 prevPosition,
-			Quaternion newRotation,
-			Quaternion prevRotation,
-			Vector3 newVelocity,
-			Vector3 prevVelocity,
-			Vector3 newAngVelocity,
-			Vector3 prevAngVelocity)
 		{
-			var displacementMagnitude = (newPosition - prevPosition).magnitude;
-
-			if (displacementMagnitude > PositionMovedThreshold)
+			if (Vector3.Distance(transform.position, _prevPosition) > PositionMovedThreshold)
 			{
 				return true;
 			}
 
-			if (Quaternion.Angle(newRotation, prevRotation) > AngleRotatedThreshold)
+			if (Quaternion.Angle(transform.rotation, _prevRotation) > AngleRotatedThreshold)
 			{
 				return true;
 			}
 
-			var velocityChangeMagnitude = (newVelocity - prevVelocity).magnitude;
-			var angularVelocityChangeMagnitude = (newAngVelocity - prevAngVelocity).magnitude;
-			if (velocityChangeMagnitude > VelocityChangeThreshold)
+			if (Vector3.Distance(_relativeVelocity, _prevVelocity) > VelocityChangeThreshold)
 			{
 				return true;
 			}
 
-			if (angularVelocityChangeMagnitude > AngVelocityChangeThreshold)
+			if (Vector3.Distance(_relativeAngularVelocity, _prevAngularVelocity) > AngVelocityChangeThreshold)
 			{
 				return true;
 			}

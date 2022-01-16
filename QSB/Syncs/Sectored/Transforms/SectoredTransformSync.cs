@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Transforms
@@ -26,27 +25,25 @@ namespace QSB.Syncs.Sectored.Transforms
 			}
 		}
 
-		protected override bool UpdateTransform()
+		protected override void GetFromAttached()
 		{
-			if (hasAuthority)
+			if (ReferenceTransform != null)
 			{
-				if (ReferenceTransform != null)
-				{
-					transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-					transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-				}
-				else
-				{
-					transform.position = Vector3.zero;
-					transform.rotation = Quaternion.identity;
-				}
-
-				return true;
+				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 			}
+			else
+			{
+				transform.position = Vector3.zero;
+				transform.rotation = Quaternion.identity;
+			}
+		}
 
+		protected override void ApplyToAttached()
+		{
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				return false;
+				return;
 			}
 
 			if (UseInterpolation)
@@ -59,8 +56,6 @@ namespace QSB.Syncs.Sectored.Transforms
 				AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
 				AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
-
-			return true;
 		}
 	}
 }

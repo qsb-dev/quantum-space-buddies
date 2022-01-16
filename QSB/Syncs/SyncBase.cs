@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -51,8 +52,8 @@ namespace QSB.Syncs
 		protected abstract bool AllowDisabledAttachedObject { get; }
 		protected abstract bool AllowNullReferenceTransform { get; }
 		protected abstract bool DestroyAttachedObject { get; }
-		protected abstract bool IsPlayerObject { get; }
-		protected virtual bool OnlyUpdateOnDeserialize => false;
+		protected virtual bool IsPlayerObject => false;
+		protected virtual bool OnlyApplyOnDeserialize => false;
 
 		public Transform AttachedTransform { get; private set; }
 		public Transform ReferenceTransform { get; private set; }
@@ -70,9 +71,8 @@ namespace QSB.Syncs
 		protected Quaternion SmoothRotation;
 
 		protected abstract Transform InitAttachedTransform();
-		// protected abstract bool GetFromAttached();
-		// protected abstract bool ApplyToAttached();
-		protected abstract bool UpdateTransform();
+		protected abstract void GetFromAttached();
+		protected abstract void ApplyToAttached();
 
 		public virtual void Start()
 		{
@@ -116,6 +116,16 @@ namespace QSB.Syncs
 		}
 
 		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
+
+		private bool _shouldApply;
+		protected override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			if (OnlyApplyOnDeserialize)
+			{
+				_shouldApply = true;
+			}
+		}
 
 		protected sealed override void Update()
 		{
@@ -176,7 +186,23 @@ namespace QSB.Syncs
 				SmoothRotation = SmartSmoothDamp(SmoothRotation, transform.rotation);
 			}
 
-			UpdateTransform();
+			if (hasAuthority)
+			{
+				GetFromAttached();
+			}
+			else
+			{
+				if (OnlyApplyOnDeserialize && _shouldApply)
+				{
+					_shouldApply = false;
+					ApplyToAttached();
+				}
+				else
+				{
+					ApplyToAttached();
+				}
+			}
+
 			base.Update();
 		}
 

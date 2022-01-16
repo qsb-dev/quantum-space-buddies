@@ -13,7 +13,7 @@ namespace QSB.Utility
 		protected virtual void SerializeInitial(NetworkWriter writer) { }
 		protected virtual void DeserializeInitial(NetworkReader reader) { }
 
-		public override bool OnSerialize(NetworkWriter writer, bool initialState)
+		public sealed override bool OnSerialize(NetworkWriter writer, bool initialState)
 		{
 			var changed = base.OnSerialize(writer, initialState);
 			if (initialState && isServer)
@@ -24,7 +24,7 @@ namespace QSB.Utility
 			return changed;
 		}
 
-		public override void OnDeserialize(NetworkReader reader, bool initialState)
+		public sealed override void OnDeserialize(NetworkReader reader, bool initialState)
 		{
 			base.OnDeserialize(reader, initialState);
 			if (initialState && !isServer)

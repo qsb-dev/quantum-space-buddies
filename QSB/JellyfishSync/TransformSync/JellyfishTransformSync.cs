@@ -13,7 +13,7 @@ namespace QSB.JellyfishSync.TransformSync
 	{
 		protected override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		protected override bool UseInterpolation => false;
-		protected override bool IsPlayerObject => false;
+		protected override bool OnlyApplyOnDeserialize => true;
 
 		private QSBJellyfish _qsbJellyfish;
 		private static readonly List<JellyfishTransformSync> _instances = new();
@@ -69,76 +69,26 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			base.Serialize(writer);
 
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				writer.Write(false);
-				return;
-			}
-
 			_qsbJellyfish.Align = true;
 			writer.Write(_qsbJellyfish.IsRising);
 		}
-
-		private bool _shouldUpdate;
 
 		protected override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				reader.ReadBool();
-				return;
-			}
-
 			_qsbJellyfish.Align = false;
 			_qsbJellyfish.IsRising = reader.ReadBool();
-			_shouldUpdate = true;
 		}
 
 		/// replacement using SetPosition/Rotation instead of Move
-		protected override bool UpdateTransform()
+		protected override void ApplyToAttached()
 		{
-			if (hasAuthority)
-			{
-				SetValuesToSync();
-				return true;
-			}
-
-			if (!_shouldUpdate)
-			{
-				return false;
-			}
-
-			_shouldUpdate = false;
-
-			var hasMoved = CustomHasMoved(
-				transform.position,
-				_localPrevPosition,
-				transform.rotation,
-				_localPrevRotation,
-				_relativeVelocity,
-				_localPrevVelocity,
-				_relativeAngularVelocity,
-				_localPrevAngularVelocity);
-
-			_localPrevPosition = transform.position;
-			_localPrevRotation = transform.rotation;
-			_localPrevVelocity = _relativeVelocity;
-			_localPrevAngularVelocity = _relativeAngularVelocity;
-
-			if (!hasMoved)
-			{
-				return true;
-			}
-
 			var pos = ReferenceTransform.FromRelPos(transform.position);
 			AttachedRigidbody.SetPosition(pos);
 			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
 			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
 			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
-
-			return true;
 		}
 
 		protected override void OnRenderObject()

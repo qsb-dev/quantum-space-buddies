@@ -97,7 +97,7 @@ namespace QSB.Player.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
+			SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -235,37 +235,40 @@ namespace QSB.Player.TransformSync
 			return REMOTE_Player_Body.transform;
 		}
 
-		protected override bool UpdateTransform()
+		protected override void GetFromAttached()
 		{
-			if (!base.UpdateTransform())
-			{
-				return false;
-			}
+			base.GetFromAttached();
 
-			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
-			UpdateSpecificTransform(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
-			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
-			UpdateSpecificTransform(_visibleRoastingSystem, _networkRoastingSystem, ref _roastingPositionVelocity, ref _roastingRotationVelocity);
-			return true;
+			GetFromChild(_visibleStickPivot, _networkStickPivot);
+			GetFromChild(_visibleStickTip, _networkStickTip);
+			GetFromChild(_visibleCameraRoot, _networkCameraRoot);
+			GetFromChild(_visibleRoastingSystem, _networkRoastingSystem);
 		}
 
-		private void UpdateSpecificTransform(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
+		protected override void ApplyToAttached()
 		{
-			if (hasAuthority)
-			{
-				network.localPosition = visible.localPosition;
-				network.localRotation = visible.localRotation;
-				return;
-			}
+			base.ApplyToAttached();
 
+			ApplyToChild(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
+			ApplyToChild(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
+			ApplyToChild(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
+			ApplyToChild(_visibleRoastingSystem, _networkRoastingSystem, ref _roastingPositionVelocity, ref _roastingRotationVelocity);
+		}
+
+		private static void GetFromChild(Transform visible, Transform network)
+		{
+			network.localPosition = visible.localPosition;
+			network.localRotation = visible.localRotation;
+		}
+
+		private static void ApplyToChild(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
+		{
 			visible.localPosition = Vector3.SmoothDamp(visible.localPosition, network.localPosition, ref positionVelocity, SmoothTime);
 			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
 		}
 
 		protected override void OnRenderObject()
 		{
-			base.OnRenderObject();
-
 			if (!QSBCore.ShowLinesInDebug
 				|| !IsInitialized
 				|| ReferenceTransform == null)
@@ -273,7 +276,8 @@ namespace QSB.Player.TransformSync
 				return;
 			}
 
-			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
+			base.OnRenderObject();
+
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickPivot.position), ReferenceTransform.TransformRotation(_networkStickPivot.rotation), Vector3.one / 4, Color.red);
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickTip.position), ReferenceTransform.TransformRotation(_networkStickTip.rotation), Vector3.one / 4, Color.red);

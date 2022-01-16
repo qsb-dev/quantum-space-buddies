@@ -26,15 +26,14 @@ namespace QSB.Syncs.Unsectored.Transforms
 			transform.rotation = reader.ReadQuaternion();
 		}
 
-		protected override bool UpdateTransform()
+		protected override void GetFromAttached()
 		{
-			if (hasAuthority)
-			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-				return true;
-			}
+			transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+			transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+		}
 
+		protected override void ApplyToAttached()
+		{
 			if (UseInterpolation)
 			{
 				AttachedTransform.position = ReferenceTransform.FromRelPos(SmoothPosition);
@@ -45,8 +44,6 @@ namespace QSB.Syncs.Unsectored.Transforms
 				AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
 				AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 			}
-
-			return true;
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace QSB.TornadoSync.TransformSync
 			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_bodyIndex)
 			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_refBodyIndex);
 		protected override bool UseInterpolation => false;
-		protected override bool IsPlayerObject => false;
+		protected override bool OnlyApplyOnDeserialize => true;
 
 		protected override OWRigidbody InitAttachedRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
 
@@ -59,55 +59,8 @@ namespace QSB.TornadoSync.TransformSync
 			_refBodyIndex = reader.ReadInt();
 		}
 
-		private bool _shouldUpdate;
-
-		protected override void Deserialize(NetworkReader reader)
+		protected override void ApplyToAttached()
 		{
-			base.Deserialize(reader);
-
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				return;
-			}
-
-			_shouldUpdate = true;
-		}
-
-		protected override bool UpdateTransform()
-		{
-			if (hasAuthority)
-			{
-				SetValuesToSync();
-				return true;
-			}
-
-			if (!_shouldUpdate)
-			{
-				return false;
-			}
-
-			_shouldUpdate = false;
-
-			var hasMoved = CustomHasMoved(
-				transform.position,
-				_localPrevPosition,
-				transform.rotation,
-				_localPrevRotation,
-				_relativeVelocity,
-				_localPrevVelocity,
-				_relativeAngularVelocity,
-				_localPrevAngularVelocity);
-
-			_localPrevPosition = transform.position;
-			_localPrevRotation = transform.rotation;
-			_localPrevVelocity = _relativeVelocity;
-			_localPrevAngularVelocity = _relativeAngularVelocity;
-
-			if (!hasMoved)
-			{
-				return true;
-			}
-
 			if (_sectors.Contains(PlayerTransformSync.LocalInstance?.ReferenceSector?.AttachedObject))
 			{
 				QueueMove(Locator._playerBody);
@@ -135,8 +88,6 @@ namespace QSB.TornadoSync.TransformSync
 			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
 			Move();
-
-			return true;
 		}
 
 		private readonly List<MoveData> _toMove = new();
