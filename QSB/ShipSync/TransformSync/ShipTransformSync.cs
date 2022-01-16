@@ -40,8 +40,8 @@ namespace QSB.ShipSync.TransformSync
 			var targetPos = ReferenceTransform.FromRelPos(transform.position);
 			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-			AttachedObject.SetPosition(targetPos);
-			AttachedObject.SetRotation(targetRot);
+			AttachedRigidbody.SetPosition(targetPos);
+			AttachedRigidbody.SetRotation(targetRot);
 		}
 
 		protected override bool UpdateTransform()
@@ -53,7 +53,7 @@ namespace QSB.ShipSync.TransformSync
 
 			// Dont do base... this is a replacement!
 
-			if (HasAuthority)
+			if (hasAuthority)
 			{
 				SetValuesToSync();
 				return true;
@@ -77,8 +77,8 @@ namespace QSB.ShipSync.TransformSync
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
 
-			SetVelocity(AttachedObject, targetVelocity);
-			AttachedObject.SetAngularVelocity(targetAngularVelocity);
+			SetVelocity(AttachedRigidbody, targetVelocity);
+			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 
 			return true;
 		}

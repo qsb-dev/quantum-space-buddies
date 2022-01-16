@@ -1,7 +1,7 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
-using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Messages
 {
@@ -11,16 +11,16 @@ namespace QSB.QuantumSync.Messages
 
 		public QuantumAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(AuthorityOwner);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			AuthorityOwner = reader.ReadUInt32();
+			AuthorityOwner = reader.Read<uint>();
 		}
 
 		public override bool ShouldReceive

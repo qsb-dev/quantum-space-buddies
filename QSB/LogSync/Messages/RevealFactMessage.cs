@@ -1,6 +1,6 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.LogSync.Messages
 {
@@ -17,7 +17,7 @@ namespace QSB.LogSync.Messages
 			ShowNotification = showNotification;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(FactId);
@@ -25,12 +25,12 @@ namespace QSB.LogSync.Messages
 			writer.Write(ShowNotification);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			FactId = reader.ReadString();
-			SaveGame = reader.ReadBoolean();
-			ShowNotification = reader.ReadBoolean();
+			SaveGame = reader.Read<bool>();
+			ShowNotification = reader.Read<bool>();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

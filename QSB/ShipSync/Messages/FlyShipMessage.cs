@@ -52,7 +52,7 @@ namespace QSB.ShipSync.Messages
 
 			if (QSBCore.IsHost)
 			{
-				ShipTransformSync.LocalInstance.NetIdentity.SetAuthority(isFlying
+				ShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
 					? id
 					: QSBPlayerManager.LocalPlayerId);
 			}

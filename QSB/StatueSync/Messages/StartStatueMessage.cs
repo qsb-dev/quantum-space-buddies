@@ -1,7 +1,7 @@
-﻿using QSB.ClientServerStateSync;
+﻿using Mirror;
+using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.StatueSync.Messages
@@ -19,7 +19,7 @@ namespace QSB.StatueSync.Messages
 			CameraDegrees = degrees;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerPosition);
@@ -27,12 +27,12 @@ namespace QSB.StatueSync.Messages
 			writer.Write(CameraDegrees);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerPosition = reader.ReadVector3();
 			PlayerRotation = reader.ReadQuaternion();
-			CameraDegrees = reader.ReadSingle();
+			CameraDegrees = reader.Read<float>();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

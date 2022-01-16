@@ -44,10 +44,7 @@ namespace QSB.Animation.Player
 				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
 			}
 
-			foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
-			{
-				_floatParams.Add(param.name, new AnimFloatParam());
-			}
+			RebuildFloatParams();
 		}
 
 		public void Update()
@@ -60,6 +57,7 @@ namespace QSB.Animation.Player
 			if (_to.runtimeAnimatorController != _from.runtimeAnimatorController)
 			{
 				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
+				RebuildFloatParams();
 			}
 
 			SyncParams();
@@ -73,13 +71,6 @@ namespace QSB.Animation.Player
 				switch (fromParam.type)
 				{
 					case AnimatorControllerParameterType.Float:
-						if (!_floatParams.ContainsKey(fromParam.name))
-						{
-							DebugLog.ToConsole($"Warning - Tried to sync anim float that doesn't exist in dict : {fromParam.name}", MessageType.Warning);
-							RebuildFloatParams();
-							break;
-						}
-
 						_floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
 						break;
 

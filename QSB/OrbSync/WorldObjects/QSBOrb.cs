@@ -1,7 +1,7 @@
-﻿using QSB.OrbSync.TransformSync;
+﻿using Mirror;
+using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.OrbSync.WorldObjects
@@ -14,7 +14,7 @@ namespace QSB.OrbSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.OrbPrefab).SpawnWithServerAuthority();
+				Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab).SpawnWithServerAuthority();
 			}
 
 			StartDelayedReady();
@@ -25,7 +25,7 @@ namespace QSB.OrbSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Destroy(TransformSync.gameObject);
+				NetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
 

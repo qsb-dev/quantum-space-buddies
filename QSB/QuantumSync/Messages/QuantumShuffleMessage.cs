@@ -1,6 +1,6 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
-using QuantumUNET.Transport;
 using System;
 using System.Linq;
 
@@ -12,14 +12,14 @@ namespace QSB.QuantumSync.Messages
 
 		public QuantumShuffleMessage(int[] indexArray) => IndexArray = indexArray;
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			var temp = IndexArray.Select(x => (byte)x).ToArray();
-			writer.WriteBytesAndSize(temp, temp.Length);
+			writer.WriteBytesAndSize(temp);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			IndexArray = Array.ConvertAll(reader.ReadBytesAndSize(), Convert.ToInt32);

@@ -3,11 +3,9 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace QSB.Menus
@@ -43,9 +41,8 @@ namespace QSB.Menus
 			Instance = this;
 			MakeTitleMenus();
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
-			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
-			QSBNetworkManager.Instance.OnClientErrorThrown += OnClientError;
+			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
+			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
@@ -273,7 +270,8 @@ namespace QSB.Menus
 
 		private void Disconnect()
 		{
-			QSBNetworkManager.Instance.StopHost();
+			QSBNetworkManager.singleton._intentionalDisconnect = true;
+			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
 			Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
@@ -286,16 +284,10 @@ namespace QSB.Menus
 
 		private void Host()
 		{
-			if (QSBNetworkManager.Instance.StartHost() != null)
-			{
-				SetButtonActive(DisconnectButton, true);
-				SetButtonActive(HostButton, false);
-				SetButtonActive(QuitButton, false);
-			}
-			else
-			{
-				OpenInfoPopup($"Failed to start server.", "OK");
-			}
+			QSBNetworkManager.singleton.StartHost();
+			SetButtonActive(DisconnectButton, true);
+			SetButtonActive(HostButton, false);
+			SetButtonActive(QuitButton, false);
 
 			var text = QSBCore.IsHost
 				? "STOP HOSTING"
@@ -319,8 +311,8 @@ namespace QSB.Menus
 		{
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
 
-			QSBNetworkManager.Instance.networkAddress = address;
-			QSBNetworkManager.Instance.StartClient();
+			QSBNetworkManager.singleton.networkAddress = address;
+			QSBNetworkManager.singleton.StartClient();
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{
@@ -365,19 +357,14 @@ namespace QSB.Menus
 			SetButtonActive(QuitButton, true);
 		}
 
-		private void OnDisconnected(NetworkError error)
+		private void OnDisconnected(string error)
 		{
-			if (error == NetworkError.Ok)
+			if (error == null)
 			{
 				return;
 			}
 
-			var text = error switch
-			{
-				NetworkError.Timeout => "Client disconnected with error!\r\nConnection timed out.",
-				_ => $"Client disconnected with error!\r\nNetworkError:{error}",
-			};
-			OpenInfoPopup(text, "OK");
+			OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
 
 			SetButtonActive(DisconnectButton, false);
 			SetButtonActive(ClientButton, true);
@@ -385,35 +372,6 @@ namespace QSB.Menus
 			SetButtonActive(HostButton, true);
 			SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
 			SetButtonActive(NewGameButton, true);
-		}
-
-		private void OnClientError(NetworkError error)
-		{
-			if (error == NetworkError.Ok)
-			{
-				// lol wut
-				return;
-			}
-
-			string text;
-			switch (error)
-			{
-				case NetworkError.DNSFailure:
-					text = "Internal QNet client error!\r\nDNS Faliure. Address was invalid or could not be resolved.";
-					DebugLog.DebugWrite($"dns failure");
-					SetButtonActive(DisconnectButton, false);
-					SetButtonActive(ClientButton, true);
-					SetButtonActive(HostButton, true);
-					SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
-					SetButtonActive(NewGameButton, true);
-					SetButtonActive(QuitButton, true);
-					break;
-				default:
-					text = $"Internal QNet client error!\n\nNetworkError:{error}";
-					break;
-			}
-
-			OpenInfoPopup(text, "OK");
 		}
 	}
 }

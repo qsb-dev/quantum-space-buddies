@@ -71,9 +71,9 @@ namespace QSB.Tools.ProbeTool.TransformSync
 				return false;
 			}
 
-			if (HasAuthority)
+			if (hasAuthority)
 			{
-				if (!AttachedObject.gameObject.activeInHierarchy)
+				if (!AttachedTransform.gameObject.activeInHierarchy)
 				{
 					var probeOWRigidbody = Locator.GetProbe().GetComponent<SurveyorProbe>().GetOWRigidbody();
 					if (probeOWRigidbody == null)
@@ -89,8 +89,8 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 					if (ReferenceTransform != null)
 					{
-						transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
-						transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
+						transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+						transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 					}
 					else
 					{
@@ -111,6 +111,6 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return true;
 		}
 
-		public override bool IsReady => AttachedObject != null || Locator.GetProbe() != null;
+		public override bool IsReady => AttachedTransform != null || Locator.GetProbe() != null;
 	}
 }

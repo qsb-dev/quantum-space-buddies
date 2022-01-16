@@ -38,7 +38,7 @@ namespace QSB.Instruments
 
 		protected void OnDestroy()
 		{
-			if (!IsLocalPlayer)
+			if (!isLocalPlayer)
 			{
 				return;
 			}
@@ -90,7 +90,7 @@ namespace QSB.Instruments
 
 		public void StartInstrument(AnimationType type)
 		{
-			if (!IsLocalPlayer)
+			if (!isLocalPlayer)
 			{
 				DebugLog.ToConsole("Error - Tried to start instrument on non-local player!", MessageType.Error);
 				return;

@@ -1,9 +1,9 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.ConversationSync.Messages
 {
@@ -19,7 +19,7 @@ namespace QSB.ConversationSync.Messages
 			Value = start;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(TreeId);
@@ -27,12 +27,12 @@ namespace QSB.ConversationSync.Messages
 			writer.Write(Value);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			TreeId = reader.ReadInt32();
-			PlayerId = reader.ReadUInt32();
-			Value = reader.ReadBoolean();
+			TreeId = reader.Read<int>();
+			PlayerId = reader.Read<uint>();
+			Value = reader.Read<bool>();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

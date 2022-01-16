@@ -140,8 +140,7 @@ namespace QSB.Player.Messages
 		{
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				if (!qsbOrb.TransformSync.enabled ||
-					!qsbOrb.TransformSync.HasAuthority)
+				if (!qsbOrb.TransformSync.hasAuthority)
 				{
 					continue;
 				}

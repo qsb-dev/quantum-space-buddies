@@ -1,5 +1,5 @@
-﻿using QSB.Messaging;
-using QuantumUNET.Transport;
+﻿using Mirror;
+using QSB.Messaging;
 
 namespace QSB.SaveSync.Messages
 {
@@ -18,7 +18,7 @@ namespace QSB.SaveSync.Messages
 			_newlyRevealed = save.newlyRevealed;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(_id);
@@ -27,13 +27,13 @@ namespace QSB.SaveSync.Messages
 			writer.Write(_newlyRevealed);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			_id = reader.ReadString();
-			_revealOrder = reader.ReadInt32();
-			_read = reader.ReadBoolean();
-			_newlyRevealed = reader.ReadBoolean();
+			_revealOrder = reader.ReadInt();
+			_read = reader.ReadBool();
+			_newlyRevealed = reader.ReadBool();
 		}
 
 		public override void OnReceiveRemote()

@@ -1,7 +1,6 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
-using QSB.Utility;
-using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Messages
@@ -17,18 +16,18 @@ namespace QSB.QuantumSync.Messages
 			Angle = angle;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Active);
 			writer.Write(Angle);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Active = reader.ReadBoolean();
-			Angle = reader.ReadSingle();
+			Active = reader.Read<bool>();
+			Angle = reader.Read<float>();
 		}
 
 		public override void OnReceiveRemote()

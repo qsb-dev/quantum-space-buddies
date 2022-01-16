@@ -1,8 +1,8 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.Utility.Messages
@@ -41,7 +41,7 @@ namespace QSB.Utility.Messages
 			RelAngVel = refBody.ToRelAngVel(body.GetAngularVelocity());
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(SectorId);
@@ -52,13 +52,13 @@ namespace QSB.Utility.Messages
 			writer.Write(RelAngVel);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			SectorId = reader.ReadInt32();
+			SectorId = reader.Read<int>();
 			RelPos = reader.ReadVector3();
 			RelRot = reader.ReadQuaternion();
-			DegreesY = reader.ReadSingle();
+			DegreesY = reader.Read<float>();
 			RelVel = reader.ReadVector3();
 			RelAngVel = reader.ReadVector3();
 		}

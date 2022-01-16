@@ -1,5 +1,5 @@
-﻿using OWML.Common;
-using QuantumUNET;
+﻿using Mirror;
+using OWML.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,36 +29,13 @@ namespace QSB.Utility
 
 		#endregion
 
-		#region QNET
+		#region MIRROR
 
-		public static uint GetPlayerId(this QNetworkConnection connection)
-		{
-			if (connection == null)
-			{
-				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.\r\n{Environment.StackTrace}", MessageType.Error);
-				return uint.MaxValue;
-			}
+		public static uint GetPlayerId(this NetworkConnection conn) =>
+			conn.identity.netId;
 
-			var playerController = connection.PlayerControllers.FirstOrDefault();
-			if (playerController == null)
-			{
-				DebugLog.ToConsole($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
-				return uint.MaxValue;
-			}
-
-			return playerController.UnetView.NetId.Value;
-		}
-
-		public static void SpawnWithServerAuthority(this GameObject go)
-		{
-			if (!QSBCore.IsHost)
-			{
-				DebugLog.ToConsole($"Error - Tried to spawn {go.name} using SpawnWithServerAuthority when not the host!", MessageType.Error);
-				return;
-			}
-
-			QNetworkServer.SpawnWithClientAuthority(go, QNetworkServer.localConnection);
-		}
+		public static void SpawnWithServerAuthority(this GameObject go) =>
+			NetworkServer.Spawn(go, NetworkServer.localConnection);
 
 		#endregion
 
@@ -131,6 +108,13 @@ namespace QSB.Utility
 
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
+
+		public static Guid ToGuid(this int value)
+		{
+			var bytes = new byte[16];
+			BitConverter.GetBytes(value).CopyTo(bytes, 0);
+			return new Guid(bytes);
+		}
 
 		#endregion
 	}

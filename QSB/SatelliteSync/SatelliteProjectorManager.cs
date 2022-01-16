@@ -33,7 +33,7 @@ namespace QSB.SatelliteSync
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
-			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
+			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 		}
 
 		public void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;

@@ -1,10 +1,10 @@
-﻿using QSB.Player.TransformSync;
+﻿using Mirror;
+using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -32,7 +32,8 @@ namespace QSB.TornadoSync.TransformSync
 			_refBodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
 		}
 
-		public override float GetNetworkSendInterval() => 20;
+		protected override float SendInterval => 20;
+		protected override bool UseReliableRpc => true;
 
 		protected override void Init()
 		{
@@ -40,36 +41,31 @@ namespace QSB.TornadoSync.TransformSync
 			SetReferenceTransform(CenterOfTheUniverse.s_rigidbodies[_refBodyIndex].transform);
 
 			_sectors = SectorManager.s_sectors
-				.Where(x => x._attachedOWRigidbody == AttachedObject).ToArray();
+				.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();
 			_childBodies = CenterOfTheUniverse.s_rigidbodies
-				.Where(x => x._origParentBody == AttachedObject)
+				.Where(x => x._origParentBody == AttachedRigidbody)
 				.ToArray();
 		}
 
-		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
+		protected override void SerializeInitial(NetworkWriter writer)
 		{
-			base.SerializeTransform(writer, initialState);
+			writer.Write(_bodyIndex);
+			writer.Write(_refBodyIndex);
+		}
 
-			if (initialState)
-			{
-				writer.Write(_bodyIndex);
-				writer.Write(_refBodyIndex);
-			}
+		protected override void DeserializeInitial(NetworkReader reader)
+		{
+			_bodyIndex = reader.ReadInt();
+			_refBodyIndex = reader.ReadInt();
 		}
 
 		private bool _shouldUpdate;
 
-		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.DeserializeTransform(reader, initialState);
+			base.Deserialize(reader);
 
-			if (initialState)
-			{
-				_bodyIndex = reader.ReadInt32();
-				_refBodyIndex = reader.ReadInt32();
-			}
-
-			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
+			if (!WorldObjectManager.AllObjectsReady)
 			{
 				return;
 			}
@@ -79,7 +75,7 @@ namespace QSB.TornadoSync.TransformSync
 
 		protected override bool UpdateTransform()
 		{
-			if (HasAuthority)
+			if (hasAuthority)
 			{
 				SetValuesToSync();
 				return true;
@@ -133,10 +129,10 @@ namespace QSB.TornadoSync.TransformSync
 			}
 
 			var pos = ReferenceTransform.FromRelPos(transform.position);
-			AttachedObject.SetPosition(pos);
-			AttachedObject.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
-			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
-			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
+			AttachedRigidbody.SetPosition(pos);
+			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
+			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
 			Move();
 
@@ -171,10 +167,10 @@ namespace QSB.TornadoSync.TransformSync
 			_toMove.Add(new MoveData
 			{
 				Child = child,
-				RelPos = AttachedObject.transform.ToRelPos(pos),
-				RelRot = AttachedObject.transform.ToRelRot(child.GetRotation()),
-				RelVel = AttachedObject.ToRelVel(child.GetVelocity(), pos),
-				RelAngVel = AttachedObject.ToRelAngVel(child.GetAngularVelocity())
+				RelPos = AttachedRigidbody.transform.ToRelPos(pos),
+				RelRot = AttachedRigidbody.transform.ToRelRot(child.GetRotation()),
+				RelVel = AttachedRigidbody.ToRelVel(child.GetVelocity(), pos),
+				RelAngVel = AttachedRigidbody.ToRelAngVel(child.GetAngularVelocity())
 			});
 		}
 
@@ -182,11 +178,11 @@ namespace QSB.TornadoSync.TransformSync
 		{
 			foreach (var data in _toMove)
 			{
-				var pos = AttachedObject.transform.FromRelPos(data.RelPos);
+				var pos = AttachedRigidbody.transform.FromRelPos(data.RelPos);
 				data.Child.SetPosition(pos);
-				data.Child.SetRotation(AttachedObject.transform.FromRelRot(data.RelRot));
-				data.Child.SetVelocity(AttachedObject.FromRelVel(data.RelVel, pos));
-				data.Child.SetAngularVelocity(AttachedObject.FromRelAngVel(data.RelAngVel));
+				data.Child.SetRotation(AttachedRigidbody.transform.FromRelRot(data.RelRot));
+				data.Child.SetVelocity(AttachedRigidbody.FromRelVel(data.RelVel, pos));
+				data.Child.SetAngularVelocity(AttachedRigidbody.FromRelAngVel(data.RelAngVel));
 			}
 
 			_toMove.Clear();

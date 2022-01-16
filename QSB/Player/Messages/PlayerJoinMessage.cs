@@ -1,7 +1,7 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Utility;
-using QuantumUNET.Transport;
 using System.Linq;
 
 namespace QSB.Player.Messages
@@ -23,7 +23,7 @@ namespace QSB.Player.Messages
 			DlcInstalled = QSBCore.DLCInstalled;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerName);
@@ -33,14 +33,14 @@ namespace QSB.Player.Messages
 			writer.Write(DlcInstalled);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerName = reader.ReadString();
 			QSBVersion = reader.ReadString();
 			GameVersion = reader.ReadString();
-			Platform = (GamePlatform)reader.ReadInt32();
-			DlcInstalled = reader.ReadBoolean();
+			Platform = (GamePlatform)reader.Read<int>();
+			DlcInstalled = reader.Read<bool>();
 		}
 
 		public override void OnReceiveRemote()

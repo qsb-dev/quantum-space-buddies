@@ -1,10 +1,17 @@
-﻿using QuantumUNET.Transport;
+﻿using Mirror;
+using System;
 
 namespace QSB.Utility.VariableSync
 {
-	public class FloatVariableSyncer : BaseVariableSyncer<float>
+	public class FloatVariableSyncer : BaseVariableSyncer
 	{
-		protected override void WriteValue(QNetworkWriter writer, float value) => writer.Write(value);
-		protected override float ReadValue(QNetworkReader reader) => reader.ReadSingle();
+		private float _prevValue;
+		[NonSerialized]
+		public float Value;
+
+		protected override bool HasChanged() => Value != _prevValue;
+		protected override void UpdatePrevData() => _prevValue = Value;
+		protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
+		protected override void Deserialize(NetworkReader reader) => Value = reader.Read<float>();
 	}
 }
