@@ -118,7 +118,7 @@ namespace QSB.SectorSync
 
 			if (goodSectors.Count == 0)
 			{
-				return default;
+				return null;
 			}
 
 			var closest = goodSectors

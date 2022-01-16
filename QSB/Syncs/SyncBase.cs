@@ -53,8 +53,8 @@ namespace QSB.Syncs
 		public abstract bool DestroyAttachedObject { get; }
 		public abstract bool IsPlayerObject { get; }
 
-		public Transform AttachedTransform { get; set; }
-		public Transform ReferenceTransform { get; set; }
+		public Transform AttachedTransform { get; private set; }
+		public Transform ReferenceTransform { get; private set; }
 
 		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty) + $"{netId}:{GetType().Name}";
 		protected virtual float DistanceLeeway => 5f;
@@ -64,7 +64,7 @@ namespace QSB.Syncs
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
-		protected bool IsInitialized;
+		public bool IsInitialized { get; private set; }
 		protected Vector3 SmoothPosition;
 		protected Quaternion SmoothRotation;
 

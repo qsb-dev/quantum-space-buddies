@@ -28,11 +28,6 @@ namespace QSB.Syncs.Sectored.Transforms
 
 		protected override bool UpdateTransform()
 		{
-			if (!base.UpdateTransform())
-			{
-				return false;
-			}
-
 			if (hasAuthority)
 			{
 				if (ReferenceTransform != null)

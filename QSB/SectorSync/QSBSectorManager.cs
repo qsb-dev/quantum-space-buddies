@@ -17,36 +17,31 @@ namespace QSB.SectorSync
 		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> FakeSectors = new();
 
-		public readonly List<BaseSectoredSync> SectoredSyncs = new();
+		public readonly List<BaseSectoredSync> TransformSyncs = new();
 
-		#region repeating timer
-
-		private const float TimeInterval = 0.4f;
-		private float _checkTimer = TimeInterval;
+		private const float UpdateInterval = 0.4f;
+		private float _timer = UpdateInterval;
 
 		private void Update()
 		{
-			_checkTimer += Time.unscaledDeltaTime;
-			if (_checkTimer < TimeInterval)
+			_timer += Time.unscaledDeltaTime;
+			if (_timer < UpdateInterval)
 			{
 				return;
 			}
 
-			Invoke();
-
-			_checkTimer = 0;
+			_timer = 0;
+			UpdateReferenceSectors();
 		}
 
-		#endregion
-
-		public void Invoke()
+		public void UpdateReferenceSectors()
 		{
 			if (!Instance.IsReady || !AllObjectsReady)
 			{
 				return;
 			}
 
-			foreach (var sync in SectoredSyncs)
+			foreach (var sync in TransformSyncs)
 			{
 				if (sync.AttachedTransform == null)
 				{
@@ -55,10 +50,10 @@ namespace QSB.SectorSync
 
 				if (sync.hasAuthority
 					&& sync.AttachedTransform.gameObject.activeInHierarchy
-					&& sync.IsReady
+					&& sync.IsInitialized
 					&& sync.SectorSync.IsReady)
 				{
-					CheckTransformSyncSector(sync);
+					UpdateReferenceSector(sync);
 				}
 			}
 		}
@@ -93,15 +88,10 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(BaseSectoredSync transformSync)
+		private static void UpdateReferenceSector(BaseSectoredSync transformSync)
 		{
 			var closestSector = transformSync.SectorSync.GetClosestSector();
-			if (closestSector == default(QSBSector))
-			{
-				return;
-			}
-
-			if (closestSector == transformSync.ReferenceSector)
+			if (closestSector == null)
 			{
 				return;
 			}

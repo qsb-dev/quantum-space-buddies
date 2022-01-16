@@ -46,11 +46,6 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override bool UpdateTransform()
 		{
-			if (!UpdateSectors())
-			{
-				return false;
-			}
-
 			// Dont do base... this is a replacement!
 
 			if (hasAuthority)

@@ -19,20 +19,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 		protected Vector3 _prevVelocity;
 		protected Vector3 _prevAngularVelocity;
 
-		/// <summary>
-		/// The previous position of the VISIBLE object, as if parented to the reference.
-		/// </summary>
-		protected Vector3 _localPrevPosition;
-
-		/// <summary>
-		/// The previous rotation of the VISIBLE object, as if parented to the reference.
-		/// </summary>
-		protected Quaternion _localPrevRotation;
-
-		protected Vector3 _localPrevVelocity;
-		protected Vector3 _localPrevAngularVelocity;
-
-		public OWRigidbody AttachedRigidbody { get; set; }
+		public OWRigidbody AttachedRigidbody { get; private set; }
 
 		protected abstract OWRigidbody InitAttachedRigidbody();
 
@@ -88,11 +75,6 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected override bool UpdateTransform()
 		{
-			if (!base.UpdateTransform())
-			{
-				return false;
-			}
-
 			if (hasAuthority)
 			{
 				SetValuesToSync();
@@ -114,26 +96,6 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			{
 				positionToSet = ReferenceTransform.FromRelPos(SmoothPosition);
 				rotationToSet = ReferenceTransform.FromRelRot(SmoothRotation);
-			}
-
-			var hasMoved = CustomHasMoved(
-				transform.position,
-				_localPrevPosition,
-				transform.rotation,
-				_localPrevRotation,
-				_relativeVelocity,
-				_localPrevVelocity,
-				_relativeAngularVelocity,
-				_localPrevAngularVelocity);
-
-			_localPrevPosition = transform.position;
-			_localPrevRotation = transform.rotation;
-			_localPrevVelocity = _relativeVelocity;
-			_localPrevAngularVelocity = _relativeAngularVelocity;
-
-			if (!hasMoved)
-			{
-				return true;
 			}
 
 			AttachedRigidbody.MoveToPosition(positionToSet);
