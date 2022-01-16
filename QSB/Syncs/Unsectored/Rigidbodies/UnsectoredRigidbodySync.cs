@@ -34,7 +34,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 		protected abstract OWRigidbody GetRigidbody();
 
-		protected override Transform SetAttachedTransform()
+		protected override Transform InitAttachedTransform()
 		{
 			AttachedRigidbody = GetRigidbody();
 			return AttachedRigidbody.transform;

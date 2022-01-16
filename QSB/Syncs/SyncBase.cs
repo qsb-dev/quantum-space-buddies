@@ -58,15 +58,17 @@ namespace QSB.Syncs
 
 		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty) + $"{netId}:{GetType().Name}";
 		protected virtual float DistanceLeeway => 5f;
+		protected virtual float AngleLeeway => 5f;
 		private float _previousDistance;
+		private float _previousAngle;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
-		protected bool _isInitialized;
+		protected bool IsInitialized;
 		protected Vector3 SmoothPosition;
 		protected Quaternion SmoothRotation;
 
-		protected abstract Transform SetAttachedTransform();
+		protected abstract Transform InitAttachedTransform();
 		protected abstract bool UpdateTransform();
 
 		public virtual void Start()
@@ -86,12 +88,9 @@ namespace QSB.Syncs
 
 		protected virtual void OnDestroy()
 		{
-			if (DestroyAttachedObject)
+			if (DestroyAttachedObject && !hasAuthority && AttachedTransform != null)
 			{
-				if (!hasAuthority && AttachedTransform != null)
-				{
-					Destroy(AttachedTransform.gameObject);
-				}
+				Destroy(AttachedTransform.gameObject);
 			}
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
@@ -104,23 +103,20 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
 			}
 
-			if (DestroyAttachedObject)
+			if (DestroyAttachedObject && !hasAuthority && AttachedTransform != null)
 			{
-				if (!hasAuthority && AttachedTransform != null)
-				{
-					Destroy(AttachedTransform.gameObject);
-				}
+				Destroy(AttachedTransform.gameObject);
 			}
 
-			AttachedTransform = SetAttachedTransform();
-			_isInitialized = true;
+			AttachedTransform = InitAttachedTransform();
+			IsInitialized = true;
 		}
 
-		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => _isInitialized = false;
+		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
 
 		protected override void Update()
 		{
-			if (!_isInitialized && IsReady && _baseIsReady)
+			if (!IsInitialized && IsReady && _baseIsReady)
 			{
 				try
 				{
@@ -132,13 +128,13 @@ namespace QSB.Syncs
 					return;
 				}
 			}
-			else if (_isInitialized && (!IsReady || !_baseIsReady))
+			else if (IsInitialized && (!IsReady || !_baseIsReady))
 			{
-				_isInitialized = false;
+				IsInitialized = false;
 				return;
 			}
 
-			if (!_isInitialized)
+			if (!IsInitialized)
 			{
 				return;
 			}
@@ -146,12 +142,18 @@ namespace QSB.Syncs
 			if (AttachedTransform == null)
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
-				_isInitialized = false;
+				IsInitialized = false;
 				return;
 			}
 
 			if (!AttachedTransform.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
 			{
+				return;
+			}
+
+			if (ReferenceTransform == null && !IgnoreNullReferenceTransform)
+			{
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 				return;
 			}
 
@@ -162,12 +164,6 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform == Locator.GetRootTransform())
 			{
-				return;
-			}
-
-			if (ReferenceTransform == null && !IgnoreNullReferenceTransform)
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 				return;
 			}
 
@@ -186,11 +182,6 @@ namespace QSB.Syncs
 			var distance = Vector3.Distance(currentPosition, targetPosition);
 			if (distance > _previousDistance + DistanceLeeway)
 			{
-				/*
-				DebugLog.DebugWrite($"{_logName} moved too far!" +
-					$"\r\n CurrentPosition:{currentPosition}," +
-					$"\r\n TargetPosition:{targetPosition}");
-				*/
 				_previousDistance = distance;
 				return targetPosition;
 			}
@@ -201,6 +192,14 @@ namespace QSB.Syncs
 
 		private Quaternion SmartSmoothDamp(Quaternion currentRotation, Quaternion targetRotation)
 		{
+			var angle = Quaternion.Angle(currentRotation, targetRotation);
+			if (angle > _previousAngle + AngleLeeway)
+			{
+				_previousAngle = angle;
+				return targetRotation;
+			}
+
+			_previousAngle = angle;
 			return QuaternionHelper.SmoothDamp(currentRotation, targetRotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
@@ -228,8 +227,7 @@ namespace QSB.Syncs
 		protected virtual void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !WorldObjectManager.AllObjectsReady
-				|| !IsReady
+				|| !IsInitialized
 				|| AttachedTransform == null
 				|| ReferenceTransform == null)
 			{

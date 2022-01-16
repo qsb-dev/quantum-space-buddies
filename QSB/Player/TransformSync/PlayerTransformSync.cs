@@ -62,7 +62,7 @@ namespace QSB.Player.TransformSync
 				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 			}
 
-			if (isInUniverse && !_isInitialized)
+			if (isInUniverse && !IsInitialized)
 			{
 				Player.IsReady = false;
 				new PlayerReadyMessage(false).Send();

@@ -134,7 +134,7 @@ namespace QSB.Syncs.Sectored
 			}
 			else
 			{
-				if (_isInitialized)
+				if (IsInitialized)
 				{
 					DebugLog.ToConsole($"Warning - ReferenceSector of {LogName} is null.", MessageType.Warning);
 				}
