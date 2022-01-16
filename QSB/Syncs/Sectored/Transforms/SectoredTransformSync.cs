@@ -46,7 +46,6 @@ namespace QSB.Syncs.Sectored.Transforms
 
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)!", MessageType.Warning);
 				return;
 			}
 

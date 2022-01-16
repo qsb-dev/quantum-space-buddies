@@ -13,7 +13,7 @@ namespace QSB.Syncs.Sectored
 		public QSBSector ReferenceSector { get; private set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 
-		private int _sectorId;
+		private int _sectorId = -1;
 
 		public override void Start()
 		{
@@ -66,7 +66,7 @@ namespace QSB.Syncs.Sectored
 				return;
 			}
 
-			ReferenceSector = _sectorId.GetWorldObject<QSBSector>();
+			SetReferenceSector(_sectorId.GetWorldObject<QSBSector>());
 		}
 
 		public void SetReferenceSector(QSBSector sector)
