@@ -210,7 +210,7 @@ namespace QSB.Menus
 
 		private void OnEyeStateChanged(EyeState state)
 		{
-			if (state >= EyeState.IntoTheVortex)
+			if (state >= EyeState.Observatory)
 			{
 				SetButtonActive(HostButton, false);
 			}
