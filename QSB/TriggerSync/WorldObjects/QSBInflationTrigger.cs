@@ -1,5 +1,4 @@
 ﻿using QSB.Player;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
@@ -12,6 +11,7 @@ namespace QSB.TriggerSync.WorldObjects
 		{
 			base.Init();
 			AttachedObject.OnEntry -= TriggerOwner.OnEnterFogSphere;
+			AttachedObject.OnExit -= OnExitEvent;
 		}
 
 		protected override void OnEnter(PlayerInfo player)
@@ -28,8 +28,6 @@ namespace QSB.TriggerSync.WorldObjects
 				AttachedObject.SetTriggerActivation(false);
 				TriggerOwner._probeDestroyTrigger.SetTriggerActivation(false);
 
-				DebugLog.DebugWrite("disable input, wait for other players to enter");
-
 				var repelVolume = (WhiteHoleFluidVolume)TriggerOwner._repelVolume;
 				repelVolume._flowSpeed = -repelVolume._flowSpeed;
 				repelVolume._massiveFlowSpeed = -repelVolume._massiveFlowSpeed;
@@ -43,7 +41,6 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 			else
 			{
-				DebugLog.DebugWrite($"fade out player {player.PlayerId}");
 				player.DitheringAnimator.SetVisible(false, 3);
 			}
 
@@ -67,8 +64,6 @@ namespace QSB.TriggerSync.WorldObjects
 
 		private void StartCollapse()
 		{
-			DebugLog.DebugWrite("fade in everyone, fog sphere collapse");
-
 			var repelVolume = (WhiteHoleFluidVolume)TriggerOwner._repelVolume;
 			repelVolume.SetVolumeActivation(false);
 			QSBPlayerManager.ShowAllPlayers();
