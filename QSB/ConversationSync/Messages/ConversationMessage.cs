@@ -1,7 +1,7 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -19,17 +19,17 @@ namespace QSB.ConversationSync.Messages
 			Message = message;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Id);
 			writer.Write(Message);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Id = reader.Read<int>();
+			Id = reader.ReadInt32();
 			Message = reader.ReadString();
 		}
 

@@ -46,7 +46,7 @@ namespace QSB.OrbSync.Patches
 			}
 
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			if (!qsbOrb.TransformSync.hasAuthority)
+			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;
 			}
@@ -65,7 +65,7 @@ namespace QSB.OrbSync.Patches
 			}
 
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			if (!qsbOrb.TransformSync.hasAuthority)
+			if (!qsbOrb.TransformSync.HasAuthority)
 			{
 				return false;
 			}

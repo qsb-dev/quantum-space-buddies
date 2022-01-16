@@ -1,9 +1,9 @@
-﻿using Mirror;
-using QSB.Utility.VariableSync;
+﻿using QSB.Utility.VariableSync;
+using QuantumUNET;
 
 namespace QSB.Animation.Player.Thrusters
 {
-	public class JetpackAccelerationSync : NetworkBehaviour
+	public class JetpackAccelerationSync : QNetworkBehaviour
 	{
 		public Vector3VariableSyncer AccelerationVariableSyncer;
 		public BoolVariableSyncer ThrustingVariableSyncer;
@@ -13,11 +13,14 @@ namespace QSB.Animation.Player.Thrusters
 		public void Init(ThrusterModel model)
 		{
 			_thrusterModel = model;
+
+			AccelerationVariableSyncer.Init();
+			ThrustingVariableSyncer.Init();
 		}
 
 		public void Update()
 		{
-			if (isLocalPlayer)
+			if (IsLocalPlayer)
 			{
 				SyncLocalAccel();
 			}

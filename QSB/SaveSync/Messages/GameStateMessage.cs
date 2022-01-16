@@ -1,8 +1,8 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
+using QuantumUNET.Transport;
 using System.Collections.Generic;
 
 namespace QSB.SaveSync.Messages
@@ -32,7 +32,7 @@ namespace QSB.SaveSync.Messages
 		}
 
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(WarpedToTheEye);
@@ -54,27 +54,27 @@ namespace QSB.SaveSync.Messages
 			}
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			WarpedToTheEye = reader.Read<bool>();
-			SecondsRemainingOnWarp = reader.Read<float>();
-			LaunchCodesGiven = reader.Read<bool>();
-			LoopCount = reader.Read<int>();
+			WarpedToTheEye = reader.ReadBoolean();
+			SecondsRemainingOnWarp = reader.ReadSingle();
+			LaunchCodesGiven = reader.ReadBoolean();
+			LoopCount = reader.ReadInt32();
 
-			var frequenciesLength = reader.Read<int>();
+			var frequenciesLength = reader.ReadInt32();
 			KnownFrequencies = new bool[frequenciesLength];
 			for (var i = 0; i < frequenciesLength; i++)
 			{
-				KnownFrequencies[i] = reader.Read<bool>();
+				KnownFrequencies[i] = reader.ReadBoolean();
 			}
 
-			var signalsLength = reader.Read<int>();
+			var signalsLength = reader.ReadInt32();
 			KnownSignals = new Dictionary<int, bool>(signalsLength);
 			for (var i = 0; i < signalsLength; i++)
 			{
-				var key = reader.Read<int>();
-				var value = reader.Read<bool>();
+				var key = reader.ReadInt32();
+				var value = reader.ReadBoolean();
 				KnownSignals.Add(key, value);
 			}
 		}

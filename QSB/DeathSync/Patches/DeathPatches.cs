@@ -4,7 +4,6 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync;
-using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -205,7 +204,7 @@ namespace QSB.DeathSync.Patches
 				return true;
 			}
 
-			if (!ShipTransformSync.LocalInstance.hasAuthority)
+			if (!ShipManager.Instance.HasAuthority)
 			{
 				return false;
 			}

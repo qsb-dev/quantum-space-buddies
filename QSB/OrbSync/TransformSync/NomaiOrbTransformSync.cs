@@ -36,7 +36,7 @@ namespace QSB.OrbSync.TransformSync
 
 			if (QSBCore.IsHost)
 			{
-				netIdentity.UnregisterAuthQueue();
+				NetIdentity.UnregisterAuthQueue();
 			}
 
 			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
@@ -56,7 +56,7 @@ namespace QSB.OrbSync.TransformSync
 			_qsbOrb.TransformSync = this;
 
 			base.Init();
-			_attachedBody = AttachedTransform.GetAttachedOWRigidbody();
+			_attachedBody = AttachedObject.GetAttachedOWRigidbody();
 			SetReferenceTransform(_attachedBody.GetOrigParent());
 
 			/*
@@ -70,15 +70,15 @@ namespace QSB.OrbSync.TransformSync
 
 			if (QSBCore.IsHost)
 			{
-				netIdentity.RegisterAuthQueue();
+				NetIdentity.RegisterAuthQueue();
 			}
 
 			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			NetIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 	}
 }

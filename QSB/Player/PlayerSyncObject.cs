@@ -1,10 +1,10 @@
-﻿using Mirror;
+﻿using QuantumUNET;
 
 namespace QSB.Player
 {
-	public abstract class PlayerSyncObject : NetworkBehaviour
+	public abstract class PlayerSyncObject : QNetworkBehaviour
 	{
-		protected uint PlayerId => netId;
+		protected uint PlayerId => NetId.Value;
 		protected PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 	}
 }

@@ -1,7 +1,7 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 using System;
 using UnityEngine;
 
@@ -36,18 +36,18 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 			_onDuration = onDuration;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(_offDuration);
 			writer.Write(_onDuration);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			_offDuration = reader.Read<float>();
-			_onDuration = reader.Read<float>();
+			_offDuration = reader.ReadSingle();
+			_onDuration = reader.ReadSingle();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

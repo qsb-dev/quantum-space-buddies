@@ -1,5 +1,5 @@
-﻿using Mirror;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
+using QuantumUNET.Transport;
 using System;
 
 namespace QSB.Messaging
@@ -15,16 +15,16 @@ namespace QSB.Messaging
 		/// </summary>
 		protected T WorldObject { get; private set; }
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.Read<int>();
+			ObjectId = reader.ReadInt32();
 		}
 
 		public override bool ShouldReceive
@@ -46,16 +46,16 @@ namespace QSB.Messaging
 	{
 		protected bool Value;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<bool>();
+			Value = reader.ReadBoolean();
 		}
 	}
 
@@ -63,16 +63,16 @@ namespace QSB.Messaging
 	{
 		protected float Value;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<float>();
+			Value = reader.ReadSingle();
 		}
 	}
 
@@ -82,16 +82,16 @@ namespace QSB.Messaging
 	{
 		protected E Value;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write((int)(object)Value);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = (E)(object)reader.Read<int>();
+			Value = (E)(object)reader.ReadInt32();
 		}
 	}
 }

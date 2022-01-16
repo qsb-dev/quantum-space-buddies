@@ -30,8 +30,8 @@ namespace QSB.RespawnSync
 				=> QSBCore.UnityEvents.RunWhen(
 					() => Locator.GetMarkerManager() != null,
 					() => Init(newScene, inUniverse));
-			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
-			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
+			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
+			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
 		}
 
 		private void OnConnected()
@@ -44,7 +44,7 @@ namespace QSB.RespawnSync
 			}
 		}
 
-		private void OnDisconnected(string error)
+		private void OnDisconnected(NetworkError error)
 		{
 			_owRecoveryPoint?.SetActive(true);
 			_qsbRecoveryPoint?.SetActive(false);

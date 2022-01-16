@@ -1,7 +1,8 @@
-﻿using Mirror;
-using QSB.Menus;
+﻿using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
+using QuantumUNET;
+using QuantumUNET.Transport;
 using System.Linq;
 
 namespace QSB.Player.Messages
@@ -19,16 +20,16 @@ namespace QSB.Player.Messages
 			Value = reason;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerId);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			PlayerId = reader.Read<uint>();
+			PlayerId = reader.ReadUInt32();
 		}
 
 		public override void OnReceiveLocal()
@@ -42,7 +43,7 @@ namespace QSB.Player.Messages
 		}
 
 		private void KickPlayer()
-			=> NetworkServer.connections.Values.First(x => PlayerId == x.GetPlayerId()).Disconnect();
+			=> QNetworkServer.connections.First(x => PlayerId == x.GetPlayerId()).Disconnect();
 
 		public override void OnReceiveRemote()
 		{

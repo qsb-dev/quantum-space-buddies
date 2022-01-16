@@ -17,7 +17,7 @@ namespace QSB.SectorSync
 		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> FakeSectors = new();
 
-		public readonly List<BaseSectoredSync> SectoredSyncs = new();
+		public readonly List<IBaseSectoredSync> SectoredSyncs = new();
 
 		#region repeating timer
 
@@ -48,13 +48,13 @@ namespace QSB.SectorSync
 
 			foreach (var sync in SectoredSyncs)
 			{
-				if (sync.AttachedTransform == null)
+				if (sync.ReturnObject() == null)
 				{
 					continue;
 				}
 
-				if (sync.hasAuthority
-					&& sync.AttachedTransform.gameObject.activeInHierarchy
+				if (sync.HasAuthority
+					&& sync.ReturnObject().gameObject.activeInHierarchy
 					&& sync.IsReady
 					&& sync.SectorSync.IsReady)
 				{
@@ -93,7 +93,7 @@ namespace QSB.SectorSync
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(BaseSectoredSync transformSync)
+		private void CheckTransformSyncSector(IBaseSectoredSync transformSync)
 		{
 			var closestSector = transformSync.SectorSync.GetClosestSector();
 			if (closestSector == default(QSBSector))

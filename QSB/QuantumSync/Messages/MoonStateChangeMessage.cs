@@ -1,6 +1,6 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 using System.Linq;
 using UnityEngine;
 
@@ -19,7 +19,7 @@ namespace QSB.QuantumSync.Messages
 			OrbitAngle = orbitAngle;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(StateIndex);
@@ -27,12 +27,12 @@ namespace QSB.QuantumSync.Messages
 			writer.Write(OrbitAngle);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			StateIndex = reader.Read<int>();
+			StateIndex = reader.ReadInt32();
 			OnUnitSphere = reader.ReadVector3();
-			OrbitAngle = reader.Read<int>();
+			OrbitAngle = reader.ReadInt32();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

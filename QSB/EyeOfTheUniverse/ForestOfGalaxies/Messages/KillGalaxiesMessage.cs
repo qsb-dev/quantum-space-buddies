@@ -1,6 +1,6 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 
 		public KillGalaxiesMessage(List<float> deathDelays) => _deathDelays = deathDelays;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(_deathDelays.Count);
@@ -23,14 +23,14 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 			}
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			var length = reader.Read<int>();
+			var length = reader.ReadInt32();
 			_deathDelays = new List<float>(length);
 			for (var i = 0; i < length; i++)
 			{
-				_deathDelays.Add(reader.Read<float>());
+				_deathDelays.Add(reader.ReadSingle());
 			}
 		}
 

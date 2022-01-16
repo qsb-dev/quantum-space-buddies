@@ -1,6 +1,6 @@
-﻿using Mirror;
-using QSB.ConversationSync.WorldObjects;
+﻿using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
+using QuantumUNET.Transport;
 
 namespace QSB.ConversationSync.Messages
 {
@@ -15,18 +15,18 @@ namespace QSB.ConversationSync.Messages
 			ListDialoguesIndex = listIndex;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ActivatedDialogueIndex);
 			writer.Write(ListDialoguesIndex);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ActivatedDialogueIndex = reader.Read<int>();
-			ListDialoguesIndex = reader.Read<int>();
+			ActivatedDialogueIndex = reader.ReadInt32();
+			ListDialoguesIndex = reader.ReadInt32();
 		}
 
 		public override void OnReceiveRemote()

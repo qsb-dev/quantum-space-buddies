@@ -1,9 +1,10 @@
-﻿using Mirror;
+﻿using QuantumUNET.Messages;
+using QuantumUNET.Transport;
 using System;
 
 namespace QSB.Messaging
 {
-	public abstract class QSBMessage
+	public abstract class QSBMessage : QMessageBase
 	{
 		/// <summary>
 		/// set automatically by Send
@@ -18,7 +19,7 @@ namespace QSB.Messaging
 		/// <summary>
 		/// call the base method when overriding
 		/// </summary>
-		public virtual void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			writer.Write(From);
 			writer.Write(To);
@@ -30,10 +31,10 @@ namespace QSB.Messaging
 		/// note: no constructor is called before this,
 		/// so fields won't be initialized.
 		/// </summary>
-		public virtual void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
-			From = reader.Read<uint>();
-			To = reader.Read<uint>();
+			From = reader.ReadUInt32();
+			To = reader.ReadUInt32();
 		}
 
 		/// <summary>
@@ -50,16 +51,16 @@ namespace QSB.Messaging
 	{
 		protected bool Value;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<bool>();
+			Value = reader.ReadBoolean();
 		}
 	}
 
@@ -67,16 +68,16 @@ namespace QSB.Messaging
 	{
 		protected float Value;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<float>();
+			Value = reader.ReadSingle();
 		}
 	}
 
@@ -84,16 +85,16 @@ namespace QSB.Messaging
 	{
 		protected E Value;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write((int)(object)Value);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = (E)(object)reader.Read<int>();
+			Value = (E)(object)reader.ReadInt32();
 		}
 	}
 }

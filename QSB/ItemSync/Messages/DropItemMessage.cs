@@ -1,9 +1,9 @@
-﻿using Mirror;
-using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.ItemSync.Messages
@@ -21,7 +21,7 @@ namespace QSB.ItemSync.Messages
 			SectorId = sector.GetWorldObject<QSBSector>().ObjectId;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Position);
@@ -29,12 +29,12 @@ namespace QSB.ItemSync.Messages
 			writer.Write(SectorId);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			Position = reader.ReadVector3();
 			Normal = reader.ReadVector3();
-			SectorId = reader.Read<int>();
+			SectorId = reader.ReadInt32();
 		}
 
 		public override void OnReceiveRemote()

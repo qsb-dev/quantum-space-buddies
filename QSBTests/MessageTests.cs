@@ -66,7 +66,7 @@ namespace QSBTests
 			Func<Instruction, bool> matches = useType switch
 			{
 				UseType.Store => x => x.MatchStfld(out var f) && f.GenericEq(field),
-				UseType.Load => x => (x.MatchLdfld(out var f) || x.MatchLdflda(out f)) && f.GenericEq(field),
+				UseType.Load => x => x.MatchLdfld(out var f) && f.GenericEq(field),
 				_ => throw new ArgumentOutOfRangeException(nameof(useType), useType, null)
 			};
 

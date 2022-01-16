@@ -1,11 +1,11 @@
-using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 
 namespace QSB.Player.Messages
 {
@@ -35,16 +35,16 @@ namespace QSB.Player.Messages
 			ObjectId = objectId;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.Read<int>();
+			ObjectId = reader.ReadInt32();
 		}
 
 		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;

@@ -1,6 +1,7 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Utility;
+using QuantumUNET;
+using QuantumUNET.Components;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,12 +14,12 @@ namespace QSB.AuthoritySync
 		/// <summary>
 		/// whoever is first gets authority
 		/// </summary>
-		private static readonly Dictionary<NetworkIdentity, List<uint>> _authQueue = new();
+		private static readonly Dictionary<QNetworkIdentity, List<uint>> _authQueue = new();
 
-		public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
-		public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
+		public static void RegisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
+		public static void UnregisterAuthQueue(this QNetworkIdentity identity) => _authQueue.Remove(identity);
 
-		public static void UpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
+		public static void UpdateAuthQueue(this QNetworkIdentity identity, uint id, AuthQueueAction action)
 		{
 			var authQueue = _authQueue[identity];
 			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
@@ -49,20 +50,19 @@ namespace QSB.AuthoritySync
 		/// <summary>
 		/// transfer authority to a different client
 		/// </summary>
-		public static void OnDisconnect(NetworkConnection conn)
+		public static void OnDisconnect(uint id)
 		{
-			var id = conn.GetPlayerId();
 			foreach (var identity in _authQueue.Keys)
 			{
 				identity.UpdateAuthQueue(id, AuthQueueAction.Remove);
 			}
 		}
 
-		public static void SetAuthority(this NetworkIdentity identity, uint id)
+		public static void SetAuthority(this QNetworkIdentity identity, uint id)
 		{
-			var oldConn = identity.connectionToClient;
+			var oldConn = identity.ClientAuthorityOwner;
 			var newConn = id != uint.MaxValue
-				? NetworkServer.connections.Values.FirstOrDefault(x => x.GetPlayerId() == id)
+				? QNetworkServer.connections.First(x => x.GetPlayerId() == id)
 				: null;
 
 			if (oldConn == newConn)
@@ -70,7 +70,10 @@ namespace QSB.AuthoritySync
 				return;
 			}
 
-			identity.RemoveClientAuthority();
+			if (oldConn != null)
+			{
+				identity.RemoveClientAuthority(oldConn);
+			}
 
 			if (newConn != null)
 			{
@@ -85,8 +88,8 @@ namespace QSB.AuthoritySync
 
 		#region any client
 
-		public static void SendAuthQueueMessage(this NetworkIdentity identity, AuthQueueAction action) =>
-			new AuthQueueMessage(identity.netId, action).Send();
+		public static void SendAuthQueueMessage(this QNetworkIdentity identity, AuthQueueAction action) =>
+			new AuthQueueMessage(identity.NetId, action).Send();
 
 		#endregion
 	}

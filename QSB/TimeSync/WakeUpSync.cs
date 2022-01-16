@@ -1,5 +1,4 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Inputs;
@@ -8,12 +7,13 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
+using QuantumUNET;
 using System;
 using UnityEngine;
 
 namespace QSB.TimeSync
 {
-	public class WakeUpSync : NetworkBehaviour
+	public class WakeUpSync : QNetworkBehaviour
 	{
 		public static WakeUpSync LocalInstance { get; private set; }
 
@@ -54,7 +54,7 @@ namespace QSB.TimeSync
 
 		public void Start()
 		{
-			if (!isLocalPlayer)
+			if (!IsLocalPlayer)
 			{
 				return;
 			}
@@ -78,7 +78,7 @@ namespace QSB.TimeSync
 		private void OnWakeUp()
 		{
 			DebugLog.DebugWrite($"OnWakeUp", MessageType.Info);
-			if (QSBCore.IsHost)
+			if (QNetworkServer.active)
 			{
 				RespawnOnDeath.Instance.Init();
 			}
@@ -114,8 +114,8 @@ namespace QSB.TimeSync
 		{
 			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
-			gameObject.GetRequiredComponent<PreserveTimeScale>();
-			if (isServer)
+			gameObject.GetAddComponent<PreserveTimeScale>();
+			if (IsServer)
 			{
 				SendServerTime();
 			}
@@ -144,7 +144,7 @@ namespace QSB.TimeSync
 				return;
 			}
 
-			if (PlayerData.LoadLoopCount() != _serverLoopCount && !isServer)
+			if (PlayerData.LoadLoopCount() != _serverLoopCount && !IsServer)
 			{
 				DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
 				return;
@@ -244,11 +244,11 @@ namespace QSB.TimeSync
 
 		public void Update()
 		{
-			if (isServer)
+			if (IsServer)
 			{
 				UpdateServer();
 			}
-			else if (isLocalPlayer && !QSBCore.AvoidTimeSync)
+			else if (IsLocalPlayer && !QSBCore.AvoidTimeSync)
 			{
 				UpdateClient();
 			}

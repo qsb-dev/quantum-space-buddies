@@ -1,17 +1,10 @@
-﻿using Mirror;
-using System;
+﻿using QuantumUNET.Transport;
 
 namespace QSB.Utility.VariableSync
 {
-	public class BoolVariableSyncer : BaseVariableSyncer
+	public class BoolVariableSyncer : BaseVariableSyncer<bool>
 	{
-		private bool _prevValue;
-		[NonSerialized]
-		public bool Value;
-
-		protected override bool HasChanged() => Value != _prevValue;
-		protected override void UpdatePrevData() => _prevValue = Value;
-		protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
-		protected override void Deserialize(NetworkReader reader) => Value = reader.Read<bool>();
+		protected override void WriteValue(QNetworkWriter writer, bool value) => writer.Write(value);
+		protected override bool ReadValue(QNetworkReader reader) => reader.ReadBoolean();
 	}
 }

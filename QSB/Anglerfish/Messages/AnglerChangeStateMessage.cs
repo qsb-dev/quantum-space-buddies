@@ -1,7 +1,7 @@
-﻿using Mirror;
-using QSB.Anglerfish.WorldObjects;
+﻿using QSB.Anglerfish.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
+using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.Anglerfish.Messages
@@ -18,17 +18,17 @@ namespace QSB.Anglerfish.Messages
 			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(TargetId);
 			writer.Write(LocalDisturbancePos);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			TargetId = reader.Read<uint>();
+			TargetId = reader.ReadUInt32();
 			LocalDisturbancePos = reader.ReadVector3();
 		}
 

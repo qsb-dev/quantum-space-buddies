@@ -1,6 +1,6 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
+using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Messages
 {
@@ -10,16 +10,16 @@ namespace QSB.QuantumSync.Messages
 
 		public MoveSkeletonMessage(int index) => _index = index;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(_index);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			_index = reader.ReadInt();
+			_index = reader.ReadInt32();
 		}
 
 		public override void OnReceiveRemote() => WorldObject.MoveSkeleton(_index);

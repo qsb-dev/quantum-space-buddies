@@ -166,7 +166,7 @@ namespace QSB.Utility
 				var instance = ShipTransformSync.LocalInstance;
 				if (QSBCore.IsHost)
 				{
-					var currentOwner = instance.netIdentity.connectionToClient;
+					var currentOwner = instance.NetIdentity.ClientAuthorityOwner;
 					if (currentOwner == null)
 					{
 						WriteLine(3, $"Current Owner : NULL");

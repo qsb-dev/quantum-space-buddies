@@ -1,5 +1,4 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.ModHelper;
 using OWML.ModHelper.Input;
 using QSB.EyeOfTheUniverse.GalaxyMap;
@@ -14,6 +13,8 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
+using QuantumUNET.Components;
 using System.Linq;
 using UnityEngine;
 
@@ -56,8 +57,8 @@ namespace QSB
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
 		public static AssetBundle TextAssetsBundle { get; private set; }
-		public static bool IsHost => NetworkServer.active;
-		public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
+		public static bool IsHost => QNetworkServer.active;
+		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
 		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
@@ -143,13 +144,16 @@ namespace QSB
 			}
 		}
 
+		public void Update() =>
+			QNetworkIdentity.UNetStaticUpdate();
+
 		public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 			Port = config.GetSettingsValue<int>("port");
-			if (QSBNetworkManager.singleton != null)
+			if (QSBNetworkManager.Instance != null)
 			{
-				QSBNetworkManager.singleton.Port = Port;
+				QSBNetworkManager.Instance.networkPort = Port;
 			}
 		}
 	}

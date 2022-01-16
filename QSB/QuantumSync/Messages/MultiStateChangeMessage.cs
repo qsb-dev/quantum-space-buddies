@@ -1,8 +1,8 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
+using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Messages
 {
@@ -12,16 +12,16 @@ namespace QSB.QuantumSync.Messages
 
 		public MultiStateChangeMessage(int stateIndex) => StateIndex = stateIndex;
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(StateIndex);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			StateIndex = reader.Read<int>();
+			StateIndex = reader.ReadInt32();
 		}
 
 		public override void OnReceiveRemote()

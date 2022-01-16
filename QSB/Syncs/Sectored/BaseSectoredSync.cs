@@ -1,17 +1,29 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
+using UnityEngine;
 
 namespace QSB.Syncs.Sectored
 {
-	public abstract class BaseSectoredSync : SyncBase
+	public interface IBaseSectoredSync
+	{
+		Component ReturnObject();
+		bool HasAuthority { get; }
+		bool IsReady { get; }
+		SectorSync.SectorSync SectorSync { get; }
+		QSBSector ReferenceSector { get; }
+		void SetReferenceSector(QSBSector closestSector);
+	}
+
+	public abstract class BaseSectoredSync<T> : SyncBase<T>, IBaseSectoredSync where T : Component
 	{
 		public override bool IgnoreDisabledAttachedObject => false;
 		public override bool IgnoreNullReferenceTransform => true;
 
+		public Component ReturnObject() => AttachedObject;
 		public QSBSector ReferenceSector { get; set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 
@@ -48,7 +60,7 @@ namespace QSB.Syncs.Sectored
 				return;
 			}
 
-			if (!hasAuthority)
+			if (!HasAuthority)
 			{
 				return;
 			}
@@ -69,7 +81,7 @@ namespace QSB.Syncs.Sectored
 			}
 		}
 
-		protected override void Update()
+		public override void Update()
 		{
 			if (_sectorIdWaitingSlot == int.MinValue)
 			{
@@ -110,7 +122,7 @@ namespace QSB.Syncs.Sectored
 			base.Update();
 		}
 
-		protected override void Serialize(NetworkWriter writer)
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
 			if (IsPlayerObject)
 			{
@@ -143,13 +155,19 @@ namespace QSB.Syncs.Sectored
 			}
 		}
 
-		protected override void Deserialize(NetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
+			if (HasAuthority)
+			{
+				reader.ReadInt32();
+				return;
+			}
+
 			int sectorId;
 			if (!WorldObjectManager.AllObjectsReady)
 			{
-				sectorId = reader.ReadInt();
-				if (sectorId != -1)
+				sectorId = reader.ReadInt32();
+				if (initialState && sectorId != -1)
 				{
 					_sectorIdWaitingSlot = sectorId;
 				}
@@ -157,7 +175,7 @@ namespace QSB.Syncs.Sectored
 				return;
 			}
 
-			sectorId = reader.ReadInt();
+			sectorId = reader.ReadInt32();
 			var sector = sectorId == -1
 				? null
 				: sectorId.GetWorldObject<QSBSector>();
@@ -181,7 +199,7 @@ namespace QSB.Syncs.Sectored
 
 			if (!sectorManagerReady)
 			{
-				if (referenceNull && hasAuthority)
+				if (referenceNull && HasAuthority)
 				{
 					DebugLog.ToConsole($"Warning - Reference was null, but sector manager wasn't ready. " +
 						$"Transform:{ReferenceTransform == null}, Sector:{ReferenceSector == null}",
@@ -192,7 +210,7 @@ namespace QSB.Syncs.Sectored
 				return false;
 			}
 
-			if (!hasAuthority)
+			if (!HasAuthority)
 			{
 				return true;
 			}

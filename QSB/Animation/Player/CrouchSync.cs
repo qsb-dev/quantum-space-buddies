@@ -1,10 +1,10 @@
-﻿using Mirror;
-using QSB.Utility.VariableSync;
+﻿using QSB.Utility.VariableSync;
+using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.Animation.Player
 {
-	public class CrouchSync : NetworkBehaviour
+	public class CrouchSync : QNetworkBehaviour
 	{
 		public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
 
@@ -20,11 +20,13 @@ namespace QSB.Animation.Player
 		{
 			_playerController = playerController;
 			_bodyAnim = bodyAnim;
+
+			CrouchVariableSyncer.Init();
 		}
 
 		public void Update()
 		{
-			if (isLocalPlayer)
+			if (IsLocalPlayer)
 			{
 				SyncLocalCrouch();
 				return;

@@ -1,8 +1,8 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Utility;
+using QuantumUNET.Transport;
 
 namespace QSB.Player.Messages
 {
@@ -32,7 +32,7 @@ namespace QSB.Player.Messages
 			ClientState = player.State;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerName);
@@ -46,18 +46,18 @@ namespace QSB.Player.Messages
 			writer.Write((int)ClientState);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerName = reader.ReadString();
-			IsReady = reader.Read<bool>();
-			FlashlightActive = reader.Read<bool>();
-			SuitedUp = reader.Read<bool>();
-			ProbeLauncherEquipped = reader.Read<bool>();
-			SignalscopeEquipped = reader.Read<bool>();
-			TranslatorEquipped = reader.Read<bool>();
-			ProbeActive = reader.Read<bool>();
-			ClientState = (ClientState)reader.Read<int>();
+			IsReady = reader.ReadBoolean();
+			FlashlightActive = reader.ReadBoolean();
+			SuitedUp = reader.ReadBoolean();
+			ProbeLauncherEquipped = reader.ReadBoolean();
+			SignalscopeEquipped = reader.ReadBoolean();
+			TranslatorEquipped = reader.ReadBoolean();
+			ProbeActive = reader.ReadBoolean();
+			ClientState = (ClientState)reader.ReadInt32();
 		}
 
 		public override void OnReceiveRemote()

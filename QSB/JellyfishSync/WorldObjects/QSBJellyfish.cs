@@ -1,7 +1,7 @@
-﻿using Mirror;
-using QSB.JellyfishSync.TransformSync;
+﻿using QSB.JellyfishSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.WorldObjects
@@ -17,7 +17,7 @@ namespace QSB.JellyfishSync.WorldObjects
 
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab).SpawnWithServerAuthority();
+				Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab).SpawnWithServerAuthority();
 			}
 
 			StartDelayedReady();
@@ -28,7 +28,7 @@ namespace QSB.JellyfishSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				NetworkServer.Destroy(TransformSync.gameObject);
+				QNetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
 

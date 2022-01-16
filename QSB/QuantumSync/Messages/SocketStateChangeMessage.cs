@@ -1,8 +1,8 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
+using QuantumUNET.Transport;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Messages
@@ -18,17 +18,17 @@ namespace QSB.QuantumSync.Messages
 			LocalRotation = localRotation;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(SocketId);
 			writer.Write(LocalRotation);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			SocketId = reader.Read<int>();
+			SocketId = reader.ReadInt32();
 			LocalRotation = reader.ReadQuaternion();
 		}
 

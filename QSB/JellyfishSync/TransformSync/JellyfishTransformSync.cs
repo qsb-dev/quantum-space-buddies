@@ -1,9 +1,9 @@
-﻿using Mirror;
-using QSB.AuthoritySync;
+﻿using QSB.AuthoritySync;
 using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,15 +34,14 @@ namespace QSB.JellyfishSync.TransformSync
 
 			if (QSBCore.IsHost)
 			{
-				netIdentity.UnregisterAuthQueue();
+				NetIdentity.UnregisterAuthQueue();
 			}
 
-			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
-		protected override float SendInterval => 10;
-		protected override bool UseReliableRpc => true;
+		public override float GetNetworkSendInterval() => 10;
 
 		protected override void Init()
 		{
@@ -54,20 +53,20 @@ namespace QSB.JellyfishSync.TransformSync
 
 			if (QSBCore.IsHost)
 			{
-				netIdentity.RegisterAuthQueue();
+				NetIdentity.RegisterAuthQueue();
 			}
 
-			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
+			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
-		protected override void Serialize(NetworkWriter writer)
+		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
 		{
-			base.Serialize(writer);
+			base.SerializeTransform(writer, initialState);
 
 			if (!WorldObjectManager.AllObjectsReady)
 			{
@@ -81,25 +80,25 @@ namespace QSB.JellyfishSync.TransformSync
 
 		private bool _shouldUpdate;
 
-		protected override void Deserialize(NetworkReader reader)
+		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.DeserializeTransform(reader, initialState);
 
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
 			{
-				reader.ReadBool();
+				reader.ReadBoolean();
 				return;
 			}
 
 			_qsbJellyfish.Align = false;
-			_qsbJellyfish.IsRising = reader.ReadBool();
+			_qsbJellyfish.IsRising = reader.ReadBoolean();
 			_shouldUpdate = true;
 		}
 
 		/// replacement using SetPosition/Rotation instead of Move
 		protected override bool UpdateTransform()
 		{
-			if (hasAuthority)
+			if (HasAuthority)
 			{
 				SetValuesToSync();
 				return true;
@@ -133,10 +132,10 @@ namespace QSB.JellyfishSync.TransformSync
 			}
 
 			var pos = ReferenceTransform.FromRelPos(transform.position);
-			AttachedRigidbody.SetPosition(pos);
-			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
-			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
-			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
+			AttachedObject.SetPosition(pos);
+			AttachedObject.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
+			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
 			return true;
 		}
@@ -144,11 +143,11 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !WorldObjectManager.AllObjectsReady
-				|| !IsReady
-				|| AttachedRigidbody == null
-				|| ReferenceTransform == null
-				|| AttachedRigidbody.IsSuspended())
+			    || !WorldObjectManager.AllObjectsReady
+			    || !IsReady
+			    || AttachedObject == null
+			    || ReferenceTransform == null
+			    || AttachedObject.IsSuspended())
 			{
 				return;
 			}

@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using QuantumUNET.Components;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -9,11 +10,11 @@ using UnityEngine;
 namespace QSB.Syncs
 {
 	/*
-	 * Rewrite number : 10
+	 * Rewrite number : 9
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
-	public abstract class SyncBase : QSBNetworkTransform
+	public abstract class SyncBase<T> : QNetworkTransform where T : Component
 	{
 		/// <summary>
 		/// valid if IsPlayerObject, otherwise null
@@ -24,7 +25,7 @@ namespace QSB.Syncs
 		{
 			get
 			{
-				if (netId is uint.MaxValue or 0)
+				if (NetId.Value is uint.MaxValue or 0)
 				{
 					return false;
 				}
@@ -36,7 +37,7 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!Player.IsReady && !isLocalPlayer)
+					if (!Player.IsReady && !IsLocalPlayer)
 					{
 						return false;
 					}
@@ -53,11 +54,11 @@ namespace QSB.Syncs
 		public abstract bool DestroyAttachedObject { get; }
 		public abstract bool IsPlayerObject { get; }
 
-		public Transform AttachedTransform { get; set; }
+		public T AttachedObject { get; set; }
 		public Transform ReferenceTransform { get; set; }
 
-		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty) + $"{netId}:{GetType().Name}";
-		protected virtual float DistanceLeeway => 5f;
+		public string LogName => (IsPlayerObject ? $"{Player?.PlayerId}." : string.Empty) + $"{NetId.Value}:{GetType().Name}";
+		protected virtual float DistanceLeeway { get; } = 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
@@ -66,7 +67,7 @@ namespace QSB.Syncs
 		protected Vector3 SmoothPosition;
 		protected Quaternion SmoothRotation;
 
-		protected abstract Transform SetAttachedTransform();
+		protected abstract T SetAttachedObject();
 		protected abstract bool UpdateTransform();
 
 		public virtual void Start()
@@ -76,7 +77,7 @@ namespace QSB.Syncs
 				// get player objects spawned before this object (or is this one)
 				// and use the closest one
 				Player = QSBPlayerManager.PlayerList
-					.Where(x => x.PlayerId <= netId)
+					.Where(x => x.PlayerId <= NetId.Value)
 					.OrderBy(x => x.PlayerId).Last();
 			}
 
@@ -88,9 +89,9 @@ namespace QSB.Syncs
 		{
 			if (DestroyAttachedObject)
 			{
-				if (!hasAuthority && AttachedTransform != null)
+				if (!HasAuthority && AttachedObject != null)
 				{
-					Destroy(AttachedTransform.gameObject);
+					Destroy(AttachedObject.gameObject);
 				}
 			}
 
@@ -106,19 +107,19 @@ namespace QSB.Syncs
 
 			if (DestroyAttachedObject)
 			{
-				if (!hasAuthority && AttachedTransform != null)
+				if (!HasAuthority && AttachedObject != null)
 				{
-					Destroy(AttachedTransform.gameObject);
+					Destroy(AttachedObject.gameObject);
 				}
 			}
 
-			AttachedTransform = SetAttachedTransform();
+			AttachedObject = SetAttachedObject();
 			_isInitialized = true;
 		}
 
 		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => _isInitialized = false;
 
-		protected override void Update()
+		public override void Update()
 		{
 			if (!_isInitialized && IsReady && _baseIsReady)
 			{
@@ -129,55 +130,67 @@ namespace QSB.Syncs
 				catch (Exception ex)
 				{
 					DebugLog.ToConsole($"Exception when initializing {name} : {ex}", MessageType.Error);
-					return;
+					enabled = false;
 				}
+
+				base.Update();
+				return;
 			}
 			else if (_isInitialized && (!IsReady || !_baseIsReady))
 			{
 				_isInitialized = false;
+				base.Update();
 				return;
 			}
 
 			if (!_isInitialized)
 			{
+				base.Update();
 				return;
 			}
 
-			if (AttachedTransform == null)
+			if (AttachedObject == null)
 			{
 				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
 				_isInitialized = false;
+				base.Update();
 				return;
 			}
 
-			if (!AttachedTransform.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
+			if (!AttachedObject.gameObject.activeInHierarchy && !IgnoreDisabledAttachedObject)
 			{
+				base.Update();
 				return;
 			}
-
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
+			else
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
+				{
+					DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				}
 			}
 
 			if (ReferenceTransform == Locator.GetRootTransform())
 			{
+				base.Update();
 				return;
 			}
 
 			if (ReferenceTransform == null && !IgnoreNullReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedObject.name}", MessageType.Warning);
+				base.Update();
 				return;
 			}
 
-			if (!hasAuthority && UseInterpolation)
+			if (!HasAuthority && UseInterpolation)
 			{
 				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
 				SmoothRotation = SmartSmoothDamp(SmoothRotation, transform.rotation);
 			}
 
 			UpdateTransform();
+
 			base.Update();
 		}
 
@@ -213,15 +226,15 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (hasAuthority)
+			if (HasAuthority)
 			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				transform.position = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
 			}
 			else if (UseInterpolation)
 			{
-				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				SmoothPosition = ReferenceTransform.ToRelPos(AttachedObject.transform.position);
+				SmoothRotation = ReferenceTransform.ToRelRot(AttachedObject.transform.rotation);
 			}
 		}
 
@@ -230,7 +243,7 @@ namespace QSB.Syncs
 			if (!QSBCore.ShowLinesInDebug
 				|| !WorldObjectManager.AllObjectsReady
 				|| !IsReady
-				|| AttachedTransform == null
+				|| AttachedObject == null
 				|| ReferenceTransform == null)
 			{
 				return;
@@ -244,10 +257,10 @@ namespace QSB.Syncs
 			 */
 
 			Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
-			Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
-			Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
+			Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedObject.transform.position, Color.red);
+			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 6, Color.green);
 			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
-			Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
+			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 
 		private void OnGUI()
@@ -258,9 +271,9 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (AttachedTransform != null)
+			if (AttachedObject != null)
 			{
-				DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
+				DebugGUI.DrawLabel(AttachedObject.transform, LogName);
 			}
 		}
 	}

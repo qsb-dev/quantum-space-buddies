@@ -190,7 +190,7 @@ namespace QSB.Player
 
 		public PlayerInfo(PlayerTransformSync transformSync)
 		{
-			PlayerId = transformSync.netId;
+			PlayerId = transformSync.NetId.Value;
 			TransformSync = transformSync;
 			AnimationSync = transformSync.GetComponent<AnimationSync>();
 			InstrumentsManager = transformSync.GetComponent<InstrumentsManager>();

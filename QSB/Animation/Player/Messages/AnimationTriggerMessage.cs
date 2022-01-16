@@ -1,7 +1,7 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 
 namespace QSB.Animation.Player.Messages
 {
@@ -16,17 +16,17 @@ namespace QSB.Animation.Player.Messages
 			Name = name;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerId);
 			writer.Write(Name);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			PlayerId = reader.Read<uint>();
+			PlayerId = reader.ReadUInt32();
 			Name = reader.ReadString();
 		}
 

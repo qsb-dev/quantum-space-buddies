@@ -1,7 +1,7 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
+using QuantumUNET.Transport;
 
 namespace QSB.Player.Messages
 {
@@ -40,16 +40,16 @@ namespace QSB.Player.Messages
 			player.EntangledObject = quantumObject;
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		public override void Serialize(QNetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		public override void Deserialize(QNetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.Read<int>();
+			ObjectId = reader.ReadInt32();
 		}
 	}
 }

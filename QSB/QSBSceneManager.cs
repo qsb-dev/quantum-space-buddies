@@ -42,7 +42,7 @@ namespace QSB
 
 			if (newScene == OWScene.TitleScreen && QSBCore.IsInMultiplayer)
 			{
-				QSBNetworkManager.singleton.StopHost();
+				QSBNetworkManager.Instance.StopHost();
 			}
 		}
 
