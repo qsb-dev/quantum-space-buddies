@@ -15,18 +15,19 @@ namespace QSB.Syncs.Sectored.Transforms
 		protected override Transform InitAttachedTransform()
 			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
-		protected override void Deserialize(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.Deserialize(reader, initialState);
 
 			if (transform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)!", MessageType.Warning);
 			}
 		}
 
 		protected override void GetFromAttached()
 		{
+			base.GetFromAttached();
+
 			if (ReferenceTransform != null)
 			{
 				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
@@ -41,8 +42,11 @@ namespace QSB.Syncs.Sectored.Transforms
 
 		protected override void ApplyToAttached()
 		{
+			base.ApplyToAttached();
+
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
+				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)!", MessageType.Warning);
 				return;
 			}
 

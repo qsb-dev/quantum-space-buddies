@@ -1,8 +1,6 @@
 ﻿using Mirror;
-using OWML.Common;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.Syncs.Sectored
@@ -15,6 +13,8 @@ namespace QSB.Syncs.Sectored
 		public QSBSector ReferenceSector { get; private set; }
 		public SectorSync.SectorSync SectorSync { get; private set; }
 
+		private int _sectorId;
+
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
@@ -26,10 +26,7 @@ namespace QSB.Syncs.Sectored
 		{
 			base.OnDestroy();
 			QSBSectorManager.Instance.TransformSyncs.Remove(this);
-			if (SectorSync != null)
-			{
-				Destroy(SectorSync);
-			}
+			Destroy(SectorSync);
 		}
 
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
@@ -38,33 +35,38 @@ namespace QSB.Syncs.Sectored
 			SetReferenceSector(null);
 		}
 
-		protected override void Serialize(NetworkWriter writer)
+		protected override void Serialize(NetworkWriter writer, bool initialState)
 		{
-			base.Serialize(writer);
-
-			if (ReferenceSector == null)
-			{
-				DebugLog.ToConsole($"Warning - ReferenceSector of {LogName} is null.", MessageType.Warning);
-				writer.Write(-1);
-				return;
-			}
-
-			writer.Write(ReferenceSector.ObjectId);
+			base.Serialize(writer, initialState);
+			writer.Write(_sectorId);
 		}
 
-		protected override void Deserialize(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.Deserialize(reader, initialState);
+			_sectorId = reader.ReadInt();
+		}
 
-			var sectorId = reader.ReadInt();
-			if (sectorId == -1)
+		protected override void GetFromAttached()
+		{
+			if (ReferenceSector != null)
 			{
-				DebugLog.ToConsole($"Error - {LogName} got sector of ID -1. (From deserializing transform.)", MessageType.Error);
+				_sectorId = ReferenceSector.ObjectId;
+			}
+			else
+			{
+				_sectorId = -1;
+			}
+		}
+
+		protected override void ApplyToAttached()
+		{
+			if (_sectorId == -1)
+			{
 				return;
 			}
 
-			var sector = sectorId.GetWorldObject<QSBSector>();
-			SetReferenceSector(sector);
+			ReferenceSector = _sectorId.GetWorldObject<QSBSector>();
 		}
 
 		public void SetReferenceSector(QSBSector sector)

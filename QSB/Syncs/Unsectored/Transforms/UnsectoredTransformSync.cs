@@ -12,16 +12,16 @@ namespace QSB.Syncs.Unsectored.Transforms
 		protected override Transform InitAttachedTransform()
 			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
-		protected override void Serialize(NetworkWriter writer)
+		protected override void Serialize(NetworkWriter writer, bool initialState)
 		{
-			base.Serialize(writer);
+			base.Serialize(writer, initialState);
 			writer.Write(transform.position);
 			writer.Write(transform.rotation);
 		}
 
-		protected override void Deserialize(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.Deserialize(reader, initialState);
 			transform.position = reader.ReadVector3();
 			transform.rotation = reader.ReadQuaternion();
 		}

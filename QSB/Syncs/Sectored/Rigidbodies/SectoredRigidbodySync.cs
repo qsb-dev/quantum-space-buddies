@@ -36,27 +36,24 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			_prevAngularVelocity = _relativeAngularVelocity;
 		}
 
-		protected override void Serialize(NetworkWriter writer)
+		protected override void Serialize(NetworkWriter writer, bool initialState)
 		{
-			base.Serialize(writer);
+			base.Serialize(writer, initialState);
 			writer.Write(_relativeVelocity);
 			writer.Write(_relativeAngularVelocity);
 		}
 
-		protected override void Deserialize(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.Deserialize(reader, initialState);
 			_relativeVelocity = reader.ReadVector3();
 			_relativeAngularVelocity = reader.ReadVector3();
-
-			if (transform.position == Vector3.zero)
-			{
-				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)!", MessageType.Warning);
-			}
 		}
 
 		protected override void GetFromAttached()
 		{
+			base.GetFromAttached();
+
 			if (ReferenceTransform != null)
 			{
 				transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
@@ -75,8 +72,11 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected override void ApplyToAttached()
 		{
+			base.ApplyToAttached();
+
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
+				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)!", MessageType.Warning);
 				return;
 			}
 

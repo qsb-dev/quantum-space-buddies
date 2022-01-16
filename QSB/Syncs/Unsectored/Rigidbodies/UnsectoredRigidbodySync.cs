@@ -33,16 +33,16 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			_prevAngularVelocity = _relativeAngularVelocity;
 		}
 
-		protected override void Serialize(NetworkWriter writer)
+		protected override void Serialize(NetworkWriter writer, bool initialState)
 		{
-			base.Serialize(writer);
+			base.Serialize(writer, initialState);
 			writer.Write(_relativeVelocity);
 			writer.Write(_relativeAngularVelocity);
 		}
 
-		protected override void Deserialize(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.Deserialize(reader, initialState);
 			_relativeVelocity = reader.ReadVector3();
 			_relativeAngularVelocity = reader.ReadVector3();
 		}

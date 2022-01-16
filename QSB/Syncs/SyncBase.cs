@@ -118,9 +118,9 @@ namespace QSB.Syncs
 		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
 
 		private bool _shouldApply;
-		protected override void Deserialize(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			base.Deserialize(reader);
+			base.Deserialize(reader, initialState);
 			if (OnlyApplyOnDeserialize)
 			{
 				_shouldApply = true;
@@ -180,7 +180,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (!hasAuthority && UseInterpolation)
+			if (UseInterpolation)
 			{
 				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
 				SmoothRotation = SmartSmoothDamp(SmoothRotation, transform.rotation);

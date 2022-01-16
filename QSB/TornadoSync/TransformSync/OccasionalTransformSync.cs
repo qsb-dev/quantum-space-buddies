@@ -47,16 +47,26 @@ namespace QSB.TornadoSync.TransformSync
 				.ToArray();
 		}
 
-		protected override void SerializeInitial(NetworkWriter writer)
+		protected override void Serialize(NetworkWriter writer, bool initialState)
 		{
-			writer.Write(_bodyIndex);
-			writer.Write(_refBodyIndex);
+			base.Serialize(writer, initialState);
+
+			if (initialState)
+			{
+				writer.Write(_bodyIndex);
+				writer.Write(_refBodyIndex);
+			}
 		}
 
-		protected override void DeserializeInitial(NetworkReader reader)
+		protected override void Deserialize(NetworkReader reader, bool initialState)
 		{
-			_bodyIndex = reader.ReadInt();
-			_refBodyIndex = reader.ReadInt();
+			base.Deserialize(reader, initialState);
+
+			if (initialState)
+			{
+				_bodyIndex = reader.ReadInt();
+				_refBodyIndex = reader.ReadInt();
+			}
 		}
 
 		protected override void ApplyToAttached()
