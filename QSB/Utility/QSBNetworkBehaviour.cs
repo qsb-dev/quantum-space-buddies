@@ -20,8 +20,8 @@ namespace QSB.Utility
 			var changed = base.OnSerialize(writer, initialState);
 			if (initialState && isServer)
 			{
-				UpdatePrevData();
 				Serialize(writer, true);
+				UpdatePrevData();
 			}
 
 			return changed;
@@ -63,9 +63,9 @@ namespace QSB.Utility
 					return;
 				}
 
-				UpdatePrevData();
 				using var writer = NetworkWriterPool.GetWriter();
 				Serialize(writer, false);
+				UpdatePrevData();
 
 				var data = writer.ToArraySegment();
 				if (UseReliableRpc)
@@ -93,8 +93,8 @@ namespace QSB.Utility
 
 		private void OnData(ArraySegment<byte> data)
 		{
-			UpdatePrevData();
 			using var reader = NetworkReaderPool.GetReader(data);
+			UpdatePrevData();
 			Deserialize(reader, false);
 		}
 	}
