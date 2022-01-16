@@ -13,6 +13,7 @@ namespace QSB.OrbSync.TransformSync
 	{
 		protected override bool IsReady => WorldObjectManager.AllObjectsAdded;
 		protected override bool UseInterpolation => true;
+		protected override float DistanceLeeway => 1f;
 
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
