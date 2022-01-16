@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using OWML.Common;
 using QSB.Utility;
 using UnityEngine;
 
@@ -7,8 +6,6 @@ namespace QSB.Syncs.Sectored.Transforms
 {
 	public abstract class SectoredTransformSync : BaseSectoredSync
 	{
-		protected override bool DestroyAttachedObject => true;
-
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();
 

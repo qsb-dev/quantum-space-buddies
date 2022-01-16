@@ -49,9 +49,8 @@ namespace QSB.Syncs
 
 		protected abstract bool IsReady { get; }
 		protected abstract bool UseInterpolation { get; }
-		protected abstract bool AllowDisabledAttachedObject { get; }
+		protected virtual bool AllowDisabledAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
-		protected abstract bool DestroyAttachedObject { get; }
 		protected virtual bool IsPlayerObject => false;
 		protected virtual bool OnlyApplyOnDeserialize => false;
 
@@ -91,7 +90,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnDestroy()
 		{
-			if (DestroyAttachedObject && !hasAuthority && AttachedTransform != null)
+			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
 			{
 				Destroy(AttachedTransform.gameObject);
 			}
@@ -106,7 +105,7 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
 			}
 
-			if (DestroyAttachedObject && !hasAuthority && AttachedTransform != null)
+			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
 			{
 				Destroy(AttachedTransform.gameObject);
 			}

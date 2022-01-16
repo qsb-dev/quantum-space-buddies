@@ -1,15 +1,12 @@
 ﻿using Mirror;
-using OWML.Common;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.Syncs.Sectored
 {
 	public abstract class BaseSectoredSync : SyncBase
 	{
-		protected override bool AllowDisabledAttachedObject => false;
 		protected override bool AllowNullReferenceTransform => true;
 
 		public QSBSector ReferenceSector { get; private set; }
@@ -57,7 +54,6 @@ namespace QSB.Syncs.Sectored
 			}
 			else
 			{
-				DebugLog.ToConsole($"Warning - {LogName} sector is null!", MessageType.Warning);
 				_sectorId = -1;
 			}
 		}
@@ -66,7 +62,6 @@ namespace QSB.Syncs.Sectored
 		{
 			if (_sectorId == -1)
 			{
-				DebugLog.ToConsole($"Warning - {LogName} sector is null!", MessageType.Warning);
 				return;
 			}
 

@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using OWML.Common;
 using QSB.Utility;
 using UnityEngine;
 
@@ -7,8 +6,6 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 {
 	public abstract class SectoredRigidbodySync : BaseSectoredSync
 	{
-		protected override bool DestroyAttachedObject => false;
-
 		private const float PositionMovedThreshold = 0.05f;
 		private const float AngleRotatedThreshold = 0.05f;
 		private const float VelocityChangeThreshold = 0.05f;

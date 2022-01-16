@@ -27,10 +27,10 @@ namespace QSB.ShipSync.TransformSync
 			return Locator.GetShipBody();
 		}
 
+		/// Dont do base... this is a replacement!
 		protected override void ApplyToAttached()
 		{
 			ApplyToSector();
-			// Dont do base... this is a replacement!
 
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
