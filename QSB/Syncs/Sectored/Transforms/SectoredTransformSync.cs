@@ -26,7 +26,7 @@ namespace QSB.Syncs.Sectored.Transforms
 
 		protected override void GetFromAttached()
 		{
-			base.GetFromAttached();
+			GetFromSector();
 
 			if (ReferenceTransform != null)
 			{
@@ -42,7 +42,7 @@ namespace QSB.Syncs.Sectored.Transforms
 
 		protected override void ApplyToAttached()
 		{
-			base.ApplyToAttached();
+			ApplyToSector();
 
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{

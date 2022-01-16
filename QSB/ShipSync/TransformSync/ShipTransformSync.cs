@@ -29,7 +29,8 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override void ApplyToAttached()
 		{
-			base.ApplyToAttached();
+			ApplyToSector();
+			// Dont do base... this is a replacement!
 
 			if (ReferenceTransform == null || transform.position == Vector3.zero)
 			{
