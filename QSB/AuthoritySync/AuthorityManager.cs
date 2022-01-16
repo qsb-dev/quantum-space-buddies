@@ -62,7 +62,7 @@ namespace QSB.AuthoritySync
 		{
 			var oldConn = identity.connectionToClient;
 			var newConn = id != uint.MaxValue
-				? NetworkServer.connections.Values.First(x => x.GetPlayerId() == id)
+				? NetworkServer.connections.Values.FirstOrDefault(x => x.GetPlayerId() == id)
 				: null;
 
 			if (oldConn == newConn)
