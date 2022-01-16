@@ -149,7 +149,7 @@ namespace QSB
 			Port = config.GetSettingsValue<int>("port");
 			if (QSBNetworkManager.singleton != null)
 			{
-				// TODO MIRROR QSBNetworkManager.Instance.networkPort = Port;
+				QSBNetworkManager.singleton.Port = Port;
 			}
 		}
 	}

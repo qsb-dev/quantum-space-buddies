@@ -44,7 +44,7 @@ namespace QSB.RespawnSync
 			}
 		}
 
-		private void OnDisconnected(NetworkError error)
+		private void OnDisconnected(string error)
 		{
 			_owRecoveryPoint?.SetActive(true);
 			_qsbRecoveryPoint?.SetActive(false);

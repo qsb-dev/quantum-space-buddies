@@ -1,5 +1,4 @@
-﻿using kcp2k;
-using Mirror;
+﻿using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -36,8 +35,7 @@ namespace QSB
 
 		public event Action OnNetworkManagerReady;
 		public event Action OnClientConnected;
-		public event Action<NetworkError> OnClientDisconnected;
-		public event Action<NetworkError> OnClientErrorThrown;
+		public event Action<string> OnClientDisconnected;
 
 		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
@@ -53,6 +51,13 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
+		public int Port
+		{
+			set => ((kcp2k.KcpTransport)transport).Port = (ushort)value;
+		}
+		private string _lastTransportError;
+		internal bool _intentionalDisconnect;
+
 		public override void Awake()
 		{
 			AppDomain.CurrentDomain.GetAssemblies()
@@ -63,7 +68,7 @@ namespace QSB
 				.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
 				.ForEach(x => x.Invoke(null, null));
 
-			transport = gameObject.AddComponent<KcpTransport>();
+			transport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			base.Awake();
 
 			PlayerName = GetPlayerName();
@@ -130,16 +135,27 @@ namespace QSB
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
-			// TODO MIRROR networkPort = QSBCore.Port;
+			Port = QSBCore.Port;
 			maxConnections = MaxConnections;
-			// TODO MIRROR?
-			// customConfig = true;
-			// connectionConfig.AddChannel(QosType.Reliable);
-			// connectionConfig.AddChannel(QosType.Unreliable);
 
-			// m_MaxBufferedPackets = MaxBufferedPackets;
-			// channels.Add(QosType.Reliable);
-			// channels.Add(QosType.Unreliable);
+			kcp2k.Log.Info = s =>
+			{
+				DebugLog.DebugWrite("[KCP] " + s);
+				if (s == "KCP: received disconnect message")
+				{
+					_lastTransportError = s;
+				}
+			};
+			kcp2k.Log.Warning = s =>
+			{
+				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+				_lastTransportError = s;
+			};
+			kcp2k.Log.Error = s =>
+			{
+				DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
+				_lastTransportError = s;
+			};
 
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
@@ -167,9 +183,6 @@ namespace QSB
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
-
-		public override void OnClientError(Exception exception)
-			=> OnClientErrorThrown?.SafeInvoke(default(NetworkError) /*TODO MIRROR bruh*/);
 
 		public override void OnClientConnect() // Called on the client when connecting to a server
 		{
@@ -240,7 +253,14 @@ namespace QSB
 		public override void OnClientDisconnect()
 		{
 			base.OnClientDisconnect();
-			OnClientDisconnected?.SafeInvoke(default(NetworkError) /*TODO MIRROR bruh*/);
+			if (_intentionalDisconnect)
+			{
+				_lastTransportError = null;
+				_intentionalDisconnect = false;
+			}
+
+			OnClientDisconnected?.SafeInvoke(_lastTransportError);
+			_lastTransportError = null;
 		}
 
 		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
