@@ -73,6 +73,7 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
     <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
+    <PackageReference Include="TextCopy" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
     <None Update="AssetBundles\*">
