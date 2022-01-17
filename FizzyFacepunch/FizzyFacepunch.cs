@@ -66,7 +66,7 @@ namespace Mirror.FizzySteam
 
 		public override void ClientEarlyUpdate()
         {
-            if (enabled)
+            if (enabled && client != null && !client.Error)
             {
                 client?.ReceiveData();
             }
@@ -82,7 +82,7 @@ namespace Mirror.FizzySteam
 
         public override void ClientLateUpdate()
         {
-            if (enabled)
+            if (enabled && client != null && !client.Error)
             {
                 client?.FlushData();
             }
