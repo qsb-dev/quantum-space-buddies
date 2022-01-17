@@ -51,27 +51,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Playing as a client
 
+- Log into Steam, and have Steam running in the background.
 - Run the game.
 - On the title menu, select "CONNECT TO MULTIPLAYER".
-- Enter the public IP address of the host.
+- Enter the SteamID of the host.
 - Hit connect, and pray.
 
 ## Playing as a host
 
-- Open port `7777` on your router.
+- Log into Steam, and have Steam running in the background.
 - Run the game.
 - On the pause menu, select "OPEN TO MULTIPLAYER".
-- Give your external IPv4 address to your clients ([like what you see here](http://whatismyip.host/)).
+- Give your SteadID to your clients.
 
 ## Frequently Asked Questions
 
 #### Requirements
+- Steam account.
 - Latest version of OWML.
 - Latest version of Mod Manager. (If using)
 - Latest version of Outer Wilds. (Epic version preferred, as Steam version is untestable. **We cannot guarantee QSB, or OWML, will work on cracked/pirated versions of Outer Wilds. Do not come asking us for help when using pirated versions.**)
 - Fast and stable internet connection, upload and download.
 - Above minimum Outer Wilds system requirements.
-- Knowledge on port forwarding and router/network configuration. We can be tech support for the mod, not your router or computer.
 
 #### Compatibility with other mods
 TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
@@ -89,20 +90,6 @@ Long answer : Pay me enough money, and maybe I'll consider it.
 QSB is incompatible between game vendors because of how it works at a base level. Not because I dislike Steam or Epic.
 
 Technical explanation : QSB relies on the orders of lists returned by certain Unity methods to be the same on all clients. For Unity objects, these are (probably) ordered by AssetID or InstanceID. These IDs are different across different game builds. The Epic and Steam versions are different builds. Therefore, the lists are ordered differently and everything breaks.
-
-#### Why can't I connect to a server?
-##### For the host :
-- Open port 7777 TCP and UDP on your router. If access the internet through multiple layers of routers, the port will need to be opened on every router.
-- Open port 7777 TCP and UDP in and out on your firewall. Some AVs might block you editing firewall settings, so check with your specific software.
-- Make sure you are giving your public IPv4 address to your clients.
-##### For the client :
-- Open port 7777 TCP and UDP in and out on your firewall. Some AVs might block you editing firewall settings, so check with your specific software.
-- Sometimes, it has helped to change your network profile to "private".
-- Make sure you are putting the right address into the address box.
-
-If nothing here works, many people have got QSB working through programs such as Hamachi. Also make sure you are not running through a VPN while trying to connect.
-
-Note - _nebula has no idea how Hamachi works and has never used it, so don't ask them for help setting it up! As said before, we are tech support for the mod. If you cannot connect to someone, or someone cannot connect to you, **that is not QSB's fault.**
 
 #### Why do I keep getting thrown around the ship?
 Boring boring physics stuff. The velocity of the ship is synced, as well as the angular velocity. However, this velocity is not also applied to the player. (Or it is sometimes. I don't 100% know.) This means the ship will accelerate, leaving the player "behind". Which makes you fly into the walls alot.
@@ -138,18 +125,6 @@ To fix the references, right click "References" in the Solution Explorer > "Add 
 
 After doing this, the project references should be working.
 
-The build pipeline (in post-build events):
-
-- Build QuantumUNET.
-  - Copy built `QuantumUNET.dll` to mod folder.
-- Build QSB.
-  - Copy `default-config.json` to mod folder.
-  - Copy AssetBundles to mod folder.
-  - Copy `manifest.json` to mod folder.
-  - Copy built `QSB.dll` into mod folder.
-- Build QSBTests.
-  - Use `dotnet test` to run QSBTests on QSB project.
-
 If Visual Studio isn't able to automatically copy the files, you'll have to copy the built dlls manually to OWML.
 
 It is recommended to use the Epic version of Outer Wilds, as you cannot run multiple versions of the Steam version.
@@ -181,6 +156,15 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 - Thanks to Logan Ver Hoef for help with the game code.
 - Thanks to all the people in the Outer Wilds Discord for helping in public tests.
 - Special thanks (and apologies) to all the people in the #modding channel, which I (_nebula) have been using as a virtual [rubber duck.](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
+
+### Dependencies
+
+- [OWML](https://github.com/amazingalek/owml)
+- [Mirror](https://mirror-networking.com/)
+- [FizzyFacepunch](https://github.com/Chykary/FizzyFacepunch)
+- [HarmonyX](https://github.com/BepInEx/HarmonyX)
+- [TextCopy](https://github.com/CopyText/TextCopy)
+- [Mono.Cecil](https://github.com/jbevain/cecil)
 
 ## Help / Discuss development / Whatever
 
