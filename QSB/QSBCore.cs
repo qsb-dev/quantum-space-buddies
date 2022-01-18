@@ -113,10 +113,8 @@ namespace QSB
 
 			// WorldObject managers
 			QSBWorldSync.Managers = typeof(WorldObjectManager).GetDerivedTypes()
-				.Select(x => (WorldObjectManager)this.gameObject.AddComponent(x))
+				.Select(x => (WorldObjectManager)gameObject.AddComponent(x))
 				.ToArray();
-
-			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
 
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
