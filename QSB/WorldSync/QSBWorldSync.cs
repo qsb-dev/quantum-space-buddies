@@ -13,14 +13,7 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		private static WorldObjectManager[] _managers;
-
-		public static void Init(QSBCore qsbCore)
-		{
-			_managers = typeof(WorldObjectManager).GetDerivedTypes()
-				.Select(x => (WorldObjectManager)qsbCore.gameObject.AddComponent(x))
-				.ToArray();
-		}
+		public static WorldObjectManager[] Managers;
 
 		/// <summary>
 		/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
@@ -47,7 +40,7 @@ namespace QSB.WorldSync
 
 		private static void DoBuild(OWScene scene)
 		{
-			foreach (var manager in _managers)
+			foreach (var manager in Managers)
 			{
 				switch (manager.WorldObjectType)
 				{
@@ -105,7 +98,7 @@ namespace QSB.WorldSync
 			WorldObjects.Clear();
 			WorldObjectsToUnityObjects.Clear();
 
-			foreach (var manager in _managers)
+			foreach (var manager in Managers)
 			{
 				manager.UnbuildWorldObjects();
 			}
