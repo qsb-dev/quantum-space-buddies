@@ -35,13 +35,6 @@ namespace QSB.WorldSync
 		{
 			GameInit();
 
-			if (!QSBNetworkManager.singleton.IsReady)
-			{
-				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when Network Manager not ready! Building when ready...", MessageType.Warning);
-				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.singleton.IsReady, () => BuildWorldObjects(scene));
-				return;
-			}
-
 			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);

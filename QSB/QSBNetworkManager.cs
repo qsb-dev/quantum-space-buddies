@@ -32,11 +32,9 @@ namespace QSB
 	{
 		public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
-		public event Action OnNetworkManagerReady;
 		public event Action OnClientConnected;
 		public event Action<string> OnClientDisconnected;
 
-		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
 		public GameObject AnglerPrefab { get; private set; }
@@ -203,9 +201,6 @@ namespace QSB
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			OnNetworkManagerReady?.SafeInvoke();
-			IsReady = true;
-
 			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
 
@@ -241,7 +236,6 @@ namespace QSB
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}
 
-			IsReady = false;
 			_everConnected = false;
 		}
 
