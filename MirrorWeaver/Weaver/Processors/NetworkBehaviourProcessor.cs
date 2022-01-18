@@ -68,6 +68,7 @@ namespace Mirror.Weaver
                 return false;
             }
 
+            /*
             if (netBehaviourSubclass.HasGenericParameters)
             {
                 Log.Error($"{netBehaviourSubclass.Name} cannot have generic parameters", netBehaviourSubclass);
@@ -76,6 +77,7 @@ namespace Mirror.Weaver
                 // maybe return false here in the future.
                 return true;
             }
+            */
             MarkAsProcessed(netBehaviourSubclass);
 
             // deconstruct tuple and set fields
