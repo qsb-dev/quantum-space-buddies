@@ -107,7 +107,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy()
+		public override void OnStopClient()
 		{
 			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
 			{

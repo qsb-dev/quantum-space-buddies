@@ -76,11 +76,11 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
-			base.OnDestroy();
+			base.OnStopClient();
 			Player.HudMarker?.Remove();
 			QSBPlayerManager.PlayerList.Remove(Player);
 			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);

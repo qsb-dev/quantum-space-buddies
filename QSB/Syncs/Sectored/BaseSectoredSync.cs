@@ -21,9 +21,9 @@ namespace QSB.Syncs.Sectored
 			base.OnStartClient();
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
-			base.OnDestroy();
+			base.OnStopClient();
 			QSBSectorManager.Instance.TransformSyncs.Remove(this);
 			Destroy(SectorSync);
 		}

@@ -25,10 +25,10 @@ namespace QSB.Anglerfish.TransformSync
 			base.OnStartClient();
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			_instances.Remove(this);
-			base.OnDestroy();
+			base.OnStopClient();
 
 			if (QSBCore.IsHost)
 			{
