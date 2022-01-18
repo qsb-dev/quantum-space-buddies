@@ -56,25 +56,13 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 		{
-			if (!isLocalPlayer)
-			{
-				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
-				return;
-			}
-
-			if (isInUniverse && !IsInitialized)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-
-			if (!isInUniverse)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+
+			if (isLocalPlayer)
+			{
+				Player.IsReady = false;
+				new PlayerReadyMessage(false).Send();
+			}
 		}
 
 		protected override void Init()
