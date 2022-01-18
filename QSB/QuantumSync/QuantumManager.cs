@@ -20,9 +20,9 @@ namespace QSB.QuantumSync
 
 		public void Awake() => QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Info);
+			DebugLog.DebugWrite("Building quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
 			QSBWorldSync.Init<QSBSocketedQuantumObject, SocketedQuantumObject>();
 			QSBWorldSync.Init<QSBMultiStateQuantumObject, MultiStateQuantumObject>();

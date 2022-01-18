@@ -8,7 +8,7 @@ namespace QSB.Animation.NPC
 		// im assuming this is used in the eye as well
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
 			QSBWorldSync.Init<QSBTravelerController, TravelerController>();

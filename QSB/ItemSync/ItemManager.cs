@@ -10,9 +10,9 @@ namespace QSB.ItemSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Info);
+			DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 
 			// Items
 			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();

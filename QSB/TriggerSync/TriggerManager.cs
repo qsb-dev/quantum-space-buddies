@@ -7,7 +7,7 @@ namespace QSB.TriggerSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBCharacterTrigger, CharacterAnimController>(x => x.playerTrackingZone);
 			QSBWorldSync.Init<QSBSolanumTrigger, NomaiConversationManager>(x => x._watchPlayerVolume);

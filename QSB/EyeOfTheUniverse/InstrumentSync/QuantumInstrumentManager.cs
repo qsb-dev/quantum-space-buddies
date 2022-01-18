@@ -7,7 +7,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Eye;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 			=> QSBWorldSync.Init<QSBQuantumInstrument, QuantumInstrument>();
 	}
 }

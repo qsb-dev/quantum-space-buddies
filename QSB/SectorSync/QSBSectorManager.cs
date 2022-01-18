@@ -64,9 +64,9 @@ namespace QSB.SectorSync
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
-			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Info);
+			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
 				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
@@ -86,6 +86,9 @@ namespace QSB.SectorSync
 			QSBWorldSync.Init<QSBSector, Sector>();
 			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
+
+		public override void UnbuildWorldObjects() =>
+			IsReady = false;
 
 		private static void UpdateReferenceSector(BaseSectoredSync transformSync)
 		{

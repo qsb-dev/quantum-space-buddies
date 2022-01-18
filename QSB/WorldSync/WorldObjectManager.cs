@@ -16,7 +16,9 @@ namespace QSB.WorldSync
 		/// </summary>
 		public abstract WorldObjectType WorldObjectType { get; }
 
-		public abstract void RebuildWorldObjects(OWScene scene);
+		public abstract void BuildWorldObjects(OWScene scene);
+
+		public virtual void UnbuildWorldObjects() { }
 
 		/// indicates that this won't become ready immediately
 		protected void StartDelayedReady() => QSBWorldSync._numManagersReadying++;

@@ -7,7 +7,7 @@ namespace QSB.GeyserSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
 	}
 }

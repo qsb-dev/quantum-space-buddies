@@ -196,8 +196,7 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.Rebuild(QSBSceneManager.CurrentScene);
-				QSBWorldSync.GameInit();
+				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -228,8 +227,7 @@ namespace QSB
 			Destroy(GetComponent<ClientStateManager>());
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			RemoveWorldObjects();
-			QSBWorldSync.Reset();
+			QSBWorldSync.RemoveWorldObjects();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -307,27 +305,6 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			base.OnStopServer();
-		}
-
-		private static void RemoveWorldObjects()
-		{
-			QSBWorldSync.RemoveWorldObjects();
-			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
-			{
-				Destroy(platform);
-			}
-
-			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
-			{
-				Destroy(camera);
-			}
-
-			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
-			{
-				Destroy(streaming);
-			}
-
-			QSBWorldSync.SetNotReady();
 		}
 	}
 }

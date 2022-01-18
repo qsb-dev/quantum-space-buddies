@@ -43,7 +43,7 @@ namespace QSB.ShipSync
 		public void Start()
 			=> Instance = this;
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
 			var shipTransform = GameObject.Find("Ship_Body");
 			if (shipTransform == null)

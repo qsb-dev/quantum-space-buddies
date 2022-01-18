@@ -10,7 +10,7 @@ namespace QSB.JellyfishSync
 
 		public static readonly List<JellyfishController> Jellyfish = new();
 
-		public override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
 			Jellyfish.Clear();
 			Jellyfish.AddRange(QSBWorldSync.GetUnityObjects<JellyfishController>());
