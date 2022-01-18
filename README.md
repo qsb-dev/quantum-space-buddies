@@ -165,7 +165,6 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 - [Mirror](https://mirror-networking.com/)
 - [FizzyFacepunch](https://github.com/Chykary/FizzyFacepunch)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
-- [TextCopy](https://github.com/CopyText/TextCopy)
 - [Mono.Cecil](https://github.com/jbevain/cecil)
 
 ## Help / Discuss development / Whatever

@@ -9,7 +9,6 @@ using Steamworks;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using TextCopy;
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
@@ -337,7 +336,7 @@ namespace QSB.Menus
 
 			var steamId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
 
-			PopupOK += () => ClipboardService.SetText(steamId);
+			PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
 
 			OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
 				$"{steamId}\r\n" +
