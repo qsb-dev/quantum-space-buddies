@@ -17,7 +17,7 @@ namespace QSB.Player
 				return;
 			}
 
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}

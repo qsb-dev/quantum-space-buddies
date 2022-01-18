@@ -24,7 +24,7 @@ namespace QSB.Animation.NPC.Patches
 		public static bool AnimatorIKReplacement(
 			CharacterAnimController __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady || ConversationManager.Instance == null)
+			if (!QSBWorldSync.AllObjectsReady || ConversationManager.Instance == null)
 			{
 				return true;
 			}
@@ -151,7 +151,7 @@ namespace QSB.Animation.NPC.Patches
 		[HarmonyPatch(typeof(KidRockController), nameof(KidRockController.Update))]
 		public static bool UpdateReplacement(KidRockController __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}

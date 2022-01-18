@@ -31,7 +31,7 @@ namespace QSB.Messaging
 		{
 			get
 			{
-				if (!WorldObjectManager.AllObjectsReady)
+				if (!QSBWorldSync.AllObjectsReady)
 				{
 					return false;
 				}

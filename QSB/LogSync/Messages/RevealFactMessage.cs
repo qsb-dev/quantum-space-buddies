@@ -33,7 +33,7 @@ namespace QSB.LogSync.Messages
 			ShowNotification = reader.Read<bool>();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal()
 		{
@@ -50,7 +50,7 @@ namespace QSB.LogSync.Messages
 				QSBWorldSync.AddFactReveal(FactId, SaveGame);
 			}
 
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}

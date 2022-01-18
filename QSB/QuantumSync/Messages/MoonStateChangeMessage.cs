@@ -35,7 +35,7 @@ namespace QSB.QuantumSync.Messages
 			OrbitAngle = reader.Read<int>();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

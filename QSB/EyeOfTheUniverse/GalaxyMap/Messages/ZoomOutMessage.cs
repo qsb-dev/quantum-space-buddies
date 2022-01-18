@@ -6,7 +6,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap.Messages
 {
 	internal class ZoomOutMessage : QSBMessage
 	{
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

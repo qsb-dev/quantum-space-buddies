@@ -36,7 +36,7 @@ namespace QSB.SectorSync
 
 		public void UpdateReferenceSectors()
 		{
-			if (!Instance.IsReady || !AllObjectsReady)
+			if (!Instance.IsReady || !QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}
@@ -58,14 +58,13 @@ namespace QSB.SectorSync
 			}
 		}
 
-		public override void Awake()
+		public void Awake()
 		{
-			base.Awake();
 			Instance = this;
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)

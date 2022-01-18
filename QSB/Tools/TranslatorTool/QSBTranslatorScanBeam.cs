@@ -77,7 +77,7 @@ namespace QSB.Tools.TranslatorTool
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug || !WorldObjectManager.AllObjectsReady)
+			if (!QSBCore.ShowLinesInDebug || !QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}

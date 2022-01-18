@@ -10,7 +10,7 @@ namespace QSB.Anglerfish
 
 		public static readonly List<AnglerfishController> Anglers = new();
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void RebuildWorldObjects(OWScene scene)
 		{
 			Anglers.Clear();
 			Anglers.AddRange(QSBWorldSync.GetUnityObjects<AnglerfishController>());

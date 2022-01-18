@@ -10,7 +10,7 @@ namespace QSB.OrbSync
 
 		public static readonly List<NomaiInterfaceOrb> Orbs = new();
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void RebuildWorldObjects(OWScene scene)
 		{
 			Orbs.Clear();
 			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>());

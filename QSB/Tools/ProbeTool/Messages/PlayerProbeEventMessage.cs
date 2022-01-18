@@ -8,7 +8,7 @@ namespace QSB.Tools.ProbeTool.Messages
 	{
 		public PlayerProbeEventMessage(ProbeEvent probeEvent) => Value = probeEvent;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

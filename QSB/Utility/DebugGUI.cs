@@ -97,7 +97,7 @@ namespace QSB.Utility
 			#region Column1 - Server data
 
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
-			WriteLine(1, $"HasWokenUp : {WorldObjectManager.AllObjectsReady}");
+			WriteLine(1, $"HasWokenUp : {QSBWorldSync.AllObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
 			{
 				WriteLine(1, $"Server State : {ServerStateManager.Instance.GetServerState()}");
@@ -145,7 +145,7 @@ namespace QSB.Utility
 				WriteLine(2, $"Ready : {player.IsReady}");
 				WriteLine(2, $"Suited Up : {player.SuitedUp}");
 
-				if (player.IsReady && WorldObjectManager.AllObjectsReady)
+				if (player.IsReady && QSBWorldSync.AllObjectsReady)
 				{
 					var networkTransform = player.TransformSync;
 					var referenceSector = networkTransform.ReferenceSector;

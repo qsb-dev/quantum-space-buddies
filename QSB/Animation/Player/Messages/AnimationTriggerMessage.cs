@@ -30,7 +30,7 @@ namespace QSB.Animation.Player.Messages
 			Name = reader.ReadString();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

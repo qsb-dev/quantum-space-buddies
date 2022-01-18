@@ -29,8 +29,8 @@ namespace QSB
 				// So objects have time to be deleted, made, whatever
 				QSBCore.UnityEvents.FireOnNextUpdate(() =>
 				{
-					WorldObjectManager.Rebuild(newScene);
-					QSBWorldSync.Init();
+					QSBWorldSync.Rebuild(newScene);
+					QSBWorldSync.GameInit();
 				});
 			}
 

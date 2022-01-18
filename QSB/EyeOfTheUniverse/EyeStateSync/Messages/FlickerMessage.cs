@@ -50,7 +50,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 			_onDuration = reader.Read<float>();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

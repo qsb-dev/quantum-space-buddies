@@ -30,7 +30,7 @@ namespace QSB.AuthoritySync
 			NetId = reader.ReadUInt();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 		public override void OnReceiveLocal() => OnReceiveRemote();
 		public override void OnReceiveRemote() => NetworkServer.spawned[NetId].UpdateAuthQueue(From, Value);
 	}

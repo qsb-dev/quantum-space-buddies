@@ -196,8 +196,8 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
-				QSBWorldSync.Init();
+				QSBWorldSync.Rebuild(QSBSceneManager.CurrentScene);
+				QSBWorldSync.GameInit();
 			}
 
 			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
@@ -327,7 +327,7 @@ namespace QSB
 				Destroy(streaming);
 			}
 
-			WorldObjectManager.SetNotReady();
+			QSBWorldSync.SetNotReady();
 		}
 	}
 }

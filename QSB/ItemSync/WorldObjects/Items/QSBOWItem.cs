@@ -26,7 +26,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 			}
 
 			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsAdded, () =>
+			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
 			{
 				FinishDelayedReady();
 

@@ -45,7 +45,7 @@ namespace QSB.Syncs
 					return false;
 				}
 
-				if (!WorldObjectManager.AllObjectsAdded)
+				if (!QSBWorldSync.AllObjectsAdded)
 				{
 					return false;
 				}

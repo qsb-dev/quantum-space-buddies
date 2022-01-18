@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
+using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
@@ -12,15 +13,111 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<CharacterDialogueTree> OldDialogueTrees { get; private set; } = new();
+		private static WorldObjectManager[] _managers;
+
+		public static void Init(QSBCore qsbCore)
+		{
+			_managers = typeof(WorldObjectManager).GetDerivedTypes()
+				.Select(x => (WorldObjectManager)qsbCore.gameObject.AddComponent(x))
+				.ToArray();
+
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		}
+
+		private static void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+		{
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
+		}
+
+		/// <summary>
+		/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
+		/// </summary>
+		public static bool AllObjectsAdded { get; private set; }
+		/// <summary>
+		/// Set when all WorldObjects have finished running Init()
+		/// </summary>
+		public static bool AllObjectsReady { get; private set; }
+
+		public static void SetNotReady()
+		{
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
+		}
+
+		public static void Rebuild(OWScene scene)
+		{
+			if (!QSBNetworkManager.singleton.IsReady)
+			{
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when Network Manager not ready! Building when ready...", MessageType.Warning);
+				QSBCore.UnityEvents.RunWhen(() => QSBNetworkManager.singleton.IsReady, () => Rebuild(scene));
+				return;
+			}
+
+			if (PlayerTransformSync.LocalInstance == null)
+			{
+				DebugLog.ToConsole($"Warning - Tried to rebuild WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
+				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => Rebuild(scene));
+				return;
+			}
+
+			DoRebuild(scene);
+		}
+
+		private static void DoRebuild(OWScene scene)
+		{
+			RemoveWorldObjects();
+			_numManagersReadying = 0;
+			_numObjectsReadying = 0;
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
+			foreach (var manager in _managers)
+			{
+				switch (manager.WorldObjectType)
+				{
+					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+						DebugLog.DebugWrite($"skipping {manager.GetType().Name} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
+						continue;
+				}
+
+				try
+				{
+					DebugLog.DebugWrite($"Rebuilding {manager.GetType().Name}", MessageType.Info);
+					manager.RebuildWorldObjects(scene);
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Exception - Exception when trying to rebuild WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
+				}
+			}
+
+			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
+			{
+				AllObjectsAdded = true;
+				DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+				QSBCore.UnityEvents.RunWhen(() => _numObjectsReadying == 0, () =>
+				{
+					AllObjectsReady = true;
+					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+				});
+			});
+		}
+
+		internal static uint _numManagersReadying;
+		internal static uint _numObjectsReadying;
+
+		// =======================================================================================================
+
+		public static List<CharacterDialogueTree> OldDialogueTrees { get; } = new();
 		public static Dictionary<string, bool> DialogueConditions { get; private set; } = new();
 		public static Dictionary<string, bool> PersistentConditions { get; private set; } = new();
-		public static List<FactReveal> ShipLogFacts { get; private set; } = new();
+		public static List<FactReveal> ShipLogFacts { get; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
-		public static void Init()
+		public static void GameInit()
 		{
 			DebugLog.DebugWrite($"Init QSBWorldSync", MessageType.Info);
 

@@ -10,7 +10,7 @@ namespace QSB.MeteorSync
 
 		public static WhiteHoleVolume WhiteHoleVolume;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void RebuildWorldObjects(OWScene scene)
 		{
 			// wait for all late initializers (which includes meteor launchers) to finish
 			StartDelayedReady();

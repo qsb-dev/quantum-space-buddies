@@ -33,7 +33,7 @@ namespace QSB.ConversationSync.Messages
 			Message = reader.ReadString();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

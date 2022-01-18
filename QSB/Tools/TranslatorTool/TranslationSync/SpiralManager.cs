@@ -7,7 +7,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void RebuildWorldObjects(OWScene scene)
 		{
 			// wait for all late initializers (which includes nomai text) to finish
 			StartDelayedReady();

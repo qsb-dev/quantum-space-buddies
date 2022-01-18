@@ -19,9 +19,9 @@ namespace QSB.WorldSync
 		public virtual void DisplayLines() { }
 
 		/// indicates that this won't become ready immediately
-		protected void StartDelayedReady() => WorldObjectManager._numObjectsReadying++;
+		protected void StartDelayedReady() => QSBWorldSync._numObjectsReadying++;
 
 		/// indicates that this is now ready
-		protected void FinishDelayedReady() => WorldObjectManager._numObjectsReadying--;
+		protected void FinishDelayedReady() => QSBWorldSync._numObjectsReadying--;
 	}
 }

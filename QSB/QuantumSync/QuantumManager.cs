@@ -18,19 +18,9 @@ namespace QSB.QuantumSync
 
 		public static QuantumShrine Shrine { get; private set; }
 
-		public override void Awake()
-		{
-			base.Awake();
-			QSBPlayerManager.OnRemovePlayer += PlayerLeave;
-		}
+		public void Awake() => QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 
-		public override void OnDestroy()
-		{
-			base.OnDestroy();
-			QSBPlayerManager.OnRemovePlayer -= PlayerLeave;
-		}
-
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void RebuildWorldObjects(OWScene scene)
 		{
 			DebugLog.DebugWrite("Rebuilding quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();
@@ -78,7 +68,7 @@ namespace QSB.QuantumSync
 
 		public static Tuple<bool, List<PlayerInfo>> IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
-			if (!AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
@@ -123,7 +113,7 @@ namespace QSB.QuantumSync
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
-			if (!AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return Enumerable.Empty<PlayerInfo>();
 			}

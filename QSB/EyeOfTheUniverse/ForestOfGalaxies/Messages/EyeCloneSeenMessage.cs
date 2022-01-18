@@ -8,7 +8,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 	internal class EyeCloneSeenMessage : QSBMessage
 	{
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

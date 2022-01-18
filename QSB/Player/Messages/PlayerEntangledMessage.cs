@@ -12,7 +12,7 @@ namespace QSB.Player.Messages
 
 		public PlayerEntangledMessage(int objectId) => ObjectId = objectId;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal()
 		{
