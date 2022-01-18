@@ -22,7 +22,11 @@ namespace Mirror.Weaver
 
         public static bool IsDerivedFrom(this TypeReference tr, Type baseClass)
         {
+            if (tr == null)
+                return false;
             TypeDefinition td = tr.Resolve();
+            if (td == null)
+                return false;
             if (!td.IsClass)
                 return false;
 
