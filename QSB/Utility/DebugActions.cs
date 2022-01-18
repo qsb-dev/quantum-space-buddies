@@ -31,16 +31,18 @@ namespace QSB.Utility
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-		private void Awake()
-		{
-			if (!QSBCore.DebugMode)
-			{
-				Destroy(this);
-			}
-		}
-
 		public void Update()
 		{
+			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
+			{
+				QSBCore.ToggleDebug();
+			}
+
+			if (!QSBCore.DebugMode)
+			{
+				return;
+			}
+
 			/*
 			 * 1 - Warp to first non local player
 			 * 2 - Set time flowing
@@ -51,7 +53,7 @@ namespace QSB.Utility
 			 * 7 - Warp to vessel
 			 * 8 - Place warp core into vessel
 			 * 9 - Load eye scene
-			 * 0 -
+			 * 0 - Die
 			 */
 
 			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
@@ -114,6 +116,11 @@ namespace QSB.Utility
 					PlayerData.SaveWarpedToTheEye(60);
 					LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
 				}
+			}
+
+			if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
+			{
+				Locator.GetDeathManager().KillPlayer(DeathType.Default);
 			}
 		}
 	}

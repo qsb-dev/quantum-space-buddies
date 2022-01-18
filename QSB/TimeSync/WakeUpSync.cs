@@ -121,7 +121,7 @@ namespace QSB.TimeSync
 			}
 			else
 			{
-				if (!QSBCore.SkipTitleScreen)
+				if (!QSBCore.AvoidTimeSync)
 				{
 					WakeUpOrSleep();
 				}

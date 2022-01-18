@@ -1,13 +1,13 @@
 ﻿using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
-using OWML.ModHelper.Input;
 using QSB.EyeOfTheUniverse.GalaxyMap;
 using QSB.EyeOfTheUniverse.MaskSync;
 using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.Player;
+using QSB.QuantumSync;
 using QSB.RespawnSync;
 using QSB.SatelliteSync;
 using QSB.StatueSync;
@@ -66,7 +66,7 @@ namespace QSB
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
-		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
+		private static DebugSettings DebugSettings { get; set; } = new();
 
 		public void Awake()
 		{
@@ -80,7 +80,7 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+			MenuApi = Helper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
@@ -88,7 +88,7 @@ namespace QSB
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
-			DebugSettings = ModHelper.Storage.Load<DebugSettings>("debugsettings.json");
+			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json");
 
 			if (DebugSettings == null)
 			{
@@ -148,6 +148,16 @@ namespace QSB
 			{
 				QSBNetworkManager.singleton.Port = Port;
 			}
+		}
+
+		public static void ToggleDebug()
+		{
+			DebugSettings.DebugMode = !DebugSettings.DebugMode;
+
+			QuantumManager.UpdateFromDebugSetting();
+			DebugCameraSettings.UpdateFromDebugSetting();
+
+			DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
 		}
 	}
 }
