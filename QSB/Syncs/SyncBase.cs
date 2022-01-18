@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -27,7 +28,8 @@ namespace QSB.Syncs
 				{
 					DebugLog.ToConsole("Error - trying to get SyncBase.Player before Start has been called! "
 						+ "this really should not be happening!\n"
-						+ $"{Environment.StackTrace}");
+						+ $"{Environment.StackTrace}",
+						MessageType.Error);
 				}
 
 				return _player;
@@ -52,7 +54,7 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!Player.IsReady && !isLocalPlayer)
+					if (!Player.IsReady && this is not PlayerTransformSync)
 					{
 						return false;
 					}

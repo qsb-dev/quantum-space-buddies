@@ -21,11 +21,6 @@ namespace QSB.Player.Patches
 		}
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.OnExitToMainMenu))]
-		public static void PauseMenuManager_OnExitToMainMenu()
-			=> QSBPlayerManager.LocalPlayer.IsReady = false;
-
-		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerData), nameof(PlayerData.LearnLaunchCodes))]
 		public static bool LearnLaunchCodes()
 		{

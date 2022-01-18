@@ -94,12 +94,6 @@ namespace QSB.Player.Messages
 			var player = QSBPlayerManager.GetPlayer(QSBPlayerManager.LocalPlayerId);
 			player.Name = PlayerName;
 			DebugLog.ToAll($"Connected to server as {player.Name}.", MessageType.Info);
-
-			if (QSBSceneManager.IsInUniverse)
-			{
-				player.IsReady = true;
-				new PlayerReadyMessage(true).Send();
-			}
 		}
 	}
 }
