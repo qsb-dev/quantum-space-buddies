@@ -68,7 +68,7 @@ namespace QSB.Player.Messages
 				new ServerStateMessage(ServerStateManager.Instance.GetServerState()) { To = From }.Send();
 				new PlayerInformationMessage { To = From }.Send();
 
-				if (WorldObjectManager.AllObjectsReady)
+				if (QSBWorldSync.AllObjectsReady)
 				{
 					SendWorldObjectInfo();
 				}
@@ -79,7 +79,7 @@ namespace QSB.Player.Messages
 				new PlayerInformationMessage { To = From }.Send();
 			}
 
-			if (WorldObjectManager.AllObjectsReady)
+			if (QSBWorldSync.AllObjectsReady)
 			{
 				SendAuthorityObjectInfo();
 			}

@@ -15,7 +15,7 @@ namespace QSB.JellyfishSync.Patches
 		[HarmonyPatch(typeof(JellyfishController), nameof(JellyfishController.FixedUpdate))]
 		public static bool FixedUpdate(JellyfishController __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}

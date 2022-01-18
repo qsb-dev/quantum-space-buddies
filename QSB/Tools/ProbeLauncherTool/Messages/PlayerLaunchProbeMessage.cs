@@ -6,7 +6,7 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 {
 	internal class PlayerLaunchProbeMessage : QSBMessage
 	{
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

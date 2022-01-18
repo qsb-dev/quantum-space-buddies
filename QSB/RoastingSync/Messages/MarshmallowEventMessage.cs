@@ -12,7 +12,7 @@ namespace QSB.RoastingSync.Messages
 	{
 		public MarshmallowEventMessage(MarshmallowMessageType type) => Value = type;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

@@ -111,12 +111,9 @@ namespace QSB
 			gameObject.AddComponent<MaskManager>();
 
 			// WorldObject managers
-			foreach (var type in typeof(WorldObjectManager).GetDerivedTypes())
-			{
-				gameObject.AddComponent(type);
-			}
-
-			Helper.HarmonyHelper.EmptyMethod<ModCommandListener>("Update");
+			QSBWorldSync.Managers = typeof(WorldObjectManager).GetDerivedTypes()
+				.Select(x => (WorldObjectManager)gameObject.AddComponent(x))
+				.ToArray();
 
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;

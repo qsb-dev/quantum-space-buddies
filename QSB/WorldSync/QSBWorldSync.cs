@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
+using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
@@ -12,17 +13,110 @@ namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<CharacterDialogueTree> OldDialogueTrees { get; private set; } = new();
+		public static WorldObjectManager[] Managers;
+
+		/// <summary>
+		/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
+		/// </summary>
+		public static bool AllObjectsAdded { get; private set; }
+		/// <summary>
+		/// Set when all WorldObjects have finished running Init()
+		/// </summary>
+		public static bool AllObjectsReady { get; private set; }
+
+		public static void BuildWorldObjects(OWScene scene)
+		{
+			GameInit();
+
+			if (PlayerTransformSync.LocalInstance == null)
+			{
+				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
+				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => BuildWorldObjects(scene));
+				return;
+			}
+
+			DoBuild(scene);
+		}
+
+		private static void DoBuild(OWScene scene)
+		{
+			foreach (var manager in Managers)
+			{
+				switch (manager.WorldObjectType)
+				{
+					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+						DebugLog.DebugWrite($"skipping {manager.GetType().Name} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
+						continue;
+				}
+
+				try
+				{
+					DebugLog.DebugWrite($"Building {manager.GetType().Name}", MessageType.Info);
+					manager.BuildWorldObjects(scene);
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Exception - Exception when trying to build WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
+				}
+			}
+
+			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
+			{
+				AllObjectsAdded = true;
+				DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+				QSBCore.UnityEvents.RunWhen(() => _numObjectsReadying == 0, () =>
+				{
+					AllObjectsReady = true;
+					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+				});
+			});
+		}
+
+		internal static uint _numManagersReadying;
+		internal static uint _numObjectsReadying;
+
+		public static void RemoveWorldObjects()
+		{
+			GameReset();
+
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
+
+			foreach (var item in WorldObjects)
+			{
+				try
+				{
+					item.OnRemoval();
+				}
+				catch (Exception e)
+				{
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+				}
+			}
+
+			WorldObjects.Clear();
+			WorldObjectsToUnityObjects.Clear();
+
+			foreach (var manager in Managers)
+			{
+				manager.UnbuildWorldObjects();
+			}
+		}
+
+		// =======================================================================================================
+
+		public static List<CharacterDialogueTree> OldDialogueTrees { get; } = new();
 		public static Dictionary<string, bool> DialogueConditions { get; private set; } = new();
 		public static Dictionary<string, bool> PersistentConditions { get; private set; } = new();
-		public static List<FactReveal> ShipLogFacts { get; private set; } = new();
+		public static List<FactReveal> ShipLogFacts { get; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
 		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
 
-		public static void Init()
+		private static void GameInit()
 		{
-			DebugLog.DebugWrite($"Init QSBWorldSync", MessageType.Info);
+			DebugLog.DebugWrite($"GameInit QSBWorldSync", MessageType.Info);
 
 			OldDialogueTrees.Clear();
 			OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>());
@@ -49,9 +143,9 @@ namespace QSB.WorldSync
 			}
 		}
 
-		public static void Reset()
+		private static void GameReset()
 		{
-			DebugLog.DebugWrite($"Reset QSBWorldSync", MessageType.Info);
+			DebugLog.DebugWrite($"GameReset QSBWorldSync", MessageType.Info);
 
 			OldDialogueTrees.Clear();
 			DialogueConditions.Clear();
@@ -111,30 +205,6 @@ namespace QSB.WorldSync
 			}
 
 			return (TWorldObject)worldObject;
-		}
-
-		public static void RemoveWorldObjects()
-		{
-			if (WorldObjects.Count == 0)
-			{
-				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects, but there are no WorldObjects!", MessageType.Warning);
-				return;
-			}
-
-			foreach (var item in WorldObjects)
-			{
-				try
-				{
-					item.OnRemoval();
-				}
-				catch (Exception e)
-				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
-				}
-			}
-
-			WorldObjects.Clear();
-			WorldObjectsToUnityObjects.Clear();
 		}
 
 		public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()

@@ -8,7 +8,7 @@ namespace QSB.Tools.ProbeTool.Messages
 	{
 		public ProbeStartRetrieveMessage(float duration) => Value = duration;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

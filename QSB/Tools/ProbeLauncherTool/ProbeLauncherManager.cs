@@ -7,7 +7,7 @@ namespace QSB.Tools.ProbeLauncherTool
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 			=> QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
 	}
 }

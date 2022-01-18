@@ -10,7 +10,7 @@ namespace QSB.TornadoSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override void BuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
 

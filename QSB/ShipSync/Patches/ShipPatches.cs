@@ -77,7 +77,7 @@ namespace QSB.ShipSync.Patches
 			 *
 			 */
 
-			if (!WorldObjectManager.AllObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
+			if (!QSBWorldSync.AllObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
 			{
 				return true;
 			}

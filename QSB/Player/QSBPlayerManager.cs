@@ -27,7 +27,7 @@ namespace QSB.Player
 				return localInstance.Player;
 			}
 		}
-		public static uint LocalPlayerId => LocalPlayer.PlayerId;
+		public static uint LocalPlayerId => LocalPlayer?.PlayerId ?? uint.MaxValue;
 
 		/// <summary>
 		/// called right after player is added

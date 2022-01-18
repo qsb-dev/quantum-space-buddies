@@ -33,11 +33,9 @@ namespace QSB
 	{
 		public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
-		public event Action OnNetworkManagerReady;
 		public event Action OnClientConnected;
 		public event Action<string> OnClientDisconnected;
 
-		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
 		public GameObject AnglerPrefab { get; private set; }
@@ -199,16 +197,12 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
-				QSBWorldSync.Init();
+				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene);
 			}
 
 			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
-
-			OnNetworkManagerReady?.SafeInvoke();
-			IsReady = true;
 
 			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
@@ -231,8 +225,7 @@ namespace QSB
 			Destroy(GetComponent<ClientStateManager>());
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			RemoveWorldObjects();
-			QSBWorldSync.Reset();
+			QSBWorldSync.RemoveWorldObjects();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -246,7 +239,6 @@ namespace QSB
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}
 
-			IsReady = false;
 			_everConnected = false;
 		}
 
@@ -310,27 +302,6 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			base.OnStopServer();
-		}
-
-		private static void RemoveWorldObjects()
-		{
-			QSBWorldSync.RemoveWorldObjects();
-			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
-			{
-				Destroy(platform);
-			}
-
-			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
-			{
-				Destroy(camera);
-			}
-
-			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
-			{
-				Destroy(streaming);
-			}
-
-			WorldObjectManager.SetNotReady();
 		}
 	}
 }

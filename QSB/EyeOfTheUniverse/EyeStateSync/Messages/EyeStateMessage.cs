@@ -19,7 +19,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 		private EyeStateMessage(EyeState state) => Value = state;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal()
 		{

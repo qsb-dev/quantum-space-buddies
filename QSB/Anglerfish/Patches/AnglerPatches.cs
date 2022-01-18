@@ -49,7 +49,7 @@ namespace QSB.Anglerfish.Patches
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateState))]
 		public static bool UpdateState(AnglerfishController __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
@@ -155,7 +155,7 @@ namespace QSB.Anglerfish.Patches
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.UpdateMovement))]
 		public static bool UpdateMovement(AnglerfishController __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
