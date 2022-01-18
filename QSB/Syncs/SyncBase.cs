@@ -26,7 +26,7 @@ namespace QSB.Syncs
 			{
 				if (_player == null)
 				{
-					DebugLog.ToConsole("Error - trying to get SyncBase.Player before Start has been called! "
+					DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
 						+ "this really should not be happening!\n"
 						+ $"{Environment.StackTrace}",
 						MessageType.Error);

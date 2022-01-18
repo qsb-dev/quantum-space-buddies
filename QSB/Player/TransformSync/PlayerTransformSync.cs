@@ -43,11 +43,13 @@ namespace QSB.Player.TransformSync
 		private Transform GetStickPivot()
 			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		public override void OnStartLocalPlayer()
-			=> LocalInstance = this;
-
 		public override void Start()
 		{
+			if (isLocalPlayer)
+			{
+				LocalInstance = this;
+			}
+
 			var player = new PlayerInfo(this);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
 			base.Start();
