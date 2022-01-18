@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -54,7 +53,12 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!Player.IsReady && this is not PlayerTransformSync)
+					if (_player == null)
+					{
+						return false;
+					}
+
+					if (!isLocalPlayer && !Player.IsReady)
 					{
 						return false;
 					}
@@ -144,11 +148,6 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
-			if (!isClient)
-			{
-				return;
-			}
-
 			if (!IsInitialized && IsReady && _baseIsReady)
 			{
 				try
