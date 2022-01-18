@@ -21,6 +21,8 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
 			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
+			QSBWorldSync.Init<QSBDreamLanternItem, DreamLanternItem>();
+			QSBWorldSync.Init<QSBVisionTorchItem, VisionTorchItem>();
 
 			// Sockets
 			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
@@ -29,6 +31,8 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
 			QSBWorldSync.Init<QSBSlideReelSocket, SlideReelSocket>();
 			QSBWorldSync.Init<QSBSlideProjectorSocket, SlideProjectorSocket>();
+			QSBWorldSync.Init<QSBDreamLanternSocket, DreamLanternSocket>();
+			QSBWorldSync.Init<QSBVisionTorchSocket, VisionTorchSocket>();
 		}
 	}
 }
