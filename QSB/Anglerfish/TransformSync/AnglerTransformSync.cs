@@ -19,10 +19,10 @@ namespace QSB.Anglerfish.TransformSync
 		protected override OWRigidbody InitAttachedRigidbody()
 			=> _qsbAngler.AttachedObject._anglerBody;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
 			_instances.Add(this);
-			base.Start();
+			base.OnStartClient();
 		}
 
 		protected override void OnDestroy()

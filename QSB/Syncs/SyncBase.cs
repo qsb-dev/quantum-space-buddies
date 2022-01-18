@@ -88,7 +88,7 @@ namespace QSB.Syncs
 		protected abstract void GetFromAttached();
 		protected abstract void ApplyToAttached();
 
-		public virtual void Start()
+		public override void OnStartClient()
 		{
 			if (IsPlayerObject)
 			{
@@ -144,6 +144,11 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
+			if (!isClient)
+			{
+				return;
+			}
+
 			if (!IsInitialized && IsReady && _baseIsReady)
 			{
 				try

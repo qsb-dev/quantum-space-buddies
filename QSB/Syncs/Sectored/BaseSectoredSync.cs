@@ -14,11 +14,11 @@ namespace QSB.Syncs.Sectored
 
 		private int _sectorId = -1;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
 			QSBSectorManager.Instance.TransformSyncs.Add(this);
-			base.Start();
+			base.OnStartClient();
 		}
 
 		protected override void OnDestroy()

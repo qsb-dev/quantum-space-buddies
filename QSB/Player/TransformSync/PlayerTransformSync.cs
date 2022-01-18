@@ -43,25 +43,23 @@ namespace QSB.Player.TransformSync
 		private Transform GetStickPivot()
 			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		public override void Start()
+		public override void OnStartClient()
 		{
-			if (isLocalPlayer)
-			{
-				LocalInstance = this;
-			}
-
 			var player = new PlayerInfo(this);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
-			base.Start();
+			base.OnStartClient();
 			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
+
+		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 		{
 			if (!hasAuthority)
 			{
 				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+				return;
 			}
 
 			if (isInUniverse && !IsInitialized)
