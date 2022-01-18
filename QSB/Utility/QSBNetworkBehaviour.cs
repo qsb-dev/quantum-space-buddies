@@ -12,20 +12,19 @@ namespace QSB.Utility
 
 		public sealed override bool OnSerialize(NetworkWriter writer, bool initialState)
 		{
-			var changed = base.OnSerialize(writer, initialState);
-			if (initialState && isServer)
+			if (initialState)
 			{
 				Serialize(writer, true);
 				UpdatePrevData();
+				return true;
 			}
 
-			return changed;
+			return false;
 		}
 
 		public sealed override void OnDeserialize(NetworkReader reader, bool initialState)
 		{
-			base.OnDeserialize(reader, initialState);
-			if (initialState && !isServer)
+			if (initialState)
 			{
 				UpdatePrevData();
 				Deserialize(reader, true);
