@@ -2,7 +2,6 @@
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
-using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;

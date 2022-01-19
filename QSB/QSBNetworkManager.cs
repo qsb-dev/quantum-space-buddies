@@ -14,7 +14,6 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
-using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
