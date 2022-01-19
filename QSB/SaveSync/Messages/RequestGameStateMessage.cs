@@ -16,7 +16,7 @@ namespace QSB.SaveSync.Messages
 		{
 			new GameStateMessage(From).Send();
 
-			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			var gameSave = QSBCore.ProfileManager.currentProfileGameSave;
 
 			var factSaves = gameSave.shipLogFactSaves;
 			foreach (var item in factSaves)

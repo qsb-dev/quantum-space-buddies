@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
@@ -22,6 +23,7 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -84,11 +86,25 @@ namespace QSB
 		{
 			try
 			{
-				var profileManager = StandaloneProfileManager.SharedInstance;
+				var profileManager = QSBCore.ProfileManager;
 				profileManager.Initialize();
-				var profile = profileManager._currentProfile;
-				var profileName = profile.profileName;
-				return profileName;
+
+				if (profileManager.GetType().Name == "MSStoreProfileManager")
+				{
+					return (string)profileManager.GetType()
+						.GetProperty("userDisplayName", BindingFlags.Public | BindingFlags.Instance)
+						.GetValue(profileManager);
+				}
+
+				if (profileManager is StandaloneProfileManager standaloneProfileManager)
+				{
+					var profile = standaloneProfileManager._currentProfile;
+					var profileName = profile.profileName;
+					return profileName;
+				}
+
+				DebugLog.ToConsole($"Cannot get player name (profile manager type = {profileManager.GetType().Name})\nTell a QSB Dev!", MessageType.Error);
+				return "Player";
 			}
 			catch (Exception ex)
 			{
