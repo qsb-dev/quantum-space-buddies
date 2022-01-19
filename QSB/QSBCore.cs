@@ -14,8 +14,10 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /*
 	Copyright (C) 2020 - 2021
@@ -150,14 +152,20 @@ namespace QSB
 			}
 		}
 
-		public static void ToggleDebug()
+		private void Update()
 		{
-			DebugSettings.DebugMode = !DebugSettings.DebugMode;
+			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].isPressed &&
+				(Keyboard.current[Key.Q].wasPressedThisFrame || Keyboard.current[Key.D].wasPressedThisFrame))
+			{
+				DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
-			QuantumManager.UpdateFromDebugSetting();
-			DebugCameraSettings.UpdateFromDebugSetting();
+				GetComponent<DebugActions>().enabled = DebugMode;
+				GetComponent<DebugGUI>().enabled = DebugMode;
+				QuantumManager.UpdateFromDebugSetting();
+				DebugCameraSettings.UpdateFromDebugSetting();
 
-			DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+				DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using QSB.Player;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,18 +32,10 @@ namespace QSB.Utility
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
+		private void Awake() => enabled = QSBCore.DebugMode;
+
 		public void Update()
 		{
-			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
-			{
-				QSBCore.ToggleDebug();
-			}
-
-			if (!QSBCore.DebugMode)
-			{
-				return;
-			}
-
 			/*
 			 * 1 - Warp to first non local player
 			 * 2 - Set time flowing

@@ -30,7 +30,12 @@ namespace QSB.Utility
 		private readonly GUIStyle guiGUIStyle = new();
 		private static readonly GUIStyle labelGUIStyle = new();
 
-		private void Awake() => guiGUIStyle.fontSize = 9;
+		private void Awake()
+		{
+			enabled = QSBCore.DebugMode;
+
+			guiGUIStyle.fontSize = 9;
+		}
 
 		private void WriteLine(int columnID, string text)
 		{
@@ -72,8 +77,7 @@ namespace QSB.Utility
 
 		public void OnGUI()
 		{
-			if (!QSBCore.DebugMode ||
-				Event.current.type != EventType.Repaint)
+			if (Event.current.type != EventType.Repaint)
 			{
 				return;
 			}
