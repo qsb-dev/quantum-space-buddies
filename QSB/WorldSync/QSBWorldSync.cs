@@ -26,14 +26,14 @@ namespace QSB.WorldSync
 
 		public static void BuildWorldObjects(OWScene scene)
 		{
-			GameInit();
-
 			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => BuildWorldObjects(scene));
 				return;
 			}
+
+			GameInit();
 
 			DoBuild(scene);
 		}
@@ -78,6 +78,11 @@ namespace QSB.WorldSync
 
 		public static void RemoveWorldObjects()
 		{
+			if (!AllObjectsReady)
+			{
+				return;
+			}
+
 			GameReset();
 
 			AllObjectsAdded = false;

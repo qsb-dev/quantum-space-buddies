@@ -22,7 +22,7 @@ namespace QSB.SaveSync.Messages
 		public GameStateMessage(uint toId)
 		{
 			To = toId;
-			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			var gameSave = PlayerData._currentGameSave;
 			WarpedToTheEye = gameSave.warpedToTheEye;
 			SecondsRemainingOnWarp = gameSave.secondsRemainingOnWarp;
 			LaunchCodesGiven = PlayerData.KnowsLaunchCodes();
@@ -89,7 +89,7 @@ namespace QSB.SaveSync.Messages
 
 			PlayerData.ResetGame();
 
-			var gameSave = StandaloneProfileManager.SharedInstance.currentProfileGameSave;
+			var gameSave = PlayerData._currentGameSave;
 			gameSave.loopCount = LoopCount;
 			gameSave.knownFrequencies = KnownFrequencies;
 			gameSave.knownSignals = KnownSignals;

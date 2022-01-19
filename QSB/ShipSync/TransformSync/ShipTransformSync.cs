@@ -15,9 +15,9 @@ namespace QSB.ShipSync.TransformSync
 		protected override bool IsReady
 			=> Locator.GetShipBody() != null;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
-			base.Start();
+			base.OnStartClient();
 			LocalInstance = this;
 		}
 

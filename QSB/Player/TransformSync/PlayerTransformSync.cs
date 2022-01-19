@@ -43,53 +43,44 @@ namespace QSB.Player.TransformSync
 		private Transform GetStickPivot()
 			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		public override void OnStartLocalPlayer()
-			=> LocalInstance = this;
-
-		public override void Start()
+		public override void OnStartClient()
 		{
 			var player = new PlayerInfo(this);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
-			base.Start();
+			base.OnStartClient();
 			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
+		public override void OnStartLocalPlayer() => LocalInstance = this;
+
 		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 		{
-			if (!hasAuthority)
-			{
-				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
-			}
-
-			if (isInUniverse && !IsInitialized)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-
-			if (!isInUniverse)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-
 			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+
+			if (isLocalPlayer)
+			{
+				Player.IsReady = false;
+				new PlayerReadyMessage(false).Send();
+			}
 		}
 
 		protected override void Init()
 		{
 			base.Init();
 
-			Player.IsReady = true;
-			new PlayerReadyMessage(true).Send();
+			if (isLocalPlayer)
+			{
+				Player.IsReady = true;
+				new PlayerReadyMessage(true).Send();
+			}
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
-			base.OnDestroy();
+			base.OnStopClient();
 			Player.HudMarker?.Remove();
 			QSBPlayerManager.PlayerList.Remove(Player);
 			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);

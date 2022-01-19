@@ -21,16 +21,16 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override OWRigidbody InitAttachedRigidbody()
 			=> _qsbJellyfish.AttachedObject._jellyfishBody;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
 			_instances.Add(this);
-			base.Start();
+			base.OnStartClient();
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			_instances.Remove(this);
-			base.OnDestroy();
+			base.OnStopClient();
 
 			if (QSBCore.IsHost)
 			{

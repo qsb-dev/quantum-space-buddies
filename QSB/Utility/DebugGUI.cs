@@ -32,11 +32,7 @@ namespace QSB.Utility
 
 		private void Awake()
 		{
-			if (!QSBCore.DebugMode)
-			{
-				Destroy(this);
-				return;
-			}
+			enabled = QSBCore.DebugMode;
 
 			guiGUIStyle.fontSize = 9;
 		}

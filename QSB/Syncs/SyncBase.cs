@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -26,7 +25,7 @@ namespace QSB.Syncs
 			{
 				if (_player == null)
 				{
-					DebugLog.ToConsole("Error - trying to get SyncBase.Player before Start has been called! "
+					DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
 						+ "this really should not be happening!\n"
 						+ $"{Environment.StackTrace}",
 						MessageType.Error);
@@ -54,7 +53,12 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!Player.IsReady && this is not PlayerTransformSync)
+					if (_player == null)
+					{
+						return false;
+					}
+
+					if (!isLocalPlayer && !Player.IsReady)
 					{
 						return false;
 					}
@@ -88,7 +92,7 @@ namespace QSB.Syncs
 		protected abstract void GetFromAttached();
 		protected abstract void ApplyToAttached();
 
-		public virtual void Start()
+		public override void OnStartClient()
 		{
 			if (IsPlayerObject)
 			{
@@ -103,7 +107,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy()
+		public override void OnStopClient()
 		{
 			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
 			{
