@@ -350,7 +350,7 @@ namespace QSB.Menus
 			{
 				KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
 				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
-				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic/Xbox/PS4)",
+				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic/Xbox)",
 				KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
 				KickReason.InEye => "Server refused connection as game has progressed too far.",
 				KickReason.None => "Kicked from server. No reason given.",

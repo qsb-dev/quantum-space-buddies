@@ -4,7 +4,6 @@
 	{
 		Steam,
 		Epic,
-		Xbox,
-		PS4
+		Xbox
 	}
 }
