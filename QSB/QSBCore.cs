@@ -15,7 +15,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
-using System.Reflection;
 using UnityEngine;
 
 /*
@@ -62,7 +61,6 @@ namespace QSB
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
 		public static GamePlatform Platform { get; private set; }
-		public static IProfileManager ProfileManager { get; private set; }
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
@@ -95,16 +93,6 @@ namespace QSB
 					DebugLog.ToConsole($"Cannot get game platform (entitlement retriever name = {other})\nTell a QSB Dev!", MessageType.Error);
 					enabled = false;
 					return;
-			}
-
-			if (Platform == GamePlatform.Xbox)
-			{
-				ProfileManager = (IProfileManager)typeof(IProfileManager).Assembly.GetType("MSStoreProfileManager")
-					.GetProperty("SharedInstance", BindingFlags.Public | BindingFlags.Static).GetValue(null);
-			}
-			else
-			{
-				ProfileManager = StandaloneProfileManager.SharedInstance;
 			}
 
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");

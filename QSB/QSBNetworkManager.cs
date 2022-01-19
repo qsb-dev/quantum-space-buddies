@@ -86,25 +86,12 @@ namespace QSB
 		{
 			try
 			{
-				var profileManager = QSBCore.ProfileManager;
+				// BUG: this doesnt work for xbox
+				var profileManager = StandaloneProfileManager.SharedInstance;
 				profileManager.Initialize();
-
-				if (profileManager.GetType().Name == "MSStoreProfileManager")
-				{
-					return (string)profileManager.GetType()
-						.GetProperty("userDisplayName", BindingFlags.Public | BindingFlags.Instance)
-						.GetValue(profileManager);
-				}
-
-				if (profileManager is StandaloneProfileManager standaloneProfileManager)
-				{
-					var profile = standaloneProfileManager._currentProfile;
-					var profileName = profile.profileName;
-					return profileName;
-				}
-
-				DebugLog.ToConsole($"Cannot get player name (profile manager type = {profileManager.GetType().Name})\nTell a QSB Dev!", MessageType.Error);
-				return "Player";
+				var profile = profileManager._currentProfile;
+				var profileName = profile.profileName;
+				return profileName;
 			}
 			catch (Exception ex)
 			{

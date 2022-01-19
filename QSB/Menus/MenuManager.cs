@@ -3,7 +3,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -235,7 +234,7 @@ namespace QSB.Menus
 
 				if (QSBCore.IsHost)
 				{
-					SetButtonActive(ResumeGameButton, QSBCore.ProfileManager.currentProfileGameSave.loopCount > 1);
+					QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 					SetButtonActive(NewGameButton, true);
 				}
 				else
@@ -247,7 +246,7 @@ namespace QSB.Menus
 			else
 			{
 				SetButtonActive(ClientButton, true);
-				SetButtonActive(ResumeGameButton, QSBCore.ProfileManager.currentProfileGameSave.loopCount > 1);
+				QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 				SetButtonActive(NewGameButton, true);
 			}
 
@@ -383,7 +382,7 @@ namespace QSB.Menus
 			SetButtonActive(ClientButton, true);
 			SetButtonActive(QuitButton, true);
 			SetButtonActive(HostButton, true);
-			SetButtonActive(ResumeGameButton, QSBCore.ProfileManager.currentProfileGameSave.loopCount > 1);
+			SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 			SetButtonActive(NewGameButton, true);
 		}
 
@@ -404,7 +403,7 @@ namespace QSB.Menus
 					SetButtonActive(DisconnectButton, false);
 					SetButtonActive(ClientButton, true);
 					SetButtonActive(HostButton, true);
-					SetButtonActive(ResumeGameButton, QSBCore.ProfileManager.currentProfileGameSave.loopCount > 1);
+					SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 					SetButtonActive(NewGameButton, true);
 					SetButtonActive(QuitButton, true);
 					break;
