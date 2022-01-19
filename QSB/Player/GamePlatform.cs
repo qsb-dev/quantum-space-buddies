@@ -3,6 +3,7 @@
 	public enum GamePlatform
 	{
 		Steam,
-		Epic
+		Epic,
+		Xbox
 	}
 }

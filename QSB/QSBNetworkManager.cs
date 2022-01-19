@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
@@ -22,6 +23,7 @@ using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
 using System;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -55,7 +57,7 @@ namespace QSB
 			base.Awake();
 			Instance = this;
 
-			PlayerName = GetPlayerName();
+			InitPlayerName();
 
 			playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 
@@ -80,21 +82,29 @@ namespace QSB
 			ConfigureNetworkManager();
 		}
 
-		private string GetPlayerName()
+		private void InitPlayerName()
 		{
-			try
+			QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () =>
 			{
-				var profileManager = StandaloneProfileManager.SharedInstance;
-				profileManager.Initialize();
-				var profile = profileManager._currentProfile;
-				var profileName = profile.profileName;
-				return profileName;
-			}
-			catch (Exception ex)
-			{
-				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
-				return "Player";
-			}
+				try
+				{
+					var titleScreenManager = FindObjectOfType<TitleScreenManager>();
+					var profileManager = titleScreenManager._profileManager;
+					if (profileManager.GetType().Name == "MSStoreProfileManager")
+					{
+						PlayerName = (string)profileManager.GetType().GetProperty("userDisplayName").GetValue(profileManager);
+					}
+					else
+					{
+						PlayerName = StandaloneProfileManager.SharedInstance.currentProfile.profileName;
+					}
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
+					PlayerName = "Player";
+				}
+			});
 		}
 
 		/// create a new network prefab from the network object prefab template.

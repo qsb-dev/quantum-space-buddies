@@ -15,7 +15,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET;
 using QuantumUNET.Components;
-using System.Linq;
 using UnityEngine;
 
 /*
@@ -61,9 +60,7 @@ namespace QSB
 		public static bool IsInMultiplayer => QNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
-		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
-			? GamePlatform.Epic
-			: GamePlatform.Steam;
+		public static GamePlatform Platform { get; private set; }
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
@@ -80,6 +77,23 @@ namespace QSB
 		{
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
+
+			switch (EntitlementsManager.instance._entitlementRetriever.GetType().Name)
+			{
+				case "EpicEntitlementRetriever":
+					Platform = GamePlatform.Epic;
+					break;
+				case "SteamEntitlementRetriever":
+					Platform = GamePlatform.Steam;
+					break;
+				case "MSStoreEntitlementRetriever":
+					Platform = GamePlatform.Xbox;
+					break;
+				case var other:
+					DebugLog.ToConsole($"Cannot get game platform (entitlement retriever name = {other})\nTell a QSB Dev!", MessageType.Error);
+					enabled = false;
+					return;
+			}
 
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 

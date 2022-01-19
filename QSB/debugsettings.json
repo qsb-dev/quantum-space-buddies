@@ -1,5 +1,5 @@
 ﻿{
-  "debugMode": true,
+  "debugMode": false,
   "drawLines": false,
   "showQuantumVisibilityObjects": false,
   "showDebugLabels": false,
