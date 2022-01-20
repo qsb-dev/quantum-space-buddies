@@ -169,8 +169,7 @@ namespace QSB
 
 		private void Update()
 		{
-			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].isPressed &&
-				(Keyboard.current[Key.Q].wasPressedThisFrame || Keyboard.current[Key.D].wasPressedThisFrame))
+			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
 			{
 				DebugSettings.DebugMode = !DebugSettings.DebugMode;
 

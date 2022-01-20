@@ -35,6 +35,11 @@ namespace QSB.Utility
 
 		public void Update()
 		{
+			if (!Keyboard.current[Key.Q].isPressed)
+			{
+				return;
+			}
+
 			/*
 			 * 1 - Warp to first non local player
 			 * 2 - Set time flowing
