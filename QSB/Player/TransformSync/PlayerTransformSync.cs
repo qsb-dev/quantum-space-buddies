@@ -260,7 +260,7 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsInitialized
 				|| ReferenceTransform == null)
 			{

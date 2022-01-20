@@ -10,7 +10,7 @@ namespace QSB.Utility
 	{
 		public static void ToConsole(string message, MessageType type = MessageType.Message)
 		{
-			if (NetworkClient.localPlayer != null && QSBCore.PlayerIdInLogs)
+			if (NetworkClient.localPlayer != null && QSBCore.DebugSettings.PlayerIdInLogs)
 			{
 				message = $"[{NetworkClient.localPlayer.netId}] " + message;
 			}
@@ -37,7 +37,7 @@ namespace QSB.Utility
 
 		public static void DebugWrite(string message, MessageType type = MessageType.Message)
 		{
-			if (QSBCore.DebugMode)
+			if (QSBCore.DebugSettings.DebugMode)
 			{
 				ToConsole(message, type);
 			}

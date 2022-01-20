@@ -31,7 +31,7 @@ namespace QSB.Utility
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-		private void Awake() => enabled = QSBCore.DebugMode;
+		private void Awake() => enabled = QSBCore.DebugSettings.DebugMode;
 
 		public void Update()
 		{

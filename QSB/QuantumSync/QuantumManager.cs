@@ -57,7 +57,7 @@ namespace QSB.QuantumSync
 
 		public void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug)
+			if (!QSBCore.DebugSettings.DrawLines)
 			{
 				return;
 			}
@@ -132,7 +132,7 @@ namespace QSB.QuantumSync
 
 		public static void UpdateFromDebugSetting()
 		{
-			if (QSBCore.ShowQuantumVisibilityObjects)
+			if (QSBCore.DebugSettings.ShowQuantumVisibilityObjects)
 			{
 				if (_debugSphere == null)
 				{

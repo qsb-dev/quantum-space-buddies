@@ -248,7 +248,7 @@ namespace QSB.Menus
 				SetButtonActive(NewGameButton, true);
 			}
 
-			if (QSBCore.SkipTitleScreen)
+			if (QSBCore.DebugSettings.SkipTitleScreen)
 			{
 				Application.runInBackground = true;
 				var titleScreenManager = FindObjectOfType<TitleScreenManager>();

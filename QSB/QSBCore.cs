@@ -46,14 +46,6 @@ namespace QSB
 		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
 		public static int Port { get; private set; }
-		public static bool DebugMode => DebugSettings.DebugMode;
-		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
-		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
-		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
-		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
-		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
-		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
-		public static bool PlayerIdInLogs => DebugMode && DebugSettings.PlayerIdInLogs;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -66,8 +58,7 @@ namespace QSB
 		public static GamePlatform Platform { get; private set; }
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
-
-		private static DebugSettings DebugSettings { get; set; } = new();
+		public static DebugSettings DebugSettings { get; set; } = new();
 
 		public void Awake()
 		{
@@ -170,17 +161,17 @@ namespace QSB
 
 		private void Update()
 		{
-			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].isPressed &&
-				(Keyboard.current[Key.Q].wasPressedThisFrame || Keyboard.current[Key.D].wasPressedThisFrame))
+			if (Keyboard.current[Key.LeftArrow].isPressed && Keyboard.current[Key.RightArrow].isPressed &&
+				(Keyboard.current[Key.LeftArrow].wasPressedThisFrame || Keyboard.current[Key.RightArrow].wasPressedThisFrame))
 			{
 				DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
-				GetComponent<DebugActions>().enabled = DebugMode;
-				GetComponent<DebugGUI>().enabled = DebugMode;
+				GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+				GetComponent<DebugGUI>().enabled = DebugSettings.DrawGui;
 				QuantumManager.UpdateFromDebugSetting();
 				DebugCameraSettings.UpdateFromDebugSetting();
 
-				DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+				DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 			}
 		}
 	}

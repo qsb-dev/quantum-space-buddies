@@ -104,7 +104,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsInitialized
 				|| AttachedRigidbody == null
 				|| ReferenceTransform == null
