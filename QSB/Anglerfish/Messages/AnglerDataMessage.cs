@@ -6,12 +6,15 @@ using UnityEngine;
 
 namespace QSB.Anglerfish.Messages
 {
-	public class AnglerChangeStateMessage : QSBEnumWorldObjectMessage<QSBAngler, AnglerfishController.AnglerState>
+	/// <summary>
+	/// angler state, target transform, and local disturbance pos
+	/// </summary>
+	public class AnglerDataMessage : QSBEnumWorldObjectMessage<QSBAngler, AnglerfishController.AnglerState>
 	{
 		private uint TargetId;
 		private Vector3 LocalDisturbancePos;
 
-		public AnglerChangeStateMessage(QSBAngler qsbAngler)
+		public AnglerDataMessage(QSBAngler qsbAngler)
 		{
 			Value = qsbAngler.AttachedObject._currentState;
 			TargetId = TargetToId(qsbAngler.TargetTransform);
