@@ -53,6 +53,7 @@ namespace QSB
 		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
 		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
 		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
+		public static bool PlayerIdInLogs => DebugMode && DebugSettings.PlayerIdInLogs;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }

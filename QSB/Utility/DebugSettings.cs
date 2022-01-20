@@ -24,5 +24,8 @@ namespace QSB.Utility
 
 		[JsonProperty("greySkybox")]
 		public bool GreySkybox { get; set; }
+
+		[JsonProperty("playerIdInLogs")]
+		public bool PlayerIdInLogs { get; set; }
 	}
 }
