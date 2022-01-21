@@ -1,31 +1,11 @@
 ﻿using OWML.Common;
-using QSB.Anglerfish.Messages;
-using QSB.Anglerfish.WorldObjects;
-using QSB.CampfireSync.Messages;
-using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
 using QSB.ConversationSync.Messages;
-using QSB.JellyfishSync.Messages;
-using QSB.JellyfishSync.WorldObjects;
 using QSB.LogSync.Messages;
 using QSB.Messaging;
-using QSB.MeteorSync.Messages;
-using QSB.MeteorSync.WorldObjects;
-using QSB.OrbSync.Messages;
-using QSB.OrbSync.WorldObjects;
-using QSB.QuantumSync.Messages;
-using QSB.QuantumSync.WorldObjects;
-using QSB.Tools.TranslatorTool.TranslationSync.Messages;
-using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
-using QSB.TornadoSync.Messages;
-using QSB.TornadoSync.WorldObjects;
-using QSB.TriggerSync.Messages;
-using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
-using UnityEngine;
 
 namespace QSB.Player.Messages
 {
@@ -74,7 +54,11 @@ namespace QSB.Player.Messages
 
 				if (QSBWorldSync.AllObjectsReady)
 				{
-					SendWorldObjectInfo();
+					QSBWorldSync.DialogueConditions.ForEach(condition
+						=> new DialogueConditionMessage(condition.Key, condition.Value) { To = From }.Send());
+
+					QSBWorldSync.ShipLogFacts.ForEach(fact
+						=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = From }.Send());
 				}
 			}
 			// if client, send player and client states
@@ -85,97 +69,10 @@ namespace QSB.Player.Messages
 
 			if (QSBWorldSync.AllObjectsReady)
 			{
-				SendAuthorityObjectInfo();
-
 				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
 				{
-					worldObject.SendResyncInfo();
+					worldObject.SendResyncInfo(From);
 				}
-			}
-		}
-
-		private void SendWorldObjectInfo()
-		{
-			QSBWorldSync.DialogueConditions.ForEach(condition
-				=> new DialogueConditionMessage(condition.Key, condition.Value) { To = From }.Send());
-
-			QSBWorldSync.ShipLogFacts.ForEach(fact
-				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = From }.Send());
-
-			foreach (var text in QSBWorldSync.GetWorldObjects<QSBNomaiText>())
-			{
-				text.GetTranslatedIds().ForEach(id =>
-					text.SendMessage(new SetAsTranslatedMessage(id) { To = From }));
-			}
-
-			QSBWorldSync.GetWorldObjects<IQSBQuantumObject>().ForEach(x =>
-			{
-				x.SendMessage(new QuantumAuthorityMessage(x.ControllingPlayer) { To = From });
-
-				if (x is QSBQuantumMoon qsbQuantumMoon)
-				{
-					var moon = qsbQuantumMoon.AttachedObject;
-					var moonBody = moon._moonBody;
-					var stateIndex = moon.GetStateIndex();
-					var orbit = moon._orbits.First(y => y.GetStateIndex() == stateIndex);
-					var orbitBody = orbit.GetAttachedOWRigidbody();
-					var relPos = moonBody.GetWorldCenterOfMass() - orbitBody.GetWorldCenterOfMass();
-					var relVel = moonBody.GetVelocity() - orbitBody.GetVelocity();
-					var onUnitSphere = relPos.normalized;
-					var perpendicular = Vector3.Cross(relPos, Vector3.up).normalized;
-					var orbitAngle = (int)OWMath.WrapAngle(OWMath.Angle(perpendicular, relVel, relPos));
-
-					new MoonStateChangeMessage(stateIndex, onUnitSphere, orbitAngle) { To = From }.Send();
-				}
-			});
-
-			QSBWorldSync.GetWorldObjects<QSBCampfire>().ForEach(campfire
-				=> campfire.SendMessage(new CampfireStateMessage(campfire.GetState()) { To = From }));
-
-			QSBWorldSync.GetWorldObjects<QSBFragment>().ForEach(fragment
-				=> fragment.SendMessage(new FragmentResyncMessage(fragment) { To = From }));
-
-			QSBWorldSync.GetWorldObjects<QSBTornado>().ForEach(tornado
-				=> tornado.SendMessage(new TornadoFormStateMessage(tornado.FormState) { To = From }));
-
-			QSBWorldSync.GetWorldObjects<IQSBTrigger>().ForEach(trigger
-				=> trigger.SendMessage(new TriggerResyncMessage(trigger.Occupants) { To = From }));
-		}
-
-		/// <summary>
-		/// send info for objects we have authority over
-		/// </summary>
-		private void SendAuthorityObjectInfo()
-		{
-			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
-			{
-				if (!qsbOrb.TransformSync.hasAuthority)
-				{
-					continue;
-				}
-
-				qsbOrb.SendMessage(new OrbDragMessage(qsbOrb.AttachedObject._isBeingDragged) { To = From });
-				qsbOrb.SendMessage(new OrbSlotMessage(qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot)) { To = From });
-			}
-
-			foreach (var qsbJellyfish in QSBWorldSync.GetWorldObjects<QSBJellyfish>())
-			{
-				if (!qsbJellyfish.TransformSync.hasAuthority)
-				{
-					continue;
-				}
-
-				qsbJellyfish.SendMessage(new JellyfishRisingMessage(qsbJellyfish.AttachedObject._isRising));
-			}
-
-			foreach (var qsbAngler in QSBWorldSync.GetWorldObjects<QSBAngler>())
-			{
-				if (!qsbAngler.TransformSync.hasAuthority)
-				{
-					continue;
-				}
-
-				qsbAngler.SendMessage(new AnglerDataMessage(qsbAngler));
 			}
 		}
 	}

@@ -17,7 +17,7 @@ namespace QSB.WorldSync
 		public virtual string ReturnLabel() => LogName;
 		public virtual void DisplayLines() { }
 
-		public virtual void SendResyncInfo() { }
+		public virtual void SendResyncInfo(uint to) { }
 
 		/// indicates that this won't become ready immediately
 		protected void StartDelayedReady() => QSBWorldSync._numObjectsReadying++;
