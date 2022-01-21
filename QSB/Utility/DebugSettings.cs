@@ -4,6 +4,12 @@ namespace QSB.Utility
 {
 	public class DebugSettings
 	{
+		[JsonProperty("useKcpTransport")]
+		public bool UseKcpTransport { get; set; }
+
+		[JsonProperty("overrideAppId")]
+		public int OverrideAppId { get; set; }
+
 		[JsonProperty("debugMode")]
 		public bool DebugMode { get; set; }
 
