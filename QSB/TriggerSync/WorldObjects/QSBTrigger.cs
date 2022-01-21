@@ -49,6 +49,14 @@ namespace QSB.TriggerSync.WorldObjects
 			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		}
 
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				((IQSBTrigger)this).SendMessage(new TriggerResyncMessage(Occupants) { To = to });
+			}
+		}
+
 		protected void OnEnterEvent(GameObject hitObj)
 		{
 			if (hitObj.CompareTag(CompareTag))

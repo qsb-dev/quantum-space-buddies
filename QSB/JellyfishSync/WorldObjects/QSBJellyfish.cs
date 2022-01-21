@@ -1,5 +1,7 @@
 ﻿using Mirror;
+using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -9,12 +11,9 @@ namespace QSB.JellyfishSync.WorldObjects
 	public class QSBJellyfish : WorldObject<JellyfishController>
 	{
 		public JellyfishTransformSync TransformSync;
-		private AlignWithTargetBody _alignWithTargetBody;
 
 		public override void Init()
 		{
-			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
-
 			if (QSBCore.IsHost)
 			{
 				Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab).SpawnWithServerAuthority();
@@ -29,6 +28,14 @@ namespace QSB.JellyfishSync.WorldObjects
 			if (QSBCore.IsHost)
 			{
 				NetworkServer.Destroy(TransformSync.gameObject);
+			}
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (TransformSync.hasAuthority)
+			{
+				this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
 			}
 		}
 
