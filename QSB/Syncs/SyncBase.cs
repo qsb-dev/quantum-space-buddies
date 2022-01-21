@@ -27,7 +27,7 @@ namespace QSB.Syncs
 				{
 					DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
 						+ "this really should not be happening!\n"
-						+ $"{Environment.StackTrace}",
+						+ Environment.StackTrace,
 						MessageType.Error);
 				}
 
@@ -173,8 +173,7 @@ namespace QSB.Syncs
 
 			if (AttachedTransform == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
-				IsInitialized = false;
+				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
 				return;
 			}
 
@@ -189,14 +188,14 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-			}
-
 			if (ReferenceTransform == Locator.GetRootTransform())
 			{
 				return;
+			}
+
+			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			{
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 			}
 
 			if (UseInterpolation)
