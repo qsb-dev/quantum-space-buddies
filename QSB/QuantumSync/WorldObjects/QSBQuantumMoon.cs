@@ -11,6 +11,8 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override void SendResyncInfo(uint to)
 		{
+			base.SendResyncInfo(to);
+
 			if (QSBCore.IsHost)
 			{
 				var moon = AttachedObject;
