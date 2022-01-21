@@ -12,5 +12,7 @@ namespace QSB.WorldSync
 		bool ShouldDisplayDebug();
 		string ReturnLabel();
 		void DisplayLines();
+
+		void SendResyncInfo();
 	}
 }

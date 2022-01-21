@@ -86,6 +86,11 @@ namespace QSB.Player.Messages
 			if (QSBWorldSync.AllObjectsReady)
 			{
 				SendAuthorityObjectInfo();
+
+				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
+				{
+					worldObject.SendResyncInfo();
+				}
 			}
 		}
 
