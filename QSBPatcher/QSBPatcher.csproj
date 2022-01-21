@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Update="SteamAPI\steam_api64.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="copy /y &quot;$(TargetPath)&quot; &quot;$(OwmlDir)\Mods\QSB\$(TargetName).dll&quot;&#xA;md &quot;$(OwmlDir)\Mods\QSB\SteamAPI&quot;&#xA;copy /y &quot;$(ProjectDir)\SteamAPI&quot; &quot;$(OwmlDir)\Mods\QSB\SteamAPI&quot;" />
+	</Target>
+</Project>
