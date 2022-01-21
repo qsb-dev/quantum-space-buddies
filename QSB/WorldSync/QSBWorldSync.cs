@@ -26,14 +26,14 @@ namespace QSB.WorldSync
 
 		public static void BuildWorldObjects(OWScene scene)
 		{
-			GameInit();
-
 			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
 				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => BuildWorldObjects(scene));
 				return;
 			}
+
+			GameInit();
 
 			DoBuild(scene);
 		}
@@ -57,7 +57,7 @@ namespace QSB.WorldSync
 				}
 				catch (Exception ex)
 				{
-					DebugLog.ToConsole($"Exception - Exception when trying to build WorldObjects of manager {manager.GetType().Name} : {ex.Message} Stacktrace :\r\n{ex.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Exception - Exception when trying to build WorldObjects of manager {manager.GetType().Name} : {ex}", MessageType.Error);
 				}
 			}
 
@@ -78,6 +78,11 @@ namespace QSB.WorldSync
 
 		public static void RemoveWorldObjects()
 		{
+			if (!AllObjectsReady)
+			{
+				return;
+			}
+
 			GameReset();
 
 			AllObjectsAdded = false;
@@ -91,7 +96,7 @@ namespace QSB.WorldSync
 				}
 				catch (Exception e)
 				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. {e}", MessageType.Error);
 				}
 			}
 

@@ -267,7 +267,7 @@ namespace QSB.Menus
 
 				if (QSBCore.IsHost)
 				{
-					SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
+					QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 					SetButtonActive(NewGameButton, true);
 				}
 				else
@@ -279,7 +279,7 @@ namespace QSB.Menus
 			else
 			{
 				SetButtonActive(ClientButton, true);
-				SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
+				QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 				SetButtonActive(NewGameButton, true);
 			}
 
@@ -389,7 +389,7 @@ namespace QSB.Menus
 			{
 				KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
 				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
-				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic)",
+				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic/Xbox)",
 				KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
 				KickReason.InEye => "Server refused connection as game has progressed too far.",
 				KickReason.None => "Kicked from server. No reason given.",
@@ -433,7 +433,7 @@ namespace QSB.Menus
 			SetButtonActive(ClientButton, true);
 			SetButtonActive(QuitButton, true);
 			SetButtonActive(HostButton, true);
-			SetButtonActive(ResumeGameButton, StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1);
+			SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 			SetButtonActive(NewGameButton, true);
 		}
 	}

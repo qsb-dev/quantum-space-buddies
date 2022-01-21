@@ -1,21 +1,23 @@
 ﻿using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
-using OWML.ModHelper.Input;
 using QSB.EyeOfTheUniverse.GalaxyMap;
 using QSB.EyeOfTheUniverse.MaskSync;
 using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.Player;
+using QSB.QuantumSync;
 using QSB.RespawnSync;
 using QSB.SatelliteSync;
 using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /*
 	Copyright (C) 2020 - 2021
@@ -59,13 +61,11 @@ namespace QSB
 		public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
-		public static GamePlatform Platform => typeof(Achievements).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever")
-			? GamePlatform.Epic
-			: GamePlatform.Steam;
+		public static GamePlatform Platform { get; private set; }
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
-		private static DebugSettings DebugSettings { get; set; } = new DebugSettings();
+		private static DebugSettings DebugSettings { get; set; } = new();
 
 		public void Awake()
 		{
@@ -79,6 +79,23 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+			switch (EntitlementsManager.instance._entitlementRetriever.GetType().Name)
+			{
+				case "EpicEntitlementRetriever":
+					Platform = GamePlatform.Epic;
+					break;
+				case "SteamEntitlementRetriever":
+					Platform = GamePlatform.Steam;
+					break;
+				case "MSStoreEntitlementRetriever":
+					Platform = GamePlatform.Xbox;
+					break;
+				case var other:
+					DebugLog.ToConsole($"Cannot get game platform (entitlement retriever name = {other})\nTell a QSB Dev!", MessageType.Error);
+					enabled = false;
+					return;
+			}
+
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
@@ -87,7 +104,7 @@ namespace QSB
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
-			DebugSettings = ModHelper.Storage.Load<DebugSettings>("debugsettings.json");
+			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json");
 
 			if (DebugSettings == null)
 			{
@@ -138,6 +155,21 @@ namespace QSB
 		public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+		}
+
+		private void Update()
+		{
+			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
+			{
+				DebugSettings.DebugMode = !DebugSettings.DebugMode;
+
+				GetComponent<DebugActions>().enabled = DebugMode;
+				GetComponent<DebugGUI>().enabled = DebugMode;
+				QuantumManager.UpdateFromDebugSetting();
+				DebugCameraSettings.UpdateFromDebugSetting();
+
+				DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+			}
 		}
 	}
 }

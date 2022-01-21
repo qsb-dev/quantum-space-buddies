@@ -1,9 +1,13 @@
 ﻿using OWML.Common;
+using QSB.Anglerfish.Messages;
+using QSB.Anglerfish.WorldObjects;
 using QSB.CampfireSync.Messages;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
 using QSB.ConversationSync.Messages;
+using QSB.JellyfishSync.Messages;
+using QSB.JellyfishSync.WorldObjects;
 using QSB.LogSync.Messages;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
@@ -147,6 +151,26 @@ namespace QSB.Player.Messages
 
 				qsbOrb.SendMessage(new OrbDragMessage(qsbOrb.AttachedObject._isBeingDragged) { To = From });
 				qsbOrb.SendMessage(new OrbSlotMessage(qsbOrb.AttachedObject._slots.IndexOf(qsbOrb.AttachedObject._occupiedSlot)) { To = From });
+			}
+
+			foreach (var qsbJellyfish in QSBWorldSync.GetWorldObjects<QSBJellyfish>())
+			{
+				if (!qsbJellyfish.TransformSync.hasAuthority)
+				{
+					continue;
+				}
+
+				qsbJellyfish.SendMessage(new JellyfishRisingMessage(qsbJellyfish.AttachedObject._isRising));
+			}
+
+			foreach (var qsbAngler in QSBWorldSync.GetWorldObjects<QSBAngler>())
+			{
+				if (!qsbAngler.TransformSync.hasAuthority)
+				{
+					continue;
+				}
+
+				qsbAngler.SendMessage(new AnglerDataMessage(qsbAngler));
 			}
 		}
 	}

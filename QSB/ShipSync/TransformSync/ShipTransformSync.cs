@@ -15,9 +15,9 @@ namespace QSB.ShipSync.TransformSync
 		protected override bool IsReady
 			=> Locator.GetShipBody() != null;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
-			base.Start();
+			base.OnStartClient();
 			LocalInstance = this;
 		}
 
@@ -31,8 +31,7 @@ namespace QSB.ShipSync.TransformSync
 		protected override void ApplyToAttached()
 		{
 			ApplyToSector();
-
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
+			if (!ReferenceTransform)
 			{
 				return;
 			}

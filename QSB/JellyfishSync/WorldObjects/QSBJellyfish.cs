@@ -32,24 +32,15 @@ namespace QSB.JellyfishSync.WorldObjects
 			}
 		}
 
-		public bool IsRising
+		public void SetIsRising(bool value)
 		{
-			get => AttachedObject._isRising;
-			set
+			if (AttachedObject._isRising == value)
 			{
-				if (AttachedObject._isRising == value)
-				{
-					return;
-				}
-
-				AttachedObject._isRising = value;
-				AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
+				return;
 			}
-		}
 
-		public bool Align
-		{
-			set => _alignWithTargetBody.enabled = value;
+			AttachedObject._isRising = value;
+			AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
 		}
 	}
 }

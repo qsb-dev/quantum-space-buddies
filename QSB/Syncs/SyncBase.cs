@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Player;
-using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -26,9 +25,9 @@ namespace QSB.Syncs
 			{
 				if (_player == null)
 				{
-					DebugLog.ToConsole("Error - trying to get SyncBase.Player before Start has been called! "
+					DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
 						+ "this really should not be happening!\n"
-						+ $"{Environment.StackTrace}",
+						+ Environment.StackTrace,
 						MessageType.Error);
 				}
 
@@ -54,7 +53,12 @@ namespace QSB.Syncs
 
 				if (IsPlayerObject)
 				{
-					if (!Player.IsReady && this is not PlayerTransformSync)
+					if (_player == null)
+					{
+						return false;
+					}
+
+					if (!isLocalPlayer && !Player.IsReady)
 					{
 						return false;
 					}
@@ -66,7 +70,6 @@ namespace QSB.Syncs
 
 		protected abstract bool IsReady { get; }
 		protected abstract bool UseInterpolation { get; }
-		protected virtual bool AllowDisabledAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
 		protected virtual bool IsPlayerObject => false;
 		protected virtual bool OnlyApplyOnDeserialize => false;
@@ -88,7 +91,7 @@ namespace QSB.Syncs
 		protected abstract void GetFromAttached();
 		protected abstract void ApplyToAttached();
 
-		public virtual void Start()
+		public override void OnStartClient()
 		{
 			if (IsPlayerObject)
 			{
@@ -103,7 +106,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy()
+		public override void OnStopClient()
 		{
 			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
 			{
@@ -169,12 +172,11 @@ namespace QSB.Syncs
 
 			if (AttachedTransform == null)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
-				IsInitialized = false;
+				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
 				return;
 			}
 
-			if (!AttachedTransform.gameObject.activeInHierarchy && !AllowDisabledAttachedObject)
+			if (!AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
@@ -185,14 +187,14 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-			}
-
 			if (ReferenceTransform == Locator.GetRootTransform())
 			{
 				return;
+			}
+
+			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			{
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 			}
 
 			if (UseInterpolation)
