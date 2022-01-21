@@ -11,6 +11,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 	{
 		protected override float DistanceLeeway => 10f;
 		protected override bool UseInterpolation => true;
+		protected override bool AllowDisabledAttachedObject => true;
 		protected override bool IsPlayerObject => true;
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
@@ -60,6 +61,37 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			Player.ProbeBody = body.gameObject;
 
 			return body;
+		}
+
+		protected override void GetFromAttached()
+		{
+			if (AttachedTransform.gameObject.activeInHierarchy)
+			{
+				base.GetFromAttached();
+				return;
+			}
+
+			var probeOWRigidbody = Locator.GetProbe().GetOWRigidbody();
+			if (probeOWRigidbody == null)
+			{
+				DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
+			}
+
+			var probeLauncher = Player.LocalProbeLauncher;
+			// TODO : make this sync to the *active* probe launcher's _launcherTransform
+			var launcherTransform = probeLauncher._launcherTransform;
+			probeOWRigidbody.SetPosition(launcherTransform.position);
+			probeOWRigidbody.SetRotation(launcherTransform.rotation);
+
+			base.GetFromAttached();
+
+			var currentReferenceSector = ReferenceSector;
+			var playerReferenceSector = Player.TransformSync.ReferenceSector;
+
+			if (currentReferenceSector != playerReferenceSector)
+			{
+				SetReferenceSector(playerReferenceSector);
+			}
 		}
 
 		protected override bool IsReady => AttachedTransform != null || Locator.GetProbe() != null;

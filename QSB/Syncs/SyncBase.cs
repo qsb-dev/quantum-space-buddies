@@ -70,6 +70,7 @@ namespace QSB.Syncs
 
 		protected abstract bool IsReady { get; }
 		protected abstract bool UseInterpolation { get; }
+		protected virtual bool AllowDisabledAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
 		protected virtual bool IsPlayerObject => false;
 		protected virtual bool OnlyApplyOnDeserialize => false;
@@ -176,7 +177,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (!AttachedTransform.gameObject.activeInHierarchy)
+			if (!AttachedTransform.gameObject.activeInHierarchy && !AllowDisabledAttachedObject)
 			{
 				return;
 			}
