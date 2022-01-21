@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.Utility;
+﻿using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Transforms
@@ -12,36 +11,22 @@ namespace QSB.Syncs.Sectored.Transforms
 		protected override Transform InitAttachedTransform()
 			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
-		{
-			base.Deserialize(reader, initialState);
-
-			if (transform.position == Vector3.zero)
-			{
-			}
-		}
-
 		protected override void GetFromAttached()
 		{
 			GetFromSector();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
-			if (ReferenceTransform != null)
-			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-			}
-			else
-			{
-				transform.position = Vector3.zero;
-				transform.rotation = Quaternion.identity;
-			}
+			transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+			transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 		}
 
 		protected override void ApplyToAttached()
 		{
 			ApplyToSector();
-
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
+			if (!ReferenceTransform)
 			{
 				return;
 			}

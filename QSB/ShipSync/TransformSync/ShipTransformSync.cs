@@ -31,8 +31,7 @@ namespace QSB.ShipSync.TransformSync
 		protected override void ApplyToAttached()
 		{
 			ApplyToSector();
-
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
+			if (!ReferenceTransform)
 			{
 				return;
 			}
