@@ -1,5 +1,7 @@
 ﻿{
-  "debugMode": false,
+  "useKcpTransport": false,
+  "overrideAppId": -1,
+  "debugMode": true,
   "drawLines": false,
   "showQuantumVisibilityObjects": false,
   "showDebugLabels": false,

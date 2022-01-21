@@ -179,7 +179,8 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			IPPopup = MenuApi.MakeInputFieldPopup("Steam ID", "Steam ID", "Connect", "Cancel");
+			var text = QSBCore.UseKcpTransport ? "Public IP Address" : "Steam ID";
+			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 			IPPopup.OnPopupValidate += Validate;
 
@@ -333,6 +334,11 @@ namespace QSB.Menus
 				? "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu."
 				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
 			DisconnectPopup._labelText.text = popupText;
+
+			if (QSBCore.UseKcpTransport)
+			{
+				return;
+			}
 
 			var steamId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
 

@@ -45,6 +45,8 @@ namespace QSB
 		public static IModHelper Helper { get; private set; }
 		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
+		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
+		public static int OverrideAppId => DebugSettings.OverrideAppId;
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
