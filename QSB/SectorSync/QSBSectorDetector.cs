@@ -54,6 +54,13 @@ namespace QSB.SectorSync
 
 		private void AddSector(Sector sector)
 		{
+			if (!sector)
+			{
+				// wtf
+				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+				return;
+			}
+
 			var worldObject = sector.GetWorldObject<QSBSector>();
 			if (worldObject == null)
 			{
@@ -72,6 +79,13 @@ namespace QSB.SectorSync
 
 		private void RemoveSector(Sector sector)
 		{
+			if (!sector)
+			{
+				// wtf
+				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+				return;
+			}
+
 			var worldObject = sector.GetWorldObject<QSBSector>();
 			if (worldObject == null)
 			{
