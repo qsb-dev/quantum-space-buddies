@@ -35,14 +35,14 @@ namespace QSB.Player
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
-		public bool Visible => IsLocalPlayer || DitheringAnimator && DitheringAnimator._visible;
+		public bool Visible => IsLocalPlayer || _ditheringAnimator && _ditheringAnimator._visible;
 		public bool IsReady { get; set; }
 		public bool IsInMoon { get; set; }
 		public bool IsInShrine { get; set; }
 		public bool IsInEyeShuttle { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
-		public DitheringAnimator DitheringAnimator { get; set; }
+		internal DitheringAnimator _ditheringAnimator;
 
 		public bool IsLocalPlayer => TransformSync.isLocalPlayer;
 
@@ -258,6 +258,29 @@ namespace QSB.Player
 			}
 
 			return tool;
+		}
+
+		public void SetVisible(bool visible, float seconds = 0)
+		{
+			if (IsLocalPlayer)
+			{
+				return;
+			}
+
+			if (!_ditheringAnimator)
+			{
+				DebugLog.ToConsole($"Warning - {PlayerId}.DitheringAnimator is null!", MessageType.Warning);
+				return;
+			}
+
+			if (seconds == 0)
+			{
+				_ditheringAnimator.SetVisibleImmediate(visible);
+			}
+			else
+			{
+				_ditheringAnimator.SetVisible(visible, 1 / seconds);
+			}
 		}
 	}
 }

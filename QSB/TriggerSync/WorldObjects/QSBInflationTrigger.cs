@@ -41,7 +41,7 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 			else
 			{
-				player.DitheringAnimator.SetVisible(false, 3);
+				player.SetVisible(false, .3f);
 			}
 
 			if (Occupants.Count == QSBPlayerManager.PlayerList.Count)
