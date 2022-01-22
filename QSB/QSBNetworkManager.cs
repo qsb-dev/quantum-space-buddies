@@ -63,16 +63,16 @@ namespace QSB
 
 			gameObject.SetActive(false);
 
-			if (QSBCore.UseKcpTransport)
+			if (QSBCore.DebugSettings.UseKcpTransport)
 			{
 				transport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			}
 			else
 			{
 				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
-				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
+				fizzy.SteamAppID = QSBCore.DebugSettings.OverrideAppId == -1
 					? "753640"
-					: $"{QSBCore.OverrideAppId}";
+					: $"{QSBCore.DebugSettings.OverrideAppId}";
 				transport = fizzy;
 			}
 
