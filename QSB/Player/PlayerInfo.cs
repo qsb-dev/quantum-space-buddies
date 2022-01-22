@@ -35,7 +35,7 @@ namespace QSB.Player
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
-		public bool Visible => IsLocalPlayer || _ditheringAnimator && _ditheringAnimator._visible;
+		public bool Visible => IsLocalPlayer || !_ditheringAnimator || _ditheringAnimator._visible;
 		public bool IsReady { get; set; }
 		public bool IsInMoon { get; set; }
 		public bool IsInShrine { get; set; }
