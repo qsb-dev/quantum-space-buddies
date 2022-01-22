@@ -32,11 +32,11 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 			}
 
 			if ((Locator.GetProbe() != null && Locator.GetProbe().IsAnchored())
-				|| QSBPlayerManager.PlayerList.Where(x => x != QSBPlayerManager.LocalPlayer).Any(x => x.Probe != null && x.Probe.IsAnchored()))
+				|| QSBPlayerManager.PlayerList.Where(x => !x.IsLocalPlayer).Any(x => x.Probe != null && x.Probe.IsAnchored()))
 			{
 				foreach (var player in QSBPlayerManager.PlayerList)
 				{
-					if (player == QSBPlayerManager.LocalPlayer
+					if (player.IsLocalPlayer
 						&& Locator.GetProbe() != null
 						&& Locator.GetProbe().IsAnchored())
 					{

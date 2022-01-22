@@ -55,7 +55,7 @@ namespace QSB.Utility
 
 			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
 			{
-				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => x != QSBPlayerManager.LocalPlayer);
+				var otherPlayer = QSBPlayerManager.PlayerList.FirstOrDefault(x => !x.IsLocalPlayer);
 				if (otherPlayer != null)
 				{
 					new DebugRequestTeleportInfoMessage(otherPlayer.PlayerId).Send();

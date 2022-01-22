@@ -21,7 +21,7 @@ namespace QSB.TriggerSync.WorldObjects
 				return;
 			}
 
-			if (player == QSBPlayerManager.LocalPlayer)
+			if (player.IsLocalPlayer)
 			{
 				AttachedObject.OnEntry -= OnEnterEvent;
 
