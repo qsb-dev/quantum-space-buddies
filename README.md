@@ -202,4 +202,4 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 
 ## Help / Discuss development / Whatever
 
-[Join the Outer Wilds Modding Discord](https://discord.gg/9vE5aHxcF9), we have a nice `#mod-support` channel for any mod help, and a other channels to discuss modding!
+[Join the Outer Wilds Modding Discord](https://discord.gg/9vE5aHxcF9), we have a nice `#qsb-bugs-and-questions` channel for support, and other channels to discuss modding!
