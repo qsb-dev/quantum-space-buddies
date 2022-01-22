@@ -10,7 +10,7 @@ using UnityEngine;
 namespace QSB.Syncs
 {
 	/*
-	 * Rewrite number : 10
+	 * Rewrite number : 11
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
@@ -300,10 +300,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (AttachedTransform)
-			{
-				DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
-			}
+			DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
 		}
 	}
 }
