@@ -282,7 +282,7 @@ namespace QSB.Player.TransformSync
 		}
 
 		protected override bool CheckReady() => base.CheckReady()
-			&& (AttachedTransform || Locator.GetPlayerTransform());
+			&& (Locator.GetPlayerTransform() || AttachedTransform);
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

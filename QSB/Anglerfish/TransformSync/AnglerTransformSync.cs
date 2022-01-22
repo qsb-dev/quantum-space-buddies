@@ -85,7 +85,7 @@ namespace QSB.Anglerfish.TransformSync
 			Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition()
 				+ AttachedRigidbody.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
 
-			if (_qsbAngler.TargetTransform != null)
+			if (_qsbAngler.TargetTransform)
 			{
 				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, AttachedRigidbody.GetPosition(), Color.gray);
 				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, _qsbAngler.TargetTransform.position + _qsbAngler.TargetVelocity, Color.green);

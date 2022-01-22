@@ -85,7 +85,7 @@ namespace QSB.Syncs
 				return false;
 			}
 
-			if (!AllowDisabledAttachedObject && !AttachedTransform.gameObject.activeInHierarchy)
+			if (!AllowInactiveAttachedObject && !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return false;
 			}
@@ -105,7 +105,7 @@ namespace QSB.Syncs
 		}
 
 		protected abstract bool UseInterpolation { get; }
-		protected virtual bool AllowDisabledAttachedObject => false;
+		protected virtual bool AllowInactiveAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
 		protected virtual bool IsPlayerObject => false;
 		protected virtual bool OnlyApplyOnDeserialize => false;
@@ -178,6 +178,7 @@ namespace QSB.Syncs
 			AttachedTransform = null;
 			ReferenceTransform = null;
 			IsInitialized = false;
+			IsValid = false;
 		}
 
 		private bool _shouldApply;
@@ -200,7 +201,6 @@ namespace QSB.Syncs
 			else if (IsInitialized && !CheckReady())
 			{
 				Uninit();
-				IsValid = false;
 				base.Update();
 				return;
 			}
