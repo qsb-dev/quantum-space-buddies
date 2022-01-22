@@ -64,17 +64,6 @@ namespace QSB.Player.TransformSync
 			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
-		protected override void Init()
-		{
-			base.Init();
-
-			if (isLocalPlayer)
-			{
-				Player.IsReady = true;
-				new PlayerReadyMessage(true).Send();
-			}
-		}
-
 		protected override void Uninit()
 		{
 			base.Uninit();
@@ -111,6 +100,9 @@ namespace QSB.Player.TransformSync
 			_visibleRoastingSystem = pivot.parent.parent;
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
+
+			Player.IsReady = true;
+			new PlayerReadyMessage(true).Send();
 
 			new RequestStateResyncMessage().Send();
 
