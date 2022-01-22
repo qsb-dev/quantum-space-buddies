@@ -11,7 +11,6 @@ namespace QSB.SectorSync
 {
 	public class QSBSectorDetector : MonoBehaviour
 	{
-		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> SectorList = new();
 
 		private SectorDetector _sectorDetector;
@@ -19,9 +18,14 @@ namespace QSB.SectorSync
 
 		public void Init(SectorDetector detector, TargetType type)
 		{
-			if (detector == null)
+			if (_sectorDetector)
 			{
-				DebugLog.ToConsole($"Error - Trying to init QSBSectorDetector with null SectorDetector.", MessageType.Error);
+				return;
+			}
+
+			if (!detector)
+			{
+				DebugLog.ToConsole("Error - Trying to init QSBSectorDetector with null SectorDetector!", MessageType.Error);
 				return;
 			}
 
@@ -32,12 +36,11 @@ namespace QSB.SectorSync
 			_sectorDetector._sectorList.ForEach(AddSector);
 
 			_targetType = type;
-			IsReady = true;
 		}
 
 		public void Uninit()
 		{
-			if (!IsReady)
+			if (!_sectorDetector)
 			{
 				return;
 			}
@@ -47,8 +50,6 @@ namespace QSB.SectorSync
 			_sectorDetector = null;
 
 			SectorList.Clear();
-			
-			IsReady = false;
 		}
 
 		private void AddSector(Sector sector)
@@ -140,12 +141,9 @@ namespace QSB.SectorSync
 		{
 			// TODO : make this work for other stuff, not just shaped triggervolumes
 			var trigger = sector.AttachedObject.GetTriggerVolume();
-			if (trigger != null)
+			if (trigger && trigger.GetShape())
 			{
-				if (trigger.GetShape() != null)
-				{
-					return trigger.GetShape().CalcWorldBounds().radius;
-				}
+				return trigger.GetShape().CalcWorldBounds().radius;
 			}
 
 			return 0f;
@@ -154,7 +152,7 @@ namespace QSB.SectorSync
 		private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
 		{
 			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
-			if (sectorRigidBody != null && rigidbody != null)
+			if (sectorRigidBody && rigidbody)
 			{
 				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
 				return relativeVelocity.sqrMagnitude;
