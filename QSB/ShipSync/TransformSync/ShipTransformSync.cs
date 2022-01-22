@@ -23,7 +23,7 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override OWRigidbody InitAttachedRigidbody()
 		{
-			SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship);
+			SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship);
 			return Locator.GetShipBody();
 		}
 

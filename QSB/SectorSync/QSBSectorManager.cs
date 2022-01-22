@@ -51,7 +51,7 @@ namespace QSB.SectorSync
 				if (sync.hasAuthority
 					&& sync.AttachedTransform.gameObject.activeInHierarchy
 					&& sync.IsInitialized
-					&& sync.SectorSync.IsReady)
+					&& sync.SectorDetector.IsReady)
 				{
 					UpdateReferenceSector(sync);
 				}
@@ -92,7 +92,7 @@ namespace QSB.SectorSync
 
 		private static void UpdateReferenceSector(BaseSectoredSync transformSync)
 		{
-			var closestSector = transformSync.SectorSync.GetClosestSector();
+			var closestSector = transformSync.SectorDetector.GetClosestSector();
 			if (closestSector == null)
 			{
 				return;

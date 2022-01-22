@@ -10,13 +10,13 @@ namespace QSB.Syncs.Sectored
 		protected override bool AllowNullReferenceTransform => true;
 
 		public QSBSector ReferenceSector { get; private set; }
-		public SectorSync.SectorSync SectorSync { get; private set; }
+		public QSBSectorDetector SectorDetector { get; private set; }
 
 		private int _sectorId = -1;
 
 		public override void OnStartClient()
 		{
-			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
+			SectorDetector = gameObject.AddComponent<QSBSectorDetector>();
 			QSBSectorManager.Instance.TransformSyncs.Add(this);
 			base.OnStartClient();
 		}
@@ -25,11 +25,14 @@ namespace QSB.Syncs.Sectored
 		{
 			base.OnStopClient();
 			QSBSectorManager.Instance.TransformSyncs.Remove(this);
-			Destroy(SectorSync);
+			Destroy(SectorDetector);
 		}
 
 		protected override void Uninit()
 		{
+			base.Uninit();
+
+			SectorDetector.Uninit();
 			SetReferenceSector(null);
 		}
 

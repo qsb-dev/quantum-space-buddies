@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.SectorSync
 {
-	public class SectorSync : MonoBehaviour
+	public class QSBSectorDetector : MonoBehaviour
 	{
 		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> SectorList = new();
@@ -17,28 +17,11 @@ namespace QSB.SectorSync
 		private SectorDetector _sectorDetector;
 		private TargetType _targetType;
 
-		private void OnDestroy()
-		{
-			if (_sectorDetector != null)
-			{
-				_sectorDetector.OnEnterSector -= AddSector;
-				_sectorDetector.OnExitSector -= RemoveSector;
-			}
-
-			IsReady = false;
-		}
-
 		public void Init(SectorDetector detector, TargetType type)
 		{
-			if (_sectorDetector != null)
-			{
-				_sectorDetector.OnEnterSector -= AddSector;
-				_sectorDetector.OnExitSector -= RemoveSector;
-			}
-
 			if (detector == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to init SectorSync with null SectorDetector.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Trying to init QSBSectorDetector with null SectorDetector.", MessageType.Error);
 				return;
 			}
 
@@ -46,11 +29,26 @@ namespace QSB.SectorSync
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
 
-			SectorList.Clear();
 			_sectorDetector._sectorList.ForEach(AddSector);
 
 			_targetType = type;
 			IsReady = true;
+		}
+
+		public void Uninit()
+		{
+			if (!IsReady)
+			{
+				return;
+			}
+
+			_sectorDetector.OnEnterSector -= AddSector;
+			_sectorDetector.OnExitSector -= RemoveSector;
+			_sectorDetector = null;
+
+			SectorList.Clear();
+			
+			IsReady = false;
 		}
 
 		private void AddSector(Sector sector)

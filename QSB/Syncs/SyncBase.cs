@@ -83,9 +83,9 @@ namespace QSB.Syncs
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
-		public bool IsInitialized { get; private set; }
 		protected Vector3 SmoothPosition { get; private set; }
 		protected Quaternion SmoothRotation { get; private set; }
+		public bool IsInitialized { get; private set; }
 
 		protected abstract Transform InitAttachedTransform();
 		protected abstract void GetFromAttached();

@@ -88,7 +88,7 @@ namespace QSB.Player.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
+			SectorDetector.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
 
 			// player body
 			var player = Locator.GetPlayerTransform();

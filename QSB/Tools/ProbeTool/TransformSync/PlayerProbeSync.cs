@@ -20,7 +20,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe);
+			SectorDetector.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe);
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
