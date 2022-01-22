@@ -7,7 +7,7 @@ namespace QSB.Syncs.Sectored
 {
 	public abstract class BaseSectoredSync : SyncBase
 	{
-		protected override bool AllowNullReferenceTransform => true;
+		protected sealed override bool AllowNullReferenceTransform => true;
 
 		public QSBSector ReferenceSector { get; private set; }
 		public QSBSectorDetector SectorDetector { get; private set; }

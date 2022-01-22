@@ -217,7 +217,7 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 			}
 
-			if (UseInterpolation)
+			if (!hasAuthority && UseInterpolation)
 			{
 				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
 				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
@@ -258,15 +258,19 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (hasAuthority)
+			if (!hasAuthority && UseInterpolation)
 			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-			}
-			else if (UseInterpolation)
-			{
-				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				if (IsPlayerObject)
+				{
+					AttachedTransform.SetParent(ReferenceTransform, true);
+					SmoothPosition = AttachedTransform.localPosition;
+					SmoothRotation = AttachedTransform.localRotation;
+				}
+				else
+				{
+					SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+					SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				}
 			}
 		}
 
