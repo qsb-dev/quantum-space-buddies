@@ -28,9 +28,8 @@ namespace QSB.Syncs.Sectored
 			Destroy(SectorSync);
 		}
 
-		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		protected override void Uninit()
 		{
-			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
 			SetReferenceSector(null);
 		}
 

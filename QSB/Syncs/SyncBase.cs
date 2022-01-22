@@ -33,7 +33,6 @@ namespace QSB.Syncs
 
 				return _player;
 			}
-			private set => _player = value;
 		}
 		private PlayerInfo _player;
 
@@ -58,7 +57,7 @@ namespace QSB.Syncs
 						return false;
 					}
 
-					if (!isLocalPlayer && !Player.IsReady)
+					if (!isLocalPlayer && !_player.IsReady)
 					{
 						return false;
 					}
@@ -85,8 +84,8 @@ namespace QSB.Syncs
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 		public bool IsInitialized { get; private set; }
-		protected Vector3 SmoothPosition;
-		protected Quaternion SmoothRotation;
+		protected Vector3 SmoothPosition { get; private set; }
+		protected Quaternion SmoothRotation { get; private set; }
 
 		protected abstract Transform InitAttachedTransform();
 		protected abstract void GetFromAttached();
@@ -98,7 +97,7 @@ namespace QSB.Syncs
 			{
 				// get player objects spawned before this object (or is this one)
 				// and use the closest one
-				Player = QSBPlayerManager.PlayerList
+				_player = QSBPlayerManager.PlayerList
 					.Where(x => x.PlayerId <= netId)
 					.OrderBy(x => x.PlayerId).Last();
 			}
@@ -109,31 +108,37 @@ namespace QSB.Syncs
 
 		public override void OnStopClient()
 		{
-			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
+			if (IsInitialized)
 			{
-				Destroy(AttachedTransform.gameObject);
+				Uninit();
 			}
 
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		{
+			if (IsInitialized)
+			{
+				Uninit();
+			}
+		}
+
 		protected virtual void Init()
 		{
-			if (!QSBSceneManager.IsInUniverse)
-			{
-				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
-			}
-
-			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
-			{
-				Destroy(AttachedTransform.gameObject);
-			}
-
 			AttachedTransform = InitAttachedTransform();
 			IsInitialized = true;
 		}
 
-		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
+		protected virtual void Uninit()
+		{
+			if (IsPlayerObject && !hasAuthority && AttachedTransform)
+			{
+				Destroy(AttachedTransform.gameObject);
+			}
+
+			IsInitialized = false;
+		}
 
 		private bool _shouldApply;
 
@@ -148,48 +153,47 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
-			if (!IsInitialized && IsReady && _baseIsReady)
+			var isReady = IsReady && _baseIsReady;
+			if (!IsInitialized && isReady)
 			{
-				try
-				{
-					Init();
-				}
-				catch (Exception ex)
-				{
-					DebugLog.ToConsole($"Exception when initializing {name} : {ex}", MessageType.Error);
-					return;
-				}
+				Init();
 			}
-			else if (IsInitialized && (!IsReady || !_baseIsReady))
+			else if (IsInitialized && !isReady)
 			{
-				IsInitialized = false;
+				Uninit();
+				base.Update();
 				return;
 			}
 
 			if (!IsInitialized)
 			{
+				base.Update();
 				return;
 			}
 
 			if (AttachedTransform == null)
 			{
 				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
+				base.Update();
 				return;
 			}
 
 			if (!AttachedTransform.gameObject.activeInHierarchy && !AllowDisabledAttachedObject)
 			{
+				base.Update();
 				return;
 			}
 
 			if (ReferenceTransform == null && !AllowNullReferenceTransform)
 			{
 				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				base.Update();
 				return;
 			}
 
 			if (ReferenceTransform == Locator.GetRootTransform())
 			{
+				base.Update();
 				return;
 			}
 
