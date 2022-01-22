@@ -15,7 +15,7 @@ namespace QSB.OrbSync.TransformSync
 		/// normally prints error when attached object is null.
 		/// this overrides it so that doesn't happen, since the orb can be destroyed.
 		/// </summary>
-		protected override bool CheckValid() => _attachedBody && base.CheckValid() && !_attachedBody.IsSuspended();
+		protected override bool CheckValid() => _attachedBody && base.CheckValid();
 		protected override bool UseInterpolation => true;
 		protected override float DistanceLeeway => 1f;
 

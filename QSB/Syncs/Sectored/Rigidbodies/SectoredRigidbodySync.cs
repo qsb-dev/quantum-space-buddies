@@ -6,8 +6,6 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 {
 	public abstract class SectoredRigidbodySync : BaseSectoredSync
 	{
-		protected override bool CheckValid() => base.CheckValid() && !AttachedRigidbody.IsSuspended();
-
 		private const float PositionMovedThreshold = 0.05f;
 		private const float AngleRotatedThreshold = 0.05f;
 		private const float VelocityChangeThreshold = 0.05f;
