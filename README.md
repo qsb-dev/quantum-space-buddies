@@ -7,13 +7,11 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/misternebula/quantum-space-buddies/latest/total?style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/misternebula/quantum-space-buddies/dev?label=last%20commit%20to%20dev&style=flat-square)
 
-Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses the OWML mod loader and customized UNET code (internally referred to as QNet or QuantumUNET) for networking.
+Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses the OWML mod loader and Mirror for networking.
 
-# Spoilers within!
+Spoilers within!
 
 ## License
-
-QNet code adapted in part from Unity Technologies' UNET.
 
 Copyright (C) 2020 - 2021 : 
 - Henry Pointer (_nebula or misternebula)
@@ -49,53 +47,88 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - Extract the `QSB` directory to the `OWML/Mods` directory;
 - Run `OWML.Launcher.exe` to start the game.
 
-## Playing as a client
+## Hosting / Connecting
 
-- Log into Steam, and have Steam running in the background.
-- Run the game.
-- On the title menu, select "CONNECT TO MULTIPLAYER".
-- Enter the SteamID of the host.
-- Hit connect, and pray.
+### If you own Outer Wilds on Steam
 
-## Playing as a host
+Make sure you are logged into Steam before hosting/connecting.
 
-- Log into Steam, and have Steam running in the background.
-- Run the game.
-- On the pause menu, select "OPEN TO MULTIPLAYER".
-- Give your SteadID to your clients.
+#### Connecting to a server
+
+- On the title screen, click the option `CONNECT TO MULTIPLAYER`.
+- Enter the SteamID of the person you are trying to connect to.
+- Enjoy!
+
+#### Hosting a server
+
+- Enter a game. This can be a new expedition or an existing save file.
+- On the pause screen, click the option `OPEN TO MULTIPLAYER`.
+- Share your SteamID with the people who want to connect.
+- Enjoy!
+
+### If you do not own Outer Wilds on Steam
+
+QSB uses Steamworks to simplify connecting and hosting. If you do not own Outer Wilds on steam, you will not be able to use this.
+
+There are several ways around this :
+- Change the "appIdOverride" option in `debugsettings.json` to an AppID that you own on Steam. The most common id to use is 480, as Spacewar is an app everyone owns by default. You will then be able to connect and host as detailed in the above section.
+- If that doesn't work, enable the "useKcpTransport" option in `debugsettings.json`. This will force QSB to use the KCP transport, which means you will have to port forward and all that fun stuff. To connect/host, follow the below instructions.
+
+#### Connecting to a server with KCP transport
+
+- On the title screen, click the option `CONNECT TO MULTIPLAYER`.
+- Enter the public IP address of the person you are trying to connect to.
+- Enjoy!
+
+#### Hosting a server with KCP transport
+
+- Port forward port 7777 with UDP/TCP.
+- Make sure your firewall isn't blocking the connections, you've port forwarded the entire route to your NAT (if using multiple routers), etc. There are many guides on port forwarding online, so check those if you need help.
+- Enter a game. This can be a new expedition or an existing save file.
+- On the pause screen, click the option `OPEN TO MULTIPLAYER`.
+- Share your public IP address with the people who want to connect.
+- Enjoy!
 
 ## Frequently Asked Questions
 
-#### Requirements
+### Requirements
 - Steam account.
 - Latest version of OWML.
 - Latest version of Mod Manager. (If using)
-- Latest version of Outer Wilds. (Epic version preferred, as Steam version is untestable. **We cannot guarantee QSB, or OWML, will work on cracked/pirated versions of Outer Wilds. Do not come asking us for help when using pirated versions.**)
+- Latest version of Outer Wilds. **We cannot guarantee QSB, or OWML, will work on cracked/pirated versions of Outer Wilds. Do not come asking us for help when using pirated versions.**
 - Fast and stable internet connection, upload and download.
 - Above minimum Outer Wilds system requirements.
 
-#### Compatibility with other mods
+### How complete is this mod? How far through the game can I play?
+
+| Area of the game  | Working |
+| ------------- | ------------- |
+| Base game  | :heavy_check_mark:  |
+| Echoes of the Eye  | :x:  |
+
+### Compatibility with other mods
 TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
 
 QSB relies on exact orders of objects found using Resources.FindObjectsOfTypeAll to sync objects, so any mod that changes the hierarchy at all risks breaking QSB. Also, QSB relies on certain game events being called when things happen in-game. Any mod that makes these things happen without calling the correct events will break QSB. Some mods will work fine and have been tested, like CrouchMod. Others may only work partly, like EnableDebugMode and TAICheat.
 
-#### Will you make this compatible with NomaiVR?
+### Will you make this compatible with NomaiVR?
 
 Short answer : No.
 
 Long answer : Pay me enough money, and maybe I'll consider it.
 
-#### Why can't a Steam game connect to an Epic game, and vice versa? Do you hate Steam/Epic?
+### Why can't a Steam game connect to an Epic game, and vice versa? Do you hate Steam/Epic?
 
 QSB is incompatible between game vendors because of how it works at a base level. Not because I dislike Steam or Epic.
 
 Technical explanation : QSB relies on the orders of lists returned by certain Unity methods to be the same on all clients. For Unity objects, these are (probably) ordered by AssetID or InstanceID. These IDs are different across different game builds. The Epic and Steam versions are different builds. Therefore, the lists are ordered differently and everything breaks.
 
-#### Why do I keep getting thrown around the ship?
+### Why do I keep getting thrown around the ship?
+
 Boring boring physics stuff. The velocity of the ship is synced, as well as the angular velocity. However, this velocity is not also applied to the player. (Or it is sometimes. I don't 100% know.) This means the ship will accelerate, leaving the player "behind". Which makes you fly into the walls alot.
 So really there's nothing we can do about this. I disabled damage by impact inside the ship, so if you die inside the ship while it is flying then that is a bug.
 
-#### What's the difference between QSB and Outer Wilds Online?
+### What's the difference between QSB and Outer Wilds Online?
 
 TL;DR - QSB is multiplayer co-op, Outer Wilds Online is multiplayer not not co-op.
 
@@ -103,7 +136,7 @@ QSB is a fully synced game. The other players are actually there in the world, a
 
 Outer Wilds Online is easier to set up, but much more basic in its features. The other players cannot affect your game, and do not contribute to anything in your save. The loop is entirely per-player.
 
-#### Why would someone make this mod? Seems like a lot of effort for no reward.
+### Why would someone make this mod? Seems like a lot of effort for no reward.
 
 Good question.
 
