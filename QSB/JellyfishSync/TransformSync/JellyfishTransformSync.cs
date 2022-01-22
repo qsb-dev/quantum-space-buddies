@@ -29,14 +29,6 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnStopClient();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
-
-			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override float SendInterval => 10;
@@ -58,6 +50,19 @@ namespace QSB.JellyfishSync.TransformSync
 			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
 			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		}
+
+		protected override void Uninit()
+		{
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+
+			base.Uninit();
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);

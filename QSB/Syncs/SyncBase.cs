@@ -172,6 +172,8 @@ namespace QSB.Syncs
 				Destroy(AttachedTransform.gameObject);
 			}
 
+			AttachedTransform = null;
+			ReferenceTransform = null;
 			IsInitialized = false;
 		}
 
