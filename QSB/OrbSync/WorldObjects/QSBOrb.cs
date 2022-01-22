@@ -10,6 +10,8 @@ namespace QSB.OrbSync.WorldObjects
 {
 	public class QSBOrb : WorldObject<NomaiInterfaceOrb>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public NomaiOrbTransformSync TransformSync;
 
 		public override void Init()

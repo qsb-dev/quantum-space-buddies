@@ -10,6 +10,8 @@ namespace QSB.Anglerfish.WorldObjects
 {
 	public class QSBAngler : WorldObject<AnglerfishController>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public AnglerTransformSync TransformSync;
 		public Transform TargetTransform;
 		public Vector3 TargetVelocity { get; private set; }

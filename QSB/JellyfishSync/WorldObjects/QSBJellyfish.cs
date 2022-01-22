@@ -10,6 +10,8 @@ namespace QSB.JellyfishSync.WorldObjects
 {
 	public class QSBJellyfish : WorldObject<JellyfishController>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public JellyfishTransformSync TransformSync;
 
 		public override void Init()
