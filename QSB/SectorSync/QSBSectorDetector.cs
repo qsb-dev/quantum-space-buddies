@@ -87,25 +87,11 @@ namespace QSB.SectorSync
 			SectorList.Remove(worldObject);
 		}
 
+		/// <summary>
+		/// called only by the sector manager
+		/// </summary>
 		public QSBSector GetClosestSector()
 		{
-			if (QSBSectorManager.Instance == null || !QSBSectorManager.Instance.IsReady)
-			{
-				return null;
-			}
-
-			if (!IsReady)
-			{
-				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector() before this SectorSync is ready. Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
-				return null;
-			}
-
-			if (_sectorDetector == null)
-			{
-				IsReady = false;
-				return null;
-			}
-
 			var inASector = SectorList.Any(x => x.ShouldSyncTo(_targetType));
 
 			var listToCheck = inASector

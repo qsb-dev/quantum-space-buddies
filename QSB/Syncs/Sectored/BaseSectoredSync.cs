@@ -17,14 +17,14 @@ namespace QSB.Syncs.Sectored
 		public override void OnStartClient()
 		{
 			SectorDetector = gameObject.AddComponent<QSBSectorDetector>();
-			QSBSectorManager.Instance.TransformSyncs.Add(this);
+			QSBSectorManager.Instance.SectoredSyncs.Add(this);
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			base.OnStopClient();
-			QSBSectorManager.Instance.TransformSyncs.Remove(this);
+			QSBSectorManager.Instance.SectoredSyncs.Remove(this);
 			Destroy(SectorDetector);
 		}
 

@@ -171,7 +171,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (AttachedTransform == null)
+			if (!AttachedTransform)
 			{
 				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
 				base.Update();
@@ -184,7 +184,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform == null && !AllowNullReferenceTransform)
+			if (!ReferenceTransform && !AllowNullReferenceTransform)
 			{
 				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 				base.Update();
@@ -197,7 +197,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
+			if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
 			{
 				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 			}
@@ -259,8 +259,8 @@ namespace QSB.Syncs
 		{
 			if (!QSBCore.ShowLinesInDebug
 				|| !IsInitialized
-				|| AttachedTransform == null
-				|| ReferenceTransform == null)
+				|| !AttachedTransform
+				|| !ReferenceTransform)
 			{
 				return;
 			}
@@ -287,7 +287,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			if (AttachedTransform != null)
+			if (AttachedTransform)
 			{
 				DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
 			}
