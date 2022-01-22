@@ -22,7 +22,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 		protected abstract OWRigidbody InitAttachedRigidbody();
 
-		protected override Transform InitAttachedTransform()
+		protected sealed override Transform InitAttachedTransform()
 		{
 			AttachedRigidbody = InitAttachedRigidbody();
 			return AttachedRigidbody.transform;

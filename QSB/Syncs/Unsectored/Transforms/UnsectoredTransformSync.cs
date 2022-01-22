@@ -9,7 +9,7 @@ namespace QSB.Syncs.Unsectored.Transforms
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();
 
-		protected override Transform InitAttachedTransform()
+		protected sealed override Transform InitAttachedTransform()
 			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		protected override void Serialize(NetworkWriter writer, bool initialState)

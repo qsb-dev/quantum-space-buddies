@@ -8,7 +8,7 @@ namespace QSB.Syncs.Sectored.Transforms
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();
 
-		protected override Transform InitAttachedTransform()
+		protected sealed override Transform InitAttachedTransform()
 			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
 		protected override void GetFromAttached()
