@@ -109,7 +109,7 @@ namespace QSB.Player
 		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");
 		public Transform WarpCoreSocket => CameraBody.transform.Find("REMOTE_WarpCoreSocket");
 		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
-		public Transform SimpleLanternSocket => CameraBody.transform.Find("REMOTE_SimpleLanternSocket");
+		public Transform SimpleLanternSocket => Body.transform.Find("REMOTE_SimpleLanternSocket");
 		public Transform DreamLanternSocket => CameraBody.transform.Find("REMOTE_DreamLanternSocket");
 		public Transform SlideReelSocket => CameraBody.transform.Find("REMOTE_SlideReelSocket");
 		public Transform VisionTorchSocket => CameraBody.transform.Find("REMOTE_VisionTorchSocket");
