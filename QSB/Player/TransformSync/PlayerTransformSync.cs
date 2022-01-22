@@ -280,9 +280,8 @@ namespace QSB.Player.TransformSync
 			Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 		}
 
-		protected override bool IsReady
-			=> AttachedTransform != null
-				|| Locator.GetPlayerTransform() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& (AttachedTransform || Locator.GetPlayerTransform());
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

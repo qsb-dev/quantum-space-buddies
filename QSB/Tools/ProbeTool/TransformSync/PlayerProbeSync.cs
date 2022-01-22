@@ -94,6 +94,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			}
 		}
 
-		protected override bool IsReady => AttachedTransform != null || Locator.GetProbe() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& (AttachedTransform || Locator.GetProbe());
 	}
 }

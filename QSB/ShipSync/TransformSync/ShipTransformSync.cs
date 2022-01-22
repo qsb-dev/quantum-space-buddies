@@ -12,8 +12,8 @@ namespace QSB.ShipSync.TransformSync
 		private const int ForcePositionAfterUpdates = 50;
 		private int _updateCount;
 
-		protected override bool IsReady
-			=> Locator.GetShipBody() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& Locator.GetShipBody();
 
 		public override void OnStartClient()
 		{

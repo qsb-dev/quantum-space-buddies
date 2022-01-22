@@ -36,38 +36,34 @@ namespace QSB.Syncs
 		}
 		private PlayerInfo _player;
 
-		private bool _baseIsReady
+		protected virtual bool CheckReady()
 		{
-			get
+			if (netId is uint.MaxValue or 0)
 			{
-				if (netId is uint.MaxValue or 0)
-				{
-					return false;
-				}
-
-				if (!QSBWorldSync.AllObjectsAdded)
-				{
-					return false;
-				}
-
-				if (IsPlayerObject)
-				{
-					if (_player == null)
-					{
-						return false;
-					}
-
-					if (!isLocalPlayer && !_player.IsReady)
-					{
-						return false;
-					}
-				}
-
-				return true;
+				return false;
 			}
+
+			if (!QSBWorldSync.AllObjectsAdded)
+			{
+				return false;
+			}
+
+			if (IsPlayerObject)
+			{
+				if (_player == null)
+				{
+					return false;
+				}
+
+				if (!isLocalPlayer && !_player.IsReady)
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
-		protected abstract bool IsReady { get; }
 		protected abstract bool UseInterpolation { get; }
 		protected virtual bool AllowDisabledAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
@@ -153,12 +149,11 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
-			var isReady = IsReady && _baseIsReady;
-			if (!IsInitialized && isReady)
+			if (!IsInitialized && CheckReady())
 			{
 				Init();
 			}
-			else if (IsInitialized && !isReady)
+			else if (IsInitialized && !CheckReady())
 			{
 				Uninit();
 				base.Update();
