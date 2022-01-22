@@ -1,12 +1,17 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using Mirror.FizzySteam;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
+using Steamworks;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
+using Button = UnityEngine.UI.Button;
 
 namespace QSB.Menus
 {
@@ -17,7 +22,8 @@ namespace QSB.Menus
 		private IMenuAPI MenuApi => QSBCore.MenuApi;
 
 		private PopupMenu IPPopup;
-		private PopupMenu InfoPopup;
+		private PopupMenu OneButtonInfoPopup;
+		private PopupMenu TwoButtonInfoPopup;
 		private bool _addedPauseLock;
 
 		// Pause menu only
@@ -35,6 +41,13 @@ namespace QSB.Menus
 
 		private const int _ClientButtonIndex = 2;
 		private const int _DisconnectIndex = 3;
+
+		private const string OpenString = "OPEN TO MULTIPLAYER";
+		private const string ConnectString = "CONNECT TO MULTIPLAYER";
+		private const string DisconnectString = "DISCONNECT";
+		private const string StopHostingString = "STOP HOSTING";
+
+		private Action PopupOK;
 
 		public void Start()
 		{
@@ -110,9 +123,9 @@ namespace QSB.Menus
 			}
 		}
 
-		private void OpenInfoPopup(string message, string buttonText)
+		private void OpenInfoPopup(string message, string okButtonText)
 		{
-			InfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(buttonText), null, true, false);
+			OneButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), null, true, false);
 
 			OWTime.Pause(OWTime.PauseType.System);
 			OWInput.ChangeInputMode(InputMode.Menu);
@@ -124,7 +137,24 @@ namespace QSB.Menus
 				_addedPauseLock = true;
 			}
 
-			InfoPopup.EnableMenu(true);
+			OneButtonInfoPopup.EnableMenu(true);
+		}
+
+		private void OpenInfoPopup(string message, string okButtonText, string cancelButtonText)
+		{
+			TwoButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), new ScreenPrompt(cancelButtonText), true, true);
+
+			OWTime.Pause(OWTime.PauseType.System);
+			OWInput.ChangeInputMode(InputMode.Menu);
+
+			var pauseCommandListener = Locator.GetPauseCommandListener();
+			if (pauseCommandListener != null)
+			{
+				pauseCommandListener.AddPauseCommandLock();
+				_addedPauseLock = true;
+			}
+
+			TwoButtonInfoPopup.EnableMenu(true);
 		}
 
 		private void OnCloseInfoPopup()
@@ -139,20 +169,26 @@ namespace QSB.Menus
 			OWTime.Unpause(OWTime.PauseType.System);
 			OWInput.RestorePreviousInputs();
 
-			if (QSBSceneManager.IsInUniverse)
-			{
-				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
-			}
+			//if (QSBSceneManager.IsInUniverse)
+			//{
+			//	LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
+			//}
+			PopupOK?.SafeInvoke();
+			PopupOK = null;
 		}
 
 		private void CreateCommonPopups()
 		{
-			IPPopup = MenuApi.MakeInputFieldPopup("IP Address", "IP Address", "Connect", "Cancel");
+			var text = QSBCore.UseKcpTransport ? "Public IP Address" : "Steam ID";
+			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 			IPPopup.OnPopupValidate += Validate;
 
-			InfoPopup = MenuApi.MakeInfoPopup("", "");
-			InfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
+			OneButtonInfoPopup = MenuApi.MakeInfoPopup("", "");
+			OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
+
+			TwoButtonInfoPopup = MenuApi.MakeTwoChoicePopup("", "", "");
+			TwoButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
 		}
 
 		private void SetButtonActive(Button button, bool active)
@@ -174,13 +210,13 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			HostButton = MenuApi.PauseMenu_MakeSimpleButton("OPEN TO MULTIPLAYER");
+			HostButton = MenuApi.PauseMenu_MakeSimpleButton(OpenString);
 			HostButton.onClick.AddListener(Host);
 
 			DisconnectPopup = MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
 			DisconnectPopup.OnPopupConfirm += Disconnect;
 
-			DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton("DISCONNECT", DisconnectPopup);
+			DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton(DisconnectString, DisconnectPopup);
 
 			QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
@@ -198,8 +234,8 @@ namespace QSB.Menus
 			}
 
 			var text = QSBCore.IsHost
-				? "STOP HOSTING"
-				: "DISCONNECT";
+				? StopHostingString
+				: DisconnectString;
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 
 			var popupText = QSBCore.IsHost
@@ -220,7 +256,7 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton("CONNECT TO MULTIPLAYER", _ClientButtonIndex, IPPopup);
+			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
 			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
@@ -250,7 +286,7 @@ namespace QSB.Menus
 
 			if (QSBCore.DebugSettings.SkipTitleScreen)
 			{
-				Application.runInBackground = true;
+				UnityEngine.Application.runInBackground = true;
 				var titleScreenManager = FindObjectOfType<TitleScreenManager>();
 				var titleScreenAnimation = titleScreenManager._cameraController;
 				const float small = 1 / 1000f;
@@ -290,21 +326,37 @@ namespace QSB.Menus
 			SetButtonActive(QuitButton, false);
 
 			var text = QSBCore.IsHost
-				? "STOP HOSTING"
-				: "DISCONNECT";
+				? StopHostingString
+				: DisconnectString;
 			DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 
 			var popupText = QSBCore.IsHost
 				? "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu."
 				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
 			DisconnectPopup._labelText.text = popupText;
+
+			if (QSBCore.UseKcpTransport)
+			{
+				return;
+			}
+
+			var steamId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
+
+			PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
+
+			OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
+				$"{steamId}\r\n" +
+				$"Do you want to copy this to the clipboard?"
+				, "YES"
+				, "NO");
 		}
 
 		private bool Validate()
 		{
-			var inputText = ((PopupInputMenu)IPPopup).GetInputText();
-			var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
-			return inputText == "localhost" || regex.Match(inputText).Success;
+			//var inputText = ((PopupInputMenu)IPPopup).GetInputText();
+			//var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
+			//return inputText == "localhost" || regex.Match(inputText).Success;
+			return ((PopupInputMenu)IPPopup).GetInputText() != "";
 		}
 
 		private void Connect()
@@ -349,6 +401,15 @@ namespace QSB.Menus
 				KickReason.None => "Kicked from server. No reason given.",
 				_ => $"Kicked from server. KickReason:{reason}",
 			};
+
+			PopupOK += () =>
+			{
+				if (QSBSceneManager.IsInUniverse)
+				{
+					LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
+				}
+			};
+
 			OpenInfoPopup(text, "OK");
 
 			SetButtonActive(DisconnectButton, false);
@@ -363,6 +424,14 @@ namespace QSB.Menus
 			{
 				return;
 			}
+
+			PopupOK += () =>
+			{
+				if (QSBSceneManager.IsInUniverse)
+				{
+					LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
+				}
+			};
 
 			OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
 

@@ -1,4 +1,6 @@
 ﻿{
+  "useKcpTransport": true,
+  "overrideAppId": -1,
   "debugMode": true,
   "debugGui": true,
   "drawLines": false,

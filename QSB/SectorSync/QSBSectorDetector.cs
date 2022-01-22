@@ -9,36 +9,23 @@ using UnityEngine;
 
 namespace QSB.SectorSync
 {
-	public class SectorSync : MonoBehaviour
+	public class QSBSectorDetector : MonoBehaviour
 	{
-		public bool IsReady { get; private set; }
 		public readonly List<QSBSector> SectorList = new();
 
 		private SectorDetector _sectorDetector;
 		private TargetType _targetType;
 
-		private void OnDestroy()
-		{
-			if (_sectorDetector != null)
-			{
-				_sectorDetector.OnEnterSector -= AddSector;
-				_sectorDetector.OnExitSector -= RemoveSector;
-			}
-
-			IsReady = false;
-		}
-
 		public void Init(SectorDetector detector, TargetType type)
 		{
-			if (_sectorDetector != null)
+			if (_sectorDetector)
 			{
-				_sectorDetector.OnEnterSector -= AddSector;
-				_sectorDetector.OnExitSector -= RemoveSector;
+				return;
 			}
 
-			if (detector == null)
+			if (!detector)
 			{
-				DebugLog.ToConsole($"Error - Trying to init SectorSync with null SectorDetector.", MessageType.Error);
+				DebugLog.ToConsole("Error - Trying to init QSBSectorDetector with null SectorDetector!", MessageType.Error);
 				return;
 			}
 
@@ -46,15 +33,34 @@ namespace QSB.SectorSync
 			_sectorDetector.OnEnterSector += AddSector;
 			_sectorDetector.OnExitSector += RemoveSector;
 
-			SectorList.Clear();
 			_sectorDetector._sectorList.ForEach(AddSector);
 
 			_targetType = type;
-			IsReady = true;
+		}
+
+		public void Uninit()
+		{
+			if (!_sectorDetector)
+			{
+				return;
+			}
+
+			_sectorDetector.OnEnterSector -= AddSector;
+			_sectorDetector.OnExitSector -= RemoveSector;
+			_sectorDetector = null;
+
+			SectorList.Clear();
 		}
 
 		private void AddSector(Sector sector)
 		{
+			if (!sector)
+			{
+				// wtf
+				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+				return;
+			}
+
 			var worldObject = sector.GetWorldObject<QSBSector>();
 			if (worldObject == null)
 			{
@@ -73,6 +79,13 @@ namespace QSB.SectorSync
 
 		private void RemoveSector(Sector sector)
 		{
+			if (!sector)
+			{
+				// wtf
+				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+				return;
+			}
+
 			var worldObject = sector.GetWorldObject<QSBSector>();
 			if (worldObject == null)
 			{
@@ -89,25 +102,11 @@ namespace QSB.SectorSync
 			SectorList.Remove(worldObject);
 		}
 
+		/// <summary>
+		/// called only by the sector manager
+		/// </summary>
 		public QSBSector GetClosestSector()
 		{
-			if (QSBSectorManager.Instance == null || !QSBSectorManager.Instance.IsReady)
-			{
-				return null;
-			}
-
-			if (!IsReady)
-			{
-				DebugLog.ToConsole($"Warning - Tried to use GetClosestSector() before this SectorSync is ready. Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
-				return null;
-			}
-
-			if (_sectorDetector == null)
-			{
-				IsReady = false;
-				return null;
-			}
-
 			var inASector = SectorList.Any(x => x.ShouldSyncTo(_targetType));
 
 			var listToCheck = inASector
@@ -156,12 +155,9 @@ namespace QSB.SectorSync
 		{
 			// TODO : make this work for other stuff, not just shaped triggervolumes
 			var trigger = sector.AttachedObject.GetTriggerVolume();
-			if (trigger != null)
+			if (trigger && trigger.GetShape())
 			{
-				if (trigger.GetShape() != null)
-				{
-					return trigger.GetShape().CalcWorldBounds().radius;
-				}
+				return trigger.GetShape().CalcWorldBounds().radius;
 			}
 
 			return 0f;
@@ -170,7 +166,7 @@ namespace QSB.SectorSync
 		private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
 		{
 			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
-			if (sectorRigidBody != null && rigidbody != null)
+			if (sectorRigidBody && rigidbody)
 			{
 				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
 				return relativeVelocity.sqrMagnitude;

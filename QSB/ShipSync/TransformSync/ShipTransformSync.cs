@@ -12,8 +12,8 @@ namespace QSB.ShipSync.TransformSync
 		private const int ForcePositionAfterUpdates = 50;
 		private int _updateCount;
 
-		protected override bool IsReady
-			=> Locator.GetShipBody() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& Locator.GetShipBody();
 
 		public override void OnStartClient()
 		{
@@ -23,7 +23,7 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override OWRigidbody InitAttachedRigidbody()
 		{
-			SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship);
+			SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship);
 			return Locator.GetShipBody();
 		}
 
@@ -31,8 +31,7 @@ namespace QSB.ShipSync.TransformSync
 		protected override void ApplyToAttached()
 		{
 			ApplyToSector();
-
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
+			if (!ReferenceTransform)
 			{
 				return;
 			}

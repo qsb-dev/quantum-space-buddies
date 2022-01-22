@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.GeyserSync.Messages;
+﻿using QSB.GeyserSync.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
 
@@ -12,6 +11,9 @@ namespace QSB.GeyserSync.WorldObjects
 			AttachedObject.OnGeyserActivateEvent += () => HandleEvent(true);
 			AttachedObject.OnGeyserDeactivateEvent += () => HandleEvent(false);
 		}
+
+		public override void SendResyncInfo(uint to) =>
+			HandleEvent(AttachedObject._isActive);
 
 		private void HandleEvent(bool state)
 		{

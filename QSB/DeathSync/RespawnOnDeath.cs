@@ -59,7 +59,7 @@ namespace QSB.DeathSync
 
 			RespawnManager.Instance.TriggerRespawnMap();
 
-			var inSpace = PlayerTransformSync.LocalInstance.SectorSync.SectorList.Count == 0;
+			var inSpace = PlayerTransformSync.LocalInstance.SectorDetector.SectorList.Count == 0;
 
 			if (inSpace)
 			{

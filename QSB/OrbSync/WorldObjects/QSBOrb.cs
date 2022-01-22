@@ -1,4 +1,6 @@
 ﻿using Mirror;
+using QSB.Messaging;
+using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -8,6 +10,8 @@ namespace QSB.OrbSync.WorldObjects
 {
 	public class QSBOrb : WorldObject<NomaiInterfaceOrb>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public NomaiOrbTransformSync TransformSync;
 
 		public override void Init()
@@ -26,6 +30,15 @@ namespace QSB.OrbSync.WorldObjects
 			if (QSBCore.IsHost)
 			{
 				NetworkServer.Destroy(TransformSync.gameObject);
+			}
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (TransformSync.hasAuthority)
+			{
+				this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
+				this.SendMessage(new OrbSlotMessage(AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot)) { To = to });
 			}
 		}
 

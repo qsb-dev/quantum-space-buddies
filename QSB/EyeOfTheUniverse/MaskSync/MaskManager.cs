@@ -32,7 +32,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 			_flickering = true;
 
 			// hide all players in shuttle
-			QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x => x.DitheringAnimator.SetVisibleImmediate(false));
+			QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x => x.SetVisible(false));
 		}
 
 		private void Update()

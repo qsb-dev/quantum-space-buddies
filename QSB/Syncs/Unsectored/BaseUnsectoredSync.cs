@@ -2,6 +2,6 @@
 {
 	public abstract class BaseUnsectoredSync : SyncBase
 	{
-		protected override bool AllowNullReferenceTransform => false;
+		protected sealed override bool AllowNullReferenceTransform => false;
 	}
 }

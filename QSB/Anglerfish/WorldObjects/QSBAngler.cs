@@ -1,5 +1,7 @@
 ﻿using Mirror;
+using QSB.Anglerfish.Messages;
 using QSB.Anglerfish.TransformSync;
+using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -8,6 +10,8 @@ namespace QSB.Anglerfish.WorldObjects
 {
 	public class QSBAngler : WorldObject<AnglerfishController>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public AnglerTransformSync TransformSync;
 		public Transform TargetTransform;
 		public Vector3 TargetVelocity { get; private set; }
@@ -30,6 +34,14 @@ namespace QSB.Anglerfish.WorldObjects
 			if (QSBCore.IsHost)
 			{
 				NetworkServer.Destroy(TransformSync.gameObject);
+			}
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (TransformSync.hasAuthority)
+			{
+				this.SendMessage(new AnglerDataMessage(this) { To = to });
 			}
 		}
 

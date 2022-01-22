@@ -14,10 +14,10 @@ namespace QSB.SectorSync
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		public static QSBSectorManager Instance { get; private set; }
-		public bool IsReady { get; private set; }
+		private bool _isReady;
 		public readonly List<QSBSector> FakeSectors = new();
 
-		public readonly List<BaseSectoredSync> TransformSyncs = new();
+		public readonly List<BaseSectoredSync> SectoredSyncs = new();
 
 		private const float UpdateInterval = 0.4f;
 		private float _timer = UpdateInterval;
@@ -36,26 +36,31 @@ namespace QSB.SectorSync
 
 		public void UpdateReferenceSectors()
 		{
-			if (!Instance.IsReady || !QSBWorldSync.AllObjectsReady)
+			if (!Instance._isReady || !QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}
 
-			foreach (var sync in TransformSyncs)
+			foreach (var sync in SectoredSyncs)
 			{
-				if (sync.AttachedTransform == null)
-				{
-					continue;
-				}
-
 				if (sync.hasAuthority
-					&& sync.AttachedTransform.gameObject.activeInHierarchy
-					&& sync.IsInitialized
-					&& sync.SectorSync.IsReady)
+					&& sync.IsValid
+					&& sync.AttachedTransform.gameObject.activeInHierarchy)
 				{
 					UpdateReferenceSector(sync);
 				}
 			}
+		}
+
+		private static void UpdateReferenceSector(BaseSectoredSync sync)
+		{
+			var closestSector = sync.SectorDetector.GetClosestSector();
+			if (closestSector == null)
+			{
+				return;
+			}
+
+			sync.SetReferenceSector(closestSector);
 		}
 
 		public void Awake()
@@ -84,21 +89,10 @@ namespace QSB.SectorSync
 			}
 
 			QSBWorldSync.Init<QSBSector, Sector>();
-			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+			_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
 		public override void UnbuildWorldObjects() =>
-			IsReady = false;
-
-		private static void UpdateReferenceSector(BaseSectoredSync transformSync)
-		{
-			var closestSector = transformSync.SectorSync.GetClosestSector();
-			if (closestSector == null)
-			{
-				return;
-			}
-
-			transformSync.SetReferenceSector(closestSector);
-		}
+			_isReady = false;
 	}
 }

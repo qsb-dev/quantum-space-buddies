@@ -1,5 +1,7 @@
 ﻿using Mirror;
+using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -8,13 +10,12 @@ namespace QSB.JellyfishSync.WorldObjects
 {
 	public class QSBJellyfish : WorldObject<JellyfishController>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public JellyfishTransformSync TransformSync;
-		private AlignWithTargetBody _alignWithTargetBody;
 
 		public override void Init()
 		{
-			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
-
 			if (QSBCore.IsHost)
 			{
 				Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab).SpawnWithServerAuthority();
@@ -32,24 +33,23 @@ namespace QSB.JellyfishSync.WorldObjects
 			}
 		}
 
-		public bool IsRising
+		public override void SendResyncInfo(uint to)
 		{
-			get => AttachedObject._isRising;
-			set
+			if (TransformSync.hasAuthority)
 			{
-				if (AttachedObject._isRising == value)
-				{
-					return;
-				}
-
-				AttachedObject._isRising = value;
-				AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
+				this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
 			}
 		}
 
-		public bool Align
+		public void SetIsRising(bool value)
 		{
-			set => _alignWithTargetBody.enabled = value;
+			if (AttachedObject._isRising == value)
+			{
+				return;
+			}
+
+			AttachedObject._isRising = value;
+			AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
 		}
 	}
 }

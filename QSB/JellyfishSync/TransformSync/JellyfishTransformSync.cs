@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.AuthoritySync;
+﻿using QSB.AuthoritySync;
 using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
@@ -11,7 +10,6 @@ namespace QSB.JellyfishSync.TransformSync
 {
 	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
-		protected override bool IsReady => QSBWorldSync.AllObjectsAdded;
 		protected override bool UseInterpolation => false;
 		protected override bool OnlyApplyOnDeserialize => true;
 
@@ -31,14 +29,6 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnStopClient();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
-
-			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override float SendInterval => 10;
@@ -62,39 +52,25 @@ namespace QSB.JellyfishSync.TransformSync
 			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
+		protected override void Uninit()
+		{
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+
+			base.Uninit();
+		}
+
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
 		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
-
-		private bool _isRising;
-
-		protected override void Serialize(NetworkWriter writer, bool initialState)
-		{
-			base.Serialize(writer, initialState);
-
-			writer.Write(_isRising);
-		}
-
-		protected override void Deserialize(NetworkReader reader, bool initialState)
-		{
-			base.Deserialize(reader, initialState);
-
-			_isRising = reader.ReadBool();
-		}
-
-		protected override void GetFromAttached()
-		{
-			base.GetFromAttached();
-
-			_qsbJellyfish.Align = true;
-			_isRising = _qsbJellyfish.IsRising;
-		}
 
 		/// replacement using SetPosition/Rotation instead of Move
 		protected override void ApplyToAttached()
 		{
-			_qsbJellyfish.Align = false;
-			_qsbJellyfish.IsRising = _isRising;
-
 			var pos = ReferenceTransform.FromRelPos(transform.position);
 			AttachedRigidbody.SetPosition(pos);
 			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
@@ -105,10 +81,9 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.DebugSettings.DrawLines
-				|| !IsInitialized
-				|| AttachedRigidbody == null
-				|| ReferenceTransform == null
-				|| AttachedRigidbody.IsSuspended())
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}

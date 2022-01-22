@@ -15,7 +15,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects
 
 				foreach (var player in MaskManager.WentOnSolanumsWildRide)
 				{
-					player.DitheringAnimator.SetVisible(true, 0.5f);
+					player.SetVisible(true, 2);
 				}
 
 				maskZoneController._whiteSphere.SetActive(false);

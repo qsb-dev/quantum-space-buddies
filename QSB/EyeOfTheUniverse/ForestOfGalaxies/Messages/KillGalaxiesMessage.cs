@@ -16,22 +16,13 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(_deathDelays.Count);
-			foreach (var item in _deathDelays)
-			{
-				writer.Write(item);
-			}
+			writer.WriteList(_deathDelays);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			var length = reader.Read<int>();
-			_deathDelays = new List<float>(length);
-			for (var i = 0; i < length; i++)
-			{
-				_deathDelays.Add(reader.Read<float>());
-			}
+			_deathDelays = reader.ReadList<float>();
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;

@@ -20,7 +20,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 
 		protected abstract OWRigidbody InitAttachedRigidbody();
 
-		protected override Transform InitAttachedTransform()
+		protected sealed override Transform InitAttachedTransform()
 		{
 			AttachedRigidbody = InitAttachedRigidbody();
 			return AttachedRigidbody.transform;
@@ -45,6 +45,12 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			base.Deserialize(reader, initialState);
 			_relativeVelocity = reader.ReadVector3();
 			_relativeAngularVelocity = reader.ReadVector3();
+		}
+
+		protected override void Uninit()
+		{
+			base.Uninit();
+			AttachedRigidbody = null;
 		}
 
 		protected override void GetFromAttached()

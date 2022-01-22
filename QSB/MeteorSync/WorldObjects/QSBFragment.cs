@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Messaging;
+using QSB.MeteorSync.Messages;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects
@@ -17,6 +19,14 @@ namespace QSB.MeteorSync.WorldObjects
 				// 	AttachedObject._integrity = 0;
 				// 	AttachedObject.CallOnTakeDamage();
 				// });
+			}
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new FragmentResyncMessage(this) { To = to });
 			}
 		}
 

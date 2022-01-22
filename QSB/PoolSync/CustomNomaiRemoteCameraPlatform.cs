@@ -675,7 +675,7 @@ namespace QSB.PoolSync
 
 		public void OnRemovePlayer(PlayerInfo player)
 		{
-			if (player == QSBPlayerManager.LocalPlayer)
+			if (player.IsLocalPlayer)
 			{
 				return;
 			}

@@ -7,7 +7,6 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -75,6 +74,14 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				ControllingPlayer = 0u;
 				IsEnabled = false;
+			}
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
 			}
 		}
 

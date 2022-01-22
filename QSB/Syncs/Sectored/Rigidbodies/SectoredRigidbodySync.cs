@@ -20,7 +20,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 		protected abstract OWRigidbody InitAttachedRigidbody();
 
-		protected override Transform InitAttachedTransform()
+		protected sealed override Transform InitAttachedTransform()
 		{
 			AttachedRigidbody = InitAttachedRigidbody();
 			return AttachedRigidbody.transform;
@@ -47,31 +47,30 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			_relativeAngularVelocity = reader.ReadVector3();
 		}
 
+		protected override void Uninit()
+		{
+			base.Uninit();
+			AttachedRigidbody = null;
+		}
+
 		protected override void GetFromAttached()
 		{
 			GetFromSector();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
-			if (ReferenceTransform != null)
-			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
-				_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
-				_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
-			}
-			else
-			{
-				transform.position = Vector3.zero;
-				transform.rotation = Quaternion.identity;
-				_relativeVelocity = Vector3.zero;
-				_relativeAngularVelocity = Vector3.zero;
-			}
+			transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
+			transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
+			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
+			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
 		}
 
 		protected override void ApplyToAttached()
 		{
 			ApplyToSector();
-
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
+			if (!ReferenceTransform)
 			{
 				return;
 			}

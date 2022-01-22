@@ -45,7 +45,15 @@ namespace QSB
 		public static IModHelper Helper { get; private set; }
 		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP { get; private set; }
-		public static int Port { get; private set; }
+		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
+		public static int OverrideAppId => DebugSettings.OverrideAppId;
+		public static bool DebugMode => DebugSettings.DebugMode;
+		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
+		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
+		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
+		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
+		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
+		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -134,10 +142,6 @@ namespace QSB
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
 				Application.runInBackground = true;
-				if (Locator.GetSceneMenuManager() != null && Locator.GetSceneMenuManager().pauseMenu.IsOpen())
-				{
-					Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
-				}
 			}
 		}
 
@@ -152,17 +156,11 @@ namespace QSB
 		public override void Configure(IModConfig config)
 		{
 			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-			Port = config.GetSettingsValue<int>("port");
-			if (QSBNetworkManager.singleton != null)
-			{
-				QSBNetworkManager.singleton.Port = Port;
-			}
 		}
 
 		private void Update()
 		{
-			if (Keyboard.current[Key.LeftArrow].isPressed && Keyboard.current[Key.RightArrow].isPressed &&
-				(Keyboard.current[Key.LeftArrow].wasPressedThisFrame || Keyboard.current[Key.RightArrow].wasPressedThisFrame))
+			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
 			{
 				DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
