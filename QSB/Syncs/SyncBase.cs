@@ -36,6 +36,8 @@ namespace QSB.Syncs
 		}
 		private PlayerInfo _player;
 
+		private bool IsInitialized;
+
 		protected virtual bool CheckReady()
 		{
 			if (netId is uint.MaxValue or 0)
@@ -64,6 +66,44 @@ namespace QSB.Syncs
 			return true;
 		}
 
+		/// <summary>
+		/// can be true with null reference transform. <br/>
+		/// can be true with inactive attached object.
+		/// </summary>
+		public bool IsValid { get; private set; }
+
+		protected virtual bool CheckValid()
+		{
+			if (!IsInitialized)
+			{
+				return false;
+			}
+
+			if (!AttachedTransform)
+			{
+				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
+				return false;
+			}
+
+			if (!AllowDisabledAttachedObject && !AttachedTransform.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+
+			if (!AllowNullReferenceTransform && !ReferenceTransform)
+			{
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				return false;
+			}
+
+			if (ReferenceTransform == Locator.GetRootTransform())
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		protected abstract bool UseInterpolation { get; }
 		protected virtual bool AllowDisabledAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
@@ -81,7 +121,6 @@ namespace QSB.Syncs
 		private Quaternion _rotationSmoothVelocity;
 		protected Vector3 SmoothPosition { get; private set; }
 		protected Quaternion SmoothRotation { get; private set; }
-		public bool IsInitialized { get; private set; }
 
 		protected abstract Transform InitAttachedTransform();
 		protected abstract void GetFromAttached();
@@ -156,37 +195,13 @@ namespace QSB.Syncs
 			else if (IsInitialized && !CheckReady())
 			{
 				Uninit();
+				IsValid = false;
 				base.Update();
 				return;
 			}
 
-			if (!IsInitialized)
-			{
-				base.Update();
-				return;
-			}
-
-			if (!AttachedTransform)
-			{
-				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
-				base.Update();
-				return;
-			}
-
-			if (!AttachedTransform.gameObject.activeInHierarchy && !AllowDisabledAttachedObject)
-			{
-				base.Update();
-				return;
-			}
-
-			if (!ReferenceTransform && !AllowNullReferenceTransform)
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-				base.Update();
-				return;
-			}
-
-			if (ReferenceTransform == Locator.GetRootTransform())
+			IsValid = CheckValid();
+			if (!IsValid)
 			{
 				base.Update();
 				return;
@@ -253,9 +268,9 @@ namespace QSB.Syncs
 		protected virtual void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !IsInitialized
-				|| !AttachedTransform
-				|| !ReferenceTransform)
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
@@ -276,8 +291,11 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.ShowDebugLabels ||
-				Event.current.type != EventType.Repaint)
+			if (!QSBCore.ShowDebugLabels
+				|| Event.current.type != EventType.Repaint
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}

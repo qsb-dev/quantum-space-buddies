@@ -44,10 +44,8 @@ namespace QSB.SectorSync
 			foreach (var sync in SectoredSyncs)
 			{
 				if (sync.hasAuthority
-					&& sync.IsInitialized
-					&& sync.AttachedTransform
-					&& sync.AttachedTransform.gameObject.activeInHierarchy
-					&& sync.SectorDetector.IsReady)
+					&& sync.IsValid
+					&& sync.AttachedTransform.gameObject.activeInHierarchy)
 				{
 					UpdateReferenceSector(sync);
 				}

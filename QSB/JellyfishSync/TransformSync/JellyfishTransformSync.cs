@@ -76,10 +76,9 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !IsInitialized
-				|| AttachedRigidbody == null
-				|| ReferenceTransform == null
-				|| AttachedRigidbody.IsSuspended())
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}

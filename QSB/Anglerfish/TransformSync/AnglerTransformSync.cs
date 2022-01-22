@@ -65,9 +65,9 @@ namespace QSB.Anglerfish.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !IsInitialized
-				|| AttachedRigidbody == null
-				|| AttachedRigidbody.IsSuspended())
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
