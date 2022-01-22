@@ -113,7 +113,10 @@ namespace QSB.Syncs
 		public Transform AttachedTransform { get; private set; }
 		public Transform ReferenceTransform { get; private set; }
 
-		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty) + $"{netId}:{GetType().Name}";
+		public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
+		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
+			+ $"{netId}:{GetType().Name} ({Name})";
+
 		protected virtual float DistanceLeeway => 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
