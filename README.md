@@ -178,7 +178,7 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 ### Authors
 
 - [\_nebula](https://github.com/misternebula) - Developer of v0.3 onwards
-- [JohnCorby](https://github.com/JohnCorby) - Co-developer of 0.13.0 onwards.
+- [JohnCorby](https://github.com/JohnCorby) - Co-developer of v0.13.0 onwards.
 - [AmazingAlek](https://github.com/amazingalek) - Developer of v0.1.0 - v0.7.1.
 - [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1.0 - v0.2.0.
 
@@ -188,9 +188,8 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 - [Chris Yeninas](https://github.com/PhantomGamers)
 
 ### Special Thanks
-- Thanks to Logan Ver Hoef for help with the game code.
-- Thanks to all the people in the Outer Wilds Discord for helping in public tests.
-- Special thanks (and apologies) to all the people in the #modding channel, which I (_nebula) have been using as a virtual [rubber duck.](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
+- Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
+- Thanks to all the people who helped in public tests.
 
 ### Dependencies
 
