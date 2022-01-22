@@ -20,7 +20,7 @@ namespace QSB.Messaging
 		#region inner workings
 
 		internal static readonly Type[] _types;
-		private static readonly Dictionary<Type, ushort> _typeToId = new();
+		internal static readonly Dictionary<Type, ushort> _typeToId = new();
 
 		static QSBMessageManager()
 		{
@@ -36,19 +36,18 @@ namespace QSB.Messaging
 		public static void Init()
 		{
 			NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
-			NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper.Msg));
+			NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
 		}
 
-		private static void OnServerReceive(Wrapper wrapper)
+		private static void OnServerReceive(QSBMessage msg)
 		{
-			var msg = wrapper.Msg;
 			if (msg.To == uint.MaxValue)
 			{
-				NetworkServer.SendToAll(wrapper);
+				NetworkServer.SendToAll<Wrapper>(msg);
 			}
 			else if (msg.To == 0)
 			{
-				NetworkServer.localConnection.Send(wrapper);
+				NetworkServer.localConnection.Send<Wrapper>(msg);
 			}
 			else
 			{
@@ -59,7 +58,7 @@ namespace QSB.Messaging
 					return;
 				}
 
-				conn.Send(wrapper);
+				conn.Send<Wrapper>(msg);
 			}
 		}
 
@@ -119,11 +118,7 @@ namespace QSB.Messaging
 			}
 
 			msg.From = QSBPlayerManager.LocalPlayerId;
-			NetworkClient.Send(new Wrapper
-			{
-				Id = _typeToId[msg.GetType()],
-				Msg = msg
-			});
+			NetworkClient.Send<Wrapper>(msg);
 		}
 
 		public static void SendMessage<T, M>(this T worldObject, M msg)
@@ -137,25 +132,29 @@ namespace QSB.Messaging
 
 	internal struct Wrapper : NetworkMessage
 	{
-		internal ushort Id;
-		internal QSBMessage Msg;
+		public QSBMessage Msg;
+
+		public static implicit operator QSBMessage(Wrapper wrapper) => wrapper.Msg;
+		public static implicit operator Wrapper(QSBMessage msg) => new() { Msg = msg };
 	}
 
 	internal static class ReaderWriterExtensions
 	{
-		private static Wrapper ReadWrapper(this NetworkReader reader)
+		private static QSBMessage ReadQSBMessage(this NetworkReader reader)
 		{
-			var wrapper = new Wrapper();
-			wrapper.Id = reader.ReadUShort();
-			wrapper.Msg = (QSBMessage)FormatterServices.GetUninitializedObject(QSBMessageManager._types[wrapper.Id]);
-			wrapper.Msg.Deserialize(reader);
-			return wrapper;
+			var id = reader.ReadUShort();
+			var type = QSBMessageManager._types[id];
+			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(type);
+			msg.Deserialize(reader);
+			return msg;
 		}
 
-		private static void WriteWrapper(this NetworkWriter writer, Wrapper wrapper)
+		private static void WriteQSBMessage(this NetworkWriter writer, QSBMessage msg)
 		{
-			writer.Write(wrapper.Id);
-			wrapper.Msg.Serialize(writer);
+			var type = msg.GetType();
+			var id = QSBMessageManager._typeToId[type];
+			writer.Write(id);
+			msg.Serialize(writer);
 		}
 	}
 }
