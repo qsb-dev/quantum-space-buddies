@@ -6,8 +6,8 @@ namespace QSB.TimeSync
 	{
 		public void Start()
 		{
-			// BUG : Get this working for the new menu system. Can't use OWML's anymore.
-			//QSBCore.Helper.Menus.PauseMenu.GetTitleButton("Button-EndCurrentLoop").Hide(); // Remove the meditation button
+			// disable meditation button;
+			Locator.GetSceneMenuManager().pauseMenu._skipToNextLoopButton.SetActive(false);
 
 			// Allow server to sleep at campfires
 			if (isServer)
