@@ -11,6 +11,11 @@ namespace QSB.OrbSync.TransformSync
 {
 	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
+		/// <summary>
+		/// normally prints error when attached object is null.
+		/// this overrides it so that doesn't happen, since the orb can be destroyed.
+		/// </summary>
+		protected override bool CheckValid() => _attachedBody && base.CheckValid() && !_attachedBody.IsSuspended();
 		protected override bool UseInterpolation => true;
 		protected override float DistanceLeeway => 1f;
 
