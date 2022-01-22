@@ -146,12 +146,11 @@ namespace QSB.Syncs
 
 		public override void OnStopClient()
 		{
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (IsInitialized)
 			{
 				Uninit();
 			}
-
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)

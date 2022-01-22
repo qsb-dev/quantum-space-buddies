@@ -78,15 +78,12 @@ namespace QSB.WorldSync
 
 		public static void RemoveWorldObjects()
 		{
-			if (!AllObjectsReady)
-			{
-				return;
-			}
-
 			GameReset();
 
 			AllObjectsAdded = false;
 			AllObjectsReady = false;
+			_numManagersReadying = 0;
+			_numObjectsReadying = 0;
 
 			foreach (var item in WorldObjects)
 			{
