@@ -38,7 +38,11 @@ namespace QSB.Player.Messages
 			{
 				if (_waitingForEvent)
 				{
-					DebugLog.ToConsole($"Did not receive PlayerInformationEvent in time. Setting _waitingForEvent to false.", MessageType.Info);
+					if (QSBPlayerManager.PlayerList.Count > 1)
+					{
+						DebugLog.ToConsole($"Did not receive PlayerInformationEvent in time. Setting _waitingForEvent to false.", MessageType.Info);
+					}
+
 					_waitingForEvent = false;
 				}
 			}, 60);
