@@ -92,7 +92,7 @@ namespace QSB.Syncs
 
 			if (!AllowNullReferenceTransform && !ReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null.", MessageType.Warning);
 				return false;
 			}
 

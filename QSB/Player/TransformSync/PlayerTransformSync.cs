@@ -54,6 +54,16 @@ namespace QSB.Player.TransformSync
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
+		public override void OnStopClient()
+		{
+			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
+			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
+			base.OnStopClient();
+			Player.HudMarker?.Remove();
+			QSBPlayerManager.PlayerList.Remove(Player);
+			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
+		}
+
 		protected override void Init()
 		{
 			base.Init();
@@ -74,16 +84,6 @@ namespace QSB.Player.TransformSync
 				Player.IsReady = false;
 				new PlayerReadyMessage(false).Send();
 			}
-		}
-
-		public override void OnStopClient()
-		{
-			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
-			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
-			base.OnStopClient();
-			Player.HudMarker?.Remove();
-			QSBPlayerManager.PlayerList.Remove(Player);
-			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
 		protected override Transform InitLocalTransform()
