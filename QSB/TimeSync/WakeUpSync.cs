@@ -192,13 +192,14 @@ namespace QSB.TimeSync
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
-			TimeSyncUI.Start(TimeSyncType.FastForwarding, FastForwardReason.TooFarBehind);
+			TimeSyncUI.Start(TimeSyncType.FastForwarding, reason);
 		}
 
 		private void StartPausing(PauseReason reason)
 		{
 			if (CurrentState == State.Pausing)
 			{
+				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
 
@@ -212,6 +213,7 @@ namespace QSB.TimeSync
 			CurrentState = State.Pausing;
 			CurrentReason = reason;
 			SpinnerUI.Show();
+			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Pausing, reason);
 		}
 
@@ -322,7 +324,7 @@ namespace QSB.TimeSync
 
 			// set fastforwarding timescale
 
-			if (CurrentState == State.FastForwarding)
+			if (CurrentState == State.FastForwarding && (FastForwardReason)CurrentReason == FastForwardReason.TooFarBehind)
 			{
 				if (Locator.GetPlayerCamera() != null && !Locator.GetPlayerCamera().enabled)
 				{
@@ -332,6 +334,11 @@ namespace QSB.TimeSync
 				var diff = _serverTime - Time.timeSinceLevelLoad;
 				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
+				TimeSyncUI.TargetTime = _serverTime;
+			}
+
+			if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.TooFarAhead)
+			{
 				TimeSyncUI.TargetTime = _serverTime;
 			}
 
