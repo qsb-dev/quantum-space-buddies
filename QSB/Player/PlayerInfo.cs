@@ -104,15 +104,16 @@ namespace QSB.Player
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
-		public Transform ItemSocket => CameraBody.transform.Find("REMOTE_ItemSocket");
-		public Transform ScrollSocket => CameraBody.transform.Find("REMOTE_ScrollSocket");
-		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");
-		public Transform WarpCoreSocket => CameraBody.transform.Find("REMOTE_WarpCoreSocket");
-		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
-		public Transform SimpleLanternSocket => Body.transform.Find("REMOTE_SimpleLanternSocket");
-		public Transform DreamLanternSocket => CameraBody.transform.Find("REMOTE_DreamLanternSocket");
-		public Transform SlideReelSocket => CameraBody.transform.Find("REMOTE_SlideReelSocket");
-		public Transform VisionTorchSocket => CameraBody.transform.Find("REMOTE_VisionTorchSocket");
+		public Transform ItemCarryTool => Body.transform.Find("REMOTE_ItemCarryTool");
+		public Transform ItemSocket => ItemCarryTool.Find("REMOTE_ItemSocket");
+		public Transform ScrollSocket => ItemCarryTool.Find("REMOTE_ScrollSocket");
+		public Transform SharedStoneSocket => ItemCarryTool.Find("REMOTE_SharedStoneSocket");
+		public Transform WarpCoreSocket => ItemCarryTool.Find("REMOTE_WarpCoreSocket");
+		public Transform VesselCoreSocket => ItemCarryTool.Find("REMOTE_VesselCoreSocket");
+		public Transform SimpleLanternSocket => ItemCarryTool.Find("REMOTE_SimpleLanternSocket");
+		public Transform DreamLanternSocket => ItemCarryTool.Find("REMOTE_DreamLanternSocket");
+		public Transform SlideReelSocket => ItemCarryTool.Find("REMOTE_SlideReelSocket");
+		public Transform VisionTorchSocket => ItemCarryTool.Find("REMOTE_VisionTorchSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 		public IQSBOWItem HeldItem { get; set; }
