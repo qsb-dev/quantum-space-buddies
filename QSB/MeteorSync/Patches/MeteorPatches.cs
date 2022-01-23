@@ -225,7 +225,7 @@ namespace QSB.MeteorSync.Patches
 			}
 			else
 			{
-				DebugLog.ToConsole($"{qsbMeteorLauncher.ToString()} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
+				DebugLog.ToConsole($"{qsbMeteorLauncher} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
 			}
 
 			return false;

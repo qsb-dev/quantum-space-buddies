@@ -118,7 +118,7 @@ namespace QSB.MeteorSync.Messages
 					else if (!IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
 					{
 						// should only happen if client is way too far ahead and they try to connect. we fail here.
-						DebugLog.ToConsole($"{qsbFragment.ToString()} is thru white hole, but msg is not. fuck", MessageType.Error);
+						DebugLog.ToConsole($"{qsbFragment} is thru white hole, but msg is not. fuck", MessageType.Error);
 						return;
 					}
 
@@ -140,7 +140,7 @@ namespace QSB.MeteorSync.Messages
 			else if (!IsDetached && qsbFragment.IsDetached)
 			{
 				// should only happen if client is way too far ahead and they try to connect. we fail here.
-				DebugLog.ToConsole($"{qsbFragment.ToString()} is detached, but msg is not. fuck", MessageType.Error);
+				DebugLog.ToConsole($"{qsbFragment} is detached, but msg is not. fuck", MessageType.Error);
 			}
 		}
 	}

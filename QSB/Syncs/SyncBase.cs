@@ -81,7 +81,7 @@ namespace QSB.Syncs
 
 			if (!AttachedTransform)
 			{
-				DebugLog.ToConsole($"Error - AttachedObject {ToString()} is null!", MessageType.Error);
+				DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
 				return false;
 			}
 
@@ -92,7 +92,7 @@ namespace QSB.Syncs
 
 			if (!AllowNullReferenceTransform && !ReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning - {ToString()}'s ReferenceTransform is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is null.", MessageType.Warning);
 				return false;
 			}
 
@@ -214,7 +214,7 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {ToString()}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
 			}
 
 			if (!hasAuthority && UseInterpolation)

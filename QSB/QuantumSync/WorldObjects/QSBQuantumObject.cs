@@ -109,7 +109,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				if (tracker == null)
 				{
-					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {ToString()} is null!", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {this} is null!", MessageType.Warning);
 					continue;
 				}
 
