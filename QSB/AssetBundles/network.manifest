@@ -1,17 +1,31 @@
 ManifestFileVersion: 0
-CRC: 1732808678
+CRC: 3106527245
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ed5c3538b047d0f36eb783ec66a9c0f3
+    Hash: d58c55da1db3dad9a79ef6e614fb7061
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 8d215c2a845369265db87f3ba41f9fb2
+    Hash: 84f74b9bed86742ca42d7105344a0c8c
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
 - Class: 4
+  Script: {instanceID: 0}
+- Class: 20
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
@@ -32,6 +46,12 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
+  Script: {fileID: 534438773, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -120762068, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -2067710655, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
   Script: {fileID: -749020886, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: -270813150, guid: 27687deae413b90448366870cb0de502, type: 3}
@@ -43,8 +63,11 @@ ClassTypes:
   Script: {fileID: 2036222940, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 115
   Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Prefabs/NetworkObject.prefab
 - Assets/Prefabs/NETWORK_Player_Body.prefab
+- Assets/Prefabs/REMOTE_Player_Body.prefab
 Dependencies: []

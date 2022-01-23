@@ -6,6 +6,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -55,32 +56,55 @@ namespace QSB.Animation.Player
 			_riebeckController = bundle.LoadAsset("assets/Riebeck/Traveller_Riebeck.controller") as RuntimeAnimatorController;
 		}
 
-		private void InitCommon(Transform body)
+		private void InitCommon(Transform modelRoot)
 		{
-			if (QSBSceneManager.IsInUniverse)
+			try
 			{
-				LoadControllers();
-			}
+				if (QSBSceneManager.IsInUniverse)
+				{
+					LoadControllers();
+				}
 
-			VisibleAnimator = body.GetComponent<Animator>();
-			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
-			if (isLocalPlayer)
+				if (modelRoot == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to InitCommon with null body!", MessageType.Error);
+					return;
+				}
+
+				VisibleAnimator = modelRoot.GetComponent<Animator>();
+				Mirror = modelRoot.gameObject.AddComponent<AnimatorMirror>();
+				if (isLocalPlayer)
+				{
+					Mirror.Init(VisibleAnimator, InvisibleAnimator);
+				}
+				else
+				{
+					Mirror.Init(InvisibleAnimator, VisibleAnimator);
+				}
+
+				NetworkAnimator.enabled = true;
+				NetworkAnimator.Invoke("Awake");
+
+				DebugLog.DebugWrite($"getting local anim controller...");
+				var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
+				DebugLog.DebugWrite($"setting controllers...");
+				_suitedAnimController = localPlayerAnimController._baseAnimController;
+				_unsuitedAnimController = localPlayerAnimController._unsuitedAnimOverride;
+				
+				DebugLog.DebugWrite($"setting graphics...");
+				_suitedGraphics = modelRoot.GetChild(1).gameObject;
+				_unsuitedGraphics = modelRoot.GetChild(0).gameObject;
+
+				//var playerAnimController = body.GetComponent<PlayerAnimController>();
+				//_suitedAnimController = playerAnimController._baseAnimController;
+				//_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
+				//_suitedGraphics = playerAnimController._suitedGroup;
+				//_unsuitedGraphics = playerAnimController._unsuitedGroup;
+			}
+			catch (Exception ex)
 			{
-				Mirror.Init(VisibleAnimator, InvisibleAnimator);
+				DebugLog.ToConsole($"Exception thrown when running InitCommon on {(modelRoot != null ? modelRoot.name : "NULL BODY")}. {ex.Message} Stacktrace: {ex.StackTrace}", MessageType.Error);
 			}
-			else
-			{
-				Mirror.Init(InvisibleAnimator, VisibleAnimator);
-			}
-
-			NetworkAnimator.enabled = true;
-			NetworkAnimator.Invoke("Awake");
-
-			var playerAnimController = body.GetComponent<PlayerAnimController>();
-			_suitedAnimController = playerAnimController._baseAnimController;
-			_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
-			_suitedGraphics = playerAnimController._suitedGroup;
-			_unsuitedGraphics = playerAnimController._unsuitedGroup;
 		}
 
 		public void InitLocal(Transform body)
@@ -97,20 +121,20 @@ namespace QSB.Animation.Player
 		{
 			InitCommon(body);
 
-			var playerAnimController = body.GetComponent<PlayerAnimController>();
-			playerAnimController.enabled = false;
+			//var playerAnimController = body.GetComponent<PlayerAnimController>();
+			//playerAnimController.enabled = false;
 
-			playerAnimController._suitedGroup = new GameObject();
-			playerAnimController._unsuitedGroup = new GameObject();
-			playerAnimController._baseAnimController = null;
-			playerAnimController._unsuitedAnimOverride = null;
-			playerAnimController._rightArmHidden = false;
+			//playerAnimController._suitedGroup = new GameObject();
+			//playerAnimController._unsuitedGroup = new GameObject();
+			//playerAnimController._baseAnimController = null;
+			//playerAnimController._unsuitedAnimOverride = null;
+			//playerAnimController._rightArmHidden = false;
 
-			var rightArmObjects = playerAnimController._rightArmObjects.ToList();
-			rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
+			//var rightArmObjects = playerAnimController._rightArmObjects.ToList();
+			//rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
 
-			body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-			body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
+			//body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
+			//body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
 			SetAnimationType(AnimationType.PlayerUnsuited);
 
@@ -118,7 +142,7 @@ namespace QSB.Animation.Player
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
 
-			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
+			var ikSync = body.gameObject.GetComponent<PlayerHeadRotationSync>();
 			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
 		}
 

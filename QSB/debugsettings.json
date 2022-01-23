@@ -2,7 +2,7 @@
   "useKcpTransport": true,
   "overrideAppId": -1,
   "debugMode": true,
-  "debugGui": true,
+  "drawGui": true,
   "drawLines": false,
   "showQuantumVisibilityObjects": false,
   "showDebugLabels": false,

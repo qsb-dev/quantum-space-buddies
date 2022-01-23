@@ -23,16 +23,16 @@ namespace QSB.Audio
 		}
 
 		public void PlayEquipTool()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorEquip);
+			=> _oneShotExternalSource?.PlayOneShot(AudioType.ToolTranslatorEquip);
 
 		public void PlayUnequipTool()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolTranslatorUnequip);
+			=> _oneShotExternalSource?.PlayOneShot(AudioType.ToolTranslatorUnequip);
 
 		public void PlayTurnOnFlashlight()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOn);
+			=> _oneShotExternalSource?.PlayOneShot(AudioType.ToolFlashlightOn);
 
 		public void PlayTurnOffFlashlight()
-			=> _oneShotExternalSource.PlayOneShot(AudioType.ToolFlashlightOff);
+			=> _oneShotExternalSource?.PlayOneShot(AudioType.ToolFlashlightOff);
 
 		private OWAudioSource CreateBaseAudio(
 			Transform parent,

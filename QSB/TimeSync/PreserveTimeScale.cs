@@ -4,7 +4,7 @@ namespace QSB.TimeSync
 {
 	public class PreserveTimeScale : NetworkBehaviour
 	{
-		public void Start()
+		public void Init()
 		{
 			// disable meditation button;
 			Locator.GetSceneMenuManager().pauseMenu._skipToNextLoopButton.SetActive(false);
