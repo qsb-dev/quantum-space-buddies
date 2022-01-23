@@ -125,36 +125,8 @@ namespace QSB.Player.TransformSync
 			var REMOTE_Traveller_HEA_Player_v2 = REMOTE_Player_Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject;
 
 			/*
-			var REMOTE_Player_Body = new GameObject("REMOTE_Player_Body");
-
-			var REMOTE_PlayerCamera = new GameObject("REMOTE_PlayerCamera");
-			REMOTE_PlayerCamera.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_PlayerCamera.transform.localPosition = new Vector3(0f, 0.8496093f, 0.1500003f);
-
-			var REMOTE_RoastingSystem = new GameObject("REMOTE_RoastingSystem");
-			REMOTE_RoastingSystem.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_RoastingSystem.transform.localPosition = new Vector3(0f, 0.4f, 0f);
-
-			var REMOTE_Stick_Root = new GameObject("REMOTE_Stick_Root");
-			REMOTE_Stick_Root.transform.parent = REMOTE_RoastingSystem.transform;
-			REMOTE_Stick_Root.transform.localPosition = new Vector3(0.25f, 0f, 0.08f);
-			REMOTE_Stick_Root.transform.localRotation = Quaternion.Euler(0f, -10f, 0f);
-			*/
-
-			/*
 			 * SET UP PLAYER BODY
 			 */
-
-			/*
-			var player = Locator.GetPlayerTransform();
-			var playerModel = player.Find("Traveller_HEA_Player_v2");
-
-			var REMOTE_Traveller_HEA_Player_v2 = Instantiate(playerModel);
-			REMOTE_Traveller_HEA_Player_v2.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_Traveller_HEA_Player_v2.transform.localPosition = new Vector3(0f, -1.03f, -0.2f);
-			REMOTE_Traveller_HEA_Player_v2.transform.localRotation = Quaternion.Euler(-1.500009f, 0f, 0f);
-			REMOTE_Traveller_HEA_Player_v2.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-			*/
 
 			Player.Body = REMOTE_Player_Body;
 

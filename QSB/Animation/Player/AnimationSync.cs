@@ -94,12 +94,6 @@ namespace QSB.Animation.Player
 				DebugLog.DebugWrite($"setting graphics...");
 				_suitedGraphics = modelRoot.GetChild(1).gameObject;
 				_unsuitedGraphics = modelRoot.GetChild(0).gameObject;
-
-				//var playerAnimController = body.GetComponent<PlayerAnimController>();
-				//_suitedAnimController = playerAnimController._baseAnimController;
-				//_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
-				//_suitedGraphics = playerAnimController._suitedGroup;
-				//_unsuitedGraphics = playerAnimController._unsuitedGroup;
 			}
 			catch (Exception ex)
 			{
@@ -120,24 +114,7 @@ namespace QSB.Animation.Player
 		public void InitRemote(Transform body)
 		{
 			InitCommon(body);
-
-			//var playerAnimController = body.GetComponent<PlayerAnimController>();
-			//playerAnimController.enabled = false;
-
-			//playerAnimController._suitedGroup = new GameObject();
-			//playerAnimController._unsuitedGroup = new GameObject();
-			//playerAnimController._baseAnimController = null;
-			//playerAnimController._unsuitedAnimOverride = null;
-			//playerAnimController._rightArmHidden = false;
-
-			//var rightArmObjects = playerAnimController._rightArmObjects.ToList();
-			//rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
-
-			//body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-			//body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
-
 			SetAnimationType(AnimationType.PlayerUnsuited);
-
 			InitCrouchSync();
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
