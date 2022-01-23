@@ -8,7 +8,6 @@ using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.RespawnSync
 {
