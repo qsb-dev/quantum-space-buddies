@@ -293,7 +293,7 @@ namespace QSB
 			{
 				if (qsbOrb.TransformSync == null)
 				{
-					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
+					DebugLog.ToConsole($"{qsbOrb.ToString()} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 

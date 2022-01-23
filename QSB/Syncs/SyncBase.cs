@@ -81,7 +81,7 @@ namespace QSB.Syncs
 
 			if (!AttachedTransform)
 			{
-				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
+				DebugLog.ToConsole($"Error - AttachedObject {ToString()} is null!", MessageType.Error);
 				return false;
 			}
 
@@ -92,7 +92,7 @@ namespace QSB.Syncs
 
 			if (!AllowNullReferenceTransform && !ReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {ToString()}'s ReferenceTransform is null.", MessageType.Warning);
 				return false;
 			}
 
@@ -114,7 +114,8 @@ namespace QSB.Syncs
 		public Transform ReferenceTransform { get; private set; }
 
 		public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
-		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
+
+		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
 			+ $"{netId}:{GetType().Name} ({Name})";
 
 		protected virtual float DistanceLeeway => 5f;
@@ -213,7 +214,7 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {ToString()}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
 			}
 
 			if (!hasAuthority && UseInterpolation)
@@ -308,7 +309,7 @@ namespace QSB.Syncs
 				return;
 			}
 
-			DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
+			DebugGUI.DrawLabel(AttachedTransform.transform, ToString());
 		}
 	}
 }

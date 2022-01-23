@@ -21,11 +21,11 @@ namespace QSB.QuantumSync.WorldObjects
 			if (socket != null)
 			{
 				var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
-				return $"{LogName}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
+				return $"{ToString()}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
 			}
 			else
 			{
-				return $"{LogName}{Environment.NewLine}SocketId:NULL";
+				return $"{ToString()}{Environment.NewLine}SocketId:NULL";
 			}
 		}
 
