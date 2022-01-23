@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using QSB.ElevatorSync.Messages;
+using QSB.Messaging;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ElevatorSync.WorldObjects
@@ -35,6 +37,14 @@ namespace QSB.ElevatorSync.WorldObjects
 			boxShape.size = new Vector3(3, 3.5f, 3);
 
 			_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
+			}
 		}
 
 		public void RemoteCall(bool isGoingUp)
