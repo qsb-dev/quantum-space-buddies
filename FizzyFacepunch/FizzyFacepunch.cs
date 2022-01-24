@@ -62,8 +62,6 @@ namespace Mirror.FizzySteam
             Invoke(nameof(FetchSteamID), 1f);
         }
 
-		public string GetSteamID() => SteamClient.SteamId.ToString();
-
 		public override void ClientEarlyUpdate()
         {
             if (enabled && client != null && !client.Error)

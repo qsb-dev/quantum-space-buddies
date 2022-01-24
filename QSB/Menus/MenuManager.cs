@@ -340,7 +340,7 @@ namespace QSB.Menus
 				return;
 			}
 
-			var steamId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
+			var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
 
 			PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
 
