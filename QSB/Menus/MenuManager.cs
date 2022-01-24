@@ -347,6 +347,10 @@ namespace QSB.Menus
 		private void Connect()
 		{
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
+			if (address == string.Empty)
+			{
+				address = QSBCore.DefaultServerIP;
+			}
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{

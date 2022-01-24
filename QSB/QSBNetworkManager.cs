@@ -204,6 +204,7 @@ namespace QSB
 
 		public override void OnStartClient()
 		{
+			QSBCore.DefaultServerIP = networkAddress;
 			var config = QSBCore.Helper.Config;
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
