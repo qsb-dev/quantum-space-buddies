@@ -50,6 +50,7 @@ namespace QSB
 
 		private string _lastTransportError;
 		internal bool _intentionalDisconnect;
+		private const string _kcpDisconnectMessage = "KCP: received disconnect message";
 
 		public override void Awake()
 		{
@@ -156,7 +157,14 @@ namespace QSB
 
 			if (QSBCore.UseKcpTransport)
 			{
-				kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);
+				kcp2k.Log.Info = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s);
+					if (s == _kcpDisconnectMessage)
+					{
+						_lastTransportError = s;
+					}
+				};
 				kcp2k.Log.Warning = s =>
 				{
 					DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
@@ -263,10 +271,6 @@ namespace QSB
 			{
 				_lastTransportError = null;
 				_intentionalDisconnect = false;
-			}
-			else if (_lastTransportError == null)
-			{
-				_lastTransportError = "host disconnected";
 			}
 
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
