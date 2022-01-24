@@ -51,6 +51,7 @@ namespace QSB
 		private string _lastTransportError;
 		internal bool _intentionalDisconnect;
 		private const string _kcpDisconnectMessage = "KCP: received disconnect message";
+		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
 		{
@@ -72,8 +73,9 @@ namespace QSB
 			{
 				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
 				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
-					? "753640"
-					: $"{QSBCore.OverrideAppId}";
+					? _defaultSteamAppID.ToString()
+					: QSBCore.OverrideAppId.ToString();
+				fizzy.OnTransportError = error => _lastTransportError = error;
 				transport = fizzy;
 			}
 

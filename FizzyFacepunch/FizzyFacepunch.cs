@@ -34,6 +34,8 @@ namespace Mirror.FizzySteam
         [Tooltip("This will display your Steam User ID when you start or connect to a server.")]
         public ulong SteamUserID;
 
+        public Action<string> OnTransportError;
+
         private void Awake()
         {
             const string fileName = "steam_appid.txt";

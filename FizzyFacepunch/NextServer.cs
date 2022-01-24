@@ -11,6 +11,7 @@ namespace Mirror.FizzySteam
         private event Action<int, byte[], int> OnReceivedData;
         private event Action<int> OnDisconnected;
         private event Action<int, Exception> OnReceivedError;
+        private event Action<string> OnTransportError;
 
         private BidirectionalDictionary<Connection, int> connToMirrorID;
         private BidirectionalDictionary<SteamId, int> steamIDToMirrorID;
@@ -36,6 +37,7 @@ namespace Mirror.FizzySteam
             s.OnDisconnected += (id) => transport.OnServerDisconnected.Invoke(id);
             s.OnReceivedData += (id, data, ch) => transport.OnServerDataReceived.Invoke(id, new ArraySegment<byte>(data), ch);
             s.OnReceivedError += (id, exception) => transport.OnServerError.Invoke(id, exception);
+            s.OnTransportError = transport.OnTransportError;
 
             if (!SteamClient.IsValid)
             {

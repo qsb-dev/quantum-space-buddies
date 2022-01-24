@@ -18,6 +18,7 @@ namespace Mirror.FizzySteam
         private event Action<byte[], int> OnReceivedData;
         private event Action OnConnected;
         private event Action OnDisconnected;
+        private event Action<string> OnTransportError;
 
         private CancellationTokenSource cancelToken;
         private TaskCompletionSource<Task> connectedComplete;
@@ -39,6 +40,7 @@ namespace Mirror.FizzySteam
             c.OnConnected += () => transport.OnClientConnected.Invoke();
             c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
             c.OnReceivedData += (data, ch) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), ch);
+            c.OnTransportError = transport.OnTransportError;
 
             if (SteamClient.IsValid)
             {
