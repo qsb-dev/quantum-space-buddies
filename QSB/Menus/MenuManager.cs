@@ -46,6 +46,8 @@ namespace QSB.Menus
 
 		private Action PopupOK;
 
+		private bool _intentionalDisconnect;
+
 		public void Start()
 		{
 			Instance = this;
@@ -166,10 +168,6 @@ namespace QSB.Menus
 			OWTime.Unpause(OWTime.PauseType.System);
 			OWInput.RestorePreviousInputs();
 
-			//if (QSBSceneManager.IsInUniverse)
-			//{
-			//	LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
-			//}
 			PopupOK?.SafeInvoke();
 			PopupOK = null;
 		}
@@ -179,7 +177,6 @@ namespace QSB.Menus
 			var text = QSBCore.UseKcpTransport ? "Public IP Address" : "Steam ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
-			IPPopup.OnPopupValidate += Validate;
 
 			OneButtonInfoPopup = MenuApi.MakeInfoPopup("", "");
 			OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -283,7 +280,7 @@ namespace QSB.Menus
 
 			if (QSBCore.SkipTitleScreen)
 			{
-				UnityEngine.Application.runInBackground = true;
+				Application.runInBackground = true;
 				var titleScreenManager = FindObjectOfType<TitleScreenManager>();
 				var titleScreenAnimation = titleScreenManager._cameraController;
 				const float small = 1 / 1000f;
@@ -303,7 +300,7 @@ namespace QSB.Menus
 
 		private void Disconnect()
 		{
-			QSBNetworkManager.singleton._intentionalDisconnect = true;
+			_intentionalDisconnect = true;
 			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
@@ -345,14 +342,6 @@ namespace QSB.Menus
 			}
 
 			QSBNetworkManager.singleton.StartHost();
-		}
-
-		private bool Validate()
-		{
-			//var inputText = ((PopupInputMenu)IPPopup).GetInputText();
-			//var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
-			//return inputText == "localhost" || regex.Match(inputText).Success;
-			return ((PopupInputMenu)IPPopup).GetInputText() != "";
 		}
 
 		private void Connect()
@@ -417,8 +406,9 @@ namespace QSB.Menus
 
 		private void OnDisconnected(string error)
 		{
-			if (error == null)
+			if (_intentionalDisconnect)
 			{
+				_intentionalDisconnect = false;
 				return;
 			}
 

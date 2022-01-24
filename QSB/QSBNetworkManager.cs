@@ -24,6 +24,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace QSB
@@ -49,8 +50,10 @@ namespace QSB
 		private bool _everConnected;
 
 		private string _lastTransportError;
-		internal bool _intentionalDisconnect;
-		private const string _kcpDisconnectMessage = "KCP: received disconnect message";
+		private static readonly Regex _kcpErrorLogs = new(
+			"KCP: received disconnect message | Failed to resolve host: .*",
+			RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace
+		);
 		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
@@ -162,7 +165,7 @@ namespace QSB
 				kcp2k.Log.Info = s =>
 				{
 					DebugLog.DebugWrite("[KCP] " + s);
-					if (s == _kcpDisconnectMessage)
+					if (_kcpErrorLogs.IsMatch(s))
 					{
 						_lastTransportError = s;
 					}
@@ -269,12 +272,6 @@ namespace QSB
 		public override void OnClientDisconnect()
 		{
 			base.OnClientDisconnect();
-			if (_intentionalDisconnect)
-			{
-				_lastTransportError = null;
-				_intentionalDisconnect = false;
-			}
-
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
 			_lastTransportError = null;
 		}
