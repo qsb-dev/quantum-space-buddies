@@ -149,27 +149,25 @@ namespace QSB
 			return template;
 		}
 
-		private void Update()
-		{
-			_lastTransportError = null;
-		}
-
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
 			maxConnections = MaxConnections;
 
-			kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);
-			kcp2k.Log.Warning = s =>
+			if (QSBCore.UseKcpTransport)
 			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
-				_lastTransportError = s;
-			};
-			kcp2k.Log.Error = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
-				_lastTransportError = s;
-			};
+				kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);
+				kcp2k.Log.Warning = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+					_lastTransportError = s;
+				};
+				kcp2k.Log.Error = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
+					_lastTransportError = s;
+				};
+			}
 
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
