@@ -1,9 +1,19 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Messaging;
+using QSB.TornadoSync.Messages;
+using QSB.WorldSync;
 
 namespace QSB.TornadoSync.WorldObjects
 {
 	public class QSBTornado : WorldObject<TornadoController>
 	{
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new TornadoFormStateMessage(FormState) { To = to });
+			}
+		}
+
 		public bool FormState
 		{
 			get => AttachedObject._tornadoRoot.activeSelf // forming or formed or collapsing

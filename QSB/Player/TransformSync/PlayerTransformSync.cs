@@ -54,28 +54,6 @@ namespace QSB.Player.TransformSync
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
-		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
-		{
-			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
-
-			if (isLocalPlayer)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-		}
-
-		protected override void Init()
-		{
-			base.Init();
-
-			if (isLocalPlayer)
-			{
-				Player.IsReady = true;
-				new PlayerReadyMessage(true).Send();
-			}
-		}
-
 		public override void OnStopClient()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
@@ -86,9 +64,20 @@ namespace QSB.Player.TransformSync
 			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
+		protected override void Uninit()
+		{
+			base.Uninit();
+
+			if (isLocalPlayer)
+			{
+				Player.IsReady = false;
+				new PlayerReadyMessage(false).Send();
+			}
+		}
+
 		protected override Transform InitLocalTransform()
 		{
-			SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
+			SectorDetector.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -111,6 +100,9 @@ namespace QSB.Player.TransformSync
 			_visibleRoastingSystem = pivot.parent.parent;
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
+
+			Player.IsReady = true;
+			new PlayerReadyMessage(true).Send();
 
 			new RequestStateResyncMessage().Send();
 
@@ -160,10 +152,10 @@ namespace QSB.Player.TransformSync
 
 			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
+			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			// get inactive renderers too
 			QSBCore.UnityEvents.FireOnNextUpdate(() =>
-				Player.DitheringAnimator._renderers = Player.DitheringAnimator
+				Player._ditheringAnimator._renderers = Player._ditheringAnimator
 					.GetComponentsInChildren<Renderer>(true)
 					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
 					.ToArray());
@@ -261,8 +253,9 @@ namespace QSB.Player.TransformSync
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !IsInitialized
-				|| ReferenceTransform == null)
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
@@ -280,9 +273,8 @@ namespace QSB.Player.TransformSync
 			Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 		}
 
-		protected override bool IsReady
-			=> AttachedTransform != null
-				|| Locator.GetPlayerTransform() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& (Locator.GetPlayerTransform() || AttachedTransform);
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

@@ -7,7 +7,6 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -78,6 +77,14 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
+			}
+		}
+
 		public List<Shape> GetAttachedShapes()
 		{
 			if (AttachedObject == null)
@@ -102,7 +109,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				if (tracker == null)
 				{
-					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {LogName} is null!", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {this} is null!", MessageType.Warning);
 					continue;
 				}
 

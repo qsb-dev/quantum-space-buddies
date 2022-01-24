@@ -10,7 +10,7 @@ using UnityEngine;
 namespace QSB.Syncs
 {
 	/*
-	 * Rewrite number : 10
+	 * Rewrite number : 11
 	 * God has cursed me for my hubris, and my work is never finished.
 	 */
 
@@ -27,50 +27,85 @@ namespace QSB.Syncs
 				{
 					DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
 						+ "this really should not be happening!\n"
-						+ $"{Environment.StackTrace}",
+						+ Environment.StackTrace,
 						MessageType.Error);
 				}
 
 				return _player;
 			}
-			private set => _player = value;
 		}
 		private PlayerInfo _player;
 
-		private bool _baseIsReady
+		private bool IsInitialized;
+
+		protected virtual bool CheckReady()
 		{
-			get
+			if (netId is uint.MaxValue or 0)
 			{
-				if (netId is uint.MaxValue or 0)
-				{
-					return false;
-				}
-
-				if (!QSBWorldSync.AllObjectsAdded)
-				{
-					return false;
-				}
-
-				if (IsPlayerObject)
-				{
-					if (_player == null)
-					{
-						return false;
-					}
-
-					if (!isLocalPlayer && !Player.IsReady)
-					{
-						return false;
-					}
-				}
-
-				return true;
+				return false;
 			}
+
+			if (!QSBWorldSync.AllObjectsAdded)
+			{
+				return false;
+			}
+
+			if (IsPlayerObject)
+			{
+				if (_player == null)
+				{
+					return false;
+				}
+
+				if (!isLocalPlayer && !_player.IsReady)
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
-		protected abstract bool IsReady { get; }
+		/// <summary>
+		/// can be true with null reference transform. <br/>
+		/// can be true with inactive attached object.
+		/// </summary>
+		public bool IsValid { get; private set; }
+
+		protected virtual bool CheckValid()
+		{
+			if (!IsInitialized)
+			{
+				return false;
+			}
+
+			if (!AttachedTransform)
+			{
+				DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
+				return false;
+			}
+
+			if (!AllowInactiveAttachedObject && !AttachedTransform.gameObject.activeInHierarchy)
+			{
+				return false;
+			}
+
+			if (!AllowNullReferenceTransform && !ReferenceTransform)
+			{
+				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is null.", MessageType.Warning);
+				return false;
+			}
+
+			if (ReferenceTransform == Locator.GetRootTransform())
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		protected abstract bool UseInterpolation { get; }
-		protected virtual bool AllowDisabledAttachedObject => false;
+		protected virtual bool AllowInactiveAttachedObject => false;
 		protected abstract bool AllowNullReferenceTransform { get; }
 		protected virtual bool IsPlayerObject => false;
 		protected virtual bool OnlyApplyOnDeserialize => false;
@@ -78,15 +113,18 @@ namespace QSB.Syncs
 		public Transform AttachedTransform { get; private set; }
 		public Transform ReferenceTransform { get; private set; }
 
-		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty) + $"{netId}:{GetType().Name}";
+		public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
+
+		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
+			+ $"{netId}:{GetType().Name} ({Name})";
+
 		protected virtual float DistanceLeeway => 5f;
 		private float _previousDistance;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
-		public bool IsInitialized { get; private set; }
-		protected Vector3 SmoothPosition;
-		protected Quaternion SmoothRotation;
+		protected Vector3 SmoothPosition { get; private set; }
+		protected Quaternion SmoothRotation { get; private set; }
 
 		protected abstract Transform InitAttachedTransform();
 		protected abstract void GetFromAttached();
@@ -98,7 +136,7 @@ namespace QSB.Syncs
 			{
 				// get player objects spawned before this object (or is this one)
 				// and use the closest one
-				Player = QSBPlayerManager.PlayerList
+				_player = QSBPlayerManager.PlayerList
 					.Where(x => x.PlayerId <= netId)
 					.OrderBy(x => x.PlayerId).Last();
 			}
@@ -109,31 +147,39 @@ namespace QSB.Syncs
 
 		public override void OnStopClient()
 		{
-			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
-			{
-				Destroy(AttachedTransform.gameObject);
-			}
-
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			if (IsInitialized)
+			{
+				Uninit();
+			}
+		}
+
+		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		{
+			if (IsInitialized)
+			{
+				Uninit();
+			}
 		}
 
 		protected virtual void Init()
 		{
-			if (!QSBSceneManager.IsInUniverse)
-			{
-				DebugLog.ToConsole($"Error - {LogName} is being init-ed when not in the universe!", MessageType.Error);
-			}
-
-			if (IsPlayerObject && !hasAuthority && AttachedTransform != null)
-			{
-				Destroy(AttachedTransform.gameObject);
-			}
-
 			AttachedTransform = InitAttachedTransform();
 			IsInitialized = true;
 		}
 
-		protected virtual void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse) => IsInitialized = false;
+		protected virtual void Uninit()
+		{
+			if (IsPlayerObject && !hasAuthority && AttachedTransform)
+			{
+				Destroy(AttachedTransform.gameObject);
+			}
+
+			AttachedTransform = null;
+			ReferenceTransform = null;
+			IsInitialized = false;
+			IsValid = false;
+		}
 
 		private bool _shouldApply;
 
@@ -148,58 +194,30 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
-			if (!IsInitialized && IsReady && _baseIsReady)
+			if (!IsInitialized && CheckReady())
 			{
-				try
-				{
-					Init();
-				}
-				catch (Exception ex)
-				{
-					DebugLog.ToConsole($"Exception when initializing {name} : {ex}", MessageType.Error);
-					return;
-				}
+				Init();
 			}
-			else if (IsInitialized && (!IsReady || !_baseIsReady))
+			else if (IsInitialized && !CheckReady())
 			{
-				IsInitialized = false;
+				Uninit();
+				base.Update();
 				return;
 			}
 
-			if (!IsInitialized)
+			IsValid = CheckValid();
+			if (!IsValid)
 			{
+				base.Update();
 				return;
 			}
 
-			if (AttachedTransform == null)
+			if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - AttachedObject {LogName} is null.", MessageType.Warning);
-				IsInitialized = false;
-				return;
+				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
 			}
 
-			if (!AttachedTransform.gameObject.activeInHierarchy && !AllowDisabledAttachedObject)
-			{
-				return;
-			}
-
-			if (ReferenceTransform == null && !AllowNullReferenceTransform)
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null. AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-				return;
-			}
-
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero && ReferenceTransform != Locator.GetRootTransform())
-			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
-			}
-
-			if (ReferenceTransform == Locator.GetRootTransform())
-			{
-				return;
-			}
-
-			if (UseInterpolation)
+			if (!hasAuthority && UseInterpolation)
 			{
 				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
 				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
@@ -240,24 +258,28 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (hasAuthority)
+			if (!hasAuthority && UseInterpolation)
 			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-			}
-			else if (UseInterpolation)
-			{
-				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				if (IsPlayerObject)
+				{
+					AttachedTransform.SetParent(ReferenceTransform, true);
+					SmoothPosition = AttachedTransform.localPosition;
+					SmoothRotation = AttachedTransform.localRotation;
+				}
+				else
+				{
+					SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+					SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				}
 			}
 		}
 
 		protected virtual void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !IsInitialized
-				|| AttachedTransform == null
-				|| ReferenceTransform == null)
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
@@ -278,16 +300,16 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.ShowDebugLabels ||
-				Event.current.type != EventType.Repaint)
+			if (!QSBCore.ShowDebugLabels
+				|| Event.current.type != EventType.Repaint
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
 
-			if (AttachedTransform != null)
-			{
-				DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
-			}
+			DebugGUI.DrawLabel(AttachedTransform.transform, ToString());
 		}
 	}
 }

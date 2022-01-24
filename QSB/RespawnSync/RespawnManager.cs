@@ -8,7 +8,6 @@ using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.RespawnSync
 {
@@ -153,14 +152,7 @@ namespace QSB.RespawnSync
 				return;
 			}
 
-			if (player.DitheringAnimator != null)
-			{
-				player.DitheringAnimator.SetVisible(false, 1);
-			}
-			else
-			{
-				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
-			}
+			player.SetVisible(false, 1);
 		}
 
 		public void OnPlayerRespawn(PlayerInfo player)
@@ -176,14 +168,7 @@ namespace QSB.RespawnSync
 			_playersPendingRespawn.Remove(player);
 			UpdateRespawnNotification();
 
-			if (player.DitheringAnimator != null)
-			{
-				player.DitheringAnimator.SetVisible(true, 1);
-			}
-			else
-			{
-				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
-			}
+			player.SetVisible(true, 1);
 		}
 
 		public void RespawnSomePlayer()

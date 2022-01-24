@@ -30,7 +30,7 @@ namespace QSB.QuantumSync.WorldObjects
 		}
 
 		public override string ReturnLabel()
-			=> $"{LogName}{Environment.NewLine}StateIndex:{AttachedObject._stateIndex}";
+			=> $"{this}{Environment.NewLine}StateIndex:{AttachedObject._stateIndex}";
 
 		public void ChangeState(int newStateIndex)
 		{

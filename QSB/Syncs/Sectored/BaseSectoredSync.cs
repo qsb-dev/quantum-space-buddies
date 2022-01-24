@@ -7,30 +7,32 @@ namespace QSB.Syncs.Sectored
 {
 	public abstract class BaseSectoredSync : SyncBase
 	{
-		protected override bool AllowNullReferenceTransform => true;
+		protected sealed override bool AllowNullReferenceTransform => true;
 
 		public QSBSector ReferenceSector { get; private set; }
-		public SectorSync.SectorSync SectorSync { get; private set; }
+		public QSBSectorDetector SectorDetector { get; private set; }
 
 		private int _sectorId = -1;
 
 		public override void OnStartClient()
 		{
-			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
-			QSBSectorManager.Instance.TransformSyncs.Add(this);
+			SectorDetector = gameObject.AddComponent<QSBSectorDetector>();
+			QSBSectorManager.Instance.SectoredSyncs.Add(this);
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			base.OnStopClient();
-			QSBSectorManager.Instance.TransformSyncs.Remove(this);
-			Destroy(SectorSync);
+			QSBSectorManager.Instance.SectoredSyncs.Remove(this);
+			Destroy(SectorDetector);
 		}
 
-		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+		protected override void Uninit()
 		{
-			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
+			base.Uninit();
+
+			SectorDetector.Uninit();
 			SetReferenceSector(null);
 		}
 
@@ -48,14 +50,7 @@ namespace QSB.Syncs.Sectored
 
 		protected void GetFromSector()
 		{
-			if (ReferenceSector != null)
-			{
-				_sectorId = ReferenceSector.ObjectId;
-			}
-			else
-			{
-				_sectorId = -1;
-			}
+			_sectorId = ReferenceSector?.ObjectId ?? -1;
 		}
 
 		protected void ApplyToSector()

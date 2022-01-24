@@ -83,10 +83,6 @@ namespace QSB.TimeSync
 				return;
 			}
 
-			var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
-			var minutes = Mathf.FloorToInt(totalSeconds / 60f);
-			var seconds = Mathf.FloorToInt(totalSeconds) % 60;
-			var milliseconds = totalSeconds % 1 * 1000;
 			var text = "";
 			switch (_currentType)
 			{
@@ -94,6 +90,10 @@ namespace QSB.TimeSync
 					switch ((FastForwardReason)_currentReason)
 					{
 						case FastForwardReason.TooFarBehind:
+							var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
+							var minutes = Mathf.FloorToInt(totalSeconds / 60f);
+							var seconds = Mathf.FloorToInt(totalSeconds) % 60;
+							var milliseconds = totalSeconds % 1 * 1000;
 							text = $"{minutes:D2}:{seconds:D2}.{milliseconds:000}"
 								+ Environment.NewLine
 								+ "Fast-forwarding to match server time...";
@@ -110,7 +110,13 @@ namespace QSB.TimeSync
 							break;
 
 						case PauseReason.TooFarAhead:
-							text = "Pausing to match server time...";
+							var totalSeconds = Mathf.Max(Time.timeSinceLevelLoad - TargetTime, 0f);
+							var minutes = Mathf.FloorToInt(totalSeconds / 60f);
+							var seconds = Mathf.FloorToInt(totalSeconds) % 60;
+							var milliseconds = totalSeconds % 1 * 1000;
+							text = $"{minutes:D2}:{seconds:D2}.{milliseconds:000}"
+								+ Environment.NewLine
+								+ "Pausing to match server time...";
 							break;
 
 						case PauseReason.WaitingForAllPlayersToBeReady:

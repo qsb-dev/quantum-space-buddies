@@ -1,50 +1,51 @@
-﻿using QSB.WorldSync;
+﻿using QSB.ElevatorSync.Messages;
+using QSB.Messaging;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ElevatorSync.WorldObjects
 {
 	public class QSBElevator : WorldObject<Elevator>
 	{
-		private Vector3 _startLocalPos;
-		private Vector3 _endLocalPos;
-
-		private SingleInteractionVolume _interactVolume;
-		private OWAudioSource _owAudioSourceOneShot;
-		private OWAudioSource _owAudioSourceLP;
 		private OWTriggerVolume _elevatorTrigger;
 
 		public override void Init()
 		{
 			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => AttachedObject._interactVolume != null, InitValues);
+			QSBCore.UnityEvents.RunWhen(() => AttachedObject._interactVolume, () =>
+			{
+				FinishDelayedReady();
+
+				// BUG : This won't work for the log lift! need to make a different trigger for that
+
+				var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
+				boxShape.center = new Vector3(0, 1.75f, 0.25f);
+				boxShape.size = new Vector3(3, 3.5f, 3);
+
+				_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
+			});
 		}
 
-		private void InitValues()
+		public override void SendResyncInfo(uint to)
 		{
-			FinishDelayedReady();
-			_startLocalPos = AttachedObject._startLocalPos;
-			_endLocalPos = AttachedObject._endLocalPos;
-			_interactVolume = AttachedObject._interactVolume;
-			_owAudioSourceOneShot = AttachedObject._owAudioSourceOneShot;
-			_owAudioSourceLP = AttachedObject._owAudioSourceLP;
-
-			// BUG : This won't work for the log lift! need to make a different trigger for that
-
-			var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
-			boxShape.center = new Vector3(0, 1.75f, 0.25f);
-			boxShape.size = new Vector3(3, 3.5f, 3);
-
-			_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
+			}
 		}
 
 		public void RemoteCall(bool isGoingUp)
 		{
+			if (AttachedObject._goingToTheEnd == isGoingUp)
+			{
+				return;
+			}
+
 			if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 			{
 				SetDirection(isGoingUp);
 
 				AttachedObject._attachPoint.AttachPlayer();
-
 				if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
 				{
 					Locator.GetPlayerSuit().RemoveSuit();
@@ -61,10 +62,9 @@ namespace QSB.ElevatorSync.WorldObjects
 
 		private void SetDirection(bool isGoingUp)
 		{
-			_interactVolume.transform.Rotate(0f, 180f, 0f);
-			var targetPos = isGoingUp ? _endLocalPos : _startLocalPos;
-			AttachedObject._targetLocalPos = targetPos;
+			AttachedObject._interactVolume.transform.Rotate(0f, 180f, 0f);
 			AttachedObject._goingToTheEnd = isGoingUp;
+			AttachedObject._targetLocalPos = isGoingUp ? AttachedObject._endLocalPos : AttachedObject._startLocalPos;
 		}
 
 		private void RemoteStartLift()
@@ -72,12 +72,10 @@ namespace QSB.ElevatorSync.WorldObjects
 			AttachedObject.enabled = true;
 			AttachedObject._initLocalPos = AttachedObject.transform.localPosition;
 			AttachedObject._initLiftTime = Time.time;
-			_owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
-			_owAudioSourceLP.FadeIn(0.5f);
-			_interactVolume.DisableInteraction();
+			AttachedObject._owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
+			AttachedObject._owAudioSourceLP.FadeIn(0.5f);
+			AttachedObject._interactVolume.DisableInteraction();
 		}
-
-		public override bool ShouldDisplayDebug() => base.ShouldDisplayDebug() && _elevatorTrigger;
 
 		public override void DisplayLines()
 		{

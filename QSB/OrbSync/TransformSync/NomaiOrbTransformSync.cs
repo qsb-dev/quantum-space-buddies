@@ -11,7 +11,11 @@ namespace QSB.OrbSync.TransformSync
 {
 	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		protected override bool IsReady => QSBWorldSync.AllObjectsAdded;
+		/// <summary>
+		/// normally prints error when attached object is null.
+		/// this overrides it so that doesn't happen, since the orb can be destroyed.
+		/// </summary>
+		protected override bool CheckValid() => _attachedBody && base.CheckValid();
 		protected override bool UseInterpolation => true;
 		protected override float DistanceLeeway => 1f;
 
@@ -32,14 +36,6 @@ namespace QSB.OrbSync.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnStopClient();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
-
-			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override void Init()
@@ -58,15 +54,6 @@ namespace QSB.OrbSync.TransformSync
 			_attachedBody = AttachedTransform.GetAttachedOWRigidbody();
 			SetReferenceTransform(_attachedBody.GetOrigParent());
 
-			/*
-			if (_attachedBody.GetOrigParent() == Locator.GetRootTransform())
-			{
-				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
-				enabled = false;
-				return;
-			}
-			*/
-
 			if (QSBCore.IsHost)
 			{
 				netIdentity.RegisterAuthQueue();
@@ -75,6 +62,20 @@ namespace QSB.OrbSync.TransformSync
 			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
 			netIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		}
+
+		protected override void Uninit()
+		{
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
+			_attachedBody = null;
+
+			base.Uninit();
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);

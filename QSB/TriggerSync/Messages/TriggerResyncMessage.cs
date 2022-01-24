@@ -21,18 +21,13 @@ namespace QSB.TriggerSync.Messages
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(_playerIds.Length);
-			_playerIds.ForEach(writer.Write);
+			writer.WriteArray(_playerIds);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			_playerIds = new uint[reader.ReadInt()];
-			for (var i = 0; i < _playerIds.Length; i++)
-			{
-				_playerIds[i] = reader.ReadUInt();
-			}
+			_playerIds = reader.ReadArray<uint>();
 		}
 
 		public override void OnReceiveRemote()

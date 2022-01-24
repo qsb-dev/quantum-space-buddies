@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -23,6 +24,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace QSB
@@ -47,12 +49,13 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
-		public int Port
-		{
-			set => ((kcp2k.KcpTransport)transport).Port = (ushort)value;
-		}
 		private string _lastTransportError;
-		internal bool _intentionalDisconnect;
+		private static readonly string[] _kcpErrorLogs =
+		{
+			"KCP: received disconnect message",
+			"Failed to resolve host: .*"
+		};
+		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
 		{
@@ -64,7 +67,24 @@ namespace QSB
 				.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
 				.ForEach(x => x.Invoke(null, null));
 
-			transport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			gameObject.SetActive(false);
+
+			if (QSBCore.UseKcpTransport)
+			{
+				transport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			}
+			else
+			{
+				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
+				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
+					? _defaultSteamAppID.ToString()
+					: QSBCore.OverrideAppId.ToString();
+				fizzy.SetTransportError = error => _lastTransportError = error;
+				transport = fizzy;
+			}
+
+			gameObject.SetActive(true);
+
 			base.Awake();
 
 			InitPlayerName();
@@ -136,28 +156,32 @@ namespace QSB
 			return template;
 		}
 
-		private void Update()
-		{
-			_lastTransportError = null;
-		}
-
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
-			Port = QSBCore.Port;
 			maxConnections = MaxConnections;
 
-			kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);
-			kcp2k.Log.Warning = s =>
+			if (QSBCore.UseKcpTransport)
 			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
-				_lastTransportError = s;
-			};
-			kcp2k.Log.Error = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
-				_lastTransportError = s;
-			};
+				kcp2k.Log.Info = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s);
+					if (_kcpErrorLogs.Any(p => Regex.IsMatch(s, p)))
+					{
+						_lastTransportError = s;
+					}
+				};
+				kcp2k.Log.Warning = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+					_lastTransportError = s;
+				};
+				kcp2k.Log.Error = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
+					_lastTransportError = s;
+				};
+			}
 
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
@@ -181,6 +205,7 @@ namespace QSB
 
 		public override void OnStartClient()
 		{
+			QSBCore.DefaultServerIP = networkAddress;
 			var config = QSBCore.Helper.Config;
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
@@ -249,17 +274,8 @@ namespace QSB
 		public override void OnClientDisconnect()
 		{
 			base.OnClientDisconnect();
-			if (_intentionalDisconnect)
-			{
-				_lastTransportError = null;
-				_intentionalDisconnect = false;
-			}
-			else if (_lastTransportError == null)
-			{
-				_lastTransportError = "host disconnected";
-			}
-
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
+			_lastTransportError = null;
 		}
 
 		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
@@ -281,7 +297,7 @@ namespace QSB
 			{
 				if (qsbOrb.TransformSync == null)
 				{
-					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
+					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 

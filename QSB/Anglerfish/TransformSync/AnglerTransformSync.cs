@@ -9,7 +9,6 @@ namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
-		protected override bool IsReady => QSBWorldSync.AllObjectsAdded;
 		protected override bool UseInterpolation => false;
 		protected override bool OnlyApplyOnDeserialize => true;
 
@@ -29,14 +28,6 @@ namespace QSB.Anglerfish.TransformSync
 		{
 			_instances.Remove(this);
 			base.OnStopClient();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
-
-			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		protected override float SendInterval => 1;
@@ -60,15 +51,28 @@ namespace QSB.Anglerfish.TransformSync
 			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
+		protected override void Uninit()
+		{
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+
+			base.Uninit();
+		}
+
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
 		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-				|| !IsInitialized
-				|| AttachedRigidbody == null
-				|| AttachedRigidbody.IsSuspended())
+				|| !IsValid
+				|| !ReferenceTransform
+				|| !AttachedTransform.gameObject.activeInHierarchy)
 			{
 				return;
 			}
@@ -81,7 +85,7 @@ namespace QSB.Anglerfish.TransformSync
 			Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition()
 				+ AttachedRigidbody.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
 
-			if (_qsbAngler.TargetTransform != null)
+			if (_qsbAngler.TargetTransform)
 			{
 				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, AttachedRigidbody.GetPosition(), Color.gray);
 				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, _qsbAngler.TargetTransform.position + _qsbAngler.TargetVelocity, Color.green);

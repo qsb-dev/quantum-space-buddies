@@ -40,11 +40,7 @@ namespace QSB.SaveSync.Messages
 			writer.Write(LaunchCodesGiven);
 			writer.Write(LoopCount);
 
-			writer.Write(KnownFrequencies.Length);
-			foreach (var item in KnownFrequencies)
-			{
-				writer.Write(item);
-			}
+			writer.WriteArray(KnownFrequencies);
 
 			writer.Write(KnownSignals.Count);
 			foreach (var (name, discovered) in KnownSignals)
@@ -62,12 +58,7 @@ namespace QSB.SaveSync.Messages
 			LaunchCodesGiven = reader.Read<bool>();
 			LoopCount = reader.Read<int>();
 
-			var frequenciesLength = reader.Read<int>();
-			KnownFrequencies = new bool[frequenciesLength];
-			for (var i = 0; i < frequenciesLength; i++)
-			{
-				KnownFrequencies[i] = reader.Read<bool>();
-			}
+			KnownFrequencies = reader.ReadArray<bool>();
 
 			var signalsLength = reader.Read<int>();
 			KnownSignals = new Dictionary<int, bool>(signalsLength);

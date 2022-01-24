@@ -31,8 +31,16 @@ namespace QSB.Utility
 
 		#region MIRROR
 
-		public static uint GetPlayerId(this NetworkConnection conn) =>
-			conn.identity.netId;
+		public static uint GetPlayerId(this NetworkConnection conn)
+		{
+			if (conn == null)
+			{
+				DebugLog.ToConsole("Warning - GetPlayerId with null NetworkConnection", MessageType.Warning);
+				return uint.MaxValue;
+			}
+
+			return conn.identity.netId;
+		}
 
 		public static void SpawnWithServerAuthority(this GameObject go) =>
 			NetworkServer.Spawn(go, NetworkServer.localConnection);
@@ -51,7 +59,7 @@ namespace QSB.Utility
 				}
 				catch (TargetInvocationException ex)
 				{
-					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException!.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! {ex.InnerException}", MessageType.Error);
 				}
 			}
 		}
