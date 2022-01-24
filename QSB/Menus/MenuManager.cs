@@ -5,13 +5,10 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
-using Steamworks;
 using System;
 using System.Text;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using Button = UnityEngine.UI.Button;
 
 namespace QSB.Menus
 {
@@ -95,8 +92,8 @@ namespace QSB.Menus
 		private void Update()
 		{
 			if (QSBCore.IsInMultiplayer
-			    && (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
-			    && _loadingText != null)
+				&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+				&& _loadingText != null)
 			{
 				var num = LoadManager.GetAsyncLoadProgress();
 				num = num < 0.1f
@@ -320,7 +317,6 @@ namespace QSB.Menus
 
 		private void Host()
 		{
-			QSBNetworkManager.singleton.StartHost();
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(HostButton, false);
 			SetButtonActive(QuitButton, false);
@@ -337,18 +333,18 @@ namespace QSB.Menus
 
 			if (QSBCore.UseKcpTransport)
 			{
-				return;
+				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
+
+				PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
+
+				OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
+					$"{steamId}\r\n" +
+					"Do you want to copy this to the clipboard?"
+					, "YES"
+					, "NO");
 			}
 
-			var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
-
-			PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
-
-			OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
-				$"{steamId}\r\n" +
-				$"Do you want to copy this to the clipboard?"
-				, "YES"
-				, "NO");
+			QSBNetworkManager.singleton.StartHost();
 		}
 
 		private bool Validate()
@@ -363,9 +359,6 @@ namespace QSB.Menus
 		{
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
 
-			QSBNetworkManager.singleton.networkAddress = address;
-			QSBNetworkManager.singleton.StartClient();
-
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{
 				SetButtonActive(ResumeGameButton, false);
@@ -376,6 +369,10 @@ namespace QSB.Menus
 			{
 				SetButtonActive(QuitButton, false);
 			}
+
+			QSBNetworkManager.singleton.networkAddress = address;
+			typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection)).SetValue(null, new NetworkConnectionToServer());
+			QSBNetworkManager.singleton.StartClient();
 		}
 
 		private void OnConnected()
