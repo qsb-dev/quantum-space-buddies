@@ -50,10 +50,11 @@ namespace QSB
 		private bool _everConnected;
 
 		private string _lastTransportError;
-		private static readonly Regex _kcpErrorLogs = new(
-			"KCP: received disconnect message | Failed to resolve host: .*",
-			RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace
-		);
+		private static readonly string[] _kcpErrorLogs =
+		{
+			"KCP: received disconnect message",
+			"Failed to resolve host: .*"
+		};
 		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
@@ -165,7 +166,7 @@ namespace QSB
 				kcp2k.Log.Info = s =>
 				{
 					DebugLog.DebugWrite("[KCP] " + s);
-					if (_kcpErrorLogs.IsMatch(s))
+					if (_kcpErrorLogs.Any(p => Regex.IsMatch(s, p)))
 					{
 						_lastTransportError = s;
 					}
