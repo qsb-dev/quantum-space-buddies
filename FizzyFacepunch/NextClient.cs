@@ -18,7 +18,7 @@ namespace Mirror.FizzySteam
         private event Action<byte[], int> OnReceivedData;
         private event Action OnConnected;
         private event Action OnDisconnected;
-        private event Action<string> OnTransportError;
+        private Action<string> SetTransportError;
 
         private CancellationTokenSource cancelToken;
         private TaskCompletionSource<Task> connectedComplete;
@@ -40,7 +40,7 @@ namespace Mirror.FizzySteam
             c.OnConnected += () => transport.OnClientConnected.Invoke();
             c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
             c.OnReceivedData += (data, ch) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), ch);
-            c.OnTransportError = transport.OnTransportError;
+            c.SetTransportError = transport.SetTransportError;
 
             if (SteamClient.IsValid)
             {
@@ -49,6 +49,7 @@ namespace Mirror.FizzySteam
             else
             {
                 Debug.LogError("SteamWorks not initialized");
+                c.SetTransportError("SteamWorks not initialized");
                 c.OnConnectionFailed();
             }
 
@@ -75,10 +76,12 @@ namespace Mirror.FizzySteam
                     if (cancelToken.IsCancellationRequested)
                     {
                         Debug.LogError($"The connection attempt was cancelled.");
+                        SetTransportError("The connection attempt was cancelled.");
                     }
                     else if (timeOutTask.IsCompleted)
                     {
                         Debug.LogError($"Connection to {host} timed out.");
+                        SetTransportError($"Connection to {host} timed out.");
                     }
 
                     OnConnected -= SetConnectedComplete;
@@ -91,12 +94,14 @@ namespace Mirror.FizzySteam
             {
                 Debug.LogError($"Connection string was not in the right format. Did you enter a SteamId?");
                 Error = true;
+                SetTransportError("Connection string was not in the right format. Did you enter a SteamId?");
                 OnConnectionFailed();
             }
             catch (Exception ex)
             {
                 Debug.LogError(ex.Message);
                 Error = true;
+                SetTransportError(ex.Message);
                 OnConnectionFailed();
             }
             finally
@@ -147,6 +152,7 @@ namespace Mirror.FizzySteam
                 Connected = false;
                 OnDisconnected.Invoke();
                 Debug.LogError("Disconnected.");
+                SetTransportError("connection closed by peer");
                 conn.Close(false, 0, "Disconnected");
             }
             else

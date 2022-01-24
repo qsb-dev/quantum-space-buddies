@@ -75,7 +75,7 @@ namespace QSB
 				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
 					? _defaultSteamAppID.ToString()
 					: QSBCore.OverrideAppId.ToString();
-				fizzy.OnTransportError = error => _lastTransportError = error;
+				fizzy.SetTransportError = error => _lastTransportError = error;
 				transport = fizzy;
 			}
 
@@ -276,6 +276,7 @@ namespace QSB
 			}
 
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
+			_lastTransportError = null;
 		}
 
 		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
