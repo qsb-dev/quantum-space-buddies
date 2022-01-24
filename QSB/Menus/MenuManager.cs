@@ -328,7 +328,7 @@ namespace QSB.Menus
 				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
 			DisconnectPopup._labelText.text = popupText;
 
-			if (QSBCore.UseKcpTransport)
+			if (!QSBCore.UseKcpTransport)
 			{
 				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
 
