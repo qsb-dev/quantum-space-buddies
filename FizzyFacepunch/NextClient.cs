@@ -48,8 +48,8 @@ namespace Mirror.FizzySteam
             }
             else
             {
-                Debug.LogError("SteamWorks not initialized");
                 c.SetTransportError("SteamWorks not initialized");
+                Debug.LogError("SteamWorks not initialized");
                 c.OnConnectionFailed();
             }
 
@@ -75,13 +75,13 @@ namespace Mirror.FizzySteam
                 {
                     if (cancelToken.IsCancellationRequested)
                     {
-                        Debug.LogError($"The connection attempt was cancelled.");
                         SetTransportError("The connection attempt was cancelled.");
+                        Debug.LogError($"The connection attempt was cancelled.");
                     }
                     else if (timeOutTask.IsCompleted)
                     {
-                        Debug.LogError($"Connection to {host} timed out.");
                         SetTransportError($"Connection to {host} timed out.");
+                        Debug.LogError($"Connection to {host} timed out.");
                     }
 
                     OnConnected -= SetConnectedComplete;
@@ -92,16 +92,16 @@ namespace Mirror.FizzySteam
             }
             catch (FormatException)
             {
+                SetTransportError("Connection string was not in the right format. Did you enter a SteamId?");
                 Debug.LogError($"Connection string was not in the right format. Did you enter a SteamId?");
                 Error = true;
-                SetTransportError("Connection string was not in the right format. Did you enter a SteamId?");
                 OnConnectionFailed();
             }
             catch (Exception ex)
             {
+                SetTransportError(ex.Message);
                 Debug.LogError(ex.Message);
                 Error = true;
-                SetTransportError(ex.Message);
                 OnConnectionFailed();
             }
             finally
@@ -149,10 +149,10 @@ namespace Mirror.FizzySteam
             }
             else if (info.State == ConnectionState.ClosedByPeer)
             {
+                SetTransportError("connection closed by peer");
                 Connected = false;
                 OnDisconnected.Invoke();
                 Debug.LogError("Disconnected.");
-                SetTransportError("connection closed by peer");
                 conn.Close(false, 0, "Disconnected");
             }
             else
