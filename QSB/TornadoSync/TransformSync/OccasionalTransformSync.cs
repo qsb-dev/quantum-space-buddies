@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace QSB.TornadoSync.TransformSync
 {
+	// todo: link this to world objects to make things deterministic
 	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
 		protected override bool CheckReady() => base.CheckReady()

@@ -186,15 +186,6 @@ namespace QSB
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
 
-		public override void OnStartServer()
-		{
-			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
-			{
-				QSBWorldSync.OldDialogueTrees.AddRange(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>());
-			}
-		}
-
 		public override void OnServerAddPlayer(NetworkConnection connection) // Called on the server when a client joins
 		{
 			DebugLog.DebugWrite($"OnServerAddPlayer", MessageType.Info);

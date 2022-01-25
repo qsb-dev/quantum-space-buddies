@@ -121,7 +121,7 @@ namespace QSB.WorldSync
 			DebugLog.DebugWrite($"GameInit QSBWorldSync", MessageType.Info);
 
 			OldDialogueTrees.Clear();
-			OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>());
+			OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>().SortDeterministic());
 
 			if (!QSBCore.IsHost)
 			{
@@ -209,6 +209,9 @@ namespace QSB.WorldSync
 			return (TWorldObject)worldObject;
 		}
 
+		/// <summary>
+		/// not deterministic across platforms
+		/// </summary>
 		public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
 			where TUnityObject : MonoBehaviour
 			=> Resources.FindObjectsOfTypeAll<TUnityObject>()
@@ -218,7 +221,7 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>();
+			var list = GetUnityObjects<TUnityObject>().SortDeterministic();
 			Init<TWorldObject, TUnityObject>(list);
 		}
 
@@ -226,10 +229,15 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>().Where(x => !typesToExclude.Contains(x.GetType()));
+			var list = GetUnityObjects<TUnityObject>()
+				.Where(x => !typesToExclude.Contains(x.GetType()))
+				.SortDeterministic();
 			Init<TWorldObject, TUnityObject>(list);
 		}
 
+		/// <summary>
+		/// make sure to sort the list!
+		/// </summary>
 		public static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom)
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
@@ -253,11 +261,15 @@ namespace QSB.WorldSync
 			where TWorldObject : QSBTrigger<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>()
-				.Select(x => (triggerSelector(x), x))
-				.Where(x => x.Item1);
-			foreach (var (item, owner) in list)
+			var list = GetUnityObjects<TUnityObject>().SortDeterministic();
+			foreach (var owner in list)
 			{
+				var item = triggerSelector(owner);
+				if (!item)
+				{
+					continue;
+				}
+
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,

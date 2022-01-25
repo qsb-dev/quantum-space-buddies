@@ -1,4 +1,5 @@
 ﻿using QSB.JellyfishSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace QSB.JellyfishSync
 		public override void BuildWorldObjects(OWScene scene)
 		{
 			Jellyfish.Clear();
-			Jellyfish.AddRange(QSBWorldSync.GetUnityObjects<JellyfishController>());
+			Jellyfish.AddRange(QSBWorldSync.GetUnityObjects<JellyfishController>().SortDeterministic());
 			QSBWorldSync.Init<QSBJellyfish, JellyfishController>(Jellyfish);
 		}
 	}

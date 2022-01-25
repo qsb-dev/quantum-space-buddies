@@ -1,4 +1,5 @@
 ﻿using QSB.OrbSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace QSB.OrbSync
 		public override void BuildWorldObjects(OWScene scene)
 		{
 			Orbs.Clear();
-			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>());
+			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>().SortDeterministic());
 			QSBWorldSync.Init<QSBOrb, NomaiInterfaceOrb>(Orbs);
 		}
 	}
