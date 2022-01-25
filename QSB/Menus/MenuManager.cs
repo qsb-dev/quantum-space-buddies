@@ -318,6 +318,8 @@ namespace QSB.Menus
 			SetButtonActive(HostButton, false);
 			SetButtonActive(QuitButton, false);
 
+			QSBNetworkManager.singleton.StartHost();
+
 			var text = QSBCore.IsHost
 				? StopHostingString
 				: DisconnectString;
@@ -340,8 +342,6 @@ namespace QSB.Menus
 					, "YES"
 					, "NO");
 			}
-
-			QSBNetworkManager.singleton.StartHost();
 		}
 
 		private void Connect()

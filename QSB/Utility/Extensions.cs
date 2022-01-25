@@ -33,9 +33,9 @@ namespace QSB.Utility
 
 		public static uint GetPlayerId(this NetworkConnection conn)
 		{
-			if (conn == null)
+			if (!conn.identity)
 			{
-				DebugLog.ToConsole("Warning - GetPlayerId with null NetworkConnection", MessageType.Warning);
+				DebugLog.ToConsole($"Error - GetPlayerId on {conn.address} has no identity", MessageType.Error);
 				return uint.MaxValue;
 			}
 
