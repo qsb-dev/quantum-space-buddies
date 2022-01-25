@@ -23,7 +23,7 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 		protected sealed override Transform InitAttachedTransform()
 		{
 			AttachedRigidbody = InitAttachedRigidbody();
-			return AttachedRigidbody.transform;
+			return AttachedRigidbody ? AttachedRigidbody.transform : null;
 		}
 
 		protected override void UpdatePrevData()
