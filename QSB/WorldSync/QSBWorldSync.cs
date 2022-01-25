@@ -110,7 +110,7 @@ namespace QSB.WorldSync
 
 		public static List<CharacterDialogueTree> OldDialogueTrees { get; } = new();
 		public static Dictionary<string, bool> DialogueConditions { get; private set; } = new();
-		public static Dictionary<string, bool> PersistentConditions { get; private set; } = new();
+		private static Dictionary<string, bool> PersistentConditions { get; set; } = new();
 		public static List<FactReveal> ShipLogFacts { get; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
