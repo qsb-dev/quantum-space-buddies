@@ -14,15 +14,15 @@ namespace QSB.TornadoSync
 		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
 
-			if (!QSBCore.IsHost)
+			if (QSBCore.IsHost)
 			{
-				return;
+				foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
+				{
+					NetworkServer.Destroy(transformSync.gameObject);
+				}
 			}
 
-			foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
-			{
-				NetworkServer.Destroy(transformSync.gameObject);
-			}
+			OccasionalTransformSync.Bodies.Clear();
 
 			var gdBody = Locator._giantsDeep.GetOWRigidbody();
 			// cannon
@@ -36,7 +36,7 @@ namespace QSB.TornadoSync
 			SpawnOccasional(cannon._probeBody, gdBody);
 
 			// islands
-			foreach (var island in QSBWorldSync.GetUnityObjects<IslandController>())
+			foreach (var island in QSBWorldSync.GetUnityObjects<IslandController>().SortDeterministic())
 			{
 				SpawnOccasional(island._islandBody, gdBody);
 			}
@@ -44,9 +44,12 @@ namespace QSB.TornadoSync
 
 		private static void SpawnOccasional(OWRigidbody body, OWRigidbody refBody)
 		{
-			var transformSync = Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
-			transformSync.InitBodyIndexes(body, refBody);
-			transformSync.gameObject.SpawnWithServerAuthority();
+			OccasionalTransformSync.Bodies.Add((body, refBody));
+			if (QSBCore.IsHost)
+			{
+				var transformSync = Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
+				transformSync.gameObject.SpawnWithServerAuthority();
+			}
 		}
 	}
 }
