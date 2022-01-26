@@ -46,8 +46,7 @@ namespace QSB.TornadoSync.TransformSync
 			_sectors = SectorManager.s_sectors
 				.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();
 			_childBodies = CenterOfTheUniverse.s_rigidbodies
-				.Where(x => x._origParentBody == AttachedRigidbody)
-				.ToArray();
+				.Where(x => x._origParentBody == AttachedRigidbody).ToArray();
 		}
 
 		protected override void ApplyToAttached()
@@ -99,7 +98,7 @@ namespace QSB.TornadoSync.TransformSync
 				return; // wtf
 			}
 
-			if (child.transform.parent != null)
+			if (child.transform.parent)
 			{
 				// it's parented to AttachedObject or one of its children
 				return;

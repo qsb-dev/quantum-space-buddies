@@ -25,6 +25,7 @@ namespace QSB.TornadoSync
 
 			if (cannon._probeBody)
 			{
+				// probe is null on statue scene reload
 				SpawnOccasional(cannon._probeBody, gdBody);
 			}
 
