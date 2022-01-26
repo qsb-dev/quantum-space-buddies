@@ -85,15 +85,15 @@ namespace QSB.Animation.Player
 				NetworkAnimator.enabled = true;
 				NetworkAnimator.Invoke("Awake");
 
-				DebugLog.DebugWrite($"getting local anim controller...");
-				var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
-				DebugLog.DebugWrite($"setting controllers...");
-				_suitedAnimController = localPlayerAnimController._baseAnimController;
-				_unsuitedAnimController = localPlayerAnimController._unsuitedAnimOverride;
-				
-				DebugLog.DebugWrite($"setting graphics...");
+				//var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
+				//_suitedAnimController = localPlayerAnimController._baseAnimController;
+				//_unsuitedAnimController = localPlayerAnimController._unsuitedAnimOverride;
+				_suitedAnimController = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<RuntimeAnimatorController>("Assets/GameAssets/AnimatorController/Player.controller"));
+				_unsuitedAnimController = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<AnimatorOverrideController>("Assets/GameAssets/AnimatorOverrideController/PlayerUnsuitedOverride.overrideController"));
 				_suitedGraphics = modelRoot.GetChild(1).gameObject;
 				_unsuitedGraphics = modelRoot.GetChild(0).gameObject;
+
+				VisibleAnimator.SetLayerWeight(1, 1f);
 			}
 			catch (Exception ex)
 			{
@@ -119,8 +119,11 @@ namespace QSB.Animation.Player
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
 
-			var ikSync = body.gameObject.GetComponent<PlayerHeadRotationSync>();
+			var ikSync = body.gameObject.GetAddComponent<PlayerHeadRotationSync>();
 			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
+
+			//var toolArmSync = body.gameObject.GetAddComponent<ToolArmOverride>();
+			//toolArmSync.Init(Player, body);
 		}
 
 		private void InitAccelerationSync()

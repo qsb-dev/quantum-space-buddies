@@ -1,6 +1,7 @@
 ﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 
 namespace QSB.ItemSync.Messages
 {
@@ -26,6 +27,14 @@ namespace QSB.ItemSync.Messages
 				_ => player.ItemSocket,
 			};
 			WorldObject.PickUpItem(itemSocket, From);
+
+			switch (itemType)
+			{
+				case ItemType.Lantern:
+					DebugLog.DebugWrite($"HOLD LANTERN");
+					player.AnimationSync.VisibleAnimator.SetTrigger("HoldLantern");
+					break;
+			}
 		}
 	}
 }

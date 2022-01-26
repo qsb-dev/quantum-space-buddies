@@ -3,6 +3,7 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -44,6 +45,9 @@ namespace QSB.ItemSync.Messages
 
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.HeldItem = WorldObject;
+
+			DebugLog.DebugWrite("DROP HELD ITEM");
+			player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 		}
 	}
 }

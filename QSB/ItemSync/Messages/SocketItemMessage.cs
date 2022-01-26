@@ -42,6 +42,10 @@ namespace QSB.ItemSync.Messages
 			IQSBOWItem itemWorldObject;
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.HeldItem = null;
+
+			DebugLog.DebugWrite("DROP HELD ITEM");
+			player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
+
 			switch (Value)
 			{
 				case SocketMessageType.Socket:

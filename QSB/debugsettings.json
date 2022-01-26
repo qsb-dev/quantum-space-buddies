@@ -3,7 +3,7 @@
   "overrideAppId": -1,
   "debugMode": true,
   "drawGui": true,
-  "drawLines": false,
+  "drawLines": true,
   "showQuantumVisibilityObjects": false,
   "showDebugLabels": false,
   "avoidTimeSync": false,

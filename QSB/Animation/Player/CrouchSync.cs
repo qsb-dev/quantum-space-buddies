@@ -9,7 +9,7 @@ namespace QSB.Animation.Player
 		public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
 
 		private const float CrouchSmoothTime = 0.05f;
-		private const int CrouchLayerIndex = 1;
+		private const int CrouchLayerIndex = 2;
 
 		private PlayerCharacterController _playerController;
 		private Animator _bodyAnim;
