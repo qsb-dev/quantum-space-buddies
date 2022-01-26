@@ -9,12 +9,13 @@ namespace QSB.ConversationSync.WorldObjects
 			// todo SendResyncInfo
 		}
 
-		public void RemoteEnterDialogue(int activatedIndex, int listIndex)
+		public void RemoteEnterDialogue(int dialogueIndex)
 		{
-			var dialogueCondition = AttachedObject._listDialogues[listIndex];
+			var dialogueCondition = AttachedObject._listDialogues[dialogueIndex];
 			AttachedObject._activeRemoteDialogue = dialogueCondition.dialogue;
 			AttachedObject._inRemoteDialogue = true;
-			AttachedObject._activatedDialogues[activatedIndex] = true;
+
+			AttachedObject._activatedDialogues[dialogueIndex] = true;
 		}
 	}
 }
