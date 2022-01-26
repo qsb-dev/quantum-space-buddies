@@ -17,7 +17,7 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 			=> AttachedObject.IsSocketOccupied();
 
 		public virtual bool PlaceIntoSocket(IQSBOWItem item)
-			=> AttachedObject.PlaceIntoSocket((OWItem)item.ReturnObject());
+			=> AttachedObject.PlaceIntoSocket((OWItem)item.AttachedObject);
 
 		public virtual IQSBOWItem RemoveFromSocket()
 			=> AttachedObject.RemoveFromSocket().GetWorldObject<IQSBOWItem>();
