@@ -8,7 +8,7 @@
 		{
 			base.SendResyncInfo(to);
 
-			// todo
+			// todo SendResyncInfo
 		}
 	}
 }

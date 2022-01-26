@@ -80,7 +80,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 		public override void SendResyncInfo(uint to)
 		{
-			// todo
+			// todo SendResyncInfo
 		}
 
 		public ItemType GetItemType()

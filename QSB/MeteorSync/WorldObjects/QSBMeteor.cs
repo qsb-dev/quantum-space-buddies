@@ -7,7 +7,7 @@ namespace QSB.MeteorSync.WorldObjects
 	{
 		public override void SendResyncInfo(uint to)
 		{
-			// todo
+			// todo SendResyncInfo
 		}
 
 		public static bool IsSpecialImpact(GameObject go) =>

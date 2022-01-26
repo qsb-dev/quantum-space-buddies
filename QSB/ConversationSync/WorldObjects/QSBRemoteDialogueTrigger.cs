@@ -6,7 +6,7 @@ namespace QSB.ConversationSync.WorldObjects
 	{
 		public override void SendResyncInfo(uint to)
 		{
-			// todo
+			// todo SendResyncInfo
 		}
 
 		public void RemoteEnterDialogue(int activatedIndex, int listIndex)

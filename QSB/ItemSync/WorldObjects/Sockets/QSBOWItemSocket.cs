@@ -9,7 +9,7 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 	{
 		public override void SendResyncInfo(uint to)
 		{
-			// todo
+			// todo SendResyncInfo
 		}
 
 		public virtual bool AcceptsItem(IQSBOWItem item)

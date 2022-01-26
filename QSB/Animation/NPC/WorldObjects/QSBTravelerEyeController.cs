@@ -4,7 +4,7 @@
 	{
 		public override void SendResyncInfo(uint to)
 		{
-			// todo
+			// todo SendResyncInfo
 		}
 
 		public override CharacterDialogueTree GetDialogueTree()
