@@ -7,27 +7,25 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 {
 	internal class QSBProbeLauncher : WorldObject<ProbeLauncher>
 	{
-		private float _probeRetrievalLength;
-		private GameObject _preLaunchProbeProxy;
-		private ProbeLauncherEffects _effects;
-		private SingularityWarpEffect _probeRetrievalEffect;
-
-		public override void Init()
-		{
-			_probeRetrievalLength = AttachedObject._probeRetrievalLength;
-			_preLaunchProbeProxy = AttachedObject._preLaunchProbeProxy;
-			_effects = AttachedObject._effects;
-			_probeRetrievalEffect = AttachedObject._probeRetrievalEffect;
-
+		public override void Init() =>
 			AttachedObject.OnLaunchProbe += OnLaunchProbe;
-		}
 
 		public override void OnRemoval() =>
 			AttachedObject.OnLaunchProbe -= OnLaunchProbe;
 
 		public override void SendResyncInfo(uint to)
 		{
-			// todo
+			if (QSBCore.IsHost)
+			{
+				if (AttachedObject._preLaunchProbeProxy.activeSelf)
+				{
+					this.SendMessage(new RetrieveProbeMessage(true));
+				}
+				else
+				{
+					this.SendMessage(new LaunchProbeMessage());
+				}
+			}
 		}
 
 		private void OnLaunchProbe(SurveyorProbe probe) =>
@@ -35,21 +33,31 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 
 		public void RetrieveProbe(bool playEffects)
 		{
-			_preLaunchProbeProxy.SetActive(true);
+			if (AttachedObject._preLaunchProbeProxy.activeSelf)
+			{
+				return;
+			}
+
+			AttachedObject._preLaunchProbeProxy.SetActive(true);
 			if (playEffects)
 			{
-				_effects.PlayRetrievalClip();
-				_probeRetrievalEffect.WarpObjectIn(_probeRetrievalLength);
+				AttachedObject._effects.PlayRetrievalClip();
+				AttachedObject._probeRetrievalEffect.WarpObjectIn(AttachedObject._probeRetrievalLength);
 			}
 		}
 
 		public void LaunchProbe()
 		{
-			_preLaunchProbeProxy.SetActive(false);
+			if (!AttachedObject._preLaunchProbeProxy.activeSelf)
+			{
+				return;
+			}
+
+			AttachedObject._preLaunchProbeProxy.SetActive(false);
 
 			// TODO : make this do underwater stuff correctly
-			_effects.PlayLaunchClip(false);
-			_effects.PlayLaunchParticles(false);
+			AttachedObject._effects.PlayLaunchClip(false);
+			AttachedObject._effects.PlayLaunchParticles(false);
 		}
 	}
 }
