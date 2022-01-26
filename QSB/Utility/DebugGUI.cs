@@ -258,14 +258,14 @@ namespace QSB.Utility
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
 			{
-				if (obj.ReturnObject() == null)
+				if (obj.AttachedObject == null)
 				{
 					return;
 				}
 
 				if (obj.ShouldDisplayDebug())
 				{
-					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
+					DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
 				}
 			}
 		}
@@ -279,7 +279,7 @@ namespace QSB.Utility
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
 			{
-				if (obj.ReturnObject() == null)
+				if (obj.AttachedObject == null)
 				{
 					return;
 				}
