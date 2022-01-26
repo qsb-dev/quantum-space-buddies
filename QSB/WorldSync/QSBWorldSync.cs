@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
+using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
@@ -62,6 +63,11 @@ namespace QSB.WorldSync
 				{
 					AllObjectsReady = true;
 					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+
+					if (!QSBCore.IsHost)
+					{
+						new RequestInitialStatesMessage().Send();
+					}
 				});
 			});
 		}

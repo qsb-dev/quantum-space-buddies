@@ -6,7 +6,7 @@ using QSB.Utility;
 
 namespace QSB.Player.Messages
 {
-	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server information
+	// Can be sent by any client (including host) to signal they want latest player and server information
 	public class RequestStateResyncMessage : QSBMessage
 	{
 		/// <summary>

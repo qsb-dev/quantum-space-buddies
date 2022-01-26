@@ -5,13 +5,11 @@ using QSB.Utility;
 
 namespace QSB.WorldSync
 {
+	/// <summary>
+	/// sent by non-host clients to get object states
+	/// </summary>
 	public class RequestInitialStatesMessage : QSBMessage
 	{
-		public RequestInitialStatesMessage()
-		{
-			DebugLog.DebugWrite("getting initial states");
-		}
-
 		public override void OnReceiveRemote()
 		{
 			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsReady,
