@@ -10,7 +10,7 @@
 		public override CharacterDialogueTree GetDialogueTree()
 			=> AttachedObject._dialogueTree;
 
-		public override bool InConversation()
+		public bool InConversation()
 			=> AttachedObject._inConversation;
 	}
 }
