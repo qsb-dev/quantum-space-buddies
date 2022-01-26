@@ -25,7 +25,7 @@ namespace QSB.ItemSync.Messages
 				ItemType.VisionTorch => player.VisionTorchSocket,
 				_ => player.ItemSocket,
 			};
-			WorldObject.PickUpItem(itemSocket, From);
+			WorldObject.PickUpItem(itemSocket);
 		}
 	}
 }
