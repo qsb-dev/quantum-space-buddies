@@ -33,7 +33,7 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			base.SendInitialState(to);
 
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)

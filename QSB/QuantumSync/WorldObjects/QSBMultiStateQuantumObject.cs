@@ -36,7 +36,7 @@ namespace QSB.QuantumSync.WorldObjects
 		{
 			base.SendInitialState(to);
 
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public void ChangeState(int newStateIndex)

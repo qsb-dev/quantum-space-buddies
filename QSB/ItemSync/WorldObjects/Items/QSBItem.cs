@@ -78,7 +78,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 		public override void SendInitialState(uint to)
 		{
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public ItemType GetItemType()

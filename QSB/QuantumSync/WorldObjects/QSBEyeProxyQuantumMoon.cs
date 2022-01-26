@@ -8,7 +8,7 @@
 		{
 			base.SendInitialState(to);
 
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 	}
 }

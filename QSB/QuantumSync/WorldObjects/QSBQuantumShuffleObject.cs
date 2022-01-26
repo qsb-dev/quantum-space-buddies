@@ -6,7 +6,7 @@
 		{
 			base.SendInitialState(to);
 
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public void ShuffleObjects(int[] indexArray)

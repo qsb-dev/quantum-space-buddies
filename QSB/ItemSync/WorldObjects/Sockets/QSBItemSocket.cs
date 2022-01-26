@@ -7,7 +7,7 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 	{
 		public override void SendInitialState(uint to)
 		{
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public bool IsSocketOccupied()

@@ -4,7 +4,7 @@
 	{
 		public override void SendInitialState(uint to)
 		{
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public override CharacterDialogueTree GetDialogueTree()

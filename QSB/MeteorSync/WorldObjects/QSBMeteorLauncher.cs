@@ -6,7 +6,7 @@ namespace QSB.MeteorSync.WorldObjects
 	{
 		public override void SendInitialState(uint to)
 		{
-			// todo SendResyncInfo
+			// todo SendInitialState
 		}
 
 		public int MeteorId;
