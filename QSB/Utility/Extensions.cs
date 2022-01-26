@@ -85,18 +85,6 @@ namespace QSB.Utility
 
 		public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
 
-		public static bool TryGet<T>(this IList<T> list, int index, out T element)
-		{
-			if (!list.IsInRange(index))
-			{
-				element = default;
-				return false;
-			}
-
-			element = list[index];
-			return true;
-		}
-
 		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
 			const BindingFlags flags = BindingFlags.Instance
@@ -105,8 +93,8 @@ namespace QSB.Utility
 				| BindingFlags.NonPublic
 				| BindingFlags.DeclaredOnly;
 			if (typeof(T)
-				.GetField(eventName, flags)?
-				.GetValue(instance) is not MulticastDelegate multiDelegate)
+					.GetField(eventName, flags)?
+					.GetValue(instance) is not MulticastDelegate multiDelegate)
 			{
 				return;
 			}
@@ -122,6 +110,18 @@ namespace QSB.Utility
 			var bytes = new byte[16];
 			BitConverter.GetBytes(value).CopyTo(bytes, 0);
 			return new Guid(bytes);
+		}
+
+		public static void Try(this object self, string description, Action action)
+		{
+			try
+			{
+				action();
+			}
+			catch (Exception e)
+			{
+				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+			}
 		}
 
 		#endregion
