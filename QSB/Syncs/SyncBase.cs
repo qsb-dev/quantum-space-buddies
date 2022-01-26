@@ -17,7 +17,7 @@ namespace QSB.Syncs
 	public abstract class SyncBase : QSBNetworkTransform
 	{
 		/// <summary>
-		/// valid if IsPlayerObject, otherwise null <br/>
+		/// valid if IsPlayerObject, otherwise null
 		/// </summary>
 		public PlayerInfo Player
 		{
