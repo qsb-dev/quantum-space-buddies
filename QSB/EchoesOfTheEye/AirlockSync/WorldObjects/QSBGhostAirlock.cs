@@ -2,7 +2,7 @@
 
 namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects
 {
-	// unused?
+	// will be implemented when eote
 	internal class QSBGhostAirlock : WorldObject<GhostAirlock>
 	{
 		public override void SendInitialState(uint to) { }

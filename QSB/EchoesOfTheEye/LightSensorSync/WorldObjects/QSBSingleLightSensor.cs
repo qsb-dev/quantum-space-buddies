@@ -2,7 +2,7 @@
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects
 {
-	// unused?
+	// will be implemented when eote
 	internal class QSBSingleLightSensor : WorldObject<SingleLightSensor>
 	{
 		public override void SendInitialState(uint to) { }
