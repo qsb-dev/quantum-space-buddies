@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using QSB.Player;
 using QSB.TriggerSync.WorldObjects;
-using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 

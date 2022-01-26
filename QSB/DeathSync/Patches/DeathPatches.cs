@@ -3,7 +3,6 @@ using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using System.Linq;
