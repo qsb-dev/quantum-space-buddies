@@ -19,7 +19,7 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 			{
 				if (AttachedObject._preLaunchProbeProxy.activeSelf)
 				{
-					this.SendMessage(new RetrieveProbeMessage(true));
+					this.SendMessage(new RetrieveProbeMessage(false));
 				}
 				else
 				{
