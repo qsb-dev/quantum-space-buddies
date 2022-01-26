@@ -10,7 +10,7 @@ namespace QSB.MeteorSync.Messages
 {
 	/// called when we request a resync on client join
 	/// pain
-	public class FragmentResyncMessage : QSBWorldObjectMessage<QSBFragment>
+	public class FragmentInitialStateMessage : QSBWorldObjectMessage<QSBFragment>
 	{
 		private float Integrity;
 		private float OrigIntegrity;
@@ -23,7 +23,7 @@ namespace QSB.MeteorSync.Messages
 		private Vector3 RelVel;
 		private Vector3 RelAngVel;
 
-		public FragmentResyncMessage(QSBFragment qsbFragment)
+		public FragmentInitialStateMessage(QSBFragment qsbFragment)
 		{
 			Integrity = qsbFragment.AttachedObject._integrity;
 			OrigIntegrity = qsbFragment.AttachedObject._origIntegrity;

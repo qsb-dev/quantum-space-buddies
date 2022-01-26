@@ -26,7 +26,7 @@ namespace QSB.MeteorSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				this.SendMessage(new FragmentResyncMessage(this) { To = to });
+				this.SendMessage(new FragmentInitialStateMessage(this) { To = to });
 			}
 		}
 

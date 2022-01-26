@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace QSB.ConversationSync.Messages
 {
-	internal class RemoteDialogueResyncMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger>
+	internal class RemoteDialogueInitialStateMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger>
 	{
 		private bool _inRemoteDialogue;
 		private bool[] _activatedDialogues;
 		private int _dialogueIndex;
 		private bool _colliderEnabled;
 
-		public RemoteDialogueResyncMessage(RemoteDialogueTrigger trigger)
+		public RemoteDialogueInitialStateMessage(RemoteDialogueTrigger trigger)
 		{
 			_inRemoteDialogue = trigger._inRemoteDialogue;
 			_activatedDialogues = trigger._activatedDialogues;
@@ -25,7 +25,7 @@ namespace QSB.ConversationSync.Messages
 		{
 			base.Serialize(writer);
 			writer.Write(_inRemoteDialogue);
-			writer.Write(_activatedDialogues);
+			writer.WriteArray(_activatedDialogues);
 			writer.Write(_dialogueIndex);
 			writer.Write(_colliderEnabled);
 		}
@@ -34,7 +34,7 @@ namespace QSB.ConversationSync.Messages
 		{
 			base.Deserialize(reader);
 			_inRemoteDialogue = reader.Read<bool>();
-			_activatedDialogues = reader.Read<bool[]>();
+			_activatedDialogues = reader.ReadArray<bool>();
 			_dialogueIndex = reader.Read<int>();
 			_colliderEnabled = reader.Read<bool>();
 		}

@@ -10,7 +10,7 @@ namespace QSB.ConversationSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				this.SendMessage(new RemoteDialogueResyncMessage(AttachedObject));
+				this.SendMessage(new RemoteDialogueInitialStateMessage(AttachedObject));
 			}
 		}
 

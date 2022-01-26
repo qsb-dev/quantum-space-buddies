@@ -53,7 +53,7 @@ namespace QSB.TriggerSync.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				((IQSBTrigger)this).SendMessage(new TriggerResyncMessage(Occupants) { To = to });
+				((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
 			}
 		}
 
