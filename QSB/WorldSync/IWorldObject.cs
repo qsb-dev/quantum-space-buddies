@@ -6,9 +6,9 @@ namespace QSB.WorldSync
 	{
 		int ObjectId { get; }
 		string Name { get; }
+		MonoBehaviour AttachedObject { get; }
 
 		void OnRemoval();
-		MonoBehaviour ReturnObject();
 		bool ShouldDisplayDebug();
 		string ReturnLabel();
 		void DisplayLines();
