@@ -43,6 +43,8 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 
+		public override void SendResyncInfo(uint to) { }
+
 		public bool ShouldSyncTo(TargetType targetType)
 		{
 			if (AttachedObject == null)

@@ -3,9 +3,15 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects.Sockets
 {
+	// todo make this 1 type
 	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
 		where T : OWItemSocket
 	{
+		public override void SendResyncInfo(uint to)
+		{
+			// todo
+		}
+
 		public virtual bool AcceptsItem(IQSBOWItem item)
 		{
 			var itemType = item.GetItemType();

@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
 {
+	// todo make this one type
 	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
 		where T : OWItem
 	{
@@ -75,6 +76,11 @@ namespace QSB.ItemSync.WorldObjects.Items
 			AttachedObject.transform.localScale = Vector3.one;
 			AttachedObject.SetSector(InitialSector?.AttachedObject);
 			AttachedObject.SetColliderActivation(true);
+		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			// todo
 		}
 
 		public ItemType GetItemType()

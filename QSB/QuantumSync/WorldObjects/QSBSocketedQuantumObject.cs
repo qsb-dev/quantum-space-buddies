@@ -29,6 +29,13 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
+		public override void SendResyncInfo(uint to)
+		{
+			base.SendResyncInfo(to);
+
+			// todo
+		}
+
 		public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
 		{
 			var qsbSocket = socketId.GetWorldObject<QSBQuantumSocket>();

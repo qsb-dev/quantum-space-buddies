@@ -2,6 +2,13 @@
 {
 	internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 	{
+		public override void SendResyncInfo(uint to)
+		{
+			base.SendResyncInfo(to);
+
+			// todo
+		}
+
 		public void ShuffleObjects(int[] indexArray)
 		{
 			var shuffledObjects = AttachedObject._shuffledObjects;

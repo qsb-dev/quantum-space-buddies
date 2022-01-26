@@ -2,6 +2,11 @@
 {
 	internal class QSBCharacterAnimController : NpcAnimController<CharacterAnimController>
 	{
+		public override void SendResyncInfo(uint to)
+		{
+			// todo
+		}
+
 		public override CharacterDialogueTree GetDialogueTree()
 			=> AttachedObject._dialogueTree;
 

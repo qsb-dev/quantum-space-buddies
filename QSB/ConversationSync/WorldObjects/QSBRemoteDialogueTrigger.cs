@@ -4,6 +4,11 @@ namespace QSB.ConversationSync.WorldObjects
 {
 	internal class QSBRemoteDialogueTrigger : WorldObject<RemoteDialogueTrigger>
 	{
+		public override void SendResyncInfo(uint to)
+		{
+			// todo
+		}
+
 		public void RemoteEnterDialogue(int activatedIndex, int listIndex)
 		{
 			var dialogueCondition = AttachedObject._listDialogues[listIndex];

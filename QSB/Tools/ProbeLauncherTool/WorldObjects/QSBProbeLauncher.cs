@@ -25,6 +25,11 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 		public override void OnRemoval() =>
 			AttachedObject.OnLaunchProbe -= OnLaunchProbe;
 
+		public override void SendResyncInfo(uint to)
+		{
+			// todo
+		}
+
 		private void OnLaunchProbe(SurveyorProbe probe) =>
 			this.SendMessage(new LaunchProbeMessage());
 

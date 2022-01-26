@@ -32,6 +32,13 @@ namespace QSB.QuantumSync.WorldObjects
 		public override string ReturnLabel()
 			=> $"{this}{Environment.NewLine}StateIndex:{AttachedObject._stateIndex}";
 
+		public override void SendResyncInfo(uint to)
+		{
+			base.SendResyncInfo(to);
+
+			// todo
+		}
+
 		public void ChangeState(int newStateIndex)
 		{
 			if (CurrentState != -1)
