@@ -7,9 +7,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
 {
-	// todo make this one type
-	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
-		where T : OWItem
+	public class QSBItem : WorldObject<OWItem>
 	{
 		public QSBItemSocket InitialSocket { get; private set; }
 		public Transform InitialParent { get; private set; }
@@ -89,19 +87,19 @@ namespace QSB.ItemSync.WorldObjects.Items
 		public void SetColliderActivation(bool active)
 			=> AttachedObject.SetColliderActivation(active);
 
-		public virtual void SocketItem(Transform socketTransform, Sector sector)
+		public void SocketItem(Transform socketTransform, Sector sector)
 		{
 			AttachedObject.SocketItem(socketTransform, sector);
 			HoldingPlayer = 0;
 		}
 
-		public virtual void PickUpItem(Transform holdTransform, uint playerId)
+		public void PickUpItem(Transform holdTransform, uint playerId)
 		{
 			AttachedObject.PickUpItem(holdTransform);
 			HoldingPlayer = playerId;
 		}
 
-		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
+		public void DropItem(Vector3 position, Vector3 normal, Sector sector)
 		{
 			AttachedObject.transform.SetParent(sector.transform);
 			AttachedObject.transform.localScale = Vector3.one;
@@ -115,8 +113,13 @@ namespace QSB.ItemSync.WorldObjects.Items
 			HoldingPlayer = 0;
 		}
 
-		public virtual void PlaySocketAnimation() { }
-		public virtual void PlayUnsocketAnimation() { }
-		public virtual void OnCompleteUnsocket() { }
+		public void PlaySocketAnimation()
+			=> AttachedObject.PlaySocketAnimation();
+
+		public void PlayUnsocketAnimation()
+			=> AttachedObject.PlayUnsocketAnimation();
+
+		public void OnCompleteUnsocket()
+			=> AttachedObject.OnCompleteUnsocket();
 	}
 }

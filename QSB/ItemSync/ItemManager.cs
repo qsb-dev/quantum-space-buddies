@@ -15,12 +15,7 @@ namespace QSB.ItemSync
 			DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 
 			// Items
-			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
-			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
-			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
-			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
-			QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
-			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
+			QSBWorldSync.Init<QSBItem, OWItem>();
 
 			// Sockets
 			QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();

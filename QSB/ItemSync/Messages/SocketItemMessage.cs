@@ -39,14 +39,14 @@ namespace QSB.ItemSync.Messages
 		public override void OnReceiveRemote()
 		{
 			QSBItemSocket socketWorldObject;
-			IQSBOWItem itemWorldObject;
+			QSBItem itemWorldObject;
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.HeldItem = null;
 			switch (Value)
 			{
 				case SocketMessageType.Socket:
 					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
-					itemWorldObject = ItemId.GetWorldObject<IQSBOWItem>();
+					itemWorldObject = ItemId.GetWorldObject<QSBItem>();
 
 					socketWorldObject.PlaceIntoSocket(itemWorldObject);
 					return;
@@ -62,7 +62,7 @@ namespace QSB.ItemSync.Messages
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketMessageType.CompleteUnsocket:
-					itemWorldObject = ItemId.GetWorldObject<IQSBOWItem>();
+					itemWorldObject = ItemId.GetWorldObject<QSBItem>();
 
 					itemWorldObject.OnCompleteUnsocket();
 					return;
