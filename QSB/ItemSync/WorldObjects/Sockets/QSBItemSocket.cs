@@ -10,20 +10,13 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 			// todo SendResyncInfo
 		}
 
-		public bool AcceptsItem(QSBItem item)
-		{
-			var itemType = item.GetItemType();
-			var acceptableType = AttachedObject._acceptableType;
-			return (itemType & acceptableType) == itemType;
-		}
-
 		public bool IsSocketOccupied()
 			=> AttachedObject.IsSocketOccupied();
 
-		public bool PlaceIntoSocket(QSBItem item)
+		public void PlaceIntoSocket(QSBItem item)
 			=> AttachedObject.PlaceIntoSocket(item.AttachedObject);
 
-		public QSBItem RemoveFromSocket()
-			=> AttachedObject.RemoveFromSocket().GetWorldObject<QSBItem>();
+		public void RemoveFromSocket()
+			=> AttachedObject.RemoveFromSocket();
 	}
 }

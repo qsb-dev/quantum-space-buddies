@@ -84,15 +84,6 @@ namespace QSB.ItemSync.WorldObjects.Items
 		public ItemType GetItemType()
 			=> AttachedObject.GetItemType();
 
-		public void SetColliderActivation(bool active)
-			=> AttachedObject.SetColliderActivation(active);
-
-		public void SocketItem(Transform socketTransform, Sector sector)
-		{
-			AttachedObject.SocketItem(socketTransform, sector);
-			HoldingPlayer = 0;
-		}
-
 		public void PickUpItem(Transform holdTransform, uint playerId)
 		{
 			AttachedObject.PickUpItem(holdTransform);
@@ -112,12 +103,6 @@ namespace QSB.ItemSync.WorldObjects.Items
 			AttachedObject.SetColliderActivation(true);
 			HoldingPlayer = 0;
 		}
-
-		public void PlaySocketAnimation()
-			=> AttachedObject.PlaySocketAnimation();
-
-		public void PlayUnsocketAnimation()
-			=> AttachedObject.PlayUnsocketAnimation();
 
 		public void OnCompleteUnsocket()
 			=> AttachedObject.OnCompleteUnsocket();
