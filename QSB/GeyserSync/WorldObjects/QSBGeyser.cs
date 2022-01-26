@@ -8,20 +8,32 @@ namespace QSB.GeyserSync.WorldObjects
 	{
 		public override void Init()
 		{
-			AttachedObject.OnGeyserActivateEvent += () => HandleEvent(true);
-			AttachedObject.OnGeyserDeactivateEvent += () => HandleEvent(false);
+			if (QSBCore.IsHost)
+			{
+				AttachedObject.OnGeyserActivateEvent += OnActivate;
+				AttachedObject.OnGeyserDeactivateEvent += OnDeactivate;
+			}
 		}
 
-		public override void SendResyncInfo(uint to) =>
-			HandleEvent(AttachedObject._isActive);
-
-		private void HandleEvent(bool state)
+		public override void OnRemoval()
 		{
 			if (QSBCore.IsHost)
 			{
-				this.SendMessage(new GeyserMessage(state));
+				AttachedObject.OnGeyserActivateEvent -= OnActivate;
+				AttachedObject.OnGeyserDeactivateEvent -= OnDeactivate;
 			}
 		}
+
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new GeyserMessage(AttachedObject._isActive));
+			}
+		}
+
+		private void OnActivate() => this.SendMessage(new GeyserMessage(true));
+		private void OnDeactivate() => this.SendMessage(new GeyserMessage(false));
 
 		public void SetState(bool state)
 		{
