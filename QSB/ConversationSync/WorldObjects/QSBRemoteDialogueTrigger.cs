@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using QSB.ConversationSync.Messages;
+using QSB.Messaging;
+using QSB.WorldSync;
 
 namespace QSB.ConversationSync.WorldObjects
 {
@@ -6,7 +8,10 @@ namespace QSB.ConversationSync.WorldObjects
 	{
 		public override void SendResyncInfo(uint to)
 		{
-			// todo SendResyncInfo
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new RemoteDialogueResyncMessage(AttachedObject));
+			}
 		}
 
 		public void RemoteEnterDialogue(int dialogueIndex)
