@@ -12,6 +12,6 @@ namespace QSB.Animation.NPC.WorldObjects
 		private QSBSolanumTrigger _trigger;
 		public QSBSolanumTrigger Trigger => _trigger ??= QSBWorldSync.GetWorldObjects<QSBSolanumTrigger>().First();
 
-		public override void SendResyncInfo(uint to) { }
+		public override void SendInitialState(uint to) { }
 	}
 }

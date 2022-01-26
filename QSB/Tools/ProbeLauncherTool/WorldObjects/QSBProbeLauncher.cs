@@ -13,7 +13,7 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 		public override void OnRemoval() =>
 			AttachedObject.OnLaunchProbe -= OnLaunchProbe;
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

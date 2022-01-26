@@ -4,9 +4,9 @@
 	{
 		protected override bool HostControls => true;
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
-			base.SendResyncInfo(to);
+			base.SendInitialState(to);
 
 			// todo SendResyncInfo
 		}

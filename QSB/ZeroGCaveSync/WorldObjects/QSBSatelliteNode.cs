@@ -7,7 +7,7 @@ namespace QSB.ZeroGCaveSync.WorldObjects
 {
 	internal class QSBSatelliteNode : WorldObject<SatelliteNode>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

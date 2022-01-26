@@ -6,6 +6,6 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public override bool ShouldDisplayDebug() => false;
 
-		public override void SendResyncInfo(uint to) { }
+		public override void SendInitialState(uint to) { }
 	}
 }

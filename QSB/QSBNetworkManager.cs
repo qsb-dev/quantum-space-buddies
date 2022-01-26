@@ -240,6 +240,9 @@ namespace QSB
 			{
 				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
 					() => new RequestStateResyncMessage().Send());
+
+				QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsReady,
+					() => new RequestInitialStatesMessage().Send());
 			}
 
 			_everConnected = true;

@@ -6,7 +6,7 @@ namespace QSB.ConversationSync.WorldObjects
 {
 	internal class QSBRemoteDialogueTrigger : WorldObject<RemoteDialogueTrigger>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

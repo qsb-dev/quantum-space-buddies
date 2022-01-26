@@ -5,7 +5,7 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBMeteor : WorldObject<MeteorController>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			// todo SendResyncInfo
 		}

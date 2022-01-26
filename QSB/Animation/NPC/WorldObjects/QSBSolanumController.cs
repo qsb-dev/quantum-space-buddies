@@ -2,7 +2,7 @@
 {
 	internal class QSBSolanumController : NpcAnimController<NomaiConversationManager>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			// todo SendResyncInfo
 		}

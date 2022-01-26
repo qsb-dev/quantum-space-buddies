@@ -2,7 +2,7 @@
 {
 	internal class QSBTravelerEyeController : NpcAnimController<TravelerEyeController>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			// todo SendResyncInfo
 		}

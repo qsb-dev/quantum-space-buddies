@@ -43,7 +43,7 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to) { }
+		public override void SendInitialState(uint to) { }
 
 		public bool ShouldSyncTo(TargetType targetType)
 		{

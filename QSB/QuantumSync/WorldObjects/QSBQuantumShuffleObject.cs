@@ -2,9 +2,9 @@
 {
 	internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
-			base.SendResyncInfo(to);
+			base.SendInitialState(to);
 
 			// todo SendResyncInfo
 		}

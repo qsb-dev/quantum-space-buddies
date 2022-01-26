@@ -2,7 +2,7 @@
 {
 	internal class QSBHearthianRecorderEffects : NpcAnimController<HearthianRecorderEffects>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			// todo SendResyncInfo
 		}

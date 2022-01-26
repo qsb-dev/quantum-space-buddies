@@ -7,7 +7,7 @@ namespace QSB.ShipSync.WorldObjects
 {
 	internal class QSBShipComponent : WorldObject<ShipComponent>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

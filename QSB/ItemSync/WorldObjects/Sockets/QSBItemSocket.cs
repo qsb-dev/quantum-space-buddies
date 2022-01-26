@@ -5,7 +5,7 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 {
 	public class QSBItemSocket : WorldObject<OWItemSocket>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			// todo SendResyncInfo
 		}

@@ -6,7 +6,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects
 {
 	internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			// not needed since mid-game join is impossible here
 		}

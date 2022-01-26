@@ -77,7 +77,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

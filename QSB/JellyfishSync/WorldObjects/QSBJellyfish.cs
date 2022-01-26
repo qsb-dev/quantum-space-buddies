@@ -33,7 +33,7 @@ namespace QSB.JellyfishSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (TransformSync.hasAuthority)
 			{
