@@ -25,13 +25,19 @@ namespace QSB.GeyserSync.WorldObjects
 
 		public void SetState(bool state)
 		{
-			if (state)
+			if (AttachedObject._isActive == state)
 			{
-				AttachedObject?.ActivateGeyser();
 				return;
 			}
 
-			AttachedObject?.DeactivateGeyser();
+			if (state)
+			{
+				AttachedObject.ActivateGeyser();
+			}
+			else
+			{
+				AttachedObject.DeactivateGeyser();
+			}
 		}
 	}
 }

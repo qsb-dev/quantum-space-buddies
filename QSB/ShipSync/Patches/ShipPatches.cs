@@ -235,7 +235,7 @@ namespace QSB.ShipSync.Patches
 			__instance._integrity = Mathf.Min(__instance._integrity + (Time.deltaTime / __instance._repairTime), 1f);
 			var qsbShipHull = __instance.GetWorldObject<QSBShipHull>();
 			qsbShipHull
-				.SendMessage(new HullRepairTickMessage(__instance._integrity));
+				.SendMessage(new HullChangeIntegrityMessage(__instance._integrity));
 
 			if (__instance._integrity >= 1f)
 			{

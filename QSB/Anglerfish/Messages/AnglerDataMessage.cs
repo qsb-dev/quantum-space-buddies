@@ -39,7 +39,10 @@ namespace QSB.Anglerfish.Messages
 		{
 			WorldObject.TargetTransform = IdToTarget(TargetId);
 			WorldObject.AttachedObject._localDisturbancePos = LocalDisturbancePos;
-			WorldObject.AttachedObject.ChangeState(Value);
+			if (WorldObject.AttachedObject._currentState != Value)
+			{
+				WorldObject.AttachedObject.ChangeState(Value);
+			}
 		}
 
 		private static uint TargetToId(Transform transform)
