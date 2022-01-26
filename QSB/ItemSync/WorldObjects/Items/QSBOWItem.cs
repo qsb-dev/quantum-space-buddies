@@ -11,7 +11,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
 		where T : OWItem
 	{
-		public IQSBOWItemSocket InitialSocket { get; private set; }
+		public QSBItemSocket InitialSocket { get; private set; }
 		public Transform InitialParent { get; private set; }
 		public Vector3 InitialPosition { get; private set; }
 		public Quaternion InitialRotation { get; private set; }
@@ -47,7 +47,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 				if (InitialParent?.GetComponent<OWItemSocket>() != null)
 				{
-					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<IQSBOWItemSocket>();
+					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<QSBItemSocket>();
 					InitialSocket = qsbObj;
 				}
 			});

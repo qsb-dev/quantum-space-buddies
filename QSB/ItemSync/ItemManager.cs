@@ -23,12 +23,7 @@ namespace QSB.ItemSync
 			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
 
 			// Sockets
-			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
-			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
-			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
-			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
-			QSBWorldSync.Init<QSBSlideReelSocket, SlideReelSocket>();
-			QSBWorldSync.Init<QSBSlideProjectorSocket, SlideProjectorSocket>();
+			QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 		}
 	}
 }

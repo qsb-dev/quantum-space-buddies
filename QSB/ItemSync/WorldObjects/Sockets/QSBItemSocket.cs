@@ -3,29 +3,27 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects.Sockets
 {
-	// todo make this 1 type
-	internal class QSBOWItemSocket<T> : WorldObject<T>, IQSBOWItemSocket
-		where T : OWItemSocket
+	internal class QSBItemSocket : WorldObject<OWItemSocket>
 	{
 		public override void SendResyncInfo(uint to)
 		{
 			// todo SendResyncInfo
 		}
 
-		public virtual bool AcceptsItem(IQSBOWItem item)
+		public bool AcceptsItem(IQSBOWItem item)
 		{
 			var itemType = item.GetItemType();
 			var acceptableType = AttachedObject._acceptableType;
 			return (itemType & acceptableType) == itemType;
 		}
 
-		public virtual bool IsSocketOccupied()
+		public bool IsSocketOccupied()
 			=> AttachedObject.IsSocketOccupied();
 
-		public virtual bool PlaceIntoSocket(IQSBOWItem item)
+		public bool PlaceIntoSocket(IQSBOWItem item)
 			=> AttachedObject.PlaceIntoSocket((OWItem)item.ReturnObject());
 
-		public virtual IQSBOWItem RemoveFromSocket()
+		public IQSBOWItem RemoveFromSocket()
 			=> AttachedObject.RemoveFromSocket().GetWorldObject<IQSBOWItem>();
 	}
 }

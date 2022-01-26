@@ -32,7 +32,7 @@ namespace QSB.ItemSync.Patches
 		public static bool ItemTool_SocketItem(ItemTool __instance, OWItemSocket socket)
 		{
 			var qsbObj = __instance._heldItem.GetWorldObject<IQSBOWItem>();
-			var socketId = socket.GetWorldObject<IQSBOWItemSocket>().ObjectId;
+			var socketId = socket.GetWorldObject<QSBItemSocket>().ObjectId;
 			var itemId = qsbObj.ObjectId;
 			QSBPlayerManager.LocalPlayer.HeldItem = null;
 			new SocketItemMessage(SocketMessageType.Socket, socketId, itemId).Send();
@@ -45,7 +45,7 @@ namespace QSB.ItemSync.Patches
 		{
 			var item = socket.GetSocketedItem().GetWorldObject<IQSBOWItem>();
 			QSBPlayerManager.LocalPlayer.HeldItem = item;
-			var socketId = socket.GetWorldObject<IQSBOWItemSocket>().ObjectId;
+			var socketId = socket.GetWorldObject<QSBItemSocket>().ObjectId;
 			new SocketItemMessage(SocketMessageType.StartUnsocket, socketId).Send();
 			return true;
 		}
