@@ -98,7 +98,7 @@ namespace QSB.WorldSync
 			}
 
 			WorldObjects.Clear();
-			WorldObjectsToUnityObjects.Clear();
+			UnityObjectsToWorldObjects.Clear();
 
 			foreach (var manager in Managers)
 			{
@@ -114,7 +114,7 @@ namespace QSB.WorldSync
 		public static List<FactReveal> ShipLogFacts { get; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
-		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
+		private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
 
 		private static void GameInit()
 		{
@@ -188,21 +188,9 @@ namespace QSB.WorldSync
 				return default;
 			}
 
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
-				return default;
-			}
-
-			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var worldObject))
+			if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
-				return default;
-			}
-
-			if (worldObject == null)
-			{
-				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
@@ -245,7 +233,7 @@ namespace QSB.WorldSync
 
 				obj.Init();
 				WorldObjects.Add(obj);
-				WorldObjectsToUnityObjects.Add(item, obj);
+				UnityObjectsToWorldObjects.Add(item, obj);
 			}
 		}
 
@@ -267,7 +255,7 @@ namespace QSB.WorldSync
 
 				obj.Init();
 				WorldObjects.Add(obj);
-				WorldObjectsToUnityObjects.Add(item, obj);
+				UnityObjectsToWorldObjects.Add(item, obj);
 			}
 		}
 
