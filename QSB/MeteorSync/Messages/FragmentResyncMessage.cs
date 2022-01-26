@@ -81,12 +81,15 @@ namespace QSB.MeteorSync.Messages
 		public override void OnReceiveRemote()
 		{
 			var qsbFragment = ObjectId.GetWorldObject<QSBFragment>();
-			qsbFragment.AttachedObject._integrity = Integrity;
 			qsbFragment.AttachedObject._origIntegrity = OrigIntegrity;
 			qsbFragment.LeashLength = LeashLength;
-			qsbFragment.AttachedObject.CallOnTakeDamage();
+			if (!OWMath.ApproxEquals(qsbFragment.AttachedObject._integrity, Integrity))
+			{
+				qsbFragment.AttachedObject._integrity = Integrity;
+				qsbFragment.AttachedObject.CallOnTakeDamage();
+			}
 
-			if (IsDetached)
+			if (IsDetached && !qsbFragment.IsDetached)
 			{
 				// the detach is delayed, so wait until that happens
 				QSBCore.UnityEvents.RunWhen(() => qsbFragment.IsDetached, () =>

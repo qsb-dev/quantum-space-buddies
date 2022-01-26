@@ -1,12 +1,32 @@
-﻿using QSB.Utility;
+﻿using QSB.Messaging;
+using QSB.Utility;
 using QSB.WorldSync;
+using QSB.ZeroGCaveSync.Messages;
 
 namespace QSB.ZeroGCaveSync.WorldObjects
 {
 	internal class QSBSatelliteNode : WorldObject<SatelliteNode>
 	{
+		public override void SendResyncInfo(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				if (!AttachedObject._damaged)
+				{
+					this.SendMessage(new SatelliteNodeRepairedMessage());
+				}
+
+				this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction));
+			}
+		}
+
 		public void SetRepaired()
 		{
+			if (!AttachedObject._damaged)
+			{
+				return;
+			}
+
 			DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} Set repaired.");
 			AttachedObject._damaged = false;
 			var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
@@ -37,6 +57,11 @@ namespace QSB.ZeroGCaveSync.WorldObjects
 
 		public void RepairTick(float repairFraction)
 		{
+			if (OWMath.ApproxEquals(AttachedObject._repairFraction, repairFraction))
+			{
+				return;
+			}
+
 			DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} repair tick {repairFraction}");
 			AttachedObject._repairFraction = repairFraction;
 			var damageEffect = AttachedObject._damageEffect;

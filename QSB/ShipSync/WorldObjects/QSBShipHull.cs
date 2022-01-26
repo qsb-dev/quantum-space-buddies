@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.ShipSync.Messages.Component;
 using QSB.ShipSync.Messages.Hull;
 using QSB.Utility;
 using QSB.WorldSync;
