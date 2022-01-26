@@ -115,7 +115,7 @@ namespace QSB.Player
 		public Transform VisionTorchSocket => CameraBody.transform.Find("REMOTE_VisionTorchSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
-		public QSBItem HeldItem { get; set; }
+		public IQSBItem HeldItem { get; set; }
 		public bool FlashlightActive { get; set; }
 		public bool SuitedUp { get; set; }
 		public bool ProbeLauncherEquipped { get; set; }

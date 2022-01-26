@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects.Sockets
 {
-	public class QSBItemSocket : WorldObject<OWItemSocket>
+	internal class QSBItemSocket : WorldObject<OWItemSocket>
 	{
 		public override void SendInitialState(uint to)
 		{
@@ -13,8 +13,8 @@ namespace QSB.ItemSync.WorldObjects.Sockets
 		public bool IsSocketOccupied()
 			=> AttachedObject.IsSocketOccupied();
 
-		public void PlaceIntoSocket(QSBItem item)
-			=> AttachedObject.PlaceIntoSocket(item.AttachedObject);
+		public void PlaceIntoSocket(IQSBItem item)
+			=> AttachedObject.PlaceIntoSocket((OWItem)item.ReturnObject());
 
 		public void RemoveFromSocket()
 			=> AttachedObject.RemoveFromSocket();

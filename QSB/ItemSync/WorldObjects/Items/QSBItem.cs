@@ -7,7 +7,8 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
 {
-	public class QSBItem : WorldObject<OWItem>
+	internal class QSBItem<T> : WorldObject<T>, IQSBItem
+		where T : OWItem
 	{
 		private QSBItemSocket InitialSocket { get; set; }
 		private Transform InitialParent { get; set; }

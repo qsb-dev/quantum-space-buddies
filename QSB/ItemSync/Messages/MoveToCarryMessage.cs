@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.ItemSync.Messages
 {
-	internal class MoveToCarryMessage : QSBWorldObjectMessage<QSBItem>
+	internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 	{
 		public override void OnReceiveRemote()
 		{
@@ -16,7 +16,7 @@ namespace QSB.ItemSync.Messages
 			{
 				ItemType.Scroll => player.ScrollSocket,
 				ItemType.SharedStone => player.SharedStoneSocket,
-				ItemType.WarpCore => ((WarpCoreItem)WorldObject.AttachedObject).IsVesselCoreType()
+				ItemType.WarpCore => ((QSBWarpCoreItem)WorldObject).IsVesselCoreType()
 					? player.VesselCoreSocket
 					: player.WarpCoreSocket,
 				ItemType.Lantern => player.SimpleLanternSocket,
