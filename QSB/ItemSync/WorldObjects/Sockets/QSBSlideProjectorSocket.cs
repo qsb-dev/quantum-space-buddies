@@ -1,6 +1,6 @@
 ﻿namespace QSB.ItemSync.WorldObjects.Sockets
 {
-	internal class QSBSlideProjectorSocket : QSBOWItemDoubleSocket<SlideProjectorSocket>
+	internal class QSBSlideProjectorSocket : QSBOWItemSocket<SlideProjectorSocket>
 	{
 	}
 }
