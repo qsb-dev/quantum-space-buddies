@@ -1,7 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 {
@@ -23,13 +22,13 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 				}
 				else
 				{
-					this.SendMessage(new LaunchProbeMessage());
+					this.SendMessage(new LaunchProbeMessage(false));
 				}
 			}
 		}
 
 		private void OnLaunchProbe(SurveyorProbe probe) =>
-			this.SendMessage(new LaunchProbeMessage());
+			this.SendMessage(new LaunchProbeMessage(true));
 
 		public void RetrieveProbe(bool playEffects)
 		{
@@ -46,7 +45,7 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 			}
 		}
 
-		public void LaunchProbe()
+		public void LaunchProbe(bool playEffects)
 		{
 			if (!AttachedObject._preLaunchProbeProxy.activeSelf)
 			{
@@ -55,9 +54,12 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 
 			AttachedObject._preLaunchProbeProxy.SetActive(false);
 
-			// TODO : make this do underwater stuff correctly
-			AttachedObject._effects.PlayLaunchClip(false);
-			AttachedObject._effects.PlayLaunchParticles(false);
+			if (playEffects)
+			{
+				// TODO : make this do underwater stuff correctly
+				AttachedObject._effects.PlayLaunchClip(false);
+				AttachedObject._effects.PlayLaunchParticles(false);
+			}
 		}
 	}
 }
