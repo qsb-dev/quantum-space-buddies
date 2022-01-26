@@ -9,11 +9,11 @@ namespace QSB.ItemSync.WorldObjects.Items
 {
 	public class QSBItem : WorldObject<OWItem>
 	{
-		public QSBItemSocket InitialSocket { get; private set; }
-		public Transform InitialParent { get; private set; }
-		public Vector3 InitialPosition { get; private set; }
-		public Quaternion InitialRotation { get; private set; }
-		public QSBSector InitialSector { get; private set; }
+		private QSBItemSocket InitialSocket { get; set; }
+		private Transform InitialParent { get; set; }
+		private Vector3 InitialPosition { get; set; }
+		private Quaternion InitialRotation { get; set; }
+		private QSBSector InitialSector { get; set; }
 
 		public override void Init()
 		{
