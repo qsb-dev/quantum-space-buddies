@@ -46,19 +46,12 @@ namespace QSB.WorldSync
 				{
 					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
 					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
-						DebugLog.DebugWrite($"skipping {manager.GetType().Name} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
+						DebugLog.DebugWrite($"skipping {manager} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
 						continue;
 				}
 
-				try
-				{
-					DebugLog.DebugWrite($"Building {manager.GetType().Name}", MessageType.Info);
-					manager.BuildWorldObjects(scene);
-				}
-				catch (Exception ex)
-				{
-					DebugLog.ToConsole($"Exception - Exception when trying to build WorldObjects of manager {manager.GetType().Name} : {ex}", MessageType.Error);
-				}
+				DebugLog.DebugWrite($"Building {manager}", MessageType.Info);
+				manager.Try("building world objects", () => manager.BuildWorldObjects(scene));
 			}
 
 			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
@@ -87,14 +80,7 @@ namespace QSB.WorldSync
 
 			foreach (var item in WorldObjects)
 			{
-				try
-				{
-					item.OnRemoval();
-				}
-				catch (Exception e)
-				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. {e}", MessageType.Error);
-				}
+				item.Try("removing", item.OnRemoval);
 			}
 
 			WorldObjects.Clear();
@@ -102,7 +88,7 @@ namespace QSB.WorldSync
 
 			foreach (var manager in Managers)
 			{
-				manager.UnbuildWorldObjects();
+				manager.Try("unbuilding world objects", manager.UnbuildWorldObjects);
 			}
 		}
 

@@ -25,5 +25,7 @@ namespace QSB.WorldSync
 
 		/// indicates that this is now ready
 		protected void FinishDelayedReady() => QSBWorldSync._numManagersReadying--;
+
+		public override string ToString() => GetType().Name;
 	}
 }

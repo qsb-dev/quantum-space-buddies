@@ -150,7 +150,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (IsInitialized)
 			{
-				Uninit();
+				this.Try("uninitializing (from object destroy)", Uninit);
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace QSB.Syncs
 		{
 			if (IsInitialized)
 			{
-				Uninit();
+				this.Try("uninitializing (from scene change)", Uninit);
 			}
 		}
 
@@ -196,11 +196,11 @@ namespace QSB.Syncs
 		{
 			if (!IsInitialized && CheckReady())
 			{
-				Init();
+				this.Try("initializing", Init);
 			}
 			else if (IsInitialized && !CheckReady())
 			{
-				Uninit();
+				this.Try("uninitializing", Uninit);
 				base.Update();
 				return;
 			}
