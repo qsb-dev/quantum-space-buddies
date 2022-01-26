@@ -11,15 +11,12 @@ namespace QSB.TornadoSync.TransformSync
 {
 	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
-		/// <summary>
-		/// item 1 is body, item 2 is ref body
-		/// </summary>
-		public static readonly List<(OWRigidbody, OWRigidbody)> Bodies = new();
+		public static readonly List<(OWRigidbody Body, OWRigidbody RefBody)> Bodies = new();
 
 		protected override bool UseInterpolation => false;
 		protected override bool OnlyApplyOnDeserialize => true;
 
-		protected override OWRigidbody InitAttachedRigidbody() => Bodies[_instances.IndexOf(this)].Item1;
+		protected override OWRigidbody InitAttachedRigidbody() => Bodies[_instances.IndexOf(this)].Body;
 
 		private static readonly List<OccasionalTransformSync> _instances = new();
 
@@ -44,7 +41,7 @@ namespace QSB.TornadoSync.TransformSync
 		protected override void Init()
 		{
 			base.Init();
-			SetReferenceTransform(Bodies[_instances.IndexOf(this)].Item2.transform);
+			SetReferenceTransform(Bodies[_instances.IndexOf(this)].RefBody.transform);
 
 			_sectors = SectorManager.s_sectors
 				.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();
