@@ -93,7 +93,7 @@ namespace QSB.Animation.Player
 				_suitedGraphics = modelRoot.GetChild(1).gameObject;
 				_unsuitedGraphics = modelRoot.GetChild(0).gameObject;
 
-				VisibleAnimator.SetLayerWeight(1, 1f);
+				VisibleAnimator.SetLayerWeight(2, 1f);
 			}
 			catch (Exception ex)
 			{
