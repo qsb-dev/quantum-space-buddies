@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages
 {
-	internal class PlayerRetrieveProbeMessage : QSBBoolMessage
+	internal class PlayerRetrieveProbeMessage : QSBMessage<bool>
 	{
 		public PlayerRetrieveProbeMessage(bool playEffects) => Value = playEffects;
 

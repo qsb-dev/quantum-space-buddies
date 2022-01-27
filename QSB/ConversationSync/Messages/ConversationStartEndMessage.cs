@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationStartEndMessage : QSBBoolMessage
+	public class ConversationStartEndMessage : QSBMessage<bool>
 	{
 		private int TreeId;
 		private uint PlayerId;

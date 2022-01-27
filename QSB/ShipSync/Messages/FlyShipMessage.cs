@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.Messages
 {
-	internal class FlyShipMessage : QSBBoolMessage
+	internal class FlyShipMessage : QSBMessage<bool>
 	{
 		static FlyShipMessage()
 		{

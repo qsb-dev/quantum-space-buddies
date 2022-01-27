@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using QSB.WorldSync;
-using System;
 
 namespace QSB.Messaging
 {
@@ -58,12 +57,4 @@ namespace QSB.Messaging
 			Value = reader.Read<V>();
 		}
 	}
-
-	public abstract class QSBBoolWorldObjectMessage<T> : QSBWorldObjectMessage<T, bool> where T : IWorldObject { }
-
-	public abstract class QSBFloatWorldObjectMessage<T> : QSBWorldObjectMessage<T, float> where T : IWorldObject { }
-
-	public abstract class QSBEnumWorldObjectMessage<T, E> : QSBWorldObjectMessage<T, E>
-		where T : IWorldObject
-		where E : Enum { }
 }

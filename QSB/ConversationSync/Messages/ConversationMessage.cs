@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationMessage : QSBEnumMessage<ConversationType>
+	public class ConversationMessage : QSBMessage<ConversationType>
 	{
 		private int Id;
 		private string Message;

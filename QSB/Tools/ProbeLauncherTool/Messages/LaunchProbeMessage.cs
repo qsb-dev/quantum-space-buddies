@@ -3,7 +3,7 @@ using QSB.Tools.ProbeLauncherTool.WorldObjects;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages
 {
-	internal class LaunchProbeMessage : QSBBoolWorldObjectMessage<QSBProbeLauncher>
+	internal class LaunchProbeMessage : QSBWorldObjectMessage<QSBProbeLauncher, bool>
 	{
 		public LaunchProbeMessage(bool playEffects) => Value = playEffects;
 

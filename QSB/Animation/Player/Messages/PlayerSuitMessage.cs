@@ -4,7 +4,7 @@ using QSB.Player.TransformSync;
 
 namespace QSB.Animation.Player.Messages
 {
-	public class PlayerSuitMessage : QSBBoolMessage
+	public class PlayerSuitMessage : QSBMessage<bool>
 	{
 		static PlayerSuitMessage()
 		{

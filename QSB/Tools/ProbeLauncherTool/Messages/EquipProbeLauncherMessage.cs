@@ -6,7 +6,7 @@ using QSB.Utility;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages
 {
-	public class EquipProbeLauncherMessage : QSBBoolMessage
+	public class EquipProbeLauncherMessage : QSBMessage<bool>
 	{
 		static EquipProbeLauncherMessage()
 		{

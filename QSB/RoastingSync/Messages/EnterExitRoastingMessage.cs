@@ -8,7 +8,7 @@ using QSB.WorldSync;
 
 namespace QSB.RoastingSync.Messages
 {
-	internal class EnterExitRoastingMessage : QSBBoolMessage
+	internal class EnterExitRoastingMessage : QSBMessage<bool>
 	{
 		static EnterExitRoastingMessage()
 		{

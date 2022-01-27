@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.ElevatorSync.Messages
 {
-	public class ElevatorMessage : QSBBoolWorldObjectMessage<QSBElevator>
+	public class ElevatorMessage : QSBWorldObjectMessage<QSBElevator, bool>
 	{
 		public ElevatorMessage(bool isGoingUp) => Value = isGoingUp;
 

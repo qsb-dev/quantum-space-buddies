@@ -4,7 +4,7 @@ using QSB.OrbSync.WorldObjects;
 
 namespace QSB.OrbSync.Messages
 {
-	public class OrbDragMessage : QSBBoolWorldObjectMessage<QSBOrb>
+	public class OrbDragMessage : QSBWorldObjectMessage<QSBOrb, bool>
 	{
 		public OrbDragMessage(bool isDragging) => Value = isDragging;
 

@@ -5,7 +5,7 @@ using QSB.WorldSync;
 
 namespace QSB.Animation.Player.Messages
 {
-	public class ChangeAnimTypeMessage : QSBEnumMessage<AnimationType>
+	public class ChangeAnimTypeMessage : QSBMessage<AnimationType>
 	{
 		private uint PlayerId;
 

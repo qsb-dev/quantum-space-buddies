@@ -7,7 +7,7 @@ using QSB.Utility;
 
 namespace QSB.DeathSync.Messages
 {
-	public class PlayerDeathMessage : QSBEnumMessage<DeathType>
+	public class PlayerDeathMessage : QSBMessage<DeathType>
 	{
 		private int NecronomiconIndex;
 

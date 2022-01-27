@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using System;
 
 namespace QSB.Messaging
 {
@@ -62,10 +61,4 @@ namespace QSB.Messaging
 			Value = reader.Read<V>();
 		}
 	}
-
-	public abstract class QSBBoolMessage : QSBMessage<bool> { }
-
-	public abstract class QSBFloatMessage : QSBMessage<float> { }
-
-	public abstract class QSBEnumMessage<E> : QSBMessage<E> where E : Enum { }
 }
