@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,11 @@ namespace QSB.Utility
 		/// </summary>
 		public static void ClearCache()
 		{
+			foreach (var worldObject in QSBWorldSync.GetWorldObjects())
+			{
+				DebugLog.DebugWrite($"{worldObject} | {worldObject.AttachedObject.GetInstanceID()} | {worldObject.AttachedObject.DeterministicPath()}");
+			}
+
 			DebugLog.DebugWrite($"cleared cache of {_cache.Count} entries");
 			_cache.Clear();
 		}
