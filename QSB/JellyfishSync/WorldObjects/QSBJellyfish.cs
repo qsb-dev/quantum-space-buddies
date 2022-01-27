@@ -16,6 +16,8 @@ namespace QSB.JellyfishSync.WorldObjects
 
 		public override void Init()
 		{
+			Object.Destroy(AttachedObject.GetComponent<AlignWithTargetBody>());
+
 			if (QSBCore.IsHost)
 			{
 				Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab).SpawnWithServerAuthority();
