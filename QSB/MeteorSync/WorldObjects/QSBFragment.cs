@@ -22,11 +22,11 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{
-				this.SendMessage(new FragmentResyncMessage(this) { To = to });
+				this.SendMessage(new FragmentInitialStateMessage(this) { To = to });
 			}
 		}
 

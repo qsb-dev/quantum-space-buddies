@@ -1,15 +1,12 @@
 ﻿using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
-using QSB.ConversationSync.Messages;
-using QSB.LogSync.Messages;
 using QSB.Messaging;
 using QSB.Utility;
-using QSB.WorldSync;
 
 namespace QSB.Player.Messages
 {
-	// Can be sent by any client (including host) to signal they want latest worldobject, player, and server information
+	// Can be sent by any client (including host) to signal they want latest player and server information
 	public class RequestStateResyncMessage : QSBMessage
 	{
 		/// <summary>
@@ -50,34 +47,12 @@ namespace QSB.Player.Messages
 
 		public override void OnReceiveRemote()
 		{
-			// if host, send worldobject and server states
 			if (QSBCore.IsHost)
 			{
 				new ServerStateMessage(ServerStateManager.Instance.GetServerState()) { To = From }.Send();
-				new PlayerInformationMessage { To = From }.Send();
-
-				if (QSBWorldSync.AllObjectsReady)
-				{
-					QSBWorldSync.DialogueConditions.ForEach(condition
-						=> new DialogueConditionMessage(condition.Key, condition.Value) { To = From }.Send());
-
-					QSBWorldSync.ShipLogFacts.ForEach(fact
-						=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = From }.Send());
-				}
-			}
-			// if client, send player and client states
-			else
-			{
-				new PlayerInformationMessage { To = From }.Send();
 			}
 
-			if (QSBWorldSync.AllObjectsReady)
-			{
-				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
-				{
-					worldObject.SendResyncInfo(From);
-				}
-			}
+			new PlayerInformationMessage { To = From }.Send();
 		}
 	}
 }

@@ -6,6 +6,11 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects
 {
 	internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 	{
+		public override void SendInitialState(uint to)
+		{
+			// not needed since mid-game join is impossible here
+		}
+
 		public void Gather()
 		{
 			var maskZoneController = QSBWorldSync.GetUnityObjects<MaskZoneController>().First();

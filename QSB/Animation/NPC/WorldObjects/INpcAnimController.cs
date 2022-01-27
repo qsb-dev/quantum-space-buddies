@@ -7,6 +7,5 @@ namespace QSB.Animation.NPC.WorldObjects
 		CharacterDialogueTree GetDialogueTree();
 		void StartConversation();
 		void EndConversation();
-		bool InConversation();
 	}
 }

@@ -1,50 +1,65 @@
 ﻿using QSB.Messaging;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 {
 	internal class QSBProbeLauncher : WorldObject<ProbeLauncher>
 	{
-		private float _probeRetrievalLength;
-		private GameObject _preLaunchProbeProxy;
-		private ProbeLauncherEffects _effects;
-		private SingularityWarpEffect _probeRetrievalEffect;
-
-		public override void Init()
-		{
-			_probeRetrievalLength = AttachedObject._probeRetrievalLength;
-			_preLaunchProbeProxy = AttachedObject._preLaunchProbeProxy;
-			_effects = AttachedObject._effects;
-			_probeRetrievalEffect = AttachedObject._probeRetrievalEffect;
-
+		public override void Init() =>
 			AttachedObject.OnLaunchProbe += OnLaunchProbe;
-		}
 
 		public override void OnRemoval() =>
 			AttachedObject.OnLaunchProbe -= OnLaunchProbe;
 
-		private void OnLaunchProbe(SurveyorProbe probe) =>
-			this.SendMessage(new LaunchProbeMessage());
-
-		public void RetrieveProbe(bool playEffects)
+		public override void SendInitialState(uint to)
 		{
-			_preLaunchProbeProxy.SetActive(true);
-			if (playEffects)
+			if (QSBCore.IsHost)
 			{
-				_effects.PlayRetrievalClip();
-				_probeRetrievalEffect.WarpObjectIn(_probeRetrievalLength);
+				if (AttachedObject._preLaunchProbeProxy.activeSelf)
+				{
+					this.SendMessage(new RetrieveProbeMessage(false));
+				}
+				else
+				{
+					this.SendMessage(new LaunchProbeMessage(false));
+				}
 			}
 		}
 
-		public void LaunchProbe()
-		{
-			_preLaunchProbeProxy.SetActive(false);
+		private void OnLaunchProbe(SurveyorProbe probe) =>
+			this.SendMessage(new LaunchProbeMessage(true));
 
-			// TODO : make this do underwater stuff correctly
-			_effects.PlayLaunchClip(false);
-			_effects.PlayLaunchParticles(false);
+		public void RetrieveProbe(bool playEffects)
+		{
+			if (AttachedObject._preLaunchProbeProxy.activeSelf)
+			{
+				return;
+			}
+
+			AttachedObject._preLaunchProbeProxy.SetActive(true);
+			if (playEffects)
+			{
+				AttachedObject._effects.PlayRetrievalClip();
+				AttachedObject._probeRetrievalEffect.WarpObjectIn(AttachedObject._probeRetrievalLength);
+			}
+		}
+
+		public void LaunchProbe(bool playEffects)
+		{
+			if (!AttachedObject._preLaunchProbeProxy.activeSelf)
+			{
+				return;
+			}
+
+			AttachedObject._preLaunchProbeProxy.SetActive(false);
+
+			if (playEffects)
+			{
+				// TODO : make this do underwater stuff correctly
+				AttachedObject._effects.PlayLaunchClip(false);
+				AttachedObject._effects.PlayLaunchParticles(false);
+			}
 		}
 	}
 }

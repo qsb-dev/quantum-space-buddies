@@ -13,6 +13,6 @@ namespace QSB.WorldSync
 		string ReturnLabel();
 		void DisplayLines();
 
-		void SendResyncInfo(uint to);
+		void SendInitialState(uint to);
 	}
 }
