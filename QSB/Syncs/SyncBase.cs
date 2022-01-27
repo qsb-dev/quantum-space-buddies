@@ -183,9 +183,9 @@ namespace QSB.Syncs
 
 		private bool _shouldApply;
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
+			base.Deserialize(reader);
 			if (OnlyApplyOnDeserialize)
 			{
 				_shouldApply = true;

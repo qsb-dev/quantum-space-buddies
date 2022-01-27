@@ -2,7 +2,6 @@
 using QSB.Anglerfish.Messages;
 using QSB.Anglerfish.TransformSync;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -22,7 +21,7 @@ namespace QSB.Anglerfish.WorldObjects
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab).SpawnWithServerAuthority();
+				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab));
 			}
 
 			StartDelayedReady();
