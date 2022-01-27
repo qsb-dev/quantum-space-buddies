@@ -66,7 +66,7 @@ namespace QSB.Utility
 
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
 		{
-			var mappedValue = ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+			var mappedValue = (value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom) + outputFrom;
 
 			return clamp
 				? Mathf.Clamp(mappedValue, outputTo, outputFrom)
@@ -99,7 +99,7 @@ namespace QSB.Utility
 				return;
 			}
 
-			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
+			multiDelegate.GetInvocationList().ForEach(dl => dl.DynamicInvoke(args));
 		}
 
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
