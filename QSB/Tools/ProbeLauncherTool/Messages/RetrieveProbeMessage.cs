@@ -5,7 +5,7 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 {
 	internal class RetrieveProbeMessage : QSBBoolWorldObjectMessage<QSBProbeLauncher>
 	{
-		public RetrieveProbeMessage(bool state) => Value = state;
+		public RetrieveProbeMessage(bool playEffects) => Value = playEffects;
 
 		public override void OnReceiveRemote() => WorldObject.RetrieveProbe(Value);
 	}

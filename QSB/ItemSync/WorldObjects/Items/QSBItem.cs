@@ -7,15 +7,14 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
 {
-	internal class QSBOWItem<T> : WorldObject<T>, IQSBOWItem
+	internal class QSBItem<T> : WorldObject<T>, IQSBItem
 		where T : OWItem
 	{
-		public IQSBOWItemSocket InitialSocket { get; private set; }
-		public Transform InitialParent { get; private set; }
-		public Vector3 InitialPosition { get; private set; }
-		public Quaternion InitialRotation { get; private set; }
-		public QSBSector InitialSector { get; private set; }
-		public uint HoldingPlayer { get; private set; }
+		private QSBItemSocket InitialSocket { get; set; }
+		private Transform InitialParent { get; set; }
+		private Vector3 InitialPosition { get; set; }
+		private Quaternion InitialRotation { get; set; }
+		private QSBSector InitialSector { get; set; }
 
 		public override void Init()
 		{
@@ -46,7 +45,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 				if (InitialParent?.GetComponent<OWItemSocket>() != null)
 				{
-					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<IQSBOWItemSocket>();
+					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<QSBItemSocket>();
 					InitialSocket = qsbObj;
 				}
 			});
@@ -58,7 +57,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 
 		private void OnPlayerLeave(PlayerInfo player)
 		{
-			if (HoldingPlayer != player.PlayerId)
+			if (player.HeldItem != this)
 			{
 				return;
 			}
@@ -77,25 +76,18 @@ namespace QSB.ItemSync.WorldObjects.Items
 			AttachedObject.SetColliderActivation(true);
 		}
 
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
+		}
+
 		public ItemType GetItemType()
 			=> AttachedObject.GetItemType();
 
-		public void SetColliderActivation(bool active)
-			=> AttachedObject.SetColliderActivation(active);
+		public void PickUpItem(Transform holdTransform)
+			=> AttachedObject.PickUpItem(holdTransform);
 
-		public virtual void SocketItem(Transform socketTransform, Sector sector)
-		{
-			AttachedObject.SocketItem(socketTransform, sector);
-			HoldingPlayer = 0;
-		}
-
-		public virtual void PickUpItem(Transform holdTransform, uint playerId)
-		{
-			AttachedObject.PickUpItem(holdTransform);
-			HoldingPlayer = playerId;
-		}
-
-		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
+		public void DropItem(Vector3 position, Vector3 normal, Sector sector)
 		{
 			AttachedObject.transform.SetParent(sector.transform);
 			AttachedObject.transform.localScale = Vector3.one;
@@ -106,11 +98,9 @@ namespace QSB.ItemSync.WorldObjects.Items
 			AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
 			AttachedObject.SetSector(sector);
 			AttachedObject.SetColliderActivation(true);
-			HoldingPlayer = 0;
 		}
 
-		public virtual void PlaySocketAnimation() { }
-		public virtual void PlayUnsocketAnimation() { }
-		public virtual void OnCompleteUnsocket() { }
+		public void OnCompleteUnsocket()
+			=> AttachedObject.OnCompleteUnsocket();
 	}
 }

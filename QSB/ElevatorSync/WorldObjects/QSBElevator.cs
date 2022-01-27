@@ -26,7 +26,7 @@ namespace QSB.ElevatorSync.WorldObjects
 			});
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

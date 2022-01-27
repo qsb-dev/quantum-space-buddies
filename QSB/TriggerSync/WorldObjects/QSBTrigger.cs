@@ -49,11 +49,11 @@ namespace QSB.TriggerSync.WorldObjects
 			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{
-				((IQSBTrigger)this).SendMessage(new TriggerResyncMessage(Occupants) { To = to });
+				((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
 			}
 		}
 

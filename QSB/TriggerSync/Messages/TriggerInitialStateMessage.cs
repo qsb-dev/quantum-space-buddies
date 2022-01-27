@@ -10,11 +10,11 @@ namespace QSB.TriggerSync.Messages
 	/// <summary>
 	/// always sent by host
 	/// </summary>
-	public class TriggerResyncMessage : QSBWorldObjectMessage<IQSBTrigger>
+	public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger>
 	{
 		private uint[] _playerIds;
 
-		public TriggerResyncMessage(IEnumerable<PlayerInfo> occupants) =>
+		public TriggerInitialStateMessage(IEnumerable<PlayerInfo> occupants) =>
 			_playerIds = occupants.Select(x => x.PlayerId).ToArray();
 
 		public override void Serialize(NetworkWriter writer)
