@@ -232,6 +232,7 @@ namespace QSB.WorldSync
 					ObjectId = WorldObjects.Count
 				};
 
+				DebugLog.DebugWrite($"{obj} | {obj.AttachedObject.GetInstanceID()} | {obj.AttachedObject.DeterministicPath()}");
 				obj.Init();
 				WorldObjects.Add(obj);
 				UnityObjectsToWorldObjects.Add(item, obj);
@@ -258,6 +259,7 @@ namespace QSB.WorldSync
 					TriggerOwner = owner
 				};
 
+				DebugLog.DebugWrite($"{obj} | {obj.AttachedObject.GetInstanceID()} | {obj.AttachedObject.DeterministicPath()}");
 				obj.Init();
 				WorldObjects.Add(obj);
 				UnityObjectsToWorldObjects.Add(item, obj);

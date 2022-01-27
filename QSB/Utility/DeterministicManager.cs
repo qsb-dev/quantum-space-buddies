@@ -15,7 +15,11 @@ namespace QSB.Utility
 		/// <summary>
 		/// called after all objects ready
 		/// </summary>
-		public static void ClearCache() => _cache.Clear();
+		public static void ClearCache()
+		{
+			DebugLog.DebugWrite($"cleared cache of {_cache.Count} entries");
+			_cache.Clear();
+		}
 
 		private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
 
