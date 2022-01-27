@@ -9,7 +9,7 @@ namespace MirrorWeaver
 		/// <summary>
 		/// finds usages of the generic read/write methods and generates read/write functions for them.
 		/// <para/>
-		/// traverses from non abstract classes up thru base types
+		/// traverses from non generic classes up thru base types
 		/// in order to replace generic parameters with their corresponding generic arguments.
 		/// </summary>
 		public static void Process(AssemblyDefinition assembly, Writers writers, Readers readers, ref bool weavingFailed)
@@ -19,7 +19,7 @@ namespace MirrorWeaver
 
 			foreach (var type in assembly.MainModule.GetTypes())
 			{
-				if (type.IsAbstract || type.IsInterface) continue;
+				if (type.HasGenericParameters) continue;
 
 				TypeReference currentType = type;
 				while (currentType != null)
