@@ -1,4 +1,5 @@
-﻿using QSB.AuthoritySync;
+﻿using Mirror;
+using QSB.AuthoritySync;
 using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
@@ -14,6 +15,7 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override bool OnlyApplyOnDeserialize => true;
 
 		private QSBJellyfish _qsbJellyfish;
+		private bool _isRising;
 		private static readonly List<JellyfishTransformSync> _instances = new();
 
 		protected override OWRigidbody InitAttachedRigidbody()
@@ -68,6 +70,25 @@ namespace QSB.JellyfishSync.TransformSync
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
 		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
+		protected override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(_isRising);
+		}
+
+		protected override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			_isRising = reader.Read<bool>();
+		}
+
+		protected override void GetFromAttached()
+		{
+			base.GetFromAttached();
+
+			_isRising = _qsbJellyfish.AttachedObject._isRising;
+		}
+
 		/// replacement using SetPosition/Rotation instead of Move
 		protected override void ApplyToAttached()
 		{
@@ -76,6 +97,8 @@ namespace QSB.JellyfishSync.TransformSync
 			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
 			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
 			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
+
+			_qsbJellyfish.SetIsRising(_isRising);
 		}
 
 		protected override void OnRenderObject()
