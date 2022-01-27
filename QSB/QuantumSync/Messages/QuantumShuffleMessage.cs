@@ -1,8 +1,6 @@
 ﻿using Mirror;
 using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
-using System;
-using System.Linq;
 
 namespace QSB.QuantumSync.Messages
 {
@@ -15,14 +13,13 @@ namespace QSB.QuantumSync.Messages
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			var temp = IndexArray.Select(x => (byte)x).ToArray();
-			writer.WriteBytesAndSize(temp);
+			writer.WriteArray(IndexArray);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			IndexArray = Array.ConvertAll(reader.ReadBytesAndSize(), Convert.ToInt32);
+			IndexArray = reader.ReadArray<int>();
 		}
 
 		public override void OnReceiveRemote() => WorldObject.ShuffleObjects(IndexArray);

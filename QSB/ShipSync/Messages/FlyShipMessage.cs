@@ -24,7 +24,7 @@ namespace QSB.ShipSync.Messages
 			}
 		}
 
-		public FlyShipMessage(bool flying) => Value = flying;
+		private FlyShipMessage(bool flying) => Value = flying;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

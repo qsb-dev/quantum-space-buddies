@@ -24,7 +24,6 @@ namespace QSB.ConversationSync.Messages
 			base.Serialize(writer);
 			writer.Write(TreeId);
 			writer.Write(PlayerId);
-			writer.Write(Value);
 		}
 
 		public override void Deserialize(NetworkReader reader)
@@ -32,7 +31,6 @@ namespace QSB.ConversationSync.Messages
 			base.Deserialize(reader);
 			TreeId = reader.Read<int>();
 			PlayerId = reader.Read<uint>();
-			Value = reader.Read<bool>();
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
