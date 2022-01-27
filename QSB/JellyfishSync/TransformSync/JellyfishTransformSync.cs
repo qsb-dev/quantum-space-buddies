@@ -10,6 +10,8 @@ namespace QSB.JellyfishSync.TransformSync
 {
 	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
+		protected override bool AllowInactiveAttachedObject => true;
+
 		protected override bool UseInterpolation => false;
 		protected override bool OnlyApplyOnDeserialize => true;
 

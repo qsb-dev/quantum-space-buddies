@@ -9,6 +9,8 @@ namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
+		protected override bool AllowInactiveAttachedObject => true;
+
 		protected override bool UseInterpolation => false;
 		protected override bool OnlyApplyOnDeserialize => true;
 
