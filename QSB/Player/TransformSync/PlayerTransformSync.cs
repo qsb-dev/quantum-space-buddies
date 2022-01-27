@@ -254,8 +254,7 @@ namespace QSB.Player.TransformSync
 		{
 			if (!QSBCore.ShowLinesInDebug
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}

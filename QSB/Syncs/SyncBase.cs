@@ -278,8 +278,7 @@ namespace QSB.Syncs
 		{
 			if (!QSBCore.ShowLinesInDebug
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}
@@ -303,8 +302,7 @@ namespace QSB.Syncs
 			if (!QSBCore.ShowDebugLabels
 				|| Event.current.type != EventType.Repaint
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}

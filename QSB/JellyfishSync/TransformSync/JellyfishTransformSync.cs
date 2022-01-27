@@ -84,8 +84,7 @@ namespace QSB.JellyfishSync.TransformSync
 		{
 			if (!QSBCore.ShowLinesInDebug
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}
