@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.TriggerSync.WorldObjects;
 using System.Collections.Generic;
@@ -10,28 +9,14 @@ namespace QSB.TriggerSync.Messages
 	/// <summary>
 	/// always sent by host
 	/// </summary>
-	public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger>
+	public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger, uint[]>
 	{
-		private uint[] _playerIds;
-
 		public TriggerInitialStateMessage(IEnumerable<PlayerInfo> occupants) =>
-			_playerIds = occupants.Select(x => x.PlayerId).ToArray();
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.WriteArray(_playerIds);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			_playerIds = reader.ReadArray<uint>();
-		}
+			Value = occupants.Select(x => x.PlayerId).ToArray();
 
 		public override void OnReceiveRemote()
 		{
-			var serverOccupants = _playerIds.Select(QSBPlayerManager.GetPlayer).ToList();
+			var serverOccupants = Value.Select(QSBPlayerManager.GetPlayer).ToList();
 			foreach (var added in serverOccupants.Except(WorldObject.Occupants))
 			{
 				WorldObject.Enter(added);
