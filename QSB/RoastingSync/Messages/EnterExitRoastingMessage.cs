@@ -3,6 +3,7 @@ using OWML.Common;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 
@@ -18,14 +19,17 @@ namespace QSB.RoastingSync.Messages
 
 		private static void Handler(Campfire campfire, bool roasting)
 		{
-			if (campfire == null)
+			if (PlayerTransformSync.LocalInstance)
 			{
-				new EnterExitRoastingMessage(-1, roasting).Send();
-				return;
-			}
+				if (campfire == null)
+				{
+					new EnterExitRoastingMessage(-1, roasting).Send();
+					return;
+				}
 
-			var qsbObj = campfire.GetWorldObject<QSBCampfire>();
-			new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
+				var qsbObj = campfire.GetWorldObject<QSBCampfire>();
+				new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
+			}
 		}
 
 		private int ObjectId;
