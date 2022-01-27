@@ -11,10 +11,13 @@ namespace QSB.Tools.ProbeLauncherTool
 		public override void BuildWorldObjects(OWScene scene)
 		{
 			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
-			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(new[]
+			if (scene == OWScene.SolarSystem)
 			{
-				QSBWorldSync.GetUnityObjects<ShipCockpitController>().First().GetShipProbeLauncher()
-			});
+				QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(new[]
+				{
+					QSBWorldSync.GetUnityObjects<ShipCockpitController>().First().GetShipProbeLauncher()
+				});
+			}
 		}
 	}
 }
