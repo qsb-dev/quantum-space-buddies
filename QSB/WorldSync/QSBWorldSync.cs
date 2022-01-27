@@ -63,7 +63,7 @@ namespace QSB.WorldSync
 				{
 					AllObjectsReady = true;
 					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
-					DeterministicManager.ClearCache();
+					DeterministicManager.WorldObjectsReady();
 
 					if (!QSBCore.IsHost)
 					{

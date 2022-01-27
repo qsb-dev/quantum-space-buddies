@@ -8,67 +8,263 @@ using UnityEngine;
 
 namespace QSB.Utility
 {
-	[HarmonyPatch]
 	public static class DeterministicManager
 	{
-		public static void Init() =>
-			Harmony.CreateAndPatchAll(typeof(DeterministicManager));
+		private static readonly Harmony _harmony = new(typeof(DeterministicManager).AssemblyQualifiedName);
+		private static bool _patched;
 
-		/// <summary>
-		/// called after all objects ready
-		/// </summary>
-		public static void ClearCache()
+		private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
+
+		public static void Init()
 		{
+			LoadManager.OnStartSceneLoad += (_, _) =>
+			{
+				DebugLog.DebugWrite("cleared cache");
+				_cache.Clear();
+
+				if (!_patched)
+				{
+					_harmony.PatchAll(typeof(OWRigidbodyPatches));
+					_patched = true;
+				}
+			};
+		}
+
+		public static void WorldObjectsReady()
+		{
+			#region debug dump
+
 			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
 			{
-				file.WriteLine("world object,deterministic path,instance id");
+				file.WriteLine("world object,instance id,deterministic path");
 				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
 				{
 					file.Write(worldObject.GetType().Name);
 					file.Write(',');
+					file.Write(worldObject.AttachedObject.transform.GetInstanceID());
+					file.Write(',');
 					file.Write('"');
 					file.Write(worldObject.AttachedObject.DeterministicPath().Replace("\"", "\"\""));
 					file.Write('"');
-					file.Write(',');
-					file.Write(worldObject.AttachedObject.GetInstanceID());
 					file.WriteLine();
 				}
 			}
 
 			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "cache.csv")))
 			{
-				file.WriteLine("name,sibling index,parent");
+				file.WriteLine("name,instance id,sibling index,parent,parent instance id");
 				foreach (var (transform, (siblingIndex, parent)) in _cache)
 				{
 					file.Write('"');
 					file.Write(transform.name.Replace("\"", "\"\""));
 					file.Write('"');
 					file.Write(',');
+					file.Write(transform.GetInstanceID());
+					file.Write(',');
 					file.Write(siblingIndex);
 					file.Write(',');
 					file.Write('"');
 					file.Write(parent ? parent.name.Replace("\"", "\"\"") : "<no parent>");
 					file.Write('"');
+					file.Write(',');
+					file.Write(parent ? parent.GetInstanceID() : 0);
 					file.WriteLine();
 				}
 			}
 
+			#endregion
+
 			DebugLog.DebugWrite($"cleared cache of {_cache.Count} entries");
 			_cache.Clear();
+
+			if (_patched)
+			{
+				_harmony.UnpatchSelf();
+				_patched = false;
+			}
 		}
 
-		private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(OWRigidbody), nameof(OWRigidbody.Awake))]
-		private static void OWRigidbody_Awake(OWRigidbody __instance)
+		[HarmonyPatch(typeof(OWRigidbody))]
+		private static class OWRigidbodyPatches
 		{
-			var transform = __instance.transform;
-			_cache.Add(transform, (transform.GetSiblingIndex(), transform.parent));
+			private static readonly Dictionary<OWRigidbody, Transform> _setParentQueue = new();
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(OWRigidbody.Awake))]
+			private static bool Awake(OWRigidbody __instance)
+			{
+				__instance._transform = __instance.transform;
+				_cache.Add(__instance._transform, (__instance._transform.GetSiblingIndex(), __instance._transform.parent));
+				if (!__instance._scaleRoot)
+				{
+					__instance._scaleRoot = __instance._transform;
+				}
+
+				CenterOfTheUniverse.TrackRigidbody(__instance);
+				__instance._offsetApplier = __instance.gameObject.GetAddComponent<CenterOfTheUniverseOffsetApplier>();
+				__instance._offsetApplier.Init(__instance);
+				if (__instance._simulateInSector)
+				{
+					__instance._simulateInSector.OnSectorOccupantsUpdated += __instance.OnSectorOccupantsUpdated;
+				}
+
+				__instance._origParent = __instance._transform.parent;
+				__instance._origParentBody = __instance._origParent ? __instance._origParent.GetAttachedOWRigidbody() : null;
+				if (__instance._transform.parent)
+				{
+					_setParentQueue[__instance] = null;
+				}
+
+				__instance._rigidbody = __instance.GetRequiredComponent<Rigidbody>();
+				__instance._rigidbody.interpolation = RigidbodyInterpolation.None;
+				if (!__instance._autoGenerateCenterOfMass)
+				{
+					__instance._rigidbody.centerOfMass = __instance._centerOfMass;
+				}
+
+				if (__instance.IsSimulatedKinematic())
+				{
+					__instance.EnableKinematicSimulation();
+				}
+
+				__instance._origCenterOfMass = __instance.RunningKinematicSimulation() ? __instance._kinematicRigidbody.centerOfMass : __instance._rigidbody.centerOfMass;
+				__instance._referenceFrame = new ReferenceFrame(__instance);
+				return false;
+			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(OWRigidbody.Start))]
+			private static void Start(OWRigidbody __instance)
+			{
+				if (_setParentQueue.TryGetValue(__instance, out var parent))
+				{
+					__instance._transform.parent = parent;
+					_setParentQueue.Remove(__instance);
+				}
+			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(OWRigidbody.OnDestroy))]
+			private static void OnDestroy(OWRigidbody __instance) =>
+				_setParentQueue.Remove(__instance);
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(OWRigidbody.Suspend), typeof(Transform), typeof(OWRigidbody))]
+			private static bool Suspend(OWRigidbody __instance, Transform suspensionParent, OWRigidbody suspensionBody)
+			{
+				if (!__instance._suspended || __instance._unsuspendNextUpdate)
+				{
+					__instance._suspensionBody = suspensionBody;
+					var direction = __instance.GetVelocity() - suspensionBody.GetPointVelocity(__instance._transform.position);
+					__instance._cachedRelativeVelocity = suspensionBody.transform.InverseTransformDirection(direction);
+					__instance._cachedAngularVelocity = __instance.RunningKinematicSimulation() ? __instance._kinematicRigidbody.angularVelocity : __instance._rigidbody.angularVelocity;
+					__instance.enabled = false;
+					__instance._offsetApplier.enabled = false;
+					if (__instance.RunningKinematicSimulation())
+					{
+						__instance._kinematicRigidbody.enabled = false;
+					}
+					else
+					{
+						__instance.MakeKinematic();
+					}
+
+					if (_setParentQueue.ContainsKey(__instance))
+					{
+						_setParentQueue[__instance] = suspensionParent;
+					}
+					else
+					{
+						__instance._transform.parent = suspensionParent;
+					}
+
+					__instance._suspended = true;
+					__instance._unsuspendNextUpdate = false;
+					if (!Physics.autoSyncTransforms)
+					{
+						Physics.SyncTransforms();
+					}
+
+					if (__instance._childColliders == null)
+					{
+						__instance._childColliders = __instance.GetComponentsInChildren<Collider>();
+						foreach (var childCollider in __instance._childColliders)
+						{
+							childCollider.gameObject.GetAddComponent<OWCollider>().ListenForParentBodySuspension();
+						}
+					}
+
+					__instance.RaiseEvent(nameof(__instance.OnSuspendOWRigidbody), __instance);
+				}
+
+				return false;
+			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(OWRigidbody.ChangeSuspensionBody))]
+			private static bool ChangeSuspensionBody(OWRigidbody __instance, OWRigidbody newSuspensionBody)
+			{
+				if (__instance._suspended)
+				{
+					__instance._cachedRelativeVelocity = Vector3.zero;
+					__instance._suspensionBody = newSuspensionBody;
+					if (_setParentQueue.ContainsKey(__instance))
+					{
+						_setParentQueue[__instance] = newSuspensionBody.transform;
+					}
+					else
+					{
+						__instance._transform.parent = newSuspensionBody.transform;
+					}
+				}
+
+				return false;
+			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(OWRigidbody.UnsuspendImmediate))]
+			private static bool UnsuspendImmediate(OWRigidbody __instance, bool restoreCachedVelocity)
+			{
+				if (__instance._suspended)
+				{
+					if (__instance.RunningKinematicSimulation())
+					{
+						__instance._kinematicRigidbody.enabled = true;
+					}
+					else
+					{
+						__instance.MakeNonKinematic();
+					}
+
+					__instance.enabled = true;
+					if (_setParentQueue.ContainsKey(__instance))
+					{
+						_setParentQueue[__instance] = null;
+					}
+					else
+					{
+						__instance._transform.parent = null;
+					}
+
+					if (!Physics.autoSyncTransforms)
+					{
+						Physics.SyncTransforms();
+					}
+
+					var cachedVelocity = restoreCachedVelocity ? __instance._suspensionBody.transform.TransformDirection(__instance._cachedRelativeVelocity) : Vector3.zero;
+					__instance.SetVelocity(__instance._suspensionBody.GetPointVelocity(__instance._transform.position) + cachedVelocity);
+					__instance.SetAngularVelocity(restoreCachedVelocity ? __instance._cachedAngularVelocity : Vector3.zero);
+					__instance._suspended = false;
+					__instance._suspensionBody = null;
+					__instance.RaiseEvent(nameof(__instance.OnUnsuspendOWRigidbody), __instance);
+				}
+
+				return false;
+			}
 		}
 
 		/// <summary>
-		/// only call this before all objects ready
+		/// only call this before world objects ready
 		/// </summary>
 		public static string DeterministicPath(this Component component)
 		{
@@ -99,7 +295,7 @@ namespace QSB.Utility
 		}
 
 		/// <summary>
-		/// only call this before all objects ready
+		/// only call this before world objects ready
 		/// </summary>
 		public static IEnumerable<T> SortDeterministic<T>(this IEnumerable<T> components) where T : Component
 			=> components.OrderBy(DeterministicPath);
