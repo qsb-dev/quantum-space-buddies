@@ -95,6 +95,7 @@ namespace QSB
 			}
 
 			QSBPatchManager.Init();
+			DeterministicManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();

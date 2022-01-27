@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -45,23 +44,6 @@ namespace QSB.Utility
 
 		public static void SpawnWithServerAuthority(this GameObject go) =>
 			NetworkServer.Spawn(go, NetworkServer.localConnection);
-
-		public static string DeterministicPath(this Component component)
-		{
-			var sb = new StringBuilder();
-			var transform = component.transform;
-			while (transform.parent)
-			{
-				sb.Append(transform.GetSiblingIndex());
-				transform = transform.parent;
-			}
-
-			sb.Append(transform.name);
-			return sb.ToString();
-		}
-
-		public static IEnumerable<T> SortDeterministic<T>(this IEnumerable<T> components) where T : Component
-			=> components.OrderBy(DeterministicPath);
 
 		#endregion
 

@@ -3,9 +3,9 @@
   "overrideAppId": -1,
   "debugMode": true,
   "drawLines": true,
-  "showQuantumVisibilityObjects": true,
+  "showQuantumVisibilityObjects": false,
   "showDebugLabels": true,
   "avoidTimeSync": false,
   "skipTitleScreen": true,
-  "greySkybox": true
+  "greySkybox": false
 }

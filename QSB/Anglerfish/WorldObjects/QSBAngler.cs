@@ -20,6 +20,8 @@ namespace QSB.Anglerfish.WorldObjects
 
 		public override void Init()
 		{
+			DebugLog.DebugWrite($"{this} | {AttachedObject.DeterministicPath()} | {AttachedObject.GetInstanceID()}");
+
 			if (QSBCore.IsHost)
 			{
 				Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab).SpawnWithServerAuthority();
