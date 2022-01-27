@@ -76,7 +76,7 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			new ConversationStartEndMessage(charId, QSBPlayerManager.LocalPlayerId, state).Send();
+			new ConversationStartEndMessage(charId, state).Send();
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)

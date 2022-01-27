@@ -10,12 +10,10 @@ namespace QSB.ConversationSync.Messages
 	public class ConversationStartEndMessage : QSBMessage<bool>
 	{
 		private int TreeId;
-		private uint PlayerId;
 
-		public ConversationStartEndMessage(int treeId, uint playerId, bool start)
+		public ConversationStartEndMessage(int treeId, bool start)
 		{
 			TreeId = treeId;
-			PlayerId = playerId;
 			Value = start;
 		}
 
@@ -23,14 +21,12 @@ namespace QSB.ConversationSync.Messages
 		{
 			base.Serialize(writer);
 			writer.Write(TreeId);
-			writer.Write(PlayerId);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			TreeId = reader.Read<int>();
-			PlayerId = reader.Read<uint>();
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
@@ -47,11 +43,11 @@ namespace QSB.ConversationSync.Messages
 
 			if (Value)
 			{
-				StartConversation(PlayerId, TreeId, dialogueTree);
+				StartConversation(From, TreeId, dialogueTree);
 			}
 			else
 			{
-				EndConversation(PlayerId, dialogueTree);
+				EndConversation(From, dialogueTree);
 			}
 		}
 
