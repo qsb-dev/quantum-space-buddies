@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -18,9 +19,38 @@ namespace QSB.Utility
 		/// </summary>
 		public static void ClearCache()
 		{
-			foreach (var worldObject in QSBWorldSync.GetWorldObjects())
+			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
 			{
-				DebugLog.DebugWrite($"{worldObject} | {worldObject.AttachedObject.GetInstanceID()} | {worldObject.AttachedObject.DeterministicPath()}");
+				file.WriteLine("world object,deterministic path,instance id");
+				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
+				{
+					file.Write(worldObject.GetType().Name);
+					file.Write(',');
+					file.Write('"');
+					file.Write(worldObject.AttachedObject.DeterministicPath().Replace("\"", "\"\""));
+					file.Write('"');
+					file.Write(',');
+					file.Write(worldObject.AttachedObject.GetInstanceID());
+					file.WriteLine();
+				}
+			}
+
+			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "cache.csv")))
+			{
+				file.WriteLine("name,sibling index,parent");
+				foreach (var (transform, (siblingIndex, parent)) in _cache)
+				{
+					file.Write('"');
+					file.Write(transform.name.Replace("\"", "\"\""));
+					file.Write('"');
+					file.Write(',');
+					file.Write(siblingIndex);
+					file.Write(',');
+					file.Write('"');
+					file.Write(parent ? parent.name.Replace("\"", "\"\"") : "<no parent>");
+					file.Write('"');
+					file.WriteLine();
+				}
 			}
 
 			DebugLog.DebugWrite($"cleared cache of {_cache.Count} entries");
@@ -57,7 +87,10 @@ namespace QSB.Utility
 					break;
 				}
 
+				sb.Append(transform.name);
+				sb.Append(' ');
 				sb.Append(data.SiblingIndex);
+				sb.Append(' ');
 				transform = data.Parent;
 			}
 
