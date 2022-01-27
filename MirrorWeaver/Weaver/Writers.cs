@@ -75,6 +75,8 @@ namespace Mirror.Weaver
         //Throws GenerateWriterException when writer could not be generated for type
         MethodReference GenerateWriter(TypeReference variableReference, ref bool WeavingFailed)
         {
+            Log.Warning($"GenerateWriter for {variableReference}");
+
             if (variableReference.IsByReference)
             {
                 throw new GenerateWriterException($"Cannot pass {variableReference.Name} by reference", variableReference);

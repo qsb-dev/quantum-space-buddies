@@ -64,6 +64,8 @@ namespace Mirror.Weaver
 
         MethodReference GenerateReader(TypeReference variableReference, ref bool WeavingFailed)
         {
+            Log.Warning($"GenerateReader for {variableReference}");
+
             // Arrays are special,  if we resolve them, we get the element type,
             // so the following ifs might choke on it for scriptable objects
             // or other objects that require a custom serializer
