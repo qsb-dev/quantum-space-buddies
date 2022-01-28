@@ -15,8 +15,7 @@ namespace QSB.Utility
 
 		private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
 
-		public static void Init()
-		{
+		public static void Init() =>
 			LoadManager.OnStartSceneLoad += (_, _) =>
 			{
 				DebugLog.DebugWrite("cleared cache");
@@ -28,7 +27,6 @@ namespace QSB.Utility
 					_patched = true;
 				}
 			};
-		}
 
 		public static void WorldObjectsReady()
 		{
