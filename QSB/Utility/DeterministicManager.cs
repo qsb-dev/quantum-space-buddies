@@ -34,12 +34,12 @@ namespace QSB.Utility
 
 			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
 			{
-				file.WriteLine("world object,instance id,deterministic path");
+				file.WriteLine("world object,deterministic path");
 				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
 				{
-					file.Write(worldObject.GetType().Name);
-					file.Write(',');
-					file.Write(worldObject.AttachedObject.transform.GetInstanceID());
+					file.Write('"');
+					file.Write(worldObject);
+					file.Write('"');
 					file.Write(',');
 					file.Write('"');
 					file.Write(worldObject.AttachedObject.DeterministicPath().Replace("\"", "\"\""));
