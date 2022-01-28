@@ -64,10 +64,10 @@ namespace QSB.Utility
 					file.Write(siblingIndex);
 					file.Write(',');
 					file.Write('"');
-					file.Write(parent ? parent.name.Replace("\"", "\"\"") : "<no parent>");
+					file.Write(parent ? parent.name.Replace("\"", "\"\"") : default);
 					file.Write('"');
 					file.Write(',');
-					file.Write(parent ? parent.GetInstanceID() : 0);
+					file.Write(parent ? parent.GetInstanceID() : default);
 					file.WriteLine();
 				}
 			}
