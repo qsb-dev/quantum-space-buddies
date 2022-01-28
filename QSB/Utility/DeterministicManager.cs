@@ -145,8 +145,11 @@ namespace QSB.Utility
 
 			[HarmonyPrefix]
 			[HarmonyPatch(nameof(OWRigidbody.OnDestroy))]
-			private static void OnDestroy(OWRigidbody __instance) =>
+			private static void OnDestroy(OWRigidbody __instance)
+			{
+				_cache.Remove(__instance._transform);
 				_setParentQueue.Remove(__instance);
+			}
 
 			[HarmonyPrefix]
 			[HarmonyPatch(nameof(OWRigidbody.Suspend), typeof(Transform), typeof(OWRigidbody))]
