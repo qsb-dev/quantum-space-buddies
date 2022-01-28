@@ -30,47 +30,46 @@ namespace QSB.Utility
 
 		public static void WorldObjectsReady()
 		{
-			#region debug dump
-
-			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
+			if (QSBCore.DumpWorldObjects)
 			{
-				file.WriteLine("world object,deterministic path");
-				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
+				using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
 				{
-					file.Write('"');
-					file.Write(worldObject);
-					file.Write('"');
-					file.Write(',');
-					file.Write('"');
-					file.Write(worldObject.AttachedObject.DeterministicPath().Replace("\"", "\"\""));
-					file.Write('"');
-					file.WriteLine();
+					file.WriteLine("world object,deterministic path");
+					foreach (var worldObject in QSBWorldSync.GetWorldObjects())
+					{
+						file.Write('"');
+						file.Write(worldObject);
+						file.Write('"');
+						file.Write(',');
+						file.Write('"');
+						file.Write(worldObject.AttachedObject.DeterministicPath().Replace("\"", "\"\""));
+						file.Write('"');
+						file.WriteLine();
+					}
+				}
+
+				using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "cache.csv")))
+				{
+					file.WriteLine("name,instance id,sibling index,parent,parent instance id");
+					foreach (var (transform, (siblingIndex, parent)) in _cache)
+					{
+						file.Write('"');
+						file.Write(transform.name.Replace("\"", "\"\""));
+						file.Write('"');
+						file.Write(',');
+						file.Write(transform.GetInstanceID());
+						file.Write(',');
+						file.Write(siblingIndex);
+						file.Write(',');
+						file.Write('"');
+						file.Write(parent ? parent.name.Replace("\"", "\"\"") : default);
+						file.Write('"');
+						file.Write(',');
+						file.Write(parent ? parent.GetInstanceID() : default);
+						file.WriteLine();
+					}
 				}
 			}
-
-			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "cache.csv")))
-			{
-				file.WriteLine("name,instance id,sibling index,parent,parent instance id");
-				foreach (var (transform, (siblingIndex, parent)) in _cache)
-				{
-					file.Write('"');
-					file.Write(transform.name.Replace("\"", "\"\""));
-					file.Write('"');
-					file.Write(',');
-					file.Write(transform.GetInstanceID());
-					file.Write(',');
-					file.Write(siblingIndex);
-					file.Write(',');
-					file.Write('"');
-					file.Write(parent ? parent.name.Replace("\"", "\"\"") : default);
-					file.Write('"');
-					file.Write(',');
-					file.Write(parent ? parent.GetInstanceID() : default);
-					file.WriteLine();
-				}
-			}
-
-			#endregion
 
 			DebugLog.DebugWrite($"cleared cache of {_cache.Count} entries");
 			_cache.Clear();

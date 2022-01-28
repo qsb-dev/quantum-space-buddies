@@ -46,6 +46,7 @@ namespace QSB
 		public static string DefaultServerIP;
 		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
 		public static int OverrideAppId => DebugSettings.OverrideAppId;
+		public static bool DumpWorldObjects => DebugSettings.DumpWorldObjects;
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;

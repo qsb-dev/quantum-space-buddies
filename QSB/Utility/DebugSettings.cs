@@ -10,6 +10,9 @@ namespace QSB.Utility
 		[JsonProperty("overrideAppId")]
 		public int OverrideAppId { get; set; } = -1;
 
+		[JsonProperty("dumpWorldObjects")]
+		public bool DumpWorldObjects { get; set; }
+
 		[JsonProperty("debugMode")]
 		public bool DebugMode { get; set; }
 
