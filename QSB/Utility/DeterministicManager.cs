@@ -285,7 +285,9 @@ namespace QSB.Utility
 				}
 
 				sb.Append(transform.name);
+				sb.Append(' ');
 				sb.Append(data.SiblingIndex);
+				sb.Append(' ');
 				transform = data.Parent;
 			}
 
