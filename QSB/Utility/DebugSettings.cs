@@ -8,7 +8,7 @@ namespace QSB.Utility
 		public bool UseKcpTransport { get; set; }
 
 		[JsonProperty("overrideAppId")]
-		public int OverrideAppId { get; set; }
+		public int OverrideAppId { get; set; } = -1;
 
 		[JsonProperty("debugMode")]
 		public bool DebugMode { get; set; }
