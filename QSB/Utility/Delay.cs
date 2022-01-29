@@ -7,19 +7,23 @@ namespace QSB.Utility
 	{
 		public static void RunNextFrame(Action action) => UniTask.Create(async () =>
 		{
-			await UniTask.NextFrame(PlayerLoopTiming.LastPostLateUpdate);
+			await UniTask.WaitForEndOfFrame();
 			action();
 		});
 
 		public static void RunFramesLater(int n, Action action) => UniTask.Create(async () =>
 		{
-			await UniTask.DelayFrame(n, PlayerLoopTiming.LastPostLateUpdate);
+			for (var i = 0; i < n; i++)
+			{
+				await UniTask.WaitForEndOfFrame();
+			}
+
 			action();
 		});
 
 		public static void RunWhen(Func<bool> predicate, Action action) => UniTask.Create(async () =>
 		{
-			await UniTask.WaitUntil(predicate, PlayerLoopTiming.LastPostLateUpdate);
+			await UniTask.WaitUntil(predicate);
 			action();
 		});
 	}
