@@ -26,31 +26,27 @@ namespace QSB.ItemSync.WorldObjects.Items
 				return;
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
+			await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+
+			InitialParent = AttachedObject.transform.parent;
+			InitialPosition = AttachedObject.transform.localPosition;
+			InitialRotation = AttachedObject.transform.localRotation;
+			var initialSector = AttachedObject.GetSector();
+			if (initialSector != null)
 			{
-				FinishDelayedReady();
+				InitialSector = initialSector.GetWorldObject<QSBSector>();
+			}
 
-				InitialParent = AttachedObject.transform.parent;
-				InitialPosition = AttachedObject.transform.localPosition;
-				InitialRotation = AttachedObject.transform.localRotation;
-				var initialSector = AttachedObject.GetSector();
-				if (initialSector != null)
-				{
-					InitialSector = initialSector.GetWorldObject<QSBSector>();
-				}
+			if (InitialParent == null)
+			{
+				DebugLog.ToConsole($"Warning - InitialParent of {AttachedObject.name} is null!", OWML.Common.MessageType.Warning);
+			}
 
-				if (InitialParent == null)
-				{
-					DebugLog.ToConsole($"Warning - InitialParent of {AttachedObject.name} is null!", OWML.Common.MessageType.Warning);
-				}
-
-				if (InitialParent?.GetComponent<OWItemSocket>() != null)
-				{
-					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<QSBItemSocket>();
-					InitialSocket = qsbObj;
-				}
-			});
+			if (InitialParent?.GetComponent<OWItemSocket>() != null)
+			{
+				var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<QSBItemSocket>();
+				InitialSocket = qsbObj;
+			}
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}

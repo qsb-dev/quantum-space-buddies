@@ -39,13 +39,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override async UniTask Init(CancellationToken ct)
 		{
-			StartDelayedReady();
-			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
-		}
-
-		private void LateInit()
-		{
-			FinishDelayedReady();
+			await UniTask.DelayFrame(5, cancellationToken: ct);
 
 			if (HostControls)
 			{

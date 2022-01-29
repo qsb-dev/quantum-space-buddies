@@ -15,20 +15,16 @@ namespace QSB.QuantumSync.WorldObjects
 
 		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(ct);
+			await base.Init(ct);
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
+			await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+
+			QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldObject<QSBQuantumState>).ToList();
+
+			if (QuantumStates.Any(x => x == null))
 			{
-				FinishDelayedReady();
-
-				QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldObject<QSBQuantumState>).ToList();
-
-				if (QuantumStates.Any(x => x == null))
-				{
-					DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
-				}
-			});
+				DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
+			}
 		}
 
 		public override string ReturnLabel()
