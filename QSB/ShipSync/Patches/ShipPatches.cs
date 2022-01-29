@@ -77,7 +77,7 @@ namespace QSB.ShipSync.Patches
 			 *
 			 */
 
-			if (!WorldObjectManager.AllObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
+			if (!QSBWorldSync.AllObjectsReady || __instance != ShipManager.Instance.HatchInteractZone)
 			{
 				return true;
 			}
@@ -215,7 +215,7 @@ namespace QSB.ShipSync.Patches
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.OnImpact))]
 		public static bool ShipDamageController_OnImpact()
-			=> ShipTransformSync.LocalInstance == null || ShipManager.Instance.HasAuthority;
+			=> ShipTransformSync.LocalInstance == null || ShipTransformSync.LocalInstance.hasAuthority;
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]
@@ -235,7 +235,7 @@ namespace QSB.ShipSync.Patches
 			__instance._integrity = Mathf.Min(__instance._integrity + (Time.deltaTime / __instance._repairTime), 1f);
 			var qsbShipHull = __instance.GetWorldObject<QSBShipHull>();
 			qsbShipHull
-				.SendMessage(new HullRepairTickMessage(__instance._integrity));
+				.SendMessage(new HullChangeIntegrityMessage(__instance._integrity));
 
 			if (__instance._integrity >= 1f)
 			{

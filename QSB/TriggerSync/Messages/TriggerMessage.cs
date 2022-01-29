@@ -4,7 +4,7 @@ using QSB.TriggerSync.WorldObjects;
 
 namespace QSB.TriggerSync.Messages
 {
-	public class TriggerMessage : QSBBoolWorldObjectMessage<IQSBTrigger>
+	public class TriggerMessage : QSBWorldObjectMessage<IQSBTrigger, bool>
 	{
 		public TriggerMessage(bool entered) => Value = entered;
 

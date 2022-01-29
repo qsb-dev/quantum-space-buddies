@@ -1,6 +1,5 @@
-﻿using QSB.WorldSync;
-using QuantumUNET.Transport;
-using System;
+﻿using Mirror;
+using QSB.WorldSync;
 
 namespace QSB.Messaging
 {
@@ -15,23 +14,23 @@ namespace QSB.Messaging
 		/// </summary>
 		protected T WorldObject { get; private set; }
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.ReadInt32();
+			ObjectId = reader.Read<int>();
 		}
 
 		public override bool ShouldReceive
 		{
 			get
 			{
-				if (!WorldObjectManager.AllObjectsReady)
+				if (!QSBWorldSync.AllObjectsReady)
 				{
 					return false;
 				}
@@ -42,56 +41,20 @@ namespace QSB.Messaging
 		}
 	}
 
-	public abstract class QSBBoolWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
+	public abstract class QSBWorldObjectMessage<T, V> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
-		protected bool Value;
+		protected V Value;
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Value);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.ReadBoolean();
-		}
-	}
-
-	public abstract class QSBFloatWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
-	{
-		protected float Value;
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Value);
-		}
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Value = reader.ReadSingle();
-		}
-	}
-
-	public abstract class QSBEnumWorldObjectMessage<T, E> : QSBWorldObjectMessage<T>
-		where T : IWorldObject
-		where E : Enum
-	{
-		protected E Value;
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write((int)(object)Value);
-		}
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Value = (E)(object)reader.ReadInt32();
+			Value = reader.Read<V>();
 		}
 	}
 }

@@ -1,5 +1,7 @@
-﻿using QSB.GeyserSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.GeyserSync.WorldObjects;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.GeyserSync
 {
@@ -7,7 +9,7 @@ namespace QSB.GeyserSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 			=> QSBWorldSync.Init<QSBGeyser, GeyserController>();
 	}
 }

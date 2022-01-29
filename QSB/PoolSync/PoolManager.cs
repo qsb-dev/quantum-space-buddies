@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using Cysharp.Threading.Tasks;
+using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.PoolSync
 {
@@ -6,7 +8,7 @@ namespace QSB.PoolSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			foreach (var streaming in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraStreaming>())
 			{
@@ -21,6 +23,24 @@ namespace QSB.PoolSync
 			foreach (var platform in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraPlatform>())
 			{
 				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
+			}
+		}
+
+		public override void UnbuildWorldObjects()
+		{
+			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
+			{
+				Destroy(platform);
+			}
+
+			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
+			{
+				Destroy(camera);
+			}
+
+			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
+			{
+				Destroy(streaming);
 			}
 		}
 	}

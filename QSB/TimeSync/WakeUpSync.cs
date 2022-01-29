@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Inputs;
@@ -7,13 +8,12 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
-using QuantumUNET;
 using System;
 using UnityEngine;
 
 namespace QSB.TimeSync
 {
-	public class WakeUpSync : QNetworkBehaviour
+	public class WakeUpSync : NetworkBehaviour
 	{
 		public static WakeUpSync LocalInstance { get; private set; }
 
@@ -54,7 +54,7 @@ namespace QSB.TimeSync
 
 		public void Start()
 		{
-			if (!IsLocalPlayer)
+			if (!isLocalPlayer)
 			{
 				return;
 			}
@@ -78,7 +78,7 @@ namespace QSB.TimeSync
 		private void OnWakeUp()
 		{
 			DebugLog.DebugWrite($"OnWakeUp", MessageType.Info);
-			if (QNetworkServer.active)
+			if (QSBCore.IsHost)
 			{
 				RespawnOnDeath.Instance.Init();
 			}
@@ -114,14 +114,14 @@ namespace QSB.TimeSync
 		{
 			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
-			gameObject.GetAddComponent<PreserveTimeScale>();
-			if (IsServer)
+			gameObject.GetRequiredComponent<PreserveTimeScale>();
+			if (isServer)
 			{
 				SendServerTime();
 			}
 			else
 			{
-				if (!QSBCore.SkipTitleScreen)
+				if (!QSBCore.AvoidTimeSync)
 				{
 					WakeUpOrSleep();
 				}
@@ -144,7 +144,7 @@ namespace QSB.TimeSync
 				return;
 			}
 
-			if (PlayerData.LoadLoopCount() != _serverLoopCount && !IsServer)
+			if (PlayerData.LoadLoopCount() != _serverLoopCount && !isServer)
 			{
 				DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
 				return;
@@ -192,13 +192,14 @@ namespace QSB.TimeSync
 			OWTime.SetMaxDeltaTime(0.033333335f);
 			OWTime.SetFixedTimestep(0.033333335f);
 			TimeSyncUI.TargetTime = _serverTime;
-			TimeSyncUI.Start(TimeSyncType.FastForwarding, FastForwardReason.TooFarBehind);
+			TimeSyncUI.Start(TimeSyncType.FastForwarding, reason);
 		}
 
 		private void StartPausing(PauseReason reason)
 		{
 			if (CurrentState == State.Pausing)
 			{
+				TimeSyncUI.TargetTime = _serverTime;
 				return;
 			}
 
@@ -212,6 +213,7 @@ namespace QSB.TimeSync
 			CurrentState = State.Pausing;
 			CurrentReason = reason;
 			SpinnerUI.Show();
+			TimeSyncUI.TargetTime = _serverTime;
 			TimeSyncUI.Start(TimeSyncType.Pausing, reason);
 		}
 
@@ -244,11 +246,11 @@ namespace QSB.TimeSync
 
 		public void Update()
 		{
-			if (IsServer)
+			if (isServer)
 			{
 				UpdateServer();
 			}
-			else if (IsLocalPlayer && !QSBCore.AvoidTimeSync)
+			else if (isLocalPlayer && !QSBCore.AvoidTimeSync)
 			{
 				UpdateClient();
 			}
@@ -322,7 +324,7 @@ namespace QSB.TimeSync
 
 			// set fastforwarding timescale
 
-			if (CurrentState == State.FastForwarding)
+			if (CurrentState == State.FastForwarding && (FastForwardReason)CurrentReason == FastForwardReason.TooFarBehind)
 			{
 				if (Locator.GetPlayerCamera() != null && !Locator.GetPlayerCamera().enabled)
 				{
@@ -332,6 +334,11 @@ namespace QSB.TimeSync
 				var diff = _serverTime - Time.timeSinceLevelLoad;
 				OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
+				TimeSyncUI.TargetTime = _serverTime;
+			}
+
+			if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.TooFarAhead)
+			{
 				TimeSyncUI.TargetTime = _serverTime;
 			}
 

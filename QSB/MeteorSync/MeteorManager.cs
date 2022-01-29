@@ -1,6 +1,8 @@
-﻿using QSB.MeteorSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
 using System.Linq;
+using System.Threading;
 
 namespace QSB.MeteorSync
 {
@@ -10,18 +12,15 @@ namespace QSB.MeteorSync
 
 		public static WhiteHoleVolume WhiteHoleVolume;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			// wait for all late initializers (which includes meteor launchers) to finish
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.isDoneInitializing, () =>
-			{
-				FinishDelayedReady();
-				WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
-				QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
-				QSBWorldSync.Init<QSBMeteor, MeteorController>();
-				QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
-			});
+			await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
+
+			WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
+			QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
+			QSBWorldSync.Init<QSBMeteor, MeteorController>();
+			QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 		}
 	}
 }

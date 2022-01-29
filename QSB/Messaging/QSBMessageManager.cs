@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
 using QSB.Player;
@@ -6,9 +7,6 @@ using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
-using QuantumUNET.Components;
-using QuantumUNET.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,100 +19,51 @@ namespace QSB.Messaging
 	{
 		#region inner workings
 
-		private static readonly Dictionary<short, Type> _msgTypeToType = new();
-		private static readonly Dictionary<Type, short> _typeToMsgType = new();
+		internal static readonly Type[] _types;
+		internal static readonly Dictionary<Type, ushort> _typeToId = new();
 
 		static QSBMessageManager()
 		{
-			var types = typeof(QSBMessageRaw).GetDerivedTypes()
-				.Concat(typeof(QSBMessage).GetDerivedTypes())
-				.ToArray();
-			for (var i = 0; i < types.Length; i++)
+			_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
+			for (ushort i = 0; i < _types.Length; i++)
 			{
-				var msgType = (short)(QMsgType.Highest + 1 + i);
-				if (msgType >= short.MaxValue)
-				{
-					DebugLog.ToConsole("Hey, uh, maybe don't create 32,767 events? You really should never be seeing this." +
-						"If you are, something has either gone terrible wrong or QSB somehow needs more events that classes in Outer Wilds." +
-						"In either case, I guess something has gone terribly wrong...", MessageType.Error);
-				}
-
-				_msgTypeToType.Add(msgType, types[i]);
-				_typeToMsgType.Add(types[i], msgType);
-
+				_typeToId.Add(_types[i], i);
 				// call static constructor of message if needed
-				RuntimeHelpers.RunClassConstructor(types[i].TypeHandle);
+				RuntimeHelpers.RunClassConstructor(_types[i].TypeHandle);
 			}
 		}
 
 		public static void Init()
 		{
-			foreach (var (msgType, type) in _msgTypeToType)
-			{
-				if (typeof(QSBMessageRaw).IsAssignableFrom(type))
-				{
-					QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceiveRaw);
-					QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceiveRaw);
-				}
-				else
-				{
-					QNetworkServer.RegisterHandlerSafe(msgType, OnServerReceive);
-					QNetworkManager.singleton.client.RegisterHandlerSafe(msgType, OnClientReceive);
-				}
-			}
+			NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
+			NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
 		}
 
-		private static void OnServerReceiveRaw(QNetworkMessage netMsg)
+		private static void OnServerReceive(QSBMessage msg)
 		{
-			var msgType = netMsg.MsgType;
-			var msg = (QSBMessageRaw)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
-			netMsg.ReadMessage(msg);
-
-			QNetworkServer.SendToAll(msgType, msg);
-		}
-
-		private static void OnClientReceiveRaw(QNetworkMessage netMsg)
-		{
-			var msgType = netMsg.MsgType;
-			var msg = (QSBMessageRaw)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
-			netMsg.ReadMessage(msg);
-
-			msg.OnReceive();
-		}
-
-		private static void OnServerReceive(QNetworkMessage netMsg)
-		{
-			var msgType = netMsg.MsgType;
-			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
-			netMsg.ReadMessage(msg);
-
 			if (msg.To == uint.MaxValue)
 			{
-				QNetworkServer.SendToAll(msgType, msg);
+				NetworkServer.SendToAll<Wrapper>(msg);
 			}
 			else if (msg.To == 0)
 			{
-				QNetworkServer.localConnection.Send(msgType, msg);
+				NetworkServer.localConnection.Send<Wrapper>(msg);
 			}
 			else
 			{
-				var conn = QNetworkServer.connections.FirstOrDefault(x => msg.To == x.GetPlayerId());
+				var conn = NetworkServer.connections.Values.FirstOrDefault(x => msg.To == x.GetPlayerId());
 				if (conn == null)
 				{
 					DebugLog.ToConsole($"SendTo unknown player! id: {msg.To}, message: {msg}", MessageType.Error);
 					return;
 				}
 
-				conn.Send(msgType, msg);
+				conn.Send<Wrapper>(msg);
 			}
 		}
 
-		private static void OnClientReceive(QNetworkMessage netMsg)
+		private static void OnClientReceive(QSBMessage msg)
 		{
-			var msgType = netMsg.MsgType;
-			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(_msgTypeToType[msgType]);
-			netMsg.ReadMessage(msg);
-
 			if (PlayerTransformSync.LocalInstance == null)
 			{
 				DebugLog.ToConsole($"Warning - Tried to handle message {msg} before local player was established.", MessageType.Warning);
@@ -159,20 +108,6 @@ namespace QSB.Messaging
 
 		#endregion
 
-		public static void SendRaw<M>(this M msg)
-			where M : QSBMessageRaw
-		{
-			var msgType = _typeToMsgType[typeof(M)];
-			QNetworkManager.singleton.client.Send(msgType, msg);
-		}
-
-		public static void ServerSendRaw<M>(this M msg, QNetworkConnection conn)
-			where M : QSBMessageRaw
-		{
-			var msgType = _typeToMsgType[typeof(M)];
-			conn.Send(msgType, msg);
-		}
-
 		public static void Send<M>(this M msg)
 			where M : QSBMessage
 		{
@@ -183,8 +118,7 @@ namespace QSB.Messaging
 			}
 
 			msg.From = QSBPlayerManager.LocalPlayerId;
-			var msgType = _typeToMsgType[typeof(M)];
-			QNetworkManager.singleton.client.Send(msgType, msg);
+			NetworkClient.Send<Wrapper>(msg);
 		}
 
 		public static void SendMessage<T, M>(this T worldObject, M msg)
@@ -196,13 +130,31 @@ namespace QSB.Messaging
 		}
 	}
 
-	/// <summary>
-	/// message that will be sent to every client. <br/>
-	/// no checks are performed on the message. it is just sent and received.
-	/// </summary>
-	public abstract class QSBMessageRaw : QMessageBase
+	internal struct Wrapper : NetworkMessage
 	{
-		public abstract void OnReceive();
-		public override string ToString() => GetType().Name;
+		public QSBMessage Msg;
+
+		public static implicit operator QSBMessage(Wrapper wrapper) => wrapper.Msg;
+		public static implicit operator Wrapper(QSBMessage msg) => new() { Msg = msg };
+	}
+
+	internal static class ReaderWriterExtensions
+	{
+		private static QSBMessage ReadQSBMessage(this NetworkReader reader)
+		{
+			var id = reader.ReadUShort();
+			var type = QSBMessageManager._types[id];
+			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(type);
+			msg.Deserialize(reader);
+			return msg;
+		}
+
+		private static void WriteQSBMessage(this NetworkWriter writer, QSBMessage msg)
+		{
+			var type = msg.GetType();
+			var id = QSBMessageManager._typeToId[type];
+			writer.Write(id);
+			msg.Serialize(writer);
+		}
 	}
 }

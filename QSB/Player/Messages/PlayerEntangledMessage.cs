@@ -1,55 +1,53 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.Player.Messages
 {
 	// almost a world object message, but supports null (-1) as well
-	internal class PlayerEntangledMessage : QSBMessage
+	internal class PlayerEntangledMessage : QSBMessage<int>
 	{
-		private int ObjectId;
+		public PlayerEntangledMessage(int objectId) => Value = objectId;
 
-		public PlayerEntangledMessage(int objectId) => ObjectId = objectId;
-
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal()
 		{
 			var player = QSBPlayerManager.LocalPlayer;
-			if (ObjectId == -1)
+			if (Value == -1)
 			{
 				player.EntangledObject = null;
 				return;
 			}
 
-			var quantumObject = ObjectId.GetWorldObject<IQSBQuantumObject>();
+			var quantumObject = Value.GetWorldObject<IQSBQuantumObject>();
 			player.EntangledObject = quantumObject;
 		}
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			if (ObjectId == -1)
+			if (Value == -1)
 			{
 				player.EntangledObject = null;
 				return;
 			}
 
-			var quantumObject = ObjectId.GetWorldObject<IQSBQuantumObject>();
+			var quantumObject = Value.GetWorldObject<IQSBQuantumObject>();
 			player.EntangledObject = quantumObject;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(ObjectId);
+			writer.Write(Value);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.ReadInt32();
+			Value = reader.Read<int>();
 		}
 	}
 }

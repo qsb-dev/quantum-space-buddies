@@ -4,11 +4,11 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeTool.Messages
 {
-	internal class ProbeStartRetrieveMessage : QSBFloatMessage
+	internal class ProbeStartRetrieveMessage : QSBMessage<float>
 	{
 		public ProbeStartRetrieveMessage(float duration) => Value = duration;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

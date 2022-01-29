@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
@@ -6,8 +7,8 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -36,66 +37,9 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			if (QSBCore.ShowQuantumVisibilityObjects)
-			{
-				var debugBundle = QSBCore.DebugAssetBundle;
-				var sphere = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
-				var cube = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
-				var capsule = debugBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
-
-				if (cube == null)
-				{
-					DebugLog.DebugWrite($"CUBE IS NULL");
-				}
-
-				if (sphere == null)
-				{
-					DebugLog.DebugWrite($"SPHERE IS NULL");
-				}
-
-				if (capsule == null)
-				{
-					DebugLog.DebugWrite($"CAPSULE IS NULL");
-				}
-
-				foreach (var shape in GetAttachedShapes())
-				{
-					if (shape is BoxShape boxShape)
-					{
-						var newCube = Object.Instantiate(cube);
-						newCube.transform.parent = shape.transform;
-						newCube.transform.localPosition = Vector3.zero;
-						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
-						newCube.transform.localScale = boxShape.size;
-					}
-					else if (shape is SphereShape sphereShape)
-					{
-						var newSphere = Object.Instantiate(sphere);
-						newSphere.transform.parent = shape.transform;
-						newSphere.transform.localPosition = Vector3.zero;
-						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
-						newSphere.transform.localScale = Vector3.one * (sphereShape.radius * 2);
-					}
-					else if (shape is CapsuleShape capsuleShape)
-					{
-						var newCapsule = Object.Instantiate(capsule);
-						newCapsule.transform.parent = shape.transform;
-						newCapsule.transform.localPosition = Vector3.zero;
-						newCapsule.transform.localRotation = Quaternion.Euler(0, 0, 0);
-						newCapsule.transform.localScale = new Vector3(capsuleShape.radius * 2, capsuleShape.height, capsuleShape.radius * 2);
-					}
-				}
-			}
-
-			StartDelayedReady();
-			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
-		}
-
-		private void LateInit()
-		{
-			FinishDelayedReady();
+			await UniTask.DelayFrame(5, cancellationToken: ct);
 
 			if (HostControls)
 			{
@@ -129,6 +73,14 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
+		public override void SendInitialState(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
+			}
+		}
+
 		public List<Shape> GetAttachedShapes()
 		{
 			if (AttachedObject == null)
@@ -153,7 +105,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				if (tracker == null)
 				{
-					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {LogName} is null!", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {this} is null!", MessageType.Warning);
 					continue;
 				}
 
@@ -175,7 +127,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 
 			IsEnabled = true;
-			if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+			if (!QSBWorldSync.AllObjectsReady && !QSBCore.IsHost)
 			{
 				return;
 			}
@@ -192,7 +144,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable(Shape s) =>
 			// we wait a frame here in case the shapes get disabled as we switch from 1 visibility tracker to another
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			Delay.RunNextFrame(() =>
 			{
 				if (!IsEnabled)
 				{
@@ -205,7 +157,7 @@ namespace QSB.QuantumSync.WorldObjects
 				}
 
 				IsEnabled = false;
-				if (!WorldObjectManager.AllObjectsReady && !QSBCore.IsHost)
+				if (!QSBWorldSync.AllObjectsReady && !QSBCore.IsHost)
 				{
 					return;
 				}

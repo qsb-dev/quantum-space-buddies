@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.GeyserSync.Messages
 {
-	public class GeyserMessage : QSBBoolWorldObjectMessage<QSBGeyser>
+	public class GeyserMessage : QSBWorldObjectMessage<QSBGeyser, bool>
 	{
 		public GeyserMessage(bool state) => Value = state;
 

@@ -1,9 +1,9 @@
-﻿using QSB.AuthoritySync;
+﻿using Mirror;
+using QSB.AuthoritySync;
 using QSB.JellyfishSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,37 +11,30 @@ namespace QSB.JellyfishSync.TransformSync
 {
 	public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => false;
-		public override bool IsPlayerObject => false;
+		protected override bool UseInterpolation => false;
+		protected override bool OnlyApplyOnDeserialize => true;
 
 		private QSBJellyfish _qsbJellyfish;
+		private bool _isRising;
 		private static readonly List<JellyfishTransformSync> _instances = new();
 
-		protected override OWRigidbody GetRigidbody()
+		protected override OWRigidbody InitAttachedRigidbody()
 			=> _qsbJellyfish.AttachedObject._jellyfishBody;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
 			_instances.Add(this);
-			base.Start();
+			base.OnStartClient();
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			_instances.Remove(this);
-			base.OnDestroy();
-
-			if (QSBCore.IsHost)
-			{
-				NetIdentity.UnregisterAuthQueue();
-			}
-
-			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
+			base.OnStopClient();
 		}
 
-		public override float GetNetworkSendInterval() => 10;
+		protected override float SendInterval => 10;
+		protected override bool UseReliableRpc => true;
 
 		protected override void Init()
 		{
@@ -53,101 +46,66 @@ namespace QSB.JellyfishSync.TransformSync
 
 			if (QSBCore.IsHost)
 			{
-				NetIdentity.RegisterAuthQueue();
+				netIdentity.RegisterAuthQueue();
 			}
 
-			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
-			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
+			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
-
-		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
+		protected override void Uninit()
 		{
-			base.SerializeTransform(writer, initialState);
-
-			if (!WorldObjectManager.AllObjectsReady)
+			if (QSBCore.IsHost)
 			{
-				writer.Write(false);
-				return;
+				netIdentity.UnregisterAuthQueue();
 			}
 
-			_qsbJellyfish.Align = true;
-			writer.Write(_qsbJellyfish.IsRising);
+			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+
+			base.Uninit();
 		}
 
-		private bool _shouldUpdate;
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
-		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
-			base.DeserializeTransform(reader, initialState);
+			base.Serialize(writer);
+			writer.Write(_isRising);
+		}
 
-			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
-			{
-				reader.ReadBoolean();
-				return;
-			}
+		protected override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			_isRising = reader.Read<bool>();
+		}
 
-			_qsbJellyfish.Align = false;
-			_qsbJellyfish.IsRising = reader.ReadBoolean();
-			_shouldUpdate = true;
+		protected override void GetFromAttached()
+		{
+			base.GetFromAttached();
+
+			_isRising = _qsbJellyfish.AttachedObject._isRising;
 		}
 
 		/// replacement using SetPosition/Rotation instead of Move
-		protected override bool UpdateTransform()
+		protected override void ApplyToAttached()
 		{
-			if (HasAuthority)
-			{
-				SetValuesToSync();
-				return true;
-			}
-
-			if (!_shouldUpdate)
-			{
-				return false;
-			}
-
-			_shouldUpdate = false;
-
-			var hasMoved = CustomHasMoved(
-				transform.position,
-				_localPrevPosition,
-				transform.rotation,
-				_localPrevRotation,
-				_relativeVelocity,
-				_localPrevVelocity,
-				_relativeAngularVelocity,
-				_localPrevAngularVelocity);
-
-			_localPrevPosition = transform.position;
-			_localPrevRotation = transform.rotation;
-			_localPrevVelocity = _relativeVelocity;
-			_localPrevAngularVelocity = _relativeAngularVelocity;
-
-			if (!hasMoved)
-			{
-				return true;
-			}
-
 			var pos = ReferenceTransform.FromRelPos(transform.position);
-			AttachedObject.SetPosition(pos);
-			AttachedObject.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
-			AttachedObject.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
-			AttachedObject.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
+			AttachedRigidbody.SetPosition(pos);
+			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
+			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
 
-			return true;
+			_qsbJellyfish.SetIsRising(_isRising);
 		}
 
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-			    || !WorldObjectManager.AllObjectsReady
-			    || !IsReady
-			    || AttachedObject == null
-			    || ReferenceTransform == null
-			    || AttachedObject.IsSuspended())
+				|| !IsValid
+				|| !ReferenceTransform)
 			{
 				return;
 			}

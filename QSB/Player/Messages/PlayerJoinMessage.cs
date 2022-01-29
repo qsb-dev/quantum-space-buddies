@@ -1,7 +1,7 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Utility;
-using QuantumUNET.Transport;
 using System.Linq;
 
 namespace QSB.Player.Messages
@@ -11,7 +11,6 @@ namespace QSB.Player.Messages
 		private string PlayerName;
 		private string QSBVersion;
 		private string GameVersion;
-		private GamePlatform Platform;
 		private bool DlcInstalled;
 
 		public PlayerJoinMessage(string name)
@@ -19,28 +18,25 @@ namespace QSB.Player.Messages
 			PlayerName = name;
 			QSBVersion = QSBCore.QSBVersion;
 			GameVersion = QSBCore.GameVersion;
-			Platform = QSBCore.Platform;
 			DlcInstalled = QSBCore.DLCInstalled;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(PlayerName);
 			writer.Write(QSBVersion);
 			writer.Write(GameVersion);
-			writer.Write((int)Platform);
 			writer.Write(DlcInstalled);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
 			PlayerName = reader.ReadString();
 			QSBVersion = reader.ReadString();
 			GameVersion = reader.ReadString();
-			Platform = (GamePlatform)reader.ReadInt32();
-			DlcInstalled = reader.ReadBoolean();
+			DlcInstalled = reader.Read<bool>();
 		}
 
 		public override void OnReceiveRemote()
@@ -61,13 +57,6 @@ namespace QSB.Player.Messages
 					return;
 				}
 
-				if (Platform != QSBCore.Platform)
-				{
-					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game platform. (Client:{Platform}, Server:{QSBCore.Platform})", MessageType.Error);
-					new PlayerKickMessage(From, KickReason.GamePlatformNotMatching).Send();
-					return;
-				}
-
 				if (DlcInstalled != QSBCore.DLCInstalled)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
@@ -75,7 +64,7 @@ namespace QSB.Player.Messages
 					return;
 				}
 
-				if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.IntoTheVortex))
+				if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.Observatory))
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
 					new PlayerKickMessage(From, KickReason.InEye).Send();
@@ -86,7 +75,7 @@ namespace QSB.Player.Messages
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.Name = PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
-			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, platform:{Platform}. dlcInstalled:{DlcInstalled}", MessageType.Info);
+			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 		}
 
 		public override void OnReceiveLocal()
@@ -94,12 +83,6 @@ namespace QSB.Player.Messages
 			var player = QSBPlayerManager.GetPlayer(QSBPlayerManager.LocalPlayerId);
 			player.Name = PlayerName;
 			DebugLog.ToAll($"Connected to server as {player.Name}.", MessageType.Info);
-
-			if (QSBSceneManager.IsInUniverse)
-			{
-				player.IsReady = true;
-				new PlayerReadyMessage(true).Send();
-			}
 		}
 	}
 }

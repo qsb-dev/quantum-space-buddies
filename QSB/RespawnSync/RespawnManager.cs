@@ -8,7 +8,6 @@ using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB.RespawnSync
 {
@@ -27,24 +26,24 @@ namespace QSB.RespawnSync
 		{
 			Instance = this;
 			QSBSceneManager.OnSceneLoaded += (OWScene old, OWScene newScene, bool inUniverse)
-				=> QSBCore.UnityEvents.RunWhen(
+				=> Delay.RunWhen(
 					() => Locator.GetMarkerManager() != null,
 					() => Init(newScene, inUniverse));
-			QSBNetworkManager.Instance.OnClientConnected += OnConnected;
-			QSBNetworkManager.Instance.OnClientDisconnected += OnDisconnected;
+			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
+			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
 		}
 
 		private void OnConnected()
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBCore.UnityEvents.RunWhen(
+				Delay.RunWhen(
 					() => PlayerTransformSync.LocalInstance != null,
 					() => Init(QSBSceneManager.CurrentScene, true));
 			}
 		}
 
-		private void OnDisconnected(NetworkError error)
+		private void OnDisconnected(string error)
 		{
 			_owRecoveryPoint?.SetActive(true);
 			_qsbRecoveryPoint?.SetActive(false);
@@ -115,7 +114,7 @@ namespace QSB.RespawnSync
 		public void TriggerRespawnMap()
 		{
 			QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
-			QSBCore.UnityEvents.FireOnNextUpdate(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
+			Delay.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 		}
 
 		public void Respawn()
@@ -153,14 +152,7 @@ namespace QSB.RespawnSync
 				return;
 			}
 
-			if (player.DitheringAnimator != null)
-			{
-				player.DitheringAnimator.SetVisible(false, 1);
-			}
-			else
-			{
-				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
-			}
+			player.SetVisible(false, 1);
 		}
 
 		public void OnPlayerRespawn(PlayerInfo player)
@@ -176,14 +168,7 @@ namespace QSB.RespawnSync
 			_playersPendingRespawn.Remove(player);
 			UpdateRespawnNotification();
 
-			if (player.DitheringAnimator != null)
-			{
-				player.DitheringAnimator.SetVisible(true, 1);
-			}
-			else
-			{
-				DebugLog.ToConsole($"Warning - {player.PlayerId}.DitheringAnimator is null!", OWML.Common.MessageType.Warning);
-			}
+			player.SetVisible(true, 1);
 		}
 
 		public void RespawnSomePlayer()

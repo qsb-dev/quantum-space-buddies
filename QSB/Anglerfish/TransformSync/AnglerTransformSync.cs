@@ -2,7 +2,6 @@
 using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,37 +9,29 @@ namespace QSB.Anglerfish.TransformSync
 {
 	public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => false;
-		public override bool IsPlayerObject => false;
+		protected override bool UseInterpolation => false;
+		protected override bool OnlyApplyOnDeserialize => true;
 
 		private QSBAngler _qsbAngler;
 		private static readonly List<AnglerTransformSync> _instances = new();
 
-		protected override OWRigidbody GetRigidbody()
+		protected override OWRigidbody InitAttachedRigidbody()
 			=> _qsbAngler.AttachedObject._anglerBody;
 
-		public override void Start()
+		public override void OnStartClient()
 		{
 			_instances.Add(this);
-			base.Start();
+			base.OnStartClient();
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			_instances.Remove(this);
-			base.OnDestroy();
-
-			if (QSBCore.IsHost)
-			{
-				NetIdentity.UnregisterAuthQueue();
-			}
-
-			AttachedObject.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedObject.OnSuspendOWRigidbody -= OnSuspend;
+			base.OnStopClient();
 		}
 
-		public override float GetNetworkSendInterval() => 1;
+		protected override float SendInterval => 1;
+		protected override bool UseReliableRpc => true;
 
 		protected override void Init()
 		{
@@ -52,71 +43,52 @@ namespace QSB.Anglerfish.TransformSync
 
 			if (QSBCore.IsHost)
 			{
-				NetIdentity.RegisterAuthQueue();
+				netIdentity.RegisterAuthQueue();
 			}
 
-			AttachedObject.OnUnsuspendOWRigidbody += OnUnsuspend;
-			AttachedObject.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.SendAuthQueueMessage(AttachedObject.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
+			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
-
-		private bool _shouldUpdate;
-
-		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
+		protected override void Uninit()
 		{
-			base.DeserializeTransform(reader, initialState);
-
-			if (!WorldObjectManager.AllObjectsReady || HasAuthority)
+			if (QSBCore.IsHost)
 			{
-				return;
+				netIdentity.UnregisterAuthQueue();
 			}
 
-			_shouldUpdate = true;
+			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+
+			base.Uninit();
 		}
 
-		protected override bool UpdateTransform()
-		{
-			if (HasAuthority)
-			{
-				return base.UpdateTransform();
-			}
-
-			if (!_shouldUpdate)
-			{
-				return false;
-			}
-
-			_shouldUpdate = false;
-			return base.UpdateTransform();
-		}
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 
 		protected override void OnRenderObject()
 		{
 			if (!QSBCore.ShowLinesInDebug
-			    || !WorldObjectManager.AllObjectsReady
-			    || !IsReady
-			    || AttachedObject == null
-			    || AttachedObject.IsSuspended())
+				|| !IsValid
+				|| !ReferenceTransform)
 			{
 				return;
 			}
 
 			base.OnRenderObject();
 
-			Popcron.Gizmos.Sphere(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._arrivalDistance, Color.blue);
-			Popcron.Gizmos.Sphere(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._pursueDistance, Color.red);
-			Popcron.Gizmos.Sphere(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._escapeDistance, Color.yellow);
-			Popcron.Gizmos.Sphere(AttachedObject.GetPosition()
-				+ AttachedObject.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
+			Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition(), _qsbAngler.AttachedObject._arrivalDistance, Color.blue);
+			Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition(), _qsbAngler.AttachedObject._pursueDistance, Color.red);
+			Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition(), _qsbAngler.AttachedObject._escapeDistance, Color.yellow);
+			Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition()
+				+ AttachedRigidbody.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
 
-			if (_qsbAngler.TargetTransform != null)
+			if (_qsbAngler.TargetTransform)
 			{
-				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, AttachedObject.GetPosition(), Color.gray);
+				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, AttachedRigidbody.GetPosition(), Color.gray);
 				Popcron.Gizmos.Line(_qsbAngler.TargetTransform.position, _qsbAngler.TargetTransform.position + _qsbAngler.TargetVelocity, Color.green);
-				Popcron.Gizmos.Line(AttachedObject.GetPosition(), _qsbAngler.AttachedObject._targetPos, Color.red);
+				Popcron.Gizmos.Line(AttachedRigidbody.GetPosition(), _qsbAngler.AttachedObject._targetPos, Color.red);
 				Popcron.Gizmos.Sphere(_qsbAngler.AttachedObject._targetPos, 5, Color.red);
 			}
 

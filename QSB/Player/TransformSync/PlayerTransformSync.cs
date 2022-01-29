@@ -15,11 +15,13 @@ namespace QSB.Player.TransformSync
 {
 	public class PlayerTransformSync : SectoredTransformSync
 	{
-		public override bool IsPlayerObject => true;
+		protected override bool IsPlayerObject => true;
+		protected override bool AllowInactiveAttachedObject => true;
 
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
 
+		// todo? stick root might be the thing that moves instead of roasting system. one of them doesn't, i just don't know which
 		private Transform _visibleRoastingSystem;
 		private Transform _networkRoastingSystem => gameObject.transform.GetChild(1);
 		private Transform _networkStickRoot => _networkRoastingSystem.GetChild(0);
@@ -42,61 +44,41 @@ namespace QSB.Player.TransformSync
 		private Transform GetStickPivot()
 			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
-		public override void OnStartLocalPlayer()
-			=> LocalInstance = this;
-
-		public override void Start()
+		public override void OnStartClient()
 		{
 			var player = new PlayerInfo(this);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
-			base.Start();
+			base.OnStartClient();
 			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
-		protected override void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
-		{
-			if (!HasAuthority)
-			{
-				base.OnSceneLoaded(oldScene, newScene, isInUniverse);
-			}
+		public override void OnStartLocalPlayer() => LocalInstance = this;
 
-			if (isInUniverse && !_isInitialized)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-
-			if (!isInUniverse)
-			{
-				Player.IsReady = false;
-				new PlayerReadyMessage(false).Send();
-			}
-
-			base.OnSceneLoaded(oldScene, newScene, isInUniverse);
-		}
-
-		protected override void Init()
-		{
-			base.Init();
-
-			Player.IsReady = true;
-			new PlayerReadyMessage(true).Send();
-		}
-
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
-			base.OnDestroy();
+			base.OnStopClient();
 			Player.HudMarker?.Remove();
 			QSBPlayerManager.PlayerList.Remove(Player);
 			DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
+		protected override void Uninit()
+		{
+			base.Uninit();
+
+			if (isLocalPlayer)
+			{
+				Player.IsReady = false;
+				new PlayerReadyMessage(false).Send();
+			}
+		}
+
 		protected override Transform InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetPlayerSectorDetector(), TargetType.Player));
+			SectorDetector.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
 
 			// player body
 			var player = Locator.GetPlayerTransform();
@@ -119,6 +101,9 @@ namespace QSB.Player.TransformSync
 			_visibleRoastingSystem = pivot.parent.parent;
 			_visibleStickPivot = pivot;
 			_visibleStickTip = pivot.Find("Stick_Tip");
+
+			Player.IsReady = true;
+			new PlayerReadyMessage(true).Send();
 
 			new RequestStateResyncMessage().Send();
 
@@ -168,10 +153,10 @@ namespace QSB.Player.TransformSync
 
 			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-			Player.DitheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
+			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			// get inactive renderers too
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
-				Player.DitheringAnimator._renderers = Player.DitheringAnimator
+			Delay.RunNextFrame(() =>
+				Player._ditheringAnimator._renderers = Player._ditheringAnimator
 					.GetComponentsInChildren<Renderer>(true)
 					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
 					.ToArray());
@@ -234,44 +219,48 @@ namespace QSB.Player.TransformSync
 			return REMOTE_Player_Body.transform;
 		}
 
-		protected override bool UpdateTransform()
+		protected override void GetFromAttached()
 		{
-			if (!base.UpdateTransform())
-			{
-				return false;
-			}
+			base.GetFromAttached();
 
-			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
-			UpdateSpecificTransform(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
-			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
-			UpdateSpecificTransform(_visibleRoastingSystem, _networkRoastingSystem, ref _roastingPositionVelocity, ref _roastingRotationVelocity);
-			return true;
+			GetFromChild(_visibleStickPivot, _networkStickPivot);
+			GetFromChild(_visibleStickTip, _networkStickTip);
+			GetFromChild(_visibleCameraRoot, _networkCameraRoot);
+			GetFromChild(_visibleRoastingSystem, _networkRoastingSystem);
 		}
 
-		private void UpdateSpecificTransform(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
+		protected override void ApplyToAttached()
 		{
-			if (HasAuthority)
-			{
-				network.localPosition = visible.localPosition;
-				network.localRotation = visible.localRotation;
-				return;
-			}
+			base.ApplyToAttached();
 
+			ApplyToChild(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
+			ApplyToChild(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
+			ApplyToChild(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
+			ApplyToChild(_visibleRoastingSystem, _networkRoastingSystem, ref _roastingPositionVelocity, ref _roastingRotationVelocity);
+		}
+
+		private static void GetFromChild(Transform visible, Transform network)
+		{
+			network.localPosition = visible.localPosition;
+			network.localRotation = visible.localRotation;
+		}
+
+		private static void ApplyToChild(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
+		{
 			visible.localPosition = Vector3.SmoothDamp(visible.localPosition, network.localPosition, ref positionVelocity, SmoothTime);
 			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
 		}
 
 		protected override void OnRenderObject()
 		{
-			base.OnRenderObject();
-
 			if (!QSBCore.ShowLinesInDebug
-			    || !WorldObjectManager.AllObjectsReady
-			    || !IsReady
-			    || ReferenceTransform == null)
+				|| !IsValid
+				|| !ReferenceTransform)
 			{
 				return;
 			}
+
+			base.OnRenderObject();
 
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
 			Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickPivot.position), ReferenceTransform.TransformRotation(_networkStickPivot.rotation), Vector3.one / 4, Color.red);
@@ -284,12 +273,11 @@ namespace QSB.Player.TransformSync
 			Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 		}
 
-		public override bool IsReady
-			=> AttachedObject != null
-			|| Locator.GetPlayerTransform() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& (Locator.GetPlayerTransform() || AttachedTransform);
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 
-		public override bool UseInterpolation => true;
+		protected override bool UseInterpolation => true;
 	}
 }

@@ -23,15 +23,12 @@ namespace QSB
 		private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
 		{
 			DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
+			QSBWorldSync.RemoveWorldObjects();
 			var universe = InUniverse(newScene);
 			if (QSBCore.IsInMultiplayer && universe)
 			{
 				// So objects have time to be deleted, made, whatever
-				QSBCore.UnityEvents.FireOnNextUpdate(() =>
-				{
-					WorldObjectManager.Rebuild(newScene);
-					QSBWorldSync.Init();
-				});
+				Delay.RunNextFrame(() => QSBWorldSync.BuildWorldObjects(newScene).Forget());
 			}
 
 			OnSceneLoaded?.SafeInvoke(oldScene, newScene, universe);
@@ -42,7 +39,7 @@ namespace QSB
 
 			if (newScene == OWScene.TitleScreen && QSBCore.IsInMultiplayer)
 			{
-				QSBNetworkManager.Instance.StopHost();
+				QSBNetworkManager.singleton.StopHost();
 			}
 		}
 

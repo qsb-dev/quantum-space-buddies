@@ -3,7 +3,7 @@ using QSB.ZeroGCaveSync.WorldObjects;
 
 namespace QSB.ZeroGCaveSync.Messages
 {
-	internal class SatelliteNodeRepairTickMessage : QSBFloatWorldObjectMessage<QSBSatelliteNode>
+	internal class SatelliteNodeRepairTickMessage : QSBWorldObjectMessage<QSBSatelliteNode, float>
 	{
 		public SatelliteNodeRepairTickMessage(float repairFraction) => Value = repairFraction;
 

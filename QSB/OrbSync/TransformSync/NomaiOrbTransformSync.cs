@@ -1,8 +1,6 @@
-﻿using OWML.Common;
-using QSB.AuthoritySync;
+﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,74 +9,75 @@ namespace QSB.OrbSync.TransformSync
 {
 	public class NomaiOrbTransformSync : UnsectoredTransformSync
 	{
-		public override bool IsReady => WorldObjectManager.AllObjectsAdded;
-		public override bool UseInterpolation => true;
-		public override bool IsPlayerObject => false;
+		/// <summary>
+		/// normally prints error when attached object is null.
+		/// this overrides it so that doesn't happen, since the orb can be destroyed.
+		/// </summary>
+		protected override bool CheckValid() => AttachedTransform && base.CheckValid();
+
+		protected override bool UseInterpolation => true;
 		protected override float DistanceLeeway => 1f;
 
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
 
-		private OWRigidbody _attachedBody;
 		private QSBOrb _qsbOrb;
 		private static readonly List<NomaiOrbTransformSync> _instances = new();
 
-		public override void Start()
+		public override void OnStartClient()
 		{
 			_instances.Add(this);
-			base.Start();
+			base.OnStartClient();
 		}
 
-		protected override void OnDestroy()
+		public override void OnStopClient()
 		{
 			_instances.Remove(this);
-			base.OnDestroy();
-
-			if (QSBCore.IsHost)
-			{
-				NetIdentity.UnregisterAuthQueue();
-			}
-
-			_attachedBody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			_attachedBody.OnSuspendOWRigidbody -= OnSuspend;
+			base.OnStopClient();
 		}
 
 		protected override void Init()
 		{
-			var index = _instances.IndexOf(this);
-			if (!OrbManager.Orbs.TryGet(index, out var orb))
-			{
-				DebugLog.ToConsole($"Error - No orb at index {index}.", MessageType.Error);
-				return;
-			}
-
-			_qsbOrb = orb.GetWorldObject<QSBOrb>();
+			_qsbOrb = OrbManager.Orbs[_instances.IndexOf(this)].GetWorldObject<QSBOrb>();
 			_qsbOrb.TransformSync = this;
 
 			base.Init();
-			_attachedBody = AttachedObject.GetAttachedOWRigidbody();
-			SetReferenceTransform(_attachedBody.GetOrigParent());
-
-			/*
-			if (_attachedBody.GetOrigParent() == Locator.GetRootTransform())
-			{
-				DebugLog.DebugWrite($"{LogName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Disabling...");
-				enabled = false;
-				return;
-			}
-			*/
+			var body = AttachedTransform.GetAttachedOWRigidbody();
+			SetReferenceTransform(body.GetOrigParent());
 
 			if (QSBCore.IsHost)
 			{
-				NetIdentity.RegisterAuthQueue();
+				netIdentity.RegisterAuthQueue();
 			}
 
-			_attachedBody.OnUnsuspendOWRigidbody += OnUnsuspend;
-			_attachedBody.OnSuspendOWRigidbody += OnSuspend;
-			NetIdentity.SendAuthQueueMessage(_attachedBody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			body.OnUnsuspendOWRigidbody += OnUnsuspend;
+			body.OnSuspendOWRigidbody += OnSuspend;
+			netIdentity.SendAuthQueueMessage(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => NetIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		protected override void Uninit()
+		{
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
+			// idk why, but whatever
+			if (AttachedTransform)
+			{
+				var body = AttachedTransform.GetAttachedOWRigidbody();
+				if (body)
+				{
+					body.OnUnsuspendOWRigidbody -= OnUnsuspend;
+					body.OnSuspendOWRigidbody -= OnSuspend;
+				}
+			}
+
+			base.Uninit();
+		}
+
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
 	}
 }

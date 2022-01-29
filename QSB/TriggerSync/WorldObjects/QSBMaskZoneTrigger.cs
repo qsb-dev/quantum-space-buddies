@@ -1,12 +1,14 @@
-﻿using QSB.Player;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Player;
+using System.Threading;
 
 namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBMaskZoneTrigger : QSBTrigger<MaskZoneController>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init();
+			await base.Init(ct);
 			AttachedObject.OnEntry -= TriggerOwner.OnEnterMaskZone;
 			AttachedObject.OnExit -= TriggerOwner.OnExitMaskZone;
 		}

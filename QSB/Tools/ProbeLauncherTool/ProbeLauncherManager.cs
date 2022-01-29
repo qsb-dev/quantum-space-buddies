@@ -1,5 +1,8 @@
-﻿using QSB.Tools.ProbeLauncherTool.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.WorldSync;
+using System.Linq;
+using System.Threading;
 
 namespace QSB.Tools.ProbeLauncherTool
 {
@@ -7,7 +10,16 @@ namespace QSB.Tools.ProbeLauncherTool
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		protected override void RebuildWorldObjects(OWScene scene)
-			=> QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		{
+			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
+			if (scene == OWScene.SolarSystem)
+			{
+				QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(new[]
+				{
+					QSBWorldSync.GetUnityObjects<ShipCockpitController>().First().GetShipProbeLauncher()
+				});
+			}
+		}
 	}
 }

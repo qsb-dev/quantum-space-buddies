@@ -1,72 +1,65 @@
-﻿using QSB.Utility;
-using QSB.WorldSync;
-using QuantumUNET.Transport;
+﻿using Mirror;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Syncs.Unsectored.Transforms
 {
-	public abstract class UnsectoredTransformSync : BaseUnsectoredSync<Transform>
+	public abstract class UnsectoredTransformSync : BaseUnsectoredSync
 	{
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();
 
-		protected override Transform SetAttachedObject()
-			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
+		protected sealed override Transform InitAttachedTransform()
+			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
-		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
-			base.SerializeTransform(writer, initialState);
-
-			var worldPos = transform.position;
-			var worldRot = transform.rotation;
-			writer.Write(worldPos);
-			SerializeRotation(writer, worldRot);
-			_prevPosition = worldPos;
-			_prevRotation = worldRot;
+			base.Serialize(writer);
+			writer.Write(transform.position);
+			writer.Write(transform.rotation);
 		}
 
-		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				reader.ReadVector3();
-				DeserializeRotation(reader);
-				return;
-			}
-
-			var pos = reader.ReadVector3();
-			var rot = DeserializeRotation(reader);
-
-			if (HasAuthority)
-			{
-				return;
-			}
-
-			transform.position = pos;
-			transform.rotation = rot;
+			base.Deserialize(reader);
+			transform.position = reader.ReadVector3();
+			transform.rotation = reader.ReadQuaternion();
 		}
 
-		protected override bool UpdateTransform()
+		protected override void GetFromAttached()
 		{
-			if (HasAuthority)
-			{
-				transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
-				transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
-				return true;
-			}
+			transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+			transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+		}
 
-			if (UseInterpolation)
+		protected override void ApplyToAttached()
+		{
+			if (IsPlayerObject)
 			{
-				AttachedObject.position = ReferenceTransform.FromRelPos(SmoothPosition);
-				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
+				if (UseInterpolation)
+				{
+					AttachedTransform.localPosition = SmoothPosition;
+					AttachedTransform.localRotation = SmoothRotation;
+				}
+				else
+				{
+					AttachedTransform.localPosition = transform.position;
+					AttachedTransform.localRotation = transform.rotation;
+				}
 			}
 			else
 			{
-				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
-				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
+				if (UseInterpolation)
+				{
+					AttachedTransform.position = ReferenceTransform.FromRelPos(SmoothPosition);
+					AttachedTransform.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
+				}
+				else
+				{
+					AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
+					AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
+				}
 			}
-
-			return true;
 		}
 	}
 }

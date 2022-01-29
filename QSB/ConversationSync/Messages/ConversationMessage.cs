@@ -1,13 +1,13 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationMessage : QSBEnumMessage<ConversationType>
+	public class ConversationMessage : QSBMessage<ConversationType>
 	{
 		private int Id;
 		private string Message;
@@ -19,21 +19,21 @@ namespace QSB.ConversationSync.Messages
 			Message = message;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(Id);
 			writer.Write(Message);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Id = reader.ReadInt32();
+			Id = reader.Read<int>();
 			Message = reader.ReadString();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

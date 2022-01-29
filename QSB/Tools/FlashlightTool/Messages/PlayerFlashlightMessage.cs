@@ -4,7 +4,7 @@ using QSB.Player.TransformSync;
 
 namespace QSB.Tools.FlashlightTool.Messages
 {
-	public class PlayerFlashlightMessage : QSBBoolMessage
+	public class PlayerFlashlightMessage : QSBMessage<bool>
 	{
 		static PlayerFlashlightMessage()
 		{

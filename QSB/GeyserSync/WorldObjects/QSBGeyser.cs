@@ -1,35 +1,57 @@
-﻿using QSB.GeyserSync.Messages;
+﻿using Cysharp.Threading.Tasks;
+using QSB.GeyserSync.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
-using QuantumUNET;
+using System.Threading;
 
 namespace QSB.GeyserSync.WorldObjects
 {
 	public class QSBGeyser : WorldObject<GeyserController>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			AttachedObject.OnGeyserActivateEvent += () => HandleEvent(true);
-			AttachedObject.OnGeyserDeactivateEvent += () => HandleEvent(false);
-		}
-
-		private void HandleEvent(bool state)
-		{
-			if (QNetworkServer.active)
+			if (QSBCore.IsHost)
 			{
-				this.SendMessage(new GeyserMessage(state));
+				AttachedObject.OnGeyserActivateEvent += OnActivate;
+				AttachedObject.OnGeyserDeactivateEvent += OnDeactivate;
 			}
 		}
+
+		public override void OnRemoval()
+		{
+			if (QSBCore.IsHost)
+			{
+				AttachedObject.OnGeyserActivateEvent -= OnActivate;
+				AttachedObject.OnGeyserDeactivateEvent -= OnDeactivate;
+			}
+		}
+
+		public override void SendInitialState(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new GeyserMessage(AttachedObject._isActive));
+			}
+		}
+
+		private void OnActivate() => this.SendMessage(new GeyserMessage(true));
+		private void OnDeactivate() => this.SendMessage(new GeyserMessage(false));
 
 		public void SetState(bool state)
 		{
-			if (state)
+			if (AttachedObject._isActive == state)
 			{
-				AttachedObject?.ActivateGeyser();
 				return;
 			}
 
-			AttachedObject?.DeactivateGeyser();
+			if (state)
+			{
+				AttachedObject.ActivateGeyser();
+			}
+			else
+			{
+				AttachedObject.DeactivateGeyser();
+			}
 		}
 	}
 }

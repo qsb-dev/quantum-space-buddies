@@ -6,6 +6,11 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects
 {
 	internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 	{
+		public override void SendInitialState(uint to)
+		{
+			// not needed since mid-game join is impossible here
+		}
+
 		public void Gather()
 		{
 			var maskZoneController = QSBWorldSync.GetUnityObjects<MaskZoneController>().First();
@@ -15,7 +20,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects
 
 				foreach (var player in MaskManager.WentOnSolanumsWildRide)
 				{
-					player.DitheringAnimator.SetVisible(true, 0.5f);
+					player.SetVisible(true, 2);
 				}
 
 				maskZoneController._whiteSphere.SetActive(false);

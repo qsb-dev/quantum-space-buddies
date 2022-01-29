@@ -1,4 +1,7 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Messaging;
+using QSB.Tools.TranslatorTool.TranslationSync.Messages;
+using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +10,15 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBNomaiText : WorldObject<NomaiText>
 	{
+		public override void SendInitialState(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				GetTranslatedIds().ForEach(id =>
+					this.SendMessage(new SetAsTranslatedMessage(id) { To = to }));
+			}
+		}
+
 		public void SetAsTranslated(int id) => AttachedObject.SetAsTranslated(id);
 
 		public IEnumerable<int> GetTranslatedIds()

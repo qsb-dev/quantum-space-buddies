@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ConversationSync.Messages;
 using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
@@ -7,6 +8,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,7 +39,7 @@ namespace QSB.ConversationSync
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 			=> QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
@@ -76,7 +78,7 @@ namespace QSB.ConversationSync
 				return;
 			}
 
-			new ConversationStartEndMessage(charId, QSBPlayerManager.LocalPlayerId, state).Send();
+			new ConversationStartEndMessage(charId, state).Send();
 		}
 
 		public void DisplayPlayerConversationBox(uint playerId, string text)

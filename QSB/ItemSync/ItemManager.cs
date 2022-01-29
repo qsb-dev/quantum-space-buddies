@@ -1,8 +1,10 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.ItemSync
 {
@@ -10,25 +12,22 @@ namespace QSB.ItemSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
-			DebugLog.DebugWrite("Rebuilding OWItems...", MessageType.Info);
+			DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 
 			// Items
+			QSBWorldSync.Init<QSBDreamLanternItem, DreamLanternItem>();
+			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
-			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
-			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 			QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
 			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
+			QSBWorldSync.Init<QSBVisionTorchItem, VisionTorchItem>();
+			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
 
 			// Sockets
-			QSBWorldSync.Init<QSBScrollSocket, ScrollSocket>();
-			QSBWorldSync.Init<QSBSharedStoneSocket, SharedStoneSocket>();
-			QSBWorldSync.Init<QSBWarpCoreSocket, WarpCoreSocket>();
-			QSBWorldSync.Init<QSBNomaiConversationStoneSocket, NomaiConversationStoneSocket>();
-			QSBWorldSync.Init<QSBSlideReelSocket, SlideReelSocket>();
-			QSBWorldSync.Init<QSBSlideProjectorSocket, SlideProjectorSocket>();
+			QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 		}
 	}
 }

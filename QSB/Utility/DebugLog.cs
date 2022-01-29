@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using System.Diagnostics;
 using System.Linq;
 
@@ -7,7 +8,14 @@ namespace QSB.Utility
 	public static class DebugLog
 	{
 		public static void ToConsole(string message, MessageType type = MessageType.Message)
-			=> QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
+		{
+			if (NetworkClient.localPlayer != null)
+			{
+				message = $"[{NetworkClient.localPlayer.netId}] " + message;
+			}
+
+			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
+		}
 
 		public static void ToHud(string message)
 		{

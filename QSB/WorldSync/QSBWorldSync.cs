@@ -1,31 +1,152 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
+using QSB.Messaging;
+using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.WorldSync
 {
 	public static class QSBWorldSync
 	{
-		public static List<CharacterDialogueTree> OldDialogueTrees { get; private set; } = new();
+		public static WorldObjectManager[] Managers;
+
+		/// <summary>
+		/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
+		/// </summary>
+		public static bool AllObjectsAdded { get; private set; }
+		/// <summary>
+		/// Set when all WorldObjects have finished running Init()
+		/// </summary>
+		public static bool AllObjectsReady { get; private set; }
+
+		private static CancellationTokenSource _cts;
+		private static readonly Dictionary<WorldObjectManager, UniTask> _managersBuilding = new();
+		private static readonly Dictionary<IWorldObject, UniTask> _objectsIniting = new();
+
+		public static async UniTaskVoid BuildWorldObjects(OWScene scene)
+		{
+			if (_cts != null)
+			{
+				return;
+			}
+
+			_cts = new CancellationTokenSource();
+
+			if (!PlayerTransformSync.LocalInstance)
+			{
+				DebugLog.ToConsole("Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
+				await UniTask.WaitUntil(() => PlayerTransformSync.LocalInstance, cancellationToken: _cts.Token);
+			}
+
+			GameInit();
+
+			foreach (var manager in Managers)
+			{
+				switch (manager.WorldObjectType)
+				{
+					case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+					case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+						DebugLog.DebugWrite($"skipping {manager} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
+						continue;
+				}
+
+				var task = UniTask.Create(async () =>
+				{
+					await manager.Try("building world objects", async () =>
+					{
+						await manager.BuildWorldObjects(scene, _cts.Token);
+						DebugLog.DebugWrite($"Built {manager}", MessageType.Info);
+					});
+					_managersBuilding.Remove(manager);
+				});
+				if (!task.Status.IsCompleted())
+				{
+					_managersBuilding.Add(manager, task);
+				}
+			}
+
+			await _managersBuilding.Values;
+			AllObjectsAdded = true;
+			DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+
+			await _objectsIniting.Values;
+			AllObjectsReady = true;
+			DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+
+			DeterministicManager.WorldObjectsReady();
+
+			if (!QSBCore.IsHost)
+			{
+				new RequestInitialStatesMessage().Send();
+			}
+		}
+
+		public static void RemoveWorldObjects()
+		{
+			if (_cts == null)
+			{
+				return;
+			}
+
+			_cts.Cancel();
+			_cts.Dispose();
+			_cts = null;
+
+			if (_managersBuilding.Count > 0)
+			{
+				DebugLog.DebugWrite($"{_managersBuilding.Count} managers still building", MessageType.Warning);
+			}
+
+			if (_objectsIniting.Count > 0)
+			{
+				DebugLog.DebugWrite($"{_objectsIniting.Count} objects still initing", MessageType.Warning);
+			}
+
+			_managersBuilding.Clear();
+			_objectsIniting.Clear();
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
+
+			GameReset();
+
+			foreach (var item in WorldObjects)
+			{
+				item.Try("removing", item.OnRemoval);
+			}
+
+			WorldObjects.Clear();
+			UnityObjectsToWorldObjects.Clear();
+
+			foreach (var manager in Managers)
+			{
+				manager.Try("unbuilding world objects", manager.UnbuildWorldObjects);
+			}
+		}
+
+		// =======================================================================================================
+
+		public static List<CharacterDialogueTree> OldDialogueTrees { get; } = new();
 		public static Dictionary<string, bool> DialogueConditions { get; private set; } = new();
-		public static Dictionary<string, bool> PersistentConditions { get; private set; } = new();
-		public static List<FactReveal> ShipLogFacts { get; private set; } = new();
+		private static Dictionary<string, bool> PersistentConditions { get; set; } = new();
+		public static List<FactReveal> ShipLogFacts { get; } = new();
 
 		private static readonly List<IWorldObject> WorldObjects = new();
-		private static readonly Dictionary<MonoBehaviour, IWorldObject> WorldObjectsToUnityObjects = new();
+		private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
 
-		public static void Init()
+		private static void GameInit()
 		{
-			DebugLog.DebugWrite($"Init QSBWorldSync", MessageType.Info);
+			DebugLog.DebugWrite($"GameInit QSBWorldSync", MessageType.Info);
 
 			OldDialogueTrees.Clear();
-			OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>());
+			OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>().SortDeterministic());
 
 			if (!QSBCore.IsHost)
 			{
@@ -33,7 +154,7 @@ namespace QSB.WorldSync
 			}
 
 			DebugLog.DebugWrite($"DIALOGUE CONDITIONS :");
-			DialogueConditions = (Dictionary<string, bool>)DialogueConditionManager.SharedInstance._dictConditions;
+			DialogueConditions = new(DialogueConditionManager.SharedInstance._dictConditions);
 			foreach (var item in DialogueConditions)
 			{
 				DebugLog.DebugWrite($"- {item.Key}, {item.Value}");
@@ -49,9 +170,9 @@ namespace QSB.WorldSync
 			}
 		}
 
-		public static void Reset()
+		private static void GameReset()
 		{
-			DebugLog.DebugWrite($"Reset QSBWorldSync", MessageType.Info);
+			DebugLog.DebugWrite($"GameReset QSBWorldSync", MessageType.Info);
 
 			OldDialogueTrees.Clear();
 			DialogueConditions.Clear();
@@ -86,57 +207,24 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldObject<TWorldObject>(this MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
-			if (unityObject == null)
+			if (!unityObject)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
-			if (!QSBCore.IsInMultiplayer)
-			{
-				DebugLog.ToConsole($"Warning - Trying to run GetWorldFromUnity while not in multiplayer! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Warning);
-				return default;
-			}
-
-			if (!WorldObjectsToUnityObjects.TryGetValue(unityObject, out var worldObject))
+			if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObject))
 			{
 				DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
-				return default;
-			}
-
-			if (worldObject == null)
-			{
-				DebugLog.ToConsole($"Error - World object for unity object {unityObject.name} is null! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
 			}
 
 			return (TWorldObject)worldObject;
 		}
 
-		public static void RemoveWorldObjects()
-		{
-			if (WorldObjects.Count == 0)
-			{
-				DebugLog.ToConsole($"Warning - Trying to remove WorldObjects, but there are no WorldObjects!", MessageType.Warning);
-				return;
-			}
-
-			foreach (var item in WorldObjects)
-			{
-				try
-				{
-					item.OnRemoval();
-				}
-				catch (Exception e)
-				{
-					DebugLog.ToConsole($"Error - Exception in OnRemoval() for {item.GetType()}. Message : {e.Message}, Stack trace : {e.StackTrace}", MessageType.Error);
-				}
-			}
-
-			WorldObjects.Clear();
-			WorldObjectsToUnityObjects.Clear();
-		}
-
+		/// <summary>
+		/// not deterministic across platforms
+		/// </summary>
 		public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
 			where TUnityObject : MonoBehaviour
 			=> Resources.FindObjectsOfTypeAll<TUnityObject>()
@@ -146,7 +234,7 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>();
+			var list = GetUnityObjects<TUnityObject>().SortDeterministic();
 			Init<TWorldObject, TUnityObject>(list);
 		}
 
@@ -154,15 +242,19 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>().Where(x => !typesToExclude.Contains(x.GetType()));
+			var list = GetUnityObjects<TUnityObject>()
+				.Where(x => !typesToExclude.Contains(x.GetType()))
+				.SortDeterministic();
 			Init<TWorldObject, TUnityObject>(list);
 		}
 
+		/// <summary>
+		/// make sure to sort the list!
+		/// </summary>
 		public static void Init<TWorldObject, TUnityObject>(IEnumerable<TUnityObject> listToInitFrom)
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {listToInitFrom.Count()} instances.", MessageType.Info);
 			foreach (var item in listToInitFrom)
 			{
 				var obj = new TWorldObject
@@ -170,10 +262,7 @@ namespace QSB.WorldSync
 					AttachedObject = item,
 					ObjectId = WorldObjects.Count
 				};
-
-				obj.Init();
-				WorldObjects.Add(obj);
-				WorldObjectsToUnityObjects.Add(item, obj);
+				AddAndInit(obj, item);
 			}
 		}
 
@@ -181,21 +270,40 @@ namespace QSB.WorldSync
 			where TWorldObject : QSBTrigger<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			var list = GetUnityObjects<TUnityObject>()
-				.Select(x => (triggerSelector(x), x))
-				.Where(x => x.Item1);
-			foreach (var (item, owner) in list)
+			var list = GetUnityObjects<TUnityObject>().SortDeterministic();
+			foreach (var owner in list)
 			{
+				var item = triggerSelector(owner);
+				if (!item)
+				{
+					continue;
+				}
+
 				var obj = new TWorldObject
 				{
 					AttachedObject = item,
 					ObjectId = WorldObjects.Count,
 					TriggerOwner = owner
 				};
+				AddAndInit(obj, item);
+			}
+		}
 
-				obj.Init();
-				WorldObjects.Add(obj);
-				WorldObjectsToUnityObjects.Add(item, obj);
+		private static void AddAndInit<TWorldObject, TUnityObject>(TWorldObject worldObject, TUnityObject unityObject)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+		{
+			WorldObjects.Add(worldObject);
+			UnityObjectsToWorldObjects.Add(unityObject, worldObject);
+
+			var task = UniTask.Create(async () =>
+			{
+				await worldObject.Try("initing", () => worldObject.Init(_cts.Token));
+				_objectsIniting.Remove(worldObject);
+			});
+			if (!task.Status.IsCompleted())
+			{
+				_objectsIniting.Add(worldObject, task);
 			}
 		}
 

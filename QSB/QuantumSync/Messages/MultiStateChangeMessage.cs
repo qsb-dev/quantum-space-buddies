@@ -2,27 +2,12 @@
 using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
-using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Messages
 {
-	internal class MultiStateChangeMessage : QSBWorldObjectMessage<QSBMultiStateQuantumObject>
+	internal class MultiStateChangeMessage : QSBWorldObjectMessage<QSBMultiStateQuantumObject, int>
 	{
-		private int StateIndex;
-
-		public MultiStateChangeMessage(int stateIndex) => StateIndex = stateIndex;
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(StateIndex);
-		}
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			StateIndex = reader.ReadInt32();
-		}
+		public MultiStateChangeMessage(int stateIndex) => Value = stateIndex;
 
 		public override void OnReceiveRemote()
 		{
@@ -32,7 +17,7 @@ namespace QSB.QuantumSync.Messages
 				return;
 			}
 
-			WorldObject.ChangeState(StateIndex);
+			WorldObject.ChangeState(Value);
 		}
 	}
 }

@@ -3,7 +3,6 @@ using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeTool.TransformSync
@@ -11,9 +10,9 @@ namespace QSB.Tools.ProbeTool.TransformSync
 	public class PlayerProbeSync : SectoredTransformSync
 	{
 		protected override float DistanceLeeway => 10f;
-		public override bool UseInterpolation => true;
-		public override bool IgnoreDisabledAttachedObject => true;
-		public override bool IsPlayerObject => true;
+		protected override bool UseInterpolation => true;
+		protected override bool AllowInactiveAttachedObject => true;
+		protected override bool IsPlayerObject => true;
 
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
@@ -21,12 +20,12 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe));
+			SectorDetector.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe);
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
 
-			if (Player.Body == null)
+			if (!Player.Body)
 			{
 				DebugLog.ToConsole($"Warning - Player.Body is null!", MessageType.Warning);
 				return null;
@@ -45,7 +44,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 		{
 			var probe = Locator.GetProbe().transform;
 
-			if (probe == null)
+			if (!probe)
 			{
 				DebugLog.ToConsole("Error - Probe is null!", MessageType.Error);
 				return default;
@@ -64,53 +63,29 @@ namespace QSB.Tools.ProbeTool.TransformSync
 			return body;
 		}
 
-		protected override bool UpdateTransform()
+		protected override void GetFromAttached()
 		{
-			if (!base.UpdateTransform())
+			if (!AttachedTransform.gameObject.activeInHierarchy)
 			{
-				return false;
-			}
-
-			if (HasAuthority)
-			{
-				if (!AttachedObject.gameObject.activeInHierarchy)
+				var probeBody = Locator.GetProbe().GetOWRigidbody();
+				if (!probeBody)
 				{
-					var probeOWRigidbody = Locator.GetProbe().GetComponent<SurveyorProbe>().GetOWRigidbody();
-					if (probeOWRigidbody == null)
-					{
-						DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
-					}
-
-					var probeLauncher = Player.LocalProbeLauncher;
-					// TODO : make this sync to the *active* probe launcher's _launcherTransform
-					var launcherTransform = probeLauncher._launcherTransform;
-					probeOWRigidbody.SetPosition(launcherTransform.position);
-					probeOWRigidbody.SetRotation(launcherTransform.rotation);
-
-					if (ReferenceTransform != null)
-					{
-						transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
-						transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
-					}
-					else
-					{
-						transform.position = Vector3.zero;
-						transform.rotation = Quaternion.identity;
-					}
-
-					var currentReferenceSector = ReferenceSector;
-					var playerReferenceSector = Player.TransformSync.ReferenceSector;
-
-					if (currentReferenceSector != playerReferenceSector)
-					{
-						SetReferenceSector(playerReferenceSector);
-					}
+					DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
 				}
+
+				var probeLauncher = Player.LocalProbeLauncher;
+				// TODO : make this sync to the *active* probe launcher's _launcherTransform
+				var launcherTransform = probeLauncher._launcherTransform;
+				probeBody.SetPosition(launcherTransform.position);
+				probeBody.SetRotation(launcherTransform.rotation);
+
+				SetReferenceSector(Player.TransformSync.ReferenceSector);
 			}
 
-			return true;
+			base.GetFromAttached();
 		}
 
-		public override bool IsReady => AttachedObject != null || Locator.GetProbe() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& (Locator.GetProbe() || AttachedTransform);
 	}
 }

@@ -1,15 +1,18 @@
-﻿using OWML.Common;
+using Mirror;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.PoolSync;
 using QSB.ShipSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.Player.Messages
 {
-	internal class EnterLeaveMessage : QSBEnumMessage<EnterLeaveType>
+	/// <summary>
+	/// todo SendInitialState
+	/// </summary>
+	internal class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 	{
 		static EnterLeaveMessage()
 		{
@@ -35,19 +38,19 @@ namespace QSB.Player.Messages
 			ObjectId = objectId;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.ReadInt32();
+			ObjectId = reader.Read<int>();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal() => OnReceiveRemote();
 

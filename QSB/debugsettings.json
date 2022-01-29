@@ -1,4 +1,7 @@
 ﻿{
+  "useKcpTransport": false,
+  "overrideAppId": -1,
+  "dumpWorldObjects": false,
   "debugMode": false,
   "drawLines": false,
   "showQuantumVisibilityObjects": false,

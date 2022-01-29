@@ -27,18 +27,18 @@ namespace QSB.Instruments
 			//QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
 			//QSBInputManager.ExitTaunt += ReturnToPlayer;
 
-			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			Delay.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		public void InitRemote(Transform root)
 		{
 			_rootObj = root;
-			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			Delay.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		protected void OnDestroy()
 		{
-			if (!IsLocalPlayer)
+			if (!isLocalPlayer)
 			{
 				return;
 			}
@@ -90,7 +90,7 @@ namespace QSB.Instruments
 
 		public void StartInstrument(AnimationType type)
 		{
-			if (!IsLocalPlayer)
+			if (!isLocalPlayer)
 			{
 				DebugLog.ToConsole("Error - Tried to start instrument on non-local player!", MessageType.Error);
 				return;
@@ -119,7 +119,7 @@ namespace QSB.Instruments
 
 		public void SwitchToType(AnimationType type)
 		{
-			new ChangeAnimTypeMessage(QSBPlayerManager.LocalPlayerId, type).Send();
+			new ChangeAnimTypeMessage(type).Send();
 			QSBPlayerManager.LocalPlayer.AnimationSync.SetAnimationType(type);
 			CheckInstrumentProps(type);
 		}

@@ -1,4 +1,6 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using Mirror.FizzySteam;
+using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
@@ -13,32 +15,26 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
-using QSB.PoolSync;
 using QSB.ShipSync.TransformSync;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
-using QuantumUNET.Components;
 using System;
-using System.Reflection;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace QSB
 {
-	public class QSBNetworkManager : QNetworkManager
+	public class QSBNetworkManager : NetworkManager
 	{
-		public static QSBNetworkManager Instance { get; private set; }
+		public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
-		public event Action OnNetworkManagerReady;
 		public event Action OnClientConnected;
-		public event Action<NetworkError> OnClientDisconnected;
-		public event Action<NetworkError> OnClientErrorThrown;
+		public event Action<string> OnClientDisconnected;
 
-		public bool IsReady { get; private set; }
 		public GameObject OrbPrefab { get; private set; }
 		public GameObject ShipPrefab { get; private set; }
 		public GameObject AnglerPrefab { get; private set; }
@@ -52,14 +48,40 @@ namespace QSB
 		private GameObject _probePrefab;
 		private bool _everConnected;
 
-		public new void Awake()
+		private string _lastTransportError;
+		private static readonly string[] _kcpErrorLogs =
 		{
+			"KCP: received disconnect message",
+			"Failed to resolve host: .*"
+		};
+		private const int _defaultSteamAppID = 753640;
+
+		public override void Awake()
+		{
+			gameObject.SetActive(false);
+
+			if (QSBCore.UseKcpTransport)
+			{
+				transport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			}
+			else
+			{
+				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
+				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
+					? _defaultSteamAppID.ToString()
+					: QSBCore.OverrideAppId.ToString();
+				fizzy.SetTransportError = error => _lastTransportError = error;
+				transport = fizzy;
+			}
+
+			gameObject.SetActive(true);
+
 			base.Awake();
-			Instance = this;
 
 			InitPlayerName();
 
 			playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
+			playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
 
 			ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
 			spawnPrefabs.Add(ShipPrefab);
@@ -84,7 +106,7 @@ namespace QSB
 
 		private void InitPlayerName()
 		{
-			QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () =>
+			Delay.RunWhen(PlayerData.IsLoaded, () =>
 			{
 				try
 				{
@@ -120,7 +142,7 @@ namespace QSB
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<QNetworkIdentity>().m_AssetId = assetId;
+			template.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
 			template.AddComponent(transformSyncType);
 			return template;
 		}
@@ -128,50 +150,53 @@ namespace QSB
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
-			networkPort = QSBCore.Port;
 			maxConnections = MaxConnections;
-			customConfig = true;
-			connectionConfig.AddChannel(QosType.Reliable);
-			connectionConfig.AddChannel(QosType.Unreliable);
 
-			m_MaxBufferedPackets = MaxBufferedPackets;
-			channels.Add(QosType.Reliable);
-			channels.Add(QosType.Unreliable);
+			if (QSBCore.UseKcpTransport)
+			{
+				kcp2k.Log.Info = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s);
+					if (_kcpErrorLogs.Any(p => Regex.IsMatch(s, p)))
+					{
+						_lastTransportError = s;
+					}
+				};
+				kcp2k.Log.Warning = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+					_lastTransportError = s;
+				};
+				kcp2k.Log.Error = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
+					_lastTransportError = s;
+				};
+			}
 
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
 
-		public override void OnStartServer()
+		public override void OnServerAddPlayer(NetworkConnection connection) // Called on the server when a client joins
 		{
-			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
-			{
-				QSBWorldSync.OldDialogueTrees.AddRange(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>());
-			}
+			DebugLog.DebugWrite($"OnServerAddPlayer", MessageType.Info);
+			base.OnServerAddPlayer(connection);
+
+			NetworkServer.Spawn(Instantiate(_probePrefab), connection);
 		}
 
-		public override void OnServerAddPlayer(QNetworkConnection connection, short playerControllerId) // Called on the server when a client joins
+		public override void OnStartClient()
 		{
-			DebugLog.DebugWrite($"OnServerAddPlayer {playerControllerId}", MessageType.Info);
-			base.OnServerAddPlayer(connection, playerControllerId);
-
-			QNetworkServer.SpawnWithClientAuthority(Instantiate(_probePrefab), connection);
-		}
-
-		public override void OnStartClient(QNetworkClient _)
-		{
+			QSBCore.DefaultServerIP = networkAddress;
 			var config = QSBCore.Helper.Config;
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
 
-		public override void OnClientError(QNetworkConnection conn, int errorCode)
-			=> OnClientErrorThrown?.SafeInvoke((NetworkError)errorCode);
-
-		public override void OnClientConnect(QNetworkConnection connection) // Called on the client when connecting to a server
+		public override void OnClientConnect() // Called on the client when connecting to a server
 		{
 			DebugLog.DebugWrite("OnClientConnect", MessageType.Info);
-			base.OnClientConnect(connection);
+			base.OnClientConnect();
 
 			OnClientConnected?.SafeInvoke();
 
@@ -183,23 +208,19 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				WorldObjectManager.Rebuild(QSBSceneManager.CurrentScene);
-				QSBWorldSync.Init();
+				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene).Forget();
 			}
 
-			var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			OnNetworkManagerReady?.SafeInvoke();
-			IsReady = true;
-
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{
-				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+				Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 					() => new RequestStateResyncMessage().Send());
 			}
 
@@ -215,8 +236,7 @@ namespace QSB
 			Destroy(GetComponent<ClientStateManager>());
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
-			RemoveWorldObjects();
-			QSBWorldSync.Reset();
+			QSBWorldSync.RemoveWorldObjects();
 
 			if (WakeUpSync.LocalInstance != null)
 			{
@@ -225,30 +245,30 @@ namespace QSB
 
 			if (_everConnected)
 			{
-				var specificType = QNetworkServer.active ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
+				var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 				QSBPatchManager.DoUnpatchType(specificType);
 				QSBPatchManager.DoUnpatchType(QSBPatchTypes.OnClientConnect);
 			}
 
-			IsReady = false;
 			_everConnected = false;
 		}
 
-		public override void OnClientDisconnect(QNetworkConnection conn)
+		public override void OnClientDisconnect()
 		{
-			base.OnClientDisconnect(conn);
-			OnClientDisconnected?.SafeInvoke(conn.LastError);
+			base.OnClientDisconnect();
+			OnClientDisconnected?.SafeInvoke(_lastTransportError);
+			_lastTransportError = null;
 		}
 
-		public override void OnServerDisconnect(QNetworkConnection conn) // Called on the server when any client disconnects
+		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
 			// revert authority from ship
 			if (ShipTransformSync.LocalInstance != null)
 			{
-				var identity = ShipTransformSync.LocalInstance.NetIdentity;
-				if (identity != null && identity.ClientAuthorityOwner == conn)
+				var identity = ShipTransformSync.LocalInstance.netIdentity;
+				if (identity != null && identity.connectionToClient == conn)
 				{
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
@@ -259,24 +279,19 @@ namespace QSB
 			{
 				if (qsbOrb.TransformSync == null)
 				{
-					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
+					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 
-				if (!qsbOrb.TransformSync.enabled)
-				{
-					continue;
-				}
-
-				var identity = qsbOrb.TransformSync.NetIdentity;
-				if (identity.ClientAuthorityOwner == conn)
+				var identity = qsbOrb.TransformSync.netIdentity;
+				if (identity.connectionToClient == conn)
 				{
 					qsbOrb.SetDragging(false);
 					qsbOrb.SendMessage(new OrbDragMessage(false));
 				}
 			}
 
-			AuthorityManager.OnDisconnect(conn.GetPlayerId());
+			AuthorityManager.OnDisconnect(conn);
 
 			base.OnServerDisconnect(conn);
 		}
@@ -289,27 +304,6 @@ namespace QSB
 			QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
 
 			base.OnStopServer();
-		}
-
-		private static void RemoveWorldObjects()
-		{
-			QSBWorldSync.RemoveWorldObjects();
-			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
-			{
-				Destroy(platform);
-			}
-
-			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
-			{
-				Destroy(camera);
-			}
-
-			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
-			{
-				Destroy(streaming);
-			}
-
-			WorldObjectManager.SetNotReady();
 		}
 	}
 }

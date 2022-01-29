@@ -1,55 +1,55 @@
-﻿using QSB.JellyfishSync.TransformSync;
-using QSB.Utility;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
+using QSB.JellyfishSync.Messages;
+using QSB.JellyfishSync.TransformSync;
+using QSB.Messaging;
 using QSB.WorldSync;
-using QuantumUNET;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.WorldObjects
 {
 	public class QSBJellyfish : WorldObject<JellyfishController>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public JellyfishTransformSync TransformSync;
-		private AlignWithTargetBody _alignWithTargetBody;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			_alignWithTargetBody = AttachedObject.GetRequiredComponent<AlignWithTargetBody>();
-
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.JellyfishPrefab).SpawnWithServerAuthority();
+				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab));
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()
 		{
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Destroy(TransformSync.gameObject);
+				NetworkServer.Destroy(TransformSync.gameObject);
 			}
 		}
 
-		public bool IsRising
+		public override void SendInitialState(uint to)
 		{
-			get => AttachedObject._isRising;
-			set
+			if (TransformSync.hasAuthority)
 			{
-				if (AttachedObject._isRising == value)
-				{
-					return;
-				}
-
-				AttachedObject._isRising = value;
-				AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
+				this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
 			}
 		}
 
-		public bool Align
+		public void SetIsRising(bool value)
 		{
-			set => _alignWithTargetBody.enabled = value;
+			if (AttachedObject._isRising == value)
+			{
+				return;
+			}
+
+			AttachedObject._isRising = value;
+			AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
 		}
 	}
 }

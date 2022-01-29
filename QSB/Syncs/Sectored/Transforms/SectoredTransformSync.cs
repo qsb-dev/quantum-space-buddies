@@ -1,101 +1,62 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using QSB.WorldSync;
-using QuantumUNET.Transport;
+﻿using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Syncs.Sectored.Transforms
 {
-	public abstract class SectoredTransformSync : BaseSectoredSync<Transform>
+	public abstract class SectoredTransformSync : BaseSectoredSync
 	{
-		public override bool DestroyAttachedObject => true;
-
 		protected abstract Transform InitLocalTransform();
 		protected abstract Transform InitRemoteTransform();
 
-		protected override Transform SetAttachedObject()
-			=> HasAuthority ? InitLocalTransform() : InitRemoteTransform();
+		protected sealed override Transform InitAttachedTransform()
+			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
 
-		public override void SerializeTransform(QNetworkWriter writer, bool initialState)
+		protected override void GetFromAttached()
 		{
-			base.SerializeTransform(writer, initialState);
-
-			var worldPos = transform.position;
-			var worldRot = transform.rotation;
-			writer.Write(worldPos);
-			SerializeRotation(writer, worldRot);
-			_prevPosition = worldPos;
-			_prevRotation = worldRot;
-		}
-
-		public override void DeserializeTransform(QNetworkReader reader, bool initialState)
-		{
-			base.DeserializeTransform(reader, initialState);
-
-			if (!WorldObjectManager.AllObjectsReady)
-			{
-				reader.ReadVector3();
-				DeserializeRotation(reader);
-				return;
-			}
-
-			var pos = reader.ReadVector3();
-			var rot = DeserializeRotation(reader);
-
-			if (HasAuthority)
+			GetFromSector();
+			if (!ReferenceTransform)
 			{
 				return;
 			}
 
-			transform.position = pos;
-			transform.rotation = rot;
-
-			if (transform.position == Vector3.zero)
-			{
-				DebugLog.ToConsole($"Warning - {LogName} at (0,0,0)! - Given position was {pos}", MessageType.Warning);
-			}
+			transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+			transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 		}
 
-		protected override bool UpdateTransform()
+		protected override void ApplyToAttached()
 		{
-			if (!base.UpdateTransform())
+			ApplyToSector();
+			if (!ReferenceTransform)
 			{
-				return false;
+				return;
 			}
 
-			if (HasAuthority)
+			if (IsPlayerObject)
 			{
-				if (ReferenceTransform != null)
+				if (UseInterpolation)
 				{
-					transform.position = ReferenceTransform.ToRelPos(AttachedObject.position);
-					transform.rotation = ReferenceTransform.ToRelRot(AttachedObject.rotation);
+					AttachedTransform.localPosition = SmoothPosition;
+					AttachedTransform.localRotation = SmoothRotation;
 				}
 				else
 				{
-					transform.position = Vector3.zero;
-					transform.rotation = Quaternion.identity;
+					AttachedTransform.localPosition = transform.position;
+					AttachedTransform.localRotation = transform.rotation;
 				}
-
-				return true;
-			}
-
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
-			{
-				return false;
-			}
-
-			if (UseInterpolation)
-			{
-				AttachedObject.position = ReferenceTransform.FromRelPos(SmoothPosition);
-				AttachedObject.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
 			}
 			else
 			{
-				AttachedObject.position = ReferenceTransform.FromRelPos(transform.position);
-				AttachedObject.rotation = ReferenceTransform.FromRelRot(transform.rotation);
+				if (UseInterpolation)
+				{
+					AttachedTransform.position = ReferenceTransform.FromRelPos(SmoothPosition);
+					AttachedTransform.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
+				}
+				else
+				{
+					AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
+					AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
+				}
 			}
-
-			return true;
 		}
 	}
 }

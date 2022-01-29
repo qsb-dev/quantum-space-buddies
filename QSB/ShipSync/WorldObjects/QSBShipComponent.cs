@@ -1,12 +1,36 @@
-﻿using QSB.Utility;
+﻿using QSB.Messaging;
+using QSB.ShipSync.Messages.Component;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ShipSync.WorldObjects
 {
 	internal class QSBShipComponent : WorldObject<ShipComponent>
 	{
+		public override void SendInitialState(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				if (AttachedObject._damaged)
+				{
+					this.SendMessage(new ComponentDamagedMessage());
+				}
+				else
+				{
+					this.SendMessage(new ComponentRepairedMessage());
+				}
+
+				this.SendMessage(new ComponentRepairTickMessage(AttachedObject._repairFraction));
+			}
+		}
+
 		public void SetDamaged()
 		{
+			if (AttachedObject._damaged)
+			{
+				return;
+			}
+
 			DebugLog.DebugWrite($"[S COMPONENT] {AttachedObject} Set damaged.");
 			AttachedObject._damaged = true;
 			AttachedObject._repairFraction = 0f;
@@ -19,6 +43,11 @@ namespace QSB.ShipSync.WorldObjects
 
 		public void SetRepaired()
 		{
+			if (!AttachedObject._damaged)
+			{
+				return;
+			}
+
 			DebugLog.DebugWrite($"[S COMPONENT] {AttachedObject} Set repaired.");
 			AttachedObject._damaged = false;
 			AttachedObject._repairFraction = 1f;
@@ -31,6 +60,11 @@ namespace QSB.ShipSync.WorldObjects
 
 		public void RepairTick(float repairFraction)
 		{
+			if (OWMath.ApproxEquals(AttachedObject._repairFraction, repairFraction))
+			{
+				return;
+			}
+
 			AttachedObject._repairFraction = repairFraction;
 			var damageEffect = AttachedObject._damageEffect;
 			damageEffect.SetEffectBlend(1f - repairFraction);

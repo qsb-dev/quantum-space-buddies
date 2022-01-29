@@ -32,11 +32,7 @@ namespace QSB.Utility
 
 		private void Awake()
 		{
-			if (!QSBCore.DebugMode)
-			{
-				Destroy(this);
-				return;
-			}
+			enabled = QSBCore.DebugMode;
 
 			guiGUIStyle.fontSize = 9;
 		}
@@ -97,7 +93,7 @@ namespace QSB.Utility
 			#region Column1 - Server data
 
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
-			WriteLine(1, $"HasWokenUp : {WorldObjectManager.AllObjectsReady}");
+			WriteLine(1, $"HasWokenUp : {QSBWorldSync.AllObjectsReady}");
 			if (WakeUpSync.LocalInstance != null)
 			{
 				WriteLine(1, $"Server State : {ServerStateManager.Instance.GetServerState()}");
@@ -145,7 +141,7 @@ namespace QSB.Utility
 				WriteLine(2, $"Ready : {player.IsReady}");
 				WriteLine(2, $"Suited Up : {player.SuitedUp}");
 
-				if (player.IsReady && WorldObjectManager.AllObjectsReady)
+				if (player.IsReady && QSBWorldSync.AllObjectsReady)
 				{
 					var networkTransform = player.TransformSync;
 					var referenceSector = networkTransform.ReferenceSector;
@@ -166,7 +162,7 @@ namespace QSB.Utility
 				var instance = ShipTransformSync.LocalInstance;
 				if (QSBCore.IsHost)
 				{
-					var currentOwner = instance.NetIdentity.ClientAuthorityOwner;
+					var currentOwner = instance.netIdentity.connectionToClient;
 					if (currentOwner == null)
 					{
 						WriteLine(3, $"Current Owner : NULL");
@@ -262,14 +258,14 @@ namespace QSB.Utility
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
 			{
-				if (obj.ReturnObject() == null)
+				if (obj.AttachedObject == null)
 				{
 					return;
 				}
 
 				if (obj.ShouldDisplayDebug())
 				{
-					DrawLabel(obj.ReturnObject().transform, obj.ReturnLabel());
+					DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
 				}
 			}
 		}
@@ -283,7 +279,7 @@ namespace QSB.Utility
 
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
 			{
-				if (obj.ReturnObject() == null)
+				if (obj.AttachedObject == null)
 				{
 					return;
 				}

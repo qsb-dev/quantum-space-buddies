@@ -27,7 +27,7 @@ namespace QSB.Player
 				return localInstance.Player;
 			}
 		}
-		public static uint LocalPlayerId => LocalPlayer.PlayerId;
+		public static uint LocalPlayerId => LocalPlayer?.PlayerId ?? uint.MaxValue;
 
 		/// <summary>
 		/// called right after player is added
@@ -88,10 +88,10 @@ namespace QSB.Player
 			=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 		public static void ShowAllPlayers()
-			=> PlayerList.Where(x => x != LocalPlayer && x.DitheringAnimator != null).ForEach(x => x.DitheringAnimator.SetVisible(true, 0.5f));
+			=> PlayerList.ForEach(x => x.SetVisible(true, 2));
 
 		public static void HideAllPlayers()
-			=> PlayerList.Where(x => x != LocalPlayer && x.DitheringAnimator != null).ForEach(x => x.DitheringAnimator.SetVisible(false, 0.5f));
+			=> PlayerList.ForEach(x => x.SetVisible(false, 2));
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
 				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
@@ -114,7 +114,7 @@ namespace QSB.Player
 			return playerList.Where(x => x.IsReady && x.Body != null).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
 		}
 
-		public static IEnumerable<Tuple<PlayerInfo, IQSBOWItem>> GetPlayerCarryItems()
-			=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBOWItem>(x, x.HeldItem));
+		public static IEnumerable<Tuple<PlayerInfo, IQSBItem>> GetPlayerCarryItems()
+			=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBItem>(x, x.HeldItem));
 	}
 }

@@ -1,8 +1,8 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
-using QuantumUNET.Transport;
 using System.Collections.Generic;
 
 namespace QSB.SaveSync.Messages
@@ -32,7 +32,7 @@ namespace QSB.SaveSync.Messages
 		}
 
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(WarpedToTheEye);
@@ -40,11 +40,7 @@ namespace QSB.SaveSync.Messages
 			writer.Write(LaunchCodesGiven);
 			writer.Write(LoopCount);
 
-			writer.Write(KnownFrequencies.Length);
-			foreach (var item in KnownFrequencies)
-			{
-				writer.Write(item);
-			}
+			writer.Write(KnownFrequencies);
 
 			writer.Write(KnownSignals.Count);
 			foreach (var (name, discovered) in KnownSignals)
@@ -54,27 +50,22 @@ namespace QSB.SaveSync.Messages
 			}
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			WarpedToTheEye = reader.ReadBoolean();
-			SecondsRemainingOnWarp = reader.ReadSingle();
-			LaunchCodesGiven = reader.ReadBoolean();
-			LoopCount = reader.ReadInt32();
+			WarpedToTheEye = reader.Read<bool>();
+			SecondsRemainingOnWarp = reader.Read<float>();
+			LaunchCodesGiven = reader.Read<bool>();
+			LoopCount = reader.Read<int>();
 
-			var frequenciesLength = reader.ReadInt32();
-			KnownFrequencies = new bool[frequenciesLength];
-			for (var i = 0; i < frequenciesLength; i++)
-			{
-				KnownFrequencies[i] = reader.ReadBoolean();
-			}
+			KnownFrequencies = reader.Read<bool[]>();
 
-			var signalsLength = reader.ReadInt32();
+			var signalsLength = reader.Read<int>();
 			KnownSignals = new Dictionary<int, bool>(signalsLength);
 			for (var i = 0; i < signalsLength; i++)
 			{
-				var key = reader.ReadInt32();
-				var value = reader.ReadBoolean();
+				var key = reader.Read<int>();
+				var value = reader.Read<bool>();
 				KnownSignals.Add(key, value);
 			}
 		}

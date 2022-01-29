@@ -1,22 +1,29 @@
-﻿using QSB.WorldSync;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
+using QSB.MeteorSync.Messages;
+using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBFragment : WorldObject<FragmentIntegrity>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			DetachableFragment = AttachedObject.GetComponent<DetachableFragment>();
 
 			if (QSBCore.IsHost)
 			{
 				LeashLength = Random.Range(MeteorManager.WhiteHoleVolume._debrisDistMin, MeteorManager.WhiteHoleVolume._debrisDistMax);
-				// QSBCore.UnityEvents.FireOnNextUpdate(() =>
-				// {
-				// 	AttachedObject._integrity = 0;
-				// 	AttachedObject.CallOnTakeDamage();
-				// });
+			}
+		}
+
+		public override void SendInitialState(uint to)
+		{
+			if (QSBCore.IsHost)
+			{
+				this.SendMessage(new FragmentInitialStateMessage(this) { To = to });
 			}
 		}
 

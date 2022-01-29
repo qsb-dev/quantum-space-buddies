@@ -13,8 +13,6 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <OutputPath>bin\$(Configuration)\QSB</OutputPath>
-        <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
         <NeutralLanguage>en-GB</NeutralLanguage>
         <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
         <Copyright>Copyright © Henry Pointer, Aleksander Waage, Ricardo Lopes 2020-2021</Copyright>
@@ -29,5 +27,13 @@
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
     </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <Optimize>true</Optimize>
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
 
 </Project>

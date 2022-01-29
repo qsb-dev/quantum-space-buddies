@@ -1,41 +1,35 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationStartEndMessage : QSBBoolMessage
+	public class ConversationStartEndMessage : QSBMessage<bool>
 	{
 		private int TreeId;
-		private uint PlayerId;
 
-		public ConversationStartEndMessage(int treeId, uint playerId, bool start)
+		public ConversationStartEndMessage(int treeId, bool start)
 		{
 			TreeId = treeId;
-			PlayerId = playerId;
 			Value = start;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(TreeId);
-			writer.Write(PlayerId);
-			writer.Write(Value);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			TreeId = reader.ReadInt32();
-			PlayerId = reader.ReadUInt32();
-			Value = reader.ReadBoolean();
+			TreeId = reader.Read<int>();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
@@ -49,11 +43,11 @@ namespace QSB.ConversationSync.Messages
 
 			if (Value)
 			{
-				StartConversation(PlayerId, TreeId, dialogueTree);
+				StartConversation(From, TreeId, dialogueTree);
 			}
 			else
 			{
-				EndConversation(PlayerId, dialogueTree);
+				EndConversation(From, dialogueTree);
 			}
 		}
 

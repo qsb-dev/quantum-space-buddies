@@ -17,7 +17,7 @@ namespace QSB.OrbSync.Patches
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.StartDragFromPosition))]
 		public static void StartDragFromPosition(NomaiInterfaceOrb __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}
@@ -35,7 +35,7 @@ namespace QSB.OrbSync.Patches
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CancelDrag))]
 		public static bool CancelDrag(NomaiInterfaceOrb __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
@@ -46,7 +46,7 @@ namespace QSB.OrbSync.Patches
 			}
 
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			if (!qsbOrb.TransformSync.HasAuthority)
+			if (!qsbOrb.TransformSync.hasAuthority)
 			{
 				return false;
 			}
@@ -59,13 +59,13 @@ namespace QSB.OrbSync.Patches
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CheckSlotCollision))]
 		public static bool CheckSlotCollision(NomaiInterfaceOrb __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
 
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			if (!qsbOrb.TransformSync.HasAuthority)
+			if (!qsbOrb.TransformSync.hasAuthority)
 			{
 				return false;
 			}

@@ -31,7 +31,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.SetIsQuantum))]
 		public static void QuantumObject_SetIsQuantum(QuantumObject __instance)
 		{
-			if (WorldObjectManager.AllObjectsReady)
+			if (QSBWorldSync.AllObjectsReady)
 			{
 				__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
 			}
@@ -44,7 +44,7 @@ namespace QSB.QuantumSync.Patches
 			ref bool __result,
 			bool skipInstantVisibilityCheck)
 		{
-			if (WorldObjectManager.AllObjectsReady)
+			if (QSBWorldSync.AllObjectsReady)
 			{
 				var socketedWorldObject = __instance.GetWorldObject<QSBSocketedQuantumObject>();
 				if (socketedWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
@@ -149,7 +149,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(SocketedQuantumObject), nameof(SocketedQuantumObject.MoveToSocket))]
 		public static void SocketedQuantumObject_MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}
@@ -186,7 +186,7 @@ namespace QSB.QuantumSync.Patches
 			ref bool __result)
 		{
 			QSBQuantumShuffleObject shuffleWorldObject = default;
-			if (WorldObjectManager.AllObjectsReady)
+			if (QSBWorldSync.AllObjectsReady)
 			{
 				shuffleWorldObject = __instance.GetWorldObject<QSBQuantumShuffleObject>();
 				if (shuffleWorldObject.ControllingPlayer != QSBPlayerManager.LocalPlayerId)
@@ -210,7 +210,7 @@ namespace QSB.QuantumSync.Patches
 				__instance._shuffledObjects[j].localPosition = __instance._localPositions[__instance._indexList[j]];
 			}
 
-			if (WorldObjectManager.AllObjectsReady)
+			if (QSBWorldSync.AllObjectsReady)
 			{
 				shuffleWorldObject.SendMessage(new QuantumShuffleMessage(__instance._indexList.ToArray()));
 				__result = true;
@@ -223,7 +223,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(MultiStateQuantumObject), nameof(MultiStateQuantumObject.Start))]
 		public static bool MultiStateQuantumObject_Start(MultiStateQuantumObject __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
@@ -259,7 +259,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(MultiStateQuantumObject), nameof(MultiStateQuantumObject.ChangeQuantumState))]
 		public static bool MultiStateQuantumObject_ChangeQuantumState(MultiStateQuantumObject __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
@@ -278,7 +278,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(QuantumState), nameof(QuantumState.SetVisible))]
 		public static void QuantumState_SetVisible(QuantumState __instance, bool visible)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}
@@ -434,7 +434,7 @@ namespace QSB.QuantumSync.Patches
 		[HarmonyPatch(typeof(QuantumSkeletonTower), nameof(QuantumSkeletonTower.ChangeQuantumState))]
 		public static bool QuantumSkeletonTower_ChangeQuantumState(QuantumSkeletonTower __instance, ref bool __result)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}

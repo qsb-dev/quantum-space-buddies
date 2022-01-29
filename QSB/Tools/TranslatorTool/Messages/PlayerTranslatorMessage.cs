@@ -4,7 +4,7 @@ using QSB.Player.TransformSync;
 
 namespace QSB.Tools.TranslatorTool.Messages
 {
-	public class PlayerTranslatorMessage : QSBBoolMessage
+	public class PlayerTranslatorMessage : QSBMessage<bool>
 	{
 		static PlayerTranslatorMessage()
 		{

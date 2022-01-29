@@ -5,14 +5,12 @@
     <Product>Quantum Space Buddies</Product>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
+    <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
+    <NoWarn>1998</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
+  <Target Name="weave qsb" BeforeTargets="PostBuildEvent" Condition="Exists($(GameDir))">
+    <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(OutputPath)\QSB.dll&quot; &quot;$(GameDir)&quot;" />
+  </Target>
   <PropertyGroup>
     <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
 :: copy output to unity project
@@ -64,7 +62,11 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
-    <ProjectReference Include="..\QuantumUNET\QuantumUNET.csproj" />
+    <Reference Include="..\Mirror\*.dll" />
+    <Reference Include="..\UniTask\*.dll" />
+    <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
+    <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
+    <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
     <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
   </ItemGroup>

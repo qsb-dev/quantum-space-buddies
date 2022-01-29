@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.Messages
 {
-	internal class FlyShipMessage : QSBBoolMessage
+	internal class FlyShipMessage : QSBMessage<bool>
 	{
 		static FlyShipMessage()
 		{
@@ -24,9 +24,9 @@ namespace QSB.ShipSync.Messages
 			}
 		}
 
-		public FlyShipMessage(bool flying) => Value = flying;
+		private FlyShipMessage(bool flying) => Value = flying;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal() => SetCurrentFlyer(From, Value);
 
@@ -52,7 +52,7 @@ namespace QSB.ShipSync.Messages
 
 			if (QSBCore.IsHost)
 			{
-				ShipTransformSync.LocalInstance.NetIdentity.SetAuthority(isFlying
+				ShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
 					? id
 					: QSBPlayerManager.LocalPlayerId);
 			}

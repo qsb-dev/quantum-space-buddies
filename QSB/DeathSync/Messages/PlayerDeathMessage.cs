@@ -1,13 +1,13 @@
-﻿using QSB.ClientServerStateSync;
+﻿using Mirror;
+using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.RespawnSync;
 using QSB.Utility;
-using QuantumUNET.Transport;
 
 namespace QSB.DeathSync.Messages
 {
-	public class PlayerDeathMessage : QSBEnumMessage<DeathType>
+	public class PlayerDeathMessage : QSBMessage<DeathType>
 	{
 		private int NecronomiconIndex;
 
@@ -17,16 +17,16 @@ namespace QSB.DeathSync.Messages
 			NecronomiconIndex = Necronomicon.GetRandomIndex(type);
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(NecronomiconIndex);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			NecronomiconIndex = reader.ReadInt32();
+			NecronomiconIndex = reader.Read<int>();
 		}
 
 		public override void OnReceiveLocal()

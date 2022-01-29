@@ -1,4 +1,7 @@
-﻿using QSB.Player;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Player;
+using QSB.Utility;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
@@ -7,9 +10,9 @@ namespace QSB.TriggerSync.WorldObjects
 	{
 		protected override string CompareTag => "PlayerCameraDetector";
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init();
+			await base.Init(ct);
 			AttachedObject.OnEntry -= TriggerOwner.OnEnterFogSphere;
 			AttachedObject.OnExit -= OnExitEvent;
 		}
@@ -21,7 +24,7 @@ namespace QSB.TriggerSync.WorldObjects
 				return;
 			}
 
-			if (player == QSBPlayerManager.LocalPlayer)
+			if (player.IsLocalPlayer)
 			{
 				AttachedObject.OnEntry -= OnEnterEvent;
 
@@ -41,7 +44,7 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 			else
 			{
-				player.DitheringAnimator.SetVisible(false, 3);
+				player.SetVisible(false, .3f);
 			}
 
 			if (Occupants.Count == QSBPlayerManager.PlayerList.Count)
@@ -53,7 +56,7 @@ namespace QSB.TriggerSync.WorldObjects
 		protected override void OnExit(PlayerInfo player)
 		{
 			// wait 1 frame for player to be removed
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			Delay.RunNextFrame(() =>
 			{
 				if (QSBCore.IsInMultiplayer && Occupants.Count == QSBPlayerManager.PlayerList.Count)
 				{

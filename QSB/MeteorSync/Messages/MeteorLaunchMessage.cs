@@ -1,6 +1,6 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
-using QuantumUNET.Transport;
 
 namespace QSB.MeteorSync.Messages
 {
@@ -15,18 +15,18 @@ namespace QSB.MeteorSync.Messages
 			LaunchSpeed = qsbMeteorLauncher.LaunchSpeed;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(MeteorId);
 			writer.Write(LaunchSpeed);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			MeteorId = reader.ReadInt32();
-			LaunchSpeed = reader.ReadSingle();
+			MeteorId = reader.Read<int>();
+			LaunchSpeed = reader.Read<float>();
 		}
 
 		public override void OnReceiveRemote() => WorldObject.LaunchMeteor(MeteorId, LaunchSpeed);

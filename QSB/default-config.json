@@ -1,7 +1,6 @@
 {
 	"enabled": true,
 	"settings": {
-		"defaultServerIP": "localhost",
-		"port": 7777
+		"defaultServerIP": "localhost"
 	}
 }

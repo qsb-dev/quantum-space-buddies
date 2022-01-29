@@ -8,11 +8,11 @@ using UnityEngine;
 
 namespace QSB.RoastingSync.Messages
 {
-	internal class MarshmallowEventMessage : QSBEnumMessage<MarshmallowMessageType>
+	internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 	{
 		public MarshmallowEventMessage(MarshmallowMessageType type) => Value = type;
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

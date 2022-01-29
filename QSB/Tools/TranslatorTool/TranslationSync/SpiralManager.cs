@@ -1,5 +1,7 @@
-﻿using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync
 {
@@ -7,15 +9,12 @@ namespace QSB.Tools.TranslatorTool.TranslationSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			// wait for all late initializers (which includes nomai text) to finish
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => LateInitializerManager.isDoneInitializing, () =>
-			{
-				FinishDelayedReady();
-				QSBWorldSync.Init<QSBNomaiText, NomaiText>(typeof(GhostWallText));
-			});
+			await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
+
+			QSBWorldSync.Init<QSBNomaiText, NomaiText>(typeof(GhostWallText));
 		}
 	}
 }

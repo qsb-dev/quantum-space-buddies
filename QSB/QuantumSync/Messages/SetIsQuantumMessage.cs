@@ -3,7 +3,7 @@ using QSB.QuantumSync.WorldObjects;
 
 namespace QSB.QuantumSync.Messages
 {
-	public class SetIsQuantumMessage : QSBBoolWorldObjectMessage<IQSBQuantumObject>
+	public class SetIsQuantumMessage : QSBWorldObjectMessage<IQSBQuantumObject, bool>
 	{
 		public SetIsQuantumMessage(bool isQuantum) => Value = isQuantum;
 

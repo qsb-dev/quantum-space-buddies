@@ -1,7 +1,6 @@
 using QSB.SectorSync;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.TransformSync
@@ -10,81 +9,55 @@ namespace QSB.ShipSync.TransformSync
 	{
 		public static ShipTransformSync LocalInstance { get; private set; }
 
-		public override bool IsPlayerObject => false;
-
 		private const int ForcePositionAfterUpdates = 50;
 		private int _updateCount;
 
-		public override bool IsReady
-			=> Locator.GetShipBody() != null;
+		protected override bool CheckReady() => base.CheckReady()
+			&& Locator.GetShipBody();
 
-		public override void Start()
+		public override void OnStartClient()
 		{
-			base.Start();
+			base.OnStartClient();
 			LocalInstance = this;
 		}
 
-		protected override OWRigidbody GetRigidbody()
+		protected override OWRigidbody InitAttachedRigidbody()
 		{
-			QSBCore.UnityEvents.RunWhen(() => WorldObjectManager.AllObjectsReady, () => SectorSync.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship));
+			SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship);
 			return Locator.GetShipBody();
 		}
 
-		private void ForcePosition()
+		/// Dont do base... this is a replacement!
+		protected override void ApplyToAttached()
 		{
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
+			ApplyToSector();
+			if (!ReferenceTransform)
 			{
 				return;
 			}
 
 			var targetPos = ReferenceTransform.FromRelPos(transform.position);
-			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
-
-			AttachedObject.SetPosition(targetPos);
-			AttachedObject.SetRotation(targetRot);
-		}
-
-		protected override bool UpdateTransform()
-		{
-			if (!UpdateSectors())
-			{
-				return false;
-			}
-
-			// Dont do base... this is a replacement!
-
-			if (HasAuthority)
-			{
-				SetValuesToSync();
-				return true;
-			}
 
 			_updateCount++;
-
 			if (_updateCount >= ForcePositionAfterUpdates)
 			{
 				_updateCount = 0;
-				ForcePosition();
-			}
 
-			if (ReferenceTransform == null || transform.position == Vector3.zero)
-			{
-				return false;
-			}
+				var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-			var targetPos = ReferenceTransform.FromRelPos(transform.position);
+				AttachedRigidbody.SetPosition(targetPos);
+				AttachedRigidbody.SetRotation(targetRot);
+			}
 
 			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
 			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
 
-			SetVelocity(AttachedObject, targetVelocity);
-			AttachedObject.SetAngularVelocity(targetAngularVelocity);
-
-			return true;
+			SetVelocity(AttachedRigidbody, targetVelocity);
+			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 		}
 
 		/// use OWRigidbody version instead of ShipBody override
-		private void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
+		private static void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
 		{
 			if (rigidbody.RunningKinematicSimulation())
 			{
@@ -99,6 +72,6 @@ namespace QSB.ShipSync.TransformSync
 			rigidbody._currentVelocity = newVelocity;
 		}
 
-		public override bool UseInterpolation => false;
+		protected override bool UseInterpolation => false;
 	}
 }

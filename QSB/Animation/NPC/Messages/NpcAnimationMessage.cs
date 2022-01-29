@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.Animation.NPC.Messages
 {
-	internal class NpcAnimationMessage : QSBBoolWorldObjectMessage<INpcAnimController>
+	internal class NpcAnimationMessage : QSBWorldObjectMessage<INpcAnimController, bool>
 	{
 		public NpcAnimationMessage(bool start) => Value = start;
 

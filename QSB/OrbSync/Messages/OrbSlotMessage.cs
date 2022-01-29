@@ -1,27 +1,25 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.OrbSync.WorldObjects;
-using QuantumUNET.Transport;
 
 namespace QSB.OrbSync.Messages
 {
-	public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb>
+	public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb, int>
 	{
-		private int SlotIndex;
+		public OrbSlotMessage(int slotIndex) => Value = slotIndex;
 
-		public OrbSlotMessage(int slotIndex) => SlotIndex = slotIndex;
-
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(SlotIndex);
+			writer.Write(Value);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			SlotIndex = reader.ReadInt32();
+			Value = reader.Read<int>();
 		}
 
-		public override void OnReceiveRemote() => WorldObject.SetSlot(SlotIndex);
+		public override void OnReceiveRemote() => WorldObject.SetSlot(Value);
 	}
 }

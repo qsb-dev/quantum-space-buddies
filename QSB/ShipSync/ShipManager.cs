@@ -1,12 +1,14 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
+using OWML.Common;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.ShipSync
@@ -22,8 +24,6 @@ namespace QSB.ShipSync
 		public ShipTractorBeamSwitch ShipTractorBeam;
 		public ShipCockpitController CockpitController;
 		public ShipElectricalComponent ShipElectricalComponent;
-		public bool HasAuthority
-			=> ShipTransformSync.LocalInstance.HasAuthority;
 		public uint CurrentFlyer
 		{
 			get => _currentFlyer;
@@ -45,7 +45,7 @@ namespace QSB.ShipSync
 		public void Start()
 			=> Instance = this;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			var shipTransform = GameObject.Find("Ship_Body");
 			if (shipTransform == null)
@@ -80,7 +80,7 @@ namespace QSB.ShipSync
 						return;
 					}
 
-					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
+					NetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
 
 				if (QSBPlayerManager.LocalPlayer.TransformSync == null)
@@ -88,7 +88,7 @@ namespace QSB.ShipSync
 					DebugLog.ToConsole($"Error - Tried to spawn ship, but LocalPlayer's TransformSync is null!", MessageType.Error);
 				}
 
-				Instantiate(QSBNetworkManager.Instance.ShipPrefab).SpawnWithServerAuthority();
+				Instantiate(QSBNetworkManager.singleton.ShipPrefab).SpawnWithServerAuthority();
 			}
 
 			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();

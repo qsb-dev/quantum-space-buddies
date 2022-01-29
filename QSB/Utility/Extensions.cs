@@ -1,5 +1,6 @@
-﻿using OWML.Common;
-using QuantumUNET;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
+using OWML.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,36 +30,22 @@ namespace QSB.Utility
 
 		#endregion
 
-		#region QNET
+		#region MIRROR
 
-		public static uint GetPlayerId(this QNetworkConnection connection)
+		public static uint GetPlayerId(this NetworkConnection conn)
 		{
-			if (connection == null)
+			if (!conn.identity)
 			{
-				DebugLog.ToConsole($"Error - Trying to get player id of null QNetworkConnection.\r\n{Environment.StackTrace}", MessageType.Error);
+				// wtf
+				DebugLog.ToConsole($"Error - GetPlayerId on {conn.address} has no identity\n{Environment.StackTrace}", MessageType.Error);
 				return uint.MaxValue;
 			}
 
-			var playerController = connection.PlayerControllers.FirstOrDefault();
-			if (playerController == null)
-			{
-				DebugLog.ToConsole($"Error - Player Controller of {connection.address} is null.", MessageType.Error);
-				return uint.MaxValue;
-			}
-
-			return playerController.UnetView.NetId.Value;
+			return conn.identity.netId;
 		}
 
-		public static void SpawnWithServerAuthority(this GameObject go)
-		{
-			if (!QSBCore.IsHost)
-			{
-				DebugLog.ToConsole($"Error - Tried to spawn {go.name} using SpawnWithServerAuthority when not the host!", MessageType.Error);
-				return;
-			}
-
-			QNetworkServer.SpawnWithClientAuthority(go, QNetworkServer.localConnection);
-		}
+		public static void SpawnWithServerAuthority(this GameObject go) =>
+			NetworkServer.Spawn(go, NetworkServer.localConnection);
 
 		#endregion
 
@@ -74,14 +61,14 @@ namespace QSB.Utility
 				}
 				catch (TargetInvocationException ex)
 				{
-					DebugLog.ToConsole($"Error invoking delegate! Message : {ex.InnerException!.Message} Stack Trace : {ex.InnerException.StackTrace}", MessageType.Error);
+					DebugLog.ToConsole($"Error invoking delegate! {ex.InnerException}", MessageType.Error);
 				}
 			}
 		}
 
 		public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
 		{
-			var mappedValue = ((value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom)) + outputFrom;
+			var mappedValue = (value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom) + outputFrom;
 
 			return clamp
 				? Mathf.Clamp(mappedValue, outputTo, outputFrom)
@@ -100,18 +87,6 @@ namespace QSB.Utility
 
 		public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
 
-		public static bool TryGet<T>(this IList<T> list, int index, out T element)
-		{
-			if (!list.IsInRange(index))
-			{
-				element = default;
-				return false;
-			}
-
-			element = list[index];
-			return true;
-		}
-
 		public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 		{
 			const BindingFlags flags = BindingFlags.Instance
@@ -120,17 +95,48 @@ namespace QSB.Utility
 				| BindingFlags.NonPublic
 				| BindingFlags.DeclaredOnly;
 			if (typeof(T)
-				.GetField(eventName, flags)?
-				.GetValue(instance) is not MulticastDelegate multiDelegate)
+					.GetField(eventName, flags)?
+					.GetValue(instance) is not MulticastDelegate multiDelegate)
 			{
 				return;
 			}
 
-			multiDelegate.GetInvocationList().ToList().ForEach(dl => dl.DynamicInvoke(args));
+			multiDelegate.GetInvocationList().ForEach(dl => dl.DynamicInvoke(args));
 		}
 
 		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
+
+		public static Guid ToGuid(this int value)
+		{
+			var bytes = new byte[16];
+			BitConverter.GetBytes(value).CopyTo(bytes, 0);
+			return new Guid(bytes);
+		}
+
+		public static void Try(this object self, string description, Action action)
+		{
+			try
+			{
+				action();
+			}
+			catch (Exception e)
+			{
+				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+			}
+		}
+
+		public static async UniTask Try(this object self, string description, Func<UniTask> func)
+		{
+			try
+			{
+				await func();
+			}
+			catch (Exception e)
+			{
+				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+			}
+		}
 
 		#endregion
 	}

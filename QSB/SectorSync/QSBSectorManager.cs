@@ -1,10 +1,12 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.SectorSync.WorldObjects;
 using QSB.Syncs.Sectored;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.SectorSync
@@ -14,65 +16,63 @@ namespace QSB.SectorSync
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
 		public static QSBSectorManager Instance { get; private set; }
-		public bool IsReady { get; private set; }
+		private bool _isReady;
 		public readonly List<QSBSector> FakeSectors = new();
 
-		public readonly List<IBaseSectoredSync> SectoredSyncs = new();
+		public readonly List<BaseSectoredSync> SectoredSyncs = new();
 
-		#region repeating timer
-
-		private const float TimeInterval = 0.4f;
-		private float _checkTimer = TimeInterval;
+		private const float UpdateInterval = 0.4f;
+		private float _timer = UpdateInterval;
 
 		private void Update()
 		{
-			_checkTimer += Time.unscaledDeltaTime;
-			if (_checkTimer < TimeInterval)
+			_timer += Time.unscaledDeltaTime;
+			if (_timer < UpdateInterval)
 			{
 				return;
 			}
 
-			Invoke();
-
-			_checkTimer = 0;
+			_timer = 0;
+			UpdateReferenceSectors();
 		}
 
-		#endregion
-
-		public void Invoke()
+		public void UpdateReferenceSectors()
 		{
-			if (!Instance.IsReady || !AllObjectsReady)
+			if (!Instance._isReady || !QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}
 
 			foreach (var sync in SectoredSyncs)
 			{
-				if (sync.ReturnObject() == null)
+				if (sync.hasAuthority
+					&& sync.IsValid)
 				{
-					continue;
-				}
-
-				if (sync.HasAuthority
-					&& sync.ReturnObject().gameObject.activeInHierarchy
-					&& sync.IsReady
-					&& sync.SectorSync.IsReady)
-				{
-					CheckTransformSyncSector(sync);
+					UpdateReferenceSector(sync);
 				}
 			}
 		}
 
-		public override void Awake()
+		private static void UpdateReferenceSector(BaseSectoredSync sync)
 		{
-			base.Awake();
+			var closestSector = sync.SectorDetector.GetClosestSector();
+			if (closestSector == null)
+			{
+				return;
+			}
+
+			sync.SetReferenceSector(closestSector);
+		}
+
+		public void Awake()
+		{
 			Instance = this;
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
-			DebugLog.DebugWrite("Rebuilding sectors...", MessageType.Info);
+			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 			{
 				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
@@ -90,23 +90,10 @@ namespace QSB.SectorSync
 			}
 
 			QSBWorldSync.Init<QSBSector, Sector>();
-			IsReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+			_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
 
-		private void CheckTransformSyncSector(IBaseSectoredSync transformSync)
-		{
-			var closestSector = transformSync.SectorSync.GetClosestSector();
-			if (closestSector == default(QSBSector))
-			{
-				return;
-			}
-
-			if (closestSector == transformSync.ReferenceSector)
-			{
-				return;
-			}
-
-			transformSync.SetReferenceSector(closestSector);
-		}
+		public override void UnbuildWorldObjects() =>
+			_isReady = false;
 	}
 }

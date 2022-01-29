@@ -1,14 +1,15 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.CampfireSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET.Transport;
 
 namespace QSB.RoastingSync.Messages
 {
-	internal class EnterExitRoastingMessage : QSBBoolMessage
+	internal class EnterExitRoastingMessage : QSBMessage<bool>
 	{
 		static EnterExitRoastingMessage()
 		{
@@ -18,14 +19,17 @@ namespace QSB.RoastingSync.Messages
 
 		private static void Handler(Campfire campfire, bool roasting)
 		{
-			if (campfire == null)
+			if (PlayerTransformSync.LocalInstance)
 			{
-				new EnterExitRoastingMessage(-1, roasting).Send();
-				return;
-			}
+				if (campfire == null)
+				{
+					new EnterExitRoastingMessage(-1, roasting).Send();
+					return;
+				}
 
-			var qsbObj = campfire.GetWorldObject<QSBCampfire>();
-			new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
+				var qsbObj = campfire.GetWorldObject<QSBCampfire>();
+				new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
+			}
 		}
 
 		private int ObjectId;
@@ -36,19 +40,19 @@ namespace QSB.RoastingSync.Messages
 			Value = roasting;
 		}
 
-		public override void Serialize(QNetworkWriter writer)
+		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
 			writer.Write(ObjectId);
 		}
 
-		public override void Deserialize(QNetworkReader reader)
+		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			ObjectId = reader.ReadInt32();
+			ObjectId = reader.Read<int>();
 		}
 
-		public override bool ShouldReceive => WorldObjectManager.AllObjectsReady;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

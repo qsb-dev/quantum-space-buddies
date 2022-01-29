@@ -3,7 +3,7 @@ using QSB.MeteorSync.WorldObjects;
 
 namespace QSB.MeteorSync.Messages
 {
-	public class FragmentDamageMessage : QSBFloatWorldObjectMessage<QSBFragment>
+	public class FragmentDamageMessage : QSBWorldObjectMessage<QSBFragment, float>
 	{
 		public FragmentDamageMessage(float damage) => Value = damage;
 

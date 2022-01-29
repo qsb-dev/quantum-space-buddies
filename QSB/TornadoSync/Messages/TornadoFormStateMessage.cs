@@ -3,7 +3,7 @@ using QSB.TornadoSync.WorldObjects;
 
 namespace QSB.TornadoSync.Messages
 {
-	public class TornadoFormStateMessage : QSBBoolWorldObjectMessage<QSBTornado>
+	public class TornadoFormStateMessage : QSBWorldObjectMessage<QSBTornado, bool>
 	{
 		public TornadoFormStateMessage(bool formState) => Value = formState;
 

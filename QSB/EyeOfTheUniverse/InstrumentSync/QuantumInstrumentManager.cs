@@ -1,5 +1,7 @@
-﻿using QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.EyeOfTheUniverse.InstrumentSync
 {
@@ -7,7 +9,7 @@ namespace QSB.EyeOfTheUniverse.InstrumentSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Eye;
 
-		protected override void RebuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 			=> QSBWorldSync.Init<QSBQuantumInstrument, QuantumInstrument>();
 	}
 }

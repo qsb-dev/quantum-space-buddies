@@ -1,31 +1,45 @@
-﻿using QSB.OrbSync.TransformSync;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
+using QSB.Messaging;
+using QSB.OrbSync.Messages;
+using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using QuantumUNET;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.OrbSync.WorldObjects
 {
 	public class QSBOrb : WorldObject<NomaiInterfaceOrb>
 	{
+		public override bool ShouldDisplayDebug() => false;
+
 		public NomaiOrbTransformSync TransformSync;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.Instance.OrbPrefab).SpawnWithServerAuthority();
+				Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab).SpawnWithServerAuthority();
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()
 		{
 			if (QSBCore.IsHost)
 			{
-				QNetworkServer.Destroy(TransformSync.gameObject);
+				NetworkServer.Destroy(TransformSync.gameObject);
+			}
+		}
+
+		public override void SendInitialState(uint to)
+		{
+			if (TransformSync.hasAuthority)
+			{
+				this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
+				this.SendMessage(new OrbSlotMessage(AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot)) { To = to });
 			}
 		}
 

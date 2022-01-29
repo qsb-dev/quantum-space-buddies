@@ -35,14 +35,16 @@ namespace QSB.Player
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
-		public bool Visible => DitheringAnimator != null && DitheringAnimator._visible;
+		public bool Visible => IsLocalPlayer || !_ditheringAnimator || _ditheringAnimator._visible;
 		public bool IsReady { get; set; }
 		public bool IsInMoon { get; set; }
 		public bool IsInShrine { get; set; }
 		public bool IsInEyeShuttle { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
-		public DitheringAnimator DitheringAnimator { get; set; }
+		internal DitheringAnimator _ditheringAnimator;
+
+		public bool IsLocalPlayer => TransformSync.isLocalPlayer;
 
 		// Body Objects
 		public OWCamera Camera
@@ -113,7 +115,7 @@ namespace QSB.Player
 		public Transform VisionTorchSocket => CameraBody.transform.Find("REMOTE_VisionTorchSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
-		public IQSBOWItem HeldItem { get; set; }
+		public IQSBItem HeldItem { get; set; }
 		public bool FlashlightActive { get; set; }
 		public bool SuitedUp { get; set; }
 		public bool ProbeLauncherEquipped { get; set; }
@@ -136,7 +138,7 @@ namespace QSB.Player
 		{
 			get
 			{
-				if (QSBPlayerManager.LocalPlayer != this)
+				if (!IsLocalPlayer)
 				{
 					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
@@ -150,7 +152,7 @@ namespace QSB.Player
 		{
 			get
 			{
-				if (QSBPlayerManager.LocalPlayer != this)
+				if (!IsLocalPlayer)
 				{
 					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
@@ -164,7 +166,7 @@ namespace QSB.Player
 		{
 			get
 			{
-				if (QSBPlayerManager.LocalPlayer != this)
+				if (!IsLocalPlayer)
 				{
 					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
@@ -178,7 +180,7 @@ namespace QSB.Player
 		{
 			get
 			{
-				if (QSBPlayerManager.LocalPlayer != this)
+				if (!IsLocalPlayer)
 				{
 					DebugLog.ToConsole($"Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", MessageType.Warning);
 					return null;
@@ -190,7 +192,7 @@ namespace QSB.Player
 
 		public PlayerInfo(PlayerTransformSync transformSync)
 		{
-			PlayerId = transformSync.NetId.Value;
+			PlayerId = transformSync.netId;
 			TransformSync = transformSync;
 			AnimationSync = transformSync.GetComponent<AnimationSync>();
 			InstrumentsManager = transformSync.GetComponent<InstrumentsManager>();
@@ -256,6 +258,29 @@ namespace QSB.Player
 			}
 
 			return tool;
+		}
+
+		public void SetVisible(bool visible, float seconds = 0)
+		{
+			if (IsLocalPlayer)
+			{
+				return;
+			}
+
+			if (!_ditheringAnimator)
+			{
+				DebugLog.ToConsole($"Warning - {PlayerId}.DitheringAnimator is null!", MessageType.Warning);
+				return;
+			}
+
+			if (seconds == 0)
+			{
+				_ditheringAnimator.SetVisibleImmediate(visible);
+			}
+			else
+			{
+				_ditheringAnimator.SetVisible(visible, 1 / seconds);
+			}
 		}
 	}
 }

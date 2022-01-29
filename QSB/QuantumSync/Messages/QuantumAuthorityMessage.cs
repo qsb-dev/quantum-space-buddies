@@ -1,27 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
-using QuantumUNET.Transport;
 
 namespace QSB.QuantumSync.Messages
 {
-	public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject>
+	public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject, uint>
 	{
-		private uint AuthorityOwner;
-
-		public QuantumAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
-
-		public override void Serialize(QNetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(AuthorityOwner);
-		}
-
-		public override void Deserialize(QNetworkReader reader)
-		{
-			base.Deserialize(reader);
-			AuthorityOwner = reader.ReadUInt32();
-		}
+		public QuantumAuthorityMessage(uint authorityOwner) => Value = authorityOwner;
 
 		public override bool ShouldReceive
 		{
@@ -40,16 +25,16 @@ namespace QSB.QuantumSync.Messages
 				// if Obj==Message then No
 				// Obj
 
-				return (WorldObject.ControllingPlayer == 0 || AuthorityOwner == 0)
-					&& WorldObject.ControllingPlayer != AuthorityOwner;
+				return (WorldObject.ControllingPlayer == 0 || Value == 0)
+					&& WorldObject.ControllingPlayer != Value;
 			}
 		}
 
-		public override void OnReceiveLocal() => WorldObject.ControllingPlayer = AuthorityOwner;
+		public override void OnReceiveLocal() => WorldObject.ControllingPlayer = Value;
 
 		public override void OnReceiveRemote()
 		{
-			WorldObject.ControllingPlayer = AuthorityOwner;
+			WorldObject.ControllingPlayer = Value;
 			if (WorldObject.ControllingPlayer == 00 && WorldObject.IsEnabled)
 			{
 				// object has no owner, but is still active for this player. request ownership

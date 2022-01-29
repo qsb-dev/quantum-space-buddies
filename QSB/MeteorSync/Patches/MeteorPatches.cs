@@ -21,7 +21,7 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 		public static bool FixedUpdate(MeteorLauncher __instance)
 		{
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
@@ -225,7 +225,7 @@ namespace QSB.MeteorSync.Patches
 			}
 			else
 			{
-				DebugLog.ToConsole($"{qsbMeteorLauncher.LogName} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
+				DebugLog.ToConsole($"{qsbMeteorLauncher} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
 			}
 
 			return false;
@@ -319,7 +319,7 @@ namespace QSB.MeteorSync.Patches
 				return true;
 			}
 
-			if (!WorldObjectManager.AllObjectsReady)
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}
