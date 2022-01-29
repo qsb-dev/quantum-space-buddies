@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Player;
+using QSB.Utility;
 using System.Threading;
 using UnityEngine;
 
@@ -55,7 +56,7 @@ namespace QSB.TriggerSync.WorldObjects
 		protected override void OnExit(PlayerInfo player)
 		{
 			// wait 1 frame for player to be removed
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			UnityEvents.FireOnNextUpdate(() =>
 			{
 				if (QSBCore.IsInMultiplayer && Occupants.Count == QSBPlayerManager.PlayerList.Count)
 				{

@@ -27,13 +27,13 @@ namespace QSB.Instruments
 			//QSBInputManager.RiebeckTaunt += OnRiebeckTaunt;
 			//QSBInputManager.ExitTaunt += ReturnToPlayer;
 
-			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		public void InitRemote(Transform root)
 		{
 			_rootObj = root;
-			QSBCore.UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
+			UnityEvents.RunWhen(() => Locator.GetPlayerBody() != null, SetupInstruments);
 		}
 
 		protected void OnDestroy()

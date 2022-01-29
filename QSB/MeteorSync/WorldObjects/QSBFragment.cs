@@ -16,7 +16,7 @@ namespace QSB.MeteorSync.WorldObjects
 			if (QSBCore.IsHost)
 			{
 				LeashLength = Random.Range(MeteorManager.WhiteHoleVolume._debrisDistMin, MeteorManager.WhiteHoleVolume._debrisDistMax);
-				// QSBCore.UnityEvents.FireOnNextUpdate(() =>
+				// UnityEvents.FireOnNextUpdate(() =>
 				// {
 				// 	AttachedObject._integrity = 0;
 				// 	AttachedObject.CallOnTakeDamage();

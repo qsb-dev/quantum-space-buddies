@@ -144,7 +144,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable(Shape s) =>
 			// we wait a frame here in case the shapes get disabled as we switch from 1 visibility tracker to another
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			UnityEvents.FireOnNextUpdate(() =>
 			{
 				if (!IsEnabled)
 				{

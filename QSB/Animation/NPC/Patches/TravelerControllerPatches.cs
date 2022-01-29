@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using QSB.Utility;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -168,7 +169,7 @@ namespace QSB.Animation.NPC.Patches
 
 			manager._playAfterDelay = false;
 			manager._playAudioTime = Time.time + audioDelay;
-			QSBCore.UnityEvents.RunWhen(() => Time.time >= manager._playAudioTime, () =>
+			UnityEvents.RunWhen(() => Time.time >= manager._playAudioTime, () =>
 			{
 				if (!signal.IsOnlyAudibleToScope() || signal.GetOWAudioSource().isPlaying)
 				{

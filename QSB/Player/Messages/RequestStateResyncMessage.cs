@@ -31,7 +31,7 @@ namespace QSB.Player.Messages
 
 		public override void OnReceiveLocal()
 		{
-			QSBCore.UnityEvents.FireInNUpdates(() =>
+			UnityEvents.FireInNUpdates(() =>
 			{
 				if (_waitingForEvent)
 				{

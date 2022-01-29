@@ -154,7 +154,7 @@ namespace QSB.Player.TransformSync
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			// get inactive renderers too
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			UnityEvents.FireOnNextUpdate(() =>
 				Player._ditheringAnimator._renderers = Player._ditheringAnimator
 					.GetComponentsInChildren<Renderer>(true)
 					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
