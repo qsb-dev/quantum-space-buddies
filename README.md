@@ -198,6 +198,7 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 - [FizzyFacepunch](https://github.com/Chykary/FizzyFacepunch)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
 - [Mono.Cecil](https://github.com/jbevain/cecil)
+- [UniTask](https://github.com/Cysharp/UniTask)
 
 ## Help / Discuss development / Whatever
 
