@@ -21,7 +21,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /*
-	Copyright (C) 2020 - 2021
+	Copyright (C) 2020 - 2022
 			Henry Pointer (_nebula / misternebula),
 			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
