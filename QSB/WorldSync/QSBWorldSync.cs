@@ -262,7 +262,7 @@ namespace QSB.WorldSync
 					AttachedObject = item,
 					ObjectId = WorldObjects.Count
 				};
-				Init(obj, item);
+				AddAndInit(obj, item);
 			}
 		}
 
@@ -285,14 +285,17 @@ namespace QSB.WorldSync
 					ObjectId = WorldObjects.Count,
 					TriggerOwner = owner
 				};
-				Init(obj, item);
+				AddAndInit(obj, item);
 			}
 		}
 
-		private static void Init<TWorldObject, TUnityObject>(TWorldObject worldObject, TUnityObject unityObject)
+		private static void AddAndInit<TWorldObject, TUnityObject>(TWorldObject worldObject, TUnityObject unityObject)
 			where TWorldObject : WorldObject<TUnityObject>
 			where TUnityObject : MonoBehaviour
 		{
+			WorldObjects.Add(worldObject);
+			UnityObjectsToWorldObjects.Add(unityObject, worldObject);
+
 			var task = UniTask.Create(async () =>
 			{
 				await worldObject.Try("initing", () => worldObject.Init(_cts.Token));
@@ -302,9 +305,6 @@ namespace QSB.WorldSync
 			{
 				_objectsIniting.Add(worldObject, task);
 			}
-
-			WorldObjects.Add(worldObject);
-			UnityObjectsToWorldObjects.Add(unityObject, worldObject);
 		}
 
 		public static void SetDialogueCondition(string name, bool state)
