@@ -31,7 +31,7 @@ namespace QSB.Player.Messages
 
 		public override void OnReceiveLocal()
 		{
-			DelayUtil.RunFramesLater(60, () =>
+			Delay.RunFramesLater(60, () =>
 			{
 				if (_waitingForEvent)
 				{

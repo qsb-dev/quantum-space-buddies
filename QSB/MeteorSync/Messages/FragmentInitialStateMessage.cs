@@ -90,7 +90,7 @@ namespace QSB.MeteorSync.Messages
 			if (IsDetached && !WorldObject.IsDetached)
 			{
 				// the detach is delayed, so wait until that happens
-				DelayUtil.RunWhen(() => WorldObject.IsDetached, () =>
+				Delay.RunWhen(() => WorldObject.IsDetached, () =>
 				{
 					var body = WorldObject.Body;
 

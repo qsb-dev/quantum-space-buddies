@@ -106,7 +106,7 @@ namespace QSB
 
 		private void InitPlayerName()
 		{
-			DelayUtil.RunWhen(PlayerData.IsLoaded, () =>
+			Delay.RunWhen(PlayerData.IsLoaded, () =>
 			{
 				try
 				{
@@ -215,12 +215,12 @@ namespace QSB
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			DelayUtil.RunWhen(() => PlayerTransformSync.LocalInstance,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{
-				DelayUtil.RunWhen(() => PlayerTransformSync.LocalInstance,
+				Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 					() => new RequestStateResyncMessage().Send());
 			}
 

@@ -26,7 +26,7 @@ namespace QSB.RespawnSync
 		{
 			Instance = this;
 			QSBSceneManager.OnSceneLoaded += (OWScene old, OWScene newScene, bool inUniverse)
-				=> DelayUtil.RunWhen(
+				=> Delay.RunWhen(
 					() => Locator.GetMarkerManager() != null,
 					() => Init(newScene, inUniverse));
 			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
@@ -37,7 +37,7 @@ namespace QSB.RespawnSync
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
-				DelayUtil.RunWhen(
+				Delay.RunWhen(
 					() => PlayerTransformSync.LocalInstance != null,
 					() => Init(QSBSceneManager.CurrentScene, true));
 			}
@@ -114,7 +114,7 @@ namespace QSB.RespawnSync
 		public void TriggerRespawnMap()
 		{
 			QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
-			DelayUtil.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
+			Delay.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 		}
 
 		public void Respawn()

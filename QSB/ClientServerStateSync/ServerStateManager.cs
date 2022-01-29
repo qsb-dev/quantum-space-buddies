@@ -32,7 +32,7 @@ namespace QSB.ClientServerStateSync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 			GlobalMessenger.AddListener("TriggerSupernova", OnTriggerSupernova);
 
-			DelayUtil.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
 				() => new ServerStateMessage(ForceGetCurrentState()).Send());
 		}
 

@@ -3,7 +3,7 @@ using System;
 
 namespace QSB.Utility
 {
-	public static class DelayUtil
+	public static class Delay
 	{
 		public static UniTask RunNextFrame(Action action) => UniTask.Create(async () =>
 		{

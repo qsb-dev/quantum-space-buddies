@@ -35,7 +35,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
-			DelayUtil.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
+			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
 			{
 				if (AttachedObject._trackedObjects != null && AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
 				{

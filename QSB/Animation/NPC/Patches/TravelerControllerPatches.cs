@@ -169,7 +169,7 @@ namespace QSB.Animation.NPC.Patches
 
 			manager._playAfterDelay = false;
 			manager._playAudioTime = Time.time + audioDelay;
-			DelayUtil.RunWhen(() => Time.time >= manager._playAudioTime, () =>
+			Delay.RunWhen(() => Time.time >= manager._playAudioTime, () =>
 			{
 				if (!signal.IsOnlyAudibleToScope() || signal.GetOWAudioSource().isPlaying)
 				{
