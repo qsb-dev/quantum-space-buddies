@@ -58,7 +58,7 @@ namespace QSB.WorldSync
 						continue;
 				}
 
-				var task = UniTask.Create(async () =>
+				var task = manager.Try("building world objects", async () =>
 				{
 					await manager.BuildWorldObjects(scene, _cts.Token);
 					DebugLog.DebugWrite($"Built {manager}", MessageType.Info);
