@@ -33,6 +33,11 @@ namespace QSB.WorldSync
 
 		public static async UniTaskVoid BuildWorldObjects(OWScene scene)
 		{
+			if (_cts != null)
+			{
+				return;
+			}
+
 			_cts = new CancellationTokenSource();
 
 			if (!PlayerTransformSync.LocalInstance)
@@ -79,12 +84,19 @@ namespace QSB.WorldSync
 
 		public static void RemoveWorldObjects()
 		{
-			_cts?.Cancel();
-			_cts?.Dispose();
-			_managerTasks.Clear();
-			_objectTasks.Clear();
+			if (_cts == null)
+			{
+				return;
+			}
+
+			_cts.Cancel();
+			_cts.Dispose();
+			_cts = null;
 
 			GameReset();
+
+			_managerTasks.Clear();
+			_objectTasks.Clear();
 
 			foreach (var item in WorldObjects)
 			{
