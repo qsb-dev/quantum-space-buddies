@@ -208,7 +208,7 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene);
+				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene).Forget();
 			}
 
 			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;

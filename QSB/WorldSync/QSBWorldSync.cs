@@ -27,27 +27,22 @@ namespace QSB.WorldSync
 		/// </summary>
 		public static bool AllObjectsReady { get; private set; }
 
-		public static void BuildWorldObjects(OWScene scene)
-		{
-			if (PlayerTransformSync.LocalInstance == null)
-			{
-				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
-				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => BuildWorldObjects(scene));
-				return;
-			}
-
-			GameInit();
-
-			DoBuild(scene).Forget();
-		}
-
 		private static CancellationTokenSource _cts;
 		private static readonly List<UniTask> _managerTasks = new();
 		private static readonly List<UniTask> _objectTasks = new();
 
-		private static async UniTaskVoid DoBuild(OWScene scene)
+		public static async UniTaskVoid BuildWorldObjects(OWScene scene)
 		{
 			_cts = new CancellationTokenSource();
+
+			if (!PlayerTransformSync.LocalInstance)
+			{
+				DebugLog.ToConsole("Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
+				await UniTask.WaitUntil(() => PlayerTransformSync.LocalInstance, cancellationToken: _cts.Token);
+			}
+
+			GameInit();
+
 			foreach (var manager in Managers)
 			{
 				switch (manager.WorldObjectType)
@@ -183,7 +178,7 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldObject<TWorldObject>(this MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
-			if (unityObject == null)
+			if (!unityObject)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
