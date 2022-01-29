@@ -262,7 +262,7 @@ namespace QSB.Menus
 
 				if (QSBCore.IsHost)
 				{
-					UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
+					DelayUtil.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 					SetButtonActive(NewGameButton, true);
 				}
 				else
@@ -274,7 +274,7 @@ namespace QSB.Menus
 			else
 			{
 				SetButtonActive(ClientButton, true);
-				UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
+				DelayUtil.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 				SetButtonActive(NewGameButton, true);
 			}
 
@@ -375,7 +375,7 @@ namespace QSB.Menus
 				return;
 			}
 
-			UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+			DelayUtil.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new RequestGameStateMessage().Send());
 		}
 

@@ -91,7 +91,7 @@ namespace QSB.ConversationSync.Patches
 		{
 			var key = __instance._name + __instance._listPagesToDisplay[__instance._currentPage];
 			// Sending key so translation can be done on client side - should make different language-d clients compatible
-			UnityEvents.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId != -1,
+			DelayUtil.RunWhen(() => QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId != -1,
 				() => ConversationManager.Instance.SendCharacterDialogue(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTreeId, key));
 		}
 

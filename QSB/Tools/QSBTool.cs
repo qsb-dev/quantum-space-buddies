@@ -15,7 +15,7 @@ namespace QSB.Tools
 			set
 			{
 				_toolGameObject = value;
-				UnityEvents.RunFramesLater(
+				DelayUtil.RunFramesLater(
 					() => DitheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>(),
 					5);
 			}
@@ -97,7 +97,7 @@ namespace QSB.Tools
 			{
 				_isDitheringOut = true;
 				DitheringAnimator.SetVisible(false, 5f);
-				UnityEvents.RunWhen(() => DitheringAnimator._visibleFraction == 0, FinishDitherOut);
+				DelayUtil.RunWhen(() => DitheringAnimator._visibleFraction == 0, FinishDitherOut);
 			}
 
 			Player.AudioController.PlayUnequipTool();

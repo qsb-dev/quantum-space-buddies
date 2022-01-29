@@ -169,7 +169,7 @@ namespace QSB.Animation.NPC.Patches
 
 			manager._playAfterDelay = false;
 			manager._playAudioTime = Time.time + audioDelay;
-			UnityEvents.RunWhen(() => Time.time >= manager._playAudioTime, () =>
+			DelayUtil.RunWhen(() => Time.time >= manager._playAudioTime, () =>
 			{
 				if (!signal.IsOnlyAudibleToScope() || signal.GetOWAudioSource().isPlaying)
 				{

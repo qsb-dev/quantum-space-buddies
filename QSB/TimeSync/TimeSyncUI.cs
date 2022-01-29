@@ -47,10 +47,10 @@ namespace QSB.TimeSync
 		}
 
 		public static void Start(TimeSyncType type, Enum reason) =>
-			UnityEvents.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type, reason));
+			DelayUtil.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type, reason));
 
 		public static void Stop() =>
-			UnityEvents.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
+			DelayUtil.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
 
 		private void StartTimeSync(TimeSyncType type, Enum reason)
 		{
