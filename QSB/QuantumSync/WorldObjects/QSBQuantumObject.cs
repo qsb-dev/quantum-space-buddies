@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
@@ -6,6 +7,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
@@ -35,7 +37,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
 			StartDelayedReady();
 			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);

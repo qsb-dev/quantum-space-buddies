@@ -1,8 +1,10 @@
-﻿using QSB.Utility;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace QSB.QuantumSync.WorldObjects
 {
@@ -11,9 +13,9 @@ namespace QSB.QuantumSync.WorldObjects
 		public List<QSBQuantumState> QuantumStates { get; private set; }
 		public int CurrentState => AttachedObject._stateIndex;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
-			base.Init();
+			base.Init(cancellationToken);
 
 			StartDelayedReady();
 			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>

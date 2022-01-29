@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
 using QSB.Messaging;
@@ -8,6 +9,7 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -36,11 +38,16 @@ namespace QSB.WorldSync
 
 			GameInit();
 
-			DoBuild(scene);
+			DoBuild(scene).Forget();
 		}
 
-		private static void DoBuild(OWScene scene)
+		private static CancellationTokenSource _cts;
+		private static readonly List<UniTask> _managerTasks = new();
+		private static readonly List<UniTask> _objectTasks = new();
+
+		private static async UniTaskVoid DoBuild(OWScene scene)
 		{
+			_cts = new CancellationTokenSource();
 			foreach (var manager in Managers)
 			{
 				switch (manager.WorldObjectType)
@@ -51,39 +58,40 @@ namespace QSB.WorldSync
 						continue;
 				}
 
-				DebugLog.DebugWrite($"Building {manager}", MessageType.Info);
-				manager.Try("building world objects", () => manager.BuildWorldObjects(scene));
+				var task = UniTask.Create(async () =>
+				{
+					await manager.BuildWorldObjects(scene, _cts.Token);
+					DebugLog.DebugWrite($"Built {manager}", MessageType.Info);
+				});
+				_managerTasks.Add(task);
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
+			await _managerTasks;
+			AllObjectsAdded = true;
+			DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+
+			await _objectTasks;
+			AllObjectsReady = true;
+			DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+
+			DeterministicManager.WorldObjectsReady();
+
+			if (!QSBCore.IsHost)
 			{
-				AllObjectsAdded = true;
-				DebugLog.DebugWrite("World Objects added.", MessageType.Success);
-				QSBCore.UnityEvents.RunWhen(() => _numObjectsReadying == 0, () =>
-				{
-					AllObjectsReady = true;
-					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
-					DeterministicManager.WorldObjectsReady();
-
-					if (!QSBCore.IsHost)
-					{
-						new RequestInitialStatesMessage().Send();
-					}
-				});
-			});
+				new RequestInitialStatesMessage().Send();
+			}
 		}
-
-		internal static uint _numManagersReadying;
-		internal static uint _numObjectsReadying;
 
 		public static void RemoveWorldObjects()
 		{
 			GameReset();
 
+			_cts?.Cancel();
+			_cts?.Dispose();
+			_managerTasks.Clear();
+			_objectTasks.Clear();
 			AllObjectsAdded = false;
 			AllObjectsReady = false;
-			_numManagersReadying = 0;
-			_numObjectsReadying = 0;
 
 			foreach (var item in WorldObjects)
 			{
@@ -232,7 +240,8 @@ namespace QSB.WorldSync
 					ObjectId = WorldObjects.Count
 				};
 
-				obj.Init();
+				var task = obj.Try("initing", async () => await obj.Init(_cts.Token));
+				_objectTasks.Add(task);
 				WorldObjects.Add(obj);
 				UnityObjectsToWorldObjects.Add(item, obj);
 			}
@@ -258,7 +267,8 @@ namespace QSB.WorldSync
 					TriggerOwner = owner
 				};
 
-				obj.Init();
+				var task = obj.Try("initing", async () => await obj.Init(_cts.Token));
+				_objectTasks.Add(task);
 				WorldObjects.Add(obj);
 				UnityObjectsToWorldObjects.Add(item, obj);
 			}

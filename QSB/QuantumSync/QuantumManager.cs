@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
@@ -8,6 +9,7 @@ using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.QuantumSync
@@ -20,7 +22,7 @@ namespace QSB.QuantumSync
 
 		public void Awake() => QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
 		{
 			DebugLog.DebugWrite("Building quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();

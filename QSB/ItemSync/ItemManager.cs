@@ -1,8 +1,10 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.ItemSync
 {
@@ -10,7 +12,7 @@ namespace QSB.ItemSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
 		{
 			DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 

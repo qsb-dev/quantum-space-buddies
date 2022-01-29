@@ -1,5 +1,7 @@
-﻿using QSB.WorldSync;
+﻿using Cysharp.Threading.Tasks;
+using QSB.WorldSync;
 using QSB.ZeroGCaveSync.WorldObjects;
+using System.Threading;
 
 namespace QSB.ZeroGCaveSync
 {
@@ -7,7 +9,7 @@ namespace QSB.ZeroGCaveSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
 			=> QSBWorldSync.Init<QSBSatelliteNode, SatelliteNode>();
 	}
 }

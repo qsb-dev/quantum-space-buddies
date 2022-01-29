@@ -1,7 +1,9 @@
-﻿using QSB.OrbSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.OrbSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace QSB.OrbSync
 {
@@ -11,7 +13,7 @@ namespace QSB.OrbSync
 
 		public static readonly List<NomaiInterfaceOrb> Orbs = new();
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
 		{
 			Orbs.Clear();
 			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>().SortDeterministic());

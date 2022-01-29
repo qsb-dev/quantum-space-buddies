@@ -1,12 +1,14 @@
-﻿using QSB.GeyserSync.Messages;
+﻿using Cysharp.Threading.Tasks;
+using QSB.GeyserSync.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.GeyserSync.WorldObjects
 {
 	public class QSBGeyser : WorldObject<GeyserController>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
 			if (QSBCore.IsHost)
 			{

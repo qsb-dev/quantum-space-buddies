@@ -1,13 +1,15 @@
-﻿using QSB.Player;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Player;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBVesselCageTrigger : QSBTrigger<VesselWarpController>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
-			base.Init();
+			base.Init(cancellationToken);
 			AttachedObject.OnExit -= TriggerOwner.OnExitCageTrigger;
 		}
 

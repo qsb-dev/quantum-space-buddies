@@ -1,9 +1,11 @@
-﻿using QSB.Messaging;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.TriggerSync.Messages;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
@@ -25,7 +27,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		protected virtual string CompareTag => "PlayerDetector";
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
 			AttachedObject.OnEntry += OnEnterEvent;
 			AttachedObject.OnExit += OnExitEvent;

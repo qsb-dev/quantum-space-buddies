@@ -1,5 +1,7 @@
-﻿using QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.EchoesOfTheEye.AirlockSync
 {
@@ -8,6 +10,6 @@ namespace QSB.EchoesOfTheEye.AirlockSync
 		// is this used in the prisoner sequence in the eye?
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override void BuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>();
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken) => QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>();
 	}
 }

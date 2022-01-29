@@ -1,8 +1,10 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.WorldObjects
@@ -13,7 +15,7 @@ namespace QSB.JellyfishSync.WorldObjects
 
 		public JellyfishTransformSync TransformSync;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
 			if (QSBCore.IsHost)
 			{

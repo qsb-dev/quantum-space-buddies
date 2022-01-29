@@ -1,6 +1,8 @@
-﻿using QSB.MeteorSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
 using System.Linq;
+using System.Threading;
 
 namespace QSB.MeteorSync
 {
@@ -10,7 +12,7 @@ namespace QSB.MeteorSync
 
 		public static WhiteHoleVolume WhiteHoleVolume;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
 		{
 			// wait for all late initializers (which includes meteor launchers) to finish
 			StartDelayedReady();

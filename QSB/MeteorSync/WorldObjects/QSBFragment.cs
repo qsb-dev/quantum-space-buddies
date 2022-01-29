@@ -1,13 +1,15 @@
-﻿using QSB.Messaging;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
 using QSB.MeteorSync.Messages;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBFragment : WorldObject<FragmentIntegrity>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
 			DetachableFragment = AttachedObject.GetComponent<DetachableFragment>();
 

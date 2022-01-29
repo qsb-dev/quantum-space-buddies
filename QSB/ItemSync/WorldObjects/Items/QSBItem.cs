@@ -1,8 +1,10 @@
-﻿using QSB.ItemSync.WorldObjects.Sockets;
+﻿using Cysharp.Threading.Tasks;
+using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
@@ -16,7 +18,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 		private Quaternion InitialRotation { get; set; }
 		private QSBSector InitialSector { get; set; }
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
 			if (AttachedObject == null)
 			{

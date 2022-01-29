@@ -1,12 +1,14 @@
-﻿using QSB.Messaging;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 {
 	internal class QSBProbeLauncher : WorldObject<ProbeLauncher>
 	{
-		public override void Init() =>
+		public override async UniTask Init(CancellationToken cancellationToken) =>
 			AttachedObject.OnLaunchProbe += OnLaunchProbe;
 
 		public override void OnRemoval() =>

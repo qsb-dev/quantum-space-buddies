@@ -1,4 +1,6 @@
-﻿using QSB.Player;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Player;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
@@ -7,9 +9,9 @@ namespace QSB.TriggerSync.WorldObjects
 	{
 		protected override string CompareTag => "PlayerCameraDetector";
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
-			base.Init();
+			base.Init(cancellationToken);
 			AttachedObject.OnEntry -= TriggerOwner.OnEnterFogSphere;
 			AttachedObject.OnExit -= OnExitEvent;
 		}

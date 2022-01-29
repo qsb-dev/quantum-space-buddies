@@ -1,7 +1,9 @@
-﻿using QSB.JellyfishSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.JellyfishSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace QSB.JellyfishSync
 {
@@ -11,7 +13,7 @@ namespace QSB.JellyfishSync
 
 		public static readonly List<JellyfishController> Jellyfish = new();
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
 		{
 			Jellyfish.Clear();
 			Jellyfish.AddRange(QSBWorldSync.GetUnityObjects<JellyfishController>().SortDeterministic());

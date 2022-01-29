@@ -1,17 +1,19 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken cancellationToken)
 		{
-			base.Init();
+			base.Init(cancellationToken);
 			AttachedObject._randomYRotation = false;
 		}
 
