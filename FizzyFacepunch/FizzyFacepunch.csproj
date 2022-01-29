@@ -1,14 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<UnityVersion>2019.4.27f1</UnityVersion>
-	</PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Facepunch.Steamworks" Version="2.3.3" />
-    <PackageReference Include="Unity3D" Version="1.7.0" />
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
-	<ItemGroup>
-		<Reference Remove="$(UnityInstallRoot)\$(UnityVersion)\$(UnityEnginePath)" />
-		<Reference Include="$(UnityInstallRoot)\$(UnityVersion)\$(UnityModulesPath)\UnityEngine.CoreModule.dll" Private="false" />
-	</ItemGroup>
 </Project>
