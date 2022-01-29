@@ -13,7 +13,7 @@ namespace QSB.QuantumSync.WorldObjects
 	{
 		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(ct);
+			await base.Init(ct);
 			AttachedObject._randomYRotation = false;
 		}
 

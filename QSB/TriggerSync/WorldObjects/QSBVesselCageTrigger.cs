@@ -9,7 +9,7 @@ namespace QSB.TriggerSync.WorldObjects
 	{
 		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(ct);
+			await base.Init(ct);
 			AttachedObject.OnExit -= TriggerOwner.OnExitCageTrigger;
 		}
 
