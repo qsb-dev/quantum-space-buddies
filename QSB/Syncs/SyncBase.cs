@@ -239,7 +239,7 @@ namespace QSB.Syncs
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
 		{
 			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
+			if (Mathf.Abs(distance - _previousDistance) > DistanceLeeway)
 			{
 				_previousDistance = distance;
 				return targetPosition;
