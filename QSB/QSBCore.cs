@@ -46,6 +46,7 @@ namespace QSB
 		public static string DefaultServerIP;
 		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
 		public static int OverrideAppId => DebugSettings.OverrideAppId;
+		public static bool DumpWorldObjects => DebugSettings.DumpWorldObjects;
 		public static bool DebugMode => DebugSettings.DebugMode;
 		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
 		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
@@ -62,7 +63,6 @@ namespace QSB
 		public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
-		public static GamePlatform Platform { get; private set; }
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 
@@ -80,23 +80,6 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			switch (EntitlementsManager.instance._entitlementRetriever.GetType().Name)
-			{
-				case "EpicEntitlementRetriever":
-					Platform = GamePlatform.Epic;
-					break;
-				case "SteamEntitlementRetriever":
-					Platform = GamePlatform.Steam;
-					break;
-				case "MSStoreEntitlementRetriever":
-					Platform = GamePlatform.Xbox;
-					break;
-				case var other:
-					DebugLog.ToConsole($"Cannot get game platform (entitlement retriever name = {other})\nTell a QSB Dev!", MessageType.Error);
-					enabled = false;
-					return;
-			}
-
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
@@ -113,6 +96,7 @@ namespace QSB
 			}
 
 			QSBPatchManager.Init();
+			DeterministicManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();

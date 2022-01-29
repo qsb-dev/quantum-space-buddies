@@ -11,7 +11,6 @@ namespace QSB.Player.Messages
 		private string PlayerName;
 		private string QSBVersion;
 		private string GameVersion;
-		private GamePlatform Platform;
 		private bool DlcInstalled;
 
 		public PlayerJoinMessage(string name)
@@ -19,7 +18,6 @@ namespace QSB.Player.Messages
 			PlayerName = name;
 			QSBVersion = QSBCore.QSBVersion;
 			GameVersion = QSBCore.GameVersion;
-			Platform = QSBCore.Platform;
 			DlcInstalled = QSBCore.DLCInstalled;
 		}
 
@@ -29,7 +27,6 @@ namespace QSB.Player.Messages
 			writer.Write(PlayerName);
 			writer.Write(QSBVersion);
 			writer.Write(GameVersion);
-			writer.Write((int)Platform);
 			writer.Write(DlcInstalled);
 		}
 
@@ -39,7 +36,6 @@ namespace QSB.Player.Messages
 			PlayerName = reader.ReadString();
 			QSBVersion = reader.ReadString();
 			GameVersion = reader.ReadString();
-			Platform = (GamePlatform)reader.Read<int>();
 			DlcInstalled = reader.Read<bool>();
 		}
 
@@ -61,13 +57,6 @@ namespace QSB.Player.Messages
 					return;
 				}
 
-				if (Platform != QSBCore.Platform)
-				{
-					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game platform. (Client:{Platform}, Server:{QSBCore.Platform})", MessageType.Error);
-					new PlayerKickMessage(From, KickReason.GamePlatformNotMatching).Send();
-					return;
-				}
-
 				if (DlcInstalled != QSBCore.DLCInstalled)
 				{
 					DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
@@ -86,7 +75,7 @@ namespace QSB.Player.Messages
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.Name = PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
-			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, platform:{Platform}. dlcInstalled:{DlcInstalled}", MessageType.Info);
+			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 		}
 
 		public override void OnReceiveLocal()

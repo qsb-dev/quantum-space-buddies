@@ -71,8 +71,7 @@ namespace QSB.Anglerfish.TransformSync
 		{
 			if (!QSBCore.ShowLinesInDebug
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}

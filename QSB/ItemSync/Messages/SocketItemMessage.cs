@@ -8,7 +8,7 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.Messages
 {
-	internal class SocketItemMessage : QSBEnumMessage<SocketMessageType>
+	internal class SocketItemMessage : QSBMessage<SocketMessageType>
 	{
 		private int SocketId;
 		private int ItemId;

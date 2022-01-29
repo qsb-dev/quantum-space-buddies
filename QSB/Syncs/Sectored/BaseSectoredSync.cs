@@ -36,15 +36,15 @@ namespace QSB.Syncs.Sectored
 			SetReferenceSector(null);
 		}
 
-		protected override void Serialize(NetworkWriter writer, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
-			base.Serialize(writer, initialState);
+			base.Serialize(writer);
 			writer.Write(_sectorId);
 		}
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
+			base.Deserialize(reader);
 			_sectorId = reader.ReadInt();
 		}
 

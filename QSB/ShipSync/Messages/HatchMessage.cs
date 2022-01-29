@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.Messages
 {
-	internal class HatchMessage : QSBBoolMessage
+	internal class HatchMessage : QSBMessage<bool>
 	{
 		public HatchMessage(bool open) => Value = open;
 

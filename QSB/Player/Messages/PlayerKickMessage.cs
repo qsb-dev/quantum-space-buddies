@@ -9,7 +9,7 @@ namespace QSB.Player.Messages
 	/// <summary>
 	/// always sent by host
 	/// </summary>
-	internal class PlayerKickMessage : QSBEnumMessage<KickReason>
+	internal class PlayerKickMessage : QSBMessage<KickReason>
 	{
 		private uint PlayerId;
 

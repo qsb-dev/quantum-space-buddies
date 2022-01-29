@@ -9,7 +9,7 @@ namespace QSB.Anglerfish.Messages
 	/// <summary>
 	/// angler state, target transform, and local disturbance pos
 	/// </summary>
-	public class AnglerDataMessage : QSBEnumWorldObjectMessage<QSBAngler, AnglerfishController.AnglerState>
+	public class AnglerDataMessage : QSBWorldObjectMessage<QSBAngler, AnglerfishController.AnglerState>
 	{
 		private uint TargetId;
 		private Vector3 LocalDisturbancePos;

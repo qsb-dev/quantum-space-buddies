@@ -25,7 +25,7 @@ namespace QSB.ConversationSync.Messages
 		{
 			base.Serialize(writer);
 			writer.Write(_inRemoteDialogue);
-			writer.WriteArray(_activatedDialogues);
+			writer.Write(_activatedDialogues);
 			writer.Write(_dialogueIndex);
 			writer.Write(_colliderEnabled);
 		}
@@ -34,7 +34,7 @@ namespace QSB.ConversationSync.Messages
 		{
 			base.Deserialize(reader);
 			_inRemoteDialogue = reader.Read<bool>();
-			_activatedDialogues = reader.ReadArray<bool>();
+			_activatedDialogues = reader.Read<bool[]>();
 			_dialogueIndex = reader.Read<int>();
 			_colliderEnabled = reader.Read<bool>();
 		}

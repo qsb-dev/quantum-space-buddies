@@ -5,7 +5,6 @@
 		None,
 		QSBVersionNotMatching,
 		GameVersionNotMatching,
-		GamePlatformNotMatching,
 		DLCNotMatching,
 		InEye
 	}

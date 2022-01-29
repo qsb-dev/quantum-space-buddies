@@ -1,10 +1,8 @@
-﻿using Mirror;
-using QSB.Player.TransformSync;
+﻿using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
-using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,25 +11,29 @@ namespace QSB.TornadoSync.TransformSync
 {
 	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
-		protected override bool CheckReady() => base.CheckReady()
-			&& QSBWorldSync.AllObjectsReady
-			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_bodyIndex)
-			&& CenterOfTheUniverse.s_rigidbodies.IsInRange(_refBodyIndex);
+		public static readonly List<(OWRigidbody Body, OWRigidbody RefBody)> Bodies = new();
+
 		protected override bool UseInterpolation => false;
 		protected override bool OnlyApplyOnDeserialize => true;
 
-		protected override OWRigidbody InitAttachedRigidbody() => CenterOfTheUniverse.s_rigidbodies[_bodyIndex];
+		protected override OWRigidbody InitAttachedRigidbody() => Bodies[_instances.IndexOf(this)].Body;
 
-		private int _bodyIndex = -1;
-		private int _refBodyIndex = -1;
+		private static readonly List<OccasionalTransformSync> _instances = new();
+
+		public override void OnStartClient()
+		{
+			_instances.Add(this);
+			base.OnStartClient();
+		}
+
+		public override void OnStopClient()
+		{
+			_instances.Remove(this);
+			base.OnStopClient();
+		}
+
 		private Sector[] _sectors;
 		private OWRigidbody[] _childBodies;
-
-		public void InitBodyIndexes(OWRigidbody body, OWRigidbody refBody)
-		{
-			_bodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(body);
-			_refBodyIndex = CenterOfTheUniverse.s_rigidbodies.IndexOf(refBody);
-		}
 
 		protected override float SendInterval => 20;
 		protected override bool UseReliableRpc => true;
@@ -39,35 +41,12 @@ namespace QSB.TornadoSync.TransformSync
 		protected override void Init()
 		{
 			base.Init();
-			SetReferenceTransform(CenterOfTheUniverse.s_rigidbodies[_refBodyIndex].transform);
+			SetReferenceTransform(Bodies[_instances.IndexOf(this)].RefBody.transform);
 
 			_sectors = SectorManager.s_sectors
 				.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();
 			_childBodies = CenterOfTheUniverse.s_rigidbodies
-				.Where(x => x._origParentBody == AttachedRigidbody)
-				.ToArray();
-		}
-
-		protected override void Serialize(NetworkWriter writer, bool initialState)
-		{
-			base.Serialize(writer, initialState);
-
-			if (initialState)
-			{
-				writer.Write(_bodyIndex);
-				writer.Write(_refBodyIndex);
-			}
-		}
-
-		protected override void Deserialize(NetworkReader reader, bool initialState)
-		{
-			base.Deserialize(reader, initialState);
-
-			if (initialState)
-			{
-				_bodyIndex = reader.ReadInt();
-				_refBodyIndex = reader.ReadInt();
-			}
+				.Where(x => x._origParentBody == AttachedRigidbody).ToArray();
 		}
 
 		protected override void ApplyToAttached()
@@ -119,7 +98,7 @@ namespace QSB.TornadoSync.TransformSync
 				return; // wtf
 			}
 
-			if (child.transform.parent != null)
+			if (child.transform.parent)
 			{
 				// it's parented to AttachedObject or one of its children
 				return;

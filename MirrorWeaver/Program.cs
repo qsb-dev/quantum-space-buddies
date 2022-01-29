@@ -40,20 +40,8 @@ namespace MirrorWeaver
 			AppDomain.CurrentDomain.AssemblyResolve += (_, eventArgs) =>
 			{
 				var name = new AssemblyName(eventArgs.Name).Name + ".dll";
-
-				var path = Path.Combine(qsbDir, name);
-				if (File.Exists(path))
-				{
-					return Assembly.LoadFile(path);
-				}
-
-				path = Path.Combine(managedDir, name);
-				if (File.Exists(path))
-				{
-					return Assembly.LoadFile(path);
-				}
-
-				return null;
+				var path = Path.Combine(managedDir, name);
+				return File.Exists(path) ? Assembly.LoadFile(path) : null;
 			};
 
 			var resolver = new DefaultAssemblyResolver();

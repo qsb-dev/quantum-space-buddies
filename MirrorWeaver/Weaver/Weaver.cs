@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -170,6 +171,7 @@ namespace Mirror.Weaver
                 Stopwatch rwstopwatch = Stopwatch.StartNew();
                 // Need to track modified from ReaderWriterProcessor too because it could find custom read/write functions or create functions for NetworkMessages
                 modified = ReaderWriterProcessor.Process(CurrentAssembly, resolver, Log, writers, readers, ref WeavingFailed);
+                QSBReaderWriterProcessor.Process(CurrentAssembly, writers, readers, ref WeavingFailed);
                 rwstopwatch.Stop();
                 Console.WriteLine($"Find all reader and writers took {rwstopwatch.ElapsedMilliseconds} milliseconds");
 
