@@ -62,6 +62,7 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
+    <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
     <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
