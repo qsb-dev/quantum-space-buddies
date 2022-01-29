@@ -154,7 +154,7 @@ namespace QSB.WorldSync
 			}
 
 			DebugLog.DebugWrite($"DIALOGUE CONDITIONS :");
-			DialogueConditions = (Dictionary<string, bool>)DialogueConditionManager.SharedInstance._dictConditions;
+			DialogueConditions = new(DialogueConditionManager.SharedInstance._dictConditions);
 			foreach (var item in DialogueConditions)
 			{
 				DebugLog.DebugWrite($"- {item.Key}, {item.Value}");

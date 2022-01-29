@@ -166,5 +166,13 @@ namespace QSB.ConversationSync.Patches
 				new PersistentConditionMessage(condition, state).Send();
 			}
 		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DialogueConditionManager), nameof(DialogueConditionManager.AddCondition))]
+		public static bool AddCondition(string conditionName, bool conditionState)
+		{
+			new DialogueConditionMessage(conditionName, conditionState).Send();
+			return true;
+		}
 	}
 }
