@@ -44,7 +44,6 @@ namespace QSB
 	public class QSBCore : ModBehaviour
 	{
 		public static IModHelper Helper { get; private set; }
-		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP;
 		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
 		public static int OverrideAppId => DebugSettings.OverrideAppId;
