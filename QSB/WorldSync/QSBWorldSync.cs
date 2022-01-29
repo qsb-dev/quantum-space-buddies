@@ -21,11 +21,11 @@ namespace QSB.WorldSync
 		/// <summary>
 		/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
 		/// </summary>
-		public static bool AllObjectsAdded => _managerTasks.Count == 0;
+		public static bool AllObjectsAdded { get; private set; }
 		/// <summary>
 		/// Set when all WorldObjects have finished running Init()
 		/// </summary>
-		public static bool AllObjectsReady => _objectTasks.Count == 0;
+		public static bool AllObjectsReady { get; private set; }
 
 		private static CancellationTokenSource _cts;
 		private static readonly List<UniTask> _managerTasks = new();
@@ -68,10 +68,12 @@ namespace QSB.WorldSync
 
 			await _managerTasks;
 			_managerTasks.Clear();
+			AllObjectsAdded = true;
 			DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
 			await _objectTasks;
 			_objectTasks.Clear();
+			AllObjectsReady = true;
 			DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
 
 			DeterministicManager.WorldObjectsReady();
@@ -93,10 +95,12 @@ namespace QSB.WorldSync
 			_cts.Dispose();
 			_cts = null;
 
-			GameReset();
-
 			_managerTasks.Clear();
 			_objectTasks.Clear();
+			AllObjectsAdded = false;
+			AllObjectsReady = false;
+
+			GameReset();
 
 			foreach (var item in WorldObjects)
 			{
