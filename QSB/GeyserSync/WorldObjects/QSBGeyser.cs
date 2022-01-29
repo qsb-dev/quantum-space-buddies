@@ -8,7 +8,7 @@ namespace QSB.GeyserSync.WorldObjects
 {
 	public class QSBGeyser : WorldObject<GeyserController>
 	{
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{

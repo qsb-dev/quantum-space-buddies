@@ -16,7 +16,7 @@ namespace QSB.OrbSync.WorldObjects
 
 		public NomaiOrbTransformSync TransformSync;
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{

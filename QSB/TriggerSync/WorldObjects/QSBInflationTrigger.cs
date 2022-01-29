@@ -9,9 +9,9 @@ namespace QSB.TriggerSync.WorldObjects
 	{
 		protected override string CompareTag => "PlayerCameraDetector";
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(cancellationToken);
+			base.Init(ct);
 			AttachedObject.OnEntry -= TriggerOwner.OnEnterFogSphere;
 			AttachedObject.OnExit -= OnExitEvent;
 		}

@@ -70,7 +70,7 @@ namespace QSB.SectorSync
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)

@@ -27,7 +27,7 @@ namespace QSB.TriggerSync.WorldObjects
 
 		protected virtual string CompareTag => "PlayerDetector";
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			AttachedObject.OnEntry += OnEnterEvent;
 			AttachedObject.OnExit += OnExitEvent;

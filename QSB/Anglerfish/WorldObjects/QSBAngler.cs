@@ -19,14 +19,14 @@ namespace QSB.Anglerfish.WorldObjects
 
 		private Vector3 _lastTargetPosition;
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{
 				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab));
 			}
 
-			await UniTask.WaitUntil(() => TransformSync, cancellationToken: cancellationToken);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()

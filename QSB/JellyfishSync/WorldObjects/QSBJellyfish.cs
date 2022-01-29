@@ -15,15 +15,14 @@ namespace QSB.JellyfishSync.WorldObjects
 
 		public JellyfishTransformSync TransformSync;
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{
 				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab));
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()

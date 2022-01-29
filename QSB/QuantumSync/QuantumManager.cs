@@ -22,7 +22,7 @@ namespace QSB.QuantumSync
 
 		public void Awake() => QSBPlayerManager.OnRemovePlayer += PlayerLeave;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			DebugLog.DebugWrite("Building quantum objects...", MessageType.Info);
 			QSBWorldSync.Init<QSBQuantumState, QuantumState>();

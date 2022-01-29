@@ -9,7 +9,7 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBFragment : WorldObject<FragmentIntegrity>
 	{
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			DetachableFragment = AttachedObject.GetComponent<DetachableFragment>();
 

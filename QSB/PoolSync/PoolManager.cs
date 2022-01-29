@@ -8,7 +8,7 @@ namespace QSB.PoolSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			foreach (var streaming in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraStreaming>())
 			{

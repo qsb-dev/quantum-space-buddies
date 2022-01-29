@@ -12,7 +12,7 @@ namespace QSB.MeteorSync
 
 		public static WhiteHoleVolume WhiteHoleVolume;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			// wait for all late initializers (which includes meteor launchers) to finish
 			StartDelayedReady();

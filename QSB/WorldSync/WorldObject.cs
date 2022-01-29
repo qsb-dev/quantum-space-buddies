@@ -13,7 +13,7 @@ namespace QSB.WorldSync
 		public string Name => AttachedObject ? AttachedObject.name : "<NullObject!>";
 		public override string ToString() => $"{ObjectId}:{GetType().Name} ({Name})";
 
-		public virtual async UniTask Init(CancellationToken cancellationToken) { }
+		public virtual async UniTask Init(CancellationToken ct) { }
 		public virtual void OnRemoval() { }
 		public virtual bool ShouldDisplayDebug() => QSBWorldSync.AllObjectsReady && AttachedObject && AttachedObject.gameObject.activeInHierarchy;
 		public virtual string ReturnLabel() => ToString();

@@ -11,9 +11,9 @@ namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(cancellationToken);
+			base.Init(ct);
 			AttachedObject._randomYRotation = false;
 		}
 

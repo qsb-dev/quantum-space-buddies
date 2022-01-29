@@ -29,7 +29,7 @@ namespace QSB.SectorSync.WorldObjects
 		public bool IsFakeSector => AttachedObject is FakeSector;
 		public FakeSector FakeSector => (FakeSector)AttachedObject;
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (IsFakeSector)
 			{

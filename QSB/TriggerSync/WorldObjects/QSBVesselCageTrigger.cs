@@ -7,9 +7,9 @@ namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBVesselCageTrigger : QSBTrigger<VesselWarpController>
 	{
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(cancellationToken);
+			base.Init(ct);
 			AttachedObject.OnExit -= TriggerOwner.OnExitCageTrigger;
 		}
 

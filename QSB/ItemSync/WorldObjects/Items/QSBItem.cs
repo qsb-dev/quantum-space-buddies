@@ -18,7 +18,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 		private Quaternion InitialRotation { get; set; }
 		private QSBSector InitialSector { get; set; }
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (AttachedObject == null)
 			{

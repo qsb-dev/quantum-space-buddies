@@ -5,9 +5,9 @@ namespace QSB.TriggerSync.WorldObjects
 {
 	public class QSBSolanumTrigger : QSBTrigger<NomaiConversationManager>
 	{
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(cancellationToken);
+			base.Init(ct);
 			AttachedObject.OnEntry -= TriggerOwner.OnEnterWatchVolume;
 			AttachedObject.OnExit -= TriggerOwner.OnExitWatchVolume;
 		}

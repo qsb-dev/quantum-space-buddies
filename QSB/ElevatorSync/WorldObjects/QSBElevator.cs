@@ -11,7 +11,7 @@ namespace QSB.ElevatorSync.WorldObjects
 	{
 		private OWTriggerVolume _elevatorTrigger;
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
 			// BUG : This won't work for the log lift! need to make a different trigger for that
 

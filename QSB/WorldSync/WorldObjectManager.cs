@@ -18,7 +18,7 @@ namespace QSB.WorldSync
 		/// </summary>
 		public abstract WorldObjectType WorldObjectType { get; }
 
-		public abstract UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken);
+		public abstract UniTask BuildWorldObjects(OWScene scene, CancellationToken ct);
 
 		public virtual void UnbuildWorldObjects() { }
 

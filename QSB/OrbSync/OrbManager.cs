@@ -13,7 +13,7 @@ namespace QSB.OrbSync
 
 		public static readonly List<NomaiInterfaceOrb> Orbs = new();
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			Orbs.Clear();
 			Orbs.AddRange(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>().SortDeterministic());

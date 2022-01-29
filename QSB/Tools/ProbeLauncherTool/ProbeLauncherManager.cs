@@ -10,7 +10,7 @@ namespace QSB.Tools.ProbeLauncherTool
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
 			if (scene == OWScene.SolarSystem)

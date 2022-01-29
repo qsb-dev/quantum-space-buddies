@@ -13,9 +13,9 @@ namespace QSB.QuantumSync.WorldObjects
 		public List<QSBQuantumState> QuantumStates { get; private set; }
 		public int CurrentState => AttachedObject._stateIndex;
 
-		public override async UniTask Init(CancellationToken cancellationToken)
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init(cancellationToken);
+			base.Init(ct);
 
 			StartDelayedReady();
 			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>

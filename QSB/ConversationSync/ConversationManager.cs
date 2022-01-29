@@ -39,7 +39,7 @@ namespace QSB.ConversationSync
 			_boxPrefab.GetComponent<Text>().color = Color.white;
 		}
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken cancellationToken)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 			=> QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
 
 		public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
