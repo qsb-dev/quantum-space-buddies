@@ -16,6 +16,7 @@ namespace QSB.Player.TransformSync
 	public class PlayerTransformSync : SectoredTransformSync
 	{
 		protected override bool IsPlayerObject => true;
+		protected override bool AllowInactiveAttachedObject => true;
 
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
