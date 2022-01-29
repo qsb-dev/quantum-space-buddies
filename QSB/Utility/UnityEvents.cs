@@ -5,13 +5,13 @@ namespace QSB.Utility
 {
 	public static class UnityEvents
 	{
-		public static UniTask FireOnNextUpdate(Action action) => UniTask.Create(async () =>
+		public static UniTask RunNextFrame(Action action) => UniTask.Create(async () =>
 		{
 			await UniTask.NextFrame();
 			action();
 		});
 
-		public static UniTask FireInNUpdates(Action action, int n) => UniTask.Create(async () =>
+		public static UniTask RunFramesLater(Action action, int n) => UniTask.Create(async () =>
 		{
 			await UniTask.DelayFrame(n);
 			action();
@@ -23,13 +23,13 @@ namespace QSB.Utility
 			action();
 		});
 
-		public static UniTask FireOnNextUpdate(Func<UniTask> func) => UniTask.Create(async () =>
+		public static UniTask RunNextFrame(Func<UniTask> func) => UniTask.Create(async () =>
 		{
 			await UniTask.NextFrame();
 			await func();
 		});
 
-		public static UniTask FireInNUpdates(Func<UniTask> func, int n) => UniTask.Create(async () =>
+		public static UniTask RunFramesLater(Func<UniTask> func, int n) => UniTask.Create(async () =>
 		{
 			await UniTask.DelayFrame(n);
 			await func();

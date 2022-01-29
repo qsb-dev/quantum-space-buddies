@@ -114,7 +114,7 @@ namespace QSB.RespawnSync
 		public void TriggerRespawnMap()
 		{
 			QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
-			UnityEvents.FireOnNextUpdate(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
+			UnityEvents.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 		}
 
 		public void Respawn()

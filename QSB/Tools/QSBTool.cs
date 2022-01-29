@@ -15,7 +15,7 @@ namespace QSB.Tools
 			set
 			{
 				_toolGameObject = value;
-				UnityEvents.FireInNUpdates(
+				UnityEvents.RunFramesLater(
 					() => DitheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>(),
 					5);
 			}

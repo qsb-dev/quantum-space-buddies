@@ -70,7 +70,7 @@ namespace QSB.Tools.TranslatorTool
 			REMOTE_NomaiTranslatorProp.transform.parent = player.CameraBody.transform;
 			REMOTE_NomaiTranslatorProp.transform.localPosition = Vector3.zero;
 			REMOTE_NomaiTranslatorProp.transform.localScale = TranslatorScale;
-			UnityEvents.FireInNUpdates(() => REMOTE_NomaiTranslatorProp.SetActive(true), 5);
+			UnityEvents.RunFramesLater(() => REMOTE_NomaiTranslatorProp.SetActive(true), 5);
 		}
 	}
 }
