@@ -1,12 +1,12 @@
 ﻿{
-  "useKcpTransport": true,
+  "useKcpTransport": false,
   "overrideAppId": -1,
   "dumpWorldObjects": false,
-  "debugMode": true,
-  "drawLines": true,
+  "debugMode": false,
+  "drawLines": false,
   "showQuantumVisibilityObjects": false,
-  "showDebugLabels": true,
+  "showDebugLabels": false,
   "avoidTimeSync": false,
-  "skipTitleScreen": true,
+  "skipTitleScreen": false,
   "greySkybox": false
 }
